@@ -16,6 +16,9 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	"moul.io/u"
+
+	"berty.tech/berty/v2/go/WIP"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -11820,6 +11823,10 @@ func _ProtocolService_AppMessageSend_Handler(srv interface{}, ctx context.Contex
 		return nil, err
 	}
 	if interceptor == nil {
+		k := u.Sha1Hex(in.GroupPK)
+		WIP.Lock.Lock()
+		WIP.RID2[k] = WIP.Goid()
+		WIP.Lock.Unlock()
 		return srv.(ProtocolServiceServer).AppMessageSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{

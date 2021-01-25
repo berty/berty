@@ -13,7 +13,9 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	"moul.io/u"
 
+	"berty.tech/berty/v2/go/WIP"
 	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
@@ -7596,6 +7598,12 @@ func _MessengerService_SendAck_Handler(srv interface{}, ctx context.Context, dec
 		return nil, err
 	}
 	if interceptor == nil {
+
+		k := u.Sha1Hex(in.MessageID)
+		WIP.Lock.Lock()
+		WIP.RID[k] = WIP.Goid()
+		WIP.Lock.Unlock()
+
 		return srv.(MessengerServiceServer).SendAck(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
