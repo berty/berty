@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Ongeldige koppeling!",
       "invalid-qr": "Ongeldige QR code!",
-      "error": "Fout!"
+      "error": "Fout!",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
     },
     "invalid-scan": {
       "dismiss-button": ""
