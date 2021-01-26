@@ -3,7 +3,6 @@ import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
-import { colors } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
 import { useConversation, useMsgrContext, Maybe } from '@berty-tech/store/hooks'
@@ -87,11 +86,11 @@ const getReplicationStatusIcon = (status: replicationServerStatus): string => {
 const getReplicationStatusColor = (status: replicationServerStatus): string => {
 	switch (status) {
 		case replicationServerStatus.KnownServerEnabled:
-			return colors.success
+			return 'green'
 		case replicationServerStatus.KnownServerNotEnabled:
-			return colors.disabled
+			return 'red'
 		case replicationServerStatus.UnknownServerEnabled:
-			return colors.success
+			return 'green'
 	}
 
 	return ''
