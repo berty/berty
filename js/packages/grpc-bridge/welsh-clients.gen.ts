@@ -60,6 +60,11 @@ export interface WelshProtocolServiceClient {
 	peerList: UnaryType<beapi.protocol.ProtocolService['peerList']>
 	attachmentPrepare: RequestStreamType<beapi.protocol.ProtocolService['attachmentPrepare']>
 	attachmentRetrieve: ResponseStreamType<beapi.protocol.ProtocolService['attachmentRetrieve']>
+	pushReceive: UnaryType<beapi.protocol.ProtocolService['pushReceive']>
+	pushSend: UnaryType<beapi.protocol.ProtocolService['pushSend']>
+	pushShareToken: UnaryType<beapi.protocol.ProtocolService['pushShareToken']>
+	pushSetDeviceToken: UnaryType<beapi.protocol.ProtocolService['pushSetDeviceToken']>
+	pushSetServer: UnaryType<beapi.protocol.ProtocolService['pushSetServer']>
 }
 
 export interface WelshAccountServiceClient {
@@ -75,6 +80,8 @@ export interface WelshAccountServiceClient {
 	deleteAccount: UnaryType<beapi.account.AccountService['deleteAccount']>
 	importAccount: UnaryType<beapi.account.AccountService['importAccount']>
 	createAccount: UnaryType<beapi.account.AccountService['createAccount']>
+	pushReceive: UnaryType<beapi.account.AccountService['pushReceive']>
+	pushPlatformTokenRegister: UnaryType<beapi.account.AccountService['pushPlatformTokenRegister']>
 	getGRPCListenerAddrs: UnaryType<beapi.account.AccountService['getGRPCListenerAddrs']>
 }
 
@@ -106,6 +113,8 @@ export interface WelshMessengerServiceClient {
 		beapi.messenger.MessengerService['replicationServiceRegisterGroup']
 	>
 	replicationSetAutoEnable: UnaryType<beapi.messenger.MessengerService['replicationSetAutoEnable']>
+	pushSetAutoShare: UnaryType<beapi.messenger.MessengerService['pushSetAutoShare']>
+	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
 	bannerQuote: UnaryType<beapi.messenger.MessengerService['bannerQuote']>
 	getUsername: UnaryType<beapi.messenger.MessengerService['getUsername']>
 	instanceExportData: ResponseStreamType<beapi.messenger.MessengerService['instanceExportData']>

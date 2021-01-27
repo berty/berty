@@ -2,7 +2,7 @@ package bertyaccount
 
 import (
 	"context"
-	fmt "fmt"
+	"fmt"
 	"sync"
 
 	"go.uber.org/zap"
@@ -11,6 +11,7 @@ import (
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 // Servicex is AccountServiceServer
@@ -33,6 +34,7 @@ type Options struct {
 	LifecycleManager      *lifecycle.Manager
 	NotificationManager   notification.Manager
 	Logger                *zap.Logger
+	DevicePushKeyPath     string
 }
 
 type service struct {
@@ -42,11 +44,13 @@ type service struct {
 	notifManager notification.Manager
 	logger       *zap.Logger
 
-	rootdir          string
-	muService        sync.RWMutex
-	initManager      *initutil.Manager
-	lifecycleManager *lifecycle.Manager
-	sclients         bertybridge.ServiceClientRegister
+	rootdir           string
+	muService         sync.RWMutex
+	initManager       *initutil.Manager
+	lifecycleManager  *lifecycle.Manager
+	sclients          bertybridge.ServiceClientRegister
+	devicePushKeyPath string
+	pushPlatformToken *protocoltypes.PushServiceReceiver
 }
 
 func (o *Options) applyDefault() {
@@ -72,13 +76,14 @@ func NewService(opts *Options) (Service, error) {
 
 	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
 	s := &service{
-		rootdir:          opts.RootDirectory,
-		rootCtx:          rootCtx,
-		rootCancel:       rootCancelCtx,
-		logger:           opts.Logger,
-		lifecycleManager: opts.LifecycleManager,
-		notifManager:     opts.NotificationManager,
-		sclients:         opts.ServiceClientRegister,
+		rootdir:           opts.RootDirectory,
+		rootCtx:           rootCtx,
+		rootCancel:        rootCancelCtx,
+		logger:            opts.Logger,
+		lifecycleManager:  opts.LifecycleManager,
+		notifManager:      opts.NotificationManager,
+		sclients:          opts.ServiceClientRegister,
+		devicePushKeyPath: opts.DevicePushKeyPath,
 	}
 
 	go s.handleLifecycle(rootCtx)

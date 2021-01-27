@@ -13,11 +13,14 @@ func (s *service) AppMetadataSend(ctx context.Context, req *protocoltypes.AppMet
 		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
 
-	if _, err := g.MetadataStore().SendAppMetadata(ctx, req.Payload, req.GetAttachmentCIDs()); err != nil {
+	op, err := g.MetadataStore().SendAppMetadata(ctx, req.Payload, req.GetAttachmentCIDs())
+	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &protocoltypes.AppMetadataSend_Reply{}, nil
+	return &protocoltypes.AppMetadataSend_Reply{
+		CID: op.GetEntry().GetHash().Bytes(),
+	}, nil
 }
 
 func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMessageSend_Request) (*protocoltypes.AppMessageSend_Reply, error) {
@@ -26,9 +29,12 @@ func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMess
 		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
 
-	if _, err := g.MessageStore().AddMessage(ctx, req.Payload, req.GetAttachmentCIDs()); err != nil {
+	op, err := g.MessageStore().AddMessage(ctx, req.Payload, req.GetAttachmentCIDs())
+	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &protocoltypes.AppMessageSend_Reply{}, nil
+	return &protocoltypes.AppMessageSend_Reply{
+		CID: op.GetEntry().GetHash().Bytes(),
+	}, nil
 }

@@ -7,32 +7,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
-func keepDisplayName(db *gorm.DB, logger *zap.Logger) string {
-	if logger == nil {
-		logger = zap.NewNop()
-	}
-
-	result := ""
-	count := int64(0)
-
-	if err := db.Table("accounts").Count(&count).Order("ROWID").Limit(1).Pluck("display_name", &result).Error; err == nil {
-		if count != 1 {
-			logger.Warn("expected one result", zap.Int64("count", count))
-		}
-
-		if result != "" && count > 0 {
-			return result
-		}
-	} else {
-		logger.Warn("attempt at retrieving display name failed", zap.Error(err))
-	}
-
-	logger.Warn("nothing found returning an empty value")
-
-	return ""
-}
-
-func keepAutoReplicateFlag(db *gorm.DB, logger *zap.Logger) bool {
+func keepAccountBoolField(db *gorm.DB, flagName string, defaultValue bool, logger *zap.Logger) bool {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -40,7 +15,7 @@ func keepAutoReplicateFlag(db *gorm.DB, logger *zap.Logger) bool {
 	result := int64(0)
 	count := int64(0)
 
-	if err := db.Table("accounts").Count(&count).Order("ROWID").Limit(1).Pluck("replicate_new_groups_automatically", &result).Error; err == nil {
+	if err := db.Table("accounts").Count(&count).Order("ROWID").Limit(1).Pluck(flagName, &result).Error; err == nil {
 		if count != 1 {
 			logger.Warn("expected one result", zap.Int64("count", count))
 		}
@@ -49,12 +24,12 @@ func keepAutoReplicateFlag(db *gorm.DB, logger *zap.Logger) bool {
 			return result != 0
 		}
 	} else {
-		logger.Warn("attempt at retrieving display name failed", zap.Error(err))
+		logger.Warn("attempt at retrieving flag failed", zap.Error(err))
 	}
 
 	logger.Warn("nothing found returning a default value")
 
-	return true
+	return defaultValue
 }
 
 func keepConversationsLocalData(db *gorm.DB, logger *zap.Logger) []*messengertypes.LocalConversationState {
@@ -103,9 +78,10 @@ func keepAccountStringField(db *gorm.DB, field string, logger *zap.Logger) strin
 func keepDatabaseLocalState(db *gorm.DB, logger *zap.Logger) *messengertypes.LocalDatabaseState {
 	return &messengertypes.LocalDatabaseState{
 		PublicKey:               keepAccountStringField(db, "public_key", logger),
-		DisplayName:             keepDisplayName(db, logger),
-		ReplicateFlag:           keepAutoReplicateFlag(db, logger),
+		DisplayName:             keepAccountStringField(db, "display_name", logger),
+		ReplicateFlag:           keepAccountBoolField(db, "replicate_new_groups_automatically", true, logger),
 		LocalConversationsState: keepConversationsLocalData(db, logger),
 		AccountLink:             keepAccountStringField(db, "link", logger),
+		AutoSharePushTokenFlag:  keepAccountBoolField(db, "auto_share_push_token_flag", true, logger),
 	}
 }
