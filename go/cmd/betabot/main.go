@@ -673,7 +673,7 @@ func safeDefaultDisplayName() string {
 func defaultReplyOption() []*messengertypes.ReplyOption {
 	return []*messengertypes.ReplyOption{
 		{Payload: "/help", Display: "Display betabot commands"},
-		{Payload: "/demo version", Display: "What is the demo version?reload"},
+		{Payload: "/demo version", Display: "What is the demo version?"},
 	}
 }
 
