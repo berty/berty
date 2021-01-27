@@ -1,0 +1,45 @@
+name: Failing DB
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/go.yml"
+      - "tool/*"
+  pull_request:
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/go.yml"
+      - "tool/*"
+
+jobs:
+  go-install-on-darwin:
+    name: "make install (darwin)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.x
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Try the project
+        run: ./tool/test/#2997/do.sh
