@@ -87,8 +87,9 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 				</Text>
 
 				{monitorPayloadSubtitle &&
-					monitorPayloadSubtitle.map((subtitle: string) => (
+					monitorPayloadSubtitle.map((subtitle: string, index: number) => (
 						<Text
+							key={index}
 							style={[
 								{ textAlign: 'left', fontFamily: 'Open Sans', color: '#4E58BF' },
 								text.bold.small,

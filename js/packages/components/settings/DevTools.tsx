@@ -306,7 +306,9 @@ const BodyDevTools: React.FC<{}> = () => {
 	const { t } = useTranslation()
 
 	const items =
-		t('settings.devtools.tor-button')?.length &&
+		t('settings.devtools.tor-button', {
+			option: '',
+		})?.length &&
 		t('settings.devtools.tor-disabled-option')?.length &&
 		t('settings.devtools.tor-optional-option')?.length &&
 		t('settings.devtools.tor-required-option')?.length

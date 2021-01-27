@@ -66,13 +66,13 @@ const BodyHelp: React.FC<{}> = () => {
 						name={t('settings.help.updates-button')}
 						icon='arrow-upward-outline'
 						iconColor={color.red}
-						onPress={navigate.settings.appUpdates}
+						onPress={() => navigate.settings.appUpdates()}
 					/>
 					<ButtonSetting
 						name={t('settings.help.about-button')}
 						icon='info-outline'
 						iconColor={color.red}
-						onPress={navigate.settings.aboutBerty}
+						onPress={() => navigate.settings.aboutBerty()}
 					/>
 					<ButtonSetting
 						name={t('settings.help.account-button')}
