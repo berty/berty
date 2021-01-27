@@ -74,15 +74,15 @@
         "accept": "Akzeptieren",
         "card-title": "Kontaktanfrage!"
       },
-      "input-placeholder": "",
+      "input-placeholder": "Stichwort suchen",
       "no-contacts": "Sie haben noch keine Kontakte oder Chats",
       "search": {
         "no-results": "Keine Ergebnisse gefunden"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Neue Gruppe erstellen",
+      "bottom-button": "Kontakt oder Gruppe scannen"
     }
   },
   "settings": {
@@ -92,7 +92,7 @@
       "header-right-button": "Einstellungen",
       "network-button": "Netzwerke",
       "switch-accounts": "Anderes Konto verwenden",
-      "edit-profile": ""
+      "edit-profile": "Profil bearbeiten"
     },
     "network-map": {
       "title": "Netzwerke",
@@ -133,15 +133,15 @@
         "tag": "blockiert"
       },
       "delete-account-button": "Mein Konto löschen",
-      "backup-account-button": ""
+      "backup-account-button": "Meinen Account sichern"
     },
     "edit-profile": {
-      "title": "",
-      "qr-will-update": "",
-      "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
+      "title": "Profil bearbeiten",
+      "qr-will-update": "Ihre Berty ID (QR-Code) wird aktualisiert",
+      "ocr-wont-update": "Ihre ausstehenden Kontaktanfragen werden nicht aktualisiert",
+      "save": "Änderungen speichern",
+      "cancel": "Abbrechen",
+      "name-input-placeholder": "Name...",
       "name-input-label": "Name"
     },
     "notifications": {
@@ -247,8 +247,8 @@
     "devtools": {
       "title": "Entwicklerwerkzeuge",
       "header-left-button": "Geräteinformationen",
-      "simulate-button": "",
-      "tor-button": "",
+      "simulate-button": "Streamfehler simulieren",
+      "tor-button": "Tor {{option}}",
       "tor-optional-option": "fakultativ",
       "tor-required-option": "erforderlich",
       "tor-disabled-option": "deaktiviert",
@@ -256,7 +256,7 @@
       "header-right-button": "Daemon neu starten",
       "system-info-button": "System-Info",
       "debug-button": "",
-      "add-dev-conversations-button": "",
+      "add-dev-conversations-button": "Entwickler-Unterhaltungen hinzufügen",
       "share-button": {
         "title": "ID auf Discord teilen",
         "alert-title": "Möchten Sie Ihren QR-Code auf Berty Discord im Kanal \"#dev-logs\" veröffentlichen?",
@@ -297,17 +297,17 @@
       "delete-button": "Fake-Daten löschen"
     },
     "add-dev-conversations": {
-      "title": "",
-      "add": "",
-      "tag-bot": "",
-      "tag-contact": "",
-      "tag-conversation": ""
+      "title": "Entwickler-Unterhaltungen hinzufügen",
+      "add": "{{name}} hinzufügen",
+      "tag-bot": "Bot",
+      "tag-contact": "Kontakt",
+      "tag-conversation": "Gruppe"
     },
     "ipfs-webui": {
       "title": "IPFS Webinterface"
     },
     "my-berty-ID": {
-      "qr": "",
+      "qr": "QR",
       "fingerprint": "Fingerabdruck",
       "devices": "Geräte"
     }
@@ -317,8 +317,8 @@
       "invalid-link": "Ungültiger Link!",
       "invalid-qr": "Ungültiger QR-Code!",
       "error": "Fehler!",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "contact-already-added": "Kontakt bereits hinzugefügt",
+      "contact-already-added-message": "Sie können den gleichen Kontakt nicht mehrmals hinzufügen"
     },
     "invalid-scan": {
       "dismiss-button": "Schließen"
@@ -348,7 +348,7 @@
     },
     "multi-member-settings": {
       "header-left-button": "Suchen",
-      "header-middle-button": "",
+      "header-middle-button": "Anruf",
       "header-right-button": "Teilen",
       "media-button": "Medien, Links & Dokumente",
       "notifications-button": "Benachrichtigungen aktivieren",
@@ -363,7 +363,7 @@
       "leave-button": "Gruppe verlassen"
     },
     "multi-member-qr": {
-      "title": ""
+      "title": "QR-Gruppe"
     },
     "one-to-one": {
       "contact-request-box": {
@@ -390,7 +390,7 @@
     },
     "one-to-one-settings": {
       "header-left-button": "Suchen",
-      "header-middle-button": "",
+      "header-middle-button": "Anruf",
       "header-right-button": "Teilen",
       "media-button": "Medien, Links & Dokumente",
       "notifications-button": "Benachrichtigungen aktivieren",
@@ -405,22 +405,22 @@
       "manage-add-button": "Dienste verwalten oder hinzufügen"
     },
     "files": {
-      "record-sound": "",
+      "record-sound": "Tonnachricht aufnehmen",
       "recording": "",
-      "gallery": "",
-      "camera": "",
-      "record": "",
-      "files": "",
-      "microphone": "",
-      "gif": "",
-      "search-gif": "",
-      "security-access": "",
+      "gallery": "Galerie",
+      "camera": "Kamera",
+      "record": "Aufnehmen",
+      "files": "Dateien",
+      "microphone": "Mikrofon",
+      "gif": "GIF",
+      "search-gif": "Gif suchen",
+      "security-access": "Sicherheitszugriff",
       "security-access-desc": "",
-      "save-to-gallery": "",
+      "save-to-gallery": "Datei in der Galerie speichern",
       "share": "Teilen",
-      "forward-berty": "",
-      "forward": "",
-      "image-saved": ""
+      "forward-berty": "An Berty Kontakt weiterleiten",
+      "forward": "Weiterleiten",
+      "image-saved": "Bild in der Galerie gespeichert"
     }
   }
 }
