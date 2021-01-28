@@ -180,6 +180,36 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
+  go-speedy-tests-on-linux:
+    name: "Speedy Stable tests (linux)"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang:
+          - 1.14.x
+          - 1.15.x
+          #- tip
+    env:
+      OS: ubuntu-latest
+      GOLANG: ${{ matrix.golang }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.golang }}
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Run tests
+        working-directory: go
+        run: make test.speedy
+
   go-tests-on-windows:
     name: "Stable tests (windows)"
     runs-on: windows-latest

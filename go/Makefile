@@ -6,6 +6,7 @@
 GO ?= go
 GOPATH ?= $(HOME)/go
 GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
+GO_TEST_SPEEDY_OPTS ?= -test.timeout=300s
 GO_TEST_PATH ?= ./...
 
 BUILD_DATE ?= `date +%s`
@@ -30,9 +31,17 @@ help:
 test: unittest lint tidy
 .PHONY: test
 
+# Speedy tests are regular tests but runned with some options optimising regular tiny runs while implementing some code.
+# Once speedy tests are fine you should run a run of regular tests (mainly for race).
+test.speedy: unittest.speedy
+.PHONY: test.speedy
+
 
 unittest: go.unittest
 .PHONY: unittest
+
+unittest.speedy: go.unittest.speedy
+.PHONY: unittest.speedy
 
 
 generate: pb.generate
@@ -93,6 +102,11 @@ go.unittest: pb.generate
 	$(call check-program, $(GO))
 	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
 .PHONY: go.unittest
+
+go.unittest.speedy:
+	$(call check-program, $(GO))
+	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_SPEEDY_OPTS) $(GO_TEST_PATH)
+.PHONY: go.unittest.speedy
 
 
 go.unstable-tests: pb.generate
