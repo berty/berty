@@ -110,7 +110,7 @@ require (
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.4
-	gorm.io/gorm v1.20.9
+	gorm.io/gorm v1.20.12
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/progress v1.3.2
