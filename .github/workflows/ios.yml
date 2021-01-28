@@ -71,7 +71,7 @@ jobs:
           path: js/ios/Berty.xcodeproj
           key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproj-
-            
+
       - name: Build deps
         working-directory: js
         run: make node_modules ios/vendor/bundle ios/Berty.xcodeproj
@@ -83,7 +83,7 @@ jobs:
       - name: Check diff
         run: |
           set -euo pipefail -o xtrace
-          if [[ $(git diff js/ios/Podfile.lock 2>&1 | tee /tmp/berty-podfile.diff) ]]; then cat /tmp/berty-podfile.diff && false; fi
+          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee /tmp/berty-podfile.diff) ]]; then cat /tmp/berty-podfile.diff && false; fi
 
   build:
     name: Build for iOS
