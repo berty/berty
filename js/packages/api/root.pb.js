@@ -4075,7 +4075,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   member: {
                     type: "Member",
-                    id: 8
+                    id: 8,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:PublicKey;references:MemberPublicKey"
+                    }
                   },
                   conversationPublicKey: {
                     type: "string",
@@ -4414,7 +4417,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   devices: {
                     rule: "repeated",
                     type: "Device",
-                    id: 5
+                    id: 5,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey;references:PublicKey"
+                    }
                   }
                 }
               },

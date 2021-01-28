@@ -377,7 +377,7 @@ message Interaction {
   AppMessage.Type type = 2 [(gogoproto.moretags) = "gorm:\"index\""];
   string member_public_key = 7;
   string device_public_key = 12;
-  Member member = 8;
+  Member member = 8 [(gogoproto.moretags) = "gorm:\"foreignKey:PublicKey;references:MemberPublicKey\""];
   string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
   Conversation conversation = 4;
   bytes payload = 5;
@@ -483,7 +483,7 @@ message Member { // Composite primary key
   bool is_creator = 8;
   int64 info_date = 7;
   Conversation conversation = 4;
-  repeated Device devices = 5;
+  repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey;references:PublicKey\""];
 }
 
 message Device {
