@@ -5,7 +5,7 @@
       "open-registered-account": "Apri un account registrato",
       "import-button": "Importa i dati da un account esistente",
       "account-selector-create-button": "Crea un nuovo account",
-      "more-options": "Più opzioni",
+      "more-options": "Altre opzioni",
       "button": "INIZIA"
     },
     "select-mode": {
@@ -14,11 +14,11 @@
         "desc": "Facile da usare - Tutte le funzionalità",
         "push-notif": "Ricevi notifiche push",
         "offline-message": "Messaggistica offline",
-        "add-contact": "Aggiungi i contatti facilmente",
-        "fast-message": "Consegna dei messaggi più veloce"
+        "add-contact": "Aggiungi facilmente i contatti",
+        "fast-message": "Consegna dei messaggi velocissima"
       },
       "high-level": {
-        "title": "Maggiore livello di privacy",
+        "title": "La migliore riservatezza",
         "desc": "Per utenti avanzati - Meno metadati",
         "disable-push-notif": "Notifiche push disabilitate",
         "disable-local-peer-discovery": "Ricerca locale dei peer disabilitata",
@@ -45,7 +45,7 @@
       "desc": "Questo potrebbe richiedere qualche secondo"
     },
     "notifications": {
-      "header": "Non perdere alcun nuovo messaggio o richiesta di contatto",
+      "header": "Non perderti alcun nuovo messaggio o richiesta di contatto",
       "recommended": "Consigliato",
       "title": "Notifiche",
       "desc": "Devi autorizzare le notifiche push da Berty sul tuo telefono",
@@ -62,7 +62,7 @@
     },
     "setup-finished": {
       "title": "Installazione terminata!",
-      "desc": "Ora è possibile utilizzare l'app, iniziare ad aggiungere contatti e parlare liberamente e privatamente con loro",
+      "desc": "Ora è possibile utilizzare l'app, iniziare ad aggiungere contatti e parlare liberamente e privatamente con essi",
       "button": "INIZIA A USARE BERTY"
     }
   },
@@ -114,7 +114,7 @@
       "app-mode-button": {
         "title": "Modalità app",
         "performance-tag": "Prestazioni",
-        "privacy-tag": "Privacy",
+        "privacy-tag": "Riservatezza",
         "description-tag": "Facile da usare - Tutte le funzionalità",
         "first-bullet-point": "Ricevi notifiche push",
         "second-bullet-point": "Ricevi richieste di contatto",
@@ -227,7 +227,7 @@
       "title": "Su Berty",
       "top-left-button": "Privato & Sicuro",
       "top-right-button": "Rete peer to peer",
-      "bottom-left-button": "Nessuna connessione dati o Internet necessari",
+      "bottom-left-button": "Nessuna connessione dati o internet necessari",
       "bottom-right-button": "Non è necessario fidarsi della rete",
       "terms-button": "Termini di utilizzo",
       "privacy-button": "Informativa sulla privacy",
@@ -242,24 +242,24 @@
       "current-tag": "Attuale",
       "installed-tag": "Installato",
       "initial-tag": "Installazione iniziale",
-      "not-installed-tag": "Non installato"
+      "not-installed-tag": "Non installata"
     },
     "devtools": {
-      "title": "Strumenti dev",
+      "title": "Strumenti di sviluppo",
       "header-left-button": "Informazioni sul dispositivo",
       "simulate-button": "Simula errore stream",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "facoltativo",
       "tor-required-option": "necessario",
       "tor-disabled-option": "disabilitato",
-      "header-middle-button": "Genera dati fake",
-      "header-right-button": "Riavvia il demone",
+      "header-middle-button": "Genera dati falsi",
+      "header-right-button": "Riavvia il daemon",
       "system-info-button": "Informazioni di sistema",
       "debug-button": "Debug",
       "add-dev-conversations-button": "Aggiungi conversazioni dev",
       "share-button": {
         "title": "Condividi ID su Discord",
-        "alert-title": "Vuoi condividere il tuo codice QR in \"#dev-logs\" su Berty Discord?",
+        "alert-title": "Vuoi condividere il tuo codice QR in \"#dev-logs\" sul Discord di Berty?",
         "alert-message": "Questo permetterà ad altri membri dello staff di scansionare il codice QR o copiare il tuo link di contatto.",
         "alert-accept-button": "Yep 👍",
         "alert-cancel-button": "Nope"
@@ -273,8 +273,8 @@
       "stop-node-button": "Arresta nodo",
       "bot-mode-button": "Modalità Bot",
       "local-grpc-button": "gRPC locale",
-      "console-logs-button": "Log di console",
-      "ipfs-webui-button": "IPFS WebUI",
+      "console-logs-button": "Logs della console",
+      "ipfs-webui-button": "Interfaccia Web di IPFS",
       "notifications-button": "Notifiche",
       "send-to-all-button": {
         "title": "Invia messaggi a tutti i contatti",
@@ -284,17 +284,17 @@
       },
       "footer-left-button": "Informazioni sul dispositivo",
       "footer-middle-button": "Elenca eventi",
-      "footer-right-button": "Riavvia il demone"
+      "footer-right-button": "Riavvia il daemon"
     },
     "system-info": {
       "title": "Informazioni di sistema"
     },
     "fake-data": {
-      "title": "Genera dati fake",
-      "contacts-button": "Gen contatti fake",
-      "multi-members-button": "Gen multi-members fake",
-      "messages-button": "Gen messaggi fake",
-      "delete-button": "Elimina dati fake"
+      "title": "Genera dati falsi",
+      "contacts-button": "Genera contatti falsi",
+      "multi-members-button": "Genera multi-membri falsi",
+      "messages-button": "Genera messaggi falsi",
+      "delete-button": "Elimina dati falsi"
     },
     "add-dev-conversations": {
       "title": "Aggiungi conversazioni dev",
@@ -304,7 +304,7 @@
       "tag-conversation": "Gruppo"
     },
     "ipfs-webui": {
-      "title": "IPFS WebUI"
+      "title": "Interfaccia web di IPFS"
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -317,8 +317,8 @@
       "invalid-link": "Link non valido!",
       "invalid-qr": "Codice QR non valido!",
       "error": "Errore!",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "contact-already-added": "Contatto già inserito",
+      "contact-already-added-message": "Non è possibile aggiungere più volte lo stesso contatto"
     },
     "invalid-scan": {
       "dismiss-button": "RIGETTA"
@@ -368,13 +368,13 @@
     "one-to-one": {
       "contact-request-box": {
         "title": "RICHIESTA DI CONTATTO",
-        "refuse-button": "RIFIUTO",
+        "refuse-button": "RIFIUTA",
         "accept-button": "ACCETTA",
         "accepted-button": "ACCETTATO"
       },
       "betabot-box": {
         "title": "AGGIUNGI BOT BETA?",
-        "desc": "Non hai ancora contatti vuoi aggiungere il Bot Beta per scoprire e testare le conversazioni?",
+        "desc": "Non hai ancora contatti ma potresti voler aggiungere il Bot Beta per scoprire e testare le conversazioni?",
         "skip-button": "SALTA",
         "add-button": "AGGIUNGI !"
       },
@@ -406,7 +406,7 @@
     },
     "files": {
       "record-sound": "Registra un messaggio audio",
-      "recording": "Registrazione...",
+      "recording": "Sto registrando...",
       "gallery": "Galleria",
       "camera": "Fotocamera",
       "record": "Registra",
@@ -414,7 +414,7 @@
       "microphone": "Microfono",
       "gif": "GIF",
       "search-gif": "Cerca una gif",
-      "security-access": "Accesso Sicurezza",
+      "security-access": "Accesso di sicurezza",
       "security-access-desc": "Tocca qui per aprire le impostazioni per consentire l'accesso al tuo",
       "save-to-gallery": "Salva questo file nella galleria",
       "share": "Condividi",
