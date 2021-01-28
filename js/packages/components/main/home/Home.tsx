@@ -164,6 +164,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 												refresh={refresh}
 												setRefresh={setRefresh}
 												onLongPress={setIsLongPress}
+												isMultiAccount={isLongPress}
 											/>
 											{searchText?.length ? (
 												<SearchComponent

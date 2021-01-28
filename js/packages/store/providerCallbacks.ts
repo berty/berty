@@ -50,8 +50,14 @@ export const createNewAccount = async (
 		await clearClients()
 		console.log('createNewAccount: clearClients')
 	}
-	await closeAccountWithProgress(dispatch)
-	await _createAccount(embedded, dispatch)
+
+	try {
+		await closeAccountWithProgress(dispatch)
+		await _createAccount(embedded, dispatch)
+	} catch (e) {
+		console.warn('unable to close account', e)
+		return
+	}
 }
 
 export const importAccount = async (
@@ -67,6 +73,7 @@ export const importAccount = async (
 	let resp: beapi.account.CreateAccount.Reply
 
 	try {
+		await closeAccountWithProgress(dispatch)
 		resp = await accountService.importAccount({
 			backupPath: path,
 		})
@@ -80,12 +87,42 @@ export const importAccount = async (
 	}
 
 	await refreshAccountList(embedded, dispatch)
-	await accountService.closeAccount({})
 
 	dispatch({
 		type: MessengerActions.SetNextAccount,
 		payload: resp.accountMetadata.accountId,
 	})
+}
+
+export const updateAccount = async (
+	embedded: boolean,
+	dispatch: (arg0: reducerAction) => void,
+	payload: any,
+) => {
+	if (!embedded) {
+		return
+	}
+
+	try {
+		let obj: any = {
+			accountId: payload.accountId,
+		}
+		if (payload.accountName) {
+			obj.accountName = payload.accountName
+		}
+		if (payload.publicKey) {
+			obj.publicKey = payload.publicKey
+		}
+		if (payload.avatarCid) {
+			obj.avatarCid = payload.avatarCid
+		}
+		await accountService.updateAccount(obj)
+	} catch (e) {
+		console.warn('unable to update account', e)
+		return
+	}
+
+	await refreshAccountList(embedded, dispatch)
 }
 
 export const switchAccount = async (
@@ -96,7 +133,13 @@ export const switchAccount = async (
 	if (!embedded) {
 		return
 	}
-	await closeAccountWithProgress(dispatch)
+
+	try {
+		await closeAccountWithProgress(dispatch)
+	} catch (e) {
+		console.warn('unable to close account', e)
+		return
+	}
 	dispatch({ type: MessengerActions.SetNextAccount, payload: accountID })
 }
 
@@ -149,7 +192,13 @@ export const restart = async (
 	if (!embedded) {
 		return
 	}
-	await closeAccountWithProgress(dispatch)
+
+	try {
+		await closeAccountWithProgress(dispatch)
+	} catch (e) {
+		console.warn('unable to close account')
+		return
+	}
 	dispatch({ type: MessengerActions.SetNextAccount, payload: accountID })
 }
 

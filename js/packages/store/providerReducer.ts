@@ -189,6 +189,7 @@ export const reducerActions: {
 			accounts: oldState.accounts,
 			embedded: oldState.embedded,
 			daemonAddress: oldState.daemonAddress,
+			isNewAccount: oldState.isNewAccount,
 			appState: MessengerAppState.Closed,
 			nextSelectedAccount: oldState.embedded ? oldState.nextSelectedAccount : '0',
 		}
@@ -306,12 +307,17 @@ export const reducerActions: {
 		return oldState
 	},
 
-	[MessengerActions.SetCreatedAccount]: (oldState, action) => ({
-		...oldState,
-		selectedAccount: action?.payload?.accountId,
-		isNewAccount: true,
-		appState: MessengerAppState.OpeningWaitingForClients,
-	}),
+	[MessengerActions.SetCreatedAccount]: (oldState, action) => {
+		return reducer(
+			{
+				...oldState,
+				nextSelectedAccount: action?.payload?.accountId,
+				isNewAccount: true,
+				appState: MessengerAppState.OpeningWaitingForClients,
+			},
+			{ type: MessengerActions.SetStateClosed },
+		)
+	},
 
 	[MessengerActions.SetStateStreamInProgress]: (oldState, action) => ({
 		...oldState,

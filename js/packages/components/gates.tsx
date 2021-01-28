@@ -36,7 +36,7 @@ export const StreamGate: React.FC = ({ children }) => {
 		dispatch({ type: MessengerActions.SetDaemonAddress, payload: { value: newAddress } })
 	}, [dispatch, newAddress])
 
-	if (streamError) {
+	if (streamError && !streamInProgress) {
 		return (
 			<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
 				<Text style={{ color: 'red' }}>{streamError.toString()}</Text>

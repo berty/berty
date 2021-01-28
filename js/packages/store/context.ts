@@ -305,6 +305,7 @@ export type MsgrState = {
 	createNewAccount: () => Promise<void>
 	importAccount: (arg0: string) => Promise<void>
 	switchAccount: (arg0: string) => Promise<void>
+	updateAccount: (arg0: any) => Promise<void>
 	deleteAccount: () => Promise<void>
 	restart: () => Promise<void>
 }
@@ -340,6 +341,7 @@ export const initialState = {
 	createNewAccount: async () => {},
 	importAccount: async () => {},
 	switchAccount: async () => {},
+	updateAccount: async () => {},
 	deleteAccount: async () => {},
 	restart: async () => {},
 	accounts: [],

@@ -24,7 +24,7 @@ export type AvatarStyle = Omit<
 	'borderRadius' | 'width' | 'height' | 'alignItems' | 'justifyContent'
 >
 
-const GenericAvatar: React.FC<{
+export const GenericAvatar: React.FC<{
 	cid: Maybe<string>
 	size: number
 	fallbackSeed: Maybe<string>

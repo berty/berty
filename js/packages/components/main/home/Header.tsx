@@ -17,6 +17,7 @@ export const HomeHeader: React.FC<
 		refresh: boolean
 		setRefresh: any
 		onLongPress: React.Dispatch<React.SetStateAction<boolean>>
+		isMultiAccount: boolean
 	}
 > = ({
 	hasRequests,
@@ -28,6 +29,7 @@ export const HomeHeader: React.FC<
 	refresh,
 	setRefresh,
 	onLongPress,
+	isMultiAccount,
 }) => {
 	const [
 		{ border, width, height, padding, text, background, margin, row },
@@ -181,7 +183,13 @@ export const HomeHeader: React.FC<
 										justifyContent: 'center',
 										alignItems: 'center',
 									}}
-									onPress={() => navigate('Settings.Home')}
+									onPress={() => {
+										if (isMultiAccount) {
+											onLongPress(false)
+										} else {
+											navigate('Settings.Home')
+										}
+									}}
 									delayLongPress={1000}
 									onLongPress={() => {
 										onLongPress(true)
