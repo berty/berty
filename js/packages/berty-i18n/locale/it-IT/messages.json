@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Link non valido!",
       "invalid-qr": "Codice QR non valido!",
-      "error": "Errore!"
+      "error": "Errore!",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
     },
     "invalid-scan": {
       "dismiss-button": "RIGETTA"

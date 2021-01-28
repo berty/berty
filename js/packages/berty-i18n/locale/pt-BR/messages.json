@@ -1,7 +1,7 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "O aplicativo seguro de mensagens ponto a ponto que funciona com ou sem acesso à internet, dados móveis ou confiando na rede",
+      "desc": "O aplicativo seguro de mensagens ponto a ponto que funciona com ou sem acesso à internet, dados móveis ou confiança na rede",
       "open-registered-account": "Abrir uma conta registrada",
       "import-button": "Importar dados de uma conta existente",
       "account-selector-create-button": "Criar uma nova conta",
@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Link inválido!",
       "invalid-qr": "Código QR inválido!",
-      "error": "Erro!"
+      "error": "Erro!",
+      "contact-already-added": "Contato já adicionado",
+      "contact-already-added-message": "Você não pode adicionar o mesmo contato várias vezes"
     },
     "invalid-scan": {
       "dismiss-button": "DISPENSAR"

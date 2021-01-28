@@ -2,9 +2,9 @@
   "onboarding": {
     "getstarted": {
       "desc": "",
-      "open-registered-account": "",
+      "open-registered-account": "Giriş yap",
       "import-button": "",
-      "account-selector-create-button": "",
+      "account-selector-create-button": "Yeni hesap oluştur",
       "more-options": "",
       "button": ""
     },
@@ -26,11 +26,11 @@
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "title": "Hesabınızı oluşturun",
+      "desc": "Hesap oluşturmak için gereken tek bilgi bir isim",
+      "required": "Gerekli",
+      "placeholder": "İsim",
+      "button": "HESABIMI OLUŞTUR"
     },
     "services-auth": {
       "header": "",
@@ -71,7 +71,7 @@
       "requests": {
         "title": "",
         "received-at": "",
-        "accept": "",
+        "accept": "Onayla",
         "card-title": ""
       },
       "input-placeholder": "",
@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "",
       "invalid-qr": "",
-      "error": ""
+      "error": "",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
     },
     "invalid-scan": {
       "dismiss-button": ""

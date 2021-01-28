@@ -2,11 +2,11 @@
   "onboarding": {
     "getstarted": {
       "desc": "Zabezpečená aplikace pro peer-to-peer výměnu zpráv. Bezpečně funguje i bez přístupu k internetu a mobilním datům a v nedůvěryhodných sítích",
-      "open-registered-account": "Otevřít registrovaný účet",
+      "open-registered-account": "Zaregistrovat se",
       "import-button": "Import dat z existujícího účtu",
       "account-selector-create-button": "Vytvořit nový účet",
       "more-options": "Další možnosti",
-      "button": "ZAČÍT"
+      "button": "ZAČÍNÁME"
     },
     "select-mode": {
       "performance": {
@@ -14,7 +14,7 @@
         "desc": "Jednoduché použití - všechny funkce",
         "push-notif": "Přijímat push oznámení",
         "offline-message": "Offline výměna zpráv",
-        "add-contact": "Snadné přidání kontaktů",
+        "add-contact": "Jednoduché přidání kontaktů",
         "fast-message": "Nejrychlejší doručování zpráv"
       },
       "high-level": {
@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Neplatný odkaz!",
       "invalid-qr": "Neplatný QR kód!",
-      "error": "Chyba!"
+      "error": "Chyba!",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
     },
     "invalid-scan": {
       "dismiss-button": "ZAHODIT"
