@@ -35,6 +35,9 @@ service AccountService {
   // CreateAccount creates a new account.
   rpc CreateAccount (CreateAccount.Request) returns (CreateAccount.Reply);
 
+  // UpdateAccount update account's metadata.
+  rpc UpdateAccount (UpdateAccount.Request) returns (UpdateAccount.Reply);
+
   // GetGRPCListenerAddrs return current listeners addrs available on this bridge.
   rpc GetGRPCListenerAddrs (GetGRPCListenerAddrs.Request) returns (GetGRPCListenerAddrs.Reply);
 }
@@ -76,7 +79,11 @@ message CloseAccountWithProgress {
 message AccountMetadata {
   string account_id = 1 [(gogoproto.customname) = "AccountID"];
   string name = 2;
-  int64 last_opened = 3;
+  string avatar_cid = 3 [(gogoproto.customname) = "AvatarCID"];
+  string public_key = 4;
+  int64 last_opened = 5;
+  int64 creation_date = 6;
+  string error = 7;
 }
 
 message ListAccounts {
@@ -113,6 +120,18 @@ message CreateAccount {
     string account_name = 2;
     repeated string args = 3;
     string logger_filters = 4;
+  }
+  message Reply {
+    AccountMetadata account_metadata = 1;
+  }
+}
+
+message UpdateAccount {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_name = 2;
+    string avatar_cid = 3 [(gogoproto.customname) = "AvatarCID"];
+    string public_key = 4;
   }
   message Reply {
     AccountMetadata account_metadata = 1;

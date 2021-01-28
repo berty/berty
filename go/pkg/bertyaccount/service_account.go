@@ -18,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
@@ -342,10 +343,10 @@ func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*Lis
 
 		account, err := s.getAccountMetaForName(subitem.Name())
 		if err != nil {
-			continue
+			accounts = append(accounts, &AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
+		} else {
+			accounts = append(accounts, account)
 		}
-
-		accounts = append(accounts, account)
 	}
 
 	return &ListAccounts_Reply{
@@ -441,6 +442,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 	}
 
 	meta.LastOpened = time.Now().UnixNano() / 1000
+	meta.CreationDate = meta.LastOpened
 
 	metaBytes, err := proto.Marshal(meta)
 	if err != nil {
@@ -457,7 +459,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 	return meta, nil
 }
 
-func (s *service) ImportAccount(_ context.Context, req *ImportAccount_Request) (*ImportAccount_Reply, error) {
+func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request) (*ImportAccount_Reply, error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -481,6 +483,26 @@ func (s *service) ImportAccount(_ context.Context, req *ImportAccount_Request) (
 	})
 	if err != nil {
 		return nil, err
+	}
+
+	p, err := s.initManager.GetMessengerClient()
+	if err != nil {
+		return nil, err
+	}
+
+	a, err := p.AccountGet(ctx, &messengertypes.AccountGet_Request{})
+	if err != nil {
+		return nil, err
+	}
+
+	meta, err = s.updateAccount(&UpdateAccount_Request{
+		AccountID:   meta.AccountID,
+		AccountName: a.Account.DisplayName,
+		PublicKey:   a.Account.PublicKey,
+		AvatarCID:   a.Account.AvatarCID,
+	})
+	if err != nil {
+		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
 	}
 
 	return &ImportAccount_Reply{
@@ -529,6 +551,52 @@ func (s *service) CreateAccount(_ context.Context, req *CreateAccount_Request) (
 	}
 
 	return &CreateAccount_Reply{
+		AccountMetadata: meta,
+	}, nil
+}
+
+func (s *service) updateAccount(req *UpdateAccount_Request) (*AccountMetadata, error) {
+	meta, err := s.getAccountMetaForName(req.AccountID)
+	if err != nil {
+		return nil, err
+	}
+
+	meta.LastOpened = time.Now().UnixNano() / 1000
+	if req.AccountName != "" {
+		meta.Name = req.AccountName
+	}
+	if req.AvatarCID != "" {
+		meta.AvatarCID = req.AvatarCID
+	}
+	if req.PublicKey != "" {
+		meta.PublicKey = req.PublicKey
+	}
+
+	metaBytes, err := proto.Marshal(meta)
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	metafileName := path.Join(s.rootdir, req.AccountID, accountMetafileName)
+	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
+		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	}
+
+	meta.AccountID = req.AccountID
+
+	return meta, nil
+}
+
+func (s *service) UpdateAccount(_ context.Context, req *UpdateAccount_Request) (*UpdateAccount_Reply, error) {
+	s.muService.Lock()
+	defer s.muService.Unlock()
+
+	meta, err := s.updateAccount(req)
+	if err != nil {
+		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
+	}
+
+	return &UpdateAccount_Reply{
 		AccountMetadata: meta,
 	}, nil
 }

@@ -48,6 +48,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "CreateAccount.Request",
                     responseType: "CreateAccount.Reply"
                   },
+                  UpdateAccount: {
+                    requestType: "UpdateAccount.Request",
+                    responseType: "UpdateAccount.Reply"
+                  },
                   GetGRPCListenerAddrs: {
                     requestType: "GetGRPCListenerAddrs.Request",
                     responseType: "GetGRPCListenerAddrs.Reply"
@@ -155,9 +159,28 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
+                  avatarCid: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "AvatarCID"
+                    }
+                  },
+                  publicKey: {
+                    type: "string",
+                    id: 4
+                  },
                   lastOpened: {
                     type: "int64",
-                    id: 3
+                    id: 5
+                  },
+                  creationDate: {
+                    type: "int64",
+                    id: 6
+                  },
+                  error: {
+                    type: "string",
+                    id: 7
                   }
                 }
               },
@@ -260,6 +283,45 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 3
                       },
                       loggerFilters: {
+                        type: "string",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      accountMetadata: {
+                        type: "AccountMetadata",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              UpdateAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      },
+                      accountName: {
+                        type: "string",
+                        id: 2
+                      },
+                      avatarCid: {
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "AvatarCID"
+                        }
+                      },
+                      publicKey: {
                         type: "string",
                         id: 4
                       }
@@ -2825,7 +2887,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBertyAccountAlreadyExists: 5013,
               ErrBertyAccountNoBackupSpecified: 5014,
               ErrBertyAccountIDGenFailed: 5015,
-              ErrBertyAccountCreationFailed: 5016
+              ErrBertyAccountCreationFailed: 5016,
+              ErrBertyAccountUpdateFailed: 5017
             }
           },
           ErrDetails: {
