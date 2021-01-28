@@ -5,24 +5,24 @@
       "open-registered-account": "Giriş yap",
       "import-button": "",
       "account-selector-create-button": "Yeni hesap oluştur",
-      "more-options": "",
+      "more-options": "Daha fazla seçenek",
       "button": ""
     },
     "select-mode": {
       "performance": {
-        "title": "",
-        "desc": "",
+        "title": "Performans",
+        "desc": "Kullanımı kolay - Tüm özellikler",
         "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "offline-message": "Çevrimdışı mesajlaşma",
+        "add-contact": "Kolayca kişi ekleyin",
+        "fast-message": "En hızlı mesaj teslimi"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "En yüksek seviyede gizlilik",
+        "desc": "Gelişmiş kullanıcılar için - Daha az metadata",
         "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "disable-local-peer-discovery": "Yerel eş keşfi devre dışı",
+        "disable-contact-request": "Kişi istekleri devre dışı"
       }
     },
     "create-account": {
@@ -34,34 +34,34 @@
     },
     "services-auth": {
       "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
+      "title": "Servisler",
+      "recommended": "Önerilen",
+      "desc": "Bu işlem sohbetlerinizi otomatik olarak bir servera kopyalar",
       "button": "",
-      "skip": ""
+      "skip": "ATLA VE DAHA SONRA YAP"
     },
     "generate-key": {
-      "title": "",
+      "title": "Berty düğümü(node) başlatılıyor…",
       "desc": ""
     },
     "notifications": {
       "header": "",
-      "recommended": "",
-      "title": "",
+      "recommended": "Önerilen",
+      "title": "Bildirimler",
       "desc": "",
-      "button": "",
-      "skip": ""
+      "button": "BİLDİRİMLERİ YETKİLENDİR",
+      "skip": "ATLA VE DAHA SONRA YAP"
     },
     "bluetooth": {
-      "header": "",
+      "header": "Telefonunu yakındaki eşlerle bağlayarak internet bağlantısı (wifi veya data) olmadan iletişim kur",
       "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "title": "Bluetooth",
+      "desc": "Bu özelliği kullanmak için telefonunuzda Bluetooth kullanımını yetkilendirmelisiniz",
+      "button": "BLUETOOTH'A YETKİ VER",
+      "skip": "ATLA VE DAHA SONRA YAP"
     },
     "setup-finished": {
-      "title": "",
+      "title": "Kurulum bitti!",
       "desc": "",
       "button": ""
     }
@@ -69,28 +69,28 @@
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
+        "title": "İstekler",
+        "received-at": "Alındı",
         "accept": "Onayla",
-        "card-title": ""
+        "card-title": "Kişi isteği!"
       },
       "input-placeholder": "",
-      "no-contacts": "",
+      "no-contacts": "Şimdilik herhangi bir kişi veya chat'in yok",
       "search": {
-        "no-results": ""
+        "no-results": "Sonuç bulunamadı"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Yeni grup oluştur",
+      "bottom-button": "Kişi veya grup tara"
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
-      "network-button": "",
+      "header-left-button": "Yardım",
+      "header-center-button": "Devtools",
+      "header-right-button": "Ayarlar",
+      "network-button": "Ağ Listesi",
       "switch-accounts": "",
       "edit-profile": ""
     },
