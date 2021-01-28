@@ -40,13 +40,13 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 
 	secretsAdded := make(chan struct{})
 
-	msA := peers[0].GC.MetadataStore()
-	msB := peers[1].GC.MetadataStore()
+	msASub := peers[0].GC.MetadataStore().Subscribe(ctx)
+	msBSub := peers[1].GC.MetadataStore().Subscribe(ctx)
 
 	go WatchNewMembersAndSendSecrets(ctx, logger, peers[0].GC)
 	go WatchNewMembersAndSendSecrets(ctx, logger, peers[1].GC)
-	go waitForBertyEventType(ctx, t, msA, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
-	go waitForBertyEventType(ctx, t, msB, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
+	go waitForBertyEventType(t, msASub, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded, true)
+	go waitForBertyEventType(t, msBSub, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded, true)
 	inviteAllPeersToGroup(ctx, t, peers, groupSK)
 
 	devPkA := peers[0].GC.DevicePubKey()
@@ -118,7 +118,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	done := make(chan struct{})
 
 	for _, peer := range peers {
-		go waitForBertyEventType(ctx, t, peer.GC.MetadataStore(), protocoltypes.EventTypeGroupMemberDeviceAdded, len(peers), done)
+		go waitForBertyEventType(t, peer.GC.MetadataStore().Subscribe(ctx), protocoltypes.EventTypeGroupMemberDeviceAdded, len(peers), done, true)
 	}
 
 	for i, peer := range peers {
@@ -739,10 +739,15 @@ func TestMultiDevices_Basic(t *testing.T) {
 	}
 
 	syncChan := make(chan struct{})
-	go waitForBertyEventType(ctx, t, meta[pi[0][0]], protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[0][1]], protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[1][0]], protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[1][1]], protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
+	subCh00 := meta[pi[0][0]].Subscribe(ctx)
+	subCh01 := meta[pi[0][1]].Subscribe(ctx)
+	subCh10 := meta[pi[1][0]].Subscribe(ctx)
+	subCh11 := meta[pi[1][1]].Subscribe(ctx)
+
+	go waitForBertyEventType(t, subCh00, protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan, true)
+	go waitForBertyEventType(t, subCh01, protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan, false)
+	go waitForBertyEventType(t, subCh10, protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan, true)
+	go waitForBertyEventType(t, subCh11, protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan, false)
 
 	// Add peers to contact
 	// Enqueuing outgoing
@@ -788,8 +793,11 @@ func TestMultiDevices_Basic(t *testing.T) {
 	// Activate group for 2nd peer's 1st device
 	groups = meta[pi[1][0]].ListMultiMemberGroups()
 	require.Len(t, groups, 0)
-	go waitForBertyEventType(ctx, t, meta[pi[1][0]], protocoltypes.EventTypeAccountGroupJoined, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[1][1]], protocoltypes.EventTypeAccountGroupJoined, 1, syncChan)
+	sub1Ch10 := meta[pi[1][0]].Subscribe(ctx)
+	sub1Ch11 := meta[pi[1][1]].Subscribe(ctx)
+	go waitForBertyEventType(t, sub1Ch10, protocoltypes.EventTypeAccountGroupJoined, 1, syncChan, true)
+	go waitForBertyEventType(t, sub1Ch11, protocoltypes.EventTypeAccountGroupJoined, 1, syncChan, false)
+
 	_, err = meta[pi[1][0]].GroupJoin(ctx, peers[pi[1][0]].GC.group)
 	require.NoError(t, err)
 	for i := 0; i < 2; i++ {

@@ -346,3 +346,10 @@ func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *mess
 	}
 	return nil
 }
+
+func (a *TestingAccount) GetMember(key string) (*messengertypes.Member, bool) {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	member, ok := a.members[key]
+	return member, ok
+}
