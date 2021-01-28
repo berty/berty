@@ -196,8 +196,9 @@ func (store *msgrStore) memberListSubscribe(convPK string, callback memberUpdate
 		if _, ok := store.memberHandlers[convPK][&callback]; !ok {
 			store.memberHandlers[convPK][&callback] = struct{}{}
 			for _, member := range store.members[convPK] {
+				m := member
 				if callback != nil {
-					store.logIfError("memberListSubscribe handler", callback(member))
+					store.logIfError("memberListSubscribe handler", callback(m))
 				}
 			}
 		}

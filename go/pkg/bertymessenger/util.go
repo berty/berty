@@ -11,7 +11,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func checkIsMe(ctx context.Context, client protocoltypes.ProtocolServiceClient, gme *protocoltypes.GroupMessageEvent) (bool, error) {
+func checkDeviceIsMe(ctx context.Context, client protocoltypes.ProtocolServiceClient, gme *protocoltypes.GroupMessageEvent) (bool, error) {
 	gpkb := gme.GetEventContext().GetGroupPK()
 
 	// TODO: support multiple devices per account

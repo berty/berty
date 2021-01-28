@@ -814,6 +814,8 @@ Composite primary key
 | display_name | [string](#string) |  |  |
 | avatar_cid | [string](#string) |  |  |
 | conversation_public_key | [string](#string) |  |  |
+| is_me | [bool](#bool) |  |  |
+| is_creator | [bool](#bool) |  |  |
 | info_date | [int64](#int64) |  |  |
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |

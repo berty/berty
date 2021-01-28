@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -22,43 +23,20 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func TestUnstableServiceStream(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
-
+func TestServiceStream(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
+	node.ProcessWholeStream(t)
+	time.Sleep(time.Second)
 
-	// first event is account update
-	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.Type, messengertypes.StreamEvent_TypeAccountUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		account := payload.(*messengertypes.StreamEvent_AccountUpdated).Account
-		require.Equal(t, account, node.GetAccount())
-		require.NotEmpty(t, account.Link)
-		require.NotEmpty(t, account.PublicKey)
-		require.Empty(t, account.DisplayName)
-	}
-
-	// second event is list end
-	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.Type, messengertypes.StreamEvent_TypeListEnded)
-		require.Empty(t, event.Payload)
-	}
-
-	// no more event
-	{
-		event := node.TryNextEvent(t, 100*time.Millisecond)
-		require.Nil(t, event)
-	}
+	account := node.GetAccount()
+	require.NotEmpty(t, account.Link)
+	require.NotEmpty(t, account.PublicKey)
+	require.Empty(t, account.DisplayName)
 }
 
-func TestUnstableServiceSetName(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
-
+func TestServiceSetName(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
@@ -66,83 +44,46 @@ func TestUnstableServiceSetName(t *testing.T) {
 	// set name before opening the stream
 	node.SetName(t, "foo")
 
-	// first event is account update
+	node.ProcessWholeStream(t)
+	time.Sleep(time.Second)
+
+	// check update
 	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.Type, messengertypes.StreamEvent_TypeAccountUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		account := payload.(*messengertypes.StreamEvent_AccountUpdated).Account
-		require.Equal(t, account, node.GetAccount())
+		account := node.GetAccount()
 		require.NotEmpty(t, account.Link)
 		require.NotEmpty(t, account.PublicKey)
 		require.Equal(t, account.DisplayName, "foo")
 	}
-
-	// second event is list end
-	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.Type, messengertypes.StreamEvent_TypeListEnded)
-		require.Empty(t, event.Payload)
-	}
-
-	// no more event
-	{
-		event := node.TryNextEvent(t, 100*time.Millisecond)
-		require.Nil(t, event)
-	}
 }
 
-func TestUnstableServiceSetNameAsync(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
-
+func TestServiceSetNameAsync(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
+	node.ProcessWholeStream(t)
+	time.Sleep(time.Second)
 
-	// first event is account update
+	// check initial account state
 	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.Type, messengertypes.StreamEvent_TypeAccountUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		account := payload.(*messengertypes.StreamEvent_AccountUpdated).Account
-		require.Equal(t, account, node.GetAccount())
+		account := node.GetAccount()
 		require.NotEmpty(t, account.Link)
 		require.NotEmpty(t, account.PublicKey)
 		require.Empty(t, account.DisplayName)
 	}
 
-	// second event is list end
-	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.Type, messengertypes.StreamEvent_TypeListEnded)
-		require.Empty(t, event.Payload)
-	}
-
 	// set name after opening the stream
 	previousAccount := node.GetAccount()
 	node.SetName(t, "foo")
+	time.Sleep(time.Second)
 
-	// new account update event
+	// check update
 	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.Type, messengertypes.StreamEvent_TypeAccountUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		account := payload.(*messengertypes.StreamEvent_AccountUpdated).Account
-		require.Equal(t, account, node.GetAccount())
+		account := node.GetAccount()
 		require.NotEmpty(t, account.Link)
 		require.NotEmpty(t, account.PublicKey)
 		require.Equal(t, account.DisplayName, "foo")
 		require.Equal(t, account.PublicKey, previousAccount.PublicKey)
 		require.NotEqual(t, account.Link, previousAccount.Link)
-	}
-
-	// no more event
-	{
-		event := node.TryNextEvent(t, 100*time.Millisecond)
-		require.Nil(t, event)
 	}
 }
 
@@ -172,23 +113,21 @@ func TestUnstableServiceStreamCancel(t *testing.T) {
 	}
 }
 
-func TestUnstableServiceContactRequest(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
-
+func TestServiceContactRequest(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
-
-	// drain init events
-	node.DrainInitEvents(t)
+	node.ProcessWholeStream(t)
+	time.Sleep(1 * time.Second)
 
 	// send contact request
+	var deeplinkReply *messengertypes.ParseDeepLink_Reply
 	{
 		link := "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"
 		ownMetadata := []byte("bar")
 		metadata, err := proto.Marshal(&messengertypes.ContactMetadata{DisplayName: "Alice"})
 		require.NoError(t, err)
-		deeplinkReply, err := node.GetClient().ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: link})
+		deeplinkReply, err = node.GetClient().ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: link})
 		require.NoError(t, err)
 		require.NoError(t, deeplinkReply.Link.IsValid())
 		req := &messengertypes.SendContactRequest_Request{
@@ -198,50 +137,36 @@ func TestUnstableServiceContactRequest(t *testing.T) {
 		}
 		_, err = node.GetClient().SendContactRequest(ctx, req)
 		require.NoError(t, err)
-		assert.Len(t, node.contacts, 0)
-		assert.Len(t, node.conversations, 0)
+		assert.Len(t, node.GetAllContacts(), 0)
+		assert.Len(t, node.GetAllConversations(), 0)
+		time.Sleep(1 * time.Second)
 	}
 
-	// check for ContactUpdated event
+	contactPK := base64.RawURLEncoding.EncodeToString(deeplinkReply.GetLink().GetBertyID().GetAccountPK())
+	require.NotEmpty(t, contactPK)
+
+	// check for contact
 	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), messengertypes.StreamEvent_TypeContactUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		contact := payload.(*messengertypes.StreamEvent_ContactUpdated).Contact
+		contact := node.GetContact(t, contactPK)
 		require.NotNil(t, contact)
 		require.Equal(t, contact.GetDisplayName(), "Alice")
 		require.Equal(t, contact.GetState(), messengertypes.Contact_OutgoingRequestEnqueued)
-		assert.Len(t, node.contacts, 1)
 	}
 
-	// check for the ConversationUpdated event
+	// check for conversation
 	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), messengertypes.StreamEvent_TypeConversationUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
+		contact := node.GetContact(t, contactPK)
+		convPK := contact.GetConversationPublicKey()
+		conversation := node.GetConversation(t, convPK)
 		require.NotNil(t, conversation)
-		assert.Len(t, node.conversations, 1)
-	}
-
-	// no more event
-	{
-		event := node.TryNextEvent(t, 100*time.Millisecond)
-		require.Nil(t, event)
 	}
 }
 
-func TestUnstableServiceConversationCreateLive(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
-
+func TestServiceConversationCreateLive(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
-
-	// drain init events
-	node.DrainInitEvents(t)
+	node.ProcessWholeStream(t)
 
 	// create conversation
 	const conversationName = "Tasty"
@@ -253,33 +178,24 @@ func TestUnstableServiceConversationCreateLive(t *testing.T) {
 		createdConversationPK = reply.GetPublicKey()
 	}
 
-	// check for the ConversationUpdated event
+	time.Sleep(time.Second)
+
+	// check for the Conversation
 	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), messengertypes.StreamEvent_TypeConversationUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
+		conversation := node.GetConversation(t, createdConversationPK)
 		require.NotNil(t, conversation)
 		require.Equal(t, conversation.GetType(), messengertypes.Conversation_MultiMemberType)
 		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
 		require.Equal(t, conversation.GetDisplayName(), conversationName)
 		require.NotEmpty(t, conversation.GetLink())
 	}
-
-	// no more event
-	{
-		event := node.TryNextEvent(t, 100*time.Millisecond)
-		require.Nil(t, event)
-	}
 }
 
-func TestUnstableServiceConversationCreateAsync(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
-
+func TestServiceConversationCreateAsync(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
+	node.ProcessWholeStream(t)
 
 	// create conversation
 	const conversationName = "Tasty"
@@ -291,36 +207,16 @@ func TestUnstableServiceConversationCreateAsync(t *testing.T) {
 		createdConversationPK = reply.GetPublicKey()
 	}
 
-	// first event is account
-	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), messengertypes.StreamEvent_TypeAccountUpdated)
-	}
+	time.Sleep(time.Second)
 
-	// second event is the conversation, with display name
+	// check conversation, with display name
 	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), messengertypes.StreamEvent_TypeConversationUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
+		conversation := node.GetConversation(t, createdConversationPK)
 		require.NotNil(t, conversation)
 		require.Equal(t, conversation.GetType(), messengertypes.Conversation_MultiMemberType)
 		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
 		require.Equal(t, conversation.GetDisplayName(), conversationName)
 		require.NotEmpty(t, conversation.GetLink())
-	}
-
-	// then, the list end event
-	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), messengertypes.StreamEvent_TypeListEnded)
-	}
-
-	// no more event
-	{
-		event := node.TryNextEvent(t, 100*time.Millisecond)
-		require.Nil(t, event)
 	}
 }
 

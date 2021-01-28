@@ -14,6 +14,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -181,6 +183,9 @@ func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
 			if err == io.EOF {
 				return
 			}
+			if e, ok := status.FromError(err); ok && e.Code() == codes.Canceled {
+				return
+			}
 			select {
 			case _, ok := <-ch:
 				if !ok {
@@ -310,12 +315,32 @@ func (a *TestingAccount) GetContact(t *testing.T, pk string) *messengertypes.Con
 	return c
 }
 
+func (a *TestingAccount) GetAllContacts() map[string]*messengertypes.Contact {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	newMap := make(map[string]*messengertypes.Contact)
+	for k, v := range a.contacts {
+		newMap[k] = v
+	}
+	return newMap
+}
+
 func (a *TestingAccount) GetConversation(t *testing.T, pk string) *messengertypes.Conversation {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	conv, ok := a.conversations[pk]
 	require.True(t, ok)
 	return conv
+}
+
+func (a *TestingAccount) GetAllConversations() map[string]*messengertypes.Conversation {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	newMap := make(map[string]*messengertypes.Conversation)
+	for k, v := range a.conversations {
+		newMap[k] = v
+	}
+	return newMap
 }
 
 func (a *TestingAccount) GetMedia(t *testing.T, cid string) *messengertypes.Media {

@@ -4184,6 +4184,7 @@ export namespace berty {
             ErrForEach = 301,
             ErrKeystoreGet = 400,
             ErrKeystorePut = 401,
+            ErrNotFound = 404,
             ErrOrbitDBInit = 1000,
             ErrOrbitDBOpen = 1001,
             ErrOrbitDBAppend = 1002,
@@ -6361,6 +6362,8 @@ export namespace berty {
                 displayName?: (string|null);
                 avatarCid?: (string|null);
                 conversationPublicKey?: (string|null);
+                isMe?: (boolean|null);
+                isCreator?: (boolean|null);
                 infoDate?: (Long|null);
                 conversation?: (berty.messenger.v1.IConversation|null);
                 devices?: (berty.messenger.v1.IDevice[]|null);
@@ -6372,6 +6375,8 @@ export namespace berty {
                 public displayName: string;
                 public avatarCid: string;
                 public conversationPublicKey: string;
+                public isMe: boolean;
+                public isCreator: boolean;
                 public infoDate: Long;
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public devices: berty.messenger.v1.IDevice[];

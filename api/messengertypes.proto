@@ -479,6 +479,8 @@ message Member { // Composite primary key
   string display_name = 2;
   string avatar_cid = 6 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  bool is_me = 9;
+  bool is_creator = 8;
   int64 info_date = 7;
   Conversation conversation = 4;
   repeated Device devices = 5;

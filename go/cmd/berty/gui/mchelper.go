@@ -13,14 +13,16 @@ type mcHelper struct {
 	}
 }
 
-func (h *mcHelper) add(w wfr) error {
-	if w.err != nil {
-		return w.err
+func (h *mcHelper) add(ws ...wfr) error {
+	for _, w := range ws {
+		if w.err != nil {
+			return w.err
+		}
+		h.children = append(h.children, struct {
+			obj   fyne.CanvasObject
+			clean func() error
+		}{w.object, w.clean})
 	}
-	h.children = append(h.children, struct {
-		obj   fyne.CanvasObject
-		clean func() error
-	}{w.object, w.clean})
 	return nil
 }
 

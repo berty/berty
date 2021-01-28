@@ -783,7 +783,7 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 	return backlog, nil
 }
 
-func (d *dbWrapper) addMember(memberPK, groupPK, displayName, avatarCID string) (*messengertypes.Member, error) {
+func (d *dbWrapper) addMember(memberPK, groupPK, displayName, avatarCID string, isMe bool, isCreator bool) (*messengertypes.Member, error) {
 	if memberPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
@@ -796,6 +796,8 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName, avatarCID string) 
 		PublicKey:             memberPK,
 		ConversationPublicKey: groupPK,
 		AvatarCID:             avatarCID,
+		IsCreator:             isCreator,
+		IsMe:                  isMe,
 	}
 
 	if err := d.tx(func(tx *dbWrapper) error {
@@ -1074,4 +1076,20 @@ func (d *dbWrapper) getAllMedias() ([]*messengertypes.Media, error) {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 	return medias, nil
+}
+
+func (d *dbWrapper) getMemberPKFromDevicePK(dpk string) (string, error) {
+	var dev messengertypes.Device
+	err := d.db.Where("public_key = ?", dpk).First(&dev).Error
+	switch err {
+	case nil:
+		if len(dev.PublicKey) == 0 {
+			return "", errcode.ErrNotFound
+		}
+		return dev.PublicKey, nil
+	case gorm.ErrRecordNotFound:
+		return "", errcode.ErrNotFound
+	default:
+		return "", errcode.ErrDBRead.Wrap(err)
+	}
 }

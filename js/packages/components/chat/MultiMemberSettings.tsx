@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { useConversation, useMsgrContext, useAccount } from '@berty-tech/store/hooks'
+import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
 
 import {
 	ButtonSetting,
@@ -15,7 +15,7 @@ import {
 } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { MemberAvatar, MultiMemberAvatar, AccountAvatar } from '../avatars'
+import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 
 //
 // GroupChatSettings
@@ -70,10 +70,11 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 
 const GroupChatSettingsHeader: React.FC<any> = ({ displayName }) => {
 	const [{ text, margin, row }] = useStyles()
+	// pass null as avatar public key to show the default multimember avatar
 	return (
 		<View>
 			<View style={[row.center]}>
-				<MultiMemberAvatar size={80} />
+				<MultiMemberAvatar publicKey={null} size={80} />
 			</View>
 			<Text
 				numberOfLines={1}
@@ -88,14 +89,14 @@ const GroupChatSettingsHeader: React.FC<any> = ({ displayName }) => {
 
 const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const [{ padding, margin, color }] = useStyles()
-	const ctx: any = useMsgrContext()
-	const account = useAccount()
+	const ctx = useMsgrContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
 	const navigation = useNavigation()
 	const memberLength = Object.values(members).length + 1
 	const memberText = memberLength < 2 ? 'member' : 'members'
 	const { t } = useTranslation()
+	const accountMember = Object.values(members).find((m) => m?.isMe)
 
 	return (
 		<View style={[padding.medium]}>
@@ -127,47 +128,50 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 						alignItems: 'center',
 					}}
 				>
-					<AccountAvatar size={30} />
+					<MemberAvatar
+						publicKey={accountMember?.publicKey}
+						conversationPublicKey={publicKey}
+						size={30}
+					/>
 					<ButtonSetting
 						style={[padding.horizontal.small]}
-						name={account?.displayName || ''}
+						name={accountMember?.displayName || ''}
 						alone={false}
 						actionIcon={null}
 					/>
 				</View>
-				{Object.entries(members).map(([k]) => {
-					return (
-						<View
-							style={{
-								flexDirection: 'row',
-								alignItems: 'center',
-							}}
-						>
+				{Object.entries(members)
+					.filter(([, m]) => m && !m.isMe)
+					.map(([k, m]) => {
+						return (
 							<View
-								style={[
-									padding.top.small,
-									{
-										alignSelf: 'flex-start',
-									},
-								]}
+								style={{
+									flexDirection: 'row',
+									alignItems: 'center',
+								}}
 							>
-								<MemberAvatar
-									publicKey={members[k]?.publicKey}
-									conversationPublicKey={publicKey}
-									size={30}
+								<View
+									style={[
+										padding.top.small,
+										{
+											alignSelf: 'flex-start',
+										},
+									]}
+								>
+									<MemberAvatar
+										publicKey={members[k]?.publicKey}
+										conversationPublicKey={publicKey}
+										size={30}
+									/>
+								</View>
+
+								<ButtonDropDown
+									title={m?.displayName || t('chat.multi-member-settings.members-button.unknown')}
+									body={m?.publicKey || ''}
 								/>
 							</View>
-
-							<ButtonDropDown
-								title={
-									(members && members[k].displayName) ||
-									t('chat.multi-member-settings.members-button.unknown')
-								}
-								body={members[k].publicKey}
-							/>
-						</View>
-					)
-				})}
+						)
+					})}
 			</FactionButtonSetting>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.add-member-button')}
