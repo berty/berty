@@ -69,7 +69,6 @@ const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 			actionIcon={null}
 			state={state}
 			onPress={() => {
-				navigation.navigate('Tabs')
 				navigation.navigate('ManageDeepLink', { type: 'link', value: link })
 			}}
 		/>

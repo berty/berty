@@ -233,7 +233,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 	})
 	return {
 		[PersistentOptionsKeys.I18N]: {
-			language: 'enUS',
+			language: 'en-US',
 		},
 		[PersistentOptionsKeys.Notifications]: {
 			enable: true,

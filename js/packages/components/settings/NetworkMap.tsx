@@ -224,7 +224,11 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 								{sortPeers.map((value) => {
 									const elem = prevPeers?.find((v) => value.id?.toString() === v.id?.toString())
 									return (
-										<PeerItem item={value} highlighted={elem ? false : prevPeers ? true : false} />
+										<PeerItem
+											key={value.id}
+											item={value}
+											highlighted={elem ? false : prevPeers ? true : false}
+										/>
 									)
 								})}
 							</>

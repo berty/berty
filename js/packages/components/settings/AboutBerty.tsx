@@ -96,7 +96,7 @@ const BodyAboutBerty: React.FC<{}> = () => {
 						iconSize={30}
 						iconColor={color.blue}
 						actionIcon='arrow-ios-forward'
-						onPress={navigation.navigate.settings.termsOfUse}
+						onPress={() => navigation.navigate.settings.termsOfUse()}
 					/>
 					<ButtonSetting
 						name={t('settings.about.privacy-button')}
