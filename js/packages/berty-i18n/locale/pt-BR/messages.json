@@ -12,7 +12,7 @@
       "performance": {
         "title": "Desempenho",
         "desc": "Fácil de usar - Todas as funcionalidades",
-        "push-notif": "Receber notificações por push",
+        "push-notif": "Receber notificações de push",
         "offline-message": "Mensagens offline",
         "add-contact": "Adicione contatos facilmente",
         "fast-message": "Entrega de mensagem mais rápida"
@@ -20,7 +20,7 @@
       "high-level": {
         "title": "Maior nível de privacidade",
         "desc": "Para usuários avançados - Menos metadados",
-        "disable-push-notif": "Push notification desativado",
+        "disable-push-notif": "Notificação de push desativada",
         "disable-local-peer-discovery": "Descoberta de par local desativada",
         "disable-contact-request": "Solicitações de contato desativadas"
       }
@@ -30,7 +30,7 @@
       "desc": "O nome é a única informação obrigatória",
       "required": "Obrigatório",
       "placeholder": "Nome",
-      "button": "CRIAR MINHA CONTA"
+      "button": "CRIAR UMA CONTA"
     },
     "services-auth": {
       "header": "Autenticar-se em serviços",
@@ -82,7 +82,7 @@
     },
     "home-modal": {
       "top-button": "Criar novo grupo",
-      "bottom-button": "Digitalizar contato ou grupo"
+      "bottom-button": "Escanear contato ou grupo"
     }
   },
   "settings": {
@@ -100,7 +100,7 @@
     },
     "mode": {
       "title": "Configurações",
-      "desc": "Personalize tudo para ter o app que se adapte às suas necessidades",
+      "desc": "Personalize tudo para ter o aplicativo que se adapte às suas necessidades",
       "notifications-button": {
         "title": "Notificações",
         "tag-enabled": "Ativado",
@@ -112,11 +112,11 @@
         "tag-disabled": "Desativado"
       },
       "app-mode-button": {
-        "title": "Modo app",
+        "title": "Modo do Aplicativo",
         "performance-tag": "Desempenho",
         "privacy-tag": "Privacidade",
         "description-tag": "Fácil de usar - Todas as funcionalidades",
-        "first-bullet-point": "Receber notificações por push",
+        "first-bullet-point": "Receber notificações de push",
         "second-bullet-point": "Receber solicitações de contato",
         "third-bullet-point": "Descoberta local de pares (BLE e DNS Multicast)"
       },
@@ -147,7 +147,7 @@
     "notifications": {
       "title": "Notificações",
       "enabled-desc": "Você ativou as notificações!",
-      "disabled-desc": "Você não ativou as notificações para este app",
+      "disabled-desc": "Você não ativou as notificações para este aplicativo",
       "activate-button": "Ativar notificações",
       "contact-request-button": {
         "title": "Solicitação de contato",
@@ -184,7 +184,7 @@
       "activate-button": "Ativar bluetooth"
     },
     "mc": {
-      "activate-button": "Ativar Conectividade Multiponto"
+      "activate-button": "Ativar Conexão Multiponto"
     },
     "services-auth": {
       "title": "Serviços externos",
@@ -202,8 +202,8 @@
     },
     "delete-account": {
       "title": "Apagar conta!",
-      "first-desc": "Tem certeza que deseja apagar sua conta?",
-      "desc": "Digite apagar para confirmar",
+      "first-desc": "Você tem certeza que deseja apagar sua conta?",
+      "desc": "Por favor, digite \"apagar\" para confirmar",
       "cancel-button": "CANCELAR",
       "delete-button": "APAGAR"
     },
@@ -215,7 +215,7 @@
       },
       "updates-button": "Atualizações",
       "about-button": "Sobre Berty",
-      "account-button": "Conta e Berty ID",
+      "account-button": "Conta e ID do Berty",
       "contact-button": "Contatos e Solicitações",
       "message-button": "Mensagens",
       "group-button": "Grupos",
@@ -245,7 +245,7 @@
       "not-installed-tag": "Não instalado"
     },
     "devtools": {
-      "title": "Ferramentas do desenvolvedor",
+      "title": "Ferramentas de desenvolvedor",
       "header-left-button": "Informações do dispositivo",
       "simulate-button": "Simular erro de transmissão",
       "tor-button": "Tor {{option}}",
@@ -273,7 +273,7 @@
       "stop-node-button": "Parar nó",
       "bot-mode-button": "Modo bot",
       "local-grpc-button": "gRPC local",
-      "console-logs-button": "Registros de console",
+      "console-logs-button": "Registros da console",
       "ipfs-webui-button": "WebUI do IPFS",
       "notifications-button": "Notificações",
       "send-to-all-button": {
@@ -408,19 +408,19 @@
       "record-sound": "Gravar uma mensagem de som",
       "recording": "Gravando...",
       "gallery": "Galeria",
-      "camera": "Câmara",
+      "camera": "Câmera",
       "record": "Gravar",
       "files": "Ficheiros",
       "microphone": "Microfone",
       "gif": "GIF",
-      "search-gif": "Pesquise por um gif",
+      "search-gif": "Procurar por um gif",
       "security-access": "Acesso de Segurança",
       "security-access-desc": "Toque aqui para abrir a definição para permitir acesso ao seu",
-      "save-to-gallery": "Guardar este ficheiro na Galeria",
+      "save-to-gallery": "Salvar arquivo na Galeria",
       "share": "Compartilhar",
       "forward-berty": "Encaminhar para contato Berty",
       "forward": "Encaminhar",
-      "image-saved": "Imagem guardada na Galeria"
+      "image-saved": "Imagem salva na Galeria"
     }
   }
 }
