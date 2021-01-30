@@ -110,7 +110,7 @@ func runMain(args []string) error {
 		}
 	}
 
-	if guiInit != nil && args[0] == "gui" { // can't check subcommand after Parse
+	if guiInit != nil && len(args) > 0 && args[0] == "gui" { // can't check subcommand after Parse
 		ech := make(chan error)
 		defer close(ech)
 
