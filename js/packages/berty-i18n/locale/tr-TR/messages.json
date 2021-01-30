@@ -1,18 +1,18 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
+      "desc": "İnternet erişimi, hücresel veri veya ağda güven varken veya yokken çalışan güvenli eşler arası mesajlaşma uygulaması",
       "open-registered-account": "Giriş yap",
-      "import-button": "",
+      "import-button": "Mevcut olan hesaba veri ekle",
       "account-selector-create-button": "Yeni hesap oluştur",
       "more-options": "Daha fazla seçenek",
-      "button": ""
+      "button": "BAŞLA"
     },
     "select-mode": {
       "performance": {
         "title": "Performans",
         "desc": "Kullanımı kolay - Tüm özellikler",
-        "push-notif": "",
+        "push-notif": "Anlık bildirimler alın",
         "offline-message": "Çevrimdışı mesajlaşma",
         "add-contact": "Kolayca kişi ekleyin",
         "fast-message": "En hızlı mesaj teslimi"
@@ -20,7 +20,7 @@
       "high-level": {
         "title": "En yüksek seviyede gizlilik",
         "desc": "Gelişmiş kullanıcılar için - Daha az metadata",
-        "disable-push-notif": "",
+        "disable-push-notif": "Anlık bildirimler devre dışı",
         "disable-local-peer-discovery": "Yerel eş keşfi devre dışı",
         "disable-contact-request": "Kişi istekleri devre dışı"
       }
@@ -33,28 +33,28 @@
       "button": "HESABIMI OLUŞTUR"
     },
     "services-auth": {
-      "header": "",
+      "header": "Servislere izin ver",
       "title": "Servisler",
       "recommended": "Önerilen",
       "desc": "Bu işlem sohbetlerinizi otomatik olarak bir servera kopyalar",
-      "button": "",
+      "button": "Berty servislerini kullan",
       "skip": "ATLA VE DAHA SONRA YAP"
     },
     "generate-key": {
       "title": "Berty düğümü(node) başlatılıyor…",
-      "desc": ""
+      "desc": "Bu işlem birkaç saniye sürebilir"
     },
     "notifications": {
-      "header": "",
+      "header": "Hiçbir yeni mesajı veya iletişim talebini kaçırmayın",
       "recommended": "Önerilen",
       "title": "Bildirimler",
-      "desc": "",
+      "desc": "Telefonunuzda Berty'den gelen push bildirimlerini yetkilendirmeniz gerekiyor",
       "button": "BİLDİRİMLERİ YETKİLENDİR",
       "skip": "ATLA VE DAHA SONRA YAP"
     },
     "bluetooth": {
       "header": "Telefonunu yakındaki eşlerle bağlayarak internet bağlantısı (wifi veya data) olmadan iletişim kur",
-      "optional": "",
+      "optional": "İsteğe bağlı",
       "title": "Bluetooth",
       "desc": "Bu özelliği kullanmak için telefonunuzda Bluetooth kullanımını yetkilendirmelisiniz",
       "button": "BLUETOOTH'A YETKİ VER",
@@ -62,8 +62,8 @@
     },
     "setup-finished": {
       "title": "Kurulum bitti!",
-      "desc": "",
-      "button": ""
+      "desc": "Artık uygulamayı kullanabilir, kişi eklemeye başlayabilir ve onlarla özgürce ve özel olarak konuşabilirsiniz",
+      "button": "BERTY KULLANMAYA BAŞLA"
     }
   },
   "main": {
@@ -91,36 +91,36 @@
       "header-center-button": "Devtools",
       "header-right-button": "Ayarlar",
       "network-button": "Ağ Listesi",
-      "switch-accounts": "",
-      "edit-profile": ""
+      "switch-accounts": "Hesap Degiştir",
+      "edit-profile": "Profili Düzenle"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "Ağ Listesi",
+      "online-peers": "Çevrimiçi Eşler"
     },
     "mode": {
-      "title": "",
-      "desc": "",
+      "title": "Ayarlar",
+      "desc": "İhtiyaçlarınıza uygun uygulamayı almak için her şeyi özelleştirin",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Bildirimler",
+        "tag-enabled": "Aktif",
+        "tag-disabled": "Pasif"
       },
       "bluetooth-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Bluetooth",
+        "tag-enabled": "Aktif",
+        "tag-disabled": "Pasif"
       },
       "app-mode-button": {
         "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
+        "performance-tag": "Performans",
+        "privacy-tag": "Gizlilik",
         "description-tag": "",
         "first-bullet-point": "",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
-      "dark-mode-button": "",
+      "dark-mode-button": "Koyu tema",
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
@@ -129,111 +129,111 @@
         "desc": ""
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Engellenen kişiler",
+        "tag": "engellendi"
       },
-      "delete-account-button": "",
-      "backup-account-button": ""
+      "delete-account-button": "Hesabımı sil",
+      "backup-account-button": "Hesabımı yedekle"
     },
     "edit-profile": {
-      "title": "",
-      "qr-will-update": "",
-      "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
-      "name-input-label": ""
+      "title": "Profilimi düzenle",
+      "qr-will-update": "Berty ID'niz (QR kodu) güncellenecek",
+      "ocr-wont-update": "Bekleyen iletişim istekleriniz güncellenmeyecek",
+      "save": "Değişiklikleri kaydet",
+      "cancel": "İptal",
+      "name-input-placeholder": "İsim...",
+      "name-input-label": "İsim"
     },
     "notifications": {
-      "title": "",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "title": "Bildirimler",
+      "enabled-desc": "Bildirimleri etkinleştirdiniz!",
+      "disabled-desc": "Bu uygulama için bildirimleri etkinleştirmediniz",
+      "activate-button": "Bildirimleri etkinleştir",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "İletişim isteği",
+        "desc": "Biri size her iletişim isteği gönderdiğinde bildirim alın"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Mesaj bildirimleri",
+        "display-button": "Bildirimleri göster",
+        "preview-button": "Mesajların önizlemesi",
+        "sound-button": "Ses",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "İstisnalar",
+          "preview-value": "Ekle",
           "tag": "",
           "tag_plural": ""
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Grup bildirimleri",
+        "display-button": "Bildirimleri göster",
+        "preview-button": "Mesajların önizlemesi",
+        "sound-button": "Ses",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "İstisnalar",
+          "preview-value": "Ekle",
           "tag": "",
           "tag_plural": ""
         }
       }
     },
     "bluetooth": {
-      "title": "",
-      "desc": "",
-      "activate-button": ""
+      "title": "Bluetooth",
+      "desc": "Bluetooth, telefonunuzu doğrudan yakındaki meslektaşlarınıza bağlayarak bir ağ bağlantınız (wifi veya veri) olmadığında Berty uygulamasını en iyi şekilde kullanmanızı sağlar",
+      "activate-button": "Aktifleştir"
     },
     "mc": {
       "activate-button": ""
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "Dış hizmetler",
+      "operated-services-button": "Berty hizmetlerini kullan",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "title": "Özel bir servis sağlayıcı kaydedin",
+        "input-placeholder": "Servis Linki",
+        "action": "Ekle"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "Servis kaydedildi",
+        "sample-no-services": "Servis kaydedilmedi",
+        "sample-unknown-service": "Bilinmeyen servis"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "title": "Hesap Sil!",
+      "first-desc": "Hesabınızı silmek istediğinizden emin misiniz?",
+      "desc": "Lütfen onaylamak için sil yazın",
+      "cancel-button": "İPTAL",
+      "delete-button": "SİL"
     },
     "help": {
-      "title": "",
+      "title": "Yardım",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "Güvenlik ve Gizlilik",
+        "desc": "Verilerinizi güvende tutun ve hayatınızı gizli tutun"
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
+      "updates-button": "Güncellemeler",
+      "about-button": "Berty Hakkinda",
+      "account-button": "Hesap & Berty ID",
+      "contact-button": "Kişiler ve İstekler",
+      "message-button": "Mesajlar",
+      "group-button": "Gruplar",
+      "settings-button": "Ayarlar",
+      "ask-button": "Soru sor",
+      "report-button": "Hata bildir"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
+      "title": "Berty hakkında",
+      "top-left-button": "Gizlilik & Güvenlik",
+      "top-right-button": "Eşler arası ağ",
       "bottom-left-button": "",
       "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": ""
+      "terms-button": "Kullanım şartları",
+      "privacy-button": "Gizlilik politikası",
+      "software-button": "Yazılım lisansı",
+      "contact-button": "İletişim",
+      "website-button": "Website"
     },
     "updates": {
       "title": "",
