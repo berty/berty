@@ -77,7 +77,7 @@
       "input-placeholder": "Mots-clés de recherche",
       "no-contacts": "Vous n'avez pas encore de contact ou de conversation",
       "search": {
-        "no-results": "Aucun résultat"
+        "no-results": "Aucun résultat trouvé"
       }
     },
     "home-modal": {
@@ -90,7 +90,7 @@
       "header-left-button": "Aide",
       "header-center-button": "Devtools",
       "header-right-button": "Paramètres",
-      "network-button": "Réseaux",
+      "network-button": "Liste de réseaux",
       "switch-accounts": "Changer de compte",
       "edit-profile": "Modifier mon profil"
     },
