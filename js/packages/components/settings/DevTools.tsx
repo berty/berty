@@ -19,6 +19,8 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { Player } from '@react-native-community/audio-toolkit'
 import { playSound } from '../sounds'
 import { MessengerActions, PersistentOptionsKeys } from '@berty-tech/store/context'
+import crashlytics from '@react-native-firebase/crashlytics'
+
 import Long from 'long'
 
 //
@@ -352,6 +354,26 @@ const BodyDevTools: React.FC<{}> = () => {
 						payload: { error: t('settings.devtools.simulate-button') },
 					})
 				}
+			/>
+			<ButtonSetting
+				name={t('settings.devtools.simulate-js-error-button')}
+				icon='alert-octagon'
+				iconPack='feather'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => {
+					throw {}
+				}}
+			/>
+			<ButtonSetting
+				name={t('settings.devtools.simulate-native-error-button')}
+				icon='x-octagon'
+				iconPack='feather'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => {
+					crashlytics().crash()
+				}}
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.debug-button')}
