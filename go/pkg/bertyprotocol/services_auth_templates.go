@@ -32,16 +32,11 @@ var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CONNECT & REPLICATE</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
     <style>
       body {
         margin: 0;
         background-color: #3f49ea;
-        font-family: "source sans pro", sans-serif;
+        font-family: Arial, Helvetica, sans-serif;
       }
       main {
         width: 100vw;
