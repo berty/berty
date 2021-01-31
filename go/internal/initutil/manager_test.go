@@ -34,8 +34,8 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/jbenet/goprocess.(*process).doClose"),                                           // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/context.CloseAfterContext.func1"),                              // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),                                  // FIXME - upstream code - is used in many code of libp2p + go-ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).run"),                                         // this goroutine has run alway without stop
-		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).runActive"),                                   // this goroutine has run alway without stop
+		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).run"),                                         // this goroutine has run always without stop
+		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).runActive"),                                   // this goroutine has run always without stop
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-autonat.(*AmbientAutoNAT).background"),                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-autonat.(*autoNATService).background"),                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-circuit.(*RelayListener).Accept"),                              // sometimes happening on CI, need more investigation

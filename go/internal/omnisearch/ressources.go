@@ -16,19 +16,19 @@ type Engine interface {
 	// Or if the search was unsuccess full, decrement yourself.
 	// You could also send a ResultReturn with a nil `Object` and decrement set (nil r.Object are just ignored).
 	//
-	// If you want to write to the channel you must do it concurently.
+	// If you want to write to the channel you must do it concurrently.
 	Search(context.Context, *sync.WaitGroup, chan<- *ResultReturn, *ResultReturn)
 }
 
 type Parser interface {
 	Informator
-	// Parse tryes to decode string
+	// Parse tries to decode string
 	// Return nil if weren't success full, else reflection will be used to know how to continue search.
 	Parse(*ResultReturn) *ResultReturn
 }
 
 // Provider can creates objects for the engines or other provider.
-// Provider are only used at instanciation time.
+// Provider are only used at instantiation time.
 type Provider interface {
 	Informator
 	Available() []reflect.Type
@@ -44,7 +44,7 @@ type stringable interface {
 	String() string
 }
 
-// ResultReturn is a struct used to comunicate metadata.
+// ResultReturn is a struct used to communicate metadata.
 type ResultReturn struct {
 	Object    interface{}   // The thing actually found.
 	Finder    Informator    // Reference to the object used to found it.

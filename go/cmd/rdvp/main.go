@@ -46,7 +46,7 @@ func main() {
 	var (
 		logFormat             = "color"   // json, console, color, light-console, light-color
 		logToFile             = "stderr"  // can be stdout, stderr or a file path
-		logFilters            = "info+:*" // info and more for everythign
+		logFilters            = "info+:*" // info and more for everything
 		serveURN              = ":memory:"
 		serveListeners        = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic"
 		servePK               = ""

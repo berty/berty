@@ -443,7 +443,7 @@ func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *me
 		options := defaultReplyOption()
 		switch strings.ToLower(msg[1:]) {
 		case "help":
-			body := `In this conversation, you can type all theses commands :
+			body := `In this conversation, you can type all these commands :
 /demo group
 /demo demo
 /demo share

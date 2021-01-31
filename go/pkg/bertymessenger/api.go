@@ -525,7 +525,7 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 			svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()))
 			err := sub.Send(&messengertypes.EventStream_Reply{Event: e})
 			if err != nil {
-				// next commmented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
+				// next commented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
 				// errch <- errors.New("TEST ERROR")
 				errch <- err
 			}

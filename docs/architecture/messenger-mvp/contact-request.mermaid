@@ -17,7 +17,7 @@ achat->>a: Display QR code with reference and Alice metadata
 a->>b: Show/Send QR with Alice reference and contact metadata
 b->>bchat: Scan QR with Alice reference and contact metadata
 bchat-->> bprotocol: Subscribe to 1to1 group metadata
-bprotocol-->> borbitdb: Subcribe to 1to1 group metadata log
+bprotocol-->> borbitdb: Subscribe to 1to1 group metadata log
 bchat->>bprotocol: Call sendContactRequest command
 bprotocol-->> bchat: Send contactRequestEnqueued event
 bchat-->> b: Display an outgoing contact request

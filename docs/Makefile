@@ -38,7 +38,7 @@ generate_local:
 	mkdir -p protocol messenger
 	protoc $(protoc_opts) --doc_out=./protocol  --doc_opt=markdown,api.md.tmp ../api/protocoltypes.proto
 	protoc $(protoc_opts) --doc_out=./messenger --doc_opt=markdown,api.md.tmp ../api/messengertypes.proto
-	@# repace multiple empty lines with one
+	@# replace multiple empty lines with one
 	cat protocol/api.md.tmp | sed '/^$$/N;/^\n$$/D' > protocol/api.md
 	cat messenger/api.md.tmp | sed '/^$$/N;/^\n$$/D' > messenger/api.md
 	rm -f */*.md.tmp

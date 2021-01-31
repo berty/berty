@@ -64,7 +64,7 @@ public class BackgroundTaskDriver: BackgroundTaskHandlerDriverProtocol {
 ##### Usage in gomobileipfs
 user will then simply register the driver to ios background task system then pass it to go
 ```swift
-// pseudo code bellow
+// pseudo code below
 // ...
 backgroundDriver = BackgroundTaskDriver()
 

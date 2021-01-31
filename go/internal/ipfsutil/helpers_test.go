@@ -23,7 +23,7 @@ import "encoding/hex"
 const closeTestPid = "/testing/close/0.1.0"
 
 // TestFullClose creates 2 hosts (a and b). a will dial b and will then try to close the connection using FullClose.
-// b will play various senario to check that it's working fine.
+// b will play various scenario to check that it's working fine.
 func TestFullClose(t *testing.T) {
 	// Creating ctx
 	ctx, cancel := context.WithCancel(context.Background())
@@ -84,7 +84,7 @@ func TestFullClose(t *testing.T) {
 	a.Peerstore().SetAddrs(b.ID(), b.Addrs(), peerstore.PermanentAddrTTL)
 	b.Peerstore().SetAddrs(a.ID(), a.Addrs(), peerstore.PermanentAddrTTL)
 
-	// First senario, regular close
+	// First scenario, regular close
 	{
 		errcb := make(chan error)
 
@@ -141,13 +141,13 @@ func TestFullClose(t *testing.T) {
 		}
 	}
 
-	// Second senario, regular timeout
+	// Second scenario, regular timeout
 	{
 		errcb := make(chan error)
 
 		var gs network.Stream // Prevent running the terminator
 		b.SetStreamHandler(closeTestPid, func(s network.Stream) {
-			gs = s // Thread unsafe if we have concurrent streams incoming, shouldn't happend thx to the pnet.
+			gs = s // Thread unsafe if we have concurrent streams incoming, shouldn't happen thx to the pnet.
 			_, err := s.Read([]byte{0})
 			errcb <- err
 		})

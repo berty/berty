@@ -7,7 +7,7 @@
 // Custom imports
 #import <React/RCTLinkingManager.h> // needed for deep linking
 #import "Berty-Swift.h" // needed for swift
-#import <Firebase.h> // needed for crashlytics, TODO: remove this after closed beta / replace it by a more privacy complient solution
+#import <Firebase.h> // needed for crashlytics, TODO: remove this after closed beta / replace it by a more privacy complieant solution
 #import "RNBootSplash.h" // needed by react-native-bootsplash
 // Done custom imports
 
@@ -44,7 +44,7 @@ static void InitializeFlipper(UIApplication *application) {
                                                    moduleName:@"Berty"
                                             initialProperties:nil];
 
-  // TODO: remove crashlytics after closed beta / replace it by a more privacy complient solution
+  // TODO: remove crashlytics after closed beta / replace it by a more privacy compliant solution
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }

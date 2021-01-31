@@ -160,7 +160,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		}
 		// -tor.mode==required: disable everything except tor
 		if m.Node.Protocol.Tor.Mode == TorRequired {
-			// Patch the IPFS config to make it complient with an anonymous node.
+			// Patch the IPFS config to make it compliant with an anonymous node.
 			ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
 				// Disable IP transports
 				c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
