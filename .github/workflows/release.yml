@@ -17,7 +17,7 @@ jobs:
         run: sudo apt-get install -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
       - name: Run Semantic Release
         id: semantic
-        uses: codfish/semantic-release-action@v1
+        uses: docker://ghcr.io/codfish/semantic-release-action:v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Go
