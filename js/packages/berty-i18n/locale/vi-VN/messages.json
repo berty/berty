@@ -1,20 +1,20 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "Ứng dụng nhắn tin ngang hàng an toàn peer-to-peer hoạt động ngay cả khi có hay không internet, dữ liệu di động 3G 4G hoặc trong mạng tin cậy",
+      "open-registered-account": "Mở một tài khoản đã đăng ký",
+      "import-button": "Nhập dữ liệu từ một tài khoản có sẵn",
+      "account-selector-create-button": "Tạo một tài khoản mới",
+      "more-options": "Thêm lựa chọn",
+      "button": "HÃY BẮT ĐẦU"
     },
     "select-mode": {
       "performance": {
         "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
+        "desc": "Dễ dàng sử dụng - Tất cả chức năng",
+        "push-notif": "Nhận các thông báo đẩy",
+        "offline-message": "Tin nhắn Offline",
+        "add-contact": "Thêm liên lạc dễ dàng",
         "fast-message": ""
       },
       "high-level": {
@@ -26,28 +26,28 @@
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "title": "Tạo tài khoản của bạn",
+      "desc": "Tên là thông tin bắt buộc duy nhất",
+      "required": "Yêu cầu",
+      "placeholder": "Tên",
+      "button": "TẠO TÀI KHOẢN CỦA TÔI"
     },
     "services-auth": {
       "header": "",
-      "title": "",
-      "recommended": "",
+      "title": "Các dịch vụ",
+      "recommended": "Đã đề xuất",
       "desc": "",
-      "button": "",
-      "skip": ""
+      "button": "Dùng dịch vụ điều hành của Berty",
+      "skip": "BỎ QUA VÀ THỰC HIỆN ĐIỀU NÀY SAU"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Bắt đầu Berty node…",
+      "desc": "Điều này sẽ mất vài giây"
     },
     "notifications": {
       "header": "",
       "recommended": "",
-      "title": "",
+      "title": "Các thông báo",
       "desc": "",
       "button": "",
       "skip": ""
@@ -61,7 +61,7 @@
       "skip": ""
     },
     "setup-finished": {
-      "title": "",
+      "title": "Cài đặt đã hoàn tất!",
       "desc": "",
       "button": ""
     }

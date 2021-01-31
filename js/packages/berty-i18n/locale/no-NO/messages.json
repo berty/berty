@@ -1,426 +1,426 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "Den sikre meldings-appen for likemenn, som fungerer både med og uten internett, mobilnett eller tillitt til nettverket",
+      "open-registered-account": "Åpne en registrert konto",
+      "import-button": "Importer data fra en eksisterende konto",
+      "account-selector-create-button": "Lag en ny konto",
+      "more-options": "Flere valg",
+      "button": "BEGYNN"
     },
     "select-mode": {
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Ytelse",
+        "desc": "Enkelt å bruke - Alle funksjoner",
+        "push-notif": "Motta push-varsler",
+        "offline-message": "Teksting uten nett",
+        "add-contact": "Legg til kontakter enkelt",
+        "fast-message": "Raskeste levering av meldinger"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "title": "Høyeste nivå av personvern",
+        "desc": "For avanserte brukere - Mindre metadata",
+        "disable-push-notif": "Push-varsler deaktivert",
+        "disable-local-peer-discovery": "Lokalt funn av likemenn deaktivert",
+        "disable-contact-request": "Kontaktforespørsler deaktivert"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "title": "Opprett din konto",
+      "desc": "Et navn er den eneste påkrevde informasjonen",
+      "required": "Obligatorisk",
+      "placeholder": "Navn",
+      "button": "OPPRETT MIN KONTO"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Verifiser til tjenester",
+      "title": "Tjenester",
+      "recommended": "Anbefalt",
+      "desc": "Dette vil automatisk gjenskape dine samtaler på en server",
+      "button": "Bruk Berty-opererte tjenester",
+      "skip": "HOPP OVER OG GJØR DETTE SENERE"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Starter Berty-noden…",
+      "desc": "Dette kan ta noen få sekunder"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Ikke gå glipp av noen nye meldinger eller kontaktforespørsler",
+      "recommended": "Anbefalt",
+      "title": "Varsler",
+      "desc": "Du må godkjenne push-varsler fra Berty på telefonen din",
+      "button": "AUTORISER VARSLER",
+      "skip": "HOPP OVER OG GJØR DETTE SENERE"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Kommuniser uten Internett-tilkobling (wifi eller mobildata), ved å koble telefonen din direkte med personer i nærheten",
+      "optional": "Valgfritt",
+      "title": "Bluetooth",
+      "desc": "For å bruke denne funksjonen må du godkjenne bruk av Bluetooth på din telefon",
+      "button": "AUTORISER BLUETOOTH",
+      "skip": "HOPP OVER OG GJØR DETTE SENERE"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Oppsett fullført!",
+      "desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
+      "button": "BEGYNN Å BRUKE BERTY"
     }
   },
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Forespørsler",
+        "received-at": "Mottatt",
+        "accept": "Godta",
+        "card-title": "Kontaktforespørsel!"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Søk med nøkkelord",
+      "no-contacts": "Du har ingen kontakter eller samtaler enda",
       "search": {
-        "no-results": ""
+        "no-results": "Fant ingen resultater"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Opprett en ny gruppe",
+      "bottom-button": "Skann kontakt eller gruppe"
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
-      "network-button": "",
-      "switch-accounts": "",
-      "edit-profile": ""
+      "header-left-button": "Hjelp",
+      "header-center-button": "Verktøy for utviklere",
+      "header-right-button": "Innstillinger",
+      "network-button": "Liste over nettverk",
+      "switch-accounts": "Bruk en annen konto",
+      "edit-profile": "Rediger profil"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "Liste over nettverk",
+      "online-peers": "Likemenn på nett"
     },
     "mode": {
-      "title": "",
-      "desc": "",
+      "title": "Innstillinger",
+      "desc": "Tilpass alt for å få appen som passer dine behov",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Varsler",
+        "tag-enabled": "Aktivert",
+        "tag-disabled": "Deaktivert"
       },
       "bluetooth-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Bluetooth",
+        "tag-enabled": "Aktivert",
+        "tag-disabled": "Deaktivert"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
+        "title": "App-modus",
+        "performance-tag": "Ytelse",
+        "privacy-tag": "Personvern",
+        "description-tag": "Enkelt å bruke - Alle funksjoner",
+        "first-bullet-point": "Motta push-varsler",
+        "second-bullet-point": "Motta kontaktforespørsler",
+        "third-bullet-point": "Lokal likemann funnet (BLE & Multicast DNS)"
       },
-      "dark-mode-button": "",
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "dark-mode-button": "Mørk-modus",
+      "receive-contact-requests-button": "Motta kontaktforespørsler",
+      "external-services-button": "Eksterne tjenester",
+      "auto-replicate-button": "Automatisk gjenskaping",
       "multicast-dns-button": {
-        "title": "",
-        "desc": ""
+        "title": "Multicast DNS",
+        "desc": "Lokal personoppdagelse"
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Blokkerte kontakter",
+        "tag": "blokkert"
       },
-      "delete-account-button": "",
-      "backup-account-button": ""
+      "delete-account-button": "Slett min konto",
+      "backup-account-button": "Sikkerhetskopier kontoen min"
     },
     "edit-profile": {
-      "title": "",
-      "qr-will-update": "",
-      "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
-      "name-input-label": ""
+      "title": "Rediger min profil",
+      "qr-will-update": "Din Berty ID (QR-kode) vil bli oppdatert",
+      "ocr-wont-update": "Dine pågående kontaktforespørsler vil ikke bli oppdatert",
+      "save": "Lagre endringer",
+      "cancel": "Avbryt",
+      "name-input-placeholder": "Navn...",
+      "name-input-label": "Navn"
     },
     "notifications": {
-      "title": "",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "title": "Varsler",
+      "enabled-desc": "Du har aktivert varsler!",
+      "disabled-desc": "Du har ikke aktivert varsler for denne appen",
+      "activate-button": "Aktiver varsler",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "Kontaktforespørsel",
+        "desc": "Motta et varsel hver gang noen sender deg en kontaktforespørsel"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Meldingsvarsler",
+        "display-button": "Vis varsler",
+        "preview-button": "Forhåndsvisning av meldinger",
+        "sound-button": "Lyd",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Unntak",
+          "preview-value": "Legg til",
+          "tag": "{{count}} unntak",
+          "tag_plural": "{{count}} unntak"
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Gruppevarsler",
+        "display-button": "Vis varsler",
+        "preview-button": "Forhåndsvisning av meldinger",
+        "sound-button": "Lyd",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Unntak",
+          "preview-value": "Legg til",
+          "tag": "{{count}} unntak",
+          "tag_plural": "{{count}} unntak"
         }
       }
     },
     "bluetooth": {
-      "title": "",
-      "desc": "",
-      "activate-button": ""
+      "title": "Bluetooth",
+      "desc": "Bluetooth lar deg bruke Berty-appen når du ikke har internett-tilgang (wifi eller mobilnett) ved å koble mobilen direkte til personer i nærheten",
+      "activate-button": "Aktiver Bluetooth"
     },
     "mc": {
-      "activate-button": ""
+      "activate-button": "Aktiver tilkobling for flere personer"
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "Eksterne tjenester",
+      "operated-services-button": "Bruk Berty-opererte tjenester",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "title": "Registrer en egendefinert tjenesteleverandør",
+        "input-placeholder": "Tjeneste URL",
+        "action": "Legg til"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "Gjeldende registrerte tjenester",
+        "sample-no-services": "Ingen tjenester registrert",
+        "sample-unknown-service": "Ukjent tjeneste"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "title": "Slett konto!",
+      "first-desc": "Er du sikker på at du vil slette din konto?",
+      "desc": "Vennligst skriv \"slett\" for å bekrefte",
+      "cancel-button": "AVBRYT",
+      "delete-button": "SLETT"
     },
     "help": {
-      "title": "",
+      "title": "Hjelp",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "Sikkerhet & Personvern",
+        "desc": "Hold dataene dine trygge og livet ditt privat"
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
+      "updates-button": "Oppdateringer",
+      "about-button": "Om Berty",
+      "account-button": "Konto & Berty ID",
+      "contact-button": "Kontakter & Forespørsler",
+      "message-button": "Meldinger",
+      "group-button": "Grupper",
+      "settings-button": "Innstillinger",
+      "ask-button": "Still et spørsmål",
+      "report-button": "Rapporter en feil"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
-      "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": ""
+      "title": "Om Berty",
+      "top-left-button": "Privat & Sikkert",
+      "top-right-button": "Nettverk mellom likemenn",
+      "bottom-left-button": "Verken internett eller data kreves",
+      "bottom-right-button": "Ingen tillit til nettverk nødvendig",
+      "terms-button": "Vilkår for bruk",
+      "privacy-button": "Retningslinjer for personvern",
+      "software-button": "Programvarelisens",
+      "contact-button": "Kontakt oss",
+      "website-button": "Nettside"
     },
     "updates": {
-      "title": "",
-      "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "title": "App-oppdateringer",
+      "up-to-date-desc": "Appen din er oppdatert",
+      "version": "Versjon",
+      "current-tag": "Gjeldende",
+      "installed-tag": "Installert",
+      "initial-tag": "Første installasjon",
+      "not-installed-tag": "Ikke installert"
     },
     "devtools": {
-      "title": "",
-      "header-left-button": "",
-      "simulate-button": "",
-      "tor-button": "",
-      "tor-optional-option": "",
-      "tor-required-option": "",
-      "tor-disabled-option": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "system-info-button": "",
-      "debug-button": "",
-      "add-dev-conversations-button": "",
+      "title": "Verktøy for utviklere",
+      "header-left-button": "Infoer om enheten",
+      "simulate-button": "Simuler stream-feil",
+      "tor-button": "Tor {{option}}",
+      "tor-optional-option": "valgfritt",
+      "tor-required-option": "obligatorisk",
+      "tor-disabled-option": "deaktivert",
+      "header-middle-button": "Generer falsk data",
+      "header-right-button": "Restart daemon",
+      "system-info-button": "System-info",
+      "debug-button": "Feilsøk",
+      "add-dev-conversations-button": "Legg til utviklersamtaler",
       "share-button": {
-        "title": "",
-        "alert-title": "",
-        "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
+        "title": "Del ID på Discord",
+        "alert-title": "Vil du dele QR-koden din til \"#dev-logs\" på Discord?",
+        "alert-message": "Dette vil tillate andre ansatte til å skanne QR-koden din eller kopiere kontaktlenken din.",
+        "alert-accept-button": "Yep 👍",
+        "alert-cancel-button": "Nei"
       },
-      "native-bridge-button": "",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
-      "stop-node-button": "",
-      "bot-mode-button": "",
-      "local-grpc-button": "",
-      "console-logs-button": "",
-      "ipfs-webui-button": "",
-      "notifications-button": "",
+      "native-bridge-button": "Test Original Bro",
+      "dump-account-button": "Dump konto",
+      "dump-contacts-button": "Dump kontakter",
+      "dump-conversations-button": "Dump samtaler",
+      "dump-interactions-button": "Dump interaksjoner",
+      "dump-members-button": "Dump medlemmer",
+      "stop-node-button": "Stopp node",
+      "bot-mode-button": "Bot-modus",
+      "local-grpc-button": "lokal gRPC",
+      "console-logs-button": "Konsoll-logger",
+      "ipfs-webui-button": "IPFS WebUI",
+      "notifications-button": "Varsler",
       "send-to-all-button": {
-        "title": "",
-        "sending": "",
-        "test": "",
-        "tried": ""
+        "title": "Send meldinger til alle kontakter",
+        "sending": "Sender...",
+        "test": "Test, ",
+        "tried": "✔ Prøvde å sende til {{length}} kontakter"
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-left-button": "Infoer om enheten",
+      "footer-middle-button": "List opp hendelser",
+      "footer-right-button": "Restart daemon"
     },
     "system-info": {
-      "title": ""
+      "title": "System-info"
     },
     "fake-data": {
-      "title": "",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
-      "delete-button": ""
+      "title": "Generer falske data",
+      "contacts-button": "Gen. falske kontakter",
+      "multi-members-button": "Gen. falske multi-medlemmer",
+      "messages-button": "Gen. falske meldinger",
+      "delete-button": "Slett falske data"
     },
     "add-dev-conversations": {
-      "title": "",
-      "add": "",
-      "tag-bot": "",
-      "tag-contact": "",
-      "tag-conversation": ""
+      "title": "Legg til utviklersamtaler",
+      "add": "Legg til {{name}}",
+      "tag-bot": "Bot",
+      "tag-contact": "Kontakt",
+      "tag-conversation": "Gruppe"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS WebUI"
     },
     "my-berty-ID": {
-      "qr": "",
-      "fingerprint": "",
-      "devices": ""
+      "qr": "QR",
+      "fingerprint": "Fingeravtrykk",
+      "devices": "Enheter"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": "",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "invalid-link": "Ugyldig lenke!",
+      "invalid-qr": "Ugyldig QR-kode!",
+      "error": "Feil!",
+      "contact-already-added": "Kontakten er allerede lagt til",
+      "contact-already-added-message": "Du kan ikke legge til samme kontakt flere ganger"
     },
     "invalid-scan": {
-      "dismiss-button": ""
+      "dismiss-button": "AVVIS"
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Fingeravtrykk",
+      "info": "Info",
+      "devices": "Enheter"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Fingeravtrykk",
+      "info": "Infoer",
+      "devices": "Enheter"
     }
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "mark-button": "Marker som verifisert",
+      "block-button": "Blokker kontakt",
+      "delete-button": "Slett kontakt",
+      "fingerprint": "Fingeravtrykk",
+      "info": "Infoer",
+      "devices": "Enheter"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Skriv en sikker melding..."
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
+      "header-left-button": "Søk",
+      "header-middle-button": "Ring",
+      "header-right-button": "Del",
+      "media-button": "Medier, lenker & dokumenter",
+      "notifications-button": "Motta varsler",
       "members-button": {
-        "title": "",
-        "unknown": ""
+        "title": "Medlemmer",
+        "unknown": "Ukjent"
       },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
-      "leave-button": ""
+      "add-member-button": "Legg til medlem",
+      "invite-button": "Inviter via lenke",
+      "save-button": "Lagre samtale på serveren",
+      "erase-button": "Slett samtale",
+      "leave-button": "Forlat gruppen"
     },
     "multi-member-qr": {
-      "title": ""
+      "title": "QR-Gruppe"
     },
     "one-to-one": {
       "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
+        "title": "KONTAKTFORESPØRSEL",
+        "refuse-button": "NEKT",
+        "accept-button": "GODTA",
+        "accepted-button": "GODTATT"
       },
       "betabot-box": {
-        "title": "",
-        "desc": "",
-        "skip-button": "",
-        "add-button": ""
+        "title": "LEGG TIL BETA-BOT?",
+        "desc": "Du har ingen kontakter ennå. Vil du legge til Beta-Bot for å oppdage og teste samtaler?",
+        "skip-button": "HOPP OVER",
+        "add-button": "LEGG TIL !"
       },
       "infos-chat": {
-        "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
-        "outgoing": ""
+        "connection-confirmed": "👋 Berty-tilkobling bekreftet! 🎉",
+        "request-sent": "Forespørsel sendt ✈",
+        "incoming": "Godta denne forespørselen for å svare!",
+        "outgoing": "Venter på ditt kontaktsvar for å tilkoble!"
       },
-      "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "betabot-input-placeholder": "Legg til betabot for å skrive her...",
+      "incoming-input-placeholder": "Godta forespørselen for å skrive her...",
+      "input-placeholder": "Skriv en sikker melding..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "header-left-button": "Søk",
+      "header-middle-button": "Ring",
+      "header-right-button": "Del",
+      "media-button": "Medier, lenker & dokumenter",
+      "notifications-button": "Motta varsler",
+      "mutual-button": "Fellesgrupper",
+      "save-button": "Lagre samtale på serveren",
+      "erase-button": "Slett samtale"
     },
     "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
+      "title": "Registrer samtale på serveren",
+      "no-registered-button": "Ingen gjenskapingstjeneste registrert",
+      "connect-button": "Koble til Berty-opererte tjenester",
+      "manage-add-button": "Administrer eller legg til tjenester"
     },
     "files": {
-      "record-sound": "",
-      "recording": "",
-      "gallery": "",
-      "camera": "",
-      "record": "",
-      "files": "",
-      "microphone": "",
-      "gif": "",
-      "search-gif": "",
-      "security-access": "",
-      "security-access-desc": "",
-      "save-to-gallery": "",
-      "share": "",
-      "forward-berty": "",
-      "forward": "",
-      "image-saved": ""
+      "record-sound": "Ta opp en lydmelding",
+      "recording": "Tar opp...",
+      "gallery": "Galleri",
+      "camera": "Kamera",
+      "record": "Ta opp",
+      "files": "Filer",
+      "microphone": "Mikrofon",
+      "gif": "GIF",
+      "search-gif": "Søk etter en gif",
+      "security-access": "Sikkerhetstilgang",
+      "security-access-desc": "Trykk her for å åpne innstillingen for å gi tilgang til din",
+      "save-to-gallery": "Lagre denne filen i Galleriet",
+      "share": "Del",
+      "forward-berty": "Videresend til Berty-contact",
+      "forward": "Videresend",
+      "image-saved": "Bilde lagret i Galleriet"
     }
   }
 }

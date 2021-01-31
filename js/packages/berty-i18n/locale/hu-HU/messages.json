@@ -1,19 +1,19 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "A biztonságos peer-to-peer üzenetküldő, ami internet, mobiladatok és hálózatba vetett bizalom nélkül is működik",
+      "open-registered-account": "Belépés regisztrált fiókba",
+      "import-button": "Adatok importálása meglévő fiókból",
+      "account-selector-create-button": "Új fiók létrehozása",
+      "more-options": "Több lehetőség",
+      "button": "Első lépések"
     },
     "select-mode": {
       "performance": {
-        "title": "",
+        "title": "Teljesítmény",
         "desc": "",
         "push-notif": "",
-        "offline-message": "",
+        "offline-message": "Offline üzenetküldés",
         "add-contact": "",
         "fast-message": ""
       },
@@ -28,8 +28,8 @@
     "create-account": {
       "title": "",
       "desc": "",
-      "required": "",
-      "placeholder": "",
+      "required": "Kötelező",
+      "placeholder": "Név",
       "button": ""
     },
     "services-auth": {
@@ -46,16 +46,16 @@
     },
     "notifications": {
       "header": "",
-      "recommended": "",
-      "title": "",
+      "recommended": "Ajánlott",
+      "title": "Értesítések",
       "desc": "",
       "button": "",
       "skip": ""
     },
     "bluetooth": {
       "header": "",
-      "optional": "",
-      "title": "",
+      "optional": "Választható",
+      "title": "Bluetooth",
       "desc": "",
       "button": "",
       "skip": ""
@@ -88,8 +88,8 @@
   "settings": {
     "home": {
       "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
+      "header-center-button": "Fejlesztői eszközök",
+      "header-right-button": "Beállítások",
       "network-button": "",
       "switch-accounts": "",
       "edit-profile": ""
@@ -99,28 +99,28 @@
       "online-peers": ""
     },
     "mode": {
-      "title": "",
+      "title": "Beállítások",
       "desc": "",
       "notifications-button": {
-        "title": "",
+        "title": "Értesítések",
         "tag-enabled": "",
         "tag-disabled": ""
       },
       "bluetooth-button": {
-        "title": "",
+        "title": "Bluetooth",
         "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-disabled": "Letiltva"
       },
       "app-mode-button": {
         "title": "",
-        "performance-tag": "",
+        "performance-tag": "Teljesítmény",
         "privacy-tag": "",
         "description-tag": "",
         "first-bullet-point": "",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
-      "dark-mode-button": "",
+      "dark-mode-button": "Sötét mód",
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
@@ -132,20 +132,20 @@
         "title": "",
         "tag": ""
       },
-      "delete-account-button": "",
+      "delete-account-button": "Fiók törlése",
       "backup-account-button": ""
     },
     "edit-profile": {
       "title": "",
       "qr-will-update": "",
       "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
-      "name-input-label": ""
+      "save": "Változtatások mentése",
+      "cancel": "Mégse",
+      "name-input-placeholder": "Név...",
+      "name-input-label": "Név"
     },
     "notifications": {
-      "title": "",
+      "title": "Értesítések",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -157,10 +157,10 @@
         "title": "",
         "display-button": "",
         "preview-button": "",
-        "sound-button": "",
+        "sound-button": "Hang",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "Kivételek",
+          "preview-value": "Hozzáadás",
           "tag": "",
           "tag_plural": ""
         }
@@ -169,17 +169,17 @@
         "title": "",
         "display-button": "",
         "preview-button": "",
-        "sound-button": "",
+        "sound-button": "Hang",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "Kivételek",
+          "preview-value": "Hozzáadás",
           "tag": "",
           "tag_plural": ""
         }
       }
     },
     "bluetooth": {
-      "title": "",
+      "title": "Bluetooth",
       "desc": "",
       "activate-button": ""
     },
@@ -192,7 +192,7 @@
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
-        "action": ""
+        "action": "Hozzáadás"
       },
       "registered-services-button": {
         "title": "",
@@ -201,11 +201,11 @@
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "title": "Fiók törlése!",
+      "first-desc": "Biztosan törölné a fiókját?",
+      "desc": "A megerősítéshez írja be hogy \"delete\"",
+      "cancel-button": "MÉGSE",
+      "delete-button": "TÖRLÉS"
     },
     "help": {
       "title": "",
@@ -213,46 +213,46 @@
         "title": "",
         "desc": ""
       },
-      "updates-button": "",
-      "about-button": "",
+      "updates-button": "Frissítések",
+      "about-button": "Berty-ről",
       "account-button": "",
       "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "",
+      "message-button": "Üzenetek",
+      "group-button": "Csoportok",
+      "settings-button": "Beállítások",
       "ask-button": "",
-      "report-button": ""
+      "report-button": "Hiba jelentése"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
+      "title": "Berty-ről",
+      "top-left-button": "Privát & Biztonságos",
+      "top-right-button": "Peer to peer hálózat",
+      "bottom-left-button": "Nincs szükség mobiladatokra",
       "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
+      "terms-button": "Felhasználási feltételek",
+      "privacy-button": "Adatvédelmi irányelvek",
       "software-button": "",
       "contact-button": "",
-      "website-button": ""
+      "website-button": "Weboldal"
     },
     "updates": {
       "title": "",
-      "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
+      "up-to-date-desc": "Alkalmazása naprakész",
+      "version": "Verzió",
+      "current-tag": "Jelenlegi",
       "installed-tag": "",
       "initial-tag": "",
       "not-installed-tag": ""
     },
     "devtools": {
-      "title": "",
+      "title": "Fejlesztői eszközök",
       "header-left-button": "",
       "simulate-button": "",
       "tor-button": "",
-      "tor-optional-option": "",
-      "tor-required-option": "",
-      "tor-disabled-option": "",
-      "header-middle-button": "",
+      "tor-optional-option": "választható",
+      "tor-required-option": "kötelező",
+      "tor-disabled-option": "letiltva",
+      "header-middle-button": "Hamis információ készítése",
       "header-right-button": "",
       "system-info-button": "",
       "debug-button": "",
@@ -261,8 +261,8 @@
         "title": "",
         "alert-title": "",
         "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
+        "alert-accept-button": "Igen 👍",
+        "alert-cancel-button": "Nem"
       },
       "native-bridge-button": "",
       "dump-account-button": "",
@@ -275,11 +275,11 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Értesítések",
       "send-to-all-button": {
         "title": "",
-        "sending": "",
-        "test": "",
+        "sending": "Küldés...",
+        "test": "Teszt, ",
         "tried": ""
       },
       "footer-left-button": "",
@@ -301,22 +301,22 @@
       "add": "",
       "tag-bot": "",
       "tag-contact": "",
-      "tag-conversation": ""
+      "tag-conversation": "Csoport"
     },
     "ipfs-webui": {
       "title": ""
     },
     "my-berty-ID": {
-      "qr": "",
+      "qr": "QR",
       "fingerprint": "",
-      "devices": ""
+      "devices": "Eszközök"
     }
   },
   "modals": {
     "manage-deep-link": {
       "invalid-link": "",
       "invalid-qr": "",
-      "error": "",
+      "error": "Hiba!",
       "contact-already-added": "",
       "contact-already-added-message": ""
     },
@@ -326,12 +326,12 @@
     "add-this-contact": {
       "fingerprint": "",
       "info": "",
-      "devices": ""
+      "devices": "Eszközök"
     },
     "group-invitation": {
       "fingerprint": "",
       "info": "",
-      "devices": ""
+      "devices": "Eszközök"
     }
   },
   "chat": {
@@ -341,26 +341,26 @@
       "delete-button": "",
       "fingerprint": "",
       "info": "",
-      "devices": ""
+      "devices": "Eszközök"
     },
     "multi-member": {
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
+      "header-left-button": "Keresés",
+      "header-middle-button": "Hívás",
+      "header-right-button": "Megosztás",
       "media-button": "",
       "notifications-button": "",
       "members-button": {
-        "title": "",
-        "unknown": ""
+        "title": "Tagok",
+        "unknown": "Ismeretlen"
       },
       "add-member-button": "",
       "invite-button": "",
       "save-button": "",
       "erase-button": "",
-      "leave-button": ""
+      "leave-button": "Csoport elhagyása"
     },
     "multi-member-qr": {
       "title": ""
@@ -375,26 +375,26 @@
       "betabot-box": {
         "title": "",
         "desc": "",
-        "skip-button": "",
+        "skip-button": "TOVÁBB",
         "add-button": ""
       },
       "infos-chat": {
         "connection-confirmed": "",
-        "request-sent": "",
+        "request-sent": "Kérés Elküldve ✈",
         "incoming": "",
         "outgoing": ""
       },
       "betabot-input-placeholder": "",
       "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "input-placeholder": "Biztonságos üzenet írása..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
+      "header-left-button": "Keresés",
+      "header-middle-button": "Hívás",
+      "header-right-button": "Megosztás",
       "media-button": "",
       "notifications-button": "",
-      "mutual-button": "",
+      "mutual-button": "Közös csoportok",
       "save-button": "",
       "erase-button": ""
     },
@@ -406,21 +406,21 @@
     },
     "files": {
       "record-sound": "",
-      "recording": "",
-      "gallery": "",
-      "camera": "",
+      "recording": "Felvétel...",
+      "gallery": "Galéria",
+      "camera": "Kamera",
       "record": "",
-      "files": "",
-      "microphone": "",
-      "gif": "",
+      "files": "Fájlok",
+      "microphone": "Mikrofon",
+      "gif": "GIF",
       "search-gif": "",
       "security-access": "",
       "security-access-desc": "",
-      "save-to-gallery": "",
-      "share": "",
-      "forward-berty": "",
-      "forward": "",
-      "image-saved": ""
+      "save-to-gallery": "Fájl mentése a Galériába",
+      "share": "Megosztás",
+      "forward-berty": "Továbbítás Berty-nek",
+      "forward": "Továbbítás",
+      "image-saved": "Kép mentve a galériába"
     }
   }
 }

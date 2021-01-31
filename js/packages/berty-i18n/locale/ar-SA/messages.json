@@ -75,48 +75,48 @@
         "card-title": "طلب الاتصال!"
       },
       "input-placeholder": "البحث عن الكلمات الرئيسية",
-      "no-contacts": "",
+      "no-contacts": "ليس لديك أي جهات اتصال أو محادثة حتى الآن",
       "search": {
-        "no-results": ""
+        "no-results": "لا توجد نتائج"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "أنشئ مجموعة جديدة",
+      "bottom-button": "فحص جهة الاتصال أو المجموعة"
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
-      "network-button": "",
-      "switch-accounts": "",
-      "edit-profile": ""
+      "header-left-button": "مساعدة",
+      "header-center-button": "أدوات التطوير",
+      "header-right-button": "الإعدادات",
+      "network-button": "قائمة الشبكات",
+      "switch-accounts": "استخدم حساب آخر",
+      "edit-profile": "تعديل الملف الشخصي"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "قائمة الشبكات",
+      "online-peers": "الأقران على الإنترنت"
     },
     "mode": {
-      "title": "",
-      "desc": "",
+      "title": "الإعدادات",
+      "desc": "تخصيص كل شيء للحصول على التطبيق الذي يلائم احتياجاتك",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "الإشعارات",
+        "tag-enabled": "مفعّل",
+        "tag-disabled": "معطّل"
       },
       "bluetooth-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "البلوتوث",
+        "tag-enabled": "مفعّل",
+        "tag-disabled": "معطّل"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "title": "نمط التطبيق",
+        "performance-tag": "فعالية",
+        "privacy-tag": "الخصوصيات",
+        "description-tag": "سهل الاستخدام - جميع الميزات",
+        "first-bullet-point": "تلقي الإشعارات",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -369,13 +369,13 @@
       "contact-request-box": {
         "title": "",
         "refuse-button": "",
-        "accept-button": "",
+        "accept-button": "الموافقة",
         "accepted-button": ""
       },
       "betabot-box": {
         "title": "",
         "desc": "",
-        "skip-button": "",
+        "skip-button": "تخطي",
         "add-button": ""
       },
       "infos-chat": {
@@ -389,10 +389,10 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
+      "header-left-button": "البحث",
+      "header-middle-button": "اتصل",
+      "header-right-button": "مشاركة",
+      "media-button": "الوسائط والروابط والمستندات",
       "notifications-button": "",
       "mutual-button": "",
       "save-button": "",
@@ -406,20 +406,20 @@
     },
     "files": {
       "record-sound": "",
-      "recording": "",
+      "recording": "يتم التسجيل...",
       "gallery": "",
-      "camera": "",
-      "record": "",
-      "files": "",
-      "microphone": "",
+      "camera": "الكاميرا",
+      "record": "سجل",
+      "files": "الملفات",
+      "microphone": "الميكروفون",
       "gif": "",
       "search-gif": "",
       "security-access": "",
       "security-access-desc": "",
       "save-to-gallery": "",
-      "share": "",
-      "forward-berty": "",
-      "forward": "",
+      "share": "مشاركة",
+      "forward-berty": "ارسال إلى جهة اتصال برتي",
+      "forward": "ارسال",
       "image-saved": ""
     }
   }
