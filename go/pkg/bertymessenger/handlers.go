@@ -843,6 +843,10 @@ func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *messengerty
 	payload := amPayload.(*messengertypes.AppMessage_SetUserInfo)
 
 	if i.GetConversation().GetType() == messengertypes.Conversation_ContactType {
+		if i.GetIsMe() {
+			return i, false, nil
+		}
+
 		cpk := i.GetConversation().GetContactPublicKey()
 		c, err := tx.getContactByPK(cpk)
 		if err != nil {
