@@ -87,7 +87,7 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "עזרה",
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
@@ -208,16 +208,16 @@
       "delete-button": ""
     },
     "help": {
-      "title": "",
+      "title": "עזרה",
       "security-privacy-button": {
         "title": "",
         "desc": ""
       },
-      "updates-button": "",
+      "updates-button": "עדכונים",
       "about-button": "",
       "account-button": "",
       "contact-button": "",
-      "message-button": "",
+      "message-button": "הודעות",
       "group-button": "",
       "settings-button": "",
       "ask-button": "",
