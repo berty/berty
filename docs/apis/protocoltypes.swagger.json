@@ -2442,7 +2442,7 @@
           "additionalProperties": {
             "type": "string"
           },
-          "title": "metadata allow to pass custom informations"
+          "title": "metadata allow to pass custom information"
         }
       },
       "title": "MessageHeaders is used in MessageEnvelope and only readable by invited group members"

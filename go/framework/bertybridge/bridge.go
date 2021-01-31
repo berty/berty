@@ -252,7 +252,7 @@ type PromiseBlock interface {
 func (b *Bridge) InvokeBridgeMethodWithPromiseBlock(promise PromiseBlock, method string, b64message string) {
 	go func() {
 		res, err := b.InvokeBridgeMethod(method, b64message)
-		// if an internal error occure generate a new bridge error
+		// if an internal error occurred generate a new bridge error
 		if err != nil {
 			err = errors.Wrap(err, "unable to invoke bridge method")
 			promise.CallReject(err)

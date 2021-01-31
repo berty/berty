@@ -151,7 +151,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 							rand.New(rand.NewSource(srand.SafeFast())), //nolint:gosec
 						)
 
-						// Generate a good key (mostly avoid colision with concurrent `make doctor` runs across the network).
+						// Generate a good key (mostly avoid collision with concurrent `make doctor` runs across the network).
 						var key string
 						{
 							// Using sha256 as this is not critical, probably still fast on most arch.

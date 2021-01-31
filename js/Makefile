@@ -55,7 +55,7 @@ help:
 	@echo "  ios.debug            Launch iOS app in debug mode            IOS_DEVICE=<virtual/real device>"
 	@echo "  ios.release          Launch iOS app in release mode          IOS_DEVICE=<virtual/real device>"
 	@echo "  lint                 Run eslint"
-	@echo "  lint.fix             Run eslint and fix erros"
+	@echo "  lint.fix             Run eslint and fix errors"
 	@echo "  metro.start          Start React-Native Metro (app debug)"
 	@echo "  regenerate           Clean and generate Protobuf files"
 	@echo "  test                 Run tests"

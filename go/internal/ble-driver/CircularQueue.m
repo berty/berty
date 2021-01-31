@@ -37,7 +37,7 @@
 	const NSUInteger next = (_start + _count) % _capacity;
 	[_array replaceObjectAtIndex:next withObject:obj];
 	if (_count == _capacity) {
-		// The queue was already full and the head is overwriten.
+		// The queue was already full and the head is overwritten.
 		_start = (_start + 1) % _capacity;
 	} else {
 		_count += 1;

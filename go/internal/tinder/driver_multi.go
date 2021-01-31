@@ -15,7 +15,7 @@ import (
 type MultiDriver struct {
 	logger *zap.Logger
 	// Stores AsyncableDriver for ease with AsyncMultiDriver.
-	// That mean they must be bundeled in a noop.
+	// That mean they must be bundled in a noop.
 	drivers []AsyncableDriver
 
 	mapc map[string]context.CancelFunc

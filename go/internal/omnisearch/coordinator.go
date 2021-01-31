@@ -7,7 +7,7 @@ import (
 
 // Coordinator executes searches
 type Coordinator interface {
-	// Do execute a search with the currently available ressources.
+	// Do execute a search with the currently available resources.
 	// The chan will be closed once finished.
 	Do(context.Context, ...interface{}) <-chan *ResultReturn
 }

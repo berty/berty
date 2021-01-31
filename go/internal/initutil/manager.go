@@ -323,7 +323,7 @@ func (m *Manager) SetupInitTimeout(fs *flag.FlagSet) {
 }
 
 // prepareForGetter prepare locks and ctx timeouts for an external getter.
-// it returns a cleanup and should be defered.
+// it returns a cleanup and should be deferred.
 func (m *Manager) prepareForGetter() func() {
 	m.mutex.Lock()
 	if m.InitTimeout > 0 {

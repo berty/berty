@@ -1031,7 +1031,7 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		require.LessOrEqual(t, beforeSend, conversation.GetLastUpdate())
 		// require.LessOrEqual(t, conversation.GetLastUpdate(), afterSend) // -> cannot be sure
 
-		// even if the conversation is closed, the unread cound should not increment if the interaction is from myself
+		// even if the conversation is closed, the unread count should not increment if the interaction is from myself
 		require.Equal(t, conversation.GetUnreadCount(), before.GetUnreadCount())
 	}
 

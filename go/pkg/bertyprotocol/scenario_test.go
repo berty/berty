@@ -629,7 +629,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			require.NoError(t, err)
 			require.NotNil(t, receiverCfg)
 
-			// Setup receiver's sharable contact
+			// Setup receiver's shareable contact
 			var receiverRDVSeed []byte
 
 			crf, err := receiver.Client.ContactRequestReference(ctx, &protocoltypes.ContactRequestReference_Request{})
