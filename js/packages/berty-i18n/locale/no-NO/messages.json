@@ -78,6 +78,10 @@
       "no-contacts": "Du har ingen kontakter eller samtaler enda",
       "search": {
         "no-results": "Fant ingen resultater"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -248,6 +252,8 @@
       "title": "Verktøy for utviklere",
       "header-left-button": "Infoer om enheten",
       "simulate-button": "Simuler stream-feil",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "valgfritt",
       "tor-required-option": "obligatorisk",
@@ -421,6 +427,25 @@
       "forward-berty": "Videresend til Berty-contact",
       "forward": "Videresend",
       "image-saved": "Bilde lagret i Galleriet"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }
