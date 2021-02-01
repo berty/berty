@@ -78,6 +78,10 @@
       "no-contacts": "У вас пока нет контактов или чатов",
       "search": {
         "no-results": "Ничего не найдено"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -248,6 +252,8 @@
       "title": "Инструменты для разработчиков",
       "header-left-button": "Информация об устройстве",
       "simulate-button": "Симулировать ошибки в передаче данных",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "необязательно",
       "tor-required-option": "обязательно",
@@ -421,6 +427,25 @@
       "forward-berty": "Переслать контакту в Berty",
       "forward": "Переслать",
       "image-saved": "Изображение сохранено в Галерее"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }
