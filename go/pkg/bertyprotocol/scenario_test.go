@@ -82,7 +82,7 @@ func TestScenario_MessageMultiMemberGroup(t *testing.T) {
 }
 
 func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
-	const ngroup = 1
+	const ngroup = 3
 
 	cases := []testCase{
 		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Stable, time.Second * 10 * ngroup},
