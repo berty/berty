@@ -329,10 +329,10 @@ type ConnnectTestingProtocolFunc func(*testing.T, libp2p_mocknet.Mocknet)
 
 // ConnectAll peers between themselves
 func ConnectAll(t *testing.T, m libp2p_mocknet.Mocknet) {
-	t.Helper()
+	// t.Helper()
 
-	err := m.ConnectAllButSelf()
-	require.NoError(t, err)
+	// err := m.ConnectAllButSelf()
+	// require.NoError(t, err)
 }
 
 // ConnectInLine, connect peers one by one in order to make a straight line:
@@ -341,11 +341,11 @@ func ConnectAll(t *testing.T, m libp2p_mocknet.Mocknet) {
 // └───┘    └───┘    └───┘         └───┘
 
 func ConnectInLine(t *testing.T, m libp2p_mocknet.Mocknet) {
-	t.Helper()
+	// t.Helper()
 
-	peers := m.Peers()
+	// peers := m.Peers()
 
-	for i := 0; i < len(peers)-1; i++ {
-		m.ConnectPeers(peers[i], peers[i+1])
-	}
+	// for i := 0; i < len(peers)-1; i++ {
+	// 	m.ConnectPeers(peers[i], peers[i+1])
+	// }
 }
