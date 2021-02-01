@@ -78,6 +78,10 @@
       "no-contacts": "Все още нямате никакви контакти или чат",
       "search": {
         "no-results": "Не са намерени резултати"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -248,6 +252,8 @@
       "title": "Инструменти за програмисти",
       "header-left-button": "Информация за устройства",
       "simulate-button": "Симулирай грешка в потока",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "незадължително",
       "tor-required-option": "задължително",
@@ -421,6 +427,25 @@
       "forward-berty": "Препрати до Berty контакт",
       "forward": "Препрати",
       "image-saved": "Изображението е запазено в галерията"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }
