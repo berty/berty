@@ -78,6 +78,10 @@
       "no-contacts": "You don't have any contacts or chat yet",
       "search": {
         "no-results": "No results found"
+      },
+      "multi-account": {
+        "create-button": "Create new account",
+        "import-button": "Import account"
       }
     },
     "home-modal": {

@@ -369,7 +369,6 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 			-v $(ext_ldflags) \
 			-cache "$(PWD)/ios/.gomobile-cache" \
 			-target ios \
-			-tags embedTor \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
 	touch $@

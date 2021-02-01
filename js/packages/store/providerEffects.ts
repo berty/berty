@@ -34,7 +34,6 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 						payload: msg,
 					})
 				} else {
-					console.log('STREAM DONE')
 					dispatch({
 						type: MessengerActions.SetStateStreamDone,
 					})
@@ -298,12 +297,15 @@ export const openingClients = (
 			cancel = () => stream.stop()
 			stream.onMessage((msg, err) => {
 				if (err) {
-					// if (err.EOF) {
-					// 	return
-					// }
-					// console.warn('events stream onMessage error:', err)
-					// dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
-					return
+					if (
+						err?.EOF ||
+						err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
+						err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE
+					) {
+						return
+					}
+					console.warn('events stream onMessage error:', err)
+					dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 				}
 				const evt = msg?.event
 				if (!evt || evt.type === null || evt.type === undefined) {

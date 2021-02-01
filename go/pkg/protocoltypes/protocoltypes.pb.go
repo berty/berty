@@ -790,7 +790,7 @@ type MessageHeaders struct {
 	DevicePK []byte `protobuf:"bytes,2,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
 	// sig is the signature of the encrypted message using the device's private key
 	Sig []byte `protobuf:"bytes,3,opt,name=sig,proto3" json:"sig,omitempty"`
-	// metadata allow to pass custom information
+	// metadata allow to pass custom informations
 	Metadata             map[string]string `protobuf:"bytes,4,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
 	XXX_unrecognized     []byte            `json:"-"`

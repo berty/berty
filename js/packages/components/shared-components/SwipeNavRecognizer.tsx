@@ -53,8 +53,10 @@ export const SwipeNavRecognizer: React.FC<{
 				return swipeUpHandler && swipeUpHandler()
 			} else if (gestureState.dx > onSwipeHorizontalOffsetThreshold) {
 				return swipeRightHandler && swipeRightHandler()
+			} else if (gestureState.dx < -onSwipeHorizontalOffsetThreshold) {
+				return swipeLeftHandler && swipeLeftHandler()
 			}
-			return swipeLeftHandler && swipeLeftHandler()
+			return () => {}
 		},
 		[swipeUpHandler, swipeDownHandler, swipeLeftHandler, swipeRightHandler],
 	)

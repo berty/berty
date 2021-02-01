@@ -156,8 +156,13 @@ const EditMyProfile: React.FC = () => {
 			}
 
 			if (updated) {
-				console.log('updating acc', update)
+				// update account in bertymessenger
 				await ctx.client?.accountUpdate(update)
+				// update account in bertyaccount
+				await ctx.updateAccount({
+					accountId: ctx.selectedAccount,
+					avatarCid: update.avatarCid,
+				})
 			}
 
 			// all good, go back

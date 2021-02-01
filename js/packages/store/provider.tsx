@@ -15,6 +15,7 @@ import {
 	setPersistentOption,
 	createNewAccount,
 	importAccount,
+	updateAccount,
 	switchAccount,
 	deleteAccount,
 	restart,
@@ -97,6 +98,11 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[embedded, state.clearClients],
 	)
 
+	const callbackUpdateAccount = useCallback(
+		(payload: any) => updateAccount(embedded, dispatch, payload),
+		[embedded],
+	)
+
 	const callbackSetPersistentOption = useCallback(
 		(action) => setPersistentOption(dispatch, state.selectedAccount, action),
 		[state.selectedAccount],
@@ -127,6 +133,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				createNewAccount: callbackCreateNewAccount,
 				importAccount: callbackImportAccount,
 				switchAccount: callbackSwitchAccount,
+				updateAccount: callbackUpdateAccount,
 				deleteAccount: callbackDeleteAccount,
 				restart: callbackRestart,
 			}}

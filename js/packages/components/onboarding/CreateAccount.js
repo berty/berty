@@ -8,8 +8,6 @@ import { useNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
 import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { globals } from '@berty-tech/config'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -28,15 +26,22 @@ const CreateAccountBody = ({ next }) => {
 			.catch((err2) => console.warn('Failed to fetch username:', err2))
 	}, [ctx.client])
 
-	const onPress = React.useCallback(() => {
+	const onPress = React.useCallback(async () => {
 		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
+		// update account in bertymessenger
 		ctx.client
 			.accountUpdate({ displayName })
 			.then(async () => {
 				setIsPressed(true)
 			})
 			.catch((err2) => setError(err2))
-	}, [ctx.client, ctx.account, name])
+		// update account in bertyaccount
+		await ctx.updateAccount({
+			accountName: displayName,
+			accountId: ctx.selectedAccount,
+			publicKey: ctx.account.publicKey,
+		})
+	}, [ctx, name])
 
 	return (
 		<Translation>

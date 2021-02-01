@@ -24,6 +24,8 @@ export namespace berty {
                 public importAccount(request: berty.account.v1.ImportAccount.IRequest): Promise<berty.account.v1.ImportAccount.Reply>;
                 public createAccount(request: berty.account.v1.CreateAccount.IRequest, callback: berty.account.v1.AccountService.CreateAccountCallback): void;
                 public createAccount(request: berty.account.v1.CreateAccount.IRequest): Promise<berty.account.v1.CreateAccount.Reply>;
+                public updateAccount(request: berty.account.v1.UpdateAccount.IRequest, callback: berty.account.v1.AccountService.UpdateAccountCallback): void;
+                public updateAccount(request: berty.account.v1.UpdateAccount.IRequest): Promise<berty.account.v1.UpdateAccount.Reply>;
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest, callback: berty.account.v1.AccountService.GetGRPCListenerAddrsCallback): void;
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest): Promise<berty.account.v1.GetGRPCListenerAddrs.Reply>;
             }
@@ -45,6 +47,8 @@ export namespace berty {
                 type ImportAccountCallback = (error: (Error|null), response?: berty.account.v1.ImportAccount.Reply) => void;
 
                 type CreateAccountCallback = (error: (Error|null), response?: berty.account.v1.CreateAccount.Reply) => void;
+
+                type UpdateAccountCallback = (error: (Error|null), response?: berty.account.v1.UpdateAccount.Reply) => void;
 
                 type GetGRPCListenerAddrsCallback = (error: (Error|null), response?: berty.account.v1.GetGRPCListenerAddrs.Reply) => void;
             }
@@ -272,14 +276,22 @@ export namespace berty {
             interface IAccountMetadata {
                 accountId?: (string|null);
                 name?: (string|null);
+                avatarCid?: (string|null);
+                publicKey?: (string|null);
                 lastOpened?: (Long|null);
+                creationDate?: (Long|null);
+                error?: (string|null);
             }
 
             class AccountMetadata implements IAccountMetadata {
 
                 public accountId: string;
                 public name: string;
+                public avatarCid: string;
+                public publicKey: string;
                 public lastOpened: Long;
+                public creationDate: Long;
+                public error: string;
                 public static create(properties?: berty.account.v1.IAccountMetadata): berty.account.v1.AccountMetadata;
                 public static encode(message: berty.account.v1.IAccountMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IAccountMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -517,6 +529,67 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CreateAccount.Reply;
                     public static toObject(message: berty.account.v1.CreateAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IUpdateAccount {
+            }
+
+            class UpdateAccount implements IUpdateAccount {
+
+                public static create(properties?: berty.account.v1.IUpdateAccount): berty.account.v1.UpdateAccount;
+                public static encode(message: berty.account.v1.IUpdateAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IUpdateAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.UpdateAccount;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.UpdateAccount;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.UpdateAccount;
+                public static toObject(message: berty.account.v1.UpdateAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace UpdateAccount {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                    accountName?: (string|null);
+                    avatarCid?: (string|null);
+                    publicKey?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public accountName: string;
+                    public avatarCid: string;
+                    public publicKey: string;
+                    public static create(properties?: berty.account.v1.UpdateAccount.IRequest): berty.account.v1.UpdateAccount.Request;
+                    public static encode(message: berty.account.v1.UpdateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.UpdateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.UpdateAccount.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.UpdateAccount.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.UpdateAccount.Request;
+                    public static toObject(message: berty.account.v1.UpdateAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                }
+
+                class Reply implements IReply {
+
+                    public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                    public static create(properties?: berty.account.v1.UpdateAccount.IReply): berty.account.v1.UpdateAccount.Reply;
+                    public static encode(message: berty.account.v1.UpdateAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.UpdateAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.UpdateAccount.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.UpdateAccount.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.UpdateAccount.Reply;
+                    public static toObject(message: berty.account.v1.UpdateAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -4271,7 +4344,8 @@ export namespace berty {
             ErrBertyAccountAlreadyExists = 5013,
             ErrBertyAccountNoBackupSpecified = 5014,
             ErrBertyAccountIDGenFailed = 5015,
-            ErrBertyAccountCreationFailed = 5016
+            ErrBertyAccountCreationFailed = 5016,
+            ErrBertyAccountUpdateFailed = 5017
         }
 
         interface IErrDetails {
