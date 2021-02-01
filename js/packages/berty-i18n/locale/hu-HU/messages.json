@@ -12,7 +12,7 @@
       "performance": {
         "title": "Teljesítmény",
         "desc": "",
-        "push-notif": "",
+        "push-notif": "Értesítések bekapcsolása",
         "offline-message": "Offline üzenetküldés",
         "add-contact": "",
         "fast-message": ""
@@ -34,15 +34,15 @@
     },
     "services-auth": {
       "header": "",
-      "title": "",
-      "recommended": "",
+      "title": "Szolgáltatások",
+      "recommended": "Ajánlott",
       "desc": "",
       "button": "",
       "skip": ""
     },
     "generate-key": {
       "title": "",
-      "desc": ""
+      "desc": "A folyamat eltarthat néhány másodpercig"
     },
     "notifications": {
       "header": "",
@@ -71,13 +71,17 @@
       "requests": {
         "title": "",
         "received-at": "",
-        "accept": "",
+        "accept": "Elfogadás",
         "card-title": ""
       },
       "input-placeholder": "",
       "no-contacts": "",
       "search": {
         "no-results": ""
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -104,7 +108,7 @@
       "notifications-button": {
         "title": "Értesítések",
         "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-disabled": "Letiltva"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
@@ -181,7 +185,7 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": ""
+      "activate-button": "Aktív bluetooth kapcsolat"
     },
     "mc": {
       "activate-button": ""
@@ -197,7 +201,7 @@
       "registered-services-button": {
         "title": "",
         "sample-no-services": "",
-        "sample-unknown-service": ""
+        "sample-unknown-service": "Ismeretlen szolgáltatás"
       }
     },
     "delete-account": {
@@ -215,7 +219,7 @@
       },
       "updates-button": "Frissítések",
       "about-button": "Berty-ről",
-      "account-button": "",
+      "account-button": "Fiók & Berty ID",
       "contact-button": "",
       "message-button": "Üzenetek",
       "group-button": "Csoportok",
@@ -248,6 +252,8 @@
       "title": "Fejlesztői eszközök",
       "header-left-button": "",
       "simulate-button": "",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "választható",
       "tor-required-option": "kötelező",
@@ -258,7 +264,7 @@
       "debug-button": "",
       "add-dev-conversations-button": "",
       "share-button": {
-        "title": "",
+        "title": "ID megosztása Discordon",
         "alert-title": "",
         "alert-message": "",
         "alert-accept-button": "Igen 👍",
@@ -290,16 +296,16 @@
       "title": ""
     },
     "fake-data": {
-      "title": "",
+      "title": "Hamis információ készítése",
       "contacts-button": "",
       "multi-members-button": "",
       "messages-button": "",
-      "delete-button": ""
+      "delete-button": "Hamis információ törlése"
     },
     "add-dev-conversations": {
       "title": "",
-      "add": "",
-      "tag-bot": "",
+      "add": "{{name}} hozzáadása",
+      "tag-bot": "Bot",
       "tag-contact": "",
       "tag-conversation": "Csoport"
     },
@@ -409,7 +415,7 @@
       "recording": "Felvétel...",
       "gallery": "Galéria",
       "camera": "Kamera",
-      "record": "",
+      "record": "Felvétel",
       "files": "Fájlok",
       "microphone": "Mikrofon",
       "gif": "GIF",
@@ -421,6 +427,25 @@
       "forward-berty": "Továbbítás Berty-nek",
       "forward": "Továbbítás",
       "image-saved": "Kép mentve a galériába"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }
