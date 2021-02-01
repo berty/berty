@@ -73,25 +73,29 @@ func (s *service) getContactGroup(key crypto.PubKey) (*protocoltypes.Group, erro
 }
 
 func (s *service) getGroupForPK(pk crypto.PubKey) (*protocoltypes.Group, error) {
-	id, err := pk.Raw()
+	pkr, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
+	return s.getGroupForPKRaw(pkr)
+}
+
+func (s *service) getGroupForPKRaw(pkr []byte) (*protocoltypes.Group, error) {
 	s.lock.Lock()
-	g, ok := s.groups[string(id)]
+	g, ok := s.groups[string(pkr)]
 	s.lock.Unlock()
 
 	if ok {
 		return g, nil
 	}
 
-	if err = s.indexGroups(); err != nil {
+	if err := s.indexGroups(); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	s.lock.Lock()
-	g, ok = s.groups[string(id)]
+	g, ok = s.groups[string(pkr)]
 	s.lock.Unlock()
 
 	if ok {
