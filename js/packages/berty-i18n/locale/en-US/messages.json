@@ -80,8 +80,8 @@
         "no-results": "No results found"
       },
       "multi-account": {
-        "create-button": "Create new account",
-        "import-button": "Import account"
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -252,8 +252,8 @@
       "title": "Dev tools",
       "header-left-button": "Device infos",
       "simulate-button": "Simulate stream error",
-      "simulate-js-error-button": "Simulate JavaScript error",
-      "simulate-native-error-button": "Simulate native error",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "optional",
       "tor-required-option": "required",
@@ -431,21 +431,21 @@
   },
   "error": {
     "labels": {
-      "bug": "Bug detected",
-      "crash": "Crash detected"
+      "bug": "",
+      "crash": ""
     },
-    "restart-app": "Restart the app",
+    "restart-app": "",
     "wtf-screen": {
-      "title": "What's the Fail ?",
-      "desc": "Application just crashed.",
-      "desc-report": "Shake your phone to report the bug and click on the button to quit and restart the app."
+      "title": "",
+      "desc": "",
+      "desc-report": ""
     },
     "sorry-screen": {
-      "title": "Sorry for this bug!",
-      "desc": "It's the fault of Francis, intern developer at Berty, who must have made a mistake. What a jerk this Francis!",
-      "desc-buy": "He'll buy you a beer when you'll see him!",
-      "desc-em": "*Well, okay, there's no Francis at Berty's team.",
-      "desc-report": "Shake your phone and here we go again!"
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }
