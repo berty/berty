@@ -110,7 +110,9 @@ var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html>
           provide your device the most efficient network performance.
         </p>
         <p>This feature is optional.</p>
-        <button class="btn">CONNECT & REPLICATE</button>
+        <form method="POST">
+          <button class="btn" type="submit">CONNECT & REPLICATE</button>
+        </form>
       </div>
     </main>
   </body>
