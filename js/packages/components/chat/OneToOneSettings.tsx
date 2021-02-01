@@ -8,9 +8,9 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useContact, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
-import HeaderSettings from '../shared-components/Header'
-import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import HeaderSettings from '../common/Header'
+import { ButtonSetting, ButtonSettingRow } from '../common/SettingsButtons'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
 
 //

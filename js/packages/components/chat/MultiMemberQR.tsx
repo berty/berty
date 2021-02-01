@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { ProceduralCircleAvatar } from '@berty-tech/components/shared-components'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
+import { ProceduralCircleAvatar } from '@berty-tech/components/common'
 
 const _contentScaleFactor = 0.66
 

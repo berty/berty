@@ -13,7 +13,7 @@ import { useMsgrContext } from '@berty-tech/store/hooks'
 import { useNavigation } from '@react-navigation/native'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
-import BlurView from '../shared-components/BlurView'
+import BlurView from '../common/BlurView'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { base64ToURLBase64 } from '@berty-tech/components/utils'
 import { Buffer } from 'buffer'

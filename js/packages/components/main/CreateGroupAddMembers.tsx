@@ -16,7 +16,7 @@ import { useContactList, useAccountContactSearchResults } from '@berty-tech/stor
 import beapi from '@berty-tech/api'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
 
 // Styles

@@ -15,9 +15,9 @@ import {
 } from '@berty-tech/store/services'
 import beapi from '@berty-tech/api'
 
-import HeaderSettings from '../shared-components/Header'
-import { ButtonSetting, FactionButtonSetting } from '../shared-components'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import HeaderSettings from '../common/Header'
+import { ButtonSetting, FactionButtonSetting } from '../common'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 
 enum replicationServerStatus {
 	KnownServerEnabled,

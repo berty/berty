@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native'
 import { Layout, Input } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
-import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../shared-components'
+import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../common'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import {

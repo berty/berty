@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ScrollView, Vibration, View } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
-import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
+import { DropDownPicker } from '@berty-tech/components/common/DropDownPicker'
 
 import { Translation } from 'react-i18next'
 
@@ -12,10 +12,10 @@ import { useNavigation } from '@berty-tech/navigation'
 import i18n from '@berty-tech/berty-i18n'
 import beapi from '@berty-tech/api'
 
-import { HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { HeaderSettings } from '../common/Header'
+import { ButtonSetting, ButtonSettingItem } from '../common/SettingsButtons'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 

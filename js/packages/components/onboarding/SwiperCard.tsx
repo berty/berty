@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
 
-import { Card } from '../shared-components/Card'
+import { Card } from '../common/Card'
 import Button from './Button'
 
 const SwiperCard: React.FC<{

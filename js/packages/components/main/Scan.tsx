@@ -15,7 +15,7 @@ import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
 
 import ScanTarget from './scan_target.svg'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer.tsx'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer.tsx'
 
 //
 // Scan => Scan QrCode of an other contact

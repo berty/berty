@@ -3,8 +3,8 @@ import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
-import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { HeaderInfoSettings, HeaderSettings } from '../common/Header'
+import { ButtonSetting, ButtonSettingItem } from '../common/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 
 //

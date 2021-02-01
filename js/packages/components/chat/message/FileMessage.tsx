@@ -7,22 +7,22 @@ import { useStyles } from '@berty-tech/styles'
 import { getSource } from '../../utils'
 
 export const FileMessage: React.FC<{ medias: any }> = ({ medias }) => {
-	const { protocolClient } = useMsgrContext()
+	const { client } = useMsgrContext()
 	const [source, setSource] = useState('')
 	const [isLoading, setLoading] = useState(false)
 	const [isDownloaded, setDownloaded] = useState(false)
 	const [{ margin }] = useStyles()
 
 	useEffect(() => {
-		if (!protocolClient) {
+		if (!client) {
 			return
 		}
-		getSource(protocolClient, medias[0].cid)
+		getSource(client, medias[0].cid)
 			.then((src) => {
 				setSource(src)
 			})
 			.catch((e) => console.error('failed to get picture message image:', e))
-	}, [protocolClient, medias])
+	}, [client, medias])
 
 	return (
 		<TouchableOpacity
@@ -31,7 +31,7 @@ export const FileMessage: React.FC<{ medias: any }> = ({ medias }) => {
 			}}
 			onPress={() => {
 				setLoading(true)
-				RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${medias[0].filename}`, source, 'base64')
+				RNFS.copyFile(source, `${RNFS.DocumentDirectoryPath}/${medias[0].filename}`)
 					.then(() => {
 						setDownloaded(true)
 						setLoading(false)

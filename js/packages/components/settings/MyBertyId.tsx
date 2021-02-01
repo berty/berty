@@ -9,10 +9,10 @@ import { useNavigation } from '@berty-tech/navigation'
 import { useAccount } from '@berty-tech/store/hooks'
 import { useTranslation } from 'react-i18next'
 
-import { TabBar } from '../shared-components/TabBar'
-import { RequestAvatar } from '../shared-components/Request'
-import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { TabBar } from '../common/TabBar'
+import { RequestAvatar } from '../common/Request'
+import { FingerprintContent } from '../common/FingerprintContent'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import logo from '../main/1_berty_picto.png'
 
 //

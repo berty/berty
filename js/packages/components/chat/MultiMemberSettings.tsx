@@ -12,9 +12,9 @@ import {
 	FactionButtonSetting,
 	ButtonSettingRow,
 	ButtonDropDown,
-} from '../shared-components/SettingsButtons'
-import HeaderSettings from '../shared-components/Header'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+} from '../common/SettingsButtons'
+import HeaderSettings from '../common/Header'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 
 //

@@ -3,10 +3,10 @@ import { View, ScrollView, Linking } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
-import { HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
+import { HeaderSettings } from '../common/Header'
+import { ButtonSetting, ButtonSettingRow } from '../common/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 
 //
 // About Berty

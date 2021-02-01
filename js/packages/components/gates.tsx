@@ -10,7 +10,7 @@ import {
 	MessengerAppState,
 } from '@berty-tech/store/context'
 
-import LoaderDots from './shared-components/LoaderDots'
+import LoaderDots from './common/LoaderDots'
 
 const expandSelfAndCenterContent: any = {
 	alignItems: 'center',

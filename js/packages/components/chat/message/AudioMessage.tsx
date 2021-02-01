@@ -11,30 +11,29 @@ import moment from 'moment'
 import { useMusicPlayer } from '@berty-tech/music-player'
 
 export const AudioMessage: React.FC<{ medias: any }> = ({ medias }) => {
-	const { protocolClient } = useMsgrContext()
+	const { client } = useMsgrContext()
 	const [{ padding, color, border, margin }, { windowWidth }] = useStyles()
 	const [source, setSource] = useState('')
 	const mimeType = medias[0].mimeType
 	const { player: globalPlayer, setPlayer: setGlobalPlayer, handlePlayPause } = useMusicPlayer()
 	const [player, setPlayer] = useState<Player>()
 	useEffect(() => {
-		if (!protocolClient) {
+		if (!client) {
 			return
 		}
 		let cancel = false
-		getSource(protocolClient, medias[0].cid)
+		getSource(client, medias[0].cid)
 			.then((src) => {
 				if (!cancel) {
-					let base64 = `data:${mimeType};base64,${src}`
-					setSource(base64)
-					setPlayer(new Player(base64).prepare())
+					setSource(src)
+					setPlayer(new Player(src).prepare())
 				}
 			})
 			.catch((e) => console.error('failed to get attachment image:', e))
 		return () => {
 			cancel = true
 		}
-	}, [protocolClient, mimeType, medias])
+	}, [client, mimeType, medias])
 
 	let currentTime =
 		globalPlayer.id === medias[0].cid ? globalPlayer.player?.currentTime : player?.currentTime

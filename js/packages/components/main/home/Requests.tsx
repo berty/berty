@@ -11,7 +11,7 @@ import { useStyles } from '@berty-tech/styles'
 
 import { pbDateToNum } from '../../helpers'
 import { ContactAvatar } from '../../avatars'
-import FromNow from '../../shared-components/FromNow'
+import FromNow from '../../common/FromNow'
 import { playSound } from '../../sounds'
 import { UnreadCount } from './UnreadCount'
 

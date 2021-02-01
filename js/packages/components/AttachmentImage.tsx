@@ -3,32 +3,36 @@ import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 're
 
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { navigate } from '@berty-tech/navigation'
+
 import { getSource } from './utils'
 
 const AttachmentImage: React.FC<
 	{ cid: string; notPressable?: boolean } & Omit<ImageProps, 'source'>
 > = (props) => {
-	const { protocolClient, medias } = useMsgrContext()
+	const { client, medias } = useMsgrContext()
 	const [source, setSource] = useState('')
 	const { cid, ...imageProps } = props
 	const mimeType = medias[cid]?.mimeType || 'image/jpeg'
 
+	console.log('source', source, 'mime', medias[cid]?.mimeType)
+
 	useEffect(() => {
-		if (!protocolClient) {
+		if (!client) {
 			return
 		}
 		let cancel = false
-		getSource(protocolClient, cid)
-			.then((src) => {
+		getSource(client, cid)
+			.then(async (src) => {
 				if (!cancel) {
-					setSource(`data:${mimeType};base64,${src}`)
+					console.log('got src for', cid, src)
+					setSource(src)
 				}
 			})
 			.catch((e) => console.error('failed to get attachment image:', e))
 		return () => {
 			cancel = true
 		}
-	}, [protocolClient, cid, mimeType])
+	}, [client, cid, mimeType])
 
 	if (!source) {
 		return (
@@ -38,12 +42,20 @@ const AttachmentImage: React.FC<
 		)
 	}
 
+	const img = (
+		<Image
+			source={{ uri: source }}
+			onError={(e) => {
+				console.error('image load failed:', e.nativeEvent.error)
+			}}
+			{...imageProps}
+		/>
+	)
+
 	return props.notPressable ? (
-		<Image source={{ uri: source }} {...imageProps} />
+		img
 	) : (
-		<TouchableOpacity onPress={() => navigate('Image', { cid })}>
-			<Image source={{ uri: source }} {...imageProps} />
-		</TouchableOpacity>
+		<TouchableOpacity onPress={() => navigate('Image', { cid })}>{img}</TouchableOpacity>
 	)
 }
 
