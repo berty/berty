@@ -20,6 +20,7 @@ import { useMountEffect } from '@berty-tech/store/hooks'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
+import { ErrorScreen } from '@berty-tech/components/error'
 
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {
@@ -43,24 +44,26 @@ export const App: React.FC = () => {
 				<MsgrProvider embedded daemonAddress='http://localhost:1337'>
 					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 					<ThemeProvider>
-						<NavigationContainer
-							ref={navigationRef}
-							onReady={() => {
-								isReadyRef.current = true
-							}}
-						>
-							<NotificationProvider>
-								<BootSplashInhibitor />
-								<StreamGate>
-									<ListGate>
-										<MusicPlayerProvider>
-											<StickMusicPlayer />
-											<Navigation />
-										</MusicPlayerProvider>
-									</ListGate>
-								</StreamGate>
-							</NotificationProvider>
-						</NavigationContainer>
+						<ErrorScreen>
+							<NavigationContainer
+								ref={navigationRef}
+								onReady={() => {
+									isReadyRef.current = true
+								}}
+							>
+								<NotificationProvider>
+									<BootSplashInhibitor />
+									<StreamGate>
+										<ListGate>
+											<MusicPlayerProvider>
+												<StickMusicPlayer />
+												<Navigation />
+											</MusicPlayerProvider>
+										</ListGate>
+									</StreamGate>
+								</NotificationProvider>
+							</NavigationContainer>
+						</ErrorScreen>
 					</ThemeProvider>
 				</MsgrProvider>
 			</StyleProvider>

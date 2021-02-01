@@ -26,6 +26,7 @@ import CameraOutline from './custom-icons-svgs/camera-outline.svg'
 import Files from './custom-icons-svgs/files.svg'
 import Gallery from './custom-icons-svgs/gallery.svg'
 import Gif from './custom-icons-svgs/gif.svg'
+import WrongMan from './custom-icons-svgs/wrong-man.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -52,6 +53,7 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	files: Files,
 	gif: Gif,
 	'camera-outline': CameraOutline,
+	'wrong-man': WrongMan,
 }
 
 const CustomIcon: React.FC<{

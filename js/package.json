@@ -45,6 +45,7 @@
 		"react-native-bootsplash": "^3.1.2",
 		"react-native-camera": ">=1.0.2",
 		"react-native-document-picker": "^4.1.1",
+		"react-native-exception-handler": "^2.10.9",
 		"react-native-fs": "^2.16.6",
 		"react-native-gesture-handler": "^1.8.0",
 		"react-native-hyperlink": "^0.0.19",
@@ -59,6 +60,7 @@
 		"react-native-qrcode-scanner": "^1.6.0",
 		"react-native-qrcode-svg": "git+https://github.com/sakul-budhathoki/react-native-qrcode-svg.git#feature/circle-lines-qr-code",
 		"react-native-reanimated": "^1.13.2",
+		"react-native-restart": "^0.0.20",
 		"react-native-safe-area-context": "^3.1.9",
 		"react-native-screens": "^2.16.1",
 		"react-native-share": "^4.1.1",
@@ -112,7 +114,8 @@
 		],
 		"moduleNameMapper": {
 			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/assetsTransformer.js",
-			"\\.(css|less)$": "<rootDir>/assetsTransformer.js"
+			"\\.(css|less)$": "<rootDir>/assetsTransformer.js",
+			"@react-native-firebase/crashlytics": "<rootDir>/jest/mocks/firebase/crashlytics.js"
 		}
 	}
 }
