@@ -1392,25 +1392,25 @@ func Test_dbWrapper_getReplyOptionsCIDForConversation(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "", cid)
 
-	db.db.Create(&messengertypes.Interaction{CID: "cid_1", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMe: false})
+	db.db.Create(&messengertypes.Interaction{CID: "cid_1", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMine: false})
 
 	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
 	require.NoError(t, err)
 	require.Equal(t, "cid_1", cid)
 
-	db.db.Create(&messengertypes.Interaction{CID: "cid_2", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMe: false})
+	db.db.Create(&messengertypes.Interaction{CID: "cid_2", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMine: false})
 
 	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
 	require.NoError(t, err)
 	require.Equal(t, "cid_1", cid)
 
-	db.db.Create(&messengertypes.Interaction{CID: "cid_3", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMe: false})
+	db.db.Create(&messengertypes.Interaction{CID: "cid_3", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMine: false})
 
 	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
 	require.NoError(t, err)
 	require.Equal(t, "cid_3", cid)
 
-	db.db.Create(&messengertypes.Interaction{CID: "cid_4", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMe: true})
+	db.db.Create(&messengertypes.Interaction{CID: "cid_4", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMine: true})
 
 	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
 	require.NoError(t, err)

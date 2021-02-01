@@ -78,7 +78,7 @@ func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent
 
 	case messengertypes.StreamEvent_TypeInteractionUpdated:
 		context.Interaction = payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
-		context.IsMe = context.Interaction.IsMe
+		context.IsMine = context.Interaction.IsMine
 		context.ConversationPK = context.Interaction.ConversationPublicKey
 		context.IsAck = context.Interaction.Acknowledged
 		payload, err := context.Interaction.UnmarshalPayload()
@@ -92,7 +92,7 @@ func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent
 			receivedMessage := payload.(*messengertypes.AppMessage_UserMessage)
 			context.UserMessage = receivedMessage.GetBody()
 			if len(b.commands) > 0 && len(context.UserMessage) > 1 && strings.HasPrefix(context.UserMessage, "/") {
-				if !context.IsMe && !context.IsReplay && !context.IsAck {
+				if !context.IsMine && !context.IsReplay && !context.IsAck {
 					context.CommandArgs = strings.Split(context.UserMessage[1:], " ")
 					command, found := b.commands[context.CommandArgs[0]]
 					if found {
@@ -130,7 +130,7 @@ func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent
 
 	case messengertypes.StreamEvent_TypeAccountUpdated:
 		context.Account = payload.(*messengertypes.StreamEvent_AccountUpdated).Account
-		context.IsMe = true
+		context.IsMine = true
 		b.callHandlers(context, AccountUpdatedHandler)
 
 	case messengertypes.StreamEvent_TypeMemberUpdated:
@@ -152,7 +152,7 @@ func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent
 }
 
 func (b *Bot) callHandlers(context *Context, typ HandlerType) {
-	if !b.withFromMyself && context.IsMe {
+	if !b.withFromMyself && context.IsMine {
 		return
 	}
 	if !b.withEntityUpdates && !context.IsNew {

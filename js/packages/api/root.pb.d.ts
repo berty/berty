@@ -6223,7 +6223,7 @@ export namespace berty {
                 conversationPublicKey?: (string|null);
                 conversation?: (berty.messenger.v1.IConversation|null);
                 payload?: (Uint8Array|null);
-                isMe?: (boolean|null);
+                isMine?: (boolean|null);
                 sentDate?: (Long|null);
                 acknowledged?: (boolean|null);
                 targetCid?: (string|null);
@@ -6240,7 +6240,7 @@ export namespace berty {
                 public conversationPublicKey: string;
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public payload: Uint8Array;
-                public isMe: boolean;
+                public isMine: boolean;
                 public sentDate: Long;
                 public acknowledged: boolean;
                 public targetCid: string;
