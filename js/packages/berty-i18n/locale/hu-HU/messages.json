@@ -11,14 +11,14 @@
     "select-mode": {
       "performance": {
         "title": "Teljesítmény",
-        "desc": "",
+        "desc": "Könnyen használható - Minden funkcióval",
         "push-notif": "Értesítések bekapcsolása",
         "offline-message": "Offline üzenetküldés",
         "add-contact": "",
         "fast-message": ""
       },
       "high-level": {
-        "title": "",
+        "title": "Legmagasabb szintű adatvédelem",
         "desc": "",
         "disable-push-notif": "",
         "disable-local-peer-discovery": "",
@@ -26,14 +26,14 @@
       }
     },
     "create-account": {
-      "title": "",
+      "title": "Fiók létrehozása",
       "desc": "",
       "required": "Kötelező",
       "placeholder": "Név",
-      "button": ""
+      "button": "FIÓK LÉTREHOZÁSA"
     },
     "services-auth": {
-      "header": "",
+      "header": "Hitelesítés a szolgáltatásokhoz",
       "title": "Szolgáltatások",
       "recommended": "Ajánlott",
       "desc": "",
@@ -58,10 +58,10 @@
       "title": "Bluetooth",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "setup-finished": {
-      "title": "",
+      "title": "A beállítás befejeződött!",
       "desc": "",
       "button": ""
     }
@@ -80,12 +80,12 @@
         "no-results": ""
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Új fiók létrehozása",
+        "import-button": "Fiók importálása"
       }
     },
     "home-modal": {
-      "top-button": "",
+      "top-button": "Új csoport létrehozása",
       "bottom-button": ""
     }
   },
@@ -96,7 +96,7 @@
       "header-right-button": "Beállítások",
       "network-button": "",
       "switch-accounts": "",
-      "edit-profile": ""
+      "edit-profile": "Fiók szerkesztése"
     },
     "network-map": {
       "title": "",
@@ -107,16 +107,16 @@
       "desc": "",
       "notifications-button": {
         "title": "Értesítések",
-        "tag-enabled": "",
+        "tag-enabled": "Engedélyezve",
         "tag-disabled": "Letiltva"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
-        "tag-enabled": "",
+        "tag-enabled": "Engedélyezve",
         "tag-disabled": "Letiltva"
       },
       "app-mode-button": {
-        "title": "",
+        "title": "App mód",
         "performance-tag": "Teljesítmény",
         "privacy-tag": "",
         "description-tag": "",
@@ -140,7 +140,7 @@
       "backup-account-button": ""
     },
     "edit-profile": {
-      "title": "",
+      "title": "Fiók szerkesztése",
       "qr-will-update": "",
       "ocr-wont-update": "",
       "save": "Változtatások mentése",
@@ -152,7 +152,7 @@
       "title": "Értesítések",
       "enabled-desc": "",
       "disabled-desc": "",
-      "activate-button": "",
+      "activate-button": "Értesítések bekapcsolása",
       "contact-request-button": {
         "title": "",
         "desc": ""
@@ -200,7 +200,7 @@
       },
       "registered-services-button": {
         "title": "",
-        "sample-no-services": "",
+        "sample-no-services": "Nincs regisztrált szolgáltatás",
         "sample-unknown-service": "Ismeretlen szolgáltatás"
       }
     },
@@ -236,7 +236,7 @@
       "terms-button": "Felhasználási feltételek",
       "privacy-button": "Adatvédelmi irányelvek",
       "software-button": "",
-      "contact-button": "",
+      "contact-button": "Elérhetőség",
       "website-button": "Weboldal"
     },
     "updates": {
@@ -251,9 +251,9 @@
     "devtools": {
       "title": "Fejlesztői eszközök",
       "header-left-button": "",
-      "simulate-button": "",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-button": "Stream hiba szimulálása",
+      "simulate-js-error-button": "JavaScript hiba szimulálása",
+      "simulate-native-error-button": "Natív hiba szimulálása",
       "tor-button": "",
       "tor-optional-option": "választható",
       "tor-required-option": "kötelező",
@@ -261,7 +261,7 @@
       "header-middle-button": "Hamis információ készítése",
       "header-right-button": "",
       "system-info-button": "",
-      "debug-button": "",
+      "debug-button": "Hibakeresés",
       "add-dev-conversations-button": "",
       "share-button": {
         "title": "ID megosztása Discordon",
@@ -277,7 +277,7 @@
       "dump-interactions-button": "",
       "dump-members-button": "",
       "stop-node-button": "",
-      "bot-mode-button": "",
+      "bot-mode-button": "Bot mód",
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
@@ -310,33 +310,33 @@
       "tag-conversation": "Csoport"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS WebUI"
     },
     "my-berty-ID": {
       "qr": "QR",
-      "fingerprint": "",
+      "fingerprint": "Ujjlenyomat",
       "devices": "Eszközök"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
+      "invalid-link": "Érvénytelen link!",
+      "invalid-qr": "Érvénytelen QR kód!",
       "error": "Hiba!",
       "contact-already-added": "",
       "contact-already-added-message": ""
     },
     "invalid-scan": {
-      "dismiss-button": ""
+      "dismiss-button": "ELUTASÍTÁS"
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
+      "fingerprint": "Ujjlenyomat",
+      "info": "Infó",
       "devices": "Eszközök"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
+      "fingerprint": "Ujjlenyomat",
+      "info": "Infók",
       "devices": "Eszközök"
     }
   },
@@ -345,47 +345,47 @@
       "mark-button": "",
       "block-button": "",
       "delete-button": "",
-      "fingerprint": "",
-      "info": "",
+      "fingerprint": "Ujjlenyomat",
+      "info": "Infók",
       "devices": "Eszközök"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Biztonságos üzenet írása..."
     },
     "multi-member-settings": {
       "header-left-button": "Keresés",
       "header-middle-button": "Hívás",
       "header-right-button": "Megosztás",
       "media-button": "",
-      "notifications-button": "",
+      "notifications-button": "Értesítések bekapcsolása",
       "members-button": {
         "title": "Tagok",
         "unknown": "Ismeretlen"
       },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
+      "add-member-button": "Résztvevők hozzáadása",
+      "invite-button": "Meghívás linken keresztül",
+      "save-button": "Beszélgetés mentése szerverre",
+      "erase-button": "Beszélgetés törlése",
       "leave-button": "Csoport elhagyása"
     },
     "multi-member-qr": {
-      "title": ""
+      "title": "QR Csoport"
     },
     "one-to-one": {
       "contact-request-box": {
         "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
+        "refuse-button": "ELUTASÍTÁS",
+        "accept-button": "ELFOGADÁS",
+        "accepted-button": "ELFOGADVA"
       },
       "betabot-box": {
         "title": "",
         "desc": "",
         "skip-button": "TOVÁBB",
-        "add-button": ""
+        "add-button": "Hozzáadás !"
       },
       "infos-chat": {
-        "connection-confirmed": "",
+        "connection-confirmed": "👋 Berty kapcsolat megerősítve! 🎉",
         "request-sent": "Kérés Elküldve ✈",
         "incoming": "",
         "outgoing": ""
@@ -399,10 +399,10 @@
       "header-middle-button": "Hívás",
       "header-right-button": "Megosztás",
       "media-button": "",
-      "notifications-button": "",
+      "notifications-button": "Értesítések bekapcsolása",
       "mutual-button": "Közös csoportok",
-      "save-button": "",
-      "erase-button": ""
+      "save-button": "Beszélgetés mentése szerverre",
+      "erase-button": "Beszélgetés törlése"
     },
     "replicate-group-settings": {
       "title": "",
@@ -419,7 +419,7 @@
       "files": "Fájlok",
       "microphone": "Mikrofon",
       "gif": "GIF",
-      "search-gif": "",
+      "search-gif": "GIF keresése",
       "security-access": "",
       "security-access-desc": "",
       "save-to-gallery": "Fájl mentése a Galériába",
@@ -431,20 +431,20 @@
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Hiba észlelve",
+      "crash": "Összeomlás észlelve"
     },
-    "restart-app": "",
+    "restart-app": "App újraindítása",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
+      "title": "Mi a probléma ?",
+      "desc": "Az app éppen összeomlott.",
       "desc-report": ""
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
+      "title": "Elnézést a hibáért!",
+      "desc": "Ez biztos Francis hibája, a Berty gyakornok fejlesztőjének, aki bizonyosan hibázott. Micsoda bunkó ez a Francis!",
+      "desc-buy": "Ha látod, vesz majd egy sört neked!",
+      "desc-em": "* Hát, oké, Francis nincs a Berty-nél.",
       "desc-report": ""
     }
   }
