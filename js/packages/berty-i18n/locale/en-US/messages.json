@@ -436,7 +436,7 @@
     },
     "restart-app": "Restart the app",
     "wtf-screen": {
-      "title": "What's the Fail ?",
+      "title": "What's the Fail?",
       "desc": "Application just crashed.",
       "desc-report": "Shake your phone to report the bug and click on the button to quit and restart the app."
     },
@@ -446,6 +446,27 @@
       "desc-buy": "He'll buy you a beer when you'll see him!",
       "desc-em": "*Well, okay, there's no Francis at Berty's team.",
       "desc-report": "Shake your phone and here we go again!"
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "Show app inspector",
+      "hide-button": "Close app inspector",
+      "title": "App inspector",
+      "accounts": {
+        "title": "Accounts",
+        "unsupported-remote-mode": "Accounts inspector not supported in remote mode",
+        "data-not-found": "Account data not found"
+      },
+      "errors": {
+        "title": "Errors",
+        "header-reported": "Error reported:",
+        "header-all-clear": "No error reported"
+      },
+      "dump": {
+        "button": "Dump app state"
+      },
+      "refresh": "Refresh"
     }
   }
 }

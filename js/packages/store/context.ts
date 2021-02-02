@@ -308,6 +308,9 @@ export type MsgrState = {
 	updateAccount: (arg0: any) => Promise<void>
 	deleteAccount: () => Promise<void>
 	restart: () => Promise<void>
+
+	debugMode: boolean
+	setDebugMode: (value: boolean) => void
 }
 
 export const initialState = {
@@ -344,6 +347,8 @@ export const initialState = {
 	updateAccount: async () => {},
 	deleteAccount: async () => {},
 	restart: async () => {},
+	setDebugMode: () => {},
+	debugMode: true,
 	accounts: [],
 }
 
