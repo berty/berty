@@ -15,19 +15,19 @@
         "push-notif": "Értesítések bekapcsolása",
         "offline-message": "Offline üzenetküldés",
         "add-contact": "",
-        "fast-message": ""
+        "fast-message": "Leggyorsabb üzenetküldés"
       },
       "high-level": {
         "title": "Legmagasabb szintű adatvédelem",
         "desc": "",
-        "disable-push-notif": "",
+        "disable-push-notif": "Értesítések letiltva",
         "disable-local-peer-discovery": "",
         "disable-contact-request": ""
       }
     },
     "create-account": {
       "title": "Fiók létrehozása",
-      "desc": "",
+      "desc": "Csak egy névre van szükségünk",
       "required": "Kötelező",
       "placeholder": "Név",
       "button": "FIÓK LÉTREHOZÁSA"
@@ -37,8 +37,8 @@
       "title": "Szolgáltatások",
       "recommended": "Ajánlott",
       "desc": "",
-      "button": "",
-      "skip": ""
+      "button": "Használja a Berty szolgáltatásait",
+      "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "generate-key": {
       "title": "",
@@ -91,7 +91,7 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "Súgó",
       "header-center-button": "Fejlesztői eszközök",
       "header-right-button": "Beállítások",
       "network-button": "",
@@ -99,7 +99,7 @@
       "edit-profile": "Fiók szerkesztése"
     },
     "network-map": {
-      "title": "",
+      "title": "Hálózati Lista",
       "online-peers": ""
     },
     "mode": {
@@ -177,8 +177,8 @@
         "exceptions-button": {
           "title": "Kivételek",
           "preview-value": "Hozzáadás",
-          "tag": "",
-          "tag_plural": ""
+          "tag": "{{count}} kivétel",
+          "tag_plural": "{{count}} kivétel"
         }
       }
     },
@@ -212,7 +212,7 @@
       "delete-button": "TÖRLÉS"
     },
     "help": {
-      "title": "",
+      "title": "Súgó",
       "security-privacy-button": {
         "title": "",
         "desc": ""
@@ -259,8 +259,8 @@
       "tor-required-option": "kötelező",
       "tor-disabled-option": "letiltva",
       "header-middle-button": "Hamis információ készítése",
-      "header-right-button": "",
-      "system-info-button": "",
+      "header-right-button": "Daemon újraindítása",
+      "system-info-button": "Rendszer információ",
       "debug-button": "Hibakeresés",
       "add-dev-conversations-button": "",
       "share-button": {
@@ -280,7 +280,7 @@
       "bot-mode-button": "Bot mód",
       "local-grpc-button": "",
       "console-logs-button": "",
-      "ipfs-webui-button": "",
+      "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "Értesítések",
       "send-to-all-button": {
         "title": "",
@@ -290,10 +290,10 @@
       },
       "footer-left-button": "",
       "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-right-button": "Daemon újraindítása"
     },
     "system-info": {
-      "title": ""
+      "title": "Rendszer információ"
     },
     "fake-data": {
       "title": "Hamis információ készítése",
