@@ -88,7 +88,7 @@ func EchoRecipe(prefix string) Recipe {
 				return
 			}
 			// do not reply to myself
-			if ctx.IsMe {
+			if ctx.IsMine {
 				return
 			}
 			// avoid bot loops

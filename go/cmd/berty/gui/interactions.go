@@ -97,7 +97,7 @@ func newInteractionView(mc *msgrContext, inte *messengertypes.Interaction) wfr {
 			msgContent.Text = fmt.Sprintf("%s%s\n%s", prefix, time.Unix(0, inte.GetSentDate()*1000000).Format("Mon Jan 2 15:04:05 2006"), usrMsg.GetBody())
 			msgContent.Wrapping = fyne.TextWrapWord
 
-			if inte.GetIsMe() {
+			if inte.GetIsMine() {
 				msgContent.Alignment = fyne.TextAlignTrailing
 			}
 

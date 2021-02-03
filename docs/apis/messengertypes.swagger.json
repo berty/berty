@@ -2082,7 +2082,7 @@
           "type": "string",
           "format": "byte"
         },
-        "is_me": {
+        "is_mine": {
           "type": "boolean"
         },
         "sent_date": {

@@ -1011,7 +1011,7 @@ MessageHeaders is used in MessageEnvelope and only readable by invited group mem
 | counter | [uint64](#uint64) |  | counter is the current counter value for the specified device |
 | device_pk | [bytes](#bytes) |  | device_pk is the public key of the device sending the message |
 | sig | [bytes](#bytes) |  | sig is the signature of the encrypted message using the device&#39;s private key |
-| metadata | [MessageHeaders.MetadataEntry](#berty.protocol.v1.MessageHeaders.MetadataEntry) | repeated | metadata allow to pass custom information |
+| metadata | [MessageHeaders.MetadataEntry](#berty.protocol.v1.MessageHeaders.MetadataEntry) | repeated | metadata allow to pass custom informations |
 
 <a name="berty.protocol.v1.MessageHeaders.MetadataEntry"></a>
 

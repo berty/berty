@@ -1005,7 +1005,7 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		messageCid = interaction.GetCID()
 		require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeUserMessage)
 		require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
-		require.True(t, interaction.GetIsMe())
+		require.True(t, interaction.GetIsMine())
 		require.Equal(t, interaction.GetCID(), messageCid)
 		interactionPayload, err := interaction.UnmarshalPayload()
 		require.NoError(t, err)
@@ -1071,12 +1071,12 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 				interactionPayload, err := interaction.UnmarshalPayload()
 				require.NoError(t, err)
 				switch {
-				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && interaction.GetIsMe():
+				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && interaction.GetIsMine():
 					require.False(t, gotOwnAck)
 					gotOwnAck = true
 					ack := interactionPayload.(*messengertypes.AppMessage_Acknowledge)
 					require.Equal(t, ack.GetTarget(), messageCid)
-				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && !interaction.GetIsMe():
+				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && !interaction.GetIsMine():
 					ack := interactionPayload.(*messengertypes.AppMessage_Acknowledge)
 					require.Equal(t, ack.GetTarget(), messageCid)
 					gotOthersAcks++
@@ -1109,7 +1109,7 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		require.NotEmpty(t, interaction.GetCID())
 		require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeAcknowledge)
 		require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
-		require.False(t, interaction.GetIsMe())
+		require.False(t, interaction.GetIsMine())
 		interactionPayload, err := interaction.UnmarshalPayload()
 		require.NoError(t, err)
 		ack := interactionPayload.(*messengertypes.AppMessage_Acknowledge)
@@ -1163,7 +1163,7 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 			require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeGroupInvitation)
 			require.NotEmpty(t, interaction.GetCID())
 			require.NotEqual(t, convPK, interaction.GetConversationPublicKey())
-			require.True(t, interaction.GetIsMe())
+			require.True(t, interaction.GetIsMine())
 			// FIXME: require.Equal, 1to1conv.pk
 			interactionPayload, err := interaction.UnmarshalPayload()
 			require.NoError(t, err)
@@ -1197,7 +1197,7 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 			require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeGroupInvitation)
 			require.NotEmpty(t, interaction.GetCID())
 			require.NotEqual(t, convPK, interaction.GetConversationPublicKey())
-			require.False(t, interaction.GetIsMe())
+			require.False(t, interaction.GetIsMine())
 			// FIXME: require.Equal, 1to1conv.pk
 			interactionPayload, err := interaction.UnmarshalPayload()
 			require.NoError(t, err)

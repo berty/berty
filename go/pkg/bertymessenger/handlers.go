@@ -788,7 +788,7 @@ func (h *eventHandler) handleAppMessageUserMessage(tx *dbWrapper, i *messengerty
 		return nil, isNew, err
 	}
 
-	if i.IsMe || h.replay || !isNew {
+	if i.IsMine || h.replay || !isNew {
 		return i, isNew, nil
 	}
 
@@ -843,7 +843,7 @@ func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *messengerty
 	payload := amPayload.(*messengertypes.AppMessage_SetUserInfo)
 
 	if i.GetConversation().GetType() == messengertypes.Conversation_ContactType {
-		if i.GetIsMe() {
+		if i.GetIsMine() {
 			return i, false, nil
 		}
 
@@ -952,7 +952,7 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 		CID:                   cid.String(),
 		Type:                  amt,
 		Payload:               am.GetPayload(),
-		IsMe:                  isMe,
+		IsMine:                isMe,
 		ConversationPublicKey: gpk,
 		SentDate:              am.GetSentDate(),
 		DevicePublicKey:       dpk,
@@ -978,7 +978,7 @@ func (h *eventHandler) interactionFetchRelations(tx *dbWrapper, i *messengertype
 
 	// build device
 	switch {
-	case i.IsMe: // myself
+	case i.IsMine: // myself
 		i.MemberPublicKey = ""
 
 	case i.Conversation != nil && i.Conversation.GetType() == messengertypes.Conversation_ContactType: // 1-1 conversation
@@ -1020,7 +1020,7 @@ func (h *eventHandler) dispatchVisibleInteraction(i *messengertypes.Interaction)
 			return err
 		}
 
-		newUnread := !h.replay && !i.IsMe && !opened
+		newUnread := !h.replay && !i.IsMine && !opened
 
 		// db update
 		if err := tx.updateConversationReadState(i.ConversationPublicKey, newUnread, time.Now()); err != nil {
