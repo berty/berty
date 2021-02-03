@@ -46,7 +46,7 @@
     },
     "notifications": {
       "header": "不错过任何新消息或联系请求",
-      "recommended": "推荐",
+      "recommended": "推荐的",
       "title": "消息通知",
       "desc": "您需要在您的手机上授权Berty 消息通知",
       "button": "授权通知",
@@ -78,6 +78,10 @@
       "no-contacts": "您还没有任何联系人或聊天",
       "search": {
         "no-results": "未找到结果"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -88,339 +92,360 @@
   "settings": {
     "home": {
       "header-left-button": "帮助",
-      "header-center-button": "",
-      "header-right-button": "",
-      "network-button": "",
-      "switch-accounts": "",
-      "edit-profile": ""
+      "header-center-button": "开发工具",
+      "header-right-button": "设置",
+      "network-button": "网络列表",
+      "switch-accounts": "使用其他账户",
+      "edit-profile": "编辑个人信息"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "网络列表",
+      "online-peers": "在线节点"
     },
     "mode": {
-      "title": "",
-      "desc": "",
+      "title": "设置",
+      "desc": "所有功能皆可自定义",
       "notifications-button": {
         "title": "消息通知",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "已启用",
+        "tag-disabled": "已禁用"
       },
       "bluetooth-button": {
         "title": "蓝牙",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "已启用",
+        "tag-disabled": "已禁用"
       },
       "app-mode-button": {
-        "title": "",
+        "title": "App模式",
         "performance-tag": "性能",
-        "privacy-tag": "",
+        "privacy-tag": "隐私",
         "description-tag": "简单使用 - 所有功能",
         "first-bullet-point": "接收新消息通知",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
+        "second-bullet-point": "接收联系人请求",
+        "third-bullet-point": "本地节点发现 (BLE & Multicast DNS)"
       },
-      "dark-mode-button": "",
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "dark-mode-button": "暗色模式",
+      "receive-contact-requests-button": "接收联系人请求",
+      "external-services-button": "外部服务",
+      "auto-replicate-button": "自动复制",
       "multicast-dns-button": {
-        "title": "",
-        "desc": ""
+        "title": "多播DNS",
+        "desc": "本地节点发现"
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "已屏蔽的联系人",
+        "tag": "已屏蔽"
       },
-      "delete-account-button": "",
-      "backup-account-button": ""
+      "delete-account-button": "删除我的帐户",
+      "backup-account-button": "备份我的帐户"
     },
     "edit-profile": {
-      "title": "",
-      "qr-will-update": "",
-      "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
+      "title": "编辑我的资料",
+      "qr-will-update": "您的 Berty ID (QR 代码) 将被更新",
+      "ocr-wont-update": "您的待处理联系人请求将不会被更新",
+      "save": "保存修改",
+      "cancel": "取消",
+      "name-input-placeholder": "名",
       "name-input-label": "名称"
     },
     "notifications": {
       "title": "消息通知",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "enabled-desc": "您已激活通知！",
+      "disabled-desc": "您还没有激活此应用的通知",
+      "activate-button": "启用通知",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "联系人请求",
+        "desc": "每次有人向您发送联系人请求时都会收到通知"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "消息通知",
+        "display-button": "显示通知",
+        "preview-button": "预览信息",
+        "sound-button": "提示音",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "例外",
+          "preview-value": "添加",
+          "tag": "{{count}} 例外",
+          "tag_plural": "{{count}} 个例外"
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "群组通知",
+        "display-button": "显示通知",
+        "preview-button": "预览信息",
+        "sound-button": "提示音",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "例外",
+          "preview-value": "添加",
+          "tag": "{{count}} 个例外",
+          "tag_plural": "{{count}} 个例外"
         }
       }
     },
     "bluetooth": {
       "title": "蓝牙",
-      "desc": "",
-      "activate-button": ""
+      "desc": "在您没有网络连接(wifi或数据) 时，您可以使用蓝牙来连接附件的节点来使用Berty应用",
+      "activate-button": "激活蓝牙"
     },
     "mc": {
-      "activate-button": ""
+      "activate-button": "激活多节点连接"
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "外部服务",
+      "operated-services-button": "使用 Berty 运营的服务",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "title": "注册自定义的服务提供商",
+        "input-placeholder": "服务 URL",
+        "action": "添加"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "当前注册的服务",
+        "sample-no-services": "未注册服务",
+        "sample-unknown-service": "未知服务"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "title": "删除帐户！",
+      "first-desc": "您确定要删除您的帐户吗？",
+      "desc": "请输入删除以确认",
+      "cancel-button": "取消",
+      "delete-button": "删除"
     },
     "help": {
-      "title": "",
+      "title": "帮助",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "安全与隐私",
+        "desc": "保护您的数据和生活隐私"
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
+      "updates-button": "更新",
+      "about-button": "关于 Berty",
+      "account-button": "账户 与 Berty ID",
+      "contact-button": "联系人与请求",
       "message-button": "消息",
-      "group-button": "",
-      "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
+      "group-button": "组",
+      "settings-button": "设置",
+      "ask-button": "提问题",
+      "report-button": "报告 bug"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
-      "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": ""
+      "title": "关于 Berty",
+      "top-left-button": "隐私与安全",
+      "top-right-button": "点对点网络",
+      "bottom-left-button": "无需互联网或移动流量",
+      "bottom-right-button": "无需可信的安全网络",
+      "terms-button": "使用条款",
+      "privacy-button": "隐私策略",
+      "software-button": "软件许可",
+      "contact-button": "联系我们",
+      "website-button": "网站"
     },
     "updates": {
-      "title": "",
-      "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "title": "应用更新",
+      "up-to-date-desc": "您的应用已是最新的",
+      "version": "版本",
+      "current-tag": "当前的",
+      "installed-tag": "已安装",
+      "initial-tag": "初始化安装",
+      "not-installed-tag": "未安装"
     },
     "devtools": {
-      "title": "",
-      "header-left-button": "",
-      "simulate-button": "",
-      "tor-button": "",
+      "title": "开发工具",
+      "header-left-button": "设备信息",
+      "simulate-button": "模拟流错误",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
+      "tor-button": "Tor{{option}}",
       "tor-optional-option": "可选",
       "tor-required-option": "必需的",
-      "tor-disabled-option": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "system-info-button": "",
-      "debug-button": "",
-      "add-dev-conversations-button": "",
+      "tor-disabled-option": "已禁用",
+      "header-middle-button": "生成伪数据",
+      "header-right-button": "重启守护进程",
+      "system-info-button": "系统信息",
+      "debug-button": "Debug",
+      "add-dev-conversations-button": "添加开发者会话",
       "share-button": {
-        "title": "",
-        "alert-title": "",
-        "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
+        "title": "分享ID到Discord",
+        "alert-title": "您想要在 Berty Discord 上分享您的二维码到\"#dev-logs\"吗？",
+        "alert-message": "这将允许其他工作人员扫描您的二维码或复制您的联系链接。",
+        "alert-accept-button": "好",
+        "alert-cancel-button": "不"
       },
-      "native-bridge-button": "",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
-      "stop-node-button": "",
-      "bot-mode-button": "",
-      "local-grpc-button": "",
-      "console-logs-button": "",
-      "ipfs-webui-button": "",
+      "native-bridge-button": "测试本机桥接器",
+      "dump-account-button": "转储帐户",
+      "dump-contacts-button": "转储联系人",
+      "dump-conversations-button": "转储对话",
+      "dump-interactions-button": "转储互动",
+      "dump-members-button": "转储成员",
+      "stop-node-button": "停止节点",
+      "bot-mode-button": "机器人模式",
+      "local-grpc-button": "本地 gRPC",
+      "console-logs-button": "控制台日志",
+      "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "消息通知",
       "send-to-all-button": {
-        "title": "",
-        "sending": "",
-        "test": "",
-        "tried": ""
+        "title": "向所有联系人发送消息",
+        "sending": "正在发送...",
+        "test": "测试， ",
+        "tried": ": very_check_mark: 正在尝试向 {{length}} 联系人发送"
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-left-button": "设备信息",
+      "footer-middle-button": "显示事件",
+      "footer-right-button": "重启守护进程"
     },
     "system-info": {
-      "title": ""
+      "title": "系统信息"
     },
     "fake-data": {
-      "title": "",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
-      "delete-button": ""
+      "title": "生成伪数据",
+      "contacts-button": "生成伪联系人",
+      "multi-members-button": "生成伪多重成员",
+      "messages-button": "生成伪消息",
+      "delete-button": "删除伪数据"
     },
     "add-dev-conversations": {
-      "title": "",
-      "add": "",
-      "tag-bot": "",
-      "tag-contact": "",
-      "tag-conversation": ""
+      "title": "添加开发者会话",
+      "add": "添加 {{name}}",
+      "tag-bot": "机器人",
+      "tag-contact": "联系人",
+      "tag-conversation": "组"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS WebUI"
     },
     "my-berty-ID": {
-      "qr": "",
-      "fingerprint": "",
-      "devices": ""
+      "qr": "二维码",
+      "fingerprint": "指纹",
+      "devices": "设备"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": "",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "invalid-link": "无效的链接！",
+      "invalid-qr": "无效的二维码",
+      "error": "错误！",
+      "contact-already-added": "联系人已添加",
+      "contact-already-added-message": "您不能多次添加同一个联系人"
     },
     "invalid-scan": {
-      "dismiss-button": ""
+      "dismiss-button": "忽略"
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "指纹",
+      "info": "信息",
+      "devices": "设备"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "指纹",
+      "info": "信息",
+      "devices": "设备"
     }
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "mark-button": "标记为已验证",
+      "block-button": "屏蔽联系人",
+      "delete-button": "删除联系人",
+      "fingerprint": "指纹",
+      "info": "信息",
+      "devices": "设备"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "撰写安全消息..."
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
+      "header-left-button": "搜索",
+      "header-middle-button": "呼叫",
+      "header-right-button": "分享",
+      "media-button": "媒体、 链接和文档",
+      "notifications-button": "接收新消息通知",
       "members-button": {
-        "title": "",
-        "unknown": ""
+        "title": "成员",
+        "unknown": "未知的"
       },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
-      "leave-button": ""
+      "add-member-button": "添加成员",
+      "invite-button": "通过链接邀请",
+      "save-button": "在服务器上保存对话",
+      "erase-button": "清除对话",
+      "leave-button": "离开群组"
     },
     "multi-member-qr": {
-      "title": ""
+      "title": "二维码组"
     },
     "one-to-one": {
       "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
+        "title": "联系人请求",
+        "refuse-button": "拒绝",
+        "accept-button": "接受",
+        "accepted-button": "已接受"
       },
       "betabot-box": {
-        "title": "",
-        "desc": "",
-        "skip-button": "",
-        "add-button": ""
+        "title": "添加BETA BOT？",
+        "desc": "您还没有任何联系人，要添加Beta Bot来发现和测试会话吗？",
+        "skip-button": "跳过",
+        "add-button": "添加！"
       },
       "infos-chat": {
-        "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
-        "outgoing": ""
+        "connection-confirmed": "👋 Berty 连接已确认! 🎉",
+        "request-sent": "请求已发送: airplan:",
+        "incoming": "接受此请求以回复 ！",
+        "outgoing": "正在等待您的联系人回复连接！"
       },
-      "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "betabot-input-placeholder": "添加测试版机器人以在此写入...",
+      "incoming-input-placeholder": "接受此请求以在这里写入...",
+      "input-placeholder": "撰写安全消息..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "header-left-button": "搜索",
+      "header-middle-button": "呼叫",
+      "header-right-button": "分享",
+      "media-button": "媒体、 链接和文档",
+      "notifications-button": "接收新消息通知",
+      "mutual-button": "相互组",
+      "save-button": "在服务器上保存对话",
+      "erase-button": "清除对话"
     },
     "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
+      "title": "在服务器上注册会话",
+      "no-registered-button": "未注册复制服务",
+      "connect-button": "连接到 Berty 运营服务",
+      "manage-add-button": "管理或添加服务"
     },
     "files": {
-      "record-sound": "",
-      "recording": "",
-      "gallery": "",
-      "camera": "",
-      "record": "",
-      "files": "",
-      "microphone": "",
-      "gif": "",
-      "search-gif": "",
-      "security-access": "",
-      "security-access-desc": "",
-      "save-to-gallery": "",
-      "share": "",
-      "forward-berty": "",
-      "forward": "",
-      "image-saved": ""
+      "record-sound": "录制一条声音消息",
+      "recording": "录制中...",
+      "gallery": "相册",
+      "camera": "摄像头",
+      "record": "录音",
+      "files": "文件",
+      "microphone": "麦克风",
+      "gif": "GIF图",
+      "search-gif": "搜索 gif图",
+      "security-access": "安全访问",
+      "security-access-desc": "点击此处以设置您的访问权限",
+      "save-to-gallery": "将此文件保存到相册",
+      "share": "分享",
+      "forward-berty": "转发到 Berty 联系人",
+      "forward": "转发",
+      "image-saved": "图片已保存到相册"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }

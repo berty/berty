@@ -78,6 +78,10 @@
       "no-contacts": "Sie haben noch keine Kontakte oder Chats",
       "search": {
         "no-results": "Keine Ergebnisse gefunden"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -248,6 +252,8 @@
       "title": "Entwicklerwerkzeuge",
       "header-left-button": "Geräteinformationen",
       "simulate-button": "Streamfehler simulieren",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "fakultativ",
       "tor-required-option": "erforderlich",
@@ -421,6 +427,25 @@
       "forward-berty": "An Berty Kontakt weiterleiten",
       "forward": "Weiterleiten",
       "image-saved": "Bild in der Galerie gespeichert"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }

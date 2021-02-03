@@ -78,6 +78,10 @@
       "no-contacts": "Vous n'avez pas encore de contact ou de conversation",
       "search": {
         "no-results": "Aucun résultat trouvé"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -248,6 +252,8 @@
       "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
       "simulate-button": "Simuler une erreur de stream",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "optionnel",
       "tor-required-option": "requis",
@@ -421,6 +427,25 @@
       "forward-berty": "Transférer au contact Berty",
       "forward": "Transférer",
       "image-saved": "Image enregistrée dans la galerie"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }

@@ -78,6 +78,10 @@
       "no-contacts": "Du har inga kontakter eller chatter ännu",
       "search": {
         "no-results": "Inga resultat hittades"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -248,6 +252,8 @@
       "title": "",
       "header-left-button": "",
       "simulate-button": "",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "valfritt",
       "tor-required-option": "obligatorisk",
@@ -421,6 +427,25 @@
       "forward-berty": "",
       "forward": "",
       "image-saved": ""
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }
