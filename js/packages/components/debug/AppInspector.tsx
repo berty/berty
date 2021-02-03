@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { View, Text, Platform, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native'
 import RNFS from 'react-native-fs'
 import { berty } from '@berty-tech/api/root.pb'
-import { Service } from '@berty-tech/grpc-bridge'
+import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import beapi from '@berty-tech/api'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { useTranslation } from 'react-i18next'
@@ -104,7 +104,11 @@ const fetchProtoAccountList = (
 
 	f().catch((err: Error) => {
 		console.warn(err)
-		Alert.alert('Error while listing accounts', err.message)
+		if (err instanceof GRPCError) {
+			Alert.alert('GRPCError while listing accounts', err.error.message)
+		} else {
+			Alert.alert('Error while listing accounts', err.message)
+		}
 	})
 }
 
