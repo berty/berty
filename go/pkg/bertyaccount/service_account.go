@@ -131,9 +131,11 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 	defer s.muService.Unlock()
 
 	prog := progress.New()
-	ch := prog.Subscribe()
-	done := make(chan bool)
 
+	defer prog.Close()
+	ch := prog.Subscribe()
+
+	done := make(chan bool)
 	go func() {
 		for step := range ch {
 			_ = step
@@ -150,7 +152,6 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 			})
 			if err != nil {
 				// not sure it is worth logging something here
-				close(ch)
 				break
 			}
 		}

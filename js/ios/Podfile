@@ -4,44 +4,50 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 platform :ios, '12.0'
 
 target 'Berty' do
-  config = use_native_modules!
+    project 'Berty',
+            'Debug' => :debug,
+            'Yolo Debug' => :debug,
+            'AppStore Release' => :release,
+            'Staff Release' => :release
 
-  use_react_native!(:path => config["reactNativePath"])
+    config = use_native_modules!
 
-  # override OpenSSL-Universal with own openssl static lib
-  pod 'OpenSSL-Universal', :path => "./OpenSSL-Universal-Override.podspec"
+    use_react_native!(:path => config["reactNativePath"])
 
-  # required custom import of permission handler
-  permissions_path = '../node_modules/react-native-permissions/ios'
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
-  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
-  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
+    # override OpenSSL-Universal with own openssl static lib
+    pod 'OpenSSL-Universal', :path => "./OpenSSL-Universal-Override.podspec"
+
+    # required custom import of permission handler
+    permissions_path = '../node_modules/react-native-permissions/ios'
+    pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+    pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+    pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
 
 
-  # Enables Flipper.
-  #
-  # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable these next few lines.
-  use_flipper!
+    # Enables Flipper.
+    #
+    # Note that if you have use_frameworks! enabled, Flipper will not work and
+    # you should disable these next few lines.
+    use_flipper!(configurations: ['Debug', 'Yolo Debug'])
 
-  post_install do |installer|
-    flipper_post_install(installer)
+    post_install do |installer|
+        flipper_post_install(installer)
 
-    # enable only active arch for all pods
-    installer.pods_project.build_configurations.each do |config|
-      config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
-    end
-
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        # set ios deployment target for all pods
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
-
-        # replace swift version 4.X -> 5.0
-        if config.build_settings.key?('SWIFT_VERSION') && config.build_settings['SWIFT_VERSION'].start_with?('4.')
-          config.build_settings['SWIFT_VERSION'] = '5.0'
+        # enable only active arch for all pods
+        installer.pods_project.build_configurations.each do |config|
+            config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
         end
-      end
+
+        installer.pods_project.targets.each do |target|
+            target.build_configurations.each do |config|
+                # set ios deployment target for all pods
+                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+
+                # replace swift version 4.X -> 5.0
+                if config.build_settings.key?('SWIFT_VERSION') && config.build_settings['SWIFT_VERSION'].start_with?('4.')
+                    config.build_settings['SWIFT_VERSION'] = '5.0'
+                end
+            end
+        end
     end
-  end
 end
