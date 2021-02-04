@@ -451,8 +451,8 @@
   "debug": {
     "inspector": {
       "show-button": "Show app inspector",
-      "hide-button": "Close app inspector",
-      "title": "App inspector",
+      "hide-button": "Close",
+      "title": "Inspector",
       "accounts": {
         "title": "Accounts",
         "unsupported-remote-mode": "Accounts inspector not supported in remote mode",

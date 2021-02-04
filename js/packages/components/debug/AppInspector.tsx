@@ -14,11 +14,21 @@ export const accountService = Service(beapi.account.AccountService, rpcBridge, n
 const styles = StyleSheet.create({
 	safeViewContainer: {
 		backgroundColor: '#000000',
+		height: '100%',
 	},
-	scrollContainer: { height: '100%' },
 	page: {
-		padding: 12,
+		margin: 12,
+		marginBottom: 60,
 		flexDirection: 'column',
+	},
+	footerButton: {
+		borderColor: '#c0c0c0',
+		borderRadius: 6,
+		borderStyle: 'solid',
+		borderWidth: 1,
+		margin: 2,
+		padding: 8,
+		flex: 1,
 	},
 	button: {
 		borderColor: '#c0c0c0',
@@ -35,7 +45,7 @@ const styles = StyleSheet.create({
 	},
 	header1: {
 		fontWeight: 'bold',
-		fontSize: 42,
+		fontSize: 38,
 	},
 	header2: {
 		fontWeight: 'bold',
@@ -202,20 +212,22 @@ const AccountsInspector: React.FC<{
 	return (
 		<>
 			{accountFSFiles.map((acc) => (
-				<TouchableOpacity onPress={() => accountAction(acc, setLastUpdate)}>
-					<View key={acc} style={[{ paddingBottom: 2, paddingTop: 2 }, styles.button]}>
-						<Text style={[styles.bold, styles.text]}>{acc}</Text>
+				<TouchableOpacity key={acc} onPress={() => accountAction(acc, setLastUpdate)}>
+					<View style={[{ paddingBottom: 2, paddingTop: 2 }, styles.button]}>
+						<Text numberOfLines={1} style={[styles.bold, styles.text]}>
+							{acc}
+						</Text>
 						<View>
 							{accountProtoEntries.hasOwnProperty(acc) ? (
 								<>
 									{accountProtoEntries[acc].name ? (
-										<Text style={[styles.text]}>
+										<Text numberOfLines={1} style={[styles.text]}>
 											Name:{'    '}
 											{accountProtoEntries[acc].name}
 										</Text>
 									) : null}
 									{accountProtoEntries[acc].creationDate ? (
-										<Text style={[styles.text]}>
+										<Text numberOfLines={1} style={[styles.text]}>
 											Created:{' '}
 											{new Date(
 												parseInt(accountProtoEntries[acc].creationDate, 10) / 1000,
@@ -224,7 +236,7 @@ const AccountsInspector: React.FC<{
 									) : null}
 
 									{accountProtoEntries[acc].lastOpened ? (
-										<Text style={[styles.text]}>
+										<Text numberOfLines={1} style={[styles.text]}>
 											Opened:{'  '}
 											{new Date(
 												parseInt(accountProtoEntries[acc].lastOpened, 10) / 1000,
@@ -232,11 +244,13 @@ const AccountsInspector: React.FC<{
 										</Text>
 									) : null}
 									{accountProtoEntries[acc].error ? (
-										<Text style={[styles.text]}>Error: {accountProtoEntries[acc].error}</Text>
+										<Text numberOfLines={1} style={[styles.text]}>
+											Error: {accountProtoEntries[acc].error}
+										</Text>
 									) : null}
 								</>
 							) : (
-								<Text style={[styles.text, styles.textError]}>
+								<Text numberOfLines={1} style={[styles.text, styles.textError]}>
 									{t('debug.inspector.accounts.data-not-found')}
 								</Text>
 							)}
@@ -260,50 +274,54 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 
 	return (
 		<SafeAreaView style={[styles.safeViewContainer]}>
-			<ScrollView style={[styles.scrollContainer]}>
-				<View style={[styles.page]}>
-					<Text style={[styles.text, styles.header1]}>{t('debug.inspector.title')}</Text>
+			<View style={{ paddingHorizontal: 12, flexDirection: 'column' }}>
+				<Text style={[styles.text, styles.header1]}>{t('debug.inspector.title')}</Text>
 
-					<View style={{ flexDirection: 'row' }}>
-						<TouchableOpacity onPress={refresh} style={{ flex: 1 }}>
-							<View style={[styles.button]}>
-								<Text style={[styles.text, styles.bold]}>{t('debug.inspector.refresh')}</Text>
-							</View>
-						</TouchableOpacity>
-						{/*<ExportAllAppData />*/}
-						<TouchableOpacity onPress={() => setDebugMode(false)} style={{ flex: 1 }}>
-							<View style={[styles.button]}>
-								<Text style={[styles.text, styles.bold]}>{t('debug.inspector.hide-button')}</Text>
-							</View>
-						</TouchableOpacity>
-					</View>
-
-					<View style={{ paddingBottom: 12 }}>
-						<Text style={[styles.text, styles.header2]}>{t('debug.inspector.errors.title')}</Text>
-						{error ? (
-							<View style={[styles.button]}>
-								<Text style={[styles.text]}>❌ {t('debug.inspector.errors.header-reported')}</Text>
-								<Text style={[styles.bold]}>{error.message}</Text>
-								<Text>{error.stack}</Text>
-							</View>
-						) : (
-							<Text style={[styles.text, styles.bold, styles.button]}>
-								✅ {t('debug.inspector.errors.header-all-clear')}
-							</Text>
-						)}
-					</View>
-					<View style={{ paddingBottom: 12 }}>
-						<Text style={[styles.text, styles.header2]}>{t('debug.inspector.accounts.title')}</Text>
-						{embedded ? (
-							<AccountsInspector lastRefresh={lastUpdate} setLastUpdate={setLastUpdate} />
-						) : (
-							<Text style={[styles.text]}>
-								❌ {t('debug.inspector.accounts.unsupported-remote-mode')}
-							</Text>
-						)}
-					</View>
+				<View style={{ paddingVertical: 12 }}>
+					<Text style={[styles.text, styles.header2]}>{t('debug.inspector.errors.title')}</Text>
+					{error ? (
+						<View style={[styles.button]}>
+							<Text style={[styles.text]}>❌ {t('debug.inspector.errors.header-reported')}</Text>
+							<Text style={[styles.bold]}>{error.message}</Text>
+							<Text>{error.stack}</Text>
+						</View>
+					) : (
+						<Text style={[styles.text, styles.bold, styles.button]}>
+							✅ {t('debug.inspector.errors.header-all-clear')}
+						</Text>
+					)}
 				</View>
+			</View>
+
+			<ScrollView style={[styles.page]} contentContainerStyle={{ paddingBottom: 30 }}>
+				<Text style={[styles.text, styles.header2]}>{t('debug.inspector.accounts.title')}</Text>
+				{embedded ? (
+					<AccountsInspector lastRefresh={lastUpdate} setLastUpdate={setLastUpdate} />
+				) : (
+					<Text style={[styles.text]}>
+						❌ {t('debug.inspector.accounts.unsupported-remote-mode')}
+					</Text>
+				)}
 			</ScrollView>
+			<View style={{ position: 'absolute', bottom: 30, left: 0, right: 0 }}>
+				<View style={{ flexDirection: 'row', paddingHorizontal: 12 }}>
+					<TouchableOpacity onPress={refresh} style={{ flex: 1 }}>
+						<View style={[styles.footerButton]}>
+							<Text style={[styles.text, styles.bold, { textAlign: 'center' }]}>
+								{t('debug.inspector.refresh')}
+							</Text>
+						</View>
+					</TouchableOpacity>
+					{/*<ExportAllAppData />*/}
+					<TouchableOpacity onPress={() => setDebugMode(false)} style={{ flex: 1 }}>
+						<View style={[styles.footerButton]}>
+							<Text style={[styles.text, styles.bold, { textAlign: 'center' }]}>
+								{t('debug.inspector.hide-button')}
+							</Text>
+						</View>
+					</TouchableOpacity>
+				</View>
+			</View>
 		</SafeAreaView>
 	)
 }
