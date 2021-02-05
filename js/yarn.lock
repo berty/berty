@@ -296,12 +296,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/node@^7.12.10":
-  version "7.12.10"
-  resolved "https://registry.yarnpkg.com/@babel/node/-/node-7.12.10.tgz#2a78e1a3a98f08e0d5e8adbaba783bed5efb09ae"
-  integrity sha512-lJT1sXp1bEfAZ7B2ChEOOiUxaGbIWkcAixqZDpbHnJWUqIjoofOGo5ON1bJ9HOmtMdF7rqKiOoM7zZSI87El3g==
+"@babel/node@^7.12.13":
+  version "7.12.13"
+  resolved "https://registry.yarnpkg.com/@babel/node/-/node-7.12.13.tgz#76f30524f0aabdcc10c7beff9cc63c0e9ae2f46e"
+  integrity sha512-ACLDLxlNsJZxPnwSSwuXp87KwjKY0NAFko6QCnBjJlxd+gKUDLLG0Y49jO+/EwqMJd9D5/BkYn5Qb1bgrYnHSA==
   dependencies:
-    "@babel/register" "^7.12.10"
+    "@babel/register" "^7.12.13"
     commander "^4.0.1"
     core-js "^3.2.1"
     lodash "^4.17.19"
@@ -726,10 +726,10 @@
     "@babel/helper-create-regexp-features-plugin" "^7.12.1"
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/register@^7.0.0", "@babel/register@^7.12.10":
-  version "7.12.10"
-  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.12.10.tgz#19b87143f17128af4dbe7af54c735663b3999f60"
-  integrity sha512-EvX/BvMMJRAA3jZgILWgbsrHwBQvllC5T8B29McyME8DvkdOxk4ujESfrMvME8IHSDvWXrmMXxPvA/lx2gqPLQ==
+"@babel/register@^7.0.0", "@babel/register@^7.12.13":
+  version "7.12.13"
+  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.12.13.tgz#e9cb57618264f2944634da941ba9755088ef9ec5"
+  integrity sha512-fnCeRXj970S9seY+973oPALQg61TRvAaW0nRDe1f4ytKqM3fZgsNXewTZWmqZedg74LFIRpg/11dsrPZZvYs2g==
   dependencies:
     find-cache-dir "^2.0.0"
     lodash "^4.17.19"
