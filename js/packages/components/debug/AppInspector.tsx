@@ -66,36 +66,68 @@ const getRootDir = () => {
 	}
 }
 
-const confirmActionWrapper = (title: string, action: () => void) => () => {
+const confirmActionWrapper = (title: string, action: () => void, t: any) => () => {
 	Alert.alert(title, '', [
 		{
-			text: 'Confirm',
+			text: t('debug.inspector.confirm-alert.button-confirm'),
 			onPress: action,
 			style: 'destructive',
 		},
 		{
-			text: 'Cancel',
+			text: t('debug.inspector.confirm-alert.button-cancel'),
 			onPress: () => {},
 			style: 'cancel',
 		},
 	])
 }
 
-const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<string>) => void) => {
+class FSItem {
+	fileName: string = ''
+	metadataFileFound: boolean = false
+	messengerDBFound: boolean = false
+	ipfsConfigFound: boolean = false
+}
+
+const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, t: any) => {
 	const f = async () => {
 		const files = await RNFS.readDir(getRootDir())
+		const items: Array<FSItem> = []
 
-		updateAccountFSFiles(files.map((item) => item.name).sort())
+		for (const file of files) {
+			const fsi = new FSItem()
+
+			try {
+				await RNFS.stat(getRootDir() + '/' + file.name + '/account_meta')
+				fsi.metadataFileFound = true
+			} catch (e) {}
+
+			try {
+				await RNFS.stat(getRootDir() + '/' + file.name + '/account0/messenger.sqlite')
+				fsi.messengerDBFound = true
+			} catch (e) {}
+
+			try {
+				await RNFS.stat(getRootDir() + '/' + file.name + '/ipfs/config')
+				fsi.ipfsConfigFound = true
+			} catch (e) {}
+
+			fsi.fileName = file.name
+
+			items.push(fsi)
+		}
+
+		updateAccountFSFiles(items.sort((a, b) => a.fileName.localeCompare(b.fileName)))
 	}
 
 	f().catch((err: Error) => {
 		console.warn(err)
-		Alert.alert('Error while listing directory contents', err.message)
+		Alert.alert(t('debug.inspector.errors.listing-files-failed'), err.message)
 	})
 }
 
 const fetchProtoAccountList = (
 	updateAccountProtoEntries: (arg: { [key: string]: berty.account.v1.IAccountMetadata }) => void,
+	t: any,
 ) => {
 	const f = async () => {
 		const resp = await accountService.listAccounts({})
@@ -115,9 +147,9 @@ const fetchProtoAccountList = (
 	f().catch((err: Error) => {
 		console.warn(err)
 		if (err instanceof GRPCError) {
-			Alert.alert('GRPCError while listing accounts', err.error.message)
+			Alert.alert(t('debug.inspector.errors.listing-accounts-failed-grpc'), err.error.message)
 		} else {
-			Alert.alert('Error while listing accounts', err.message)
+			Alert.alert(t('debug.inspector.errors.listing-accounts-failed'), err.message)
 		}
 	})
 }
@@ -125,56 +157,68 @@ const fetchProtoAccountList = (
 const accountAction = async (
 	accountId: string,
 	setLastUpdate: React.Dispatch<React.SetStateAction<number>>,
+	t: any,
 ) => {
-	let title = 'Account ' + accountId + ' does not exists, a directory has this name though.'
+	let title = t('debug.inspector.accounts.action-delete.file-exists', { accountId: accountId })
 
 	try {
 		const stat = await RNFS.stat(getRootDir() + '/' + accountId)
 		if (stat.isFile()) {
-			title = 'Account ' + accountId + ' does not exists, a file has this name though.'
+			title = t('debug.inspector.accounts.action-delete.file-exists', { accountId: accountId })
+		} else {
+			title = t('debug.inspector.accounts.action-delete.account-exists', { accountId: accountId })
 		}
 	} catch (err) {
 		console.warn(err)
-		Alert.alert('Error while getting FS info about account', err.message)
+		Alert.alert(t('debug.inspector.accounts.action-delete.fs-read-error'), err.message)
 		return
 	}
 
-	Alert.alert(title, 'What should we do?', [
+	Alert.alert(title, t('debug.inspector.accounts.action-delete.actions-title'), [
 		{
-			text: 'Delete it via account manager',
-			onPress: confirmActionWrapper('Confirm deletion of account', () => {
-				// close account if necessary
-				accountService
-					.closeAccount({})
-					.catch((err: Error) => {
-						console.warn(err)
-						Alert.alert('Error while closing account', err.message)
-					})
-					// delete account
-					.then(() => accountService.deleteAccount({ accountId: accountId }))
-					.then(() => Alert.alert('Account deleted'))
-					.catch((err: Error) => {
-						console.warn(err)
-						Alert.alert('Error while deleting account', err.message)
-					})
-					.finally(() => setLastUpdate(Date.now()))
-			}),
+			text: t('debug.inspector.accounts.action-delete.action-account-manager'),
+			onPress: confirmActionWrapper(
+				t('debug.inspector.accounts.action-delete.action-account-manager-confirm'),
+				() => {
+					// close account if necessary
+					accountService
+						.closeAccount({})
+						.catch((err: Error) => {
+							console.warn(err)
+							Alert.alert(t('debug.inspector.accounts.action-delete.error-close'), err.message)
+						})
+						// delete account
+						.then(() => accountService.deleteAccount({ accountId: accountId }))
+						.then(() => Alert.alert(t('debug.inspector.accounts.action-delete.success-feedback')))
+						.catch((err: Error) => {
+							console.warn(err)
+							Alert.alert(t('debug.inspector.accounts.action-delete.error-delete'), err.message)
+						})
+						.finally(() => setLastUpdate(Date.now()))
+				},
+				t,
+			),
 			style: 'destructive',
 		},
 		{
-			text: 'Force delete it',
-			onPress: confirmActionWrapper('Confirm force deletion of account', () => {
-				RNFS.unlink(getRootDir() + '/' + accountId)
-					.catch((err: Error) => {
-						console.warn(err)
-						Alert.alert('Unable to remove account', err.message)
-					})
-					.finally(() => setLastUpdate(Date.now()))
-			}),
+			text: t('debug.inspector.accounts.action-delete.action-force-delete'),
+			onPress: confirmActionWrapper(
+				t('debug.inspector.accounts.action-delete.action-force-delete-confirm'),
+				() => {
+					RNFS.unlink(getRootDir() + '/' + accountId)
+						.then(() => Alert.alert(t('debug.inspector.accounts.action-delete.success-feedback')))
+						.catch((err: Error) => {
+							console.warn(err)
+							Alert.alert(t('debug.inspector.accounts.action-delete.error-delete'), err.message)
+						})
+						.finally(() => setLastUpdate(Date.now()))
+				},
+				t,
+			),
 			style: 'destructive',
 		},
 		{
-			text: 'Nothing',
+			text: t('debug.inspector.accounts.action-delete.action-cancel'),
 			onPress: () => {},
 			style: 'cancel',
 		},
@@ -197,67 +241,126 @@ const AccountsInspector: React.FC<{
 	lastRefresh: Number
 	setLastUpdate: React.Dispatch<React.SetStateAction<number>>
 }> = ({ lastRefresh, setLastUpdate }) => {
-	const [accountFSFiles, updateAccountFSFiles] = useState<Array<string>>([])
+	const [accountFSFiles, updateAccountFSFiles] = useState<Array<FSItem>>([])
 	const [accountProtoEntries, updateAccountProtoEntries] = useState<{
 		[key: string]: berty.account.v1.IAccountMetadata
 	}>({})
 	const { t }: { t: any } = useTranslation()
 
-	useEffect(() => fetchFSAccountList(updateAccountFSFiles), [updateAccountFSFiles, lastRefresh])
-	useEffect(() => fetchProtoAccountList(updateAccountProtoEntries), [
+	useEffect(() => fetchFSAccountList(updateAccountFSFiles, t), [
+		updateAccountFSFiles,
+		lastRefresh,
+		t,
+	])
+	useEffect(() => fetchProtoAccountList(updateAccountProtoEntries, t), [
 		updateAccountProtoEntries,
 		lastRefresh,
+		t,
 	])
 
 	return (
 		<>
-			{accountFSFiles.map((acc) => (
-				<TouchableOpacity key={acc} onPress={() => accountAction(acc, setLastUpdate)}>
-					<View style={[{ paddingBottom: 2, paddingTop: 2 }, styles.button]}>
-						<Text numberOfLines={1} style={[styles.bold, styles.text]}>
-							{acc}
-						</Text>
-						<View>
-							{accountProtoEntries.hasOwnProperty(acc) ? (
-								<>
-									{accountProtoEntries[acc].name ? (
-										<Text numberOfLines={1} style={[styles.text]}>
-											Name:{'    '}
-											{accountProtoEntries[acc].name}
-										</Text>
-									) : null}
-									{accountProtoEntries[acc].creationDate ? (
-										<Text numberOfLines={1} style={[styles.text]}>
-											Created:{' '}
-											{new Date(
-												parseInt(accountProtoEntries[acc].creationDate, 10) / 1000,
-											).toUTCString()}
-										</Text>
-									) : null}
+			{accountFSFiles.map((acc) => {
+				const isMetaLoaded = accountProtoEntries.hasOwnProperty(acc.fileName)
 
-									{accountProtoEntries[acc].lastOpened ? (
-										<Text numberOfLines={1} style={[styles.text]}>
-											Opened:{'  '}
-											{new Date(
-												parseInt(accountProtoEntries[acc].lastOpened, 10) / 1000,
-											).toUTCString()}
+				return (
+					<TouchableOpacity
+						key={acc.fileName}
+						onPress={() => accountAction(acc.fileName, setLastUpdate, t)}
+					>
+						<View style={[{ paddingBottom: 2, paddingTop: 2 }, styles.button]}>
+							<Text numberOfLines={1} style={[styles.bold, styles.text]}>
+								{acc.fileName}
+							</Text>
+							<View>
+								{isMetaLoaded ? (
+									<>
+										{accountProtoEntries[acc.fileName].name ? (
+											<Text numberOfLines={1} style={[styles.text]}>
+												{t('debug.inspector.accounts.infos.aligned.name', {
+													name: accountProtoEntries[acc.fileName].name,
+												})}
+											</Text>
+										) : null}
+										{accountProtoEntries[acc.fileName].creationDate ? (
+											<Text numberOfLines={1} style={[styles.text]}>
+												{t('debug.inspector.accounts.infos.aligned.created', {
+													created: new Date(
+														parseInt(accountProtoEntries[acc.fileName].creationDate, 10) / 1000,
+													).toUTCString(),
+												})}
+											</Text>
+										) : null}
+
+										{accountProtoEntries[acc.fileName].lastOpened ? (
+											<Text numberOfLines={1} style={[styles.text]}>
+												{t('debug.inspector.accounts.infos.aligned.opened', {
+													opened: new Date(
+														parseInt(accountProtoEntries[acc.fileName].lastOpened, 10) / 1000,
+													).toUTCString(),
+												})}
+											</Text>
+										) : null}
+										{accountProtoEntries[acc.fileName].error ? (
+											<Text style={[styles.text]}>
+												{t('debug.inspector.accounts.infos.aligned.error', {
+													error: accountProtoEntries[acc.fileName].error,
+												})}
+											</Text>
+										) : null}
+									</>
+								) : (
+									<>
+										<Text numberOfLines={1} style={[styles.text, styles.textError]}>
+											{t('debug.inspector.accounts.data-not-found')}
 										</Text>
-									) : null}
-									{accountProtoEntries[acc].error ? (
-										<Text numberOfLines={1} style={[styles.text]}>
-											Error: {accountProtoEntries[acc].error}
-										</Text>
-									) : null}
+									</>
+								)}
+								<>
+									{!isMetaLoaded && (
+										<>
+											{acc.metadataFileFound && (
+												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
+													{t('debug.inspector.accounts.status.metadata-found')}
+												</Text>
+											)}
+											{acc.ipfsConfigFound && (
+												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
+													{t('debug.inspector.accounts.status.ipfs-repo-config-found')}
+												</Text>
+											)}
+											{acc.messengerDBFound && (
+												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
+													{t('debug.inspector.accounts.status.messenger-db-found')}
+												</Text>
+											)}
+										</>
+									)}
+									{isMetaLoaded && !accountProtoEntries[acc.fileName].error && (
+										<>
+											{!acc.metadataFileFound && (
+												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
+													{t('debug.inspector.accounts.status.metadata-not-found')}
+												</Text>
+											)}
+											{!acc.ipfsConfigFound && (
+												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
+													{t('debug.inspector.accounts.status.ipfs-repo-config-not-found')}
+												</Text>
+											)}
+											{!acc.messengerDBFound && (
+												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
+													{t('debug.inspector.accounts.status.messenger-db-not-found')}
+												</Text>
+											)}
+										</>
+									)}
 								</>
-							) : (
-								<Text numberOfLines={1} style={[styles.text, styles.textError]}>
-									{t('debug.inspector.accounts.data-not-found')}
-								</Text>
-							)}
+							</View>
 						</View>
-					</View>
-				</TouchableOpacity>
-			))}
+					</TouchableOpacity>
+				)
+			})}
 		</>
 	)
 }
