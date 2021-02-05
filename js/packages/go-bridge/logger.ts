@@ -7,6 +7,7 @@ const formatMessage = (...args: any[]): string =>
 		.replace(/\\"/g, '"')
 
 const BridgeLogger = (bridge: GoBridgeInterface) => ({
+	...console,
 	log: (message?: any, ...opts: any[]): void =>
 		bridge.log({
 			level: GoLogLevel.debug,
