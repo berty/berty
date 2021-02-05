@@ -381,7 +381,7 @@ message Interaction {
   string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
   Conversation conversation = 4;
   bytes payload = 5;
-  bool is_me = 6;
+  bool is_mine = 6;
   int64 sent_date = 9;
   bool acknowledged = 10;
   string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];

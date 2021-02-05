@@ -326,7 +326,7 @@ func (bot *Bot) handleContactUpdated(ctx context.Context, _ *messengertypes.Even
 }
 
 func (bot *Bot) handleUserMessageInteractionUpdated(ctx context.Context, _ *messengertypes.EventStream_Reply, interaction *messengertypes.Interaction, payload proto.Message) error {
-	if interaction.IsMe || interaction.Acknowledged {
+	if interaction.IsMine || interaction.Acknowledged {
 		return nil
 	}
 
@@ -478,7 +478,7 @@ func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, sr 
 		return nil
 	}
 
-	if !interaction.IsMe {
+	if !interaction.IsMine {
 		// auto-accept invitations to group
 		receivedInvitation := payload.(*messengertypes.AppMessage_GroupInvitation)
 		_, err := bot.client.ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{

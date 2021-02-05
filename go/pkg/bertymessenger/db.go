@@ -720,9 +720,9 @@ func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error)
 					SELECT MAX(ROWID)
 					FROM interactions
 					WHERE conversation_public_key = ?
-					AND is_me = true
+					AND is_mine = true
 				), 0)
-			AND is_me = false
+			AND is_mine = false
 			AND type = ?
 			ORDER BY ROWID DESC
 			LIMIT 1

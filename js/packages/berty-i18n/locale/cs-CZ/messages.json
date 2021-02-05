@@ -78,6 +78,10 @@
       "no-contacts": "Zatím nemáte žádné kontakty ani chaty",
       "search": {
         "no-results": "Nenalezeny žádné výsledky"
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
       }
     },
     "home-modal": {
@@ -248,6 +252,8 @@
       "title": "Nástroje pro vývojáře",
       "header-left-button": "Informace o zařízení",
       "simulate-button": "Simulovat chybu streamu",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "nepovinné",
       "tor-required-option": "povinné",
@@ -421,6 +427,25 @@
       "forward-berty": "Přeposlat Berty kontaktu",
       "forward": "Přeposlat",
       "image-saved": "Obrázek uložen v galerii"
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
     }
   }
 }

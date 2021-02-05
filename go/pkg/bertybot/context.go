@@ -20,7 +20,7 @@ type Context struct {
 	Client       messengertypes.MessengerServiceClient
 	Logger       *zap.Logger
 	IsReplay     bool // whether the event is a replayed or a fresh event
-	IsMe         bool // whether the bot is the author
+	IsMine       bool // whether the bot is the author
 	IsAck        bool // whether the event is an ack
 	IsNew        bool // whether the event is new or an entity update
 

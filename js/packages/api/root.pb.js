@@ -4158,7 +4158,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "bytes",
                     id: 5
                   },
-                  isMe: {
+                  isMine: {
                     type: "bool",
                     id: 6
                   },
