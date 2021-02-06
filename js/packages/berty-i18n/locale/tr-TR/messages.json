@@ -80,8 +80,8 @@
         "no-results": "Sonuç bulunamadı"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Yeni hesap oluştur",
+        "import-button": "Hesabı içeri aktar"
       }
     },
     "home-modal": {
@@ -119,15 +119,15 @@
         "title": "Uygulama modu",
         "performance-tag": "Performans",
         "privacy-tag": "Gizlilik",
-        "description-tag": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
+        "description-tag": "Kullanımı Kolay - Tüm Özellikler",
+        "first-bullet-point": "Anlık bildirimler alın",
+        "second-bullet-point": "Bağlantı istekleri alın",
         "third-bullet-point": ""
       },
       "dark-mode-button": "Koyu tema",
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "receive-contact-requests-button": "Bağlantı istekleri alın",
+      "external-services-button": "Dış hizmetler",
+      "auto-replicate-button": "Otomatik çoklama",
       "multicast-dns-button": {
         "title": "",
         "desc": ""
@@ -149,9 +149,9 @@
       "name-input-label": "İsim"
     },
     "notifications": {
-      "title": "",
-      "enabled-desc": "",
-      "disabled-desc": "",
+      "title": "Bildirimler",
+      "enabled-desc": "Bildirimleri etkinleştirdiniz!",
+      "disabled-desc": "Bu uygulama için bildirimleri etkinleştirmediniz",
       "activate-button": "",
       "contact-request-button": {
         "title": "",
