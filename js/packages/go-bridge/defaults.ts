@@ -1,7 +1,7 @@
 import { GoBridgeOpts } from './types'
 
 export const GoBridgeDefaultOpts: GoBridgeOpts = {
-	logFilters: 'info+:bty*,-*.grpc warn+:*.grpc error+:*',
+	logFilters: 'debug+:bty*,-*.grpc warn+:*.grpc error+:*',
 	cliArgs: [
 		'--log.format=console',
 		'--node.display-name=',
