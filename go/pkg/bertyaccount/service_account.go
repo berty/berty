@@ -48,6 +48,7 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 
 	if prog == nil {
 		prog = progress.New()
+		defer prog.Close()
 	}
 	prog.AddStep("init")
 	prog.AddStep("setup-logger")
@@ -132,7 +133,6 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 
 	prog := progress.New()
 	defer prog.Close()
-
 	ch := prog.Subscribe()
 	done := make(chan bool)
 
@@ -204,6 +204,7 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 	}
 
 	prog := progress.New()
+	defer prog.Close()
 	ch := prog.Subscribe()
 	done := make(chan bool)
 
@@ -223,7 +224,6 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 			})
 			if err != nil {
 				// not sure it is worth logging something here
-				close(ch)
 				break
 			}
 		}

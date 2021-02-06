@@ -223,6 +223,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 
 	if prog == nil {
 		prog = progress.New()
+		defer prog.Close()
 	}
 	prog.AddStep("cancel-context")
 	prog.AddStep("close-client-conn")
