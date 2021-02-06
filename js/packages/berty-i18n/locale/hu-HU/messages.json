@@ -100,7 +100,7 @@
     },
     "network-map": {
       "title": "Hálózati Lista",
-      "online-peers": ""
+      "online-peers": "Online Peer-ek"
     },
     "mode": {
       "title": "Beállítások",
@@ -126,11 +126,11 @@
       },
       "dark-mode-button": "Sötét mód",
       "receive-contact-requests-button": "",
-      "external-services-button": "",
+      "external-services-button": "Külső szolgáltatások",
       "auto-replicate-button": "",
       "multicast-dns-button": {
         "title": "",
-        "desc": ""
+        "desc": "Helyi Peer felfedezés"
       },
       "blocked-contacts-button": {
         "title": "",
@@ -270,7 +270,7 @@
         "alert-accept-button": "Igen 👍",
         "alert-cancel-button": "Nem"
       },
-      "native-bridge-button": "",
+      "native-bridge-button": "Native Bridge tesztelése",
       "dump-account-button": "",
       "dump-contacts-button": "",
       "dump-conversations-button": "",
@@ -278,7 +278,7 @@
       "dump-members-button": "",
       "stop-node-button": "",
       "bot-mode-button": "Bot mód",
-      "local-grpc-button": "",
+      "local-grpc-button": "helyi gRPC",
       "console-logs-button": "",
       "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "Értesítések",
@@ -299,7 +299,7 @@
       "title": "Hamis információ készítése",
       "contacts-button": "",
       "multi-members-button": "",
-      "messages-button": "",
+      "messages-button": "Hamis beszélgetés készítése",
       "delete-button": "Hamis információ törlése"
     },
     "add-dev-conversations": {
@@ -356,7 +356,7 @@
       "header-left-button": "Keresés",
       "header-middle-button": "Hívás",
       "header-right-button": "Megosztás",
-      "media-button": "",
+      "media-button": "Képek, linkek és dokumentumok",
       "notifications-button": "Értesítések bekapcsolása",
       "members-button": {
         "title": "Tagok",
@@ -379,7 +379,7 @@
         "accepted-button": "ELFOGADVA"
       },
       "betabot-box": {
-        "title": "",
+        "title": "HOZZÁADJA A BÉTA BOTOT?",
         "desc": "",
         "skip-button": "TOVÁBB",
         "add-button": "Hozzáadás !"
@@ -398,20 +398,20 @@
       "header-left-button": "Keresés",
       "header-middle-button": "Hívás",
       "header-right-button": "Megosztás",
-      "media-button": "",
+      "media-button": "Képek, linkek és dokumentumok",
       "notifications-button": "Értesítések bekapcsolása",
       "mutual-button": "Közös csoportok",
       "save-button": "Beszélgetés mentése szerverre",
       "erase-button": "Beszélgetés törlése"
     },
     "replicate-group-settings": {
-      "title": "",
+      "title": "Beszélgetés regisztrálása a szerveren",
       "no-registered-button": "",
       "connect-button": "",
       "manage-add-button": ""
     },
     "files": {
-      "record-sound": "",
+      "record-sound": "Hangüzenet felvétele",
       "recording": "Felvétel...",
       "gallery": "Galéria",
       "camera": "Kamera",
@@ -420,7 +420,7 @@
       "microphone": "Mikrofon",
       "gif": "GIF",
       "search-gif": "GIF keresése",
-      "security-access": "",
+      "security-access": "Biztonsági Hozzáférés",
       "security-access-desc": "",
       "save-to-gallery": "Fájl mentése a Galériába",
       "share": "Megosztás",
@@ -438,7 +438,7 @@
     "wtf-screen": {
       "title": "Mi a probléma ?",
       "desc": "Az app éppen összeomlott.",
-      "desc-report": ""
+      "desc-report": "Hiba jelentéséhez rázza meg telefonját, kattintson a gombra az alkalmazás újraindításához."
     },
     "sorry-screen": {
       "title": "Elnézést a hibáért!",
