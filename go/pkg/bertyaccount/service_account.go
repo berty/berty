@@ -131,6 +131,8 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 	defer s.muService.Unlock()
 
 	prog := progress.New()
+	defer prog.Close()
+
 	ch := prog.Subscribe()
 	done := make(chan bool)
 
@@ -150,7 +152,6 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 			})
 			if err != nil {
 				// not sure it is worth logging something here
-				close(ch)
 				break
 			}
 		}
