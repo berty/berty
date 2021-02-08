@@ -202,7 +202,7 @@ export const MessageInvitation: React.FC<{ message: InteractionGroupInvitation }
 
 	return (
 		<View style={[row.center, padding.horizontal.medium, margin.bottom.small, { paddingTop: 2 }]}>
-			{message.isMe ? (
+			{message.isMine ? (
 				<MessageSystemWrapper logo={false}>
 					<MessageInvitationSent message={message} />
 				</MessageSystemWrapper>

@@ -31,7 +31,7 @@ const useStylesMessage = () => {
 }
 
 const interactionsFilter = (inte: any) =>
-	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage && inte.isMe
+	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage && inte.isMine
 
 const getUserMessageState = (
 	inte: any,
@@ -54,19 +54,19 @@ const getUserMessageState = (
 	const cmd = null /*messenger.message.isCommandMessage(payload.body)*/
 	if (convKind === beapi.messenger.Conversation.Type.ContactType) {
 		// State of OneToOne conversation
-		msgTextColor = inte.isMe
+		msgTextColor = inte.isMine
 			? inte.acknowledged
 				? color.white
 				: cmd
 				? color.grey
 				: color.blue
 			: color.blue
-		msgBackgroundColor = inte.isMe ? (inte.acknowledged ? color.blue : color.white) : '#CED2FF99'
-		msgBorderColor = inte.isMe && (cmd ? border.color.grey : border.color.blue)
+		msgBackgroundColor = inte.isMine ? (inte.acknowledged ? color.blue : color.white) : '#CED2FF99'
+		msgBorderColor = inte.isMine && (cmd ? border.color.grey : border.color.blue)
 
 		isWithinCollapseDuration =
 			nextMessage &&
-			inte?.isMe === nextMessage?.isMe &&
+			inte.isMine === nextMessage?.isMine &&
 			sentDate &&
 			nextMessage.sentDate &&
 			(parseInt(nextMessage?.sentDate.toString(), 10) || 0) - (sentDate || 0) < 60000 // one minute
@@ -76,9 +76,9 @@ const getUserMessageState = (
 			name = members[inte.memberPublicKey].displayName
 		}
 		isFollowupMessage =
-			previousMessage && !inte.isMe && inte.memberPublicKey === previousMessage.memberPublicKey
+			previousMessage && !inte.isMine && inte.memberPublicKey === previousMessage.memberPublicKey
 		isFollowedMessage =
-			nextMessage && !inte.isMe && inte.memberPublicKey === nextMessage.memberPublicKey
+			nextMessage && !inte.isMine && inte.memberPublicKey === nextMessage.memberPublicKey
 
 		isWithinCollapseDuration =
 			nextMessage &&
@@ -87,24 +87,24 @@ const getUserMessageState = (
 			nextMessage.sentDate &&
 			(parseInt(nextMessage?.sentDate.toString(), 10) || 0) - (sentDate || 0) < 60000 // one minute
 
-		if (!inte.isMe && inte.memberPublicKey) {
+		if (!inte.isMine && inte.memberPublicKey) {
 			const h = new SHA3(256).update(inte.memberPublicKey).digest()
 			baseColor = '#' + pal[h[0]]
 		}
-		msgTextColor = inte.isMe
+		msgTextColor = inte.isMine
 			? inte.acknowledged
 				? color.white
 				: cmd
 				? color.grey
 				: baseColor
 			: baseColor
-		msgBackgroundColor = inte.isMe
+		msgBackgroundColor = inte.isMine
 			? inte.acknowledged
 				? baseColor
 				: color.white
 			: Color(baseColor).alpha(0.1).string()
-		msgBorderColor = inte.isMe && (cmd ? border.color.grey : { borderColor: baseColor })
-		msgSenderColor = inte.isMe ? 'red' : baseColor
+		msgBorderColor = inte.isMine && (cmd ? border.color.grey : { borderColor: baseColor })
+		msgSenderColor = inte.isMine ? 'red' : baseColor
 	}
 
 	return {
@@ -153,12 +153,12 @@ export const UserMessage: React.FC<{
 		<View
 			style={[
 				row.left,
-				inte.isMe ? _styles.isMeMessage : _styles.isOtherMessage,
+				inte.isMine ? _styles.isMeMessage : _styles.isOtherMessage,
 				padding.horizontal.medium,
 				padding.top.scale(2),
 			]}
 		>
-			{!inte.isMe && isGroup && !isFollowedMessage && (
+			{!inte.isMine && isGroup && !isFollowedMessage && (
 				<View
 					style={{
 						paddingRight: 5 * scaleSize,
@@ -177,7 +177,7 @@ export const UserMessage: React.FC<{
 			)}
 
 			<View style={[column.top, _styles.messageItem]}>
-				{!inte.isMe && isGroup && !isFollowupMessage && (
+				{!inte.isMine && isGroup && !isFollowupMessage && (
 					<View style={[isFollowedMessage && margin.left.scale(40)]}>
 						<Text
 							style={[
