@@ -264,7 +264,7 @@
       "debug-button": "Debug",
       "log-button": {
         "name": "Log format",
-        "bullet-point": "Reboot app after change this field!"
+        "bullet-point": "Restart app after changing this field"
       },
       "add-dev-conversations-button": "Add dev conversations",
       "share-button": {

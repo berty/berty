@@ -8,6 +8,7 @@ declare module '*.svg' {
 declare module 'react-native-in-app-notification'
 declare module 'react-native-jdenticon'
 declare module 'react-native-audiowaveform'
+declare module 'linkify-it'
 
 declare module 'google-palette' {
 	const content: (type: string, count: number) => string[]

@@ -32,6 +32,7 @@
 		"google-palette": "^1.1.0",
 		"google-protobuf": "^3.14.0",
 		"i18next": "^19.8.5",
+		"linkify-it": "^3.0.2",
 		"lottie-react-native": "^3.5.0",
 		"mem": "^8.0.0",
 		"moment": "^2.29.1",
@@ -69,7 +70,8 @@
 		"react-native-vector-icons": "^7.1.0",
 		"react-native-webview": "^11.2.1",
 		"rn-fetch-blob": "^0.12.0",
-		"sha3": "^2.1.4"
+		"sha3": "^2.1.4",
+		"tlds": "^1.217.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.13",
