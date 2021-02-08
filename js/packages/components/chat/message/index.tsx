@@ -52,7 +52,7 @@ export const Message: React.FC<{
 				<View style={[padding.horizontal.medium]}>
 					<Text
 						style={[
-							inte.isMe ? text.align.right : text.align.left,
+							inte.isMine ? text.align.right : text.align.left,
 							text.color.grey,
 							text.size.scale(11),
 							text.bold.small,
@@ -69,7 +69,7 @@ export const Message: React.FC<{
 		return (
 			<>
 				<View style={[padding.horizontal.medium]}>
-					<QuickReplyOptions convPk={convPK} options={inte.payload.options} />
+					<QuickReplyOptions convPk={convPK} options={inte.payload.options || []} />
 				</View>
 			</>
 		)

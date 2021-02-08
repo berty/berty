@@ -96,13 +96,13 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	if (lastInte?.medias?.length) {
 		if (lastInte.medias[0].mimeType?.startsWith('image')) {
 			messageType = 'picture'
-			description = `${lastInte.isMe ? 'You' : userDisplayName} sent ${
-				lastInte.isMe ? userDisplayName : 'you'
+			description = `${lastInte.isMine ? 'You' : userDisplayName} sent ${
+				lastInte.isMine ? userDisplayName : 'you'
 			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} pics` : 'a pic'}`
 		} else if (lastInte.medias[0].mimeType?.startsWith('audio')) {
 			messageType = 'audio'
-			description = `${lastInte.isMe ? 'You' : userDisplayName} sent ${
-				lastInte.isMe ? userDisplayName : 'you'
+			description = `${lastInte.isMine ? 'You' : userDisplayName} sent ${
+				lastInte.isMine ? userDisplayName : 'you'
 			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} audio files` : 'an audio file'}`
 		}
 	}
@@ -247,7 +247,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								},
 							]}
 						>
-							{lastInte && lastInte.isMe && (
+							{lastInte && lastInte.isMine && (
 								<MessageStatus
 									interaction={lastInte}
 									isAccepted={

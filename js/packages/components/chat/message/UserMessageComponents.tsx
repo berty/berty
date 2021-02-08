@@ -61,12 +61,12 @@ export const HyperlinkUserMessage: React.FC<{
 		<View
 			style={[
 				border.radius.top.medium,
-				inte.isMe ? border.radius.left.medium : border.radius.right.medium,
+				inte.isMine ? border.radius.left.medium : border.radius.right.medium,
 				msgBorderColor,
-				inte.isMe && border.scale(2),
-				padding.horizontal.scale(inte.isMe ? 11 : 13),
-				padding.vertical.scale(inte.isMe ? 7 : 9),
-				inte.isMe ? column.item.right : column.item.left,
+				inte.isMine && border.scale(2),
+				padding.horizontal.scale(inte.isMine ? 11 : 13),
+				padding.vertical.scale(inte.isMine ? 7 : 9),
+				inte.isMine ? column.item.right : column.item.left,
 				isFollowedMessage && margin.left.scale(35),
 				{
 					backgroundColor: msgBackgroundColor,
@@ -128,7 +128,7 @@ export const TimestampStatusUserMessage: React.FC<{
 				flex.align.center,
 				margin.top.tiny,
 				margin.bottom.tiny,
-				inte.isMe && row.item.bottom,
+				inte.isMine && row.item.bottom,
 			]}
 		>
 			<Text style={[_styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
@@ -136,7 +136,7 @@ export const TimestampStatusUserMessage: React.FC<{
 			</Text>
 			{!cmd && lastInte?.cid?.toString() === inte.cid?.toString() && (
 				<>
-					{inte.isMe && (
+					{inte.isMine && (
 						<Icon
 							name={inte.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
 							width={12}
@@ -145,7 +145,7 @@ export const TimestampStatusUserMessage: React.FC<{
 							style={[padding.left.tiny, { marginTop: 1 * scaleSize }]}
 						/>
 					)}
-					{inte.isMe && (
+					{inte.isMine && (
 						<Text style={[_styles.stateMessageValueMe]}>
 							{inte.acknowledged ? 'sent' : 'sending...'}
 						</Text>
