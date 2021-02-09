@@ -14,6 +14,10 @@ import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clien
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
 
+const linkify = require('linkify-it')()
+
+linkify.tlds(['tech', 'tv', 'app', 'ninja', 'xyz', 'io', 'shop', 'exchange', 'paris', 'ma', 'gg'])
+
 const useStylesMessage = () => {
 	const [{ text, padding }] = useStyles()
 	return {
@@ -94,6 +98,7 @@ export const HyperlinkUserMessage: React.FC<{
 							lineHeight: 17,
 						},
 					]}
+					selectable={true}
 				>
 					{isReadMore ? message.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
 				</Text>
