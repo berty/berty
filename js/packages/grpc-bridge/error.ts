@@ -48,6 +48,21 @@ class GRPCError extends Error {
 		return this.GrpcCode
 	}
 
+	public toJSON(): any {
+		const details = this.details().codes.map((err: beapi.errcode.ErrCode) => {
+			return beapi.errcode.ErrCode[err]
+		})
+
+		return {
+			message: this.message,
+			grpcErrorCode: beapi.bridge.GRPCErrCode[this.GrpcCode],
+			errorCode: beapi.errcode.ErrCode[this.Code],
+			details: details,
+			EOF: this.EOF,
+			OK: this.OK,
+		}
+	}
+
 	public hasErrCode(error: beapi.errcode.ErrCode): boolean {
 		return reduce(this.error.errorDetails?.codes, (ac, v) => ac && v == error, false) || false
 	}
