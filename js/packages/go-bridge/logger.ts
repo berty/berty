@@ -1,8 +1,25 @@
-import { GoLogLevel, GoBridgeInterface } from './types'
+import { GRPCError } from '../grpc-bridge/error'
+import { GoBridgeInterface, GoLogLevel } from './types'
+
+const stringifyReplacer = (key: string, value: any): any => {
+	if (value instanceof GRPCError) {
+		return GRPCError.toJSON()
+	}
+
+	if (value instanceof Error) {
+		var error: { [key: string]: any } = {}
+		Object.getOwnPropertyNames(value).forEach((key) => {
+			error[key] = value[key]
+		})
+		return error
+	}
+
+	return value
+}
 
 const formatMessage = (...args: any[]): string =>
 	args
-		.map((e) => JSON.stringify(e))
+		.map((e) => JSON.stringify(e, stringifyReplacer))
 		.join(' ')
 		.replace(/\\"/g, '"')
 
