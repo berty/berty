@@ -436,7 +436,7 @@
     },
     "restart-app": "Restart the app",
     "wtf-screen": {
-      "title": "What's the Fail ?",
+      "title": "What's the Fail?",
       "desc": "Application just crashed.",
       "desc-report": "Shake your phone to report the bug and click on the button to quit and restart the app."
     },
@@ -446,6 +446,65 @@
       "desc-buy": "He'll buy you a beer when you'll see him!",
       "desc-em": "*Well, okay, there's no Francis at Berty's team.",
       "desc-report": "Shake your phone and here we go again!"
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "Show app inspector",
+      "hide-button": "Close",
+      "title": "Inspector",
+      "accounts": {
+        "title": "Accounts",
+        "unsupported-remote-mode": "Accounts inspector not supported in remote mode",
+        "data-not-found": "Account not in list",
+        "action-delete": {
+          "file-exists": "Account {{accountId}} does not exists, a file has this name though.",
+          "account-exists": "Account {{accountId}} currently exists.",
+          "directory-exists-load-error": "Account {{accountId}} does not exists, a directory has this name though.",
+          "fs-read-error": "Error while getting FS info about account",
+          "actions-title": "What should we do?",
+          "action-account-manager": "Delete it via account manager",
+          "action-account-manager-confirm": "Confirm deletion of account",
+          "action-force-delete": "Force delete it",
+          "action-force-delete-confirm": "Confirm force deletion of account",
+          "error-close": "Error while closing account",
+          "error-delete": "Error while deleting account",
+          "success-feedback": "Account deleted",
+          "action-cancel": "Cancel"
+        },
+        "status": {
+          "metadata-found": "Metadata file found",
+          "metadata-not-found": "Metadata file not found",
+          "ipfs-repo-config-found": "IPFS config file found",
+          "ipfs-repo-config-not-found": "IPFS config file not found",
+          "messenger-db-found": "Messenger DB found",
+          "messenger-db-not-found": "Messenger DB not found"
+        },
+        "infos": {
+          "aligned": {
+            "name":       "Name:    {{name}}",
+            "created":    "Created: {{created}}",
+            "opened":     "Opened:  {{opened}}",
+            "error":      "Error:   {{error}}"
+          }
+        }
+      },
+      "errors": {
+        "title": "Errors",
+        "header-reported": "Error reported:",
+        "header-all-clear": "No error reported",
+        "listing-files-failed": "Error while listing directory contents",
+        "listing-accounts-failed": "Error while listing accounts",
+        "listing-accounts-failed-grpc": "GRPC Error while listing accounts"
+      },
+      "dump": {
+        "button": "Dump app state"
+      },
+      "refresh": "Refresh",
+      "confirm-alert": {
+        "button-confirm": "Confirm",
+        "button-cancel": "Cancel"
+      }
     }
   }
 }

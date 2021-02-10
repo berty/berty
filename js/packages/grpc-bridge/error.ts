@@ -7,7 +7,7 @@ class GRPCError extends Error {
 	public Code: beapi.errcode.ErrCode
 	public GrpcCode: beapi.bridge.GRPCErrCode
 
-	private error: beapi.bridge.Error
+	public error: beapi.bridge.Error
 
 	constructor(e: beapi.bridge.IError | null | undefined) {
 		if (!e) {

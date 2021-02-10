@@ -25,6 +25,7 @@ import { reducer } from './providerReducer'
 export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
 	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
 	const [eventEmitter] = React.useState(new EventEmitter())
+	const [debugMode, setDebugMode] = React.useState(false)
 
 	useEffect(() => {
 		console.log('State change:', state.appState + '\n')
@@ -122,6 +123,8 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[eventEmitter],
 	)
 
+	const callbackSetDebugMode = useCallback((value: boolean) => setDebugMode(value), [])
+
 	return (
 		<MsgrContext.Provider
 			value={{
@@ -136,6 +139,8 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				updateAccount: callbackUpdateAccount,
 				deleteAccount: callbackDeleteAccount,
 				restart: callbackRestart,
+				debugMode: debugMode,
+				setDebugMode: callbackSetDebugMode,
 			}}
 		>
 			{children}
