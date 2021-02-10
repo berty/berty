@@ -98,7 +98,11 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		}
 
 		mrepo := ipfs_mobile.NewRepoMobile("", repo)
-		mnode, err := ipfsutil.NewIPFSMobile(ctx, mrepo, &ipfsutil.MobileOptions{})
+		mnode, err := ipfsutil.NewIPFSMobile(ctx, mrepo, &ipfsutil.MobileOptions{
+			ExtraOpts: map[string]bool{
+				"pubsub": true,
+			},
+		})
 		if err != nil {
 			return err
 		}
