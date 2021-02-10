@@ -80,8 +80,8 @@
         "no-results": "Ничего не найдено"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Создать новый аккаунт",
+        "import-button": "Импортировать аккаунт"
       }
     },
     "home-modal": {
@@ -96,7 +96,7 @@
       "header-right-button": "Настройки",
       "network-button": "Список сетей",
       "switch-accounts": "Использовать другой аккаунт",
-      "edit-profile": ""
+      "edit-profile": "Редактировать профиль"
     },
     "network-map": {
       "title": "Список сетей",
@@ -313,7 +313,7 @@
       "title": "IPFS WebUI"
     },
     "my-berty-ID": {
-      "qr": "",
+      "qr": "QR",
       "fingerprint": "Отпечаток",
       "devices": "Устройства"
     }
@@ -323,8 +323,8 @@
       "invalid-link": "Некорректная ссылка!",
       "invalid-qr": "Некорректный QR-код!",
       "error": "Ошибка!",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "contact-already-added": "Контакт уже добавлен",
+      "contact-already-added-message": "Нельзя добавить один и тот же контакт несколько раз"
     },
     "invalid-scan": {
       "dismiss-button": "ОТКЛОНИТЬ"
@@ -431,21 +431,80 @@
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Обнаружена ошибка",
+      "crash": "Обнаружен сбой"
     },
-    "restart-app": "",
+    "restart-app": "Перезапустить приложение",
     "wtf-screen": {
       "title": "",
-      "desc": "",
-      "desc-report": ""
+      "desc": "Приложение только что завершилось.",
+      "desc-report": "Встряхните свой телефон для сообщения об ошибке и нажмите на кнопку, чтобы выйти и перезапустить приложение."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
+      "title": "Извините за эту ошибку!",
+      "desc": "Это вина Фрэнсиса, стажер разработчика Berty, который должен был ошибиться. Какой рывок это французы!",
       "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "",
+      "hide-button": "",
+      "title": "",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": "Отменить"
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": "Отменить"
+      }
     }
   }
 }
