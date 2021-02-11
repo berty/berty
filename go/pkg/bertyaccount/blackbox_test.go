@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/codec"
 	"github.com/stretchr/testify/require"
 	"github.com/tj/assert"
 	"google.golang.org/grpc"
@@ -273,14 +272,12 @@ func TestFlow(t *testing.T) {
 func createAccountClient(ctx context.Context, t *testing.T, s bertyaccount.AccountServiceServer) bertyaccount.AccountServiceClient {
 	t.Helper()
 
-	gogoCodec := codec.New(2048)
-
-	srv := grpc.NewServer(grpc.CustomCodec(gogoCodec))
+	srv := grpc.NewServer()
 	bertyaccount.RegisterAccountServiceServer(srv, s)
 
 	l := grpcutil.NewBufListener(ctx, 2048)
 
-	cc, err := l.NewClientConn(grpc.WithCodec(gogoCodec))
+	cc, err := l.NewClientConn()
 	assert.NoError(t, err)
 
 	cl := bertyaccount.NewAccountServiceClient(cc)
