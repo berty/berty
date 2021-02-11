@@ -477,6 +477,14 @@ const BodyDevTools: React.FC<{}> = () => {
 			/>
 			<SendToAll />
 			<PlaySound />
+			<ButtonSetting
+				name={t('debug.inspector.show-button')}
+				icon='umbrella-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				actionIcon='arrow-ios-forward'
+				onPress={() => ctx.setDebugMode(true)}
+			/>
 			<ButtonSettingRow
 				state={[
 					{

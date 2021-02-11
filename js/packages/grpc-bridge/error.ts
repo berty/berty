@@ -7,7 +7,7 @@ class GRPCError extends Error {
 	public Code: beapi.errcode.ErrCode
 	public GrpcCode: beapi.bridge.GRPCErrCode
 
-	private error: beapi.bridge.Error
+	public error: beapi.bridge.Error
 
 	constructor(e: beapi.bridge.IError | null | undefined) {
 		if (!e) {
@@ -46,6 +46,21 @@ class GRPCError extends Error {
 
 	public grpcErrorCode(): beapi.bridge.GRPCErrCode {
 		return this.GrpcCode
+	}
+
+	public toJSON(): any {
+		const details = this.details().codes.map((err: beapi.errcode.ErrCode) => {
+			return beapi.errcode.ErrCode[err]
+		})
+
+		return {
+			message: this.message,
+			grpcErrorCode: beapi.bridge.GRPCErrCode[this.GrpcCode],
+			errorCode: beapi.errcode.ErrCode[this.Code],
+			details: details,
+			EOF: this.EOF,
+			OK: this.OK,
+		}
 	}
 
 	public hasErrCode(error: beapi.errcode.ErrCode): boolean {

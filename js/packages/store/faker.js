@@ -105,17 +105,17 @@ export const fakeMessages = (length, conversationList = [], membersListList, sta
 					return null
 				}
 				return fakeArray(length).map((_, idx) => {
-					let isMe = true
+					let isMine = true
 					let memberPublicKey = ''
 
 					if (conversation.type === beapi.messenger.Conversation.Type.MultiMemberType) {
 						const memberIndex = Math.floor(Math.random() * (membersCount + 1))
 						if (memberIndex < membersCount) {
-							isMe = false
+							isMine = false
 							memberPublicKey = membersListList[i][memberIndex].publicKey
 						}
 					} else {
-						isMe = faker.random.boolean()
+						isMine = faker.random.boolean()
 					}
 
 					return {
@@ -124,7 +124,7 @@ export const fakeMessages = (length, conversationList = [], membersListList, sta
 						conversationPublicKey: conversation.publicKey,
 						memberPublicKey,
 						payload: { body: faker.lorem.sentences() },
-						isMe,
+						isMine,
 						sentDate: (
 							Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000))
 						).toString(),
