@@ -136,6 +136,7 @@ export enum PersistentOptionsKeys {
 	MC = 'mc',
 	Debug = 'debug',
 	Tor = 'tor',
+	Log = 'log',
 }
 
 export type PersistentOptionsI18N = {
@@ -175,6 +176,10 @@ export type PersistentOptionsTor = {
 	flag: string
 }
 
+export type PersistentOptionsLog = {
+	format: string
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -204,6 +209,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.Tor
 			payload: Partial<PersistentOptionsTor>
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.Log
+			payload: Partial<PersistentOptionsLog>
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -213,6 +222,7 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.MC]: PersistentOptionsMC
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 	[PersistentOptionsKeys.Tor]: PersistentOptionsTor
+	[PersistentOptionsKeys.Log]: PersistentOptionsLog
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => {
@@ -250,6 +260,9 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		},
 		[PersistentOptionsKeys.Tor]: {
 			flag: 'disabled',
+		},
+		[PersistentOptionsKeys.Log]: {
+			format: 'console',
 		},
 	}
 }

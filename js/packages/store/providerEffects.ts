@@ -236,6 +236,11 @@ export const openingDaemon = async (
 		bridgeOpts.cliArgs = opts?.tor?.flag.length
 			? [...bridgeOpts.cliArgs!, `--tor.mode=${opts?.tor?.flag}`]
 			: [...bridgeOpts.cliArgs!, '--tor.mode=disabled']
+
+		// set log flag
+		bridgeOpts.cliArgs = opts?.log?.format
+			? [...bridgeOpts.cliArgs!, `--log.format=${opts?.log?.format}`]
+			: [...bridgeOpts.cliArgs!, '--log.format=console']
 	} catch (e) {
 		console.warn('store getPersistentOptions Failed:', e)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
