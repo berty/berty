@@ -80,8 +80,8 @@
         "no-results": "Keine Ergebnisse gefunden"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Ihr Konto erstellen",
+        "import-button": "Konto importieren"
       }
     },
     "home-modal": {
@@ -252,8 +252,8 @@
       "title": "Entwicklerwerkzeuge",
       "header-left-button": "Geräteinformationen",
       "simulate-button": "Streamfehler simulieren",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-js-error-button": "JavaScript-Fehler simulieren",
+      "simulate-native-error-button": "Native App-Fehler simulieren",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "fakultativ",
       "tor-required-option": "erforderlich",
@@ -431,78 +431,78 @@
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Fehler entdeckt",
+      "crash": "Absturz erkannt"
     },
-    "restart-app": "",
+    "restart-app": "App neu starten",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Was ist das Problem?",
+      "desc": "Die Anwendung ist soeben abgestürzt.",
+      "desc-report": "Schütteln Sie Ihr Telefon um den Fehler zu melden und klicken Sie auf den Button, um die App zu beenden und neu zu starten."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "Entschuldigen Sie diesen Fehler!",
+      "desc": "Francis ist schuld, unser Praktikant. Er hat wohl einen Fehler gemacht. Ach dieser Francis!",
+      "desc-buy": "Er kauft dir ein Bier, wenn du ihn triffst!",
+      "desc-em": "*Okay, es gibt keinen Francis im Team Berty.",
+      "desc-report": "Schütteln Sie Ihr Telefon und es geht weiter!"
     }
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
+      "show-button": "App-Inspektor anzeigen",
+      "hide-button": "Beenden",
+      "title": "Inspektor",
       "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "title": "Konten",
+        "unsupported-remote-mode": "Der Konten-Inspektor wird im Remote-Modus nicht unterstützt",
+        "data-not-found": "Dieses Konto ist nicht in der Liste",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
+          "file-exists": "Konto {{accountId}} existiert nicht, aber eine Datei mit diesem Namen.",
+          "account-exists": "Konto {{accountId}} existiert bereits.",
+          "directory-exists-load-error": "Konto {{accountId}} existiert nicht, aber ein Verzeichnis mit diesem Namen.",
+          "fs-read-error": "Fehler beim Abrufen der Datei-Informationen über das Konto",
+          "actions-title": "Was sollen wir tun?",
+          "action-account-manager": "Löschen über den Kontomanager",
+          "action-account-manager-confirm": "Löschung des Kontos bestätigen",
+          "action-force-delete": "Löschen erzwingen",
+          "action-force-delete-confirm": "Löschung des Kontos nochmals bestätigen",
+          "error-close": "Fehler beim Schliessen des Kontos",
+          "error-delete": "Fehler beim Löschen des Kontos",
+          "success-feedback": "Konto gelöscht",
           "action-cancel": "Abbrechen"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "metadata-found": "Metadaten-Datei gefunden",
+          "metadata-not-found": "Metadaten-Datei nicht gefunden",
+          "ipfs-repo-config-found": "IPFS-Konfigurationsdatei gefunden",
+          "ipfs-repo-config-not-found": "IPFS-Konfigurationsdatei nicht gefunden",
+          "messenger-db-found": "Messenger-DB gefunden",
+          "messenger-db-not-found": "Messenger-DB nicht gefunden"
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
+            "name": "Name: {{name}}",
+            "created": "Erstellt: {{created}}",
+            "opened": "Geöffnet: {{opened}}",
+            "error": "Fehler:   {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "title": "Fehlermeldungen",
+        "header-reported": "Fehler aufgetreten:",
+        "header-all-clear": "Keine Fehler aufgetreten",
+        "listing-files-failed": "Fehler beim Auflisten des Verzeichnisses",
+        "listing-accounts-failed": "Fehler beim Auflisten der Konten",
+        "listing-accounts-failed-grpc": "GRPC-Fehler beim Auflisten der Konten"
       },
       "dump": {
-        "button": ""
+        "button": "App-Status ausgeben"
       },
-      "refresh": "",
+      "refresh": "Aktualisieren",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Bestätigen",
         "button-cancel": "Abbrechen"
       }
     }
