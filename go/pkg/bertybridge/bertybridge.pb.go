@@ -6,8 +6,11 @@ package bertybridge
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 
+	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -242,11 +245,20 @@ func (*ClientInvokeUnary) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientInvokeUnary) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientInvokeUnary.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientInvokeUnary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientInvokeUnary.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientInvokeUnary.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientInvokeUnary) XXX_Merge(src proto.Message) {
@@ -254,7 +266,7 @@ func (m *ClientInvokeUnary) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientInvokeUnary) XXX_Size() int {
-	return xxx_messageInfo_ClientInvokeUnary.Size(m)
+	return m.Size()
 }
 
 func (m *ClientInvokeUnary) XXX_DiscardUnknown() {
@@ -280,11 +292,20 @@ func (*ClientInvokeUnary_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientInvokeUnary_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientInvokeUnary_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientInvokeUnary_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientInvokeUnary_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientInvokeUnary_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientInvokeUnary_Request) XXX_Merge(src proto.Message) {
@@ -292,7 +313,7 @@ func (m *ClientInvokeUnary_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientInvokeUnary_Request) XXX_Size() int {
-	return xxx_messageInfo_ClientInvokeUnary_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ClientInvokeUnary_Request) XXX_DiscardUnknown() {
@@ -339,11 +360,20 @@ func (*ClientInvokeUnary_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientInvokeUnary_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientInvokeUnary_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientInvokeUnary_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientInvokeUnary_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientInvokeUnary_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientInvokeUnary_Reply) XXX_Merge(src proto.Message) {
@@ -351,7 +381,7 @@ func (m *ClientInvokeUnary_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientInvokeUnary_Reply) XXX_Size() int {
-	return xxx_messageInfo_ClientInvokeUnary_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ClientInvokeUnary_Reply) XXX_DiscardUnknown() {
@@ -395,11 +425,20 @@ func (*ClientCreateStream) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientCreateStream) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientCreateStream.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientCreateStream) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientCreateStream.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientCreateStream.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientCreateStream) XXX_Merge(src proto.Message) {
@@ -407,7 +446,7 @@ func (m *ClientCreateStream) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientCreateStream) XXX_Size() int {
-	return xxx_messageInfo_ClientCreateStream.Size(m)
+	return m.Size()
 }
 
 func (m *ClientCreateStream) XXX_DiscardUnknown() {
@@ -433,11 +472,20 @@ func (*ClientCreateStream_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientCreateStream_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientCreateStream_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientCreateStream_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientCreateStream_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientCreateStream_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientCreateStream_Request) XXX_Merge(src proto.Message) {
@@ -445,7 +493,7 @@ func (m *ClientCreateStream_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientCreateStream_Request) XXX_Size() int {
-	return xxx_messageInfo_ClientCreateStream_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ClientCreateStream_Request) XXX_DiscardUnknown() {
@@ -492,11 +540,20 @@ func (*ClientCreateStream_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientCreateStream_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientCreateStream_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientCreateStream_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientCreateStream_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientCreateStream_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientCreateStream_Reply) XXX_Merge(src proto.Message) {
@@ -504,7 +561,7 @@ func (m *ClientCreateStream_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientCreateStream_Reply) XXX_Size() int {
-	return xxx_messageInfo_ClientCreateStream_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ClientCreateStream_Reply) XXX_DiscardUnknown() {
@@ -548,11 +605,20 @@ func (*ClientStreamSend) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamSend) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamSend.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamSend.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamSend.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamSend) XXX_Merge(src proto.Message) {
@@ -560,7 +626,7 @@ func (m *ClientStreamSend) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamSend) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamSend.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamSend) XXX_DiscardUnknown() {
@@ -585,11 +651,20 @@ func (*ClientStreamSend_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamSend_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamSend_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamSend_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamSend_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamSend_Request) XXX_Merge(src proto.Message) {
@@ -597,7 +672,7 @@ func (m *ClientStreamSend_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamSend_Request) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamSend_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamSend_Request) XXX_DiscardUnknown() {
@@ -637,11 +712,20 @@ func (*ClientStreamSend_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamSend_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamSend_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamSend_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamSend_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamSend_Reply) XXX_Merge(src proto.Message) {
@@ -649,7 +733,7 @@ func (m *ClientStreamSend_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamSend_Reply) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamSend_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamSend_Reply) XXX_DiscardUnknown() {
@@ -693,11 +777,20 @@ func (*ClientStreamRecv) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamRecv) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamRecv.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamRecv) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamRecv.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamRecv.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamRecv) XXX_Merge(src proto.Message) {
@@ -705,7 +798,7 @@ func (m *ClientStreamRecv) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamRecv) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamRecv.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamRecv) XXX_DiscardUnknown() {
@@ -729,11 +822,20 @@ func (*ClientStreamRecv_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamRecv_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamRecv_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamRecv_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamRecv_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamRecv_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamRecv_Request) XXX_Merge(src proto.Message) {
@@ -741,7 +843,7 @@ func (m *ClientStreamRecv_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamRecv_Request) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamRecv_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamRecv_Request) XXX_DiscardUnknown() {
@@ -775,11 +877,20 @@ func (*ClientStreamRecv_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamRecv_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamRecv_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamRecv_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamRecv_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamRecv_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamRecv_Reply) XXX_Merge(src proto.Message) {
@@ -787,7 +898,7 @@ func (m *ClientStreamRecv_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamRecv_Reply) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamRecv_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamRecv_Reply) XXX_DiscardUnknown() {
@@ -838,11 +949,20 @@ func (*ClientStreamClose) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamClose) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamClose.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamClose) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamClose.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamClose.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamClose) XXX_Merge(src proto.Message) {
@@ -850,7 +970,7 @@ func (m *ClientStreamClose) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamClose) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamClose.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamClose) XXX_DiscardUnknown() {
@@ -874,11 +994,20 @@ func (*ClientStreamClose_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamClose_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamClose_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamClose_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamClose_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamClose_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamClose_Request) XXX_Merge(src proto.Message) {
@@ -886,7 +1015,7 @@ func (m *ClientStreamClose_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamClose_Request) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamClose_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamClose_Request) XXX_DiscardUnknown() {
@@ -919,11 +1048,20 @@ func (*ClientStreamClose_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamClose_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamClose_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamClose_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamClose_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamClose_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamClose_Reply) XXX_Merge(src proto.Message) {
@@ -931,7 +1069,7 @@ func (m *ClientStreamClose_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamClose_Reply) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamClose_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamClose_Reply) XXX_DiscardUnknown() {
@@ -975,11 +1113,20 @@ func (*ClientStreamCloseAndRecv) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamCloseAndRecv) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamCloseAndRecv.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamCloseAndRecv) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamCloseAndRecv.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamCloseAndRecv.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamCloseAndRecv) XXX_Merge(src proto.Message) {
@@ -987,7 +1134,7 @@ func (m *ClientStreamCloseAndRecv) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamCloseAndRecv) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamCloseAndRecv.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamCloseAndRecv) XXX_DiscardUnknown() {
@@ -1011,11 +1158,20 @@ func (*ClientStreamCloseAndRecv_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamCloseAndRecv_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamCloseAndRecv_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamCloseAndRecv_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamCloseAndRecv_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamCloseAndRecv_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamCloseAndRecv_Request) XXX_Merge(src proto.Message) {
@@ -1023,7 +1179,7 @@ func (m *ClientStreamCloseAndRecv_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamCloseAndRecv_Request) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamCloseAndRecv_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamCloseAndRecv_Request) XXX_DiscardUnknown() {
@@ -1057,11 +1213,20 @@ func (*ClientStreamCloseAndRecv_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ClientStreamCloseAndRecv_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClientStreamCloseAndRecv_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ClientStreamCloseAndRecv_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClientStreamCloseAndRecv_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ClientStreamCloseAndRecv_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ClientStreamCloseAndRecv_Reply) XXX_Merge(src proto.Message) {
@@ -1069,7 +1234,7 @@ func (m *ClientStreamCloseAndRecv_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ClientStreamCloseAndRecv_Reply) XXX_Size() int {
-	return xxx_messageInfo_ClientStreamCloseAndRecv_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ClientStreamCloseAndRecv_Reply) XXX_DiscardUnknown() {
@@ -1126,11 +1291,20 @@ func (*MethodDesc) Descriptor() ([]byte, []int) {
 }
 
 func (m *MethodDesc) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MethodDesc.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *MethodDesc) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MethodDesc.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_MethodDesc.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *MethodDesc) XXX_Merge(src proto.Message) {
@@ -1138,7 +1312,7 @@ func (m *MethodDesc) XXX_Merge(src proto.Message) {
 }
 
 func (m *MethodDesc) XXX_Size() int {
-	return xxx_messageInfo_MethodDesc.Size(m)
+	return m.Size()
 }
 
 func (m *MethodDesc) XXX_DiscardUnknown() {
@@ -1184,11 +1358,20 @@ func (*Metadata) Descriptor() ([]byte, []int) {
 }
 
 func (m *Metadata) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Metadata.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *Metadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Metadata.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_Metadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *Metadata) XXX_Merge(src proto.Message) {
@@ -1196,7 +1379,7 @@ func (m *Metadata) XXX_Merge(src proto.Message) {
 }
 
 func (m *Metadata) XXX_Size() int {
-	return xxx_messageInfo_Metadata.Size(m)
+	return m.Size()
 }
 
 func (m *Metadata) XXX_DiscardUnknown() {
@@ -1241,11 +1424,20 @@ func (*Error) Descriptor() ([]byte, []int) {
 }
 
 func (m *Error) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Error.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *Error) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Error.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_Error.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *Error) XXX_Merge(src proto.Message) {
@@ -1253,7 +1445,7 @@ func (m *Error) XXX_Merge(src proto.Message) {
 }
 
 func (m *Error) XXX_Size() int {
-	return xxx_messageInfo_Error.Size(m)
+	return m.Size()
 }
 
 func (m *Error) XXX_DiscardUnknown() {
@@ -1318,66 +1510,67 @@ func init() {
 func init() { proto.RegisterFile("bertybridge.proto", fileDescriptor_16edae2516c26cee) }
 
 var fileDescriptor_16edae2516c26cee = []byte{
-	// 931 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x56, 0xcd, 0x72, 0xe3, 0x44,
-	0x17, 0xfd, 0x64, 0x27, 0xb1, 0x7d, 0x6d, 0xc7, 0x9d, 0x9e, 0x8f, 0xe0, 0xf1, 0xb0, 0x48, 0x85,
-	0x02, 0xcc, 0x40, 0xd9, 0x95, 0x0c, 0xec, 0x28, 0x8a, 0x8e, 0xd4, 0xc9, 0xa8, 0x46, 0x69, 0xa5,
-	0x5a, 0xd2, 0x30, 0xb0, 0x51, 0x29, 0x56, 0xe3, 0xa8, 0x62, 0x5b, 0x46, 0xd2, 0xb8, 0xca, 0x1b,
-	0x56, 0x54, 0xf1, 0x02, 0xbc, 0x00, 0xc5, 0x13, 0xb0, 0x60, 0xc9, 0x92, 0xd7, 0x60, 0xc9, 0x73,
-	0x50, 0xad, 0x1f, 0xc7, 0xc1, 0x31, 0xf1, 0xac, 0x48, 0xb1, 0xeb, 0x6e, 0x9d, 0x7b, 0xee, 0xb9,
-	0xe7, 0xaa, 0x7f, 0x60, 0xef, 0x52, 0x44, 0xc9, 0xfc, 0x32, 0x0a, 0xfc, 0xa1, 0xe8, 0x4d, 0xa3,
-	0x30, 0x09, 0x71, 0x2b, 0x5d, 0xea, 0xe5, 0x6b, 0xb3, 0xa3, 0x4e, 0x53, 0x44, 0xd1, 0x20, 0xf4,
-	0xf3, 0xef, 0x87, 0xbf, 0x94, 0x60, 0x4f, 0x1d, 0x05, 0x62, 0x92, 0xe8, 0x93, 0x59, 0x78, 0x2d,
-	0x9c, 0x89, 0x17, 0xcd, 0x3b, 0x3f, 0x2a, 0x50, 0xe1, 0xe2, 0xdb, 0xd7, 0x22, 0x4e, 0xf0, 0x67,
-	0x50, 0x1f, 0x8b, 0xe4, 0x2a, 0xf4, 0x5d, 0x5f, 0xc4, 0x83, 0x76, 0xe9, 0x40, 0xe9, 0xd6, 0x8f,
-	0x9f, 0xf4, 0xfe, 0xc6, 0xdb, 0x3b, 0x4f, 0x31, 0x9a, 0x88, 0x07, 0x1c, 0xc6, 0x8b, 0x31, 0x6e,
-	0x43, 0x65, 0xea, 0xcd, 0x47, 0xa1, 0xe7, 0xb7, 0xcb, 0x07, 0x4a, 0xb7, 0xc1, 0x8b, 0x29, 0x3e,
-	0x82, 0x9d, 0x2b, 0xe1, 0xf9, 0x22, 0x6a, 0x6f, 0x1d, 0x94, 0xbb, 0xf5, 0xe3, 0xc7, 0x77, 0x51,
-	0x7a, 0xbe, 0x97, 0x78, 0x3c, 0x07, 0x76, 0xbe, 0x57, 0x60, 0x9b, 0x8b, 0xe9, 0x68, 0xbe, 0x4c,
-	0x5b, 0xba, 0x4d, 0xfb, 0x0c, 0x2a, 0x49, 0xe4, 0x05, 0x23, 0x11, 0xb5, 0xcb, 0xf7, 0xf1, 0x16,
-	0x48, 0xfc, 0x31, 0x6c, 0x8b, 0x28, 0x0a, 0xa5, 0x14, 0x59, 0xdd, 0xfe, 0x4a, 0x08, 0x95, 0x5f,
-	0x79, 0x06, 0x3a, 0xfc, 0xb5, 0x04, 0x38, 0xf3, 0x4c, 0x8d, 0x84, 0x97, 0x08, 0x2b, 0x89, 0x84,
-	0x37, 0x7e, 0xa8, 0xa6, 0xfd, 0xb0, 0x30, 0xed, 0x09, 0xd4, 0xe2, 0x54, 0xaa, 0x1b, 0xf8, 0x6d,
-	0xe5, 0x40, 0xe9, 0xd6, 0x78, 0x35, 0x5b, 0xd0, 0x6f, 0xf9, 0x56, 0x7a, 0x73, 0xdf, 0xca, 0x9b,
-	0xf8, 0xf6, 0x87, 0x02, 0x28, 0xf3, 0x2d, 0x73, 0xcc, 0x12, 0x13, 0xbf, 0xf3, 0xc5, 0x8d, 0x69,
-	0xff, 0xa8, 0x6f, 0x6d, 0xc7, 0x1f, 0x70, 0x81, 0x5c, 0x0c, 0x66, 0x9d, 0xf7, 0x37, 0x2b, 0xb0,
-	0xf3, 0xd3, 0x66, 0x65, 0xfc, 0xab, 0x7f, 0xfe, 0xef, 0x4a, 0x71, 0x5a, 0x64, 0x05, 0xaa, 0xa3,
-	0x30, 0x16, 0x1b, 0x57, 0xf8, 0x70, 0x1a, 0xf5, 0xa7, 0x02, 0xed, 0x95, 0x3a, 0xc8, 0xc4, 0xff,
-	0xcf, 0x35, 0x2c, 0x01, 0xb8, 0x39, 0x63, 0x30, 0x86, 0xad, 0x89, 0x37, 0x16, 0xb9, 0xc4, 0x74,
-	0x8c, 0xbb, 0x80, 0x82, 0xd8, 0x1d, 0xa4, 0x66, 0xb8, 0x99, 0xe8, 0x54, 0x67, 0x95, 0xef, 0x06,
-	0xf1, 0xb2, 0x47, 0x39, 0x32, 0x16, 0xd1, 0x4c, 0x44, 0x05, 0xb2, 0x5c, 0x20, 0xad, 0x74, 0x39,
-	0x43, 0x1e, 0x7e, 0x02, 0xd5, 0x42, 0x38, 0x46, 0x50, 0xbe, 0x16, 0xf3, 0x3c, 0xa5, 0x1c, 0xe2,
-	0x7d, 0xd8, 0x99, 0x79, 0xa3, 0xd7, 0x22, 0x4e, 0xdb, 0x5b, 0xe3, 0xf9, 0x4c, 0xee, 0x9e, 0xed,
-	0x54, 0x3c, 0xd6, 0xa0, 0x35, 0x8c, 0xa6, 0x03, 0x37, 0xad, 0xc1, 0x95, 0xb7, 0x55, 0x1a, 0xbf,
-	0x7b, 0xfc, 0xce, 0x4a, 0xb5, 0x67, 0xfc, 0x42, 0xa5, 0x51, 0xa4, 0x86, 0xbe, 0xe0, 0x4d, 0x19,
-	0x94, 0x32, 0xc8, 0x29, 0xfe, 0x14, 0x60, 0x89, 0xa0, 0x94, 0x12, 0x14, 0x76, 0x15, 0x97, 0x60,
-	0x11, 0x5a, 0x13, 0x8b, 0xb0, 0x36, 0x54, 0xc6, 0x22, 0x8e, 0xbd, 0xa1, 0x48, 0xab, 0xab, 0xf1,
-	0x62, 0x8a, 0x3f, 0x87, 0x66, 0x46, 0xe8, 0x8b, 0xc4, 0x0b, 0x46, 0x71, 0xde, 0x82, 0xc7, 0xab,
-	0x9c, 0x5a, 0x06, 0xe0, 0x8d, 0x14, 0x9f, 0xcf, 0x9e, 0xfe, 0x56, 0x82, 0xfa, 0x92, 0x5e, 0xbc,
-	0x03, 0x25, 0xf3, 0x05, 0xfa, 0x1f, 0x6e, 0x40, 0x55, 0x25, 0x4c, 0xa5, 0x06, 0xd5, 0x90, 0x82,
-	0xeb, 0x50, 0x71, 0xd8, 0x0b, 0x66, 0x7e, 0xc9, 0x50, 0x09, 0xff, 0x1f, 0x90, 0xce, 0x5e, 0x12,
-	0x43, 0xd7, 0x5c, 0xc2, 0xcf, 0x9c, 0x73, 0xca, 0x6c, 0x54, 0xc6, 0x6f, 0xc1, 0x9e, 0x46, 0x89,
-	0x66, 0xe8, 0x8c, 0xba, 0xf4, 0x95, 0x4a, 0xa9, 0x46, 0x35, 0xb4, 0x85, 0x9b, 0x50, 0x63, 0xa6,
-	0xed, 0x9e, 0x9a, 0x0e, 0xd3, 0xd0, 0x36, 0xc6, 0xb0, 0x4b, 0x0c, 0x4e, 0x89, 0xf6, 0x95, 0x4b,
-	0x5f, 0xe9, 0x96, 0x6d, 0xa1, 0x1d, 0x19, 0x79, 0x41, 0xf9, 0xb9, 0x6e, 0x59, 0xba, 0xc9, 0x5c,
-	0x8d, 0x32, 0x9d, 0x6a, 0xa8, 0x82, 0xf7, 0x01, 0x73, 0x6a, 0x99, 0x0e, 0x57, 0x25, 0xe1, 0x73,
-	0xe2, 0x58, 0x36, 0xd5, 0x50, 0x15, 0xbf, 0x0d, 0x8f, 0x4e, 0x89, 0x6e, 0x50, 0xcd, 0xbd, 0xe0,
-	0x54, 0x35, 0x99, 0xa6, 0xdb, 0xba, 0xc9, 0x50, 0x4d, 0x8a, 0x24, 0x27, 0x26, 0x97, 0x28, 0xc0,
-	0x08, 0x1a, 0xa6, 0x63, 0xbb, 0xe6, 0xa9, 0xcb, 0x09, 0x3b, 0xa3, 0xa8, 0x8e, 0xf7, 0xa0, 0xe9,
-	0x30, 0xfd, 0xfc, 0xc2, 0xa0, 0x52, 0x31, 0xd5, 0x50, 0x43, 0x16, 0xa9, 0x33, 0x9b, 0x72, 0x46,
-	0x0c, 0xd4, 0xc4, 0x2d, 0xa8, 0x3b, 0x8c, 0xbc, 0x24, 0xba, 0x41, 0x4e, 0x0c, 0x8a, 0x76, 0xa5,
-	0x76, 0x8d, 0xd8, 0xc4, 0x35, 0x4c, 0xcb, 0x42, 0x2d, 0xfc, 0x08, 0x5a, 0x0e, 0x23, 0x8e, 0xfd,
-	0x9c, 0x32, 0x5b, 0x57, 0x89, 0xa4, 0x40, 0xc7, 0x3f, 0x6f, 0x43, 0xf3, 0x24, 0xed, 0xbc, 0xfc,
-	0xdb, 0x82, 0x81, 0xc0, 0xc1, 0x1d, 0x8f, 0x17, 0xfc, 0x74, 0xe5, 0x27, 0x59, 0xc1, 0xf4, 0xf2,
-	0x0d, 0xde, 0xe9, 0x6e, 0x84, 0x95, 0x7b, 0x7c, 0x04, 0x38, 0xbb, 0xed, 0x6f, 0xed, 0x89, 0x8f,
-	0xd6, 0xc4, 0x2f, 0x3f, 0x0c, 0x16, 0xc9, 0x3e, 0xdc, 0x0c, 0x2c, 0xb3, 0x7d, 0xb3, 0x7a, 0x53,
-	0xe2, 0x75, 0xe1, 0x37, 0x90, 0x45, 0xa6, 0x0f, 0x36, 0x81, 0xde, 0x91, 0x47, 0x9e, 0x7f, 0xf7,
-	0xe4, 0x91, 0x90, 0x0d, 0xf3, 0xe4, 0x50, 0x99, 0x27, 0xb8, 0xe3, 0xde, 0x58, 0xdb, 0xa8, 0x25,
-	0xcc, 0xbd, 0x8d, 0xba, 0x8d, 0x95, 0xa9, 0xbe, 0x5b, 0x7f, 0xb4, 0xe3, 0xa3, 0xfb, 0x59, 0x72,
-	0xe8, 0x22, 0x71, 0xff, 0x4d, 0x42, 0xa6, 0xa3, 0xf9, 0xc9, 0x7b, 0x5f, 0xbf, 0x9b, 0x45, 0x24,
-	0x62, 0x70, 0xd5, 0x4f, 0x87, 0xfd, 0x61, 0xd8, 0x9f, 0x5e, 0x0f, 0xfb, 0x4b, 0xcf, 0xf3, 0xcb,
-	0x9d, 0xf4, 0xfd, 0xfd, 0xec, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x3a, 0xc3, 0xe6, 0x17, 0xb4,
-	0x0b, 0x00, 0x00,
+	// 957 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x56, 0x4d, 0x6f, 0xe3, 0x44,
+	0x18, 0xc6, 0x49, 0x9b, 0x8f, 0x37, 0x49, 0x33, 0x9d, 0x5d, 0x4a, 0x36, 0x8b, 0xaa, 0xaa, 0x48,
+	0x10, 0x16, 0x94, 0xa8, 0x5d, 0xb8, 0x21, 0x84, 0x6b, 0x4f, 0xbb, 0xd6, 0xba, 0xe3, 0x6a, 0x6c,
+	0x2f, 0x0b, 0x17, 0xcb, 0x8d, 0x87, 0xd4, 0x6a, 0x12, 0x07, 0xdb, 0x1b, 0x29, 0x17, 0x4e, 0x48,
+	0xfc, 0x01, 0xfe, 0x00, 0xe2, 0x17, 0x70, 0xe0, 0xc8, 0x11, 0x89, 0x23, 0xbf, 0x00, 0xa1, 0x1e,
+	0xf8, 0x1d, 0x68, 0xfc, 0x91, 0xa6, 0xa4, 0xa1, 0xd9, 0x13, 0x15, 0xb7, 0x99, 0xf1, 0xf3, 0x3e,
+	0xef, 0xf3, 0x3e, 0xaf, 0xe7, 0x03, 0xb6, 0xcf, 0x79, 0x18, 0xcf, 0xce, 0x43, 0xdf, 0x1b, 0xf0,
+	0xee, 0x24, 0x0c, 0xe2, 0x00, 0x37, 0x93, 0xa5, 0x6e, 0xb6, 0x36, 0x3d, 0x68, 0x3f, 0x1c, 0x04,
+	0x83, 0x20, 0xf9, 0xd6, 0x13, 0xa3, 0x14, 0xd6, 0x6e, 0xf0, 0x30, 0xec, 0x07, 0x5e, 0x16, 0xb5,
+	0xff, 0x53, 0x01, 0xb6, 0x95, 0xa1, 0xcf, 0xc7, 0xb1, 0x36, 0x9e, 0x06, 0x97, 0xdc, 0x1e, 0xbb,
+	0xe1, 0xac, 0xfd, 0xbd, 0x04, 0x65, 0xc6, 0xbf, 0x7e, 0xc5, 0xa3, 0x18, 0x7f, 0x02, 0xb5, 0x11,
+	0x8f, 0x2f, 0x02, 0xcf, 0xf1, 0x78, 0xd4, 0x6f, 0x15, 0xf6, 0xa4, 0x4e, 0xed, 0xf0, 0x71, 0xf7,
+	0x1f, 0xd9, 0xba, 0xa7, 0x09, 0x46, 0xe5, 0x51, 0x9f, 0xc1, 0x68, 0x3e, 0xc6, 0x2d, 0x28, 0x4f,
+	0xdc, 0xd9, 0x30, 0x70, 0xbd, 0x56, 0x71, 0x4f, 0xea, 0xd4, 0x59, 0x3e, 0xc5, 0x07, 0x50, 0xba,
+	0xe0, 0xae, 0xc7, 0xc3, 0xd6, 0xc6, 0x5e, 0xb1, 0x53, 0x3b, 0x7c, 0x74, 0x1b, 0xa5, 0xeb, 0xb9,
+	0xb1, 0xcb, 0x32, 0x60, 0xfb, 0x5b, 0x09, 0x36, 0x19, 0x9f, 0x0c, 0x67, 0x8b, 0xb4, 0x85, 0x9b,
+	0xb4, 0x4f, 0xa1, 0x1c, 0x87, 0xae, 0x3f, 0xe4, 0x61, 0xab, 0x78, 0x17, 0x6f, 0x8e, 0xc4, 0x1f,
+	0xc2, 0x26, 0x0f, 0xc3, 0x40, 0x48, 0x11, 0xd5, 0xed, 0x2c, 0x85, 0x10, 0xf1, 0x95, 0xa5, 0xa0,
+	0xfd, 0x9f, 0x0b, 0x80, 0x53, 0xcf, 0x94, 0x90, 0xbb, 0x31, 0x37, 0xe3, 0x90, 0xbb, 0xa3, 0xfb,
+	0x6a, 0xda, 0x77, 0x73, 0xd3, 0x1e, 0x43, 0x35, 0x4a, 0xa4, 0x3a, 0xbe, 0xd7, 0x92, 0xf6, 0xa4,
+	0x4e, 0x95, 0x55, 0xd2, 0x05, 0xed, 0x86, 0x6f, 0x85, 0xd7, 0xf7, 0xad, 0xb8, 0x8e, 0x6f, 0x7f,
+	0x48, 0x80, 0x52, 0xdf, 0x52, 0xc7, 0x4c, 0x3e, 0xf6, 0xda, 0x9f, 0x5d, 0x9b, 0xf6, 0xaf, 0xfa,
+	0x56, 0x76, 0xfc, 0x1e, 0x17, 0xc8, 0x78, 0x7f, 0xda, 0x7e, 0x77, 0xbd, 0x02, 0xdb, 0x3f, 0xac,
+	0x57, 0xc6, 0x7f, 0xfa, 0xe7, 0xff, 0x2a, 0xe5, 0xa7, 0x45, 0x5a, 0xa0, 0x32, 0x0c, 0x22, 0xbe,
+	0x76, 0x85, 0xf7, 0xa7, 0x51, 0x7f, 0x49, 0xd0, 0x5a, 0xaa, 0x43, 0x1e, 0x7b, 0xff, 0xbb, 0x86,
+	0xc5, 0x00, 0xd7, 0x67, 0x0c, 0xc6, 0xb0, 0x31, 0x76, 0x47, 0x3c, 0x93, 0x98, 0x8c, 0x71, 0x07,
+	0x90, 0x1f, 0x39, 0xfd, 0xc4, 0x0c, 0x27, 0x15, 0x9d, 0xe8, 0xac, 0xb0, 0x2d, 0x3f, 0x5a, 0xf4,
+	0x28, 0x43, 0x46, 0x3c, 0x9c, 0xf2, 0x30, 0x47, 0x16, 0x73, 0xa4, 0x99, 0x2c, 0xa7, 0xc8, 0xfd,
+	0x8f, 0xa0, 0x92, 0x0b, 0xc7, 0x08, 0x8a, 0x97, 0x7c, 0x96, 0xa5, 0x14, 0x43, 0xbc, 0x03, 0xa5,
+	0xa9, 0x3b, 0x7c, 0xc5, 0xa3, 0xa4, 0xbd, 0x55, 0x96, 0xcd, 0xc4, 0xee, 0xd9, 0x4c, 0xc4, 0x63,
+	0x15, 0x9a, 0x83, 0x70, 0xd2, 0x77, 0x92, 0x1a, 0x1c, 0x71, 0x5b, 0x25, 0xf1, 0x5b, 0x87, 0x6f,
+	0x2f, 0x55, 0x7b, 0xc2, 0xce, 0x14, 0x12, 0x86, 0x4a, 0xe0, 0x71, 0xd6, 0x10, 0x41, 0x09, 0x83,
+	0x98, 0xe2, 0x8f, 0x01, 0x16, 0x08, 0x0a, 0x09, 0x41, 0x6e, 0x57, 0x7e, 0x09, 0xe6, 0xa1, 0x55,
+	0x3e, 0x0f, 0x6b, 0x41, 0x79, 0xc4, 0xa3, 0xc8, 0x1d, 0xf0, 0xa4, 0xba, 0x2a, 0xcb, 0xa7, 0xf8,
+	0x53, 0x68, 0xa4, 0x84, 0x1e, 0x8f, 0x5d, 0x7f, 0x18, 0x65, 0x2d, 0x78, 0xb4, 0xcc, 0xa9, 0xa6,
+	0x00, 0x56, 0x4f, 0xf0, 0xd9, 0xec, 0xc9, 0x2f, 0x05, 0xa8, 0x2d, 0xe8, 0xc5, 0x25, 0x28, 0x18,
+	0xcf, 0xd1, 0x1b, 0xb8, 0x0e, 0x15, 0x45, 0xa6, 0x0a, 0xd1, 0x89, 0x8a, 0x24, 0x5c, 0x83, 0xb2,
+	0x4d, 0x9f, 0x53, 0xe3, 0x73, 0x8a, 0x0a, 0xf8, 0x21, 0x20, 0x8d, 0xbe, 0x90, 0x75, 0x4d, 0x75,
+	0x64, 0x76, 0x62, 0x9f, 0x12, 0x6a, 0xa1, 0x22, 0x7e, 0x13, 0xb6, 0x55, 0x22, 0xab, 0xba, 0x46,
+	0x89, 0x43, 0x5e, 0x2a, 0x84, 0xa8, 0x44, 0x45, 0x1b, 0xb8, 0x01, 0x55, 0x6a, 0x58, 0xce, 0xb1,
+	0x61, 0x53, 0x15, 0x6d, 0x62, 0x0c, 0x5b, 0xb2, 0xce, 0x88, 0xac, 0x7e, 0xe1, 0x90, 0x97, 0x9a,
+	0x69, 0x99, 0xa8, 0x24, 0x22, 0xcf, 0x08, 0x3b, 0xd5, 0x4c, 0x53, 0x33, 0xa8, 0xa3, 0x12, 0xaa,
+	0x11, 0x15, 0x95, 0xf1, 0x0e, 0x60, 0x46, 0x4c, 0xc3, 0x66, 0x8a, 0x20, 0x7c, 0x26, 0xdb, 0xa6,
+	0x45, 0x54, 0x54, 0xc1, 0x6f, 0xc1, 0x83, 0x63, 0x59, 0xd3, 0x89, 0xea, 0x9c, 0x31, 0xa2, 0x18,
+	0x54, 0xd5, 0x2c, 0xcd, 0xa0, 0xa8, 0x2a, 0x44, 0xca, 0x47, 0x06, 0x13, 0x28, 0xc0, 0x08, 0xea,
+	0x86, 0x6d, 0x39, 0xc6, 0xb1, 0xc3, 0x64, 0x7a, 0x42, 0x50, 0x0d, 0x6f, 0x43, 0xc3, 0xa6, 0xda,
+	0xe9, 0x99, 0x4e, 0x84, 0x62, 0xa2, 0xa2, 0xba, 0x28, 0x52, 0xa3, 0x16, 0x61, 0x54, 0xd6, 0x51,
+	0x03, 0x37, 0xa1, 0x66, 0x53, 0xf9, 0x85, 0xac, 0xe9, 0xf2, 0x91, 0x4e, 0xd0, 0x96, 0xd0, 0xae,
+	0xca, 0x96, 0xec, 0xe8, 0x86, 0x69, 0xa2, 0x26, 0x7e, 0x00, 0x4d, 0x9b, 0xca, 0xb6, 0xf5, 0x8c,
+	0x50, 0x4b, 0x53, 0x64, 0x41, 0x81, 0x0e, 0x7f, 0xdc, 0x84, 0xc6, 0x51, 0xd2, 0x79, 0xf1, 0xb7,
+	0xf9, 0x7d, 0x8e, 0xfd, 0x5b, 0x1e, 0x2f, 0xf8, 0xc9, 0xd2, 0x4f, 0xb2, 0x84, 0xe9, 0x66, 0x1b,
+	0xbc, 0xdd, 0x59, 0x0b, 0x2b, 0xf6, 0xf8, 0x10, 0x70, 0x7a, 0xdb, 0xdf, 0xd8, 0x13, 0x1f, 0xac,
+	0x88, 0x5f, 0x7c, 0x18, 0xcc, 0x93, 0xbd, 0xbf, 0x1e, 0x58, 0x64, 0xfb, 0x6a, 0xf9, 0xa6, 0xc4,
+	0xab, 0xc2, 0xaf, 0x21, 0xf3, 0x4c, 0xef, 0xad, 0x03, 0xbd, 0x25, 0x8f, 0x38, 0xff, 0xee, 0xc8,
+	0x23, 0x20, 0x6b, 0xe6, 0xc9, 0xa0, 0x22, 0x8f, 0x7f, 0xcb, 0xbd, 0xb1, 0xb2, 0x51, 0x0b, 0x98,
+	0x3b, 0x1b, 0x75, 0x13, 0x2b, 0x52, 0x7d, 0xb3, 0xfa, 0x68, 0xc7, 0x07, 0x77, 0xb3, 0x64, 0xd0,
+	0x79, 0xe2, 0xde, 0xeb, 0x84, 0x4c, 0x86, 0xb3, 0xa3, 0x83, 0xdf, 0xae, 0x76, 0xa5, 0xdf, 0xaf,
+	0x76, 0xa5, 0x3f, 0xaf, 0x76, 0xa5, 0x2f, 0xdf, 0x49, 0xa3, 0x63, 0xde, 0xbf, 0xe8, 0x25, 0xc3,
+	0xde, 0x20, 0xe8, 0x4d, 0x2e, 0x07, 0xbd, 0x85, 0x07, 0xfc, 0x79, 0x29, 0x79, 0x8b, 0x3f, 0xfd,
+	0x3b, 0x00, 0x00, 0xff, 0xff, 0xa2, 0x1f, 0x19, 0x7a, 0xd6, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1658,3 +1851,3935 @@ var _BridgeService_serviceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "bertybridge.proto",
 }
+
+func (m *ClientInvokeUnary) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientInvokeUnary) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientInvokeUnary) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientInvokeUnary_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientInvokeUnary_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientInvokeUnary_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Header) > 0 {
+		for iNdEx := len(m.Header) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Header[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.MethodDesc != nil {
+		{
+			size, err := m.MethodDesc.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientInvokeUnary_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientInvokeUnary_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientInvokeUnary_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Error != nil {
+		{
+			size, err := m.Error.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Trailer) > 0 {
+		for iNdEx := len(m.Trailer) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Trailer[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientCreateStream) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientCreateStream) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientCreateStream) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientCreateStream_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientCreateStream_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientCreateStream_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Header) > 0 {
+		for iNdEx := len(m.Header) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Header[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.MethodDesc != nil {
+		{
+			size, err := m.MethodDesc.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientCreateStream_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientCreateStream_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientCreateStream_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Error != nil {
+		{
+			size, err := m.Error.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Trailer) > 0 {
+		for iNdEx := len(m.Trailer) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Trailer[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamSend) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamSend) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamSend) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamSend_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamSend_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamSend_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamSend_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamSend_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamSend_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Error != nil {
+		{
+			size, err := m.Error.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Trailer) > 0 {
+		for iNdEx := len(m.Trailer) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Trailer[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamRecv) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamRecv) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamRecv) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamRecv_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamRecv_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamRecv_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamRecv_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamRecv_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamRecv_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Error != nil {
+		{
+			size, err := m.Error.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Trailer) > 0 {
+		for iNdEx := len(m.Trailer) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Trailer[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamClose) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamClose) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamClose) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamClose_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamClose_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamClose_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamClose_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamClose_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamClose_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Error != nil {
+		{
+			size, err := m.Error.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Trailer) > 0 {
+		for iNdEx := len(m.Trailer) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Trailer[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamCloseAndRecv) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamCloseAndRecv) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamCloseAndRecv) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamCloseAndRecv_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamCloseAndRecv_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamCloseAndRecv_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ClientStreamCloseAndRecv_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClientStreamCloseAndRecv_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClientStreamCloseAndRecv_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Error != nil {
+		{
+			size, err := m.Error.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Trailer) > 0 {
+		for iNdEx := len(m.Trailer) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Trailer[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertybridge(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.StreamId) > 0 {
+		i -= len(m.StreamId)
+		copy(dAtA[i:], m.StreamId)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.StreamId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MethodDesc) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MethodDesc) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MethodDesc) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.IsServerStream {
+		i--
+		if m.IsServerStream {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.IsClientStream {
+		i--
+		if m.IsClientStream {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Metadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Metadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Metadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Values) > 0 {
+		for iNdEx := len(m.Values) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Values[iNdEx])
+			copy(dAtA[i:], m.Values[iNdEx])
+			i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Values[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Error) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Error) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Error) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.ErrorDetails != nil {
+		{
+			size, err := m.ErrorDetails.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertybridge(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintBertybridge(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.ErrorCode != 0 {
+		i = encodeVarintBertybridge(dAtA, i, uint64(m.ErrorCode))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.GrpcErrorCode != 0 {
+		i = encodeVarintBertybridge(dAtA, i, uint64(m.GrpcErrorCode))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintBertybridge(dAtA []byte, offset int, v uint64) int {
+	offset -= sovBertybridge(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+
+func (m *ClientInvokeUnary) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientInvokeUnary_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.MethodDesc != nil {
+		l = m.MethodDesc.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Header) > 0 {
+		for _, e := range m.Header {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientInvokeUnary_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Trailer) > 0 {
+		for _, e := range m.Trailer {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientCreateStream) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientCreateStream_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.MethodDesc != nil {
+		l = m.MethodDesc.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Header) > 0 {
+		for _, e := range m.Header {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientCreateStream_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Trailer) > 0 {
+		for _, e := range m.Trailer {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamSend) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamSend_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamSend_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Trailer) > 0 {
+		for _, e := range m.Trailer {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamRecv) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamRecv_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamRecv_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Trailer) > 0 {
+		for _, e := range m.Trailer {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamClose) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamClose_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamClose_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Trailer) > 0 {
+		for _, e := range m.Trailer {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamCloseAndRecv) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamCloseAndRecv_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ClientStreamCloseAndRecv_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StreamId)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Trailer) > 0 {
+		for _, e := range m.Trailer {
+			l = e.Size()
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MethodDesc) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.IsClientStream {
+		n += 2
+	}
+	if m.IsServerStream {
+		n += 2
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *Metadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Key)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if len(m.Values) > 0 {
+		for _, s := range m.Values {
+			l = len(s)
+			n += 1 + l + sovBertybridge(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *Error) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GrpcErrorCode != 0 {
+		n += 1 + sovBertybridge(uint64(m.GrpcErrorCode))
+	}
+	if m.ErrorCode != 0 {
+		n += 1 + sovBertybridge(uint64(m.ErrorCode))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.ErrorDetails != nil {
+		l = m.ErrorDetails.Size()
+		n += 1 + l + sovBertybridge(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func sovBertybridge(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+
+func sozBertybridge(x uint64) (n int) {
+	return sovBertybridge(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+
+func (m *ClientInvokeUnary) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClientInvokeUnary: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClientInvokeUnary: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientInvokeUnary_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MethodDesc", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MethodDesc == nil {
+				m.MethodDesc = &MethodDesc{}
+			}
+			if err := m.MethodDesc.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Header", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Header = append(m.Header, &Metadata{})
+			if err := m.Header[len(m.Header)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientInvokeUnary_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Trailer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Trailer = append(m.Trailer, &Metadata{})
+			if err := m.Trailer[len(m.Trailer)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Error == nil {
+				m.Error = &Error{}
+			}
+			if err := m.Error.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientCreateStream) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClientCreateStream: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClientCreateStream: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientCreateStream_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MethodDesc", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MethodDesc == nil {
+				m.MethodDesc = &MethodDesc{}
+			}
+			if err := m.MethodDesc.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Header", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Header = append(m.Header, &Metadata{})
+			if err := m.Header[len(m.Header)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientCreateStream_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Trailer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Trailer = append(m.Trailer, &Metadata{})
+			if err := m.Trailer[len(m.Trailer)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Error == nil {
+				m.Error = &Error{}
+			}
+			if err := m.Error.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamSend) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClientStreamSend: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClientStreamSend: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamSend_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamSend_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Trailer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Trailer = append(m.Trailer, &Metadata{})
+			if err := m.Trailer[len(m.Trailer)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Error == nil {
+				m.Error = &Error{}
+			}
+			if err := m.Error.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamRecv) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClientStreamRecv: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClientStreamRecv: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamRecv_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamRecv_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Trailer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Trailer = append(m.Trailer, &Metadata{})
+			if err := m.Trailer[len(m.Trailer)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Error == nil {
+				m.Error = &Error{}
+			}
+			if err := m.Error.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamClose) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClientStreamClose: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClientStreamClose: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamClose_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamClose_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Trailer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Trailer = append(m.Trailer, &Metadata{})
+			if err := m.Trailer[len(m.Trailer)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Error == nil {
+				m.Error = &Error{}
+			}
+			if err := m.Error.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamCloseAndRecv) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClientStreamCloseAndRecv: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClientStreamCloseAndRecv: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamCloseAndRecv_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ClientStreamCloseAndRecv_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StreamId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StreamId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Trailer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Trailer = append(m.Trailer, &Metadata{})
+			if err := m.Trailer[len(m.Trailer)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Error == nil {
+				m.Error = &Error{}
+			}
+			if err := m.Error.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *MethodDesc) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MethodDesc: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MethodDesc: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsClientStream", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsClientStream = bool(v != 0)
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsServerStream", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsServerStream = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *Metadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Metadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Metadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Key = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Values", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Values = append(m.Values, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *Error) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Error: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Error: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GrpcErrorCode", wireType)
+			}
+			m.GrpcErrorCode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GrpcErrorCode |= GRPCErrCode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrorCode", wireType)
+			}
+			m.ErrorCode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ErrorCode |= errcode.ErrCode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrorDetails", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ErrorDetails == nil {
+				m.ErrorDetails = &errcode.ErrDetails{}
+			}
+			if err := m.ErrorDetails.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertybridge(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertybridge
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func skipBertybridge(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowBertybridge
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowBertybridge
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthBertybridge
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupBertybridge
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthBertybridge
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthBertybridge        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowBertybridge          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupBertybridge = fmt.Errorf("proto: unexpected end of group")
+)

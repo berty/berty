@@ -6,7 +6,9 @@ package bertyaccount
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
@@ -45,11 +47,20 @@ func (*OpenAccount) Descriptor() ([]byte, []int) {
 }
 
 func (m *OpenAccount) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OpenAccount.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *OpenAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OpenAccount.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_OpenAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *OpenAccount) XXX_Merge(src proto.Message) {
@@ -57,7 +68,7 @@ func (m *OpenAccount) XXX_Merge(src proto.Message) {
 }
 
 func (m *OpenAccount) XXX_Size() int {
-	return xxx_messageInfo_OpenAccount.Size(m)
+	return m.Size()
 }
 
 func (m *OpenAccount) XXX_DiscardUnknown() {
@@ -83,11 +94,20 @@ func (*OpenAccount_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *OpenAccount_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OpenAccount_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *OpenAccount_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OpenAccount_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_OpenAccount_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *OpenAccount_Request) XXX_Merge(src proto.Message) {
@@ -95,7 +115,7 @@ func (m *OpenAccount_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *OpenAccount_Request) XXX_Size() int {
-	return xxx_messageInfo_OpenAccount_Request.Size(m)
+	return m.Size()
 }
 
 func (m *OpenAccount_Request) XXX_DiscardUnknown() {
@@ -139,11 +159,20 @@ func (*OpenAccount_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *OpenAccount_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OpenAccount_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *OpenAccount_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OpenAccount_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_OpenAccount_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *OpenAccount_Reply) XXX_Merge(src proto.Message) {
@@ -151,7 +180,7 @@ func (m *OpenAccount_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *OpenAccount_Reply) XXX_Size() int {
-	return xxx_messageInfo_OpenAccount_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *OpenAccount_Reply) XXX_DiscardUnknown() {
@@ -174,11 +203,20 @@ func (*OpenAccountWithProgress) Descriptor() ([]byte, []int) {
 }
 
 func (m *OpenAccountWithProgress) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OpenAccountWithProgress.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *OpenAccountWithProgress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OpenAccountWithProgress.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_OpenAccountWithProgress.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *OpenAccountWithProgress) XXX_Merge(src proto.Message) {
@@ -186,7 +224,7 @@ func (m *OpenAccountWithProgress) XXX_Merge(src proto.Message) {
 }
 
 func (m *OpenAccountWithProgress) XXX_Size() int {
-	return xxx_messageInfo_OpenAccountWithProgress.Size(m)
+	return m.Size()
 }
 
 func (m *OpenAccountWithProgress) XXX_DiscardUnknown() {
@@ -212,11 +250,20 @@ func (*OpenAccountWithProgress_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *OpenAccountWithProgress_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OpenAccountWithProgress_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *OpenAccountWithProgress_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OpenAccountWithProgress_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_OpenAccountWithProgress_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *OpenAccountWithProgress_Request) XXX_Merge(src proto.Message) {
@@ -224,7 +271,7 @@ func (m *OpenAccountWithProgress_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *OpenAccountWithProgress_Request) XXX_Size() int {
-	return xxx_messageInfo_OpenAccountWithProgress_Request.Size(m)
+	return m.Size()
 }
 
 func (m *OpenAccountWithProgress_Request) XXX_DiscardUnknown() {
@@ -269,11 +316,20 @@ func (*OpenAccountWithProgress_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *OpenAccountWithProgress_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OpenAccountWithProgress_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *OpenAccountWithProgress_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OpenAccountWithProgress_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_OpenAccountWithProgress_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *OpenAccountWithProgress_Reply) XXX_Merge(src proto.Message) {
@@ -281,7 +337,7 @@ func (m *OpenAccountWithProgress_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *OpenAccountWithProgress_Reply) XXX_Size() int {
-	return xxx_messageInfo_OpenAccountWithProgress_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *OpenAccountWithProgress_Reply) XXX_DiscardUnknown() {
@@ -311,11 +367,20 @@ func (*CloseAccount) Descriptor() ([]byte, []int) {
 }
 
 func (m *CloseAccount) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CloseAccount.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CloseAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CloseAccount.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CloseAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CloseAccount) XXX_Merge(src proto.Message) {
@@ -323,7 +388,7 @@ func (m *CloseAccount) XXX_Merge(src proto.Message) {
 }
 
 func (m *CloseAccount) XXX_Size() int {
-	return xxx_messageInfo_CloseAccount.Size(m)
+	return m.Size()
 }
 
 func (m *CloseAccount) XXX_DiscardUnknown() {
@@ -346,11 +411,20 @@ func (*CloseAccount_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *CloseAccount_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CloseAccount_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CloseAccount_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CloseAccount_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CloseAccount_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CloseAccount_Request) XXX_Merge(src proto.Message) {
@@ -358,7 +432,7 @@ func (m *CloseAccount_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *CloseAccount_Request) XXX_Size() int {
-	return xxx_messageInfo_CloseAccount_Request.Size(m)
+	return m.Size()
 }
 
 func (m *CloseAccount_Request) XXX_DiscardUnknown() {
@@ -381,11 +455,20 @@ func (*CloseAccount_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *CloseAccount_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CloseAccount_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CloseAccount_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CloseAccount_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CloseAccount_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CloseAccount_Reply) XXX_Merge(src proto.Message) {
@@ -393,7 +476,7 @@ func (m *CloseAccount_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *CloseAccount_Reply) XXX_Size() int {
-	return xxx_messageInfo_CloseAccount_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *CloseAccount_Reply) XXX_DiscardUnknown() {
@@ -416,11 +499,20 @@ func (*CloseAccountWithProgress) Descriptor() ([]byte, []int) {
 }
 
 func (m *CloseAccountWithProgress) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CloseAccountWithProgress.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CloseAccountWithProgress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CloseAccountWithProgress.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CloseAccountWithProgress.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CloseAccountWithProgress) XXX_Merge(src proto.Message) {
@@ -428,7 +520,7 @@ func (m *CloseAccountWithProgress) XXX_Merge(src proto.Message) {
 }
 
 func (m *CloseAccountWithProgress) XXX_Size() int {
-	return xxx_messageInfo_CloseAccountWithProgress.Size(m)
+	return m.Size()
 }
 
 func (m *CloseAccountWithProgress) XXX_DiscardUnknown() {
@@ -451,11 +543,20 @@ func (*CloseAccountWithProgress_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *CloseAccountWithProgress_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CloseAccountWithProgress_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CloseAccountWithProgress_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CloseAccountWithProgress_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CloseAccountWithProgress_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CloseAccountWithProgress_Request) XXX_Merge(src proto.Message) {
@@ -463,7 +564,7 @@ func (m *CloseAccountWithProgress_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *CloseAccountWithProgress_Request) XXX_Size() int {
-	return xxx_messageInfo_CloseAccountWithProgress_Request.Size(m)
+	return m.Size()
 }
 
 func (m *CloseAccountWithProgress_Request) XXX_DiscardUnknown() {
@@ -487,11 +588,20 @@ func (*CloseAccountWithProgress_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *CloseAccountWithProgress_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CloseAccountWithProgress_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CloseAccountWithProgress_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CloseAccountWithProgress_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CloseAccountWithProgress_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CloseAccountWithProgress_Reply) XXX_Merge(src proto.Message) {
@@ -499,7 +609,7 @@ func (m *CloseAccountWithProgress_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *CloseAccountWithProgress_Reply) XXX_Size() int {
-	return xxx_messageInfo_CloseAccountWithProgress_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *CloseAccountWithProgress_Reply) XXX_DiscardUnknown() {
@@ -536,11 +646,20 @@ func (*AccountMetadata) Descriptor() ([]byte, []int) {
 }
 
 func (m *AccountMetadata) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountMetadata.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *AccountMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountMetadata.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_AccountMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *AccountMetadata) XXX_Merge(src proto.Message) {
@@ -548,7 +667,7 @@ func (m *AccountMetadata) XXX_Merge(src proto.Message) {
 }
 
 func (m *AccountMetadata) XXX_Size() int {
-	return xxx_messageInfo_AccountMetadata.Size(m)
+	return m.Size()
 }
 
 func (m *AccountMetadata) XXX_DiscardUnknown() {
@@ -620,11 +739,20 @@ func (*ListAccounts) Descriptor() ([]byte, []int) {
 }
 
 func (m *ListAccounts) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ListAccounts.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ListAccounts) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ListAccounts.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ListAccounts.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ListAccounts) XXX_Merge(src proto.Message) {
@@ -632,7 +760,7 @@ func (m *ListAccounts) XXX_Merge(src proto.Message) {
 }
 
 func (m *ListAccounts) XXX_Size() int {
-	return xxx_messageInfo_ListAccounts.Size(m)
+	return m.Size()
 }
 
 func (m *ListAccounts) XXX_DiscardUnknown() {
@@ -655,11 +783,20 @@ func (*ListAccounts_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ListAccounts_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ListAccounts_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ListAccounts_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ListAccounts_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ListAccounts_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ListAccounts_Request) XXX_Merge(src proto.Message) {
@@ -667,7 +804,7 @@ func (m *ListAccounts_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ListAccounts_Request) XXX_Size() int {
-	return xxx_messageInfo_ListAccounts_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ListAccounts_Request) XXX_DiscardUnknown() {
@@ -691,11 +828,20 @@ func (*ListAccounts_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ListAccounts_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ListAccounts_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ListAccounts_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ListAccounts_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ListAccounts_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ListAccounts_Reply) XXX_Merge(src proto.Message) {
@@ -703,7 +849,7 @@ func (m *ListAccounts_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ListAccounts_Reply) XXX_Size() int {
-	return xxx_messageInfo_ListAccounts_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ListAccounts_Reply) XXX_DiscardUnknown() {
@@ -733,11 +879,20 @@ func (*DeleteAccount) Descriptor() ([]byte, []int) {
 }
 
 func (m *DeleteAccount) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteAccount.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *DeleteAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteAccount.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_DeleteAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *DeleteAccount) XXX_Merge(src proto.Message) {
@@ -745,7 +900,7 @@ func (m *DeleteAccount) XXX_Merge(src proto.Message) {
 }
 
 func (m *DeleteAccount) XXX_Size() int {
-	return xxx_messageInfo_DeleteAccount.Size(m)
+	return m.Size()
 }
 
 func (m *DeleteAccount) XXX_DiscardUnknown() {
@@ -769,11 +924,20 @@ func (*DeleteAccount_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *DeleteAccount_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteAccount_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *DeleteAccount_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteAccount_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_DeleteAccount_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *DeleteAccount_Request) XXX_Merge(src proto.Message) {
@@ -781,7 +945,7 @@ func (m *DeleteAccount_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *DeleteAccount_Request) XXX_Size() int {
-	return xxx_messageInfo_DeleteAccount_Request.Size(m)
+	return m.Size()
 }
 
 func (m *DeleteAccount_Request) XXX_DiscardUnknown() {
@@ -811,11 +975,20 @@ func (*DeleteAccount_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *DeleteAccount_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteAccount_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *DeleteAccount_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteAccount_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_DeleteAccount_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *DeleteAccount_Reply) XXX_Merge(src proto.Message) {
@@ -823,7 +996,7 @@ func (m *DeleteAccount_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *DeleteAccount_Reply) XXX_Size() int {
-	return xxx_messageInfo_DeleteAccount_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *DeleteAccount_Reply) XXX_DiscardUnknown() {
@@ -846,11 +1019,20 @@ func (*ImportAccount) Descriptor() ([]byte, []int) {
 }
 
 func (m *ImportAccount) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ImportAccount.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ImportAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ImportAccount.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ImportAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ImportAccount) XXX_Merge(src proto.Message) {
@@ -858,7 +1040,7 @@ func (m *ImportAccount) XXX_Merge(src proto.Message) {
 }
 
 func (m *ImportAccount) XXX_Size() int {
-	return xxx_messageInfo_ImportAccount.Size(m)
+	return m.Size()
 }
 
 func (m *ImportAccount) XXX_DiscardUnknown() {
@@ -886,11 +1068,20 @@ func (*ImportAccount_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *ImportAccount_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ImportAccount_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ImportAccount_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ImportAccount_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ImportAccount_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ImportAccount_Request) XXX_Merge(src proto.Message) {
@@ -898,7 +1089,7 @@ func (m *ImportAccount_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *ImportAccount_Request) XXX_Size() int {
-	return xxx_messageInfo_ImportAccount_Request.Size(m)
+	return m.Size()
 }
 
 func (m *ImportAccount_Request) XXX_DiscardUnknown() {
@@ -957,11 +1148,20 @@ func (*ImportAccount_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *ImportAccount_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ImportAccount_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *ImportAccount_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ImportAccount_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ImportAccount_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *ImportAccount_Reply) XXX_Merge(src proto.Message) {
@@ -969,7 +1169,7 @@ func (m *ImportAccount_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *ImportAccount_Reply) XXX_Size() int {
-	return xxx_messageInfo_ImportAccount_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *ImportAccount_Reply) XXX_DiscardUnknown() {
@@ -999,11 +1199,20 @@ func (*CreateAccount) Descriptor() ([]byte, []int) {
 }
 
 func (m *CreateAccount) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreateAccount.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CreateAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreateAccount.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CreateAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CreateAccount) XXX_Merge(src proto.Message) {
@@ -1011,7 +1220,7 @@ func (m *CreateAccount) XXX_Merge(src proto.Message) {
 }
 
 func (m *CreateAccount) XXX_Size() int {
-	return xxx_messageInfo_CreateAccount.Size(m)
+	return m.Size()
 }
 
 func (m *CreateAccount) XXX_DiscardUnknown() {
@@ -1038,11 +1247,20 @@ func (*CreateAccount_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *CreateAccount_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreateAccount_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CreateAccount_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreateAccount_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CreateAccount_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CreateAccount_Request) XXX_Merge(src proto.Message) {
@@ -1050,7 +1268,7 @@ func (m *CreateAccount_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *CreateAccount_Request) XXX_Size() int {
-	return xxx_messageInfo_CreateAccount_Request.Size(m)
+	return m.Size()
 }
 
 func (m *CreateAccount_Request) XXX_DiscardUnknown() {
@@ -1102,11 +1320,20 @@ func (*CreateAccount_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *CreateAccount_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreateAccount_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *CreateAccount_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreateAccount_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_CreateAccount_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *CreateAccount_Reply) XXX_Merge(src proto.Message) {
@@ -1114,7 +1341,7 @@ func (m *CreateAccount_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *CreateAccount_Reply) XXX_Size() int {
-	return xxx_messageInfo_CreateAccount_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *CreateAccount_Reply) XXX_DiscardUnknown() {
@@ -1144,11 +1371,20 @@ func (*UpdateAccount) Descriptor() ([]byte, []int) {
 }
 
 func (m *UpdateAccount) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateAccount.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *UpdateAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateAccount.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_UpdateAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *UpdateAccount) XXX_Merge(src proto.Message) {
@@ -1156,7 +1392,7 @@ func (m *UpdateAccount) XXX_Merge(src proto.Message) {
 }
 
 func (m *UpdateAccount) XXX_Size() int {
-	return xxx_messageInfo_UpdateAccount.Size(m)
+	return m.Size()
 }
 
 func (m *UpdateAccount) XXX_DiscardUnknown() {
@@ -1183,11 +1419,20 @@ func (*UpdateAccount_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *UpdateAccount_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateAccount_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *UpdateAccount_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateAccount_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_UpdateAccount_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *UpdateAccount_Request) XXX_Merge(src proto.Message) {
@@ -1195,7 +1440,7 @@ func (m *UpdateAccount_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *UpdateAccount_Request) XXX_Size() int {
-	return xxx_messageInfo_UpdateAccount_Request.Size(m)
+	return m.Size()
 }
 
 func (m *UpdateAccount_Request) XXX_DiscardUnknown() {
@@ -1247,11 +1492,20 @@ func (*UpdateAccount_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *UpdateAccount_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateAccount_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *UpdateAccount_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateAccount_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_UpdateAccount_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *UpdateAccount_Reply) XXX_Merge(src proto.Message) {
@@ -1259,7 +1513,7 @@ func (m *UpdateAccount_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *UpdateAccount_Reply) XXX_Size() int {
-	return xxx_messageInfo_UpdateAccount_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *UpdateAccount_Reply) XXX_DiscardUnknown() {
@@ -1289,11 +1543,20 @@ func (*GetGRPCListenerAddrs) Descriptor() ([]byte, []int) {
 }
 
 func (m *GetGRPCListenerAddrs) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetGRPCListenerAddrs.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *GetGRPCListenerAddrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetGRPCListenerAddrs.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_GetGRPCListenerAddrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *GetGRPCListenerAddrs) XXX_Merge(src proto.Message) {
@@ -1301,7 +1564,7 @@ func (m *GetGRPCListenerAddrs) XXX_Merge(src proto.Message) {
 }
 
 func (m *GetGRPCListenerAddrs) XXX_Size() int {
-	return xxx_messageInfo_GetGRPCListenerAddrs.Size(m)
+	return m.Size()
 }
 
 func (m *GetGRPCListenerAddrs) XXX_DiscardUnknown() {
@@ -1324,11 +1587,20 @@ func (*GetGRPCListenerAddrs_Request) Descriptor() ([]byte, []int) {
 }
 
 func (m *GetGRPCListenerAddrs_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *GetGRPCListenerAddrs_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_GetGRPCListenerAddrs_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *GetGRPCListenerAddrs_Request) XXX_Merge(src proto.Message) {
@@ -1336,7 +1608,7 @@ func (m *GetGRPCListenerAddrs_Request) XXX_Merge(src proto.Message) {
 }
 
 func (m *GetGRPCListenerAddrs_Request) XXX_Size() int {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Request.Size(m)
+	return m.Size()
 }
 
 func (m *GetGRPCListenerAddrs_Request) XXX_DiscardUnknown() {
@@ -1360,11 +1632,20 @@ func (*GetGRPCListenerAddrs_Reply) Descriptor() ([]byte, []int) {
 }
 
 func (m *GetGRPCListenerAddrs_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *GetGRPCListenerAddrs_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_GetGRPCListenerAddrs_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *GetGRPCListenerAddrs_Reply) XXX_Merge(src proto.Message) {
@@ -1372,7 +1653,7 @@ func (m *GetGRPCListenerAddrs_Reply) XXX_Merge(src proto.Message) {
 }
 
 func (m *GetGRPCListenerAddrs_Reply) XXX_Size() int {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Reply.Size(m)
+	return m.Size()
 }
 
 func (m *GetGRPCListenerAddrs_Reply) XXX_DiscardUnknown() {
@@ -1404,11 +1685,20 @@ func (*GetGRPCListenerAddrs_Reply_Entry) Descriptor() ([]byte, []int) {
 }
 
 func (m *GetGRPCListenerAddrs_Reply_Entry) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Reply_Entry.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 
 func (m *GetGRPCListenerAddrs_Reply_Entry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Reply_Entry.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_GetGRPCListenerAddrs_Reply_Entry.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 
 func (m *GetGRPCListenerAddrs_Reply_Entry) XXX_Merge(src proto.Message) {
@@ -1416,7 +1706,7 @@ func (m *GetGRPCListenerAddrs_Reply_Entry) XXX_Merge(src proto.Message) {
 }
 
 func (m *GetGRPCListenerAddrs_Reply_Entry) XXX_Size() int {
-	return xxx_messageInfo_GetGRPCListenerAddrs_Reply_Entry.Size(m)
+	return m.Size()
 }
 
 func (m *GetGRPCListenerAddrs_Reply_Entry) XXX_DiscardUnknown() {
@@ -1477,61 +1767,62 @@ func init() {
 func init() { proto.RegisterFile("bertyaccount.proto", fileDescriptor_2e9b7fcde47f62fe) }
 
 var fileDescriptor_2e9b7fcde47f62fe = []byte{
-	// 859 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0x41, 0x8f, 0xdb, 0x44,
-	0x14, 0x96, 0x77, 0x93, 0xee, 0xe6, 0x25, 0x6e, 0xab, 0x61, 0x25, 0xac, 0x20, 0xb4, 0x69, 0xda,
-	0x2d, 0x39, 0x54, 0x4e, 0x37, 0x3d, 0xf4, 0x84, 0x44, 0x9b, 0xa5, 0xd5, 0x8a, 0x42, 0x17, 0xa3,
-	0x0a, 0x81, 0x90, 0xac, 0x89, 0xfd, 0x70, 0xac, 0x75, 0x6c, 0x33, 0x9e, 0x44, 0xca, 0x09, 0x89,
-	0x63, 0x4f, 0x5c, 0x38, 0x73, 0xec, 0x8d, 0x23, 0x7f, 0x83, 0x7f, 0xc0, 0x81, 0xdf, 0x81, 0x10,
-	0xf2, 0xcc, 0xd8, 0xb1, 0x1d, 0x37, 0x69, 0x80, 0xa5, 0xa7, 0x8c, 0xdf, 0x7c, 0xef, 0x7d, 0xef,
-	0x7d, 0x33, 0xef, 0x8d, 0x02, 0x64, 0x82, 0x8c, 0x2f, 0xa9, 0xe3, 0x44, 0xf3, 0x90, 0x9b, 0x31,
-	0x8b, 0x78, 0x44, 0x6e, 0x0a, 0x9b, 0x99, 0x19, 0x17, 0xa7, 0xdd, 0x23, 0x2f, 0xf2, 0x22, 0xb1,
-	0x39, 0x4c, 0x57, 0x12, 0xd7, 0x7d, 0x47, 0xfc, 0x38, 0x51, 0xc0, 0x97, 0x31, 0x26, 0xca, 0xa8,
-	0x23, 0x63, 0x4e, 0xe4, 0xa2, 0xfc, 0xec, 0xbf, 0xd4, 0xa0, 0xfd, 0x3c, 0xc6, 0xf0, 0x91, 0x0c,
-	0xd6, 0x65, 0x70, 0x60, 0xe1, 0x77, 0x73, 0x4c, 0x38, 0x21, 0xd0, 0xa0, 0xcc, 0x4b, 0x0c, 0xad,
-	0xb7, 0x3f, 0x68, 0x59, 0x62, 0x4d, 0xee, 0x01, 0x28, 0x5a, 0xdb, 0x77, 0x8d, 0xbd, 0x9e, 0x36,
-	0x68, 0x3d, 0xd6, 0xff, 0xf8, 0xfd, 0xb8, 0xa5, 0xfc, 0xcf, 0xcf, 0xac, 0x96, 0x02, 0x9c, 0xbb,
-	0xe4, 0x04, 0xae, 0x07, 0x91, 0xe7, 0x21, 0xb3, 0xbf, 0xf5, 0x03, 0x8e, 0x2c, 0x31, 0xf6, 0x53,
-	0x0f, 0x4b, 0x97, 0xd6, 0x27, 0xd2, 0xd8, 0x3d, 0x80, 0xa6, 0x85, 0x71, 0xb0, 0xec, 0xff, 0xa6,
-	0xc1, 0xbb, 0x85, 0x64, 0xbe, 0xf4, 0xf9, 0xf4, 0x82, 0x45, 0x1e, 0xc3, 0x24, 0x79, 0x2b, 0x89,
-	0x7d, 0xa4, 0x12, 0x23, 0x0f, 0xe1, 0x30, 0x56, 0x89, 0x18, 0x5a, 0x4f, 0x1b, 0xb4, 0x47, 0xef,
-	0x99, 0xf2, 0x10, 0x32, 0x89, 0xcd, 0xc5, 0xa9, 0x99, 0xe5, 0x6a, 0xe5, 0xe0, 0x7e, 0x1f, 0x3a,
-	0xe3, 0x20, 0x4a, 0x30, 0x93, 0xb7, 0x95, 0x57, 0xb1, 0xaa, 0xda, 0x03, 0xa3, 0x88, 0x29, 0x55,
-	0x5d, 0xc0, 0xff, 0xfb, 0x64, 0xfe, 0xd4, 0xe0, 0x86, 0x22, 0xf9, 0x14, 0x39, 0x75, 0x29, 0xa7,
-	0x15, 0xdd, 0xb4, 0x2d, 0xba, 0x11, 0x68, 0x84, 0x74, 0x86, 0x52, 0x5f, 0x4b, 0xac, 0x45, 0x84,
-	0x05, 0xe5, 0x94, 0xd9, 0x8e, 0xef, 0x4a, 0x1d, 0x55, 0x04, 0x61, 0x1d, 0x8b, 0x08, 0x72, 0xe9,
-	0xbb, 0xe4, 0x7d, 0x80, 0x78, 0x3e, 0x09, 0x7c, 0xc7, 0xbe, 0xc4, 0xa5, 0xd1, 0x10, 0x71, 0x5a,
-	0xd2, 0xf2, 0x09, 0x2e, 0xc9, 0x31, 0xb4, 0x03, 0x9a, 0x70, 0x3b, 0x8a, 0x31, 0x44, 0xd7, 0x68,
-	0xf6, 0xb4, 0xc1, 0xbe, 0x05, 0xa9, 0xe9, 0xb9, 0xb0, 0x90, 0xdb, 0xa0, 0x3b, 0x0c, 0x29, 0xf7,
-	0xa3, 0xd0, 0x76, 0x29, 0x47, 0xe3, 0x9a, 0x80, 0x74, 0x32, 0xe3, 0x19, 0xe5, 0x48, 0x8e, 0xa0,
-	0x89, 0x8c, 0x45, 0xcc, 0x38, 0x10, 0xf1, 0xe5, 0x47, 0x9f, 0x42, 0xe7, 0x99, 0x9f, 0x70, 0x55,
-	0x58, 0x49, 0xdb, 0x27, 0x99, 0xb6, 0x1f, 0xc2, 0xa1, 0xaa, 0x56, 0x5e, 0xaf, 0xf6, 0xe8, 0x96,
-	0x59, 0xed, 0x36, 0xb3, 0xa2, 0xa1, 0x95, 0xbb, 0xf4, 0x3f, 0x07, 0xfd, 0x0c, 0x03, 0xe4, 0xf9,
-	0x79, 0x3f, 0x5c, 0xdd, 0xda, 0x9d, 0x94, 0x5e, 0xdd, 0x8e, 0x9f, 0xf7, 0x40, 0x3f, 0x9f, 0xc5,
-	0x11, 0xcb, 0x12, 0xef, 0xfe, 0xaa, 0xfd, 0xc3, 0xa0, 0xe4, 0x16, 0x74, 0x32, 0x74, 0xe1, 0x18,
-	0xdb, 0xca, 0xf6, 0x59, 0x7a, 0x9a, 0xc7, 0xd0, 0x9e, 0x50, 0xe7, 0x72, 0x1e, 0xdb, 0x31, 0xe5,
-	0x53, 0xd5, 0x16, 0x20, 0x4d, 0x17, 0x94, 0x4f, 0xf3, 0xe6, 0x6b, 0x14, 0x9a, 0x6f, 0xbd, 0x9d,
-	0x9a, 0x75, 0xed, 0xf4, 0x22, 0x53, 0xf9, 0x19, 0xdc, 0xcc, 0xf2, 0x98, 0x29, 0x11, 0xd5, 0x4d,
-	0x7e, 0x03, 0xb5, 0x6f, 0xd0, 0xb2, 0xa1, 0xff, 0x97, 0x06, 0xfa, 0x38, 0x3d, 0xfe, 0x5c, 0xf5,
-	0x9f, 0xae, 0x52, 0xa1, 0x4c, 0x80, 0xfd, 0x8d, 0x02, 0x34, 0xfe, 0x47, 0x01, 0x7e, 0xdc, 0x03,
-	0xfd, 0x45, 0xec, 0x16, 0x04, 0x78, 0x75, 0x95, 0x02, 0xfc, 0x97, 0x0d, 0x7f, 0x55, 0x92, 0xfc,
-	0xa2, 0xc1, 0xd1, 0x53, 0xe4, 0x4f, 0xad, 0x8b, 0x71, 0xda, 0xf3, 0x18, 0x22, 0x7b, 0xe4, 0xba,
-	0xac, 0xd4, 0xf4, 0x2f, 0xb5, 0x15, 0xf7, 0x01, 0x86, 0x9c, 0xf9, 0x98, 0x35, 0xfd, 0x68, 0x9d,
-	0xb2, 0x2e, 0x9a, 0x29, 0xdc, 0xcd, 0x8f, 0x43, 0xce, 0x96, 0x56, 0x16, 0xa2, 0xfb, 0x00, 0x9a,
-	0xc2, 0x92, 0x8e, 0x21, 0x31, 0x91, 0xa5, 0xe8, 0x96, 0xfc, 0x48, 0xad, 0x33, 0xea, 0xba, 0x4c,
-	0x49, 0x2b, 0x3f, 0x46, 0xaf, 0x0e, 0xe1, 0xba, 0xaa, 0xea, 0x0b, 0x64, 0x0b, 0xdf, 0x41, 0xf2,
-	0x55, 0xe9, 0x65, 0x26, 0x27, 0xeb, 0x39, 0x15, 0xb6, 0xcd, 0xac, 0xaa, 0xdb, 0xdb, 0x60, 0x69,
-	0xc1, 0xdf, 0xbf, 0xf6, 0x9d, 0x25, 0xa7, 0x1b, 0xfd, 0x8b, 0xd0, 0x9c, 0x72, 0xb8, 0x8b, 0x4b,
-	0x1c, 0x2c, 0xef, 0x6b, 0xe4, 0x9b, 0xf2, 0xbb, 0x48, 0xee, 0xae, 0x87, 0x28, 0xee, 0xe7, 0x54,
-	0x77, 0xb6, 0xe2, 0xd2, 0xf2, 0x7e, 0xd0, 0x5e, 0xff, 0xa4, 0x92, 0xd1, 0xe6, 0x10, 0xb5, 0x15,
-	0xde, 0xdf, 0xc9, 0x27, 0x2f, 0xb1, 0xf8, 0xdc, 0xd4, 0x95, 0x58, 0xdc, 0xdf, 0x54, 0x62, 0x05,
-	0x97, 0x96, 0x68, 0x57, 0x5e, 0x1a, 0xf2, 0xc1, 0xba, 0x5b, 0x09, 0x90, 0xc7, 0x3f, 0xd9, 0x0e,
-	0x54, 0x04, 0xa5, 0x67, 0xa7, 0x8e, 0xa0, 0x04, 0xd8, 0x44, 0x50, 0x05, 0x2a, 0x82, 0xd2, 0xd4,
-	0xae, 0x23, 0x28, 0x01, 0x36, 0x11, 0x54, 0x81, 0x8a, 0xa0, 0x34, 0x15, 0xeb, 0x08, 0x4a, 0x80,
-	0x4d, 0x04, 0x55, 0x60, 0x4a, 0xc0, 0xeb, 0x67, 0x0c, 0x31, 0xdf, 0x78, 0x7a, 0x48, 0xba, 0x7b,
-	0xbb, 0x4c, 0x9b, 0xc7, 0x77, 0xbf, 0xbe, 0x23, 0xe1, 0x1c, 0x9d, 0xe9, 0x50, 0x2c, 0x87, 0x5e,
-	0x34, 0x8c, 0x2f, 0xbd, 0x61, 0xf1, 0xbf, 0xc2, 0xe4, 0x9a, 0x18, 0x37, 0x0f, 0xfe, 0x0e, 0x00,
-	0x00, 0xff, 0xff, 0xb9, 0xb0, 0x20, 0x30, 0x42, 0x0c, 0x00, 0x00,
+	// 874 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0x41, 0x6f, 0xdc, 0x44,
+	0x14, 0xd6, 0x24, 0xbb, 0x4d, 0xf6, 0x6d, 0xdc, 0x56, 0x43, 0x24, 0xac, 0x45, 0x24, 0xe9, 0xb6,
+	0x81, 0x1c, 0x2a, 0x6f, 0xb3, 0x3d, 0xf4, 0x84, 0x44, 0x9b, 0xd0, 0x2a, 0xa2, 0xd0, 0x60, 0x54,
+	0x21, 0x10, 0x92, 0x35, 0xb1, 0x1f, 0x8e, 0x15, 0xc7, 0x36, 0xe3, 0xd9, 0x95, 0xf6, 0x84, 0xc4,
+	0xb1, 0x27, 0x2e, 0x9c, 0x39, 0xf6, 0xc6, 0x91, 0xdf, 0xc0, 0x0d, 0x7e, 0x01, 0x42, 0xfb, 0x3b,
+	0x10, 0x42, 0x9e, 0x19, 0x7b, 0x6d, 0xaf, 0xbb, 0xdb, 0x05, 0x02, 0xa7, 0x1d, 0xbf, 0xf9, 0xde,
+	0xfb, 0xde, 0xfb, 0x66, 0xde, 0x1b, 0x2d, 0xd0, 0x33, 0xe4, 0x62, 0xc2, 0x5c, 0x37, 0x1e, 0x45,
+	0xc2, 0x4a, 0x78, 0x2c, 0x62, 0x7a, 0x53, 0xda, 0xac, 0xdc, 0x38, 0x3e, 0xec, 0x6d, 0xfb, 0xb1,
+	0x1f, 0xcb, 0xcd, 0x41, 0xb6, 0x52, 0xb8, 0xde, 0x1b, 0xf2, 0xc7, 0x8d, 0x43, 0x31, 0x49, 0x30,
+	0xd5, 0x46, 0x03, 0x39, 0x77, 0x63, 0x0f, 0xd5, 0x67, 0xff, 0x05, 0x81, 0xee, 0xb3, 0x04, 0xa3,
+	0x87, 0x2a, 0x58, 0x8f, 0xc3, 0x86, 0x8d, 0x5f, 0x8f, 0x30, 0x15, 0x94, 0x42, 0x8b, 0x71, 0x3f,
+	0x35, 0xc9, 0xde, 0xfa, 0x41, 0xc7, 0x96, 0x6b, 0x7a, 0x17, 0x40, 0xd3, 0x3a, 0x81, 0x67, 0xae,
+	0xed, 0x91, 0x83, 0xce, 0x23, 0x63, 0xfa, 0xdb, 0x6e, 0x47, 0xfb, 0x9f, 0x1c, 0xdb, 0x1d, 0x0d,
+	0x38, 0xf1, 0xe8, 0x3e, 0x5c, 0x0f, 0x63, 0xdf, 0x47, 0xee, 0x7c, 0x15, 0x84, 0x02, 0x79, 0x6a,
+	0xae, 0x67, 0x1e, 0xb6, 0xa1, 0xac, 0x8f, 0x95, 0xb1, 0xb7, 0x01, 0x6d, 0x1b, 0x93, 0x70, 0xd2,
+	0xff, 0x85, 0xc0, 0x9b, 0xa5, 0x64, 0x3e, 0x0b, 0xc4, 0xf9, 0x29, 0x8f, 0x7d, 0x8e, 0x69, 0xfa,
+	0xbf, 0x24, 0xf6, 0xbe, 0x4e, 0x8c, 0x3e, 0x80, 0xcd, 0x44, 0x27, 0x62, 0x92, 0x3d, 0x72, 0xd0,
+	0x1d, 0xbe, 0x65, 0xa9, 0x43, 0xc8, 0x25, 0xb6, 0xc6, 0x87, 0x56, 0x9e, 0xab, 0x5d, 0x80, 0xfb,
+	0x7d, 0xd8, 0x3a, 0x0a, 0xe3, 0x14, 0x73, 0x79, 0x3b, 0x45, 0x15, 0xb3, 0xaa, 0x7d, 0x30, 0xcb,
+	0x98, 0x4a, 0xd5, 0x25, 0xfc, 0x3f, 0x4f, 0xe6, 0x0f, 0x02, 0x37, 0x34, 0xc9, 0x47, 0x28, 0x98,
+	0xc7, 0x04, 0xab, 0xe9, 0x46, 0x96, 0xe8, 0x46, 0xa1, 0x15, 0xb1, 0x4b, 0x54, 0xfa, 0xda, 0x72,
+	0x2d, 0x23, 0x8c, 0x99, 0x60, 0xdc, 0x71, 0x03, 0x4f, 0xe9, 0xa8, 0x23, 0x48, 0xeb, 0x91, 0x8c,
+	0xa0, 0x96, 0x81, 0x47, 0xdf, 0x06, 0x48, 0x46, 0x67, 0x61, 0xe0, 0x3a, 0x17, 0x38, 0x31, 0x5b,
+	0x32, 0x4e, 0x47, 0x59, 0x3e, 0xc4, 0x09, 0xdd, 0x85, 0x6e, 0xc8, 0x52, 0xe1, 0xc4, 0x09, 0x46,
+	0xe8, 0x99, 0xed, 0x3d, 0x72, 0xb0, 0x6e, 0x43, 0x66, 0x7a, 0x26, 0x2d, 0xf4, 0x36, 0x18, 0x2e,
+	0x47, 0x26, 0x82, 0x38, 0x72, 0x3c, 0x26, 0xd0, 0xbc, 0x26, 0x21, 0x5b, 0xb9, 0xf1, 0x98, 0x09,
+	0xa4, 0xdb, 0xd0, 0x46, 0xce, 0x63, 0x6e, 0x6e, 0xc8, 0xf8, 0xea, 0xa3, 0xcf, 0x60, 0xeb, 0x69,
+	0x90, 0x0a, 0x5d, 0x58, 0x45, 0xdb, 0xc7, 0xb9, 0xb6, 0xef, 0xc1, 0xa6, 0xae, 0x56, 0x5d, 0xaf,
+	0xee, 0xf0, 0x96, 0x55, 0xef, 0x36, 0xab, 0xa6, 0xa1, 0x5d, 0xb8, 0xf4, 0x3f, 0x01, 0xe3, 0x18,
+	0x43, 0x14, 0xc5, 0x79, 0x3f, 0x98, 0xdd, 0xda, 0x95, 0x94, 0x9e, 0xdd, 0x8e, 0x1f, 0xd6, 0xc0,
+	0x38, 0xb9, 0x4c, 0x62, 0x9e, 0x27, 0xde, 0xfb, 0x89, 0xfc, 0xcd, 0xa0, 0xf4, 0x16, 0x6c, 0xe5,
+	0xe8, 0xd2, 0x31, 0x76, 0xb5, 0xed, 0xe3, 0xec, 0x34, 0x77, 0xa1, 0x7b, 0xc6, 0xdc, 0x8b, 0x51,
+	0xe2, 0x24, 0x4c, 0x9c, 0xeb, 0xb6, 0x00, 0x65, 0x3a, 0x65, 0xe2, 0xbc, 0x68, 0xbe, 0x56, 0xa9,
+	0xf9, 0xe6, 0xdb, 0xa9, 0xdd, 0xd4, 0x4e, 0xcf, 0x73, 0x95, 0x9f, 0xc2, 0xcd, 0x3c, 0x8f, 0x4b,
+	0x2d, 0xa2, 0xbe, 0xc9, 0xaf, 0xa1, 0xf6, 0x0d, 0x56, 0x35, 0xf4, 0xff, 0x24, 0x60, 0x1c, 0x65,
+	0xc7, 0x5f, 0xa8, 0xfe, 0xfd, 0x55, 0x2a, 0x94, 0x0b, 0xb0, 0xbe, 0x50, 0x80, 0xd6, 0x7f, 0x28,
+	0xc0, 0x77, 0x6b, 0x60, 0x3c, 0x4f, 0xbc, 0x92, 0x00, 0x2f, 0xaf, 0x52, 0x80, 0x7f, 0xb3, 0xe1,
+	0xaf, 0x4a, 0x92, 0x1f, 0x09, 0x6c, 0x3f, 0x41, 0xf1, 0xc4, 0x3e, 0x3d, 0xca, 0x7a, 0x1e, 0x23,
+	0xe4, 0x0f, 0x3d, 0x8f, 0x57, 0x9a, 0xfe, 0x05, 0x99, 0x71, 0x6f, 0x60, 0x24, 0x78, 0x80, 0x79,
+	0xd3, 0x0f, 0xe7, 0x29, 0x9b, 0xa2, 0x59, 0xd2, 0xdd, 0xfa, 0x20, 0x12, 0x7c, 0x62, 0xe7, 0x21,
+	0x7a, 0xf7, 0xa1, 0x2d, 0x2d, 0xd9, 0x18, 0x92, 0x13, 0x59, 0x89, 0x6e, 0xab, 0x8f, 0xcc, 0x7a,
+	0xc9, 0x3c, 0x8f, 0x6b, 0x69, 0xd5, 0xc7, 0xf0, 0xe5, 0x26, 0x5c, 0xd7, 0x55, 0x7d, 0x8a, 0x7c,
+	0x1c, 0xb8, 0x48, 0x3f, 0xaf, 0xbc, 0xcc, 0x74, 0x7f, 0x3e, 0xa7, 0xd2, 0xb6, 0x95, 0x57, 0x75,
+	0x7b, 0x19, 0x2c, 0x2b, 0xf8, 0x9b, 0x57, 0xbe, 0xb3, 0xf4, 0x70, 0xa1, 0x7f, 0x19, 0x5a, 0x50,
+	0x0e, 0x56, 0x71, 0x49, 0xc2, 0xc9, 0x3d, 0x42, 0xbf, 0xac, 0xbe, 0x8b, 0xf4, 0x9d, 0xf9, 0x10,
+	0xe5, 0xfd, 0x82, 0xea, 0xce, 0x52, 0x5c, 0x56, 0xde, 0xb7, 0xe4, 0xd5, 0x4f, 0x2a, 0x1d, 0x2e,
+	0x0e, 0xd1, 0x58, 0xe1, 0xbd, 0x95, 0x7c, 0x8a, 0x12, 0xcb, 0xcf, 0x4d, 0x53, 0x89, 0xe5, 0xfd,
+	0x45, 0x25, 0xd6, 0x70, 0x59, 0x89, 0x4e, 0xed, 0xa5, 0xa1, 0xef, 0xce, 0xbb, 0x55, 0x00, 0x45,
+	0xfc, 0xfd, 0xe5, 0x40, 0x4d, 0x50, 0x79, 0x76, 0x9a, 0x08, 0x2a, 0x80, 0x45, 0x04, 0x75, 0xa0,
+	0x26, 0xa8, 0x4c, 0xed, 0x26, 0x82, 0x0a, 0x60, 0x11, 0x41, 0x1d, 0xa8, 0x09, 0x2a, 0x53, 0xb1,
+	0x89, 0xa0, 0x02, 0x58, 0x44, 0x50, 0x07, 0x66, 0x04, 0xa2, 0x79, 0xc6, 0x50, 0xeb, 0xb5, 0xa7,
+	0x87, 0xa2, 0xbb, 0xbb, 0xca, 0xb4, 0x79, 0x34, 0xfc, 0x79, 0xba, 0x43, 0x7e, 0x9d, 0xee, 0x90,
+	0xdf, 0xa7, 0x3b, 0xe4, 0x8b, 0x3b, 0xca, 0x55, 0xa0, 0x7b, 0x3e, 0x90, 0xcb, 0x81, 0x1f, 0x0f,
+	0x92, 0x0b, 0x7f, 0x50, 0xfe, 0xdf, 0x70, 0x76, 0x4d, 0x8e, 0x9e, 0xfb, 0x7f, 0x05, 0x00, 0x00,
+	0xff, 0xff, 0xb1, 0x14, 0xd1, 0xd9, 0x4e, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2023,3 +2314,4715 @@ var _AccountService_serviceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "bertyaccount.proto",
 }
+
+func (m *OpenAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OpenAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OpenAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *OpenAccount_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OpenAccount_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OpenAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.LoggerFilters) > 0 {
+		i -= len(m.LoggerFilters)
+		copy(dAtA[i:], m.LoggerFilters)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.LoggerFilters)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Args) > 0 {
+		for iNdEx := len(m.Args) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Args[iNdEx])
+			copy(dAtA[i:], m.Args[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Args[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *OpenAccount_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OpenAccount_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OpenAccount_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *OpenAccountWithProgress) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OpenAccountWithProgress) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OpenAccountWithProgress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *OpenAccountWithProgress_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OpenAccountWithProgress_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OpenAccountWithProgress_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.LoggerFilters) > 0 {
+		i -= len(m.LoggerFilters)
+		copy(dAtA[i:], m.LoggerFilters)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.LoggerFilters)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Args) > 0 {
+		for iNdEx := len(m.Args) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Args[iNdEx])
+			copy(dAtA[i:], m.Args[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Args[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *OpenAccountWithProgress_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OpenAccountWithProgress_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OpenAccountWithProgress_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Progress != nil {
+		{
+			size, err := m.Progress.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CloseAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CloseAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CloseAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CloseAccount_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CloseAccount_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CloseAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CloseAccount_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CloseAccount_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CloseAccount_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CloseAccountWithProgress) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CloseAccountWithProgress) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CloseAccountWithProgress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CloseAccountWithProgress_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CloseAccountWithProgress_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CloseAccountWithProgress_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CloseAccountWithProgress_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CloseAccountWithProgress_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CloseAccountWithProgress_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Progress != nil {
+		{
+			size, err := m.Progress.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Error) > 0 {
+		i -= len(m.Error)
+		copy(dAtA[i:], m.Error)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Error)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.CreationDate != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.CreationDate))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.LastOpened != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.LastOpened))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.PublicKey) > 0 {
+		i -= len(m.PublicKey)
+		copy(dAtA[i:], m.PublicKey)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.PublicKey)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.AvatarCID) > 0 {
+		i -= len(m.AvatarCID)
+		copy(dAtA[i:], m.AvatarCID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AvatarCID)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListAccounts) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListAccounts) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListAccounts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListAccounts_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListAccounts_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListAccounts_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListAccounts_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListAccounts_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListAccounts_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Accounts) > 0 {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Accounts[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeleteAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeleteAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeleteAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeleteAccount_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeleteAccount_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeleteAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeleteAccount_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeleteAccount_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeleteAccount_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ImportAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ImportAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ImportAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ImportAccount_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ImportAccount_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ImportAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.LoggerFilters) > 0 {
+		i -= len(m.LoggerFilters)
+		copy(dAtA[i:], m.LoggerFilters)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.LoggerFilters)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Args) > 0 {
+		for iNdEx := len(m.Args) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Args[iNdEx])
+			copy(dAtA[i:], m.Args[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Args[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.BackupPath) > 0 {
+		i -= len(m.BackupPath)
+		copy(dAtA[i:], m.BackupPath)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.BackupPath)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AccountName) > 0 {
+		i -= len(m.AccountName)
+		copy(dAtA[i:], m.AccountName)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ImportAccount_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ImportAccount_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ImportAccount_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.AccountMetadata != nil {
+		{
+			size, err := m.AccountMetadata.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CreateAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CreateAccount_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateAccount_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.LoggerFilters) > 0 {
+		i -= len(m.LoggerFilters)
+		copy(dAtA[i:], m.LoggerFilters)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.LoggerFilters)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Args) > 0 {
+		for iNdEx := len(m.Args) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Args[iNdEx])
+			copy(dAtA[i:], m.Args[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Args[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.AccountName) > 0 {
+		i -= len(m.AccountName)
+		copy(dAtA[i:], m.AccountName)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CreateAccount_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateAccount_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateAccount_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.AccountMetadata != nil {
+		{
+			size, err := m.AccountMetadata.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UpdateAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UpdateAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UpdateAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UpdateAccount_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UpdateAccount_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UpdateAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.PublicKey) > 0 {
+		i -= len(m.PublicKey)
+		copy(dAtA[i:], m.PublicKey)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.PublicKey)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.AvatarCID) > 0 {
+		i -= len(m.AvatarCID)
+		copy(dAtA[i:], m.AvatarCID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AvatarCID)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AccountName) > 0 {
+		i -= len(m.AccountName)
+		copy(dAtA[i:], m.AccountName)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UpdateAccount_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UpdateAccount_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UpdateAccount_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.AccountMetadata != nil {
+		{
+			size, err := m.AccountMetadata.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetGRPCListenerAddrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetGRPCListenerAddrs) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetGRPCListenerAddrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetGRPCListenerAddrs_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetGRPCListenerAddrs_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetGRPCListenerAddrs_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetGRPCListenerAddrs_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetGRPCListenerAddrs_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetGRPCListenerAddrs_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Entries) > 0 {
+		for iNdEx := len(m.Entries) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Entries[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetGRPCListenerAddrs_Reply_Entry) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetGRPCListenerAddrs_Reply_Entry) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetGRPCListenerAddrs_Reply_Entry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Maddr) > 0 {
+		i -= len(m.Maddr)
+		copy(dAtA[i:], m.Maddr)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Maddr)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Proto) > 0 {
+		i -= len(m.Proto)
+		copy(dAtA[i:], m.Proto)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Proto)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintBertyaccount(dAtA []byte, offset int, v uint64) int {
+	offset -= sovBertyaccount(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+
+func (m *OpenAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *OpenAccount_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Args) > 0 {
+		for _, s := range m.Args {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.LoggerFilters)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *OpenAccount_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *OpenAccountWithProgress) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *OpenAccountWithProgress_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Args) > 0 {
+		for _, s := range m.Args {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.LoggerFilters)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *OpenAccountWithProgress_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Progress != nil {
+		l = m.Progress.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CloseAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CloseAccount_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CloseAccount_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CloseAccountWithProgress) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CloseAccountWithProgress_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CloseAccountWithProgress_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Progress != nil {
+		l = m.Progress.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.AvatarCID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.PublicKey)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.LastOpened != 0 {
+		n += 1 + sovBertyaccount(uint64(m.LastOpened))
+	}
+	if m.CreationDate != 0 {
+		n += 1 + sovBertyaccount(uint64(m.CreationDate))
+	}
+	l = len(m.Error)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ListAccounts) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ListAccounts_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ListAccounts_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Accounts) > 0 {
+		for _, e := range m.Accounts {
+			l = e.Size()
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeleteAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeleteAccount_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeleteAccount_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ImportAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ImportAccount_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.AccountName)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.BackupPath)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if len(m.Args) > 0 {
+		for _, s := range m.Args {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	l = len(m.LoggerFilters)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ImportAccount_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.AccountMetadata != nil {
+		l = m.AccountMetadata.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CreateAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CreateAccount_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.AccountName)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if len(m.Args) > 0 {
+		for _, s := range m.Args {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	l = len(m.LoggerFilters)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CreateAccount_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.AccountMetadata != nil {
+		l = m.AccountMetadata.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UpdateAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UpdateAccount_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.AccountName)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.AvatarCID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.PublicKey)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UpdateAccount_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.AccountMetadata != nil {
+		l = m.AccountMetadata.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetGRPCListenerAddrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetGRPCListenerAddrs_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetGRPCListenerAddrs_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Entries) > 0 {
+		for _, e := range m.Entries {
+			l = e.Size()
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetGRPCListenerAddrs_Reply_Entry) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proto)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.Maddr)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func sovBertyaccount(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+
+func sozBertyaccount(x uint64) (n int) {
+	return sovBertyaccount(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+
+func (m *OpenAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: OpenAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: OpenAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *OpenAccount_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Args", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Args = append(m.Args, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LoggerFilters", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *OpenAccount_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *OpenAccountWithProgress) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: OpenAccountWithProgress: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: OpenAccountWithProgress: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *OpenAccountWithProgress_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Args", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Args = append(m.Args, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LoggerFilters", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *OpenAccountWithProgress_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Progress", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Progress == nil {
+				m.Progress = &protocoltypes.Progress{}
+			}
+			if err := m.Progress.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CloseAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CloseAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CloseAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CloseAccount_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CloseAccount_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CloseAccountWithProgress) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CloseAccountWithProgress: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CloseAccountWithProgress: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CloseAccountWithProgress_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CloseAccountWithProgress_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Progress", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Progress == nil {
+				m.Progress = &protocoltypes.Progress{}
+			}
+			if err := m.Progress.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *AccountMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AvatarCID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AvatarCID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PublicKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastOpened", wireType)
+			}
+			m.LastOpened = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastOpened |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreationDate", wireType)
+			}
+			m.CreationDate = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreationDate |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Error = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ListAccounts) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListAccounts: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListAccounts: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ListAccounts_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ListAccounts_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Accounts = append(m.Accounts, &AccountMetadata{})
+			if err := m.Accounts[len(m.Accounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *DeleteAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeleteAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeleteAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *DeleteAccount_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *DeleteAccount_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ImportAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ImportAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ImportAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ImportAccount_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BackupPath", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BackupPath = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Args", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Args = append(m.Args, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LoggerFilters", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *ImportAccount_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountMetadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AccountMetadata == nil {
+				m.AccountMetadata = &AccountMetadata{}
+			}
+			if err := m.AccountMetadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CreateAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CreateAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CreateAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CreateAccount_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Args", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Args = append(m.Args, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LoggerFilters", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *CreateAccount_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountMetadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AccountMetadata == nil {
+				m.AccountMetadata = &AccountMetadata{}
+			}
+			if err := m.AccountMetadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *UpdateAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UpdateAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UpdateAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *UpdateAccount_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AvatarCID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AvatarCID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PublicKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *UpdateAccount_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountMetadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AccountMetadata == nil {
+				m.AccountMetadata = &AccountMetadata{}
+			}
+			if err := m.AccountMetadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *GetGRPCListenerAddrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetGRPCListenerAddrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetGRPCListenerAddrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *GetGRPCListenerAddrs_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *GetGRPCListenerAddrs_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Entries", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Entries = append(m.Entries, &GetGRPCListenerAddrs_Reply_Entry{})
+			if err := m.Entries[len(m.Entries)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *GetGRPCListenerAddrs_Reply_Entry) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Entry: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Entry: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proto", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proto = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Maddr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Maddr = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func skipBertyaccount(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthBertyaccount
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupBertyaccount
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthBertyaccount
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthBertyaccount        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowBertyaccount          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupBertyaccount = fmt.Errorf("proto: unexpected end of group")
+)
