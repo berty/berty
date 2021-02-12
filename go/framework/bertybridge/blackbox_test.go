@@ -27,8 +27,10 @@ func Example() {
 			config.SetLifeCycleDriver(nil)
 			config.SetLoggerDriver(nil)
 			config.SetNotificationDriver(nil)
-			config.SetRootDir(tmpdir)
 		}
+
+		// set bridge root dir
+		config.SetRootDir(tmpdir)
 
 		b, err = bertybridge.NewBridge(config)
 		checkErr(err)
