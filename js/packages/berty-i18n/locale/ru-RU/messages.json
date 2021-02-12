@@ -252,8 +252,8 @@
       "title": "Инструменты для разработчиков",
       "header-left-button": "Информация об устройстве",
       "simulate-button": "Симулировать ошибки в передаче данных",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-js-error-button": "Имитация ошибки JavaScript",
+      "simulate-native-error-button": "Симуляция родной ошибки",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "необязательно",
       "tor-required-option": "обязательно",
@@ -436,7 +436,7 @@
     },
     "restart-app": "Перезапустить приложение",
     "wtf-screen": {
-      "title": "",
+      "title": "Что случилось?",
       "desc": "Приложение только что завершилось.",
       "desc-report": "Встряхните свой телефон для сообщения об ошибке и нажмите на кнопку, чтобы выйти и перезапустить приложение."
     },
@@ -450,59 +450,59 @@
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
+      "show-button": "Показать инспектор приложения",
+      "hide-button": "Закрыть",
+      "title": "Инспектор",
       "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "title": "Аккаунты",
+        "unsupported-remote-mode": "Инспектор аккаунтов не поддерживается в удаленном режиме",
+        "data-not-found": "Аккаунт не в списке",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
+          "file-exists": "Аккаунт {{accountId}} не существует, однако файл имеет это имя.",
+          "account-exists": "Аккаунт {{accountId}} уже существует.",
+          "directory-exists-load-error": "Аккаунт {{accountId}} не существует, однако в каталоге есть это имя.",
+          "fs-read-error": "Ошибка при получении информации об аккаунте",
+          "actions-title": "Что нужно делать?",
+          "action-account-manager": "Удалить через менеджер аккаунтов",
+          "action-account-manager-confirm": "Подтвердите удаление аккаунта",
+          "action-force-delete": "Принудительно удалить",
+          "action-force-delete-confirm": "Подтвердите принудительное удаление аккаунта",
+          "error-close": "Ошибка при закрытии аккаунта",
+          "error-delete": "Ошибка при удалении аккаунта",
+          "success-feedback": "Аккаунт удалён",
           "action-cancel": "Отменить"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "metadata-found": "Найден файл метаданных",
+          "metadata-not-found": "Файл метаданных не найден",
+          "ipfs-repo-config-found": "Найден файл конфигурации IPFS",
+          "ipfs-repo-config-not-found": "Файл конфигурации IPFS не найден",
+          "messenger-db-found": "Обнаружена база данных мессенджера",
+          "messenger-db-not-found": "База данных мессенджера не найдена"
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
+            "name": "Имя:    {{name}}",
+            "created": "Создано: {{created}}",
+            "opened": "Открыто:  {{opened}}",
+            "error": "Ошибка:   {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "title": "Ошибки",
+        "header-reported": "Произошла ошибка:",
+        "header-all-clear": "Нет сообщений об ошибке",
+        "listing-files-failed": "Ошибка при отображении содержимого каталога",
+        "listing-accounts-failed": "Ошибка при отображении аккаунтов",
+        "listing-accounts-failed-grpc": "Ошибка GRPC при отображении аккаунтов"
       },
       "dump": {
-        "button": ""
+        "button": "Дамп состояния приложения"
       },
-      "refresh": "",
+      "refresh": "Обновить",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Подтвердить",
         "button-cancel": "Отменить"
       }
     }
