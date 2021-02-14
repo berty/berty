@@ -80,8 +80,8 @@
         "no-results": "Nessun risultato trovato"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Crea un nuovo account",
+        "import-button": "Importa account"
       }
     },
     "home-modal": {
@@ -252,8 +252,8 @@
       "title": "Strumenti di sviluppo",
       "header-left-button": "Informazioni sul dispositivo",
       "simulate-button": "Simula errore stream",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-js-error-button": "Simula errore JavaScript",
+      "simulate-native-error-button": "Simula errore nativo",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "facoltativo",
       "tor-required-option": "necessario",
@@ -431,28 +431,28 @@
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Rilevato bug",
+      "crash": "Rilevato crash"
     },
-    "restart-app": "",
+    "restart-app": "Riavvia l'app",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Cosa è fallito?",
+      "desc": "L'applicazione è appena crashata.",
+      "desc-report": "Scuoti il telefono per segnalare il bug e fai clic sul pulsante per uscire e riavviare l'app."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "Ci dispiace per questo bug!",
+      "desc": "È colpa di Francis, sviluppatore stagista a Berty, che deve aver commesso un errore. Che idiota questo Francis!",
+      "desc-buy": "Ti comprerà una birra quando lo vedrai!",
+      "desc-em": "*Beh, ok, non c'è alcun Francis nel team di Berty.",
+      "desc-report": "Scuoti il tuo telefono e via di nuovo!"
     }
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
+      "show-button": "Mostra l'ispettore dell'app",
+      "hide-button": "Chiudi",
+      "title": "Ispettore",
       "accounts": {
         "title": "",
         "unsupported-remote-mode": "",
@@ -490,7 +490,7 @@
         }
       },
       "errors": {
-        "title": "",
+        "title": "Errori",
         "header-reported": "",
         "header-all-clear": "",
         "listing-files-failed": "",
