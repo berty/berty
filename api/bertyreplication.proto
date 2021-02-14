@@ -2,9 +2,14 @@ syntax = "proto3";
 
 package berty.protocol.v1;
 
+import "gogoproto/gogo.proto";
 import "protocoltypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertyprotocol";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
 
 // ReplicationService
 service ReplicationService {

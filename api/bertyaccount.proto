@@ -8,6 +8,10 @@ import "errcode.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertyaccount";
 
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
 service AccountService {
   /// Account
 
