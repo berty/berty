@@ -169,7 +169,7 @@ jobs:
         working-directory: go
         env:
           TEST_SPEED: any
-          GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -coverprofile=coverage.txt -covermode=atomic
+          GO_TEST_OPTS: -test.timeout=12000s -count=1 -race -cover -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
