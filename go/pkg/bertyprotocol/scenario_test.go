@@ -85,39 +85,38 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 	const ngroup = 3
 
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},
-		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10 * ngroup},
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10 * ngroup},
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10 * ngroup},
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20 * ngroup},
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20 * ngroup},
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30 * ngroup},
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30 * ngroup},
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40 * ngroup},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40 * ngroup},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
 		for i := 0; i < ngroup; i++ {
 			t.Logf("===== MultiMember Group #%d =====", i+1)
 
-			// var groupContext context.Context
-			// var groupCancel context.CancelFunc
+			var groupContext context.Context
+			var groupCancel context.CancelFunc
 
-			// var deadline time.Time
+			var deadline time.Time
 
-			// deadline, _ = ctx.Deadline()
+			deadline, _ = ctx.Deadline()
 
-			// groupContext, groupCancel = context.WithTimeout(context.Background(), time.Until(deadline))
+			groupContext, groupCancel = context.WithTimeout(context.Background(), time.Until(deadline))
 
 			// Create MultiMember Group
-			groupID := createMultiMemberGroup(ctx, t, tps...)
+			groupID := createMultiMemberGroup(groupContext, t, tps...)
 
 			// Each member sends 3 messages on MultiMember Group
 			messages := []string{"test1", "test2", "test3"}
 			sendMessageOnGroup(ctx, t, tps, tps, groupID, messages)
 
-			// groupCancel()
-			time.Sleep(time.Second * 1);
+			groupCancel()
 		}
 	})
 }
