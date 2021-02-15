@@ -262,6 +262,10 @@
       "header-right-button": "Reiniciar el servicio",
       "system-info-button": "Información del sistema",
       "debug-button": "Depurar",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Agregar conversaciones de desarrollo",
       "share-button": {
         "title": "Compartir ID en discord",
