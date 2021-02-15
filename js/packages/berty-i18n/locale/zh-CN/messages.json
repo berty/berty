@@ -262,6 +262,10 @@
       "header-right-button": "重启守护进程",
       "system-info-button": "系统信息",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "添加开发者会话",
       "share-button": {
         "title": "分享ID到Discord",
