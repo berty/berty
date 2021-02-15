@@ -262,6 +262,10 @@
       "header-right-button": "Restart daemon",
       "system-info-button": "System-info",
       "debug-button": "Feilsøk",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Legg til utviklersamtaler",
       "share-button": {
         "title": "Del ID på Discord",
