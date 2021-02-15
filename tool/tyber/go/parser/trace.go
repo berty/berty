@@ -1,6 +1,6 @@
 package parser
 
-import "berty.tech/berty/v2/tool/tyber/go/format"
+import "berty.tech/berty/tool/tyber/go/v2/format"
 
 type Trace struct {
 	ID    string  `json:"id"`
