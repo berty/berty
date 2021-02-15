@@ -262,6 +262,10 @@
       "header-right-button": "Рестартирай daemon-а",
       "system-info-button": "Система информация",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Добави програмистка грешка",
       "share-button": {
         "title": "Сподели ID в discord",
