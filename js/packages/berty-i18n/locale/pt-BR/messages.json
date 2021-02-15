@@ -262,6 +262,10 @@
       "header-right-button": "Reiniciar daemon",
       "system-info-button": "Informações do sistema",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Adicionar conversas de desenvolvimento",
       "share-button": {
         "title": "Compartilhar ID no Discord",
