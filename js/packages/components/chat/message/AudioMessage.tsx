@@ -68,8 +68,10 @@ export const AudioMessage: React.FC<{ medias: any }> = ({ medias }) => {
 							width: windowWidth - 100,
 							maxWidth: 400,
 							position: 'absolute',
-							top: 10,
+							// top: 10,
 							left: 0,
+							// borderWidth: 1,
+							// borderColor: color.red,
 						}}
 						source={{ uri: source }}
 						waveFormStyle={{

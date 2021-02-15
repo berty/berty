@@ -17,7 +17,6 @@ import AccountBerty from './custom-icons-svgs/account-berty.svg'
 import Tor from './custom-icons-svgs/Tor.svg'
 import Berty from './custom-icons-svgs/berty_picto.svg'
 import AddNewGroup from './custom-icons-svgs/add-new-group.svg'
-import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
 import Microphone from './custom-icons-svgs/microphone.svg'
 import Play from './custom-icons-svgs/play-player.svg'
 import Pause from './custom-icons-svgs/pause-player.svg'
@@ -30,6 +29,9 @@ import WrongMan from './custom-icons-svgs/wrong-man.svg'
 import Privacy from './custom-icons-svgs/privacy.svg'
 import COGChip from './custom-icons-svgs/cog-chip.svg'
 import PrivacyModeBackground from './custom-icons-svgs/privacy-mode-bg.svg'
+import MicrophoneFooter from './custom-icons-svgs/microphone-footer.svg'
+import CameraFooter from './custom-icons-svgs/camera-footer.svg'
+import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -47,7 +49,6 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	berty: Berty,
 	plus: Plus,
 	'account-berty': AccountBerty,
-	bertyzzz: Bertyzzz,
 	microphone: Microphone,
 	play: Play,
 	pause: Pause,
@@ -60,6 +61,9 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	privacy: Privacy,
 	'cog-chip': COGChip,
 	'privacy-bg': PrivacyModeBackground,
+	'microphone-footer': MicrophoneFooter,
+	'camera-footer': CameraFooter,
+	bertyzzz: Bertyzzz,
 }
 
 const CustomIcon: React.FC<{

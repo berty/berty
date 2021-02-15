@@ -1,19 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import {
-	View,
-	Animated,
-	Modal,
-	KeyboardAvoidingView,
-	Platform,
-	TouchableOpacity,
-	ActivityIndicator,
-} from 'react-native'
+import React, { useState } from 'react'
+import { View, Modal, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
-import { Text, Icon } from '@ui-kitten/components'
 import DocumentPicker from 'react-native-document-picker'
-import { Player, Recorder } from '@react-native-community/audio-toolkit'
-import moment from 'moment'
 import ImagePicker from 'react-native-image-crop-picker'
 import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
 import beapi from '@berty-tech/api'
@@ -21,54 +10,20 @@ import beapi from '@berty-tech/api'
 import { MenuListItem } from './MenuListItem'
 import { GallerySection } from './GallerySection'
 import { GifSection } from './GifSection'
-import { RecorderState, TabItems } from './types'
+import { TabItems } from './types'
 import { SecurityAccess } from './SecurityAccess'
 import { useClient } from '@berty-tech/store/hooks'
-
-let audioFilename = 'tempVoiceClip.aac'
-let player = new Player(audioFilename)
-let recorder: Recorder
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
 
 export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = ({ onClose }) => {
-	const [{ color, border, padding, margin }, { windowWidth }] = useStyles()
+	const [{ color, border, padding }] = useStyles()
 	const { t }: { t: any } = useTranslation()
-	const [recorderFilePath, setRecorderFilePath] = useState('')
-	const [recorderState, setRecorderState] = useState(RecorderState.Default)
-	const [recordStartTime, setRecordStartTime] = useState<null | moment.Moment>(moment())
-	const [recordStopTime, setRecordStopTime] = useState<null | moment.Moment>(moment())
-	const [refresh, setRefresh] = useState(0)
-	const [intervalId, setIntervalId] = useState<any>()
-	const [animatedWidth] = useState(new Animated.Value(0))
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
 	const [isLoading, setLoading] = useState(false)
 	const client = useClient()
-
-	useEffect(() => {
-		if (player?.isPlaying) {
-			Animated.timing(animatedWidth, {
-				toValue:
-					((player.currentTime === -1 ? player.duration : player.currentTime) / player.duration) *
-					windowWidth *
-					1.1,
-				duration: 100,
-				useNativeDriver: false,
-			}).start()
-		} else if (!recorder?.isRecording && player?.isStopped) {
-			Animated.timing(animatedWidth, {
-				toValue: 0,
-				duration: 100,
-				useNativeDriver: false,
-			}).start()
-
-			intervalId && clearInterval(intervalId)
-		}
-	}, [animatedWidth, intervalId, refresh, windowWidth])
-
-	const recordingDuration = recordStartTime && (recordStopTime || moment()).diff(recordStartTime)
 
 	const LIST_CONFIG = [
 		{
@@ -79,6 +34,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 			},
 			title: t('chat.files.gallery'),
 			onPress: async () => {
+				setActiveTab(TabItems.Gallery)
 				if (Platform.OS === 'ios') {
 					try {
 						const status = await check(PERMISSIONS.IOS.PHOTO_LIBRARY)
@@ -97,7 +53,6 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 						console.log(err)
 					}
 				}
-				setActiveTab(TabItems.Gallery)
 			},
 		},
 		{
@@ -146,45 +101,6 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					])
 				} catch (err) {
 					console.log(err)
-				}
-			},
-		},
-		{
-			iconProps: {
-				name: 'microphone',
-				fill: recorderState === RecorderState.Recording ? '#F65B77' : '#C7C8D8',
-				pack: 'custom',
-			},
-			title: t('chat.files.record'),
-			onPress: async () => {
-				setActiveTab(TabItems.Record)
-				try {
-					const status = await check(
-						Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
-					)
-					if (status !== RESULTS.GRANTED) {
-						try {
-							const status = await request(
-								Platform.OS === 'ios'
-									? PERMISSIONS.IOS.MICROPHONE
-									: PERMISSIONS.ANDROID.RECORD_AUDIO,
-							)
-							if (status !== RESULTS.GRANTED) {
-								setSecurityAccessVisibility(true)
-								return
-							}
-						} catch (err) {
-							console.log(err)
-						}
-					}
-				} catch (err) {
-					console.log(err)
-				}
-
-				if (recorderState === RecorderState.Recording) {
-					stopRecording()
-				} else if (recorderState === RecorderState.Default) {
-					startRecording()
 				}
 			},
 		},
@@ -239,46 +155,6 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 		},
 	]
 
-	let duration = '00:00'
-	if (recorderState === RecorderState.Recorded && !player?.isStopped) {
-		duration = moment.utc(player?.currentTime).format('mm:ss')
-	} else if (recordingDuration) {
-		duration = moment.utc(recordingDuration).format('mm:ss')
-	}
-	const startTimer = () => {
-		setIntervalId(setInterval(() => setRefresh((timer) => timer + 1), 100))
-	}
-	const startRecording = () => {
-		recorder = new Recorder('tempVoiceClip.aac').prepare((err, filePath) => {
-			if (err) {
-				console.log('recorder prepare error', err?.message)
-			}
-			setRecorderFilePath(filePath)
-		})
-		recorder.record((err) => {
-			if (err) {
-				console.log('recorder record error', err?.message)
-			} else {
-				setRecorderState(RecorderState.Recording)
-				setRecordStartTime(moment())
-				setRecordStopTime(null)
-				startTimer()
-			}
-		})
-	}
-
-	const stopRecording = () => {
-		recorder?.stop(() => {
-			player.prepare()
-			recorder?.destroy()
-		})
-		setRecorderState(
-			recorderState === RecorderState.Recording ? RecorderState.Recorded : RecorderState.Default,
-		)
-		setRecordStopTime(moment())
-		intervalId && clearInterval(intervalId)
-	}
-
 	const prepareMediaAndSend = async (res: beapi.messenger.IMedia[]) => {
 		if (isLoading) {
 			return
@@ -318,8 +194,6 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					flex: 1,
 				}}
 				onPress={() => {
-					player?.stop()
-					recorder?.destroy()
 					onClose()
 				}}
 			/>
@@ -356,195 +230,6 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 							padding.bottom.large,
 						]}
 					>
-						{activeTab === TabItems.Record && (
-							<>
-								{recorderState === RecorderState.Recording && (
-									<TouchableOpacity
-										onPress={() => stopRecording()}
-										style={[
-											padding.vertical.medium,
-											padding.horizontal.large,
-											border.radius.top.large,
-											{
-												flexDirection: 'row',
-												alignItems: 'center',
-												justifyContent: 'center',
-												backgroundColor: '#F89A9A',
-												width: '100%',
-											},
-										]}
-									>
-										<View
-											style={{
-												flex: 1,
-											}}
-										>
-											<Icon height={50} width={50} name='microphone' pack='custom' fill='#F65B77' />
-										</View>
-
-										<Text>{t('chat.files.recording')}</Text>
-
-										<View
-											style={[
-												{
-													flex: 1,
-													alignItems: 'flex-end',
-												},
-											]}
-										>
-											<View
-												style={[
-													padding.vertical.tiny,
-													padding.horizontal.small,
-													border.radius.small,
-													{ backgroundColor: '#F6617A' },
-												]}
-											>
-												<Text style={{ color: color.white }}>{duration}</Text>
-											</View>
-										</View>
-									</TouchableOpacity>
-								)}
-								{recorderState === RecorderState.Recorded && (
-									<View
-										style={[
-											padding.vertical.medium,
-											padding.horizontal.large,
-											border.radius.top.large,
-											{
-												flexDirection: 'row',
-												alignItems: 'center',
-												backgroundColor: '#6B80FF',
-												width: '100%',
-												flex: 1,
-											},
-										]}
-									>
-										<TouchableOpacity
-											style={{
-												flex: 1,
-												alignItems: 'flex-start',
-											}}
-											onPress={() => {
-												prepareMediaAndSend([
-													{
-														filename: audioFilename,
-														mimeType: 'audio/aac',
-														uri: recorderFilePath,
-													},
-												])
-											}}
-										>
-											{isLoading ? (
-												<ActivityIndicator color='#4F58C0' size={50} />
-											) : (
-												<Icon height={50} width={50} name='checkmark-circle-2' fill='#4F58C0' />
-											)}
-										</TouchableOpacity>
-
-										<TouchableOpacity
-											onPress={() => {
-												if (player?.isPlaying) {
-													player.pause()
-												} else if (player?.isPaused) {
-													player.playPause()
-												} else {
-													player = new Player('tempVoiceClip.aac')
-													player.play((err) => {
-														if (err) {
-															console.log('player play', err?.message)
-														} else {
-															startTimer()
-														}
-													})
-												}
-											}}
-											style={[
-												border.radius.small,
-												{
-													backgroundColor: '#4F58C0',
-													alignItems: 'center',
-													justifyContent: 'center',
-													height: 40,
-													width: 100,
-												},
-											]}
-										>
-											<Icon
-												name={player?.isPlaying ? 'pause' : 'play'}
-												fill='white'
-												height={30}
-												width={30}
-												pack='custom'
-											/>
-										</TouchableOpacity>
-
-										<View
-											style={{
-												flex: 1,
-												flexDirection: 'row',
-												alignItems: 'center',
-												justifyContent: 'flex-end',
-											}}
-										>
-											<View
-												style={[
-													padding.vertical.tiny,
-													padding.horizontal.small,
-													border.radius.small,
-													{
-														backgroundColor: '#4F58C0',
-													},
-												]}
-											>
-												<Text style={{ color: color.white }}>{duration}</Text>
-											</View>
-
-											<TouchableOpacity
-												onPress={() => {
-													setRecorderState(RecorderState.Default)
-													recorder?.destroy()
-													setRecordStartTime(null)
-													setRecordStopTime(null)
-													player?.stop()
-												}}
-												style={[padding.tiny, margin.left.small]}
-											>
-												<Icon name='close-circle-outline' fill='#A1AEFF' height={30} width={30} />
-											</TouchableOpacity>
-										</View>
-
-										<View
-											style={{
-												position: 'absolute',
-												bottom: 0,
-												left: 0,
-												right: 0,
-												backgroundColor: '#8999FF',
-												height: 5,
-											}}
-										>
-											<Animated.View
-												style={[
-													{
-														position: 'absolute',
-														bottom: 0,
-														left: 0,
-														right: 0,
-														backgroundColor: '#3F49EA',
-														height: 5,
-														width: animatedWidth,
-													},
-													Number(animatedWidth).toFixed(2) !== windowWidth.toFixed(2) &&
-														border.radius.right.tiny,
-												]}
-											/>
-										</View>
-									</View>
-								)}
-							</>
-						)}
-
 						<View
 							style={{
 								flexDirection: 'row',

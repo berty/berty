@@ -11,10 +11,11 @@ import moment from 'moment'
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import { Recorder } from '@react-native-community/audio-toolkit'
 import beapi from '@berty-tech/api'
-import { playSound } from '@berty-tech/components/sounds'
+import { playSound } from '@berty-tech/store/sounds'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useTranslation } from 'react-i18next'
+import { Icon } from '@ui-kitten/components'
 
 enum RecordingState {
 	UNDEFINED = 0,
@@ -23,6 +24,7 @@ enum RecordingState {
 	RECORDING_LOCKED = 3,
 	PENDING_CANCEL = 4,
 	CANCELLING = 5,
+	PREVIEW = 6,
 	COMPLETE = 7,
 }
 
@@ -110,6 +112,8 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 
 export const RecordComponent: React.FC<{
 	convPk: string
+	component: React.ReactNode
+	aFixMicro: Animated.AnimatedInterpolation
 	style?: any
 	distanceCancel?: number
 	distanceLock?: number
@@ -117,9 +121,11 @@ export const RecordComponent: React.FC<{
 	disableLockMode?: boolean
 }> = ({
 	children,
+	component,
+	aFixMicro,
 	style = [],
 	distanceCancel = 200,
-	distanceLock = 100,
+	distanceLock = 80,
 	disableLockMode = false,
 	minAudioDuration = 1000,
 	convPk,
@@ -129,7 +135,7 @@ export const RecordComponent: React.FC<{
 	const [recorderFilePath, setRecorderFilePath] = useState('')
 	const { t } = useTranslation()
 
-	const [{ border, padding, margin, color }] = useStyles()
+	const [{ border, padding, margin, color }, { scaleSize }] = useStyles()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
 	const [recordingStart, setRecordingStart] = useState(Date.now())
 	const [clearRecordingInterval, setClearRecordingInterval] = useState<any | null>(null)
@@ -201,6 +207,7 @@ export const RecordComponent: React.FC<{
 		switch (recordingState) {
 			case RecordingState.PENDING_CANCEL:
 				Vibration.vibrate(200)
+				setRecordingState(RecordingState.CANCELLING)
 				break
 
 			case RecordingState.CANCELLING:
@@ -209,6 +216,13 @@ export const RecordComponent: React.FC<{
 				})
 
 				clearRecording()
+				break
+
+			case RecordingState.PREVIEW:
+				recorder.current?.stop(() => {
+					recorder.current?.destroy()
+				})
+
 				break
 
 			case RecordingState.COMPLETE:
@@ -285,16 +299,6 @@ export const RecordComponent: React.FC<{
 		async (e: LongPressGestureHandlerStateChangeEvent) => {
 			// Pressed
 			if (e.nativeEvent.state === State.BEGAN || e.nativeEvent.state === State.ACTIVE) {
-				if (recordingState === RecordingState.RECORDING_LOCKED) {
-					if (xy.x > -distanceCancel && xy.y > -20 && xy.y < 70) {
-						setRecordingState(RecordingState.CANCELLING)
-						return
-					}
-
-					setRecordingState(RecordingState.COMPLETE)
-					return
-				}
-
 				if (recordingState === RecordingState.NOT_RECORDING) {
 					const permState = await acquireMicPerm()
 					if (permState === MicPermStatus.NEWLY_GRANTED) {
@@ -341,9 +345,7 @@ export const RecordComponent: React.FC<{
 
 			// Released
 			if (e.nativeEvent.state === State.END) {
-				if (recordingState === RecordingState.PENDING_CANCEL) {
-					setRecordingState(RecordingState.CANCELLING)
-				} else if (recordingState === RecordingState.RECORDING) {
+				if (recordingState === RecordingState.RECORDING) {
 					setRecordingState(RecordingState.COMPLETE)
 				}
 
@@ -351,24 +353,15 @@ export const RecordComponent: React.FC<{
 			}
 
 			if (e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED) {
-				setRecordingState(RecordingState.CANCELLING)
+				setRecordingState(RecordingState.PENDING_CANCEL)
 				return
 			}
 		},
-		[
-			recordingState,
-			xy.x,
-			xy.y,
-			distanceCancel,
-			clearHelpMessageValue,
-			setHelpMessageValue,
-			t,
-			updateCurrentTime,
-		],
+		[recordingState, clearHelpMessageValue, setHelpMessageValue, t, updateCurrentTime],
 	)
 
 	return (
-		<>
+		<View style={[padding.top.medium, { flexDirection: 'row' }]}>
 			{helpMessage !== '' && (
 				<TouchableOpacity
 					style={{
@@ -393,7 +386,19 @@ export const RecordComponent: React.FC<{
 				</TouchableOpacity>
 			)}
 			{isRecording && (
-				<>
+				<View
+					style={[
+						style,
+						margin.left.medium,
+						{
+							flexDirection: 'row',
+							alignItems: 'center',
+							alignSelf: 'center',
+							height: 40,
+							flex: 1,
+						},
+					]}
+				>
 					<View
 						style={[
 							{
@@ -405,7 +410,7 @@ export const RecordComponent: React.FC<{
 								bottom: 0,
 								justifyContent: 'center',
 							},
-							padding.small,
+							padding.horizontal.small,
 							border.radius.small,
 							margin.right.small,
 						]}
@@ -428,80 +433,245 @@ export const RecordComponent: React.FC<{
 									outputRange: [0, 0.2],
 								}),
 							},
-							padding.small,
 							border.radius.small,
 							margin.right.small,
 						]}
 					/>
-					<View
+					<TouchableOpacity
+						onPress={() => {
+							if (recordingState === RecordingState.RECORDING_LOCKED) {
+								setHelpMessageValue({
+									message: t('audio.record.tooltip.not-sent'),
+								})
+								setRecordingState(RecordingState.PENDING_CANCEL)
+							}
+						}}
 						style={[
-							{
-								position: 'absolute',
-								width: distanceCancel,
-								right: 38,
-							},
-							padding.small,
 							border.radius.small,
-							margin.right.small,
-							recordingState === RecordingState.RECORDING_LOCKED ? border.color.light.grey : null,
-							recordingState === RecordingState.RECORDING_LOCKED ? border.scale(2) : null,
+							{
+								alignItems: 'center',
+								justifyContent: 'center',
+								bottom: 0,
+								top: 0,
+								position: 'absolute',
+							},
 						]}
 					>
 						{recordingState !== RecordingState.RECORDING_LOCKED ? (
-							<Text style={{ color: color.black, fontWeight: 'bold' }}>
+							<Text
+								style={{
+									color: color.black,
+									fontWeight: 'bold',
+									fontFamily: 'Open Sans',
+									padding: 5,
+								}}
+							>
 								{t('audio.record.slide-to-cancel')}
 							</Text>
 						) : (
-							<TouchableOpacity
-								onPress={() => {
-									setHelpMessageValue({
-										message: t('audio.record.tooltip.not-sent'),
-									})
-									setRecordingState(RecordingState.CANCELLING)
+							<Text
+								style={{
+									color: color.black,
+									fontWeight: 'bold',
+									fontFamily: 'Open Sans',
+									padding: 5,
 								}}
 							>
-								<Text
-									style={{
-										color: color.black,
-										fontWeight: 'bold',
-										textAlign: 'center',
-									}}
-								>
-									{t('audio.record.cancel-button')}
-								</Text>
-							</TouchableOpacity>
+								{t('audio.record.cancel-button')}
+							</Text>
 						)}
-					</View>
-				</>
-			)}
-			<LongPressGestureHandler
-				minDurationMs={0}
-				maxDist={100}
-				onGestureEvent={updateRecordingPressEvent}
-				onHandlerStateChange={recordingPressStatus}
-			>
-				<Animated.View style={[style]}>
-					{isRecording && (
-						<>
-							{!disableLockMode && recordingState !== RecordingState.RECORDING_LOCKED && (
-								<View
-									style={[
-										{
-											backgroundColor: '#0f0',
-											position: 'absolute',
-											top: -distanceLock - 30,
-											height: 30,
-										},
-									]}
-								>
-									<Text>Lock</Text>
-								</View>
-							)}
-						</>
+					</TouchableOpacity>
+					{recordingState === RecordingState.RECORDING_LOCKED && (
+						<TouchableOpacity
+							style={{
+								marginRight: 10 * scaleSize,
+								paddingHorizontal: 12 * scaleSize,
+								justifyContent: 'center',
+								alignItems: 'center',
+								borderRadius: 100,
+								position: 'absolute',
+								bottom: 0,
+								top: 0,
+								right: 0,
+							}}
+							onPress={() => {
+								setRecordingState(RecordingState.PREVIEW)
+							}}
+						>
+							<Icon
+								name='square'
+								height={20 * scaleSize}
+								width={20 * scaleSize}
+								fill={color.white}
+							/>
+						</TouchableOpacity>
 					)}
-					<View>{children}</View>
+				</View>
+			)}
+			{recordingState === RecordingState.PREVIEW && (
+				<View
+					style={[
+						style,
+						margin.horizontal.medium,
+						border.radius.medium,
+						{
+							height: 50,
+							flex: 1,
+							backgroundColor: '#F7F8FF',
+							flexDirection: 'row',
+							alignItems: 'center',
+						},
+					]}
+				>
+					<TouchableOpacity
+						style={[
+							padding.horizontal.small,
+							margin.left.scale(6),
+							{
+								alignItems: 'center',
+								justifyContent: 'center',
+								width: 36 * scaleSize,
+								height: 36 * scaleSize,
+							},
+						]}
+						onPress={() => {
+							clearInterval(clearRecordingInterval)
+							setHelpMessageValue({
+								message: t('audio.record.tooltip.not-sent'),
+							})
+							setRecordingState(RecordingState.PENDING_CANCEL)
+						}}
+					>
+						<Icon
+							name='trash-outline'
+							height={23 * scaleSize}
+							width={23 * scaleSize}
+							fill={color.red}
+						/>
+					</TouchableOpacity>
+					<Text style={{ flex: 1, textAlign: 'center' }}>Preview</Text>
+					<TouchableOpacity
+						style={[
+							padding.horizontal.small,
+							margin.right.scale(6),
+							{
+								alignItems: 'center',
+								justifyContent: 'center',
+								width: 36 * scaleSize,
+								height: 36 * scaleSize,
+							},
+						]}
+						onPress={() => {
+							setRecordingState(RecordingState.COMPLETE)
+						}}
+					>
+						<Icon
+							name='paper-plane-outline'
+							width={23 * scaleSize}
+							height={23 * scaleSize}
+							fill={color.blue}
+						/>
+					</TouchableOpacity>
+				</View>
+			)}
+			{!isRecording && recordingState !== RecordingState.PREVIEW && (
+				<View
+					style={[
+						style,
+						padding.left.scale(10),
+						{
+							height: 50,
+							flex: 1,
+						},
+					]}
+				>
+					{children}
+				</View>
+			)}
+			{recordingState === RecordingState.RECORDING_LOCKED && (
+				<Animated.View
+					style={[
+						{
+							right: aFixMicro,
+							height: 50,
+							justifyContent: 'center',
+							alignItems: 'flex-end',
+							paddingRight: 15 * scaleSize,
+							paddingLeft: 8 * scaleSize,
+						},
+					]}
+				>
+					<TouchableOpacity
+						style={[
+							{
+								alignItems: 'center',
+								justifyContent: 'center',
+								width: 36 * scaleSize,
+								height: 36 * scaleSize,
+							},
+						]}
+						onPress={() => {
+							setRecordingState(RecordingState.COMPLETE)
+						}}
+					>
+						<Icon
+							name='paper-plane-outline'
+							width={23 * scaleSize}
+							height={23 * scaleSize}
+							fill={color.blue}
+						/>
+					</TouchableOpacity>
 				</Animated.View>
-			</LongPressGestureHandler>
-		</>
+			)}
+			{(recordingState === RecordingState.NOT_RECORDING ||
+				recordingState === RecordingState.RECORDING) && (
+				<LongPressGestureHandler
+					minDurationMs={0}
+					maxDist={100 * scaleSize}
+					onGestureEvent={updateRecordingPressEvent}
+					onHandlerStateChange={recordingPressStatus}
+				>
+					<Animated.View
+						style={[
+							{
+								right: aFixMicro,
+								height: 50,
+								justifyContent: 'center',
+								alignItems: 'flex-end',
+								paddingRight: 15 * scaleSize,
+								paddingLeft: 8 * scaleSize,
+							},
+						]}
+					>
+						{isRecording && (
+							<View
+								style={{
+									justifyContent: 'center',
+									alignItems: 'center',
+									borderRadius: 100,
+									backgroundColor: color.blue,
+									width: 36 * scaleSize,
+									height: 36 * scaleSize,
+									position: 'absolute',
+									top: -distanceLock - 30,
+									right: 16,
+									paddingVertical: 5,
+								}}
+							>
+								<Icon
+									name='lock'
+									pack='feather'
+									height={20 * scaleSize}
+									width={20 * scaleSize}
+									fill={color.white}
+								/>
+							</View>
+						)}
+
+						<View>{component}</View>
+					</Animated.View>
+				</LongPressGestureHandler>
+			)}
+		</View>
 	)
 }

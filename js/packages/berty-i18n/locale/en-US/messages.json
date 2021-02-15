@@ -408,7 +408,7 @@
       "devices": "Devices"
     },
     "multi-member": {
-      "input-placeholder": "Write a secure message..."
+      "input-placeholder": "Type here..."
     },
     "multi-member-settings": {
       "header-left-button": "Search",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "Add betabot to write here...",
       "incoming-input-placeholder": "Accept the request to write here...",
-      "input-placeholder": "Write a secure message..."
+      "input-placeholder": "Type here..."
     },
     "one-to-one-settings": {
       "header-left-button": "Search",
