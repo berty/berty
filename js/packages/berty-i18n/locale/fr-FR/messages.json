@@ -262,6 +262,10 @@
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Ajouter conversations de dev",
       "share-button": {
         "title": "Partager l'ID sur Discord",
