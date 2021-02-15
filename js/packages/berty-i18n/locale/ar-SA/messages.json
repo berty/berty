@@ -262,6 +262,10 @@
       "header-right-button": "",
       "system-info-button": "",
       "debug-button": "",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "",
       "share-button": {
         "title": "",
