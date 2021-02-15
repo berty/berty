@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import beapi from '@berty-tech/api'
 import { ConversationAvatar } from '../avatars'
 import { useClient } from '@berty-tech/store/hooks'
-import { playSound } from '../sounds'
 
 import { useSortedConversationList, useMsgrContext } from '@berty-tech/store/hooks'
 
@@ -58,7 +57,7 @@ export const ForwardToBertyContactModal: React.FC<{
 					mediaCids: [reply.cid],
 				})
 				.then(() => {
-					playSound('messageSent')
+					ctx.playSound('messageSent')
 				})
 				.catch((e) => {
 					console.warn('e sending message:', e)

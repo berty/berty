@@ -5,14 +5,13 @@ import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useClient } from '@berty-tech/store/hooks'
+import { useClient, useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 
 import { pbDateToNum } from '../../helpers'
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'
-import { playSound } from '../../sounds'
 import { UnreadCount } from './UnreadCount'
 
 const useStylesContactRequest: any = () => {
@@ -90,6 +89,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 		acceptButton,
 		buttonsWrapper,
 	} = useStylesContactRequest()
+	const ctx = useMsgrContext()
 
 	const id = publicKey
 	const [{ border, padding, row, absolute, text, color }, { scaleSize }] = useStyles()
@@ -184,7 +184,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 								client
 									?.contactAccept({ publicKey })
 									.then(() => {
-										playSound('contactRequestAccepted')
+										ctx.playSound('contactRequestAccepted')
 									})
 									.catch((err: any) => console.warn('Failed to accept contact request:', err))
 							}

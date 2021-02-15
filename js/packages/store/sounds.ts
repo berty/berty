@@ -13,7 +13,14 @@ const soundsMap = {
 export type SoundKey = keyof typeof soundsMap
 
 const preloadedSounds = mapValues(soundsMap, (fileName) => {
-	const p = new Player(fileName, { autoDestroy: false, mixWithOthers: true })
+	const p = new Player(fileName, {
+		autoDestroy: false,
+		mixWithOthers: true,
+		// https://github.com/react-native-audio-toolkit/react-native-audio-toolkit/blob/master/docs/API.md
+		// https://developer.apple.com/documentation/avfaudio/avaudiosession/category
+		// 3 is the SoloAmbient PlaybackCategories
+		category: 3,
+	})
 	p.prepare()
 	return p
 })
