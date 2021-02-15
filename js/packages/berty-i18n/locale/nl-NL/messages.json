@@ -262,6 +262,10 @@
       "header-right-button": "Daemon herstarten",
       "system-info-button": "Systeem informatie",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Voeg ontwikkelaar gesprekken toe",
       "share-button": {
         "title": "Deel ID op discord",
