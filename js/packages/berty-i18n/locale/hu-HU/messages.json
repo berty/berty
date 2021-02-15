@@ -262,6 +262,10 @@
       "header-right-button": "Daemon újraindítása",
       "system-info-button": "Rendszer információ",
       "debug-button": "Hibakeresés",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "",
       "share-button": {
         "title": "ID megosztása Discordon",
