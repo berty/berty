@@ -262,6 +262,10 @@
       "header-right-button": "Restartovat démona",
       "system-info-button": "Systémové informace",
       "debug-button": "Debugging",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Přidat vývojářské konverzace",
       "share-button": {
         "title": "Sdílet ID na Discordu",
