@@ -262,6 +262,10 @@
       "header-right-button": "Перезапустить демон",
       "system-info-button": "Информация о системе",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Добавить dev беседы",
       "share-button": {
         "title": "Поделиться ID на Discord",
