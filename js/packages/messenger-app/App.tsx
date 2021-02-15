@@ -14,7 +14,7 @@ import { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { Navigation } from '@berty-tech/navigation/stacks'
 import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/NotificationProvider'
-import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
+import { StickMusicPlayer } from '@berty-tech/components/common/StickyMusicPlayer'
 import { MusicPlayerProvider } from '@berty-tech/music-player'
 import { useMountEffect } from '@berty-tech/store/hooks'
 

@@ -9,9 +9,9 @@ import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount } from '@berty-tech/store/hooks'
 
-import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import HeaderSettings from '../shared-components/Header'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { ButtonSetting, ButtonSettingRow } from '../common/SettingsButtons'
+import HeaderSettings from '../common/Header'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
 

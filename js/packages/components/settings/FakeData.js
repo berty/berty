@@ -3,9 +3,9 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { HeaderSettings } from '../common/Header'
+import { ButtonSetting } from '../common/SettingsButtons'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'

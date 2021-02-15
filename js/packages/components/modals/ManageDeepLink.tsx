@@ -11,7 +11,7 @@ import beapi from '@berty-tech/api'
 import { ManageGroupInvitation } from './ManageGroupInvitation'
 import AddThisContact from './AddThisContact'
 import { base64ToURLBase64 } from '../utils'
-import BlurView from '../shared-components/BlurView'
+import BlurView from '../common/BlurView'
 import InvalidScan from './InvalidScan'
 
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({

@@ -3,7 +3,7 @@ import { View, ScrollView, ActivityIndicator } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
-import { HeaderSettings } from '../shared-components/Header'
+import { HeaderSettings } from '../common/Header'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 

@@ -17,7 +17,7 @@ import moment from 'moment'
 import { groupBy } from 'lodash'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
+import { KeyboardAvoidingView } from '@berty-tech/components/common/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
@@ -34,13 +34,13 @@ import {
 import { Message } from './message'
 import { MessageInvitationButton } from './message/MessageInvitation'
 import { MessageSystemWrapper } from './message/MessageSystemWrapper'
-import BlurView from '../shared-components/BlurView'
+import BlurView from '../common/BlurView'
 import { ContactAvatar } from '../avatars'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 import { playSound } from '../sounds'
 import { ChatDate, ChatFooter } from './common'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 
 //
 // Chat

@@ -10,7 +10,7 @@ export type ResponseStream<Request extends {}, Reply extends {}> = (
 	req: Request,
 ) => Promise<{
 	start: () => Promise<void>
-	onMessage: (cb: (rep: Reply | null, err: GRPCError | null) => void) => void
+	onMessage: (cb: (rep: Reply | null, err: GRPCError | null) => void | Promise<void>) => void
 	stop: () => Promise<void>
 }>
 

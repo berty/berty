@@ -8,7 +8,7 @@ import {
 	Pressable,
 } from 'react-native'
 
-import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
+import { KeyboardAvoidingView } from '@berty-tech/components/common/KeyboardAvoidingView'
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
@@ -19,7 +19,7 @@ import { useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 
 import { AccountAvatar } from '../avatars'
-import BlurView from '../shared-components/BlurView'
+import BlurView from '../common/BlurView'
 
 //
 // Edit Profile
@@ -144,7 +144,7 @@ const EditMyProfile: React.FC = () => {
 					throw new Error('invalid PrepareAttachment reply, missing cid')
 				}
 
-				console.log('done', reply.cid)
+				console.log('upload done', reply)
 
 				update.avatarCid = reply.cid
 				updated = true

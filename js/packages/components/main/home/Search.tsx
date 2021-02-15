@@ -12,7 +12,7 @@ import { pbDateToNum, timeFormat } from '../../helpers'
 import { ContactAvatar, ConversationAvatar } from '../../avatars'
 import { EdgeInsets } from 'react-native-safe-area-context'
 import { Translation } from 'react-i18next'
-import { HintBody } from '@berty-tech/components/shared-components'
+import { HintBody } from '@berty-tech/components/common'
 
 // Styles
 

@@ -4,10 +4,10 @@ import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { HeaderInfoSettings, HeaderSettings } from '../common/Header'
+import { ButtonSetting } from '../common/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //

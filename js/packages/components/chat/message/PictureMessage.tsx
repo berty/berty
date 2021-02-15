@@ -9,24 +9,24 @@ import { useNavigation } from '@berty-tech/navigation'
 
 export const PictureMessage: React.FC<{ medias: any }> = ({ medias }) => {
 	const [{ border }] = useStyles()
-	const { protocolClient } = useMsgrContext()
+	const { client } = useMsgrContext()
 	const [images, setImages] = useState<any[]>([])
 	const navigation = useNavigation()
 	useEffect(() => {
-		if (!protocolClient) {
+		if (!client) {
 			return
 		}
 
 		Promise.all(
 			medias.map((media: any) => {
-				return getSource(protocolClient, media.cid)
-					.then((src) => {
-						return { ...media, uri: `data:${media.mimeType};base64,${src}` }
+				return getSource(client, media.cid)
+					.then((uri) => {
+						return { ...media, uri }
 					})
 					.catch((e) => console.error('failed to get picture message image:', e))
 			}),
 		).then((images: any) => setImages(images.filter(Boolean)))
-	}, [protocolClient, medias])
+	}, [client, medias])
 
 	return (
 		<View

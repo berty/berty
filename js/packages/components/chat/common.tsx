@@ -9,7 +9,7 @@ import { useMsgrContext } from '@berty-tech/store/hooks'
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
 import { playSound } from '../sounds'
-import BlurView from '../shared-components/BlurView'
+import BlurView from '../common/BlurView'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },

@@ -7,11 +7,11 @@ import { useStyles } from '@berty-tech/styles'
 import { useContacts } from '@berty-tech/store/hooks'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 
-import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { TabBar } from '../shared-components/TabBar'
-import HeaderSettings from '../shared-components/Header'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { ButtonSetting } from '../common/SettingsButtons'
+import { FingerprintContent } from '../common/FingerprintContent'
+import { TabBar } from '../common/TabBar'
+import HeaderSettings from '../common/Header'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {

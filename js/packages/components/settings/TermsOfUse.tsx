@@ -2,9 +2,9 @@ import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
-import { HeaderSettings } from '../shared-components/Header'
+import { HeaderSettings } from '../common/Header'
 import { useNavigation } from '@berty-tech/navigation'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 
 //
 // TermsOfUse

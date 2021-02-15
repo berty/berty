@@ -14,10 +14,10 @@ import { useNavigation } from '@berty-tech/navigation'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import beapi from '@berty-tech/api'
 
-import { HeaderSettings } from '../shared-components/Header'
+import { HeaderSettings } from '../common/Header'
 import { usePrevious } from '../hooks'
 import { pbDateToNum } from '../helpers'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../common/SwipeNavRecognizer'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,

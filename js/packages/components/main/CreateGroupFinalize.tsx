@@ -11,7 +11,7 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './CreateGroupAddMembers'
-import { ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { ButtonSettingItem } from '../common/SettingsButtons'
 import { playSound } from '../sounds'
 import { ContactAvatar } from '../avatars'
 
