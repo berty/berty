@@ -262,6 +262,10 @@
       "header-right-button": "Zrestartuj daemon",
       "system-info-button": "Informacje systemowe",
       "debug-button": "Debuguj",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
       "share-button": {
         "title": "Udostępnij ID na discordzie",
