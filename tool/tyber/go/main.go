@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"berty.tech/berty/v2/tool/tyber/go/bind"
-	"berty.tech/berty/v2/tool/tyber/go/bridge"
+	"berty.tech/berty/tool/tyber/go/v2/bind"
+	"berty.tech/berty/tool/tyber/go/v2/bridge"
 	"github.com/asticode/go-astikit"
 	"github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
