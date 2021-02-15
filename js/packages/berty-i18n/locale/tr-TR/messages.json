@@ -262,6 +262,10 @@
       "header-right-button": "Arka plan programını yeniden başlat",
       "system-info-button": "Sistem bilgisi",
       "debug-button": "Hata ayıklama",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Geliştirici konuşmalarını ekle",
       "share-button": {
         "title": "ID'yi Discord'da paylaş",
