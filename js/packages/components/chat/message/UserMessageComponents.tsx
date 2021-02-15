@@ -3,16 +3,20 @@ import { Linking, View, TouchableOpacity } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Icon, Text } from '@ui-kitten/components'
+import linkify from 'linkify-it'
+import tlds from 'tlds'
 
 import { Maybe, useClient } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-
-import { pbDateToNum, timeFormat } from '../../helpers'
 import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
+import { pbDateToNum, timeFormat } from '../../helpers'
+
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
+
+const linkify_conf = linkify().tlds(tlds, true)
 
 const useStylesMessage = () => {
 	const [{ text, padding }] = useStyles()
@@ -85,6 +89,7 @@ export const HyperlinkUserMessage: React.FC<{
 					Linking.canOpenURL(url).then((supported) => supported && Linking.openURL(url))
 				}}
 				linkStyle={{ textDecorationLine: 'underline' }}
+				linkify={linkify_conf}
 			>
 				<Text
 					style={[
@@ -94,6 +99,7 @@ export const HyperlinkUserMessage: React.FC<{
 							lineHeight: 17,
 						},
 					]}
+					selectable={true}
 				>
 					{isReadMore ? message.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
 				</Text>

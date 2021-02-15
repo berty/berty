@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
-import { Alert, ScrollView, Vibration, View } from 'react-native'
+import { Alert, ScrollView, TextInput, TouchableOpacity, Vibration, View } from 'react-native'
 import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
-import { Layout } from '@ui-kitten/components'
+import { Layout, Icon } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
+import {
+	ButtonSetting,
+	ButtonSettingItem,
+	ButtonSettingRow,
+} from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import beapi from '@berty-tech/api'
@@ -298,6 +302,67 @@ const PlaySound: React.FC = () => {
 	)
 }
 
+const LogButton: React.FC = () => {
+	const [{ flex, row, color, text, margin, padding, border }] = useStyles()
+	const ctx = useMsgrContext()
+	const [value, setValue] = useState<string>(ctx.persistentOptions?.log?.format)
+	const { t } = useTranslation()
+
+	return (
+		<ButtonSetting
+			name={t('settings.devtools.log-button.name')}
+			icon='message-circle-outline'
+			iconColor={color.dark.grey}
+			actionIcon={null}
+		>
+			<View style={[padding.right.small, padding.top.small]}>
+				<View
+					style={[
+						flex.tiny,
+						border.radius.medium,
+						border.color.black,
+						border.medium,
+						padding.small,
+						row.fill,
+						margin.bottom.small,
+						{
+							alignItems: 'center',
+						},
+					]}
+				>
+					<TextInput
+						onChangeText={(t) => setValue(t)}
+						value={value}
+						style={[text.bold.small, flex.scale(8), { fontFamily: 'Open Sans' }]}
+					/>
+					<TouchableOpacity
+						onPress={async () => {
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.Log,
+								payload: {
+									format: value,
+								},
+							})
+						}}
+					>
+						<Icon name='checkmark-outline' fill={color.dark.grey} width={20} height={20} />
+					</TouchableOpacity>
+				</View>
+
+				<ButtonSettingItem
+					value={t('settings.devtools.log-button.bullet-point')}
+					icon='info-outline'
+					iconColor={color.yellow}
+					iconSize={15}
+					disabled
+					styleText={[text.color.grey]}
+					styleContainer={[margin.bottom.tiny]}
+				/>
+			</View>
+		</ButtonSetting>
+	)
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
@@ -399,6 +464,7 @@ const BodyDevTools: React.FC<{}> = () => {
 					})
 				}}
 			/>
+			<LogButton />
 			<ButtonSetting
 				name={t('settings.devtools.add-dev-conversations-button')}
 				icon='plus-outline'
