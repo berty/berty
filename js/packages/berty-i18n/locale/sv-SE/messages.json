@@ -262,6 +262,10 @@
       "header-right-button": "Starta om bakgrundstjänst",
       "system-info-button": "Systeminformation",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Lägg till utvecklarkonversationer",
       "share-button": {
         "title": "Dela ID via Discord",
