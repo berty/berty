@@ -137,6 +137,9 @@ export enum PersistentOptionsKeys {
 	Debug = 'debug',
 	Tor = 'tor',
 	Log = 'log',
+	Configurations = 'configurations',
+	WelcomeModal = 'welcomeModal',
+	Preset = 'preset',
 }
 
 export type PersistentOptionsI18N = {
@@ -180,6 +183,24 @@ export type PersistentOptionsLog = {
 	format: string
 }
 
+export type Configuration = {
+	key: 'network' | 'notification'
+	displayName: string
+	desc: string
+	icon: string
+	state: 'added' | 'skipped' | 'unread'
+	color: string
+}
+
+export type PersistentOptionsWelcomeModal = {
+	enable: boolean
+}
+export type PersistentOptionsConfigurations = { [key: string]: Configuration }
+
+export type PersistentOptionsPreset = {
+	value: 'performance' | 'full-anonymity'
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -213,6 +234,18 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.Log
 			payload: Partial<PersistentOptionsLog>
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.Configurations
+			payload: Partial<PersistentOptionsConfigurations>
+	  }
+	| {
+			type: typeof PersistentOptionsKeys.WelcomeModal
+			payload: PersistentOptionsWelcomeModal
+	  }
+	| {
+			type: typeof PersistentOptionsKeys.Preset
+			payload: PersistentOptionsPreset
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -223,6 +256,9 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 	[PersistentOptionsKeys.Tor]: PersistentOptionsTor
 	[PersistentOptionsKeys.Log]: PersistentOptionsLog
+	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
+	[PersistentOptionsKeys.WelcomeModal]: PersistentOptionsWelcomeModal
+	[PersistentOptionsKeys.Preset]: PersistentOptionsPreset
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => {
@@ -263,6 +299,30 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		},
 		[PersistentOptionsKeys.Log]: {
 			format: 'console',
+		},
+		[PersistentOptionsKeys.Configurations]: {
+			network: {
+				key: 'network',
+				displayName: 'main.configurations.network.display-name',
+				desc: 'main.configurations.network.desc',
+				icon: 'berty_dev_blue_bg',
+				state: 'unread',
+				color: '#EBECFD',
+			},
+			notification: {
+				key: 'notification',
+				displayName: 'main.configurations.notification.display-name',
+				desc: 'main.configurations.notification.desc',
+				icon: 'berty_bot_orange_bg',
+				state: 'unread',
+				color: '#FDE9EF',
+			},
+		},
+		[PersistentOptionsKeys.WelcomeModal]: {
+			enable: true,
+		},
+		[PersistentOptionsKeys.Preset]: {
+			value: 'performance',
 		},
 	}
 }

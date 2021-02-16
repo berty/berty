@@ -41,9 +41,11 @@ const createNavigation = ({
 		navigate: {
 			onboarding: {
 				getStarted: createNavigateFunc(navigate, Routes.Onboarding.GetStarted),
+				choosePreset: createNavigateFunc(navigate, Routes.Onboarding.ChoosePreset),
 				selectMode: createNavigateFunc(navigate, Routes.Onboarding.SelectMode),
 				performance: createNavigateFunc(navigate, Routes.Onboarding.Performance),
 				privacy: createNavigateFunc(navigate, Routes.Onboarding.Privacy),
+				servicesAuth: createNavigateFunc(navigate, Routes.Onboarding.ServicesAuth),
 			},
 			main: {
 				home: createNavigateFunc<ScreenProps.Main.Home>(navigate, Routes.Main.Home),
@@ -59,6 +61,7 @@ const createNavigation = ({
 					),
 					createGroupFinalize: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroupFinalize),
 				},
+				networkOptions: createNavigateFunc(navigate, Routes.Main.NetworkOptions),
 			},
 			chat: {
 				oneToOne: createNavigateFunc(navigate, Routes.Chat.OneToOne),

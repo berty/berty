@@ -60,6 +60,7 @@ export namespace ScreenProps {
 export namespace Routes {
 	export enum Onboarding {
 		GetStarted = 'Onboarding.GetStarted',
+		ChoosePreset = 'Onboarding.ChoosePreset',
 		SelectMode = 'Onboarding.SelectMode',
 		Performance = 'Onboarding.Performance',
 		Privacy = 'Onboarding.Privacy',
@@ -71,6 +72,7 @@ export namespace Routes {
 		Home = 'Main.Home',
 		ContactRequest = 'Main.ContactRequest',
 		Scan = 'Main.Scan',
+		NetworkOptions = 'Main.NetworkOptions',
 	}
 	export enum CreateGroup {
 		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',

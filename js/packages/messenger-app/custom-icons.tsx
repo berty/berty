@@ -27,6 +27,9 @@ import Files from './custom-icons-svgs/files.svg'
 import Gallery from './custom-icons-svgs/gallery.svg'
 import Gif from './custom-icons-svgs/gif.svg'
 import WrongMan from './custom-icons-svgs/wrong-man.svg'
+import Privacy from './custom-icons-svgs/privacy.svg'
+import COGChip from './custom-icons-svgs/cog-chip.svg'
+import PrivacyModeBackground from './custom-icons-svgs/privacy-mode-bg.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -54,6 +57,9 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	gif: Gif,
 	'camera-outline': CameraOutline,
 	'wrong-man': WrongMan,
+	privacy: Privacy,
+	'cog-chip': COGChip,
+	'privacy-bg': PrivacyModeBackground,
 }
 
 const CustomIcon: React.FC<{

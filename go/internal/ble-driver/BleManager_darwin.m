@@ -48,12 +48,12 @@ static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A
         _cManager = [[CBCentralManager alloc]
                         initWithDelegate:self
                         queue:dispatch_queue_create("CentralManager", DISPATCH_QUEUE_SERIAL)
-                        options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+                        options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:NO]}];
 
         _pManager = [[CBPeripheralManager alloc]
                         initWithDelegate:self
                         queue:dispatch_queue_create("PeripheralManager", DISPATCH_QUEUE_SERIAL)
-                        options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+                        options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:NO]}];
 
         [self initService];
         [self addService];

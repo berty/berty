@@ -4,13 +4,16 @@ import { useNavigation } from '@react-navigation/native'
 
 import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/services'
 import { useMsgrContext, useNotificationsInhibitor } from '@berty-tech/store/hooks'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
+import { RouteProp } from '@react-navigation/native'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const ctx = useMsgrContext()
 	const accountServices = useAccountServices() || []
+	const { goBack } = useNavigation()
 
 	React.useEffect(() => {
 		if (accountServices.length > 0) {
@@ -33,6 +36,18 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 									text: t('onboarding.services-auth.button'),
 									onPress: async () => {
 										await servicesAuthViaDefault(ctx)
+										await ctx.setPersistentOption({
+											type: PersistentOptionsKeys.Configurations,
+											payload: {
+												...ctx.persistentOptions.configurations,
+												network: {
+													...ctx.persistentOptions.configurations.network,
+													state: 'added',
+												},
+											},
+										})
+
+										goBack()
 									},
 							  }
 					}
@@ -46,13 +61,29 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	)
 }
 
-export const ServicesAuth: React.FC<{}> = () => {
+export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = () => {
 	useNotificationsInhibitor(() => true)
-	const { navigate } = useNavigation()
+	const { goBack } = useNavigation()
+	const { persistentOptions, setPersistentOption } = useMsgrContext()
 
 	return (
 		<OnboardingWrapper>
-			<ServicesAuthBody next={() => navigate('Onboarding.SetupFinished')} />
+			<ServicesAuthBody
+				next={async () => {
+					await setPersistentOption({
+						type: PersistentOptionsKeys.Configurations,
+						payload: {
+							...persistentOptions.configurations,
+							network: {
+								...persistentOptions.configurations.network,
+								state: 'skipped',
+							},
+						},
+					})
+
+					goBack()
+				}}
+			/>
 		</OnboardingWrapper>
 	)
 }
