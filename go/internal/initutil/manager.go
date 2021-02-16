@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"strings"
 	"sync"
 	"text/tabwriter"
@@ -86,16 +87,18 @@ type Manager struct {
 			RelayHack bool `json:"RelayHack,omitempty"`
 
 			// internal
-			needAuth         bool
-			ipfsNode         *core.IpfsNode
-			ipfsAPI          ipfsutil.ExtendedCoreAPI
-			pubsub           *pubsub.PubSub
-			discovery        tinder.Driver
-			server           bertyprotocol.Service
-			client           protocoltypes.ProtocolServiceClient
-			requiredByClient bool
-			ipfsWebUICleanup func()
-			orbitDB          *bertyprotocol.BertyOrbitDB
+			needAuth          bool
+			ipfsNode          *core.IpfsNode
+			ipfsAPI           ipfsutil.ExtendedCoreAPI
+			pubsub            *pubsub.PubSub
+			discovery         tinder.Driver
+			server            bertyprotocol.Service
+			ipfsAPIListeners  []net.Listener
+			ipfsWebUIListener net.Listener
+			client            protocoltypes.ProtocolServiceClient
+			requiredByClient  bool
+			ipfsWebUICleanup  func()
+			orbitDB           *bertyprotocol.BertyOrbitDB
 		}
 		Messenger struct {
 			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`

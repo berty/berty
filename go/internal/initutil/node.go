@@ -164,20 +164,6 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	// construct http api endpoint
-	// ignore error to allow two berty instances in the same place
-	// if m.Node.Protocol.IPFSAPIListeners != "" {
-	// 	err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
-	// 	if err != nil {
-	// 		logger.Warn("IPFS API error", zap.Error(err))
-	// 	}
-	// }
-
-	// serve the embedded ipfs web UI
-	// if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
-	// 	m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(addr, logger)
-	// }
-
 	odb, err := m.getOrbitDB()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

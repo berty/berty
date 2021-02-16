@@ -8,7 +8,7 @@ import (
 	"time"
 
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
-	datastore "github.com/ipfs/go-datastore"
+	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -58,7 +58,7 @@ type Opts struct {
 	IpfsCoreAPI            ipfsutil.ExtendedCoreAPI
 	DeviceKeystore         DeviceKeystore
 	DatastoreDir           string
-	RootDatastore          datastore.Batching
+	RootDatastore          ds.Batching
 	OrbitDB                *BertyOrbitDB
 	TinderDriver           tinder.Driver
 	RendezvousRotationBase time.Duration
@@ -75,14 +75,14 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 
 	if opts.RootDatastore == nil {
 		if opts.DatastoreDir == "" || opts.DatastoreDir == InMemoryDirectory {
-			opts.RootDatastore = ds_sync.MutexWrap(datastore.NewMapDatastore())
+			opts.RootDatastore = ds_sync.MutexWrap(ds.NewMapDatastore())
 		} else {
 			opts.RootDatastore = nil
 		}
 	}
 
 	if opts.DeviceKeystore == nil {
-		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceDeviceKeystore)))
+		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceDeviceKeystore)))
 		opts.DeviceKeystore = NewDeviceKeystore(ks)
 	}
 
@@ -134,7 +134,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 				Directory: &orbitDirectory,
 				Logger:    opts.Logger,
 			},
-			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceOrbitDBDatastore)),
+			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
 			DeviceKeystore: opts.DeviceKeystore,
 		}
 
