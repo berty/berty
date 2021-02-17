@@ -10,6 +10,7 @@ import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
 import { playSound } from '../sounds'
 import BlurView from '../shared-components/BlurView'
+import { RecordComponent } from '@berty-tech/components/chat/RecordComponent'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -99,7 +100,7 @@ export const ChatFooter: React.FC<{
 	}
 
 	return (
-		<BlurView blurType='light' blurAmount={30}>
+		<BlurView blurType='light' blurAmount={30} style={{ overflow: 'visible' }}>
 			<SafeAreaView>
 				{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
 				<View
@@ -164,18 +165,29 @@ export const ChatFooter: React.FC<{
 							returnKeyType={isTablet ? 'send' : 'default'}
 							onSubmitEditing={() => isTablet && handlePressSend()}
 						/>
-						<TouchableOpacity
-							style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
-							disabled={!sendEnabled}
-							onPress={handlePressSend}
-						>
-							<Icon
-								name='paper-plane-outline'
-								width={26}
-								height={26}
-								fill={sendEnabled ? color.blue : '#AFB1C0'}
-							/>
-						</TouchableOpacity>
+						{!sendEnabled && (
+							<RecordComponent
+								style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
+								convPk={convPk}
+								disableLockMode={true}
+							>
+								<Icon name='mic' width={26} height={26} fill={color.blue} />
+							</RecordComponent>
+						)}
+						{sendEnabled && (
+							<TouchableOpacity
+								style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
+								disabled={!sendEnabled}
+								onPress={handlePressSend}
+							>
+								<Icon
+									name='paper-plane-outline'
+									width={26}
+									height={26}
+									fill={sendEnabled ? color.blue : '#AFB1C0'}
+								/>
+							</TouchableOpacity>
+						)}
 					</View>
 				</View>
 			</SafeAreaView>

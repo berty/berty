@@ -13,7 +13,7 @@
 		"@eva-design/eva": "^2.0.0",
 		"@improbable-eng/grpc-web": "^0.13.0",
 		"@react-native-community/async-storage": "^1.12.1",
-		"@react-native-community/audio-toolkit": "git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#6a258f1e6a81381a50c018d343764ad29b3d8f27",
+		"@react-native-community/audio-toolkit": "git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#0a2e315d168df1cb02e93d19b98fff5106976882",
 		"@react-native-community/blur": "^3.6.0",
 		"@react-native-community/cameraroll": "^4.0.2",
 		"@react-native-community/hooks": "^2.6.0",

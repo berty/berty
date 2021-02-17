@@ -1480,13 +1480,13 @@
   dependencies:
     deep-assign "^3.0.0"
 
-"@react-native-community/audio-toolkit@git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#6a258f1e6a81381a50c018d343764ad29b3d8f27":
+"@react-native-community/audio-toolkit@git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#0a2e315d168df1cb02e93d19b98fff5106976882":
   version "2.0.3"
-  resolved "git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#6a258f1e6a81381a50c018d343764ad29b3d8f27"
+  resolved "git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#0a2e315d168df1cb02e93d19b98fff5106976882"
   dependencies:
     async "^2.6.3"
     eventemitter3 "^1.2.0"
-    lodash "^4.17.15"
+    lodash "^4.17.19"
 
 "@react-native-community/blur@^3.6.0":
   version "3.6.0"

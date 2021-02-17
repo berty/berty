@@ -510,5 +510,16 @@
         "button-cancel": "Cancel"
       }
     }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Hold to record, release to send",
+        "not-sent": "Audio message has not been sent",
+        "permission-denied": "App is not allowed to record sound"
+      },
+      "slide-to-cancel": "<< Slide to cancel",
+      "cancel-button": "Cancel"
+    }
   }
 }
