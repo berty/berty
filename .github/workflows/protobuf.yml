@@ -67,7 +67,7 @@ on:
 jobs:
   gen-go-and-docs:
     runs-on: ubuntu-latest
-    container: bertytech/protoc:26
+    container: bertytech/protoc:27
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -127,7 +127,7 @@ jobs:
       #    file: docs/.tmp/openapi/bertymessenger.swagger.json
   gen-js:
     runs-on: ubuntu-latest
-    container: bertytech/protoc:26
+    container: bertytech/protoc:27
     steps:
       - uses: actions/checkout@v2
 

@@ -7,4 +7,4 @@ a0f40b352e250661468a43010986cf256ee1e2e8  ../api/messengertypes.proto
 dea6584ed15b6ba55867ad3ff0cc57213e6b25da  ../api/messengertypes.yaml
 e320eefe0ea2dcd46e81248096b5cb62c4e28e60  ../api/protocoltypes.proto
 14884bc268447c0e1d04ed82b7603c0371f66a0d  ../api/protocoltypes.yaml
-94ee960d105413be081f95679aa8945ab9d12d7d  Makefile
+e73d7b4c87fee9e43333c611dec70198b1103044  Makefile

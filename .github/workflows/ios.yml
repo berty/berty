@@ -42,7 +42,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.3
+          go-version: 1.16.x
 
       - name: Cache Node modules
         uses: actions/cache@v2
@@ -104,7 +104,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.3
+          go-version: 1.16.x
 
       - name: Setup Node
         uses: actions/setup-node@v2.1.5

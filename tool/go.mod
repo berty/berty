@@ -2,7 +2,7 @@
 
 module berty.tech/berty/tool/v2
 
-go 1.14
+go 1.15
 
 require (
 	berty.tech/berty/v2 v2.0.0

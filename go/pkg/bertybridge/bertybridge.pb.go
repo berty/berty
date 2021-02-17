@@ -3284,10 +3284,7 @@ func (m *ClientInvokeUnary) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -3443,10 +3440,7 @@ func (m *ClientInvokeUnary_Request) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -3602,10 +3596,7 @@ func (m *ClientInvokeUnary_Reply) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -3657,10 +3648,7 @@ func (m *ClientCreateStream) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -3816,10 +3804,7 @@ func (m *ClientCreateStream_Request) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -3973,10 +3958,7 @@ func (m *ClientCreateStream_Reply) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4028,10 +4010,7 @@ func (m *ClientStreamSend) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4149,10 +4128,7 @@ func (m *ClientStreamSend_Request) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4306,10 +4282,7 @@ func (m *ClientStreamSend_Reply) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4361,10 +4334,7 @@ func (m *ClientStreamRecv) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4448,10 +4418,7 @@ func (m *ClientStreamRecv_Request) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4639,10 +4606,7 @@ func (m *ClientStreamRecv_Reply) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4694,10 +4658,7 @@ func (m *ClientStreamClose) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4781,10 +4742,7 @@ func (m *ClientStreamClose_Request) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4938,10 +4896,7 @@ func (m *ClientStreamClose_Reply) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -4993,10 +4948,7 @@ func (m *ClientStreamCloseAndRecv) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -5080,10 +5032,7 @@ func (m *ClientStreamCloseAndRecv_Request) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -5271,10 +5220,7 @@ func (m *ClientStreamCloseAndRecv_Reply) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -5398,10 +5344,7 @@ func (m *MethodDesc) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -5517,10 +5460,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {
@@ -5678,10 +5618,7 @@ func (m *Error) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertybridge
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthBertybridge
 			}
 			if (iNdEx + skippy) > l {

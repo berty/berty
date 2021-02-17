@@ -680,10 +680,7 @@ func (m *BoxEnvelope) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthHandshake
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthHandshake
 			}
 			if (iNdEx + skippy) > l {
@@ -769,10 +766,7 @@ func (m *HelloPayload) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthHandshake
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthHandshake
 			}
 			if (iNdEx + skippy) > l {
@@ -892,10 +886,7 @@ func (m *RequesterAuthenticatePayload) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthHandshake
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthHandshake
 			}
 			if (iNdEx + skippy) > l {
@@ -981,10 +972,7 @@ func (m *ResponderAcceptPayload) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthHandshake
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthHandshake
 			}
 			if (iNdEx + skippy) > l {
@@ -1056,10 +1044,7 @@ func (m *RequesterAcknowledgePayload) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthHandshake
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthHandshake
 			}
 			if (iNdEx + skippy) > l {
