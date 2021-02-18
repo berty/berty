@@ -123,6 +123,8 @@ func TestServiceContactRequest(t *testing.T) {
 	// send contact request
 	var deeplinkReply *messengertypes.ParseDeepLink_Reply
 	{
+		assert.Len(t, node.GetAllContacts(), 0)
+		assert.Len(t, node.GetAllConversations(), 0)
 		link := "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"
 		ownMetadata := []byte("bar")
 		metadata, err := proto.Marshal(&messengertypes.ContactMetadata{DisplayName: "Alice"})
@@ -137,9 +139,9 @@ func TestServiceContactRequest(t *testing.T) {
 		}
 		_, err = node.GetClient().SendContactRequest(ctx, req)
 		require.NoError(t, err)
-		assert.Len(t, node.GetAllContacts(), 0)
-		assert.Len(t, node.GetAllConversations(), 0)
 		time.Sleep(1 * time.Second)
+		assert.Len(t, node.GetAllContacts(), 1)
+		assert.Len(t, node.GetAllConversations(), 1)
 	}
 
 	contactPK := base64.RawURLEncoding.EncodeToString(deeplinkReply.GetLink().GetBertyID().GetAccountPK())
@@ -1307,8 +1309,7 @@ func TestAccountUpdate(t *testing.T) {
 	cids := []string(nil)
 	for _, friend := range friends {
 		logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
-		userInFriend, ok := friend.contacts[userPK]
-		require.True(t, ok)
+		userInFriend := friend.GetContact(t, userPK)
 		require.Equal(t, testName, userInFriend.GetDisplayName())
 		avatarCIDInFriend := userInFriend.GetAvatarCID()
 		require.NotEqual(t, userAvatarCID, avatarCIDInFriend)
