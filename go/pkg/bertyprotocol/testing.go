@@ -49,8 +49,6 @@ type TestingOpts struct {
 }
 
 func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
-	t.Helper()
-
 	if opts == nil {
 		opts = &TestingOpts{}
 	}
@@ -194,8 +192,6 @@ func testHelperNewReplicationService(ctx context.Context, t *testing.T, logger *
 }
 
 func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, sk ed25519.PublicKey, opts *TestingOpts) (*TestingReplicationPeer, func()) {
-	t.Helper()
-
 	// TODO: handle auth
 	_ = secret
 	_ = sk

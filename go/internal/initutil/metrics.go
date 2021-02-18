@@ -35,11 +35,6 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 		return nil, err
 	}
 
-	l, err := net.Listen("tcp", m.Metrics.Listener)
-	if err != nil {
-		return nil, err
-	}
-
 	if m.Metrics.Pedantic {
 		m.Metrics.registry = prometheus.NewPedanticRegistry()
 	} else {
@@ -50,7 +45,15 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 	m.Metrics.registry.MustRegister(prometheus.NewGoCollector())
 
 	mux := http.NewServeMux()
+	var l net.Listener
 	m.workers.Add(func() error {
+		var err error
+
+		l, err = net.Listen("tcp", m.Metrics.Listener)
+		if err != nil {
+			return err
+		}
+
 		handerfor := promhttp.HandlerFor(
 			m.Metrics.registry,
 			promhttp.HandlerOpts{Registry: m.Metrics.registry},
@@ -60,9 +63,12 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 		logger.Info("metrics listener",
 			zap.String("handler", metricsHandler),
 			zap.String("listener", l.Addr().String()))
+
 		return http.Serve(l, mux)
 	}, func(error) {
-		l.Close()
+		if l != nil {
+			l.Close()
+		}
 	})
 
 	return m.Metrics.registry, nil

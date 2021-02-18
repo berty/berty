@@ -7,9 +7,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	datastore "github.com/ipfs/go-datastore"
+	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
+	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
-	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -58,7 +58,7 @@ type Opts struct {
 	IpfsCoreAPI            ipfsutil.ExtendedCoreAPI
 	DeviceKeystore         DeviceKeystore
 	DatastoreDir           string
-	RootDatastore          datastore.Batching
+	RootDatastore          ds.Batching
 	OrbitDB                *BertyOrbitDB
 	TinderDriver           tinder.Driver
 	RendezvousRotationBase time.Duration
@@ -75,14 +75,14 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 
 	if opts.RootDatastore == nil {
 		if opts.DatastoreDir == "" || opts.DatastoreDir == InMemoryDirectory {
-			opts.RootDatastore = ds_sync.MutexWrap(datastore.NewMapDatastore())
+			opts.RootDatastore = ds_sync.MutexWrap(ds.NewMapDatastore())
 		} else {
 			opts.RootDatastore = nil
 		}
 	}
 
 	if opts.DeviceKeystore == nil {
-		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceDeviceKeystore)))
+		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceDeviceKeystore)))
 		opts.DeviceKeystore = NewDeviceKeystore(ks)
 	}
 
@@ -91,15 +91,27 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 	}
 
 	if opts.IpfsCoreAPI == nil {
-		var err error
-		var createdIPFSNode *ipfs_core.IpfsNode
-
-		opts.IpfsCoreAPI, createdIPFSNode, err = ipfsutil.NewCoreAPI(ctx, &ipfsutil.CoreAPIConfig{})
+		dsync := ds_sync.MutexWrap(ds.NewMapDatastore())
+		repo, err := ipfsutil.CreateMockedRepo(dsync)
 		if err != nil {
-			return errcode.TODO.Wrap(err)
+			return err
 		}
 
-		opts.Host = createdIPFSNode.PeerHost
+		mrepo := ipfs_mobile.NewRepoMobile("", repo)
+		mnode, err := ipfsutil.NewIPFSMobile(ctx, mrepo, &ipfsutil.MobileOptions{
+			ExtraOpts: map[string]bool{
+				"pubsub": true,
+			},
+		})
+		if err != nil {
+			return err
+		}
+
+		opts.IpfsCoreAPI, err = ipfsutil.NewExtendedCoreAPIFromNode(mnode.IpfsNode)
+		if err != nil {
+			return err
+		}
+		opts.Host = mnode.PeerHost()
 
 		oldClose := opts.close
 		opts.close = func() error {
@@ -107,7 +119,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 				_ = oldClose()
 			}
 
-			return createdIPFSNode.Close()
+			return mnode.Close()
 		}
 	}
 
@@ -122,13 +134,13 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 				Directory: &orbitDirectory,
 				Logger:    opts.Logger,
 			},
-			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceOrbitDBDatastore)),
+			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
 			DeviceKeystore: opts.DeviceKeystore,
 		}
 
 		odb, err := NewBertyOrbitDB(ctx, opts.IpfsCoreAPI, odbOpts)
 		if err != nil {
-			return nil
+			return err
 		}
 
 		oldClose := opts.close

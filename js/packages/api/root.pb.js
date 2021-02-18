@@ -9,7 +9,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertyaccount"
+              go_package: "berty.tech/berty/go/pkg/bertyaccount",
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
             },
             nested: {
               AccountService: {
@@ -2760,7 +2763,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       errcode: {
         options: {
           go_package: "berty.tech/berty/go/pkg/errcode",
-          "(gogoproto.goproto_enum_prefix_all)": false
+          "(gogoproto.goproto_enum_prefix_all)": false,
+          "(gogoproto.marshaler_all)": true,
+          "(gogoproto.unmarshaler_all)": true,
+          "(gogoproto.sizer_all)": true
         },
         nested: {
           ErrCode: {
@@ -2808,6 +2814,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrOrbitDBStoreCast: 1004,
               ErrIPFSAdd: 1050,
               ErrIPFSGet: 1051,
+              ErrIPFSInit: 1052,
+              ErrIPFSSetupConfig: 1053,
+              ErrIPFSSetupRepo: 1054,
+              ErrIPFSSetupHost: 1055,
               ErrHandshakeOwnEphemeralKeyGenSend: 1100,
               ErrHandshakePeerEphemeralKeyRecv: 1101,
               ErrHandshakeRequesterAuthenticateBoxKeyGen: 1102,
@@ -2906,7 +2916,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertybridge"
+              go_package: "berty.tech/berty/go/pkg/bertybridge",
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
             },
             nested: {
               BridgeService: {
