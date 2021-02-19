@@ -41,7 +41,7 @@
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "generate-key": {
-      "title": "",
+      "title": "Berty node indítása…",
       "desc": "A folyamat eltarthat néhány másodpercig"
     },
     "notifications": {
@@ -95,7 +95,7 @@
       "header-center-button": "Fejlesztői eszközök",
       "header-right-button": "Beállítások",
       "network-button": "",
-      "switch-accounts": "",
+      "switch-accounts": "Másik profil használata",
       "edit-profile": "Fiók szerkesztése"
     },
     "network-map": {
@@ -240,13 +240,13 @@
       "website-button": "Weboldal"
     },
     "updates": {
-      "title": "",
+      "title": "Frissítések",
       "up-to-date-desc": "Alkalmazása naprakész",
       "version": "Verzió",
       "current-tag": "Jelenlegi",
-      "installed-tag": "",
+      "installed-tag": "Telepített",
       "initial-tag": "",
-      "not-installed-tag": ""
+      "not-installed-tag": "Nem telepített"
     },
     "devtools": {
       "title": "Fejlesztői eszközök",
@@ -280,7 +280,7 @@
       "dump-conversations-button": "",
       "dump-interactions-button": "",
       "dump-members-button": "",
-      "stop-node-button": "",
+      "stop-node-button": "Node leállítása",
       "bot-mode-button": "Bot mód",
       "local-grpc-button": "helyi gRPC",
       "console-logs-button": "",
@@ -455,10 +455,10 @@
   "debug": {
     "inspector": {
       "show-button": "",
-      "hide-button": "",
+      "hide-button": "Bezárás",
       "title": "",
       "accounts": {
-        "title": "",
+        "title": "Fiókok",
         "unsupported-remote-mode": "",
         "data-not-found": "",
         "action-delete": {
@@ -487,7 +487,7 @@
         "infos": {
           "aligned": {
             "name": "",
-            "created": "",
+            "created": "Létrehozva: {{created}}",
             "opened": "",
             "error": ""
           }
@@ -504,9 +504,9 @@
       "dump": {
         "button": ""
       },
-      "refresh": "",
+      "refresh": "Frissítés",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Megerősítés",
         "button-cancel": "Mégse"
       }
     }
