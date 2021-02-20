@@ -101,11 +101,6 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 		var groupContext context.Context
 		var groupCancel context.CancelFunc
 
-		// var deadline time.Time
-
-		// deadline, _ = ctx.Deadline()
-
-		// groupContext, groupCancel = context.WithTimeout(ctx, time.Until(deadline))
 		groupContext, groupCancel = context.WithCancel(ctx)
 
 		defer groupCancel()
@@ -567,13 +562,10 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 				deadline, _ = ctx.Deadline()
 
 				peerContext, peerCancel = context.WithTimeout(ctx, time.Until(deadline))
-				// peerContext, peerCancel = context.WithCancel(ctx)
 
 				defer peerCancel()
 
-				// incrementLock.Lock()
 				secretsReceived[i] = map[string]struct{}{}
-				// incrementLock.Unlock()
 
 				message := protocoltypes.GroupMetadataList_Request{
 					GroupPK: group.PublicKey,
@@ -604,20 +596,13 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 						assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
 						break
 					} else if source != nil {
-						// incrementLock.Lock()
-						// secretsReceived[i][string(source)] = struct{}{}
 						secretsReceived[i][strconv.Itoa(counter)] = struct{}{}
 						counter++
 						done := len(secretsReceived[i]) == ntps
 						nSuccess = nSuccess + 1
 
 						if done {
-							// got := fmt.Sprintf("%d/%d", nSuccess, ntps)
-							// tps[i].Opts.Logger.Debug("received all secrets", zap.String("ok", got))
-							// incrementLock.Unlock()
 							break;
-						} else {
-							// incrementLock.Unlock()
 						}
 					}
 				}
