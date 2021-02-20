@@ -12,7 +12,6 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"strconv"
 
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
@@ -82,7 +81,7 @@ func TestScenario_MessageMultiMemberGroup(t *testing.T) {
 }
 
 func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
-	const ngroup = 3
+	const ngroup = 5
 
 	cases := []testCase{
 		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Stable, time.Second * 10 * ngroup},
@@ -101,11 +100,15 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 		var groupContext context.Context
 		var groupCancel context.CancelFunc
 
-		groupContext, groupCancel = context.WithCancel(ctx)
+		var deadline time.Time
+
+		deadline, _ = ctx.Deadline()
+
+		groupContext, groupCancel = context.WithTimeout(ctx, time.Until(deadline))
 
 		defer groupCancel()
 
-		for i := 0; i < ngroup; i++ {
+		for i := 0; i < 3; i++ {
 			t.Logf("===== MultiMember Group #%d =====", i+1)
 
 			// Create MultiMember Group
@@ -546,8 +549,6 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 		secretsReceived := make([]map[string]struct{}, ntps)
 		wg.Add(ntps)
 
-		var nSuccess int;
-
 		for index := range tps {
 			go func(i int) {
 				tp := tps[i]
@@ -574,12 +575,9 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 				sub, inErr := tp.Client.GroupMetadataList(peerContext, &message);
 
 				if inErr != nil {
-					assert.NoError(t, err, fmt.Sprintf("error for client %d with error %s", i, inErr.Error()))
+					assert.NoError(t, inErr, fmt.Sprintf("error for client %d with error %s", i, inErr.Error()))
 					return
 				}
-				assert.NoError(t, inErr, fmt.Sprintf("Test error!"))
-
-				var counter int = 0
 
 				for {
 					evt, inErr := sub.Recv()
@@ -596,10 +594,9 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 						assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
 						break
 					} else if source != nil {
-						secretsReceived[i][strconv.Itoa(counter)] = struct{}{}
-						counter++
+						secretsReceived[i][string(source)] = struct{}{}
 						done := len(secretsReceived[i]) == ntps
-						nSuccess = nSuccess + 1
+						// nSuccess = nSuccess + 1
 
 						if done {
 							break;

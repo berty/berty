@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ed25519"
 	"fmt"
+	"time"
 	"testing"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -134,6 +135,17 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		grpc.WithChainUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
 		grpc.WithChainStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
 	}
+
+	var messageSize int = 10 * 1024 * 1024 // I wrote it this way to point out that the size is 10 MB
+	serverOpts[0] = grpc.MaxConcurrentStreams(300)
+	serverOpts[0] = grpc.MaxRecvMsgSize(messageSize)
+	serverOpts[0] = grpc.MaxSendMsgSize(messageSize);
+	serverOpts[0] = grpc.ConnectionTimeout(time.Second * 240);
+
+	serverOpts[1] = grpc.MaxConcurrentStreams(300)
+	serverOpts[1] = grpc.MaxRecvMsgSize(messageSize)
+	serverOpts[1] = grpc.MaxSendMsgSize(messageSize);
+	serverOpts[1] = grpc.ConnectionTimeout(time.Second * 240);
 
 	server := grpc.NewServer(serverOpts...)
 	client, cleanupClient := TestingClientFromServer(ctx, t, server, service, clientOpts...)
