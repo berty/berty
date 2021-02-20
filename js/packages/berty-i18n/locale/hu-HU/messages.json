@@ -14,12 +14,12 @@
         "desc": "Könnyen használható - Minden funkcióval",
         "push-notif": "Értesítések bekapcsolása",
         "offline-message": "Offline üzenetküldés",
-        "add-contact": "",
+        "add-contact": "Könnyen felvehet új kontaktokat",
         "fast-message": "Leggyorsabb üzenetküldés"
       },
       "high-level": {
         "title": "Legmagasabb szintű adatvédelem",
-        "desc": "",
+        "desc": "Haladó felhasználók számára - Kevesebb metaadat",
         "disable-push-notif": "Értesítések letiltva",
         "disable-local-peer-discovery": "",
         "disable-contact-request": ""
@@ -49,7 +49,7 @@
       "recommended": "Ajánlott",
       "title": "Értesítések",
       "desc": "",
-      "button": "",
+      "button": "ÉRTESÍTÉSEK ENGEDÉLYEZÉSE",
       "skip": ""
     },
     "bluetooth": {
@@ -57,7 +57,7 @@
       "optional": "Választható",
       "title": "Bluetooth",
       "desc": "",
-      "button": "",
+      "button": "BLUETOOTH ENGEDÉLYEZÉSE",
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "setup-finished": {
@@ -74,7 +74,7 @@
         "accept": "Elfogadás",
         "card-title": ""
       },
-      "input-placeholder": "",
+      "input-placeholder": "Kulcsszó kereséshez",
       "no-contacts": "",
       "search": {
         "no-results": ""
@@ -86,7 +86,7 @@
     },
     "home-modal": {
       "top-button": "Új csoport létrehozása",
-      "bottom-button": ""
+      "bottom-button": "Keresés kontakton vagy csoporton belül"
     }
   },
   "settings": {
@@ -94,7 +94,7 @@
       "header-left-button": "Súgó",
       "header-center-button": "Fejlesztői eszközök",
       "header-right-button": "Beállítások",
-      "network-button": "",
+      "network-button": "Hálózati Lista",
       "switch-accounts": "Másik profil használata",
       "edit-profile": "Fiók szerkesztése"
     },
@@ -133,11 +133,11 @@
         "desc": "Helyi Peer felfedezés"
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Letiltott kontaktok",
+        "tag": "letiltva"
       },
       "delete-account-button": "Fiók törlése",
-      "backup-account-button": ""
+      "backup-account-button": "Biztonsági mentés készítése"
     },
     "edit-profile": {
       "title": "Fiók szerkesztése",
@@ -188,18 +188,18 @@
       "activate-button": "Aktív bluetooth kapcsolat"
     },
     "mc": {
-      "activate-button": ""
+      "activate-button": "Multipeer kapcsolat aktiválása"
     },
     "services-auth": {
-      "title": "",
+      "title": "Külső szolgáltatások",
       "operated-services-button": "",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
+        "title": "Egyéni szolgáltató regisztrálása",
+        "input-placeholder": "Szolgáltató URL címe",
         "action": "Hozzáadás"
       },
       "registered-services-button": {
-        "title": "",
+        "title": "Jelenleg regisztrált szolgáltatók",
         "sample-no-services": "Nincs regisztrált szolgáltatás",
         "sample-unknown-service": "Ismeretlen szolgáltatás"
       }
@@ -224,7 +224,7 @@
       "message-button": "Üzenetek",
       "group-button": "Csoportok",
       "settings-button": "Beállítások",
-      "ask-button": "",
+      "ask-button": "Kérdezzen valamit",
       "report-button": "Hiba jelentése"
     },
     "about": {
@@ -235,7 +235,7 @@
       "bottom-right-button": "",
       "terms-button": "Felhasználási feltételek",
       "privacy-button": "Adatvédelmi irányelvek",
-      "software-button": "",
+      "software-button": "Szoftver licenc",
       "contact-button": "Elérhetőség",
       "website-button": "Weboldal"
     },
@@ -263,7 +263,7 @@
       "system-info-button": "Rendszer információ",
       "debug-button": "Hibakeresés",
       "log-button": {
-        "name": "",
+        "name": "Naplózás formázása",
         "bullet-point": ""
       },
       "add-dev-conversations-button": "",
@@ -287,7 +287,7 @@
       "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "Értesítések",
       "send-to-all-button": {
-        "title": "",
+        "title": "Üzenetek küldése minden kontaktnak",
         "sending": "Küldés...",
         "test": "Teszt, ",
         "tried": ""
@@ -301,7 +301,7 @@
     },
     "fake-data": {
       "title": "Hamis információ készítése",
-      "contacts-button": "",
+      "contacts-button": "Hamis kontaktok készítése",
       "multi-members-button": "",
       "messages-button": "Hamis beszélgetés készítése",
       "delete-button": "Hamis információ törlése"
@@ -346,9 +346,9 @@
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
+      "mark-button": "Ellenőrizve",
+      "block-button": "Kontakt letiltása",
+      "delete-button": "Kontakt törlése",
       "fingerprint": "Ujjlenyomat",
       "info": "Infók",
       "devices": "Eszközök"
@@ -412,7 +412,7 @@
       "title": "Beszélgetés regisztrálása a szerveren",
       "no-registered-button": "",
       "connect-button": "",
-      "manage-add-button": ""
+      "manage-add-button": "Szolgáltatások kezelése és hozzáadása"
     },
     "files": {
       "record-sound": "Hangüzenet felvétele",
@@ -440,7 +440,7 @@
     },
     "restart-app": "App újraindítása",
     "wtf-screen": {
-      "title": "",
+      "title": "Mi a probléma?",
       "desc": "Az app éppen összeomlott.",
       "desc-report": "Hiba jelentéséhez rázza meg telefonját, kattintson a gombra az alkalmazás újraindításához."
     },
@@ -460,7 +460,7 @@
       "accounts": {
         "title": "Fiókok",
         "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "data-not-found": "A fiók nem szerepel a listán",
         "action-delete": {
           "file-exists": "",
           "account-exists": "",
@@ -468,34 +468,34 @@
           "fs-read-error": "",
           "actions-title": "",
           "action-account-manager": "",
-          "action-account-manager-confirm": "",
+          "action-account-manager-confirm": "Fiók törlésének megerősítése",
           "action-force-delete": "",
           "action-force-delete-confirm": "",
           "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
+          "error-delete": "Hiba a fiók törlésekor",
+          "success-feedback": "Fiók törölve",
           "action-cancel": "Mégse"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "metadata-found": "Metaadat fájl megtalálva",
+          "metadata-not-found": "Metaadat fájl nem található",
+          "ipfs-repo-config-found": "IPFS konfigurációs fájl megtalálva",
+          "ipfs-repo-config-not-found": "IPFS konfigurációs fájl nem található",
+          "messenger-db-found": "Messenger DB megtalálva",
+          "messenger-db-not-found": "Messenger DB nem található"
         },
         "infos": {
           "aligned": {
-            "name": "",
+            "name": "Név: {{name}}",
             "created": "Létrehozva: {{created}}",
-            "opened": "",
-            "error": ""
+            "opened": "Megnyitva: {{opened}}",
+            "error": "Hiba: {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
+        "title": "Hibák",
+        "header-reported": "Hibák jelentve:",
         "header-all-clear": "",
         "listing-files-failed": "",
         "listing-accounts-failed": "",
