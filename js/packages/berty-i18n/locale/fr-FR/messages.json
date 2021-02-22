@@ -9,20 +9,24 @@
       "button": "COMMENCER"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Performance",
         "desc": "Utilisation simple - Toutes les options",
         "push-notif": "Recevoir les notifications push",
-        "offline-message": "Messagerie hors-ligne",
+        "offline-message": "",
         "add-contact": "Ajout facile de contacts",
         "fast-message": "Messagerie instantanée"
       },
       "high-level": {
-        "title": "Plus haut niveau de confidentialité",
-        "desc": "Moins de metadonnées",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Notifications push désactivées",
         "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
-        "disable-contact-request": "Demande d'ami désactivée"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Demande d'ami désactivée",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Seul le nom est requis",
       "required": "Requis",
       "placeholder": "Nom",
-      "button": "CRÉER MON COMPTE"
+      "button": "CRÉER MON COMPTE",
+      "import-account": ""
     },
     "services-auth": {
       "header": "S'authentifier aux services",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Créer un nouveau groupe",
       "bottom-button": "Scanner le contact ou le groupe"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Empreinte digitale",
       "info": "Infos",
       "devices": "Appareils"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "PASSER",
+      "next": ""
     }
   },
   "chat": {
