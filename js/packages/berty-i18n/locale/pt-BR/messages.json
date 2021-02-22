@@ -9,20 +9,24 @@
       "button": "PRIMEIROS PASSOS"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Desempenho",
         "desc": "Fácil de usar - Todas as funcionalidades",
         "push-notif": "Receber notificações de push",
-        "offline-message": "Mensagens offline",
+        "offline-message": "",
         "add-contact": "Adicione contatos facilmente",
         "fast-message": "Entrega de mensagem mais rápida"
       },
       "high-level": {
-        "title": "Maior nível de privacidade",
-        "desc": "Para usuários avançados - Menos metadados",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Notificação de push desativada",
         "disable-local-peer-discovery": "Descoberta de par local desativada",
-        "disable-contact-request": "Solicitações de contato desativadas"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Solicitações de contato desativadas",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "O nome é a única informação obrigatória",
       "required": "Obrigatório",
       "placeholder": "Nome",
-      "button": "CRIAR UMA CONTA"
+      "button": "CRIAR UMA CONTA",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Autenticar-se em serviços",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Criar novo grupo",
       "bottom-button": "Escanear contato ou grupo"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "PULAR E FAZER MAIS TARDE"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Impressão digital",
       "info": "Informações",
       "devices": "Dispositivos"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "PULAR",
+      "next": ""
     }
   },
   "chat": {
