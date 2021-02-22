@@ -9,11 +9,13 @@
       "button": "HÃY BẮT ĐẦU"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "",
         "desc": "Dễ dàng sử dụng - Tất cả chức năng",
         "push-notif": "Nhận các thông báo đẩy",
-        "offline-message": "Tin nhắn Offline",
+        "offline-message": "",
         "add-contact": "Thêm liên lạc dễ dàng",
         "fast-message": ""
       },
@@ -22,7 +24,9 @@
         "desc": "",
         "disable-push-notif": "",
         "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Tên là thông tin bắt buộc duy nhất",
       "required": "Yêu cầu",
       "placeholder": "Tên",
-      "button": "TẠO TÀI KHOẢN CỦA TÔI"
+      "button": "TẠO TÀI KHOẢN CỦA TÔI",
+      "import-account": ""
     },
     "services-auth": {
       "header": "",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "",
       "bottom-button": ""
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "BỎ QUA VÀ THỰC HIỆN ĐIỀU NÀY SAU"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "",
       "info": "",
       "devices": ""
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "",
+      "next": ""
     }
   },
   "chat": {
