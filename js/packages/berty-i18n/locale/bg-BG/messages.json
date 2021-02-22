@@ -9,20 +9,24 @@
       "button": "ЗАПОЧНИ"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Производителност",
         "desc": "Лесен за употреба - Всички функционалности",
         "push-notif": "Получаване на push известия",
-        "offline-message": "Offline съобщения",
+        "offline-message": "",
         "add-contact": "Добави лесно контакти",
         "fast-message": "Най-бърза доставка на съобщения"
       },
       "high-level": {
-        "title": "Най-високо ниво на поверителност",
-        "desc": "За напреднали потребители - По-малко метаданни",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Известията са забранени",
         "disable-local-peer-discovery": "Локално откриване на Peers e забранено",
-        "disable-contact-request": "Заявките за контакт са деактивирани"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Заявките за контакт са деактивирани",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Името е единствената необходима информация",
       "required": "Задължително",
       "placeholder": "Име",
-      "button": "Създай моя акаунт"
+      "button": "Създай моя акаунт",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Удостоверяване на услуги",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Създай нова група",
       "bottom-button": "Сканирай контакт или група"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
     }
   },
   "settings": {
@@ -262,6 +297,10 @@
       "header-right-button": "Рестартирай daemon-а",
       "system-info-button": "Система информация",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Добави програмистка грешка",
       "share-button": {
         "title": "Сподели ID в discord",
@@ -338,6 +377,12 @@
       "fingerprint": "Fingerprint",
       "info": "Информация",
       "devices": "Устройства"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "ПРОПУСНИ",
+      "next": ""
     }
   },
   "chat": {
@@ -446,6 +491,65 @@
       "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "",
+      "hide-button": "",
+      "title": "",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": "Отказ"
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": "Отказ"
+      }
     }
   }
 }

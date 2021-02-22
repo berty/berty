@@ -9,20 +9,24 @@
       "button": "НАЧАТЬ"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Производительность",
         "desc": "Простой в использовании - Все функции",
         "push-notif": "Получать push-уведомления",
-        "offline-message": "Сообщения в оффлайне",
+        "offline-message": "",
         "add-contact": "Простое добавление контактов",
         "fast-message": "Самая быстрая доставка сообщений"
       },
       "high-level": {
-        "title": "Высочайший уровень приватности",
-        "desc": "Для продвинутых пользователей - меньше метаданных",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push-уведомления отключены",
         "disable-local-peer-discovery": "Обнаружение узлов рядом отключено",
-        "disable-contact-request": "Запросы в контакты отключены"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Запросы в контакты отключены",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Имя - единственная необходимая информация",
       "required": "Обязательно",
       "placeholder": "Имя",
-      "button": "СОЗДАТЬ МОЙ АККАУНТ"
+      "button": "СОЗДАТЬ МОЙ АККАУНТ",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Аутентифицироваться в сервисы",
@@ -80,13 +85,43 @@
         "no-results": "Ничего не найдено"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Создать новый аккаунт",
+        "import-button": "Импортировать аккаунт"
       }
     },
     "home-modal": {
       "top-button": "Создать новую группу",
       "bottom-button": "Сканировать контакт или группу"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
     }
   },
   "settings": {
@@ -96,7 +131,7 @@
       "header-right-button": "Настройки",
       "network-button": "Список сетей",
       "switch-accounts": "Использовать другой аккаунт",
-      "edit-profile": ""
+      "edit-profile": "Редактировать профиль"
     },
     "network-map": {
       "title": "Список сетей",
@@ -252,8 +287,8 @@
       "title": "Инструменты для разработчиков",
       "header-left-button": "Информация об устройстве",
       "simulate-button": "Симулировать ошибки в передаче данных",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-js-error-button": "Имитация ошибки JavaScript",
+      "simulate-native-error-button": "Симуляция родной ошибки",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "необязательно",
       "tor-required-option": "обязательно",
@@ -262,6 +297,10 @@
       "header-right-button": "Перезапустить демон",
       "system-info-button": "Информация о системе",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "Формат журнала",
+        "bullet-point": "Перезапустите приложение после изменения этого поля"
+      },
       "add-dev-conversations-button": "Добавить dev беседы",
       "share-button": {
         "title": "Поделиться ID на Discord",
@@ -313,7 +352,7 @@
       "title": "IPFS WebUI"
     },
     "my-berty-ID": {
-      "qr": "",
+      "qr": "QR",
       "fingerprint": "Отпечаток",
       "devices": "Устройства"
     }
@@ -323,8 +362,8 @@
       "invalid-link": "Некорректная ссылка!",
       "invalid-qr": "Некорректный QR-код!",
       "error": "Ошибка!",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "contact-already-added": "Контакт уже добавлен",
+      "contact-already-added-message": "Нельзя добавить один и тот же контакт несколько раз"
     },
     "invalid-scan": {
       "dismiss-button": "ОТКЛОНИТЬ"
@@ -338,6 +377,12 @@
       "fingerprint": "Отпечаток",
       "info": "Информация",
       "devices": "Устройства"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "ПРОПУСТИТЬ",
+      "next": ""
     }
   },
   "chat": {
@@ -431,21 +476,80 @@
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Обнаружена ошибка",
+      "crash": "Обнаружен сбой"
     },
-    "restart-app": "",
+    "restart-app": "Перезапустить приложение",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Что случилось?",
+      "desc": "Приложение только что завершилось.",
+      "desc-report": "Встряхните свой телефон для сообщения об ошибке и нажмите на кнопку, чтобы выйти и перезапустить приложение."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "Извините за эту ошибку!",
+      "desc": "Это вина Фрэнсиса, стажер разработчика Berty, который должен был ошибиться. Какой рывок это французы!",
+      "desc-buy": "Он купит тебе пива, когда ты его увидишь!",
+      "desc-em": "*Ладно, в команде Berty нет Фрэнсиса.",
+      "desc-report": "Встряхните телефон, и мы снова начнём!"
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "Показать инспектор приложения",
+      "hide-button": "Закрыть",
+      "title": "Инспектор",
+      "accounts": {
+        "title": "Аккаунты",
+        "unsupported-remote-mode": "Инспектор аккаунтов не поддерживается в удаленном режиме",
+        "data-not-found": "Аккаунт не в списке",
+        "action-delete": {
+          "file-exists": "Аккаунт {{accountId}} не существует, однако файл имеет это имя.",
+          "account-exists": "Аккаунт {{accountId}} уже существует.",
+          "directory-exists-load-error": "Аккаунт {{accountId}} не существует, однако в каталоге есть это имя.",
+          "fs-read-error": "Ошибка при получении информации об аккаунте",
+          "actions-title": "Что нужно делать?",
+          "action-account-manager": "Удалить через менеджер аккаунтов",
+          "action-account-manager-confirm": "Подтвердите удаление аккаунта",
+          "action-force-delete": "Принудительно удалить",
+          "action-force-delete-confirm": "Подтвердите принудительное удаление аккаунта",
+          "error-close": "Ошибка при закрытии аккаунта",
+          "error-delete": "Ошибка при удалении аккаунта",
+          "success-feedback": "Аккаунт удалён",
+          "action-cancel": "Отменить"
+        },
+        "status": {
+          "metadata-found": "Найден файл метаданных",
+          "metadata-not-found": "Файл метаданных не найден",
+          "ipfs-repo-config-found": "Найден файл конфигурации IPFS",
+          "ipfs-repo-config-not-found": "Файл конфигурации IPFS не найден",
+          "messenger-db-found": "Обнаружена база данных мессенджера",
+          "messenger-db-not-found": "База данных мессенджера не найдена"
+        },
+        "infos": {
+          "aligned": {
+            "name": "Имя:    {{name}}",
+            "created": "Создано: {{created}}",
+            "opened": "Открыто:  {{opened}}",
+            "error": "Ошибка:   {{error}}"
+          }
+        }
+      },
+      "errors": {
+        "title": "Ошибки",
+        "header-reported": "Произошла ошибка:",
+        "header-all-clear": "Нет сообщений об ошибке",
+        "listing-files-failed": "Ошибка при отображении содержимого каталога",
+        "listing-accounts-failed": "Ошибка при отображении аккаунтов",
+        "listing-accounts-failed-grpc": "Ошибка GRPC при отображении аккаунтов"
+      },
+      "dump": {
+        "button": "Дамп состояния приложения"
+      },
+      "refresh": "Обновить",
+      "confirm-alert": {
+        "button-confirm": "Подтвердить",
+        "button-cancel": "Отменить"
+      }
     }
   }
 }

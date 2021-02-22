@@ -9,20 +9,24 @@
       "button": "ROZPOCZNIJ"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Wydajność",
         "desc": "Łatwy w obsłudze - wszystkie funkcje",
         "push-notif": "Otrzymuj powiadomienia push",
-        "offline-message": "Wiadomości offline",
+        "offline-message": "",
         "add-contact": "Dodaj łatwo kontakty",
         "fast-message": "Najszybsze dostarczenie wiadomości"
       },
       "high-level": {
-        "title": "Najwyższy poziom prywatności",
-        "desc": "Dla zaawansowanych użytkowników - Mniej metadanych",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Powiadomienia push wyłączone",
         "disable-local-peer-discovery": "Wykrywanie lokalnych peerów wyłączone",
-        "disable-contact-request": "Prośby kontaktów wyłączone"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Prośby kontaktów wyłączone",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Nazwa to jedyna wymagana informacja",
       "required": "Wymagane",
       "placeholder": "Nazwa",
-      "button": "UTWÓRZ MOJE KONTO"
+      "button": "UTWÓRZ MOJE KONTO",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Uwierzytelnianie do usług",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Utwórz nową grupę",
       "bottom-button": "Zeskanuj kontakt lub grupę"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
     }
   },
   "settings": {
@@ -262,6 +297,10 @@
       "header-right-button": "Zrestartuj daemon",
       "system-info-button": "Informacje systemowe",
       "debug-button": "Debuguj",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
       "share-button": {
         "title": "Udostępnij ID na discordzie",
@@ -338,6 +377,12 @@
       "fingerprint": "Odcisk palca",
       "info": "Informacje",
       "devices": "Urządzenia"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "POMIŃ",
+      "next": ""
     }
   },
   "chat": {
@@ -446,6 +491,65 @@
       "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "",
+      "hide-button": "",
+      "title": "",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": "Anuluj"
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": "Anuluj"
+      }
     }
   }
 }

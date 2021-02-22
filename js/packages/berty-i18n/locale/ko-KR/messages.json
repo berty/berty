@@ -9,20 +9,24 @@
       "button": "시작하기"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "성능",
         "desc": "쉬운 사용법 - 모든 기능",
         "push-notif": "푸쉬 알림 수신하기",
-        "offline-message": "오프라인 메시지",
+        "offline-message": "",
         "add-contact": "쉽게 연락처 추가하기",
         "fast-message": "더 빠른 메시지 전송"
       },
       "high-level": {
-        "title": "더 높은 프라이버시 레벨",
-        "desc": "고급 유저용 - 메타데이터 줄이기",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "알림 수신 해제됨",
         "disable-local-peer-discovery": "주변 탐색 해제됨",
-        "disable-contact-request": "연락처 요청 해제됨"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "연락처 요청 해제됨",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "이름만 있으면 됩니다",
       "required": "필요",
       "placeholder": "이름",
-      "button": "내 계정 만들기"
+      "button": "내 계정 만들기",
+      "import-account": ""
     },
     "services-auth": {
       "header": "",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "",
       "bottom-button": ""
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "넘기고 다음에 하기"
     }
   },
   "settings": {
@@ -262,6 +297,10 @@
       "header-right-button": "",
       "system-info-button": "",
       "debug-button": "",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "",
       "share-button": {
         "title": "",
@@ -338,6 +377,12 @@
       "fingerprint": "",
       "info": "",
       "devices": ""
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "",
+      "next": ""
     }
   },
   "chat": {
@@ -446,6 +491,65 @@
       "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "",
+      "hide-button": "",
+      "title": "",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": ""
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": ""
+      }
     }
   }
 }
