@@ -263,8 +263,8 @@
       "system-info-button": "Информация о системе",
       "debug-button": "Debug",
       "log-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Формат журнала",
+        "bullet-point": "Перезапустите приложение после изменения этого поля"
       },
       "add-dev-conversations-button": "Добавить dev беседы",
       "share-button": {
