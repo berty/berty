@@ -9,20 +9,24 @@
       "button": "Loslegen"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Leistung",
         "desc": "Einfach zu bedienen - Alle Funktionen",
         "push-notif": "Push-Benachrichtigungen erhalten",
-        "offline-message": "Offline-Nachrichten",
+        "offline-message": "",
         "add-contact": "Kontakte einfach hinzufügen",
         "fast-message": "Schnellste Nachrichtenlieferung"
       },
       "high-level": {
-        "title": "Höchste Privatsphäre",
-        "desc": "Für fortgeschrittene Benutzer - Weniger Metadaten",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push Benachrichtigungen deaktiviert",
         "disable-local-peer-discovery": "Lokale Peer-Entdeckung deaktiviert",
-        "disable-contact-request": "Kontaktanfragen deaktiviert"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Kontaktanfragen deaktiviert",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Ein Spitzname ist die einzige erforderliche Information",
       "required": "Erforderlich",
       "placeholder": "Name",
-      "button": "MEIN KONTO ERSTELLEN"
+      "button": "MEIN KONTO ERSTELLEN",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Authentifizieren bei Diensten",
@@ -80,13 +85,43 @@
         "no-results": "Keine Ergebnisse gefunden"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Ihr Konto erstellen",
+        "import-button": "Konto importieren"
       }
     },
     "home-modal": {
       "top-button": "Neue Gruppe erstellen",
       "bottom-button": "Kontakt oder Gruppe scannen"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     }
   },
   "settings": {
@@ -252,8 +287,8 @@
       "title": "Entwicklerwerkzeuge",
       "header-left-button": "Geräteinformationen",
       "simulate-button": "Streamfehler simulieren",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-js-error-button": "JavaScript-Fehler simulieren",
+      "simulate-native-error-button": "Native App-Fehler simulieren",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "fakultativ",
       "tor-required-option": "erforderlich",
@@ -262,6 +297,10 @@
       "header-right-button": "Daemon neu starten",
       "system-info-button": "System-Info",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Entwickler-Unterhaltungen hinzufügen",
       "share-button": {
         "title": "ID auf Discord teilen",
@@ -338,6 +377,12 @@
       "fingerprint": "Fingerabdruck",
       "info": "Infos",
       "devices": "Geräte"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "Überspringen",
+      "next": ""
     }
   },
   "chat": {
@@ -431,21 +476,80 @@
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Fehler entdeckt",
+      "crash": "Absturz erkannt"
     },
-    "restart-app": "",
+    "restart-app": "App neu starten",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Was ist das Problem?",
+      "desc": "Die Anwendung ist soeben abgestürzt.",
+      "desc-report": "Schütteln Sie Ihr Telefon um den Fehler zu melden und klicken Sie auf den Button, um die App zu beenden und neu zu starten."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "Entschuldigen Sie diesen Fehler!",
+      "desc": "Francis ist schuld, unser Praktikant. Er hat wohl einen Fehler gemacht. Ach dieser Francis!",
+      "desc-buy": "Er kauft dir ein Bier, wenn du ihn triffst!",
+      "desc-em": "*Okay, es gibt keinen Francis im Team Berty.",
+      "desc-report": "Schütteln Sie Ihr Telefon und es geht weiter!"
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "App-Inspektor anzeigen",
+      "hide-button": "Beenden",
+      "title": "Inspektor",
+      "accounts": {
+        "title": "Konten",
+        "unsupported-remote-mode": "Der Konten-Inspektor wird im Remote-Modus nicht unterstützt",
+        "data-not-found": "Dieses Konto ist nicht in der Liste",
+        "action-delete": {
+          "file-exists": "Konto {{accountId}} existiert nicht, aber eine Datei mit diesem Namen.",
+          "account-exists": "Konto {{accountId}} existiert bereits.",
+          "directory-exists-load-error": "Konto {{accountId}} existiert nicht, aber ein Verzeichnis mit diesem Namen.",
+          "fs-read-error": "Fehler beim Abrufen der Datei-Informationen über das Konto",
+          "actions-title": "Was sollen wir tun?",
+          "action-account-manager": "Löschen über den Kontomanager",
+          "action-account-manager-confirm": "Löschung des Kontos bestätigen",
+          "action-force-delete": "Löschen erzwingen",
+          "action-force-delete-confirm": "Löschung des Kontos nochmals bestätigen",
+          "error-close": "Fehler beim Schliessen des Kontos",
+          "error-delete": "Fehler beim Löschen des Kontos",
+          "success-feedback": "Konto gelöscht",
+          "action-cancel": "Abbrechen"
+        },
+        "status": {
+          "metadata-found": "Metadaten-Datei gefunden",
+          "metadata-not-found": "Metadaten-Datei nicht gefunden",
+          "ipfs-repo-config-found": "IPFS-Konfigurationsdatei gefunden",
+          "ipfs-repo-config-not-found": "IPFS-Konfigurationsdatei nicht gefunden",
+          "messenger-db-found": "Messenger-DB gefunden",
+          "messenger-db-not-found": "Messenger-DB nicht gefunden"
+        },
+        "infos": {
+          "aligned": {
+            "name": "Name: {{name}}",
+            "created": "Erstellt: {{created}}",
+            "opened": "Geöffnet: {{opened}}",
+            "error": "Fehler:   {{error}}"
+          }
+        }
+      },
+      "errors": {
+        "title": "Fehlermeldungen",
+        "header-reported": "Fehler aufgetreten:",
+        "header-all-clear": "Keine Fehler aufgetreten",
+        "listing-files-failed": "Fehler beim Auflisten des Verzeichnisses",
+        "listing-accounts-failed": "Fehler beim Auflisten der Konten",
+        "listing-accounts-failed-grpc": "GRPC-Fehler beim Auflisten der Konten"
+      },
+      "dump": {
+        "button": "App-Status ausgeben"
+      },
+      "refresh": "Aktualisieren",
+      "confirm-alert": {
+        "button-confirm": "Bestätigen",
+        "button-cancel": "Abbrechen"
+      }
     }
   }
 }
