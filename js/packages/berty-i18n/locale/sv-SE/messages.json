@@ -9,20 +9,24 @@
       "button": "BÖRJA"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Prestanda",
         "desc": "Lätt att använda - alla funktioner",
         "push-notif": "Ta emot push-aviseringar",
-        "offline-message": "Offline-meddelanden",
+        "offline-message": "",
         "add-contact": "Lägg enkelt till kontakter",
         "fast-message": "Snabbast möjliga leverans av meddelanden"
       },
       "high-level": {
-        "title": "Högsta möjliga nivå av sekretess",
-        "desc": "För avancerade användare - mindre metadata",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push-aviseringar avstängda",
         "disable-local-peer-discovery": "Sökning efter lokala noder avstängd",
-        "disable-contact-request": "Kontaktförfrågningar avstängda"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Kontaktförfrågningar avstängda",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Ett namn är den enda information som behövs",
       "required": "Obligatorisk",
       "placeholder": "Namn",
-      "button": "SKAPA MITT KONTO"
+      "button": "SKAPA MITT KONTO",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Autentisera till tjänster",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Skapa ny grupp",
       "bottom-button": "Skanna kontakt eller grupp"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "HOPPA ÖVER OCH GÖR SENARE"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Fingeravtryck",
       "info": "Detaljer",
       "devices": "Enheter"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "HOPPA ÖVER",
+      "next": ""
     }
   },
   "chat": {
