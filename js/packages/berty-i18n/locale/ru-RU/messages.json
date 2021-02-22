@@ -9,20 +9,24 @@
       "button": "НАЧАТЬ"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Производительность",
         "desc": "Простой в использовании - Все функции",
         "push-notif": "Получать push-уведомления",
-        "offline-message": "Сообщения в оффлайне",
+        "offline-message": "",
         "add-contact": "Простое добавление контактов",
         "fast-message": "Самая быстрая доставка сообщений"
       },
       "high-level": {
-        "title": "Высочайший уровень приватности",
-        "desc": "Для продвинутых пользователей - меньше метаданных",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push-уведомления отключены",
         "disable-local-peer-discovery": "Обнаружение узлов рядом отключено",
-        "disable-contact-request": "Запросы в контакты отключены"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Запросы в контакты отключены",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Имя - единственная необходимая информация",
       "required": "Обязательно",
       "placeholder": "Имя",
-      "button": "СОЗДАТЬ МОЙ АККАУНТ"
+      "button": "СОЗДАТЬ МОЙ АККАУНТ",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Аутентифицироваться в сервисы",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Создать новую группу",
       "bottom-button": "Сканировать контакт или группу"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Отпечаток",
       "info": "Информация",
       "devices": "Устройства"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "ПРОПУСТИТЬ",
+      "next": ""
     }
   },
   "chat": {
