@@ -9,6 +9,8 @@
       "button": ""
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "",
         "desc": "",
@@ -22,7 +24,9 @@
         "desc": "",
         "disable-push-notif": "",
         "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "",
       "required": "",
       "placeholder": "名前",
-      "button": "アカウントの作成"
+      "button": "アカウントの作成",
+      "import-account": ""
     },
     "services-auth": {
       "header": "",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "",
       "bottom-button": ""
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": ""
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "",
       "info": "",
       "devices": ""
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "",
+      "next": ""
     }
   },
   "chat": {
