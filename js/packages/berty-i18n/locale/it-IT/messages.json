@@ -9,20 +9,24 @@
       "button": "INIZIA"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Prestazioni",
         "desc": "Facile da usare - Tutte le funzionalità",
         "push-notif": "Ricevi notifiche push",
-        "offline-message": "Messaggistica offline",
+        "offline-message": "",
         "add-contact": "Aggiungi facilmente i contatti",
         "fast-message": "Consegna dei messaggi velocissima"
       },
       "high-level": {
-        "title": "La migliore riservatezza",
-        "desc": "Per utenti avanzati - Meno metadati",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Notifiche push disabilitate",
         "disable-local-peer-discovery": "Ricerca locale dei peer disabilitata",
-        "disable-contact-request": "Richieste di contatto disattivate"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Richieste di contatto disattivate",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Un nome è l'unica informazione richiesta",
       "required": "Necessario",
       "placeholder": "Nome",
-      "button": "CREA IL MIO ACCOUNT"
+      "button": "CREA IL MIO ACCOUNT",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Autenticazione ai servizi",
@@ -80,13 +85,43 @@
         "no-results": "Nessun risultato trovato"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Crea un nuovo account",
+        "import-button": "Importa account"
       }
     },
     "home-modal": {
       "top-button": "Crea un nuovo gruppo",
       "bottom-button": "Scansiona il contatto o gruppo"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "SALTA E FALLO DOPO"
     }
   },
   "settings": {
@@ -252,8 +287,8 @@
       "title": "Strumenti di sviluppo",
       "header-left-button": "Informazioni sul dispositivo",
       "simulate-button": "Simula errore stream",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-js-error-button": "Simula errore JavaScript",
+      "simulate-native-error-button": "Simula errore nativo",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "facoltativo",
       "tor-required-option": "necessario",
@@ -262,6 +297,10 @@
       "header-right-button": "Riavvia il daemon",
       "system-info-button": "Informazioni di sistema",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Aggiungi conversazioni dev",
       "share-button": {
         "title": "Condividi ID su Discord",
@@ -338,6 +377,12 @@
       "fingerprint": "Impronta",
       "info": "Informazioni",
       "devices": "Dispositivi"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "SALTA",
+      "next": ""
     }
   },
   "chat": {
@@ -431,21 +476,80 @@
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Rilevato bug",
+      "crash": "Rilevato crash"
     },
-    "restart-app": "",
+    "restart-app": "Riavvia l'app",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Cosa è fallito?",
+      "desc": "L'applicazione è appena crashata.",
+      "desc-report": "Scuoti il telefono per segnalare il bug e fai clic sul pulsante per uscire e riavviare l'app."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "Ci dispiace per questo bug!",
+      "desc": "È colpa di Francis, sviluppatore stagista a Berty, che deve aver commesso un errore. Che idiota questo Francis!",
+      "desc-buy": "Ti comprerà una birra quando lo vedrai!",
+      "desc-em": "*Beh, ok, non c'è alcun Francis nel team di Berty.",
+      "desc-report": "Scuoti il tuo telefono e via di nuovo!"
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "Mostra l'ispettore dell'app",
+      "hide-button": "Chiudi",
+      "title": "Ispettore",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": "Annulla"
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "Errori",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": "Annulla"
+      }
     }
   }
 }
