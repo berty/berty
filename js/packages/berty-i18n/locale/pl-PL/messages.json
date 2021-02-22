@@ -9,20 +9,24 @@
       "button": "ROZPOCZNIJ"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Wydajność",
         "desc": "Łatwy w obsłudze - wszystkie funkcje",
         "push-notif": "Otrzymuj powiadomienia push",
-        "offline-message": "Wiadomości offline",
+        "offline-message": "",
         "add-contact": "Dodaj łatwo kontakty",
         "fast-message": "Najszybsze dostarczenie wiadomości"
       },
       "high-level": {
-        "title": "Najwyższy poziom prywatności",
-        "desc": "Dla zaawansowanych użytkowników - Mniej metadanych",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Powiadomienia push wyłączone",
         "disable-local-peer-discovery": "Wykrywanie lokalnych peerów wyłączone",
-        "disable-contact-request": "Prośby kontaktów wyłączone"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Prośby kontaktów wyłączone",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Nazwa to jedyna wymagana informacja",
       "required": "Wymagane",
       "placeholder": "Nazwa",
-      "button": "UTWÓRZ MOJE KONTO"
+      "button": "UTWÓRZ MOJE KONTO",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Uwierzytelnianie do usług",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Utwórz nową grupę",
       "bottom-button": "Zeskanuj kontakt lub grupę"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Odcisk palca",
       "info": "Informacje",
       "devices": "Urządzenia"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "POMIŃ",
+      "next": ""
     }
   },
   "chat": {
