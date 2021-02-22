@@ -9,20 +9,24 @@
       "button": "ΞΕΚΙΝΗΣΕ ΤΩΡΑ"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Απόδοση",
         "desc": "Εύκολο στη χρήση - Όλες οι δυνατότητες",
         "push-notif": "Λήψη ειδοποιήσεων",
-        "offline-message": "Μηνύματα εκτός σύνδεσης",
+        "offline-message": "",
         "add-contact": "Εύκολη προσθήκη επαφών",
         "fast-message": "Ταχύτερη παράδοση μηνυμάτων"
       },
       "high-level": {
-        "title": "Υψηλότερο επίπεδο ιδιωτικότητας",
-        "desc": "Για προχωρημένους χρήστες - Λιγότερα μεταδεδομένα",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Προώθηση ειδοποιήσεων ανενεργές",
         "disable-local-peer-discovery": "Το τοπικό peer είναι απενεργοποιημένο",
-        "disable-contact-request": "Τα αιτήματα επαφής απενεργοποιήθηκαν"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Τα αιτήματα επαφής απενεργοποιήθηκαν",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Απαιτείται μόνο το όνομα",
       "required": "Απαιτείται",
       "placeholder": "Όνομα",
-      "button": "ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ"
+      "button": "ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Ταυτοποίηση στις υπηρεσίες",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "",
       "bottom-button": ""
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "",
       "info": "",
       "devices": ""
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "",
+      "next": ""
     }
   },
   "chat": {
