@@ -9,20 +9,24 @@
       "button": "开始"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "性能",
         "desc": "简单使用 - 所有功能",
         "push-notif": "接收新消息通知",
-        "offline-message": "离线消息",
+        "offline-message": "",
         "add-contact": "添加联系人",
         "fast-message": "快速发送消息"
       },
       "high-level": {
-        "title": "高级隐私",
-        "desc": "对于高级用户-更少的元数据",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "已禁用新消息通知",
         "disable-local-peer-discovery": "本地对等用户发现已禁用",
-        "disable-contact-request": "已禁用联系人请求"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "已禁用联系人请求",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "名称是唯一需要的信息",
       "required": "必需的",
       "placeholder": "名称",
-      "button": "创建我的帐户"
+      "button": "创建我的帐户",
+      "import-account": ""
     },
     "services-auth": {
       "header": "认证服务",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "",
       "bottom-button": ""
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "跳过并稍后再做"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "",
       "info": "",
       "devices": ""
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "",
+      "next": ""
     }
   },
   "chat": {
