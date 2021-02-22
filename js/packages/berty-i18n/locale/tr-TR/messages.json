@@ -9,20 +9,24 @@
       "button": "BAŞLA"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Performans",
         "desc": "Kullanımı kolay - Tüm özellikler",
         "push-notif": "Anlık bildirimler alın",
-        "offline-message": "Çevrimdışı mesajlaşma",
+        "offline-message": "",
         "add-contact": "Kolayca kişi ekleyin",
         "fast-message": "En hızlı mesaj teslimi"
       },
       "high-level": {
-        "title": "En yüksek seviyede gizlilik",
-        "desc": "Gelişmiş kullanıcılar için - Daha az metadata",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Anlık bildirimler devre dışı",
         "disable-local-peer-discovery": "Yerel eş keşfi devre dışı",
-        "disable-contact-request": "Kişi istekleri devre dışı"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Kişi istekleri devre dışı",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Hesap oluşturmak için gereken tek bilgi bir isim",
       "required": "Gerekli",
       "placeholder": "İsim",
-      "button": "HESABIMI OLUŞTUR"
+      "button": "HESABIMI OLUŞTUR",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Servislere izin ver",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Yeni grup oluştur",
       "bottom-button": "Kişi veya grup tara"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "ATLA VE DAHA SONRA YAP"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Parmak izi",
       "info": "Bilgiler",
       "devices": "Aygıtlar"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "ATLA",
+      "next": ""
     }
   },
   "chat": {
