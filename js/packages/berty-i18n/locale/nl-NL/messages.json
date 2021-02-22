@@ -9,20 +9,24 @@
       "button": "BEGIN HIER"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Prestaties",
         "desc": "Eenvoudig in gebruik - alle functies",
         "push-notif": "Ontvang push notificaties",
-        "offline-message": "Offline berichten",
+        "offline-message": "",
         "add-contact": "Voeg eenvoudig contacten toe",
         "fast-message": "Snelste aflevering van berichten"
       },
       "high-level": {
-        "title": "Hoogste niveau van privacy",
-        "desc": "Voor geavanceerde gebruikers - minder metagegevens",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push notificaties uitgeschakeld",
         "disable-local-peer-discovery": "Lokale peer detectie uitgeschakeld",
-        "disable-contact-request": "Contact verzoeken uitgeschakeld"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Contact verzoeken uitgeschakeld",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Een naam is de enige informatie die vereist is",
       "required": "Vereist",
       "placeholder": "Naam",
-      "button": "MAAK MIJN ACCOUNT"
+      "button": "MAAK MIJN ACCOUNT",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Verifieer bij diensten",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Nieuwe groep aanmaken",
       "bottom-button": "Scan contact of groep"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "OVERSLAAN EN LATER UITVOEREN"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Vingerafdruk",
       "info": "Informatie",
       "devices": "Apparaten"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "OVERSLAAN",
+      "next": ""
     }
   },
   "chat": {
