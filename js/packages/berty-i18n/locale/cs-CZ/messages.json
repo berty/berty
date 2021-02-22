@@ -9,20 +9,24 @@
       "button": "ZAČÍNÁME"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Výkon",
         "desc": "Jednoduché použití - všechny funkce",
         "push-notif": "Přijímat push oznámení",
-        "offline-message": "Offline výměna zpráv",
+        "offline-message": "",
         "add-contact": "Jednoduché přidání kontaktů",
         "fast-message": "Nejrychlejší doručování zpráv"
       },
       "high-level": {
-        "title": "Nejvyšší úroveň soukromí",
-        "desc": "Pro pokročilé uživatele - méně metadat",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push oznámení zakázána",
         "disable-local-peer-discovery": "Lokální vyhledávání uživatelů je zakázáno",
-        "disable-contact-request": "Žádosti o kontakty jsou zakázány"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Žádosti o kontakty jsou zakázány",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Jméno je jediná požadovaná informace",
       "required": "Povinné",
       "placeholder": "Jméno",
-      "button": "VYTVOŘIT ÚČET"
+      "button": "VYTVOŘIT ÚČET",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Přihlášení ke službám",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Vytvořit novou skupinu",
       "bottom-button": "Prohledat kontakt nebo skupinu"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Otisk",
       "info": "Informace",
       "devices": "Zařízení"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "PŘESKOČIT",
+      "next": ""
     }
   },
   "chat": {
