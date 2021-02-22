@@ -118,9 +118,13 @@ PODS:
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
+  - Permission-BluetoothPeripheral (3.0.0):
+    - RNPermissions
   - Permission-Camera (3.0.0):
     - RNPermissions
   - Permission-Microphone (3.0.0):
+    - RNPermissions
+  - Permission-Notifications (3.0.0):
     - RNPermissions
   - Permission-PhotoLibrary (3.0.0):
     - RNPermissions
@@ -456,8 +460,10 @@ DEPENDENCIES:
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - OGReactNativeWaveform (from `../node_modules/react-native-audiowaveform`)
   - OpenSSL-Universal (from `./OpenSSL-Universal-Override.podspec`)
+  - Permission-BluetoothPeripheral (from `../node_modules/react-native-permissions/ios/BluetoothPeripheral`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
   - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone`)
+  - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications`)
   - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -556,10 +562,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-audiowaveform"
   OpenSSL-Universal:
     :path: "./OpenSSL-Universal-Override.podspec"
+  Permission-BluetoothPeripheral:
+    :path: "../node_modules/react-native-permissions/ios/BluetoothPeripheral"
   Permission-Camera:
     :path: "../node_modules/react-native-permissions/ios/Camera"
   Permission-Microphone:
     :path: "../node_modules/react-native-permissions/ios/Microphone"
+  Permission-Notifications:
+    :path: "../node_modules/react-native-permissions/ios/Notifications"
   Permission-PhotoLibrary:
     :path: "../node_modules/react-native-permissions/ios/PhotoLibrary"
   RCTRequired:
@@ -687,8 +697,10 @@ SPEC CHECKSUMS:
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   OGReactNativeWaveform: f789fabadbf3904c7cba84d183405395861b8fed
   OpenSSL-Universal: 853119ea7eda1a9a6b1971ce0a9aa8a93ecdbc71
+  Permission-BluetoothPeripheral: 0111f6d0b7c3e9013c6b93ab6fa6446875facf03
   Permission-Camera: 119b01de97a5b3edb637999e38476b68143b9d17
   Permission-Microphone: e426a115ddf9591e8c30c55ea2b28572d4cbd07e
+  Permission-Notifications: 5c69bf2f6c1e30345af4f25e2981dc1c8dafbc22
   Permission-PhotoLibrary: cb9cdc1e3744e26ab404297a8e289d50c8ee27e8
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
@@ -742,6 +754,6 @@ SPEC CHECKSUMS:
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 5abebcaa789f2ba8767f2b20f737ff4028997b2e
+PODFILE CHECKSUM: b4878f6d4ebd205e8a0a2979ec1c89d845677b77
 
 COCOAPODS: 1.10.0

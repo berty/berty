@@ -36,6 +36,7 @@ type SettingButtonProps = {
 	actionToggle?: any
 	varToggle?: boolean
 	style?: StyleProp<any>[]
+	textStyle?: StyleProp<any>[]
 	// action
 	previewValue?: string
 	previewValueColor?: string
@@ -73,6 +74,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	alone = true,
 	toggled = false,
 	style = null,
+	textStyle = null,
 	actionIcon = !toggled && 'arrow-ios-forward',
 	onPress,
 	disabled = false,
@@ -141,7 +143,12 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					<View>
 						<Text
 							numberOfLines={2}
-							style={[padding.left.small, text.color.black, { maxWidth: windowWidth - 150 }]}
+							style={[
+								padding.left.small,
+								text.color.black,
+								{ maxWidth: windowWidth - 150 },
+								textStyle,
+							]}
 						>
 							{name}
 						</Text>

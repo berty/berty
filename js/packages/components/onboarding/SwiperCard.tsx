@@ -13,8 +13,9 @@ const SwiperCard: React.FC<{
 	title: string
 	description: string
 	button?: { text: string; onPress: () => Promise<void> | void }
+	secondButton?: { text: string; onPress: () => Promise<void> | void }
 	skip?: { text: string; onPress: () => void }
-}> = ({ children, header, label, title, description, button, skip }) => {
+}> = ({ children, header, label, title, description, button, skip, secondButton }) => {
 	const [{ absolute, text, padding, margin, background, border, column }] = useStyles()
 	let labelColor: keyof typeof background.light
 	switch (label) {
@@ -88,6 +89,18 @@ const SwiperCard: React.FC<{
 					</Text>
 					{children}
 					{button ? <Button onPress={button.onPress}>{button.text}</Button> : null}
+					{secondButton ? (
+						<Button
+							onPress={secondButton.onPress}
+							style={{
+								backgroundColor: '#DAE4FF',
+								marginTop: 5,
+							}}
+						>
+							{secondButton.text}
+						</Button>
+					) : null}
+
 					{skip ? (
 						<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
 							<Text style={[text.size.small, text.color.grey, text.align.center]}>{skip.text}</Text>

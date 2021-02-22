@@ -4,6 +4,7 @@ import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
+import DocumentPicker from 'react-native-document-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
@@ -42,6 +43,23 @@ const CreateAccountBody = ({ next }) => {
 			publicKey: ctx.account.publicKey,
 		})
 	}, [ctx, name])
+
+	const onImportPress = async () => {
+		try {
+			const res = await DocumentPicker.pick({
+				// @ts-ignore
+				type: ['public.tar-archive', '*/*'],
+			})
+
+			await ctx.importAccount(res.uri.replace(/^file:\/\//, ''))
+		} catch (err) {
+			if (DocumentPicker.isCancel(err)) {
+				// ignore
+			} else {
+				console.error(err)
+			}
+		}
+	}
 
 	return (
 		<Translation>
@@ -82,6 +100,10 @@ const CreateAccountBody = ({ next }) => {
 								text: t('onboarding.create-account.button'),
 								onPress,
 							}}
+							secondButton={{
+								text: t('onboarding.create-account.import-account'),
+								onPress: onImportPress,
+							}}
 						>
 							<TextInput
 								autoCapitalize='none'
@@ -114,7 +136,7 @@ export const CreateAccount = () => {
 
 	return (
 		<OnboardingWrapper>
-			<CreateAccountBody next={() => navigate('Onboarding.ServicesAuth')} />
+			<CreateAccountBody next={() => navigate('Onboarding.SetupFinished')} />
 		</OnboardingWrapper>
 	)
 }

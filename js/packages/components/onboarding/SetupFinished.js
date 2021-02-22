@@ -56,9 +56,19 @@ const SetupFinishedBody = () => {
 										/>
 									) : (
 										<LottieView
-											source={require('./Berty_onboard_animation_assets2/Startup animation assets/Finish loop.json')}
+											source={require('./confetti.json')}
 											autoPlay
-											loop
+											loop={false}
+											style={{
+												position: 'absolute',
+												top: 50,
+												left: 0,
+												transform: [
+													{
+														scale: 1.4,
+													},
+												],
+											}}
 										/>
 									)}
 								</>
