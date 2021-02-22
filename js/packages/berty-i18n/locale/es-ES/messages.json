@@ -9,20 +9,24 @@
       "button": "EMPEZAR"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Rendimiento",
         "desc": "Fácil de usar - Todas las funciones",
         "push-notif": "Recibir notificaciones push",
-        "offline-message": "Mensajería sin conexión",
+        "offline-message": "",
         "add-contact": "Añadir contactos de forma fácil",
         "fast-message": "Envío de mensajes más rápido"
       },
       "high-level": {
-        "title": "Mayor nivel de privacidad",
-        "desc": "Para usuarios avanzados - Menos metadatos",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Notificaciones push desactivadas",
         "disable-local-peer-discovery": "Descubrimiento local de pares desactivado",
-        "disable-contact-request": "Solicitudes de contacto desactivadas"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Solicitudes de contacto desactivadas",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Un nombre es la única información requerida",
       "required": "Requerido",
       "placeholder": "Nombre",
-      "button": "CREAR MI CUENTA"
+      "button": "CREAR MI CUENTA",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Autenticar a los servicios",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Crear un nuevo grupo",
       "bottom-button": "Escanear contacto o grupo"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "SALTAR Y HACER MÁS TARDE"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Huella digital",
       "info": "Información",
       "devices": "Dispositivos"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "SALTAR",
+      "next": ""
     }
   },
   "chat": {
