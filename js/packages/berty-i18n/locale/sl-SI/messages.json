@@ -9,20 +9,24 @@
       "button": ""
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "",
         "desc": "",
         "push-notif": "",
-        "offline-message": "Sporočanje brez povezave",
+        "offline-message": "",
         "add-contact": "Enostavno dodaje kontakte",
         "fast-message": "Najhitrejše dostavljanje sporočil"
       },
       "high-level": {
-        "title": "Najvišja stopnja varnosti",
-        "desc": "Za napredne uporabnike - Manj metapodatkov",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "",
         "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "",
       "required": "Obvezno",
       "placeholder": "Ime",
-      "button": "USTVARI MOJ RAČUN"
+      "button": "USTVARI MOJ RAČUN",
+      "import-account": ""
     },
     "services-auth": {
       "header": "",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Ustvari novo skupino",
       "bottom-button": ""
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "PRESKOČI IN NAREDI KASNEJE"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Prstni odtis",
       "info": "Informacije",
       "devices": "Naprave"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "",
+      "next": ""
     }
   },
   "chat": {
