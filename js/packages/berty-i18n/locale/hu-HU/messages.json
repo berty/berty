@@ -9,20 +9,24 @@
       "button": "Első lépések"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Teljesítmény",
         "desc": "Könnyen használható - Minden funkcióval",
         "push-notif": "Értesítések bekapcsolása",
-        "offline-message": "Offline üzenetküldés",
+        "offline-message": "",
         "add-contact": "Könnyen felvehet új kontaktokat",
         "fast-message": "Leggyorsabb üzenetküldés"
       },
       "high-level": {
-        "title": "Legmagasabb szintű adatvédelem",
-        "desc": "Haladó felhasználók számára - Kevesebb metaadat",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Értesítések letiltva",
         "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Csak egy névre van szükségünk",
       "required": "Kötelező",
       "placeholder": "Név",
-      "button": "FIÓK LÉTREHOZÁSA"
+      "button": "FIÓK LÉTREHOZÁSA",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Hitelesítés a szolgáltatásokhoz",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Új csoport létrehozása",
       "bottom-button": "Keresés kontakton vagy csoporton belül"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Ujjlenyomat",
       "info": "Infók",
       "devices": "Eszközök"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "TOVÁBB",
+      "next": ""
     }
   },
   "chat": {
