@@ -9,20 +9,24 @@
       "button": "INIZIA"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Prestazioni",
         "desc": "Facile da usare - Tutte le funzionalità",
         "push-notif": "Ricevi notifiche push",
-        "offline-message": "Messaggistica offline",
+        "offline-message": "",
         "add-contact": "Aggiungi facilmente i contatti",
         "fast-message": "Consegna dei messaggi velocissima"
       },
       "high-level": {
-        "title": "La migliore riservatezza",
-        "desc": "Per utenti avanzati - Meno metadati",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Notifiche push disabilitate",
         "disable-local-peer-discovery": "Ricerca locale dei peer disabilitata",
-        "disable-contact-request": "Richieste di contatto disattivate"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Richieste di contatto disattivate",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Un nome è l'unica informazione richiesta",
       "required": "Necessario",
       "placeholder": "Nome",
-      "button": "CREA IL MIO ACCOUNT"
+      "button": "CREA IL MIO ACCOUNT",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Autenticazione ai servizi",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Crea un nuovo gruppo",
       "bottom-button": "Scansiona il contatto o gruppo"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "SALTA E FALLO DOPO"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Impronta",
       "info": "Informazioni",
       "devices": "Dispositivi"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "SALTA",
+      "next": ""
     }
   },
   "chat": {
