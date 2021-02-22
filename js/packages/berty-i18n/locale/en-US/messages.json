@@ -9,20 +9,24 @@
       "button": "GET STARTED"
     },
     "select-mode": {
+      "title": "Choose a preset",
+      "change-later": "You'll have choice to change it later!",
       "performance": {
         "title": "Performance",
         "desc": "Easy to use - All the features",
         "push-notif": "Receive push notifications",
-        "offline-message": "Offline messaging",
+        "offline-message": "Offline messaging with Bluetooth",
         "add-contact": "Add contacts easily",
         "fast-message": "Fastest message delivery"
       },
       "high-level": {
-        "title": "Highest level of privacy",
-        "desc": "For advanced users - Less metadatas",
+        "title": "Full Anonymity",
+        "desc": "For extremely cautious users",
         "disable-push-notif": "Push notifications disabled",
         "disable-local-peer-discovery": "Local peer discovery disabled",
-        "disable-contact-request": "Contact requests disabled"
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
+        "disable-contact-request": "Contact requests disabled",
+        "on-same-network": "Local on same network/wifi"
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "A name is the only information required",
       "required": "Required",
       "placeholder": "Name",
-      "button": "CREATE MY ACCOUNT"
+      "button": "CREATE MY ACCOUNT",
+      "import-account": "IMPORT AN ACCOUNT"
     },
     "services-auth": {
       "header": "Authenticate to services",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Create new group",
       "bottom-button": "Scan contact or group"
+    },
+    "suggestion-display-name-initial": "Click here to add",
+    "configurations": {
+      "network": {
+        "display-name": "Network Configuration",
+        "desc": "Click here to finish network config"
+      },
+      "notification": {
+        "display-name": "Notification Configuration",
+        "desc": "Click here for push-notification config"
+      }
+    },
+    "network-options": {
+      "welcome-title": "Welcome on the Networks Options",
+      "full-anon-mode": "Full Anon Mode",
+      "simple-tor-compatible": "Simple TOR Compatible",
+      "allow-expert-mode": "Allow Expert Mode",
+      "tor-compatible": {
+        "title": "TOR Compatible",
+        "desc": "This configuration will allow you to connect with Tor network and discuss with Full Anon users without being yourself in a extreme anonymous mode."
+      },
+      "full-anon": {
+        "title": "Full Anon Mode",
+        "desc": "This configuration is based on radical presets providing an extremely cautions networks parameters:",
+        "no-ip": "No ip",
+        "no-mc": "No mc",
+        "tor-only": "Tor only"
+      },
+      "save": "SAVE",
+      "skip": "SKIP AND DO THIS LATER"
     }
   },
   "settings": {
@@ -263,8 +298,8 @@
       "system-info-button": "System info",
       "debug-button": "Debug",
       "log-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Log format",
+        "bullet-point": "Restart app after changing this field"
       },
       "add-dev-conversations-button": "Add dev conversations",
       "share-button": {
@@ -342,6 +377,12 @@
       "fingerprint": "Fingerprint",
       "info": "Infos",
       "devices": "Devices"
+    },
+    "welcome-configuration": {
+      "title": "Welcome on board!",
+      "desc": "Let's have a quick overview of Settings and finish your first configuration!",
+      "skip": "SKIP",
+      "next": "NEXT"
     }
   },
   "chat": {
@@ -440,7 +481,7 @@
     },
     "restart-app": "Restart the app",
     "wtf-screen": {
-      "title": "",
+      "title": "What's the Fail?",
       "desc": "Application just crashed.",
       "desc-report": "Shake your phone to report the bug and click on the button to quit and restart the app."
     },
@@ -454,60 +495,60 @@
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
+      "show-button": "Show app inspector",
+      "hide-button": "Close",
+      "title": "Inspector",
       "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "title": "Accounts",
+        "unsupported-remote-mode": "Accounts inspector not supported in remote mode",
+        "data-not-found": "Account not in list",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
-          "action-cancel": ""
+          "file-exists": "Account {{accountId}} does not exists, a file has this name though.",
+          "account-exists": "Account {{accountId}} currently exists.",
+          "directory-exists-load-error": "Account {{accountId}} does not exists, a directory has this name though.",
+          "fs-read-error": "Error while getting FS info about account",
+          "actions-title": "What should we do?",
+          "action-account-manager": "Delete it via account manager",
+          "action-account-manager-confirm": "Confirm deletion of account",
+          "action-force-delete": "Force delete it",
+          "action-force-delete-confirm": "Confirm force deletion of account",
+          "error-close": "Error while closing account",
+          "error-delete": "Error while deleting account",
+          "success-feedback": "Account deleted",
+          "action-cancel": "Cancel"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "metadata-found": "Metadata file found",
+          "metadata-not-found": "Metadata file not found",
+          "ipfs-repo-config-found": "IPFS config file found",
+          "ipfs-repo-config-not-found": "IPFS config file not found",
+          "messenger-db-found": "Messenger DB found",
+          "messenger-db-not-found": "Messenger DB not found"
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
+            "name": "Name: {{name}}",
+            "created": "Created: {{created}}",
+            "opened": "Opened:  {{opened}}",
+            "error": "Error: {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "title": "Errors",
+        "header-reported": "Error reported:",
+        "header-all-clear": "No error reported",
+        "listing-files-failed": "Error while listing directory contents",
+        "listing-accounts-failed": "Error while listing accounts",
+        "listing-accounts-failed-grpc": "GRPC Error while listing accounts"
       },
       "dump": {
-        "button": ""
+        "button": "Dump app state"
       },
-      "refresh": "",
+      "refresh": "Refresh",
       "confirm-alert": {
-        "button-confirm": "",
-        "button-cancel": ""
+        "button-confirm": "Confirm",
+        "button-cancel": "Cancel"
       }
     }
   }
