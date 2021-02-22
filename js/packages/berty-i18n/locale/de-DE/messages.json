@@ -9,20 +9,24 @@
       "button": "Loslegen"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Leistung",
         "desc": "Einfach zu bedienen - Alle Funktionen",
         "push-notif": "Push-Benachrichtigungen erhalten",
-        "offline-message": "Offline-Nachrichten",
+        "offline-message": "",
         "add-contact": "Kontakte einfach hinzufügen",
         "fast-message": "Schnellste Nachrichtenlieferung"
       },
       "high-level": {
-        "title": "Höchste Privatsphäre",
-        "desc": "Für fortgeschrittene Benutzer - Weniger Metadaten",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push Benachrichtigungen deaktiviert",
         "disable-local-peer-discovery": "Lokale Peer-Entdeckung deaktiviert",
-        "disable-contact-request": "Kontaktanfragen deaktiviert"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Kontaktanfragen deaktiviert",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Ein Spitzname ist die einzige erforderliche Information",
       "required": "Erforderlich",
       "placeholder": "Name",
-      "button": "MEIN KONTO ERSTELLEN"
+      "button": "MEIN KONTO ERSTELLEN",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Authentifizieren bei Diensten",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Neue Gruppe erstellen",
       "bottom-button": "Kontakt oder Gruppe scannen"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     }
   },
   "settings": {
@@ -342,6 +377,12 @@
       "fingerprint": "Fingerabdruck",
       "info": "Infos",
       "devices": "Geräte"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "Überspringen",
+      "next": ""
     }
   },
   "chat": {
