@@ -19,17 +19,17 @@ type AsyncableFindPeers interface {
 type AsyncableDriver interface {
 	// AsyncableDriver implements Driver to simplify the creation pipeline.
 	// Creator returns AsyncableDriver so that fit both cases.
-	Driver
+	UnregisterDiscovery
 
 	AsyncableFindPeers
 }
 
 type composeAsyncableDriver struct {
-	Driver
+	UnregisterDiscovery
 	AsyncableFindPeers
 }
 
-func ComposeAsyncableDriver(driver Driver, find AsyncableFindPeers) AsyncableDriver {
+func ComposeAsyncableDriver(driver UnregisterDiscovery, find AsyncableFindPeers) AsyncableDriver {
 	return &composeAsyncableDriver{
 		Driver:             driver,
 		AsyncableFindPeers: find,

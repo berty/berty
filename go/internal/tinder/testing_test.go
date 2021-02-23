@@ -31,10 +31,10 @@ func testingPeers(t *testing.T, mn p2p_mock.Mocknet, n int) []p2p_host.Host {
 	return hs
 }
 
-func testingMockedDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_host.Host) []Driver {
+func testingMockedDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_host.Host) []UnregisterDiscovery {
 	t.Helper()
 
-	drivers := make([]Driver, len(hs))
+	drivers := make([]UnregisterDiscovery, len(hs))
 	for i := range drivers {
 		drivers[i] = NewMockedDriverClient(hs[i], s)
 	}

@@ -482,7 +482,7 @@ func (m *Manager) setupIPFSHost(h host.Host) error {
 		rdvClients = append(rdvClients, drivers...)
 	}
 
-	var rdvClient tinder.Driver
+	var rdvClient tinder.UnregisterDiscovery
 	switch len(rdvClients) {
 	case 0:
 		// FIXME: Check if this isn't called when DisableIPFSNetwork true.

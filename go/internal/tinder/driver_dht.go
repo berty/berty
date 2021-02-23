@@ -10,7 +10,7 @@ type DHTDriver struct {
 	Unregisterer
 }
 
-func NewDHTDriver(d *dht.IpfsDHT) Driver {
+func NewDHTDriver(d *dht.IpfsDHT) UnregisterDiscovery {
 	disc := p2p_discovery.NewRoutingDiscovery(d)
 	return &DHTDriver{
 		Discovery:    disc,

@@ -59,9 +59,9 @@ var _ discovery.Discovery = (*localDiscovery)(nil)
 var _ network.Notifiee = (*localDiscovery)(nil)
 
 // LocalDiscovery is a Driver
-var _ Driver = (*localDiscovery)(nil)
+var _ UnregisterDiscovery = (*localDiscovery)(nil)
 
-func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) Driver {
+func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) UnregisterDiscovery {
 	ld := &localDiscovery{
 		logger:    logger.Named("tinder/localDiscovery"),
 		host:      host,

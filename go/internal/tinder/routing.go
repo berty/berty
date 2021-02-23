@@ -11,7 +11,7 @@ import (
 type DriverRouting interface {
 	p2p_routing.Routing
 
-	Driver
+	UnregisterDiscovery
 }
 
 type routing struct {
@@ -19,7 +19,7 @@ type routing struct {
 	p2p_routing.PeerRouting
 	p2p_routing.ValueStore
 
-	Driver
+	UnregisterDiscovery
 
 	bootstrap func(context.Context) error
 }

@@ -2,6 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
+	"strings"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -124,8 +125,12 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 			// handle this event
 			monitorEvent = monitorHandlePubsubEvent(&e, s.host)
 		case tinder.EvtDriverMonitor:
+
+			// trim floodsub topic
+			eventTopic := strings.TrimPrefix(e.Topic, "floodsub:")
+
 			// skip if we are filtering by topic
-			if topic != "" && topic != e.Topic {
+			if topic != "" && topic != eventTopic {
 				continue
 			}
 

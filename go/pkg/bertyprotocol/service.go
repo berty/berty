@@ -60,7 +60,7 @@ type Opts struct {
 	DatastoreDir           string
 	RootDatastore          ds.Batching
 	OrbitDB                *BertyOrbitDB
-	TinderDriver           tinder.Driver
+	TinderDriver           tinder.UnregisterDiscovery
 	RendezvousRotationBase time.Duration
 	Host                   host.Host
 	PubSub                 *pubsub.PubSub

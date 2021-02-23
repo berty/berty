@@ -103,7 +103,7 @@ type Manager struct {
 			ipfsNode          *core.IpfsNode
 			ipfsAPI           ipfsutil.ExtendedCoreAPI
 			pubsub            *pubsub.PubSub
-			discovery         tinder.Driver
+			discovery         tinder.UnregisterDiscovery
 			server            bertyprotocol.Service
 			ipfsAPIListeners  []net.Listener
 			ipfsWebUIListener net.Listener

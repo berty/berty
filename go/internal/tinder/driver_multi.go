@@ -22,7 +22,7 @@ type MultiDriver struct {
 	muc  sync.Mutex
 }
 
-func NewMultiDriver(logger *zap.Logger, drivers ...Driver) Driver {
+func NewMultiDriver(logger *zap.Logger, drivers ...UnregisterDiscovery) UnregisterDiscovery {
 	switch len(drivers) {
 	case 0:
 		panic("tinder.NewMultiDriver requires at least one driver")
@@ -41,7 +41,7 @@ func NewMultiDriver(logger *zap.Logger, drivers ...Driver) Driver {
 	}
 }
 
-type noopAsyncDriver struct{ Driver }
+type noopAsyncDriver struct{ UnregisterDiscovery }
 
 func (noopAsyncDriver) FindPeersAsync(ctx context.Context, outPeers chan<- p2p_peer.AddrInfo, ns string, opts ...p2p_discovery.Option) error {
 	return nil
