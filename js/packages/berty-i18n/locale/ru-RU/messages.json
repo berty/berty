@@ -9,24 +9,24 @@
       "button": "НАЧАТЬ"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Выберите пресет",
+      "change-later": "У вас будет возможность изменить его позже!",
       "performance": {
         "title": "Производительность",
         "desc": "Простой в использовании - Все функции",
         "push-notif": "Получать push-уведомления",
-        "offline-message": "",
+        "offline-message": "Автономные сообщения через Bluetooth",
         "add-contact": "Простое добавление контактов",
         "fast-message": "Самая быстрая доставка сообщений"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Полная анонимность",
+        "desc": "Для очень осторожных пользователей",
         "disable-push-notif": "Push-уведомления отключены",
         "disable-local-peer-discovery": "Обнаружение узлов рядом отключено",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Многоадресный DNS и Bluetooth",
         "disable-contact-request": "Запросы в контакты отключены",
-        "on-same-network": ""
+        "on-same-network": "Локально в той же сети/Wi-Fi"
       }
     },
     "create-account": {
@@ -35,7 +35,7 @@
       "required": "Обязательно",
       "placeholder": "Имя",
       "button": "СОЗДАТЬ МОЙ АККАУНТ",
-      "import-account": ""
+      "import-account": "ИМПОРТ УЧЕТНОЙ ЗАПИСИ"
     },
     "services-auth": {
       "header": "Аутентифицироваться в сервисы",
@@ -93,34 +93,34 @@
       "top-button": "Создать новую группу",
       "bottom-button": "Сканировать контакт или группу"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Нажмите здесь, чтобы добавить",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Конфигурация сети",
+        "desc": "Нажмите здесь, чтобы завершить конфигурацию сети"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Конфигурация уведомлений",
+        "desc": "Нажмите здесь, чтобы просмотреть конфигурацию push-уведомлений"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "welcome-title": "Добро пожаловать в параметры сети",
+      "full-anon-mode": "Полный анонимный режим",
+      "simple-tor-compatible": "Совместимость с Simple TOR",
+      "allow-expert-mode": "Разрешить экспертный режим",
       "tor-compatible": {
-        "title": "",
-        "desc": ""
+        "title": "Совместимость с TOR",
+        "desc": "Эта конфигурация позволит вам подключаться к сети Tor и обсуждать с полностью анонимными пользователями, не находясь при этом в крайне анонимном режиме."
       },
       "full-anon": {
-        "title": "",
-        "desc": "",
-        "no-ip": "",
+        "title": "Полный анонимный режим",
+        "desc": "Эта конфигурация основана на радикальных предустановках, обеспечивающих крайне осторожные параметры сети:",
+        "no-ip": "Нет IP",
         "no-mc": "",
-        "tor-only": ""
+        "tor-only": "Только Tor"
       },
-      "save": "",
+      "save": "СОХРАНИТЬ",
       "skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
     }
   },
@@ -379,10 +379,10 @@
       "devices": "Устройства"
     },
     "welcome-configuration": {
-      "title": "",
-      "desc": "",
+      "title": "Добро пожаловать на борт!",
+      "desc": "Давайте сделаем краткий обзор настроек и завершим вашу первую настройку!",
       "skip": "ПРОПУСТИТЬ",
-      "next": ""
+      "next": "ДАЛЕЕ"
     }
   },
   "chat": {
@@ -527,10 +527,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "Имя:    {{name}}",
+            "name": "Имя: {{name}}",
             "created": "Создано: {{created}}",
             "opened": "Открыто:  {{opened}}",
-            "error": "Ошибка:   {{error}}"
+            "error": "Ошибка: {{error}}"
           }
         }
       },
