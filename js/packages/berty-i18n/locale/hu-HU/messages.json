@@ -527,10 +527,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "Név: {{name}}",
+            "name": "",
             "created": "Létrehozva: {{created}}",
             "opened": "Megnyitva: {{opened}}",
-            "error": "Hiba: {{error}}"
+            "error": ""
           }
         }
       },
