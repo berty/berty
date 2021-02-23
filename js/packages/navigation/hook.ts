@@ -86,6 +86,10 @@ const createNavigation = ({
 					navigate,
 					Routes.Chat.ReplicateGroupSettings,
 				),
+				sharedMedias: createNavigateFunc<ScreenProps.Chat.SharedMedias>(
+					navigate,
+					Routes.Chat.SharedMedias,
+				),
 			},
 			settings: {
 				home: createNavigateFunc<ScreenProps.Settings.Home>(navigate, Routes.Settings.Home),

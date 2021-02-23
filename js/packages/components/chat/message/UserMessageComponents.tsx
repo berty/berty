@@ -26,7 +26,10 @@ const useStylesMessage = () => {
 	}
 }
 
-async function isBertyDeepLink(client: WelshMessengerServiceClient, url: string): Promise<boolean> {
+export async function isBertyDeepLink(
+	client: WelshMessengerServiceClient,
+	url: string,
+): Promise<boolean> {
 	return new Promise((resolve) => {
 		client
 			.parseDeepLink({

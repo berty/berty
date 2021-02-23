@@ -29,6 +29,7 @@ export namespace ScreenProps {
 		export type MultiMemberSettings = RouteProps<{ convId: string }>
 		export type ReplicateGroupSettings = RouteProps<{ convId: string }>
 		export type MultiMemberQR = RouteProps<{ convId: string }>
+		export type SharedMedias = RouteProps<{}>
 	}
 	export namespace Settings {
 		export type Home = RouteProps<void>
@@ -86,6 +87,7 @@ export namespace Routes {
 		MultiMemberSettings = 'Group.MultiMemberSettings',
 		MultiMemberQR = 'Chat.MultiMemberQR',
 		ReplicateGroupSettings = 'Chat.ReplicateGroupSettings',
+		SharedMedias = 'Chat.SharedMedias',
 	}
 	export enum Settings {
 		Home = 'Settings.Home',
