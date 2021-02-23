@@ -105,7 +105,7 @@
       }
     },
     "network-options": {
-      "welcome-title": "Welcome on the Networks Options",
+      "welcome-title": "",
       "full-anon-mode": "Full Anon Mode",
       "simple-tor-compatible": "Simple TOR Compatible",
       "allow-expert-mode": "Allow Expert Mode",
@@ -379,7 +379,7 @@
       "devices": "Devices"
     },
     "welcome-configuration": {
-      "title": "Welcome on board!",
+      "title": "",
       "desc": "Let's have a quick overview of Settings and finish your first configuration!",
       "skip": "SKIP",
       "next": "NEXT"
@@ -527,10 +527,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "Name: {{name}}",
+            "name": "",
             "created": "Created: {{created}}",
             "opened": "Opened:  {{opened}}",
-            "error": "Error: {{error}}"
+            "error": ""
           }
         }
       },
