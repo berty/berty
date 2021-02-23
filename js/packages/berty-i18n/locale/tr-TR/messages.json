@@ -527,10 +527,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "İsim:    {{name}}",
+            "name": "",
             "created": "Oluşturuldu: {{created}}",
             "opened": "Açıldı:  {{opened}}",
-            "error": "Hata:   {{error}}"
+            "error": ""
           }
         }
       },
