@@ -527,10 +527,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "Namn:    {{name}}",
+            "name": "",
             "created": "Skapad: {{created}}",
             "opened": "Öppnad:  {{opened}}",
-            "error": "Fel:   {{error}}"
+            "error": ""
           }
         }
       },
