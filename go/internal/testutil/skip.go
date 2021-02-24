@@ -26,6 +26,14 @@ const (
 	AnySpeed Speed = "any"
 )
 
+// RacePolicy enum
+type RacePolicy string
+
+const (
+	SkipIfRace RacePolicy = "skip-if-race"
+	RunIfRace  RacePolicy = "run-if-race"
+)
+
 // Default levels
 const (
 	defaultStabilityFilter Stability = Stable
