@@ -68,7 +68,7 @@
 		"react-native-svg": "^12.1.0",
 		"react-native-tab-view": ">= 2.0.0",
 		"react-native-vector-icons": "^7.1.0",
-		"react-native-webview": "^11.2.1",
+		"react-native-webview": "^11.2.3",
 		"rn-fetch-blob": "^0.12.0",
 		"sha3": "^2.1.4",
 		"tlds": "^1.217.0"
@@ -94,7 +94,7 @@
 		"jest": "^26.6.3",
 		"metro-config": "^0.65.0",
 		"metro-react-native-babel-preset": "^0.65.0",
-		"react-dev-utils": "^11.0.1",
+		"react-dev-utils": "^11.0.3",
 		"react-native-svg-transformer": "^0.14.3",
 		"react-test-renderer": "16.13.1",
 		"typescript": "^4.1.3"
