@@ -472,6 +472,12 @@
       "forward-berty": "Přeposlat Berty kontaktu",
       "forward": "Přeposlat",
       "image-saved": "Obrázek uložen v galerii"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
