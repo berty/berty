@@ -472,6 +472,12 @@
       "forward-berty": "ارسال إلى جهة اتصال برتي",
       "forward": "ارسال",
       "image-saved": ""
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
