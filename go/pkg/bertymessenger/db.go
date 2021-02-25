@@ -67,19 +67,19 @@ func (d *dbWrapper) getUpdatedDB(models []interface{}, replayer func(db *dbWrapp
 		currentState := keepDatabaseLocalState(d.db, logger)
 
 		if err := dropAllTables(d.db); err != nil {
-			return err
+			return errcode.ErrDBDestroy.Wrap(err)
 		}
 
 		if err := d.db.AutoMigrate(models...); err != nil {
-			return err
+			return errcode.ErrDBMigrate.Wrap(err)
 		}
 
 		if err := replayer(d); err != nil {
-			return err
+			return errcode.ErrDBReplay.Wrap(err)
 		}
 
 		if err := restoreDatabaseLocalState(d, currentState); err != nil {
-			return err
+			return errcode.ErrDBRestore.Wrap(err)
 		}
 	}
 
@@ -1092,4 +1092,59 @@ func (d *dbWrapper) getMemberPKFromDevicePK(dpk string) (string, error) {
 	default:
 		return "", errcode.ErrDBRead.Wrap(err)
 	}
+}
+
+type nextMediaOpts struct {
+	fileNames []string
+	mimeTypes []string
+}
+
+func (d *dbWrapper) getNextMedia(lastCID string, opts nextMediaOpts) (*messengertypes.Media, error) {
+	cid := ""
+	media := &messengertypes.Media{}
+
+	query := `
+		SELECT media.cid
+		FROM interactions
+		JOIN media ON media.interaction_cid = interactions.cid
+		JOIN (
+			SELECT conversation_public_key, sent_date
+			FROM interactions
+			WHERE cid = (
+				SELECT interaction_cid FROM media WHERE cid = ?
+			)
+		) as ctx_ref
+		WHERE interactions.conversation_public_key = ctx_ref.conversation_public_key
+		AND interactions.sent_date > ctx_ref.sent_date`
+
+	queryArgs := []interface{}{lastCID}
+
+	if len(opts.mimeTypes) > 0 {
+		query += `
+		AND media.mime_type IN ?`
+		queryArgs = append(queryArgs, opts.mimeTypes)
+	}
+
+	if len(opts.fileNames) > 0 {
+		query += `
+		AND media.filename IN ?`
+		queryArgs = append(queryArgs, opts.fileNames)
+	}
+
+	query += `
+	LIMIT 1`
+
+	if err := d.db.Model(&messengertypes.Media{}).Raw(query, queryArgs...).Scan(&cid).Error; err != nil {
+		return nil, err
+	}
+
+	if cid == "" {
+		return nil, errcode.ErrNotFound
+	}
+
+	if err := d.db.Model(&messengertypes.Media{}).First(&media, &messengertypes.Media{CID: cid}).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	return media, nil
 }

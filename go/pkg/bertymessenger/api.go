@@ -1327,3 +1327,19 @@ func (svc *service) MediaRetrieve(req *messengertypes.MediaRetrieve_Request, srv
 	// success
 	return nil
 }
+
+func (svc *service) MediaGetRelated(ctx context.Context, request *messengertypes.MediaGetRelated_Request) (*messengertypes.MediaGetRelated_Reply, error) {
+	media, err := svc.db.getNextMedia(request.CID, nextMediaOpts{
+		fileNames: request.FileNames,
+		mimeTypes: request.MimeTypes,
+	})
+	if err != nil || media == nil {
+		if err != nil {
+			svc.logger.Error("unable to retrieve next audio message", zap.Error(err))
+		}
+
+		return &messengertypes.MediaGetRelated_Reply{End: true}, nil
+	}
+
+	return &messengertypes.MediaGetRelated_Reply{Media: media}, nil
+}

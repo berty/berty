@@ -11,7 +11,7 @@ export const MARGIN_FIX = 10
 export const StickMusicPlayer = () => {
 	const [{ border, padding, margin }, { windowWidth }] = useStyles()
 	const [animatedWidth] = useState(new Animated.Value(0))
-	const { player, setPlayer, handlePlayPause, refresh } = useMusicPlayer()
+	const { player, unload, handlePlayPause, refresh } = useMusicPlayer()
 	const { top } = useSafeAreaInsets()
 
 	useEffect(() => {
@@ -63,7 +63,7 @@ export const StickMusicPlayer = () => {
 				style={{
 					flex: 1,
 				}}
-				onPress={() => setPlayer()}
+				onPress={() => unload()}
 			>
 				<Icon height={30} width={30} name='close-circle-outline' fill='#8F95D7' />
 			</TouchableOpacity>

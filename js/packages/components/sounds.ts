@@ -32,3 +32,28 @@ export const playSound = (name: SoundKey) => {
 		p.play()
 	})
 }
+
+export const playSoundAsync = (name: SoundKey) => {
+	return new Promise((resolve) => {
+		const p = preloadedSounds[name]
+		if (!p) {
+			console.warn(`Tried to play unknown sound "${name}"`)
+			return
+		}
+
+		const endListener = () => {
+			resolve()
+			p.removeListener(endListener)
+		}
+
+		p.on('ended', endListener)
+
+		if (!p.isPlaying) {
+			p.play()
+			return
+		}
+		p.seek(0, () => {
+			p.play()
+		})
+	})
+}

@@ -578,43 +578,43 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 	// restore store if provided
 	if err := m.restoreMessengerDataFromExport(); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to restore messenger data from export: %w", err))
 	}
 
 	// logger
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init logger: %w", err))
 	}
 
 	// messenger db
 	db, err := m.getMessengerDB()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init messenger db: %w", err))
 	}
 
 	// grpc server
 	grpcServer, gatewayMux, err := m.getGRPCServer()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to grpc server: %w", err))
 	}
 
 	// configure notifications
 	notifmanager, err := m.getNotificationManager()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init notification manager: %w", err))
 	}
 
 	// local protocol server
 	protocolServer, err := m.getLocalProtocolServer()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init local protocol server: %w", err))
 	}
 
 	// protocol client
 	protocolClient, err := bertyprotocol.NewClient(m.getContext(), protocolServer, nil, nil) // FIXME: setup tracing
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init protocol client: %w", err))
 	}
 	m.Node.Messenger.protocolClient = protocolClient
 
@@ -631,13 +631,13 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init messenger server: %w", err))
 	}
 
 	// register grpc service
 	messengertypes.RegisterMessengerServiceServer(grpcServer, messengerServer)
 	if err := messengertypes.RegisterMessengerServiceHandlerServer(m.getContext(), gatewayMux, messengerServer); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to register messenger service handler: %w", err))
 	}
 
 	m.Node.Messenger.lcmanager = lcmanager

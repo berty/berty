@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Animated, Platform, Text, TouchableOpacity, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
@@ -31,6 +31,50 @@ enum MicPermStatus {
 	GRANTED = 1,
 	NEWLY_GRANTED = 2,
 	DENIED = 3,
+}
+
+const voiceMemoBitrate = 32000
+const voiceMemoSampleRate = 22050
+const voiceMemoFormat = 'aac'
+export const voiceMemoFilename = 'audio_memo.aac'
+
+const volumeValueLowest = -160
+const volumeValuePrecision = 100_000
+export const volumeValuesAttached = 100
+
+export const limitIntensities = (intensities: Array<number>, max: number): Array<number> => {
+	if (intensities.length === max) {
+		return intensities
+	}
+
+	if (intensities.length === 0) {
+		return []
+	}
+
+	const normalizedIntensities: Array<number> = []
+
+	if (intensities.length > max) {
+		const step = Math.ceil(intensities.length / max)
+
+		for (let idx = 0; idx < intensities.length; idx++) {
+			if (normalizedIntensities.length === 0 || idx / step > normalizedIntensities.length) {
+				normalizedIntensities.push(intensities[idx])
+			} else {
+				normalizedIntensities[normalizedIntensities.length - 1] = Math.max(
+					normalizedIntensities[normalizedIntensities.length - 1],
+					intensities[idx],
+				)
+			}
+		}
+
+		return normalizedIntensities
+	}
+
+	for (let i = 0; i < max; i++) {
+		normalizedIntensities.push(intensities[Math.floor(i / (max / intensities.length))])
+	}
+
+	return normalizedIntensities
 }
 
 const acquireMicPerm = async (): Promise<MicPermStatus> => {
@@ -99,6 +143,7 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 						filename: doc.filename,
 						mimeType: doc.mimeType,
 						displayName: doc.filename,
+						metadataBytes: doc.metadataBytes,
 					},
 					uri: doc.uri,
 				})
@@ -132,7 +177,9 @@ export const RecordComponent: React.FC<{
 	const [{ border, padding, margin, color }] = useStyles()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
 	const [recordingStart, setRecordingStart] = useState(Date.now())
-	const [clearRecordingInterval, setClearRecordingInterval] = useState<any | null>(null)
+	const [clearRecordingInterval, setClearRecordingInterval] = useState<ReturnType<
+		typeof setInterval
+	> | null>(null)
 	const [xy, setXY] = useState({ x: 0, y: 0 })
 	const [currentTime, setCurrentTime] = useState(Date.now())
 	const [helpMessageTimeoutID, _setHelpMessageTimeoutID] = useState<ReturnType<
@@ -140,10 +187,18 @@ export const RecordComponent: React.FC<{
 	> | null>(null)
 	const [helpMessage, _setHelpMessage] = useState('')
 	const recordingColorVal = React.useRef(new Animated.Value(0)).current
+	const meteredValuesRef = useRef<number[]>([])
 
 	const isRecording =
 		recordingState === RecordingState.RECORDING ||
 		recordingState === RecordingState.RECORDING_LOCKED
+
+	const addMeteredValue = useCallback(
+		(metered: any) => {
+			meteredValuesRef.current.push(metered.value)
+		},
+		[meteredValuesRef],
+	)
 
 	const clearHelpMessageValue = useCallback(() => {
 		if (helpMessageTimeoutID !== null) {
@@ -195,7 +250,8 @@ export const RecordComponent: React.FC<{
 
 		clearInterval(clearRecordingInterval)
 		setRecordingState(RecordingState.NOT_RECORDING)
-	}, [clearRecordingInterval])
+		recorder.current?.removeListener('meter', addMeteredValue)
+	}, [addMeteredValue, clearRecordingInterval])
 
 	useEffect(() => {
 		switch (recordingState) {
@@ -212,30 +268,51 @@ export const RecordComponent: React.FC<{
 				break
 
 			case RecordingState.COMPLETE:
-				recorder.current?.stop(() => {
-					recorder.current?.destroy()
-				})
+				recorder.current?.stop((err) => {
+					const duration = Date.now() - recordingStart
 
-				if (Date.now() - recordingStart < minAudioDuration) {
-					setHelpMessageValue({
-						message: t('audio.record.tooltip.usage'),
-					})
-				} else {
-					Vibration.vibrate(400)
-					attachMedias(ctx.client!, [
-						{
-							filename: 'audio_memo.aac',
-							mimeType: 'audio/aac',
-							uri: recorderFilePath,
-						},
-					])
-						.then((cids) => {
-							return sendMessage(ctx.client!, convPk, { medias: cids })
+					if (err !== null) {
+						console.warn(err)
+					} else if (duration < minAudioDuration) {
+						setHelpMessageValue({
+							message: t('audio.record.tooltip.usage'),
 						})
-						.catch((e) => console.warn(e))
-				}
+					} else {
+						Vibration.vibrate(400)
+						attachMedias(ctx.client!, [
+							{
+								filename: voiceMemoFilename,
+								mimeType: 'audio/aac',
+								uri: recorderFilePath,
+								metadataBytes: beapi.messenger.MediaMetadata.encode({
+									items: [
+										{
+											metadataType: beapi.messenger.MediaMetadataType.MetadataAudioPreview,
+											payload: beapi.messenger.AudioPreview.encode({
+												bitrate: voiceMemoBitrate,
+												format: voiceMemoFormat,
+												samplingRate: voiceMemoSampleRate,
+												volumeIntensities: limitIntensities(
+													meteredValuesRef.current.map((v) =>
+														Math.round((v - volumeValueLowest) * volumeValuePrecision),
+													),
+													volumeValuesAttached,
+												),
+												durationMs: duration,
+											}).finish(),
+										},
+									],
+								}).finish(),
+							},
+						])
+							.then((cids) => {
+								return sendMessage(ctx.client!, convPk, { medias: cids })
+							})
+							.catch((e) => console.warn(e))
+					}
 
-				clearRecording()
+					clearRecording()
+				})
 				break
 		}
 	}, [
@@ -248,6 +325,7 @@ export const RecordComponent: React.FC<{
 		recorderFilePath,
 		convPk,
 		t,
+		meteredValuesRef,
 	])
 
 	const updateCurrentTime = useCallback(() => {
@@ -312,15 +390,16 @@ export const RecordComponent: React.FC<{
 					setRecordingStart(Date.now())
 					setCurrentTime(Date.now())
 					setClearRecordingInterval(setInterval(() => updateCurrentTime(), 100))
+					meteredValuesRef.current = []
 
 					recorder.current = new Recorder('tempVoiceClip.aac', {
 						channels: 1,
-						bitrate: 32000,
-						sampleRate: 22050,
-						format: 'aac',
-						encoder: 'aac',
+						bitrate: voiceMemoBitrate,
+						sampleRate: voiceMemoSampleRate,
+						format: voiceMemoFormat,
+						encoder: voiceMemoFormat,
 						quality: 'low',
-						meteringInterval: 100,
+						meteringInterval: 20,
 					}).prepare((err, filePath) => {
 						if (err) {
 							console.log('recorder prepare error', err?.message)
@@ -331,6 +410,11 @@ export const RecordComponent: React.FC<{
 						if (err) {
 							console.log('recorder record error', err?.message)
 						} else {
+							try {
+								recorder.current?.on('meter', addMeteredValue)
+							} catch (e) {
+								console.warn(['err' + e])
+							}
 							setRecordingState(RecordingState.RECORDING)
 						}
 					})
@@ -364,6 +448,7 @@ export const RecordComponent: React.FC<{
 			setHelpMessageValue,
 			t,
 			updateCurrentTime,
+			addMeteredValue,
 		],
 	)
 
