@@ -134,7 +134,7 @@ func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipf
 func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error) {
 	optsCleanup, err := opts.applyDefaults()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("error while applying default of messenger opts: %w", err))
 	}
 	opts.Logger = opts.Logger.Named("msg")
 	opts.Logger.Debug("initializing messenger", zap.String("version", bertyversion.Version))
@@ -161,7 +161,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore database local state: %w", err))
 		}
 	} else if err := db.initDB(getEventsReplayerForDB(ctx, client)); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(fmt.Errorf("error during db init: %w", err))
 	}
 
 	cancel()
@@ -186,7 +186,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 
 	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
 	}
 	pkStr := b64EncodeBytes(icr.GetAccountGroupPK())
 
@@ -198,14 +198,14 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
 			ret, err := svc.internalInstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
 			if err != nil {
-				return nil, err
+				return nil, errcode.TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
 			}
 
 			if err = svc.db.addAccount(pkStr, ret.GetWebURL()); err != nil {
 				return nil, err
 			}
 		case err != nil: // internal error
-			return nil, err
+			return nil, errcode.ErrInternal.Wrap(err)
 		case pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
 			// FIXME: use errcode
 			return nil, errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
@@ -248,28 +248,28 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	// Subscribe to account group metadata
 	err = svc.subscribeToMetadata(icr.GetAccountGroupPK())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while subscribing to account metadata: %w", err)
 	}
 
 	// subscribe to groups
 	{
 		convs, err := svc.db.getAllConversations()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error while fetching conversations from db: %w", err)
 		}
 		for _, cv := range convs {
 			gpkb, err := b64DecodeBytes(cv.GetPublicKey())
 			if err != nil {
-				return nil, err
+				return nil, errcode.ErrDeserialization.Wrap(err)
 			}
 
 			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
 			if err != nil {
-				return nil, err
+				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating group: %w", err))
 			}
 
 			if err := svc.subscribeToGroup(gpkb); err != nil {
-				return nil, err
+				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to group metadata: %w", err))
 			}
 		}
 	}
@@ -278,21 +278,21 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	{
 		contacts, err := svc.db.getContactsByState(messengertypes.Contact_OutgoingRequestSent)
 		if err != nil {
-			return nil, err
+			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
 		}
 		for _, c := range contacts {
 			gpkb, err := b64DecodeBytes(c.GetConversationPublicKey())
 			if err != nil {
-				return nil, err
+				return nil, errcode.ErrDeserialization.Wrap(err)
 			}
 
 			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
 			if err != nil {
-				return nil, err
+				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating contact group: %w", err))
 			}
 
 			if err := svc.subscribeToMetadata(gpkb); err != nil {
-				return nil, err
+				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to contact group metadata: %w", err))
 			}
 		}
 	}

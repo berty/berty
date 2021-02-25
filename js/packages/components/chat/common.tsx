@@ -48,6 +48,37 @@ const useStylesChatFooter = () => {
 	}
 }
 
+// create interpolations
+export const createAnimationInterpolation = (
+	value: Animated.Value,
+	outputRange: number[],
+	inputRange?: number[],
+) => {
+	return value.interpolate({
+		inputRange: inputRange || [0, 1],
+		outputRange,
+	})
+}
+
+// create animations
+export const createAnimationTiming = (
+	value: Animated.Value,
+	toValue:
+		| number
+		| Animated.Value
+		| Animated.ValueXY
+		| { x: number; y: number }
+		| Animated.AnimatedInterpolation,
+	duration?: number,
+) => {
+	return Animated.timing(value, {
+		toValue,
+		duration: duration || aDuration,
+		easing: Easing.linear,
+		useNativeDriver: false,
+	})
+}
+
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
 
@@ -146,51 +177,25 @@ export const ChatFooter: React.FC<{
 	DeviceInfo.isEmulator().then((isEmulator) => {
 		_isEmulator = isEmulator
 	})
+
 	// animations values
 	const _aMaxWidth = useRef(new Animated.Value(0)).current
 	const _aFixLeft = useRef(new Animated.Value(0)).current
 	const _aFixMicro = useRef(new Animated.Value(0)).current
+	const _aFixSend = useRef(new Animated.Value(0)).current
 	const _aPaddingLeft = useRef(new Animated.Value(0)).current
 	const _aOpacity = useRef(new Animated.Value(0)).current
 	const _aOpacitySendButton = useRef(new Animated.Value(0)).current
 	const aDuration = 600
 
-	// create interpolations
-	const createAnimationInterpolation = (
-		value: Animated.Value,
-		outputRange: number[],
-		inputRange?: number[],
-	) => {
-		return value.interpolate({
-			inputRange: inputRange || [0, 1],
-			outputRange,
-		})
-	}
-	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [wp('47%'), wp('80%')])
+	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [wp('47%'), wp('69%')])
 	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 45 * scaleSize])
-	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -130 * scaleSize])
+	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -92 * scaleSize])
+	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -53 * scaleSize])
 	const aPaddingLeft = createAnimationInterpolation(_aPaddingLeft, [0, 45])
 	const aOpacity = createAnimationInterpolation(_aOpacity, [1, 0])
 	const aOpacitySendButton = createAnimationInterpolation(_aOpacity, [0, 1])
 
-	// create animations
-	const createAnimationTiming = (
-		value: Animated.Value,
-		toValue:
-			| number
-			| Animated.Value
-			| Animated.ValueXY
-			| { x: number; y: number }
-			| Animated.AnimatedInterpolation,
-		duration?: number,
-	) => {
-		return Animated.timing(value, {
-			toValue,
-			duration: duration || aDuration,
-			easing: Easing.linear,
-			useNativeDriver: false,
-		})
-	}
 	const keyboardWillShow = useCallback(
 		(event?: any) => {
 			const duration = event?.duration || aDuration
@@ -198,12 +203,13 @@ export const ChatFooter: React.FC<{
 				createAnimationTiming(_aMaxWidth, 1, duration),
 				createAnimationTiming(_aFixLeft, 1, duration),
 				createAnimationTiming(_aFixMicro, 1, duration),
+				createAnimationTiming(_aFixSend, 1, duration),
 				createAnimationTiming(_aPaddingLeft, 1, duration),
 				createAnimationTiming(_aOpacity, 1, duration),
 				createAnimationTiming(_aOpacitySendButton, 1, duration),
 			]).start()
 		},
-		[_aMaxWidth, _aFixLeft, _aPaddingLeft, _aOpacity, _aFixMicro, _aOpacitySendButton],
+		[_aMaxWidth, _aFixLeft, _aPaddingLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
 	)
 	const keyboardWillHide = useCallback(
 		(event?: any) => {
@@ -212,12 +218,13 @@ export const ChatFooter: React.FC<{
 				createAnimationTiming(_aMaxWidth, 0, duration),
 				createAnimationTiming(_aFixLeft, 0, duration),
 				createAnimationTiming(_aFixMicro, 0, duration),
+				createAnimationTiming(_aFixSend, 0, duration),
 				createAnimationTiming(_aPaddingLeft, 0, duration),
 				createAnimationTiming(_aOpacity, 0, duration),
 				createAnimationTiming(_aOpacitySendButton, 0, duration),
 			]).start()
 		},
-		[_aMaxWidth, _aFixLeft, _aPaddingLeft, _aOpacity, _aFixMicro, _aOpacitySendButton],
+		[_aMaxWidth, _aFixLeft, _aPaddingLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
 	)
 	useEffect(() => {
 		if (_isEmulator) {
@@ -269,7 +276,6 @@ export const ChatFooter: React.FC<{
 							<Icon name='mic' height={20 * scaleSize} width={20 * scaleSize} fill={color.white} />
 						</Animated.View>
 					}
-					style={[{ justifyContent: 'center' }]}
 					convPk={convPk}
 					disableLockMode={false}
 				>
@@ -337,6 +343,8 @@ export const ChatFooter: React.FC<{
 										height: 42 * scaleSize,
 										right: aFixLeft,
 										marginLeft: 9 * scaleSize,
+										zIndex: 100,
+										elevation: 100,
 									},
 								]}
 							>
@@ -364,21 +372,32 @@ export const ChatFooter: React.FC<{
 										returnKeyType={isTablet ? 'send' : 'default'}
 										onSubmitEditing={() => isTablet && handlePressSend()}
 									/>
-									<Animated.View style={{ opacity: aOpacitySendButton }}>
-										<TouchableOpacity
-											style={[flex.tiny, { alignItems: 'flex-end', justifyContent: 'center' }]}
-											disabled={!sendEnabled}
-											onPress={handlePressSend}
-										>
-											<Icon
-												name='paper-plane-outline'
-												width={23 * scaleSize}
-												height={23 * scaleSize}
-												fill={sendEnabled ? color.blue : '#AFB1C0'}
-											/>
-										</TouchableOpacity>
-									</Animated.View>
 								</View>
+							</Animated.View>
+							<Animated.View
+								style={{ opacity: aOpacitySendButton, position: 'absolute', right: aFixSend }}
+							>
+								<TouchableOpacity
+									style={[
+										{
+											alignItems: 'center',
+											justifyContent: 'center',
+											width: 36 * scaleSize,
+											height: 36 * scaleSize,
+											backgroundColor: sendEnabled ? color.blue : '#AFB1C0',
+											borderRadius: 18,
+										},
+									]}
+									disabled={!sendEnabled}
+									onPress={handlePressSend}
+								>
+									<Icon
+										name='paper-plane-outline'
+										width={20 * scaleSize}
+										height={20 * scaleSize}
+										fill={color.white}
+									/>
+								</TouchableOpacity>
 							</Animated.View>
 							<Animated.View
 								style={{

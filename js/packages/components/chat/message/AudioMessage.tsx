@@ -1,43 +1,166 @@
-import React, { useEffect, useState } from 'react'
-import { View, TouchableOpacity } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import React, { useEffect, useMemo } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { Icon, Text } from '@ui-kitten/components'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 
 import { useStyles } from '@berty-tech/styles'
-import { Player } from '@react-native-community/audio-toolkit'
-import WaveForm from 'react-native-audiowaveform'
 import { getSource } from '../../utils'
 import moment from 'moment'
-import { useMusicPlayer } from '@berty-tech/music-player'
+import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
+import beapi from '@berty-tech/api'
+import { limitIntensities, voiceMemoFilename } from '@berty-tech/components/chat/RecordComponent'
+import { playSoundAsync } from '@berty-tech/store/sounds'
 
-export const AudioMessage: React.FC<{ medias: any }> = ({ medias }) => {
-	const { protocolClient } = useMsgrContext()
-	const [{ padding, color, border, margin }, { windowWidth }] = useStyles()
-	const [source, setSource] = useState('')
-	const mimeType = medias[0].mimeType
-	const { player: globalPlayer, setPlayer: setGlobalPlayer, handlePlayPause } = useMusicPlayer()
-	const [player, setPlayer] = useState<Player>()
+const volumeValueShown = 50
+
+const normalizeVolumeIntensities = (intensities: Array<number>) => {
+	const min = Math.min(...intensities)
+	const max = Math.max(...intensities)
+
+	intensities = limitIntensities(
+		intensities.map((i) => (i - min) / (max - min)),
+		volumeValueShown,
+	)
+
+	return intensities
+}
+
+export const WaveForm: React.FC<{
+	intensities: any[]
+	duration: number | null
+	currentTime?: number
+}> = ({ intensities, duration, currentTime = 0 }) => {
+	const normalizedIntensities = useMemo(() => normalizeVolumeIntensities(intensities), [
+		intensities,
+	])
+	const [{ margin, text }] = useStyles()
+	return (
+		<View
+			style={{
+				flexDirection: 'row',
+				alignItems: 'center',
+				flex: 1,
+				padding: 8,
+				height: '100%',
+			}}
+		>
+			<View style={{ flex: 1, flexDirection: 'row', height: '100%', alignItems: 'center' }}>
+				{normalizedIntensities.map((intensity, index) => {
+					return (
+						<React.Fragment key={index}>
+							<View
+								style={{
+									backgroundColor:
+										duration &&
+										index < Math.floor((currentTime! / duration) * normalizedIntensities.length)
+											? '#fff'
+											: '#4F58C0',
+									minHeight: 5,
+									height: 70 * intensity + '%',
+									flex: 2,
+									borderRadius: 5,
+								}}
+							/>
+							<View style={{ flex: 1 }} />
+						</React.Fragment>
+					)
+				})}
+			</View>
+			<Text
+				style={[
+					{
+						color: '#4F58C0',
+					},
+					margin.left.tiny,
+					text.size.small,
+				]}
+			>
+				{moment.utc(duration).format('mm:ss')}
+			</Text>
+		</View>
+	)
+}
+
+const AudioPreview: React.FC<{
+	media: beapi.messenger.IMedia
+	currentTime?: number
+}> = ({ media, currentTime = 0 }) => {
+	const [normalizedIntensities, duration] = useMemo(() => {
+		const metadata = beapi.messenger.MediaMetadata.decode(media.metadataBytes!)
+		const previews = metadata?.items.filter(
+			(m) => m.metadataType === beapi.messenger.MediaMetadataType.MetadataAudioPreview,
+		)
+
+		if (previews === undefined || previews.length === 0) {
+			return [null, null]
+		}
+
+		const preview = beapi.messenger.AudioPreview.decode(previews[0].payload!)
+		return [normalizeVolumeIntensities(preview.volumeIntensities), preview.durationMs]
+	}, [media.metadataBytes])
+
+	if (normalizedIntensities === null) {
+		return (
+			<View style={{ flex: 1 }}>
+				<Text style={{ color: '#4F58C0' }} numberOfLines={1}>
+					{media.filename!}
+				</Text>
+			</View>
+		)
+	}
+
+	return (
+		<WaveForm intensities={normalizedIntensities} duration={duration} currentTime={currentTime} />
+	)
+}
+
+export const AudioMessage: React.FC<{ medias: Array<beapi.messenger.Media> }> = ({ medias }) => {
+	const { protocolClient, client } = useMsgrContext()
+	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
+	const { player: globalPlayer, load: globalPlayerLoad, handlePlayPause } = useMusicPlayer()
+	const cid = useMemo(() => medias[0].cid, [medias])
+	const filename = useMemo(() => medias[0].filename, [medias])
+
+	const isPlaying = useMemo(
+		() => globalPlayer.metadata?.id === cid && globalPlayer.player?.isPlaying === true,
+		[globalPlayer.metadata?.id, globalPlayer.player?.isPlaying, cid],
+	)
+
 	useEffect(() => {
-		if (!protocolClient) {
+		if (!isPlaying) {
 			return
 		}
-		let cancel = false
-		getSource(protocolClient, medias[0].cid)
-			.then((src) => {
-				if (!cancel) {
-					let base64 = `data:${mimeType};base64,${src}`
-					setSource(base64)
-					setPlayer(new Player(base64).prepare())
-				}
-			})
-			.catch((e) => console.error('failed to get attachment image:', e))
-		return () => {
-			cancel = true
-		}
-	}, [protocolClient, mimeType, medias])
 
-	let currentTime =
-		globalPlayer.id === medias[0].cid ? globalPlayer.player?.currentTime : player?.currentTime
+		return () => {
+			if (filename !== voiceMemoFilename || globalPlayer.player?.isStopped === false) {
+				return
+			}
+
+			globalPlayerLoad(
+				(async (): Promise<[string, PlayerItemMetadata]> => {
+					const next = await client?.mediaGetRelated({
+						cid: cid,
+						fileNames: [voiceMemoFilename],
+					})
+
+					if (!next || next.end) {
+						throw new EndError()
+					}
+
+					const srcP = getSource(protocolClient!, next.media?.cid!)
+					await playSoundAsync('contactRequestAccepted')
+					const src = await srcP
+
+					return [
+						`data:${next.media?.mimeType};base64,${src}`,
+						{
+							id: next.media?.cid!,
+						},
+					]
+				})(),
+			)
+		}
+	}, [cid, isPlaying, globalPlayer.player, globalPlayerLoad, client, protocolClient, filename])
 
 	return (
 		<View
@@ -54,48 +177,35 @@ export const AudioMessage: React.FC<{ medias: any }> = ({ medias }) => {
 						backgroundColor: '#E9EAF8',
 						alignItems: 'center',
 						justifyContent: 'center',
-						height: 80,
+						height: 50,
 						width: windowWidth - 100,
 						maxWidth: 400,
+						flexDirection: 'row',
 					},
-					border.radius.large,
+					border.radius.small,
 				]}
 			>
-				{!!source && (
-					<WaveForm
-						style={{
-							height: 60,
-							width: windowWidth - 100,
-							maxWidth: 400,
-							position: 'absolute',
-							// top: 10,
-							left: 0,
-							// borderWidth: 1,
-							// borderColor: color.red,
-						}}
-						source={{ uri: source }}
-						waveFormStyle={{
-							waveColor: '#4F58C0',
-							scrubColor: 'transparent',
-						}}
-						autoPlay={false}
-					/>
-				)}
-
 				<TouchableOpacity
 					onPress={() => {
-						if (globalPlayer.id === medias[0].cid) {
+						if (globalPlayer.metadata?.id === medias[0].cid) {
 							handlePlayPause()
-						} else {
-							setGlobalPlayer(source, medias[0].cid)
+						} else if (protocolClient) {
+							globalPlayerLoad(
+								getSource(protocolClient, cid).then((src) => [
+									`data:${medias[0].mimeType};base64,${src}`,
+									{
+										id: cid,
+									},
+								]),
+							)
 						}
 					}}
 					style={[
-						padding.vertical.tiny,
-						padding.horizontal.big,
+						padding.top.tiny,
+						padding.left.scale(10),
 						border.radius.small,
+						margin.tiny,
 						{
-							backgroundColor: '#4F58C0',
 							alignSelf: 'center',
 							alignItems: 'center',
 							justifyContent: 'center',
@@ -103,60 +213,17 @@ export const AudioMessage: React.FC<{ medias: any }> = ({ medias }) => {
 					]}
 				>
 					<Icon
-						name={
-							globalPlayer.id === medias[0].cid && globalPlayer.player?.isPlaying ? 'pause' : 'play'
-						}
-						fill='white'
-						height={30}
-						width={30}
+						name={isPlaying ? 'pause' : 'play'}
+						fill='#4F58C0'
+						height={26 * scaleSize}
+						width={26 * scaleSize}
 						pack='custom'
 					/>
 				</TouchableOpacity>
-			</View>
-			<View
-				style={[
-					border.radius.small,
-					padding.horizontal.small,
-					padding.vertical.tiny,
-
-					{
-						backgroundColor: '#4F58C0',
-						flexDirection: 'row',
-						alignContent: 'center',
-						alignItems: 'center',
-						shadowColor: '#000',
-						shadowOffset: {
-							width: 0,
-							height: 2,
-						},
-						shadowOpacity: 0.25,
-						shadowRadius: 3.84,
-
-						elevation: 5,
-					},
-				]}
-			>
-				<Text style={{ color: color.white }}>
-					{moment.utc(Number((currentTime || 0) > 0 ? currentTime : 0)).format('mm:ss')}
-				</Text>
-				<View
-					style={[
-						margin.horizontal.small,
-						{
-							height: 12,
-							width: 1.5,
-							backgroundColor: color.white,
-							opacity: 0.5,
-						},
-					]}
+				<AudioPreview
+					media={medias[0]}
+					currentTime={isPlaying ? globalPlayer.player?.currentTime : 0}
 				/>
-				<Text
-					style={{
-						color: color.white,
-					}}
-				>
-					{moment.utc(Number(player?.duration) > 0 ? player?.duration : 0).format('mm:ss')}
-				</Text>
 			</View>
 		</View>
 	)

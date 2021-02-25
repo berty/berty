@@ -2791,6 +2791,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrMissingMapKey: 107,
               ErrDBWrite: 108,
               ErrDBRead: 109,
+              ErrDBDestroy: 120,
+              ErrDBMigrate: 121,
+              ErrDBReplay: 122,
+              ErrDBRestore: 123,
               ErrCryptoRandomGeneration: 200,
               ErrCryptoKeyGeneration: 201,
               ErrCryptoNonceGeneration: 202,
@@ -3378,6 +3382,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "MediaRetrieve.Request",
                     responseType: "MediaRetrieve.Reply",
                     responseStream: true
+                  },
+                  MediaGetRelated: {
+                    requestType: "MediaGetRelated.Request",
+                    responseType: "MediaGetRelated.Reply"
                   }
                 }
               },
@@ -4274,6 +4282,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 4
                   },
+                  metadataBytes: {
+                    type: "bytes",
+                    id: 6
+                  },
                   interactionCid: {
                     type: "string",
                     id: 100,
@@ -5149,6 +5161,115 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 2
                       }
                     }
+                  }
+                }
+              },
+              MediaGetRelated: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      cid: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      },
+                      mimeTypes: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3
+                      },
+                      fileNames: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 4
+                      }
+                    },
+                    reserved: [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  },
+                  Reply: {
+                    fields: {
+                      media: {
+                        type: "Media",
+                        id: 1
+                      },
+                      end: {
+                        type: "bool",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              MediaMetadataType: {
+                values: {
+                  MetadataUnknown: 0,
+                  MetadataKeyValue: 1,
+                  MetadataAudioPreview: 2
+                }
+              },
+              MediaMetadata: {
+                fields: {
+                  items: {
+                    rule: "repeated",
+                    type: "MediaMetadataItem",
+                    id: 1
+                  }
+                }
+              },
+              MediaMetadataItem: {
+                fields: {
+                  metadataType: {
+                    type: "MediaMetadataType",
+                    id: 1
+                  },
+                  payload: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              MediaMetadataKV: {
+                fields: {
+                  key: {
+                    type: "string",
+                    id: 1
+                  },
+                  value: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              AudioPreview: {
+                fields: {
+                  volumeIntensities: {
+                    rule: "repeated",
+                    type: "uint32",
+                    id: 1
+                  },
+                  durationMs: {
+                    type: "uint32",
+                    id: 2
+                  },
+                  format: {
+                    type: "string",
+                    id: 3
+                  },
+                  bitrate: {
+                    type: "uint32",
+                    id: 4
+                  },
+                  samplingRate: {
+                    type: "uint32",
+                    id: 5
                   }
                 }
               }

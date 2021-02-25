@@ -1,55 +1,115 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { Player } from '@react-native-community/audio-toolkit'
 
 type PlayerType = Player | undefined
-type IDType = string | number | undefined
 
-const INITIAL_PLAYER_VALUE = {
-	player: undefined,
-	id: '',
+export class EndError extends Error {}
+
+export interface PlayerItemMetadata {
+	id: String
+	title?: String
+	subtitle?: String
+	duration?: String
+	waveform?: Array<number>
+	visualURI?: String
 }
+
+interface PlayerState {
+	player: PlayerType
+	metadata: PlayerItemMetadata
+	next?: Promise<[string, PlayerItemMetadata]>
+}
+
+const INITIAL_PLAYER_METADATA: PlayerItemMetadata = {
+	id: '',
+	title: '',
+	subtitle: '',
+	duration: '',
+	waveform: [],
+	visualURI: '',
+}
+
+const INITIAL_PLAYER_VALUE: PlayerState = {
+	player: undefined,
+	metadata: INITIAL_PLAYER_METADATA,
+}
+
 export const MusicPlayerContext = createContext<{
-	player: { player: PlayerType; id: IDType }
-	setPlayer: (source?: string, id?: IDType) => void
+	player: PlayerState
+	load: (contentPromise: Promise<[string, PlayerItemMetadata]>) => void
+	unload: () => void
 	handlePlayPause: () => void
 	refresh: number
 }>({
-	player: {
-		player: undefined,
-		id: '',
-	},
-	setPlayer: () => {},
+	player: INITIAL_PLAYER_VALUE,
+	load: () => {},
+	unload: () => {},
 	handlePlayPause: () => {},
 	refresh: 0,
 })
 
-export const MusicPlayerProvider: React.FC<{ children: JSX.Element[] }> = ({ children }) => {
-	const [player, setPlayer] = useState<{
-		player: PlayerType
-		id: IDType
-	}>(INITIAL_PLAYER_VALUE)
+export const MusicPlayerProvider: React.FC = ({ children }) => {
+	const [player, setPlayer] = useState<PlayerState>(INITIAL_PLAYER_VALUE)
 	const [refresh, setRefresh] = useState(0)
-	const [intervalId, setIntervalId] = useState<any>()
+	const [intervalId, setIntervalId] = useState<ReturnType<typeof setInterval>>()
 	const [startPlay, setStartPlay] = useState(false)
-	const [source, setSource] = useState('')
 
-	const startRefresh = () => {
+	const startRefresh = useCallback(() => {
+		if (intervalId) {
+			clearInterval(intervalId)
+		}
+
 		setIntervalId(setInterval(() => setRefresh((prev) => prev + 1), 100))
+	}, [intervalId])
+
+	useEffect(() => {
+		if (!player.next) {
+			return
+		}
+
+		let canceled = false
+		;(async () => {
+			try {
+				const contentMetadata = await player.next
+				if (canceled || contentMetadata === undefined) {
+					return
+				}
+
+				const [content, metadata] = contentMetadata
+
+				setRefresh(0)
+				setPlayer({
+					player: new Player(content),
+					metadata: metadata || INITIAL_PLAYER_METADATA,
+					next: undefined,
+				})
+				setStartPlay(true)
+			} catch (e) {
+				if (e instanceof EndError) {
+					return
+				}
+
+				console.warn('error while fetching next player item', e)
+			}
+		})()
+
+		return () => {
+			canceled = true
+		}
+	}, [player.next])
+
+	useEffect(() => () => player.player?.destroy(), [player.player])
+
+	const unload = () => {
+		intervalId && clearInterval(intervalId)
+		setPlayer(INITIAL_PLAYER_VALUE)
 	}
 
-	const setPlayerFn = (source?: string, id?: IDType): void => {
-		if (player.player?.isPlaying) {
-			player.player?.stop()
-		}
-		if (source) {
-			setRefresh(0)
-			setPlayer({ player: new Player(source), id })
-			setSource(source)
-			setStartPlay(true)
-		} else {
-			intervalId && clearInterval(intervalId)
-			setPlayer(INITIAL_PLAYER_VALUE)
-		}
+	const load = (promise: Promise<[string, PlayerItemMetadata]>) => {
+		setPlayer({
+			...player,
+			next: promise,
+		})
 	}
 
 	const handlePlayPause = () => {
@@ -79,16 +139,12 @@ export const MusicPlayerProvider: React.FC<{ children: JSX.Element[] }> = ({ chi
 	useEffect(() => {
 		if (refresh > 10 && player.player?.isStopped) {
 			intervalId && clearInterval(intervalId)
-			setPlayer({
-				player: new Player(source),
-				id: player.id,
-			})
 			setRefresh(0)
 		}
-	}, [player, refresh, intervalId, source])
+	}, [player, refresh, intervalId])
 
 	useEffect(() => {
-		if (startPlay && !player.player?.isPlaying) {
+		if (startPlay && !player.player?.isPlaying && !player.next) {
 			player.player?.play((err) => {
 				if (!err) {
 					setStartPlay(false)
@@ -96,11 +152,17 @@ export const MusicPlayerProvider: React.FC<{ children: JSX.Element[] }> = ({ chi
 				}
 			})
 		}
-	}, [startPlay, player])
+	}, [startRefresh, startPlay, player])
 
 	return (
 		<MusicPlayerContext.Provider
-			value={{ player, setPlayer: setPlayerFn, handlePlayPause, refresh }}
+			value={{
+				player,
+				load: load,
+				unload: unload,
+				handlePlayPause,
+				refresh,
+			}}
 		>
 			{children}
 		</MusicPlayerContext.Provider>
