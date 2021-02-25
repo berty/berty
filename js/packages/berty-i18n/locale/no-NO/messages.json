@@ -472,6 +472,12 @@
       "forward-berty": "Videresend til Berty-contact",
       "forward": "Videresend",
       "image-saved": "Bilde lagret i Galleriet"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
