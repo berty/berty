@@ -472,6 +472,12 @@
       "forward-berty": "An Berty Kontakt weiterleiten",
       "forward": "Weiterleiten",
       "image-saved": "Bild in der Galerie gespeichert"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
