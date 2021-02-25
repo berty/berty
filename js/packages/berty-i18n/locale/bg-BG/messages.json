@@ -472,6 +472,12 @@
       "forward-berty": "Препрати до Berty контакт",
       "forward": "Препрати",
       "image-saved": "Изображението е запазено в галерията"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
