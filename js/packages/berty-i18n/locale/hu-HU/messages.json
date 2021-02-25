@@ -472,6 +472,12 @@
       "forward-berty": "Továbbítás Berty-nek",
       "forward": "Továbbítás",
       "image-saved": "Kép mentve a galériába"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
