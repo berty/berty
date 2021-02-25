@@ -472,6 +472,12 @@
       "forward-berty": "Переслать контакту в Berty",
       "forward": "Переслать",
       "image-saved": "Изображение сохранено в Галерее"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
