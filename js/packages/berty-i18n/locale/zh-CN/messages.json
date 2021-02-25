@@ -472,6 +472,12 @@
       "forward-berty": "转发到 Berty 联系人",
       "forward": "转发",
       "image-saved": "图片已保存到相册"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
