@@ -472,6 +472,12 @@
       "forward-berty": "Doorsturen naar Berty contact",
       "forward": "Doorsturen",
       "image-saved": "Afbeelding opgeslagen in Galerij"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
