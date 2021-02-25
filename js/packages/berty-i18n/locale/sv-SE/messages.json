@@ -472,6 +472,12 @@
       "forward-berty": "Vidarebefordra till Berty kontakt",
       "forward": "Vidarebefordra",
       "image-saved": "Bild sparad i galleriet"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
