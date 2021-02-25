@@ -103,7 +103,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 			<ButtonSetting
 				name={t('chat.multi-member-settings.media-button')}
 				icon='image-outline'
-				disabled
+				onPress={() => navigation.navigate.chat.sharedMedias({ convPk: publicKey })}
 			/>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.notifications-button')}

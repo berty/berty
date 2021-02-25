@@ -247,6 +247,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Chat.ReplicateGroupSettings}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Chat.SharedMedias}
+				component={Components.Chat.SharedMedias}
+			/>
+			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
 				options={ModalScreenOptions}
