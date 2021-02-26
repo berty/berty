@@ -3339,6 +3339,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ConversationClose.Request",
                     responseType: "ConversationClose.Reply"
                   },
+                  ConversationLoad: {
+                    requestType: "ConversationLoad.Request",
+                    responseType: "ConversationLoad.Reply"
+                  },
                   ServicesTokenList: {
                     requestType: "protocol.v1.ServicesTokenList.Request",
                     responseType: "protocol.v1.ServicesTokenList.Reply",
@@ -3377,6 +3381,40 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              PaginatedInteractionsOptions: {
+                fields: {
+                  amount: {
+                    type: "int32",
+                    id: 1
+                  },
+                  refCid: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "RefCID"
+                    }
+                  },
+                  conversationPk: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "ConversationPK"
+                    }
+                  },
+                  oldestToNewest: {
+                    type: "bool",
+                    id: 4
+                  },
+                  excludeMedias: {
+                    type: "bool",
+                    id: 5
+                  },
+                  noBulk: {
+                    type: "bool",
+                    id: 6
+                  }
+                }
+              },
               ConversationOpen: {
                 fields: {},
                 nested: {
@@ -3407,6 +3445,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "GroupPK"
                         }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ConversationLoad: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      options: {
+                        type: "PaginatedInteractionsOptions",
+                        id: 1
                       }
                     }
                   },
@@ -4555,7 +4609,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeMemberUpdated: 8,
                       TypeDeviceUpdated: 9,
                       TypeNotified: 10,
-                      TypeMediaUpdated: 11
+                      TypeMediaUpdated: 11,
+                      TypeConversationPartialLoad: 12
                     }
                   },
                   ConversationUpdated: {
@@ -4633,6 +4688,27 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       media: {
                         type: "Media",
                         id: 1
+                      }
+                    }
+                  },
+                  ConversationPartialLoad: {
+                    fields: {
+                      conversationPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ConversationPK"
+                        }
+                      },
+                      interactions: {
+                        rule: "repeated",
+                        type: "Interaction",
+                        id: 2
+                      },
+                      medias: {
+                        rule: "repeated",
+                        type: "Media",
+                        id: 3
                       }
                     }
                   },
@@ -4776,13 +4852,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 nested: {
                   Request: {
                     fields: {
-                      count: {
-                        type: "uint64",
+                      shallowAmount: {
+                        type: "int32",
                         id: 1
-                      },
-                      page: {
-                        type: "uint64",
-                        id: 2
                       }
                     }
                   },

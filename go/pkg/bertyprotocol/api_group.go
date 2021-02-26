@@ -145,13 +145,15 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 			}
 		}
 
-		err := srv.Send(&protocoltypes.MonitorGroup_Reply{
-			GroupPK: req.GetGroupPK(),
-			Event:   monitorEvent,
-		})
-		if err != nil {
-			return err
-		}
+		// FIXME: @gfanton promised to do something about this part
+		_ = monitorEvent
+		// err := srv.Send(&protocoltypes.MonitorGroup_Reply{
+		// 	GroupPK: req.GetGroupPK(),
+		// 	Event:   monitorEvent,
+		// })
+		// if err != nil {
+		// 	return err
+		// }
 	}
 
 	return nil

@@ -394,9 +394,51 @@ func (svc *service) ConversationStream(req *messengertypes.ConversationStream_Re
 	}
 }
 
-func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub messengertypes.MessengerService_EventStreamServer) error {
-	// TODO: cursors
+func (svc *service) streamEverything(sub messengertypes.MessengerService_EventStreamServer) error {
+	if err := svc.streamShallow(sub, 0); err != nil {
+		return err
+	}
 
+	// send interactions
+	{
+		interactions, err := svc.db.getAllInteractions()
+		if err != nil {
+			return err
+		}
+		svc.logger.Info("sending existing interactions", zap.Int("count", len(interactions)))
+		for _, inte := range interactions {
+			iu, err := proto.Marshal(&messengertypes.StreamEvent_InteractionUpdated{Interaction: inte})
+			if err != nil {
+				return err
+			}
+			if err := sub.Send(&messengertypes.EventStream_Reply{Event: &messengertypes.StreamEvent{Type: messengertypes.StreamEvent_TypeInteractionUpdated, Payload: iu, IsNew: false}}); err != nil {
+				return err
+			}
+		}
+	}
+
+	// send medias
+	{
+		medias, err := svc.db.getAllMedias()
+		if err != nil {
+			return err
+		}
+		svc.logger.Info("sending existing medias", zap.Int("count", len(medias)))
+		for _, media := range medias {
+			mu, err := proto.Marshal(&messengertypes.StreamEvent_MediaUpdated{Media: media})
+			if err != nil {
+				return err
+			}
+			if err := sub.Send(&messengertypes.EventStream_Reply{Event: &messengertypes.StreamEvent{Type: messengertypes.StreamEvent_TypeMediaUpdated, Payload: mu, IsNew: false}}); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (svc *service) streamShallow(sub messengertypes.MessengerService_EventStreamServer, includeInteractionsAndMedias int32) error {
 	// send account
 	{
 		svc.logger.Debug("sending account")
@@ -468,8 +510,8 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 	}
 
 	// send interactions
-	{
-		interactions, err := svc.db.getAllInteractions()
+	if includeInteractionsAndMedias > 0 {
+		interactions, medias, err := svc.db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{Amount: includeInteractionsAndMedias})
 		if err != nil {
 			return err
 		}
@@ -483,14 +525,7 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 				return err
 			}
 		}
-	}
 
-	// send medias
-	{
-		medias, err := svc.db.getAllMedias()
-		if err != nil {
-			return err
-		}
 		svc.logger.Info("sending existing medias", zap.Int("count", len(medias)))
 		for _, media := range medias {
 			mu, err := proto.Marshal(&messengertypes.StreamEvent_MediaUpdated{Media: media})
@@ -500,6 +535,21 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 			if err := sub.Send(&messengertypes.EventStream_Reply{Event: &messengertypes.StreamEvent{Type: messengertypes.StreamEvent_TypeMediaUpdated, Payload: mu, IsNew: false}}); err != nil {
 				return err
 			}
+		}
+	}
+
+	return nil
+}
+
+func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub messengertypes.MessengerService_EventStreamServer) error {
+	if req.ShallowAmount > 0 {
+		if err := svc.streamShallow(sub, req.ShallowAmount); err != nil {
+			return err
+		}
+	} else {
+		err := svc.streamEverything(sub)
+		if err != nil {
+			return err
 		}
 	}
 
@@ -1326,4 +1376,50 @@ func (svc *service) MediaRetrieve(req *messengertypes.MediaRetrieve_Request, srv
 
 	// success
 	return nil
+}
+
+func (svc *service) ConversationLoad(ctx context.Context, request *messengertypes.ConversationLoad_Request) (*messengertypes.ConversationLoad_Reply, error) {
+	if request.Options.ConversationPK == "" && request.Options.RefCID == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation pk or ref cid specified"))
+	}
+
+	interactions, medias, err := svc.db.getPaginatedInteractions(request.Options)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(interactions) == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("nothing to return"))
+	}
+
+	if !request.Options.NoBulk {
+		if medias == nil {
+			medias = []*messengertypes.Media{}
+		}
+
+		if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationPartialLoad, &messengertypes.StreamEvent_ConversationPartialLoad{
+			ConversationPK: interactions[0].ConversationPublicKey,
+			Interactions:   interactions,
+			Medias:         medias,
+		}, false); err != nil {
+			svc.logger.Error("unable to bulk send conversation events", zap.Error(err))
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+	} else {
+		svc.logger.Info("sending found interactions", zap.Int("count", len(interactions)))
+		for _, inte := range interactions {
+			if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{Interaction: inte}, false); err != nil {
+				return nil, err
+			}
+		}
+
+		svc.logger.Info("sending found medias", zap.Int("count", len(medias)))
+		for _, media := range medias {
+			if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeMediaUpdated, &messengertypes.StreamEvent_MediaUpdated{Media: media}, false); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return &messengertypes.ConversationLoad_Reply{}, nil
 }

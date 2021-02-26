@@ -8,6 +8,7 @@ import { MessengerActions } from '@berty-tech/store/context'
 import { MsgrContext, useMsgrContext, NotificationsInhibitor } from './context'
 import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
 import { ParsedInteraction } from './types.gen'
+import { Routes } from '@berty-tech/navigation'
 
 export { useMsgrContext }
 
@@ -19,7 +20,7 @@ export const useGetMessage = (id: Maybe<string>, convId: Maybe<string>) => {
 	if (!intes) {
 		return undefined
 	}
-	return intes[id as string]
+	return intes.find((i) => i.cid === id)
 }
 
 export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
@@ -123,23 +124,8 @@ export const useConversation = (publicKey: Maybe<string>) => {
 }
 
 export const useConvInteractions = (publicKey: Maybe<string>) => {
-	const ctx = useMsgrContext()
-	return ctx.interactions[publicKey as string] || {}
-}
-
-export const useConvInteractionsList = (publicKey: Maybe<string>) => {
-	const intes = useConvInteractions(publicKey)
-	return Object.values(intes) as ParsedInteraction[]
-}
-
-export const useSortedConvInteractions = (publicKey: Maybe<string>) => {
-	const intes = useConvInteractionsList(publicKey)
-	return intes.sort((a, b) => pbDateToNum(a.sentDate) - pbDateToNum(b.sentDate))
-}
-
-export const useInteraction = (cid: Maybe<string>, convPk: Maybe<string>) => {
-	const intes = useConvInteractions(convPk)
-	return intes[cid as string]
+	const { interactions } = useMsgrContext()
+	return interactions[publicKey as string] || []
 }
 
 export const useConversationsCount = () => {
@@ -248,22 +234,23 @@ export const useDeleteFakeData = () => {
 		})
 }
 
-export type SortedConvsFilter = Parameters<
-	ReturnType<typeof useSortedConvInteractions>['filter']
->[0]
+export type SortedConvsFilter = Parameters<ReturnType<typeof useConvInteractions>['filter']>[0]
 
 export const useLastConvInteraction = (
 	convPublicKey: Maybe<string>,
 	filterFunc?: Maybe<SortedConvsFilter>,
 ) => {
-	let intes = useSortedConvInteractions(convPublicKey)
-	if (filterFunc) {
-		intes = intes.filter(filterFunc)
-	}
+	let intes = useConvInteractions(convPublicKey)
+
 	if (intes.length <= 0) {
 		return null
 	}
-	return intes[intes.length - 1]
+
+	if (!filterFunc) {
+		return intes[0]
+	}
+
+	return intes.find(filterFunc) || null
 }
 
 const useDispatch = () => {
@@ -332,6 +319,18 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 				clearTimeout(timeoutID)
 				timeoutID = null
 			}
+
+			// Not marking a conversation as closed if still in the navigation stack
+			const { routes } = navigation.dangerouslyGetState()
+			for (let route of routes) {
+				if (
+					(route.name === Routes.Chat.OneToOne || route.name === Routes.Chat.Group) &&
+					route.params?.convId === publicKey
+				) {
+					return
+				}
+			}
+
 			ctx.client?.conversationClose({ groupPk: publicKey }).catch((err: unknown) => {
 				console.warn('failed to close conversation,', err)
 			})
@@ -347,3 +346,42 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
 export const useMountEffect = (effect: EffectCallback) => useEffect(effect, [])
+
+export const fetchMore = ({
+	setFetchingFrom,
+	setFetchedFirst,
+	fetchingFrom,
+	fetchedFirst,
+	oldestMessage,
+	client,
+	convPk,
+}: {
+	setFetchingFrom: (value: string | null) => void
+	setFetchedFirst: (value: boolean) => void
+	fetchingFrom: string | null
+	fetchedFirst: boolean
+	oldestMessage?: ParsedInteraction
+	client: any
+	convPk: string
+}) => {
+	if (fetchingFrom !== null || fetchedFirst) {
+		return
+	}
+
+	let refCid: string | undefined
+	if (oldestMessage) {
+		refCid = oldestMessage.cid!
+	}
+
+	setFetchingFrom(refCid || '')
+
+	client
+		?.conversationLoad({
+			options: {
+				amount: 30,
+				conversationPk: convPk,
+				refCid: refCid,
+			},
+		})
+		.catch(() => setFetchedFirst(true))
+}

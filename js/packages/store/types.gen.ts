@@ -24,6 +24,8 @@ export type StreamEventPayloadType<T> = T extends beapi.messenger.StreamEvent.Ty
 	? beapi.messenger.StreamEvent.INotified
 	: T extends beapi.messenger.StreamEvent.Type.TypeMediaUpdated
 	? beapi.messenger.StreamEvent.IMediaUpdated
+	: T extends beapi.messenger.StreamEvent.Type.TypeConversationPartialLoad
+	? beapi.messenger.StreamEvent.IConversationPartialLoad
 	: never
 
 export type StreamEventNotifiedPayloadType<
@@ -245,6 +247,13 @@ export type MessengerMethodsHooks = {
 		error: any
 		call: (req?: beapi.messenger.ConversationClose.IRequest) => void
 		reply: beapi.messenger.ConversationClose.IReply | null
+		done: boolean
+		called: boolean
+	}
+	useConversationLoad: () => {
+		error: any
+		call: (req?: beapi.messenger.ConversationLoad.IRequest) => void
+		reply: beapi.messenger.ConversationLoad.IReply | null
 		done: boolean
 		called: boolean
 	}

@@ -60,6 +60,7 @@ service MessengerService {
   rpc Interact(Interact.Request) returns (Interact.Reply);
   rpc ConversationOpen(ConversationOpen.Request) returns (ConversationOpen.Reply);
   rpc ConversationClose(ConversationClose.Request) returns (ConversationClose.Reply);
+  rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
 
   // ServicesTokenList Retrieves the list of service server tokens
   rpc ServicesTokenList(protocol.v1.ServicesTokenList.Request) returns (stream protocol.v1.ServicesTokenList.Reply);
@@ -86,6 +87,26 @@ service MessengerService {
   rpc MediaRetrieve (MediaRetrieve.Request) returns (stream MediaRetrieve.Reply);
 }
 
+message PaginatedInteractionsOptions {
+  // amount Number of entries to be returned. Default is 5.
+  int32 amount = 1;
+
+  // ref_cid Reference CID for used for pagination defaulting to oldest/newest depending on sorting. When specified this CID won't be included in the results.
+  string ref_cid = 2 [(gogoproto.customname) = "RefCID"];
+
+  // conversation_pk Filter by conversation, otherwise X latest message of each conversation are returned
+  string conversation_pk = 3 [(gogoproto.customname) = "ConversationPK"];
+
+  // oldest_to_newest Default sort of results is latest to oldest message
+  bool oldest_to_newest = 4;
+
+  // exclude_medias Medias are included by default
+  bool exclude_medias = 5;
+
+  // no_bulk should interactions be via atomic update in the stream
+  bool no_bulk = 6;
+}
+
 message ConversationOpen {
   message Request {
     string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
@@ -96,6 +117,13 @@ message ConversationOpen {
 message ConversationClose {
   message Request {
     string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply {}
+}
+
+message ConversationLoad {
+  message Request {
+    PaginatedInteractionsOptions options = 1;
   }
   message Reply {}
 }
@@ -514,6 +542,7 @@ message StreamEvent {
     TypeDeviceUpdated = 9;
     TypeNotified = 10;
     TypeMediaUpdated = 11;
+    TypeConversationPartialLoad = 12;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -542,6 +571,11 @@ message StreamEvent {
   message ListEnded {}
   message MediaUpdated {
     Media media = 1;
+  }
+  message ConversationPartialLoad {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+    repeated Interaction interactions = 2;
+    repeated Media medias = 3;
   }
   message Notified {
     Type type = 1;
@@ -599,8 +633,7 @@ message AccountGet {
 
 message EventStream {
   message Request {
-    uint64 count = 1;
-    uint64 page = 2;
+    int32 shallow_amount = 1;
   }
   message Reply {
     StreamEvent event = 1;

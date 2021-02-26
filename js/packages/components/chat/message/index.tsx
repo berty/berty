@@ -3,30 +3,29 @@ import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useInteraction, useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
 
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { MessageInvitation } from './MessageInvitation'
 import { MessageMonitorMetadata } from './MessageMonitorMetadata'
-import { QuickReplyOptions } from './QuickReplyOptions'
 import { UserMessage } from './UserMessage'
+import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 //
 // Message => All messages (group/contact)
 //
 
 export const Message: React.FC<{
-	id: string
-	convKind: any
+	inte?: ParsedInteraction
+	convKind: beapi.messenger.Conversation.Type
 	members?: { [key: string]: any }
 	convPK: string
-	previousMessageId: string
-	nextMessageId: string
-}> = ({ id, convKind, members, previousMessageId, nextMessageId, convPK }) => {
+	previousMessage?: ParsedInteraction
+	nextMessage?: ParsedInteraction
+}> = ({ inte, convKind, members, previousMessage, nextMessage, convPK }) => {
 	const ctx = useMsgrContext()
-	const inte = useInteraction(id, convPK)
 	const [{ text, padding }] = useStyles()
 	if (!inte) {
 		return null
@@ -39,8 +38,8 @@ export const Message: React.FC<{
 				members={members}
 				convPK={convPK}
 				convKind={convKind}
-				nextMessageId={nextMessageId}
-				previousMessageId={previousMessageId}
+				nextMessage={nextMessage}
+				previousMessage={previousMessage}
 			/>
 		)
 	} else if (
@@ -63,14 +62,6 @@ export const Message: React.FC<{
 					</Text>
 				</View>
 				<MessageInvitation message={inte} />
-			</>
-		)
-	} else if (inte.type === beapi.messenger.AppMessage.Type.TypeReplyOptions) {
-		return (
-			<>
-				<View style={[padding.horizontal.medium, padding.bottom.small]}>
-					<QuickReplyOptions convPk={convPK} options={inte.payload.options || []} />
-				</View>
 			</>
 		)
 	} else if (

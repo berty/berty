@@ -1541,3 +1541,53 @@ func Test_dbWrapper_getMedias_mix(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, testMedias, medias)
 }
+
+func Test_dbWrapper_getLatestInteractionAndMediaPerConversation(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	for i := 0; i < 10; i++ {
+		err := db.db.Create(&messengertypes.Conversation{PublicKey: fmt.Sprintf("c%d", i)}).Error
+		require.NoError(t, err)
+
+		for j := 0; j <= i; j++ {
+			err := db.db.Create(&messengertypes.Interaction{
+				CID:                   fmt.Sprintf("c%d_i%d", i, j),
+				ConversationPublicKey: fmt.Sprintf("c%d", i),
+				Payload:               []byte(fmt.Sprintf("c%d_i%d", i, j)),
+				SentDate:              int64(i*100 + j),
+			}).Error
+			require.NoError(t, err)
+
+			if j >= 8 {
+				err := db.db.Create(&messengertypes.Media{
+					CID:            fmt.Sprintf("c%d_i%d_m", i, j),
+					InteractionCID: fmt.Sprintf("c%d_i%d", i, j),
+				}).Error
+				require.NoError(t, err)
+			}
+		}
+	}
+
+	interactions, medias, err := db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{Amount: 5})
+	require.NoError(t, err)
+	require.Len(t, interactions, 40)
+	require.Len(t, medias, 3)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{RefCID: "c9_i9", Amount: 5})
+	require.NoError(t, err)
+	require.Len(t, interactions, 5)
+	require.Len(t, medias, 1)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{RefCID: "c9_i7", Amount: 5, OldestToNewest: true})
+	require.NoError(t, err)
+	require.Len(t, interactions, 2)
+	require.Len(t, medias, 2)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c8", RefCID: "c9_i9", Amount: 5})
+	require.Error(t, err)
+	require.Len(t, interactions, 0)
+	require.Len(t, medias, 0)
+
+	// TODO: check fetched items cids
+}

@@ -268,6 +268,38 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/ConversationLoad": {
+      "post": {
+        "operationId": "MessengerService_ConversationLoad",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConversationLoadReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationLoadRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ConversationOpen": {
       "post": {
         "operationId": "MessengerService_ConversationOpen",
@@ -1796,6 +1828,17 @@
         }
       }
     },
+    "v1ConversationLoadReply": {
+      "type": "object"
+    },
+    "v1ConversationLoadRequest": {
+      "type": "object",
+      "properties": {
+        "options": {
+          "$ref": "#/definitions/v1PaginatedInteractionsOptions"
+        }
+      }
+    },
     "v1ConversationOpenReply": {
       "type": "object"
     },
@@ -1937,13 +1980,9 @@
     "v1EventStreamRequest": {
       "type": "object",
       "properties": {
-        "count": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "page": {
-          "type": "string",
-          "format": "uint64"
+        "shallow_amount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -2221,6 +2260,36 @@
         }
       }
     },
+    "v1PaginatedInteractionsOptions": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int32",
+          "description": "amount Number of entries to be returned. Default is 5."
+        },
+        "ref_cid": {
+          "type": "string",
+          "description": "ref_cid Reference CID for used for pagination defaulting to oldest/newest depending on sorting. When specified this CID won't be included in the results."
+        },
+        "conversation_pk": {
+          "type": "string",
+          "title": "conversation_pk Filter by conversation, otherwise X latest message of each conversation are returned"
+        },
+        "oldest_to_newest": {
+          "type": "boolean",
+          "title": "oldest_to_newest Default sort of results is latest to oldest message"
+        },
+        "exclude_medias": {
+          "type": "boolean",
+          "title": "exclude_medias Medias are included by default"
+        },
+        "no_bulk": {
+          "type": "boolean",
+          "title": "no_bulk should interactions be via atomic update in the stream"
+        }
+      }
+    },
     "v1ParseDeepLinkReply": {
       "type": "object",
       "properties": {
@@ -2410,7 +2479,8 @@
         "TypeMemberUpdated",
         "TypeDeviceUpdated",
         "TypeNotified",
-        "TypeMediaUpdated"
+        "TypeMediaUpdated",
+        "TypeConversationPartialLoad"
       ],
       "default": "Undefined"
     }

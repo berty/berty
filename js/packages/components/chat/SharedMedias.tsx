@@ -14,7 +14,7 @@ import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@berty-tech/navigation'
 import { useTranslation } from 'react-i18next'
 import beapi from '@berty-tech/api'
-import { useMsgrContext, useSortedConvInteractions, useClient } from '@berty-tech/store/hooks'
+import { useMsgrContext, useConvInteractions, useClient } from '@berty-tech/store/hooks'
 import { getSource } from '@berty-tech/components/utils'
 import RNFS from 'react-native-fs'
 import { timeFormat } from '@berty-tech/components/helpers'
@@ -41,7 +41,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 	const [images, setImages] = useState<any[]>([])
 	const client = useClient()
 
-	const messages = useSortedConvInteractions(convPk).filter(
+	const messages = useConvInteractions(convPk).filter(
 		(msg) =>
 			msg.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
 			msg.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation ||

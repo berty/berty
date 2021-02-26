@@ -45,6 +45,9 @@
     - [ConversationJoin](#berty.messenger.v1.ConversationJoin)
     - [ConversationJoin.Reply](#berty.messenger.v1.ConversationJoin.Reply)
     - [ConversationJoin.Request](#berty.messenger.v1.ConversationJoin.Request)
+    - [ConversationLoad](#berty.messenger.v1.ConversationLoad)
+    - [ConversationLoad.Reply](#berty.messenger.v1.ConversationLoad.Reply)
+    - [ConversationLoad.Request](#berty.messenger.v1.ConversationLoad.Request)
     - [ConversationOpen](#berty.messenger.v1.ConversationOpen)
     - [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply)
     - [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request)
@@ -88,6 +91,7 @@
     - [MediaRetrieve.Reply](#berty.messenger.v1.MediaRetrieve.Reply)
     - [MediaRetrieve.Request](#berty.messenger.v1.MediaRetrieve.Request)
     - [Member](#berty.messenger.v1.Member)
+    - [PaginatedInteractionsOptions](#berty.messenger.v1.PaginatedInteractionsOptions)
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
     - [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request)
@@ -118,6 +122,7 @@
     - [StreamEvent.AccountUpdated](#berty.messenger.v1.StreamEvent.AccountUpdated)
     - [StreamEvent.ContactUpdated](#berty.messenger.v1.StreamEvent.ContactUpdated)
     - [StreamEvent.ConversationDeleted](#berty.messenger.v1.StreamEvent.ConversationDeleted)
+    - [StreamEvent.ConversationPartialLoad](#berty.messenger.v1.StreamEvent.ConversationPartialLoad)
     - [StreamEvent.ConversationUpdated](#berty.messenger.v1.StreamEvent.ConversationUpdated)
     - [StreamEvent.DeviceUpdated](#berty.messenger.v1.StreamEvent.DeviceUpdated)
     - [StreamEvent.InteractionDeleted](#berty.messenger.v1.StreamEvent.InteractionDeleted)
@@ -489,6 +494,22 @@ to test more false-positive guesses.
 | link | [string](#string) |  |  |
 | passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
 
+<a name="berty.messenger.v1.ConversationLoad"></a>
+
+### ConversationLoad
+
+<a name="berty.messenger.v1.ConversationLoad.Reply"></a>
+
+### ConversationLoad.Reply
+
+<a name="berty.messenger.v1.ConversationLoad.Request"></a>
+
+### ConversationLoad.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| options | [PaginatedInteractionsOptions](#berty.messenger.v1.PaginatedInteractionsOptions) |  |  |
+
 <a name="berty.messenger.v1.ConversationOpen"></a>
 
 ### ConversationOpen
@@ -625,8 +646,7 @@ to test more false-positive guesses.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| count | [uint64](#uint64) |  |  |
-| page | [uint64](#uint64) |  |  |
+| shallow_amount | [int32](#int32) |  |  |
 
 <a name="berty.messenger.v1.GetUsername"></a>
 
@@ -819,6 +839,19 @@ Composite primary key
 | info_date | [int64](#int64) |  |  |
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |
+
+<a name="berty.messenger.v1.PaginatedInteractionsOptions"></a>
+
+### PaginatedInteractionsOptions
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| amount | [int32](#int32) |  | amount Number of entries to be returned. Default is 5. |
+| ref_cid | [string](#string) |  | ref_cid Reference CID for used for pagination defaulting to oldest/newest depending on sorting. When specified this CID won&#39;t be included in the results. |
+| conversation_pk | [string](#string) |  | conversation_pk Filter by conversation, otherwise X latest message of each conversation are returned |
+| oldest_to_newest | [bool](#bool) |  | oldest_to_newest Default sort of results is latest to oldest message |
+| exclude_medias | [bool](#bool) |  | exclude_medias Medias are included by default |
+| no_bulk | [bool](#bool) |  | no_bulk should interactions be via atomic update in the stream |
 
 <a name="berty.messenger.v1.ParseDeepLink"></a>
 
@@ -1020,6 +1053,16 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.StreamEvent.ConversationPartialLoad"></a>
+
+### StreamEvent.ConversationPartialLoad
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| conversation_pk | [string](#string) |  |  |
+| interactions | [Interaction](#berty.messenger.v1.Interaction) | repeated |  |
+| medias | [Media](#berty.messenger.v1.Media) | repeated |  |
 
 <a name="berty.messenger.v1.StreamEvent.ConversationUpdated"></a>
 
@@ -1254,6 +1297,7 @@ Composite primary key
 | TypeDeviceUpdated | 9 |  |
 | TypeNotified | 10 |  |
 | TypeMediaUpdated | 11 |  |
+| TypeConversationPartialLoad | 12 |  |
 
  
 
@@ -1289,6 +1333,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | Interact | [Interact.Request](#berty.messenger.v1.Interact.Request) | [Interact.Reply](#berty.messenger.v1.Interact.Reply) |  |
 | ConversationOpen | [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request) | [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply) |  |
 | ConversationClose | [ConversationClose.Request](#berty.messenger.v1.ConversationClose.Request) | [ConversationClose.Reply](#berty.messenger.v1.ConversationClose.Reply) |  |
+| ConversationLoad | [ConversationLoad.Request](#berty.messenger.v1.ConversationLoad.Request) | [ConversationLoad.Reply](#berty.messenger.v1.ConversationLoad.Reply) |  |
 | ServicesTokenList | [.berty.protocol.v1.ServicesTokenList.Request](#berty.protocol.v1.ServicesTokenList.Request) | [.berty.protocol.v1.ServicesTokenList.Reply](#berty.protocol.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request) | [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |

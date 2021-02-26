@@ -6,6 +6,7 @@ import {
 	TextInput,
 	NativeModules,
 	Platform,
+	ViewToken,
 } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
@@ -16,6 +17,7 @@ import { useMsgrContext } from '@berty-tech/store/hooks'
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
 import BlurView from '../shared-components/BlurView'
+import moment from 'moment'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -217,4 +219,17 @@ export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
 			<Text style={[_styles.dateText, { color: textColor }]}>{timeFormat.fmtTimestamp2(date)}</Text>
 		</View>
 	)
+}
+
+export const updateStickyDate: (
+	setStickyDate: (date: number) => void,
+) => (info: { viewableItems: ViewToken[] }) => void = (setStickyDate: (date: number) => void) => ({
+	viewableItems,
+}) => {
+	if (viewableItems && viewableItems.length) {
+		const minDate = viewableItems[viewableItems.length - 1]?.section?.title
+		if (minDate) {
+			setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
+		}
+	}
 }
