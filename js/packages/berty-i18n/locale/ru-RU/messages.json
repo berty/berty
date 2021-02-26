@@ -474,10 +474,10 @@
       "image-saved": "Изображение сохранено в Галерее"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
-      "links": "",
-      "documents": ""
+      "title": "Общие медиа",
+      "medias": "Медиа",
+      "links": "Ссылки",
+      "documents": "Документы"
     }
   },
   "error": {
