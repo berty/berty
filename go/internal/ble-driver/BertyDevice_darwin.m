@@ -51,8 +51,6 @@ CBService *getService(NSArray *services, NSString *uuid) {
         self.manager = nil;
         self.peerIDSend = FALSE;
         self.peerIDRecv = FALSE;
-        self.didHandshake = FALSE;
-        self.didHandshakeLock = [[NSObject alloc] init];
 
         self.dQueue = dispatch_queue_create([[NSString stringWithFormat:@"%@%@", @"BertyDevice-", identifier]
                                              cStringUsingEncoding:NSASCIIStringEncoding],
@@ -81,8 +79,6 @@ CBService *getService(NSArray *services, NSString *uuid) {
                                      [BleManager.peerUUID UUIDString]: [NSMutableData data],
                                      };
     }
-    
-    self.dataBuffer = [[CircularQueue alloc] initWithCapacity:1000];
 
     return self;
 }
@@ -131,15 +127,6 @@ CBService *getService(NSArray *services, NSString *uuid) {
         os_log(OS_LOG_BLE, "checkAndHandleFoundPeer() successful");
     }
     return TRUE;
-}
-
-- (void)flushDataBuffer {
-    if (self.dataBuffer.count > 0) {
-        os_log(OS_LOG_BLE, "flushDataBuffer: flushing %lu entries", self.dataBuffer.count);
-    }
-    while (self.dataBuffer.count > 0) {
-        BLEBridgeReceiveFromPeer(self.remotePeerID, [self.dataBuffer deqObject]);
-    }
 }
 
 // Need to copy blocks into the heap because writing is async and the handshake function's stack should not be available

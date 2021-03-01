@@ -5,7 +5,7 @@ package mc
 import (
 	"go.uber.org/zap"
 
-	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
+	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 )
 
 const Supported = false

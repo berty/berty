@@ -5,7 +5,7 @@ package ble
 import (
 	"go.uber.org/zap"
 
-	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
+	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 )
 
 // Supported is used by main package as default value for enable the BLE  driver.

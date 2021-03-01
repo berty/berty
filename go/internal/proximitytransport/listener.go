@@ -58,6 +58,7 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 	for {
 		select {
 		case req := <-l.inboundConnReq:
+			l.transport.logger.Debug("Listener.Accept(): incoming connection")
 			conn, err := newConn(l.ctx, l.transport, req.remoteMa, req.remotePID, true)
 			// If the newConn failed for some reason, Accept won't return an error
 			// because otherwise it will close the listener
