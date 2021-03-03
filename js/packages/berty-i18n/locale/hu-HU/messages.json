@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Aktív bluetooth kapcsolat"
+      "activate-button": "Aktív bluetooth kapcsolat",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Mégse",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Multipeer kapcsolat aktiválása"
