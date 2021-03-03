@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth позволяет пользоваться приложением Berty, даже если вы не имеете подключения к сети Интернет (wifi или мобильного интернета), соединяя ваше устройство напрямую с ближайшими узлами",
-      "activate-button": "Активировать Bluetooth"
+      "activate-button": "Активировать Bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Отменить",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Активировать Multipeer Connectivity"
