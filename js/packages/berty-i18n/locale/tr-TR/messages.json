@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth, ağ bağlantınız (wifi veya veri) olmadığında telefonunuzu yakındaki eşlere bağlayarak Berty uygulamasını kullanmanızı sağlar",
-      "activate-button": "Bluetooth'u etkinleştir"
+      "activate-button": "Bluetooth'u etkinleştir",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "İptal",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Çok eşli bağlantıyı etkinleştir"
