@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth te permite usar mejor la aplicación Berty cuando no tienes una conexión de red (wifi o datos) conectando tu teléfono directamente con los contactos cercanos",
-      "activate-button": "Activar bluetooth"
+      "activate-button": "Activar bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Cancelar",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Activar conectividad con múltiples compañeros"
