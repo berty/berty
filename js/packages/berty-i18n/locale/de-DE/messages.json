@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Wenn Sie keine Netzwerkverbindung (WLAN/Funknetz) haben, kann Berty über Bluetooth mit Partnern in Ihrer näheren Umgebung kommunizieren",
-      "activate-button": "Bluetooth aktivieren"
+      "activate-button": "Bluetooth aktivieren",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Abbrechen",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Verbindung zu mehreren Partnern aktivieren"
