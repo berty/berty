@@ -26,8 +26,6 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 @property (nonatomic, strong, nonnull) NSDictionary *serviceDict;
 @property (readwrite) BOOL peerIDSend;
 @property (readwrite) BOOL peerIDRecv;
-@property (readwrite) BOOL didHandshake;
-@property (strong, nullable) NSObject *didHandshakeLock;
 @property (nonatomic, strong, nullable) CBPeripheral *peripheral;
 @property (nonatomic, strong, nonnull) NSString *identifier;
 @property (nonatomic, strong, nullable) BleManager *manager;
@@ -39,7 +37,6 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 @property (nonatomic, strong, nonnull) NSDictionary* characteristicDatas;
 @property (nonatomic, strong, nullable) NSMutableData *remainingData;
 @property (nonatomic, strong, nullable) NSString *remotePeerID;
-@property (nonatomic, strong, nullable) CircularQueue *dataBuffer;
 
 - (instancetype __nullable)initWithIdentifier:(NSString *__nonnull)identifier;
 - (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral central:(BleManager *__nonnull)manager;
@@ -48,7 +45,6 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 - (void)handshake;
 - (void)handleConnect:(NSError * __nullable)error;
 - (void)connectWithOptions:(NSDictionary * __nullable)options withBlock:(BertyDeviceConnectCallbackBlockType __nonnull)connectCallback;
-- (void)flushDataBuffer;
 
 @property (nonatomic, copy, nullable) BertyDeviceConnectCallbackBlockType connectCallback;
 @property (nonatomic, copy, nullable) BertyDeviceServiceCallbackBlockType serviceCallback;

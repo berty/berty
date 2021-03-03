@@ -58,15 +58,6 @@ int BLESendToPeer(char *remotePID, void *payload, int length) {
         __block NSError *blockError = nil;
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
 
-        // check if it's the first send, meaning that libp2p proximity transporter is ready and handshake finished
-        @synchronized (bDevice.didHandshakeLock) {
-            if (bDevice.peripheral.state == CBPeripheralStateConnected && !bDevice.didHandshake) {
-                // flush received data before sending data
-                [bDevice flushDataBuffer];
-                bDevice.didHandshake = TRUE;
-            }
-        }
-
         [bDevice writeToCharacteristic:[NSMutableData dataWithData:cPayload] forCharacteristic:bDevice.writer withEOD:FALSE andBlock:^(NSError *error) {
             blockError = [error copy];
             dispatch_semaphore_signal(sema);

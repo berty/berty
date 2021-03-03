@@ -31,7 +31,7 @@ import (
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
-	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
+	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -40,6 +40,10 @@ import (
 	torcfg "berty.tech/go-libp2p-tor-transport/config"
 	ipfswebui "berty.tech/ipfs-webui-packed"
 )
+
+func (m *Manager) SetBleDriver(d proximity.NativeDriver) {
+	m.Node.Protocol.Ble.Driver = d
+}
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	m.SetupPresetFlags(fs)
@@ -53,7 +57,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
-	fs.BoolVar(&m.Node.Protocol.Ble, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
+	fs.BoolVar(&m.Node.Protocol.Ble.Enable, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
@@ -334,15 +338,21 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// Setup BLE
-	if m.Node.Protocol.Ble {
-		if ble.Supported {
-			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, ble.DefaultAddr)
-			p2popts = append(p2popts,
-				libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger))),
-			)
-		} else {
+	if m.Node.Protocol.Ble.Enable {
+		var bleOpt libp2p.Option
+
+		cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, ble.DefaultAddr)
+		switch {
+		// Java embedded driver (android)
+		case m.Node.Protocol.Ble.Driver != nil:
+			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Ble.Driver))
+		// Go embedded driver (ios)
+		case ble.Supported:
+			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
+		default:
 			m.initLogger.Warn("cannot enable BLE on an unsupported platform")
 		}
+		p2popts = append(p2popts, bleOpt)
 	}
 
 	// Setup MC

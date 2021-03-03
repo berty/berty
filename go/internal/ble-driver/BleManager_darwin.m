@@ -150,7 +150,7 @@ static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A
     if (self.cmEnable) {
         BertyDevice *bDevice = [self findPeripheral:peripheral];
         
-        if (bDevice != nil) {
+        if (bDevice != nil && bDevice.peripheral != nil) {
             os_log_debug(OS_LOG_BLE, "cancelPeripheralConnection: device %{public}@", [bDevice.peripheral.identifier UUIDString]);
             bDevice.peripheral.delegate = nil;
             if (bDevice.peripheral.state == CBPeripheralStateConnecting || bDevice.peripheral.state == CBPeripheralStateConnected) {
@@ -168,7 +168,9 @@ static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A
     if (self.cmEnable) {
         @synchronized (self.bDevices) {
             for (BertyDevice *bDevice in self.bDevices) {
-                [self.cManager cancelPeripheralConnection:bDevice.peripheral];
+                if (bDevice.peripheral != nil) {
+                    [self.cManager cancelPeripheralConnection:bDevice.peripheral];
+                }
             }
             [self.bDevices removeAllObjects];
         }
@@ -267,6 +269,7 @@ static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A
             // adding info given by CBCentralManager (scanning)
             [nDevice setPeripheral:peripheral central:self];
         } else {
+			// TODO: retest if bDevices is still null after @synchronized
             @synchronized (self.bDevices) {
                 nDevice = [[BertyDevice alloc]initWithPeripheral:peripheral central:self];
                 [self.bDevices addObject:nDevice];
@@ -374,9 +377,9 @@ static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didReceiveWriteRequests:(NSArray<CBATTRequest *> *)requests {
     os_log_debug(OS_LOG_BLE, "didReceiveWriteRequests() writer called for device %{public}@", [requests[0].central.identifier UUIDString]);
-    BOOL didHandshake;
 
     for (CBATTRequest *request in requests) {
+        os_log_debug(OS_LOG_BLE, "didReceiveWriteRequests(): payload: %{public}@", request.value);
         CBMutableCharacteristic *characteristic;
         // check if we hold a remote device of this type
         BertyDevice *remote = [self findPeripheralFromIdentifier:request.central.identifier];
@@ -392,29 +395,18 @@ static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A
 
         if ([request.characteristic.UUID isEqual:self.writerUUID]) {
             os_log_debug(OS_LOG_BLE, "didReceiveWriteRequests: writer characteristic selected");
-            // synchronised also for dataBuffer
-            @synchronized (remote.didHandshakeLock) {
-                didHandshake = remote.didHandshake;
-                if (!didHandshake) {
-                    os_log(OS_LOG_BLE, "didReceiveWriteRequests(): handshake not completed, adding data to cache: %{public}@", request.value);
-                        [remote.dataBuffer enqObject:[request.value copy]];
-                    [peripheral respondToRequest:[requests objectAtIndex:0] withResult:CBATTErrorSuccess];
-                    return ;
-                }
-            }
             characteristic = self.writerCharacteristic;
         }
         else if ([request.characteristic.UUID isEqual:self.peerUUID]) {
             os_log_debug(OS_LOG_BLE, "didReceiveWriteRequests: peerID characteristic selected");
-            @synchronized (remote.didHandshakeLock) {
-                didHandshake = remote.didHandshake;
-            }
-            if (didHandshake) {
+
+            if (remote.peerIDRecv) {
                 os_log_error(OS_LOG_BLE, "didReceiveWriteRequests: receive peerID for device already connected");
                 [self cancelPeripheralConnection:remote.peripheral];
                 [peripheral respondToRequest:[requests objectAtIndex:0] withResult:CBATTErrorWriteNotPermitted];
                 return ;
             }
+
             characteristic = self.peerIDCharacteristic;
         } else {
             os_log_error(OS_LOG_BLE, "didReceiveWriteRequests(): characteristic not found");

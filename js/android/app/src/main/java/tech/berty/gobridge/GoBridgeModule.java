@@ -17,6 +17,8 @@ import bertybridge.PromiseBlock;
 import bertybridge.Bertybridge;
 import bertybridge.Bridge;
 import bertybridge.Config;
+import tech.berty.android.MainApplication;
+import tech.berty.gobridge.bledriver.BleInterface;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
   private final static String TAG = "GoBridge";
@@ -112,6 +114,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
         }
       }
       config.setAndroidCacheDir(this.tempDir.getAbsolutePath());
+
+	  // set ble driver
+	  BleInterface bleDriver = new BleInterface(reactContext);
+	  config.setBleDriver(bleDriver);
 
       System.out.println("bflifecycle: calling Bertybridge.newBridge");
       this.bridgeMessenger = Bertybridge.newBridge(config);
