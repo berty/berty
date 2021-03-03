@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth vám umožňuje používat aplikaci Berty i v případě, že nemáte síťové připojení (wifi nebo data). Telefon tak můžete připojit přímo k nejbližším uživatelům",
-      "activate-button": "Zapnout Bluetooth"
+      "activate-button": "Zapnout Bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Zrušit",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Aktivovat propojení více uživatelů"
