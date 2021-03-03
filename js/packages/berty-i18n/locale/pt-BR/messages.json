@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "O Bluetooth permite que você use o aplicativo Berty quando você não está conectado (wifi ou dados) ao conectar seu telefone diretamente com pares próximos",
-      "activate-button": "Ativar bluetooth"
+      "activate-button": "Ativar bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Cancelar",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Ativar Conexão Multiponto"
