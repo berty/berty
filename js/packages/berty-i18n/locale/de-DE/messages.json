@@ -9,24 +9,24 @@
       "button": "Loslegen"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Voreinstellung auswählen",
+      "change-later": "Du hast die Wahl, es später zu ändern!",
       "performance": {
         "title": "Leistung",
         "desc": "Einfach zu bedienen - Alle Funktionen",
         "push-notif": "Push-Benachrichtigungen erhalten",
-        "offline-message": "",
+        "offline-message": "Offline-Nachrichten über Bluetooth",
         "add-contact": "Kontakte einfach hinzufügen",
         "fast-message": "Schnellste Nachrichtenlieferung"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Vollständige Anonymität",
+        "desc": "Für extrem vorsichtige Benutzer",
         "disable-push-notif": "Push Benachrichtigungen deaktiviert",
         "disable-local-peer-discovery": "Lokale Peer-Entdeckung deaktiviert",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
         "disable-contact-request": "Kontaktanfragen deaktiviert",
-        "on-same-network": ""
+        "on-same-network": "Lokal im gleichen Netzwerk/Wlan"
       }
     },
     "create-account": {
@@ -35,7 +35,7 @@
       "required": "Erforderlich",
       "placeholder": "Name",
       "button": "MEIN KONTO ERSTELLEN",
-      "import-account": ""
+      "import-account": "Ein Konto importieren"
     },
     "services-auth": {
       "header": "Authentifizieren bei Diensten",
@@ -93,34 +93,34 @@
       "top-button": "Neue Gruppe erstellen",
       "bottom-button": "Kontakt oder Gruppe scannen"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Klicke hier, um hinzuzufügen",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Netzwerkeinstellungen",
+        "desc": "Klicke hier, um die Netzwerk-Konfiguration zu beenden"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Benachrichtigungseinstellungen",
+        "desc": "Hier klicken für Push-Benachrichtigungskonfiguration"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "welcome-title": "Willkommen zu den Netzwerkoptionen",
+      "full-anon-mode": "Voller Anonmodus",
+      "simple-tor-compatible": "Einfache TOR Kompatibilität",
+      "allow-expert-mode": "Experten-Modus erlauben",
       "tor-compatible": {
-        "title": "",
-        "desc": ""
+        "title": "TOR Kompatibel",
+        "desc": "Mit dieser Konfiguration kannst du dich mit dem Tor-Netzwerk verbinden und mit Vollanon-Benutzern diskutieren, ohne selbst in einem extrem anonymen Modus zu sein."
       },
       "full-anon": {
-        "title": "",
+        "title": "Voller Anonmodus",
         "desc": "",
-        "no-ip": "",
-        "no-mc": "",
-        "tor-only": ""
+        "no-ip": "Keine IP",
+        "no-mc": "Kein mc",
+        "tor-only": "Nur Tor"
       },
-      "save": "",
+      "save": "SPEICHERN",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     }
   },
@@ -221,11 +221,11 @@
       "title": "Bluetooth",
       "desc": "Wenn Sie keine Netzwerkverbindung (WLAN/Funknetz) haben, kann Berty über Bluetooth mit Partnern in Ihrer näheren Umgebung kommunizieren",
       "activate-button": "Bluetooth aktivieren",
-      "permission-title": "",
-      "permission-description": "",
-      "tag-neutral": "",
+      "permission-title": "Berty Bluetooth Berechtigung",
+      "permission-description": "Autorisiere die Berty App um Bluetooth-Funktionen auf deinem Handy zu nutzen",
+      "tag-neutral": "Später nachfragen",
       "tag-negative": "Abbrechen",
-      "tag-positive": ""
+      "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Verbindung zu mehreren Partnern aktivieren"
@@ -303,8 +303,8 @@
       "system-info-button": "System-Info",
       "debug-button": "Debug",
       "log-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Log-Format",
+        "bullet-point": "App nach dem Ändern dieses Feldes neu starten"
       },
       "add-dev-conversations-button": "Entwickler-Unterhaltungen hinzufügen",
       "share-button": {
@@ -384,10 +384,10 @@
       "devices": "Geräte"
     },
     "welcome-configuration": {
-      "title": "",
-      "desc": "",
+      "title": "Willkommen an Bord!",
+      "desc": "Lassen Sie uns einen schnellen Überblick über die Einstellungen haben und beenden Sie Ihre erste Konfiguration!",
       "skip": "Überspringen",
-      "next": ""
+      "next": "Nächstes"
     }
   },
   "chat": {
@@ -479,10 +479,10 @@
       "image-saved": "Bild in der Galerie gespeichert"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
-      "links": "",
-      "documents": ""
+      "title": "Geteilte Medien",
+      "medias": "Medien",
+      "links": "Links",
+      "documents": "Dokumente"
     }
   },
   "error": {
@@ -538,10 +538,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "",
+            "name": "Name: {{name}}",
             "created": "Erstellt: {{created}}",
             "opened": "Geöffnet: {{opened}}",
-            "error": ""
+            "error": "Fehler: {{error}}"
           }
         }
       },
