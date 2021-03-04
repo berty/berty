@@ -272,6 +272,7 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 	manager.SetLogger(logger)
 	manager.SetNotificationManager(s.notifManager)
 	manager.SetBleDriver(s.bleDriver)
+	manager.SetNBDriver(s.nbDriver)
 
 	// setup `InitManager`
 	{
