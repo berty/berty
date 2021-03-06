@@ -9,20 +9,24 @@
       "button": "BEGYNN"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Ytelse",
         "desc": "Enkelt å bruke - Alle funksjoner",
         "push-notif": "Motta push-varsler",
-        "offline-message": "Teksting uten nett",
+        "offline-message": "",
         "add-contact": "Legg til kontakter enkelt",
         "fast-message": "Raskeste levering av meldinger"
       },
       "high-level": {
-        "title": "Høyeste nivå av personvern",
-        "desc": "For avanserte brukere - Mindre metadata",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Push-varsler deaktivert",
         "disable-local-peer-discovery": "Lokalt funn av likemenn deaktivert",
-        "disable-contact-request": "Kontaktforespørsler deaktivert"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Kontaktforespørsler deaktivert",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Et navn er den eneste påkrevde informasjonen",
       "required": "Obligatorisk",
       "placeholder": "Navn",
-      "button": "OPPRETT MIN KONTO"
+      "button": "OPPRETT MIN KONTO",
+      "import-account": ""
     },
     "services-auth": {
       "header": "Verifiser til tjenester",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Opprett en ny gruppe",
       "bottom-button": "Skann kontakt eller gruppe"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "HOPP OVER OG GJØR DETTE SENERE"
     }
   },
   "settings": {
@@ -262,6 +297,10 @@
       "header-right-button": "Restart daemon",
       "system-info-button": "System-info",
       "debug-button": "Feilsøk",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Legg til utviklersamtaler",
       "share-button": {
         "title": "Del ID på Discord",
@@ -338,6 +377,12 @@
       "fingerprint": "Fingeravtrykk",
       "info": "Infoer",
       "devices": "Enheter"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "HOPP OVER",
+      "next": ""
     }
   },
   "chat": {
@@ -446,6 +491,65 @@
       "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "",
+      "hide-button": "",
+      "title": "",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": "Avbryt"
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": "Avbryt"
+      }
     }
   }
 }

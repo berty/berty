@@ -6,7 +6,7 @@ import (
 	"math"
 	"time"
 
-	"berty.tech/berty/v2/tool/tyber/go/format"
+	"berty.tech/berty/tool/tyber/go/v2/format"
 	"github.com/gofrs/uuid"
 )
 

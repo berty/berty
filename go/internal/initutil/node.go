@@ -62,12 +62,10 @@ func (m *Manager) SetupProtocolAuth(fs *flag.FlagSet) {
 
 func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "", "gRPC API listeners")
-	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", "", "IPFS WebUI listener")
 }
 
 func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
-	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 }
 
 func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
@@ -77,7 +75,7 @@ func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
 		"better performance: current development defaults",
 	}, [2]string{
 		"-preset=" + AnonymityPreset,
-		"better privacy: -tor.mode=" + TorRequired + " -p2p.local-discovery=false -p2p.multipeer-connectivity=false",
+		"better privacy: -tor.mode=" + TorRequired + " -p2p.local-discovery=false -p2p.multipeer-connectivity=false -p2p.ble=false",
 	}, [2]string{
 		"-preset=" + VolatilePreset,
 		"similar to " + PerformancePreset + ` but optimize for a quick throwable node: -store.inmem=true -p2p.ipfs-api-listeners="" -p2p.swarm-listeners="" -p2p.webui-listener=""`,
@@ -120,7 +118,7 @@ func (m *Manager) applyPreset() error {
 		// Disable proximity communications
 		m.Node.Protocol.LocalDiscovery = false
 		m.Node.Protocol.MultipeerConnectivity = false
-		// FIXME: disable other BLE transports
+		m.Node.Protocol.Ble.Enable = false
 	case VolatilePreset:
 		m.Datastore.InMemory = true
 		m.Node.Protocol.SwarmListeners = ""
@@ -164,20 +162,6 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	_, _, err = m.getLocalIPFS()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
-	}
-
-	// construct http api endpoint
-	// ignore error to allow two berty instances in the same place
-	if m.Node.Protocol.IPFSAPIListeners != "" {
-		err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
-		if err != nil {
-			logger.Warn("IPFS API error", zap.Error(err))
-		}
-	}
-
-	// serve the embedded ipfs web UI
-	if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
-		m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(addr, logger)
 	}
 
 	odb, err := m.getOrbitDB()

@@ -51,7 +51,7 @@ static void InitializeFlipper(UIApplication *application) {
 
   // Background Fetch
   if (@available(iOS 13.0, *)) {
-    [LocalNotificationManager requestPermission];
+    // [LocalNotificationManager requestPermission];
     [[LifeCycle getSharedInstance] registerBackgroundTaskWithIdentifier:@"tech.berty.ios.task.gobridge-process"];
     [[LifeCycle getSharedInstance] registerBackgroundTaskWithIdentifier:@"tech.berty.ios.task.gobridge-refresh"];
   } else {

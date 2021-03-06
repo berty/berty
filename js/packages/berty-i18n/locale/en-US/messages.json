@@ -9,20 +9,24 @@
       "button": "GET STARTED"
     },
     "select-mode": {
+      "title": "Choose a preset",
+      "change-later": "You'll have choice to change it later!",
       "performance": {
         "title": "Performance",
         "desc": "Easy to use - All the features",
         "push-notif": "Receive push notifications",
-        "offline-message": "Offline messaging",
+        "offline-message": "Offline messaging with Bluetooth",
         "add-contact": "Add contacts easily",
         "fast-message": "Fastest message delivery"
       },
       "high-level": {
-        "title": "Highest level of privacy",
-        "desc": "For advanced users - Less metadatas",
+        "title": "Full Anonymity",
+        "desc": "For extremely cautious users",
         "disable-push-notif": "Push notifications disabled",
         "disable-local-peer-discovery": "Local peer discovery disabled",
-        "disable-contact-request": "Contact requests disabled"
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
+        "disable-contact-request": "Contact requests disabled",
+        "on-same-network": "Local on same network/wifi"
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "A name is the only information required",
       "required": "Required",
       "placeholder": "Name",
-      "button": "CREATE MY ACCOUNT"
+      "button": "CREATE MY ACCOUNT",
+      "import-account": "IMPORT AN ACCOUNT"
     },
     "services-auth": {
       "header": "Authenticate to services",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Create new group",
       "bottom-button": "Scan contact or group"
+    },
+    "suggestion-display-name-initial": "Click here to add",
+    "configurations": {
+      "network": {
+        "display-name": "Network Configuration",
+        "desc": "Click here to finish network config"
+      },
+      "notification": {
+        "display-name": "Notification Configuration",
+        "desc": "Click here for push-notification config"
+      }
+    },
+    "network-options": {
+      "welcome-title": "Welcome on the Networks Options",
+      "full-anon-mode": "Full Anon Mode",
+      "simple-tor-compatible": "Simple TOR Compatible",
+      "allow-expert-mode": "Allow Expert Mode",
+      "tor-compatible": {
+        "title": "TOR Compatible",
+        "desc": "This configuration will allow you to connect with Tor network and discuss with Full Anon users without being yourself in a extreme anonymous mode."
+      },
+      "full-anon": {
+        "title": "Full Anon Mode",
+        "desc": "This configuration is based on radical presets providing an extremely cautions networks parameters:",
+        "no-ip": "No ip",
+        "no-mc": "No mc",
+        "tor-only": "Tor only"
+      },
+      "save": "SAVE",
+      "skip": "SKIP AND DO THIS LATER"
     }
   },
   "settings": {
@@ -185,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth allows you top use the Berty app when you don't have a network connection (wifi or data) by connecting your phone directly with peers nearby",
-      "activate-button": "Activate bluetooth"
+      "activate-button": "Activate bluetooth",
+	  "permission-title": "Berty Bluetooth permission",
+	  "permission-description": "Authorize the Berty app to use Bluetooth capabilities on your phone",
+	  "tag-neutral": "Ask me later",
+	  "tag-negative": "Cancel",
+	  "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Activate Multipeer Connectivity"
@@ -262,6 +302,10 @@
       "header-right-button": "Restart daemon",
       "system-info-button": "System info",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "Log format",
+        "bullet-point": "Restart app after changing this field"
+      },
       "add-dev-conversations-button": "Add dev conversations",
       "share-button": {
         "title": "Share ID on discord",
@@ -338,6 +382,12 @@
       "fingerprint": "Fingerprint",
       "info": "Infos",
       "devices": "Devices"
+    },
+    "welcome-configuration": {
+      "title": "Welcome on board!",
+      "desc": "Let's have a quick overview of Settings and finish your first configuration!",
+      "skip": "SKIP",
+      "next": "NEXT"
     }
   },
   "chat": {
@@ -427,6 +477,12 @@
       "forward-berty": "Forward to Berty contact",
       "forward": "Forward",
       "image-saved": "Image saved in Gallery"
+    },
+    "shared-medias": {
+      "title": "Shared medias",
+      "medias": "Medias",
+      "links": "Links",
+      "documents": "Documents"
     }
   },
   "error": {
@@ -482,10 +538,10 @@
         },
         "infos": {
           "aligned": {
-            "name":       "Name:    {{name}}",
-            "created":    "Created: {{created}}",
-            "opened":     "Opened:  {{opened}}",
-            "error":      "Error:   {{error}}"
+            "name": "Name: {{name}}",
+            "created": "Created: {{created}}",
+            "opened": "Opened:  {{opened}}",
+            "error": "Error: {{error}}"
           }
         }
       },

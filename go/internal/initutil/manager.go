@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"strings"
 	"sync"
 	"text/tabwriter"
@@ -26,6 +27,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -63,13 +65,16 @@ type Manager struct {
 	Node struct {
 		Preset   string `json:"preset"`
 		Protocol struct {
-			SwarmListeners        string        `json:"SwarmListeners,omitempty"`
-			IPFSAPIListeners      string        `json:"IPFSAPIListeners,omitempty"`
-			IPFSWebUIListener     string        `json:"IPFSWebUIListener,omitempty"`
-			Announce              string        `json:"Announce,omitempty"`
-			NoAnnounce            string        `json:"NoAnnounce,omitempty"`
-			LocalDiscovery        bool          `json:"LocalDiscovery,omitempty"`
-			Ble                   bool          `json:"Ble,omitempty"`
+			SwarmListeners    string `json:"SwarmListeners,omitempty"`
+			IPFSAPIListeners  string `json:"IPFSAPIListeners,omitempty"`
+			IPFSWebUIListener string `json:"IPFSWebUIListener,omitempty"`
+			Announce          string `json:"Announce,omitempty"`
+			NoAnnounce        string `json:"NoAnnounce,omitempty"`
+			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
+			Ble               struct {
+				Enable bool                   `json:"Enable,omitempty"`
+				Driver proximity.NativeDriver `json:"Driver,omitempty"`
+			}
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`
@@ -86,16 +91,18 @@ type Manager struct {
 			RelayHack bool `json:"RelayHack,omitempty"`
 
 			// internal
-			needAuth         bool
-			ipfsNode         *core.IpfsNode
-			ipfsAPI          ipfsutil.ExtendedCoreAPI
-			pubsub           *pubsub.PubSub
-			discovery        tinder.Driver
-			server           bertyprotocol.Service
-			client           protocoltypes.ProtocolServiceClient
-			requiredByClient bool
-			ipfsWebUICleanup func()
-			orbitDB          *bertyprotocol.BertyOrbitDB
+			needAuth          bool
+			ipfsNode          *core.IpfsNode
+			ipfsAPI           ipfsutil.ExtendedCoreAPI
+			pubsub            *pubsub.PubSub
+			discovery         tinder.Driver
+			server            bertyprotocol.Service
+			ipfsAPIListeners  []net.Listener
+			ipfsWebUIListener net.Listener
+			client            protocoltypes.ProtocolServiceClient
+			requiredByClient  bool
+			ipfsWebUICleanup  func()
+			orbitDB           *bertyprotocol.BertyOrbitDB
 		}
 		Messenger struct {
 			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`
@@ -211,7 +218,7 @@ func (m *Manager) RunWorkers() error {
 	m.workers.Add(func() error {
 		<-m.getContext().Done()
 		return m.getContext().Err()
-	}, func(error) {
+	}, func(err error) {
 		m.ctxCancel()
 	})
 	return m.workers.Run()
@@ -225,6 +232,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 		prog = progress.New()
 		defer prog.Close()
 	}
+
 	prog.AddStep("cancel-context")
 	prog.AddStep("close-client-conn")
 	prog.AddStep("stop-buf-server")
@@ -234,7 +242,6 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("close-messenger-protocol-client")
 	prog.AddStep("cleanup-messenger-db")
 	prog.AddStep("close-protocol-server")
-	prog.AddStep("cleanup-ipfs-webui")
 	prog.AddStep("close-ipfs-node")
 	prog.AddStep("close-datastore")
 	prog.AddStep("cleanup-logging")
@@ -282,11 +289,6 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("close-protocol-server").SetAsCurrent()
 	if m.Node.Protocol.server != nil {
 		m.Node.Protocol.server.Close()
-	}
-
-	prog.Get("cleanup-ipfs-webui").SetAsCurrent()
-	if m.Node.Protocol.ipfsWebUICleanup != nil {
-		m.Node.Protocol.ipfsWebUICleanup()
 	}
 
 	prog.Get("close-ipfs-node").SetAsCurrent()

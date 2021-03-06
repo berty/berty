@@ -219,6 +219,11 @@ export const Navigation: React.FC = () => {
 				component={Components.Main.Scan}
 				options={ModalScreenOptions}
 			/>
+			<NavigationStack.Screen
+				name={Routes.Main.NetworkOptions}
+				component={Components.Main.NetworkOptions}
+				options={ModalScreenOptions}
+			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
 			<NavigationStack.Screen
@@ -240,6 +245,10 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Chat.ReplicateGroupSettings}
 				component={Components.Chat.ReplicateGroupSettings}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.SharedMedias}
+				component={Components.Chat.SharedMedias}
 			/>
 			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
@@ -319,6 +328,10 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}
 				component={Components.Onboarding.GetStarted}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.ChoosePreset}
+				component={Components.Onboarding.ChoosePreset}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.CreateAccount}

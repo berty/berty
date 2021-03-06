@@ -89,7 +89,7 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 			<ButtonSetting
 				name={t('chat.one-to-one-settings.media-button')}
 				icon='image-outline'
-				disabled
+				onPress={() => navigation.navigate.chat.sharedMedias({ convPk: publicKey })}
 			/>
 			<ButtonSetting
 				name={t('chat.one-to-one-settings.notifications-button')}

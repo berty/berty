@@ -16,6 +16,7 @@ import {
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
+import { WelcomeConfiguration } from '@berty-tech/components/modals'
 
 import { useLayout } from '../../hooks'
 import { SwipeNavRecognizer } from '../../shared-components/SwipeNavRecognizer'
@@ -28,6 +29,7 @@ import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -55,6 +57,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		displayName: '',
 		isVisible: false,
 	})
+
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
 	const { navigate } = useNativeNavigation()
@@ -77,7 +80,11 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const suggestions = Object.values(ctx.persistentOptions?.suggestions).filter(
 		(i: any) => i.state === 'unread',
 	)
+	const configurations = Object.values(ctx.persistentOptions?.configurations).filter(
+		(i: any) => i.state === 'unread',
+	)
 	const hasSuggestion: number = suggestions.length
+	const hasConfigurations: number = configurations.length
 
 	const searchConversations = React.useMemo(
 		() =>
@@ -180,10 +187,11 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 													<Conversations
 														items={conversations}
 														suggestions={suggestions}
+														configurations={configurations}
 														onLayout={onLayoutConvs}
 														addBot={setIsAddBot}
 													/>
-													{!isConversation && !hasSuggestion && (
+													{!isConversation && !hasSuggestion && !hasConfigurations && (
 														<View style={[background.white]}>
 															<View
 																style={[
@@ -253,6 +261,17 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 												link={isAddBot.link}
 												displayName={isAddBot.displayName}
 												closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
+											/>
+										)}
+
+										{ctx.persistentOptions.welcomeModal.enable && (
+											<WelcomeConfiguration
+												closeModal={async () => {
+													await ctx.setPersistentOption({
+														type: PersistentOptionsKeys.WelcomeModal,
+														payload: { enable: false },
+													})
+												}}
 											/>
 										)}
 										{isLongPress && (

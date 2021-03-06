@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ScrollView, Vibration, View } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
@@ -24,9 +24,7 @@ import { PersistentOptionsKeys } from '@berty-tech/store/context'
 //
 
 // Types
-type BodyModeProps = {
-	isMode: boolean
-}
+type BodyModeProps = {}
 
 // Styles
 const useStylesMode = () => {
@@ -37,7 +35,7 @@ const useStylesMode = () => {
 	}
 }
 
-const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
+const BodyMode: React.FC<BodyModeProps> = () => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text, column }, { scaleSize }] = useStyles()
 	const navigation = useReactNavigation()
@@ -48,6 +46,8 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	)
 
 	const ctx = useMsgrContext()
+
+	const isPrefMode = ctx.persistentOptions.preset.value === 'performance'
 	const enableNotif = ctx.persistentOptions.notifications.enable
 
 	const items: any = Object.entries(languages).map(([key, attrs]) => ({
@@ -100,12 +100,12 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						iconColor={color.blue}
 						actionIcon='arrow-ios-forward'
 						state={{
-							value: isMode
+							value: isPrefMode
 								? t('settings.mode.app-mode-button.performance-tag')
 								: t('settings.mode.app-mode-button.privacy-tag'),
 							color: color.white,
-							bgColor: isMode ? color.blue : color.red,
-							stateIcon: isMode ? 'flash-outline' : 'lock-outline',
+							bgColor: isPrefMode ? color.blue : color.red,
+							stateIcon: isPrefMode ? 'flash-outline' : 'lock-outline',
 							stateIconColor: color.white,
 						}}
 						disabled
@@ -114,7 +114,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 							style={[
 								column.item.right,
 								_styles.buttonListUnderStateText,
-								isMode ? text.color.blue : text.color.red,
+								isPrefMode ? text.color.blue : text.color.red,
 								margin.bottom.small,
 							]}
 						>
@@ -124,8 +124,8 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 							<ButtonSettingItem
 								value={t('settings.mode.app-mode-button.first-bullet-point')}
 								// color='rgba(43,46,77,0.8)'
-								icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
-								iconColor={isMode ? color.blue : color.red}
+								icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
+								iconColor={isPrefMode ? color.blue : color.red}
 								disabled
 								styleText={[text.color.grey]}
 								styleContainer={[margin.bottom.tiny]}
@@ -133,8 +133,8 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 							<ButtonSettingItem
 								value={t('settings.mode.app-mode-button.second-bullet-point')}
 								color='rgba(43,46,77,0.8)'
-								icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
-								iconColor={isMode ? color.blue : color.red}
+								icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
+								iconColor={isPrefMode ? color.blue : color.red}
 								disabled
 								styleText={[text.color.grey]}
 								styleContainer={[margin.bottom.tiny]}
@@ -142,8 +142,8 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 							<ButtonSettingItem
 								value={t('settings.mode.app-mode-button.third-bullet-point')}
 								color='rgba(43,46,77,0.8)'
-								icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
-								iconColor={isMode ? color.blue : color.red}
+								icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
+								iconColor={isPrefMode ? color.blue : color.red}
 								disabled
 								styleText={[text.color.grey]}
 								styleContainer={[margin.bottom.tiny]}
@@ -251,7 +251,6 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 }
 
 export const Mode: React.FC<{}> = () => {
-	const [isMode] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ flex, background, padding }] = useStyles()
 	return (
@@ -265,7 +264,7 @@ export const Mode: React.FC<{}> = () => {
 								desc={t('settings.mode.desc')}
 								undo={goBack}
 							/>
-							<BodyMode isMode={isMode} />
+							<BodyMode />
 						</ScrollView>
 					</SwipeNavRecognizer>
 				</Layout>

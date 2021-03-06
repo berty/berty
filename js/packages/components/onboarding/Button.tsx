@@ -17,8 +17,8 @@ const Button: React.FC<{
 				margin.top.medium,
 				padding.medium,
 				border.radius.small,
-				style,
 				{ backgroundColor: '#CED2FF' },
+				style,
 			]}
 			onPress={onPress}
 		>

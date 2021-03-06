@@ -14,6 +14,8 @@ import {
 import beapi from '@berty-tech/api'
 import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
+import OrangeBotAvatar from '@berty-tech/assets/berty_bot_orange_bg.png'
+import BlueDevAvatar from '@berty-tech/assets/berty_dev_blue_bg.png'
 
 import AttachmentImage from './AttachmentImage'
 import GroupAvatar from './main/Avatar_Group_Copy_19.png'
@@ -112,6 +114,9 @@ export const GenericAvatar: React.FC<{
 const hardcodedAvatars = {
 	berty_dev_green_bg: GreenDevAvatar,
 	berty_bot_pink_bg: PinkBotAvatar,
+	berty_dev_blue_bg: BlueDevAvatar,
+	berty_bot_orange_bg: OrangeBotAvatar,
+
 	group: GroupAvatar,
 }
 

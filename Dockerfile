@@ -4,7 +4,7 @@ ARG             VCS_REF
 ARG             VERSION
 
 # build
-FROM            golang:1.15.8-alpine as builder
+FROM            golang:1.16.0-alpine as builder
 RUN             apk add --no-cache git gcc musl-dev make
 ENV             GO111MODULE=on
 WORKDIR         /go/src/berty.tech/berty
@@ -16,7 +16,7 @@ WORKDIR         /go/src/berty.tech/berty/go
 RUN             make go.install
 
 # minimalist runtime
-FROM            alpine:3.13.1
+FROM            alpine:3.13.2
 RUN             apk add --no-cache ncurses
 LABEL           org.label-schema.build-date=$BUILD_DATE \
                 org.label-schema.name="berty" \

@@ -9,20 +9,24 @@
       "button": "COMMENCER"
     },
     "select-mode": {
+      "title": "",
+      "change-later": "",
       "performance": {
         "title": "Performance",
         "desc": "Utilisation simple - Toutes les options",
         "push-notif": "Recevoir les notifications push",
-        "offline-message": "Messagerie hors-ligne",
+        "offline-message": "",
         "add-contact": "Ajout facile de contacts",
         "fast-message": "Messagerie instantanée"
       },
       "high-level": {
-        "title": "Plus haut niveau de confidentialité",
-        "desc": "Moins de metadonnées",
+        "title": "",
+        "desc": "",
         "disable-push-notif": "Notifications push désactivées",
         "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
-        "disable-contact-request": "Demande d'ami désactivée"
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "Demande d'ami désactivée",
+        "on-same-network": ""
       }
     },
     "create-account": {
@@ -30,7 +34,8 @@
       "desc": "Seul le nom est requis",
       "required": "Requis",
       "placeholder": "Nom",
-      "button": "CRÉER MON COMPTE"
+      "button": "CRÉER MON COMPTE",
+      "import-account": ""
     },
     "services-auth": {
       "header": "S'authentifier aux services",
@@ -87,6 +92,36 @@
     "home-modal": {
       "top-button": "Créer un nouveau groupe",
       "bottom-button": "Scanner le contact ou le groupe"
+    },
+    "suggestion-display-name-initial": "",
+    "configurations": {
+      "network": {
+        "display-name": "",
+        "desc": ""
+      },
+      "notification": {
+        "display-name": "",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     }
   },
   "settings": {
@@ -185,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Le Bluetooth vous permet d'utiliser l'application Berty lorsque vous n'avez pas de connexion réseau (wifi ou données) en connectant votre téléphone directement avec les pairs à proximité",
-      "activate-button": "Activer le bluetooth"
+      "activate-button": "Activer le bluetooth",
+	  "permission-title": "Permission pour le Bluetooth",
+	  "permission-description": "Autoriser l'app Berty à utiliser le Bluetooth de votre téléphone",
+	  "tag-neutral": "Plus tard",
+	  "tag-negative": "Annuler",
+	  "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Activer la connectivité multi-pair"
@@ -262,6 +302,10 @@
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
       "debug-button": "Debug",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Ajouter conversations de dev",
       "share-button": {
         "title": "Partager l'ID sur Discord",
@@ -338,6 +382,12 @@
       "fingerprint": "Empreinte digitale",
       "info": "Infos",
       "devices": "Appareils"
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "PASSER",
+      "next": ""
     }
   },
   "chat": {
@@ -446,6 +496,65 @@
       "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "",
+      "hide-button": "",
+      "title": "",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": "Annuler"
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": "Annuler"
+      }
     }
   }
 }

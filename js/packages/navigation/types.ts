@@ -29,6 +29,7 @@ export namespace ScreenProps {
 		export type MultiMemberSettings = RouteProps<{ convId: string }>
 		export type ReplicateGroupSettings = RouteProps<{ convId: string }>
 		export type MultiMemberQR = RouteProps<{ convId: string }>
+		export type SharedMedias = RouteProps<{}>
 	}
 	export namespace Settings {
 		export type Home = RouteProps<void>
@@ -60,6 +61,7 @@ export namespace ScreenProps {
 export namespace Routes {
 	export enum Onboarding {
 		GetStarted = 'Onboarding.GetStarted',
+		ChoosePreset = 'Onboarding.ChoosePreset',
 		SelectMode = 'Onboarding.SelectMode',
 		Performance = 'Onboarding.Performance',
 		Privacy = 'Onboarding.Privacy',
@@ -71,6 +73,7 @@ export namespace Routes {
 		Home = 'Main.Home',
 		ContactRequest = 'Main.ContactRequest',
 		Scan = 'Main.Scan',
+		NetworkOptions = 'Main.NetworkOptions',
 	}
 	export enum CreateGroup {
 		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',
@@ -84,6 +87,7 @@ export namespace Routes {
 		MultiMemberSettings = 'Group.MultiMemberSettings',
 		MultiMemberQR = 'Chat.MultiMemberQR',
 		ReplicateGroupSettings = 'Chat.ReplicateGroupSettings',
+		SharedMedias = 'Chat.SharedMedias',
 	}
 	export enum Settings {
 		Home = 'Settings.Home',

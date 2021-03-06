@@ -8,7 +8,7 @@ var _ net.Addr = &Addr{}
 // Addr represents a network end point address.
 type Addr struct {
 	Address   string
-	transport *ProximityTransport
+	transport *proximityTransport
 }
 
 // Network returns the address's network name.

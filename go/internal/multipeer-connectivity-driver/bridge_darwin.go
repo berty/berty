@@ -15,7 +15,7 @@ import (
 
 	"go.uber.org/zap"
 
-	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
+	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 )
 
 const Supported = true
@@ -48,7 +48,7 @@ func HandleFoundPeer(remotePID *C.char) int {
 	if !ok {
 		return 0
 	}
-	if t.(*proximity.ProximityTransport).HandleFoundPeer(goPID) {
+	if t.(proximity.ProximityTransport).HandleFoundPeer(goPID) {
 		return 1
 	}
 	return 0
@@ -62,7 +62,7 @@ func HandleLostPeer(remotePID *C.char) {
 	if !ok {
 		return
 	}
-	t.(*proximity.ProximityTransport).HandleLostPeer(goPID)
+	t.(proximity.ProximityTransport).HandleLostPeer(goPID)
 }
 
 //export ReceiveFromPeer
@@ -74,7 +74,7 @@ func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
 	if !ok {
 		return
 	}
-	t.(*proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
+	t.(proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
 }
 
 func (d *Driver) Start(localPID string) {

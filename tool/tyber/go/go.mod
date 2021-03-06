@@ -1,4 +1,4 @@
-module berty.tech/berty/v2/tool/tyber/go
+module berty.tech/berty/tool/tyber/go/v2
 
 go 1.13
 

@@ -46,8 +46,6 @@ type responderTestFunc func(
 )
 
 func newMockedPeer(t *testing.T, ctx context.Context, ipfsOpts *ipfsutil.TestingAPIOpts) (*mockedPeer, func()) {
-	t.Helper()
-
 	accountID, _, err := p2pcrypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err, "can't create new identity")
 

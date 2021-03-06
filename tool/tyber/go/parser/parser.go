@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/v2/tool/tyber/go/format"
-	"berty.tech/berty/v2/tool/tyber/go/logger"
+	"berty.tech/berty/tool/tyber/go/v2/format"
+	"berty.tech/berty/tool/tyber/go/v2/logger"
 	"github.com/pkg/errors"
 	orderedmap "github.com/wk8/go-ordered-map"
 )
