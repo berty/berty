@@ -15,11 +15,11 @@ import (
 
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
-	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	// libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
-	"go.uber.org/zap"
+	// "go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/internal/tracer"
@@ -81,7 +81,7 @@ func TestScenario_MessageMultiMemberGroup(t *testing.T) {
 }
 
 func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
-	const ngroup = 5
+	const ngroup = 1
 
 	cases := []testCase{
 		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Stable, time.Second * 10 * ngroup},
@@ -96,27 +96,25 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
+		for i := 0; i < ngroup; i++ {
+			// var groupContext context.Context;
+			// var groupCancel context.CancelFunc;
 
-		var groupContext context.Context
-		var groupCancel context.CancelFunc
+			// var deadline time.Time;
 
-		var deadline time.Time
+			// deadline, _ = ctx.Deadline();
 
-		deadline, _ = ctx.Deadline()
-
-		groupContext, groupCancel = context.WithTimeout(ctx, time.Until(deadline))
-
-		defer groupCancel()
-
-		for i := 0; i < 3; i++ {
+			// groupContext, groupCancel = context.WithTimeout(context.Background(), time.Until(deadline))
+			// defer groupCancel();
+		//
 			t.Logf("===== MultiMember Group #%d =====", i+1)
 
 			// Create MultiMember Group
-			groupID := createMultiMemberGroup(groupContext, t, tps...)
+			groupID := createMultiMemberGroup(ctx, t, tps...)
 
 			// Each member sends 3 messages on MultiMember Group
 			messages := []string{"test1", "test2", "test3"}
-			sendMessageOnGroup(groupContext, t, tps, tps, groupID, messages)
+			sendMessageOnGroup(ctx, t, tps, tps, groupID, messages)
 		}
 	})
 }
@@ -429,16 +427,16 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			logger, cleanup := testutil.Logger(t)
-			defer cleanup()
+			logger, _ := testutil.Logger(t)
+			// defer loggerCleanup()
 
 			opts := TestingOpts{
-				Mocknet: libp2p_mocknet.New(ctx),
+				// Mocknet: libp2p_mocknet.New(ctx),
 				Logger:  logger,
 			}
 
-			tps, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, tc.NumberOfClient)
-			defer cleanup()
+			tps, _ := NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, tc.NumberOfClient)
+			// defer cleanup()
 
 			// connect all tps together
 			tc.ConnectFunc(t, opts.Mocknet)
@@ -544,7 +542,6 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 		start := time.Now()
 
 		wg := sync.WaitGroup{}
-		// incrementLock := sync.Mutex{}
 
 		secretsReceived := make([]map[string]struct{}, ntps)
 		wg.Add(ntps)
@@ -559,11 +556,9 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 				var peerCancel context.CancelFunc
 
 				var deadline time.Time
-
 				deadline, _ = ctx.Deadline()
 
-				peerContext, peerCancel = context.WithTimeout(ctx, time.Until(deadline))
-
+				peerContext, peerCancel = context.WithTimeout(context.Background(), time.Until(deadline))
 				defer peerCancel()
 
 				secretsReceived[i] = map[string]struct{}{}
@@ -584,19 +579,18 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 
 					if inErr != nil {
 						if inErr != io.EOF {
-							assert.NoError(t, inErr, fmt.Sprintf("error for client %d", i))
+							assert.NoError(t, inErr, fmt.Sprintf("Receive error for client %d", i))
 						}
-						break
+						break;
 					}
 
 					if source, err := isEventAddSecretTargetedToMember(memberPKs[i], evt); err != nil {
-						tps[i].Opts.Logger.Error("err:", zap.Error(inErr))
+						// tps[i].Opts.Logger.Error("err:", zap.Error(inErr))
 						assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
 						break
 					} else if source != nil {
 						secretsReceived[i][string(source)] = struct{}{}
 						done := len(secretsReceived[i]) == ntps
-						// nSuccess = nSuccess + 1
 
 						if done {
 							break;
