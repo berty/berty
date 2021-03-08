@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth ви позволява да използвате приложението Berty най-добре, когато нямате мрежова връзка (wifi или данни), като свързвате телефона си директно с peers наблизо",
-      "activate-button": "Активирай bluetooth"
+      "activate-button": "Активирай bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Отказ",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Активирай Multipeer Connectivity"
@@ -472,6 +477,12 @@
       "forward-berty": "Препрати до Berty контакт",
       "forward": "Препрати",
       "image-saved": "Изображението е запазено в галерията"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
