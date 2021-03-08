@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth pozwala na korzystanie z aplikacji Berty, gdy nie masz połączenia sieciowego (wifi lub danych) poprzez bezpośrednie połączenie telefonu z peerami w pobliżu",
-      "activate-button": "Aktywuj bluetooth"
+      "activate-button": "Aktywuj bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Anuluj",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Aktywuj połączenia z wieloma peerami"
@@ -472,6 +477,12 @@
       "forward-berty": "Przekaż do kontaktu Berty",
       "forward": "Przekaż",
       "image-saved": "Obraz zapisany w galerii"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
