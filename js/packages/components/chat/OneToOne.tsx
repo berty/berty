@@ -38,7 +38,6 @@ import BlurView from '../shared-components/BlurView'
 import { ContactAvatar } from '../avatars'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
-import { playSound } from '../sounds'
 import { ChatDate, ChatFooter } from './common'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
@@ -165,6 +164,7 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	const [{ row, flex, text, margin, color }] = useStyles()
 	const [acceptDisabled, setAcceptDisabled] = useState<boolean>(false)
 
+	const ctx = useMsgrContext()
 	const client = useClient()
 	const decline: any = () => {}
 
@@ -223,7 +223,7 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 								client
 									.contactAccept({ publicKey })
 									.then(() => {
-										playSound('contactRequestAccepted')
+										ctx.playSound('contactRequestAccepted')
 									})
 									.catch((err: any) => console.warn('Failed to accept contact request:', err))
 							}

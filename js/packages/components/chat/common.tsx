@@ -8,7 +8,6 @@ import { useMsgrContext } from '@berty-tech/store/hooks'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
-import { playSound } from '../sounds'
 import BlurView from '../shared-components/BlurView'
 
 const {
@@ -68,13 +67,13 @@ export const ChatFooter: React.FC<{
 				.then(() => {
 					setMessage('')
 					setMediaCids([])
-					playSound('messageSent')
+					ctx.playSound('messageSent')
 				})
 				.catch((e) => {
 					console.warn('e sending message:', e)
 				})
 		},
-		[buf, convPk, ctx.client],
+		[buf, convPk, ctx],
 	)
 
 	// TODO: Debug, error on restarting node
@@ -101,7 +100,7 @@ export const ChatFooter: React.FC<{
 	return (
 		<BlurView blurType='light' blurAmount={30}>
 			<SafeAreaView>
-				{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
+				{showAddFileMenu ? <AddFileMenu onClose={handleCloseFileMenu} /> : null}
 				<View
 					style={[
 						row.right,

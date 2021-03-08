@@ -10,7 +10,7 @@ import { NotificationsInhibitor } from '@berty-tech/store/context'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
-import { playSound, SoundKey } from './sounds'
+import { SoundKey } from '@berty-tech/store/sounds'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }
@@ -89,9 +89,9 @@ const GatedNotificationBody: React.FC<any> = (props) => {
 		const sound: SoundKey | undefined = notifsSounds[notifType]
 		if (justOpened && sound && (!inhibit || inhibit === 'sound-only')) {
 			Vibration.vibrate(400)
-			playSound(sound)
+			ctx.playSound(sound)
 		}
-	}, [notifType, justOpened, inhibit])
+	}, [ctx, notifType, justOpened, inhibit])
 
 	if (!isValid || inhibit) {
 		if (props.isOpen) {

@@ -12,8 +12,8 @@ import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { playSound } from '../sounds'
 import { ContactAvatar } from '../avatars'
+import { useMsgrContext } from '@berty-tech/store/context'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
@@ -230,6 +230,7 @@ export const CreateGroupFinalize: React.FC<{
 	)
 	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, background, padding }] = useStyles()
+	const ctx = useMsgrContext()
 
 	React.useEffect(() => {
 		// TODO: better handle error
@@ -277,7 +278,7 @@ export const CreateGroupFinalize: React.FC<{
 				title='CREATE A GROUP'
 				action={() => {
 					createGroup()
-					playSound('groupCreated')
+					ctx.playSound('groupCreated')
 				}}
 			/>
 		</Layout>

@@ -21,7 +21,6 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { Player } from '@react-native-community/audio-toolkit'
-import { playSound } from '../sounds'
 import { MessengerActions, PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import Long from 'long'
@@ -280,6 +279,7 @@ const DumpMembers: React.FC = () => {
 
 const PlaySound: React.FC = () => {
 	const [{ color }] = useStyles()
+	const { playSound } = useMsgrContext()
 	return (
 		<>
 			<ButtonSetting

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import MsgrContext, { initialState } from './context'
+import MsgrContext, { initialState, PersistentOptionsKeys } from './context'
 import { EventEmitter } from 'events'
 import {
 	initialLaunch,
@@ -21,6 +21,7 @@ import {
 	restart,
 } from './providerCallbacks'
 import { reducer } from './providerReducer'
+import { playSound, SoundKey } from './sounds'
 
 export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
 	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
@@ -125,6 +126,16 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 
 	const callbackSetDebugMode = useCallback((value: boolean) => setDebugMode(value), [])
 
+	const callbackPlaySound = useCallback(
+		(sound: SoundKey) => {
+			if (state.persistentOptions[PersistentOptionsKeys.Notifications].enable) {
+				playSound(sound)
+			}
+			return
+		},
+		[state.persistentOptions],
+	)
+
 	return (
 		<MsgrContext.Provider
 			value={{
@@ -140,6 +151,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				deleteAccount: callbackDeleteAccount,
 				restart: callbackRestart,
 				debugMode: debugMode,
+				playSound: callbackPlaySound,
 				setDebugMode: callbackSetDebugMode,
 			}}
 		>
