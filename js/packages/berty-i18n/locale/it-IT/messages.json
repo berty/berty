@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Il Bluetooth consente di utilizzare Berty quando non si dispone di una connessione di rete (wifi o dati) collegando il telefono direttamente con gli utenti nelle vicinanze",
-      "activate-button": "Attiva bluetooth"
+      "activate-button": "Attiva bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Annulla",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Attiva Multipeer Connectivity"
@@ -472,6 +477,12 @@
       "forward-berty": "Inoltra a contatto Berty",
       "forward": "Inoltra",
       "image-saved": "Immagine salvata in Galleria"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
