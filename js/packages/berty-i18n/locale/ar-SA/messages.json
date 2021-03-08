@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "البلوتوث",
       "desc": "يسمح لك البلوتوث بأعلى استخدام تطبيق Berty عندما لا يكون لديك اتصال بالشبكة (Wifi أو البيانات) عن طريق توصيل هاتفك مباشرة مع أقران قريبين",
-      "activate-button": "تفعيل البلوتوث"
+      "activate-button": "تفعيل البلوتوث",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "تنشيط الاتصال المتعدد الأقران"
@@ -472,6 +477,12 @@
       "forward-berty": "ارسال إلى جهة اتصال برتي",
       "forward": "ارسال",
       "image-saved": ""
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
