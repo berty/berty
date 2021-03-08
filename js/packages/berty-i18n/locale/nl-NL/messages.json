@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth staat je toe om de Berty app te gebruiken als je geen netwerkverbinding (wifi of data) hebt door je telefoon direct te verbinden met peers in de buurt",
-      "activate-button": "Bluetooth activeren"
+      "activate-button": "Bluetooth activeren",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Annuleren",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Multipeer verbindingen activeren"
@@ -472,6 +477,12 @@
       "forward-berty": "Doorsturen naar Berty contact",
       "forward": "Doorsturen",
       "image-saved": "Afbeelding opgeslagen in Galerij"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
