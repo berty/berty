@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": ""
+      "activate-button": "",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": ""
@@ -472,6 +477,12 @@
       "forward-berty": "",
       "forward": "",
       "image-saved": ""
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
