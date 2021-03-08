@@ -205,3 +205,30 @@ func (contact *Contact) MarshalJSON() ([]byte, error) {
 		State: contact.GetState().String(),
 	})
 }
+
+type IndexableAppMessage interface {
+	proto.Message
+	TextRepresentation() (string, error)
+}
+
+func (am *AppMessage) TextRepresentation() (string, error) {
+	rawPayload, err := am.UnmarshalPayload()
+	if err != nil {
+		return "", errcode.ErrDeserialization.Wrap(err)
+	}
+
+	indexedMessage, ok := rawPayload.(IndexableAppMessage)
+	if !ok {
+		return "", nil
+	}
+
+	return indexedMessage.TextRepresentation()
+}
+
+func (m *AppMessage_UserMessage) TextRepresentation() (string, error) {
+	return m.Body, nil
+}
+
+func (m *AppMessage_UserMessage) TextStrippedPayload() (proto.Message, error) {
+	return &AppMessage_UserMessage{}, nil
+}

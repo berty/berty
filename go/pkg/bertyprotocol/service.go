@@ -210,7 +210,7 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 func (s *service) Close() error {
 	s.odb.Close()
 	if s.close != nil {
-		s.close()
+		_ = s.close()
 	}
 
 	return nil

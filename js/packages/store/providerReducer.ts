@@ -11,6 +11,7 @@ import {
 } from './context'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
 import { pbDateToNum } from '@berty-tech/components/helpers'
+import { parseInteraction } from '@berty-tech/store/utils'
 
 export declare type reducerAction = {
 	type: beapi.messenger.StreamEvent.Type | MessengerActions
@@ -92,30 +93,7 @@ const sortInteractions = (interactions: ParsedInteraction[]) =>
 	interactions.sort((a, b) => pbDateToNum(b.sentDate) - pbDateToNum(a.sentDate))
 
 const parseInteractions = (rawInteractions: beapi.messenger.Interaction[]) =>
-	rawInteractions
-		.map(
-			(i: beapi.messenger.Interaction): ParsedInteraction => {
-				const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(
-					(name) => beapi.messenger.AppMessage.Type[name as any] === i.type,
-				)
-				const name = typeName?.substr('Type'.length)
-				const pbobj = (beapi.messenger.AppMessage as any)[name as any]
-
-				if (!pbobj) {
-					return {
-						...i,
-						type: beapi.messenger.AppMessage.Type.Undefined,
-						payload: undefined,
-					}
-				}
-
-				return {
-					...i,
-					payload: pbobj.decode(i.payload),
-				}
-			},
-		)
-		.filter((i: ParsedInteraction) => i.payload !== undefined)
+	rawInteractions.map(parseInteraction).filter((i: ParsedInteraction) => i.payload !== undefined)
 
 const newestMeaningfulInteraction = (interactions: ParsedInteraction[]) =>
 	interactions.find((i) => i.type === beapi.messenger.AppMessage.Type.TypeUserMessage)

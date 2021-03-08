@@ -5,7 +5,8 @@
 
 GO ?= go
 GOPATH ?= $(HOME)/go
-GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
+GO_TAGS ?= -tags fts5
+GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic $(GO_TAGS)
 GO_TEST_PATH ?= ./...
 
 BUILD_DATE ?= `date +%s`
@@ -110,8 +111,8 @@ go.broken-tests: pb.generate
 
 go.install: pb.generate
 	$(call check-program, $(GO))
-	@echo GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
-	@GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
+	@echo GO111MODULE=on $(GO) install $(GO_TAGS) $(LDFLAGS) -v ./cmd/...
+	@GO111MODULE=on $(GO) install $(GO_TAGS) $(LDFLAGS) -v ./cmd/...
 .PHONY: go.install
 
 
@@ -124,7 +125,7 @@ docker.build: pb.generate
 docker.fast: pb.generate
 	$(call check-program, $(GO) docker)
 	@mkdir -p out
-	GOOS=linux GOARCH=amd64 GO111MODULE=on $(GO) build -v -o ./out/berty-linux-static ./cmd/berty
+	GOOS=linux GOARCH=amd64 GO111MODULE=on $(GO) build $(GO_TAGS) -v -o ./out/berty-linux-static ./cmd/berty
 	docker run -it --rm -v $(PWD)/out/berty-linux-static:/bin/berty $(RUN_OPTS) ubuntu berty $(ARGS)
 .PHONY: docker.fast
 

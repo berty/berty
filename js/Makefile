@@ -12,6 +12,7 @@ METRO_RN_PORT ?= 8081
 IOS_DEVICE ?=
 ANDROID_DEVICE ?=
 GO ?= go # this allows to override the go version used
+GO_TAGS ?= -tags fts5
 
 ## Internal variables
 
@@ -355,6 +356,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
+			$(GO_TAGS) \
 			-cache "$(PWD)/ios/.gomobile-cache" \
 			-target ios \
 			-iosversion $(minimum_ios_ver) \
@@ -403,6 +405,7 @@ android/libs/gobridge.aar: $(bridge_src)
 	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
+		$(GO_TAGS) \
 		-cache "$(PWD)/android/.gomobile-cache" \
 		-target android \
 		-androidapi $(minimum_android_ver) \

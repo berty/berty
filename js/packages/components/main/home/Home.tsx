@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import { ScrollView, Text as TextNative, View, StatusBar } from 'react-native'
@@ -61,6 +61,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
 	const { navigate } = useNativeNavigation()
+	const { client } = useMsgrContext()
 
 	const [
 		{ text, opacity, flex, margin, background },
@@ -104,21 +105,58 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		[ctx.contacts, searchCheck, searching],
 	)
 
-	const searchInteractions = React.useMemo(() => {
-		if (!searching) {
-			return {}
+	const searchInteractions = React.useRef<beapi.messenger.IInteraction[]>([])
+	const [earliestResult, setEarliestResult] = React.useState('')
+
+	useEffect(() => {
+		let cancelled = false
+		searchInteractions.current = []
+
+		if (searchText.trim() === '') {
+			return
 		}
-		const allInteractions: any = Object.values(ctx.interactions).reduce(
-			(r: any, intes: any) => ({ ...r, ...intes }),
-			{},
-		)
-		return pickBy(
-			allInteractions,
-			(inte) =>
-				inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
-				searchCheck(inte.payload?.body),
-		)
-	}, [ctx.interactions, searchCheck, searching])
+
+		;(async () => {
+			await new Promise((resolve) => {
+				setTimeout(() => resolve(true), 200)
+			})
+			if (cancelled) {
+				return
+			}
+
+			try {
+				let earliestResult = ''
+				setEarliestResult('')
+				while (true) {
+					const results = await client?.messageSearch({
+						query: searchText,
+						refCid: earliestResult,
+						limit: 10,
+					})
+
+					if (!results || results.results.length === 0) {
+						cancelled = true
+					}
+
+					if (cancelled) {
+						return
+					}
+
+					searchInteractions.current = searchInteractions.current.concat(results!.results)
+					setEarliestResult(results!.results[results!.results.length - 1].cid!)
+					earliestResult = results!.results[results!.results.length - 1].cid!
+					// TODO: remove this loop, add loading on scroll
+				}
+			} catch (e) {
+				cancelled = true
+				console.warn(e)
+			}
+		})()
+
+		return () => {
+			cancelled = true
+		}
+	}, [client, searchInteractions, searchText])
 
 	const hasResults = [searchConversations, searchContacts, searchInteractions].some(
 		(c) => Object.keys(c).length > 0,
@@ -188,9 +226,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 													insets={insets}
 													conversations={searchConversations}
 													contacts={searchContacts}
-													interactions={searchInteractions}
+													interactions={searchInteractions.current}
 													value={searchText}
 													hasResults={hasResults}
+													earliestInteractionCID={earliestResult}
 												/>
 											) : (
 												<>

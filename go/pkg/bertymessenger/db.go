@@ -19,8 +19,43 @@ import (
 )
 
 type dbWrapper struct {
-	db  *gorm.DB
-	log *zap.Logger
+	db         *gorm.DB
+	log        *zap.Logger
+	disableFTS bool
+}
+
+func isFTS5Enabled(db *gorm.DB) (bool, error) {
+	var total int64
+
+	rawDB, err := db.DB()
+	if err != nil {
+		return false, err
+	}
+
+	rows, err := rawDB.Query(`WITH opts(n, opt) AS (
+	  VALUES(0, NULL)
+	  UNION ALL
+	  SELECT n + 1,
+			 sqlite_compileoption_get(n)
+	  FROM opts
+	  WHERE sqlite_compileoption_get(n) IS NOT NULL
+	)
+	SELECT COUNT(opt) AS total
+	FROM opts
+	WHERE opt = 'ENABLE_FTS5';`)
+	defer func() { _ = rows.Close() }()
+
+	if err != nil {
+		return false, errcode.ErrDBRead.Wrap(err)
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&total); err != nil {
+			return false, errcode.ErrDBRead.Wrap(err)
+		}
+	}
+
+	return total == 1, nil
 }
 
 func newDBWrapper(db *gorm.DB, log *zap.Logger) *dbWrapper {
@@ -32,9 +67,24 @@ func newDBWrapper(db *gorm.DB, log *zap.Logger) *dbWrapper {
 		db.Logger = &dbLogWrapper{Interface: db.Logger}
 	}
 
+	fts5Enabled, err := isFTS5Enabled(db)
+	if err != nil {
+		log.Warn("unable to check if fts5 extension is enabled", zap.Error(err))
+		fts5Enabled = false
+	}
+
 	return &dbWrapper{
-		db:  db,
-		log: log,
+		db:         db,
+		log:        log,
+		disableFTS: !fts5Enabled,
+	}
+}
+
+func (d *dbWrapper) DisableFTS() *dbWrapper {
+	return &dbWrapper{
+		db:         d.db,
+		log:        d.log,
+		disableFTS: true,
 	}
 }
 
@@ -75,6 +125,11 @@ func (d *dbWrapper) getUpdatedDB(models []interface{}, replayer func(db *dbWrapp
 			return errcode.ErrDBMigrate.Wrap(err)
 		}
 
+		// Add virtual tables and triggers before replaying events
+		if err := d.setupVirtualTablesAndTriggers(); err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
+		}
+
 		if err := replayer(d); err != nil {
 			return errcode.ErrDBReplay.Wrap(err)
 		}
@@ -82,6 +137,8 @@ func (d *dbWrapper) getUpdatedDB(models []interface{}, replayer func(db *dbWrapp
 		if err := restoreDatabaseLocalState(d, currentState); err != nil {
 			return errcode.ErrDBRestore.Wrap(err)
 		}
+	} else if err := d.setupVirtualTablesAndTriggers(); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
 	}
 
 	return nil
@@ -104,7 +161,7 @@ func isSQLiteError(err error, sqliteErr sqlite3.ErrNo) bool {
 func (d *dbWrapper) tx(txFunc func(*dbWrapper) error) error {
 	// Use this to propagate scope, ie. opened account
 	return d.db.Transaction(func(tx *gorm.DB) error {
-		return txFunc(&dbWrapper{db: tx})
+		return txFunc(&dbWrapper{db: tx, log: d.log, disableFTS: d.disableFTS})
 	})
 }
 
@@ -448,6 +505,11 @@ func (d *dbWrapper) getPaginatedInteractions(opts *messengertypes.PaginatedInter
 		conversationPks = []string{previousInteraction.ConversationPublicKey}
 	}
 
+	order := "sent_date DESC, cid DESC"
+	if opts.OldestToNewest {
+		order = "sent_date, cid"
+	}
+
 	for _, pk := range conversationPks {
 		var cidsForConv []string
 		query := d.db.
@@ -456,21 +518,16 @@ func (d *dbWrapper) getPaginatedInteractions(opts *messengertypes.PaginatedInter
 
 		if previousInteraction != nil {
 			if opts.OldestToNewest {
-				query = query.Where("sent_date > ?", previousInteraction.SentDate)
+				query = query.Where("sent_date > ? OR (sent_date == ? AND cid > ?)", previousInteraction.SentDate, previousInteraction.SentDate, previousInteraction.CID)
 			} else {
-				query = query.Where("sent_date < ?", previousInteraction.SentDate)
+				query = query.Where("sent_date < ? OR (sent_date == ? AND cid < ?)", previousInteraction.SentDate, previousInteraction.SentDate, previousInteraction.CID)
 			}
 		}
 
 		query = query.Limit(int(opts.Amount))
 
-		if opts.OldestToNewest {
-			query = query.Order("sent_date")
-		} else {
-			query = query.Order("sent_date DESC")
-		}
-
 		if err := query.
+			Order(order).
 			Pluck("cid", &cidsForConv).
 			Error; err != nil {
 			return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list latest cids for conversation: %w", err))
@@ -485,6 +542,7 @@ func (d *dbWrapper) getPaginatedInteractions(opts *messengertypes.PaginatedInter
 
 	if err := d.db.
 		Preload(clause.Associations).
+		Order(order).
 		Find(&interactions, cids).
 		Error; err != nil {
 		return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch interactions: %w", err))
@@ -1241,4 +1299,129 @@ func (d *dbWrapper) getNextMedia(lastCID string, opts nextMediaOpts) (*messenger
 	}
 
 	return media, nil
+}
+
+func (d *dbWrapper) interactionIndexText(interactionCID string, text string) error {
+	return d.tx(func(wrapper *dbWrapper) error {
+		if d.disableFTS {
+			d.log.Info("full text search is not enabled")
+			return nil
+		}
+
+		var rowID int
+
+		if err := d.db.Model(&messengertypes.Interaction{}).Where("CID = ?", interactionCID).Pluck("ROWID", &rowID).Error; err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if rowID == 0 {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("interaction not found"))
+		}
+
+		if err := d.db.Exec("INSERT OR REPLACE INTO interactions_fts (rowid,payload) VALUES(?, ?);", rowID, text).Error; err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
+		}
+
+		return nil
+	})
+}
+
+type SearchOptions struct {
+	BeforeDate     int
+	AfterDate      int
+	Limit          int
+	RefCID         string
+	OldestToNewest bool
+}
+
+func (d *dbWrapper) interactionsSearch(query string, options *SearchOptions) ([]*messengertypes.Interaction, error) {
+	if d.disableFTS {
+		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("full text search is not enabled"))
+	}
+
+	if query == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a search query"))
+	}
+
+	if options == nil {
+		options = &SearchOptions{}
+	}
+
+	if options.Limit <= 0 {
+		options.Limit = 10
+	}
+
+	interactions := []*messengertypes.Interaction{}
+
+	dbQuery := d.db.Model(&messengertypes.Interaction{}).
+		Preload(clause.Associations).
+		Joins("JOIN interactions_fts ON interactions_fts.ROWID = interactions.ROWID").
+		Where("interactions_fts = ?", query)
+
+	if options.AfterDate == 0 && options.BeforeDate == 0 && options.RefCID != "" {
+		cutoffDate := int64(0)
+		if err := d.db.Model(&messengertypes.Interaction{}).Where(&messengertypes.Interaction{CID: options.RefCID}).Pluck("sent_date", &cutoffDate).Error; err != nil {
+			return nil, errcode.ErrDBRead.Wrap(err)
+		}
+
+		if options.OldestToNewest {
+			options.AfterDate = int(cutoffDate)
+		} else {
+			options.BeforeDate = int(cutoffDate)
+		}
+	}
+
+	if options.AfterDate != 0 {
+		if options.RefCID != "" {
+			dbQuery = dbQuery.Where("interactions.sent_date > ? OR (interactions.sent_date == ? AND interactions.cid > ?)", options.AfterDate, options.AfterDate, options.RefCID)
+		} else {
+			dbQuery = dbQuery.Where("interactions.sent_date > ?", options.AfterDate)
+		}
+	}
+
+	if options.BeforeDate != 0 {
+		if options.RefCID != "" {
+			dbQuery = dbQuery.Where("interactions.sent_date < ? OR (interactions.sent_date == ? AND interactions.cid < ?)", options.BeforeDate, options.BeforeDate, options.RefCID)
+		} else {
+			dbQuery = dbQuery.Where("interactions.sent_date < ?", options.BeforeDate)
+		}
+	}
+
+	if options.OldestToNewest {
+		dbQuery = dbQuery.Order("interactions.sent_date ASC, interactions.cid ASC")
+	} else {
+		dbQuery = dbQuery.Order("interactions.sent_date DESC, interactions.cid DESC")
+	}
+
+	if err := dbQuery.
+		Limit(options.Limit).
+		Find(&interactions).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	return interactions, nil
+}
+
+func (d *dbWrapper) setupVirtualTablesAndTriggers() error {
+	if d.disableFTS {
+		d.log.Info("full text search is not enabled")
+		return nil
+	}
+
+	if err := d.db.Exec(`CREATE VIRTUAL TABLE IF NOT EXISTS interactions_fts
+			USING fts5(payload, detail=none, tokenize='porter unicode61 remove_diacritics 2');`).
+		Error; err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	if err := d.db.Exec(`CREATE TRIGGER IF NOT EXISTS interactions_fts_delete
+	AFTER DELETE ON interactions BEGIN
+    	DELETE FROM interactions_fts WHERE rowid = old.rowid;
+	END;`).
+		Error; err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return nil
 }

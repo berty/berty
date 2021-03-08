@@ -285,6 +285,13 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useMessageSearch: () => {
+		error: any
+		call: (req?: beapi.messenger.MessageSearch.IRequest) => void
+		reply: beapi.messenger.MessageSearch.IReply | null
+		done: boolean
+		called: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {

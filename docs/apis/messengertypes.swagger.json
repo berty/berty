@@ -781,6 +781,39 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/MessageSearch": {
+      "post": {
+        "summary": "MessageSearch",
+        "operationId": "MessengerService_MessageSearch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MessageSearchReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1MessageSearchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ParseDeepLink": {
       "post": {
         "summary": "ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure\nthat can be used to display information.\nThis action is read-only.",
@@ -2327,6 +2360,43 @@
           "items": {
             "$ref": "#/definitions/v1Device"
           }
+        }
+      }
+    },
+    "v1MessageSearchReply": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Interaction"
+          }
+        }
+      }
+    },
+    "v1MessageSearchRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "before_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "after_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ref_cid": {
+          "type": "string"
+        },
+        "oldest_to_newest": {
+          "type": "boolean"
         }
       }
     },
