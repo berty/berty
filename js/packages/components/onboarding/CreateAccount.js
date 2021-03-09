@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TextInput, Vibration } from 'react-native'
+import { View, TextInput, Vibration, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
@@ -133,9 +133,11 @@ const CreateAccountBody = ({ next }) => {
 export const CreateAccount = () => {
 	useNotificationsInhibitor(() => true)
 	const { navigate } = useNavigation()
+	const [{ color }] = useStyles()
 
 	return (
 		<OnboardingWrapper>
+			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
 			<CreateAccountBody next={() => navigate('Onboarding.SetupFinished')} />
 		</OnboardingWrapper>
 	)

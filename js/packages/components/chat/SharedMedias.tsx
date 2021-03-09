@@ -271,7 +271,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 
 	return (
 		<View style={[flex.tiny, background.white]}>
-			<StatusBar barStyle='light-content' />
+			<StatusBar barStyle='light-content' backgroundColor={color.blue} />
 			<SafeAreaView style={[{ backgroundColor: color.blue }]}>
 				<View style={[padding.horizontal.medium, padding.top.tiny, margin.bottom.big]}>
 					<View style={[row.fill, { justifyContent: 'center', alignItems: 'center' }]}>

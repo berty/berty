@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -13,13 +13,14 @@ import Button from './Button'
 
 export const GetStarted = () => {
 	useNotificationsInhibitor(() => true)
-	const [{ absolute, background, column, flex, padding, text }] = useStyles()
+	const [{ absolute, background, column, flex, padding, text, color }] = useStyles()
 	const { navigate } = useNavigation()
 
 	return (
 		<Translation>
 			{(t) => (
 				<SafeAreaView style={[absolute.fill, background.white, column.justify, padding.medium]}>
+					<StatusBar backgroundColor={color.white} barStyle='dark-content' />
 					<View style={[flex.medium]} />
 					<View style={[flex.big, { flexDirection: 'row', justifyContent: 'center' }]}>
 						<Logo height='60%' width='65%' />

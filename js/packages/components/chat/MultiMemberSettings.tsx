@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, Share } from 'react-native'
+import { View, ScrollView, Share, StatusBar } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -224,7 +224,7 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 	const { convId } = route.params
 	const conv = useConversation(convId)
 	const { goBack } = useNavigation()
-	const [{ flex, padding }] = useStyles()
+	const [{ flex, padding, color }] = useStyles()
 
 	if (!conv) {
 		goBack()
@@ -232,6 +232,7 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 	}
 	return (
 		<Layout style={[flex.tiny]}>
+			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
 			<SwipeNavRecognizer>
 				<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
 					<HeaderSettings actionIcon='edit-outline' undo={goBack}>

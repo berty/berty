@@ -68,12 +68,12 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 					{
 						width: 110 * scaleHeight,
 						height: 110 * scaleHeight,
-
 						justifyContent: 'center',
 						alignItems: 'center',
 						position: 'relative',
 						top: 50,
 						zIndex: 1,
+						elevation: 7,
 						shadowOpacity: 0.1,
 						shadowRadius: 5,
 						shadowOffset: { width: 0, height: 3 },

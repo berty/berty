@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {
 	ActivityIndicator,
+	Platform,
 	SectionList,
 	SectionListData,
 	SectionListRenderItem,
@@ -461,7 +462,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 			>
 				<KeyboardAvoidingView
 					style={[flex.tiny, { justifyContent: 'flex-start' }]}
-					behavior='padding'
+					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				>
 					<MessageList
 						convPk={params?.convId}

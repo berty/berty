@@ -1,5 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react'
-import { TouchableOpacity, SafeAreaView, View, TextInput, NativeModules } from 'react-native'
+import {
+	TouchableOpacity,
+	SafeAreaView,
+	View,
+	TextInput,
+	NativeModules,
+	Platform,
+} from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
@@ -107,7 +114,7 @@ export const ChatFooter: React.FC<{
 						padding.horizontal.medium,
 						padding.top.medium,
 						_isFocused && padding.bottom.medium,
-						{ alignItems: 'center' },
+						{ alignItems: 'center', backgroundColor: 'transparent' },
 					]}
 				>
 					<TouchableOpacity
@@ -134,7 +141,7 @@ export const ChatFooter: React.FC<{
 						style={[
 							flex.tiny,
 							border.radius.medium,
-							padding.small,
+							Platform.OS === 'android' ? padding.horizontal.small : padding.small,
 							row.fill,
 							{
 								alignItems: 'center',

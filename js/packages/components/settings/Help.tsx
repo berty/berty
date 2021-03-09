@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { View, ScrollView, StyleSheet, StatusBar } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
@@ -149,6 +149,7 @@ export const Help: React.FC<ScreenProps.Settings.Help> = () => {
 		<Translation>
 			{(t: any): React.ReactNode => (
 				<Layout style={[background.white, flex.tiny]}>
+					<StatusBar backgroundColor={color.red} barStyle='light-content' />
 					<SwipeNavRecognizer>
 						<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
 							<HeaderSettings title={t('settings.help.title')} bgColor={color.red} undo={goBack}>

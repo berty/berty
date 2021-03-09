@@ -6,6 +6,7 @@ import {
 	TextInput,
 	Text as TextNative,
 	TouchableWithoutFeedback,
+	StatusBar,
 } from 'react-native'
 import { Layout, Text, Icon, CheckBox } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -13,6 +14,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useContactList, useAccountContactSearchResults } from '@berty-tech/store/hooks'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
 import beapi from '@berty-tech/api'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
@@ -201,16 +204,13 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	onSetMember,
 	onRemoveMember,
 	members,
-	layout,
 	paddingBottom,
 }) => {
-	const [
-		{ padding, background, row, height, margin, border },
-		{ windowHeight, scaleHeight },
-	] = useStyles()
+	const [{ padding, background, row, margin, border }] = useStyles()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useAccountContactSearchResults(searchText)
 	const accountContacts = useContactList()
+	const navigation = useNavigation()
 	let contacts = searchText.length ? searchContacts : accountContacts
 	contacts = contacts.filter(
 		(contact: any) => contact.state === beapi.messenger.Contact.State.Accepted,
@@ -237,28 +237,32 @@ const AddMembers: React.FC<AddMembersProps> = ({
 						autoCorrect={false}
 					/>
 				</View>
-				<View style={[height(windowHeight - layout * scaleHeight - 70 * scaleHeight)]}>
-					<ScrollView
-						contentContainerStyle={[
-							padding.top.medium,
-							{
-								paddingBottom,
-							},
-						]}
-						showsVerticalScrollIndicator={false}
-					>
-						{contacts.map((contact, index) => (
-							<AddMembersItem
-								key={contact.publicKey}
-								onSetMember={onSetMember}
-								onRemoveMember={onRemoveMember}
-								added={!!members.find((member) => member.publicKey === contact.publicKey)}
-								contact={contact}
-								separateBar={index < contacts.length - 1}
-							/>
-						))}
-					</ScrollView>
-				</View>
+
+				<ScrollView
+					contentContainerStyle={[
+						padding.top.medium,
+						{
+							paddingBottom,
+						},
+					]}
+					showsVerticalScrollIndicator={false}
+				>
+					{contacts.map((contact, index) => (
+						<AddMembersItem
+							key={contact.publicKey}
+							onSetMember={onSetMember}
+							onRemoveMember={onRemoveMember}
+							added={!!members.find((member) => member.publicKey === contact.publicKey)}
+							contact={contact}
+							separateBar={index < contacts.length - 1}
+						/>
+					))}
+				</ScrollView>
+				<FooterCreateGroup
+					title='CONTINUE'
+					icon='arrow-forward-outline'
+					action={navigation.navigate.main.createGroup.createGroupFinalize}
+				/>
 			</View>
 		</View>
 	)
@@ -378,12 +382,14 @@ export const CreateGroupAddMembers: React.FC<{
 	onRemoveMember: (id: string) => void
 	members: any[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
-	const [{ flex, background, margin }] = useStyles()
+	const [{ flex, background, margin, color }] = useStyles()
 	const [layout, setLayout] = useState<number>(0)
 	const navigation = useNavigation()
+	const insets = useSafeAreaInsets()
 
 	return (
 		<Layout style={[flex.tiny]}>
+			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
 			<SwipeNavRecognizer
 				onSwipeUp={() => navigation.goBack()}
 				onSwipeDown={() => navigation.goBack()}
@@ -400,15 +406,10 @@ export const CreateGroupAddMembers: React.FC<{
 						members={members}
 						onSetMember={onSetMember}
 						onRemoveMember={onRemoveMember}
-						paddingBottom={180}
+						paddingBottom={240 + insets.bottom}
 						layout={layout}
 					/>
 				</SafeAreaView>
-				<FooterCreateGroup
-					title='CONTINUE'
-					icon='arrow-forward-outline'
-					action={navigation.navigate.main.createGroup.createGroupFinalize}
-				/>
 			</SwipeNavRecognizer>
 		</Layout>
 	)

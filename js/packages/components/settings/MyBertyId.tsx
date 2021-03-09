@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, ScrollView, Share } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Share, StatusBar } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCode from 'react-native-qrcode-svg'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
@@ -271,6 +271,7 @@ export const MyBertyId: React.FC<{ user: any }> = ({ user }) => {
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
+			<StatusBar backgroundColor='#585AF1' barStyle='light-content' />
 			<SwipeNavRecognizer
 				onSwipeUp={() => navigation.goBack()}
 				onSwipeDown={() => navigation.goBack()}

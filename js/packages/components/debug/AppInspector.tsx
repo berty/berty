@@ -1,5 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { View, Text, Platform, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native'
+import {
+	View,
+	Text,
+	Platform,
+	TouchableOpacity,
+	ScrollView,
+	Alert,
+	StyleSheet,
+	StatusBar,
+} from 'react-native'
 import RNFS from 'react-native-fs'
 import { berty } from '@berty-tech/api/root.pb'
 import { GRPCError, Service } from '@berty-tech/grpc-bridge'
@@ -377,6 +386,7 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 
 	return (
 		<SafeAreaView style={[styles.safeViewContainer]}>
+			<StatusBar backgroundColor='black' barStyle='light-content' />
 			<View style={{ paddingHorizontal: 12, flexDirection: 'column' }}>
 				<Text style={[styles.text, styles.header1]}>{t('debug.inspector.title')}</Text>
 

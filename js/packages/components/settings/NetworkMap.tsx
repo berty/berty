@@ -5,6 +5,7 @@ import {
 	Text as TextNative,
 	ActivityIndicator,
 	TouchableOpacity,
+	StatusBar,
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
@@ -260,6 +261,7 @@ export const NetworkMap = () => {
 			{(t) => (
 				<Layout style={[background.white, flex.tiny]}>
 					<SwipeNavRecognizer>
+						<StatusBar backgroundColor={color.dark.grey} barStyle='light-content' />
 						<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(30)}>
 							<HeaderSettings
 								title={t('settings.network-map.title')}

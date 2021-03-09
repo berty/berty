@@ -1,6 +1,6 @@
 import React from 'react'
 import QRCode from 'react-native-qrcode-svg'
-import { ScrollView, Share, TouchableOpacity, View, Text } from 'react-native'
+import { ScrollView, Share, TouchableOpacity, View, Text, StatusBar } from 'react-native'
 import { Icon, Layout } from '@ui-kitten/components'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
@@ -206,6 +206,7 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 	}
 	return (
 		<Layout style={[{ backgroundColor: 'transparent', flex: 1 }]}>
+			<StatusBar backgroundColor='#585AF1' barStyle='light-content' />
 			<SwipeNavRecognizer
 				onSwipeUp={() => goBack()}
 				onSwipeDown={() => goBack()}
