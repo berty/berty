@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Activate Multipeer Connectivity"
     },
+    "nearby": {
+      "activate-button": "Activate Android Nearby"
+    },
     "services-auth": {
       "title": "External services",
       "operated-services-button": "Use Berty operated services",

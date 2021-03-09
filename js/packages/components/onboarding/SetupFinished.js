@@ -33,6 +33,12 @@ const SetupFinishedBody = () => {
 					enable: hasBluetoothPermission,
 				},
 			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Nearby,
+				payload: {
+					enable: hasBluetoothPermission,
+				},
+			})
 		}
 
 		return () => {

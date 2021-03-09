@@ -135,6 +135,7 @@ export enum PersistentOptionsKeys {
 	Suggestions = 'suggestions',
 	BLE = 'ble',
 	MC = 'mc',
+	Nearby = 'nearby',
 	Debug = 'debug',
 	Tor = 'tor',
 	Log = 'log',
@@ -169,6 +170,10 @@ export type PersistentOptionsBLE = {
 }
 
 export type PersistentOptionsMC = {
+	enable: boolean
+}
+
+export type PersistentOptionsNearby = {
 	enable: boolean
 }
 
@@ -224,6 +229,10 @@ export type PersistentOptionsUpdate =
 			payload: Partial<PersistentOptionsMC>
 	  }
 	| {
+			type: typeof PersistentOptionsKeys.Nearby
+			payload: Partial<PersistentOptionsNearby>
+	  }
+	| {
 			type: typeof PersistentOptionsKeys.Debug
 			payload: Partial<PersistentOptionsDebug>
 	  }
@@ -254,6 +263,7 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.Suggestions]: PersistentOptionsSuggestions
 	[PersistentOptionsKeys.BLE]: PersistentOptionsBLE
 	[PersistentOptionsKeys.MC]: PersistentOptionsMC
+	[PersistentOptionsKeys.Nearby]: PersistentOptionsNearby
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 	[PersistentOptionsKeys.Tor]: PersistentOptionsTor
 	[PersistentOptionsKeys.Log]: PersistentOptionsLog
@@ -290,6 +300,9 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			enable: true,
 		},
 		[PersistentOptionsKeys.MC]: {
+			enable: true,
+		},
+		[PersistentOptionsKeys.Nearby]: {
 			enable: true,
 		},
 		[PersistentOptionsKeys.Debug]: {
