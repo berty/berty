@@ -94,6 +94,7 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 						position: 'relative',
 						top: 50,
 						zIndex: 1,
+						elevation: 7,
 						shadowOpacity: 0.1,
 						shadowRadius: 5,
 						shadowOffset: { width: 0, height: 3 },

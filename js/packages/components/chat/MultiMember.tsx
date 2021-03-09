@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import {
 	TouchableOpacity,
 	View,
-	StatusBar,
 	ActivityIndicator,
 	SectionListRenderItem,
 	SectionListData,
 	SectionList,
 	ViewToken,
+	Platform,
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
@@ -295,8 +295,10 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 					)
 				}
 			>
-				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-					<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
+				<KeyboardAvoidingView
+					style={[flex.tiny]}
+					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				>
 					<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
 					<ChatFooter
 						convPk={params?.convId}

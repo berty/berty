@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, ScrollView, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import QRCode from 'react-native-qrcode-svg'
@@ -153,7 +153,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<View style={[flex.tiny, padding.horizontal.medium]}>
+				<View style={[flex.tiny, padding.horizontal.medium, padding.vertical.small]}>
 					<ButtonSetting
 						name={t('settings.home.network-button')}
 						icon='earth'
@@ -175,6 +175,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	return (
 		<>
 			<View style={[flex.tiny, background.white]}>
+				<StatusBar backgroundColor='#585AF1' barStyle='light-content' />
 				<SwipeNavRecognizer
 					onSwipeUp={() => navigation.goBack()}
 					onSwipeLeft={() => navigation.goBack()}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ScrollView, TextInput, TouchableOpacity, View, ViewProps } from 'react-native'
+import { Platform, ScrollView, TextInput, TouchableOpacity, View, ViewProps } from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Translation } from 'react-i18next'
@@ -118,7 +118,7 @@ export const HomeHeader: React.FC<
 											alignItems: 'center',
 											backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
 										},
-										padding.vertical.scale(12),
+										padding.vertical.scale(Platform.OS === 'android' ? 0 : 12),
 										padding.left.medium,
 										margin.left.small,
 										margin.right.scale(25),
@@ -157,8 +157,6 @@ export const HomeHeader: React.FC<
 											style={[
 												{ fontFamily: 'Open Sans', color: '#FFAE3A' },
 												value?.length ? padding.right.scale(25) : padding.right.medium,
-												text.bold.small,
-												text.align.center,
 												text.size.medium,
 											]}
 										/>

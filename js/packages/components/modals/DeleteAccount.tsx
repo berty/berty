@@ -6,6 +6,7 @@ import {
 	TextInput,
 	Vibration,
 	Text as TextNative,
+	StatusBar,
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
@@ -190,7 +191,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 
 export const DeleteAccount: React.FC<{}> = () => {
 	const [layout, setLayout] = useState(0)
-	const [{ background, padding, border }] = useStyles()
+	const [{ background, padding, color, border }] = useStyles()
 
 	return (
 		<Translation>
@@ -198,6 +199,7 @@ export const DeleteAccount: React.FC<{}> = () => {
 				<View
 					style={[padding.medium, background.red, { justifyContent: 'center', height: '100%' }]}
 				>
+					<StatusBar backgroundColor={color.red} barStyle='light-content' />
 					<View
 						onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
 						style={[

@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
-import { ScrollView, Text as TextNative, View } from 'react-native'
+import { ScrollView, Text as TextNative, View, StatusBar } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import pickBy from 'lodash/pickBy'
 
@@ -132,7 +132,17 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		<>
 			<Translation>
 				{(t: any): React.ReactNode => (
-					<View style={[flex.tiny, styleBackground]}>
+					<View
+						style={[
+							flex.tiny,
+							styleBackground,
+							{
+								position: 'relative',
+								flex: 1,
+							},
+						]}
+					>
+						<StatusBar backgroundColor='white' barStyle='dark-content' />
 						<SwipeNavRecognizer onSwipeLeft={() => !isModalVisible && navigate('Settings.Home')}>
 							<SafeAreaConsumer>
 								{(insets: EdgeInsets | null) => (

@@ -14,6 +14,7 @@ import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'
 import { useMsgrContext } from '@berty-tech/store/context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
@@ -105,10 +106,10 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 		{ scaleSize, windowHeight },
 	] = useStyles()
 	const _styles = useStylesCreateGroup()
-	const restScreen = windowHeight - layout - 400 * scaleSize // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
+	const insets = useSafeAreaInsets()
+	const restScreen = windowHeight - layout - 400 * scaleSize - insets.bottom // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
 	const paddingBottom =
 		restScreen < 90 * scaleSize ? 90 * scaleSize - restScreen + 20 * scaleSize : 0 // Padding in scrollview if the rest of screen was smaller than footer // 90 = size of footer, 20 = padding
-
 	return (
 		<ScrollView
 			showsVerticalScrollIndicator={false}
@@ -231,6 +232,7 @@ export const CreateGroupFinalize: React.FC<{
 	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, background, padding }] = useStyles()
 	const ctx = useMsgrContext()
+	const insets = useSafeAreaInsets()
 
 	React.useEffect(() => {
 		// TODO: better handle error
@@ -268,19 +270,19 @@ export const CreateGroupFinalize: React.FC<{
 						first
 					/>
 				</View>
-				<View style={[{ top: -5 }]}>
+				<View style={[{ top: -5, paddingBottom: insets.bottom }]}>
 					<Header title='Group info'>
 						<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
+						<FooterCreateGroup
+							title='CREATE A GROUP'
+							action={() => {
+								createGroup()
+								ctx.playSound('groupCreated')
+							}}
+						/>
 					</Header>
 				</View>
 			</SafeAreaView>
-			<FooterCreateGroup
-				title='CREATE A GROUP'
-				action={() => {
-					createGroup()
-					ctx.playSound('groupCreated')
-				}}
-			/>
 		</Layout>
 	)
 }

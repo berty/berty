@@ -68,7 +68,7 @@ export const Message: React.FC<{
 	} else if (inte.type === beapi.messenger.AppMessage.Type.TypeReplyOptions) {
 		return (
 			<>
-				<View style={[padding.horizontal.medium]}>
+				<View style={[padding.horizontal.medium, padding.bottom.small]}>
 					<QuickReplyOptions convPk={convPK} options={inte.payload.options || []} />
 				</View>
 			</>

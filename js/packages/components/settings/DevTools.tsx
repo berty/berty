@@ -1,5 +1,13 @@
 import React, { useState } from 'react'
-import { Alert, ScrollView, TextInput, TouchableOpacity, Vibration, View } from 'react-native'
+import {
+	Alert,
+	ScrollView,
+	TextInput,
+	TouchableOpacity,
+	Vibration,
+	View,
+	StatusBar,
+} from 'react-native'
 import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 import { Layout, Icon } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
@@ -589,6 +597,7 @@ export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 		<Translation>
 			{(t: any): React.ReactNode => (
 				<Layout style={[background.white, flex.tiny]}>
+					<StatusBar backgroundColor={color.dark.grey} barStyle='light-content' />
 					<SwipeNavRecognizer>
 						<ScrollView bounces={false} contentContainerStyle={padding.bottom.huge}>
 							<HeaderSettings
