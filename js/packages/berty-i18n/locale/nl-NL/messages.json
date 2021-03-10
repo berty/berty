@@ -10,7 +10,7 @@
     },
     "select-mode": {
       "title": "",
-      "change-later": "",
+      "change-later": "Je hebt een keuze om het later te veranderen!",
       "performance": {
         "title": "Prestaties",
         "desc": "Eenvoudig in gebruik - alle functies",
@@ -20,8 +20,8 @@
         "fast-message": "Snelste aflevering van berichten"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Volledige Anonimiteit",
+        "desc": "Voor extreem voorzichtige gebruikers",
         "disable-push-notif": "Push notificaties uitgeschakeld",
         "disable-local-peer-discovery": "Lokale peer detectie uitgeschakeld",
         "disable-local-peer-discovery-desc": "",
@@ -35,7 +35,7 @@
       "required": "Vereist",
       "placeholder": "Naam",
       "button": "MAAK MIJN ACCOUNT",
-      "import-account": ""
+      "import-account": "IMPORTEER EEN ACCOUNT"
     },
     "services-auth": {
       "header": "Verifieer bij diensten",
@@ -85,7 +85,7 @@
         "no-results": "Geen resultaten gevonden"
       },
       "multi-account": {
-        "create-button": "",
+        "create-button": "Nieuw account aanmaken",
         "import-button": ""
       }
     },
@@ -93,7 +93,7 @@
       "top-button": "Nieuwe groep aanmaken",
       "bottom-button": "Scan contact of groep"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Klik hier om toe te voegen",
     "configurations": {
       "network": {
         "display-name": "",
@@ -116,11 +116,11 @@
       "full-anon": {
         "title": "",
         "desc": "",
-        "no-ip": "",
+        "no-ip": "Geen ip",
         "no-mc": "",
         "tor-only": ""
       },
-      "save": "",
+      "save": "BEWAAR",
       "skip": "OVERSLAAN EN LATER UITVOEREN"
     }
   },
@@ -223,9 +223,9 @@
       "activate-button": "Bluetooth activeren",
       "permission-title": "",
       "permission-description": "",
-      "tag-neutral": "",
+      "tag-neutral": "Vraag mij later",
       "tag-negative": "Annuleren",
-      "tag-positive": ""
+      "tag-positive": "Oke"
     },
     "mc": {
       "activate-button": "Multipeer verbindingen activeren"
@@ -384,10 +384,10 @@
       "devices": "Apparaten"
     },
     "welcome-configuration": {
-      "title": "",
+      "title": "Welkom aan boord!",
       "desc": "",
       "skip": "OVERSLAAN",
-      "next": ""
+      "next": "Volgende"
     }
   },
   "chat": {
@@ -481,23 +481,23 @@
     "shared-medias": {
       "title": "",
       "medias": "",
-      "links": "",
-      "documents": ""
+      "links": "Koppelingen",
+      "documents": "Documenten"
     }
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Bug gedetecteerd",
+      "crash": "Crash gedetecteerd"
     },
-    "restart-app": "",
+    "restart-app": "Herstart de app",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
+      "title": "Wat is het fout?",
+      "desc": "Applicatie is net gecrasht.",
       "desc-report": ""
     },
     "sorry-screen": {
-      "title": "",
+      "title": "Sorry voor deze bug!",
       "desc": "",
       "desc-buy": "",
       "desc-em": "",
@@ -506,11 +506,11 @@
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
+      "show-button": "Toon app inspector",
+      "hide-button": "Sluiten",
       "title": "",
       "accounts": {
-        "title": "",
+        "title": "Accounts",
         "unsupported-remote-mode": "",
         "data-not-found": "",
         "action-delete": {
@@ -546,7 +546,7 @@
         }
       },
       "errors": {
-        "title": "",
+        "title": "Fouten",
         "header-reported": "",
         "header-all-clear": "",
         "listing-files-failed": "",
@@ -556,9 +556,9 @@
       "dump": {
         "button": ""
       },
-      "refresh": "",
+      "refresh": "Vernieuwen",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Bevestigen",
         "button-cancel": "Annuleren"
       }
     }
