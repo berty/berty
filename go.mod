@@ -49,7 +49,7 @@ require (
 	github.com/ipfs/go-ipfs-files v0.0.8
 	github.com/ipfs/go-ipfs-keystore v0.0.2
 	github.com/ipfs/go-ipld-cbor v0.0.5
-	github.com/ipfs/go-log/v2 v2.1.1
+	github.com/ipfs/go-log/v2 v2.1.2
 	github.com/ipfs/interface-go-ipfs-core v0.4.0
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
