@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth lar deg bruke Berty-appen når du ikke har internett-tilgang (wifi eller mobilnett) ved å koble mobilen direkte til personer i nærheten",
-      "activate-button": "Aktiver Bluetooth"
+      "activate-button": "Aktiver Bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Avbryt",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Aktiver tilkobling for flere personer"
@@ -472,6 +477,12 @@
       "forward-berty": "Videresend til Berty-contact",
       "forward": "Videresend",
       "image-saved": "Bilde lagret i Galleriet"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {

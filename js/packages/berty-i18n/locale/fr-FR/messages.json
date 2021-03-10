@@ -221,11 +221,11 @@
       "title": "Bluetooth",
       "desc": "Le Bluetooth vous permet d'utiliser l'application Berty lorsque vous n'avez pas de connexion réseau (wifi ou données) en connectant votre téléphone directement avec les pairs à proximité",
       "activate-button": "Activer le bluetooth",
-	  "permission-title": "Permission pour le Bluetooth",
-	  "permission-description": "Autoriser l'app Berty à utiliser le Bluetooth de votre téléphone",
-	  "tag-neutral": "Plus tard",
-	  "tag-negative": "Annuler",
-	  "tag-positive": "OK"
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Annuler",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Activer la connectivité multi-pair"
@@ -477,6 +477,12 @@
       "forward-berty": "Transférer au contact Berty",
       "forward": "Transférer",
       "image-saved": "Image enregistrée dans la galerie"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {

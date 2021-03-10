@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "蓝牙",
       "desc": "在您没有网络连接(wifi或数据) 时，您可以使用蓝牙来连接附件的节点来使用Berty应用",
-      "activate-button": "激活蓝牙"
+      "activate-button": "激活蓝牙",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "取消",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "激活多节点连接"
@@ -472,6 +477,12 @@
       "forward-berty": "转发到 Berty 联系人",
       "forward": "转发",
       "image-saved": "图片已保存到相册"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {

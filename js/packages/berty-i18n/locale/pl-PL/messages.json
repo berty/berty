@@ -9,24 +9,24 @@
       "button": "ROZPOCZNIJ"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Wybierz ustawienie",
+      "change-later": "Będziesz mógł, aby zmienić to później!",
       "performance": {
         "title": "Wydajność",
         "desc": "Łatwy w obsłudze - wszystkie funkcje",
         "push-notif": "Otrzymuj powiadomienia push",
-        "offline-message": "",
+        "offline-message": "Wiadomości offline z Bluetooth",
         "add-contact": "Dodaj łatwo kontakty",
         "fast-message": "Najszybsze dostarczenie wiadomości"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Pełna anonimowość",
+        "desc": "Dla bardzo ostrożnych użytkowników",
         "disable-push-notif": "Powiadomienia push wyłączone",
         "disable-local-peer-discovery": "Wykrywanie lokalnych peerów wyłączone",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multiemisja DNS & Bluetooth",
         "disable-contact-request": "Prośby kontaktów wyłączone",
-        "on-same-network": ""
+        "on-same-network": "Lokalnie w tej samej sieci/wifi"
       }
     },
     "create-account": {
@@ -35,7 +35,7 @@
       "required": "Wymagane",
       "placeholder": "Nazwa",
       "button": "UTWÓRZ MOJE KONTO",
-      "import-account": ""
+      "import-account": "IMPORTUJ KONTO"
     },
     "services-auth": {
       "header": "Uwierzytelnianie do usług",
@@ -85,42 +85,42 @@
         "no-results": "Nie znaleziono wyników"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Utwórz nowe konto",
+        "import-button": "Importuj konto"
       }
     },
     "home-modal": {
       "top-button": "Utwórz nową grupę",
       "bottom-button": "Zeskanuj kontakt lub grupę"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Kliknij tutaj, aby dodać",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Konfiguracja sieci",
+        "desc": "Kliknij tutaj, aby zakończyć konfigurację sieci"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Konfiguracja powiadomień",
+        "desc": "Kliknij tutaj, dla konfiguracji powiadomień push"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "welcome-title": "Witaj w opcjach sieci",
+      "full-anon-mode": "Tryb w pełni anonimowy",
+      "simple-tor-compatible": "Kompatybilny z prostym TOR",
+      "allow-expert-mode": "Zezwól na tryb eksperta",
       "tor-compatible": {
-        "title": "",
-        "desc": ""
+        "title": "Kompatybilny z TOR",
+        "desc": "Ta konfiguracja pozwoli Ci połączyć się z siecią Tor i rozmawiać z pełnoprawnymi anonimowymi użytkownikami, nie będąc w trybie ekstremalnie anonimowym."
       },
       "full-anon": {
-        "title": "",
-        "desc": "",
-        "no-ip": "",
-        "no-mc": "",
-        "tor-only": ""
+        "title": "Tryb w pełni anonimowy",
+        "desc": "Ta konfiguracja opiera się na ustawieniach radykalnych, zawierająca parametry sieci:",
+        "no-ip": "Brak ip",
+        "no-mc": "Brak mc",
+        "tor-only": "Tylko Tor"
       },
-      "save": "",
+      "save": "ZAPISZ",
       "skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
     }
   },
@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth pozwala na korzystanie z aplikacji Berty, gdy nie masz połączenia sieciowego (wifi lub danych) poprzez bezpośrednie połączenie telefonu z peerami w pobliżu",
-      "activate-button": "Aktywuj bluetooth"
+      "activate-button": "Aktywuj bluetooth",
+      "permission-title": "Uprawnienia Berty Bluetooth",
+      "permission-description": "Autoryzuj aplikację Berty do korzystania z funkcji Bluetooth w telefonie",
+      "tag-neutral": "Zapytaj mnie później",
+      "tag-negative": "Anuluj",
+      "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Aktywuj połączenia z wieloma peerami"
@@ -287,8 +292,8 @@
       "title": "Narzędzia deweloperskie",
       "header-left-button": "Informacje o urządzeniu",
       "simulate-button": "Symuluj błąd strumienia",
-      "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
+      "simulate-js-error-button": "Symuluj błąd JavaScript",
+      "simulate-native-error-button": "Symuluj błąd natywny",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "opcjonalnie",
       "tor-required-option": "wymagane",
@@ -298,8 +303,8 @@
       "system-info-button": "Informacje systemowe",
       "debug-button": "Debuguj",
       "log-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Format dziennika",
+        "bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
       },
       "add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
       "share-button": {
@@ -379,10 +384,10 @@
       "devices": "Urządzenia"
     },
     "welcome-configuration": {
-      "title": "",
-      "desc": "",
+      "title": "Witaj na pokładzie!",
+      "desc": "Zróbmy szybki przegląd ustawień i dokończ pierwszą konfigurację!",
       "skip": "POMIŃ",
-      "next": ""
+      "next": "DALEJ"
     }
   },
   "chat": {
@@ -472,22 +477,28 @@
       "forward-berty": "Przekaż do kontaktu Berty",
       "forward": "Przekaż",
       "image-saved": "Obraz zapisany w galerii"
+    },
+    "shared-medias": {
+      "title": "Współdzielone media",
+      "medias": "Media",
+      "links": "Linki",
+      "documents": "Dokumenty"
     }
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Wykryto błąd",
+      "crash": "Wykryto awarię"
     },
-    "restart-app": "",
+    "restart-app": "Zrestartuj aplikację",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Jaki jest błąd?",
+      "desc": "Aplikacja właśnie uległa awarii.",
+      "desc-report": "Potrząśnij telefonem, aby zgłosić błąd i kliknij przycisk, aby wyjść i uruchomić ponownie aplikację."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
+      "title": "Przepraszamy za ten błąd!",
+      "desc": "Jest to wina Francisa, twórcy wewnętrznego Berty, który musiał popełnić błąd. Co za szaleństwo tego Francisa!",
       "desc-buy": "",
       "desc-em": "",
       "desc-report": ""

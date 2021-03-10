@@ -1,22 +1,22 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
+      "desc": "インターネットアクセスやモバイル通信は必要とせず、不安定なネットワークでも機能する安全なピアツーピアメッセージングアプリ",
+      "open-registered-account": "登録済みのアカウントを開く",
+      "import-button": "既存のアカウントからデータをインポート",
+      "account-selector-create-button": "アカウントの作成",
+      "more-options": "その他のオプション",
       "button": ""
     },
     "select-mode": {
       "title": "",
-      "change-later": "",
+      "change-later": "あとで変更することができます！",
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
+        "title": "パフォーマンス",
+        "desc": "使いやすい - すべての機能",
+        "push-notif": "プッシュ通知の受信",
+        "offline-message": "Bluetooth によるオフラインメッセージ",
+        "add-contact": "連絡先を簡単に追加",
         "fast-message": ""
       },
       "high-level": {
@@ -32,14 +32,14 @@
     "create-account": {
       "title": "アカウントの作成",
       "desc": "",
-      "required": "",
+      "required": "必須",
       "placeholder": "名前",
       "button": "アカウントの作成",
-      "import-account": ""
+      "import-account": "アカウントをインポート"
     },
     "services-auth": {
       "header": "",
-      "title": "",
+      "title": "サービス",
       "recommended": "",
       "desc": "",
       "button": "",
@@ -47,7 +47,7 @@
     },
     "generate-key": {
       "title": "",
-      "desc": ""
+      "desc": "これは数秒かかることがあります"
     },
     "notifications": {
       "header": "",
@@ -59,7 +59,7 @@
     },
     "bluetooth": {
       "header": "",
-      "optional": "",
+      "optional": "オプション",
       "title": "Bluetooth",
       "desc": "",
       "button": "Bluetoothの使用を許可する",
@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": ""
+      "activate-button": "",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": ""
@@ -472,6 +477,12 @@
       "forward-berty": "",
       "forward": "",
       "image-saved": ""
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {

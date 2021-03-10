@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Med Bluetooth kan du använda appen Berty när du inte har någon nätverksanslutning (wifi eller data) genom att ansluta telefonen direkt med andra i närheten",
-      "activate-button": "Aktivera Bluetooth"
+      "activate-button": "Aktivera Bluetooth",
+      "permission-title": "",
+      "permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "Avbryt",
+      "tag-positive": ""
     },
     "mc": {
       "activate-button": "Aktivera multi-klient anslutning"
@@ -472,6 +477,12 @@
       "forward-berty": "Vidarebefordra till Berty kontakt",
       "forward": "Vidarebefordra",
       "image-saved": "Bild sparad i galleriet"
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
     }
   },
   "error": {
@@ -527,10 +538,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "Namn:    {{name}}",
+            "name": "",
             "created": "Skapad: {{created}}",
             "opened": "Öppnad:  {{opened}}",
-            "error": "Fel:   {{error}}"
+            "error": ""
           }
         }
       },
