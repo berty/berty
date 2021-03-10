@@ -220,6 +220,16 @@ func (s *service) advertise(ctx context.Context, d *Driver, ns string, opts ...p
 
 			deadline = s.resetInterval
 		} else {
+			s.Emit(&EvtDriverMonitor{
+				EventType: TypeEventMonitorAdvertise,
+				AddrInfo: p2p_peer.AddrInfo{
+					ID:    s.host.ID(),
+					Addrs: currentAddrs,
+				},
+				Topic:      ns,
+				DriverName: d.Name,
+			})
+
 			deadline = 7 * ttl / 8
 		}
 

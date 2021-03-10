@@ -118,6 +118,9 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 
 		switch e := evt.(type) {
 		case ipfsutil.EvtPubSubTopic:
+			// trim floodsub topic (if present)
+			e.Topic = strings.TrimPrefix(e.Topic, "floodsub:")
+
 			if topic != "" && topic != e.Topic {
 				continue
 			}
@@ -125,12 +128,11 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 			// handle this event
 			monitorEvent = monitorHandlePubsubEvent(&e, s.host)
 		case tinder.EvtDriverMonitor:
-
-			// trim floodsub topic
-			eventTopic := strings.TrimPrefix(e.Topic, "floodsub:")
+			// trim floodsub topic (if present)
+			e.Topic = strings.TrimPrefix(e.Topic, "floodsub:")
 
 			// skip if we are filtering by topic
-			if topic != "" && topic != eventTopic {
+			if topic != "" && topic != e.Topic {
 				continue
 			}
 
