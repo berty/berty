@@ -333,7 +333,10 @@ export type NotificationsInhibitor = (
 	evt: beapi.messenger.StreamEvent.INotified,
 ) => boolean | 'sound-only'
 
-export type StreamInProgress = beapi.protocol.Progress
+export type StreamInProgress = {
+	msg: beapi.protocol.Progress
+	stream: string
+}
 
 export type MsgrState = {
 	selectedAccount: string | null
