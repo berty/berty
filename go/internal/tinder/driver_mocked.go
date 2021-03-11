@@ -4,6 +4,7 @@ package tinder
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -20,6 +21,7 @@ type MockDriverServer struct {
 type discoveryRegistration struct {
 	info       p2p_peer.AddrInfo
 	expiration time.Time
+	exist      chan struct{}
 }
 
 func NewMockedDriverServer() *MockDriverServer {
@@ -37,7 +39,16 @@ func (s *MockDriverServer) Advertise(ns string, info p2p_peer.AddrInfo, ttl time
 		peers = make(map[p2p_peer.ID]*discoveryRegistration)
 		s.db[ns] = peers
 	}
-	peers[info.ID] = &discoveryRegistration{info, time.Now().Add(ttl)}
+
+	if p, ok := peers[info.ID]; ok && p.exist != nil {
+		select {
+		case <-p.exist:
+		default:
+			close(p.exist)
+		}
+	}
+
+	peers[info.ID] = &discoveryRegistration{info, time.Now().Add(ttl), nil}
 	return ttl, nil
 }
 
@@ -82,46 +93,6 @@ func (s *MockDriverServer) FindPeers(ns string, limit int) (<-chan p2p_peer.Addr
 	return ch, nil
 }
 
-func (s *MockDriverServer) FindPeersAsync(ctx context.Context, outChan chan<- p2p_peer.AddrInfo, ns string, limit int) {
-	go func() {
-		s.mx.Lock()
-		defer s.mx.Unlock()
-
-		peers, ok := s.db[ns]
-		if !ok || len(peers) == 0 {
-			return
-		}
-
-		count := len(peers)
-		if limit != 0 && count > limit {
-			count = limit
-		}
-
-		iterTime := time.Now()
-		numSent := 0
-		for p, reg := range peers {
-			if numSent == count {
-				break
-			}
-			if iterTime.After(reg.expiration) {
-				delete(peers, p)
-				continue
-			}
-
-			numSent++
-			select {
-			case outChan <- reg.info:
-			case <-ctx.Done():
-				return
-			}
-		}
-
-		if len(peers) == 0 {
-			delete(s.db, ns)
-		}
-	}()
-}
-
 func (s *MockDriverServer) Unregister(ns string, pid p2p_peer.ID) {
 	s.mx.Lock()
 	if peers, ok := s.db[ns]; ok {
@@ -139,10 +110,37 @@ func (s *MockDriverServer) HasPeerRecord(ns string, pid p2p_peer.ID) bool {
 	defer s.mx.RUnlock()
 
 	if peers, ok := s.db[ns]; ok {
-		_, ok := peers[pid]
-		return ok
+		if p, ok := peers[pid]; ok {
+			now := time.Now()
+			if p.expiration.After(now) {
+				fmt.Printf("will expire in: %dms\n", p.expiration.Sub(now).Milliseconds())
+				return true
+			}
+			fmt.Printf("expired since: %dms\n", now.Sub(p.expiration).Milliseconds())
+		}
 	}
 	return false
+}
+
+func (s *MockDriverServer) WaitForAdvertise(ns string, pid p2p_peer.ID) chan struct{} {
+	s.mx.Lock()
+	defer s.mx.Unlock()
+
+	cc := make(chan struct{})
+
+	peers, ok := s.db[ns]
+	if !ok {
+		peers = make(map[p2p_peer.ID]*discoveryRegistration)
+		s.db[ns] = peers
+	}
+
+	if p, ok := peers[pid]; ok && p.expiration.After(time.Now()) {
+		close(cc)
+		return cc
+	}
+
+	peers[pid] = &discoveryRegistration{p2p_peer.AddrInfo{ID: pid}, time.Now(), cc}
+	return cc
 }
 
 func (s *MockDriverServer) Reset() {
@@ -151,16 +149,21 @@ func (s *MockDriverServer) Reset() {
 	s.mx.Unlock()
 }
 
-type mockDriverClient struct {
+type MockDriverClient struct {
 	host   p2p_host.Host
 	server *MockDriverServer
 }
 
-func NewMockedDriverClient(host p2p_host.Host, server *MockDriverServer) AsyncableDriver {
-	return &mockDriverClient{host, server}
+func NewMockedDriverClient(name string, host p2p_host.Host, server *MockDriverServer) *Driver {
+	c := &MockDriverClient{host, server}
+	return &Driver{
+		Name:         name,
+		Unregisterer: c,
+		Discovery:    c,
+	}
 }
 
-func (d *mockDriverClient) Advertise(ctx context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
+func (d *MockDriverClient) Advertise(ctx context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
 	var options p2p_discovery.Options
 	err := options.Apply(opts...)
 	if err != nil {
@@ -170,7 +173,7 @@ func (d *mockDriverClient) Advertise(ctx context.Context, ns string, opts ...p2p
 	return d.server.Advertise(ns, *p2p_host.InfoFromHost(d.host), options.Ttl)
 }
 
-func (d *mockDriverClient) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
+func (d *MockDriverClient) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
 	var options p2p_discovery.Options
 	err := options.Apply(opts...)
 	if err != nil {
@@ -180,20 +183,9 @@ func (d *mockDriverClient) FindPeers(ctx context.Context, ns string, opts ...p2p
 	return d.server.FindPeers(ns, options.Limit)
 }
 
-func (d *mockDriverClient) FindPeersAsync(ctx context.Context, outChan chan<- p2p_peer.AddrInfo, ns string, opts ...p2p_discovery.Option) error {
-	var options p2p_discovery.Options
-	err := options.Apply(opts...)
-	if err != nil {
-		return err
-	}
-
-	d.server.FindPeersAsync(ctx, outChan, ns, options.Limit)
-	return nil
-}
-
-func (d *mockDriverClient) Unregister(ctx context.Context, ns string) error {
+func (d *MockDriverClient) Unregister(ctx context.Context, ns string) error {
 	d.server.Unregister(ns, d.host.ID())
 	return nil
 }
 
-func (d *mockDriverClient) Name() string { return "mock" }
+func (d *MockDriverClient) Name() string { return "mock" }

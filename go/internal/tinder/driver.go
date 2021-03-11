@@ -3,8 +3,10 @@ package tinder
 import (
 	"context"
 	"fmt"
+	"time"
 
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/peer"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
 	ma "github.com/multiformats/go-multiaddr"
 )
@@ -32,11 +34,11 @@ type Driver struct {
 
 func (d *Driver) applyDefault() error {
 	if d.Name == "" {
-		return fmt.Errorf("no driver `Name` was provided")
+		return fmt.Errorf("no `Name` was provided")
 	}
 
 	if d.Discovery == nil {
-		return fmt.Errorf("cannot create a tinder driver without a discovery")
+		d.Discovery = NoopDiscovery
 	}
 
 	if d.Unregisterer == nil {
@@ -50,7 +52,7 @@ func (d *Driver) applyDefault() error {
 	return nil
 }
 
-func NoopAddrsFactory([]ma.Multiaddr) (a []ma.Multiaddr) { return }
+func NoopAddrsFactory(addrs []ma.Multiaddr) []ma.Multiaddr { return addrs }
 
 var NoopUnregisterer Unregisterer = &noopUnregisterer{}
 
@@ -58,6 +60,16 @@ type noopUnregisterer struct{}
 
 func (*noopUnregisterer) Unregister(context.Context, string) error { return nil }
 
-func ComposeDriver(name string, advertiser p2p_discovery.Advertiser, discover p2p_discovery.Discoverer, unregister Unregisterer) UnregisterDiscovery {
-	return nil
+var NoopDiscovery p2p_discovery.Discovery = &noopDiscovery{}
+
+type noopDiscovery struct{}
+
+func (*noopDiscovery) Advertise(context.Context, string, ...p2p_discovery.Option) (time.Duration, error) {
+	return 0, nil
+}
+
+func (*noopDiscovery) FindPeers(context.Context, string, ...p2p_discovery.Option) (<-chan peer.AddrInfo, error) {
+	cc := make(chan peer.AddrInfo)
+	close(cc)
+	return cc, nil
 }

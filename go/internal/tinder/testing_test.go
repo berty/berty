@@ -36,18 +36,7 @@ func testingMockedDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_hos
 
 	drivers := make([]UnregisterDiscovery, len(hs))
 	for i := range drivers {
-		drivers[i] = NewMockedDriverClient(hs[i], s)
-	}
-
-	return drivers
-}
-
-func testingMockedAsyncDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_host.Host) []AsyncableDriver {
-	t.Helper()
-
-	drivers := make([]AsyncableDriver, len(hs))
-	for i := range drivers {
-		drivers[i] = NewMockedDriverClient(hs[i], s)
+		drivers[i] = NewMockedDriverClient("mocked", hs[i], s)
 	}
 
 	return drivers
@@ -56,15 +45,3 @@ func testingMockedAsyncDriverClients(t *testing.T, s *MockDriverServer, hs ...p2
 func testingDiscoveryOptions(opts ...p2p_discovery.Option) []p2p_discovery.Option {
 	return opts
 }
-
-// type cleanFunc func()
-
-// func testingRendezVousServer(ctx context.Context, t *testing.T, h p2p_host.Host, smaddrs ...ma.Multiaddr) (*Server, cleanFunc) {
-// 	t.Helper()
-// 	db, err := p2p_rpdb.OpenDB(ctx, ":memory:")
-// 	require.NoError(t, err)
-
-// 	s, err := NewRendezVousServer(ctx, h, db, smaddrs...)
-// 	require.NoError(t, err)
-// 	return s, func() { db.Close() }
-// }

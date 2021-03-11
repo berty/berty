@@ -246,7 +246,7 @@ func TestReplicationService_Flow(t *testing.T) {
 
 	err = mn.LinkAll()
 	require.NoError(t, err)
-
+	x
 	evts2, err = g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
 	ops2 = testFilterAppMetadata(t, evts2)

@@ -58,7 +58,6 @@ type Opts struct {
 	Logger *zap.Logger
 
 	Drivers                []Driver
-	Host                   host.Host
 	AdvertiseResetInterval time.Duration
 	AdvertiseGracePeriod   time.Duration
 	BackoffStratFactory    p2p_discovery.BackoffFactory
@@ -70,12 +69,13 @@ func (o *Opts) applyDefault() {
 		o.Logger = zap.NewNop()
 	}
 
-	if o.AdvertiseResetInterval == 0 {
+	if o.AdvertiseResetInterval == 0 && o.AdvertiseGracePeriod == 0 {
 		o.AdvertiseResetInterval = DefaultAdvertiseInterval
+		o.AdvertiseGracePeriod = DefaultAdvertiseGracePeriod
 	}
 
-	if o.AdvertiseGracePeriod == 0 {
-		o.AdvertiseGracePeriod = DefaultAdvertiseGracePeriod
+	if o.BackoffStratFactory == nil {
+		o.BackoffStratFactory = p2p_discovery.NewFixedBackoff(time.Minute)
 	}
 }
 
@@ -118,7 +118,7 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 }
 
 func newService(opts *Opts, h host.Host, drivers ...*Driver) (*service, error) {
-	nn, err := NewNetworkUpdate(opts.Host)
+	nn, err := NewNetworkUpdate(h)
 	if err != nil {
 		return nil, err
 	}
@@ -130,6 +130,7 @@ func newService(opts *Opts, h host.Host, drivers ...*Driver) (*service, error) {
 	}
 
 	s := &service{
+		watchdogs:     make(map[string]*time.Timer),
 		emitter:       emitter,
 		host:          h,
 		networkNotify: nn,
@@ -142,30 +143,6 @@ func newService(opts *Opts, h host.Host, drivers ...*Driver) (*service, error) {
 	return s, nil
 }
 
-func (s *service) Unregister(ctx context.Context, ns string) error {
-	// first cancel advertiser
-	s.muAdvertiser.Lock()
-	if t, ok := s.watchdogs[ns]; ok {
-		if !t.Stop() {
-			<-t.C
-		}
-
-		t.Reset(0)
-	}
-	s.muAdvertiser.Unlock()
-
-	// unregister drivers
-	for _, driver := range s.drivers {
-		if driver.Unregisterer != nil {
-			if err := driver.Unregister(ctx, ns); err != nil {
-				s.logger.Warn("unable to unsubscribe", zap.Error(err))
-			}
-		}
-	}
-
-	return nil
-}
-
 func (s *service) Advertise(ctx context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
 	if len(s.drivers) == 0 {
 		return 0, fmt.Errorf("no drivers to advertise")
@@ -173,6 +150,7 @@ func (s *service) Advertise(ctx context.Context, ns string, opts ...p2p_discover
 
 	s.muAdvertiser.Lock()
 
+	timer := time.Now()
 	if t, ok := s.watchdogs[ns]; ok {
 		if !t.Stop() {
 			<-t.C
@@ -183,16 +161,33 @@ func (s *service) Advertise(ctx context.Context, ns string, opts ...p2p_discover
 		ctx, cancel := context.WithCancel(ctx)
 		s.watchdogs[ns] = time.AfterFunc(s.resetInterval, func() {
 			cancel()
+			s.logger.Debug("advertise expired",
+				zap.String("ns", ns),
+				zap.Duration("duration", time.Since(timer)),
+			)
+
 			s.muAdvertiser.Lock()
 			delete(s.watchdogs, ns)
 			s.muAdvertiser.Unlock()
+
+			// unregister drivers, dont use canceled context
+			s.unregister(context.Background(), ns)
 		})
 		s.advertises(ctx, ns, opts...)
 	}
 
 	s.muAdvertiser.Unlock()
 
+	s.logger.Debug("advertise started", zap.String("ns", ns))
 	return s.ttl, nil
+}
+
+func (s *service) unregister(ctx context.Context, ns string) {
+	for _, driver := range s.drivers {
+		if err := driver.Unregister(ctx, ns); err != nil {
+			s.logger.Warn("unable to unsubscribe", zap.Error(err))
+		}
+	}
 }
 
 func (s *service) advertises(ctx context.Context, ns string, opts ...p2p_discovery.Option) {
@@ -204,7 +199,9 @@ func (s *service) advertises(ctx context.Context, ns string, opts ...p2p_discove
 func (s *service) advertise(ctx context.Context, d *Driver, ns string, opts ...p2p_discovery.Option) {
 	for {
 		currentAddrs := s.networkNotify.GetLastUpdatedAddrs(ctx)
+		now := time.Now()
 		ttl, err := d.Advertise(ctx, ns, opts...)
+		took := time.Since(now)
 
 		var deadline time.Duration
 
@@ -230,8 +227,19 @@ func (s *service) advertise(ctx context.Context, d *Driver, ns string, opts ...p
 				DriverName: d.Name,
 			})
 
-			deadline = 7 * ttl / 8
+			if ttl == 0 {
+				ttl = s.ttl
+			}
+			deadline = 4 * ttl / 5
 		}
+
+		s.logger.Debug("advertise",
+			zap.String("driver", d.Name),
+			zap.String("ns", ns),
+			zap.Duration("ttl", ttl),
+			zap.Duration("took", took),
+			zap.Duration("next", deadline),
+		)
 
 		waitctx, cancel := context.WithTimeout(ctx, deadline)
 		ok := s.networkNotify.WaitForUpdate(waitctx, currentAddrs, d.AddrsFactory)
@@ -288,7 +296,7 @@ func (s *service) FindPeers(ctx context.Context, ns string, opts ...p2p_discover
 		defer cancel()
 		defer close(cc)
 
-		// use optimized method for few peers
+		// use optimized method for few drivers
 		if err := s.selectFindPeers(ctx, cc, cdrivers); err != nil {
 			s.logger.Warn("find peers", zap.Error(err))
 		}
@@ -348,6 +356,22 @@ func (s *service) selectFindPeers(ctx context.Context, out chan<- peer.AddrInfo,
 		out <- peer
 	}
 
+	return nil
+}
+
+func (s *service) Unregister(ctx context.Context, ns string) error {
+	// cancel advertiser, will trigger  unregister
+	s.muAdvertiser.Lock()
+	if t, ok := s.watchdogs[ns]; ok {
+		if !t.Stop() {
+			<-t.C
+		}
+
+		t.Reset(0)
+	}
+	s.muAdvertiser.Unlock()
+
+	s.unregister(ctx, ns)
 	return nil
 }
 

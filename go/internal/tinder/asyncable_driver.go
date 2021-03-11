@@ -28,10 +28,3 @@ type composeAsyncableDriver struct {
 	UnregisterDiscovery
 	AsyncableFindPeers
 }
-
-func ComposeAsyncableDriver(driver UnregisterDiscovery, find AsyncableFindPeers) AsyncableDriver {
-	return &composeAsyncableDriver{
-		Driver:             driver,
-		AsyncableFindPeers: find,
-	}
-}

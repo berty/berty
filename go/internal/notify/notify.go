@@ -30,12 +30,16 @@ func (n *Notify) Wait(ctx context.Context) (ok bool) {
 	signal := n.getChan()
 
 	n.L.Unlock()
+
+	// now := time.Now()
 	select {
 	case <-ctx.Done():
 		ok = false
 	case <-signal:
 		ok = true
 	}
+	// fmt.Printf("TIMEOUT TOOK  %dms\n", time.Since(now).Milliseconds())
+
 	n.L.Lock()
 
 	return

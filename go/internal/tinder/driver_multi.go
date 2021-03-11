@@ -271,5 +271,3 @@ func (md *MultiDriver) Unregister(ctx context.Context, ns string) error {
 
 	return nil
 }
-
-func (*MultiDriver) Name() string { return "MultiDriver" }

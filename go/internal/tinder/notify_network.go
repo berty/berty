@@ -7,6 +7,7 @@ import (
 	"berty.tech/berty/v2/go/internal/notify"
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
+	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -25,9 +26,10 @@ func NewNetworkUpdate(h host.Host) (*NetworkUpdate, error) {
 
 	locker := &sync.Mutex{}
 	nu := &NetworkUpdate{
-		sub:    sub,
-		locker: locker,
-		notify: notify.New(locker),
+		sub:          sub,
+		locker:       locker,
+		notify:       notify.New(locker),
+		currentAddrs: h.Network().ListenAddresses(),
 	}
 
 	go nu.subscribeToNetworkUpdate()
@@ -35,13 +37,13 @@ func NewNetworkUpdate(h host.Host) (*NetworkUpdate, error) {
 	return nu, nil
 }
 
-func (n *NetworkUpdate) WaitForUpdate(ctx context.Context, currentAddrs []ma.Multiaddr, factory AddrsFactory) bool {
+func (n *NetworkUpdate) WaitForUpdate(ctx context.Context, currentAddrs []ma.Multiaddr, factory bhost.AddrsFactory) bool {
 	n.locker.Lock()
 	defer n.locker.Unlock()
 
 	for {
 		// check for new/removed addrs
-		if diff := diffAddrs(n.currentAddrs, currentAddrs); len(diff) > 0 {
+		if diff := diffAddrs(currentAddrs, n.currentAddrs); len(diff) > 0 {
 			// filter addrs
 			if factory == nil {
 				return true
@@ -94,6 +96,7 @@ func diffAddrs(a, b []ma.Multiaddr) []ma.Multiaddr {
 			diff = append(diff, addr)
 		}
 	}
+
 	return diff
 }
 
