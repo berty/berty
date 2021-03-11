@@ -83,7 +83,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	const _styles = useStylesSettingButton()
 	const [
 		{ background, margin, row, flex, padding, opacity, text, border },
-		{ windowWidth },
+		{ windowWidth, scaleSize },
 	] = useStyles()
 
 	return (
@@ -101,7 +101,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 				_styles.settingButton,
 				background.white,
 				style,
-				{ minHeight: 60 },
+				{ minHeight: 60 * scaleSize },
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
 				alone ? margin.top.scale(20) : null,
@@ -129,8 +129,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 								]}
 								pack={iconPack}
 								name={icon}
-								width={iconSize}
-								height={iconSize}
+								width={iconSize * scaleSize}
+								height={iconSize * scaleSize}
 								fill={iconColor}
 							/>
 						</View>
@@ -146,6 +146,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							style={[
 								padding.left.small,
 								text.color.black,
+								text.size.medium,
 								{ maxWidth: windowWidth - 150 },
 								textStyle,
 							]}

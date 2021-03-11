@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, ImageBackground, View, TouchableOpacity } from 'react-native'
+import { ImageBackground, View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +13,7 @@ export const ChoosePreset = () => {
 	const { dispatch, setPersistentOption } = useMsgrContext()
 	const insets = useSafeAreaInsets()
 
-	const [{ text, padding, border, margin, flex, color }] = useStyles()
+	const [{ text, padding, border, margin, flex, color }, { scaleSize }] = useStyles()
 	const performanceCheckList = [
 		{ title: t('onboarding.select-mode.performance.push-notif') },
 		{ title: t('onboarding.select-mode.performance.offline-message') },
@@ -30,56 +30,56 @@ export const ChoosePreset = () => {
 		{ title: t('onboarding.select-mode.high-level.on-same-network') },
 	]
 	return (
-		<View
-			style={{
-				backgroundColor: 'white',
-				flex: 1,
-			}}
-		>
-			<ScrollView
-				contentContainerStyle={[
-					padding.big,
+		<View style={[flex.tiny, padding.big, margin.top.scale(insets.top)]}>
+			<Text style={[text.align.center, text.size.huge, text.bold.medium, margin.bottom.huge]}>
+				{t('onboarding.select-mode.title')}
+			</Text>
+			<TouchableOpacity
+				activeOpacity={0.7}
+				onPress={async () => {
+					dispatch({ type: MessengerActions.SetStateOnBoarding })
+					await setPersistentOption({
+						type: PersistentOptionsKeys.Preset,
+						payload: {
+							value: 'performance',
+						},
+					})
+				}}
+				style={[
+					border.radius.medium,
+					flex.tiny,
 					{
-						marginTop: insets.top,
+						backgroundColor: '#5A64EC',
+						position: 'relative',
+						overflow: 'hidden',
 					},
 				]}
 			>
-				<Text style={[text.align.center, text.size.huge, margin.bottom.huge, text.bold.medium]}>
-					{t('onboarding.select-mode.title')}
-				</Text>
-				<TouchableOpacity
-					activeOpacity={0.7}
-					onPress={async () => {
-						dispatch({ type: MessengerActions.SetStateOnBoarding })
-						await setPersistentOption({
-							type: PersistentOptionsKeys.Preset,
-							payload: {
-								value: 'performance',
-							},
-						})
-					}}
-					style={[
-						border.radius.medium,
-
-						{
-							backgroundColor: '#5A64EC',
-							position: 'relative',
-							overflow: 'hidden',
-						},
-					]}
+				<ImageBackground
+					source={PerformanceBackground}
+					style={[padding.horizontal.large, padding.bottom.medium, flex.tiny]}
 				>
-					<ImageBackground source={PerformanceBackground} style={[padding.large]}>
-						<View style={[flex.direction.row, flex.align.end, flex.justify.spaceBetween]}>
+					<View style={[flex.direction.row, flex.align.center, flex.justify.spaceBetween]}>
+						<View style={[padding.top.large]}>
 							<Text style={[text.color.white, text.size.huge, text.bold.medium]}>
 								{t('onboarding.select-mode.performance.title')}
 							</Text>
-							<Icon name='flash-outline' height={60} width={60} fill='white' />
+							<Text
+								style={[text.color.white, text.size.medium, margin.bottom.large, margin.top.tiny]}
+							>
+								{t('onboarding.select-mode.performance.desc')}
+							</Text>
 						</View>
-						<Text
-							style={[text.color.white, text.size.medium, margin.top.small, margin.bottom.large]}
-						>
-							{t('onboarding.select-mode.performance.desc')}
-						</Text>
+
+						<Icon
+							name='flash-outline'
+							height={45 * scaleSize}
+							width={45 * scaleSize}
+							fill='white'
+						/>
+					</View>
+
+					<View style={{ justifyContent: 'center', flex: 1 }}>
 						{performanceCheckList.map((item) => (
 							<View
 								key={item.title}
@@ -87,91 +87,106 @@ export const ChoosePreset = () => {
 									flex.direction.row,
 									flex.align.center,
 									margin.bottom.small,
-									{
-										paddingRight: 70,
-									},
+									padding.right.scale(70),
 								]}
 							>
 								<Icon
 									name='checkmark-circle-2'
 									fill='white'
-									height={16}
-									width={16}
+									height={16 * scaleSize}
+									width={16 * scaleSize}
 									style={[margin.right.small]}
 								/>
-								<Text style={[text.color.white]}>{item.title}</Text>
+								<Text style={[text.color.white, text.size.medium]}>{item.title}</Text>
 							</View>
 						))}
+					</View>
 
+					<View
+						style={[
+							{
+								position: 'absolute',
+								right: 10 * scaleSize,
+								top: 0,
+								bottom: 0,
+								alignItems: 'center',
+								justifyContent: 'center',
+							},
+						]}
+					>
 						<View
 							style={[
+								border.radius.small,
+								flex.justify.center,
 								{
-									position: 'absolute',
-									right: 10,
-									top: 0,
-									bottom: 0,
-									alignItems: 'center',
-									justifyContent: 'center',
+									backgroundColor: '#4B54E9',
 								},
 							]}
 						>
-							<View
-								style={[
-									border.radius.small,
-									flex.justify.center,
-									{
-										backgroundColor: '#4B54E9',
-									},
-								]}
-							>
-								<Icon name='chevron-right' fill='white' height={50} width={50} />
-							</View>
+							<Icon
+								name='chevron-right'
+								fill='white'
+								height={40 * scaleSize}
+								width={40 * scaleSize}
+							/>
 						</View>
-					</ImageBackground>
-				</TouchableOpacity>
-				<Text
-					style={[
-						text.align.center,
-						margin.vertical.medium,
-						{ fontStyle: 'italic', color: '#A5A7C5' },
-					]}
-				>
-					{t('onboarding.select-mode.change-later')}
-				</Text>
-				<TouchableOpacity
-					style={[
-						border.radius.medium,
-						{
-							flex: 1,
-							backgroundColor: '#202240',
-							position: 'relative',
-							overflow: 'hidden',
+					</View>
+				</ImageBackground>
+			</TouchableOpacity>
+			<Text
+				style={[
+					text.align.center,
+					margin.vertical.medium,
+					text.size.medium,
+					{ fontStyle: 'italic', color: '#A5A7C5' },
+				]}
+			>
+				{t('onboarding.select-mode.change-later')}
+			</Text>
+			<TouchableOpacity
+				style={[
+					border.radius.medium,
+					{
+						flex: 1,
+						backgroundColor: '#202240',
+						position: 'relative',
+						overflow: 'hidden',
+					},
+				]}
+				activeOpacity={0.7}
+				onPress={async () => {
+					dispatch({ type: MessengerActions.SetStateOnBoarding })
+					await setPersistentOption({
+						type: PersistentOptionsKeys.Preset,
+						payload: {
+							value: 'full-anonymity',
 						},
-					]}
-					activeOpacity={0.7}
-					onPress={async () => {
-						dispatch({ type: MessengerActions.SetStateOnBoarding })
-						await setPersistentOption({
-							type: PersistentOptionsKeys.Preset,
-							payload: {
-								value: 'full-anonymity',
-							},
-						})
-					}}
-				>
-					<ImageBackground source={FullAnonBackground} style={[padding.large]}>
-						<View style={[flex.direction.row, flex.align.center, flex.justify.spaceBetween]}>
+					})
+				}}
+			>
+				<ImageBackground source={FullAnonBackground} style={[padding.horizontal.large, flex.tiny]}>
+					<View style={[flex.direction.row, flex.align.center, flex.justify.spaceBetween]}>
+						<View style={[padding.top.large]}>
 							<Text style={[text.color.white, text.size.huge, text.bold.medium]}>
 								{t('onboarding.select-mode.high-level.title')}
 							</Text>
-							<Icon name='privacy' pack='custom' height={70} width={70} fill='white' />
+							<Text
+								style={[text.color.white, text.size.medium, margin.bottom.large, margin.top.tiny]}
+							>
+								{t('onboarding.select-mode.high-level.desc')}
+							</Text>
 						</View>
 
-						<Text
-							style={[text.color.white, text.size.medium, margin.top.small, margin.bottom.large]}
-						>
-							{t('onboarding.select-mode.high-level.desc')}
-						</Text>
+						<Icon
+							name='privacy'
+							pack='custom'
+							height={60 * scaleSize}
+							width={60 * scaleSize}
+							fill='white'
+						/>
+					</View>
+
+					<View style={{ justifyContent: 'center', flex: 1 }}>
 						{anonymityCheckList.map((item) => (
 							<View key={item.title} style={[margin.bottom.small]}>
 								<View style={[flex.direction.row, flex.align.center]}>
@@ -182,22 +197,22 @@ export const ChoosePreset = () => {
 											flex.justify.center,
 											margin.right.small,
 											{
-												height: 16,
-												width: 16,
+												height: 16 * scaleSize,
+												width: 16 * scaleSize,
 												backgroundColor: color.white,
 											},
 										]}
 									>
-										<Icon name='close' fill='red' height={12} width={12} />
+										<Icon name='close' fill='red' height={12 * scaleSize} width={12 * scaleSize} />
 									</View>
-									<Text style={[text.color.white]}>{item.title}</Text>
+									<Text style={[text.color.white, text.size.medium]}>{item.title}</Text>
 								</View>
 								<Text
 									style={[
 										text.color.white,
 										text.size.small,
 										{
-											marginLeft: 25,
+											marginLeft: 25 * scaleSize,
 										},
 									]}
 								>
@@ -205,34 +220,39 @@ export const ChoosePreset = () => {
 								</Text>
 							</View>
 						))}
+					</View>
 
+					<View
+						style={[
+							{
+								position: 'absolute',
+								right: 10 * scaleSize,
+								top: 0,
+								bottom: 0,
+								alignItems: 'center',
+								justifyContent: 'center',
+							},
+						]}
+					>
 						<View
 							style={[
+								border.radius.small,
+								flex.justify.center,
 								{
-									position: 'absolute',
-									right: 10,
-									top: 0,
-									bottom: 0,
-									alignItems: 'center',
-									justifyContent: 'center',
+									backgroundColor: '#34354A',
 								},
 							]}
 						>
-							<View
-								style={[
-									border.radius.small,
-									flex.justify.center,
-									{
-										backgroundColor: '#34354A',
-									},
-								]}
-							>
-								<Icon name='chevron-right' fill='white' height={50} width={50} />
-							</View>
+							<Icon
+								name='chevron-right'
+								fill='white'
+								height={40 * scaleSize}
+								width={40 * scaleSize}
+							/>
 						</View>
-					</ImageBackground>
-				</TouchableOpacity>
-			</ScrollView>
+					</View>
+				</ImageBackground>
+			</TouchableOpacity>
 		</View>
 	)
 }
