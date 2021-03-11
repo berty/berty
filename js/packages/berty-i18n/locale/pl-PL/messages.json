@@ -499,66 +499,66 @@
     "sorry-screen": {
       "title": "Przepraszamy za ten błąd!",
       "desc": "Jest to wina Francisa, twórcy wewnętrznego Berty, który musiał popełnić błąd. Co za szaleństwo tego Francisa!",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "desc-buy": "Kupi ci piwo, gdy go spotkasz!",
+      "desc-em": "*No dobra, w zespole Berty nie ma Francisa.",
+      "desc-report": "Potrząśnij swoim telefonem i wracamy tu znowu!"
     }
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
+      "show-button": "Pokaż inspektora aplikacji",
+      "hide-button": "Zamknij",
+      "title": "Inspektor",
       "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "title": "Konta",
+        "unsupported-remote-mode": "Inspektor kont nie jest obsługiwany w trybie zdalnym",
+        "data-not-found": "Konto nie jest na liście",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
+          "file-exists": "Konto {{accountId}} nie istnieje, jednak plik ma taką nazwę.",
+          "account-exists": "Konto {{accountId}} aktualnie istnieje.",
+          "directory-exists-load-error": "Konto {{accountId}} nie istnieje, jednak katalog ma taką nazwę.",
+          "fs-read-error": "Błąd podczas uzyskiwania informacji FS o koncie",
+          "actions-title": "Co powinniśmy zrobić?",
+          "action-account-manager": "Usuń go poprzez menedżera kont",
+          "action-account-manager-confirm": "Potwierdź usunięcie konta",
+          "action-force-delete": "Wymuś usunięcie",
+          "action-force-delete-confirm": "Potwierdź wymuszenie usunięcia konta",
+          "error-close": "Błąd podczas zamykania konta",
+          "error-delete": "Błąd podczas usuwania konta",
+          "success-feedback": "Konto usunięte",
           "action-cancel": "Anuluj"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "metadata-found": "Znaleziono plik metadanych",
+          "metadata-not-found": "Nie znaleziono pliku metadanych",
+          "ipfs-repo-config-found": "Znaleziono plik konfiguracyjny IPFS",
+          "ipfs-repo-config-not-found": "Nie znaleziono pliku konfiguracyjnego IPFS",
+          "messenger-db-found": "Znaleziono DB komunikatora",
+          "messenger-db-not-found": "Nie znaleziono DB komunikatora"
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
+            "name": "Nazwa: {{name}}",
+            "created": "Utworzono: {{created}}",
+            "opened": "Otwarto:  {{opened}}",
+            "error": "Błąd: {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "title": "Błędy",
+        "header-reported": "Zgłoszono błąd:",
+        "header-all-clear": "Nie zgłoszono błędu",
+        "listing-files-failed": "Wystąpił błąd podczas wyświetlania zawartości katalogu",
+        "listing-accounts-failed": "Błąd podczas wyświetlania kont",
+        "listing-accounts-failed-grpc": "Błąd GRPC podczas wyświetlania kont"
       },
       "dump": {
-        "button": ""
+        "button": "Zrzuć stan aplikacji"
       },
-      "refresh": "",
+      "refresh": "Odśwież",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Potwierdź",
         "button-cancel": "Anuluj"
       }
     }
