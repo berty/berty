@@ -37,5 +37,7 @@ export const requestBluetoothAndHandleAlert = async () =>
 				],
 				{ cancelable: false },
 			)
+		} else {
+			resolve('')
 		}
 	})
