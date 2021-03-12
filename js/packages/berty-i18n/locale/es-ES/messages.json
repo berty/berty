@@ -10,23 +10,23 @@
     },
     "select-mode": {
       "title": "",
-      "change-later": "",
+      "change-later": "¡Trendrás la opción de cambiarlo más tarde!",
       "performance": {
         "title": "Rendimiento",
         "desc": "Fácil de usar - Todas las funciones",
         "push-notif": "Recibir notificaciones push",
-        "offline-message": "",
+        "offline-message": "Mensajería sin conexión a través de Bluetooth",
         "add-contact": "Añadir contactos de forma fácil",
         "fast-message": "Envío de mensajes más rápido"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Anonimato completo",
+        "desc": "Para usuarios extremadamente cautelosos",
         "disable-push-notif": "Notificaciones push desactivadas",
         "disable-local-peer-discovery": "Descubrimiento local de pares desactivado",
         "disable-local-peer-discovery-desc": "",
         "disable-contact-request": "Solicitudes de contacto desactivadas",
-        "on-same-network": ""
+        "on-same-network": "Local en la misma red/wifi"
       }
     },
     "create-account": {
@@ -35,7 +35,7 @@
       "required": "Requerido",
       "placeholder": "Nombre",
       "button": "CREAR MI CUENTA",
-      "import-account": ""
+      "import-account": "IMPORTAR UNA CUENTA"
     },
     "services-auth": {
       "header": "Autenticar a los servicios",
@@ -85,42 +85,42 @@
         "no-results": "No se encontraron resultados"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Crear una nueva cuenta",
+        "import-button": "Importar cuenta"
       }
     },
     "home-modal": {
       "top-button": "Crear un nuevo grupo",
       "bottom-button": "Escanear contacto o grupo"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Haz clic aquí para añadir",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configuración de la red",
+        "desc": "Haz clic aquí para finalizar la configuración de la red"
       },
       "notification": {
-        "display-name": "",
+        "display-name": "Configuración de notificaciones",
         "desc": ""
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
+      "welcome-title": "Bienvenido a las opciones de redes",
+      "full-anon-mode": "Modo anónimo completo",
       "simple-tor-compatible": "",
       "allow-expert-mode": "",
       "tor-compatible": {
-        "title": "",
-        "desc": ""
+        "title": "Compatible con TOR",
+        "desc": "Esta configuración te permitirá conectarte a la red Tor y chatear con usuarios en modo anónimo completo sin estar tu mismo en este modo."
       },
       "full-anon": {
-        "title": "",
+        "title": "Modo anónimo completo",
         "desc": "",
         "no-ip": "",
         "no-mc": "",
-        "tor-only": ""
+        "tor-only": "Solo Tor"
       },
-      "save": "",
+      "save": "GUARDAR",
       "skip": "SALTAR Y HACER MÁS TARDE"
     }
   },
@@ -222,10 +222,10 @@
       "desc": "Bluetooth te permite usar mejor la aplicación Berty cuando no tienes una conexión de red (wifi o datos) conectando tu teléfono directamente con los contactos cercanos",
       "activate-button": "Activar bluetooth",
       "permission-title": "",
-      "permission-description": "",
-      "tag-neutral": "",
+      "permission-description": "Autoriza a la aplicación Berty para usar las funciones de Bluetooth en tu dispositivo",
+      "tag-neutral": "Pregúntame más tarde",
       "tag-negative": "Cancelar",
-      "tag-positive": ""
+      "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Activar conectividad con múltiples compañeros"
@@ -304,7 +304,7 @@
       "debug-button": "Depurar",
       "log-button": {
         "name": "",
-        "bullet-point": ""
+        "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
       },
       "add-dev-conversations-button": "Agregar conversaciones de desarrollo",
       "share-button": {
@@ -367,8 +367,8 @@
       "invalid-link": "¡Enlace no válido!",
       "invalid-qr": "¡Código QR inválido!",
       "error": "¡Error!",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "contact-already-added": "El contacto ya ha sido añadido",
+      "contact-already-added-message": "No puedes añadir el mismo contacto varias veces"
     },
     "invalid-scan": {
       "dismiss-button": "CERRAR"
@@ -384,8 +384,8 @@
       "devices": "Dispositivos"
     },
     "welcome-configuration": {
-      "title": "",
-      "desc": "",
+      "title": "¡Bienvenido a bordo!",
+      "desc": "¡Veamos un resumen de los ajustes y terminemos tu primera configuración!",
       "skip": "SALTAR",
       "next": ""
     }
@@ -479,21 +479,21 @@
       "image-saved": "Imagen guardada en la galería"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
-      "links": "",
-      "documents": ""
+      "title": "Multimedia compartida",
+      "medias": "Multimedia",
+      "links": "Enlaces",
+      "documents": "Documentos"
     }
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Error detectado",
+      "crash": "Fallo detectado"
     },
-    "restart-app": "",
+    "restart-app": "Reinicia la aplicación",
     "wtf-screen": {
       "title": "",
-      "desc": "",
+      "desc": "La aplicación ha fallado.",
       "desc-report": ""
     },
     "sorry-screen": {
@@ -507,58 +507,58 @@
   "debug": {
     "inspector": {
       "show-button": "",
-      "hide-button": "",
+      "hide-button": "Cerrar",
       "title": "",
       "accounts": {
-        "title": "",
+        "title": "Cuentas",
         "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "data-not-found": "La cuenta no está en la lista",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
+          "file-exists": "La cuenta {{accountId}} no existe, pero un archivo tiene este mismo nombre.",
+          "account-exists": "La cuenta {{accountId}} ya existe.",
+          "directory-exists-load-error": "La cuenta {{accountId}} no existe, pero un directorio tiene este mismo nombre.",
           "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
+          "actions-title": "¿Qué deberíamos hacer?",
+          "action-account-manager": "Eliminar a través del gestor de cuentas",
+          "action-account-manager-confirm": "Confirmar eliminación de la cuenta",
+          "action-force-delete": "Forzar la eliminación",
+          "action-force-delete-confirm": "Confirmar la eliminación de la cuenta",
+          "error-close": "Error al cerrar la cuenta",
+          "error-delete": "Error al eliminar la cuenta",
+          "success-feedback": "Cuenta eliminada",
           "action-cancel": "Cancelar"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
+          "metadata-found": "Se encontró el archivo de metadatos",
+          "metadata-not-found": "No se encontró el archivo de metadatos",
+          "ipfs-repo-config-found": "Se encontró el archivo IPFS",
+          "ipfs-repo-config-not-found": "No se encontró el archivo IPFS",
           "messenger-db-found": "",
           "messenger-db-not-found": ""
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
+            "name": "Nombre: {{name}}",
+            "created": "Creado: {{created}}",
+            "opened": "Abierto: {{opened}}",
+            "error": "Error: {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "title": "Errores",
+        "header-reported": "Error reportado:",
+        "header-all-clear": "Ningún error reportado",
+        "listing-files-failed": "Error al mostrar el contenido del directorio",
+        "listing-accounts-failed": "Error al mostrar las cuentas",
+        "listing-accounts-failed-grpc": "Error GRPC al mostrar las cuentas"
       },
       "dump": {
         "button": ""
       },
-      "refresh": "",
+      "refresh": "Actualizar",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Confirmar",
         "button-cancel": "Cancelar"
       }
     }
