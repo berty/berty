@@ -148,6 +148,16 @@ export const MessageList: React.FC<{
 		}
 	}, [fetchingFrom, oldestMessage?.cid])
 
+	const replyOptions = useMemo(() => {
+		try {
+			return beapi.messenger.AppMessage.ReplyOptions.decode(
+				conversation?.replyOptions?.payload!,
+			).options.filter((o) => o.payload && o.display)
+		} catch (e) {
+			return []
+		}
+	}, [conversation?.replyOptions?.payload])
+
 	return (
 		<FlatList
 			initialScrollIndex={initialScrollIndex}
@@ -178,20 +188,13 @@ export const MessageList: React.FC<{
 				setTimeout(() => setShowStickyDate(false), 2000)
 			}}
 			ListHeaderComponent={
-				conversation?.replyOptions && (
+				replyOptions.length > 0 ? (
 					<>
 						<View style={[padding.horizontal.medium, padding.bottom.small]}>
-							<QuickReplyOptions
-								convPk={id}
-								options={
-									beapi.messenger.AppMessage.ReplyOptions.decode(
-										conversation.replyOptions?.payload!,
-									).options || []
-								}
-							/>
+							<QuickReplyOptions convPk={id} options={replyOptions} />
 						</View>
 					</>
-				)
+				) : undefined
 			}
 		/>
 	)
