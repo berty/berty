@@ -182,7 +182,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							}}
 						>
 							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
-								{(fake && 'FAKE - ') || ''} {userDisplayName}
+								{fake ? `FAKE - ${userDisplayName}` : userDisplayName}
 							</Text>
 						</View>
 						{/* Timestamp and unread count */}
