@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
+import { View, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
@@ -12,12 +12,16 @@ import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { ContactAvatar } from '../avatars'
+import { MemberList } from './CreateGroupAddMembers'
 import { useMsgrContext } from '@berty-tech/store/context'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 
 const useStylesCreateGroup = () => {
-	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
+	const [
+		{ padding, height, width, absolute, border, column, text, background },
+		{ scaleSize },
+	] = useStyles()
 	return {
 		newGroup: height(30),
 		newGroup2ItemName: padding.top.tiny,
@@ -31,7 +35,11 @@ const useStylesCreateGroup = () => {
 			border.radius.medium,
 		],
 		newGroup2: height(200),
-		groupInfoProfilePhoto: [height(65), width(65), border.radius.scale(65 / 2)],
+		groupInfoProfilePhoto: [
+			height(65 * scaleSize),
+			width(65 * scaleSize),
+			border.radius.scale(65 / 2),
+		],
 		groupInfoAboutGroupsText: text.size.medium,
 		memberItemDelete: [
 			height(25),
@@ -52,52 +60,6 @@ const _stylesCreateGroup = StyleSheet.create({
 	},
 })
 
-const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, onRemove }) => {
-	const [{ padding, column, text, color, row, maxWidth }] = useStyles()
-	const _styles = useStylesCreateGroup()
-
-	return (
-		<View style={[padding.horizontal.medium, maxWidth(100)]}>
-			<View style={[column.top, padding.top.small]}>
-				<ContactAvatar publicKey={member.publicKey} size={70} />
-				<Text style={[text.color.white, column.item.center, padding.top.tiny]} numberOfLines={1}>
-					{member.displayName}
-				</Text>
-			</View>
-			<TouchableOpacity style={[_styles.memberItemDelete]} onPress={onRemove}>
-				<Icon
-					name='close-outline'
-					width={20}
-					height={20}
-					fill={color.red}
-					style={row.item.justify}
-				/>
-			</TouchableOpacity>
-		</View>
-	)
-}
-
-const MemberList: React.FC<{
-	members: any[]
-	onRemoveMember: (id: string) => void
-}> = ({ members, onRemoveMember }) => {
-	const [{ height, padding }] = useStyles()
-
-	return (
-		<View style={[height(135)]}>
-			<ScrollView
-				horizontal={true}
-				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={[padding.left.medium]}
-			>
-				{members.map((member: any) => (
-					<MemberItem member={member} onRemove={() => onRemoveMember(member.publicKey)} />
-				))}
-			</ScrollView>
-		</View>
-	)
-}
-
 type GroupInfoProps = { onGroupNameChange: (name: string) => void; layout: number }
 
 const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
@@ -108,15 +70,8 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 	const _styles = useStylesCreateGroup()
 	const insets = useSafeAreaInsets()
 	const restScreen = windowHeight - layout - 400 * scaleSize - insets.bottom // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
-	const paddingBottom =
-		restScreen < 90 * scaleSize ? 90 * scaleSize - restScreen + 20 * scaleSize : 0 // Padding in scrollview if the rest of screen was smaller than footer // 90 = size of footer, 20 = padding
 	return (
-		<ScrollView
-			showsVerticalScrollIndicator={false}
-			bounces={paddingBottom ? true : false}
-			style={[height(300 + restScreen), padding.horizontal.large]}
-			contentContainerStyle={[padding.bottom.scale(paddingBottom)]}
-		>
+		<View style={[height(300 + restScreen), padding.horizontal.large]}>
 			<View style={[row.center]}>
 				<View
 					style={[
@@ -128,8 +83,8 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 				>
 					<Icon
 						name='camera-outline'
-						height={30}
-						width={30}
+						height={30 * scaleSize}
+						width={30 * scaleSize}
 						fill={color.blue}
 						style={row.item.justify}
 					/>
@@ -149,6 +104,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 						style={[
 							margin.left.small,
 							text.bold.small,
+							text.size.medium,
 							{ fontFamily: 'Open Sans', color: '#AFB1C0' },
 						]}
 						placeholder='Group name'
@@ -160,14 +116,14 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 			</View>
 			<TouchableOpacity
 				activeOpacity={0.9}
-				style={[border.radius.medium, border.shadow.medium, padding.medium, margin.top.medium]}
+				style={[border.radius.medium, border.shadow.medium, padding.medium, margin.top.tiny]}
 			>
 				<View style={[row.fill]}>
 					<View style={[row.center]}>
 						<Icon
 							name='info-outline'
-							height={30}
-							width={30}
+							height={30 * scaleSize}
+							width={30 * scaleSize}
 							fill={color.blue}
 							style={row.item.justify}
 						/>
@@ -213,7 +169,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 					/>
 				</View>
 			</TouchableOpacity>
-		</ScrollView>
+		</View>
 	)
 }
 
@@ -233,6 +189,7 @@ export const CreateGroupFinalize: React.FC<{
 	const [{ flex, background, padding }] = useStyles()
 	const ctx = useMsgrContext()
 	const insets = useSafeAreaInsets()
+	const { t }: { t: any } = useTranslation()
 
 	React.useEffect(() => {
 		// TODO: better handle error
@@ -264,25 +221,25 @@ export const CreateGroupFinalize: React.FC<{
 					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />
 					<Header
-						title='Add members'
+						title={t('main.home.create-group.add-members')}
 						onPress={() => goBack()}
 						style={[padding.bottom.small]}
 						first
 					/>
 				</View>
 				<View style={[{ top: -5, paddingBottom: insets.bottom }]}>
-					<Header title='Group info'>
+					<Header title={t('main.home.create-group.group-info')}>
 						<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
-						<FooterCreateGroup
-							title='CREATE A GROUP'
-							action={() => {
-								createGroup()
-								ctx.playSound('groupCreated')
-							}}
-						/>
 					</Header>
 				</View>
 			</SafeAreaView>
+			<FooterCreateGroup
+				title={t('main.home.create-group.create-group')}
+				action={() => {
+					createGroup()
+					ctx.playSound('groupCreated')
+				}}
+			/>
 		</Layout>
 	)
 }

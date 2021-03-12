@@ -12,16 +12,15 @@ type FooterCreateGroupProps = {
 }
 
 const useStylesCreateGroup = () => {
-	const [{ padding, border, margin, text }] = useStyles()
+	const [{ border, text }] = useStyles()
 	return {
-		footerCreateGroup: [padding.horizontal.scale(60), margin.bottom.scale(40)],
 		footerCreateGroupButton: border.radius.small,
 		footerCreateGroupText: text.size.medium,
 	}
 }
 
 export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, action }) => {
-	const [{ absolute, background, row, padding, color, text }] = useStyles()
+	const [{ absolute, background, row, padding, color, text }, { scaleSize }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
 	return (
@@ -33,7 +32,16 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 				]}
 				colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 			/>
-			<View style={[absolute.bottom, absolute.left, absolute.right, _styles.footerCreateGroup]}>
+			<View
+				style={[
+					{
+						position: 'absolute',
+						bottom: 25 * scaleSize,
+						left: 60 * scaleSize,
+						right: 60 * scaleSize,
+					},
+				]}
+			>
 				<TouchableOpacity onPress={() => action()}>
 					<View
 						style={[
@@ -61,7 +69,12 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 						</View>
 						{icon && (
 							<View style={[row.item.justify, padding.left.medium]}>
-								<Icon name='arrow-forward-outline' width={25} height={25} fill={color.blue} />
+								<Icon
+									name='arrow-forward-outline'
+									width={25 * scaleSize}
+									height={25 * scaleSize}
+									fill={color.blue}
+								/>
 							</View>
 						)}
 					</View>
