@@ -78,7 +78,7 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 					justifyContent: 'center',
 					alignItems: 'center',
 					height: 250 * scaleHeight,
-					top: 140,
+					top: '25%',
 				},
 				margin.big,
 			]}
@@ -92,7 +92,7 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 						justifyContent: 'center',
 						alignItems: 'center',
 						position: 'relative',
-						top: 50,
+						top: 50 * scaleHeight,
 						zIndex: 1,
 						elevation: 7,
 						shadowOpacity: 0.1,
@@ -114,7 +114,7 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 					border.shadow.huge,
 				]}
 			>
-				<View style={[margin.top.scale(60)]}>
+				<View style={[margin.top.scale(70 * scaleHeight)]}>
 					<Icon
 						name='info-outline'
 						fill={color.blue}
@@ -153,7 +153,7 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 								{ fontFamily: 'Open Sans' },
 							]}
 						>
-							{displayName}
+							{` ${displayName} `}
 						</TextNative>
 						<TextNative
 							style={[
@@ -169,7 +169,12 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 				</View>
 				<View style={[row.center, padding.top.medium]}>
 					<TouchableOpacity
-						style={[row.fill, margin.bottom.medium, opacity(0.5), _styles.skipButton]}
+						style={[
+							margin.bottom.medium,
+							opacity(0.5),
+							_styles.skipButton,
+							{ flexDirection: 'row', justifyContent: 'center' },
+						]}
 						onPress={async () => {
 							await setPersistentOption({
 								type: PersistentOptionsKeys.Suggestions,
@@ -199,10 +204,14 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 						</TextNative>
 					</TouchableOpacity>
 					<TouchableOpacity
-						style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
+						style={[
+							margin.bottom.medium,
+							background.light.blue,
+							_styles.addButton,
+							{ flexDirection: 'row', justifyContent: 'center' },
+						]}
 						onPress={async () => {
 							if (pdlDone && !pdlError) {
-								console.log('heeere')
 								await setPersistentOption({
 									type: PersistentOptionsKeys.Suggestions,
 									payload: {

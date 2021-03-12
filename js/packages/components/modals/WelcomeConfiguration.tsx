@@ -58,7 +58,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 					justifyContent: 'center',
 					alignItems: 'center',
 					height: 250 * scaleHeight,
-					top: 140,
+					top: '25%',
 				},
 				margin.big,
 			]}
@@ -71,14 +71,13 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 						justifyContent: 'center',
 						alignItems: 'center',
 						position: 'relative',
-						top: 50,
+						top: 50 * scaleHeight,
 						zIndex: 1,
 						elevation: 7,
 						shadowOpacity: 0.1,
 						shadowRadius: 5,
 						shadowOffset: { width: 0, height: 3 },
 					},
-
 					border.radius.scale(60),
 				]}
 			>
@@ -98,7 +97,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 					source={WelcomeBackground}
 					style={[padding.horizontal.medium, padding.bottom.medium]}
 				>
-					<View style={[margin.top.scale(60)]}>
+					<View style={[margin.top.scale(70 * scaleHeight)]}>
 						<Icon
 							name='info-outline'
 							fill={color.white}
@@ -134,10 +133,11 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 					<View style={[row.center, padding.top.medium]}>
 						<TouchableOpacity
 							style={[
-								row.fill,
 								margin.bottom.medium,
 								_styles.skipButton,
 								{
+									flexDirection: 'row',
+									justifyContent: 'center',
 									backgroundColor: 'white',
 								},
 							]}
@@ -164,7 +164,12 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 							</TextNative>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
+							style={[
+								margin.bottom.medium,
+								background.light.blue,
+								_styles.addButton,
+								{ flexDirection: 'row', justifyContent: 'center' },
+							]}
 							onPress={async () => {
 								closeModal()
 								const { status } = await requestNotifications(['alert', 'badge'])
