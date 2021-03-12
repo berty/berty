@@ -14,29 +14,19 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useContactList, useAccountContactSearchResults } from '@berty-tech/store/hooks'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty-tech/api'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
+import { useTranslation } from 'react-i18next'
 
 // Styles
 const useStylesCreateGroup = () => {
-	const [{ height, width, absolute, border, background, column }] = useStyles()
+	const [{ border }] = useStyles()
 	return {
-		separateBar: [border.scale(0.5), border.color.light.grey], // opacity
-		memberItemDelete: [
-			height(25),
-			width(25),
-			absolute.scale({ top: 5, right: 10 }),
-			border.shadow.medium,
-			border.radius.medium,
-			background.white,
-			absolute.top,
-			column.justify,
-		],
+		separateBar: [border.scale(0.6), border.color.light.grey], // opacity
 	}
 }
 
@@ -50,8 +40,6 @@ type AddMembersItemProps = {
 }
 
 type AddMembersProps = {
-	paddingBottom?: number
-	layout: number
 	onSetMember: (contact: any) => void
 	onRemoveMember: (id: string) => void
 	members: any[]
@@ -77,6 +65,7 @@ export const Header: React.FC<{
 }) => {
 	const [
 		{ height, border, margin, row, padding, text, column, color, background, opacity },
+		{ scaleHeight },
 	] = useStyles()
 	return (
 		<View style={[!first && background.white]}>
@@ -93,14 +82,14 @@ export const Header: React.FC<{
 					<View style={[height(90)]}>
 						<View
 							style={[
-								margin.top.small,
+								margin.top.medium,
 								row.item.justify,
 								border.scale(2.5),
 								border.color.light.grey,
 								border.radius.scale(4),
 								{
 									backgroundColor: '#E8E9FC',
-									width: '14%',
+									width: 60 * scaleHeight,
 								},
 							]}
 						/>
@@ -136,7 +125,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 	added,
 	separateBar = true,
 }) => {
-	const [{ row, margin, padding }] = useStyles()
+	const [{ row, margin, padding }, { scaleSize }] = useStyles()
 	const _styles = useStylesCreateGroup()
 	return (
 		<View>
@@ -151,7 +140,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 				style={[row.fill, padding.right.small]}
 			>
 				<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
-					<ContactAvatar size={50} publicKey={contact.publicKey} />
+					<ContactAvatar size={50 * scaleSize} publicKey={contact.publicKey} />
 					<Text numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
 						{contact.displayName}
 					</Text>
@@ -174,108 +163,80 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 	)
 }
 
-export const AddMembersHeader: React.FC<{ style?: any }> = ({ style }) => {
-	const [{ padding, row, text, margin, border }] = useStyles()
-	return (
-		<View style={style}>
-			<View
-				style={[
-					margin.top.small,
-					row.item.justify,
-					border.scale(2.5),
-					border.color.light.grey,
-					border.radius.scale(4),
-					{
-						backgroundColor: '#E8E9FC',
-						width: '14%',
-					},
-				]}
-			/>
-			<View style={[padding.bottom.big, padding.top.medium]}>
-				<TextNative style={[text.bold.medium, text.size.scale(27), text.color.black]}>
-					Add members
-				</TextNative>
-			</View>
-		</View>
-	)
-}
-
-const AddMembers: React.FC<AddMembersProps> = ({
-	onSetMember,
-	onRemoveMember,
-	members,
-	paddingBottom,
-}) => {
-	const [{ padding, background, row, margin, border }] = useStyles()
+const AddMembers: React.FC<AddMembersProps> = ({ onSetMember, onRemoveMember, members }) => {
+	const [{ padding, background, row, margin, border }, { scaleHeight, scaleSize }] = useStyles()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useAccountContactSearchResults(searchText)
 	const accountContacts = useContactList()
-	const navigation = useNavigation()
+	const { t }: { t: any } = useTranslation()
 	let contacts = searchText.length ? searchContacts : accountContacts
 	contacts = contacts.filter(
 		(contact: any) => contact.state === beapi.messenger.Contact.State.Accepted,
 	)
 
 	return (
-		<View>
-			<View style={[padding.horizontal.large, padding.top.small, background.white]}>
-				<View
-					style={[padding.small, row.left, border.radius.medium, { backgroundColor: '#F7F8FF' }]}
-				>
-					<Icon
-						name='search-outline'
-						width={30}
-						height={30}
-						fill='#AFB1C0'
-						style={row.item.justify}
-					/>
-					<TextInput
-						style={[margin.left.small, row.item.justify, { color: '#AFB1C0' }]}
-						placeholder='Search'
-						placeholderTextColor='#AFB1C090'
-						onChangeText={setSearchText}
-						autoCorrect={false}
-					/>
-				</View>
-
-				<ScrollView
-					contentContainerStyle={[
-						padding.top.medium,
+		<View style={[padding.horizontal.large, padding.top.small, background.white, { flex: 1 }]}>
+			<View
+				style={[
+					padding.small,
+					row.left,
+					border.radius.medium,
+					{ backgroundColor: '#F7F8FF', alignItems: 'center' },
+				]}
+			>
+				<Icon
+					name='search-outline'
+					width={30 * scaleHeight}
+					height={30 * scaleHeight}
+					fill='#AFB1C0'
+					style={row.item.justify}
+				/>
+				<TextInput
+					style={[
+						margin.left.small,
 						{
-							paddingBottom,
+							color: '#AFB1C0',
+							paddingVertical: 8 * scaleHeight,
+							flex: 1,
 						},
 					]}
-					showsVerticalScrollIndicator={false}
-				>
-					{contacts.map((contact, index) => (
-						<AddMembersItem
-							key={contact.publicKey}
-							onSetMember={onSetMember}
-							onRemoveMember={onRemoveMember}
-							added={!!members.find((member) => member.publicKey === contact.publicKey)}
-							contact={contact}
-							separateBar={index < contacts.length - 1}
-						/>
-					))}
-				</ScrollView>
-				<FooterCreateGroup
-					title='CONTINUE'
-					icon='arrow-forward-outline'
-					action={navigation.navigate.main.createGroup.createGroupFinalize}
+					placeholder={t('main.home.create-group.search-placeholder')}
+					placeholderTextColor='#AFB1C090'
+					onChangeText={setSearchText}
+					autoCorrect={false}
 				/>
 			</View>
+
+			<ScrollView
+				contentContainerStyle={[padding.top.medium, { paddingBottom: 75 * scaleSize }]}
+				style={[margin.top.small, { flex: 1 }]}
+				showsVerticalScrollIndicator={false}
+			>
+				{contacts.map((contact, index) => (
+					<AddMembersItem
+						key={contact.publicKey}
+						onSetMember={onSetMember}
+						onRemoveMember={onRemoveMember}
+						added={!!members.find((member) => member.publicKey === contact.publicKey)}
+						contact={contact}
+						separateBar={index < contacts.length - 1}
+					/>
+				))}
+			</ScrollView>
 		</View>
 	)
 }
 
 const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, onRemove }) => {
-	const [{ padding, column, text, color, row, maxWidth }] = useStyles()
-	const _styles = useStylesCreateGroup()
+	const [
+		{ padding, column, text, color, row, maxWidth, border, background },
+		{ scaleSize },
+	] = useStyles()
 
 	return (
 		<View style={[padding.horizontal.medium, maxWidth(100)]}>
 			<View style={[column.top, padding.top.small]}>
-				<ContactAvatar size={70} publicKey={member.publicKey} />
+				<ContactAvatar size={70 * scaleSize} publicKey={member.publicKey} />
 				<TextNative
 					numberOfLines={1}
 					style={[
@@ -289,11 +250,26 @@ const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, o
 					{member.displayName}
 				</TextNative>
 			</View>
-			<TouchableOpacity style={[_styles.memberItemDelete]} onPress={onRemove}>
+			<TouchableOpacity
+				style={[
+					border.shadow.medium,
+					border.radius.medium,
+					background.white,
+					column.justify,
+					{
+						height: 25 * scaleSize,
+						width: 25 * scaleSize,
+						position: 'absolute',
+						top: 5 * scaleSize,
+						right: 9 * scaleSize,
+					},
+				]}
+				onPress={onRemove}
+			>
 				<Icon
 					name='close-outline'
-					width={20}
-					height={20}
+					width={20 * scaleSize}
+					height={20 * scaleSize}
 					fill={color.red}
 					style={row.item.justify}
 				/>
@@ -316,7 +292,11 @@ export const MemberList: React.FC<{
 				contentContainerStyle={[padding.left.medium]}
 			>
 				{members.map((member) => (
-					<MemberItem member={member} onRemove={() => onRemoveMember(member.publicKey)} />
+					<MemberItem
+						key={member.publicKey}
+						member={member}
+						onRemove={() => onRemoveMember(member.publicKey)}
+					/>
 				))}
 			</ScrollView>
 		</View>
@@ -325,7 +305,8 @@ export const MemberList: React.FC<{
 
 export const CreateGroupHeader: React.FC<{}> = () => {
 	const navigation = useNavigation()
-	const [{ color, padding, margin }] = useStyles()
+	const [{ color, padding, margin, text }, { scaleSize }] = useStyles()
+	const { t }: { t: any } = useTranslation()
 	return (
 		<View
 			style={[
@@ -348,34 +329,46 @@ export const CreateGroupHeader: React.FC<{}> = () => {
 			>
 				<TouchableOpacity
 					onPress={navigation.goBack}
-					style={{ alignItems: 'center', justifyContent: 'center' }}
+					style={{
+						padding: 7,
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
 				>
 					<Icon
 						name='arrow-back-outline'
-						width={_iconArrowBackSize}
-						height={_iconArrowBackSize}
+						width={_iconArrowBackSize * scaleSize}
+						height={_iconArrowBackSize * scaleSize}
 						fill={color.white}
 					/>
 				</TouchableOpacity>
 				<Text
-					style={{
-						fontWeight: '700',
-						fontSize: _titleSize,
-						lineHeight: 1.25 * _titleSize,
-						marginLeft: 10,
-						color: color.white,
-					}}
+					style={[
+						text.size.huge,
+						{
+							fontWeight: '700',
+							lineHeight: 1.25 * _titleSize,
+							marginLeft: 10,
+							color: color.white,
+						},
+					]}
 				>
-					New Group
+					{t('main.home.create-group.title')}
 				</Text>
 			</View>
-			<Icon name='users' pack='custom' width={35} height={35} fill={color.white} />
+			<Icon
+				name='users'
+				pack='custom'
+				width={35 * scaleSize}
+				height={35 * scaleSize}
+				fill={color.white}
+			/>
 		</View>
 	)
 }
 
 const _iconArrowBackSize = 30
-const _titleSize = 26
+const _titleSize = 25
 
 export const CreateGroupAddMembers: React.FC<{
 	onSetMember: (contact: any) => void
@@ -383,33 +376,30 @@ export const CreateGroupAddMembers: React.FC<{
 	members: any[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
 	const [{ flex, background, margin, color }] = useStyles()
-	const [layout, setLayout] = useState<number>(0)
 	const navigation = useNavigation()
-	const insets = useSafeAreaInsets()
+	const { t }: { t: any } = useTranslation()
 
 	return (
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
-			<SwipeNavRecognizer
-				onSwipeUp={() => navigation.goBack()}
-				onSwipeDown={() => navigation.goBack()}
-				onSwipeLeft={() => navigation.goBack()}
-				onSwipeRight={() => navigation.goBack()}
-			>
-				<SafeAreaView style={[background.blue]}>
-					<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
+			<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
+				<SafeAreaView style={[background.blue, flex.tiny]}>
+					<View>
 						<CreateGroupHeader />
 						<MemberList members={members} onRemoveMember={onRemoveMember} />
 					</View>
-					<Header title='Add members' first style={[margin.bottom.scale(-1)]} />
-					<AddMembers
-						members={members}
-						onSetMember={onSetMember}
-						onRemoveMember={onRemoveMember}
-						paddingBottom={240 + insets.bottom}
-						layout={layout}
+					<Header
+						title={t('main.home.create-group.add-members')}
+						first
+						style={[margin.bottom.scale(-1)]}
 					/>
+					<AddMembers members={members} onSetMember={onSetMember} onRemoveMember={onRemoveMember} />
 				</SafeAreaView>
+				<FooterCreateGroup
+					title={t('main.home.create-group.continue')}
+					icon='arrow-forward-outline'
+					action={navigation.navigate.main.createGroup.createGroupFinalize}
+				/>
 			</SwipeNavRecognizer>
 		</Layout>
 	)

@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "Create new account",
         "import-button": "Import account"
+      },
+      "create-group": {
+        "title": "New Group",
+        "add-members": "Add members",
+        "group-info": "Group info",
+        "search-placeholder": "Search",
+        "continue": "CONTINUE",
+        "create-group": "CREATE A GROUP"
       }
     },
     "home-modal": {

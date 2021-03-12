@@ -14,7 +14,7 @@ export const DropDownPicker: React.FC<{
 	defaultValue: string
 	onChangeItem: (item: Item) => void
 }> = ({ items, defaultValue, onChangeItem }) => {
-	const [{ padding, border, background, opacity }] = useStyles()
+	const [{ padding, border, background, opacity, text }, { scaleSize }] = useStyles()
 
 	const [isOpen, setOpen] = useState(false)
 	const [animateHeight] = useState(new Animated.Value(0))
@@ -47,7 +47,7 @@ export const DropDownPicker: React.FC<{
 				background.white,
 				border.shadow.medium,
 				border.radius.medium,
-				{ flex: 1, marginTop: 22, minHeight: 60 },
+				{ flex: 1, marginTop: 22 * scaleSize, minHeight: 60 * scaleSize },
 			]}
 		>
 			<TouchableOpacity
@@ -62,7 +62,9 @@ export const DropDownPicker: React.FC<{
 				]}
 				onPress={toggleView}
 			>
-				<Text>{items.find((item) => item.value === defaultValue)?.label}</Text>
+				<Text style={[text.size.medium]}>
+					{items.find((item) => item.value === defaultValue)?.label}
+				</Text>
 				<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
 					<Animated.View
 						style={[
@@ -94,7 +96,9 @@ export const DropDownPicker: React.FC<{
 						style={[padding.medium]}
 						key={key}
 					>
-						<Text key={item.value}>{item.label}</Text>
+						<Text style={[text.size.medium]} key={item.value}>
+							{item.label}
+						</Text>
 						<View
 							style={[
 								border.color.grey,

@@ -341,7 +341,7 @@ const LogButton: React.FC = () => {
 					<TextInput
 						onChangeText={(t) => setValue(t)}
 						value={value}
-						style={[text.bold.small, flex.scale(8), { fontFamily: 'Open Sans' }]}
+						style={[text.bold.small, text.size.medium, flex.scale(8), { fontFamily: 'Open Sans' }]}
 					/>
 					<TouchableOpacity
 						onPress={async () => {
