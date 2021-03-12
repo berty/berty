@@ -330,7 +330,10 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 func (svc *service) subscribeToMessages(gpkb []byte) error {
 	ms, err := svc.protocolClient.GroupMessageList(
 		svc.ctx,
-		&protocoltypes.GroupMessageList_Request{GroupPK: gpkb},
+		&protocoltypes.GroupMessageList_Request{
+			GroupPK:  gpkb,
+			SinceNow: true,
+		},
 	)
 	if err != nil {
 		return errcode.ErrEventListMessage.Wrap(err)

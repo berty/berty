@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Text } from 'react-native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useInteraction, useConversation } from '@berty-tech/store/hooks'
+import { useConversation } from '@berty-tech/store/hooks'
 import { navigate, Routes } from '@berty-tech/navigation'
 
 import { useStylesNotification } from './common'
@@ -15,7 +15,8 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 
 	const { payload } = props?.additionalProps?.payload || {}
 	const convExists = useConversation(payload.conversation?.publicKey)
-	const inteExists = useInteraction(payload?.interaction?.cid, payload.conversation?.publicKey)
+	// const inteExists = useInteraction(payload?.interaction?.cid, payload.conversation?.publicKey)
+	const inteExists = true // TODO : scroll to time
 
 	const handlePressConvMessage = () => {
 		if (convExists && inteExists) {

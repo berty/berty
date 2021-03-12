@@ -299,7 +299,7 @@ export const openingClients = (
 		precancel = true
 	}
 	messengerClient
-		.eventStream({})
+		.eventStream({ shallowAmount: 1 })
 		.then(async (stream) => {
 			if (precancel) {
 				await stream.stop()

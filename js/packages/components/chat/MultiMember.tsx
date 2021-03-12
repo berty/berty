@@ -1,18 +1,7 @@
 import React, { useState } from 'react'
-import {
-	TouchableOpacity,
-	View,
-	ActivityIndicator,
-	SectionListRenderItem,
-	SectionListData,
-	SectionList,
-	ViewToken,
-	Platform,
-} from 'react-native'
+import { TouchableOpacity, View, Platform } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
-import { groupBy } from 'lodash'
-import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
@@ -21,22 +10,17 @@ import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
 	useConversation,
 	useLastConvInteraction,
-	useMsgrContext,
 	useReadEffect,
-	useSortedConvInteractions,
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 import { ChatFooter, ChatDate } from './common'
-import { Message } from './message'
-import { MessageSystemWrapper } from './message/MessageSystemWrapper'
 import BlurView from '../shared-components/BlurView'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useLayout } from '../hooks'
-import { pbDateToNum } from '../helpers'
 import { MultiMemberAvatar } from '../avatars'
+import { MessageList } from '@berty-tech/components/chat/MessageList'
 
 //
 // MultiMember
@@ -109,149 +93,6 @@ const HeaderMultiMember: React.FC<{
 				</View>
 			) : null}
 		</View>
-	)
-}
-
-const InfosMultiMember: React.FC<beapi.messenger.IConversation> = ({
-	createdDate: createdDateStr,
-}) => {
-	const [{ margin, text, flex }] = useStyles()
-	// const members = useConvMembers(publicKey)
-	const createdDate = parseInt((createdDateStr as unknown) as string, 10)
-	const textColor = '#4E58BF'
-	return (
-		<View style={[flex.align.center, flex.justify.center]}>
-			<ChatDate date={createdDate} />
-			<MessageSystemWrapper styleContainer={[margin.top.large, margin.bottom.medium]}>
-				<Text style={[text.align.center, { color: textColor }]}>Group joined! 👍</Text>
-			</MessageSystemWrapper>
-			{/*<MemberList members={Object.keys(members)} />*/}
-		</View>
-	)
-}
-
-const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
-	const { ...propsToPass } = props
-	return (
-		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-			<ActivityIndicator {...propsToPass} />
-		</View>
-	)
-}
-
-const _createSections = (items: any[]) => {
-	try {
-		const grouped = groupBy(items, (m) =>
-			moment(pbDateToNum(m?.sentDate || Date.now())).format('DD/MM/YYYY'),
-		)
-		const mapped = Object.entries(grouped).map(([k, v], i) => ({ title: k, data: v, index: i }))
-		return mapped
-	} catch (e) {
-		console.warn('could not make sections from data:', e)
-		return []
-	}
-}
-
-const MessageList: React.FC<{
-	id: string
-	scrollToMessage?: string
-	setStickyDate: any
-	setShowStickyDate: any
-}> = ({ id, scrollToMessage, setStickyDate, setShowStickyDate }) => {
-	const [{ overflow, margin, row, flex }, { scaleHeight }] = useStyles()
-	const conversation = useConversation(id)
-	const ctx = useMsgrContext()
-	const members = (ctx as any).members[id] || {}
-	const interactions = useSortedConvInteractions(id).filter(
-		(msg) =>
-			msg.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
-			msg.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata,
-	)
-
-	if (conversation?.replyOptions) {
-		interactions.push(conversation.replyOptions as ParsedInteraction)
-	}
-	const initialScrollIndex = React.useMemo(() => {
-		if (scrollToMessage) {
-			for (let i = 0; i < interactions.length; i++) {
-				if (interactions[i] && interactions[i].cid === scrollToMessage) {
-					return i
-				}
-			}
-		}
-	}, [interactions, scrollToMessage])
-	const flatListRef: any = React.useRef(null)
-
-	const onScrollToIndexFailed = () => {
-		// Not sure why this happens (something to do with item/screen dimensions I think)
-		flatListRef?.current?.scrollToIndex({ index: 0 })
-	}
-
-	const items: any = React.useMemo(() => {
-		return interactions?.reverse() || []
-	}, [interactions])
-
-	const sections = React.useMemo(() => _createSections(items), [items])
-
-	const renderDateFooter: (info: { section: SectionListData<any> }) => React.ReactElement<any> = ({
-		section,
-	}) => {
-		return (
-			<View style={[margin.bottom.tiny]}>
-				{section?.index > 0 && (
-					<ChatDate date={moment(section.title, 'DD/MM/YYYY').unix() * 1000} />
-				)}
-			</View>
-		)
-	}
-	const renderItem: SectionListRenderItem<any> = ({ item, index }) => {
-		return (
-			<Message
-				id={item?.cid || `${index}`}
-				convKind={beapi.messenger.Conversation.Type.MultiMemberType}
-				convPK={conversation?.publicKey || ''}
-				members={members}
-				previousMessageId={index < items.length - 1 ? items[index + 1]?.cid : ''}
-				nextMessageId={index > 0 ? items[index - 1]?.cid : ''}
-			/>
-		)
-	}
-
-	const updateStickyDate: (info: { viewableItems: ViewToken[] }) => void = ({ viewableItems }) => {
-		if (viewableItems && viewableItems.length) {
-			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
-			if (minDate) {
-				setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
-			}
-		}
-	}
-
-	if (!conversation) {
-		return <CenteredActivityIndicator />
-	}
-
-	return (
-		<SectionList
-			initialScrollIndex={initialScrollIndex}
-			onScrollToIndexFailed={onScrollToIndexFailed}
-			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
-			ref={flatListRef}
-			keyboardDismissMode='on-drag'
-			sections={sections}
-			inverted
-			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
-			ListFooterComponent={<InfosMultiMember {...conversation} />}
-			renderSectionFooter={renderDateFooter}
-			renderItem={renderItem}
-			onViewableItemsChanged={updateStickyDate}
-			initialNumToRender={20}
-			onScrollBeginDrag={() => {
-				setShowStickyDate(false) // TODO: tmp until hide if start of conversation is visible
-			}}
-			onScrollEndDrag={() => {
-				setTimeout(() => setShowStickyDate(false), 2000)
-			}}
-		/>
 	)
 }
 

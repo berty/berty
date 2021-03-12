@@ -350,7 +350,7 @@ export type MsgrState = {
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
 	contacts: { [key: string]: beapi.messenger.IContact | undefined }
 	interactions: {
-		[key: string]: { [key: string]: ParsedInteraction | undefined } | undefined
+		[key: string]: ParsedInteraction[]
 	}
 	members: {
 		[key: string]: { [key: string]: beapi.messenger.IMember | undefined } | undefined

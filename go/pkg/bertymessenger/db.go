@@ -413,6 +413,96 @@ func (d *dbWrapper) getAllInteractions() ([]*messengertypes.Interaction, error) 
 	return interactions, d.db.Preload(clause.Associations).Find(&interactions).Error
 }
 
+func (d *dbWrapper) getPaginatedInteractions(opts *messengertypes.PaginatedInteractionsOptions) ([]*messengertypes.Interaction, []*messengertypes.Media, error) {
+	if opts == nil {
+		opts = &messengertypes.PaginatedInteractionsOptions{}
+	}
+
+	if opts.Amount <= 0 {
+		opts.Amount = 5
+	}
+
+	var conversationPks, cids []string
+	interactions := []*messengertypes.Interaction(nil)
+	medias := []*messengertypes.Media(nil)
+	previousInteraction := (*messengertypes.Interaction)(nil)
+
+	if opts.ConversationPK != "" {
+		conversationPks = []string{opts.ConversationPK}
+	} else if err := d.db.Model(&messengertypes.Conversation{}).Pluck("public_key", &conversationPks).Error; err != nil {
+		return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list conversation ids: %w", err))
+	}
+
+	if opts.RefCID != "" {
+		var err error
+		previousInteraction, err = d.getInteractionByCID(opts.RefCID)
+		if err != nil {
+			return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to retrieve specified interaction: %w", err))
+		}
+
+		if opts.ConversationPK != "" && previousInteraction.ConversationPublicKey != opts.ConversationPK {
+			return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("specified interaction cid and conversation pk doesn't match"))
+		}
+
+		conversationPks = []string{previousInteraction.ConversationPublicKey}
+	}
+
+	for _, pk := range conversationPks {
+		var cidsForConv []string
+		query := d.db.
+			Model(&messengertypes.Interaction{}).
+			Where(&messengertypes.Interaction{ConversationPublicKey: pk})
+
+		if previousInteraction != nil {
+			if opts.OldestToNewest {
+				query = query.Where("sent_date > ?", previousInteraction.SentDate)
+			} else {
+				query = query.Where("sent_date < ?", previousInteraction.SentDate)
+			}
+		}
+
+		query = query.Limit(int(opts.Amount))
+
+		if opts.OldestToNewest {
+			query = query.Order("sent_date")
+		} else {
+			query = query.Order("sent_date DESC")
+		}
+
+		if err := query.
+			Pluck("cid", &cidsForConv).
+			Error; err != nil {
+			return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list latest cids for conversation: %w", err))
+		}
+
+		cids = append(cids, cidsForConv...)
+	}
+
+	if len(cids) == 0 {
+		return nil, nil, nil
+	}
+
+	if err := d.db.
+		Preload(clause.Associations).
+		Find(&interactions, cids).
+		Error; err != nil {
+		return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch interactions: %w", err))
+	}
+
+	if !opts.ExcludeMedias {
+		if err := d.db.
+			Preload(clause.Associations).
+			Model(&messengertypes.Media{}).
+			Where("media.interaction_cid IN (?)", cids).
+			Find(&medias).
+			Error; err != nil {
+			return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch medias: %w", err))
+		}
+	}
+
+	return interactions, medias, nil
+}
+
 func (d *dbWrapper) getInteractionByCID(cid string) (*messengertypes.Interaction, error) {
 	if cid == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))

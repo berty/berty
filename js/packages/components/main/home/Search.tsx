@@ -5,7 +5,7 @@ import { CommonActions } from '@react-navigation/native'
 
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useContact, useSortedConvInteractions } from '@berty-tech/store/hooks'
+import { useConversation, useContact, useConvInteractions } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
 import { pbDateToNum, timeFormat } from '../../helpers'
@@ -133,7 +133,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	}
 	const contact = useContact(contactPk)
 
-	const interactions = useSortedConvInteractions(conv?.publicKey).filter(
+	const interactions = useConvInteractions(conv?.publicKey).filter(
 		(inte) => inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage,
 	)
 	const lastInteraction =

@@ -6,13 +6,13 @@ import Color from 'color'
 import { Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useInteraction, useLastConvInteraction } from '@berty-tech/store/hooks'
+import { useLastConvInteraction } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 import { pbDateToNum } from '../../helpers'
-import { InteractionUserMessage } from '@berty-tech/store/types.gen'
+import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 import { PictureMessage } from './PictureMessage'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
@@ -125,11 +125,9 @@ export const UserMessage: React.FC<{
 	members?: { [key: string]: any }
 	convPK: string
 	convKind: any
-	previousMessageId: string
-	nextMessageId: string
-}> = ({ inte, members, convPK, convKind, previousMessageId, nextMessageId }) => {
-	const previousMessage = useInteraction(previousMessageId, convPK)
-	const nextMessage = useInteraction(nextMessageId, convPK)
+	previousMessage?: ParsedInteraction
+	nextMessage?: ParsedInteraction
+}> = ({ inte, members, convPK, convKind, previousMessage, nextMessage }) => {
 	const lastInte = useLastConvInteraction(convPK, interactionsFilter)
 
 	const _styles = useStylesMessage()

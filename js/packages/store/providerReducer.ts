@@ -9,6 +9,8 @@ import {
 	MessengerAppState,
 	MsgrState,
 } from './context'
+import { ParsedInteraction } from '@berty-tech/store/types.gen'
+import { pbDateToNum } from '@berty-tech/components/helpers'
 
 export declare type reducerAction = {
 	type: beapi.messenger.StreamEvent.Type | MessengerActions
@@ -16,16 +18,136 @@ export declare type reducerAction = {
 	name?: string
 }
 
+const mergeInteractions = (existing: Array<ParsedInteraction>, toAdd: Array<ParsedInteraction>) => {
+	// This function expects both args to be sorted by sentDate descending
+	if (toAdd.length === 0) {
+		return existing || []
+	}
+
+	if (existing.length === 0) {
+		return toAdd || []
+	}
+
+	if (toAdd.length === 1 && existing[0].cid === toAdd[0].cid) {
+		return toAdd.concat(existing.slice(1))
+	}
+
+	if (
+		pbDateToNum(existing[0].sentDate) <= pbDateToNum(toAdd[toAdd.length - 1].sentDate) &&
+		existing[0].cid !== toAdd[toAdd.length - 1].cid
+	) {
+		return toAdd.concat(existing)
+	}
+
+	if (
+		pbDateToNum(existing[existing.length - 1].sentDate) >= pbDateToNum(toAdd[0].sentDate) &&
+		existing[existing.length - 1].cid !== toAdd[0].cid
+	) {
+		return existing.concat(toAdd)
+	}
+
+	// existing and entries to add seems to overlap
+	existing = existing.slice()
+	let i = 0
+	while (toAdd.length > 0) {
+		const newItem = toAdd.shift()
+		if (newItem === undefined) {
+			continue
+		}
+
+		while (
+			i < existing.length &&
+			pbDateToNum(existing[i].sentDate) > pbDateToNum(newItem.sentDate)
+		) {
+			i++
+		}
+		if (i < existing.length) {
+			continue
+		}
+
+		if (existing[i] && existing[i].cid === newItem.cid) {
+			existing[i] = newItem
+		} else {
+			existing.splice(i, 0, newItem)
+		}
+	}
+
+	return existing
+}
+
+const applyAcksToInteractions = (interactions: ParsedInteraction[], acks: ParsedInteraction[]) => {
+	for (let ack of acks) {
+		const found = interactions.find((value) => value.cid === ack.targetCid)
+		if (found === undefined) {
+			continue
+		}
+
+		found.acknowledged = true
+	}
+
+	return interactions
+}
+
+const sortInteractions = (interactions: ParsedInteraction[]) =>
+	interactions.sort((a, b) => pbDateToNum(b.sentDate) - pbDateToNum(a.sentDate))
+
+const parseInteractions = (rawInteractions: beapi.messenger.Interaction[]) =>
+	rawInteractions
+		.map(
+			(i: beapi.messenger.Interaction): ParsedInteraction => {
+				const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(
+					(name) => beapi.messenger.AppMessage.Type[name as any] === i.type,
+				)
+				const name = typeName?.substr('Type'.length)
+				const pbobj = (beapi.messenger.AppMessage as any)[name as any]
+
+				if (!pbobj) {
+					return {
+						...i,
+						type: beapi.messenger.AppMessage.Type.Undefined,
+						payload: undefined,
+					}
+				}
+
+				return {
+					...i,
+					payload: pbobj.decode(i.payload),
+				}
+			},
+		)
+		.filter((i: ParsedInteraction) => i.payload !== undefined)
+
+const newestMeaningfulInteraction = (interactions: ParsedInteraction[]) =>
+	interactions.find((i) => i.type === beapi.messenger.AppMessage.Type.TypeUserMessage)
+
 export const reducerActions: {
 	[key: string]: (oldState: MsgrState, action: reducerAction) => MsgrState
 } = {
-	[beapi.messenger.StreamEvent.Type.TypeConversationUpdated]: (oldState, action) => ({
-		...oldState,
-		conversations: {
-			...oldState.conversations,
-			[action.payload.conversation.publicKey]: action.payload.conversation,
-		},
-	}),
+	[beapi.messenger.StreamEvent.Type.TypeConversationUpdated]: (oldState, action) => {
+		const interactionsRewrite: { [key: string]: ParsedInteraction[] } = {}
+
+		if (!action.payload.conversation.isOpen) {
+			const newestInteraction = newestMeaningfulInteraction(
+				oldState.interactions[action.payload.conversation.publicKey] || [],
+			)
+
+			if (newestInteraction) {
+				interactionsRewrite[action.payload.conversation.publicKey] = [newestInteraction]
+			}
+		}
+
+		return {
+			...oldState,
+			conversations: {
+				...oldState.conversations,
+				[action.payload.conversation.publicKey]: action.payload.conversation,
+			},
+			interactions: {
+				...oldState.interactions,
+				...interactionsRewrite,
+			},
+		}
+	},
 
 	[beapi.messenger.StreamEvent.Type.TypeAccountUpdated]: (oldState, action) => ({
 		...oldState,
@@ -63,13 +185,16 @@ export const reducerActions: {
 		}
 	},
 
-	[beapi.messenger.StreamEvent.Type.TypeInteractionDeleted]: (oldState, action) => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { [action.payload.cid]: _, ...withoutDeletedInteraction } = oldState.interactions
+	[beapi.messenger.StreamEvent.Type.TypeInteractionDeleted]: (oldState, _) => {
+		// const { [action.payload.cid]: _, ...withoutDeletedInteraction } = oldState.interactions
+		// previous code was likely failing
+		// TODO: add relevant conversation to payload along cid
 
 		return {
 			...oldState,
-			interactions: withoutDeletedInteraction,
+			interactions: {
+				...oldState.interactions,
+			},
 		}
 	},
 
@@ -78,56 +203,48 @@ export const reducerActions: {
 		initialListComplete: true,
 	}),
 
-	[beapi.messenger.StreamEvent.Type.TypeInteractionUpdated]: (oldState, action) => {
-		try {
-			const inte = action.payload.interaction
-			const gpk = inte.conversationPublicKey
-			const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(
-				(name) => beapi.messenger.AppMessage.Type[name as any] === inte.type,
-			)
-			const name = typeName?.substr('Type'.length)
-			const pbobj = (beapi.messenger.AppMessage as any)[name as any]
-			if (!pbobj) {
-				throw new Error('failed to find a protobuf object matching the event type')
-			}
-			inte.name = name
+	[beapi.messenger.StreamEvent.Type.TypeConversationPartialLoad]: (oldState, action) => {
+		const gpk = action.payload.conversationPk
+		const rawInteractions: Array<beapi.messenger.Interaction> = action.payload.interactions || []
+		const medias: Array<beapi.messenger.Media> = action.payload.medias || []
 
-			inte.payload = pbobj.decode(inte.payload)
-			console.log('jsoned payload', inte.payload)
-			console.log('received inte', inte)
+		const interactions = sortInteractions(parseInteractions(rawInteractions))
+		const mergedInteractions = mergeInteractions(
+			oldState.interactions[gpk] || [],
+			interactions.filter((i) => i.type !== beapi.messenger.AppMessage.Type.TypeAcknowledge),
+		)
 
-			if (inte.type === beapi.messenger.AppMessage.Type.TypeAcknowledge) {
-				if ((oldState.interactions[gpk] || {})[inte.payload.target]) {
-					return {
-						...oldState,
-						interactions: {
-							...oldState.interactions,
-							[gpk]: {
-								...(oldState.interactions[gpk] || {}),
-								[inte.payload.target]: {
-									...(oldState.interactions[gpk] || {})[inte.payload.target],
-									acknowledged: true,
-								},
-							},
-						},
-					}
-				}
-			}
+		const ackInteractions = interactions.filter(
+			(i) => i.type === beapi.messenger.AppMessage.Type.TypeAcknowledge,
+		)
 
-			return {
-				...oldState,
-				interactions: {
-					...oldState.interactions,
-					[gpk]: {
-						...(oldState.interactions[gpk] || {}),
-						[inte.cid]: inte,
-					},
-				},
-			}
-		} catch (e) {
-			console.warn('failed to reduce interaction', e)
-			return oldState
+		return {
+			...oldState,
+			interactions: {
+				...oldState.interactions,
+				[gpk]: applyAcksToInteractions(mergedInteractions, ackInteractions),
+			},
+			medias: {
+				...oldState.medias,
+				...medias.reduce<{ [key: string]: beapi.messenger.Media }>(
+					(all, m) => ({
+						...all,
+						[m.cid]: m,
+					}),
+					{},
+				),
+			},
 		}
+	},
+
+	[beapi.messenger.StreamEvent.Type.TypeInteractionUpdated]: (oldState, action) => {
+		return reducerActions[beapi.messenger.StreamEvent.Type.TypeConversationPartialLoad](oldState, {
+			...action,
+			payload: {
+				conversationPk: action.payload.interaction.conversationPublicKey,
+				interactions: [action.payload.interaction],
+			},
+		})
 	},
 
 	[MessengerActions.SetStreamError]: (oldState, action) => ({
@@ -136,12 +253,13 @@ export const reducerActions: {
 	}),
 
 	[MessengerActions.AddFakeData]: (oldState, action) => {
-		let fakeInteractions: { [key: string]: { [key: string]: any } } = {}
+		let fakeInteractions: { [key: string]: any[] } = {}
 		for (const inte of action.payload.interactions || []) {
 			if (!fakeInteractions[inte.conversationPublicKey]) {
-				fakeInteractions[inte.conversationPublicKey] = {}
+				fakeInteractions[inte.conversationPublicKey] = []
+
+				fakeInteractions[inte.conversationPublicKey].push(inte)
 			}
-			fakeInteractions[inte.conversationPublicKey][inte.cid] = inte
 		}
 
 		return {
@@ -157,9 +275,10 @@ export const reducerActions: {
 		...oldState,
 		conversations: pickBy(oldState.conversations, (conv) => !(conv as any).fake),
 		contacts: pickBy(oldState.contacts, (contact) => !(contact as any).fake),
-		interactions: mapValues(oldState.interactions, (intes) =>
-			pickBy(intes, (inte) => !(inte as any).fake),
-		),
+		// TODO:
+		// interactions: mapValues(oldState.interactions, (intes) =>
+		// 	pickBy(intes, (inte) => !(inte as any).fake),
+		// ),
 		members: mapValues(oldState.members, (members) =>
 			pickBy(members, (member) => !(member as any).fake),
 		),
