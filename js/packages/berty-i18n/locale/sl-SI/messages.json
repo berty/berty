@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "",
         "import-button": ""
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Iskanje",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
