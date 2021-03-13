@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "Создать новый аккаунт",
         "import-button": "Импортировать аккаунт"
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Поиск",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
