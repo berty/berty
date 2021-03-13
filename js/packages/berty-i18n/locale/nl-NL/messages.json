@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "Nieuw account aanmaken",
         "import-button": ""
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Zoeken",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
