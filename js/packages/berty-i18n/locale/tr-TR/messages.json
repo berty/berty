@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "Yeni hesap oluştur",
         "import-button": "Hesabı içeri aktar"
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Sorgula",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
