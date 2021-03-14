@@ -4,21 +4,24 @@ import (
 	"context"
 	"sync"
 
-	"berty.tech/berty/v2/go/internal/notify"
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
 	ma "github.com/multiformats/go-multiaddr"
+	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/notify"
 )
 
 type NetworkUpdate struct {
+	logger       *zap.Logger
 	notify       *notify.Notify
 	locker       *sync.Mutex
 	sub          event.Subscription
 	currentAddrs []ma.Multiaddr
 }
 
-func NewNetworkUpdate(h host.Host) (*NetworkUpdate, error) {
+func NewNetworkUpdate(logger *zap.Logger, h host.Host) (*NetworkUpdate, error) {
 	sub, err := h.EventBus().Subscribe(new(event.EvtLocalAddressesUpdated))
 	if err != nil {
 		return nil, err
@@ -26,6 +29,7 @@ func NewNetworkUpdate(h host.Host) (*NetworkUpdate, error) {
 
 	locker := &sync.Mutex{}
 	nu := &NetworkUpdate{
+		logger:       logger,
 		sub:          sub,
 		locker:       locker,
 		notify:       notify.New(locker),
@@ -33,6 +37,7 @@ func NewNetworkUpdate(h host.Host) (*NetworkUpdate, error) {
 	}
 
 	go nu.subscribeToNetworkUpdate()
+	nu.logger.Debug("network update subscribe started")
 
 	return nu, nil
 }
@@ -44,6 +49,7 @@ func (n *NetworkUpdate) WaitForUpdate(ctx context.Context, currentAddrs []ma.Mul
 	for {
 		// check for new/removed addrs
 		if diff := diffAddrs(currentAddrs, n.currentAddrs); len(diff) > 0 {
+
 			// filter addrs
 			if factory == nil {
 				return true
@@ -68,14 +74,26 @@ func (n *NetworkUpdate) GetLastUpdatedAddrs(ctx context.Context) (addrs []ma.Mul
 	return
 }
 
-func (n *NetworkUpdate) Close() error {
-	return n.sub.Close()
-}
-
 func (n *NetworkUpdate) subscribeToNetworkUpdate() {
 	for evt := range n.sub.Out() {
 		e := evt.(event.EvtLocalAddressesUpdated)
 		if e.Diffs {
+			// log diffs
+			var nadd, ndel int
+			for _, uaddr := range e.Current {
+				switch uaddr.Action {
+				case event.Added:
+					n.logger.Debug("new addr", zap.String("addr", uaddr.Address.String()))
+					nadd++
+				case event.Removed:
+					n.logger.Debug("removed addr", zap.String("addr", uaddr.Address.String()))
+					ndel++
+				}
+			}
+
+			n.logger.Debug("network update", zap.Int("del", ndel), zap.Int("add", nadd), zap.Int("total", nadd+ndel))
+
+			// update current addrs
 			n.locker.Lock()
 			n.currentAddrs = getAddrsFromUpdatedAddress(e.Current)
 			n.notify.Broadcast()
@@ -84,16 +102,32 @@ func (n *NetworkUpdate) subscribeToNetworkUpdate() {
 	}
 }
 
+func (n *NetworkUpdate) Close() error {
+	return n.sub.Close()
+}
+
 func diffAddrs(a, b []ma.Multiaddr) []ma.Multiaddr {
-	mb := make(map[string]struct{}, len(b))
-	for _, addr := range b {
-		mb[addr.String()] = struct{}{}
+	diff := []ma.Multiaddr{}
+
+	seta := make(map[string]ma.Multiaddr, len(a))
+	for _, addr := range a {
+		seta[addr.String()] = addr
 	}
 
-	var diff []ma.Multiaddr
-	for _, addr := range a {
-		if _, found := mb[addr.String()]; !found {
-			diff = append(diff, addr)
+	setb := make(map[string]struct{})
+	for _, maddr := range b {
+		key := maddr.String()
+		if _, found := seta[key]; !found {
+			delete(seta, key)
+			diff = append(diff, maddr)
+		} else {
+			setb[key] = struct{}{}
+		}
+	}
+
+	for key, maddr := range seta {
+		if _, found := setb[key]; !found {
+			diff = append(diff, maddr)
 		}
 	}
 

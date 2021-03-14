@@ -319,12 +319,23 @@ func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *protocoltypes
 		}
 	case protocoltypes.TypeEventMonitorAdvertiseGroup:
 		advertisegroup := e.GetAdvertiseGroup()
-		payload = fmt.Sprintf("local peer advertised <%.15s> on `%s`, with %d maddrs",
-			advertisegroup.GetPeerID(), advertisegroup.GetDriverName(), len(advertisegroup.GetMaddrs()))
+		drivername := advertisegroup.GetDriverName()
+		if drivername != "" {
+			payload = fmt.Sprintf("local peer advertised <%.15s> on `%s`, with %d maddrs",
+				advertisegroup.GetPeerID(), advertisegroup.GetDriverName(), len(advertisegroup.GetMaddrs()))
+		} else {
+			payload = fmt.Sprintf("local peer advertised <%.15s>", advertisegroup.GetPeerID())
+		}
+
 	case protocoltypes.TypeEventMonitorPeerFound:
 		peerfound := e.GetPeerFound()
-		payload = fmt.Sprintf("new peer found <%.15s> on `%s`, with %d maddrs",
-			peerfound.GetPeerID(), peerfound.GetDriverName(), len(peerfound.GetMaddrs()))
+		drivername := peerfound.GetDriverName()
+		if drivername != "" {
+			payload = fmt.Sprintf("new peer found <%.15s> on `%s`, with %d maddrs",
+				peerfound.GetPeerID(), drivername, len(peerfound.GetMaddrs()))
+		} else {
+			payload = fmt.Sprintf("grabbed a peer <%.15s> ", peerfound.GetPeerID())
+		}
 	default:
 		logger.Warn("unknow monitor event received")
 		return

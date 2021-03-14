@@ -23,7 +23,7 @@ func (s *service) WakeUp(ctx context.Context) error {
 	defer cancel()
 
 	s.logger.Info("starting wake up")
-	pl
+
 	<-ctx.Done()
 
 	s.logger.Info("ending wake up")

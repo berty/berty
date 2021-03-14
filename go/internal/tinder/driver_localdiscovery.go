@@ -1,5 +1,8 @@
 package tinder
 
+// localdiscovery isn't use for now since most of the job is done by pubsub,
+// keep it here in case we need it
+
 import (
 	"context"
 	"errors"

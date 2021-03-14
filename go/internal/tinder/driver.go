@@ -7,6 +7,8 @@ import (
 
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
+	routing "github.com/libp2p/go-libp2p-core/routing"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
 	ma "github.com/multiformats/go-multiaddr"
 )
@@ -22,6 +24,11 @@ type Unregisterer interface {
 type UnregisterDiscovery interface {
 	p2p_discovery.Discovery
 	Unregisterer
+}
+
+type DriverDiscovery struct {
+	p2p_discovery.Discoverer
+	p2p_discovery.Advertiser
 }
 
 type Driver struct {
@@ -50,6 +57,32 @@ func (d *Driver) applyDefault() error {
 	}
 
 	return nil
+}
+
+func NewDriverFromDiscovery(name string, disc p2p_discovery.Discovery, factory bhost.AddrsFactory) *Driver {
+	return &Driver{
+		Name:         name,
+		Discovery:    disc,
+		AddrsFactory: factory,
+	}
+}
+
+func NewDriverFromUnregisterDiscovery(name string, udisc UnregisterDiscovery, factory bhost.AddrsFactory) *Driver {
+	return &Driver{
+		Name:         name,
+		Discovery:    udisc,
+		Unregisterer: udisc,
+		AddrsFactory: factory,
+	}
+}
+
+func NewDriverFromRouting(name string, routing routing.ContentRouting, factory bhost.AddrsFactory) *Driver {
+	disc := discovery.NewRoutingDiscovery(routing)
+	return &Driver{
+		Name:         name,
+		Discovery:    disc,
+		AddrsFactory: factory,
+	}
 }
 
 func NoopAddrsFactory(addrs []ma.Multiaddr) []ma.Multiaddr { return addrs }

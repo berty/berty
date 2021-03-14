@@ -1,8 +1,6 @@
 package tinder
 
 import (
-	"context"
-
 	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
 )
 
@@ -12,19 +10,19 @@ type DriverRouting interface {
 	UnregisterDiscovery
 }
 
-type routing struct {
-	p2p_routing.ContentRouting
-	p2p_routing.PeerRouting
-	p2p_routing.ValueStore
+// type routing struct {
+// 	p2p_routing.ContentRouting
+// 	p2p_routing.PeerRouting
+// 	p2p_routing.ValueStore
 
-	UnregisterDiscovery
+// 	UnregisterDiscovery
 
-	bootstrap func(context.Context) error
-}
+// 	bootstrap func(context.Context) error
+// }
 
-func (r *routing) Bootstrap(ctx context.Context) error {
-	return r.bootstrap(ctx)
-}
+// func (r *routing) Bootstrap(ctx context.Context) error {
+// 	return r.bootstrap(ctx)
+// }
 
 // func NewDriverRouting(logger *zap.Logger, name string, r p2p_routing.Routing) DriverRouting {
 // 	rdisc := discovery.NewRoutingDiscovery(r)

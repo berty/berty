@@ -7,13 +7,14 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/testutil"
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/tj/assert"
+
+	"berty.tech/berty/v2/go/internal/testutil"
 )
 
 type mockedService struct {
@@ -220,7 +221,7 @@ func TestFindPeersCache(t *testing.T) {
 
 	// should return one peer
 	count := 0
-	for _ = range cc {
+	for range cc {
 		count++
 	}
 

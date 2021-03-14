@@ -19,7 +19,8 @@ import (
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/peerstore"
+	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -130,8 +131,9 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	mopts := ipfsutil.MobileOptions{
 		IpfsConfigPatch: m.setupIPFSConfig,
-		HostConfigFunc:  m.setupIPFSHost,
-		RoutingOption:   ipfsutil.CustomRoutingOption(p2p_dht.ModeClient, p2p_dht.Concurrency(2)),
+		// HostConfigFunc:    m.setupIPFSHost,
+		RoutingConfigFunc: m.configIPFSRouting,
+		RoutingOption:     ipfsutil.CustomRoutingOption(p2p_dht.ModeClient, p2p_dht.Concurrency(2)),
 		ExtraOpts: map[string]bool{
 			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
 			"pubsub": false,
@@ -386,50 +388,58 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		}
 	}
 
-	if m.Node.Protocol.RelayHack {
-		// Resolving addresses
-		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
-		if err != nil {
-			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
-		}
+	// if m.Node.Protocol.RelayHack {
+	// 	// Resolving addresses
+	// 	pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
+	// 	if err != nil {
+	// 		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+	// 	}
 
-		lenPis := len(pis)
-		pickFrom := make([]peer.AddrInfo, lenPis)
-		for lenPis > 0 {
-			lenPis--
-			pickFrom[lenPis] = *pis[lenPis]
-		}
+	// 	lenPis := len(pis)
+	// 	pickFrom := make([]peer.AddrInfo, lenPis)
+	// 	for lenPis > 0 {
+	// 		lenPis--
+	// 		pickFrom[lenPis] = *pis[lenPis]
+	// 	}
 
-		// Selecting 2 random one
-		rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
-		var relays []peer.AddrInfo
-		if len(pickFrom) <= 2 {
-			relays = pickFrom
-		} else {
-			for i := 2; i > 0; i-- {
-				lenPickFrom := len(pickFrom)
-				n := rng.Intn(lenPickFrom)
-				relays = append(relays, pickFrom[n])
-				if n == 0 {
-					pickFrom = pickFrom[1:]
-					continue
-				}
-				if n == lenPickFrom-1 {
-					pickFrom = pickFrom[:n-1]
-					continue
-				}
-				pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
-			}
-		}
+	// 	// Selecting 2 random one
+	// 	rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
+	// 	var relays []peer.AddrInfo
+	// 	if len(pickFrom) <= 2 {
+	// 		relays = pickFrom
+	// 	} else {
+	// 		for i := 2; i > 0; i-- {
+	// 			lenPickFrom := len(pickFrom)
+	// 			n := rng.Intn(lenPickFrom)
+	// 			relays = append(relays, pickFrom[n])
+	// 			if n == 0 {
+	// 				pickFrom = pickFrom[1:]
+	// 				continue
+	// 			}
+	// 			if n == lenPickFrom-1 {
+	// 				pickFrom = pickFrom[:n-1]
+	// 				continue
+	// 			}
+	// 			pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
+	// 		}
+	// 	}
 
-		for _, relay := range relays {
-			for _, addr := range relay.Addrs {
-				cfg.Addresses.Announce = append(cfg.Addresses.Announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
-			}
-		}
+	// for _, relay := range relays {
+	// 	for _, addr := range relay.Addrs {
+	// 		cfg.Addresses.Announce = append(cfg.Addresses.Announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
+	// 	}
+	// }
 
-		p2popts = append(p2popts, libp2p.StaticRelays(relays))
+	// 	p2popts = append(p2popts, libp2p.StaticRelays(relays))
+	// }
+
+	// localdisc driver
+	if !m.Node.Protocol.LocalDiscovery {
+		cfg.Discovery.MDNS.Enabled = false
 	}
+
+	// enable autorelay
+	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
 
 	// prefill peerstore with known rdvp servers
 	if m.Node.Protocol.Tor.Mode != TorRequired {
@@ -441,7 +451,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	return p2popts, nil
 }
 
-func (m *Manager) setupIPFSHost(h host.Host) error {
+func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	logger, err := m.getLogger()
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
@@ -463,42 +473,48 @@ func (m *Manager) setupIPFSHost(h host.Host) error {
 		}
 	}
 
-	var rdvClients []tinder.AsyncableDriver
+	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+
+	// rdvp driver
+	var drivers []*tinder.Driver
 	if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
-		drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
-		for i, peer := range rdvpeers {
+		for _, peer := range rdvpeers {
 			h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-			rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-			disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+			udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
 
-			// monitor this driver
-			disc, err := tinder.MonitorDriverAsync(logger, h, disc)
-			if err != nil {
-				return errcode.ErrIPFSSetupHost.Wrap(err)
-			}
-
-			drivers[i] = disc
+			name := fmt.Sprintf("rdvp#%.6s", peer.ID)
+			drivers = append(drivers,
+				tinder.NewDriverFromUnregisterDiscovery(name, udisc, tinder.FilterPublicAddrs))
 		}
-		rdvClients = append(rdvClients, drivers...)
 	}
 
-	var rdvClient tinder.UnregisterDiscovery
-	switch len(rdvClients) {
-	case 0:
-		// FIXME: Check if this isn't called when DisableIPFSNetwork true.
-		return errcode.ErrIPFSSetupHost.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
-	case 1:
-		rdvClient = rdvClients[0]
-	default:
-		rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
+	// dht driver
+	drivers = append(drivers,
+		tinder.NewDriverFromRouting("dht", r, nil))
+
+	// localdisc driver
+	if m.Node.Protocol.LocalDiscovery {
+		localdisc := tinder.NewLocalDiscovery(logger, h, rng)
+		drivers = append(drivers,
+			tinder.NewDriverFromUnregisterDiscovery("localdisc", localdisc, tinder.FilterPrivateAddrs))
 	}
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-	m.Node.Protocol.discovery, err = tinder.NewService(
-		logger,
-		rdvClient,
-		discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serverRng),
-	)
+
+	backoffstrat := discovery.NewExponentialBackoff(
+		m.Node.Protocol.MinBackoff,
+		m.Node.Protocol.MaxBackoff,
+		discovery.FullJitter,
+		time.Second, 5.0, 0, serverRng)
+
+	tinderOpts := &tinder.Opts{
+		Logger:                 logger,
+		AdvertiseResetInterval: time.Minute,
+		AdvertiseGracePeriod:   time.Minute,
+		BackoffStratFactory:    backoffstrat,
+	}
+
+	m.Node.Protocol.discovery, err = tinder.NewService(tinderOpts, h, drivers...)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
@@ -508,11 +524,17 @@ func (m *Manager) setupIPFSHost(h host.Host) error {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
 
-	pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
+	cacheSize := 100
+	dialTimeout := time.Second * 20
+	backoffconnector := func(host host.Host) (*discovery.BackoffConnector, error) {
+		return discovery.NewBackoffConnector(host, cacheSize, dialTimeout, backoffstrat)
+	}
+
+	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
 		pubsub.WithMessageSigning(true),
-		pubsub.WithFloodPublish(true),
-		pubsub.WithDiscovery(m.Node.Protocol.discovery),
+		pubsub.WithDiscovery(m.Node.Protocol.discovery,
+			pubsub.WithDiscoverConnector(backoffconnector)),
 		pubsub.WithPeerExchange(true),
 		pt.EventTracerOption(),
 	)

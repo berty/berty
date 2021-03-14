@@ -103,7 +103,7 @@ type Manager struct {
 			ipfsNode          *core.IpfsNode
 			ipfsAPI           ipfsutil.ExtendedCoreAPI
 			pubsub            *pubsub.PubSub
-			discovery         tinder.UnregisterDiscovery
+			discovery         tinder.Service
 			server            bertyprotocol.Service
 			ipfsAPIListeners  []net.Listener
 			ipfsWebUIListener net.Listener
@@ -252,6 +252,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("close-messenger-protocol-client")
 	prog.AddStep("cleanup-messenger-db")
 	prog.AddStep("close-protocol-server")
+	prog.AddStep("close-tinder-service")
 	prog.AddStep("close-ipfs-node")
 	prog.AddStep("close-datastore")
 	prog.AddStep("close-ring")
@@ -301,6 +302,11 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("close-protocol-server").SetAsCurrent()
 	if m.Node.Protocol.server != nil {
 		m.Node.Protocol.server.Close()
+	}
+
+	prog.Get("close-tinder-service").SetAsCurrent()
+	if m.Node.Protocol.server != nil {
+		m.Node.Protocol.discovery.Close()
 	}
 
 	prog.Get("close-ipfs-node").SetAsCurrent()

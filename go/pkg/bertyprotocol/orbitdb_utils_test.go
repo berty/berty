@@ -34,7 +34,7 @@ func connectPeers(ctx context.Context, t testing.TB, mn mocknet.Mocknet) {
 	err := mn.LinkAll()
 	require.NoError(t, err)
 
-	err = mn.onnectAllButSelf()
+	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
 }
 

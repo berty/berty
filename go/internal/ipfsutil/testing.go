@@ -39,7 +39,7 @@ type CoreAPIMock interface {
 	API() ExtendedCoreAPI
 
 	PubSub() *pubsub.PubSub
-	Tinder() tinder.Driver
+	Tinder() tinder.Service
 	MockNetwork() p2p_mocknet.Mocknet
 	MockNode() *ipfs_core.IpfsNode
 	Close()
@@ -130,36 +130,56 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	repo := TestingRepo(t, datastore)
 
 	var ps *pubsub.PubSub
-	var disc tinder.Driver
+	var disc tinder.Service
 	configureRouting := func(h host.Host, r routing.Routing) error {
 		var err error
+		// if opts.RDVPeer.ID != "" {
+		// 	// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
+		// 	h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
+		// 	// @FIXME(gfanton): use rand as argument
+		// 	// disc = tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
+
+		// 	if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
+		// 		return err
+		// 	}
+		// } else {
+		// 	disc = tinder.NewDriverRouting(opts.Logger, "dht", r)
+		// }
+
+		drivers := []*tinder.Driver{}
 		if opts.RDVPeer.ID != "" {
 			// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
 			h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
 			// @FIXME(gfanton): use rand as argument
-			disc = tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
+			rdvp := tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
 			if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
 				return err
 			}
-		} else {
-			disc = tinder.NewDriverRouting(opts.Logger, "dht", r)
+
+			driver := tinder.NewDriverFromUnregisterDiscovery("rdpv", rdvp, nil)
+			drivers = append(drivers, driver)
+		}
+
+		// if r != nil {
+		// 	driver := tinder.NewDriverFromRouting("dht", r, nil)
+		// 	drivers = append(drivers, driver)
+		// }
+
+		// minBackoff, maxBackoff := time.Second, time.Minute
+		// rng := rand.New(rand.NewSource(rand.Int63()))
+		tinderOpts := &tinder.Opts{
+			Logger:                 opts.Logger,
+			AdvertiseResetInterval: time.Minute,
+			AdvertiseGracePeriod:   time.Minute,
+			BackoffStratFactory:    discovery.NewFixedBackoff(time.Second),
+			// BackoffStratFactory: discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+
 		}
 
 		// enable discovery monitor
-		disc, err = tinder.MonitorDriver(opts.Logger, h, disc)
+		disc, err = tinder.NewService(tinderOpts, h, drivers...)
 		if err != nil {
 			return fmt.Errorf("unable to monitor discovery driver: %w", err)
-		}
-
-		minBackoff, maxBackoff := time.Second, time.Minute
-		rng := rand.New(rand.NewSource(rand.Int63()))
-		disc, err = tinder.NewService(
-			opts.Logger,
-			disc,
-			discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
-		)
-		if err != nil {
-			return err
 		}
 
 		pubsubtracker, err := NewPubsubMonitor(opts.Logger, h)
@@ -254,7 +274,7 @@ type coreAPIMock struct {
 	pubsub  *pubsub.PubSub
 	mocknet p2p_mocknet.Mocknet
 	node    *ipfs_core.IpfsNode
-	tinder  tinder.Driver
+	tinder  tinder.Service
 }
 
 func (m *coreAPIMock) ConnMgr() ConnMgr {
@@ -289,10 +309,11 @@ func (m *coreAPIMock) PubSub() *pubsub.PubSub {
 	return m.pubsub
 }
 
-func (m *coreAPIMock) Tinder() tinder.Driver {
+func (m *coreAPIMock) Tinder() tinder.Service {
 	return m.tinder
 }
 
 func (m *coreAPIMock) Close() {
 	m.node.Close()
+	m.tinder.Close()
 }
