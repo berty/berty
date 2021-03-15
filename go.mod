@@ -120,7 +120,7 @@ require (
 	moul.io/u v1.20.0
 	moul.io/zapconfig v1.3.0
 	moul.io/zapfilter v1.6.1
-	moul.io/zapgorm2 v1.0.1
+	moul.io/zapgorm2 v1.0.2
 	mvdan.cc/gofumpt v0.0.0-20200802201014-ab5a8192947d
 	nhooyr.io/websocket v1.8.6 // indirect
 )
