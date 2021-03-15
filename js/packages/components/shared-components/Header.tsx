@@ -44,7 +44,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	undo,
 	undoIcon = 'arrow-back-outline',
 	undoIconPack,
-	undoIconSize = 25,
+	undoIconSize = 30,
 	undoIconColor = 'white',
 	undoIconHitSlop = largeHitSlop,
 	desc = null,
@@ -53,26 +53,26 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	action = null,
 	actionValue = null,
 	actionIcon = 'swap',
-	actionIconSize = 25,
+	actionIconSize = 30,
 	actionIconColor = 'white',
 	actionIconHitSlop = largeHitSlop,
 }) => {
-	const [{ border, flex, padding, row, text }] = useStyles()
+	const [{ border, flex, padding, row, text }, { scaleSize }] = useStyles()
 	return (
 		<SafeAreaView style={[flex.tiny, border.radius.bottom.scale(20), { backgroundColor: bgColor }]}>
 			<View style={[padding.horizontal.medium, padding.top.tiny, padding.bottom.medium]}>
-				<View style={[row.fill, flex.tiny, { justifyContent: 'center' }]}>
+				<View style={[row.fill, flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}>
 					{undo ? (
 						<TouchableOpacity
-							style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
+							style={[flex.tiny, { justifyContent: 'center' }]}
 							onPress={undo}
 							hitSlop={undoIconHitSlop}
 						>
 							<Icon
 								name={undoIcon}
 								pack={undoIconPack}
-								width={undoIconSize}
-								height={undoIconSize}
+								width={undoIconSize * scaleSize}
+								height={undoIconSize * scaleSize}
 								fill={undoIconColor}
 							/>
 						</TouchableOpacity>
@@ -105,8 +105,8 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 							>
 								<Icon
 									name={actionIcon}
-									width={actionIconSize}
-									height={actionIconSize}
+									width={actionIconSize * scaleSize}
+									height={actionIconSize * scaleSize}
 									fill={actionIconColor}
 								/>
 							</TouchableOpacity>

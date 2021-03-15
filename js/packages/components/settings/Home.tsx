@@ -112,33 +112,47 @@ const HomeHeaderAvatar: React.FC = () => {
 
 const HomeHeader: React.FC = () => {
 	const navigation = useNativeNavigation()
-	const [{ color, margin }] = useStyles()
+	const [{ color, margin, flex, text }, { scaleSize }] = useStyles()
 	const { t }: { t: any } = useTranslation()
 
 	return (
-		<View style={{ width: '100%' }}>
+		<View style={[flex.tiny]}>
 			<View
 				style={[
 					margin.top.scale(10),
 					{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
 				]}
 			>
-				<TouchableOpacity onPress={() => navigation.goBack()}>
-					<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
+				<TouchableOpacity style={[flex.tiny]} onPress={() => navigation.goBack()}>
+					<Icon
+						name='arrow-back-outline'
+						width={30 * scaleSize}
+						height={30 * scaleSize}
+						fill={color.white}
+					/>
 				</TouchableOpacity>
-				<View />
+				<View style={[flex.big]} />
 				<TouchableOpacity
 					onPress={() => navigation.navigate('Settings.EditProfile')}
-					style={{
-						flexDirection: 'row',
-						alignContent: 'center',
-						alignItems: 'center',
-					}}
+					style={[
+						flex.small,
+						{
+							flexDirection: 'row',
+							alignContent: 'center',
+							alignItems: 'center',
+							justifyContent: 'flex-end',
+						},
+					]}
 				>
-					<Text style={[{ color: color.white }, margin.right.small]}>
+					<Text style={[{ color: color.white }, margin.right.small, text.size.medium]}>
 						{t('settings.home.edit-profile')}
 					</Text>
-					<Icon name='edit-outline' width={30} height={30} fill={color.white} />
+					<Icon
+						name='edit-outline'
+						width={30 * scaleSize}
+						height={30 * scaleSize}
+						fill={color.white}
+					/>
 				</TouchableOpacity>
 			</View>
 			<HomeHeaderAvatar />
