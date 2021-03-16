@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Animated, Platform, Text, TouchableOpacity, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
@@ -7,23 +7,18 @@ import {
 	State,
 } from 'react-native-gesture-handler'
 import { useStyles } from '@berty-tech/styles'
-import moment from 'moment'
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import { Recorder } from '@react-native-community/audio-toolkit'
 import beapi from '@berty-tech/api'
-import { playSound, playSoundFile } from '@berty-tech/store/sounds'
+import { playSound } from '@berty-tech/store/sounds'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
-import { WaveForm } from '@berty-tech/components/chat/message/AudioMessage'
-import { readFile } from 'react-native-fs'
-import {
-	createAnimationInterpolation,
-	createAnimationTiming,
-} from '@berty-tech/components/chat/common'
+import { RecordingComponent } from './RecordingComponent'
+import { PreviewComponent } from './PreviewComponent'
 
-enum RecordingState {
+export enum RecordingState {
 	UNDEFINED = 0,
 	NOT_RECORDING = 1,
 	RECORDING = 2,
@@ -47,8 +42,8 @@ const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 export const voiceMemoFilename = 'audio_memo.aac'
 
-const volumeValueLowest = -160
-const volumeValuePrecision = 100_000
+export const volumeValueLowest = -160
+export const volumeValuePrecision = 100000
 export const volumeValuesAttached = 100
 
 export const limitIntensities = (intensities: Array<number>, max: number): Array<number> => {
@@ -75,7 +70,6 @@ export const limitIntensities = (intensities: Array<number>, max: number): Array
 				)
 			}
 		}
-
 		return normalizedIntensities
 	}
 
@@ -162,277 +156,6 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 		)
 	).filter((cid) => !!cid)
 
-const RecordingComponent: React.FC<{
-	recordingState: RecordingState
-	recordingColorVal: Animated.Value
-	setRecordingState: React.Dispatch<React.SetStateAction<RecordingState>>
-	setHelpMessageValue: ({ message, delay }: { message: string; delay?: number | undefined }) => void
-	timer: number
-}> = ({ recordingState, recordingColorVal, setRecordingState, setHelpMessageValue, timer }) => {
-	const [{ border, padding, margin, color }, { scaleSize }] = useStyles()
-	const { t } = useTranslation()
-
-	return (
-		<View
-			style={[
-				margin.left.medium,
-				{
-					flexDirection: 'row',
-					justifyContent: 'center',
-					alignItems: 'center',
-					alignSelf: 'center',
-					height: 40,
-					flex: 1,
-				},
-			]}
-		>
-			<View
-				style={[
-					{
-						backgroundColor: color.red,
-						position: 'absolute',
-						right: 0,
-						left: 0,
-						top: 0,
-						bottom: 0,
-						justifyContent: 'center',
-					},
-					padding.horizontal.small,
-					border.radius.small,
-					margin.right.small,
-				]}
-			>
-				<Text style={{ color: color.white }}>{moment.utc(timer).format('mm:ss')}</Text>
-			</View>
-			<Animated.View
-				style={[
-					{
-						backgroundColor: color.white,
-						position: 'absolute',
-						right: 0,
-						left: 0,
-						top: 0,
-						bottom: 0,
-						opacity: recordingColorVal.interpolate({
-							inputRange: [0, 1],
-							outputRange: [0, 0.2],
-						}),
-					},
-					border.radius.small,
-					margin.right.small,
-				]}
-			/>
-			<TouchableOpacity
-				onPress={() => {
-					if (recordingState === RecordingState.RECORDING_LOCKED) {
-						setHelpMessageValue({
-							message: t('audio.record.tooltip.not-sent'),
-						})
-						setRecordingState(RecordingState.PENDING_CANCEL)
-					}
-				}}
-				style={[
-					border.radius.small,
-					{
-						alignItems: 'center',
-						justifyContent: 'center',
-						bottom: 0,
-						top: 0,
-						position: 'absolute',
-					},
-				]}
-			>
-				{recordingState !== RecordingState.RECORDING_LOCKED ? (
-					<Text
-						style={{
-							color: color.black,
-							fontWeight: 'bold',
-							fontFamily: 'Open Sans',
-							padding: 5,
-						}}
-					>
-						{t('audio.record.slide-to-cancel')}
-					</Text>
-				) : (
-					<Text
-						style={{
-							color: color.black,
-							fontWeight: 'bold',
-							fontFamily: 'Open Sans',
-							padding: 5,
-						}}
-					>
-						{t('audio.record.cancel-button')}
-					</Text>
-				)}
-			</TouchableOpacity>
-			{recordingState === RecordingState.RECORDING_LOCKED && (
-				<TouchableOpacity
-					style={{
-						marginRight: 10 * scaleSize,
-						paddingHorizontal: 12 * scaleSize,
-						justifyContent: 'center',
-						alignItems: 'center',
-						borderRadius: 100,
-						position: 'absolute',
-						bottom: 0,
-						top: 0,
-						right: 0,
-					}}
-					onPress={() => {
-						setRecordingState(RecordingState.PENDING_PREVIEW)
-					}}
-				>
-					<Icon name='square' height={20 * scaleSize} width={20 * scaleSize} fill={color.white} />
-				</TouchableOpacity>
-			)}
-		</View>
-	)
-}
-
-const PreviewComponent: React.FC<{
-	meteredValuesRef: React.MutableRefObject<number[]>
-	recordDuration: number | null
-	recordFilePath: string
-	clearRecordingInterval: NodeJS.Timeout | null
-	setRecordingState: React.Dispatch<React.SetStateAction<RecordingState>>
-	setHelpMessageValue: ({ message, delay }: { message: string; delay?: number | undefined }) => void
-}> = ({
-	meteredValuesRef,
-	recordDuration,
-	recordFilePath,
-	clearRecordingInterval,
-	setRecordingState,
-	setHelpMessageValue,
-}) => {
-	const [{ border, padding, margin, color }, { scaleSize }] = useStyles()
-	const { t } = useTranslation()
-	const [player, setPlayer] = useState<any>(null)
-	const isPlaying = useMemo(() => player?.isPlaying === true, [player?.isPlaying])
-
-	return (
-		<View
-			style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, margin.horizontal.medium]}
-		>
-			<TouchableOpacity
-				style={[
-					padding.horizontal.small,
-					margin.right.small,
-					{
-						alignItems: 'center',
-						justifyContent: 'center',
-						width: 36 * scaleSize,
-						height: 36 * scaleSize,
-						backgroundColor: color.red,
-						borderRadius: 18,
-					},
-				]}
-				onPress={() => {
-					clearInterval(clearRecordingInterval)
-					setHelpMessageValue({
-						message: t('audio.record.tooltip.not-sent'),
-					})
-					setRecordingState(RecordingState.PENDING_CANCEL)
-				}}
-			>
-				<Icon
-					name='trash-outline'
-					height={20 * scaleSize}
-					width={20 * scaleSize}
-					fill={color.white}
-				/>
-			</TouchableOpacity>
-			<View
-				style={[
-					border.radius.medium,
-					margin.right.small,
-					padding.left.small,
-					{
-						height: 50,
-						flex: 1,
-						backgroundColor: '#F7F8FF',
-						flexDirection: 'row',
-						justifyContent: 'center',
-						alignItems: 'center',
-					},
-				]}
-			>
-				<View
-					style={[
-						{
-							height: '100%',
-							flex: 1,
-							flexDirection: 'row',
-							alignItems: 'center',
-							justifyContent: 'center',
-						},
-					]}
-				>
-					<TouchableOpacity
-						onPress={() => {
-							if (player?.isPlaying) {
-								player?.pause()
-							} else if (player?.isPaused) {
-								player?.playPause()
-							} else {
-								readFile(recordFilePath, 'base64')
-									.then((response) => {
-										console.log('SUCCESS')
-										setPlayer(playSoundFile(response))
-									})
-									.catch((err) => {
-										console.error(err)
-									})
-							}
-						}}
-					>
-						<Icon
-							name={isPlaying ? 'pause' : 'play'}
-							fill='#4F58C0'
-							height={18 * scaleSize}
-							width={18 * scaleSize}
-							pack='custom'
-						/>
-					</TouchableOpacity>
-					<WaveForm
-						intensities={limitIntensities(
-							meteredValuesRef.current.map((v) =>
-								Math.round((v - volumeValueLowest) * volumeValuePrecision),
-							),
-							volumeValuesAttached,
-						)}
-						currentTime={isPlaying && player?.currentTime}
-						duration={recordDuration}
-					/>
-				</View>
-			</View>
-			<TouchableOpacity
-				style={[
-					padding.horizontal.small,
-					{
-						alignItems: 'center',
-						justifyContent: 'center',
-						width: 36 * scaleSize,
-						height: 36 * scaleSize,
-						backgroundColor: color.blue,
-						borderRadius: 18,
-					},
-				]}
-				onPress={() => {
-					setRecordingState(RecordingState.COMPLETE)
-				}}
-			>
-				<Icon
-					name='paper-plane-outline'
-					width={20 * scaleSize}
-					height={20 * scaleSize}
-					fill={color.white}
-				/>
-			</TouchableOpacity>
-		</View>
-	)
-}
-
 export const RecordComponent: React.FC<{
 	convPk: string
 	component: React.ReactNode
@@ -471,14 +194,6 @@ export const RecordComponent: React.FC<{
 	const recordingColorVal = React.useRef(new Animated.Value(0)).current
 	const meteredValuesRef = useRef<number[]>([])
 	const [recordDuration, setRecordDuration] = useState<number | null>(null)
-
-	// animation values
-	const _aRecordingPos = useRef(new Animated.Value(0)).current
-	const _aNotRecordingPos = useRef(new Animated.Value(0)).current
-	const aDuration = 200
-
-	const aRecordingPos = createAnimationInterpolation(_aRecordingPos, [-500, 0])
-	const aNotRecordingPos = createAnimationInterpolation(_aNotRecordingPos, [0, -500])
 
 	const isRecording =
 		recordingState === RecordingState.RECORDING ||
@@ -581,17 +296,6 @@ export const RecordComponent: React.FC<{
 		},
 		[convPk, ctx.client, recorderFilePath],
 	)
-
-	// effect for animations
-	useEffect(() => {
-		switch (recordingState) {
-			case RecordingState.RECORDING:
-				Animated.parallel([
-					createAnimationTiming(_aRecordingPos, 1, aDuration),
-					createAnimationTiming(_aNotRecordingPos, 1, aDuration),
-				]).start()
-		}
-	}, [recordingState, _aRecordingPos, _aNotRecordingPos])
 
 	useEffect(() => {
 		switch (recordingState) {
@@ -788,52 +492,13 @@ export const RecordComponent: React.FC<{
 				</TouchableOpacity>
 			)}
 			{isRecording && (
-				<View style={{ flexDirection: 'row', flex: 1 }}>
-					<RecordingComponent
-						recordingState={recordingState}
-						recordingColorVal={recordingColorVal}
-						setRecordingState={setRecordingState}
-						setHelpMessageValue={setHelpMessageValue}
-						timer={currentTime - recordingStart}
-					/>
-					{recordingState === RecordingState.RECORDING_LOCKED && (
-						<View
-							style={[
-								{
-									right: 0,
-									height: 50,
-									justifyContent: 'center',
-									alignItems: 'flex-end',
-									paddingRight: 15 * scaleSize,
-									paddingLeft: 5 * scaleSize,
-								},
-							]}
-						>
-							<TouchableOpacity
-								style={[
-									{
-										alignItems: 'center',
-										justifyContent: 'center',
-										width: 36 * scaleSize,
-										height: 36 * scaleSize,
-										backgroundColor: color.blue,
-										borderRadius: 18,
-									},
-								]}
-								onPress={() => {
-									setRecordingState(RecordingState.COMPLETE)
-								}}
-							>
-								<Icon
-									name='paper-plane-outline'
-									width={20 * scaleSize}
-									height={20 * scaleSize}
-									fill={color.white}
-								/>
-							</TouchableOpacity>
-						</View>
-					)}
-				</View>
+				<RecordingComponent
+					recordingState={recordingState}
+					recordingColorVal={recordingColorVal}
+					setRecordingState={setRecordingState}
+					setHelpMessageValue={setHelpMessageValue}
+					timer={currentTime - recordingStart}
+				/>
 			)}
 			{recordingState === RecordingState.PREVIEW && (
 				<PreviewComponent
@@ -875,11 +540,10 @@ export const RecordComponent: React.FC<{
 								justifyContent: 'center',
 								alignItems: 'flex-end',
 								paddingRight: 15 * scaleSize,
-								paddingLeft: 5 * scaleSize,
 							},
 						]}
 					>
-						{isRecording && (
+						{recordingState === RecordingState.RECORDING && (
 							<View
 								style={{
 									justifyContent: 'center',

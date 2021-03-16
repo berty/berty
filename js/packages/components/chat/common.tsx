@@ -12,7 +12,6 @@ import {
 	Keyboard,
 } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
-import { widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import DeviceInfo from 'react-native-device-info'
 
 import { useStyles } from '@berty-tech/styles'
@@ -27,7 +26,7 @@ import moment from 'moment'
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
-import { RecordComponent } from './RecordComponent'
+import { RecordComponent } from './record/RecordComponent'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -47,6 +46,8 @@ const useStylesChatFooter = () => {
 		sendButton: padding.left.scale(4),
 	}
 }
+
+const aDuration = 600
 
 // create interpolations
 export const createAnimationInterpolation = (
@@ -186,12 +187,11 @@ export const ChatFooter: React.FC<{
 	const _aPaddingLeft = useRef(new Animated.Value(0)).current
 	const _aOpacity = useRef(new Animated.Value(0)).current
 	const _aOpacitySendButton = useRef(new Animated.Value(0)).current
-	const aDuration = 600
 
-	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [wp('47%'), wp('69%')])
+	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(94 * scaleSize)])
 	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 45 * scaleSize])
 	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -92 * scaleSize])
-	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -53 * scaleSize])
+	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -45 * scaleSize])
 	const aPaddingLeft = createAnimationInterpolation(_aPaddingLeft, [0, 45])
 	const aOpacity = createAnimationInterpolation(_aOpacity, [1, 0])
 	const aOpacitySendButton = createAnimationInterpolation(_aOpacity, [0, 1])
@@ -273,7 +273,13 @@ export const ChatFooter: React.FC<{
 								},
 							]}
 						>
-							<Icon name='mic' height={20 * scaleSize} width={20 * scaleSize} fill={color.white} />
+							<Icon
+								name='microphone-footer'
+								pack='custom'
+								height={18 * scaleSize}
+								width={18 * scaleSize}
+								fill={color.white}
+							/>
 						</Animated.View>
 					}
 					convPk={convPk}
@@ -287,6 +293,7 @@ export const ChatFooter: React.FC<{
 							row.fill,
 							{
 								alignItems: 'center',
+								flexDirection: 'row',
 							},
 						]}
 					>
@@ -335,16 +342,17 @@ export const ChatFooter: React.FC<{
 							<Animated.View
 								style={[
 									border.radius.medium,
-									padding.horizontal.small,
+									padding.left.small,
 									{
 										justifyContent: 'center',
 										backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
-										width: aMaxWidth,
+										marginRight: aMaxWidth,
 										height: 42 * scaleSize,
 										right: aFixLeft,
 										marginLeft: 9 * scaleSize,
 										zIndex: 100,
 										elevation: 100,
+										flex: 1,
 									},
 								]}
 							>
@@ -363,8 +371,8 @@ export const ChatFooter: React.FC<{
 											text.bold.small,
 											{
 												fontFamily: 'Open Sans',
-												flex: 1,
 												fontSize: 15 * scaleSize,
+												flex: 1,
 											},
 										]}
 										placeholder={placeholder}
@@ -404,6 +412,7 @@ export const ChatFooter: React.FC<{
 									opacity: aOpacity,
 									flexDirection: 'row',
 									paddingLeft: 15 * scaleSize,
+									right: aFixMicro,
 								}}
 							>
 								<TouchableOpacity
@@ -463,8 +472,9 @@ export const ChatFooter: React.FC<{
 								>
 									<Icon
 										name='camera'
-										height={20 * scaleSize}
-										width={20 * scaleSize}
+										pack='custom'
+										height={16 * scaleSize}
+										width={16 * scaleSize}
 										fill={color.white}
 									/>
 								</TouchableOpacity>

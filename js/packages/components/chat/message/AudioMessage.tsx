@@ -8,7 +8,10 @@ import { getSource } from '../../utils'
 import moment from 'moment'
 import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
 import beapi from '@berty-tech/api'
-import { limitIntensities, voiceMemoFilename } from '@berty-tech/components/chat/RecordComponent'
+import {
+	limitIntensities,
+	voiceMemoFilename,
+} from '@berty-tech/components/chat/record/RecordComponent'
 import { playSoundAsync } from '@berty-tech/store/sounds'
 
 const volumeValueShown = 50
