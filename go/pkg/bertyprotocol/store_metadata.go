@@ -17,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
 	ipliface "berty.tech/go-ipfs-log/iface"
@@ -276,12 +277,16 @@ func metadataStoreAddEvent(ctx context.Context, m *metadataStore, g *protocoltyp
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
+	tyber.MayStep(ctx, m.logger.Debug, "Envelope sealed", nil, tyber.Succeeded, false)
+
 	op := operation.NewOperation(nil, "ADD", env)
 
 	e, err := m.AddOperation(ctx, op, nil)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
+
+	tyber.MayStep(ctx, m.logger.Debug, "Opperation added to orbitDB", nil, tyber.Succeeded, false)
 
 	op, err = operation.ParseOperation(e)
 	if err != nil {
@@ -564,8 +569,21 @@ func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, conta
 	}
 
 	if m.checkContactStatus(pk, protocoltypes.ContactStateRemoved, protocoltypes.ContactStateDiscarded, protocoltypes.ContactStateReceived) {
-		return m.ContactRequestOutgoingSent(ctx, pk)
+		tyber.MayStep(ctx, m.logger.Debug, "Contact has been Removed, Discarded or Received previously", nil, tyber.Succeeded, false)
+
+		op, err := m.ContactRequestOutgoingSent(ctx, pk)
+		if err != nil {
+			tyber.MayStep(ctx, m.logger.Debug,
+				"Error ContactRequestOutgoingSent",
+				[]tyber.Detail{{Name: "Error", Description: err.Error()}},
+				tyber.Succeeded,
+				true,
+			)
+		}
+		return op, err
 	}
+
+	tyber.MayStep(ctx, m.logger.Debug, "Contact has never been seen before, creating a new one", nil, tyber.Succeeded, false)
 
 	return m.attributeSignAndAddEvent(ctx, &protocoltypes.AccountContactRequestEnqueued{
 		Contact: &protocoltypes.ShareableContact{
@@ -598,6 +616,8 @@ func (m *metadataStore) ContactRequestOutgoingSent(ctx context.Context, pk crypt
 	default:
 		return nil, errcode.ErrInvalidInput
 	}
+
+	tyber.MayStep(ctx, m.logger.Debug, "Resending contact request", nil, tyber.Succeeded, false)
 
 	return m.contactAction(ctx, pk, &protocoltypes.AccountContactRequestSent{}, protocoltypes.EventTypeAccountContactRequestOutgoingSent)
 }
@@ -833,6 +853,8 @@ func (m *metadataStore) attributeSignAndAddEvent(ctx context.Context, evt accoun
 	if err != nil {
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
+
+	tyber.MayStep(ctx, m.logger.Debug, "Signed", nil, tyber.Succeeded, false)
 
 	return metadataStoreAddEvent(ctx, m, m.g, eventType, evt, sig, attachmentsCIDs)
 }

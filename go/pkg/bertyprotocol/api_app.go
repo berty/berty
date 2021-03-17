@@ -3,7 +3,6 @@ package bertyprotocol
 import (
 	"context"
 	"encoding/hex"
-	"fmt"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -13,7 +12,7 @@ import (
 func (s *service) AppMetadataSend(ctx context.Context, req *protocoltypes.AppMetadataSend_Request) (*protocoltypes.AppMetadataSend_Reply, error) {
 	ctx = tyber.ContextWithTraceID(ctx)
 	s.logger.Info(
-		fmt.Sprintf("Sending metadata to group %s", hex.EncodeToString(req.GroupPK)),
+		"Sending metadata to group "+hex.EncodeToString(req.GroupPK),
 		tyber.FormatTraceLogFields(ctx)...,
 	)
 
@@ -60,9 +59,9 @@ func (s *service) AppMetadataSend(ctx context.Context, req *protocoltypes.AppMet
 }
 
 func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMessageSend_Request) (*protocoltypes.AppMessageSend_Reply, error) {
-	ctx = tyber.ContextWithTraceID(ctx)
+	ctx = tyber.ContextWithTraceIDFromSalt(ctx, req.GroupPK, req.Payload)
 	s.logger.Info(
-		fmt.Sprintf("Sending message to group %s", hex.EncodeToString(req.GroupPK)),
+		"Sending message to group "+hex.EncodeToString(req.GroupPK),
 		tyber.FormatTraceLogFields(ctx)...,
 	)
 

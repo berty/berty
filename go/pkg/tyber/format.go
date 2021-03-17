@@ -1,3 +1,5 @@
+// +build !withoutTyber
+
 package tyber
 
 import (
@@ -7,56 +9,49 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type Detail struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
-type LogType string
-
-const (
-	TraceType LogType = "trace"
-	StepType  LogType = "step"
-	EventType LogType = "event"
-)
-
-type StatusType string
-
-const (
-	Running   StatusType = "running"
-	Succeeded StatusType = "succeeded"
-	Failed    StatusType = "failed"
-)
-
-type Trace struct {
-	TraceID string `json:"traceID"`
-}
-
-type Step struct {
-	ParentTraceID string     `json:"parentTraceID"`
-	Details       []Detail   `json:"details"`
-	Status        StatusType `json:"status"`
-	EndTrace      bool       `json:"endTrace"`
-}
-
-type Event struct {
-	Details []Detail `json:"details"`
+// MayTrace will start a trace with the given string as message but only if the context is tyber injected.
+// The passed function is meant to be easly zap#Logger.{Error,Info,Debug}
+func MayTrace(ctx context.Context, l func(string, ...zap.Field), msg string) {
+	tid, ok := ctx.Value(traceIDKey).(string)
+	if ok {
+		l(msg, formatTraceLogFields(tid)...)
+	}
 }
 
 func FormatTraceLogFields(ctx context.Context) []zapcore.Field {
+	return formatTraceLogFields(getTraceIDFromContext(ctx))
+}
+
+// formatTraceLogFields mainly exists so MayTrace can be inlined.
+func formatTraceLogFields(tid string) []zapcore.Field {
 	return []zapcore.Field{
 		zap.String("tyberLogType", string(TraceType)),
 		zap.Any("trace", Trace{
-			TraceID: getTraceIDFromContext(ctx),
+			TraceID: tid,
 		}),
 	}
 }
 
+// MayTrace will step a trace with the given string as message but only if the context is tyber injected.
+// details, status and end will be passed to FormatStepLogFields.
+// The passed function is meant to be easly zap#Logger.{Error,Info,Debug}
+func MayStep(ctx context.Context, l func(string, ...zap.Field), msg string, details []Detail, status StatusType, end bool) {
+	tid, ok := ctx.Value(traceIDKey).(string)
+	if ok {
+		l(msg, formatStepLogFields(tid, details, status, end)...)
+	}
+}
+
 func FormatStepLogFields(ctx context.Context, details []Detail, status StatusType, end bool) []zapcore.Field {
+	return formatStepLogFields(getTraceIDFromContext(ctx), details, status, end)
+}
+
+// formatStepLogFields mainly exists so MayStep can be inlined.
+func formatStepLogFields(tid string, details []Detail, status StatusType, end bool) []zapcore.Field {
 	return []zapcore.Field{
 		zap.String("tyberLogType", string(StepType)),
 		zap.Any("step", Step{
-			ParentTraceID: getTraceIDFromContext(ctx),
+			ParentTraceID: tid,
 			Status:        status,
 			Details:       details,
 			EndTrace:      end,
@@ -64,7 +59,7 @@ func FormatStepLogFields(ctx context.Context, details []Detail, status StatusTyp
 	}
 }
 
-func FormatEventLogFields(ctx context.Context, details []Detail) []zapcore.Field {
+func FormatEventLogFields(details ...Detail) []zapcore.Field {
 	return []zapcore.Field{
 		zap.String("tyberLogType", string(EventType)),
 		zap.Any("event", Event{
