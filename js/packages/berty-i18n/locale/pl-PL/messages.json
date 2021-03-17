@@ -408,7 +408,7 @@
       "devices": "Urządzenia"
     },
     "multi-member": {
-      "input-placeholder": "Napisz bezpieczną wiadomość..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Szukaj",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "Dodaj betabota, aby napisać tutaj...",
       "incoming-input-placeholder": "Zaakceptuj prośbę aby pisać tutaj...",
-      "input-placeholder": "Napisz bezpieczną wiadomość..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Szukaj",
@@ -569,6 +569,17 @@
         "button-confirm": "Potwierdź",
         "button-cancel": "Anuluj"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Anuluj"
     }
   }
 }
