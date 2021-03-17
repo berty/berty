@@ -408,7 +408,7 @@
       "devices": "设备"
     },
     "multi-member": {
-      "input-placeholder": "撰写安全消息..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "搜索",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "添加测试版机器人以在此写入...",
       "incoming-input-placeholder": "接受此请求以在这里写入...",
-      "input-placeholder": "撰写安全消息..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "搜索",
@@ -569,6 +569,17 @@
         "button-confirm": "",
         "button-cancel": "取消"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "取消"
     }
   }
 }
