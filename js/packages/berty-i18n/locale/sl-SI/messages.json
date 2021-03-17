@@ -570,5 +570,16 @@
         "button-cancel": "Prekini"
       }
     }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Prekini"
+    }
   }
 }
