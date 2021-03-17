@@ -408,7 +408,7 @@
       "devices": "Устройства"
     },
     "multi-member": {
-      "input-placeholder": "Написать защищённое сообщение..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Поиск",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "Добавьте бетабота, чтобы писать здесь...",
       "incoming-input-placeholder": "Примите запрос, чтобы писать здесь...",
-      "input-placeholder": "Написать защищённое сообщение..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Поиск",
@@ -569,6 +569,17 @@
         "button-confirm": "Подтвердить",
         "button-cancel": "Отменить"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Отменить"
     }
   }
 }
