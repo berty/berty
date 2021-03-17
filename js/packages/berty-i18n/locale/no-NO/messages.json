@@ -408,7 +408,7 @@
       "devices": "Enheter"
     },
     "multi-member": {
-      "input-placeholder": "Skriv en sikker melding..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Søk",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "Legg til betabot for å skrive her...",
       "incoming-input-placeholder": "Godta forespørselen for å skrive her...",
-      "input-placeholder": "Skriv en sikker melding..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Søk",
@@ -569,6 +569,17 @@
         "button-confirm": "",
         "button-cancel": "Avbryt"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Avbryt"
     }
   }
 }
