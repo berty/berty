@@ -1,0 +1,11 @@
+write /home/norman/go/src/berty.tech/berty/js/android/.gomobile-cache/src/go.mod
+go: found berty.tech/berty/v2/go/framework/bertybridge in berty.tech/berty/v2 v2.0.0-00010101000000-000000000000
+runtime/cgo
+plugin
+berty.tech/berty/v2/go/pkg/username
+golang.org/x/mobile/internal/mobileinit
+net
+github.com/mattn/go-sqlite3
+golang.org/x/mobile/bind/java
+berty.tech/berty/v2/go/framework/bertybridge
+gobind/gobind
