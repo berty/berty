@@ -408,7 +408,7 @@
       "devices": "Appareils"
     },
     "multi-member": {
-      "input-placeholder": "Écrire un message sécurisé..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Rechercher",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "Ajouter le BetaBot pour écrire ici...",
       "incoming-input-placeholder": "Accepter la demande pour écrire ici...",
-      "input-placeholder": "Écrire un message sécurisé..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Rechercher",
@@ -569,6 +569,17 @@
         "button-confirm": "",
         "button-cancel": "Annuler"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Annuler"
     }
   }
 }
