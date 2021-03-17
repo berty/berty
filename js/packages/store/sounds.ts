@@ -12,6 +12,15 @@ const soundsMap = {
 
 export type SoundKey = keyof typeof soundsMap
 
+export const playSoundFile = (encodedFile: string) => {
+	const p = new Player(`data:audio/aac;base64,${encodedFile}`, {
+		autoDestroy: false,
+		mixWithOthers: true,
+	})
+	p.play()
+	return p
+}
+
 const preloadedSounds = mapValues(soundsMap, (fileName) => {
 	const p = new Player(fileName, {
 		autoDestroy: false,
@@ -37,5 +46,30 @@ export const playSound = (name: SoundKey) => {
 	}
 	p.seek(0, () => {
 		p.play()
+	})
+}
+
+export const playSoundAsync = (name: SoundKey) => {
+	return new Promise((resolve) => {
+		const p = preloadedSounds[name]
+		if (!p) {
+			console.warn(`Tried to play unknown sound "${name}"`)
+			return
+		}
+
+		const endListener = () => {
+			resolve()
+			p.removeListener(endListener)
+		}
+
+		p.on('ended', endListener)
+
+		if (!p.isPlaying) {
+			p.play()
+			return
+		}
+		p.seek(0, () => {
+			p.play()
+		})
 	})
 }

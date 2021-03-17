@@ -483,6 +483,17 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "audio": {
+      "record": {
+        "tooltip": {
+          "usage": "Maintenez et parlez, lâchez pour envoyer",
+          "not-sent": "Le message vocal n'a pas été envoyé",
+          "permission-denied": "L'app n'est pas autorisée à utiliser le micro"
+        },
+        "slide-to-cancel": "<< Glisser pour annuler",
+        "cancel-button": "Annuler"
+      }
     }
   },
   "error": {

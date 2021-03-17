@@ -113,4 +113,5 @@ export interface WelshMessengerServiceClient {
 	instanceExportData: ResponseStreamType<beapi.messenger.MessengerService['instanceExportData']>
 	mediaPrepare: RequestStreamType<beapi.messenger.MessengerService['mediaPrepare']>
 	mediaRetrieve: ResponseStreamType<beapi.messenger.MessengerService['mediaRetrieve']>
+	mediaGetRelated: UnaryType<beapi.messenger.MessengerService['mediaGetRelated']>
 }

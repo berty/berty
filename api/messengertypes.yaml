@@ -96,3 +96,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.MediaRetrieve
    post: /berty.messenger.v1/MessengerService/MediaRetrieve
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.MediaGetRelated
+   post: /berty.messenger.v1/MessengerService/MediaGetRelated
+   body: "*"

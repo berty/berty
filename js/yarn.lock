@@ -1489,9 +1489,9 @@
   dependencies:
     deep-assign "^3.0.0"
 
-"@react-native-community/audio-toolkit@git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#6a258f1e6a81381a50c018d343764ad29b3d8f27":
+"@react-native-community/audio-toolkit@git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#b4495caffd55e5d464e203b0216fe2ce0424fa3b":
   version "2.0.3"
-  resolved "git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#6a258f1e6a81381a50c018d343764ad29b3d8f27"
+  resolved "git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#b4495caffd55e5d464e203b0216fe2ce0424fa3b"
   dependencies:
     async "^2.6.3"
     eventemitter3 "^1.2.0"
@@ -8249,6 +8249,11 @@ react-native-crypto@^2.0.1:
     pbkdf2 "3.0.8"
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
+
+react-native-device-info@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.0.2.tgz#edefb8538412bf33e12a7ba1b80fbd804f69580b"
+  integrity sha512-5X5sMO2N9WpnqA4BXHlby0ml0WKlHconLhgf8fCiXDELf7DIjOMX8z6iYZ7WDgmn0E/6Psubq9yb5D2Qdc30Wg==
 
 react-native-document-picker@^4.1.1:
   version "4.2.0"

@@ -20,6 +20,7 @@
     - [AppMessage.SetUserInfo](#berty.messenger.v1.AppMessage.SetUserInfo)
     - [AppMessage.UserMessage](#berty.messenger.v1.AppMessage.UserMessage)
     - [AppMessage.UserReaction](#berty.messenger.v1.AppMessage.UserReaction)
+    - [AudioPreview](#berty.messenger.v1.AudioPreview)
     - [BannerQuote](#berty.messenger.v1.BannerQuote)
     - [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply)
     - [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request)
@@ -84,6 +85,12 @@
     - [LocalConversationState](#berty.messenger.v1.LocalConversationState)
     - [LocalDatabaseState](#berty.messenger.v1.LocalDatabaseState)
     - [Media](#berty.messenger.v1.Media)
+    - [MediaGetRelated](#berty.messenger.v1.MediaGetRelated)
+    - [MediaGetRelated.Reply](#berty.messenger.v1.MediaGetRelated.Reply)
+    - [MediaGetRelated.Request](#berty.messenger.v1.MediaGetRelated.Request)
+    - [MediaMetadata](#berty.messenger.v1.MediaMetadata)
+    - [MediaMetadataItem](#berty.messenger.v1.MediaMetadataItem)
+    - [MediaMetadataKV](#berty.messenger.v1.MediaMetadataKV)
     - [MediaPrepare](#berty.messenger.v1.MediaPrepare)
     - [MediaPrepare.Reply](#berty.messenger.v1.MediaPrepare.Reply)
     - [MediaPrepare.Request](#berty.messenger.v1.MediaPrepare.Request)
@@ -146,6 +153,7 @@
     - [Contact.State](#berty.messenger.v1.Contact.State)
     - [Conversation.Type](#berty.messenger.v1.Conversation.Type)
     - [Media.State](#berty.messenger.v1.Media.State)
+    - [MediaMetadataType](#berty.messenger.v1.MediaMetadataType)
     - [StreamEvent.Notified.Type](#berty.messenger.v1.StreamEvent.Notified.Type)
     - [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type)
   
@@ -282,6 +290,18 @@ AppMessage is the app layer format
 | ----- | ---- | ----- | ----------- |
 | target | [string](#string) |  | TODO: optimize message size |
 | emoji | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.AudioPreview"></a>
+
+### AudioPreview
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| volume_intensities | [uint32](#uint32) | repeated |  |
+| duration_ms | [uint32](#uint32) |  |  |
+| format | [string](#string) |  |  |
+| bitrate | [uint32](#uint32) |  |  |
+| sampling_rate | [uint32](#uint32) |  |  |
 
 <a name="berty.messenger.v1.BannerQuote"></a>
 
@@ -777,8 +797,58 @@ TODO: return cid
 | mime_type | [string](#string) |  |  |
 | filename | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
+| metadata_bytes | [bytes](#bytes) |  |  |
 | interaction_cid | [string](#string) |  | these should not be sent on the bertyprotocol layer |
 | state | [Media.State](#berty.messenger.v1.Media.State) |  |  |
+
+<a name="berty.messenger.v1.MediaGetRelated"></a>
+
+### MediaGetRelated
+
+<a name="berty.messenger.v1.MediaGetRelated.Reply"></a>
+
+### MediaGetRelated.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| media | [Media](#berty.messenger.v1.Media) |  |  |
+| end | [bool](#bool) |  |  |
+
+<a name="berty.messenger.v1.MediaGetRelated.Request"></a>
+
+### MediaGetRelated.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [string](#string) |  |  |
+| mime_types | [string](#string) | repeated | bool previous = 2; // TODO: gets previous media instead of next |
+| file_names | [string](#string) | repeated |  |
+
+<a name="berty.messenger.v1.MediaMetadata"></a>
+
+### MediaMetadata
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| items | [MediaMetadataItem](#berty.messenger.v1.MediaMetadataItem) | repeated |  |
+
+<a name="berty.messenger.v1.MediaMetadataItem"></a>
+
+### MediaMetadataItem
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| metadata_type | [MediaMetadataType](#berty.messenger.v1.MediaMetadataType) |  |  |
+| payload | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.v1.MediaMetadataKV"></a>
+
+### MediaMetadataKV
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| key | [string](#string) |  |  |
+| value | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.MediaPrepare"></a>
 
@@ -1267,6 +1337,16 @@ Composite primary key
 | StatePrepared | 100 | specific to media sent |
 | StateAttached | 101 |  |
 
+<a name="berty.messenger.v1.MediaMetadataType"></a>
+
+### MediaMetadataType
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| MetadataUnknown | 0 |  |
+| MetadataKeyValue | 1 |  |
+| MetadataAudioPreview | 2 |  |
+
 <a name="berty.messenger.v1.StreamEvent.Notified.Type"></a>
 
 ### StreamEvent.Notified.Type
@@ -1342,6 +1422,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | InstanceExportData | [InstanceExportData.Request](#berty.messenger.v1.InstanceExportData.Request) | [InstanceExportData.Reply](#berty.messenger.v1.InstanceExportData.Reply) stream | InstanceExportData exports instance data |
 | MediaPrepare | [MediaPrepare.Request](#berty.messenger.v1.MediaPrepare.Request) stream | [MediaPrepare.Reply](#berty.messenger.v1.MediaPrepare.Reply) | MediaPrepare allows to upload a file and returns a cid to attach to messages |
 | MediaRetrieve | [MediaRetrieve.Request](#berty.messenger.v1.MediaRetrieve.Request) | [MediaRetrieve.Reply](#berty.messenger.v1.MediaRetrieve.Reply) stream | MediaRetrieve allows to download a file attached to a message |
+| MediaGetRelated | [MediaGetRelated.Request](#berty.messenger.v1.MediaGetRelated.Request) | [MediaGetRelated.Reply](#berty.messenger.v1.MediaGetRelated.Reply) | MediaGetRelated Gets previous/next media to be played after current |
 
  
 

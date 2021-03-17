@@ -285,6 +285,13 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useMediaGetRelated: () => {
+		error: any
+		call: (req?: beapi.messenger.MediaGetRelated.IRequest) => void
+		reply: beapi.messenger.MediaGetRelated.IReply | null
+		done: boolean
+		called: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {

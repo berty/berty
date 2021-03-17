@@ -85,6 +85,9 @@ service MessengerService {
 
   // MediaRetrieve allows to download a file attached to a message
   rpc MediaRetrieve (MediaRetrieve.Request) returns (stream MediaRetrieve.Reply);
+
+  // MediaGetRelated Gets previous/next media to be played after current
+  rpc MediaGetRelated(MediaGetRelated.Request) returns (MediaGetRelated.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -421,6 +424,7 @@ message Media {
   string mime_type = 2;
   string filename = 3;
   string display_name = 4;
+  bytes metadata_bytes = 6;
 
   // these should not be sent on the bertyprotocol layer
   string interaction_cid = 100 [(gogoproto.moretags) = "gorm:\"index;column:interaction_cid\"", (gogoproto.customname) = "InteractionCID"];
@@ -762,4 +766,47 @@ message MediaRetrieve {
 
     Media info = 2;
   }
+}
+
+message MediaGetRelated {
+  message Request {
+    string cid = 1 [(gogoproto.customname) = "CID"];
+    reserved 2;
+    // bool previous = 2; // TODO: gets previous media instead of next
+    repeated string mime_types = 3;
+    repeated string file_names = 4;
+  }
+
+  message Reply {
+    Media media = 1;
+    bool end = 2;
+  }
+}
+
+enum MediaMetadataType {
+  MetadataUnknown = 0;
+  MetadataKeyValue = 1;
+  MetadataAudioPreview = 2;
+}
+
+message MediaMetadata {
+  repeated MediaMetadataItem items = 1;
+}
+
+message MediaMetadataItem {
+  MediaMetadataType metadata_type = 1;
+  bytes payload = 2;
+}
+
+message MediaMetadataKV {
+  string key = 1;
+  string value = 2;
+}
+
+message AudioPreview {
+  repeated uint32 volume_intensities = 1;
+  uint32 duration_ms = 2;
+  string format = 3;
+  uint32 bitrate = 4;
+  uint32 sampling_rate = 5;
 }

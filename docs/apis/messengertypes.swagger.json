@@ -672,6 +672,39 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/MediaGetRelated": {
+      "post": {
+        "summary": "MediaGetRelated Gets previous/next media to be played after current",
+        "operationId": "MessengerService_MediaGetRelated",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MediaGetRelatedReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1MediaGetRelatedRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/MediaPrepare": {
       "post": {
         "summary": "MediaPrepare allows to upload a file and returns a cid to attach to messages",
@@ -2157,12 +2190,48 @@
         "display_name": {
           "type": "string"
         },
+        "metadata_bytes": {
+          "type": "string",
+          "format": "byte"
+        },
         "interaction_cid": {
           "type": "string",
           "title": "these should not be sent on the bertyprotocol layer"
         },
         "state": {
           "$ref": "#/definitions/v1MediaState"
+        }
+      }
+    },
+    "v1MediaGetRelatedReply": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "$ref": "#/definitions/v1Media"
+        },
+        "end": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1MediaGetRelatedRequest": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string"
+        },
+        "mime_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "bool previous = 2; // TODO: gets previous media instead of next"
+        },
+        "file_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
