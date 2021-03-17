@@ -408,7 +408,7 @@
       "devices": "Enheter"
     },
     "multi-member": {
-      "input-placeholder": "Skriv ett säkert meddelande..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Sök",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "Lägg till Beta-boten för att skriva här...",
       "incoming-input-placeholder": "Godkänn förfrågan för att skriva här...",
-      "input-placeholder": "Skriv ett säkert meddelande..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Sök",
@@ -569,6 +569,17 @@
         "button-confirm": "Bekräfta",
         "button-cancel": "Avbryt"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Avbryt"
     }
   }
 }
