@@ -408,7 +408,7 @@
       "devices": "Eszközök"
     },
     "multi-member": {
-      "input-placeholder": "Biztonságos üzenet írása..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Keresés",
@@ -450,7 +450,7 @@
       },
       "betabot-input-placeholder": "",
       "incoming-input-placeholder": "",
-      "input-placeholder": "Biztonságos üzenet írása..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Keresés",
@@ -569,6 +569,17 @@
         "button-confirm": "Megerősítés",
         "button-cancel": "Mégse"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Mégse"
     }
   }
 }
