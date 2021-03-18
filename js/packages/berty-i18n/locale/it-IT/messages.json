@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "Crea un nuovo account",
         "import-button": "Importa account"
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Cerca",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
@@ -400,7 +408,7 @@
       "devices": "Dispositivi"
     },
     "multi-member": {
-      "input-placeholder": "Scrivi un messaggio sicuro..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Cerca",
@@ -442,7 +450,7 @@
       },
       "betabot-input-placeholder": "Aggiungi betabot per scrivere qui...",
       "incoming-input-placeholder": "Accetta la richiesta per scrivere qui...",
-      "input-placeholder": "Scrivi un messaggio sicuro..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Cerca",
@@ -561,6 +569,17 @@
         "button-confirm": "",
         "button-cancel": "Annulla"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Annulla"
     }
   }
 }

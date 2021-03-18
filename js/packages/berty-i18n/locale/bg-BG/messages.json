@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "",
         "import-button": ""
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Търсене",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
@@ -400,7 +408,7 @@
       "devices": "Устройства"
     },
     "multi-member": {
-      "input-placeholder": "Напиши тайно съобщение..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Търсене",
@@ -442,7 +450,7 @@
       },
       "betabot-input-placeholder": "Добави betabot да пише тук...",
       "incoming-input-placeholder": "Приеми заявката за да пишеш тук...",
-      "input-placeholder": "Напиши тайно съобщение..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Търсене",
@@ -561,6 +569,17 @@
         "button-confirm": "",
         "button-cancel": "Отказ"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Отказ"
     }
   }
 }
