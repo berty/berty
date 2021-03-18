@@ -1,7 +1,7 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "Die sichere Peer-to-Peer-Messaging-App, die mit oder ohne Internetzugang, Mobilfunkdaten oder Vertrauen in das Netzwerk funktioniert",
+      "desc": "Die sichere Peer-to-Peer-Messaging-App, die mit oder ohne Internetzugang, Mobilfunkdaten oder Vertrauen im Netzwerk funktioniert",
       "open-registered-account": "Eröffnen eines registrierten Kontos",
       "import-button": "Daten von einem bestehenden Konto importieren",
       "account-selector-create-button": "Ihr Konto erstellen",
@@ -46,7 +46,7 @@
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "generate-key": {
-      "title": "Starte den Berty Router…",
+      "title": "Starte den Berty Knotenpunkt…",
       "desc": "Dies könnte einige Sekunden dauern"
     },
     "notifications": {
@@ -54,12 +54,12 @@
       "recommended": "Empfohlen",
       "title": "Benachrichtigungen",
       "desc": "Du musst Push-Benachrichtigungen von Berty auf deinem Handy autorisieren",
-      "button": "BENACHRICHTIGUNGEN AUTHORIS",
+      "button": "BENACHRICHTIGUNGEN AUTHORISIEREN",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "bluetooth": {
-      "header": "Kommunizieren ohne Internetverbindung (WiFi oder Daten), indem Sie Ihr Telefon direkt mit Kollegen in der Nähe verbinden",
-      "optional": "Fakultativ",
+      "header": "Kommuniziere ohne Internetverbindung (WiFi oder Moblile Daten), indem Sie Ihr Telefon direkt mit Anderen in der Nähe verbinden",
+      "optional": "Optional",
       "title": "Bluetooth",
       "desc": "Um diese Funktion nutzen zu können, müssen Sie die Benutzung von Bluetooth auf Ihrem Smartphone erlauben",
       "button": "BLUETOOTH AUTORISIEREN",
@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "Ihr Konto erstellen",
         "import-button": "Konto importieren"
+      },
+      "create-group": {
+        "title": "Neue Gruppe",
+        "add-members": "Mitglied hinzufügen",
+        "group-info": "Gruppen informationen",
+        "search-placeholder": "Suchen",
+        "continue": "Fortfahren",
+        "create-group": "Gruppe erstellen"
       }
     },
     "home-modal": {
@@ -115,7 +123,7 @@
       },
       "full-anon": {
         "title": "Voller Anonmodus",
-        "desc": "",
+        "desc": "Diese Konfigurationen basieren auf redikalen Voreinstallungen, die extrem sensible Netwerkparameter bereitstellen:",
         "no-ip": "Keine IP",
         "no-mc": "Kein mc",
         "tor-only": "Nur Tor"
@@ -400,7 +408,7 @@
       "devices": "Geräte"
     },
     "multi-member": {
-      "input-placeholder": "Sichere Nachricht schreiben..."
+      "input-placeholder": "Hier eingeben..."
     },
     "multi-member-settings": {
       "header-left-button": "Suchen",
@@ -442,7 +450,7 @@
       },
       "betabot-input-placeholder": "Beta-Bot hinzufügen, um hier schreiben zu können ...",
       "incoming-input-placeholder": "Nehmen Sie die Anfrage an, um hier schreiben zu können ...",
-      "input-placeholder": "Sichere Nachricht schreiben..."
+      "input-placeholder": "Hier eingeben..."
     },
     "one-to-one-settings": {
       "header-left-button": "Suchen",
@@ -561,6 +569,17 @@
         "button-confirm": "Bestätigen",
         "button-cancel": "Abbrechen"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Halte zum aufnehmen, lasse los zum senden",
+        "not-sent": "Audionachricht wurde nicht gesendet",
+        "permission-denied": "App ist nicht berechtigt, Ton aufzuzeichnen"
+      },
+      "slide-to-cancel": "Streichen um abbzubrechen",
+      "cancel-button": "Abbrechen"
     }
   }
 }
