@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "",
         "import-button": ""
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Rechercher",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
@@ -400,7 +408,7 @@
       "devices": "Appareils"
     },
     "multi-member": {
-      "input-placeholder": "Écrire un message sécurisé..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Rechercher",
@@ -442,7 +450,7 @@
       },
       "betabot-input-placeholder": "Ajouter le BetaBot pour écrire ici...",
       "incoming-input-placeholder": "Accepter la demande pour écrire ici...",
-      "input-placeholder": "Écrire un message sécurisé..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Rechercher",
@@ -483,17 +491,6 @@
       "medias": "",
       "links": "",
       "documents": ""
-    },
-    "audio": {
-      "record": {
-        "tooltip": {
-          "usage": "Maintenez et parlez, lâchez pour envoyer",
-          "not-sent": "Le message vocal n'a pas été envoyé",
-          "permission-denied": "L'app n'est pas autorisée à utiliser le micro"
-        },
-        "slide-to-cancel": "<< Glisser pour annuler",
-        "cancel-button": "Annuler"
-      }
     }
   },
   "error": {
@@ -572,6 +569,17 @@
         "button-confirm": "",
         "button-cancel": "Annuler"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Annuler"
     }
   }
 }
