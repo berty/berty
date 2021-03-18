@@ -48,6 +48,7 @@
 		"react-native-device-info": "^8.0.2",
 		"react-native-document-picker": "^4.1.1",
 		"react-native-exception-handler": "^2.10.9",
+		"react-native-flags": "^1.0.0",
 		"react-native-fs": "^2.16.6",
 		"react-native-gesture-handler": "^1.8.0",
 		"react-native-hyperlink": "^0.0.19",

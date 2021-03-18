@@ -1,17 +1,19 @@
 import React from 'react'
-import { ImageBackground, View, TouchableOpacity } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { ImageBackground, TouchableOpacity, View } from 'react-native'
+import { Icon, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
 import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import FullAnonBackground from '@berty-tech/assets/full_anon_bg.png'
 import PerformanceBackground from '@berty-tech/assets/performance_bg.png'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 
 export const ChoosePreset = () => {
 	const { t }: { t: any } = useTranslation()
-	const { dispatch, setPersistentOption } = useMsgrContext()
+	const { dispatch, setPersistentOption, persistentOptions } = useMsgrContext()
 	const insets = useSafeAreaInsets()
+	const navigation = useNativeNavigation()
 
 	const [{ text, padding, border, margin, flex, color }, { scaleSize }] = useStyles()
 	const performanceCheckList = [
@@ -37,7 +39,9 @@ export const ChoosePreset = () => {
 			<TouchableOpacity
 				activeOpacity={0.7}
 				onPress={async () => {
-					dispatch({ type: MessengerActions.SetStateOnBoarding })
+					!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable
+						? navigation.goBack()
+						: dispatch({ type: MessengerActions.SetStateOnBoarding })
 					await setPersistentOption({
 						type: PersistentOptionsKeys.Preset,
 						payload: {
@@ -155,7 +159,9 @@ export const ChoosePreset = () => {
 				]}
 				activeOpacity={0.7}
 				onPress={async () => {
-					dispatch({ type: MessengerActions.SetStateOnBoarding })
+					!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable
+						? navigation.goBack()
+						: dispatch({ type: MessengerActions.SetStateOnBoarding })
 					await setPersistentOption({
 						type: PersistentOptionsKeys.Preset,
 						payload: {
