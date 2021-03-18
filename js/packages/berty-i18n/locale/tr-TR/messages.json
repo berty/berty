@@ -87,6 +87,14 @@
       "multi-account": {
         "create-button": "Yeni hesap oluştur",
         "import-button": "Hesabı içeri aktar"
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "Sorgula",
+        "continue": "",
+        "create-group": ""
       }
     },
     "home-modal": {
@@ -400,7 +408,7 @@
       "devices": "Aygıtlar"
     },
     "multi-member": {
-      "input-placeholder": "Güvenli bir mesaj yaz..."
+      "input-placeholder": ""
     },
     "multi-member-settings": {
       "header-left-button": "Sorgula",
@@ -442,7 +450,7 @@
       },
       "betabot-input-placeholder": "Buraya yazmak için Beta Bot'u ekle",
       "incoming-input-placeholder": "Buraya yazmak için isteği kabul et...",
-      "input-placeholder": "Güvenli bir mesaj yaz..."
+      "input-placeholder": ""
     },
     "one-to-one-settings": {
       "header-left-button": "Sorgula",
@@ -561,6 +569,17 @@
         "button-confirm": "Onayla",
         "button-cancel": "İptal"
       }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "İptal"
     }
   }
 }
