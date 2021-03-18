@@ -1,6 +1,8 @@
 import React from 'react'
-import Jdenticon from 'react-native-jdenticon'
-import { Image, View, ViewStyle } from 'react-native'
+import { Image, View, ViewStyle, Text } from 'react-native'
+import palette from 'google-palette'
+import { SHA3 } from 'sha3'
+import { Buffer } from 'buffer'
 
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -26,13 +28,16 @@ export type AvatarStyle = Omit<
 	'borderRadius' | 'width' | 'height' | 'alignItems' | 'justifyContent'
 >
 
+const pal = palette('tol-rainbow', 256)
+
 export const GenericAvatar: React.FC<{
 	cid: Maybe<string>
+	colorSeed: Maybe<string>
 	size: number
-	fallbackSeed: Maybe<string>
 	style?: AvatarStyle
 	isEditable?: boolean
-}> = ({ cid, size, fallbackSeed, style, isEditable = false }) => {
+	nameSeed: Maybe<string>
+}> = ({ cid, size, colorSeed, style, isEditable = false, nameSeed }) => {
 	const [{ border, background, color }] = useStyles()
 	const padding = Math.round(size / 14)
 	let innerSize = Math.round(size - 2 * padding)
@@ -71,7 +76,7 @@ export const GenericAvatar: React.FC<{
 		}
 		content = (
 			<>
-				<Jdenticon value={fallbackSeed} size={iconSize} style={{}} />
+				<NameAvatar size={size} style={style} colorSeed={colorSeed} nameSeed={nameSeed} />
 				{isEditable ? (
 					<View
 						style={[
@@ -157,12 +162,42 @@ export const AccountAvatar: React.FC<{
 	const account = useAccount()
 	return (
 		<GenericAvatar
+			nameSeed={account?.displayName}
 			cid={account?.avatarCid}
 			size={size}
-			fallbackSeed={account?.publicKey}
+			colorSeed={account?.publicKey}
 			style={style}
 			isEditable={isEditable}
 		/>
+	)
+}
+
+export const NameAvatar: React.FC<{
+	colorSeed: Maybe<string>
+	size: number
+	style?: AvatarStyle
+	nameSeed: Maybe<string>
+}> = ({ colorSeed, size, style, nameSeed }) => {
+	const h = new SHA3(256).update(Buffer.from(colorSeed || '', 'base64')).digest()
+	const color = '#' + pal[h[0]]
+	return (
+		<View
+			style={[
+				style,
+				{
+					width: size,
+					height: size,
+					backgroundColor: color,
+					borderRadius: size / 2,
+					alignItems: 'center',
+					justifyContent: 'center',
+				},
+			]}
+		>
+			<Text style={{ color: 'white', fontSize: size * 0.5, includeFontPadding: false }}>
+				{(nameSeed || '?')[0].toUpperCase()}
+			</Text>
+		</View>
 	)
 }
 
@@ -179,11 +214,22 @@ export const ContactAvatar: React.FC<{
 	if (suggestion) {
 		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
 	}
+	if (contact?.displayName) {
+		return (
+			<NameAvatar
+				colorSeed={contact?.publicKey}
+				style={style}
+				nameSeed={contact?.displayName}
+				size={size}
+			/>
+		)
+	}
 	return (
 		<GenericAvatar
+			nameSeed={contact?.displayName}
 			cid={contact?.avatarCid}
 			size={size}
-			fallbackSeed={contact?.publicKey}
+			colorSeed={contact?.publicKey}
 			style={style}
 		/>
 	)
@@ -195,7 +241,14 @@ export const MemberAvatar: React.FC<{
 	size: number
 }> = ({ publicKey, conversationPublicKey, size }) => {
 	const member = useMember({ publicKey, conversationPublicKey })
-	return <GenericAvatar cid={member?.avatarCid} size={size} fallbackSeed={member?.publicKey} />
+	return (
+		<GenericAvatar
+			cid={member?.avatarCid}
+			size={size}
+			colorSeed={member?.publicKey}
+			nameSeed={member?.displayName}
+		/>
+	)
 }
 
 export const MultiMemberAvatar: React.FC<{
@@ -230,7 +283,7 @@ export const ConversationAvatar: React.FC<{
 	}
 
 	if (!conv) {
-		return <GenericAvatar size={size} style={style} cid='' fallbackSeed={publicKey} />
+		return <GenericAvatar size={size} style={style} cid='' colorSeed={publicKey} nameSeed={'G'} />
 	}
 
 	if (conv.type === beapi.messenger.Conversation.Type.MultiMemberType) {

@@ -6,7 +6,6 @@ declare module '*.svg' {
 }
 
 declare module 'react-native-in-app-notification'
-declare module 'react-native-jdenticon'
 declare module 'react-native-audiowaveform'
 declare module 'linkify-it'
 

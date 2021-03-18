@@ -5,7 +5,7 @@ import { Text, Icon } from '@ui-kitten/components'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
@@ -98,10 +98,10 @@ const AddThisContact: React.FC<{
 				]}
 			>
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
-					<ProceduralCircleAvatar
-						seed={publicKey}
-						style={[border.shadow.big, row.center]}
-						diffSize={30}
+					<ContactAvatar
+						publicKey={publicKey}
+						style={[border.shadow.big, row.center] as any}
+						size={100}
 					/>
 				</View>
 				<View style={[padding.top.scale(55)]}>

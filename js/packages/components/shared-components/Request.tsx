@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 import { Text, Icon, Toggle } from '@ui-kitten/components'
+
+import { useContact } from '@berty-tech/store/hooks'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
+
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
-import { ProceduralCircleAvatar } from './ProceduralCircleAvatar'
-import { useContact } from '@berty-tech/store/hooks'
+import { ContactAvatar } from '../avatars'
 
 //
 // RequestButtons
@@ -230,7 +232,7 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
 			<View style={[absolute.scale({ top: -70 }), row.item.justify, border.shadow.medium]}>
-				<ProceduralCircleAvatar seed={contactPublicKey} size={140} diffSize={40} />
+				<ContactAvatar publicKey={contactPublicKey} size={140} />
 			</View>
 			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>
 				<Text style={[padding.vertical.tiny, text.align.center, text.size.big]}>

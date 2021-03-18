@@ -4,7 +4,7 @@ import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
+// import { CircleAvatar } from '../shared-components/CircleAvatar'
 
 //
 // Blocked Contacts
@@ -48,7 +48,7 @@ const HeaderBlockedContacts: React.FC<{}> = () => {
 	)
 }
 
-const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ avatarUri, name }) => {
+const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ name }) => {
 	const _styles = useStylesBlockedContacts()
 	const [{ flex, background, padding, row, text, color }] = useStyles()
 
@@ -56,7 +56,7 @@ const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ avatarUri, na
 		<TouchableOpacity style={[flex.tiny, background.white, padding.small, _styles.item]}>
 			<View style={[flex.tiny, row.fill]}>
 				<View style={[row.center, row.item.justify]}>
-					<CircleAvatar avatarUri={avatarUri} size={40} withCircle={false} />
+					{/*<CircleAvatar avatarUri={avatarUri} size={40} withCircle={false} />*/}
 					<View style={[padding.left.small]}>
 						<Text style={[text.bold.medium]} category='s4'>
 							{name}
