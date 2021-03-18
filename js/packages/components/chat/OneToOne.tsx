@@ -46,7 +46,7 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 	const conv = useConversation(convPk)
 	const contact = useContact(conv?.contactPublicKey || null)
 
-	const [{ padding, text, opacity, color }] = useStyles()
+	const [{ flex, padding, text, opacity, color, row }, { scaleSize }] = useStyles()
 
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
 
@@ -56,7 +56,6 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 		return <CenteredActivityIndicator />
 	}
 	const title = (conv as any).fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
-	const outerElemsSize = 45
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
 			<BlurView
@@ -75,19 +74,31 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 					padding.medium,
 				]}
 			>
-				<TouchableOpacity onPress={goBack} style={{ width: outerElemsSize }}>
-					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
+				<TouchableOpacity onPress={goBack} style={[flex.tiny, flex.justify.center]}>
+					<Icon
+						name='arrow-back-outline'
+						width={25 * scaleSize}
+						height={25 * scaleSize}
+						fill={color.black}
+					/>
 				</TouchableOpacity>
-				<Text numberOfLines={1} style={[text.bold.medium, text.size.scale(20)]}>
-					{title}
-				</Text>
-				<TouchableOpacity
-					activeOpacity={contact ? 0.2 : 0.5}
-					style={[!contact ? opacity(0.5) : null]}
-					onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
-				>
-					<ContactAvatar size={outerElemsSize} publicKey={conv.contactPublicKey} />
-				</TouchableOpacity>
+				<View style={[flex.large]}>
+					<Text
+						numberOfLines={1}
+						style={[text.align.center, text.bold.medium, text.size.scale(20)]}
+					>
+						{title}
+					</Text>
+				</View>
+				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
+					<TouchableOpacity
+						activeOpacity={contact ? 0.2 : 0.5}
+						style={[!contact ? opacity(0.5) : null, flex.small, row.right]}
+						onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
+					>
+						<ContactAvatar size={40 * scaleSize} publicKey={conv.contactPublicKey} />
+					</TouchableOpacity>
+				</View>
 			</View>
 			{stickyDate && showStickyDate && layoutHeader?.height && (
 				<View

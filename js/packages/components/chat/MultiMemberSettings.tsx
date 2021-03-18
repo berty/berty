@@ -88,7 +88,7 @@ const GroupChatSettingsHeader: React.FC<any> = ({ displayName }) => {
 }
 
 const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
-	const [{ padding, margin, color }] = useStyles()
+	const [{ padding, margin, color }, { scaleSize }] = useStyles()
 	const ctx = useMsgrContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
@@ -131,10 +131,11 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 					<MemberAvatar
 						publicKey={accountMember?.publicKey}
 						conversationPublicKey={publicKey}
-						size={30}
+						size={30 * scaleSize}
 					/>
 					<ButtonSetting
 						style={[padding.horizontal.small]}
+						textSize={15}
 						name={accountMember?.displayName || ''}
 						alone={false}
 						actionIcon={null}
@@ -161,7 +162,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 									<MemberAvatar
 										publicKey={members[k]?.publicKey}
 										conversationPublicKey={publicKey}
-										size={30}
+										size={30 * scaleSize}
 									/>
 								</View>
 

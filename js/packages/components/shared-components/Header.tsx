@@ -44,7 +44,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	undo,
 	undoIcon = 'arrow-back-outline',
 	undoIconPack,
-	undoIconSize = 30,
+	undoIconSize = 25,
 	undoIconColor = 'white',
 	undoIconHitSlop = largeHitSlop,
 	desc = null,
@@ -60,7 +60,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	const [{ border, flex, padding, row, text }, { scaleSize }] = useStyles()
 	return (
 		<SafeAreaView style={[flex.tiny, border.radius.bottom.scale(20), { backgroundColor: bgColor }]}>
-			<View style={[padding.horizontal.medium, padding.top.tiny, padding.bottom.medium]}>
+			<View style={[padding.horizontal.medium, padding.top.medium, padding.bottom.medium]}>
 				<View style={[row.fill, flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}>
 					{undo ? (
 						<TouchableOpacity
@@ -82,13 +82,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 					{title ? (
 						<View style={[flex.big, row.item.justify]}>
 							<Text
-								style={[
-									text.align.center,
-									text.color.white,
-									text.bold.medium,
-									padding.top.medium,
-									text.size.scale(25),
-								]}
+								style={[text.align.center, text.color.white, text.bold.medium, text.size.scale(25)]}
 							>
 								{title}
 							</Text>

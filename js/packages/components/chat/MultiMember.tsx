@@ -21,6 +21,7 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useLayout } from '../hooks'
 import { MultiMemberAvatar } from '../avatars'
 import { MessageList } from '@berty-tech/components/chat/MessageList'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 //
 // MultiMember
@@ -34,7 +35,8 @@ const HeaderMultiMember: React.FC<{
 	showStickyDate?: boolean
 }> = ({ id, stickyDate, showStickyDate }) => {
 	const { navigate, goBack } = useNavigation()
-	const [{ row, padding, flex, text, column, margin, color }] = useStyles()
+	const insets = useSafeAreaInsets()
+	const [{ row, padding, flex, text, color }, { scaleSize }] = useStyles()
 	const conversation = useConversation(id)
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
 
@@ -47,40 +49,41 @@ const HeaderMultiMember: React.FC<{
 			/>
 			<View
 				style={[
-					flex.align.center,
-					flex.direction.row,
-					padding.right.medium,
-					padding.left.tiny,
-					margin.top.scale(50),
-					padding.bottom.scale(20),
+					{
+						alignItems: 'center',
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						marginTop: insets.top,
+					},
+					padding.medium,
 				]}
 			>
-				<TouchableOpacity
-					style={[flex.tiny, flex.justify.center, flex.align.center]}
-					onPress={goBack}
-				>
-					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
+				<TouchableOpacity style={[flex.tiny]} onPress={goBack}>
+					<Icon
+						name='arrow-back-outline'
+						width={25 * scaleSize}
+						height={25 * scaleSize}
+						fill={color.black}
+					/>
 				</TouchableOpacity>
-				<View style={[flex.large, column.justify, row.item.justify, margin.top.small]}>
-					<View style={[flex.direction.row, flex.justify.center, flex.align.center]}>
-						<Text
-							numberOfLines={1}
-							style={[text.align.center, text.bold.medium, text.size.scale(20)]}
-						>
-							{conversation?.displayName || ''}
-						</Text>
-					</View>
+				<View style={[flex.large]}>
+					<Text
+						numberOfLines={1}
+						style={[text.align.center, text.bold.medium, text.size.scale(20)]}
+					>
+						{conversation?.displayName || ''}
+					</Text>
 				</View>
 				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
 					<TouchableOpacity
 						style={[flex.small, row.right]}
 						onPress={() => navigate.chat.groupSettings({ convId: id })}
 					>
-						<MultiMemberAvatar size={40} />
+						<MultiMemberAvatar size={40 * scaleSize} />
 					</TouchableOpacity>
 				</View>
 			</View>
-			{!!stickyDate && !!showStickyDate && layoutHeader?.height ? (
+			{!!stickyDate && !!showStickyDate && layoutHeader?.height && (
 				<View
 					style={{
 						position: 'absolute',
@@ -91,7 +94,7 @@ const HeaderMultiMember: React.FC<{
 				>
 					<ChatDate date={stickyDate} />
 				</View>
-			) : null}
+			)}
 		</View>
 	)
 }

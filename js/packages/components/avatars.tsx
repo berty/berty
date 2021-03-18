@@ -201,7 +201,7 @@ export const MemberAvatar: React.FC<{
 export const MultiMemberAvatar: React.FC<{
 	size: number
 	style?: AvatarStyle
-	publicKey: Maybe<string>
+	publicKey?: Maybe<string>
 }> = ({ size, style, publicKey }) => {
 	const ctx = useMsgrContext()
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(

@@ -11,6 +11,7 @@ import { CircleAvatar } from './CircleAvatar'
 // Type
 type SettingButtonProps = {
 	name: string
+	textSize?: number | null
 	image?: string
 	icon?: string
 	iconSize?: number
@@ -57,6 +58,7 @@ const useStylesSettingButton = () => {
 
 export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	name,
+	textSize,
 	image = null,
 	icon = null,
 	iconSize = 30,
@@ -146,7 +148,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							style={[
 								padding.left.small,
 								text.color.black,
-								text.size.medium,
+								text.size.scale(textSize || 15),
 								{ maxWidth: windowWidth - 150 },
 								textStyle,
 							]}
@@ -269,7 +271,10 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	disabled = false,
 }) => {
 	const _styles = useStylesSettingButton()
-	const [{ background, border, padding, flex, height, row, opacity, margin, text }] = useStyles()
+	const [
+		{ background, border, padding, flex, height, row, opacity, margin, text },
+		{ scaleSize },
+	] = useStyles()
 	return (
 		<View
 			style={[
@@ -289,14 +294,14 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 								<Icon
 									name={icon}
 									pack={iconPack}
-									width={iconSize}
-									height={iconSize}
+									width={iconSize * scaleSize}
+									height={iconSize * scaleSize}
 									fill={iconColor}
 								/>
 							</View>
 						)}
 						<View>
-							<Text style={[padding.left.small]}>{name}</Text>
+							<Text style={[padding.left.small, text.size.medium]}>{name}</Text>
 						</View>
 						{state && state.value && state.color && state.bgColor && (
 							<View
@@ -310,8 +315,8 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 									<Icon
 										style={[margin.right.small]}
 										name={state.icon}
-										width={state.iconSize}
-										height={state.iconSize}
+										width={state.iconSize * scaleSize}
+										height={state.iconSize * scaleSize}
 										fill={state.iconColor}
 									/>
 								)}
@@ -327,8 +332,8 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 										<Icon
 											style={[row.item.justify, margin.right.scale(5)]}
 											name={state.stateIcon}
-											width={13}
-											height={13}
+											width={13 * scaleSize}
+											height={13 * scaleSize}
 											fill={state.stateIconColor}
 										/>
 									)}
@@ -490,7 +495,7 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 
 export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ title, body }) => {
 	const [isOpen, setOpen] = useState(false)
-	const [{ padding, margin }] = useStyles()
+	const [{ padding, margin, text }, { scaleSize }] = useStyles()
 	const [animateHeight] = useState(new Animated.Value(0))
 	const [rotateValue] = useState(new Animated.Value(0))
 
@@ -511,9 +516,9 @@ export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ titl
 			}}
 		>
 			<View style={[padding.right.small, { flex: 1, overflow: 'hidden' }]}>
-				<Text style={{ marginBottom: 12 }}>{title}</Text>
+				<Text style={[{ marginBottom: 12 }, text.size.medium]}>{title}</Text>
 				<Animated.View style={{ maxHeight: animateHeight }}>
-					<Text style={[margin.top.small]}>{body}</Text>
+					<Text style={[margin.top.small, text.size.medium]}>{body}</Text>
 				</Animated.View>
 			</View>
 			<TouchableOpacity
@@ -545,7 +550,12 @@ export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ titl
 						},
 					]}
 				>
-					<Icon name='arrow-ios-upward' width={25} height={25} fill='black' />
+					<Icon
+						name='arrow-ios-upward'
+						width={25 * scaleSize}
+						height={25 * scaleSize}
+						fill='black'
+					/>
 				</Animated.View>
 			</TouchableOpacity>
 		</View>

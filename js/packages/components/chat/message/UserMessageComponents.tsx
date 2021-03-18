@@ -57,7 +57,7 @@ export const HyperlinkUserMessage: React.FC<{
 
 	const client = useClient()
 	const navigation = useNativeNavigation()
-	const [{ margin, padding, column, border }] = useStyles()
+	const [{ margin, padding, column, border }, { scaleSize }] = useStyles()
 	const [isReadMore, setReadMore] = useState(false)
 
 	useEffect(() => {
@@ -74,7 +74,7 @@ export const HyperlinkUserMessage: React.FC<{
 				padding.horizontal.scale(inte.isMine ? 11 : 13),
 				padding.vertical.scale(inte.isMine ? 7 : 9),
 				inte.isMine ? column.item.right : column.item.left,
-				isFollowedMessage && margin.left.scale(35),
+				isFollowedMessage && { marginLeft: 35 * scaleSize },
 				{
 					backgroundColor: msgBackgroundColor,
 				},

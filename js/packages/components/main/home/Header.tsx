@@ -33,7 +33,7 @@ export const HomeHeader: React.FC<
 }) => {
 	const [
 		{ border, width, height, padding, text, background, margin, row },
-		{ scaleHeight },
+		{ scaleHeight, scaleSize },
 	] = useStyles()
 	const { navigate } = useNativeNavigation()
 	const [focus, setFocus] = useState<any>(null)
@@ -131,8 +131,8 @@ export const HomeHeader: React.FC<
 										<Icon
 											name='search-outline'
 											fill={value?.length ? '#FFAE3A' : '#8F9BB3'}
-											width={20}
-											height={20}
+											width={20 * scaleSize}
+											height={20 * scaleSize}
 										/>
 									</View>
 
@@ -170,7 +170,12 @@ export const HomeHeader: React.FC<
 											}}
 											onPress={() => onChange('')}
 										>
-											<Icon name='close-circle-outline' fill='#FFAE3A' width={20} height={20} />
+											<Icon
+												name='close-circle-outline'
+												fill='#FFAE3A'
+												width={20 * scaleSize}
+												height={20 * scaleSize}
+											/>
 										</TouchableOpacity>
 									) : null}
 								</TouchableOpacity>
@@ -193,7 +198,7 @@ export const HomeHeader: React.FC<
 										onLongPress(true)
 									}}
 								>
-									<AccountAvatar size={40} />
+									<AccountAvatar size={40 * scaleSize} />
 								</TouchableOpacity>
 							</View>
 						</View>

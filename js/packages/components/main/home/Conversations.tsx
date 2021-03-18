@@ -76,7 +76,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
-	const [{ color, row, border, flex, padding, text, opacity, margin }] = useStyles()
+	const [{ color, row, border, flex, padding, text, opacity, margin }, { scaleSize }] = useStyles()
 	const { dispatch } = useNavigation()
 
 	let description
@@ -161,7 +161,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						},
 					]}
 				>
-					<ConversationAvatar size={40} publicKey={publicKey} />
+					<ConversationAvatar size={40 * scaleSize} publicKey={publicKey} />
 				</View>
 				<View
 					style={[
@@ -223,8 +223,8 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							<Icon
 								name={messageType === 'audio' ? 'headphones' : 'image'}
 								fill={color.black}
-								height={20}
-								width={20}
+								height={20 * scaleSize}
+								width={20 * scaleSize}
 								style={[margin.right.tiny]}
 							/>
 						)}
@@ -275,7 +275,7 @@ const SuggestionsItem: React.FC<{
 	icon: string
 	style?: StyleProp<any>
 }> = ({ displayName, desc, link, addBot, icon, style }) => {
-	const [{ color, row, border, flex, padding, text, margin }] = useStyles()
+	const [{ color, row, border, flex, padding, text, margin }, { scaleSize }] = useStyles()
 	return (
 		<>
 			<TouchableHighlight
@@ -308,7 +308,7 @@ const SuggestionsItem: React.FC<{
 							},
 						]}
 					>
-						<HardcodedAvatar size={40} name={icon} />
+						<HardcodedAvatar size={40 * scaleSize} name={icon} />
 					</View>
 					<View
 						style={[
