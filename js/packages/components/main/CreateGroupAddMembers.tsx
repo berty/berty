@@ -74,7 +74,7 @@ export const Header: React.FC<{
 					style={[
 						background.white,
 						border.radius.top.scale(30),
-						border.shadow.big,
+						!first && border.shadow.big,
 						disabled && opacity(0.5),
 						style,
 					]}
@@ -282,10 +282,10 @@ export const MemberList: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
-	const [{ height, padding }] = useStyles()
+	const [{ padding }] = useStyles()
 
 	return (
-		<View style={[height(135)]}>
+		<View style={{ height: 135 }}>
 			<ScrollView
 				horizontal={true}
 				showsHorizontalScrollIndicator={false}
@@ -375,7 +375,7 @@ export const CreateGroupAddMembers: React.FC<{
 	onRemoveMember: (id: string) => void
 	members: any[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
-	const [{ flex, background, margin, color }] = useStyles()
+	const [{ flex, background, margin, color }, { scaleHeight }] = useStyles()
 	const navigation = useNavigation()
 	const { t }: { t: any } = useTranslation()
 
@@ -383,24 +383,30 @@ export const CreateGroupAddMembers: React.FC<{
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
 			<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
-				<SafeAreaView style={[background.blue, flex.tiny]}>
-					<View>
-						<CreateGroupHeader />
-						<MemberList members={members} onRemoveMember={onRemoveMember} />
-					</View>
-					<Header
-						title={t('main.home.create-group.add-members')}
-						first
-						style={[margin.bottom.scale(-1)]}
-					/>
-					<AddMembers members={members} onSetMember={onSetMember} onRemoveMember={onRemoveMember} />
+				<SafeAreaView style={[background.blue]}>
+					<CreateGroupHeader />
+					<MemberList members={members} onRemoveMember={onRemoveMember} />
 				</SafeAreaView>
-				<FooterCreateGroup
-					title={t('main.home.create-group.continue')}
-					icon='arrow-forward-outline'
-					action={navigation.navigate.main.createGroup.createGroupFinalize}
-				/>
+				<View style={[background.white, { flex: 1 }]}>
+					<View style={{ top: -30 * scaleHeight, flex: 1 }}>
+						<Header
+							title={t('main.home.create-group.add-members')}
+							first
+							style={[margin.bottom.scale(-1)]}
+						/>
+						<AddMembers
+							members={members}
+							onSetMember={onSetMember}
+							onRemoveMember={onRemoveMember}
+						/>
+					</View>
+				</View>
 			</SwipeNavRecognizer>
+			<FooterCreateGroup
+				title={t('main.home.create-group.continue')}
+				icon='arrow-forward-outline'
+				action={navigation.navigate.main.createGroup.createGroupFinalize}
+			/>
 		</Layout>
 	)
 }

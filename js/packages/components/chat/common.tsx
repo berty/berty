@@ -84,13 +84,13 @@ export const ChatFooter: React.FC<{
 }> = ({ isFocused, setFocus, convPk, disabled = false, placeholder, setSwipe }) => {
 	const ctx = useMsgrContext()
 	const client = useClient()
-	const [{ padding, flex, border, color, text }, { scaleSize }] = useStyles()
 
 	const [message, setMessage] = useState('')
 	const [inputHeight, setInputHeight] = useState<number>(35)
 	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
+	const [{ padding, flex, border, color, text }, { scaleSize }] = useStyles()
 	const [mediaCids, setMediaCids] = useState<string[]>([])
 
 	const [activateTab, setActivateTab] = useState(TabItems.Default)
@@ -181,8 +181,8 @@ export const ChatFooter: React.FC<{
 
 	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(94 * scaleSize)])
 	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 45 * scaleSize])
-	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -92 * scaleSize])
-	const aFixSend = createAnimationInterpolation(_aFixMicro, [70, -45 * scaleSize])
+	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -120 * scaleSize])
+	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -45 * scaleSize])
 	const aPaddingLeft = createAnimationInterpolation(_aPaddingLeft, [0, 45])
 	const aOpacity = createAnimationInterpolation(_aOpacity, [1, 0])
 	const aOpacitySendButton = createAnimationInterpolation(_aOpacity, [0, 1])
@@ -294,7 +294,8 @@ export const ChatFooter: React.FC<{
 						style={[
 							flex.tiny,
 							border.radius.medium,
-							padding.horizontal.small,
+							padding.left.small,
+							!_isFocused && padding.right.small,
 							{
 								alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
 								flexDirection: 'row',
@@ -391,7 +392,12 @@ export const ChatFooter: React.FC<{
 								/>
 							</Animated.View>
 							<Animated.View
-								style={{ opacity: aOpacitySendButton, position: 'absolute', right: aFixSend }}
+								style={{
+									opacity: aOpacitySendButton,
+									position: 'absolute',
+									right: aFixSend,
+									padding: 8 * scaleSize,
+								}}
 							>
 								<TouchableOpacity
 									style={[

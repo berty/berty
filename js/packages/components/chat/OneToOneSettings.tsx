@@ -30,10 +30,11 @@ const useStylesOneToOne = () => {
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const _styles = useStylesOneToOne()
-	const [{ text, padding }] = useStyles()
+	const [{ text, padding }, { scaleSize }] = useStyles()
+
 	return (
 		<View style={[_styles.headerAvatar, { alignItems: 'center' }]}>
-			<ContactAvatar size={100} publicKey={contact.publicKey} />
+			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} />
 			<Text
 				numberOfLines={1}
 				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}
@@ -140,24 +141,30 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
 	return (
-		<ScrollView
-			style={[flex.tiny, background.white]}
-			contentContainerStyle={[padding.bottom.huge]}
-			bounces={false}
-		>
-			<SwipeNavRecognizer>
-				<HeaderSettings
-					action={() => navigate.chat.contactSettings({ contactId: conv.contactPublicKey || '' })}
-					actionIcon='more-horizontal-outline'
-					undo={goBack}
+		<>
+			<View style={[flex.tiny]}>
+				<ScrollView
+					style={[flex.tiny, background.white]}
+					contentContainerStyle={[padding.bottom.huge]}
+					bounces={false}
 				>
-					<View>
-						<OneToOneHeader contact={contact} />
-						<OneToOneHeaderButtons />
-					</View>
-				</HeaderSettings>
-				<OneToOneBody {...conv} isIncoming={isIncoming} />
-			</SwipeNavRecognizer>
-		</ScrollView>
+					<SwipeNavRecognizer>
+						<HeaderSettings
+							action={() =>
+								navigate.chat.contactSettings({ contactId: conv.contactPublicKey || '' })
+							}
+							actionIcon='more-horizontal-outline'
+							undo={goBack}
+						>
+							<View>
+								<OneToOneHeader contact={contact} />
+								<OneToOneHeaderButtons />
+							</View>
+						</HeaderSettings>
+						<OneToOneBody {...conv} isIncoming={isIncoming} />
+					</SwipeNavRecognizer>
+				</ScrollView>
+			</View>
+		</>
 	)
 }

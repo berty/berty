@@ -117,17 +117,12 @@ const HomeHeader: React.FC = () => {
 
 	return (
 		<View style={[flex.tiny]}>
-			<View
-				style={[
-					margin.top.scale(10),
-					{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
-				]}
-			>
+			<View style={[{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }]}>
 				<TouchableOpacity style={[flex.tiny]} onPress={() => navigation.goBack()}>
 					<Icon
 						name='arrow-back-outline'
-						width={30 * scaleSize}
-						height={30 * scaleSize}
+						width={25 * scaleSize}
+						height={25 * scaleSize}
 						fill={color.white}
 					/>
 				</TouchableOpacity>
@@ -149,8 +144,8 @@ const HomeHeader: React.FC = () => {
 					</Text>
 					<Icon
 						name='edit-outline'
-						width={30 * scaleSize}
-						height={30 * scaleSize}
+						width={25 * scaleSize}
+						height={25 * scaleSize}
 						fill={color.white}
 					/>
 				</TouchableOpacity>

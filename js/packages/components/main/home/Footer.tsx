@@ -23,7 +23,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	disabled = false,
 	isModalVisible,
 }) => {
-	const [{ border, column, color, opacity }] = useStyles()
+	const [{ border, column, color, opacity }, { scaleSize }] = useStyles()
 	const selectedSize = 59
 	const sizeProp = 47
 	const backgroundColorProp = 'white'
@@ -53,8 +53,8 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	return (
 		<View
 			style={{
-				width: selectedSize,
-				height: selectedSize,
+				width: selectedSize * scaleSize,
+				height: selectedSize * scaleSize,
 				justifyContent: 'center',
 				alignItems: 'center',
 			}}
@@ -65,11 +65,10 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 				style={[
 					border.shadow.medium,
 					column.justify,
-
 					{
 						backgroundColor,
-						width: size,
-						height: size,
+						width: size * scaleSize,
+						height: size * scaleSize,
 						borderRadius: size / 2,
 					},
 				]}
@@ -92,8 +91,8 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 					<Icon
 						name={icon || ''}
 						pack={iconPack}
-						width={elemSize}
-						height={elemSize}
+						width={elemSize * scaleSize}
+						height={elemSize * scaleSize}
 						fill={elemColor}
 					/>
 				</Animated.View>

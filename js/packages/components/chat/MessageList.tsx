@@ -97,7 +97,7 @@ export const MessageList: React.FC<{
 		({ item, index }) => {
 			return (
 				<>
-					<DateSeparator current={item} next={index > 0 ? messages[index - 1] : undefined} />
+					{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
 					<Message
 						inte={item}
 						convKind={conversation?.type || beapi.messenger.Conversation.Type.Undefined}
@@ -163,6 +163,7 @@ export const MessageList: React.FC<{
 			initialScrollIndex={initialScrollIndex}
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
+			contentContainerStyle={{ paddingBottom: 35 * scaleHeight }}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
 			data={messages}
