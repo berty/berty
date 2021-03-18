@@ -61,9 +61,11 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 
 	tracerFlush := tracer.InitTracer(m.Logging.Tracer, m.Logging.Service)
 	logger, loggerCleanup, err := logutil.NewLogger(
-		m.Logging.Filters,
-		m.Logging.Format,
-		m.Logging.Logfile,
+		logutil.NewStdStream(
+			m.Logging.Filters,
+			m.Logging.Format,
+			m.Logging.Logfile,
+		),
 	)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

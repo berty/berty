@@ -40,7 +40,7 @@ func Logger(t testing.TB) (*zap.Logger, func()) {
 		*logFilters = strings.ReplaceAll(*logFilters, ":default:", defaultLoggingFilters)
 
 		var err error
-		loggerInstance, loggerCleanup, err = logutil.NewLogger(*logFilters, *logFormat, *logFile)
+		loggerInstance, loggerCleanup, err = logutil.NewLogger(logutil.NewStdStream(*logFilters, *logFormat, *logFile))
 		if !assert.NoError(t, err) {
 			loggerInstance = zap.NewNop()
 			loggerCleanup = func() {}

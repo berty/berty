@@ -1,61 +1,51 @@
 package logutil_test
 
 import (
+	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+	"moul.io/u"
+	"moul.io/zapring"
+
 	"berty.tech/berty/v2/go/internal/logutil"
 )
 
-func Example_logall() {
-	logger, cleanup, err := logutil.NewLogger("*", "light-console", "stdout")
+func TestTypeStd(t *testing.T) {
+	closer, err := u.CaptureStdoutAndStderr()
+
+	logger, cleanup, err := logutil.NewLogger(
+		logutil.NewStdStream("*", "light-console", "stdout"),
+	)
+	defer cleanup()
 	if err != nil {
 		panic(err)
 	}
-	defer cleanup()
 
-	logger.Debug("top debug")
-	logger.Info("top info")
-	logger.Warn("top warn")
-	logger.Error("top error")
-
-	logger.Named("foo").Debug("foo debug")
-	logger.Named("foo").Info("foo info")
-	logger.Named("foo").Warn("foo warn")
-	logger.Named("foo").Error("foo error")
-
-	// Output:
-	// DEBUG	bty               	logutil/logutil_test.go:14	top debug
-	// INFO 	bty               	logutil/logutil_test.go:15	top info
-	// WARN 	bty               	logutil/logutil_test.go:16	top warn
-	// ERROR	bty               	logutil/logutil_test.go:17	top error
-	// DEBUG	bty.foo           	logutil/logutil_test.go:19	foo debug
-	// INFO 	bty.foo           	logutil/logutil_test.go:20	foo info
-	// WARN 	bty.foo           	logutil/logutil_test.go:21	foo warn
-	// ERROR	bty.foo           	logutil/logutil_test.go:22	foo error
+	require.NoError(t, err)
+	logger.Info("hello world!")
+	logger.Warn("hello world!")
+	logger.Sync()
+	lines := strings.Split(strings.TrimSpace(closer()), "\n")
+	require.Equal(t, 2, len(lines))
+	require.Equal(t, "INFO \tbty               \tlogutil/logutil_test.go:26\thello world!", lines[0])
+	require.Equal(t, "WARN \tbty               \tlogutil/logutil_test.go:27\thello world!", lines[1])
 }
 
-func Example_logerrors() {
-	logger, cleanup, err := logutil.NewLogger("error:*,-*.bar warn:*.bar", "light-console", "stdout")
+func TestTypeRing(t *testing.T) {
+	closer, err := u.CaptureStdoutAndStderr()
+	ring := zapring.New(10 * 1024 * 1024) // 10MB ring-buffer
+	logger, cleanup, err := logutil.NewLogger(
+		logutil.NewRingStream("*", "light-console", ring),
+	)
+	defer cleanup()
 	if err != nil {
 		panic(err)
 	}
-	defer cleanup()
 
-	logger.Debug("top debug")
-	logger.Info("top info")
-	logger.Warn("top warn")
-	logger.Error("top error")
-
-	logger.Named("foo").Debug("foo debug")
-	logger.Named("foo").Info("foo info")
-	logger.Named("foo").Warn("foo warn")
-	logger.Named("foo").Error("foo error")
-
-	logger.Named("foo").Named("bar").Debug("foo.bar debug")
-	logger.Named("foo").Named("bar").Info("foo.bar info")
-	logger.Named("foo").Named("bar").Warn("foo.bar warn")
-	logger.Named("foo").Named("bar").Error("foo.bar error")
-
-	// Output:
-	// ERROR	bty               	logutil/logutil_test.go:45	top error
-	// ERROR	bty.foo           	logutil/logutil_test.go:50	foo error
-	// WARN 	bty.foo.bar       	logutil/logutil_test.go:54	foo.bar warn
+	require.NoError(t, err)
+	logger.Info("hello world!")
+	logger.Warn("hello world!")
+	logger.Sync()
+	require.Empty(t, closer())
 }

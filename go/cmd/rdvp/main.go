@@ -93,7 +93,7 @@ func main() {
 			}
 
 			mrand.Seed(srand.MustSecure())
-			logger, cleanup, err := logutil.NewLogger(logFilters, logFormat, logToFile)
+			logger, cleanup, err := logutil.NewLogger(logutil.NewStdStream(logFilters, logFormat, logToFile))
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}

@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"moul.io/u"
 	"moul.io/zapfilter"
+	"moul.io/zapring"
 )
 
 const (
@@ -20,120 +21,131 @@ const (
 	jsonEncoding    = "json"
 )
 
-func NewLogger(filters string, format string, logFile string) (*zap.Logger, func(), error) {
-	if filters == "" {
-		cleanup := func() {}
+func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
+	cores := []zapcore.Core{}
+	cleanup := func() {}
+	withIPFS := false
+
+	for _, opts := range streams {
+		if opts.filters == "" {
+			continue
+		}
+		var core zapcore.Core
+
+		// configure zap
+		var config zap.Config
+		switch strings.ToLower(opts.format) {
+		case "":
+			config = zap.NewDevelopmentConfig()
+		case "json":
+			config = zap.NewProductionConfig()
+			config.Development = true
+			config.Encoding = jsonEncoding
+		case "light-json":
+			config = zap.NewProductionConfig()
+			config.Encoding = jsonEncoding
+			config.EncoderConfig.TimeKey = ""
+			config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
+			config.Development = true
+			config.DisableStacktrace = true
+		case "light-console":
+			config = zap.NewDevelopmentConfig()
+			config.Encoding = consoleEncoding
+			config.EncoderConfig.TimeKey = ""
+			config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
+			config.DisableStacktrace = true
+			config.EncoderConfig.EncodeName = stableWidthNameEncoder
+			config.Development = true
+		case "light-color":
+			config = zap.NewDevelopmentConfig()
+			config.Encoding = consoleEncoding
+			config.EncoderConfig.TimeKey = ""
+			config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
+			config.DisableStacktrace = true
+			config.EncoderConfig.EncodeName = stableWidthNameEncoder
+			config.Development = true
+		case "console":
+			config = zap.NewDevelopmentConfig()
+			config.Encoding = consoleEncoding
+			config.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
+			config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
+			config.DisableStacktrace = true
+			config.EncoderConfig.EncodeName = stableWidthNameEncoder
+			config.Development = true
+		case "color":
+			config = zap.NewDevelopmentConfig()
+			config.Encoding = consoleEncoding
+			config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+			config.EncoderConfig.EncodeDuration = zapcore.StringDurationEncoder
+			config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
+			config.DisableStacktrace = true
+			config.EncoderConfig.EncodeName = stableWidthNameEncoder
+			config.Development = true
+		default:
+			return nil, nil, fmt.Errorf("unknown log format: %q", opts.format)
+		}
+		config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+
+		switch opts.kind {
+		case typeStd:
+			switch opts.path {
+			case "":
+			case "stdout", "stderr":
+				config.OutputPaths = []string{opts.path}
+			default:
+				config.OutputPaths = []string{opts.path}
+			}
+
+			logger, err := config.Build()
+			if err != nil {
+				return nil, nil, err
+			}
+			core = logger.Core()
+		case typeRing:
+			ring := zapring.New(10 * 1024 * 1024)
+			core = ring
+		case typeLumberjack:
+			return nil, nil, fmt.Errorf("not implemented")
+		default:
+			return nil, nil, fmt.Errorf("unknown logger type: %q", opts.kind)
+		}
+
+		filter, err := zapfilter.ParseRules(opts.filters)
+		if err != nil {
+			return nil, nil, err
+		}
+		filtered := zapfilter.NewFilteringCore(core, filter)
+
+		if !withIPFS && zapfilter.CheckAnyLevel(zap.New(filtered).Named("ipfs")) {
+			withIPFS = true
+		}
+		cores = append(cores, filtered)
+	}
+
+	if len(cores) == 0 {
 		return zap.NewNop(), cleanup, nil
 	}
 
-	stableWidthNameEncoder := func(loggerName string, enc zapcore.PrimitiveArrayEncoder) {
-		enc.AppendString(fmt.Sprintf("%-18s", loggerName))
-	}
-	stableWidthCapitalLevelEncoder := func(l zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
-		enc.AppendString(fmt.Sprintf("%-5s", l.CapitalString()))
-	}
-	const (
-		Black uint8 = iota + 30
-		Red
-		Green
-		Yellow
-		Blue
-		Magenta
-		Cyan
-		White
+	// combine cores
+	tee := zap.New(
+		zapcore.NewTee(cores...),
+		zap.AddCaller(),
 	)
-	stableWidthCapitalColorLevelEncoder := func(l zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
-		switch l {
-		case zapcore.DebugLevel:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Magenta, "DEBUG"))
-		case zapcore.InfoLevel:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Blue, "INFO "))
-		case zapcore.WarnLevel:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Yellow, "WARN "))
-		case zapcore.ErrorLevel:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Red, "ERROR"))
-		case zapcore.DPanicLevel:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Red, "DPANIC"))
-		case zapcore.PanicLevel:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Red, "PANIC"))
-		case zapcore.FatalLevel:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Red, "FATAL"))
-		default:
-			enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Red, l.CapitalString()))
+	cleanup = u.CombineFuncs(cleanup, func() { _ = tee.Sync() })
+
+	// IPFS/libp2p logging
+	{
+		ipfsLogger := tee.Named("ipfs")
+		if withIPFS {
+			proxyCleanup := setupIPFSLogProxy(ipfsLogger)
+			cleanup = u.CombineFuncs(proxyCleanup, cleanup)
 		}
 	}
 
-	// configure zap
-	var config zap.Config
-	switch strings.ToLower(format) {
-	case "":
-		config = zap.NewDevelopmentConfig()
-	case "json":
-		config = zap.NewProductionConfig()
-		config.Development = true
-		config.Encoding = jsonEncoding
-	case "light-json":
-		config = zap.NewProductionConfig()
-		config.Encoding = jsonEncoding
-		config.EncoderConfig.TimeKey = ""
-		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
-		config.Development = true
-		config.DisableStacktrace = true
-	case "light-console":
-		config = zap.NewDevelopmentConfig()
-		config.Encoding = consoleEncoding
-		config.EncoderConfig.TimeKey = ""
-		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeName = stableWidthNameEncoder
-		config.Development = true
-	case "light-color":
-		config = zap.NewDevelopmentConfig()
-		config.Encoding = consoleEncoding
-		config.EncoderConfig.TimeKey = ""
-		config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeName = stableWidthNameEncoder
-		config.Development = true
-	case "console":
-		config = zap.NewDevelopmentConfig()
-		config.Encoding = consoleEncoding
-		config.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
-		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeName = stableWidthNameEncoder
-		config.Development = true
-	case "color":
-		config = zap.NewDevelopmentConfig()
-		config.Encoding = consoleEncoding
-		config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-		config.EncoderConfig.EncodeDuration = zapcore.StringDurationEncoder
-		config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeName = stableWidthNameEncoder
-		config.Development = true
-	default:
-		return nil, nil, fmt.Errorf("unknown log format: %q", format)
-	}
-
-	config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
-
-	switch logFile {
-	case "":
-	case "stdout", "stderr":
-		config.OutputPaths = []string{logFile}
-	default:
-		config.OutputPaths = []string{logFile}
-	}
-
-	base, err := config.Build()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return DecorateLogger(base, filters)
+	return tee.Named("bty"), cleanup, nil
 }
 
+// DecorateLogger can be used by external packages to configure zapfilter and libp2p logging on an existing zap.Logger.
 func DecorateLogger(base *zap.Logger, filters string) (*zap.Logger, func(), error) {
 	filter, err := zapfilter.ParseRules(filters)
 	if err != nil {
