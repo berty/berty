@@ -6,12 +6,7 @@ labels: ":rocket: feature-request"
 assignees:
 ---
 
-<!-- Provide a general summary of the issue in the Title above -->
-
-<!-- Before submitting an issue, please be sure to read the `CONTRIBUTING` document -->
-<!-- Then Put an `x` in the box bellow -->
-
-- [ ] **I have read the [CONTRIBUTING](https://github.com/berty/community/blob/master/CONTRIBUTING.md) document**
+<!-- Before submitting an issue, please read https://github.com/berty/community/blob/master/CONTRIBUTING.md -->
 
 ## Detailed Description
 <!-- Provide a detailed description of the change or addition you are proposing -->
