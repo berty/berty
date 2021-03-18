@@ -38,15 +38,6 @@ const isTablet = deviceType === 'pad'
 // ChatFooter => Textinput for type message
 //
 
-// Styles
-const useStylesChatFooter = () => {
-	const [{ maxHeight, padding }] = useStyles()
-	return {
-		focusTextInput: maxHeight(80),
-		sendButton: padding.left.scale(4),
-	}
-}
-
 const aDuration = 600
 
 // create interpolations
@@ -93,13 +84,13 @@ export const ChatFooter: React.FC<{
 }> = ({ isFocused, setFocus, convPk, disabled = false, placeholder, setSwipe }) => {
 	const ctx = useMsgrContext()
 	const client = useClient()
+	const [{ padding, flex, border, color, text }, { scaleSize }] = useStyles()
 
 	const [message, setMessage] = useState('')
+	const [inputHeight, setInputHeight] = useState<number>(35)
 	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
-	const _styles = useStylesChatFooter()
-	const [{ padding, flex, border, margin, color, text, row }, { scaleSize }] = useStyles()
 	const [mediaCids, setMediaCids] = useState<string[]>([])
 
 	const [activateTab, setActivateTab] = useState(TabItems.Default)
@@ -191,7 +182,7 @@ export const ChatFooter: React.FC<{
 	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(94 * scaleSize)])
 	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 45 * scaleSize])
 	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -92 * scaleSize])
-	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -45 * scaleSize])
+	const aFixSend = createAnimationInterpolation(_aFixMicro, [70, -45 * scaleSize])
 	const aPaddingLeft = createAnimationInterpolation(_aPaddingLeft, [0, 45])
 	const aOpacity = createAnimationInterpolation(_aOpacity, [1, 0])
 	const aOpacitySendButton = createAnimationInterpolation(_aOpacity, [0, 1])
@@ -248,8 +239,22 @@ export const ChatFooter: React.FC<{
 	}
 
 	return (
-		<BlurView blurType='light' blurAmount={30} style={{ overflow: 'visible' }}>
-			<SafeAreaView style={[margin.bottom.medium, { zIndex: 10 }]}>
+		<BlurView
+			blurType='light'
+			blurAmount={30}
+			style={{
+				overflow: 'visible',
+				paddingTop: _isFocused && inputHeight > 35 ? (inputHeight - 35) * scaleSize : 0,
+			}}
+		>
+			<SafeAreaView
+				style={[
+					{
+						zIndex: 10,
+						minHeight: 80 * scaleSize,
+					},
+				]}
+			>
 				{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
 				{isSecurityAccessVisible && (
 					<SecurityAccess
@@ -289,10 +294,9 @@ export const ChatFooter: React.FC<{
 						style={[
 							flex.tiny,
 							border.radius.medium,
-							Platform.OS === 'android' ? padding.horizontal.small : padding.small,
-							row.fill,
+							padding.horizontal.small,
 							{
-								alignItems: 'center',
+								alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
 								flexDirection: 'row',
 							},
 						]}
@@ -324,7 +328,7 @@ export const ChatFooter: React.FC<{
 								flex: 1,
 								paddingLeft: 9 * scaleSize,
 								paddingRight: 4 * scaleSize,
-								alignItems: 'center',
+								alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
 								flexDirection: 'row',
 							}}
 						>
@@ -338,49 +342,53 @@ export const ChatFooter: React.FC<{
 									/>
 								</View>
 							</Animated.View>
-
 							<Animated.View
 								style={[
 									border.radius.medium,
 									padding.left.small,
 									{
-										justifyContent: 'center',
+										alignSelf: 'flex-end',
 										backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
 										marginRight: aMaxWidth,
-										height: 42 * scaleSize,
 										right: aFixLeft,
 										marginLeft: 9 * scaleSize,
 										zIndex: 100,
 										elevation: 100,
+										paddingVertical: 5 * scaleSize,
 										flex: 1,
 									},
 								]}
 							>
-								<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-									<TextInput
-										value={message}
-										ref={inputRef}
-										multiline
-										editable={disabled ? false : true}
-										onFocus={() => setFocus(true)}
-										onBlur={() => setFocus(false)}
-										onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
-										autoCorrect
-										style={[
-											_isFocused && { color: color.blue } && _styles.focusTextInput,
-											text.bold.small,
-											{
-												fontFamily: 'Open Sans',
-												fontSize: 15 * scaleSize,
-												flex: 1,
-											},
-										]}
-										placeholder={placeholder}
-										placeholderTextColor={_isFocused ? color.blue : '#AFB1C0'}
-										returnKeyType={isTablet ? 'send' : 'default'}
-										onSubmitEditing={() => isTablet && handlePressSend()}
-									/>
-								</View>
+								<TextInput
+									value={message}
+									ref={inputRef}
+									multiline
+									editable={disabled ? false : true}
+									onFocus={() => setFocus(true)}
+									onBlur={() => setFocus(false)}
+									onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
+									onContentSizeChange={({ nativeEvent }) =>
+										setInputHeight(
+											nativeEvent?.contentSize.height > 80 ? 80 : nativeEvent?.contentSize.height,
+										)
+									}
+									autoCorrect
+									style={[
+										_isFocused ? { color: '#3443D9' } : { maxHeight: 35 * scaleSize },
+										text.bold.small,
+										{
+											height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
+											fontFamily: 'Open Sans',
+											marginTop: 3 * scaleSize,
+											fontSize: 15 * scaleSize,
+											paddingRight: 12 * scaleSize,
+										},
+									]}
+									placeholder={placeholder}
+									placeholderTextColor={_isFocused ? '#3443D9' : '#AFB1C0'}
+									returnKeyType={isTablet ? 'send' : 'default'}
+									onSubmitEditing={() => isTablet && handlePressSend()}
+								/>
 							</Animated.View>
 							<Animated.View
 								style={{ opacity: aOpacitySendButton, position: 'absolute', right: aFixSend }}

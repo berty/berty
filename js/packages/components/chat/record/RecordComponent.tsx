@@ -470,11 +470,7 @@ export const RecordComponent: React.FC<{
 		<View style={[padding.top.medium, { flexDirection: 'row' }]}>
 			{helpMessage !== '' && (
 				<TouchableOpacity
-					style={{
-						position: 'absolute',
-						top: -30,
-						right: 0,
-					}}
+					style={{ position: 'absolute', top: -30, right: 0 }}
 					onPress={() => clearHelpMessageValue()}
 				>
 					<View
@@ -511,18 +507,7 @@ export const RecordComponent: React.FC<{
 				/>
 			)}
 			{recordingState === RecordingState.NOT_RECORDING && (
-				<View
-					style={[
-						padding.left.scale(10),
-						{
-							height: 50,
-							flex: 1,
-							justifyContent: 'center',
-						},
-					]}
-				>
-					{children}
-				</View>
+				<View style={[padding.left.scale(10), { flex: 1 }]}>{children}</View>
 			)}
 			{(recordingState === RecordingState.NOT_RECORDING ||
 				recordingState === RecordingState.RECORDING) && (
@@ -536,7 +521,6 @@ export const RecordComponent: React.FC<{
 						style={[
 							{
 								right: aFixMicro,
-								height: 50,
 								justifyContent: 'center',
 								alignItems: 'flex-end',
 								paddingRight: 15 * scaleSize,
