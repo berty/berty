@@ -3,6 +3,7 @@ package bertyprotocol
 import (
 	"context"
 	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -129,6 +130,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer os.RemoveAll(pathBase)
 
 	var baseDS datastore.Batching
 	baseDS, err = badger.NewDatastore(pathBase, nil)
