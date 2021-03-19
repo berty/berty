@@ -4,12 +4,12 @@
       "desc": "Die sichere Peer-to-Peer-Messaging-App, die mit oder ohne Internetzugang, Mobilfunkdaten oder Vertrauen im Netzwerk funktioniert",
       "open-registered-account": "Eröffnen eines registrierten Kontos",
       "import-button": "Daten von einem bestehenden Konto importieren",
-      "account-selector-create-button": "Ihr Konto erstellen",
+      "account-selector-create-button": "Erstelle ein neues Konto",
       "more-options": "Weitere Optionen",
-      "button": "Loslegen"
+      "button": "Leg los"
     },
     "select-mode": {
-      "title": "Voreinstellung auswählen",
+      "title": "Wähle eine Voreinstellung",
       "change-later": "Du hast die Wahl, es später zu ändern!",
       "performance": {
         "title": "Leistung",
@@ -17,10 +17,10 @@
         "push-notif": "Push-Benachrichtigungen erhalten",
         "offline-message": "Offline-Nachrichten über Bluetooth",
         "add-contact": "Kontakte einfach hinzufügen",
-        "fast-message": "Schnellste Nachrichtenlieferung"
+        "fast-message": "Schnellste Nachrichtenzustellung"
       },
       "high-level": {
-        "title": "Vollständige Anonymität",
+        "title": "Absolute Anonymität",
         "desc": "Für extrem vorsichtige Benutzer",
         "disable-push-notif": "Push Benachrichtigungen deaktiviert",
         "disable-local-peer-discovery": "Lokale Peer-Entdeckung deaktiviert",
@@ -35,7 +35,7 @@
       "required": "Erforderlich",
       "placeholder": "Name",
       "button": "MEIN KONTO ERSTELLEN",
-      "import-account": "Ein Konto importieren"
+      "import-account": "Importiere ein Konto"
     },
     "services-auth": {
       "header": "Authentifizieren bei Diensten",
@@ -66,7 +66,7 @@
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "setup-finished": {
-      "title": "Einrichtung beendet!",
+      "title": "Einrichtung abgeschlossen!",
       "desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
       "button": "Fertig - Berty benutzen"
     }
