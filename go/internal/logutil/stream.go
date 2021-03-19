@@ -1,8 +1,8 @@
 package logutil
 
 import (
-	"moul.io/zapring"
 	lumberjack "gopkg.in/natefinch/lumberjack.v2"
+	"moul.io/zapring"
 )
 
 const (
