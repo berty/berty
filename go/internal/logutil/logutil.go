@@ -13,7 +13,6 @@ import (
 	"go.uber.org/zap/zapcore"
 	"moul.io/u"
 	"moul.io/zapfilter"
-	"moul.io/zapring"
 )
 
 const (
@@ -102,8 +101,16 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			}
 			core = logger.Core()
 		case typeRing:
-			ring := zapring.New(10 * 1024 * 1024)
+			var enc zapcore.Encoder
+			switch config.Encoding {
+			case consoleEncoding:
+				enc = zapcore.NewConsoleEncoder(config.EncoderConfig)
+			case jsonEncoding:
+				enc = zapcore.NewJSONEncoder(config.EncoderConfig)
+			}
+			ring := opts.ring.SetEncoder(enc)
 			core = ring
+
 		case typeLumberjack:
 			return nil, nil, fmt.Errorf("not implemented")
 		default:
