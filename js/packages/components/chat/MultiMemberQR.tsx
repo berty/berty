@@ -9,7 +9,7 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { ProceduralCircleAvatar } from '@berty-tech/components/shared-components'
+import { MultiMemberAvatar } from '../avatars'
 
 const _contentScaleFactor = 0.66
 
@@ -61,12 +61,7 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 						border.shadow.big,
 					]}
 				>
-					<ProceduralCircleAvatar
-						{...conv}
-						seed={conv?.publicKey}
-						size={requestAvatarSize}
-						diffSize={30}
-					/>
+					<MultiMemberAvatar publicKey={conv?.publicKey} size={requestAvatarSize} />
 				</View>
 				<Text
 					style={[

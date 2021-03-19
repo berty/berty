@@ -1,6 +1,6 @@
 ## User variables
 
-VERSION ?= `go run -mod=readonly -modfile=$(PWD)/../go.mod github.com/mdomke/git-semver/v5`
+VERSION ?= `$(GO) run -mod=readonly -modfile=$(PWD)/../go.mod github.com/mdomke/git-semver/v5`
 VCS_REF ?= `git rev-parse --short HEAD`
 TMP ?= $(TMPDIR)
 CI ?= false
@@ -11,6 +11,7 @@ BERTY_DAEMON_STORE ?= -store.dir=$(BERTY_DAEMON_PORT).db.d
 METRO_RN_PORT ?= 8081
 IOS_DEVICE ?=
 ANDROID_DEVICE ?=
+GO ?= go # this allows to override the go version used 
 
 ## Internal variables
 
@@ -25,7 +26,7 @@ xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
-go_libtor_ver = $(shell  go list -mod=readonly -modfile=$(PWD)/../go.mod -f '{{.Version}}' -m berty.tech/go-libtor)
+go_libtor_ver = $(shell  $(GO) list -mod=readonly -modfile=$(PWD)/../go.mod -f '{{.Version}}' -m berty.tech/go-libtor)
 go_libtor_libs_ver = $(shell cat ios/tor-deps/version 2> /dev/null)
 
 ## if (PWD != Makefile directory) then exit
@@ -272,7 +273,7 @@ metro.start: node_modules
 .PHONY: daemon.start
 daemon.start:
 	cd ../go && $(MAKE) install
-	`go env GOPATH`/bin/berty $(BERTY_OPTS) daemon -node.listeners=/ip4/$(BERTY_DAEMON_HOST)/tcp/$(BERTY_DAEMON_PORT)/grpcws $(BERTY_DAEMON_STORE) $(BERTY_DAEMON_OPTS)
+	`$(GO) env GOPATH`/bin/berty $(BERTY_OPTS) daemon -node.listeners=/ip4/$(BERTY_DAEMON_HOST)/tcp/$(BERTY_DAEMON_PORT)/grpcws $(BERTY_DAEMON_STORE) $(BERTY_DAEMON_OPTS)
 
 .PHONY: daemon.start.docker
 daemon.start.docker:
@@ -283,7 +284,7 @@ daemon.start.docker:
 
 ##### pbjs
 
-pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
+pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 
 pbjs_protos := ../api/bertyaccount.proto ../api/bertybridge.proto ../api/protocoltypes.proto ../api/messengertypes.proto
 
@@ -344,8 +345,8 @@ _write_gen_sum:
 #### iOS
 
 ios/Frameworks/Bertybridge.framework: $(bridge_src)
-	cd .. && go mod download
-	cd .. && go run golang.org/x/mobile/cmd/gomobile init
+	cd .. && $(GO) mod download
+	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	# Download required go-libtor deps if needed
 	if [ "$(go_libtor_ver)" != "$(go_libtor_libs_ver)" ]; then \
 		set -o pipefail; \
@@ -364,7 +365,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		GO111MODULE=on \
 		LIBRARY_PATH="$(PWD)/ios/tor-deps/lib" \
 		CPATH="$(PWD)/ios/tor-deps/include" \
-		go run golang.org/x/mobile/cmd/gomobile bind \
+		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
 			-cache "$(PWD)/ios/.gomobile-cache" \
@@ -409,10 +410,10 @@ ios/vendor/bundle: ios/Gemfile
 #### Android
 
 android/libs/gobridge.aar: $(bridge_src)
-	cd .. && go mod download
-	cd .. && go run golang.org/x/mobile/cmd/gomobile init
+	cd .. && $(GO) mod download
+	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p android/libs
-	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
+	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
 		-cache "$(PWD)/android/.gomobile-cache" \
