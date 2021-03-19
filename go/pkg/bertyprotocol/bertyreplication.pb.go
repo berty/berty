@@ -90,8 +90,7 @@ type ReplicationServiceServer interface {
 }
 
 // UnimplementedReplicationServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedReplicationServiceServer struct {
-}
+type UnimplementedReplicationServiceServer struct{}
 
 func (*UnimplementedReplicationServiceServer) ReplicateGroup(ctx context.Context, req *protocoltypes.ReplicationServiceReplicateGroup_Request) (*protocoltypes.ReplicationServiceReplicateGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicateGroup not implemented")

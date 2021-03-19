@@ -424,8 +424,7 @@ func (m *PaginatedInteractionsOptions) GetNoBulk() bool {
 	return false
 }
 
-type ConversationOpen struct {
-}
+type ConversationOpen struct{}
 
 func (m *ConversationOpen) Reset()         { *m = ConversationOpen{} }
 func (m *ConversationOpen) String() string { return proto.CompactTextString(m) }
@@ -496,8 +495,7 @@ func (m *ConversationOpen_Request) GetGroupPK() string {
 	return ""
 }
 
-type ConversationOpen_Reply struct {
-}
+type ConversationOpen_Reply struct{}
 
 func (m *ConversationOpen_Reply) Reset()         { *m = ConversationOpen_Reply{} }
 func (m *ConversationOpen_Reply) String() string { return proto.CompactTextString(m) }
@@ -528,8 +526,7 @@ func (m *ConversationOpen_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConversationOpen_Reply proto.InternalMessageInfo
 
-type ConversationClose struct {
-}
+type ConversationClose struct{}
 
 func (m *ConversationClose) Reset()         { *m = ConversationClose{} }
 func (m *ConversationClose) String() string { return proto.CompactTextString(m) }
@@ -600,8 +597,7 @@ func (m *ConversationClose_Request) GetGroupPK() string {
 	return ""
 }
 
-type ConversationClose_Reply struct {
-}
+type ConversationClose_Reply struct{}
 
 func (m *ConversationClose_Reply) Reset()         { *m = ConversationClose_Reply{} }
 func (m *ConversationClose_Reply) String() string { return proto.CompactTextString(m) }
@@ -632,8 +628,7 @@ func (m *ConversationClose_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConversationClose_Reply proto.InternalMessageInfo
 
-type ConversationLoad struct {
-}
+type ConversationLoad struct{}
 
 func (m *ConversationLoad) Reset()         { *m = ConversationLoad{} }
 func (m *ConversationLoad) String() string { return proto.CompactTextString(m) }
@@ -704,8 +699,7 @@ func (m *ConversationLoad_Request) GetOptions() *PaginatedInteractionsOptions {
 	return nil
 }
 
-type ConversationLoad_Reply struct {
-}
+type ConversationLoad_Reply struct{}
 
 func (m *ConversationLoad_Reply) Reset()         { *m = ConversationLoad_Reply{} }
 func (m *ConversationLoad_Reply) String() string { return proto.CompactTextString(m) }
@@ -736,8 +730,7 @@ func (m *ConversationLoad_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConversationLoad_Reply proto.InternalMessageInfo
 
-type EchoTest struct {
-}
+type EchoTest struct{}
 
 func (m *EchoTest) Reset()         { *m = EchoTest{} }
 func (m *EchoTest) String() string { return proto.CompactTextString(m) }
@@ -864,8 +857,7 @@ func (m *EchoTest_Reply) GetEcho() string {
 	return ""
 }
 
-type EchoDuplexTest struct {
-}
+type EchoDuplexTest struct{}
 
 func (m *EchoDuplexTest) Reset()         { *m = EchoDuplexTest{} }
 func (m *EchoDuplexTest) String() string { return proto.CompactTextString(m) }
@@ -984,8 +976,7 @@ func (m *EchoDuplexTest_Reply) GetEcho() string {
 	return ""
 }
 
-type InstanceShareableBertyID struct {
-}
+type InstanceShareableBertyID struct{}
 
 func (m *InstanceShareableBertyID) Reset()         { *m = InstanceShareableBertyID{} }
 func (m *InstanceShareableBertyID) String() string { return proto.CompactTextString(m) }
@@ -1130,8 +1121,7 @@ func (m *InstanceShareableBertyID_Reply) GetWebURL() string {
 	return ""
 }
 
-type ShareableBertyGroup struct {
-}
+type ShareableBertyGroup struct{}
 
 func (m *ShareableBertyGroup) Reset()         { *m = ShareableBertyGroup{} }
 func (m *ShareableBertyGroup) String() string { return proto.CompactTextString(m) }
@@ -1266,8 +1256,7 @@ func (m *ShareableBertyGroup_Reply) GetWebURL() string {
 	return ""
 }
 
-type DevShareInstanceBertyID struct {
-}
+type DevShareInstanceBertyID struct{}
 
 func (m *DevShareInstanceBertyID) Reset()         { *m = DevShareInstanceBertyID{} }
 func (m *DevShareInstanceBertyID) String() string { return proto.CompactTextString(m) }
@@ -1347,8 +1336,7 @@ func (m *DevShareInstanceBertyID_Request) GetDisplayName() string {
 	return ""
 }
 
-type DevShareInstanceBertyID_Reply struct {
-}
+type DevShareInstanceBertyID_Reply struct{}
 
 func (m *DevShareInstanceBertyID_Reply) Reset()         { *m = DevShareInstanceBertyID_Reply{} }
 func (m *DevShareInstanceBertyID_Reply) String() string { return proto.CompactTextString(m) }
@@ -1379,8 +1367,7 @@ func (m *DevShareInstanceBertyID_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DevShareInstanceBertyID_Reply proto.InternalMessageInfo
 
-type ParseDeepLink struct {
-}
+type ParseDeepLink struct{}
 
 func (m *ParseDeepLink) Reset()         { *m = ParseDeepLink{} }
 func (m *ParseDeepLink) String() string { return proto.CompactTextString(m) }
@@ -1698,8 +1685,7 @@ func (m *BertyLink_Encrypted) GetGroupSignPub() []byte {
 	return nil
 }
 
-type SendContactRequest struct {
-}
+type SendContactRequest struct{}
 
 func (m *SendContactRequest) Reset()         { *m = SendContactRequest{} }
 func (m *SendContactRequest) String() string { return proto.CompactTextString(m) }
@@ -1786,8 +1772,7 @@ func (m *SendContactRequest_Request) GetOwnMetadata() []byte {
 	return nil
 }
 
-type SendContactRequest_Reply struct {
-}
+type SendContactRequest_Reply struct{}
 
 func (m *SendContactRequest_Reply) Reset()         { *m = SendContactRequest_Reply{} }
 func (m *SendContactRequest_Reply) String() string { return proto.CompactTextString(m) }
@@ -1818,8 +1803,7 @@ func (m *SendContactRequest_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SendContactRequest_Reply proto.InternalMessageInfo
 
-type SendAck struct {
-}
+type SendAck struct{}
 
 func (m *SendAck) Reset()         { *m = SendAck{} }
 func (m *SendAck) String() string { return proto.CompactTextString(m) }
@@ -1898,8 +1882,7 @@ func (m *SendAck_Request) GetMessageID() []byte {
 	return nil
 }
 
-type SendAck_Reply struct {
-}
+type SendAck_Reply struct{}
 
 func (m *SendAck_Reply) Reset()         { *m = SendAck_Reply{} }
 func (m *SendAck_Reply) String() string { return proto.CompactTextString(m) }
@@ -1930,8 +1913,7 @@ func (m *SendAck_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SendAck_Reply proto.InternalMessageInfo
 
-type SendMessage struct {
-}
+type SendMessage struct{}
 
 func (m *SendMessage) Reset()         { *m = SendMessage{} }
 func (m *SendMessage) String() string { return proto.CompactTextString(m) }
@@ -2010,8 +1992,7 @@ func (m *SendMessage_Request) GetMessage() string {
 	return ""
 }
 
-type SendMessage_Reply struct {
-}
+type SendMessage_Reply struct{}
 
 func (m *SendMessage_Reply) Reset()         { *m = SendMessage_Reply{} }
 func (m *SendMessage_Reply) String() string { return proto.CompactTextString(m) }
@@ -2042,8 +2023,7 @@ func (m *SendMessage_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SendMessage_Reply proto.InternalMessageInfo
 
-type SendReplyOptions struct {
-}
+type SendReplyOptions struct{}
 
 func (m *SendReplyOptions) Reset()         { *m = SendReplyOptions{} }
 func (m *SendReplyOptions) String() string { return proto.CompactTextString(m) }
@@ -2122,8 +2102,7 @@ func (m *SendReplyOptions_Request) GetOptions() *AppMessage_ReplyOptions {
 	return nil
 }
 
-type SendReplyOptions_Reply struct {
-}
+type SendReplyOptions_Reply struct{}
 
 func (m *SendReplyOptions_Reply) Reset()         { *m = SendReplyOptions_Reply{} }
 func (m *SendReplyOptions_Reply) String() string { return proto.CompactTextString(m) }
@@ -2715,8 +2694,7 @@ func (m *ReplyOption) GetPayload() string {
 	return ""
 }
 
-type SystemInfo struct {
-}
+type SystemInfo struct{}
 
 func (m *SystemInfo) Reset()         { *m = SystemInfo{} }
 func (m *SystemInfo) String() string { return proto.CompactTextString(m) }
@@ -2747,8 +2725,7 @@ func (m *SystemInfo) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SystemInfo proto.InternalMessageInfo
 
-type SystemInfo_Request struct {
-}
+type SystemInfo_Request struct{}
 
 func (m *SystemInfo_Request) Reset()         { *m = SystemInfo_Request{} }
 func (m *SystemInfo_Request) String() string { return proto.CompactTextString(m) }
@@ -2987,8 +2964,7 @@ func (m *SystemInfo_DB) GetConversationReplicationInfo() int64 {
 	return 0
 }
 
-type ConversationJoin struct {
-}
+type ConversationJoin struct{}
 
 func (m *ConversationJoin) Reset()         { *m = ConversationJoin{} }
 func (m *ConversationJoin) String() string { return proto.CompactTextString(m) }
@@ -3068,8 +3044,7 @@ func (m *ConversationJoin_Request) GetPassphrase() []byte {
 	return nil
 }
 
-type ConversationJoin_Reply struct {
-}
+type ConversationJoin_Reply struct{}
 
 func (m *ConversationJoin_Reply) Reset()         { *m = ConversationJoin_Reply{} }
 func (m *ConversationJoin_Reply) String() string { return proto.CompactTextString(m) }
@@ -4403,8 +4378,7 @@ func (m *StreamEvent_DeviceUpdated) GetDevice() *Device {
 	return nil
 }
 
-type StreamEvent_ListEnded struct {
-}
+type StreamEvent_ListEnded struct{}
 
 func (m *StreamEvent_ListEnded) Reset()         { *m = StreamEvent_ListEnded{} }
 func (m *StreamEvent_ListEnded) String() string { return proto.CompactTextString(m) }
@@ -4595,8 +4569,7 @@ func (m *StreamEvent_Notified) GetPayload() []byte {
 	return nil
 }
 
-type StreamEvent_Notified_Basic struct {
-}
+type StreamEvent_Notified_Basic struct{}
 
 func (m *StreamEvent_Notified_Basic) Reset()         { *m = StreamEvent_Notified_Basic{} }
 func (m *StreamEvent_Notified_Basic) String() string { return proto.CompactTextString(m) }
@@ -4770,8 +4743,7 @@ func (m *StreamEvent_Notified_ContactRequestReceived) GetContact() *Contact {
 	return nil
 }
 
-type ConversationStream struct {
-}
+type ConversationStream struct{}
 
 func (m *ConversationStream) Reset()         { *m = ConversationStream{} }
 func (m *ConversationStream) String() string { return proto.CompactTextString(m) }
@@ -4890,8 +4862,7 @@ func (m *ConversationStream_Reply) GetConversation() *Conversation {
 	return nil
 }
 
-type ConversationCreate struct {
-}
+type ConversationCreate struct{}
 
 func (m *ConversationCreate) Reset()         { *m = ConversationCreate{} }
 func (m *ConversationCreate) String() string { return proto.CompactTextString(m) }
@@ -5010,8 +4981,7 @@ func (m *ConversationCreate_Reply) GetPublicKey() string {
 	return ""
 }
 
-type AccountGet struct {
-}
+type AccountGet struct{}
 
 func (m *AccountGet) Reset()         { *m = AccountGet{} }
 func (m *AccountGet) String() string { return proto.CompactTextString(m) }
@@ -5042,8 +5012,7 @@ func (m *AccountGet) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AccountGet proto.InternalMessageInfo
 
-type AccountGet_Request struct {
-}
+type AccountGet_Request struct{}
 
 func (m *AccountGet_Request) Reset()         { *m = AccountGet_Request{} }
 func (m *AccountGet_Request) String() string { return proto.CompactTextString(m) }
@@ -5114,8 +5083,7 @@ func (m *AccountGet_Reply) GetAccount() *Account {
 	return nil
 }
 
-type EventStream struct {
-}
+type EventStream struct{}
 
 func (m *EventStream) Reset()         { *m = EventStream{} }
 func (m *EventStream) String() string { return proto.CompactTextString(m) }
@@ -5226,8 +5194,7 @@ func (m *EventStream_Reply) GetEvent() *StreamEvent {
 	return nil
 }
 
-type AccountUpdate struct {
-}
+type AccountUpdate struct{}
 
 func (m *AccountUpdate) Reset()         { *m = AccountUpdate{} }
 func (m *AccountUpdate) String() string { return proto.CompactTextString(m) }
@@ -5306,8 +5273,7 @@ func (m *AccountUpdate_Request) GetAvatarCID() string {
 	return ""
 }
 
-type AccountUpdate_Reply struct {
-}
+type AccountUpdate_Reply struct{}
 
 func (m *AccountUpdate_Reply) Reset()         { *m = AccountUpdate_Reply{} }
 func (m *AccountUpdate_Reply) String() string { return proto.CompactTextString(m) }
@@ -5338,8 +5304,7 @@ func (m *AccountUpdate_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AccountUpdate_Reply proto.InternalMessageInfo
 
-type ContactRequest struct {
-}
+type ContactRequest struct{}
 
 func (m *ContactRequest) Reset()         { *m = ContactRequest{} }
 func (m *ContactRequest) String() string { return proto.CompactTextString(m) }
@@ -5419,8 +5384,7 @@ func (m *ContactRequest_Request) GetPassphrase() []byte {
 	return nil
 }
 
-type ContactRequest_Reply struct {
-}
+type ContactRequest_Reply struct{}
 
 func (m *ContactRequest_Reply) Reset()         { *m = ContactRequest_Reply{} }
 func (m *ContactRequest_Reply) String() string { return proto.CompactTextString(m) }
@@ -5451,8 +5415,7 @@ func (m *ContactRequest_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ContactRequest_Reply proto.InternalMessageInfo
 
-type ContactAccept struct {
-}
+type ContactAccept struct{}
 
 func (m *ContactAccept) Reset()         { *m = ContactAccept{} }
 func (m *ContactAccept) String() string { return proto.CompactTextString(m) }
@@ -5523,8 +5486,7 @@ func (m *ContactAccept_Request) GetPublicKey() string {
 	return ""
 }
 
-type ContactAccept_Reply struct {
-}
+type ContactAccept_Reply struct{}
 
 func (m *ContactAccept_Reply) Reset()         { *m = ContactAccept_Reply{} }
 func (m *ContactAccept_Reply) String() string { return proto.CompactTextString(m) }
@@ -5555,8 +5517,7 @@ func (m *ContactAccept_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ContactAccept_Reply proto.InternalMessageInfo
 
-type Interact struct {
-}
+type Interact struct{}
 
 func (m *Interact) Reset()         { *m = Interact{} }
 func (m *Interact) String() string { return proto.CompactTextString(m) }
@@ -5651,8 +5612,7 @@ func (m *Interact_Request) GetMediaCids() []string {
 	return nil
 }
 
-type Interact_Reply struct {
-}
+type Interact_Reply struct{}
 
 func (m *Interact_Reply) Reset()         { *m = Interact_Reply{} }
 func (m *Interact_Reply) String() string { return proto.CompactTextString(m) }
@@ -5683,8 +5643,7 @@ func (m *Interact_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Interact_Reply proto.InternalMessageInfo
 
-type ReplicationServiceRegisterGroup struct {
-}
+type ReplicationServiceRegisterGroup struct{}
 
 func (m *ReplicationServiceRegisterGroup) Reset()         { *m = ReplicationServiceRegisterGroup{} }
 func (m *ReplicationServiceRegisterGroup) String() string { return proto.CompactTextString(m) }
@@ -5765,8 +5724,7 @@ func (m *ReplicationServiceRegisterGroup_Request) GetConversationPublicKey() str
 	return ""
 }
 
-type ReplicationServiceRegisterGroup_Reply struct {
-}
+type ReplicationServiceRegisterGroup_Reply struct{}
 
 func (m *ReplicationServiceRegisterGroup_Reply) Reset()         { *m = ReplicationServiceRegisterGroup_Reply{} }
 func (m *ReplicationServiceRegisterGroup_Reply) String() string { return proto.CompactTextString(m) }
@@ -5797,8 +5755,7 @@ func (m *ReplicationServiceRegisterGroup_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ReplicationServiceRegisterGroup_Reply proto.InternalMessageInfo
 
-type ReplicationSetAutoEnable struct {
-}
+type ReplicationSetAutoEnable struct{}
 
 func (m *ReplicationSetAutoEnable) Reset()         { *m = ReplicationSetAutoEnable{} }
 func (m *ReplicationSetAutoEnable) String() string { return proto.CompactTextString(m) }
@@ -5869,8 +5826,7 @@ func (m *ReplicationSetAutoEnable_Request) GetEnabled() bool {
 	return false
 }
 
-type ReplicationSetAutoEnable_Reply struct {
-}
+type ReplicationSetAutoEnable_Reply struct{}
 
 func (m *ReplicationSetAutoEnable_Reply) Reset()         { *m = ReplicationSetAutoEnable_Reply{} }
 func (m *ReplicationSetAutoEnable_Reply) String() string { return proto.CompactTextString(m) }
@@ -5901,8 +5857,7 @@ func (m *ReplicationSetAutoEnable_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ReplicationSetAutoEnable_Reply proto.InternalMessageInfo
 
-type BannerQuote struct {
-}
+type BannerQuote struct{}
 
 func (m *BannerQuote) Reset()         { *m = BannerQuote{} }
 func (m *BannerQuote) String() string { return proto.CompactTextString(m) }
@@ -6021,8 +5976,7 @@ func (m *BannerQuote_Reply) GetAuthor() string {
 	return ""
 }
 
-type GetUsername struct {
-}
+type GetUsername struct{}
 
 func (m *GetUsername) Reset()         { *m = GetUsername{} }
 func (m *GetUsername) String() string { return proto.CompactTextString(m) }
@@ -6053,8 +6007,7 @@ func (m *GetUsername) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GetUsername proto.InternalMessageInfo
 
-type GetUsername_Request struct {
-}
+type GetUsername_Request struct{}
 
 func (m *GetUsername_Request) Reset()         { *m = GetUsername_Request{} }
 func (m *GetUsername_Request) String() string { return proto.CompactTextString(m) }
@@ -6125,8 +6078,7 @@ func (m *GetUsername_Reply) GetUsername() string {
 	return ""
 }
 
-type InstanceExportData struct {
-}
+type InstanceExportData struct{}
 
 func (m *InstanceExportData) Reset()         { *m = InstanceExportData{} }
 func (m *InstanceExportData) String() string { return proto.CompactTextString(m) }
@@ -6157,8 +6109,7 @@ func (m *InstanceExportData) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_InstanceExportData proto.InternalMessageInfo
 
-type InstanceExportData_Request struct {
-}
+type InstanceExportData_Request struct{}
 
 func (m *InstanceExportData_Request) Reset()         { *m = InstanceExportData_Request{} }
 func (m *InstanceExportData_Request) String() string { return proto.CompactTextString(m) }
@@ -6365,8 +6316,7 @@ func (m *LocalConversationState) GetType() Conversation_Type {
 	return Conversation_Undefined
 }
 
-type MediaPrepare struct {
-}
+type MediaPrepare struct{}
 
 func (m *MediaPrepare) Reset()         { *m = MediaPrepare{} }
 func (m *MediaPrepare) String() string { return proto.CompactTextString(m) }
@@ -6493,8 +6443,7 @@ func (m *MediaPrepare_Reply) GetCid() string {
 	return ""
 }
 
-type MediaRetrieve struct {
-}
+type MediaRetrieve struct{}
 
 func (m *MediaRetrieve) Reset()         { *m = MediaRetrieve{} }
 func (m *MediaRetrieve) String() string { return proto.CompactTextString(m) }
@@ -6613,8 +6562,7 @@ func (m *MediaRetrieve_Reply) GetInfo() *Media {
 	return nil
 }
 
-type MediaGetRelated struct {
-}
+type MediaGetRelated struct{}
 
 func (m *MediaGetRelated) Reset()         { *m = MediaGetRelated{} }
 func (m *MediaGetRelated) String() string { return proto.CompactTextString(m) }
@@ -8050,8 +7998,7 @@ type MessengerServiceServer interface {
 }
 
 // UnimplementedMessengerServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedMessengerServiceServer struct {
-}
+type UnimplementedMessengerServiceServer struct{}
 
 func (*UnimplementedMessengerServiceServer) InstanceShareableBertyID(ctx context.Context, req *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceShareableBertyID not implemented")

@@ -2030,8 +2030,7 @@ type AccountServiceServer interface {
 }
 
 // UnimplementedAccountServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedAccountServiceServer struct {
-}
+type UnimplementedAccountServiceServer struct{}
 
 func (*UnimplementedAccountServiceServer) OpenAccount(ctx context.Context, req *OpenAccount_Request) (*OpenAccount_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OpenAccount not implemented")

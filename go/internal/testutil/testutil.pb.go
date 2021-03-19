@@ -580,8 +580,7 @@ type TestServiceServer interface {
 }
 
 // UnimplementedTestServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedTestServiceServer struct {
-}
+type UnimplementedTestServiceServer struct{}
 
 func (*UnimplementedTestServiceServer) EchoTest(ctx context.Context, req *EchoTest_Request) (*EchoTest_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoTest not implemented")
