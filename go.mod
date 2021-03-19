@@ -109,6 +109,7 @@ require (
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.21.3

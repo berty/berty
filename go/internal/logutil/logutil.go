@@ -85,6 +85,14 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 		}
 		config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
 
+		var enc zapcore.Encoder
+		switch config.Encoding {
+		case consoleEncoding:
+			enc = zapcore.NewConsoleEncoder(config.EncoderConfig)
+		case jsonEncoding:
+			enc = zapcore.NewJSONEncoder(config.EncoderConfig)
+		}
+
 		switch opts.kind {
 		case typeStd:
 			switch opts.path {
@@ -101,18 +109,12 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			}
 			core = logger.Core()
 		case typeRing:
-			var enc zapcore.Encoder
-			switch config.Encoding {
-			case consoleEncoding:
-				enc = zapcore.NewConsoleEncoder(config.EncoderConfig)
-			case jsonEncoding:
-				enc = zapcore.NewJSONEncoder(config.EncoderConfig)
-			}
 			ring := opts.ring.SetEncoder(enc)
 			core = ring
 
 		case typeLumberjack:
-			return nil, nil, fmt.Errorf("not implemented")
+			w := zapcore.AddSync(opts.lumberOpts)
+			core = zapcore.NewCore(enc, w, config.Level)
 		default:
 			return nil, nil, fmt.Errorf("unknown logger type: %q", opts.kind)
 		}
