@@ -11314,8 +11314,7 @@ type ProtocolServiceServer interface {
 }
 
 // UnimplementedProtocolServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedProtocolServiceServer struct {
-}
+type UnimplementedProtocolServiceServer struct{}
 
 func (*UnimplementedProtocolServiceServer) InstanceExportData(req *InstanceExportData_Request, srv ProtocolService_InstanceExportDataServer) error {
 	return status.Errorf(codes.Unimplemented, "method InstanceExportData not implemented")

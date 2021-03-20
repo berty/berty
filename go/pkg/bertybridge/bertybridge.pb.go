@@ -1680,8 +1680,7 @@ type BridgeServiceServer interface {
 }
 
 // UnimplementedBridgeServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedBridgeServiceServer struct {
-}
+type UnimplementedBridgeServiceServer struct{}
 
 func (*UnimplementedBridgeServiceServer) ClientInvokeUnary(ctx context.Context, req *ClientInvokeUnary_Request) (*ClientInvokeUnary_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClientInvokeUnary not implemented")
