@@ -9,19 +9,19 @@
       "button": "INIZIA"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Scegli un preset",
+      "change-later": "Avrai la possibilità di cambiarlo più tardi!",
       "performance": {
         "title": "Prestazioni",
         "desc": "Facile da usare - Tutte le funzionalità",
         "push-notif": "Ricevi notifiche push",
-        "offline-message": "",
+        "offline-message": "Messaggistica offline con Bluetooth",
         "add-contact": "Aggiungi facilmente i contatti",
         "fast-message": "Consegna dei messaggi velocissima"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Pieno Anonimato",
+        "desc": "Per utenti estremamente prudenti",
         "disable-push-notif": "Notifiche push disabilitate",
         "disable-local-peer-discovery": "Ricerca locale dei peer disabilitata",
         "disable-local-peer-discovery-desc": "",
