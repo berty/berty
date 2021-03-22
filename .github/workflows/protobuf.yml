@@ -170,6 +170,7 @@ jobs:
 
       - name: check diff
         run: |
+          go mod tidy
           git status | cat
           git diff -w | cat
           git diff-index -w --quiet HEAD --
