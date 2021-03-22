@@ -11,7 +11,7 @@ BERTY_DAEMON_STORE ?= -store.dir=$(BERTY_DAEMON_PORT).db.d
 METRO_RN_PORT ?= 8081
 IOS_DEVICE ?=
 ANDROID_DEVICE ?=
-GO ?= go # this allows to override the go version used 
+GO ?= go # this allows to override the go version used
 
 ## Internal variables
 
