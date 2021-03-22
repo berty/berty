@@ -375,6 +375,10 @@ AccountServiceTokenRemoved indicates a token has removed
 
 ### AppMessageSend.Reply
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [bytes](#bytes) |  |  |
+
 <a name="berty.protocol.v1.AppMessageSend.Request"></a>
 
 ### AppMessageSend.Request

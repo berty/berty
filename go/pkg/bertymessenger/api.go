@@ -310,9 +310,7 @@ func (svc *service) SendAck(ctx context.Context, req *messengertypes.SendAck_Req
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("only %s groups are supported", protocoltypes.GroupTypeContact.String()))
 	}
 
-	am, err := messengertypes.AppMessage_TypeAcknowledge.MarshalPayload(0, nil, &messengertypes.AppMessage_Acknowledge{
-		Target: b64EncodeBytes(req.MessageID),
-	})
+	am, err := messengertypes.AppMessage_TypeAcknowledge.MarshalPayload(0, b64EncodeBytes(req.MessageID), nil, &messengertypes.AppMessage_Acknowledge{})
 	if err != nil {
 		return nil, err
 	}
@@ -327,25 +325,6 @@ func (svc *service) SendAck(ctx context.Context, req *messengertypes.SendAck_Req
 	}
 
 	return &messengertypes.SendAck_Reply{}, nil
-}
-
-func (svc *service) SendMessage(ctx context.Context, req *messengertypes.SendMessage_Request) (*messengertypes.SendMessage_Reply, error) {
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
-	payload, err := messengertypes.AppMessage_TypeUserMessage.MarshalPayload(timestampMs(time.Now()), nil, &messengertypes.AppMessage_UserMessage{
-		Body: req.Message,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
-		GroupPK: req.GroupPK,
-		Payload: payload,
-	})
-
-	return &messengertypes.SendMessage_Reply{}, err
 }
 
 func (svc *service) ConversationStream(req *messengertypes.ConversationStream_Request, sub messengertypes.MessengerService_ConversationStreamServer) error {
@@ -660,7 +639,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 	// Try to put group name in group metadata
 	{
 		err := func() error {
-			am, err := messengertypes.AppMessage_TypeSetGroupInfo.MarshalPayload(0, nil, &messengertypes.AppMessage_SetGroupInfo{DisplayName: dn})
+			am, err := messengertypes.AppMessage_TypeSetGroupInfo.MarshalPayload(0, "", nil, &messengertypes.AppMessage_SetGroupInfo{DisplayName: dn})
 			if err != nil {
 				return err
 			}
@@ -683,7 +662,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 	}
 
 	for _, contactPK := range req.GetContactsToInvite() {
-		am, err := messengertypes.AppMessage_TypeGroupInvitation.MarshalPayload(timestampMs(time.Now()), nil, &messengertypes.AppMessage_GroupInvitation{Link: conv.GetLink()})
+		am, err := messengertypes.AppMessage_TypeGroupInvitation.MarshalPayload(timestampMs(time.Now()), "", nil, &messengertypes.AppMessage_GroupInvitation{Link: conv.GetLink()})
 		if err != nil {
 			return nil, err
 		}
@@ -966,38 +945,47 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
+	var p2 proto.Message
+	switch req.GetType() {
+	case messengertypes.AppMessage_TypeUserMessage:
+		p2 = &messengertypes.AppMessage_UserMessage{}
+	case messengertypes.AppMessage_TypeUserReaction:
+		p2 = &messengertypes.AppMessage_UserReaction{}
+	default:
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unsupported type: %v", req.GetType()))
+	}
+
+	if err := proto.Unmarshal(req.GetPayload(), p2); err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	switch req.GetType() {
-	case messengertypes.AppMessage_TypeUserMessage:
-		var p messengertypes.AppMessage_UserMessage
-		if err := proto.Unmarshal(req.GetPayload(), &p); err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
-		}
-		medias, err := svc.db.getMedias(req.GetMediaCids())
-		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(err)
-		}
-		fp, err := messengertypes.AppMessage_TypeUserMessage.MarshalPayload(timestampMs(time.Now()), medias, &p)
-		if err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
-		}
-		cids := make([][]byte, len(req.GetMediaCids()))
-		for i, mediaCID := range req.GetMediaCids() {
-			cids[i], err = b64DecodeBytes(mediaCID)
-			if err != nil {
-				return nil, errcode.ErrDeserialization.Wrap(err)
-			}
-		}
-		_, err = svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp, AttachmentCIDs: cids})
-		if err != nil {
-			return nil, err
-		}
-	case messengertypes.AppMessage_TypeAcknowledge:
-		// trick gocritic
+	medias, err := svc.db.getMedias(req.GetMediaCids())
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
 	}
-	return &messengertypes.Interact_Reply{}, nil
+	fp, err := req.GetType().MarshalPayload(timestampMs(time.Now()), "", medias, p2)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+	cids := make([][]byte, len(req.GetMediaCids()))
+	for i, mediaCID := range req.GetMediaCids() {
+		cids[i], err = b64DecodeBytes(mediaCID)
+		if err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+	}
+	reply, err := svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp, AttachmentCIDs: cids})
+	if err != nil {
+		return nil, err
+	}
+	cid, err := ipfscid.Cast(reply.GetCID())
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+	return &messengertypes.Interact_Reply{CID: cid.String()}, nil
 }
 
 func (svc *service) AccountGet(ctx context.Context, req *messengertypes.AccountGet_Request) (*messengertypes.AccountGet_Reply, error) {
@@ -1171,7 +1159,7 @@ func (svc *service) SendReplyOptions(ctx context.Context, req *messengertypes.Se
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	payload, err := messengertypes.AppMessage_TypeReplyOptions.MarshalPayload(timestampMs(time.Now()), nil, req.Options)
+	payload, err := messengertypes.AppMessage_TypeReplyOptions.MarshalPayload(timestampMs(time.Now()), "", nil, req.Options)
 	if err != nil {
 		return nil, err
 	}

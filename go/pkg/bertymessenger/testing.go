@@ -333,6 +333,14 @@ func (a *TestingAccount) GetConversation(t *testing.T, pk string) *messengertype
 	return conv
 }
 
+func (a *TestingAccount) GetInteraction(t *testing.T, cid string) *messengertypes.Interaction {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	interaction, ok := a.interactions[cid]
+	require.True(t, ok)
+	return interaction
+}
+
 func (a *TestingAccount) GetAllConversations() map[string]*messengertypes.Conversation {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()

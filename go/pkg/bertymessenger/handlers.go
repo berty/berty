@@ -67,6 +67,7 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		messengertypes.AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		messengertypes.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
 		messengertypes.AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, true},
+		messengertypes.AppMessage_TypeUserReaction:    {h.handleAppMessageUserReaction, true},
 	}
 
 	return h
@@ -730,14 +731,12 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 	return nil
 }
 
-func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *messengertypes.Interaction, amPayload proto.Message) (*messengertypes.Interaction, bool, error) {
-	payload := amPayload.(*messengertypes.AppMessage_Acknowledge)
-	target, err := tx.markInteractionAsAcknowledged(payload.Target)
+func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *messengertypes.Interaction, _ proto.Message) (*messengertypes.Interaction, bool, error) {
+	target, err := tx.markInteractionAsAcknowledged(i.TargetCID)
 
 	switch {
 	case err == gorm.ErrRecordNotFound:
-		h.logger.Debug("added ack in backlog", zap.String("target", payload.GetTarget()), zap.String("cid", i.GetCID()))
-		i.TargetCID = payload.Target
+		h.logger.Debug("added ack in backlog", zap.String("target", i.TargetCID), zap.String("cid", i.GetCID()))
 		i, _, err = tx.addInteraction(*i)
 		if err != nil {
 			return nil, false, err
@@ -925,6 +924,31 @@ func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *messengerty
 	return i, false, nil
 }
 
+func (h *eventHandler) handleAppMessageUserReaction(tx *dbWrapper, i *messengertypes.Interaction, amPayload proto.Message) (*messengertypes.Interaction, bool, error) {
+	i, isNew, err := tx.addInteraction(*i)
+	if err != nil {
+		return nil, isNew, err
+	}
+
+	if h.svc == nil {
+		return i, isNew, nil
+	}
+
+	if err := h.svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{Interaction: i}, isNew); err != nil {
+		return nil, isNew, err
+	}
+
+	if i.IsMine || h.replay || !isNew {
+		return i, isNew, nil
+	}
+
+	if err := h.sendAck(i.CID, i.ConversationPublicKey); err != nil {
+		h.logger.Error("error while sending ack", zap.String("public-key", i.ConversationPublicKey), zap.String("cid", i.CID), zap.Error(err))
+	}
+
+	return i, isNew, nil
+}
+
 func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.GroupMessageEvent, am *messengertypes.AppMessage) (*messengertypes.Interaction, error) {
 	amt := am.GetType()
 	cid, err := ipfscid.Cast(gme.GetEventContext().GetID())
@@ -958,6 +982,7 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 		DevicePublicKey:       dpk,
 		Medias:                am.GetMedias(),
 		MemberPublicKey:       mpk,
+		TargetCID:             am.GetTargetCID(),
 	}
 
 	for _, media := range i.Medias {
@@ -1048,7 +1073,7 @@ func (h *eventHandler) sendAck(cid, conversationPK string) error {
 
 	// Don't send ack if message is already acked to prevent spam in multimember groups
 	// Maybe wait a few seconds before checking since we're likely to receive the message before any ack
-	amp, err := messengertypes.AppMessage_TypeAcknowledge.MarshalPayload(0, nil, &messengertypes.AppMessage_Acknowledge{Target: cid})
+	amp, err := messengertypes.AppMessage_TypeAcknowledge.MarshalPayload(0, cid, nil, &messengertypes.AppMessage_Acknowledge{})
 	if err != nil {
 		return err
 	}

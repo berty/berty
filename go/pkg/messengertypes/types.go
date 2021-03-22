@@ -40,13 +40,13 @@ func (x *AppMessage_Type) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AppMessage_Undefined.String())
 }
 
-func (x AppMessage_Type) MarshalPayload(sentDate int64, medias []*Media, payload proto.Message) ([]byte, error) {
+func (x AppMessage_Type) MarshalPayload(sentDate int64, target string, medias []*Media, payload proto.Message) ([]byte, error) {
 	p, err := proto.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	return proto.Marshal(&AppMessage{Type: x, Payload: p, SentDate: sentDate, Medias: mediaSliceFilterForNetwork(medias)})
+	return proto.Marshal(&AppMessage{Type: x, TargetCID: target, Payload: p, SentDate: sentDate, Medias: mediaSliceFilterForNetwork(medias)})
 }
 
 func mediaSliceFilterForNetwork(dbMedias []*Media) []*Media {

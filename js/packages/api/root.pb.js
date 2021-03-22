@@ -1682,7 +1682,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -3270,10 +3278,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "SendContactRequest.Request",
                     responseType: "SendContactRequest.Reply"
                   },
-                  SendMessage: {
-                    requestType: "SendMessage.Request",
-                    responseType: "SendMessage.Reply"
-                  },
                   SendReplyOptions: {
                     requestType: "SendReplyOptions.Request",
                     responseType: "SendReplyOptions.Reply"
@@ -3798,29 +3802,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              SendMessage: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      groupPk: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
-                      },
-                      message: {
-                        type: "string",
-                        id: 2
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
               SendReplyOptions: {
                 fields: {},
                 nested: {
@@ -3896,6 +3877,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     rule: "repeated",
                     type: "Media",
                     id: 4
+                  },
+                  targetCid: {
+                    type: "string",
+                    id: 5,
+                    options: {
+                      "(gogoproto.customname)": "TargetCID"
+                    }
                   }
                 },
                 nested: {
@@ -3922,10 +3910,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   UserReaction: {
                     fields: {
-                      target: {
-                        type: "string",
-                        id: 3
-                      },
                       emoji: {
                         type: "string",
                         id: 2
@@ -3968,12 +3952,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Acknowledge: {
-                    fields: {
-                      target: {
-                        type: "string",
-                        id: 2
-                      }
-                    }
+                    fields: {}
                   },
                   ReplyOptions: {
                     fields: {
@@ -4961,11 +4940,26 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         rule: "repeated",
                         type: "string",
                         id: 4
+                      },
+                      targetCid: {
+                        type: "string",
+                        id: 5,
+                        options: {
+                          "(gogoproto.customname)": "TargetCID"
+                        }
                       }
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      cid: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      }
+                    }
                   }
                 }
               },

@@ -946,39 +946,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/SendMessage": {
-      "post": {
-        "summary": "SendMessage sends a message to a group.",
-        "operationId": "MessengerService_SendMessage",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SendMessageReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1SendMessageRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/SendReplyOptions": {
       "post": {
         "summary": "SendReplyOptions sends a list of prefilled response options to a group.",
@@ -2103,7 +2070,12 @@
       }
     },
     "v1InteractReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string"
+        }
+      }
     },
     "v1InteractRequest": {
       "type": "object",
@@ -2123,6 +2095,9 @@
           "items": {
             "type": "string"
           }
+        },
+        "target_cid": {
+          "type": "string"
         }
       }
     },
@@ -2434,21 +2409,6 @@
         "own_metadata": {
           "type": "string",
           "format": "byte"
-        }
-      }
-    },
-    "v1SendMessageReply": {
-      "type": "object"
-    },
-    "v1SendMessageRequest": {
-      "type": "object",
-      "properties": {
-        "group_pk": {
-          "type": "string",
-          "format": "byte"
-        },
-        "message": {
-          "type": "string"
         }
       }
     },

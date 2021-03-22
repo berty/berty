@@ -508,6 +508,7 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 
 	am, err := messengertypes.AppMessage_TypeSetUserInfo.MarshalPayload(
 		timestampMs(time.Now()),
+		"",
 		medias,
 		&messengertypes.AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
 	)
