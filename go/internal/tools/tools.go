@@ -37,6 +37,9 @@ import (
 	// required by protoc
 	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger"
 
+	// keep switching between disappearing and indirect
+	_ "github.com/kr/pretty"
+
 	// required by Makefile
 	_ "github.com/mdomke/git-semver/v5"
 

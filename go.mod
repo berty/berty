@@ -54,6 +54,7 @@ require (
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/koron/go-ssdp v0.0.2 // indirect
+	github.com/kr/pretty v0.2.1
 	github.com/kr/text v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-circuit v0.4.0
@@ -109,6 +110,7 @@ require (
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.21.4
@@ -121,6 +123,7 @@ require (
 	moul.io/zapconfig v1.3.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.0.2
+	moul.io/zapring v1.3.0
 	mvdan.cc/gofumpt v0.1.1
 	nhooyr.io/websocket v1.8.6 // indirect
 )

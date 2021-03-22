@@ -22,6 +22,7 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 	"moul.io/progress"
+	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -38,14 +39,16 @@ import (
 
 type Manager struct {
 	Logging struct {
-		Format  string `json:"Format,omitempty"`
-		Logfile string `json:"Logfile,omitempty"`
-		Filters string `json:"Filters,omitempty"`
-		Tracer  string `json:"Tracer,omitempty"`
-		Service string `json:"Service,omitempty"`
+		Format   string `json:"Format,omitempty"`
+		Logfile  string `json:"Logfile,omitempty"`
+		Filters  string `json:"Filters,omitempty"`
+		Tracer   string `json:"Tracer,omitempty"`
+		Service  string `json:"Service,omitempty"`
+		RingSize uint   `json:"RingSize,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
+		ring      *zapring.Core
 	} `json:"Logging,omitempty"`
 	Metrics struct {
 		Listener string `json:"Listener,omitempty"`
@@ -167,6 +170,7 @@ func New(ctx context.Context) (*Manager, error) {
 	m.Logging.Filters = defaultLoggingFilters
 	m.Logging.Format = "color"
 	m.Logging.Service = "berty"
+	m.Logging.RingSize = 10 // 10MB ring buffer
 
 	// generate SessionID using uuidv4 to identify each run
 	id, err := uuid.NewV4()
@@ -244,6 +248,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("close-protocol-server")
 	prog.AddStep("close-ipfs-node")
 	prog.AddStep("close-datastore")
+	prog.AddStep("close-ring")
 	prog.AddStep("cleanup-logging")
 
 	prog.Get("cancel-context").SetAsCurrent()
@@ -299,6 +304,11 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("close-datastore").SetAsCurrent()
 	if m.Datastore.rootDS != nil {
 		m.Datastore.rootDS.Close()
+	}
+
+	prog.Get("close-ring").SetAsCurrent()
+	if m.Logging.ring != nil {
+		m.Logging.ring.Close()
 	}
 
 	prog.Get("cleanup-logging").SetAsCurrent()
