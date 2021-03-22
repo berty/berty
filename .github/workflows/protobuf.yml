@@ -126,15 +126,18 @@ jobs:
       #    token: ${{ secrets.BUMP_TOKEN }}
       #    file: docs/.tmp/openapi/bertymessenger.swagger.json
   gen-js:
+    strategy:
+      matrix:
+        node: [14.x]
     runs-on: ubuntu-latest
     container: bertytech/protoc:27
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node }}
 
       - run: make gen.clean
         working-directory: js
@@ -143,10 +146,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-genjs-v2-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-genjs-v2-
-            ${{ runner.OS }}-
+          key:          ${{ runner.OS }}-genjs-${{ matrix.node}}-v1-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-genjs-${{ matrix.node}}-v1-
 
       - name: "Fetch deps"
         # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image

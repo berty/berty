@@ -26,6 +26,9 @@ jobs:
     name: "GoReleaser (dry-run)"
     runs-on: ubuntu-latest
     needs: golangci-lint
+    strategy:
+      matrix:
+        golang: ['1.16.x']
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -34,14 +37,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: ${{ matrix.golang }}
       - name: Cache Go modules
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
       - name: Run GoReleaser (Dry Run)
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -77,8 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golang:
-          - 1.16.x
+        golang: ['1.16.x']
     env:
       OS: ubuntu-latest
       GOLANG: ${{ matrix.golang }}
@@ -93,9 +94,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
       - name: Avoid triggering make generate
         run: touch go/gen.sum
       - name: Fetch dependencies
@@ -140,9 +140,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
       - name: Compile the project on Unix-like operating systems
         working-directory: go
         run: |
@@ -183,20 +182,22 @@ jobs:
   go-tests-on-windows:
     name: "Stable tests (windows)"
     runs-on: windows-latest
+    strategy:
+      matrix:
+        golang: ['1.16.x']
     steps:
       - name: Checkout
         uses: actions/checkout@master
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: ${{ matrix.golang }}
       - name: Cache Go modules
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
       - name: Compile the project on Windows
         run: go.exe install -buildmode=exe ./go/cmd/...
       - name: Check go.mod and go.sum
@@ -232,20 +233,21 @@ jobs:
   go-install-on-darwin:
     name: "make install (darwin)"
     runs-on: macos-latest
+    strategy:
+      golang: ['1.16.x']
     steps:
       - name: Checkout
         uses: actions/checkout@master
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.x
+          go-version: ${{ matrix.golang }}
       - name: Cache Go modules
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
       - name: Install the project on Darwin
         run: cd go && make install
       - name: Check go.mod and go.sum
