@@ -46,6 +46,7 @@ type TestingOpts struct {
 	DeviceKeystore DeviceKeystore
 	CoreAPIMock    ipfsutil.CoreAPIMock
 	OrbitDB        *BertyOrbitDB
+	ConnectFunc    ConnectTestingProtocolFunc
 }
 
 func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
@@ -158,6 +159,9 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	if opts.Mocknet == nil {
 		opts.Mocknet = libp2p_mocknet.New(ctx)
 	}
+	if opts.ConnectFunc == nil {
+		opts.ConnectFunc = ConnectAll
+	}
 }
 
 func testHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, rdvp peer.AddrInfo, ds datastore.Batching) (*replicationService, context.CancelFunc) {
@@ -242,11 +246,13 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 		tps[i], cls[i] = NewTestingProtocol(ctx, t, opts, ds)
 	}
 
-	err := opts.Mocknet.LinkAll()
-	require.NoError(t, err)
+	opts.ConnectFunc(t, opts.Mocknet)
 
 	for _, net := range opts.Mocknet.Nets() {
 		if net != rdvpnet {
+			_, err := opts.Mocknet.LinkNets(net, rdvpnet)
+			assert.NoError(t, err)
+
 			_, err = opts.Mocknet.ConnectNets(net, rdvpnet)
 			assert.NoError(t, err)
 		}
@@ -321,13 +327,16 @@ func TestingClient(ctx context.Context, t *testing.T, svc Service, clientOpts []
 }
 
 // Connect Peers Helper
-type ConnnectTestingProtocolFunc func(*testing.T, libp2p_mocknet.Mocknet)
+type ConnectTestingProtocolFunc func(*testing.T, libp2p_mocknet.Mocknet)
 
 // ConnectAll peers between themselves
 func ConnectAll(t *testing.T, m libp2p_mocknet.Mocknet) {
 	t.Helper()
 
-	err := m.ConnectAllButSelf()
+	err := m.LinkAll()
+	require.NoError(t, err)
+
+	err = m.ConnectAllButSelf()
 	require.NoError(t, err)
 }
 
@@ -342,6 +351,10 @@ func ConnectInLine(t *testing.T, m libp2p_mocknet.Mocknet) {
 	peers := m.Peers()
 
 	for i := 0; i < len(peers)-1; i++ {
-		m.ConnectPeers(peers[i], peers[i+1])
+		_, err := m.LinkPeers(peers[i], peers[i+1])
+		require.NoError(t, err)
+
+		_, err = m.ConnectPeers(peers[i], peers[i+1])
+		require.NoError(t, err)
 	}
 }
