@@ -5,11 +5,11 @@ import { useStyles } from '@berty-tech/styles'
 import { useMusicPlayer } from '@berty-tech/music-player'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-export const HEIGHT_OF_PLAYER = 100
+export const HEIGHT_OF_PLAYER = 60
 export const MARGIN_FIX = 10
 
 export const StickMusicPlayer = () => {
-	const [{ border, padding, margin }, { windowWidth }] = useStyles()
+	const [{ border, padding, margin }, { windowWidth, scaleSize }] = useStyles()
 	const [animatedWidth] = useState(new Animated.Value(0))
 	const { player, unload, handlePlayPause, refresh } = useMusicPlayer()
 	const { top } = useSafeAreaInsets()
@@ -23,7 +23,7 @@ export const StickMusicPlayer = () => {
 						: player.player?.currentTime) /
 						player.player?.duration) *
 					windowWidth *
-					1.05,
+					0.92,
 				duration: 100,
 				useNativeDriver: false,
 			}).start()
@@ -45,6 +45,7 @@ export const StickMusicPlayer = () => {
 			style={[
 				padding.horizontal.large,
 				padding.vertical.medium,
+				border.radius.top.medium,
 				{
 					flexDirection: 'row',
 					alignItems: 'center',
@@ -52,21 +53,46 @@ export const StickMusicPlayer = () => {
 					width: '100%',
 					position: 'relative',
 					marginBottom: -top + MARGIN_FIX,
-					paddingTop: top,
+					marginTop: (top + 10) * scaleSize,
 					zIndex: 9,
 					backgroundColor: '#4F58C0',
 					height: HEIGHT_OF_PLAYER,
 				},
 			]}
 		>
-			<TouchableOpacity
+			<View
 				style={{
 					flex: 1,
+					justifyContent: 'center',
+					alignItems: 'flex-start',
 				}}
-				onPress={() => unload()}
 			>
-				<Icon height={30} width={30} name='close-circle-outline' fill='#8F95D7' />
-			</TouchableOpacity>
+				<TouchableOpacity
+					style={[
+						border.radius.big,
+						{
+							padding: 1,
+							borderWidth: 3,
+							borderColor: '#8F95D7',
+							transform: [
+								{
+									rotate: '45deg',
+								},
+							],
+						},
+					]}
+					onPress={() => unload()}
+				>
+					<Icon
+						height={16 * scaleSize}
+						width={16 * scaleSize}
+						name='plus'
+						pack='custom'
+						fill='#8F95D7'
+					/>
+				</TouchableOpacity>
+			</View>
+
 			<View
 				style={{
 					flexDirection: 'row',
@@ -91,14 +117,11 @@ export const StickMusicPlayer = () => {
 					]}
 				>
 					<Icon
-						name='fast-forward'
-						fill='#6D76CA'
-						height={30}
-						width={30}
-						pack='feather'
-						style={{
-							transform: [{ rotate: '180deg' }],
-						}}
+						name='prev'
+						fill='white'
+						height={25 * scaleSize}
+						width={25 * scaleSize}
+						pack='custom'
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -107,7 +130,7 @@ export const StickMusicPlayer = () => {
 					}}
 					style={[
 						border.radius.small,
-						margin.horizontal.medium,
+						margin.horizontal.big,
 						{
 							backgroundColor: '#4F58C0',
 							alignItems: 'center',
@@ -118,8 +141,8 @@ export const StickMusicPlayer = () => {
 					<Icon
 						name={player.player?.isPlaying ? 'pause' : 'play'}
 						fill='white'
-						height={35}
-						width={35}
+						height={25 * scaleSize}
+						width={25 * scaleSize}
 						pack='custom'
 					/>
 				</TouchableOpacity>
@@ -141,7 +164,13 @@ export const StickMusicPlayer = () => {
 						},
 					]}
 				>
-					<Icon name='fast-forward' fill='#6D76CA' height={30} width={30} pack='feather' />
+					<Icon
+						name='next'
+						fill='white'
+						height={25 * scaleSize}
+						width={25 * scaleSize}
+						pack='custom'
+					/>
 				</TouchableOpacity>
 			</View>
 
@@ -154,16 +183,22 @@ export const StickMusicPlayer = () => {
 				}}
 			>
 				<TouchableOpacity onPress={() => {}} style={[padding.tiny, margin.left.small]}>
-					<Icon name='volume-up-outline' fill='white' height={30} width={30} />
+					<Icon
+						name='volume'
+						fill='white'
+						height={20 * scaleSize}
+						width={20 * scaleSize}
+						pack='custom'
+					/>
 				</TouchableOpacity>
 			</View>
 
 			<View
 				style={{
 					position: 'absolute',
-					bottom: 0,
-					left: 0,
-					right: 0,
+					top: 0,
+					left: 15,
+					right: 15,
 					backgroundColor: '#8999FF',
 					height: 5,
 				}}
@@ -174,7 +209,7 @@ export const StickMusicPlayer = () => {
 							position: 'absolute',
 							top: 0,
 							left: 0,
-							right: 0,
+							right: -15,
 							backgroundColor: '#3F49EA',
 							height: 5,
 							width: animatedWidth,

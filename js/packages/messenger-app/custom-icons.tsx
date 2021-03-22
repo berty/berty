@@ -32,6 +32,9 @@ import PrivacyModeBackground from './custom-icons-svgs/privacy-mode-bg.svg'
 import MicrophoneFooter from './custom-icons-svgs/microphone-footer.svg'
 import CameraFooter from './custom-icons-svgs/camera-footer.svg'
 import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
+import Volume from './custom-icons-svgs/volume.svg'
+import Prev from './custom-icons-svgs/prev.svg'
+import Next from './custom-icons-svgs/next.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -64,6 +67,9 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	'microphone-footer': MicrophoneFooter,
 	'camera-footer': CameraFooter,
 	bertyzzz: Bertyzzz,
+	volume: Volume,
+	prev: Prev,
+	next: Next,
 }
 
 const CustomIcon: React.FC<{
