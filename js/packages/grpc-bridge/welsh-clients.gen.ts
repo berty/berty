@@ -83,6 +83,7 @@ export interface WelshMessengerServiceClient {
 	instanceShareableBertyID: UnaryType<beapi.messenger.MessengerService['instanceShareableBertyID']>
 	shareableBertyGroup: UnaryType<beapi.messenger.MessengerService['shareableBertyGroup']>
 	devShareInstanceBertyID: UnaryType<beapi.messenger.MessengerService['devShareInstanceBertyID']>
+	devStreamLogs: ResponseStreamType<beapi.messenger.MessengerService['devStreamLogs']>
 	parseDeepLink: UnaryType<beapi.messenger.MessengerService['parseDeepLink']>
 	sendContactRequest: UnaryType<beapi.messenger.MessengerService['sendContactRequest']>
 	sendReplyOptions: UnaryType<beapi.messenger.MessengerService['sendReplyOptions']>

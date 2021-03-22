@@ -146,12 +146,10 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 	cleanup = u.CombineFuncs(cleanup, func() { _ = tee.Sync() })
 
 	// IPFS/libp2p logging
-	{
+	if withIPFS {
 		ipfsLogger := tee.Named("ipfs")
-		if withIPFS {
-			proxyCleanup := setupIPFSLogProxy(ipfsLogger)
-			cleanup = u.CombineFuncs(proxyCleanup, cleanup)
-		}
+		proxyCleanup := setupIPFSLogProxy(ipfsLogger)
+		cleanup = u.CombineFuncs(proxyCleanup, cleanup)
 	}
 
 	return tee.Named("bty"), cleanup, nil

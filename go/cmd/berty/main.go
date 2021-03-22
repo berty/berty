@@ -76,6 +76,7 @@ func runMain(args []string) error {
 				peersCommand(),
 				exportCommand(),
 				omnisearchCommand(),
+				remoteLogsCommand(),
 			},
 		}
 

@@ -12,6 +12,9 @@ http:
  - selector: berty.messenger.v1.MessengerService.DevShareInstanceBertyID
    post: /berty.messenger.v1/MessengerService/DevShareInstanceBertyID
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.DevStreamLogs
+   post: /berty.messenger.v1/MessengerService/DevStreamLogs
+   body: "*"
  - selector: berty.messenger.v1.MessengerService.ParseDeepLink
    post: /berty.messenger.v1/MessengerService/ParseDeepLink
    body: "*"

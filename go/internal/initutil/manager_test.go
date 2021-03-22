@@ -172,7 +172,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		manager.SetupLoggingFlags(fs)
 		manager.SetupLocalProtocolServerFlags(fs)
 		manager.SetupEmptyGRPCListenersFlags(fs)
-		err = fs.Parse([]string{"-node.listeners", "/ip4/0.0.0.0/tcp/9097", "-store.inmem", "-log.filters="})
+		err = fs.Parse([]string{"-node.listeners", "/ip4/0.0.0.0/tcp/9097", "-store.inmem", "-log.filters=", "-log.ring-filters="})
 		require.NoError(t, err)
 		man1 = manager
 	}
@@ -188,7 +188,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		manager.SetupLoggingFlags(fs)
 		manager.SetupRemoteNodeFlags(fs)
 		manager.SetupEmptyGRPCListenersFlags(fs)
-		err = fs.Parse([]string{"-node.remote-addr", "127.0.0.1:9097", "-log.filters="})
+		err = fs.Parse([]string{"-node.remote-addr", "127.0.0.1:9097", "-log.filters=", "-log.ring-filters="})
 		require.NoError(t, err)
 		man2 = manager
 	}
@@ -230,7 +230,7 @@ func TestCloseByContext(t *testing.T) {
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalProtocolServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)
-	fs.Parse([]string{"-store.inmem", "-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-log.filters="})
+	fs.Parse([]string{"-store.inmem", "-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-log.filters=", "-log.ring-filters="})
 
 	server, err := manager.GetLocalProtocolServer()
 	require.NoError(t, err)
@@ -251,7 +251,7 @@ func TestFlagsLeak(t *testing.T) {
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalProtocolServerFlags(fs)
 	manager.SetupRemoteNodeFlags(fs)
-	err = fs.Parse([]string{"-store.inmem", "-p2p.min-backoff=2m10s", "-node.remote-addr=1.2.3.4:5678", "-log.filters="})
+	err = fs.Parse([]string{"-store.inmem", "-p2p.min-backoff=2m10s", "-node.remote-addr=1.2.3.4:5678", "-log.filters=", "-log.ring-filters="})
 	require.NoError(t, err)
 }
 
@@ -267,7 +267,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalProtocolServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)
-	err = fs.Parse([]string{"-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-store.inmem", "-log.filters="})
+	err = fs.Parse([]string{"-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-store.inmem", "-log.filters=", "-log.ring-filters="})
 	require.NoError(t, err)
 
 	server, err := manager.GetLocalProtocolServer()
@@ -296,7 +296,7 @@ func TestLocalProtocolServerLeak(t *testing.T) {
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalProtocolServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)
-	err = fs.Parse([]string{"-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-store.inmem", "-log.filters="})
+	err = fs.Parse([]string{"-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-store.inmem", "-log.filters=", "-log.ring-filters="})
 
 	server, err := manager.GetLocalProtocolServer()
 	require.NoError(t, err)
@@ -326,7 +326,7 @@ func TestClosingTwice(t *testing.T) {
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalProtocolServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)
-	err = fs.Parse([]string{"-node.listeners=", "-store.inmem", "-log.filters="})
+	err = fs.Parse([]string{"-node.listeners=", "-store.inmem", "-log.filters=", "-log.ring-filters="})
 	require.NoError(t, err)
 
 	_, err = manager.GetLocalProtocolServer()

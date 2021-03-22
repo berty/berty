@@ -59,6 +59,9 @@
     - [DevShareInstanceBertyID](#berty.messenger.v1.DevShareInstanceBertyID)
     - [DevShareInstanceBertyID.Reply](#berty.messenger.v1.DevShareInstanceBertyID.Reply)
     - [DevShareInstanceBertyID.Request](#berty.messenger.v1.DevShareInstanceBertyID.Request)
+    - [DevStreamLogs](#berty.messenger.v1.DevStreamLogs)
+    - [DevStreamLogs.Reply](#berty.messenger.v1.DevStreamLogs.Reply)
+    - [DevStreamLogs.Request](#berty.messenger.v1.DevStreamLogs.Request)
     - [Device](#berty.messenger.v1.Device)
     - [EchoDuplexTest](#berty.messenger.v1.EchoDuplexTest)
     - [EchoDuplexTest.Reply](#berty.messenger.v1.EchoDuplexTest.Reply)
@@ -594,6 +597,22 @@ to test more false-positive guesses.
 | ----- | ---- | ----- | ----------- |
 | reset | [bool](#bool) |  | reset will regenerate a new link |
 | display_name | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.DevStreamLogs"></a>
+
+### DevStreamLogs
+
+<a name="berty.messenger.v1.DevStreamLogs.Reply"></a>
+
+### DevStreamLogs.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| line | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.DevStreamLogs.Request"></a>
+
+### DevStreamLogs.Request
 
 <a name="berty.messenger.v1.Device"></a>
 
@@ -1430,6 +1449,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | InstanceShareableBertyID | [InstanceShareableBertyID.Request](#berty.messenger.v1.InstanceShareableBertyID.Request) | [InstanceShareableBertyID.Reply](#berty.messenger.v1.InstanceShareableBertyID.Reply) | InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link. |
 | ShareableBertyGroup | [ShareableBertyGroup.Request](#berty.messenger.v1.ShareableBertyGroup.Request) | [ShareableBertyGroup.Reply](#berty.messenger.v1.ShareableBertyGroup.Reply) | ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link. |
 | DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.messenger.v1.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.messenger.v1.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
+| DevStreamLogs | [DevStreamLogs.Request](#berty.messenger.v1.DevStreamLogs.Request) | [DevStreamLogs.Reply](#berty.messenger.v1.DevStreamLogs.Reply) stream | DevStreamLogs streams logs from the ring-buffer. |
 | ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
 | SendContactRequest | [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
 | SendReplyOptions | [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request) | [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply) | SendReplyOptions sends a list of prefilled response options to a group. |

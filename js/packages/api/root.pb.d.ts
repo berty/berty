@@ -4883,6 +4883,8 @@ export namespace berty {
                 public shareableBertyGroup(request: berty.messenger.v1.ShareableBertyGroup.IRequest): Promise<berty.messenger.v1.ShareableBertyGroup.Reply>;
                 public devShareInstanceBertyID(request: berty.messenger.v1.DevShareInstanceBertyID.IRequest, callback: berty.messenger.v1.MessengerService.DevShareInstanceBertyIDCallback): void;
                 public devShareInstanceBertyID(request: berty.messenger.v1.DevShareInstanceBertyID.IRequest): Promise<berty.messenger.v1.DevShareInstanceBertyID.Reply>;
+                public devStreamLogs(request: berty.messenger.v1.DevStreamLogs.IRequest, callback: berty.messenger.v1.MessengerService.DevStreamLogsCallback): void;
+                public devStreamLogs(request: berty.messenger.v1.DevStreamLogs.IRequest): Promise<berty.messenger.v1.DevStreamLogs.Reply>;
                 public parseDeepLink(request: berty.messenger.v1.ParseDeepLink.IRequest, callback: berty.messenger.v1.MessengerService.ParseDeepLinkCallback): void;
                 public parseDeepLink(request: berty.messenger.v1.ParseDeepLink.IRequest): Promise<berty.messenger.v1.ParseDeepLink.Reply>;
                 public sendContactRequest(request: berty.messenger.v1.SendContactRequest.IRequest, callback: berty.messenger.v1.MessengerService.SendContactRequestCallback): void;
@@ -4950,6 +4952,8 @@ export namespace berty {
                 type ShareableBertyGroupCallback = (error: (Error|null), response?: berty.messenger.v1.ShareableBertyGroup.Reply) => void;
 
                 type DevShareInstanceBertyIDCallback = (error: (Error|null), response?: berty.messenger.v1.DevShareInstanceBertyID.Reply) => void;
+
+                type DevStreamLogsCallback = (error: (Error|null), response?: berty.messenger.v1.DevStreamLogs.Reply) => void;
 
                 type ParseDeepLinkCallback = (error: (Error|null), response?: berty.messenger.v1.ParseDeepLink.Reply) => void;
 
@@ -5488,6 +5492,59 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevShareInstanceBertyID.Reply;
                     public static toObject(message: berty.messenger.v1.DevShareInstanceBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IDevStreamLogs {
+            }
+
+            class DevStreamLogs implements IDevStreamLogs {
+
+                public static create(properties?: berty.messenger.v1.IDevStreamLogs): berty.messenger.v1.DevStreamLogs;
+                public static encode(message: berty.messenger.v1.IDevStreamLogs, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IDevStreamLogs, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DevStreamLogs;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DevStreamLogs;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevStreamLogs;
+                public static toObject(message: berty.messenger.v1.DevStreamLogs, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DevStreamLogs {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.messenger.v1.DevStreamLogs.IRequest): berty.messenger.v1.DevStreamLogs.Request;
+                    public static encode(message: berty.messenger.v1.DevStreamLogs.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DevStreamLogs.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DevStreamLogs.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DevStreamLogs.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevStreamLogs.Request;
+                    public static toObject(message: berty.messenger.v1.DevStreamLogs.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    line?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public line: string;
+                    public static create(properties?: berty.messenger.v1.DevStreamLogs.IReply): berty.messenger.v1.DevStreamLogs.Reply;
+                    public static encode(message: berty.messenger.v1.DevStreamLogs.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DevStreamLogs.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DevStreamLogs.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DevStreamLogs.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevStreamLogs.Reply;
+                    public static toObject(message: berty.messenger.v1.DevStreamLogs.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
