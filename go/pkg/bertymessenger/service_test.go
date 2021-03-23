@@ -1772,6 +1772,7 @@ func TestUserReaction(t *testing.T) {
 
 	logger.Info("starting test")
 
+	// send message
 	convPK := friend.GetContact(t, userPK).GetConversationPublicKey()
 	require.NotNil(t, convPK)
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
@@ -1783,24 +1784,92 @@ func TestUserReaction(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, interactReply.GetCID())
-	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️"})
+
+	// react
+	payload, err = proto.Marshal(&messengertypes.AppMessage_AddReaction{Emoji: "❤️"})
 	require.NoError(t, err)
-	reactionReply, err := friend.client.Interact(ctx, &messengertypes.Interact_Request{
-		Type:                  messengertypes.AppMessage_TypeUserReaction,
+	_, err = friend.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeAddReaction,
 		Payload:               payload,
 		ConversationPublicKey: convPK,
 		TargetCID:             interactReply.GetCID(),
 	})
 	require.NoError(t, err)
-	require.NotEmpty(t, reactionReply.GetCID())
 	time.Sleep(1 * time.Second)
-	interaction := user.GetInteraction(t, reactionReply.GetCID())
+
+	interaction := user.GetInteraction(t, interactReply.GetCID())
 	require.NotNil(t, interaction)
-	payload2, err := interaction.UnmarshalPayload()
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: false, Count: 1},
+	}, interaction.Reactions)
+
+	interaction = friend.GetInteraction(t, interactReply.GetCID())
+	require.NotNil(t, interaction)
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: true, Count: 1},
+	}, interaction.Reactions)
+
+	// react with other user
+	payload, err = proto.Marshal(&messengertypes.AppMessage_AddReaction{Emoji: "❤️"})
 	require.NoError(t, err)
-	castedValue, ok := payload2.(*messengertypes.AppMessage_UserReaction)
-	require.True(t, ok)
-	require.Equal(t, "❤️", castedValue.GetEmoji())
+	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeAddReaction,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+
+	for _, user := range nodes {
+		interaction = user.GetInteraction(t, interactReply.GetCID())
+		require.NotNil(t, interaction)
+		require.Equal(t, []*messengertypes.Interaction_ReactionView{
+			{Emoji: "❤️", OwnState: true, Count: 2},
+		}, interaction.Reactions)
+	}
+
+	// remove first reaction
+	payload, err = proto.Marshal(&messengertypes.AppMessage_RemoveReaction{Emoji: "❤️"})
+	require.NoError(t, err)
+	_, err = friend.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeRemoveReaction,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+
+	interaction = user.GetInteraction(t, interactReply.GetCID())
+	require.NotNil(t, interaction)
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: true, Count: 1},
+	}, interaction.Reactions)
+
+	interaction = friend.GetInteraction(t, interactReply.GetCID())
+	require.NotNil(t, interaction)
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: false, Count: 1},
+	}, interaction.Reactions)
+
+	// remove second reaction
+	payload, err = proto.Marshal(&messengertypes.AppMessage_RemoveReaction{Emoji: "❤️"})
+	require.NoError(t, err)
+	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeRemoveReaction,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+
+	for _, user := range nodes {
+		interaction = user.GetInteraction(t, interactReply.GetCID())
+		require.NotNil(t, interaction)
+		require.Equal(t, []*messengertypes.Interaction_ReactionView(nil), interaction.Reactions)
+	}
 }
 
 func TestReply(t *testing.T) {
@@ -1869,11 +1938,17 @@ func TestReply(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, replyReply.GetCID())
 	time.Sleep(1 * time.Second)
-	interaction := user.GetInteraction(t, replyReply.GetCID())
-	require.NotNil(t, interaction)
-	payload2, err := interaction.UnmarshalPayload()
-	require.NoError(t, err)
-	castedValue, ok := payload2.(*messengertypes.AppMessage_UserMessage)
-	require.True(t, ok)
-	require.Equal(t, "Test", castedValue.GetBody())
+
+	for _, user := range nodes {
+		replyInteraction := user.GetInteraction(t, replyReply.GetCID())
+		require.NotNil(t, replyInteraction)
+		require.Equal(t, interactReply.CID, replyInteraction.TargetCID)
+
+		replyPayload, err := replyInteraction.UnmarshalPayload()
+		require.NoError(t, err)
+
+		castedValue, ok := replyPayload.(*messengertypes.AppMessage_UserMessage)
+		require.True(t, ok)
+		require.Equal(t, "Test", castedValue.GetBody())
+	}
 }

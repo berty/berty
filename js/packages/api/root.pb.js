@@ -2863,6 +2863,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrMessengerInvalidDeepLink: 2000,
               ErrMessengerDeepLinkRequiresPassphrase: 2001,
               ErrMessengerDeepLinkInvalidPassphrase: 2002,
+              ErrMessengerStreamEvent: 2003,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
               ErrDBAddContactRequestOutgoingSent: 2102,
@@ -3891,12 +3892,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     values: {
                       Undefined: 0,
                       TypeUserMessage: 1,
-                      TypeUserReaction: 2,
                       TypeGroupInvitation: 3,
                       TypeSetGroupInfo: 4,
                       TypeSetUserInfo: 5,
                       TypeAcknowledge: 6,
                       TypeReplyOptions: 7,
+                      TypeAddReaction: 8,
+                      TypeRemoveReaction: 9,
                       TypeMonitorMetadata: 100
                     }
                   },
@@ -3908,7 +3910,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       }
                     }
                   },
-                  UserReaction: {
+                  AddReaction: {
+                    fields: {
+                      emoji: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  RemoveReaction: {
                     fields: {
                       emoji: {
                         type: "string",
@@ -4060,6 +4070,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       conversationReplicationInfo: {
                         type: "int64",
                         id: 8
+                      },
+                      reactions: {
+                        type: "int64",
+                        id: 9
                       }
                     }
                   }
@@ -4236,6 +4250,32 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     rule: "repeated",
                     type: "Media",
                     id: 15
+                  },
+                  reactions: {
+                    rule: "repeated",
+                    type: "ReactionView",
+                    id: 16,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:-"
+                    }
+                  }
+                },
+                nested: {
+                  ReactionView: {
+                    fields: {
+                      emoji: {
+                        type: "string",
+                        id: 1
+                      },
+                      ownState: {
+                        type: "bool",
+                        id: 2
+                      },
+                      count: {
+                        type: "uint64",
+                        id: 3
+                      }
+                    }
                   }
                 }
               },
@@ -5264,6 +5304,44 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   samplingRate: {
                     type: "uint32",
                     id: 5
+                  }
+                }
+              },
+              Reaction: {
+                fields: {
+                  targetCid: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:target_cid;primaryKey",
+                      "(gogoproto.customname)": "TargetCID"
+                    }
+                  },
+                  memberPublicKey: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  emoji: {
+                    type: "string",
+                    id: 4,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  isMine: {
+                    type: "bool",
+                    id: 5
+                  },
+                  state: {
+                    type: "bool",
+                    id: 6
+                  },
+                  stateDate: {
+                    type: "int64",
+                    id: 7
                   }
                 }
               }

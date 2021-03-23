@@ -551,13 +551,21 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 		errch := make(chan error)
 		defer close(errch)
 		n := NotifieeBundle{StreamEventImpl: func(e *messengertypes.StreamEvent) error {
-			svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()))
-			err := sub.Send(&messengertypes.EventStream_Reply{Event: e})
-			if err != nil {
+			{
+				payload, err := e.UnmarshalPayload()
+				if err != nil {
+					svc.logger.Error("failed to unmarshal payload for logging", zap.Error(err))
+					payload = nil
+				}
+				svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()), zap.Any("payload", payload))
+			}
+
+			if err := sub.Send(&messengertypes.EventStream_Reply{Event: e}); err != nil {
 				// next commented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
 				// errch <- errors.New("TEST ERROR")
 				errch <- err
 			}
+
 			return nil
 		}}
 		unreg := svc.dispatcher.Register(&n)
@@ -945,17 +953,11 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	var p2 proto.Message
-	switch req.GetType() {
-	case messengertypes.AppMessage_TypeUserMessage:
-		p2 = &messengertypes.AppMessage_UserMessage{}
-	case messengertypes.AppMessage_TypeUserReaction:
-		p2 = &messengertypes.AppMessage_UserReaction{}
-	default:
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unsupported type: %v", req.GetType()))
-	}
-
-	if err := proto.Unmarshal(req.GetPayload(), p2); err != nil {
+	payload, err := (&messengertypes.AppMessage{
+		Type:    req.GetType(),
+		Payload: req.GetPayload(),
+	}).UnmarshalPayload()
+	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
@@ -966,7 +968,7 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 	if err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
-	fp, err := req.GetType().MarshalPayload(timestampMs(time.Now()), "", medias, p2)
+	fp, err := req.GetType().MarshalPayload(timestampMs(time.Now()), req.GetTargetCID(), medias, payload)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -1396,6 +1398,7 @@ func (svc *service) ConversationLoad(ctx context.Context, request *messengertype
 	} else {
 		svc.logger.Info("sending found interactions", zap.Int("count", len(interactions)))
 		for _, inte := range interactions {
+			// FIXME: build reactions view
 			if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{Interaction: inte}, false); err != nil {
 				return nil, err
 			}

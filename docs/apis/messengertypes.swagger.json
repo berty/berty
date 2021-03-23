@@ -1161,6 +1161,21 @@
       ],
       "default": "UnknownKind"
     },
+    "InteractionReactionView": {
+      "type": "object",
+      "properties": {
+        "emoji": {
+          "type": "string"
+        },
+        "own_state": {
+          "type": "boolean"
+        },
+        "count": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
     "OrbitDBReplicationStatus": {
       "type": "object",
       "properties": {
@@ -1214,6 +1229,10 @@
           "format": "int64"
         },
         "conversation_replication_info": {
+          "type": "string",
+          "format": "int64"
+        },
+        "reactions": {
           "type": "string",
           "format": "int64"
         }
@@ -1556,12 +1575,13 @@
       "enum": [
         "Undefined",
         "TypeUserMessage",
-        "TypeUserReaction",
         "TypeGroupInvitation",
         "TypeSetGroupInfo",
         "TypeSetUserInfo",
         "TypeAcknowledge",
         "TypeReplyOptions",
+        "TypeAddReaction",
+        "TypeRemoveReaction",
         "TypeMonitorMetadata"
       ],
       "default": "Undefined",
@@ -2147,6 +2167,13 @@
           "items": {
             "$ref": "#/definitions/v1Media"
           }
+        },
+        "reactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InteractionReactionView"
+          },
+          "title": "specific to client model"
         }
       }
     },

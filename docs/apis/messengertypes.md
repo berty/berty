@@ -13,13 +13,14 @@
     - [AccountUpdate.Request](#berty.messenger.v1.AccountUpdate.Request)
     - [AppMessage](#berty.messenger.v1.AppMessage)
     - [AppMessage.Acknowledge](#berty.messenger.v1.AppMessage.Acknowledge)
+    - [AppMessage.AddReaction](#berty.messenger.v1.AppMessage.AddReaction)
     - [AppMessage.GroupInvitation](#berty.messenger.v1.AppMessage.GroupInvitation)
     - [AppMessage.MonitorMetadata](#berty.messenger.v1.AppMessage.MonitorMetadata)
+    - [AppMessage.RemoveReaction](#berty.messenger.v1.AppMessage.RemoveReaction)
     - [AppMessage.ReplyOptions](#berty.messenger.v1.AppMessage.ReplyOptions)
     - [AppMessage.SetGroupInfo](#berty.messenger.v1.AppMessage.SetGroupInfo)
     - [AppMessage.SetUserInfo](#berty.messenger.v1.AppMessage.SetUserInfo)
     - [AppMessage.UserMessage](#berty.messenger.v1.AppMessage.UserMessage)
-    - [AppMessage.UserReaction](#berty.messenger.v1.AppMessage.UserReaction)
     - [AudioPreview](#berty.messenger.v1.AudioPreview)
     - [BannerQuote](#berty.messenger.v1.BannerQuote)
     - [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply)
@@ -82,6 +83,7 @@
     - [Interact.Reply](#berty.messenger.v1.Interact.Reply)
     - [Interact.Request](#berty.messenger.v1.Interact.Request)
     - [Interaction](#berty.messenger.v1.Interaction)
+    - [Interaction.ReactionView](#berty.messenger.v1.Interaction.ReactionView)
     - [LocalConversationState](#berty.messenger.v1.LocalConversationState)
     - [LocalDatabaseState](#berty.messenger.v1.LocalDatabaseState)
     - [Media](#berty.messenger.v1.Media)
@@ -102,6 +104,7 @@
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
     - [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request)
+    - [Reaction](#berty.messenger.v1.Reaction)
     - [ReplicationServiceRegisterGroup](#berty.messenger.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request)
@@ -226,6 +229,14 @@ AppMessage is the app layer format
 
 ### AppMessage.Acknowledge
 
+<a name="berty.messenger.v1.AppMessage.AddReaction"></a>
+
+### AppMessage.AddReaction
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| emoji | [string](#string) |  |  |
+
 <a name="berty.messenger.v1.AppMessage.GroupInvitation"></a>
 
 ### AppMessage.GroupInvitation
@@ -241,6 +252,14 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | event | [berty.protocol.v1.MonitorGroup.EventMonitor](#berty.protocol.v1.MonitorGroup.EventMonitor) |  |  |
+
+<a name="berty.messenger.v1.AppMessage.RemoveReaction"></a>
+
+### AppMessage.RemoveReaction
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| emoji | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.ReplyOptions"></a>
 
@@ -275,14 +294,6 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | body | [string](#string) |  |  |
-
-<a name="berty.messenger.v1.AppMessage.UserReaction"></a>
-
-### AppMessage.UserReaction
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| emoji | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.AudioPreview"></a>
 
@@ -760,6 +771,17 @@ to test more false-positive guesses.
 | acknowledged | [bool](#bool) |  |  |
 | target_cid | [string](#string) |  |  |
 | medias | [Media](#berty.messenger.v1.Media) | repeated |  |
+| reactions | [Interaction.ReactionView](#berty.messenger.v1.Interaction.ReactionView) | repeated | specific to client model |
+
+<a name="berty.messenger.v1.Interaction.ReactionView"></a>
+
+### Interaction.ReactionView
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| emoji | [string](#string) |  |  |
+| own_state | [bool](#bool) |  |  |
+| count | [uint64](#uint64) |  |  |
 
 <a name="berty.messenger.v1.LocalConversationState"></a>
 
@@ -940,6 +962,19 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
 | passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
+
+<a name="berty.messenger.v1.Reaction"></a>
+
+### Reaction
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| target_cid | [string](#string) |  |  |
+| member_public_key | [string](#string) |  |  |
+| emoji | [string](#string) |  |  |
+| is_mine | [bool](#bool) |  |  |
+| state | [bool](#bool) |  |  |
+| state_date | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.ReplicationServiceRegisterGroup"></a>
 
@@ -1224,7 +1259,8 @@ Composite primary key
 | members | [int64](#int64) |  |  |
 | devices | [int64](#int64) |  |  |
 | service_tokens | [int64](#int64) |  |  |
-| conversation_replication_info | [int64](#int64) |  | older, more recent |
+| conversation_replication_info | [int64](#int64) |  |  |
+| reactions | [int64](#int64) |  | older, more recent |
 
 <a name="berty.messenger.v1.SystemInfo.Messenger"></a>
 
@@ -1260,12 +1296,13 @@ Composite primary key
 | ---- | ------ | ----------- |
 | Undefined | 0 |  |
 | TypeUserMessage | 1 |  |
-| TypeUserReaction | 2 |  |
 | TypeGroupInvitation | 3 |  |
 | TypeSetGroupInfo | 4 |  |
 | TypeSetUserInfo | 5 |  |
 | TypeAcknowledge | 6 |  |
 | TypeReplyOptions | 7 |  |
+| TypeAddReaction | 8 |  |
+| TypeRemoveReaction | 9 |  |
 | TypeMonitorMetadata | 100 | these shouldn&#39;t be sent on the network |
 
 <a name="berty.messenger.v1.BertyLink.Kind"></a>

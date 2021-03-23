@@ -167,6 +167,21 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	cancel()
 
 	ctx, cancel = context.WithCancel(context.Background())
+	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	cancel()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
+	}
+	pkStr := b64EncodeBytes(icr.GetAccountGroupPK())
+	shortPkStr := pkStr
+	const shortLen = 6
+	if len(shortPkStr) > shortLen {
+		shortPkStr = shortPkStr[:shortLen]
+	}
+
+	opts.Logger = opts.Logger.With(zap.String("a", shortPkStr))
+
+	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
 		protocolClient:        client,
 		logger:                opts.Logger,
@@ -183,12 +198,6 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	}
 
 	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)
-
-	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
-	}
-	pkStr := b64EncodeBytes(icr.GetAccountGroupPK())
 
 	// get or create account in DB
 	{
@@ -354,7 +363,7 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 
 			svc.handlerMutex.Lock()
 			if err := svc.eventHandler.handleAppMessage(b64EncodeBytes(gpkb), gme, &am); err != nil {
-				svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
+				svc.logger.Error("failed to handle app message", zap.Any("type", am.GetType()), zap.Error(errcode.ErrInternal.Wrap(err)))
 			}
 			svc.handlerMutex.Unlock()
 		}

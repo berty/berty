@@ -49,6 +49,7 @@ func getDBModels() []interface{} {
 		&messengertypes.Device{},
 		&messengertypes.ConversationReplicationInfo{},
 		&messengertypes.Media{},
+		&messengertypes.Reaction{},
 	}
 }
 
@@ -711,6 +712,9 @@ func (d *dbWrapper) getDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	errs = multierr.Append(errs, err)
 
 	infos.ConversationReplicationInfo, err = d.dbModelRowsCount(messengertypes.ConversationReplicationInfo{})
+	errs = multierr.Append(errs, err)
+
+	infos.Reactions, err = d.dbModelRowsCount(messengertypes.Reaction{})
 	errs = multierr.Append(errs, err)
 
 	return infos, errs

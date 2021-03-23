@@ -46,8 +46,6 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? undefined
 	: T extends beapi.messenger.AppMessage.Type.TypeUserMessage
 	? beapi.messenger.AppMessage.IUserMessage
-	: T extends beapi.messenger.AppMessage.Type.TypeUserReaction
-	? beapi.messenger.AppMessage.IUserReaction
 	: T extends beapi.messenger.AppMessage.Type.TypeGroupInvitation
 	? beapi.messenger.AppMessage.IGroupInvitation
 	: T extends beapi.messenger.AppMessage.Type.TypeSetGroupInfo
@@ -58,6 +56,10 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? beapi.messenger.AppMessage.IAcknowledge
 	: T extends beapi.messenger.AppMessage.Type.TypeReplyOptions
 	? beapi.messenger.AppMessage.IReplyOptions
+	: T extends beapi.messenger.AppMessage.Type.TypeAddReaction
+	? beapi.messenger.AppMessage.IAddReaction
+	: T extends beapi.messenger.AppMessage.Type.TypeRemoveReaction
+	? beapi.messenger.AppMessage.IRemoveReaction
 	: T extends beapi.messenger.AppMessage.Type.TypeMonitorMetadata
 	? beapi.messenger.AppMessage.IMonitorMetadata
 	: never
@@ -84,10 +86,6 @@ export type InteractionUserMessage = {
 	type: beapi.messenger.AppMessage.Type.TypeUserMessage
 	payload: beapi.messenger.AppMessage.IUserMessage
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
-export type InteractionUserReaction = {
-	type: beapi.messenger.AppMessage.Type.TypeUserReaction
-	payload: beapi.messenger.AppMessage.IUserReaction
-} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionGroupInvitation = {
 	type: beapi.messenger.AppMessage.Type.TypeGroupInvitation
 	payload: beapi.messenger.AppMessage.IGroupInvitation
@@ -108,6 +106,14 @@ export type InteractionReplyOptions = {
 	type: beapi.messenger.AppMessage.Type.TypeReplyOptions
 	payload: beapi.messenger.AppMessage.IReplyOptions
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionAddReaction = {
+	type: beapi.messenger.AppMessage.Type.TypeAddReaction
+	payload: beapi.messenger.AppMessage.IAddReaction
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionRemoveReaction = {
+	type: beapi.messenger.AppMessage.Type.TypeRemoveReaction
+	payload: beapi.messenger.AppMessage.IRemoveReaction
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionMonitorMetadata = {
 	type: beapi.messenger.AppMessage.Type.TypeMonitorMetadata
 	payload: beapi.messenger.AppMessage.IMonitorMetadata
@@ -116,12 +122,13 @@ export type InteractionMonitorMetadata = {
 export type ParsedInteraction =
 	| InteractionUndefined
 	| InteractionUserMessage
-	| InteractionUserReaction
 	| InteractionGroupInvitation
 	| InteractionSetGroupInfo
 	| InteractionSetUserInfo
 	| InteractionAcknowledge
 	| InteractionReplyOptions
+	| InteractionAddReaction
+	| InteractionRemoveReaction
 	| InteractionMonitorMetadata
 export type MessengerMethodsHooks = {
 	useInstanceShareableBertyID: () => {

@@ -1044,6 +1044,10 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 		db.db.Create(&messengertypes.ConversationReplicationInfo{CID: fmt.Sprintf("%d", i)})
 	}
 
+	for i := 0; i < 9; i++ {
+		db.db.Create(&messengertypes.Reaction{Emoji: fmt.Sprintf("%d", i)})
+	}
+
 	info, err = db.getDBInfo()
 	require.NoError(t, err)
 	require.Equal(t, int64(1), info.Accounts)
@@ -1054,12 +1058,13 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(6), info.Devices)
 	require.Equal(t, int64(7), info.ServiceTokens)
 	require.Equal(t, int64(8), info.ConversationReplicationInfo)
+	require.Equal(t, int64(9), info.Reactions)
 
 	// Ensure all tables are in the debug data
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
-	require.Equal(t, 9, len(tables))
+	require.Equal(t, 10, len(tables))
 }
 
 func Test_dbWrapper_getMemberByPK(t *testing.T) {

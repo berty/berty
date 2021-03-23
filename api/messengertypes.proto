@@ -292,12 +292,13 @@ message AppMessage {
   enum Type {
     Undefined = 0;
     TypeUserMessage = 1;
-    TypeUserReaction = 2;
     TypeGroupInvitation = 3;
     TypeSetGroupInfo = 4;
     TypeSetUserInfo = 5;
     TypeAcknowledge = 6;
     TypeReplyOptions = 7;
+    TypeAddReaction = 8;
+    TypeRemoveReaction = 9;
 
     // these shouldn't be sent on the network
     TypeMonitorMetadata = 100;
@@ -305,7 +306,10 @@ message AppMessage {
   message UserMessage {
     string body = 1;
   }
-  message UserReaction {
+  message AddReaction {
+    string emoji = 2;
+  }
+  message RemoveReaction {
     string emoji = 2;
   }
   message GroupInvitation {
@@ -357,6 +361,7 @@ message SystemInfo {
     int64 devices = 6;
     int64 service_tokens = 7;
     int64 conversation_replication_info = 8;
+    int64 reactions = 9;
     // older, more recent
   }
 }
@@ -405,6 +410,14 @@ message Interaction {
   bool acknowledged = 10;
   string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
   repeated Media medias = 15;
+
+  // specific to client model
+  repeated ReactionView reactions = 16 [(gogoproto.moretags) = "gorm:\"-\""];
+  message ReactionView {
+    string emoji = 1;
+    bool own_state = 2;
+    uint64 count = 3;
+  }
 }
 
 message Media {
@@ -798,4 +811,13 @@ message AudioPreview {
   string format = 3;
   uint32 bitrate = 4;
   uint32 sampling_rate = 5;
+}
+
+message Reaction {
+  string target_cid = 2 [(gogoproto.moretags) = "gorm:\"column:target_cid;primaryKey\"", (gogoproto.customname) = "TargetCID"];
+  string member_public_key = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string emoji = 4 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  bool is_mine = 5;
+  bool state = 6;
+  int64 state_date = 7;
 }
