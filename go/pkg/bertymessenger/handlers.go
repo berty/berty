@@ -75,29 +75,6 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 	return h
 }
 
-func (h *eventHandler) streamInteraction(tx *dbWrapper, cid string, isNew bool) error {
-	if h.svc != nil {
-		eventInte, err := tx.getInteractionByCID(cid)
-		if err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-
-		eventInte.Reactions, err = buildReactionsView(tx, cid)
-		if err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-
-		if err := h.svc.dispatcher.StreamEvent(
-			mt.StreamEvent_TypeInteractionUpdated,
-			&mt.StreamEvent_InteractionUpdated{Interaction: eventInte},
-			isNew,
-		); err != nil {
-			return errcode.ErrMessengerStreamEvent.Wrap(err)
-		}
-	}
-	return nil
-}
-
 func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
 	reactions := ([]*mt.Reaction)(nil)
 	if err := tx.db.Where(&mt.Reaction{TargetCID: cid}).Find(&reactions).Error; err != nil {
@@ -771,7 +748,7 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 				}
 
 			default:
-				if err := h.streamInteraction(h.db, elem.CID, false); err != nil {
+				if err := h.svc.streamInteraction(h.db, elem.CID, false); err != nil {
 					return err
 				}
 			}
@@ -819,7 +796,7 @@ func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *mt.Interact
 
 	default:
 		if target != nil {
-			if err := h.streamInteraction(tx, target.CID, false); err != nil {
+			if err := h.svc.streamInteraction(tx, target.CID, false); err != nil {
 				h.logger.Error("error while sending stream event", zap.String("public-key", i.ConversationPublicKey), zap.String("cid", i.CID), zap.Error(err))
 			}
 		}
@@ -835,7 +812,7 @@ func (h *eventHandler) handleAppMessageGroupInvitation(tx *dbWrapper, i *mt.Inte
 	}
 
 	if h.svc != nil {
-		if err := h.streamInteraction(tx, i.CID, isNew); err != nil {
+		if err := h.svc.streamInteraction(tx, i.CID, isNew); err != nil {
 			return nil, isNew, err
 		}
 	}
@@ -853,7 +830,7 @@ func (h *eventHandler) handleAppMessageUserMessage(tx *dbWrapper, i *mt.Interact
 		return i, isNew, nil
 	}
 
-	if err := h.streamInteraction(tx, i.CID, isNew); err != nil {
+	if err := h.svc.streamInteraction(tx, i.CID, isNew); err != nil {
 		return nil, isNew, err
 	}
 
@@ -1044,7 +1021,7 @@ func (h *eventHandler) handleReaction(tx *dbWrapper, i *mt.Interaction, amPayloa
 
 	if updated {
 		// TODO: move streamInteraction in svc
-		if err := h.streamInteraction(tx, i.TargetCID, false); err != nil {
+		if err := h.svc.streamInteraction(tx, i.TargetCID, false); err != nil {
 			h.logger.Debug("failed to stream updated target interaction after AddReaction", zap.Error(err))
 		}
 	}
@@ -1222,7 +1199,7 @@ func (h *eventHandler) handleAppMessageReplyOptions(tx *dbWrapper, i *mt.Interac
 		return i, isNew, nil
 	}
 
-	if err := h.streamInteraction(tx, i.CID, isNew); err != nil {
+	if err := h.svc.streamInteraction(tx, i.CID, isNew); err != nil {
 		return nil, isNew, err
 	}
 

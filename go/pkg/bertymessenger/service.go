@@ -27,6 +27,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
@@ -533,6 +534,29 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 		return errcode.ErrProtocolSend.Wrap(err)
 	}
 
+	return nil
+}
+
+func (svc *service) streamInteraction(tx *dbWrapper, cid string, isNew bool) error {
+	if svc != nil && svc.dispatcher != nil {
+		eventInte, err := tx.getInteractionByCID(cid)
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		eventInte.Reactions, err = buildReactionsView(tx, cid)
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if err := svc.dispatcher.StreamEvent(
+			mt.StreamEvent_TypeInteractionUpdated,
+			&mt.StreamEvent_InteractionUpdated{Interaction: eventInte},
+			isNew,
+		); err != nil {
+			return errcode.ErrMessengerStreamEvent.Wrap(err)
+		}
+	}
 	return nil
 }
 

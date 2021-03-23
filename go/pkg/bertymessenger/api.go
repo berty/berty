@@ -1398,8 +1398,7 @@ func (svc *service) ConversationLoad(ctx context.Context, request *messengertype
 	} else {
 		svc.logger.Info("sending found interactions", zap.Int("count", len(interactions)))
 		for _, inte := range interactions {
-			// FIXME: build reactions view
-			if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{Interaction: inte}, false); err != nil {
+			if err := svc.streamInteraction(svc.db, inte.CID, false); err != nil {
 				return nil, err
 			}
 		}
