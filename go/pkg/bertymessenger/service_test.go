@@ -1443,44 +1443,10 @@ func TestUnstableAccountUpdateGroup(t *testing.T) {
 func TestSendBlob(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
-	// PREPARE
-	logger, cleanup := testutil.Logger(t)
-	defer cleanup()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	const l = 2
-
-	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
-	defer cleanup()
-
-	nodes := make([]*TestingAccount, l)
-	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
-		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
-		close := nodes[i].ProcessWholeStream(t)
-		defer close()
-	}
-
-	logger.Info("Started nodes, waiting for settlement")
-	time.Sleep(4 * time.Second)
-
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
 	user := nodes[0]
 	friend := nodes[1]
-	userPK := user.GetAccount().GetPublicKey()
-
-	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
-	require.NoError(t, err)
-	logger.Info("waiting for request propagation")
-	time.Sleep(1 * time.Second)
-	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
-	require.NoError(t, err)
-
-	logger.Info("waiting for contact settlement")
-	time.Sleep(4 * time.Second)
-
-	// REAL TEST
 
 	logger.Info("starting test")
 
@@ -1496,7 +1462,6 @@ func TestSendBlob(t *testing.T) {
 	require.NoError(t, err)
 
 	logger.Info("starting send")
-	const testName = "user"
 
 	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
 
@@ -1560,44 +1525,10 @@ func TestSendBlob(t *testing.T) {
 func TestSendMedia(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
-	// PREPARE
-	logger, cleanup := testutil.Logger(t)
-	defer cleanup()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 35*time.Second)
-	defer cancel()
-
-	const l = 2
-
-	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
-	defer cleanup()
-
-	nodes := make([]*TestingAccount, l)
-	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
-		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
-		close := nodes[i].ProcessWholeStream(t)
-		defer close()
-	}
-
-	logger.Info("Started nodes, waiting for settlement")
-	time.Sleep(4 * time.Second)
-
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
 	user := nodes[0]
 	friend := nodes[1]
-	userPK := user.GetAccount().GetPublicKey()
-
-	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
-	require.NoError(t, err)
-	logger.Info("waiting for request propagation")
-	time.Sleep(1 * time.Second)
-	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
-	require.NoError(t, err)
-
-	logger.Info("waiting for contact settlement")
-	time.Sleep(4 * time.Second)
-
-	// REAL TEST
 
 	logger.Info("starting test")
 
@@ -1614,7 +1545,6 @@ func TestSendMedia(t *testing.T) {
 	require.NoError(t, err)
 
 	logger.Info("starting send")
-	const testName = "user"
 
 	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
 
@@ -1731,44 +1661,11 @@ func Test_exportMessengerData(t *testing.T) {
 func TestUserReaction(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
-	// PREPARE
-	logger, cleanup := testutil.Logger(t)
-	defer cleanup()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	const l = 2
-
-	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
-	defer cleanup()
-
-	nodes := make([]*TestingAccount, l)
-	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
-		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
-		close := nodes[i].ProcessWholeStream(t)
-		defer close()
-	}
-
-	logger.Info("Started nodes, waiting for settlement")
-	time.Sleep(4 * time.Second)
-
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
 	user := nodes[0]
-	friend := nodes[1]
 	userPK := user.GetAccount().GetPublicKey()
-
-	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
-	require.NoError(t, err)
-	logger.Info("waiting for request propagation")
-	time.Sleep(1 * time.Second)
-	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
-	require.NoError(t, err)
-
-	logger.Info("waiting for contact settlement")
-	time.Sleep(4 * time.Second)
-
-	// REAL TEST
+	friend := nodes[1]
 
 	logger.Info("starting test")
 
@@ -1875,49 +1772,18 @@ func TestUserReaction(t *testing.T) {
 func TestReply(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
-	// PREPARE
-	logger, cleanup := testutil.Logger(t)
-	defer cleanup()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	const l = 2
-
-	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
-	defer cleanup()
-
-	nodes := make([]*TestingAccount, l)
-	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
-		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
-		close := nodes[i].ProcessWholeStream(t)
-		defer close()
-	}
-
-	logger.Info("Started nodes, waiting for settlement")
-	time.Sleep(4 * time.Second)
-
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
 	user := nodes[0]
-	friend := nodes[1]
 	userPK := user.GetAccount().GetPublicKey()
-
-	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
-	require.NoError(t, err)
-	logger.Info("waiting for request propagation")
-	time.Sleep(1 * time.Second)
-	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
-	require.NoError(t, err)
-
-	logger.Info("waiting for contact settlement")
-	time.Sleep(4 * time.Second)
-
-	// REAL TEST
+	friend := nodes[1]
 
 	logger.Info("starting test")
 
 	convPK := friend.GetContact(t, userPK).GetConversationPublicKey()
 	require.NotNil(t, convPK)
+
+	// send message
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
 	require.NoError(t, err)
 	interactReply, err := user.client.Interact(ctx, &messengertypes.Interact_Request{
@@ -1927,6 +1793,9 @@ func TestReply(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, interactReply.GetCID())
+	time.Sleep(1 * time.Second)
+
+	// reply
 	payload, err = proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Test"})
 	require.NoError(t, err)
 	replyReply, err := friend.client.Interact(ctx, &messengertypes.Interact_Request{
@@ -1939,6 +1808,7 @@ func TestReply(t *testing.T) {
 	require.NotEmpty(t, replyReply.GetCID())
 	time.Sleep(1 * time.Second)
 
+	// check reply interaction in nodes
 	for _, user := range nodes {
 		replyInteraction := user.GetInteraction(t, replyReply.GetCID())
 		require.NotNil(t, replyInteraction)

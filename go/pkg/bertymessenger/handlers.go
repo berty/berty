@@ -82,10 +82,11 @@ func (h *eventHandler) streamInteraction(tx *dbWrapper, cid string, isNew bool) 
 			return errcode.ErrDBRead.Wrap(err)
 		}
 
-		eventInte.Reactions, err = buildReactionsView(tx, eventInte)
+		eventInte.Reactions, err = buildReactionsView(tx, cid)
 		if err != nil {
 			return errcode.ErrDBRead.Wrap(err)
 		}
+
 		if err := h.svc.dispatcher.StreamEvent(
 			mt.StreamEvent_TypeInteractionUpdated,
 			&mt.StreamEvent_InteractionUpdated{Interaction: eventInte},
@@ -97,9 +98,9 @@ func (h *eventHandler) streamInteraction(tx *dbWrapper, cid string, isNew bool) 
 	return nil
 }
 
-func buildReactionsView(tx *dbWrapper, i *mt.Interaction) ([]*mt.Interaction_ReactionView, error) {
+func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
 	reactions := ([]*mt.Reaction)(nil)
-	if err := tx.db.Where(&mt.Reaction{TargetCID: i.CID}).Find(&reactions).Error; err != nil {
+	if err := tx.db.Where(&mt.Reaction{TargetCID: cid}).Find(&reactions).Error; err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
