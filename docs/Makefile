@@ -29,7 +29,7 @@ $(gen_sum): $(gen_src)
 	    --workdir="/go/src/berty.tech/berty/docs" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:26 \
+	    bertytech/protoc:27 \
 	    -xec 'make generate_local' \
 	)
 protoc_opts := -I ../api:`go list -m -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -mod=mod -f {{.Dir}} github.com/gogo/protobuf`:/protobuf

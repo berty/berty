@@ -35,11 +35,14 @@ jobs:
     if: github.event_name == 'schedule'
     name: "integration (production)"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang: [1.16.x]
     env:
       OS: ubuntu-latest
-      GOLANG: 1.15.x
+      GOLANG: ${{ matrix.golang }}
     steps:
-      - name: Generate run's URL
+      - name: "Generate run's URL"
         id: url
         run: |
           echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
@@ -48,14 +51,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.x
+          go-version: ${{ matrix.golang }}
       - name: Cache Go modules
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
       - name: Avoid triggering make generate
         run: touch go/gen.sum
       - name: Fetch dependencies
@@ -85,9 +87,12 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     name: "integration (local)"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang: [1.16.x]
     env:
       OS: ubuntu-latest
-      GOLANG: 1.15.x
+      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -112,9 +117,12 @@ jobs:
   doctor-production:
     name: "doctor (production)"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang: [1.16.x]
     env:
       OS: ubuntu-latest
-      GOLANG: 1.15.x
+      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Generate run's URL
         id: url
@@ -125,14 +133,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.x
+          go-version: ${{ matrix.golang }}
       - name: Cache Go modules
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang}}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang}}-v1-
       - name: Avoid triggering make generate
         run: touch go/gen.sum
       - name: Fetch dependencies

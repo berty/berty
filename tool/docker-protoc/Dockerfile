@@ -1,7 +1,7 @@
 FROM    moul/protoc-gen-gotemplate:latest as pgg
 
 # build image
-FROM    golang:1.15-alpine as builder
+FROM    golang:1.16-alpine as builder
 # install deps
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker npm
 # install compilers
@@ -15,7 +15,7 @@ RUN     go install -mod=readonly \
           golang.org/x/tools/cmd/goimports
 
 # runtime
-FROM    golang:1.15-alpine
+FROM    golang:1.16-alpine
 RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm yarn sudo perl-utils tar sed grep \
  &&     mkdir -p /.cache/go-build \
  &&     chmod -R 777 /.cache \

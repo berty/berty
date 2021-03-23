@@ -26,6 +26,11 @@ jobs:
   sync-pods-lock:
     name: Verify that Podfile.lock is up to date
     runs-on: macos-latest
+    strategy:
+      matrix:
+        golang: ['1.16.x']
+        xcode: ['12.0']
+        node: ['14.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,40 +42,40 @@ jobs:
       - name: Setup XCode
         uses: maxim-lobanov/setup-xcode@v1.2.1
         with:
-          xcode-version: '12.0'
+          xcode-version: ${{ matrix.xcode }}
 
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.3
+          go-version: ${{ matrix.golang }}
 
       - name: Cache Node modules
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v4-
+          key:          ${{ runner.OS }}-node-${{ matrix.node }}-v1-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v1-
 
       - name: Cache Ruby modules
         uses: actions/cache@v2
         with:
           path: js/vendor/bundle
-          key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
-          restore-keys: ${{ runner.OS }}-bundle-
+          key:          ${{ runner.OS }}-bundle-${{ matrix.xcode }}-v1-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-${{ matrix.xcode }}-v1-
 
       - name: Cache XCodeGen
         uses: actions/cache@v2
         with:
           path: js/vendor/xcodegen
-          key: ios-xcodegen-${{ hashFiles('js/XcodeGen.version') }}
-          restore-keys: ios-xcodegen-
+          key:          ios-xcodegen-${{ matrix.xcode }}-v1-${{ hashFiles('js/XcodeGen.version') }}
+          restore-keys: ios-xcodegen-${{ matrix.xcode }}-v1-
 
       - name: Cache XCode project
         uses: actions/cache@v2
         with:
           path: js/ios/Berty.xcodeproj
-          key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
-          restore-keys: ios-xcodeproj-
+          key:          ios-xcodeproj-${{ matrix.xcode }}-v1-${{ hashFiles('js/ios/*.yaml') }}
+          restore-keys: ios-xcodeproj-${{ matrix.xcode }}-v1-
 
       - name: Build deps
         working-directory: js
@@ -88,6 +93,11 @@ jobs:
   build:
     name: Build for iOS
     runs-on: macos-latest
+    strategy:
+      matrix:
+        golang: ['1.16.x']
+        xcode: ['12.0']
+        node: ['14.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -99,59 +109,59 @@ jobs:
       - name: Setup XCode
         uses: maxim-lobanov/setup-xcode@v1.2.1
         with:
-          xcode-version: '12.0'
+          xcode-version: ${{ matrix.xcode }}
 
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.3
+          go-version: ${{ matrix.golang }}
 
       - name: Setup Node
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: 14.x
+          node-version: ${{ matrix.node }}
 
       - name: Cache Go modules
         uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
 
       - name: Cache Node modules
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v4-
+          key:          ${{ runner.OS }}-node-${{ matrix.node }}-v1-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v1-
 
       - name: Cache Ruby modules
         uses: actions/cache@v2
         with:
           path: js/vendor/bundle
-          key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
-          restore-keys: ${{ runner.OS }}-bundle-
+          key:          ${{ runner.OS }}-bundle-v1-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-v1-
 
       - name: Cache Gomobile .framework
         uses: actions/cache@v2
         with:
           path: js/ios/Frameworks/Bertybridge.framework
-          key: ios-gomobile-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h', 'go.sum') }}
-          restore-keys: ios-gomobile-
+          key:          ios-gomobile-${{ matrix.golang }}-v1-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h', 'go.sum') }}
+          restore-keys: ios-gomobile-${{ matrix.golang }}-v1-
 
       - name: Cache XCodeGen
         uses: actions/cache@v2
         with:
           path: js/vendor/xcodegen
-          key: ios-xcodegen-${{ hashFiles('js/XcodeGen.version') }}
-          restore-keys: ios-xcodegen-
+          key:          ios-xcodegen-${{ matrix.xcode }}-v1-${{ hashFiles('js/XcodeGen.version') }}
+          restore-keys: ios-xcodegen-${{ matrix.xcode }}-v1-
 
       - name: Cache XCode project
         uses: actions/cache@v2
         with:
           path: js/ios/Berty.xcodeproj
-          key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
-          restore-keys: ios-xcodeproj-
+          key:          ios-xcodeproj-${{ matrix.xcode }}-v1-${{ hashFiles('js/ios/*.yaml') }}
+          restore-keys: ios-xcodeproj-${{ matrix.xcode }}-v1-
 
       - name: Cache Pods and XCode workspace
         uses: actions/cache@v2
@@ -159,8 +169,8 @@ jobs:
           path: |
             js/ios/Berty.xcworkspace
             js/ios/Pods
-          key: ios-xcodeworkspace-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
-          restore-keys: ios-xcodeworkspace-
+          key:          ios-xcodeworkspace-${{ matrix.xcode }}-v1-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
+          restore-keys: ios-xcodeworkspace-${{ matrix.xcode }}-v1-
 
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity

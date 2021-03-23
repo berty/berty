@@ -2,4 +2,4 @@
 
 module berty.tech/berty/js/v2
 
-go 1.14
+go 1.15

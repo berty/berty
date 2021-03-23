@@ -1,6 +1,6 @@
 module berty.tech/berty/v2
 
-go 1.14
+go 1.15
 
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
@@ -102,7 +102,7 @@ require (
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
-	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
+	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/tools v0.0.0-20210106214847-113979e3529a
@@ -135,5 +135,5 @@ replace (
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a // use berty fork of go-libp2p-rendezvous
 	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.4.2 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
-	golang.org/x/mobile => github.com/aeddi/mobile v0.0.1 // temporary, see https://github.com/golang/mobile/pull/58
+	golang.org/x/mobile => github.com/aeddi/mobile v0.0.2 // temporary, see https://github.com/golang/mobile/pull/58
 )

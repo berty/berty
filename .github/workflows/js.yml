@@ -22,22 +22,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version:
+        node:
           #- 10.x
           #- 12.x
           - 14.x
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node }}
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v4-
+          key:          ${{ runner.OS }}-node-${{ matrix.node }}-v1-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v1-
       - name: "Fetch deps"
         run: |
           cd js

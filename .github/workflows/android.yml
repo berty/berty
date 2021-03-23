@@ -26,6 +26,11 @@ jobs:
   build:
     name: Build for Android
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang: ['1.16.x']
+        node: ['14.x']
+        java: ['1.8']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,38 +42,38 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.x
+          go-version: ${{ matrix.golang }}
 
       - name: Setup Node
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: 14.x
+          node-version: ${{ matrix.node }}
 
       - name: Cache Go modules
         uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
 
       - name: Cache Node modules
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v4-
+          key:          ${{ runner.OS }}-node-${{ matrix.node }}-v1-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v1-
 
       - name: Cache Gomobile .aar
         uses: actions/cache@v2
         with:
           path: js/android/libs/gobridge.aar
-          key: android-gomobile-${{ hashFiles('go/**/*.go', 'go.sum') }}
-          restore-keys: android-gomobile-
+          key:          android-gomobile-${{ matrix.golang }}-v1-${{ hashFiles('go/**/*.go', 'go.sum') }}
+          restore-keys: android-gomobile-${{ matrix.golang }}-v1-
 
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: ${{ matrix.java }}
 
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env.prod >> js/.env
