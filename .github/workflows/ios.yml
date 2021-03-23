@@ -125,8 +125,8 @@ jobs:
         uses: actions/cache@v2.1.4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v2-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v2-
 
       - name: Cache Node modules
         uses: actions/cache@v2.1.4
