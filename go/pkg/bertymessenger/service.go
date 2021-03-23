@@ -560,6 +560,36 @@ func (svc *service) streamInteraction(tx *dbWrapper, cid string, isNew bool) err
 	return nil
 }
 
+func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
+	reactions := ([]*mt.Reaction)(nil)
+	if err := tx.db.Where(&mt.Reaction{TargetCID: cid, State: true}).Find(&reactions).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	viewMap := make(map[string]*mt.Interaction_ReactionView)
+	for _, r := range reactions {
+		e := r.GetEmoji()
+		if _, ok := viewMap[e]; !ok {
+			viewMap[e] = &mt.Interaction_ReactionView{
+				Emoji:    e,
+				Count:    1,
+				OwnState: r.GetIsMine(),
+			}
+		} else {
+			viewMap[e].Count++
+			if r.GetIsMine() {
+				viewMap[e].OwnState = true
+			}
+		}
+	}
+
+	views := ([]*mt.Interaction_ReactionView)(nil)
+	for _, v := range viewMap {
+		views = append(views, v)
+	}
+	return views, nil
+}
+
 func (svc *service) Close() {
 	svc.logger.Debug("closing service")
 	svc.dispatcher.UnregisterAll()

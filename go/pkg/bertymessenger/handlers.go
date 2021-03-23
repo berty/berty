@@ -75,38 +75,6 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 	return h
 }
 
-func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
-	reactions := ([]*mt.Reaction)(nil)
-	if err := tx.db.Where(&mt.Reaction{TargetCID: cid}).Find(&reactions).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
-	viewMap := make(map[string]*mt.Interaction_ReactionView)
-	for _, r := range reactions {
-		if r.State {
-			e := r.GetEmoji()
-			if _, ok := viewMap[e]; !ok {
-				viewMap[e] = &mt.Interaction_ReactionView{
-					Emoji:    e,
-					Count:    1,
-					OwnState: r.GetIsMine(),
-				}
-			} else {
-				viewMap[e].Count++
-				if r.GetIsMine() {
-					viewMap[e].OwnState = true
-				}
-			}
-		}
-	}
-
-	views := ([]*mt.Interaction_ReactionView)(nil)
-	for _, v := range viewMap {
-		views = append(views, v)
-	}
-	return views, nil
-}
-
 func (h *eventHandler) handleMetadataEvent(gme *protocoltypes.GroupMetadataEvent) error {
 	et := gme.GetMetadata().GetEventType()
 	h.logger.Info("received protocol event", zap.String("type", et.String()))
