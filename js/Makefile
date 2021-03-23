@@ -26,8 +26,6 @@ xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
-go_libtor_ver = $(shell  $(GO) list -mod=readonly -modfile=$(PWD)/../go.mod -f '{{.Version}}' -m berty.tech/go-libtor)
-go_libtor_libs_ver = $(shell cat ios/tor-deps/version 2> /dev/null)
 
 ## if (PWD != Makefile directory) then exit
 
@@ -348,18 +346,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	# Download required go-libtor deps if needed
-	if [ "$(go_libtor_ver)" != "$(go_libtor_libs_ver)" ]; then \
-		set -o pipefail; \
-		mkdir -p ios/tor-deps $(TMP)/tor-deps/ios && \
-		libs=$$(wget -O - "https://github.com/berty/go-libtor/releases/tag/$(go_libtor_ver)" 2> /dev/null \
-			| grep -o 'ios-.*-universal\.tar\.gz' \
-			| uniq) && \
-		for lib in $$libs; do \
-			wget "https://github.com/berty/go-libtor/releases/download/$(go_libtor_ver)/$$lib" -O "$(TMP)/tor-deps/ios/$$lib" && \
-			tar xvf "$(TMP)/tor-deps/ios/$$lib" -C ios/tor-deps || exit 1; \
-		done && \
-		echo $(go_libtor_ver) > ios/tor-deps/version; \
-	fi
+	../tool/build/shell/dl-go-libtor-ios.sh
 	mkdir -p ios/Frameworks
 	cd .. && \
 		GO111MODULE=on \
