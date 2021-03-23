@@ -1575,13 +1575,12 @@
       "enum": [
         "Undefined",
         "TypeUserMessage",
+        "TypeUserReaction",
         "TypeGroupInvitation",
         "TypeSetGroupInfo",
         "TypeSetUserInfo",
         "TypeAcknowledge",
         "TypeReplyOptions",
-        "TypeAddReaction",
-        "TypeRemoveReaction",
         "TypeMonitorMetadata"
       ],
       "default": "Undefined",

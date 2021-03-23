@@ -3892,13 +3892,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     values: {
                       Undefined: 0,
                       TypeUserMessage: 1,
+                      TypeUserReaction: 2,
                       TypeGroupInvitation: 3,
                       TypeSetGroupInfo: 4,
                       TypeSetUserInfo: 5,
                       TypeAcknowledge: 6,
                       TypeReplyOptions: 7,
-                      TypeAddReaction: 8,
-                      TypeRemoveReaction: 9,
                       TypeMonitorMetadata: 100
                     }
                   },
@@ -3910,16 +3909,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       }
                     }
                   },
-                  AddReaction: {
+                  UserReaction: {
                     fields: {
-                      emoji: {
-                        type: "string",
-                        id: 2
-                      }
-                    }
-                  },
-                  RemoveReaction: {
-                    fields: {
+                      state: {
+                        type: "bool",
+                        id: 1
+                      },
                       emoji: {
                         type: "string",
                         id: 2

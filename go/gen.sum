@@ -5,6 +5,6 @@ e468c5b7be0fa5ff2cb312a9ba282a9610e775d2  ../api/bertyreplication.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
-2b9dea3bfc7627b1475f86308b089d08f212faef  ../api/messengertypes.proto
+06fca31d12e92963e013edd041b59fe952f73d50  ../api/messengertypes.proto
 839d9f79831c9282c8e5f189ab3dccfee8e8e71b  ../api/protocoltypes.proto
 1ceb4befdba0213a0503eacf64dfaecb577aea87  Makefile

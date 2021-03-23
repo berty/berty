@@ -5857,13 +5857,12 @@ export namespace berty {
                 enum Type {
                     Undefined = 0,
                     TypeUserMessage = 1,
+                    TypeUserReaction = 2,
                     TypeGroupInvitation = 3,
                     TypeSetGroupInfo = 4,
                     TypeSetUserInfo = 5,
                     TypeAcknowledge = 6,
                     TypeReplyOptions = 7,
-                    TypeAddReaction = 8,
-                    TypeRemoveReaction = 9,
                     TypeMonitorMetadata = 100
                 }
 
@@ -5885,39 +5884,23 @@ export namespace berty {
                     public toJSON(): { [k: string]: any };
                 }
 
-                interface IAddReaction {
+                interface IUserReaction {
+                    state?: (boolean|null);
                     emoji?: (string|null);
                 }
 
-                class AddReaction implements IAddReaction {
+                class UserReaction implements IUserReaction {
 
+                    public state: boolean;
                     public emoji: string;
-                    public static create(properties?: berty.messenger.v1.AppMessage.IAddReaction): berty.messenger.v1.AppMessage.AddReaction;
-                    public static encode(message: berty.messenger.v1.AppMessage.IAddReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IAddReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.AddReaction;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.AddReaction;
+                    public static create(properties?: berty.messenger.v1.AppMessage.IUserReaction): berty.messenger.v1.AppMessage.UserReaction;
+                    public static encode(message: berty.messenger.v1.AppMessage.IUserReaction, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IUserReaction, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.UserReaction;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.UserReaction;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.AddReaction;
-                    public static toObject(message: berty.messenger.v1.AppMessage.AddReaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IRemoveReaction {
-                    emoji?: (string|null);
-                }
-
-                class RemoveReaction implements IRemoveReaction {
-
-                    public emoji: string;
-                    public static create(properties?: berty.messenger.v1.AppMessage.IRemoveReaction): berty.messenger.v1.AppMessage.RemoveReaction;
-                    public static encode(message: berty.messenger.v1.AppMessage.IRemoveReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IRemoveReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.RemoveReaction;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.RemoveReaction;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.RemoveReaction;
-                    public static toObject(message: berty.messenger.v1.AppMessage.RemoveReaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.UserReaction;
+                    public static toObject(message: berty.messenger.v1.AppMessage.UserReaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 

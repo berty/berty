@@ -72,10 +72,8 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 		message = &AppMessage_Acknowledge{}
 	case AppMessage_TypeUserMessage:
 		message = &AppMessage_UserMessage{}
-	case AppMessage_TypeAddReaction:
-		message = &AppMessage_AddReaction{}
-	case AppMessage_TypeRemoveReaction:
-		message = &AppMessage_RemoveReaction{}
+	case AppMessage_TypeUserReaction:
+		message = &AppMessage_UserReaction{}
 	case AppMessage_TypeGroupInvitation:
 		message = &AppMessage_GroupInvitation{}
 	case AppMessage_TypeSetGroupInfo:

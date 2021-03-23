@@ -1786,10 +1786,10 @@ func TestUserReaction(t *testing.T) {
 	require.NotEmpty(t, interactReply.GetCID())
 
 	// react
-	payload, err = proto.Marshal(&messengertypes.AppMessage_AddReaction{Emoji: "❤️"})
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: true})
 	require.NoError(t, err)
 	_, err = friend.client.Interact(ctx, &messengertypes.Interact_Request{
-		Type:                  messengertypes.AppMessage_TypeAddReaction,
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
 		Payload:               payload,
 		ConversationPublicKey: convPK,
 		TargetCID:             interactReply.GetCID(),
@@ -1810,10 +1810,10 @@ func TestUserReaction(t *testing.T) {
 	}, interaction.Reactions)
 
 	// react with other user
-	payload, err = proto.Marshal(&messengertypes.AppMessage_AddReaction{Emoji: "❤️"})
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: true})
 	require.NoError(t, err)
 	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
-		Type:                  messengertypes.AppMessage_TypeAddReaction,
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
 		Payload:               payload,
 		ConversationPublicKey: convPK,
 		TargetCID:             interactReply.GetCID(),
@@ -1830,10 +1830,10 @@ func TestUserReaction(t *testing.T) {
 	}
 
 	// remove first reaction
-	payload, err = proto.Marshal(&messengertypes.AppMessage_RemoveReaction{Emoji: "❤️"})
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: false})
 	require.NoError(t, err)
 	_, err = friend.client.Interact(ctx, &messengertypes.Interact_Request{
-		Type:                  messengertypes.AppMessage_TypeRemoveReaction,
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
 		Payload:               payload,
 		ConversationPublicKey: convPK,
 		TargetCID:             interactReply.GetCID(),
@@ -1854,10 +1854,10 @@ func TestUserReaction(t *testing.T) {
 	}, interaction.Reactions)
 
 	// remove second reaction
-	payload, err = proto.Marshal(&messengertypes.AppMessage_RemoveReaction{Emoji: "❤️"})
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: false})
 	require.NoError(t, err)
 	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
-		Type:                  messengertypes.AppMessage_TypeRemoveReaction,
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
 		Payload:               payload,
 		ConversationPublicKey: convPK,
 		TargetCID:             interactReply.GetCID(),

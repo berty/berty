@@ -69,8 +69,7 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		mt.AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		mt.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
 		mt.AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, true},
-		mt.AppMessage_TypeAddReaction:     {h.handleAppMessageAddReaction, false},
-		mt.AppMessage_TypeRemoveReaction:  {h.handleAppMessageRemoveReaction, false},
+		mt.AppMessage_TypeUserReaction:    {h.handleAppMessageUserReaction, false},
 	}
 
 	return h
@@ -994,11 +993,7 @@ func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *mt.Interact
 	return i, false, nil
 }
 
-func (h *eventHandler) handleAppMessageAddReaction(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	return nil, false, h.handleReaction(tx, i, amPayload)
-}
-
-func (h *eventHandler) handleAppMessageRemoveReaction(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+func (h *eventHandler) handleAppMessageUserReaction(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
 	return nil, false, h.handleReaction(tx, i, amPayload)
 }
 
@@ -1010,22 +1005,12 @@ func (h *eventHandler) handleReaction(tx *dbWrapper, i *mt.Interaction, amPayloa
 		return errcode.ErrInvalidInput.Wrap(errors.New("empty target cid"))
 	}
 
-	var state bool
-	switch i.GetType() {
-	case mt.AppMessage_TypeAddReaction:
-		state = true
-	case mt.AppMessage_TypeRemoveReaction:
-		state = false
-	default:
-		return errcode.ErrInvalidInput.Wrap(errors.New("invalid interaction type"))
-	}
-
 	reaction := mt.Reaction{
 		TargetCID:       i.TargetCID,
 		MemberPublicKey: i.MemberPublicKey,
 		Emoji:           amPayload.(interface{ GetEmoji() string }).GetEmoji(),
 		IsMine:          i.IsMine,
-		State:           state,
+		State:           amPayload.(interface{ GetState() bool }).GetState(),
 		StateDate:       i.GetSentDate(),
 	}
 

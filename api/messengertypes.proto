@@ -292,13 +292,12 @@ message AppMessage {
   enum Type {
     Undefined = 0;
     TypeUserMessage = 1;
+    TypeUserReaction = 2;
     TypeGroupInvitation = 3;
     TypeSetGroupInfo = 4;
     TypeSetUserInfo = 5;
     TypeAcknowledge = 6;
     TypeReplyOptions = 7;
-    TypeAddReaction = 8;
-    TypeRemoveReaction = 9;
 
     // these shouldn't be sent on the network
     TypeMonitorMetadata = 100;
@@ -306,10 +305,8 @@ message AppMessage {
   message UserMessage {
     string body = 1;
   }
-  message AddReaction {
-    string emoji = 2;
-  }
-  message RemoveReaction {
+  message UserReaction {
+    bool state = 1;
     string emoji = 2;
   }
   message GroupInvitation {
