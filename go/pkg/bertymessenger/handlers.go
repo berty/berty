@@ -83,7 +83,7 @@ func (h *eventHandler) streamInteraction(tx *dbWrapper, cid string, isNew bool) 
 			return errcode.ErrDBRead.Wrap(err)
 		}
 
-		eventInte.Reactions, err = h.buildReactionsView(tx, eventInte)
+		eventInte.Reactions, err = buildReactionsView(tx, eventInte)
 		if err != nil {
 			return errcode.ErrDBRead.Wrap(err)
 		}
@@ -98,13 +98,11 @@ func (h *eventHandler) streamInteraction(tx *dbWrapper, cid string, isNew bool) 
 	return nil
 }
 
-func (h *eventHandler) buildReactionsView(tx *dbWrapper, i *mt.Interaction) ([]*mt.Interaction_ReactionView, error) {
+func buildReactionsView(tx *dbWrapper, i *mt.Interaction) ([]*mt.Interaction_ReactionView, error) {
 	reactions := ([]*mt.Reaction)(nil)
-	if err := tx.db.Where("target_cid = ?", i.GetCID()).Find(&reactions).Error; err != nil {
+	if err := tx.db.Where(&mt.Reaction{TargetCID: i.CID}).Find(&reactions).Error; err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
-
-	h.logger.Debug("reactions", zap.Any("val", reactions))
 
 	viewMap := make(map[string]*mt.Interaction_ReactionView)
 	for _, r := range reactions {
@@ -1032,10 +1030,10 @@ func (h *eventHandler) handleReaction(tx *dbWrapper, i *mt.Interaction, amPayloa
 	}
 
 	existingReactions := ([]*mt.Reaction)(nil)
-	if err := tx.db.Where(map[string]interface{}{
-		"member_public_key": reaction.MemberPublicKey,
-		"target_cid":        reaction.TargetCID,
-		"emoji":             reaction.Emoji,
+	if err := tx.db.Where(&mt.Reaction{
+		MemberPublicKey: reaction.MemberPublicKey,
+		TargetCID:       reaction.TargetCID,
+		Emoji:           reaction.Emoji,
 	}).Find(&existingReactions).Error; err != nil {
 		return errcode.ErrDBRead.Wrap(err)
 	}
