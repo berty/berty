@@ -251,7 +251,7 @@ func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContex
 }
 
 func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.PubKey, selfAnnouncement bool) error {
-	wg := sync.WaitGroup{}
+	var wg sync.WaitGroup
 	wg.Add(2)
 
 	syncChMKH := make(chan bool, 1)

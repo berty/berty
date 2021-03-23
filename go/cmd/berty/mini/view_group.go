@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -17,6 +18,7 @@ import (
 	"go.opentelemetry.io/otel/api/kv"
 	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
+	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
@@ -116,10 +118,16 @@ func (v *groupView) ack(ctx context.Context, evt *protocoltypes.GroupMessageEven
 		return
 	}
 
+	k := u.Sha1Hex(evt.EventContext.ID)
+	k2 := u.Sha1Hex(evt.EventContext.GroupPK)
+
 	_, err := v.v.messenger.SendAck(ctx, &messengertypes.SendAck_Request{
 		GroupPK:   evt.EventContext.GroupPK,
 		MessageID: evt.EventContext.ID,
 	})
+	runtime.KeepAlive(k)
+	runtime.KeepAlive(k2)
+
 	if err != nil {
 		v.messages.AppendErr(fmt.Errorf("error while sending ack: %s", err.Error()))
 		v.addBadge()
@@ -249,6 +257,8 @@ func (v *groupView) loop(ctx context.Context) {
 				}
 				break
 			}
+
+			runtime.Breakpoint()
 
 			metadataEventHandler(ctx, v, evt, true, v.logger)
 			lastMetadataID = evt.EventContext.ID
