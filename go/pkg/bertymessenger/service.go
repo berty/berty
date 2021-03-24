@@ -26,7 +26,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -561,31 +560,12 @@ func (svc *service) streamInteraction(tx *dbWrapper, cid string, isNew bool) err
 }
 
 func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
-	reactions := ([]*mt.Reaction)(nil)
-	if err := tx.db.Where(&mt.Reaction{TargetCID: cid, State: true}).Find(&reactions).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
-	viewMap := make(map[string]*mt.Interaction_ReactionView)
-	for _, r := range reactions {
-		e := r.GetEmoji()
-		if _, ok := viewMap[e]; !ok {
-			viewMap[e] = &mt.Interaction_ReactionView{
-				Emoji:    e,
-				Count:    1,
-				OwnState: r.GetIsMine(),
-			}
-		} else {
-			viewMap[e].Count++
-			if r.GetIsMine() {
-				viewMap[e].OwnState = true
-			}
-		}
-	}
-
 	views := ([]*mt.Interaction_ReactionView)(nil)
-	for _, v := range viewMap {
-		views = append(views, v)
+	if err := tx.db.Raw(
+		"SELECT count(*) AS count, emoji, MAX(is_mine) > 0 AS own_state FROM reactions WHERE target_cid = ? AND state = true GROUP BY emoji ORDER BY MIN(state_date) ASC",
+		cid,
+	).Scan(&views).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 	return views, nil
 }

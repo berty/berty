@@ -969,6 +969,10 @@ func (h *eventHandler) handleReaction(tx *dbWrapper, i *mt.Interaction, amPayloa
 		return errcode.ErrDBRead.Wrap(err)
 	}
 
+	if len(existingReactions) > 1 {
+		return errcode.ErrInternal.Wrap(fmt.Errorf("expected max 1 reaction, got %d", len(existingReactions)))
+	}
+
 	updated := false
 	if len(existingReactions) != 0 {
 		for _, r := range existingReactions {
@@ -988,7 +992,6 @@ func (h *eventHandler) handleReaction(tx *dbWrapper, i *mt.Interaction, amPayloa
 	}
 
 	if updated {
-		// TODO: move streamInteraction in svc
 		if err := h.svc.streamInteraction(tx, i.TargetCID, false); err != nil {
 			h.logger.Debug("failed to stream updated target interaction after AddReaction", zap.Error(err))
 		}
