@@ -7,6 +7,7 @@ import {
 	MessengerActions,
 	PersistentOptionsUpdate,
 } from '@berty-tech/store/context'
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 import {
 	refreshAccountList,
@@ -14,6 +15,7 @@ import {
 	storageKeyForAccount,
 	accountService,
 } from './providerEffects'
+import { Maybe } from './hooks'
 
 const _createAccount = async (embedded: boolean, dispatch: (arg0: reducerAction) => void) => {
 	let resp: beapi.account.CreateAccount.Reply
@@ -168,7 +170,7 @@ export const deleteAccount = async (
 	} else {
 		// open the last opened if an other account exist
 		let accountSelected: beapi.account.IAccountMetadata | null = null
-		Object.values(accounts).forEach((account: beapi.account.IAccountMetadata) => {
+		for (const account of accounts) {
 			if (!accountSelected) {
 				accountSelected = account
 			} else if (
@@ -179,7 +181,7 @@ export const deleteAccount = async (
 			) {
 				accountSelected = account
 			}
-		})
+		}
 		dispatch({ type: MessengerActions.SetNextAccount, payload: accountSelected?.accountId })
 	}
 }
@@ -187,7 +189,7 @@ export const deleteAccount = async (
 export const restart = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
-	accountID: string,
+	accountID: Maybe<string>,
 ) => {
 	if (!embedded) {
 		return
@@ -240,3 +242,17 @@ export const setPersistentOption = async (
 		return
 	}
 }
+
+export const setReaction = (
+	convPK: string,
+	targetCID: string,
+	emoji: string,
+	state: boolean,
+	messengerClient: WelshMessengerServiceClient,
+) =>
+	messengerClient.interact({
+		type: beapi.messenger.AppMessage.Type.TypeUserReaction,
+		conversationPublicKey: convPK,
+		targetCid: targetCID,
+		payload: beapi.messenger.AppMessage.UserReaction.encode({ emoji, state }).finish(),
+	})

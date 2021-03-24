@@ -19,6 +19,7 @@ import {
 	switchAccount,
 	deleteAccount,
 	restart,
+	setReaction,
 } from './providerCallbacks'
 import { reducer } from './providerReducer'
 import { playSound, SoundKey } from './sounds'
@@ -136,6 +137,24 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[state.persistentOptions],
 	)
 
+	const callbackAddReaction = useCallback(
+		(convPK: string, targetCID: string, emoji: string) => {
+			if (state.client) {
+				return setReaction(convPK, targetCID, emoji, true, state.client)
+			}
+		},
+		[state.client],
+	)
+
+	const callbackRemoveReaction = useCallback(
+		(convPK: string, targetCID: string, emoji: string) => {
+			if (state.client) {
+				return setReaction(convPK, targetCID, emoji, false, state.client)
+			}
+		},
+		[state.client],
+	)
+
 	return (
 		<MsgrContext.Provider
 			value={{
@@ -153,6 +172,8 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				debugMode: debugMode,
 				playSound: callbackPlaySound,
 				setDebugMode: callbackSetDebugMode,
+				addReaction: callbackAddReaction,
+				removeReaction: callbackRemoveReaction,
 			}}
 		>
 			{children}
