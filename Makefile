@@ -15,6 +15,7 @@ generate:
 	cd docs; $(MAKE) generate
 	cd js; $(MAKE) generate
 	cd config; $(MAKE) generate
+	go mod tidy
 .PHONY: generate
 
 
@@ -24,6 +25,7 @@ regenerate:
 	cd docs; $(MAKE) regenerate
 	cd js; $(MAKE) regenerate
 	cd config; $(MAKE) generate
+	go mod tidy
 .PHONY: regenerate
 
 
