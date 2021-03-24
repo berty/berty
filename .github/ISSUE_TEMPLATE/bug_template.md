@@ -3,7 +3,6 @@ name: Bug report
 about: Create a report to help us improve
 title: "[BUG]: <your_bug>"
 labels: bug
-assignees:
 ---
 
 <!-- Before submitting an issue, please read https://github.com/berty/community/blob/master/CONTRIBUTING.md -->

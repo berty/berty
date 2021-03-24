@@ -3,7 +3,6 @@ name: Feature request
 about: Suggest an idea for this project
 title: "[FEATURE]: <your_feature>"
 labels: ":rocket: feature-request"
-assignees:
 ---
 
 <!-- Before submitting an issue, please read https://github.com/berty/community/blob/master/CONTRIBUTING.md -->
