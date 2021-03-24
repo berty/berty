@@ -2,6 +2,7 @@ package bertymessenger
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net"
 	"strconv"
@@ -22,6 +23,7 @@ import (
 	"moul.io/u"
 	"moul.io/zapgorm2"
 
+	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -110,6 +112,49 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 	require.NoError(t, mocknet.ConnectAllButSelf())
 
 	return clients, protocols, cleanup
+}
+
+func Testing1To1ProcessWholeStream(t *testing.T) (context.Context, []*TestingAccount, *zap.Logger, func()) {
+	t.Helper()
+
+	// PREPARE
+	logger, cleanup := testutil.Logger(t)
+	clean := cleanup
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	clean = u.CombineFuncs(cancel, clean)
+
+	const l = 2
+
+	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
+	clean = u.CombineFuncs(cleanup, clean)
+
+	nodes := make([]*TestingAccount, l)
+	for i := range nodes {
+		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
+		close := nodes[i].ProcessWholeStream(t)
+		clean = u.CombineFuncs(close, clean)
+	}
+
+	logger.Info("Started nodes, waiting for settlement")
+	time.Sleep(4 * time.Second)
+
+	user := nodes[0]
+	friend := nodes[1]
+	userPK := user.GetAccount().GetPublicKey()
+
+	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
+	require.NoError(t, err)
+	logger.Info("waiting for request propagation")
+	time.Sleep(1 * time.Second)
+	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
+	require.NoError(t, err)
+
+	logger.Info("waiting for contact settlement")
+	time.Sleep(4 * time.Second)
+
+	return ctx, nodes, logger, clean
 }
 
 func mkBufDialer(l *bufconn.Listener) func(context.Context, string) (net.Conn, error) {
@@ -331,6 +376,14 @@ func (a *TestingAccount) GetConversation(t *testing.T, pk string) *messengertype
 	conv, ok := a.conversations[pk]
 	require.True(t, ok)
 	return conv
+}
+
+func (a *TestingAccount) GetInteraction(t *testing.T, cid string) *messengertypes.Interaction {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	interaction, ok := a.interactions[cid]
+	require.True(t, ok)
+	return interaction
 }
 
 func (a *TestingAccount) GetAllConversations() map[string]*messengertypes.Conversation {

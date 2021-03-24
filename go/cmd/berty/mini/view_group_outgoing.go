@@ -11,6 +11,9 @@ import (
 	"strings"
 
 	"github.com/atotto/clipboard"
+
+	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
+	"github.com/golang/protobuf/proto"
 	"github.com/ipfs/go-cid"
 	"github.com/mdp/qrterminal/v3"
 	"moul.io/godev"
@@ -784,9 +787,16 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 		return nil
 	}
 
-	_, err := v.v.messenger.SendMessage(ctx, &messengertypes.SendMessage_Request{
-		GroupPK: v.g.PublicKey,
-		Message: cmd,
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
+		Body: cmd,
+	})
+	if err != nil {
+		return err
+	}
+	_, err = v.v.messenger.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
+		Payload:               payload,
+		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(v.g.PublicKey),
 	})
 
 	return err

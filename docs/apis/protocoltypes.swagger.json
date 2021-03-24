@@ -1724,7 +1724,13 @@
       }
     },
     "v1AppMessageSendReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "v1AppMessageSendRequest": {
       "type": "object",

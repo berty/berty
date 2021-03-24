@@ -149,6 +149,7 @@ enum ErrCode {
   ErrMessengerInvalidDeepLink = 2000;
   ErrMessengerDeepLinkRequiresPassphrase = 2001;
   ErrMessengerDeepLinkInvalidPassphrase = 2002;
+  ErrMessengerStreamEvent = 2003;
 
   // DB errors
 

@@ -1076,11 +1076,9 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && interaction.GetIsMine():
 					require.False(t, gotOwnAck)
 					gotOwnAck = true
-					ack := interactionPayload.(*messengertypes.AppMessage_Acknowledge)
-					require.Equal(t, ack.GetTarget(), messageCid)
+					require.Equal(t, interaction.GetTargetCID(), messageCid)
 				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && !interaction.GetIsMine():
-					ack := interactionPayload.(*messengertypes.AppMessage_Acknowledge)
-					require.Equal(t, ack.GetTarget(), messageCid)
+					require.Equal(t, interaction.GetTargetCID(), messageCid)
 					gotOthersAcks++
 				case interaction.GetType() == messengertypes.AppMessage_TypeUserMessage:
 					require.False(t, gotMsg)
@@ -1112,10 +1110,7 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeAcknowledge)
 		require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
 		require.False(t, interaction.GetIsMine())
-		interactionPayload, err := interaction.UnmarshalPayload()
-		require.NoError(t, err)
-		ack := interactionPayload.(*messengertypes.AppMessage_Acknowledge)
-		require.Equal(t, ack.GetTarget(), messageCid)
+		require.Equal(t, interaction.GetTargetCID(), messageCid)
 		logger.Debug("testSendGroupMessage: message ack received by creator")
 		// FIXME: check if the ack is from the good receiver, or useless?
 	}
@@ -1448,44 +1443,10 @@ func TestUnstableAccountUpdateGroup(t *testing.T) {
 func TestSendBlob(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
-	// PREPARE
-	logger, cleanup := testutil.Logger(t)
-	defer cleanup()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	const l = 2
-
-	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
-	defer cleanup()
-
-	nodes := make([]*TestingAccount, l)
-	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
-		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
-		close := nodes[i].ProcessWholeStream(t)
-		defer close()
-	}
-
-	logger.Info("Started nodes, waiting for settlement")
-	time.Sleep(4 * time.Second)
-
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
 	user := nodes[0]
 	friend := nodes[1]
-	userPK := user.GetAccount().GetPublicKey()
-
-	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
-	require.NoError(t, err)
-	logger.Info("waiting for request propagation")
-	time.Sleep(1 * time.Second)
-	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
-	require.NoError(t, err)
-
-	logger.Info("waiting for contact settlement")
-	time.Sleep(4 * time.Second)
-
-	// REAL TEST
 
 	logger.Info("starting test")
 
@@ -1501,7 +1462,6 @@ func TestSendBlob(t *testing.T) {
 	require.NoError(t, err)
 
 	logger.Info("starting send")
-	const testName = "user"
 
 	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
 
@@ -1565,44 +1525,10 @@ func TestSendBlob(t *testing.T) {
 func TestSendMedia(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
-	// PREPARE
-	logger, cleanup := testutil.Logger(t)
-	defer cleanup()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 35*time.Second)
-	defer cancel()
-
-	const l = 2
-
-	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
-	defer cleanup()
-
-	nodes := make([]*TestingAccount, l)
-	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
-		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
-		close := nodes[i].ProcessWholeStream(t)
-		defer close()
-	}
-
-	logger.Info("Started nodes, waiting for settlement")
-	time.Sleep(4 * time.Second)
-
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
 	user := nodes[0]
 	friend := nodes[1]
-	userPK := user.GetAccount().GetPublicKey()
-
-	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
-	require.NoError(t, err)
-	logger.Info("waiting for request propagation")
-	time.Sleep(1 * time.Second)
-	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
-	require.NoError(t, err)
-
-	logger.Info("waiting for contact settlement")
-	time.Sleep(4 * time.Second)
-
-	// REAL TEST
 
 	logger.Info("starting test")
 
@@ -1619,7 +1545,6 @@ func TestSendMedia(t *testing.T) {
 	require.NoError(t, err)
 
 	logger.Info("starting send")
-	const testName = "user"
 
 	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
 
@@ -1731,4 +1656,169 @@ func Test_exportMessengerData(t *testing.T) {
 	require.Equal(t, "pk_account_1", state.PublicKey)
 	require.Equal(t, "display_name", state.DisplayName)
 	require.Equal(t, true, state.ReplicateFlag)
+}
+
+func TestUserReaction(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
+	user := nodes[0]
+	userPK := user.GetAccount().GetPublicKey()
+	friend := nodes[1]
+
+	logger.Info("starting test")
+
+	// send message
+	convPK := friend.GetContact(t, userPK).GetConversationPublicKey()
+	require.NotNil(t, convPK)
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	require.NoError(t, err)
+	interactReply, err := user.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, interactReply.GetCID())
+
+	// react
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: true})
+	require.NoError(t, err)
+	_, err = friend.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+
+	interaction := user.GetInteraction(t, interactReply.GetCID())
+	require.NotNil(t, interaction)
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: false, Count: 1},
+	}, interaction.Reactions)
+
+	interaction = friend.GetInteraction(t, interactReply.GetCID())
+	require.NotNil(t, interaction)
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: true, Count: 1},
+	}, interaction.Reactions)
+
+	// react with other user
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: true})
+	require.NoError(t, err)
+	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+
+	for _, user := range nodes {
+		interaction = user.GetInteraction(t, interactReply.GetCID())
+		require.NotNil(t, interaction)
+		require.Equal(t, []*messengertypes.Interaction_ReactionView{
+			{Emoji: "❤️", OwnState: true, Count: 2},
+		}, interaction.Reactions)
+	}
+
+	// remove first reaction
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: false})
+	require.NoError(t, err)
+	_, err = friend.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+
+	interaction = user.GetInteraction(t, interactReply.GetCID())
+	require.NotNil(t, interaction)
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: true, Count: 1},
+	}, interaction.Reactions)
+
+	interaction = friend.GetInteraction(t, interactReply.GetCID())
+	require.NotNil(t, interaction)
+	require.Equal(t, []*messengertypes.Interaction_ReactionView{
+		{Emoji: "❤️", OwnState: false, Count: 1},
+	}, interaction.Reactions)
+
+	// remove second reaction
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserReaction{Emoji: "❤️", State: false})
+	require.NoError(t, err)
+	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserReaction,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+
+	for _, user := range nodes {
+		interaction = user.GetInteraction(t, interactReply.GetCID())
+		require.NotNil(t, interaction)
+		require.Equal(t, []*messengertypes.Interaction_ReactionView(nil), interaction.Reactions)
+	}
+}
+
+func TestReply(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
+	user := nodes[0]
+	userPK := user.GetAccount().GetPublicKey()
+	friend := nodes[1]
+
+	logger.Info("starting test")
+
+	convPK := friend.GetContact(t, userPK).GetConversationPublicKey()
+	require.NotNil(t, convPK)
+
+	// send message
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	require.NoError(t, err)
+	interactReply, err := user.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, interactReply.GetCID())
+	time.Sleep(1 * time.Second)
+
+	// reply
+	payload, err = proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Test"})
+	require.NoError(t, err)
+	replyReply, err := friend.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+		TargetCID:             interactReply.GetCID(),
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, replyReply.GetCID())
+	time.Sleep(1 * time.Second)
+
+	// check reply interaction in nodes
+	for _, user := range nodes {
+		replyInteraction := user.GetInteraction(t, replyReply.GetCID())
+		require.NotNil(t, replyInteraction)
+		require.Equal(t, interactReply.CID, replyInteraction.TargetCID)
+
+		replyPayload, err := replyInteraction.UnmarshalPayload()
+		require.NoError(t, err)
+
+		castedValue, ok := replyPayload.(*messengertypes.AppMessage_UserMessage)
+		require.True(t, ok)
+		require.Equal(t, "Test", castedValue.GetBody())
+	}
 }

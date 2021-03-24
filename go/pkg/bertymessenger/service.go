@@ -26,12 +26,12 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
+	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type Service interface {
-	messengertypes.MessengerServiceServer
+	mt.MessengerServiceServer
 	Close()
 }
 
@@ -60,7 +60,7 @@ type Opts struct {
 	DB                  *gorm.DB
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
-	StateBackup         *messengertypes.LocalDatabaseState
+	StateBackup         *mt.LocalDatabaseState
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -98,7 +98,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	return cleanup, nil
 }
 
-func databaseStateRestoreAccountHandler(statePointer *messengertypes.LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
+func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
 	return bertyprotocol.RestoreAccountHandler{
 		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
 			if header.Name != exportLocalDBState {
@@ -127,7 +127,7 @@ func databaseStateRestoreAccountHandler(statePointer *messengertypes.LocalDataba
 	}
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *messengertypes.LocalDatabaseState, logger *zap.Logger) error {
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *mt.LocalDatabaseState, logger *zap.Logger) error {
 	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
@@ -167,6 +167,21 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	cancel()
 
 	ctx, cancel = context.WithCancel(context.Background())
+	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	cancel()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
+	}
+	pkStr := b64EncodeBytes(icr.GetAccountGroupPK())
+	shortPkStr := pkStr
+	const shortLen = 6
+	if len(shortPkStr) > shortLen {
+		shortPkStr = shortPkStr[:shortLen]
+	}
+
+	opts.Logger = opts.Logger.With(zap.String("a", shortPkStr))
+
+	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
 		protocolClient:        client,
 		logger:                opts.Logger,
@@ -184,19 +199,13 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 
 	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)
 
-	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
-	}
-	pkStr := b64EncodeBytes(icr.GetAccountGroupPK())
-
 	// get or create account in DB
 	{
 		acc, err := svc.db.getAccount()
 		switch {
 		case err == gorm.ErrRecordNotFound: // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
-			ret, err := svc.internalInstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
+			ret, err := svc.internalInstanceShareableBertyID(ctx, &mt.InstanceShareableBertyID_Request{})
 			if err != nil {
 				return nil, errcode.TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
 			}
@@ -218,19 +227,19 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	go svc.monitorState(ctx)
 
 	// Dispatch app notifications to native manager
-	svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(se *messengertypes.StreamEvent) error {
-		if se.GetType() != messengertypes.StreamEvent_TypeNotified {
+	svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(se *mt.StreamEvent) error {
+		if se.GetType() != mt.StreamEvent_TypeNotified {
 			return nil
 		}
 
-		var notif *messengertypes.StreamEvent_Notified
+		var notif *mt.StreamEvent_Notified
 		{
 			payload, err := se.UnmarshalPayload()
 			if err != nil {
 				opts.Logger.Error("unable to unmarshal Notified", zap.Error(err))
 				return nil
 			}
-			notif = payload.(*messengertypes.StreamEvent_Notified)
+			notif = payload.(*mt.StreamEvent_Notified)
 		}
 
 		if svc.lcmanager.GetCurrentState() == StateInactive {
@@ -276,7 +285,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 
 	// subscribe to contact groups
 	{
-		contacts, err := svc.db.getContactsByState(messengertypes.Contact_OutgoingRequestSent)
+		contacts, err := svc.db.getContactsByState(mt.Contact_OutgoingRequestSent)
 		if err != nil {
 			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
 		}
@@ -346,7 +355,7 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 				return
 			}
 
-			var am messengertypes.AppMessage
+			var am mt.AppMessage
 			if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
 				svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
 				return
@@ -354,7 +363,7 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 
 			svc.handlerMutex.Lock()
 			if err := svc.eventHandler.handleAppMessage(b64EncodeBytes(gpkb), gme, &am); err != nil {
-				svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
+				svc.logger.Error("failed to handle app message", zap.Any("type", am.GetType()), zap.Error(errcode.ErrInternal.Wrap(err)))
 			}
 			svc.handlerMutex.Unlock()
 		}
@@ -389,7 +398,7 @@ func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
 				return
 			}
 
-			meta := messengertypes.AppMessage_MonitorMetadata{
+			meta := mt.AppMessage_MonitorMetadata{
 				Event: evt.Event,
 			}
 
@@ -400,15 +409,15 @@ func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
 			}
 
 			cid := fmt.Sprintf("__monitor-group-%d", seqid)
-			i := &messengertypes.Interaction{
+			i := &mt.Interaction{
 				CID:                   cid,
-				Type:                  messengertypes.AppMessage_TypeMonitorMetadata,
+				Type:                  mt.AppMessage_TypeMonitorMetadata,
 				ConversationPublicKey: b64EncodeBytes(evt.GetGroupPK()),
 				Payload:               payload,
 				SentDate:              timestampMs(time.Now()),
 			}
 
-			err = svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{Interaction: i}, true)
+			err = svc.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionUpdated, &mt.StreamEvent_InteractionUpdated{Interaction: i}, true)
 			if err != nil {
 				svc.logger.Error("unable to dispatch monitor event")
 			}
@@ -483,7 +492,7 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 
 	var avatarCID string
 	var attachmentCIDs [][]byte
-	var medias []*messengertypes.Media
+	var medias []*mt.Media
 	if acc.GetAvatarCID() != "" {
 		// TODO: add AttachmentRecrypt to bertyprotocol
 		avatar, err := svc.attachmentRetrieve(acc.GetAvatarCID())
@@ -506,10 +515,11 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 		medias[0].CID = avatarCID
 	}
 
-	am, err := messengertypes.AppMessage_TypeSetUserInfo.MarshalPayload(
+	am, err := mt.AppMessage_TypeSetUserInfo.MarshalPayload(
 		timestampMs(time.Now()),
+		"",
 		medias,
-		&messengertypes.AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
+		&mt.AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
 	)
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
@@ -524,6 +534,40 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 	}
 
 	return nil
+}
+
+func (svc *service) streamInteraction(tx *dbWrapper, cid string, isNew bool) error {
+	if svc != nil && svc.dispatcher != nil {
+		eventInte, err := tx.getInteractionByCID(cid)
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		eventInte.Reactions, err = buildReactionsView(tx, cid)
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if err := svc.dispatcher.StreamEvent(
+			mt.StreamEvent_TypeInteractionUpdated,
+			&mt.StreamEvent_InteractionUpdated{Interaction: eventInte},
+			isNew,
+		); err != nil {
+			return errcode.ErrMessengerStreamEvent.Wrap(err)
+		}
+	}
+	return nil
+}
+
+func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
+	views := ([]*mt.Interaction_ReactionView)(nil)
+	if err := tx.db.Raw(
+		"SELECT count(*) AS count, emoji, MAX(is_mine) > 0 AS own_state FROM reactions WHERE target_cid = ? AND state = true GROUP BY emoji ORDER BY MIN(state_date) ASC",
+		cid,
+	).Scan(&views).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	return views, nil
 }
 
 func (svc *service) Close() {

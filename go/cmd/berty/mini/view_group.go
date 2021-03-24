@@ -214,8 +214,7 @@ func (v *groupView) loop(ctx context.Context) {
 				if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
 					continue
 				}
-				payload := amp.(*messengertypes.AppMessage_Acknowledge)
-				v.acks.Store(payload.Target, true)
+				v.acks.Store(am.TargetCID, true)
 
 			case messengertypes.AppMessage_TypeReplyOptions:
 				// TODO:
@@ -309,7 +308,7 @@ func (v *groupView) loop(ctx context.Context) {
 					if err != nil {
 						v.logger.Error("failed to unmarshal Acknowledge", zap.Error(err))
 					}
-					v.acks.Store(payload.Target, true)
+					v.acks.Store(am.TargetCID, true)
 					continue
 
 				case messengertypes.AppMessage_TypeUserMessage:

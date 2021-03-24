@@ -821,7 +821,9 @@ message AppMessageSend {
     repeated bytes attachment_cids = 3 [(gogoproto.customname) = "AttachmentCIDs"];
   }
 
-  message Reply {}
+  message Reply {
+    bytes cid = 1 [(gogoproto.customname) = "CID"];
+  }
 }
 
 message GroupMetadataEvent {

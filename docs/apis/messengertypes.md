@@ -82,6 +82,7 @@
     - [Interact.Reply](#berty.messenger.v1.Interact.Reply)
     - [Interact.Request](#berty.messenger.v1.Interact.Request)
     - [Interaction](#berty.messenger.v1.Interaction)
+    - [Interaction.ReactionView](#berty.messenger.v1.Interaction.ReactionView)
     - [LocalConversationState](#berty.messenger.v1.LocalConversationState)
     - [LocalDatabaseState](#berty.messenger.v1.LocalDatabaseState)
     - [Media](#berty.messenger.v1.Media)
@@ -102,6 +103,7 @@
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
     - [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request)
+    - [Reaction](#berty.messenger.v1.Reaction)
     - [ReplicationServiceRegisterGroup](#berty.messenger.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request)
@@ -115,9 +117,6 @@
     - [SendContactRequest](#berty.messenger.v1.SendContactRequest)
     - [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply)
     - [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request)
-    - [SendMessage](#berty.messenger.v1.SendMessage)
-    - [SendMessage.Reply](#berty.messenger.v1.SendMessage.Reply)
-    - [SendMessage.Request](#berty.messenger.v1.SendMessage.Request)
     - [SendReplyOptions](#berty.messenger.v1.SendReplyOptions)
     - [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply)
     - [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request)
@@ -223,14 +222,11 @@ AppMessage is the app layer format
 | payload | [bytes](#bytes) |  |  |
 | sent_date | [int64](#int64) |  |  |
 | medias | [Media](#berty.messenger.v1.Media) | repeated |  |
+| target_cid | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.Acknowledge"></a>
 
 ### AppMessage.Acknowledge
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| target | [string](#string) |  | TODO: optimize message size |
 
 <a name="berty.messenger.v1.AppMessage.GroupInvitation"></a>
 
@@ -288,7 +284,7 @@ AppMessage is the app layer format
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| target | [string](#string) |  | TODO: optimize message size |
+| state | [bool](#bool) |  |  |
 | emoji | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.AudioPreview"></a>
@@ -731,7 +727,10 @@ to test more false-positive guesses.
 <a name="berty.messenger.v1.Interact.Reply"></a>
 
 ### Interact.Reply
-TODO: return cid
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.Interact.Request"></a>
 
@@ -743,6 +742,7 @@ TODO: return cid
 | payload | [bytes](#bytes) |  |  |
 | conversation_public_key | [string](#string) |  |  |
 | media_cids | [string](#string) | repeated |  |
+| target_cid | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.Interaction"></a>
 
@@ -763,6 +763,17 @@ TODO: return cid
 | acknowledged | [bool](#bool) |  |  |
 | target_cid | [string](#string) |  |  |
 | medias | [Media](#berty.messenger.v1.Media) | repeated |  |
+| reactions | [Interaction.ReactionView](#berty.messenger.v1.Interaction.ReactionView) | repeated | specific to client model |
+
+<a name="berty.messenger.v1.Interaction.ReactionView"></a>
+
+### Interaction.ReactionView
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| emoji | [string](#string) |  |  |
+| own_state | [bool](#bool) |  |  |
+| count | [uint64](#uint64) |  |  |
 
 <a name="berty.messenger.v1.LocalConversationState"></a>
 
@@ -944,6 +955,19 @@ Composite primary key
 | link | [string](#string) |  |  |
 | passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
 
+<a name="berty.messenger.v1.Reaction"></a>
+
+### Reaction
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| target_cid | [string](#string) |  |  |
+| member_public_key | [string](#string) |  |  |
+| emoji | [string](#string) |  |  |
+| is_mine | [bool](#bool) |  |  |
+| state | [bool](#bool) |  |  |
+| state_date | [int64](#int64) |  |  |
+
 <a name="berty.messenger.v1.ReplicationServiceRegisterGroup"></a>
 
 ### ReplicationServiceRegisterGroup
@@ -1020,23 +1044,6 @@ Composite primary key
 | berty_id | [BertyID](#berty.messenger.v1.BertyID) |  |  |
 | metadata | [bytes](#bytes) |  |  |
 | own_metadata | [bytes](#bytes) |  |  |
-
-<a name="berty.messenger.v1.SendMessage"></a>
-
-### SendMessage
-
-<a name="berty.messenger.v1.SendMessage.Reply"></a>
-
-### SendMessage.Reply
-
-<a name="berty.messenger.v1.SendMessage.Request"></a>
-
-### SendMessage.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pk | [bytes](#bytes) |  |  |
-| message | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.SendReplyOptions"></a>
 
@@ -1244,7 +1251,8 @@ Composite primary key
 | members | [int64](#int64) |  |  |
 | devices | [int64](#int64) |  |  |
 | service_tokens | [int64](#int64) |  |  |
-| conversation_replication_info | [int64](#int64) |  | older, more recent |
+| conversation_replication_info | [int64](#int64) |  |  |
+| reactions | [int64](#int64) |  | older, more recent |
 
 <a name="berty.messenger.v1.SystemInfo.Messenger"></a>
 
@@ -1396,7 +1404,6 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.messenger.v1.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.messenger.v1.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
 | ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
 | SendContactRequest | [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
-| SendMessage | [SendMessage.Request](#berty.messenger.v1.SendMessage.Request) | [SendMessage.Reply](#berty.messenger.v1.SendMessage.Reply) | SendMessage sends a message to a group. |
 | SendReplyOptions | [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request) | [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply) | SendReplyOptions sends a list of prefilled response options to a group. |
 | SendAck | [SendAck.Request](#berty.messenger.v1.SendAck.Request) | [SendAck.Reply](#berty.messenger.v1.SendAck.Reply) | SendAck sends an acknowledge payload for given message id. |
 | SystemInfo | [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply) | SystemInfo returns runtime information. |

@@ -83,8 +83,8 @@ func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMess
 			false,
 		)...,
 	)
-
-	if _, err := gc.MessageStore().AddMessage(ctx, req.Payload, req.GetAttachmentCIDs()); err != nil {
+	op, err := gc.MessageStore().AddMessage(ctx, req.Payload, req.GetAttachmentCIDs())
+	if err != nil {
 		s.logger.Error(
 			"Writing metadata on metadata store failed",
 			tyber.FormatStepLogFields(
@@ -105,5 +105,5 @@ func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMess
 		tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.Succeeded, true)...,
 	)
 
-	return &protocoltypes.AppMessageSend_Reply{}, nil
+	return &protocoltypes.AppMessageSend_Reply{CID: op.GetEntry().GetHash().Bytes()}, nil
 }

@@ -10,6 +10,8 @@ import { ButtonSetting, FactionButtonSetting } from '../shared-components/Settin
 // Blocked Contacts
 //
 
+// check deep link handling
+
 // Types
 type BlockedContactsItempProps = {
 	avatarUri: string

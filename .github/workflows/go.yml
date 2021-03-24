@@ -234,7 +234,8 @@ jobs:
     name: "make install (darwin)"
     runs-on: macos-latest
     strategy:
-      golang: ['1.16.x']
+      matrix:
+        golang: ['1.16.x']
     steps:
       - name: Checkout
         uses: actions/checkout@master

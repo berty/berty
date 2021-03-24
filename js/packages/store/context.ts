@@ -2,9 +2,10 @@ import { Dispatch, createContext, useContext } from 'react'
 
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { globals } from '@berty-tech/config'
 
 import { ParsedInteraction } from './types.gen'
-import { globals } from '@berty-tech/config'
+import { SoundKey } from './sounds'
 
 export enum MessengerAppState {
 	Init = 0,
@@ -384,7 +385,17 @@ export type MsgrState = {
 	updateAccount: (arg0: any) => Promise<void>
 	deleteAccount: () => Promise<void>
 	restart: () => Promise<void>
-	playSound: (arg0: string) => void
+	playSound: (arg0: SoundKey) => void
+	addReaction: (
+		convPK: string,
+		targetCID: string,
+		emoji: string,
+	) => Promise<beapi.messenger.Interact.Reply> | undefined
+	removeReaction: (
+		convPK: string,
+		targetCID: string,
+		emoji: string,
+	) => Promise<beapi.messenger.Interact.Reply> | undefined
 
 	debugMode: boolean
 	setDebugMode: (value: boolean) => void
@@ -428,6 +439,8 @@ export const initialState = {
 	playSound: () => {},
 	debugMode: true,
 	accounts: [],
+	addReaction: () => undefined,
+	removeReaction: () => undefined,
 }
 
 export const MsgrContext = createContext<MsgrState>(initialState)
