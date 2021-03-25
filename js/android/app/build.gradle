@@ -223,7 +223,10 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     implementation project(':react-native-share')
-    implementation 'com.google.android.gms:play-services-nearby:17.0.0'
+
+    // Add Android Nearby
+    implementation "com.google.android.gms:play-services-nearby:16.0.0"
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

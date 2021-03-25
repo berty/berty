@@ -19,7 +19,6 @@ import bertybridge.Bridge;
 import bertybridge.Config;
 import tech.berty.android.MainApplication;
 import tech.berty.gobridge.bledriver.BleInterface;
-import tech.berty.gobridge.nearby.NBInterface;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
   private final static String TAG = "GoBridge";
@@ -121,7 +120,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 	  config.setBleDriver(bleDriver);
 
 	  // set NearBy driver
-      NBInterface NBDriver = new NBInterface(reactContext);
+      BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
       config.setNBDriver(NBDriver);
 
       System.out.println("bflifecycle: calling Bertybridge.newBridge");
