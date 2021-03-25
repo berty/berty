@@ -45,8 +45,9 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			config.Encoding = jsonEncoding
 			config.EncoderConfig.TimeKey = ""
 			config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
-			config.Development = true
+			config.Development = false
 			config.DisableStacktrace = true
+			config.Sampling = &zap.SamplingConfig{Initial: 100, Thereafter: 100}
 		case "light-console":
 			config = zap.NewDevelopmentConfig()
 			config.Encoding = consoleEncoding
@@ -54,7 +55,8 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
 			config.DisableStacktrace = true
 			config.EncoderConfig.EncodeName = stableWidthNameEncoder
-			config.Development = true
+			config.Development = false
+			config.Sampling = &zap.SamplingConfig{Initial: 100, Thereafter: 100}
 		case "light-color":
 			config = zap.NewDevelopmentConfig()
 			config.Encoding = consoleEncoding
@@ -62,7 +64,8 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
 			config.DisableStacktrace = true
 			config.EncoderConfig.EncodeName = stableWidthNameEncoder
-			config.Development = true
+			config.Development = false
+			config.Sampling = &zap.SamplingConfig{Initial: 100, Thereafter: 100}
 		case "console":
 			config = zap.NewDevelopmentConfig()
 			config.Encoding = consoleEncoding
