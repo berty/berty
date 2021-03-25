@@ -99,6 +99,9 @@
     - [MediaRetrieve.Reply](#berty.messenger.v1.MediaRetrieve.Reply)
     - [MediaRetrieve.Request](#berty.messenger.v1.MediaRetrieve.Request)
     - [Member](#berty.messenger.v1.Member)
+    - [MessageSearch](#berty.messenger.v1.MessageSearch)
+    - [MessageSearch.Reply](#berty.messenger.v1.MessageSearch.Reply)
+    - [MessageSearch.Request](#berty.messenger.v1.MessageSearch.Request)
     - [PaginatedInteractionsOptions](#berty.messenger.v1.PaginatedInteractionsOptions)
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
@@ -921,6 +924,31 @@ Composite primary key
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |
 
+<a name="berty.messenger.v1.MessageSearch"></a>
+
+### MessageSearch
+
+<a name="berty.messenger.v1.MessageSearch.Reply"></a>
+
+### MessageSearch.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| results | [Interaction](#berty.messenger.v1.Interaction) | repeated |  |
+
+<a name="berty.messenger.v1.MessageSearch.Request"></a>
+
+### MessageSearch.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| query | [string](#string) |  |  |
+| before_date | [int64](#int64) |  |  |
+| after_date | [int64](#int64) |  |  |
+| limit | [int32](#int32) |  |  |
+| ref_cid | [string](#string) |  |  |
+| oldest_to_newest | [bool](#bool) |  |  |
+
 <a name="berty.messenger.v1.PaginatedInteractionsOptions"></a>
 
 ### PaginatedInteractionsOptions
@@ -1430,6 +1458,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | MediaPrepare | [MediaPrepare.Request](#berty.messenger.v1.MediaPrepare.Request) stream | [MediaPrepare.Reply](#berty.messenger.v1.MediaPrepare.Reply) | MediaPrepare allows to upload a file and returns a cid to attach to messages |
 | MediaRetrieve | [MediaRetrieve.Request](#berty.messenger.v1.MediaRetrieve.Request) | [MediaRetrieve.Reply](#berty.messenger.v1.MediaRetrieve.Reply) stream | MediaRetrieve allows to download a file attached to a message |
 | MediaGetRelated | [MediaGetRelated.Request](#berty.messenger.v1.MediaGetRelated.Request) | [MediaGetRelated.Reply](#berty.messenger.v1.MediaGetRelated.Reply) | MediaGetRelated Gets previous/next media to be played after current |
+| MessageSearch | [MessageSearch.Request](#berty.messenger.v1.MessageSearch.Request) | [MessageSearch.Reply](#berty.messenger.v1.MessageSearch.Reply) | MessageSearch |
 
  
 

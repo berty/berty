@@ -113,7 +113,7 @@ func (h *eventHandler) handleAppMessage(gpk string, gme *protocoltypes.GroupMess
 		return err
 	}
 
-	handler, ok := h.appMessageHandlers[i.GetType()]
+	handler, ok := h.appMessageHandlers[am.Type]
 
 	if !ok {
 		h.logger.Warn("unsupported app message type", zap.String("type", i.GetType().String()))
@@ -149,6 +149,14 @@ func (h *eventHandler) handleAppMessage(gpk string, gme *protocoltypes.GroupMess
 
 		i, isNew, err = handler.handler(tx, i, amPayload)
 		if err != nil {
+			return err
+		}
+
+		if i == nil {
+			println(am.Type.String())
+		}
+
+		if err := h.indexMessage(tx, i.CID, am); err != nil {
 			return err
 		}
 
@@ -940,7 +948,7 @@ func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *mt.Interact
 }
 
 func (h *eventHandler) handleAppMessageUserReaction(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	return nil, false, h.handleReaction(tx, i, amPayload)
+	return i, false, h.handleReaction(tx, i, amPayload)
 }
 
 func (h *eventHandler) handleReaction(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) error {
@@ -1024,7 +1032,7 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 	i := mt.Interaction{
 		CID:                   cid.String(),
 		Type:                  amt,
-		Payload:               am.GetPayload(),
+		Payload:               am.Payload,
 		IsMine:                isMe,
 		ConversationPublicKey: gpk,
 		SentDate:              am.GetSentDate(),
@@ -1175,4 +1183,21 @@ func (h *eventHandler) handleAppMessageReplyOptions(tx *dbWrapper, i *mt.Interac
 	}
 
 	return i, isNew, nil
+}
+
+func (h *eventHandler) indexMessage(tx *dbWrapper, id string, am *mt.AppMessage) error {
+	amText, err := am.TextRepresentation()
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	if amText == "" {
+		return nil
+	}
+
+	if err := tx.interactionIndexText(id, amText); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return nil
 }

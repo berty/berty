@@ -4939,6 +4939,8 @@ export namespace berty {
                 public mediaRetrieve(request: berty.messenger.v1.MediaRetrieve.IRequest): Promise<berty.messenger.v1.MediaRetrieve.Reply>;
                 public mediaGetRelated(request: berty.messenger.v1.MediaGetRelated.IRequest, callback: berty.messenger.v1.MessengerService.MediaGetRelatedCallback): void;
                 public mediaGetRelated(request: berty.messenger.v1.MediaGetRelated.IRequest): Promise<berty.messenger.v1.MediaGetRelated.Reply>;
+                public messageSearch(request: berty.messenger.v1.MessageSearch.IRequest, callback: berty.messenger.v1.MessengerService.MessageSearchCallback): void;
+                public messageSearch(request: berty.messenger.v1.MessageSearch.IRequest): Promise<berty.messenger.v1.MessageSearch.Reply>;
             }
 
             namespace MessengerService {
@@ -5004,6 +5006,8 @@ export namespace berty {
                 type MediaRetrieveCallback = (error: (Error|null), response?: berty.messenger.v1.MediaRetrieve.Reply) => void;
 
                 type MediaGetRelatedCallback = (error: (Error|null), response?: berty.messenger.v1.MediaGetRelated.Reply) => void;
+
+                type MessageSearchCallback = (error: (Error|null), response?: berty.messenger.v1.MessageSearch.Reply) => void;
             }
 
             interface IPaginatedInteractionsOptions {
@@ -7987,6 +7991,71 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Reaction;
                 public static toObject(message: berty.messenger.v1.Reaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
+            }
+
+            interface IMessageSearch {
+            }
+
+            class MessageSearch implements IMessageSearch {
+
+                public static create(properties?: berty.messenger.v1.IMessageSearch): berty.messenger.v1.MessageSearch;
+                public static encode(message: berty.messenger.v1.IMessageSearch, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMessageSearch, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MessageSearch;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MessageSearch;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch;
+                public static toObject(message: berty.messenger.v1.MessageSearch, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace MessageSearch {
+
+                interface IRequest {
+                    query?: (string|null);
+                    beforeDate?: (Long|null);
+                    afterDate?: (Long|null);
+                    limit?: (number|null);
+                    refCid?: (string|null);
+                    oldestToNewest?: (boolean|null);
+                }
+
+                class Request implements IRequest {
+
+                    public query: string;
+                    public beforeDate: Long;
+                    public afterDate: Long;
+                    public limit: number;
+                    public refCid: string;
+                    public oldestToNewest: boolean;
+                    public static create(properties?: berty.messenger.v1.MessageSearch.IRequest): berty.messenger.v1.MessageSearch.Request;
+                    public static encode(message: berty.messenger.v1.MessageSearch.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MessageSearch.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MessageSearch.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MessageSearch.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch.Request;
+                    public static toObject(message: berty.messenger.v1.MessageSearch.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    results?: (berty.messenger.v1.IInteraction[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public results: berty.messenger.v1.IInteraction[];
+                    public static create(properties?: berty.messenger.v1.MessageSearch.IReply): berty.messenger.v1.MessageSearch.Reply;
+                    public static encode(message: berty.messenger.v1.MessageSearch.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MessageSearch.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MessageSearch.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MessageSearch.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch.Reply;
+                    public static toObject(message: berty.messenger.v1.MessageSearch.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
         }
     }

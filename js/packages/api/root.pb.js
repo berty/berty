@@ -3391,6 +3391,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   MediaGetRelated: {
                     requestType: "MediaGetRelated.Request",
                     responseType: "MediaGetRelated.Reply"
+                  },
+                  MessageSearch: {
+                    requestType: "MessageSearch.Request",
+                    responseType: "MessageSearch.Reply"
                   }
                 }
               },
@@ -4227,7 +4231,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   sentDate: {
                     type: "int64",
-                    id: 9
+                    id: 9,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index"
+                    }
                   },
                   acknowledged: {
                     type: "bool",
@@ -5337,6 +5344,51 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   stateDate: {
                     type: "int64",
                     id: 7
+                  }
+                }
+              },
+              MessageSearch: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      query: {
+                        type: "string",
+                        id: 1
+                      },
+                      beforeDate: {
+                        type: "int64",
+                        id: 2
+                      },
+                      afterDate: {
+                        type: "int64",
+                        id: 3
+                      },
+                      limit: {
+                        type: "int32",
+                        id: 4
+                      },
+                      refCid: {
+                        type: "string",
+                        id: 5,
+                        options: {
+                          "(gogoproto.customname)": "RefCID"
+                        }
+                      },
+                      oldestToNewest: {
+                        type: "bool",
+                        id: 6
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      results: {
+                        rule: "repeated",
+                        type: "Interaction",
+                        id: 1
+                      }
+                    }
                   }
                 }
               }

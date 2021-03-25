@@ -26,6 +26,7 @@ const (
 	getInMemoryTestDBOptsUndefined = iota
 	getInMemoryTestDBOptsNoInit
 	getInMemoryTestDBOptsStdOutLogger
+	getInMemoryTestDBOptsNoFTS
 )
 
 var _ = getInMemoryTestDBOptsUndefined
@@ -36,6 +37,7 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 	init := true
 	log := zap.NewNop()
 	loggerCleanup := func() {}
+	noFTS := false
 
 	for _, o := range opts {
 		switch o {
@@ -43,6 +45,8 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 			init = false
 		case getInMemoryTestDBOptsStdOutLogger:
 			log, loggerCleanup = testutil.Logger(t)
+		case getInMemoryTestDBOptsNoFTS:
+			noFTS = true
 		}
 	}
 
@@ -54,6 +58,9 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 	}
 
 	wrappedDB := newDBWrapper(db, log)
+	if noFTS {
+		wrappedDB = wrappedDB.DisableFTS()
+	}
 
 	if init {
 		if err := wrappedDB.initDB(noopReplayer); err != nil {
@@ -1062,7 +1069,7 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 
 	// Ensure all tables are in the debug data
 	tables := []string(nil)
-	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
+	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%_fts%'").Scan(&tables).Error
 	require.NoError(t, err)
 	require.Equal(t, 10, len(tables))
 }
@@ -1593,6 +1600,228 @@ func Test_dbWrapper_getLatestInteractionAndMediaPerConversation(t *testing.T) {
 	require.Error(t, err)
 	require.Len(t, interactions, 0)
 	require.Len(t, medias, 0)
+}
 
-	// TODO: check fetched items cids
+func Test_dbWrapper_getLatestInteractionAndMediaPerConversation_sorting(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	err := db.db.Create(&messengertypes.Conversation{PublicKey: "c1"}).Error
+	require.NoError(t, err)
+
+	for i := 0; i < 100; i++ {
+		err := db.db.Create(&messengertypes.Interaction{
+			CID:                   fmt.Sprintf("c1_i%02d", i),
+			ConversationPublicKey: "c1",
+			Payload:               []byte(fmt.Sprintf("c1_i%02d", i)),
+			SentDate:              1000,
+		}).Error
+		require.NoError(t, err)
+	}
+
+	interactions, medias, err := db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5})
+	require.NoError(t, err)
+	require.Len(t, interactions, 5)
+	require.Len(t, medias, 0)
+
+	require.Equal(t, "c1_i99", interactions[0].CID)
+	require.Equal(t, "c1_i98", interactions[1].CID)
+	require.Equal(t, "c1_i97", interactions[2].CID)
+	require.Equal(t, "c1_i96", interactions[3].CID)
+	require.Equal(t, "c1_i95", interactions[4].CID)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i95"})
+	require.NoError(t, err)
+	require.Len(t, interactions, 5)
+	require.Len(t, medias, 0)
+
+	require.Equal(t, "c1_i94", interactions[0].CID)
+	require.Equal(t, "c1_i93", interactions[1].CID)
+	require.Equal(t, "c1_i92", interactions[2].CID)
+	require.Equal(t, "c1_i91", interactions[3].CID)
+	require.Equal(t, "c1_i90", interactions[4].CID)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i03"})
+	require.NoError(t, err)
+	require.Len(t, interactions, 3)
+	require.Len(t, medias, 0)
+
+	require.Equal(t, "c1_i02", interactions[0].CID)
+	require.Equal(t, "c1_i01", interactions[1].CID)
+	require.Equal(t, "c1_i00", interactions[2].CID)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, OldestToNewest: true})
+	require.NoError(t, err)
+	require.Len(t, interactions, 5)
+	require.Len(t, medias, 0)
+
+	require.Equal(t, "c1_i00", interactions[0].CID)
+	require.Equal(t, "c1_i01", interactions[1].CID)
+	require.Equal(t, "c1_i02", interactions[2].CID)
+	require.Equal(t, "c1_i03", interactions[3].CID)
+	require.Equal(t, "c1_i04", interactions[4].CID)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i04", OldestToNewest: true})
+	require.NoError(t, err)
+	require.Len(t, interactions, 5)
+	require.Len(t, medias, 0)
+
+	require.Equal(t, "c1_i05", interactions[0].CID)
+	require.Equal(t, "c1_i06", interactions[1].CID)
+	require.Equal(t, "c1_i07", interactions[2].CID)
+	require.Equal(t, "c1_i08", interactions[3].CID)
+	require.Equal(t, "c1_i09", interactions[4].CID)
+
+	interactions, medias, err = db.getPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i96", OldestToNewest: true})
+	require.NoError(t, err)
+	require.Len(t, interactions, 3)
+	require.Len(t, medias, 0)
+
+	require.Equal(t, "c1_i97", interactions[0].CID)
+	require.Equal(t, "c1_i98", interactions[1].CID)
+	require.Equal(t, "c1_i99", interactions[2].CID)
+}
+
+func Test_dbWrapper_interactionIndexText_interactionsSearch(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	interactions, err := db.interactionsSearch("", nil)
+	require.Error(t, err)
+	require.Empty(t, interactions)
+
+	interactions, err = db.interactionsSearch("dummy", nil)
+	require.NoError(t, err)
+	require.Empty(t, interactions)
+
+	db.db.Create(&messengertypes.Interaction{CID: "cid_1", SentDate: 1000})
+	db.db.Create(&messengertypes.Interaction{CID: "cid_2", SentDate: 1001})
+	db.db.Create(&messengertypes.Interaction{CID: "cid_3", SentDate: 1002})
+	db.db.Create(&messengertypes.Interaction{CID: "cid_4", SentDate: 1003})
+
+	interactions, err = db.interactionsSearch("dummy", nil)
+	require.NoError(t, err)
+	require.Empty(t, interactions)
+
+	err = db.interactionIndexText("cid_0", "This entry should not be added as the CID doesn't match any interaction")
+	require.Error(t, err)
+
+	interactions, err = db.interactionsSearch("interaction", nil)
+	require.NoError(t, err)
+	require.Empty(t, interactions)
+
+	err = db.interactionIndexText("cid_1", "This dummy content should show up in the results if we need it")
+	require.NoError(t, err)
+
+	err = db.interactionIndexText("cid_2", "This other content should show up in the results if the relevant word is typed")
+	require.NoError(t, err)
+
+	// Adding content for the same CID twice should not trigger an error
+	err = db.interactionIndexText("cid_2", "This other content should show up in the results if the relevant word is typed")
+	require.NoError(t, err)
+
+	interactions, err = db.interactionsSearch("content", nil)
+	require.NoError(t, err)
+	require.Len(t, interactions, 2)
+
+	interactions, err = db.interactionsSearch("contents", nil)
+	require.NoError(t, err)
+	require.Len(t, interactions, 2)
+
+	interactions, err = db.interactionsSearch("CoNteNTs", nil)
+	require.NoError(t, err)
+	require.Len(t, interactions, 2)
+
+	interactions, err = db.interactionsSearch("DUMMY", nil)
+	require.NoError(t, err)
+	require.Len(t, interactions, 1)
+	require.Equal(t, "cid_1", interactions[0].CID)
+
+	interactions, err = db.interactionsSearch("other", nil)
+	require.NoError(t, err)
+	require.Len(t, interactions, 1)
+	require.Equal(t, "cid_2", interactions[0].CID)
+
+	err = db.interactionIndexText("cid_3", "This other content should show up in the results if the relevant word is typed")
+	err = db.interactionIndexText("cid_4", "This other content should show up in the results if the relevant word is typed")
+
+	interactions, err = db.interactionsSearch("content", nil)
+	require.NoError(t, err)
+	require.Len(t, interactions, 4)
+
+	interactions, err = db.interactionsSearch("content", &SearchOptions{Limit: 1})
+	require.NoError(t, err)
+	require.Len(t, interactions, 1)
+
+	interactions, err = db.interactionsSearch("content", &SearchOptions{AfterDate: 1001})
+	require.NoError(t, err)
+	require.Len(t, interactions, 2)
+
+	interactions, err = db.interactionsSearch("content", &SearchOptions{BeforeDate: 1003})
+	require.NoError(t, err)
+	require.Len(t, interactions, 3)
+
+	interactions, err = db.interactionsSearch("content", &SearchOptions{AfterDate: 1001, BeforeDate: 1003})
+	require.NoError(t, err)
+	require.Len(t, interactions, 1)
+}
+
+func Test_dbWrapper_interactionIndexText_interactionsSearch_sorting(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	for i := 0; i < 100; i++ {
+		id := fmt.Sprintf("cid_%02d", i)
+
+		err := db.db.Create(&messengertypes.Interaction{CID: id, SentDate: 1000}).Error
+		require.NoError(t, err)
+
+		indexed := "This other content should show up in the results if the relevant word is typed"
+		if i%2 == 0 {
+			indexed = "This is something else"
+		}
+
+		err = db.interactionIndexText(id, indexed)
+		require.NoError(t, err)
+	}
+
+	interactions, err := db.interactionsSearch("content", &SearchOptions{})
+	require.NoError(t, err)
+	require.Len(t, interactions, 10)
+	require.Equal(t, "cid_99", interactions[0].CID)
+	require.Equal(t, "cid_97", interactions[1].CID)
+	require.Equal(t, "cid_83", interactions[8].CID)
+	require.Equal(t, "cid_81", interactions[9].CID)
+
+	interactions, err = db.interactionsSearch("else", &SearchOptions{})
+	require.NoError(t, err)
+	require.Len(t, interactions, 10)
+	require.Equal(t, "cid_98", interactions[0].CID)
+	require.Equal(t, "cid_96", interactions[1].CID)
+	require.Equal(t, "cid_82", interactions[8].CID)
+	require.Equal(t, "cid_80", interactions[9].CID)
+
+	interactions, err = db.interactionsSearch("else", &SearchOptions{RefCID: "cid_80"})
+	require.NoError(t, err)
+	require.Len(t, interactions, 10)
+	require.Equal(t, "cid_78", interactions[0].CID)
+	require.Equal(t, "cid_76", interactions[1].CID)
+	require.Equal(t, "cid_62", interactions[8].CID)
+	require.Equal(t, "cid_60", interactions[9].CID)
+
+	interactions, err = db.interactionsSearch("else", &SearchOptions{RefCID: "cid_60", OldestToNewest: true})
+	require.NoError(t, err)
+	require.Len(t, interactions, 10)
+	require.Equal(t, "cid_62", interactions[0].CID)
+	require.Equal(t, "cid_64", interactions[1].CID)
+	require.Equal(t, "cid_78", interactions[8].CID)
+	require.Equal(t, "cid_80", interactions[9].CID)
+
+	interactions, err = db.interactionsSearch("else", &SearchOptions{RefCID: "cid_60", OldestToNewest: true, Limit: 4})
+	require.NoError(t, err)
+	require.Len(t, interactions, 4)
+	require.Equal(t, "cid_62", interactions[0].CID)
+	require.Equal(t, "cid_64", interactions[1].CID)
+	require.Equal(t, "cid_66", interactions[2].CID)
+	require.Equal(t, "cid_68", interactions[3].CID)
 }

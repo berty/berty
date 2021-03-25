@@ -78,7 +78,7 @@ func (modelConversationV6) TableName() string { return "conversations" }
 func (modelInteractionV2) TableName() string  { return "interactions" }
 
 func Test_ensureSeamlessDBUpdate(t *testing.T) {
-	db, dispose := getInMemoryTestDB(t, getInMemoryTestDBOptsNoInit)
+	db, dispose := getInMemoryTestDB(t, getInMemoryTestDBOptsNoInit, getInMemoryTestDBOptsNoFTS)
 	defer dispose()
 
 	log, loggerCleanup := testutil.Logger(t)

@@ -13,6 +13,8 @@ import { ContactAvatar, ConversationAvatar } from '../../avatars'
 import { EdgeInsets } from 'react-native-safe-area-context'
 import { Translation } from 'react-i18next'
 import { HintBody } from '@berty-tech/components/shared-components'
+import { parseInteraction } from '@berty-tech/store/utils'
+import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 // Styles
 
@@ -140,7 +142,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 		interactions && interactions.length > 0 ? interactions[interactions.length - 1] : null
 
 	let name: string
-	let inte: beapi.messenger.IInteraction | null
+	let inte: beapi.messenger.IInteraction | ParsedInteraction | null
 	let avatar: JSX.Element
 	switch (kind) {
 		case SearchResultKind.Contact:
@@ -162,6 +164,15 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				avatar = <ConversationAvatar publicKey={convPk} size={_resultAvatarSize} />
 			}
 			inte = data || null
+			if (inte !== null) {
+				try {
+					inte = parseInteraction(inte as beapi.messenger.Interaction)
+				} catch (e) {
+					console.warn(e)
+				}
+			}
+
+			console.log(data)
 			break
 		default:
 			return null
@@ -310,10 +321,19 @@ export const SearchComponent: React.FC<{
 	insets: EdgeInsets | null
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
 	contacts: { [key: string]: beapi.messenger.IContact | undefined }
-	interactions: { [key: string]: beapi.messenger.IInteraction | undefined }
+	interactions: beapi.messenger.IInteraction[]
 	hasResults: boolean
 	value: string
-}> = ({ insets, conversations, contacts, interactions, hasResults, value }) => {
+	earliestInteractionCID: string
+}> = ({
+	insets,
+	conversations,
+	contacts,
+	interactions,
+	hasResults,
+	value,
+	earliestInteractionCID: _earliestInteractionCID,
+}) => {
 	const [
 		{ height, width, background, padding, text, border, margin },
 		{ scaleHeight },
@@ -326,15 +346,9 @@ export const SearchComponent: React.FC<{
 		})
 	}, [conversations])
 
-	const sortedInteractions = useMemo(() => {
-		return Object.values(interactions).sort((a, b) => {
-			return pbDateToNum(b?.sentDate) - pbDateToNum(a?.sentDate)
-		})
-	}, [interactions])
-
 	const sections = useMemo(
-		() => createSections(sortedConversations, Object.values(contacts), sortedInteractions, value),
-		[contacts, sortedConversations, sortedInteractions, value],
+		() => createSections(sortedConversations, Object.values(contacts), interactions, value),
+		[contacts, sortedConversations, interactions, value],
 	)
 
 	useEffect(() => {

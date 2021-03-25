@@ -85,6 +85,9 @@ service MessengerService {
 
   // MediaGetRelated Gets previous/next media to be played after current
   rpc MediaGetRelated(MediaGetRelated.Request) returns (MediaGetRelated.Reply);
+
+  // MessageSearch
+  rpc MessageSearch (MessageSearch.Request) returns (MessageSearch.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -403,7 +406,7 @@ message Interaction {
   Conversation conversation = 4;
   bytes payload = 5;
   bool is_mine = 6;
-  int64 sent_date = 9;
+  int64 sent_date = 9 [(gogoproto.moretags) = "gorm:\"index\""];
   bool acknowledged = 10;
   string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
   repeated Media medias = 15;
@@ -817,4 +820,18 @@ message Reaction {
   bool is_mine = 5;
   bool state = 6;
   int64 state_date = 7;
+}
+
+message MessageSearch {
+  message Request {
+    string query = 1;
+    int64 before_date = 2;
+    int64 after_date = 3;
+    int32 limit = 4;
+    string ref_cid = 5 [(gogoproto.customname) = "RefCID"];
+    bool oldest_to_newest = 6;
+  }
+  message Reply {
+    repeated Interaction results = 1;
+  }
 }

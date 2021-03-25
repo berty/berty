@@ -1429,3 +1429,18 @@ func (svc *service) MediaGetRelated(ctx context.Context, request *messengertypes
 
 	return &messengertypes.MediaGetRelated_Reply{Media: media}, nil
 }
+
+func (svc *service) MessageSearch(ctx context.Context, request *messengertypes.MessageSearch_Request) (*messengertypes.MessageSearch_Reply, error) {
+	results, err := svc.db.interactionsSearch(request.Query, &SearchOptions{
+		BeforeDate:     int(request.BeforeDate),
+		AfterDate:      int(request.AfterDate),
+		Limit:          int(request.Limit),
+		OldestToNewest: request.OldestToNewest,
+		RefCID:         request.RefCID,
+	})
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &messengertypes.MessageSearch_Reply{Results: results}, nil
+}

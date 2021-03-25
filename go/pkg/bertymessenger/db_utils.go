@@ -147,7 +147,7 @@ func getDBTablesSchemas(db *gorm.DB) (map[string][]*ColumnInfo, error) {
 	schemas := map[string][]*ColumnInfo{}
 	tableNamesAndSQL := []NameSQL{}
 
-	err := db.Raw("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';").Scan(&tableNamesAndSQL).Error
+	err := db.Raw("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%_fts%';").Scan(&tableNamesAndSQL).Error
 	if err != nil {
 		return nil, err
 	}
