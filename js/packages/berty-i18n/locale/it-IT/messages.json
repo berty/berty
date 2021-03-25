@@ -9,24 +9,24 @@
       "button": "INIZIA"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Scegli un preset",
+      "change-later": "Avrai la possibilità di cambiarlo più tardi!",
       "performance": {
         "title": "Prestazioni",
         "desc": "Facile da usare - Tutte le funzionalità",
         "push-notif": "Ricevi notifiche push",
-        "offline-message": "",
+        "offline-message": "Messaggistica offline con Bluetooth",
         "add-contact": "Aggiungi facilmente i contatti",
         "fast-message": "Consegna dei messaggi velocissima"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Pieno Anonimato",
+        "desc": "Per utenti estremamente prudenti",
         "disable-push-notif": "Notifiche push disabilitate",
         "disable-local-peer-discovery": "Ricerca locale dei peer disabilitata",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
         "disable-contact-request": "Richieste di contatto disattivate",
-        "on-same-network": ""
+        "on-same-network": "Locale sulla stessa rete/wifi"
       }
     },
     "create-account": {
@@ -35,7 +35,7 @@
       "required": "Necessario",
       "placeholder": "Nome",
       "button": "CREA IL MIO ACCOUNT",
-      "import-account": ""
+      "import-account": "IMPORTA UN ACCOUNT"
     },
     "services-auth": {
       "header": "Autenticazione ai servizi",
@@ -89,19 +89,19 @@
         "import-button": "Importa account"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Nuovo Gruppo",
+        "add-members": "Aggiungi membri",
+        "group-info": "Info gruppo",
         "search-placeholder": "Cerca",
-        "continue": "",
-        "create-group": ""
+        "continue": "CONTINUA",
+        "create-group": "CREA UN GRUPPO"
       }
     },
     "home-modal": {
       "top-button": "Crea un nuovo gruppo",
       "bottom-button": "Scansiona il contatto o gruppo"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Clicca qui per aggiungere",
     "configurations": {
       "network": {
         "display-name": "",
