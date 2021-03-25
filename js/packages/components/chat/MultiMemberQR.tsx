@@ -1,5 +1,4 @@
 import React from 'react'
-import QRCode from 'react-native-qrcode-svg'
 import { ScrollView, Share, TouchableOpacity, View, Text, StatusBar } from 'react-native'
 import { Icon, Layout } from '@ui-kitten/components'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
@@ -10,6 +9,7 @@ import { useAccount, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MultiMemberAvatar } from '../avatars'
+import LazyQRCode from '../settings/LazyQRCode'
 
 const _contentScaleFactor = 0.66
 
@@ -77,7 +77,7 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 			</View>
 			<View style={[padding.horizontal.big, { top: -30 }]}>
 				<View style={[column.item.center]}>
-					<QRCode
+					<LazyQRCode
 						size={_contentScaleFactor * Math.min(windowHeight, windowWidth)}
 						value={conv.link}
 					/>

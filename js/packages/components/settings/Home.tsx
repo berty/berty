@@ -2,7 +2,6 @@ import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
-import QRCode from 'react-native-qrcode-svg'
 import { Translation, useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
@@ -14,6 +13,7 @@ import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
+import LazyQRCode from './LazyQRCode'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -100,7 +100,7 @@ const HomeHeaderAvatar: React.FC = () => {
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View style={[padding.top.scale(20 * scaleHeight)]}>
 						{(account?.link && (
-							<QRCode size={qrCodeSize} value={account.link} logo={logo} color='#3845E0' />
+							<LazyQRCode size={qrCodeSize} value={account.link} logo={logo} color='#3845E0' />
 						)) ||
 							null}
 					</View>

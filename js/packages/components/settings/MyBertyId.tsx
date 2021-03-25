@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, Share, StatusBar } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import QRCode from 'react-native-qrcode-svg'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
@@ -14,6 +13,7 @@ import { RequestAvatar } from '../shared-components/Request'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import logo from '../main/1_berty_picto.png'
+import LazyQRCode from './LazyQRCode'
 
 //
 // Settings My Berty ID Vue
@@ -75,7 +75,7 @@ const ContactRequestQR = () => {
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
 		<View style={[padding.top.big]}>
-			<QRCode logo={logo} size={qrCodeSize} value={account.link} color='#3845E0' />
+			<LazyQRCode logo={logo} size={qrCodeSize} value={account.link} color='#3845E0' />
 		</View>
 	)
 }
@@ -100,7 +100,7 @@ const Fingerprint: React.FC = () => {
 				},
 			]}
 		>
-			<FingerprintContent seed={account.publicKey} />
+			<FingerprintContent seed={account.publicKey || ''} isEncrypted={false} />
 		</View>
 	)
 }
