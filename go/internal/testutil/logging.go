@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
+	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/logutil"
 )
@@ -22,9 +23,17 @@ var (
 	loggerInstance *zap.Logger
 	loggerCleanup  func()
 	loggerInitOnce sync.Once
+	loggerRing     *zapring.Core
 )
 
 func Logger(t testing.TB) (*zap.Logger, func()) {
+	t.Helper()
+
+	loggerInstance, _, loggerCleanup := LoggerWithRing(t)
+	return loggerInstance, loggerCleanup
+}
+
+func LoggerWithRing(t testing.TB) (*zap.Logger, *zapring.Core, func()) {
 	t.Helper()
 
 	loggerInitOnce.Do(func() {
@@ -40,12 +49,16 @@ func Logger(t testing.TB) (*zap.Logger, func()) {
 		*logFilters = strings.ReplaceAll(*logFilters, ":default:", defaultLoggingFilters)
 
 		var err error
-		loggerInstance, loggerCleanup, err = logutil.NewLogger(logutil.NewStdStream(*logFilters, *logFormat, *logFile))
+		loggerRing = zapring.New(10 * 1024 * 1024)
+		loggerInstance, loggerCleanup, err = logutil.NewLogger(
+			logutil.NewStdStream(*logFilters, *logFormat, *logFile),
+			logutil.NewRingStream(*logFilters, *logFormat, loggerRing),
+		)
 		if !assert.NoError(t, err) {
 			loggerInstance = zap.NewNop()
 			loggerCleanup = func() {}
 		}
 	})
 
-	return loggerInstance, loggerCleanup
+	return loggerInstance, loggerRing, loggerCleanup
 }

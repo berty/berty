@@ -406,6 +406,48 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/DevStreamLogs": {
+      "post": {
+        "summary": "DevStreamLogs streams logs from the ring-buffer.",
+        "operationId": "MessengerService_DevStreamLogs",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1DevStreamLogsReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1DevStreamLogsReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DevStreamLogsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/EchoDuplexTest": {
       "post": {
         "summary": "Use to test duplex stream.",
@@ -1967,6 +2009,17 @@
           "type": "string"
         }
       }
+    },
+    "v1DevStreamLogsReply": {
+      "type": "object",
+      "properties": {
+        "line": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DevStreamLogsRequest": {
+      "type": "object"
     },
     "v1Device": {
       "type": "object",

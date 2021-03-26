@@ -23,6 +23,9 @@ service MessengerService {
   // TODO: remove for public.
   rpc DevShareInstanceBertyID(DevShareInstanceBertyID.Request) returns (DevShareInstanceBertyID.Reply);
 
+  // DevStreamLogs streams logs from the ring-buffer.
+  rpc DevStreamLogs(DevStreamLogs.Request) returns (stream DevStreamLogs.Reply);
+
   // ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure
   // that can be used to display information.
   // This action is read-only.
@@ -187,6 +190,13 @@ message DevShareInstanceBertyID {
     string display_name = 2;
   }
   message Reply {}
+}
+
+message DevStreamLogs {
+  message Request {}
+  message Reply {
+    string line = 1;
+  }
 }
 
 message ParseDeepLink {

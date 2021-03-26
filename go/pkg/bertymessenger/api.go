@@ -1,6 +1,7 @@
 package bertymessenger
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
@@ -45,6 +46,35 @@ func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *messengert
 	}
 
 	return &messengertypes.DevShareInstanceBertyID_Reply{}, nil
+}
+
+func (svc *service) DevStreamLogs(req *messengertypes.DevStreamLogs_Request, stream messengertypes.MessengerService_DevStreamLogsServer) error {
+	if svc.ring == nil {
+		return errcode.TODO.Wrap(fmt.Errorf("ring not configured"))
+	}
+
+	r, w := io.Pipe()
+	defer w.Close()
+
+	go func() {
+		_, _ = svc.ring.WriteTo(w)
+	}()
+
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		err := stream.Send(&messengertypes.DevStreamLogs_Reply{
+			Line: scanner.Text(),
+		})
+
+		switch err {
+		case nil: // ok
+		case io.EOF:
+			return nil
+		default:
+			return errcode.TODO.Wrap(err)
+		}
+	}
+	return nil
 }
 
 func (svc *service) InstanceShareableBertyID(ctx context.Context, req *messengertypes.InstanceShareableBertyID_Request) (*messengertypes.InstanceShareableBertyID_Reply, error) {

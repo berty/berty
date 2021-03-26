@@ -612,6 +612,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		NotificationManager: notifmanager,
 		LifeCycleManager:    lcmanager,
 		StateBackup:         m.Node.Messenger.localDBState,
+		Ring:                m.Logging.ring,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {

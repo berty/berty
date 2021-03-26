@@ -8,14 +8,58 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
+	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/test/bufconn"
+	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
+
+func TestServiceDevStreamLogs(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ring := zapring.New(10 * 1024 * 1024)
+	logger, cleanup, err := logutil.NewLogger(
+		logutil.NewRingStream("*:*devstreamlogs", "light-json", ring),
+	)
+	require.NoError(t, err)
+	defer cleanup()
+
+	logger.Named("devstreamlogs").Info("hello world1!", zap.String("foo", "bar"))
+	logger.Named("devstreamlogs").Info("hello world2!", zap.String("foo", "baz"))
+
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger, Ring: ring})
+	defer cleanup()
+	listener := bufconn.Listen(1024 * 1024)
+	s := grpc.NewServer()
+	messengertypes.RegisterMessengerServiceServer(s, svc)
+	go func() {
+		err := s.Serve(listener)
+		require.NoError(t, err)
+	}()
+	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(listener)), grpc.WithInsecure())
+	require.NoError(t, err)
+
+	client := messengertypes.NewMessengerServiceClient(conn)
+
+	stream, err := client.DevStreamLogs(ctx, &messengertypes.DevStreamLogs_Request{})
+	require.NoError(t, err)
+
+	ret, err := stream.Recv()
+	require.NoError(t, err)
+	require.Contains(t, ret.Line, "hello world1!")
+
+	ret, err = stream.Recv()
+	require.NoError(t, err)
+	require.Contains(t, ret.Line, "hello world2!")
+}
 
 func TestServiceInstanceShareableBertyID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())

@@ -22,6 +22,7 @@ import (
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"
+	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -33,6 +34,7 @@ type TestingServiceOpts struct {
 	Logger *zap.Logger
 	Client bertyprotocol.Client
 	Index  int
+	Ring   *zapring.Core
 }
 
 func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (messengertypes.MessengerServiceServer, func()) {
@@ -70,7 +72,7 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 		cleanup,
 	)
 
-	server, err := New(opts.Client, &Opts{Logger: opts.Logger, DB: db})
+	server, err := New(opts.Client, &Opts{Logger: opts.Logger, DB: db, Ring: opts.Ring})
 	if err != nil {
 		cleanup()
 		require.NoError(t, err)

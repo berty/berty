@@ -19,6 +19,7 @@ import (
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"
+	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
@@ -52,6 +53,7 @@ type service struct {
 	notifmanager          notification.Manager
 	lcmanager             *lifecycle.Manager
 	eventHandler          *eventHandler
+	ring                  *zapring.Core
 }
 
 type Opts struct {
@@ -61,6 +63,7 @@ type Opts struct {
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
 	StateBackup         *mt.LocalDatabaseState
+	Ring                *zapring.Core
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -195,6 +198,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 		optsCleanup:           optsCleanup,
 		ctx:                   ctx,
 		handlerMutex:          sync.Mutex{},
+		ring:                  opts.Ring,
 	}
 
 	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)

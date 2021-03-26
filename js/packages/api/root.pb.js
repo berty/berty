@@ -3271,6 +3271,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "DevShareInstanceBertyID.Request",
                     responseType: "DevShareInstanceBertyID.Reply"
                   },
+                  DevStreamLogs: {
+                    requestType: "DevStreamLogs.Request",
+                    responseType: "DevStreamLogs.Reply",
+                    responseStream: true
+                  },
                   ParseDeepLink: {
                     requestType: "ParseDeepLink.Request",
                     responseType: "ParseDeepLink.Reply"
@@ -3642,6 +3647,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              DevStreamLogs: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      line: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },

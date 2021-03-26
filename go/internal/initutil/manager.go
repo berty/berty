@@ -39,12 +39,13 @@ import (
 
 type Manager struct {
 	Logging struct {
-		Format   string `json:"Format,omitempty"`
-		Logfile  string `json:"Logfile,omitempty"`
-		Filters  string `json:"Filters,omitempty"`
-		Tracer   string `json:"Tracer,omitempty"`
-		Service  string `json:"Service,omitempty"`
-		RingSize uint   `json:"RingSize,omitempty"`
+		Format      string `json:"Format,omitempty"`
+		Logfile     string `json:"Logfile,omitempty"`
+		Filters     string `json:"Filters,omitempty"`
+		Tracer      string `json:"Tracer,omitempty"`
+		Service     string `json:"Service,omitempty"`
+		RingFilters string `json:"RingFilters,omitempty"`
+		RingSize    uint   `json:"RingSize,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
@@ -168,6 +169,7 @@ func New(ctx context.Context) (*Manager, error) {
 	//
 	// the good location for other variables is in the initutil.SetupFoo functions.
 	m.Logging.Filters = defaultLoggingFilters
+	m.Logging.RingFilters = defaultLoggingFilters
 	m.Logging.Format = "color"
 	m.Logging.Service = "berty"
 	m.Logging.RingSize = 10 // 10MB ring buffer
@@ -250,6 +252,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("close-datastore")
 	prog.AddStep("close-ring")
 	prog.AddStep("cleanup-logging")
+	prog.AddStep("finish")
 
 	prog.Get("cancel-context").SetAsCurrent()
 	if m.ctxCancel != nil {
@@ -306,17 +309,17 @@ func (m *Manager) Close(prog *progress.Progress) error {
 		m.Datastore.rootDS.Close()
 	}
 
+	prog.Get("cleanup-logging").SetAsCurrent()
+	if m.Logging.cleanup != nil {
+		m.Logging.cleanup()
+	}
+
 	prog.Get("close-ring").SetAsCurrent()
 	if m.Logging.ring != nil {
 		m.Logging.ring.Close()
 	}
 
-	prog.Get("cleanup-logging").SetAsCurrent()
-	if m.Logging.cleanup != nil {
-		m.Logging.cleanup()
-	}
-	prog.Get("cleanup-logging").Done()
-
+	prog.Get("finish").SetAsCurrent().Done()
 	return nil
 }
 
