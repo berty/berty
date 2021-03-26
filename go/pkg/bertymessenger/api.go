@@ -54,9 +54,10 @@ func (svc *service) DevStreamLogs(req *messengertypes.DevStreamLogs_Request, str
 	}
 
 	r, w := io.Pipe()
+	defer w.Close()
+
 	go func() {
 		_, _ = svc.ring.WriteTo(w)
-		w.Close()
 	}()
 
 	scanner := bufio.NewScanner(r)
@@ -64,7 +65,12 @@ func (svc *service) DevStreamLogs(req *messengertypes.DevStreamLogs_Request, str
 		err := stream.Send(&messengertypes.DevStreamLogs_Reply{
 			Line: scanner.Text(),
 		})
-		if err != nil {
+
+		switch err {
+		case nil: // ok
+		case io.EOF:
+			return nil
+		default:
 			return errcode.TODO.Wrap(err)
 		}
 	}
