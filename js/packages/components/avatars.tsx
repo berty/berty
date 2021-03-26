@@ -3,6 +3,7 @@ import { Image, View, ViewStyle, Text } from 'react-native'
 import palette from 'google-palette'
 import { SHA3 } from 'sha3'
 import { Buffer } from 'buffer'
+import { withBadge } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -205,7 +206,8 @@ export const ContactAvatar: React.FC<{
 	publicKey: Maybe<string>
 	size: number
 	style?: AvatarStyle
-}> = ({ publicKey, size, style }) => {
+	fallbackNameSeed?: Maybe<string>
+}> = ({ publicKey, size, style, fallbackNameSeed }) => {
 	const contact = useContact(publicKey)
 	const ctx = useMsgrContext()
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
@@ -214,22 +216,12 @@ export const ContactAvatar: React.FC<{
 	if (suggestion) {
 		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
 	}
-	if (contact?.displayName) {
-		return (
-			<NameAvatar
-				colorSeed={contact?.publicKey}
-				style={style}
-				nameSeed={contact?.displayName}
-				size={size}
-			/>
-		)
-	}
 	return (
 		<GenericAvatar
-			nameSeed={contact?.displayName}
+			nameSeed={contact?.displayName || fallbackNameSeed}
 			cid={contact?.avatarCid}
 			size={size}
-			colorSeed={contact?.publicKey}
+			colorSeed={publicKey}
 			style={style}
 		/>
 	)
@@ -245,7 +237,7 @@ export const MemberAvatar: React.FC<{
 		<GenericAvatar
 			cid={member?.avatarCid}
 			size={size}
-			colorSeed={member?.publicKey}
+			colorSeed={publicKey}
 			nameSeed={member?.displayName}
 		/>
 	)
@@ -255,16 +247,34 @@ export const MultiMemberAvatar: React.FC<{
 	size: number
 	style?: AvatarStyle
 	publicKey?: Maybe<string>
-}> = ({ size, style, publicKey }) => {
+	fallbackNameSeed?: Maybe<string>
+}> = ({ size, style, publicKey, fallbackNameSeed }) => {
 	const ctx = useMsgrContext()
+	const conv = useConversation(publicKey)
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
 		(v) => v.pk === publicKey,
 	)
-	let name = 'group'
+	let content: React.ReactElement
 	if (suggestion) {
-		name = suggestion.icon
+		content = <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
+	} else {
+		content = (
+			<GenericAvatar
+				size={size}
+				style={style}
+				cid={conv?.avatarCid}
+				colorSeed={publicKey}
+				nameSeed={conv?.displayName || fallbackNameSeed}
+			/>
+		)
 	}
-	return <HardcodedAvatar size={size} style={style} name={name as any} />
+	const badgeSize = size / 3
+	class GroupBadge extends React.Component {
+		render = () => <HardcodedAvatar size={badgeSize} name={'group'} />
+	}
+	const Avatar = () => content
+	const WrappedAvatar = withBadge('', { Component: GroupBadge })(Avatar)
+	return <WrappedAvatar />
 }
 
 export const ConversationAvatar: React.FC<{
@@ -275,6 +285,14 @@ export const ConversationAvatar: React.FC<{
 	const conv = useConversation(publicKey)
 	const ctx = useMsgrContext()
 
+	if (conv) {
+		if (conv.type === beapi.messenger.Conversation.Type.MultiMemberType) {
+			return <MultiMemberAvatar size={size} style={style} publicKey={publicKey} />
+		} else if (conv.type === beapi.messenger.Conversation.Type.ContactType) {
+			return <ContactAvatar size={size} publicKey={conv?.contactPublicKey} />
+		}
+	}
+
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
 		(v) => v.pk === publicKey,
 	)
@@ -282,13 +300,5 @@ export const ConversationAvatar: React.FC<{
 		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
 	}
 
-	if (!conv) {
-		return <GenericAvatar size={size} style={style} cid='' colorSeed={publicKey} nameSeed={'G'} />
-	}
-
-	if (conv.type === beapi.messenger.Conversation.Type.MultiMemberType) {
-		return <MultiMemberAvatar size={size} style={style} publicKey={publicKey} />
-	}
-
-	return <ContactAvatar size={size} publicKey={conv?.contactPublicKey} />
+	return <GenericAvatar size={size} style={style} cid='' colorSeed={publicKey} nameSeed={'C'} />
 }

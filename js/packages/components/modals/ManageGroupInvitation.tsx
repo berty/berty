@@ -38,8 +38,8 @@ const SelectedContent = ({
 	isEncrypted: boolean
 }) => {
 	const [{ padding }] = useStyles()
-	switch (contentName) {
-		case 'Fingerprint':
+	switch (contentName.toLowerCase()) {
+		case 'fingerprint':
 			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
 		default:
 			return (
@@ -60,7 +60,7 @@ export const ManageGroupInvitation: React.FC<{
 	const [
 		{ row, text, column, color, flex, absolute, padding, background, border, margin },
 	] = useStyles()
-	const [selectedContent, setSelectedContent] = useState('Fingerprint')
+	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
 
@@ -95,6 +95,7 @@ export const ManageGroupInvitation: React.FC<{
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
 					<MultiMemberAvatar
 						publicKey={publicKey}
+						fallbackNameSeed={displayName}
 						style={[border.shadow.big, row.center] as any}
 						size={100}
 					/>

@@ -79,7 +79,7 @@ const HeaderMultiMember: React.FC<{
 						style={[flex.small, row.right]}
 						onPress={() => navigate.chat.groupSettings({ convId: id })}
 					>
-						<MultiMemberAvatar size={40 * scaleSize} />
+						<MultiMemberAvatar publicKey={conversation?.publicKey} size={40 * scaleSize} />
 					</TouchableOpacity>
 				</View>
 			</View>
