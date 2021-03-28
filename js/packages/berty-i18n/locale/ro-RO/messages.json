@@ -1,11 +1,11 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
+      "desc": "Aplicația securizată de mesagerie peer-to-peer, care funcționează cu sau fără acces la internet, date mobile sau încredere în rețea",
       "open-registered-account": "",
       "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
+      "account-selector-create-button": "Creaţi un cont nou",
+      "more-options": "Mai multe opțiuni",
       "button": ""
     },
     "select-mode": {
