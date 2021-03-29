@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Activar conectividad con múltiples compañeros"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Servicios externos",
       "operated-services-button": "Usar los servicios operados por Berty",
