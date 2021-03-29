@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "激活多节点连接"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "外部服务",
       "operated-services-button": "使用 Berty 运营的服务",
