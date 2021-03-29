@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Verbindung zu mehreren Partnern aktivieren"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Externe Dienste",
       "operated-services-button": "Von Berty betriebene Dienste verwenden",
