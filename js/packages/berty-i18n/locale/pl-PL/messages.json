@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Aktywuj połączenia z wieloma peerami"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Zewnętrzne usługi",
       "operated-services-button": "Używanie usług świadczonych przez Berty",
