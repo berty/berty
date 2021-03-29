@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Attiva Multipeer Connectivity"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Servizi esterni",
       "operated-services-button": "Usa servizi gestiti da Berty",
