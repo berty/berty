@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Aktiver tilkobling for flere personer"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Eksterne tjenester",
       "operated-services-button": "Bruk Berty-opererte tjenester",
