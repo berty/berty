@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Multipeer kapcsolat aktiválása"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Külső szolgáltatások",
       "operated-services-button": "",
