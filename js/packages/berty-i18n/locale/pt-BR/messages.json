@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Ativar Conexão Multiponto"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Serviços externos",
       "operated-services-button": "Usar serviços operados pelo Berty",
