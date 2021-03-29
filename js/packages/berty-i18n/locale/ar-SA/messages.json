@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "تنشيط الاتصال المتعدد الأقران"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "الخدمات الخارجية",
       "operated-services-button": "استخدام الخدمات التي تشغلها برتي",
