@@ -224,6 +224,10 @@ dependencies {
 
     implementation project(':react-native-share')
 
+    // Add Android Nearby
+    implementation "com.google.android.gms:play-services-nearby:16.0.0"
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

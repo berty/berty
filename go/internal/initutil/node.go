@@ -75,7 +75,7 @@ func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
 		"better performance: current development defaults",
 	}, [2]string{
 		"-preset=" + AnonymityPreset,
-		"better privacy: -tor.mode=" + TorRequired + " -p2p.local-discovery=false -p2p.multipeer-connectivity=false -p2p.ble=false",
+		"better privacy: -tor.mode=" + TorRequired + " -p2p.local-discovery=false -p2p.multipeer-connectivity=false -p2p.ble=false -p2p.nearby=false",
 	}, [2]string{
 		"-preset=" + VolatilePreset,
 		"similar to " + PerformancePreset + ` but optimize for a quick throwable node: -store.inmem=true -p2p.ipfs-api-listeners="" -p2p.swarm-listeners="" -p2p.webui-listener=""`,
@@ -119,6 +119,7 @@ func (m *Manager) applyPreset() error {
 		m.Node.Protocol.LocalDiscovery = false
 		m.Node.Protocol.MultipeerConnectivity = false
 		m.Node.Protocol.Ble.Enable = false
+		m.Node.Protocol.Nearby.Enable = false
 	case VolatilePreset:
 		m.Datastore.InMemory = true
 		m.Node.Protocol.SwarmListeners = ""

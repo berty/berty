@@ -203,6 +203,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 	const ctx = useMsgrContext()
 	const [bleEnabled, setBleEnabled] = useState(ctx.persistentOptions?.ble.enable)
 	const [mcEnabled, setMcEnabled] = useState(ctx.persistentOptions?.mc.enable)
+	const [nearbyEnabled, setNearbyEnabled] = useState(ctx.persistentOptions?.nearby.enable)
 
 	return (
 		<Translation>
@@ -241,13 +242,32 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 						iconColor={color.blue}
 						toggled
 						disabled={Platform.OS === 'android' || !isBluetooth ? true : false}
-						varToggle={mcEnabled}
+						varToggle={Platform.OS === 'ios' && mcEnabled}
 						actionToggle={async () => {
 							setMcEnabled(!ctx.persistentOptions?.mc.enable)
 							await ctx.setPersistentOption({
 								type: PersistentOptionsKeys.MC,
 								payload: {
 									enable: !ctx.persistentOptions?.mc.enable,
+								},
+							})
+						}}
+					/>
+
+					<ButtonSetting
+						name={t('settings.nearby.activate-button')}
+						icon='wifi-outline'
+						iconSize={30}
+						iconColor={color.blue}
+						toggled
+						disabled={Platform.OS === 'ios' || !isBluetooth ? true : false}
+						varToggle={Platform.OS === 'android' && nearbyEnabled}
+						actionToggle={async () => {
+							setNearbyEnabled(!ctx.persistentOptions?.nearby.enable)
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.Nearby,
+								payload: {
+									enable: !ctx.persistentOptions?.nearby.enable,
 								},
 							})
 						}}

@@ -27,6 +27,7 @@ import (
 	manet "github.com/multiformats/go-multiaddr/net"
 	"moul.io/srand"
 
+	nb "berty.tech/berty/v2/go/internal/androidnearby"
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -41,8 +42,14 @@ import (
 	ipfswebui "berty.tech/ipfs-webui-packed"
 )
 
+// Set the Java Android BLE driver
 func (m *Manager) SetBleDriver(d proximity.NativeDriver) {
 	m.Node.Protocol.Ble.Driver = d
+}
+
+// Set the Java Android Nearby driver
+func (m *Manager) SetNBDriver(d proximity.NativeDriver) {
+	m.Node.Protocol.Nearby.Driver = d
 }
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
@@ -58,6 +65,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
+	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, "p2p.nearby", nb.Supported, "if true Android Nearby will be enabled")
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
@@ -353,6 +361,17 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 			m.initLogger.Warn("cannot enable BLE on an unsupported platform")
 		}
 		p2popts = append(p2popts, bleOpt)
+	}
+
+	// Setup Android Nearby
+	if m.Node.Protocol.Nearby.Enable {
+		if m.Node.Protocol.Nearby.Driver != nil {
+			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, m.Node.Protocol.Nearby.Driver.DefaultAddr())
+			p2popts = append(p2popts,
+				libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Nearby.Driver)))
+		} else {
+			m.initLogger.Warn("cannot enable Android Nearby on an unsupported platform")
+		}
 	}
 
 	// Setup MC

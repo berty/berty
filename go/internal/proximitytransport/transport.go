@@ -56,7 +56,7 @@ func NewTransport(ctx context.Context, l *zap.Logger, driver NativeDriver) func(
 	}
 
 	return func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {
-		l.Debug("NewTransport()")
+		l.Debug("NewTransport called", zap.String("driver", driver.ProtocolName()))
 		transport := &proximityTransport{
 			host:     h,
 			upgrader: u,

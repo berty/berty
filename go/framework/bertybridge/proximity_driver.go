@@ -8,6 +8,10 @@ type NativeBleDriver interface {
 	proximity.NativeDriver
 }
 
+type NativeNBDriver interface {
+	proximity.NativeDriver
+}
+
 type ProximityTransport interface {
 	proximity.ProximityTransport
 }

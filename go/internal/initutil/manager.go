@@ -79,6 +79,10 @@ type Manager struct {
 				Enable bool                   `json:"Enable,omitempty"`
 				Driver proximity.NativeDriver `json:"Driver,omitempty"`
 			}
+			Nearby struct {
+				Enable bool                   `json:"Enable,omitempty"`
+				Driver proximity.NativeDriver `json:"Driver,omitempty"`
+			}
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`

@@ -236,7 +236,10 @@
       "tag-positive": ""
     },
     "mc": {
-      "activate-button": "Activer la connectivité multi-pair"
+      "activate-button": "Activer Apple Multipeer Connectivity"
+    },
+    "nearby": {
+      "activate-button": "Activer Android Nearby"
     },
     "services-auth": {
       "title": "Services externes",

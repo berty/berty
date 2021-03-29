@@ -37,6 +37,7 @@ type Bridge struct {
 	onceCloser     sync.Once
 	workers        run.Group
 	bleDriver      proximity.NativeDriver
+	nbDriver       proximity.NativeDriver
 	logger         *zap.Logger
 
 	lifecycleManager    *lifecycle.Manager
@@ -90,6 +91,11 @@ func NewBridge(config *Config) (*Bridge, error) {
 		b.bleDriver = config.bleDriver
 	}
 
+	// setup nearby driver
+	{
+		b.nbDriver = config.nbDriver
+	}
+
 	// setup lifecycle manager
 	{
 		b.lifecycleManager = lifecycle.NewManager(bertymessenger.StateActive)
@@ -136,6 +142,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 			Logger:                b.logger,
 			LifecycleManager:      b.lifecycleManager,
 			BleDriver:             b.bleDriver,
+			NBDriver:              b.nbDriver,
 		}
 
 		var err error

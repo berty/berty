@@ -119,6 +119,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 	  BleInterface bleDriver = new BleInterface(reactContext);
 	  config.setBleDriver(bleDriver);
 
+	  // set NearBy driver
+      BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
+      config.setNBDriver(NBDriver);
+
       System.out.println("bflifecycle: calling Bertybridge.newBridge");
       this.bridgeMessenger = Bertybridge.newBridge(config);
       System.out.println("bflifecycle: done Bertybridge.newBridge");

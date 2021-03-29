@@ -34,6 +34,7 @@ type Options struct {
 	LifecycleManager      *lifecycle.Manager
 	NotificationManager   notification.Manager
 	BleDriver             proximity.NativeDriver
+	NBDriver              proximity.NativeDriver
 	Logger                *zap.Logger
 }
 
@@ -50,6 +51,7 @@ type service struct {
 	lifecycleManager *lifecycle.Manager
 	sclients         bertybridge.ServiceClientRegister
 	bleDriver        proximity.NativeDriver
+	nbDriver         proximity.NativeDriver
 }
 
 func (o *Options) applyDefault() {
@@ -83,6 +85,7 @@ func NewService(opts *Options) (Service, error) {
 		notifManager:     opts.NotificationManager,
 		sclients:         opts.ServiceClientRegister,
 		bleDriver:        opts.BleDriver,
+		nbDriver:         opts.NBDriver,
 	}
 
 	go s.handleLifecycle(rootCtx)
