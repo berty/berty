@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Aktivovat propojení více uživatelů"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Externí služby",
       "operated-services-button": "Použít služby provozované Berty",
