@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Activer la connectivité multi-pair"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Services externes",
       "operated-services-button": "Utiliser les services opérés par Berty",
