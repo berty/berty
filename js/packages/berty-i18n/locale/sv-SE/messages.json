@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Aktivera multi-klient anslutning"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Externa tjänster",
       "operated-services-button": "Använd Berty-drivna tjänster",
