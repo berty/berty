@@ -8,7 +8,7 @@ import { useStyles } from '@berty-tech/styles'
 import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
 
 import { MessageSystemWrapper } from './MessageSystemWrapper'
-import { ConversationAvatar } from '../../avatars'
+import { MultiMemberAvatar } from '../../avatars'
 import { base64ToURLBase64 } from '../../utils'
 
 export const MessageInvitationButton: React.FC<{
@@ -142,7 +142,9 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 				</TextNative>
 			</View>
 			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
-				<ConversationAvatar publicKey={convPk} size={40} style={margin.bottom.small} />
+				<View style={margin.bottom.small}>
+					<MultiMemberAvatar publicKey={convPk} size={40} fallbackNameSeed={displayName} />
+				</View>
 				<TextNative
 					style={[
 						text.color.black,

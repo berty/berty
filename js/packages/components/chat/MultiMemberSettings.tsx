@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
+import { Maybe, useConversation, useMsgrContext } from '@berty-tech/store/hooks'
 
 import {
 	ButtonSetting,
@@ -68,20 +68,20 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 	)
 }
 
-const GroupChatSettingsHeader: React.FC<any> = ({ displayName }) => {
+const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
+	const conv = useConversation(publicKey)
 	const [{ text, margin, row }] = useStyles()
-	// pass null as avatar public key to show the default multimember avatar
 	return (
 		<View>
 			<View style={[row.center]}>
-				<MultiMemberAvatar publicKey={null} size={80} />
+				<MultiMemberAvatar publicKey={publicKey} size={80} />
 			</View>
 			<Text
 				numberOfLines={1}
 				ellipsizeMode='tail'
 				style={[text.align.center, text.color.white, margin.top.small, text.bold.medium]}
 			>
-				{displayName || ''}
+				{conv?.displayName || ''}
 			</Text>
 		</View>
 	)
@@ -238,7 +238,7 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 				<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
 					<HeaderSettings actionIcon='edit-outline' undo={goBack}>
 						<View>
-							<GroupChatSettingsHeader {...conv} />
+							<GroupChatSettingsHeader publicKey={conv.publicKey} />
 							<GroupChatSettingsHeaderButtons {...conv} />
 						</View>
 					</HeaderSettings>

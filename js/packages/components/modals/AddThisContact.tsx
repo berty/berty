@@ -100,6 +100,7 @@ const AddThisContact: React.FC<{
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
 					<ContactAvatar
 						publicKey={publicKey}
+						fallbackNameSeed={displayName}
 						style={[border.shadow.big, row.center] as any}
 						size={100}
 					/>

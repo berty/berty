@@ -80,7 +80,9 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 						</TextNative>
 					</View>
 					<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
-						<ContactAvatar publicKey={publicKey} size={40} style={margin.bottom.small} />
+						<View style={margin.bottom.small}>
+							<ContactAvatar publicKey={publicKey} size={40} />
+						</View>
 						<TextNative
 							style={[
 								text.color.black,
