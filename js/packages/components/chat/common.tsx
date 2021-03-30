@@ -9,10 +9,8 @@ import {
 	ViewToken,
 	Animated,
 	Easing,
-	Keyboard,
 } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
-import DeviceInfo from 'react-native-device-info'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
@@ -38,7 +36,7 @@ const isTablet = deviceType === 'pad'
 // ChatFooter => Textinput for type message
 //
 
-const aDuration = 600
+const aDuration = 200
 
 // create interpolations
 export const createAnimationInterpolation = (
@@ -165,11 +163,6 @@ export const ChatFooter: React.FC<{
 		setLoading(false)
 	}
 
-	let _isEmulator: boolean = false
-	DeviceInfo.isEmulator().then((isEmulator) => {
-		_isEmulator = isEmulator
-	})
-
 	// animations values
 	const _aMaxWidth = useRef(new Animated.Value(0)).current
 	const _aFixLeft = useRef(new Animated.Value(0)).current
@@ -218,21 +211,12 @@ export const ChatFooter: React.FC<{
 		[_aMaxWidth, _aFixLeft, _aPaddingLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
 	)
 	useEffect(() => {
-		if (_isEmulator) {
-			if (_isFocused) {
-				keyboardWillShow()
-			} else {
-				keyboardWillHide()
-			}
+		if (message.length > 0) {
+			keyboardWillShow()
 		} else {
-			const keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', keyboardWillShow)
-			const keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', keyboardWillHide)
-			return () => {
-				keyboardWillShowSub.remove()
-				keyboardWillHideSub.remove()
-			}
+			keyboardWillHide()
 		}
-	}, [_isFocused, _isEmulator, keyboardWillHide, keyboardWillShow])
+	}, [message, keyboardWillHide, keyboardWillShow])
 
 	if (!conversation) {
 		return null
@@ -375,7 +359,7 @@ export const ChatFooter: React.FC<{
 									}
 									autoCorrect
 									style={[
-										_isFocused ? { color: '#3443D9' } : { maxHeight: 35 * scaleSize },
+										(message.length > 0 || _isFocused) && { color: '#3443D9' },
 										text.bold.small,
 										{
 											height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
