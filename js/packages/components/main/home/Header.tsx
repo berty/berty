@@ -198,7 +198,7 @@ export const HomeHeader: React.FC<
 										onLongPress(true)
 									}}
 								>
-									<AccountAvatar size={40 * scaleSize} />
+									<AccountAvatar size={35} />
 								</TouchableOpacity>
 							</View>
 						</View>

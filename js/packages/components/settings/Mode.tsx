@@ -1,7 +1,6 @@
 import React from 'react'
 import { ScrollView, Vibration, View } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
-import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 
 import { Translation } from 'react-i18next'
 
@@ -9,15 +8,12 @@ import { useStyles } from '@berty-tech/styles'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
-import i18n from '@berty-tech/berty-i18n'
 import beapi from '@berty-tech/api'
 
 import { HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { languages } from '@berty-tech/berty-i18n/locale/languages'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Mode
@@ -37,7 +33,7 @@ const useStylesMode = () => {
 
 const BodyMode: React.FC<BodyModeProps> = () => {
 	const _styles = useStylesMode()
-	const [{ flex, padding, margin, color, text, column }, { scaleSize }] = useStyles()
+	const [{ flex, padding, margin, color, text }, { scaleSize }] = useStyles()
 	const navigation = useReactNavigation()
 	const account: beapi.messenger.Account = useAccount()
 	const services = useAccountServices()
@@ -47,116 +43,123 @@ const BodyMode: React.FC<BodyModeProps> = () => {
 
 	const ctx = useMsgrContext()
 
-	const isPrefMode = ctx.persistentOptions.preset.value === 'performance'
-	const enableNotif = ctx.persistentOptions.notifications.enable
+	// const isPrefMode = ctx.persistentOptions.preset.value === 'performance'
+	// const enableNotif = ctx.persistentOptions.notifications.enable
 
-	const items: any = Object.entries(languages).map(([key, attrs]) => ({
-		label: attrs.localName,
-		value: key,
-	}))
-
-	items.push({ label: 'Debug', value: 'cimode' })
+	// const items: any = Object.entries(languages).map(([key, attrs]) => ({
+	// 	label: attrs.localName,
+	// 	value: key,
+	// }))
+	//
+	// items.push({ label: 'Debug', value: 'cimode' })
 
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
 				<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
-					<DropDownPicker
-						items={items}
-						defaultValue={ctx.persistentOptions?.i18n.language}
-						onChangeItem={async (item: any) => {
-							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.I18N,
-								payload: {
-									language: item.value,
-								},
-							})
-							await i18n.changeLanguage(item.value)
-						}}
-					/>
+					{/*<DropDownPicker*/}
+					{/*	items={items}*/}
+					{/*	defaultValue={ctx.persistentOptions?.i18n.language}*/}
+					{/*	onChangeItem={async (item: any) => {*/}
+					{/*		await ctx.setPersistentOption({*/}
+					{/*			type: PersistentOptionsKeys.I18N,*/}
+					{/*			payload: {*/}
+					{/*				language: item.value,*/}
+					{/*			},*/}
+					{/*		})*/}
+					{/*		await i18n.changeLanguage(item.value)*/}
+					{/*	}}*/}
+					{/*/>*/}
+					{/*<ButtonSetting*/}
+					{/*	name={t('settings.mode.notifications-button.title')}*/}
+					{/*	icon='bell-outline'*/}
+					{/*	iconColor={color.blue}*/}
+					{/*	state={{*/}
+					{/*		value: enableNotif*/}
+					{/*			? t('settings.mode.notifications-button.tag-enabled')*/}
+					{/*			: t('settings.mode.notifications-button.tag-disabled'),*/}
+					{/*		color: enableNotif ? color.green : color.red,*/}
+					{/*		bgColor: enableNotif ? color.light.green : color.light.red,*/}
+					{/*	}}*/}
+					{/*	onPress={() => navigation.navigate('Settings.Notifications')}*/}
+					{/*/>*/}
+					{/*<ButtonSetting*/}
+					{/*	name={t('settings.mode.bluetooth-button.title')}*/}
+					{/*	icon='bluetooth-outline'*/}
+					{/*	iconColor={color.blue}*/}
+					{/*	onPress={() => navigation.navigate('Settings.Bluetooth')}*/}
+					{/*/>*/}
+					{/*<ButtonSetting*/}
+					{/*	name={t('settings.mode.app-mode-button.title')}*/}
+					{/*	icon='options-outline'*/}
+					{/*	iconSize={30}*/}
+					{/*	iconColor={color.blue}*/}
+					{/*	actionIcon='arrow-ios-forward'*/}
+					{/*	state={{*/}
+					{/*		value: isPrefMode*/}
+					{/*			? t('settings.mode.app-mode-button.performance-tag')*/}
+					{/*			: t('settings.mode.app-mode-button.privacy-tag'),*/}
+					{/*		color: color.white,*/}
+					{/*		bgColor: isPrefMode ? color.blue : color.red,*/}
+					{/*		stateIcon: isPrefMode ? 'flash-outline' : 'lock-outline',*/}
+					{/*		stateIconColor: color.white,*/}
+					{/*	}}*/}
+					{/*	disabled*/}
+					{/*>*/}
+					{/*	<Text*/}
+					{/*		style={[*/}
+					{/*			column.item.right,*/}
+					{/*			_styles.buttonListUnderStateText,*/}
+					{/*			isPrefMode ? text.color.blue : text.color.red,*/}
+					{/*			margin.bottom.small,*/}
+					{/*		]}*/}
+					{/*	>*/}
+					{/*		{t('settings.mode.app-mode-button.description-tag')}*/}
+					{/*	</Text>*/}
+					{/*	<View style={[padding.right.small]}>*/}
+					{/*		<ButtonSettingItem*/}
+					{/*			value={t('settings.mode.app-mode-button.first-bullet-point')}*/}
+					{/*			// color='rgba(43,46,77,0.8)'*/}
+					{/*			icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}*/}
+					{/*			iconColor={isPrefMode ? color.blue : color.red}*/}
+					{/*			disabled*/}
+					{/*			styleText={[text.color.grey]}*/}
+					{/*			styleContainer={[margin.bottom.tiny]}*/}
+					{/*		/>*/}
+					{/*		<ButtonSettingItem*/}
+					{/*			value={t('settings.mode.app-mode-button.second-bullet-point')}*/}
+					{/*			color='rgba(43,46,77,0.8)'*/}
+					{/*			icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}*/}
+					{/*			iconColor={isPrefMode ? color.blue : color.red}*/}
+					{/*			disabled*/}
+					{/*			styleText={[text.color.grey]}*/}
+					{/*			styleContainer={[margin.bottom.tiny]}*/}
+					{/*		/>*/}
+					{/*		<ButtonSettingItem*/}
+					{/*			value={t('settings.mode.app-mode-button.third-bullet-point')}*/}
+					{/*			color='rgba(43,46,77,0.8)'*/}
+					{/*			icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}*/}
+					{/*			iconColor={isPrefMode ? color.blue : color.red}*/}
+					{/*			disabled*/}
+					{/*			styleText={[text.color.grey]}*/}
+					{/*			styleContainer={[margin.bottom.tiny]}*/}
+					{/*		/>*/}
+					{/*	</View>*/}
+					{/*</ButtonSetting>*/}
 					<ButtonSetting
-						name={t('settings.mode.notifications-button.title')}
-						icon='bell-outline'
+						name={t('settings.home.network-button')}
+						icon='earth'
+						iconPack='custom'
 						iconColor={color.blue}
-						state={{
-							value: enableNotif
-								? t('settings.mode.notifications-button.tag-enabled')
-								: t('settings.mode.notifications-button.tag-disabled'),
-							color: enableNotif ? color.green : color.red,
-							bgColor: enableNotif ? color.light.green : color.light.red,
-						}}
-						onPress={() => navigation.navigate('Settings.Notifications')}
+						onPress={() => navigation.navigate('Settings.NetworkMap')}
 					/>
-					<ButtonSetting
-						name={t('settings.mode.bluetooth-button.title')}
-						icon='bluetooth-outline'
-						iconColor={color.blue}
-						onPress={() => navigation.navigate('Settings.Bluetooth')}
-					/>
-					<ButtonSetting
-						name={t('settings.mode.app-mode-button.title')}
-						icon='options-outline'
-						iconSize={30}
-						iconColor={color.blue}
-						actionIcon='arrow-ios-forward'
-						state={{
-							value: isPrefMode
-								? t('settings.mode.app-mode-button.performance-tag')
-								: t('settings.mode.app-mode-button.privacy-tag'),
-							color: color.white,
-							bgColor: isPrefMode ? color.blue : color.red,
-							stateIcon: isPrefMode ? 'flash-outline' : 'lock-outline',
-							stateIconColor: color.white,
-						}}
-						disabled
-					>
-						<Text
-							style={[
-								column.item.right,
-								_styles.buttonListUnderStateText,
-								isPrefMode ? text.color.blue : text.color.red,
-								margin.bottom.small,
-							]}
-						>
-							{t('settings.mode.app-mode-button.description-tag')}
-						</Text>
-						<View style={[padding.right.small]}>
-							<ButtonSettingItem
-								value={t('settings.mode.app-mode-button.first-bullet-point')}
-								// color='rgba(43,46,77,0.8)'
-								icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
-								iconColor={isPrefMode ? color.blue : color.red}
-								disabled
-								styleText={[text.color.grey]}
-								styleContainer={[margin.bottom.tiny]}
-							/>
-							<ButtonSettingItem
-								value={t('settings.mode.app-mode-button.second-bullet-point')}
-								color='rgba(43,46,77,0.8)'
-								icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
-								iconColor={isPrefMode ? color.blue : color.red}
-								disabled
-								styleText={[text.color.grey]}
-								styleContainer={[margin.bottom.tiny]}
-							/>
-							<ButtonSettingItem
-								value={t('settings.mode.app-mode-button.third-bullet-point')}
-								color='rgba(43,46,77,0.8)'
-								icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
-								iconColor={isPrefMode ? color.blue : color.red}
-								disabled
-								styleText={[text.color.grey]}
-								styleContainer={[margin.bottom.tiny]}
-							/>
-						</View>
-					</ButtonSetting>
-					<ButtonSetting
-						name={t('settings.mode.dark-mode-button')}
-						icon='moon-outline'
-						iconColor={color.blue}
-						toggled
-						disabled
-					/>
+					{/*<ButtonSetting*/}
+					{/*	name={t('settings.mode.dark-mode-button')}*/}
+					{/*	icon='moon-outline'*/}
+					{/*	iconColor={color.blue}*/}
+					{/*	toggled*/}
+					{/*	disabled*/}
+					{/*/>*/}
 					<ButtonSetting
 						name={t('settings.mode.receive-contact-requests-button')}
 						icon='person-done-outline'

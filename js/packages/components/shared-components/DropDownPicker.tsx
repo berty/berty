@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Flag from 'react-native-flags'
 import { useStyles } from '@berty-tech/styles'
 import { Text, Icon } from '@ui-kitten/components'
 
@@ -14,7 +15,7 @@ export const DropDownPicker: React.FC<{
 	defaultValue: string
 	onChangeItem: (item: Item) => void
 }> = ({ items, defaultValue, onChangeItem }) => {
-	const [{ padding, border, background, opacity, text }, { scaleSize }] = useStyles()
+	const [{ padding, border, background, opacity, text, margin }, { scaleSize }] = useStyles()
 
 	const [isOpen, setOpen] = useState(false)
 	const [animateHeight] = useState(new Animated.Value(0))
@@ -41,6 +42,7 @@ export const DropDownPicker: React.FC<{
 		]).start()
 		setOpen((prev) => !prev)
 	}
+	const selectedItem = items.find((item) => item.value === defaultValue)
 	return (
 		<View
 			style={[
@@ -57,14 +59,15 @@ export const DropDownPicker: React.FC<{
 					padding.horizontal.medium,
 					{
 						flexDirection: 'row',
-						alignItems: 'space-between',
+						alignItems: 'center',
 					},
 				]}
 				onPress={toggleView}
 			>
-				<Text style={[text.size.medium]}>
-					{items.find((item) => item.value === defaultValue)?.label}
-				</Text>
+				<View style={[margin.right.medium]}>
+					<Flag code={selectedItem?.value.split('-')[1]} size={24} />
+				</View>
+				<Text style={[text.size.medium]}>{selectedItem?.label}</Text>
 				<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
 					<Animated.View
 						style={[
@@ -93,9 +96,12 @@ export const DropDownPicker: React.FC<{
 							toggleView()
 							onChangeItem(item)
 						}}
-						style={[padding.medium]}
+						style={[padding.medium, { flexDirection: 'row', alignItems: 'center' }]}
 						key={key}
 					>
+						<View style={[margin.right.medium]}>
+							<Flag code={item.value.split('-')[1]} size={24} />
+						</View>
 						<Text style={[text.size.medium]} key={item.value}>
 							{item.label}
 						</Text>
