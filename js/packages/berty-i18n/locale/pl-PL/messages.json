@@ -89,12 +89,12 @@
         "import-button": "Importuj konto"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Nowa Grupa",
+        "add-members": "Dodaj członków",
+        "group-info": "Informacje o grupie",
         "search-placeholder": "Szukaj",
-        "continue": "",
-        "create-group": ""
+        "continue": "KONTYNUUJ",
+        "create-group": "UTWÓRZ GRUPĘ"
       }
     },
     "home-modal": {
@@ -239,7 +239,7 @@
       "activate-button": "Aktywuj połączenia z wieloma peerami"
     },
     "nearby": {
-      "activate-button": ""
+      "activate-button": "Aktywuj Android Nearby"
     },
     "services-auth": {
       "title": "Zewnętrzne usługi",
@@ -411,7 +411,7 @@
       "devices": "Urządzenia"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Wpisz tutaj..."
     },
     "multi-member-settings": {
       "header-left-button": "Szukaj",
@@ -453,7 +453,7 @@
       },
       "betabot-input-placeholder": "Dodaj betabota, aby napisać tutaj...",
       "incoming-input-placeholder": "Zaakceptuj prośbę aby pisać tutaj...",
-      "input-placeholder": ""
+      "input-placeholder": "Wpisz tutaj..."
     },
     "one-to-one-settings": {
       "header-left-button": "Szukaj",
@@ -577,11 +577,11 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
+        "usage": "Przytrzymaj aby nagrywać, puść, aby wysłać",
+        "not-sent": "Wiadomość audio nie została wysłana",
+        "permission-denied": "Aplikacja nie może nagrywać dźwięku"
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< Przesuń aby anulować",
       "cancel-button": "Anuluj"
     }
   }
