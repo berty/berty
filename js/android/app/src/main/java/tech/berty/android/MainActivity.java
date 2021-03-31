@@ -25,7 +25,7 @@ public class MainActivity extends ReactActivity {
       return super.dispatchTouchEvent(ev);
   }
 
-   // needed byreact-native-bootsplash
+   // needed by react-native-bootsplash
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
