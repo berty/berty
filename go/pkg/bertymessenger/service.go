@@ -542,19 +542,14 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 
 func (svc *service) streamInteraction(tx *dbWrapper, cid string, isNew bool) error {
 	if svc != nil && svc.dispatcher != nil {
-		eventInte, err := tx.getInteractionByCID(cid)
-		if err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-
-		eventInte.Reactions, err = buildReactionsView(tx, cid)
+		interaction, err := tx.getAugmentedInteraction(cid)
 		if err != nil {
 			return errcode.ErrDBRead.Wrap(err)
 		}
 
 		if err := svc.dispatcher.StreamEvent(
 			mt.StreamEvent_TypeInteractionUpdated,
-			&mt.StreamEvent_InteractionUpdated{Interaction: eventInte},
+			&mt.StreamEvent_InteractionUpdated{Interaction: interaction},
 			isNew,
 		); err != nil {
 			return errcode.ErrMessengerStreamEvent.Wrap(err)

@@ -19,61 +19,25 @@ export declare type reducerAction = {
 	name?: string
 }
 
+/*
+TODO: remove the sort, @n0izn0iz and @glouvigny agreed that the best store representation should be something like
+{
+    sortedInteraction: []{id: string, sentAt: int},
+    interactions: {[key: string]: Interaction},
+}
+we keep a sorted reference array to avoid sorting on every map update
+but we also keep a dict of the actual states to get O(~1) on interaction updates and lookup
+*/
 const mergeInteractions = (existing: Array<ParsedInteraction>, toAdd: Array<ParsedInteraction>) => {
-	// This function expects both args to be sorted by sentDate descending
-	if (toAdd.length === 0) {
-		return existing || []
-	}
-
-	if (existing.length === 0) {
-		return toAdd || []
-	}
-
-	if (toAdd.length === 1 && existing[0].cid === toAdd[0].cid) {
-		return toAdd.concat(existing.slice(1))
-	}
-
-	if (
-		pbDateToNum(existing[0].sentDate) <= pbDateToNum(toAdd[toAdd.length - 1].sentDate) &&
-		existing[0].cid !== toAdd[toAdd.length - 1].cid
-	) {
-		return toAdd.concat(existing)
-	}
-
-	if (
-		pbDateToNum(existing[existing.length - 1].sentDate) >= pbDateToNum(toAdd[0].sentDate) &&
-		existing[existing.length - 1].cid !== toAdd[0].cid
-	) {
-		return existing.concat(toAdd)
-	}
-
-	// existing and entries to add seems to overlap
-	existing = existing.slice()
-	let i = 0
-	while (toAdd.length > 0) {
-		const newItem = toAdd.shift()
-		if (newItem === undefined) {
+	const m = {} as { [key: string]: ParsedInteraction }
+	for (const i of [...existing, ...toAdd]) {
+		if (!i.conversationPublicKey || !i.cid) {
 			continue
 		}
-
-		while (
-			i < existing.length &&
-			pbDateToNum(existing[i].sentDate) > pbDateToNum(newItem.sentDate)
-		) {
-			i++
-		}
-		if (i < existing.length) {
-			continue
-		}
-
-		if (existing[i] && existing[i].cid === newItem.cid) {
-			existing[i] = newItem
-		} else {
-			existing.splice(i, 0, newItem)
-		}
+		m[i.cid] = i
 	}
-
-	return existing
+	const l = Object.values(m)
+	return sortInteractions(l)
 }
 
 const applyAcksToInteractions = (interactions: ParsedInteraction[], acks: ParsedInteraction[]) => {

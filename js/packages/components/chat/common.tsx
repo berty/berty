@@ -14,7 +14,7 @@ import { Icon, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useClient, useMsgrContext } from '@berty-tech/store/hooks'
+import { useClient, useMsgrContext, useContact } from '@berty-tech/store/hooks'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
@@ -25,6 +25,7 @@ import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
+import { useReplyReaction } from './ReplyReactionContext'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -73,13 +74,11 @@ const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C)
 	Promise.all(arr.map(cb))
 
 export const ChatFooter: React.FC<{
-	isFocused: boolean
-	setFocus: React.Dispatch<React.SetStateAction<any>>
 	convPk: string
 	disabled?: boolean
 	placeholder: string
 	setSwipe: (val: boolean) => void
-}> = ({ isFocused, setFocus, convPk, disabled = false, placeholder, setSwipe }) => {
+}> = ({ convPk, disabled = false, placeholder, setSwipe }) => {
 	const ctx = useMsgrContext()
 	const client = useClient()
 
@@ -87,8 +86,12 @@ export const ChatFooter: React.FC<{
 	const [inputHeight, setInputHeight] = useState<number>(35)
 	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 	const inputRef = useRef<TextInput>(null)
-	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
+	const _isFocused = inputRef?.current?.isFocused() || false
 	const [{ padding, flex, border, color, text }, { scaleSize }] = useStyles()
+	const { activeReplyInte, setActiveReplyInte } = useReplyReaction()
+	const contact =
+		useContact(activeReplyInte?.conversation?.contactPublicKey) || activeReplyInte?.member
+
 	const [mediaCids, setMediaCids] = useState<string[]>([])
 
 	const [activateTab, setActivateTab] = useState(TabItems.Default)
@@ -110,17 +113,19 @@ export const ChatFooter: React.FC<{
 					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
 					mediaCids: medias,
+					targetCid: activeReplyInte?.cid,
 				})
 				.then(() => {
 					setMessage('')
 					setMediaCids([])
 					ctx.playSound('messageSent')
+					setActiveReplyInte()
 				})
 				.catch((e) => {
 					console.warn('e sending message:', e)
 				})
 		},
-		[buf, convPk, ctx],
+		[buf, convPk, ctx, activeReplyInte?.cid, setActiveReplyInte],
 	)
 
 	// TODO: Debug, error on restarting node
@@ -217,6 +222,12 @@ export const ChatFooter: React.FC<{
 			keyboardWillHide()
 		}
 	}, [message, keyboardWillHide, keyboardWillShow])
+
+	useEffect(() => {
+		if (activeReplyInte) {
+			inputRef?.current?.focus()
+		}
+	}, [activeReplyInte])
 
 	if (!conversation) {
 		return null
@@ -330,7 +341,7 @@ export const ChatFooter: React.FC<{
 							<Animated.View
 								style={[
 									border.radius.medium,
-									padding.left.small,
+
 									{
 										alignSelf: 'flex-end',
 										backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
@@ -339,41 +350,95 @@ export const ChatFooter: React.FC<{
 										marginLeft: 9 * scaleSize,
 										zIndex: 100,
 										elevation: 100,
-										paddingVertical: 5 * scaleSize,
+
 										flex: 1,
 									},
 								]}
 							>
-								<TextInput
-									value={message}
-									ref={inputRef}
-									multiline
-									editable={disabled ? false : true}
-									onFocus={() => setFocus(true)}
-									onBlur={() => setFocus(false)}
-									onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
-									onContentSizeChange={({ nativeEvent }) =>
-										setInputHeight(
-											nativeEvent?.contentSize.height > 80 ? 80 : nativeEvent?.contentSize.height,
-										)
-									}
-									autoCorrect
+								{!!activeReplyInte && (
+									<Animated.View
+										style={[
+											border.radius.top.medium,
+											{
+												backgroundColor: activeReplyInte?.backgroundColor,
+												paddingVertical: 4,
+												paddingHorizontal: 10,
+												zIndex: 0,
+											},
+										]}
+									>
+										<View
+											style={{
+												position: 'absolute',
+												top: -20,
+												alignSelf: 'center',
+												backgroundColor: '#F7F8FF',
+												borderColor: '#E4E5EF',
+												paddingVertical: 2,
+												paddingHorizontal: 20,
+												borderWidth: 1,
+												borderRadius: 20,
+											}}
+										>
+											<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
+												You're replying to {contact?.displayName || ''}
+											</Text>
+										</View>
+										<Text
+											numberOfLines={1}
+											style={{
+												width: 220,
+												color: activeReplyInte?.textColor,
+												fontSize: 12,
+												lineHeight: 17,
+											}}
+										>
+											{activeReplyInte?.payload?.body || ''}
+										</Text>
+									</Animated.View>
+								)}
+								<View
 									style={[
 										(message.length > 0 || _isFocused) && { color: '#3443D9' },
 										text.bold.small,
+										padding.left.small,
 										{
-											height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
-											fontFamily: 'Open Sans',
-											marginTop: 3 * scaleSize,
-											fontSize: 15 * scaleSize,
-											paddingRight: 12 * scaleSize,
+											paddingVertical: 5 * scaleSize,
 										},
 									]}
-									placeholder={placeholder}
-									placeholderTextColor={_isFocused ? '#3443D9' : '#AFB1C0'}
-									returnKeyType={isTablet ? 'send' : 'default'}
-									onSubmitEditing={() => isTablet && handlePressSend()}
-								/>
+								>
+									<TextInput
+										value={message}
+										ref={inputRef}
+										multiline
+										editable={disabled ? false : true}
+										onBlur={() => {
+											activeReplyInte && setActiveReplyInte()
+										}}
+										onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
+										onContentSizeChange={({ nativeEvent }) =>
+											setInputHeight(
+												nativeEvent?.contentSize.height > 80 ? 80 : nativeEvent?.contentSize.height,
+											)
+										}
+										autoCorrect
+										style={[
+											_isFocused ? { color: '#3443D9' } : { maxHeight: 35 * scaleSize },
+											text.bold.small,
+											{
+												height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
+												fontFamily: 'Open Sans',
+												marginTop: 3 * scaleSize,
+												fontSize: 15 * scaleSize,
+												paddingRight: 12 * scaleSize,
+											},
+										]}
+										placeholder={placeholder}
+										placeholderTextColor={_isFocused ? '#3443D9' : '#AFB1C0'}
+										returnKeyType={isTablet ? 'send' : 'default'}
+										onSubmitEditing={() => isTablet && handlePressSend()}
+									/>
+								</View>
 							</Animated.View>
 							<Animated.View
 								style={{

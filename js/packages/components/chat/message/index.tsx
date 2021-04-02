@@ -24,23 +24,30 @@ export const Message: React.FC<{
 	convPK: string
 	previousMessage?: ParsedInteraction
 	nextMessage?: ParsedInteraction
-}> = ({ inte, convKind, members, previousMessage, nextMessage, convPK }) => {
+	replyOf?: ParsedInteraction
+	scrollToCid: (cid: string) => void
+}> = ({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
 	const ctx = useMsgrContext()
 	const [{ text, padding }] = useStyles()
 	if (!inte) {
 		return null
 	}
 	const sentDate = pbDateToNum(inte?.sentDate)
+
 	if (inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
 		return (
-			<UserMessage
-				inte={inte}
-				members={members}
-				convPK={convPK}
-				convKind={convKind}
-				nextMessage={nextMessage}
-				previousMessage={previousMessage}
-			/>
+			<>
+				<UserMessage
+					inte={inte}
+					members={members}
+					convPK={convPK}
+					convKind={convKind}
+					nextMessage={nextMessage}
+					previousMessage={previousMessage}
+					replyOf={replyOf}
+					scrollToCid={scrollToCid}
+				/>
+			</>
 		)
 	} else if (
 		inte.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation &&

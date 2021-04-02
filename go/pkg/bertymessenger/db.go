@@ -1425,3 +1425,17 @@ func (d *dbWrapper) setupVirtualTablesAndTriggers() error {
 
 	return nil
 }
+
+func (d *dbWrapper) getAugmentedInteraction(cid string) (*messengertypes.Interaction, error) {
+	inte, err := d.getInteractionByCID(cid)
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	inte.Reactions, err = buildReactionsView(d, cid)
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	return inte, nil
+}
