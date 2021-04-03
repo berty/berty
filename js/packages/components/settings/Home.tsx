@@ -1,8 +1,7 @@
 import React from 'react'
-import { View, ScrollView, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native'
+import { View, ScrollView, TouchableOpacity, StatusBar, ActivityIndicator } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
-import QRCode from 'react-native-qrcode-svg'
 import { Translation, useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
@@ -15,13 +14,9 @@ import {
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
-import i18n from '@berty-tech/berty-i18n'
-import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
-import { languages } from '@berty-tech/berty-i18n/locale/languages'
+// import QRCode from 'react-native-qrcode-svg'
+// import logo from '../main/1_berty_picto.png'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -82,13 +77,10 @@ const HomeHeaderGroupButton: React.FC = () => {
 
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
-	const [
-		{ row, margin, background, border, padding },
-		{ windowWidth, windowHeight, scaleHeight, scaleSize },
-	] = useStyles()
+	const [{ row, margin, background, border, padding }, { scaleSize }] = useStyles()
 	const account = useAccount()
 	const navigation = useNavigation()
-	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.3
+	// const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.3
 
 	return (
 		<View style={[row.center, margin.top.scale(30), padding.bottom.scale(70)]}>
@@ -106,12 +98,12 @@ const HomeHeaderAvatar: React.FC = () => {
 						<AccountAvatar size={60 * scaleSize} />
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
-					<View style={[padding.top.scale(18 * scaleHeight)]}>
+					{/* <View style={[padding.top.scale(18 * scaleHeight)]}>
 						{(account?.link && (
 							<QRCode size={qrCodeSize} value={account.link} logo={logo} color='#3845E0' />
 						)) ||
 							null}
-					</View>
+					</View> */}
 				</View>
 			</TouchableOpacity>
 		</View>
@@ -168,12 +160,6 @@ const HomeBodySettings: React.FC<{}> = () => {
 	const isPrefMode = ctx.persistentOptions.preset.value === 'performance'
 	const enableNotif = ctx.persistentOptions.notifications.enable
 
-	const items: any = Object.entries(languages).map(([key, attrs]) => ({
-		label: attrs.localName,
-		value: key,
-	}))
-
-	items.push({ label: 'Debug', value: 'cimode' })
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -236,19 +222,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 							/>
 						</View>
 					</ButtonSetting>
-					<DropDownPicker
-						items={items}
-						defaultValue={ctx.persistentOptions?.i18n.language}
-						onChangeItem={async (item: any) => {
-							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.I18N,
-								payload: {
-									language: item.value,
-								},
-							})
-							await i18n.changeLanguage(item.value)
-						}}
-					/>
+
 					<ButtonSetting
 						name={t('settings.mode.notifications-button.title')}
 						icon='bell-outline'
@@ -290,34 +264,26 @@ const HomeBodySettings: React.FC<{}> = () => {
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = useAccount()
 	const [{ flex, background, row, margin }] = useStyles()
-	const navigation = useNativeNavigation()
 
 	return (
 		<>
 			<View style={[flex.tiny, background.white]}>
 				<StatusBar backgroundColor='#585AF1' barStyle='light-content' />
-				<SwipeNavRecognizer
-					// onSwipeUp={() => navigation.goBack()}
-					// onSwipeLeft={() => navigation.goBack()}
-					onSwipeRight={() => navigation.goBack()}
-					// onSwipeDown={() => navigation.goBack()}
-				>
-					{account == null ? (
-						<ActivityIndicator size='large' style={[row.center]} />
-					) : (
-						<ScrollView contentContainerStyle={{ paddingBottom: 30 }} bounces={false}>
-							<View style={[margin.bottom.scale(20)]}>
-								<HeaderSettings>
-									<View>
-										<HomeHeader />
-										<HomeHeaderGroupButton />
-									</View>
-								</HeaderSettings>
-							</View>
-							<HomeBodySettings />
-						</ScrollView>
-					)}
-				</SwipeNavRecognizer>
+				{account == null ? (
+					<ActivityIndicator size='large' style={[row.center]} />
+				) : (
+					<ScrollView contentContainerStyle={{ paddingBottom: 30 }} bounces={false}>
+						<View style={[margin.bottom.scale(20)]}>
+							<HeaderSettings>
+								<View>
+									<HomeHeader />
+									<HomeHeaderGroupButton />
+								</View>
+							</HeaderSettings>
+						</View>
+						<HomeBodySettings />
+					</ScrollView>
+				)}
 			</View>
 		</>
 	)

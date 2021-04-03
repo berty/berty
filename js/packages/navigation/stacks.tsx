@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Linking } from 'react-native'
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import {
-	createStackNavigator,
-	HeaderStyleInterpolators,
-	StackCardInterpolationProps,
-	StackNavigationOptions,
-	TransitionSpecs,
-} from '@react-navigation/stack'
+import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 
 import * as RawComponents from '@berty-tech/components'
 import mapValues from 'lodash/mapValues'
@@ -16,61 +10,61 @@ import { Routes } from './types'
 import { MessengerAppState } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
 
-const CustomTransitionOptions: StackNavigationOptions = {
-	headerShown: false,
-	gestureEnabled: true,
-	gestureDirection: 'horizontal',
-	transitionSpec: {
-		open: TransitionSpecs.TransitionIOSSpec,
-		close: TransitionSpecs.TransitionIOSSpec,
-	},
-	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
-	cardStyleInterpolator: ({ current, next, layouts }: StackCardInterpolationProps) => {
-		return {
-			cardStyle: {
-				transform: [
-					{
-						translateX: current.progress.interpolate({
-							inputRange: [0, 1],
-							outputRange: [layouts.screen.width, 0],
-						}),
-					},
-					{
-						scale: next
-							? next.progress.interpolate({
-									inputRange: [0, 1],
-									outputRange: [1, 0.9],
-							  })
-							: 1,
-					},
-				],
-			},
-			overlayStyle: {
-				opacity: current.progress.interpolate({
-					inputRange: [0, 1],
-					outputRange: [0, 0.5],
-				}),
-			},
-		}
-	},
-}
+// const CustomTransitionOptions: StackNavigationOptions = {
+// 	headerShown: false,
+// 	gestureEnabled: true,
+// 	gestureDirection: 'horizontal',
+// 	transitionSpec: {
+// 		open: TransitionSpecs.TransitionIOSSpec,
+// 		close: TransitionSpecs.TransitionIOSSpec,
+// 	},
+// 	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
+// 	cardStyleInterpolator: ({ current, next, layouts }: StackCardInterpolationProps) => {
+// 		return {
+// 			cardStyle: {
+// 				transform: [
+// 					{
+// 						translateX: current.progress.interpolate({
+// 							inputRange: [0, 1],
+// 							outputRange: [layouts.screen.width, 0],
+// 						}),
+// 					},
+// 					{
+// 						scale: next
+// 							? next.progress.interpolate({
+// 									inputRange: [0, 1],
+// 									outputRange: [1, 0.9],
+// 							  })
+// 							: 1,
+// 					},
+// 				],
+// 			},
+// 			overlayStyle: {
+// 				opacity: current.progress.interpolate({
+// 					inputRange: [0, 1],
+// 					outputRange: [0, 0.5],
+// 				}),
+// 			},
+// 		}
+// 	},
+// }
 
-const ModalScreenOptions: StackNavigationOptions = {
-	headerShown: false,
-	cardStyle: { backgroundColor: 'transparent' },
-	transitionSpec: {
-		open: TransitionSpecs.TransitionIOSSpec,
-		close: TransitionSpecs.TransitionIOSSpec,
-	},
-	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
-	cardStyleInterpolator: ({ current }: StackCardInterpolationProps) => {
-		return {
-			cardStyle: {
-				opacity: current.progress,
-			},
-		}
-	},
-}
+// const ModalScreenOptions: StackNavigationOptions = {
+// 	headerShown: false,
+// 	cardStyle: { backgroundColor: 'transparent' },
+// 	transitionSpec: {
+// 		open: TransitionSpecs.TransitionIOSSpec,
+// 		close: TransitionSpecs.TransitionIOSSpec,
+// 	},
+// 	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
+// 	cardStyleInterpolator: ({ current }: StackCardInterpolationProps) => {
+// 		return {
+// 			cardStyle: {
+// 				opacity: current.progress,
+// 			},
+// 		}
+// 	},
+// }
 
 function useLinking() {
 	const [url, setUrl] = useState<string | null>(null)
@@ -129,7 +123,7 @@ Components = mapValues(RawComponents, (SubComponents) =>
 	)),
 )
 
-const CreateGroupStack = createStackNavigator()
+const CreateGroupStack = createNativeStackNavigator()
 export const CreateGroupNavigation: React.FC = () => {
 	const [members, setMembers] = useState([] as any[])
 	const setMember = (contact: any) => {
@@ -149,7 +143,7 @@ export const CreateGroupNavigation: React.FC = () => {
 		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
@@ -162,7 +156,7 @@ export const CreateGroupNavigation: React.FC = () => {
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupFinalize}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			>
 				{() => (
 					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
@@ -172,7 +166,7 @@ export const CreateGroupNavigation: React.FC = () => {
 	)
 }
 
-const NavigationStack = createStackNavigator()
+const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
 
@@ -207,22 +201,25 @@ export const Navigation: React.FC = () => {
 					? Routes.Main.Home
 					: Routes.Onboarding.GetStarted
 			}
-			screenOptions={CustomTransitionOptions}
+			screenOptions={{
+				headerShown: false,
+			}}
+			// screenOptions={CustomTransitionOptions}
 		>
 			<NavigationStack.Screen
 				name={Routes.Main.ContactRequest}
 				component={Components.Main.ContactRequest}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Main.Scan}
 				component={Components.Main.Scan}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Main.NetworkOptions}
 				component={Components.Main.NetworkOptions}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
@@ -253,18 +250,18 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.EditProfile}
 				component={Components.Settings.EditProfile}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 			<NavigationStack.Screen
@@ -348,17 +345,17 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Modals.DeleteAccount}
 				component={Components.Modals.DeleteAccount}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Modals.ManageDeepLink}
 				component={Components.Modals.ManageDeepLink}
-				options={ModalScreenOptions}
+				// options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Modals.ImageView}
 				component={Components.Modals.ImageView}
-				options={{ ...ModalScreenOptions, gestureEnabled: false }}
+				// options={{ ...ModalScreenOptions, gestureEnabled: false }}
 			/>
 		</NavigationStack.Navigator>
 	)

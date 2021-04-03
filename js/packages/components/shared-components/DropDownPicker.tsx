@@ -42,6 +42,7 @@ export const DropDownPicker: React.FC<{
 		]).start()
 		setOpen((prev) => !prev)
 	}
+
 	const selectedItem = items.find((item) => item.value === defaultValue)
 	return (
 		<View
@@ -80,47 +81,48 @@ export const DropDownPicker: React.FC<{
 					</Animated.View>
 				</View>
 			</TouchableOpacity>
-
-			<Animated.ScrollView
-				style={[
-					border.radius.bottom.medium,
-					{
-						maxHeight: animateHeight,
-					},
-				]}
-			>
-				{items.map((item, key) => (
-					<TouchableOpacity
-						activeOpacity={0.9}
-						onPress={() => {
-							toggleView()
-							onChangeItem(item)
-						}}
-						style={[padding.medium, { flexDirection: 'row', alignItems: 'center' }]}
-						key={key}
-					>
-						<View style={[margin.right.medium]}>
-							<Flag code={item.value.split('-')[1]} size={24} />
-						</View>
-						<Text style={[text.size.medium]} key={item.value}>
-							{item.label}
-						</Text>
-						<View
-							style={[
-								border.color.grey,
-								border.medium,
-								opacity(0.2),
-								{
-									position: 'absolute',
-									top: 0,
-									left: 0,
-									right: 0,
-								},
-							]}
-						/>
-					</TouchableOpacity>
-				))}
-			</Animated.ScrollView>
+			{isOpen && (
+				<Animated.ScrollView
+					style={[
+						border.radius.bottom.medium,
+						{
+							maxHeight: animateHeight,
+						},
+					]}
+				>
+					{items.map((item, key) => (
+						<TouchableOpacity
+							activeOpacity={0.9}
+							onPress={() => {
+								toggleView()
+								onChangeItem(item)
+							}}
+							style={[padding.medium, { flexDirection: 'row', alignItems: 'center' }]}
+							key={key}
+						>
+							<View style={[margin.right.medium]}>
+								<Flag code={item.value.split('-')[1]} size={24} />
+							</View>
+							<Text style={[text.size.medium]} key={item.value}>
+								{item.label}
+							</Text>
+							<View
+								style={[
+									border.color.grey,
+									border.medium,
+									opacity(0.2),
+									{
+										position: 'absolute',
+										top: 0,
+										left: 0,
+										right: 0,
+									},
+								]}
+							/>
+						</TouchableOpacity>
+					))}
+				</Animated.ScrollView>
+			)}
 		</View>
 	)
 }

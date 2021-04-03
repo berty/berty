@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import Shake from '@shakebugs/react-native-shake'
 import RNBootSplash from 'react-native-bootsplash'
+import { enableScreens } from 'react-native-screens'
 
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
@@ -28,6 +29,8 @@ const BootSplashInhibitor = () => {
 	})
 	return null
 }
+
+enableScreens()
 
 export const App: React.FC = () => {
 	React.useEffect(() => {
