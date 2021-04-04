@@ -19,7 +19,7 @@ import { useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 
 import { AccountAvatar } from '../avatars'
-import BlurView from '../shared-components/BlurView'
+import { BlurView } from '@react-native-community/blur'
 
 //
 // Edit Profile

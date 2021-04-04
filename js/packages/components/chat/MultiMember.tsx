@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, View, Platform } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
+import { BlurView } from '@react-native-community/blur'
 import { CommonActions } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import EmojiBoard from 'react-native-emoji-board'
@@ -18,7 +19,6 @@ import {
 import beapi from '@berty-tech/api'
 
 import { ChatFooter, ChatDate } from './common'
-import BlurView from '../shared-components/BlurView'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useLayout } from '../hooks'
 import { MultiMemberAvatar } from '../avatars'
@@ -46,6 +46,7 @@ const HeaderMultiMember: React.FC<{
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
 			<BlurView
+				overlayColor=''
 				blurType='light'
 				blurAmount={30}
 				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}

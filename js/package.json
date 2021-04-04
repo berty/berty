@@ -7,14 +7,15 @@
 		"ios": "react-native run-ios",
 		"start": "react-native start",
 		"test": "jest",
-		"lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"postinstall": "patch-package"
 	},
 	"dependencies": {
 		"@eva-design/eva": "^2.0.0",
 		"@improbable-eng/grpc-web": "^0.13.0",
 		"@react-native-community/async-storage": "^1.12.1",
 		"@react-native-community/audio-toolkit": "git+https://github.com/react-native-audio-toolkit/react-native-audio-toolkit.git#b4495caffd55e5d464e203b0216fe2ce0424fa3b",
-		"@react-native-community/blur": "^3.6.0",
+		"@react-native-community/blur": "patches/@react-native-community+blur+3.6.0.patch",
 		"@react-native-community/cameraroll": "^4.0.2",
 		"@react-native-community/hooks": "^2.6.0",
 		"@react-native-community/masked-view": "^0.1.10",
@@ -37,6 +38,8 @@
 		"mem": "^8.0.0",
 		"moment": "^2.29.1",
 		"node-libs-react-native": "^1.2.1",
+		"patch-package": "^6.4.7",
+		"postinstall-postinstall": "^2.1.0",
 		"prop-types": "^15.7.2",
 		"protobufjs": "^6.10.2",
 		"react": "16.13.1",
