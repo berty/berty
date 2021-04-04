@@ -2,7 +2,7 @@
   "onboarding": {
     "getstarted": {
       "desc": "Die sichere Peer-to-Peer-Messaging-App, die mit oder ohne Internetzugang, Mobilfunkdaten oder Vertrauen im Netzwerk funktioniert",
-      "open-registered-account": "Eröffnen eines registrierten Kontos",
+      "open-registered-account": "In ein registriertes Konto einloggen",
       "import-button": "Daten von einem bestehenden Konto importieren",
       "account-selector-create-button": "Erstelle ein neues Konto",
       "more-options": "Weitere Optionen",
@@ -10,7 +10,7 @@
     },
     "select-mode": {
       "title": "Wähle eine Voreinstellung",
-      "change-later": "Du hast die Wahl, es später zu ändern!",
+      "change-later": "Du kannst dies später ändern!",
       "performance": {
         "title": "Leistung",
         "desc": "Einfach zu bedienen - Alle Funktionen",
@@ -239,7 +239,7 @@
       "activate-button": "Verbindung zu mehreren Partnern aktivieren"
     },
     "nearby": {
-      "activate-button": ""
+      "activate-button": "\"Android in der Nähe\" aktivieren"
     },
     "services-auth": {
       "title": "Externe Dienste",
