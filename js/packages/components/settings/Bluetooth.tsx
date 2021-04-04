@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet, Linking, Platform } from 'react-native'
+import { View, ScrollView, TouchableOpacity, Linking, Platform } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import { Translation } from 'react-i18next'
+import { Translation, useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
@@ -17,8 +17,8 @@ import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 
 // Types
 type BluetoothProps = {
-	isBluetooth: boolean
-	setIsBluetooth: React.Dispatch<React.SetStateAction<boolean>>
+	hasBluetoothPermissions: boolean
+	setHasBluetoothPermissions: React.Dispatch<React.SetStateAction<boolean | undefined>>
 }
 
 // Styles
@@ -29,42 +29,6 @@ const useStylesBluetooth = () => {
 		headerInfosText: text.size.scale(11),
 		headerInfosButtonText: text.size.medium,
 	}
-}
-
-const _bluetoothStyles = StyleSheet.create({
-	bodyNotAuthorize: {
-		opacity: 0.3,
-	},
-})
-
-const checkBluetoothPermission = async (): Promise<boolean> => {
-	let permission =
-		Platform.OS === 'ios'
-			? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-			: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-	try {
-		let result = await check(permission)
-		switch (result) {
-			case RESULTS.UNAVAILABLE:
-				console.log('Bluetooth is not available (on this device / in this context)')
-				break
-			case RESULTS.DENIED:
-				console.log('The Bluetooth permission has not been requested / is denied but requestable')
-				break
-			case RESULTS.LIMITED:
-				console.log('The Bluetooth permission is limited: some actions are possible')
-				break
-			case RESULTS.GRANTED:
-				console.log('The Bluetooth permission is granted')
-				return true
-			case RESULTS.BLOCKED:
-				console.log('The Bluetooth permission is denied and not requestable anymore')
-				break
-		}
-	} catch (error) {
-		console.log('The Bluetooth permission check failed: ', error)
-	}
-	return false
 }
 
 export const requestBluetoothPermission = async (): Promise<boolean> => {
@@ -97,13 +61,46 @@ export const requestBluetoothPermission = async (): Promise<boolean> => {
 	return false
 }
 
-const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth, setIsBluetooth }) => {
+const checkBluetoothPermission = async (): Promise<boolean> => {
+	let permission =
+		Platform.OS === 'ios'
+			? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
+			: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+	try {
+		let result = await check(permission)
+		switch (result) {
+			case RESULTS.UNAVAILABLE:
+				console.log('Bluetooth is not available (on this device / in this context)')
+				break
+			case RESULTS.DENIED:
+				console.log('The Bluetooth permission has not been requested / is denied but requestable')
+				break
+			case RESULTS.LIMITED:
+				console.log('The Bluetooth permission is limited: some actions are possible')
+				break
+			case RESULTS.GRANTED:
+				console.log('The Bluetooth permission is granted')
+				return true
+			case RESULTS.BLOCKED:
+				console.log('The Bluetooth permission is denied and not requestable anymore')
+				break
+		}
+	} catch (error) {
+		console.log('The Bluetooth permission check failed: ', error)
+	}
+	return false
+}
+
+const HeaderBluetooth: React.FC<BluetoothProps> = ({
+	hasBluetoothPermissions,
+	setHasBluetoothPermissions,
+}) => {
 	const _styles = useStylesBluetooth()
 	const [{ row, color, flex, margin, text, background, border, padding }] = useStyles()
 
 	return (
 		<View>
-			{!isBluetooth && (
+			{!hasBluetoothPermissions && (
 				<HeaderInfoSettings>
 					<TouchableOpacity style={[row.right]}>
 						<Icon name='close-outline' width={20} height={20} fill={color.light.blue} />
@@ -138,7 +135,9 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth, setIsBluetooth
 							margin.top.medium,
 						]}
 						onPress={() =>
-							requestBluetoothPermission().then((hasPermission) => setIsBluetooth(hasPermission))
+							requestBluetoothPermission().then((hasPermission) =>
+								setHasBluetoothPermissions(hasPermission),
+							)
 						}
 					>
 						<View
@@ -198,102 +197,90 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth, setIsBluetooth
 	)
 }
 
-const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
+const BodyBluetooth: React.FC<BluetoothProps> = ({ hasBluetoothPermissions }) => {
 	const [{ flex, padding, margin, color }] = useStyles()
 	const ctx = useMsgrContext()
 	const [bleEnabled, setBleEnabled] = useState(ctx.persistentOptions?.ble.enable)
 	const [mcEnabled, setMcEnabled] = useState(ctx.persistentOptions?.mc.enable)
 	const [nearbyEnabled, setNearbyEnabled] = useState(ctx.persistentOptions?.nearby.enable)
+	const { t }: { t: any } = useTranslation()
 
 	return (
-		<Translation>
-			{(t: any): React.ReactNode => (
-				<View
-					style={[
-						flex.tiny,
-						padding.medium,
-						margin.bottom.medium,
-						!isBluetooth ? _bluetoothStyles.bodyNotAuthorize : null,
-					]}
-				>
-					<ButtonSetting
-						name={t('settings.bluetooth.activate-button')}
-						icon='bluetooth-outline'
-						iconSize={30}
-						iconColor={color.blue}
-						toggled
-						disabled={!isBluetooth ? true : false}
-						varToggle={bleEnabled}
-						actionToggle={async () => {
-							setBleEnabled(!ctx.persistentOptions?.ble.enable)
-							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.BLE,
-								payload: {
-									enable: !ctx.persistentOptions?.ble.enable,
-								},
-							})
-						}}
-					/>
-
-					<ButtonSetting
-						name={t('settings.mc.activate-button')}
-						icon='wifi-outline'
-						iconSize={30}
-						iconColor={color.blue}
-						toggled
-						disabled={Platform.OS === 'android' || !isBluetooth ? true : false}
-						varToggle={Platform.OS === 'ios' && mcEnabled}
-						actionToggle={async () => {
-							setMcEnabled(!ctx.persistentOptions?.mc.enable)
-							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.MC,
-								payload: {
-									enable: !ctx.persistentOptions?.mc.enable,
-								},
-							})
-						}}
-					/>
-
-					<ButtonSetting
-						name={t('settings.nearby.activate-button')}
-						icon='wifi-outline'
-						iconSize={30}
-						iconColor={color.blue}
-						toggled
-						disabled={Platform.OS === 'ios' || !isBluetooth ? true : false}
-						varToggle={Platform.OS === 'android' && nearbyEnabled}
-						actionToggle={async () => {
-							setNearbyEnabled(!ctx.persistentOptions?.nearby.enable)
-							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.Nearby,
-								payload: {
-									enable: !ctx.persistentOptions?.nearby.enable,
-								},
-							})
-						}}
-					/>
-				</View>
-			)}
-		</Translation>
+		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
+			<ButtonSetting
+				name={t('settings.bluetooth.activate-button')}
+				icon='bluetooth-outline'
+				iconSize={30}
+				iconColor={color.blue}
+				disabled={hasBluetoothPermissions ? false : true}
+				toggled
+				varToggle={bleEnabled}
+				actionToggle={async () => {
+					setBleEnabled(!ctx.persistentOptions?.ble.enable)
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.BLE,
+						payload: {
+							enable: !ctx.persistentOptions?.ble.enable,
+						},
+					})
+				}}
+			/>
+			<ButtonSetting
+				name={t('settings.mc.activate-button')}
+				icon='wifi-outline'
+				iconSize={30}
+				iconColor={color.blue}
+				toggled
+				disabled={Platform.OS === 'android' || !hasBluetoothPermissions ? true : false}
+				varToggle={Platform.OS === 'ios' && mcEnabled}
+				actionToggle={async () => {
+					setMcEnabled(!ctx.persistentOptions?.mc.enable)
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.MC,
+						payload: {
+							enable: !ctx.persistentOptions?.mc.enable,
+						},
+					})
+				}}
+			/>
+			<ButtonSetting
+				name={t('settings.nearby.activate-button')}
+				icon='wifi-outline'
+				iconSize={30}
+				iconColor={color.blue}
+				toggled
+				disabled={Platform.OS === 'ios' || !hasBluetoothPermissions ? true : false}
+				varToggle={Platform.OS === 'android' && nearbyEnabled}
+				actionToggle={async () => {
+					setNearbyEnabled(!ctx.persistentOptions?.nearby.enable)
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.Nearby,
+						payload: {
+							enable: !ctx.persistentOptions?.nearby.enable,
+						},
+					})
+				}}
+			/>
+		</View>
 	)
 }
 
 export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
-	const [isBluetooth, setIsBluetooth] = useState(false)
+	const [hasBluetoothPermissions, setHasBluetoothPermissions] = useState<boolean | undefined>()
 	const { goBack } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	const ctx = useMsgrContext()
 
 	checkBluetoothPermission()
 		.then((result) => {
-			setIsBluetooth(result)
+			setHasBluetoothPermissions(result)
 		})
 		.catch((err) => {
 			console.log('The Bluetooth permission cannot be retrieved:', err)
 		})
 
 	React.useEffect(() => {
-		if (!isBluetooth) {
+		if (!hasBluetoothPermissions) {
 			ctx.setPersistentOption({
 				type: PersistentOptionsKeys.BLE,
 				payload: {
@@ -308,7 +295,7 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 				},
 			})
 		}
-	}, [isBluetooth]) // eslint-disable-line react-hooks/exhaustive-deps
+	}, [hasBluetoothPermissions]) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Translation>
@@ -321,9 +308,19 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 								desc={t('settings.bluetooth.desc')}
 								undo={goBack}
 							>
-								<HeaderBluetooth isBluetooth={isBluetooth} setIsBluetooth={setIsBluetooth} />
+								{hasBluetoothPermissions !== undefined && (
+									<HeaderBluetooth
+										hasBluetoothPermissions={hasBluetoothPermissions}
+										setHasBluetoothPermissions={setHasBluetoothPermissions}
+									/>
+								)}
 							</HeaderSettings>
-							<BodyBluetooth isBluetooth={isBluetooth} setIsBluetooth={setIsBluetooth} />
+							{hasBluetoothPermissions !== undefined && (
+								<BodyBluetooth
+									hasBluetoothPermissions={hasBluetoothPermissions}
+									setHasBluetoothPermissions={setHasBluetoothPermissions}
+								/>
+							)}
 						</ScrollView>
 					</SwipeNavRecognizer>
 				</Layout>
