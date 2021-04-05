@@ -65,10 +65,10 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		isVisibleEvent bool
 	}{
 		mt.AppMessage_TypeAcknowledge:     {h.handleAppMessageAcknowledge, false},
-		mt.AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, true},
+		mt.AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, false},
 		mt.AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		mt.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
-		mt.AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, true},
+		mt.AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, false},
 		mt.AppMessage_TypeUserReaction:    {h.handleAppMessageUserReaction, false},
 	}
 
