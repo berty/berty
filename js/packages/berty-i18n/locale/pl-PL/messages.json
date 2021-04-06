@@ -317,6 +317,10 @@
         "name": "Format dziennika",
         "bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
+      },
       "add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
       "share-button": {
         "title": "Udostępnij ID na discordzie",
