@@ -2,109 +2,109 @@
   "onboarding": {
     "getstarted": {
       "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "open-registered-account": "Entrar numa conta registada",
+      "import-button": "Importar dados de uma conta existente",
+      "account-selector-create-button": "Criar uma nova conta",
+      "more-options": "Mais opções",
+      "button": "COMEÇAR"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Escolha uma predefinição",
+      "change-later": "Poderá mudar mais tarde!",
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Desempenho",
+        "desc": "Fácil de usar - Todas as funcionalidades",
+        "push-notif": "Receber notificações push",
+        "offline-message": "Mensagens offline com Bluetooth",
+        "add-contact": "Adicionar contactos facilmente",
+        "fast-message": "A entrega de mensagens mais rápida"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
+        "title": "Anonimato Total",
+        "desc": "Para utilizadores extremamente cautelosos",
+        "disable-push-notif": "Notificações push desativadas",
         "disable-local-peer-discovery": "",
-        "disable-local-peer-discovery-desc": "",
-        "disable-contact-request": "",
-        "on-same-network": ""
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
+        "disable-contact-request": "Pedidos de contacto desativados",
+        "on-same-network": "Local na mesma rede/wifi"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": "",
-      "import-account": ""
+      "title": "Criar a sua conta",
+      "desc": "Um nome é a única informação necessária",
+      "required": "Necessário",
+      "placeholder": "Nome",
+      "button": "CRIAR CONTA",
+      "import-account": "IMPORTAR CONTA"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Autenticar-se nos serviços",
+      "title": "Serviços",
+      "recommended": "Recomendado",
+      "desc": "Isto irá replicar as tuas conversas num servidor",
+      "button": "Usar os serviços operados pelo Berty",
+      "skip": "SALTAR E FAZER MAIS TARDE"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "A iniciar o nó do Berty…",
+      "desc": "Isto pode demorar alguns segundos"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Não perca nenhuma mensagem ou pedido de contacto",
+      "recommended": "Recomendado",
+      "title": "Notificações",
+      "desc": "É necessário autorizar as notificações push do Berty no seu telemóvel",
+      "button": "AUTORIZAR NOTIFICAÇÕES",
+      "skip": "SALTAR E FAZER MAIS TARDE"
     },
     "bluetooth": {
       "header": "",
-      "optional": "",
+      "optional": "Opcional",
       "title": "Bluetooth",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "desc": "Para usar esta funcionalidade precisa de autorizar o uso de Bluetooth no seu telemóvel",
+      "button": "AUTORIZAR BLUETOOTH",
+      "skip": "SALTAR E FAZER MAIS TARDE"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Configuração finalizada!",
+      "desc": "A app está pronta a ser usada, adicione contactos e converse livremente e em privado com eles",
+      "button": "COMECE A USAR O BERTY"
     }
   },
   "main": {
     "home": {
       "requests": {
-        "title": "",
+        "title": "Pedidos de mensagem",
         "received-at": "",
         "accept": "",
-        "card-title": ""
+        "card-title": "Pedido de contacto!"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Pesquisar palavra-chave",
+      "no-contacts": "Ainda não tem nenhum contacto ou chat",
       "search": {
-        "no-results": ""
+        "no-results": "Não foram encontrados resultados"
       },
       "multi-account": {
         "create-button": "",
         "import-button": ""
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
-        "search-placeholder": "",
-        "continue": "",
-        "create-group": ""
+        "title": "Novo Grupo",
+        "add-members": "Adicionar membros",
+        "group-info": "Informação do Grupo",
+        "search-placeholder": "Pesquisar",
+        "continue": "CONTINUAR",
+        "create-group": "CRIAR UM GRUPO"
       }
     },
     "home-modal": {
-      "top-button": "",
+      "top-button": "Criar um novo grupo",
       "bottom-button": ""
     },
     "suggestion-display-name-initial": "",
     "configurations": {
       "network": {
-        "display-name": "",
+        "display-name": "Configuração de Rede",
         "desc": ""
       },
       "notification": {
@@ -128,39 +128,39 @@
         "no-mc": "",
         "tor-only": ""
       },
-      "save": "",
+      "save": "GUARDAR",
       "skip": ""
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
+      "header-left-button": "Ajuda",
+      "header-center-button": "Ferramentas de Programador",
+      "header-right-button": "Definições",
       "network-button": "",
       "switch-accounts": "",
-      "edit-profile": ""
+      "edit-profile": "Editar perfil"
     },
     "network-map": {
-      "title": "",
+      "title": "Lista de redes",
       "online-peers": ""
     },
     "mode": {
-      "title": "",
+      "title": "Definições",
       "desc": "",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Notificações",
+        "tag-enabled": "Ativado",
+        "tag-disabled": "Desativado"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "Ativado",
+        "tag-disabled": "Desativado"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
+        "title": "Modo da aplicação",
+        "performance-tag": "Desempenho",
         "privacy-tag": "",
         "description-tag": "",
         "first-bullet-point": "",
@@ -192,48 +192,48 @@
       "name-input-label": ""
     },
     "notifications": {
-      "title": "",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "title": "Notificações",
+      "enabled-desc": "Ativou as notificações!",
+      "disabled-desc": "Não ativou as notificações para esta app",
+      "activate-button": "Ativar as notificações",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "Pedido de contacto",
+        "desc": "Receber notificação quando alguém enviar um pedido de contacto"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Notificações de mensagens",
+        "display-button": "Mostrar notificações",
+        "preview-button": "Pré-visualizar mensagens",
+        "sound-button": "Som",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Excepções",
+          "preview-value": "Adicionar",
+          "tag": "{{count}} excepção",
+          "tag_plural": "{{count}} excepções"
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Notificações de grupos",
+        "display-button": "Mostrar notificações",
+        "preview-button": "Pré-visualizar mensagens",
+        "sound-button": "Som",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Excepções",
+          "preview-value": "Adicionar",
+          "tag": "{{count}} excepção",
+          "tag_plural": "{{count}} excepções"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "permission-description": "",
-      "tag-neutral": "",
-      "tag-negative": "",
-      "tag-positive": ""
+      "activate-button": "Ativar bluetooth",
+      "permission-title": "Permissão de Bluetooth do Berty",
+      "permission-description": "Autorizar o Berty a usar as funções de Bluetooth no teu telemóvel",
+      "tag-neutral": "Pedir mais tarde",
+      "tag-negative": "Cancelar",
+      "tag-positive": "OK"
     },
     "mc": {
       "activate-button": ""
@@ -247,7 +247,7 @@
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
-        "action": ""
+        "action": "Adicionar"
       },
       "registered-services-button": {
         "title": "",
@@ -314,6 +314,10 @@
       "system-info-button": "",
       "debug-button": "",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },
