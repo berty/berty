@@ -317,6 +317,10 @@
         "name": "",
         "bullet-point": ""
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Legg til utviklersamtaler",
       "share-button": {
         "title": "Del ID på Discord",
