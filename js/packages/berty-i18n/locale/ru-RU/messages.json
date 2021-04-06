@@ -317,6 +317,10 @@
         "name": "Формат журнала",
         "bullet-point": "Перезапустите приложение после изменения этого поля"
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": "Перезапустите приложение после изменения этого поля"
+      },
       "add-dev-conversations-button": "Добавить dev беседы",
       "share-button": {
         "title": "Поделиться ID на Discord",
