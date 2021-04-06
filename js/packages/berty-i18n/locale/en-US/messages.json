@@ -317,6 +317,10 @@
         "name": "Log format",
         "bullet-point": "Restart app after changing this field"
       },
+      "log-filters-button": {
+        "name": "Log filters",
+        "bullet-point": "Restart app after changing this field"
+      },
       "add-dev-conversations-button": "Add dev conversations",
       "share-button": {
         "title": "Share ID on discord",

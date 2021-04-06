@@ -27,7 +27,6 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 		.closeAccountWithProgress({})
 		.then(async (stream) => {
 			stream.onMessage((msg, _) => {
-				// console.log('closeAccountWithProgress:', msg)
 				if (msg?.progress?.state !== 'done') {
 					dispatch({
 						type: MessengerActions.SetStateStreamInProgress,
@@ -63,11 +62,10 @@ export const openAccountWithProgress = async (
 		.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
-			loggerFilters: GoBridgeDefaultOpts.logFilters,
+			loggerFilters: bridgeOpts.logFilters,
 		})
 		.then(async (stream) => {
 			stream.onMessage((msg, _) => {
-				// console.log('openAccountWithProgress:', msg)
 				if (msg?.progress?.doing !== 'done') {
 					dispatch({
 						type: MessengerActions.SetStateStreamInProgress,
@@ -247,6 +245,11 @@ export const openingDaemon = async (
 		bridgeOpts.cliArgs = opts?.log?.format
 			? [...bridgeOpts.cliArgs!, `--log.format=${opts?.log?.format}`]
 			: [...bridgeOpts.cliArgs!, '--log.format=console']
+
+		// set log filter flag
+		bridgeOpts.logFilters = opts?.logFilters?.format
+			? opts?.logFilters?.format
+			: 'info+:bty*,-*.grpc warn+:*.grpc error+:*'
 	} catch (e) {
 		console.warn('store getPersistentOptions Failed:', e)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)

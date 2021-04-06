@@ -142,6 +142,7 @@ export enum PersistentOptionsKeys {
 	Configurations = 'configurations',
 	WelcomeModal = 'welcomeModal',
 	Preset = 'preset',
+	LogFilters = 'logFilters',
 }
 
 export type PersistentOptionsI18N = {
@@ -207,6 +208,10 @@ export type PersistentOptionsPreset = {
 	value: 'performance' | 'full-anonymity'
 }
 
+export type PersistentOptionsLogFilters = {
+	format: string
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -256,6 +261,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.Preset
 			payload: PersistentOptionsPreset
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.LogFilters
+			payload: PersistentOptionsLogFilters
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -270,6 +279,7 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
 	[PersistentOptionsKeys.WelcomeModal]: PersistentOptionsWelcomeModal
 	[PersistentOptionsKeys.Preset]: PersistentOptionsPreset
+	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => {
@@ -337,6 +347,9 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		},
 		[PersistentOptionsKeys.Preset]: {
 			value: 'performance',
+		},
+		[PersistentOptionsKeys.LogFilters]: {
+			format: 'info+:bty*,-*.grpc warn+:*.grpc error+:*',
 		},
 	}
 }
