@@ -317,6 +317,10 @@
         "name": "Naplózás formázása",
         "bullet-point": ""
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "",
       "share-button": {
         "title": "ID megosztása Discordon",
