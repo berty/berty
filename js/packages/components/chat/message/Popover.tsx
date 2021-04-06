@@ -14,57 +14,41 @@ const Popover: React.FC<{
 	return (
 		<View
 			style={{
-				padding: 20,
-				paddingBottom: 40,
-				height: 120,
+				backgroundColor: '#F7F8FF',
+				flexDirection: 'row',
+				paddingVertical: 5,
+				paddingHorizontal: 10,
+				alignItems: 'center',
+				justifyContent: 'center',
+				borderRadius: 100,
+				borderWidth: 2,
+				borderColor: '#EFF1FA',
 			}}
 		>
-			<View
-				style={{
-					backgroundColor: '#F7F8FF',
-					flexDirection: 'row',
-					paddingVertical: 5,
-					paddingHorizontal: 10,
-					alignItems: 'center',
-					justifyContent: 'center',
-					borderRadius: 100,
-					shadowColor: 'rgba(0,0,0,1)',
-					shadowOffset: {
-						width: 0,
-						height: 10,
-					},
-					shadowOpacity: 0.27,
-					shadowRadius: 10,
-					elevation: 6,
-					borderWidth: 2,
-					borderColor: '#EFF1FA',
-				}}
-			>
-				<Icon
-					name='undo'
-					fill='#D1D4DE'
-					style={{ marginHorizontal: 4 }}
-					height={30}
-					width={30}
-					onPress={onReply}
+			<Icon
+				name='undo'
+				fill='#D1D4DE'
+				style={{ marginHorizontal: 4 }}
+				height={30}
+				width={30}
+				onPress={onReply}
+			/>
+			{emojis.map((item) => (
+				<Emoji
+					key={item}
+					name={item}
+					style={{ marginHorizontal: 4, fontSize: 26 }}
+					onPress={() => onSelectEmoji(item)}
 				/>
-				{emojis.map((item) => (
-					<Emoji
-						key={item}
-						name={item}
-						style={{ marginHorizontal: 4, fontSize: 26 }}
-						onPress={() => onSelectEmoji(item)}
-					/>
-				))}
-				<Icon
-					name='more-horizontal'
-					fill='#D1D4DE'
-					style={{ marginHorizontal: 4 }}
-					height={40}
-					width={40}
-					onPress={onEmojiKeyboard}
-				/>
-			</View>
+			))}
+			<Icon
+				name='more-horizontal'
+				fill='#D1D4DE'
+				style={{ marginHorizontal: 4 }}
+				height={40}
+				width={40}
+				onPress={onEmojiKeyboard}
+			/>
 		</View>
 	)
 }

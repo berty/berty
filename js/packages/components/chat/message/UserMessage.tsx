@@ -4,7 +4,7 @@ import { SHA3 } from 'sha3'
 import palette from 'google-palette'
 import Color from 'color'
 import { Text, Icon } from '@ui-kitten/components'
-import Popover, { PopoverPlacement } from 'react-native-popover-view'
+import Popover from 'react-native-popover-view'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
 
 import beapi from '@berty-tech/api'
@@ -297,33 +297,47 @@ export const UserMessage: React.FC<{
 						<PanGestureHandler
 							enabled={!inte.isMine}
 							onGestureEvent={({ nativeEvent }) => {
-								if (nativeEvent.translationX > 0 && nativeEvent.translationX < 100) {
+								if (nativeEvent.translationX > 0 && nativeEvent.translationX < 120) {
 									Animated.timing(animatedValue, {
 										toValue: nativeEvent.translationX,
-										duration: 10,
+										duration: 1,
 										useNativeDriver: false,
 									}).start()
 								} else if (nativeEvent.translationX <= 0) {
 									Animated.timing(animatedValue, {
 										toValue: 0,
-										duration: 100,
+										duration: 50,
 										useNativeDriver: false,
 									}).start()
 								}
 							}}
 							onHandlerStateChange={(event) => {
 								if (event.nativeEvent.oldState === State.ACTIVE) {
-									if (event.nativeEvent.velocityX > 100 || event.nativeEvent.translationX > 40) {
+									if (event.nativeEvent.translationX > 120) {
+										setActiveReplyInte({
+											...inte,
+											backgroundColor: msgBackgroundColor,
+											textColor: msgTextColor,
+										})
 										Animated.timing(animatedValue, {
-											toValue: 100,
-											duration: 100,
+											toValue: 0,
+											duration: 50,
+											useNativeDriver: false,
+										}).start()
+									} else if (
+										event.nativeEvent.velocityX > 100 ||
+										event.nativeEvent.translationX > 40
+									) {
+										Animated.timing(animatedValue, {
+											toValue: 60,
+											duration: 50,
 
 											useNativeDriver: false,
 										}).start()
 									} else {
 										Animated.timing(animatedValue, {
 											toValue: 0,
-											duration: 100,
+											duration: 50,
 
 											useNativeDriver: false,
 										}).start()
@@ -335,25 +349,24 @@ export const UserMessage: React.FC<{
 								style={{
 									flexDirection: 'row',
 									alignItems: 'center',
-									marginLeft: animatedValue,
+									transform: [{ translateX: animatedValue }],
 								}}
 							>
 								<Animated.View
 									style={{
 										marginRight: 10,
 										opacity: animatedValue.interpolate({
-											inputRange: [0, 100],
+											inputRange: [0, 60],
 											outputRange: [0, 1],
 										}),
 										position: 'absolute',
-										bottom: 0,
 										left: -50,
 									}}
 								>
 									<Icon
 										name='undo'
-										height={40}
-										width={40}
+										height={30}
+										width={30}
 										fill='#D1D4DF'
 										onPress={() => {
 											setActiveReplyInte({
@@ -371,14 +384,11 @@ export const UserMessage: React.FC<{
 									/>
 								</Animated.View>
 								<Popover
-									placement={PopoverPlacement.BOTTOM}
 									isVisible={activePopoverCid === inte.cid}
 									popoverStyle={{
 										backgroundColor: 'transparent',
 										borderWidth: 0,
 										shadowColor: 'transparent',
-										marginTop: -30,
-										marginLeft: -20,
 									}}
 									backgroundStyle={{
 										backgroundColor: 'transparent',
@@ -394,17 +404,16 @@ export const UserMessage: React.FC<{
 											disabled={inte.isMine}
 											activeOpacity={0.9}
 											onPress={() => {
+												if (activePopoverCid === inte.cid) {
+													setActivePopoverCid(null)
+												} else if (animatedValue._value === 0) {
+													setActivePopoverCid(inte.cid)
+												}
 												Animated.timing(animatedValue, {
 													toValue: 0,
-													duration: 100,
+													duration: 50,
 													useNativeDriver: false,
-												}).start(() => {
-													if (activePopoverCid === inte.cid) {
-														setActivePopoverCid(null)
-													} else {
-														setActivePopoverCid(inte.cid)
-													}
-												})
+												}).start(() => {})
 											}}
 										>
 											<HyperlinkUserMessage

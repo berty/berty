@@ -80,7 +80,7 @@ export const HyperlinkUserMessage: React.FC<{
 					backgroundColor: msgBackgroundColor,
 				},
 				inte?.reactions?.length && {
-					marginBottom: 10,
+					marginBottom: 14,
 				},
 			]}
 		>
@@ -134,15 +134,9 @@ export const HyperlinkUserMessage: React.FC<{
 							paddingVertical: 2,
 							paddingHorizontal: 4,
 							position: 'absolute',
-							bottom: -10,
+							bottom: -14,
+							right: 10,
 						},
-						inte.isMine
-							? {
-									left: 10,
-							  }
-							: {
-									right: 10,
-							  },
 					]}
 				>
 					{inte.reactions.map(({ emoji }) => (

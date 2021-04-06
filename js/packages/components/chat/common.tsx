@@ -387,7 +387,7 @@ export const ChatFooter: React.FC<{
 										<Text
 											numberOfLines={1}
 											style={{
-												width: 220,
+												width: aMaxWidth?.value,
 												color: activeReplyInte?.textColor,
 												fontSize: 12,
 												lineHeight: 17,
