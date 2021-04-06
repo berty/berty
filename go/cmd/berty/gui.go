@@ -38,7 +38,7 @@ func guiCommand() (*ffcli.Command, func() error) {
 
 	return &ffcli.Command{
 		Name:           "gui",
-		ShortHelp:      "start a fyne-based berty client",
+		ShortHelp:      "start an experimental fyne-based berty client, not officially supported",
 		ShortUsage:     "berty [global flags] gui [flags]",
 		FlagSetBuilder: fsBuilder,
 		Options:        ffSubcommandOptions(),
