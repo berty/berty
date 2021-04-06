@@ -114,6 +114,10 @@ endif
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
 
+	# gomobile cache
+	chmod -R u+wx ios/.gomobile-cache" && rm -rf ios/.gomobile-cache"
+	chmod -R u+wx android/.gomobile-cache" && rm -rf android/.gomobile-cache"
+
 	# Help complementary cleaning
 	@echo ""
 	@echo "Cleaned. Now you may consider clearing some of your system cache with one of the following commands."
@@ -121,8 +125,6 @@ endif
 	@echo "  rm -rf $(HOME)/.gradle/caches"
 	@echo "  rm -rf $(HOME)/Library/Developer/Xcode/DerivedData"
 	@echo "  rm -rf $(HOME)/Library/Caches/CocoaPods"
-	@echo "  sudo rm -rf $(PWD)/ios/.gomobile-cache"
-	@echo "  sudo rm -rf $(PWD)/android/.gomobile-cache"
 
 
 .PHONY: gen.clean

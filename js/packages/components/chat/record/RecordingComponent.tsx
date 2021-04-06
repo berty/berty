@@ -1,10 +1,12 @@
 import React from 'react'
 import { Animated, Text, TouchableOpacity, View } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Icon } from '@ui-kitten/components'
-import { RecordingState } from './RecordComponent'
+
+import { useStyles } from '@berty-tech/styles'
+
+import { RecordingState } from './common'
 
 export const RecordingComponent: React.FC<{
 	recordingState: RecordingState

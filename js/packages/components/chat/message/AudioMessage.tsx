@@ -1,18 +1,16 @@
 import React, { useEffect, useMemo } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
-import { useMsgrContext } from '@berty-tech/store/hooks'
-
-import { useStyles } from '@berty-tech/styles'
-import { getSource } from '../../utils'
 import moment from 'moment'
+
+import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
 import beapi from '@berty-tech/api'
-import {
-	limitIntensities,
-	voiceMemoFilename,
-} from '@berty-tech/components/chat/record/RecordComponent'
 import { playSoundAsync } from '@berty-tech/store/sounds'
+
+import { limitIntensities, voiceMemoFilename } from '../record/common'
+import { getSource } from '../../utils'
 
 const volumeValueShown = 50
 

@@ -1,18 +1,20 @@
 import React, { useMemo, useState } from 'react'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { readFile } from 'react-native-fs'
+
 import { playSoundFile } from '@berty-tech/store/sounds'
-import { WaveForm } from '@berty-tech/components/chat/message/AudioMessage'
+import { useStyles } from '@berty-tech/styles'
+
 import {
 	limitIntensities,
 	RecordingState,
 	volumeValuesAttached,
 	volumeValueLowest,
 	volumeValuePrecision,
-} from '@berty-tech/components/chat/record/RecordComponent'
+} from './common'
+import { WaveForm } from '../message/AudioMessage'
 
 export const PreviewComponent: React.FC<{
 	meteredValuesRef: React.MutableRefObject<number[]>
@@ -52,7 +54,7 @@ export const PreviewComponent: React.FC<{
 					},
 				]}
 				onPress={() => {
-					clearInterval(clearRecordingInterval)
+					clearInterval(clearRecordingInterval as any)
 					setHelpMessageValue({
 						message: t('audio.record.tooltip.not-sent'),
 					})
