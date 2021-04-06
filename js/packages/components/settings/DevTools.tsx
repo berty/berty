@@ -310,15 +310,18 @@ const PlaySound: React.FC = () => {
 	)
 }
 
-const LogButton: React.FC = () => {
+const LogButton: React.FC<{
+	name: string
+	type: PersistentOptionsKeys.Log | PersistentOptionsKeys.LogFilters
+	bulletPointValue: string
+}> = ({ name, type, bulletPointValue }) => {
 	const [{ flex, row, color, text, margin, padding, border }] = useStyles()
 	const ctx = useMsgrContext()
-	const [value, setValue] = useState<string>(ctx.persistentOptions?.log?.format)
-	const { t } = useTranslation()
+	const [value, setValue] = useState<string>(ctx.persistentOptions[type].format)
 
 	return (
 		<ButtonSetting
-			name={t('settings.devtools.log-button.name')}
+			name={name}
 			icon='message-circle-outline'
 			iconColor={color.dark.grey}
 			actionIcon={null}
@@ -339,6 +342,8 @@ const LogButton: React.FC = () => {
 					]}
 				>
 					<TextInput
+						autoCorrect={false}
+						autoCapitalize='none'
 						onChangeText={(t) => setValue(t)}
 						value={value}
 						style={[text.bold.small, text.size.medium, flex.scale(8), { fontFamily: 'Open Sans' }]}
@@ -346,7 +351,7 @@ const LogButton: React.FC = () => {
 					<TouchableOpacity
 						onPress={async () => {
 							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.Log,
+								type,
 								payload: {
 									format: value,
 								},
@@ -358,7 +363,7 @@ const LogButton: React.FC = () => {
 				</View>
 
 				<ButtonSettingItem
-					value={t('settings.devtools.log-button.bullet-point')}
+					value={bulletPointValue}
 					icon='info-outline'
 					iconColor={color.yellow}
 					iconSize={15}
@@ -472,7 +477,16 @@ const BodyDevTools: React.FC<{}> = () => {
 					})
 				}}
 			/>
-			<LogButton />
+			<LogButton
+				name={t('settings.devtools.log-button.name')}
+				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
+				type={PersistentOptionsKeys.Log}
+			/>
+			<LogButton
+				name={t('settings.devtools.log-filters-button.name')}
+				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
+				type={PersistentOptionsKeys.LogFilters}
+			/>
 			<ButtonSetting
 				name={t('settings.devtools.add-dev-conversations-button')}
 				icon='plus-outline'
