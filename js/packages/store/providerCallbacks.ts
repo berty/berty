@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 
 import beapi from '@berty-tech/api'
-import { reducerAction } from '@berty-tech/store/providerReducer'
 import {
 	defaultPersistentOptions,
 	MessengerActions,
@@ -9,58 +8,10 @@ import {
 } from '@berty-tech/store/context'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import {
-	refreshAccountList,
-	closeAccountWithProgress,
-	storageKeyForAccount,
-	accountService,
-} from './providerEffects'
+import { storageKeyForAccount } from './providerEffects'
 import { Maybe } from './hooks'
-
-const _createAccount = async (embedded: boolean, dispatch: (arg0: reducerAction) => void) => {
-	let resp: beapi.account.CreateAccount.Reply
-	try {
-		resp = await accountService.createAccount({})
-		console.log('createNewAccount: createAccount')
-	} catch (e) {
-		console.warn('unable to create account', e)
-		return
-	}
-	if (!resp.accountMetadata?.accountId) {
-		throw new Error('no account id returned')
-	}
-
-	await refreshAccountList(embedded, dispatch)
-	dispatch({
-		type: MessengerActions.SetCreatedAccount,
-		payload: {
-			accountId: resp.accountMetadata.accountId,
-		},
-	})
-}
-
-export const createNewAccount = async (
-	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
-	clearClients?: any,
-) => {
-	if (!embedded) {
-		return
-	}
-
-	if (clearClients) {
-		await clearClients()
-		console.log('createNewAccount: clearClients')
-	}
-
-	try {
-		await closeAccountWithProgress(dispatch)
-		await _createAccount(embedded, dispatch)
-	} catch (e) {
-		console.warn('unable to close account', e)
-		return
-	}
-}
+import { createAccount, refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
+import { accountService, reducerAction } from './context'
 
 export const importAccount = async (
 	embedded: boolean,
@@ -166,7 +117,7 @@ export const deleteAccount = async (
 	}
 	if (!Object.values(accounts).length) {
 		// create new account if no more account exist
-		await _createAccount(embedded, dispatch)
+		await createAccount(embedded, dispatch)
 	} else {
 		// open the last opened if an other account exist
 		let accountSelected: beapi.account.IAccountMetadata | null = null

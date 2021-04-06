@@ -3,6 +3,8 @@ import { Dispatch, createContext, useContext } from 'react'
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { globals } from '@berty-tech/config'
+import { Service } from '@berty-tech/grpc-bridge'
+import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
 
 import { ParsedInteraction } from './types.gen'
 import { SoundKey } from './sounds'
@@ -474,3 +476,11 @@ export const MsgrContext = createContext<MsgrState>(initialState)
 export default MsgrContext
 
 export const useMsgrContext = (): MsgrState => useContext(MsgrContext)
+
+export declare type reducerAction = {
+	type: beapi.messenger.StreamEvent.Type | MessengerActions
+	payload?: any
+	name?: string
+}
+
+export const accountService = Service(beapi.account.AccountService, rpcBridge, null)

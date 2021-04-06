@@ -2,22 +2,18 @@ import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
 
 import beapi from '@berty-tech/api'
+import { pbDateToNum } from '@berty-tech/components/helpers'
+
 import {
 	initialState,
 	isExpectedAppStateChange,
 	MessengerActions,
 	MessengerAppState,
 	MsgrState,
+	reducerAction,
 } from './context'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
-import { pbDateToNum } from '@berty-tech/components/helpers'
-import { parseInteraction } from '@berty-tech/store/utils'
-
-export declare type reducerAction = {
-	type: beapi.messenger.StreamEvent.Type | MessengerActions
-	payload?: any
-	name?: string
-}
+import { parseInteraction } from './utils'
+import { ParsedInteraction } from './types.gen'
 
 const mergeInteractions = (existing: Array<ParsedInteraction>, toAdd: Array<ParsedInteraction>) => {
 	// This function expects both args to be sorted by sentDate descending

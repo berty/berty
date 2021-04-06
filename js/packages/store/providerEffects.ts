@@ -3,55 +3,27 @@ import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
-import {
-	defaultPersistentOptions,
-	MessengerActions,
-	MessengerAppState,
-	PersistentOptions,
-	PersistentOptionsKeys,
-} from '@berty-tech/store/context'
 import beapi from '@berty-tech/api'
-import { reducerAction } from '@berty-tech/store/providerReducer'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 
 import ExternalTransport from './externalTransport'
-import { createNewAccount } from './providerCallbacks'
-
-export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
-
-export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
-	await accountService
-		.closeAccountWithProgress({})
-		.then(async (stream) => {
-			stream.onMessage((msg, _) => {
-				if (msg?.progress?.state !== 'done') {
-					dispatch({
-						type: MessengerActions.SetStateStreamInProgress,
-						payload: {
-							msg: msg,
-							stream: 'Close account',
-						},
-					})
-				} else {
-					dispatch({
-						type: MessengerActions.SetStateStreamDone,
-					})
-				}
-				return
-			})
-			await stream.start()
-			console.log('node is closed')
-		})
-		.catch((err) => {
-			dispatch({
-				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to close node: ${err}`) },
-			})
-		})
-}
+import {
+	createNewAccount,
+	refreshAccountList,
+	closeAccountWithProgress,
+} from './effectableCallbacks'
+import {
+	defaultPersistentOptions,
+	MessengerActions,
+	MessengerAppState,
+	PersistentOptions,
+	PersistentOptionsKeys,
+	reducerAction,
+	accountService,
+} from './context'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -94,34 +66,6 @@ export const openAccountWithProgress = async (
 }
 
 export const storageKeyForAccount = (accountID: string) => `storage_${accountID}`
-
-export const refreshAccountList = async (
-	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
-): Promise<beapi.account.IAccountMetadata[]> => {
-	try {
-		if (embedded) {
-			const resp = await accountService.listAccounts({})
-
-			if (!resp.accounts) {
-				return []
-			}
-
-			dispatch({ type: MessengerActions.SetAccounts, payload: resp.accounts })
-
-			return resp.accounts
-		}
-
-		let accounts = [{ accountId: '0', name: 'remote server account' }]
-
-		dispatch({ type: MessengerActions.SetAccounts, payload: accounts })
-
-		return accounts
-	} catch (e) {
-		console.warn(e)
-		return []
-	}
-}
 
 const getPersistentOptions = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -175,7 +119,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 			Object.values(accounts).forEach((account) => {
 				if (!accountSelected) {
 					accountSelected = account
-				} else if (accountSelected && accountSelected.lastOpened < account.lastOpened) {
+				} else if (accountSelected && accountSelected.lastOpened < (account.lastOpened || 0)) {
 					accountSelected = account
 				}
 			})
@@ -221,7 +165,7 @@ export const openingDaemon = async (
 	let bridgeOpts: GoBridgeOpts
 	try {
 		const store = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount.toString()))
-		const opts: PersistentOptions = JSON.parse(store)
+		const opts: PersistentOptions = JSON.parse(store as any)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 
 		// set ble flag

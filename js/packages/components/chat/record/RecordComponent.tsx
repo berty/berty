@@ -6,29 +6,27 @@ import {
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
-import { useStyles } from '@berty-tech/styles'
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import { Recorder } from '@react-native-community/audio-toolkit'
+import { useTranslation } from 'react-i18next'
+import { Icon } from '@ui-kitten/components'
+
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { playSound } from '@berty-tech/store/sounds'
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { useTranslation } from 'react-i18next'
-import { Icon } from '@ui-kitten/components'
+
+import {
+	limitIntensities,
+	RecordingState,
+	volumeValuesAttached,
+	volumeValueLowest,
+	volumeValuePrecision,
+	voiceMemoFilename,
+} from './common'
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
-
-export enum RecordingState {
-	UNDEFINED = 0,
-	NOT_RECORDING = 1,
-	RECORDING = 2,
-	RECORDING_LOCKED = 3,
-	PENDING_CANCEL = 4,
-	CANCELLING = 5,
-	PENDING_PREVIEW = 6,
-	PREVIEW = 7,
-	COMPLETE = 8,
-}
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -40,45 +38,6 @@ enum MicPermStatus {
 const voiceMemoBitrate = 32000
 const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
-export const voiceMemoFilename = 'audio_memo.aac'
-
-export const volumeValueLowest = -160
-export const volumeValuePrecision = 100000
-export const volumeValuesAttached = 100
-
-export const limitIntensities = (intensities: Array<number>, max: number): Array<number> => {
-	if (intensities.length === max) {
-		return intensities
-	}
-
-	if (intensities.length === 0) {
-		return []
-	}
-
-	const normalizedIntensities: Array<number> = []
-
-	if (intensities.length > max) {
-		const step = Math.ceil(intensities.length / max)
-
-		for (let idx = 0; idx < intensities.length; idx++) {
-			if (normalizedIntensities.length === 0 || idx / step > normalizedIntensities.length) {
-				normalizedIntensities.push(intensities[idx])
-			} else {
-				normalizedIntensities[normalizedIntensities.length - 1] = Math.max(
-					normalizedIntensities[normalizedIntensities.length - 1],
-					intensities[idx],
-				)
-			}
-		}
-		return normalizedIntensities
-	}
-
-	for (let i = 0; i < max; i++) {
-		normalizedIntensities.push(intensities[Math.floor(i / (max / intensities.length))])
-	}
-
-	return normalizedIntensities
-}
 
 const acquireMicPerm = async (): Promise<MicPermStatus> => {
 	try {
@@ -257,7 +216,7 @@ export const RecordComponent: React.FC<{
 		clearInterval(clearRecordingInterval)
 		setRecordingState(RecordingState.NOT_RECORDING)
 		setRecordDuration(null)
-		recorder.current?.removeListener('meter', addMeteredValue)
+		;(recorder.current as any)?.removeListener('meter', addMeteredValue)
 	}, [addMeteredValue, clearRecordingInterval])
 
 	const sendComplete = useCallback(
@@ -430,7 +389,7 @@ export const RecordComponent: React.FC<{
 							console.log('recorder record error', err?.message)
 						} else {
 							try {
-								recorder.current?.on('meter', addMeteredValue)
+								;(recorder.current as any)?.on('meter', addMeteredValue)
 							} catch (e) {
 								console.warn(['err' + e])
 							}
