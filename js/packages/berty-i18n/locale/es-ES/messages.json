@@ -317,6 +317,10 @@
         "name": "",
         "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
+      },
       "add-dev-conversations-button": "Agregar conversaciones de desarrollo",
       "share-button": {
         "title": "Compartir ID en discord",
