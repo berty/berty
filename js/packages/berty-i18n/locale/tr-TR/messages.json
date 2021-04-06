@@ -317,6 +317,10 @@
         "name": "",
         "bullet-point": ""
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Geliştirici konuşmalarını ekle",
       "share-button": {
         "title": "ID'yi Discord'da paylaş",
