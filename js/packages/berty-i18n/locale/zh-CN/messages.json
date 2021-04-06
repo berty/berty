@@ -317,6 +317,10 @@
         "name": "日志格式",
         "bullet-point": "更改之后重新启动应用"
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": "更改之后重新启动应用"
+      },
       "add-dev-conversations-button": "添加开发者会话",
       "share-button": {
         "title": "分享ID到Discord",
