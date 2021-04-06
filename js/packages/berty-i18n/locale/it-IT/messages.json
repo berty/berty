@@ -317,6 +317,10 @@
         "name": "",
         "bullet-point": ""
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "Aggiungi conversazioni dev",
       "share-button": {
         "title": "Condividi ID su Discord",
