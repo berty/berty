@@ -8434,10 +8434,10 @@ react-native-screens@^2.17.1:
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.17.1.tgz#c3c0ac750af48741c5b1635511e6af2a27b74309"
   integrity sha512-B4gD5e4csvlVwlhf+RNqjQZ9mHTwe/iL3rXondgZxnKz4oW0QAmtLnLRKOrYVxoaJaF9Fy7jhjo//24/472APQ==
 
-react-native-share@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-4.1.2.tgz#674bffd7b0cb5f812381569961c341ce3d188dd7"
-  integrity sha512-wfOMrlzxe2lMNTrHnd7sDrRmiOmG1XUmEwqfmUFFypp5y7OOe9prJCjsp3usG83DRkl3bInX1/VOM8DJYIEtfw==
+react-native-share@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-5.2.0.tgz#6170c218c869066c3a589414fa9cf922ddc4228a"
+  integrity sha512-pPXiczgLVUp/RyxdLsQ6oBW2atmuMaTIAnh7/gzGvcCPLPavFViih5QsAFtfljCNEHah4jRXDbM3aAsttCY2sw==
 
 react-native-size-matters@^0.3.1:
   version "0.3.1"
