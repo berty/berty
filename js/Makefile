@@ -27,6 +27,8 @@ xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
+ios_gomobile_cache=ios/.gomobile-cache
+android_gomobile_cache=android/.gomobile-cache
 
 ## if (PWD != Makefile directory) then exit
 
@@ -115,8 +117,12 @@ endif
 	rm -rf ios/Berty.xcworkspace
 
 	# gomobile cache
-	chmod -R u+wx ios/.gomobile-cache" && rm -rf ios/.gomobile-cache"
-	chmod -R u+wx android/.gomobile-cache" && rm -rf android/.gomobile-cache"
+ifneq (, $(wildcard $(ios_gomobile_cache)))
+	chmod -R u+wx $(ios_gomobile_cache) && rm -rf $(ios_gomobile_cache)
+endif
+ifneq (, $(wildcard $(android_gomobile_cache)))
+	chmod -R u+wx $(android_gomobile_cache) && rm -rf $(android_gomobile_cache)
+endif
 
 	# Help complementary cleaning
 	@echo ""

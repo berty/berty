@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Vibration } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
-import { SafeAreaContext } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -24,34 +24,31 @@ const NotificationContents: React.FC<{
 
 const NotificationBody: React.FC<any> = (props) => {
 	const [{ border, flex, column, background }] = useStyles()
+	const insets = useSafeAreaInsets()
 
 	return (
-		<SafeAreaContext.Consumer>
-			{(insets) => (
-				<GestureRecognizer
-					onSwipe={(gestureName) => {
-						if (gestureName === 'SWIPE_UP' && typeof props.onClose === 'function') {
-							props.onClose()
-						}
-					}}
-					style={[
-						border.shadow.big,
-						flex.tiny,
-						flex.justify.center,
-						column.item.center,
-						background.white,
-						{
-							position: 'absolute',
-							marginTop: insets?.top || 0,
-							width: '90%',
-							borderRadius: 15,
-						},
-					]}
-				>
-					<NotificationContents {...props} />
-				</GestureRecognizer>
-			)}
-		</SafeAreaContext.Consumer>
+		<GestureRecognizer
+			onSwipe={(gestureName) => {
+				if (gestureName === 'SWIPE_UP' && typeof props.onClose === 'function') {
+					props.onClose()
+				}
+			}}
+			style={[
+				border.shadow.big,
+				flex.tiny,
+				flex.justify.center,
+				column.item.center,
+				background.white,
+				{
+					position: 'absolute',
+					marginTop: insets?.top || 0,
+					width: '90%',
+					borderRadius: 15,
+				},
+			]}
+		>
+			<NotificationContents {...props} />
+		</GestureRecognizer>
 	)
 }
 

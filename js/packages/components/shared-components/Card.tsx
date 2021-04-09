@@ -28,11 +28,7 @@ export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = (
 )
 
 export const Card: React.FunctionComponent<ViewProps> = (props) => (
-	<View
-		{...props}
-		style={[style.default, props.style]}
-		onPress={props.onPress ? props.onPress : (): null => null}
-	>
+	<View {...props} style={[style.default, props.style]}>
 		<Fragment>{props.children}</Fragment>
 	</View>
 )
