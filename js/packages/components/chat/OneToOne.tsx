@@ -4,6 +4,7 @@ import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import EmojiBoard from 'react-native-emoji-board'
 
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
@@ -11,6 +12,7 @@ import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import {
 	useContact,
+	useMsgrContext,
 	useConversation,
 	useReadEffect,
 	useNotificationsInhibitor,
@@ -22,6 +24,7 @@ import { useLayout } from '../hooks'
 import { ChatDate, ChatFooter } from './common'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MessageList } from '@berty-tech/components/chat/MessageList'
+import { ReplyReactionProvider } from './ReplyReactionContext'
 
 //
 // Chat
@@ -131,13 +134,14 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 		return false
 	})
 
-	const [inputIsFocused, setInputFocus] = useState(false)
+	const insets = useSafeAreaInsets()
 	const [{ flex, background }] = useStyles()
 	useReadEffect(params?.convId, 1000)
 	const { dispatch } = useNavigation()
 	const { t } = useTranslation()
 	const conv = useConversation(params?.convId)
 	const contact = useContact(conv?.contactPublicKey)
+	const ctx = useMsgrContext()
 
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const isFooterDisable = isIncoming
@@ -150,38 +154,76 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const [isSwipe, setSwipe] = useState(true)
 
 	return (
-		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
-			<SwipeNavRecognizer
-				onSwipeLeft={() =>
-					isSwipe &&
-					dispatch(
-						CommonActions.navigate({
-							name: Routes.Chat.OneToOneSettings,
-							params: { convId: params?.convId },
-						}),
-					)
-				}
-			>
-				<KeyboardAvoidingView
-					style={[flex.tiny, { justifyContent: 'flex-start' }]}
-					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				>
-					<MessageList
-						id={params?.convId}
-						scrollToMessage={params?.scrollToMessage || '0'}
-						{...{ setStickyDate, setShowStickyDate }}
-					/>
-					<ChatFooter
-						convPk={params?.convId}
-						isFocused={inputIsFocused}
-						setFocus={setInputFocus}
-						disabled={isFooterDisable}
-						placeholder={placeholder}
-						setSwipe={setSwipe}
-					/>
-					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
-				</KeyboardAvoidingView>
-			</SwipeNavRecognizer>
-		</View>
+		<ReplyReactionProvider>
+			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }) => (
+				<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
+					<SwipeNavRecognizer
+						onSwipeLeft={() =>
+							isSwipe &&
+							dispatch(
+								CommonActions.navigate({
+									name: Routes.Chat.OneToOneSettings,
+									params: { convId: params?.convId },
+								}),
+							)
+						}
+					>
+						<KeyboardAvoidingView
+							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+							style={[flex.tiny, { justifyContent: 'flex-start' }]}
+						>
+							<MessageList
+								id={params?.convId}
+								scrollToMessage={params?.scrollToMessage || '0'}
+								{...{ setStickyDate, setShowStickyDate }}
+							/>
+
+							<ChatFooter
+								convPk={params?.convId}
+								disabled={isFooterDisable}
+								placeholder={placeholder}
+								setSwipe={setSwipe}
+							/>
+
+							<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
+						</KeyboardAvoidingView>
+					</SwipeNavRecognizer>
+					{!!activeEmojiKeyboardCid && (
+						<EmojiBoard
+							showBoard={true}
+							onClick={(emoji) => {
+								ctx.client
+									?.interact({
+										conversationPublicKey: conv?.publicKey,
+										type: beapi.messenger.AppMessage.Type.TypeUserReaction,
+										payload: beapi.messenger.AppMessage.UserReaction.encode({
+											emoji: `:${emoji.name}:`,
+											state: true,
+										}).finish(),
+										targetCid: activeEmojiKeyboardCid,
+									})
+									.then(() => {
+										ctx.playSound('messageSent')
+										setActivePopoverCid(null)
+										setActiveEmojiKeyboardCid(null)
+									})
+									.catch((e) => {
+										console.warn('e sending message:', e)
+									})
+							}}
+							onRemove={() => {
+								setActivePopoverCid(activeEmojiKeyboardCid)
+								setActiveEmojiKeyboardCid(null)
+							}}
+							containerStyle={{
+								position: 'absolute',
+								bottom: 0,
+								paddingBottom: insets.bottom,
+							}}
+						/>
+					)}
+				</View>
+			)}
+		</ReplyReactionProvider>
 	)
 }

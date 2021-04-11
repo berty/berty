@@ -5,6 +5,7 @@ import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Icon, Text } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import tlds from 'tlds'
+import Emoji from 'react-native-emoji'
 
 import { Maybe, useClient } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
@@ -78,6 +79,9 @@ export const HyperlinkUserMessage: React.FC<{
 				{
 					backgroundColor: msgBackgroundColor,
 				},
+				inte?.reactions?.length && {
+					marginBottom: 14,
+				},
 			]}
 		>
 			<Hyperlink
@@ -106,6 +110,7 @@ export const HyperlinkUserMessage: React.FC<{
 				>
 					{isReadMore ? message.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
 				</Text>
+
 				{isReadMore && (
 					<TouchableOpacity onPress={() => setReadMore(false)}>
 						<Text
@@ -116,6 +121,29 @@ export const HyperlinkUserMessage: React.FC<{
 					</TouchableOpacity>
 				)}
 			</Hyperlink>
+			{!!inte?.reactions?.length && (
+				<View
+					style={[
+						border.radius.large,
+						{
+							flexDirection: 'row',
+							backgroundColor: '#F7F8FF',
+							borderRadius: 20,
+							borderWidth: 1,
+							borderColor: '#E3E4EE',
+							paddingVertical: 2,
+							paddingHorizontal: 4,
+							position: 'absolute',
+							bottom: -14,
+							right: 10,
+						},
+					]}
+				>
+					{inte.reactions.map(({ emoji }) => (
+						<Emoji key={emoji} name={emoji} style={{ marginHorizontal: 2, fontSize: 10 }} />
+					))}
+				</View>
+			)}
 		</View>
 	)
 }
