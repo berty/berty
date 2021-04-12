@@ -89,12 +89,12 @@
         "import-button": "Импортировать аккаунт"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Создать группу",
+        "add-members": "Добавить участника",
+        "group-info": "Информация о группе",
         "search-placeholder": "Поиск",
-        "continue": "",
-        "create-group": ""
+        "continue": "ПРОДОЛЖИТЬ",
+        "create-group": "СОЗДАТЬ ГРУППУ"
       }
     },
     "home-modal": {
@@ -125,7 +125,7 @@
         "title": "Полный анонимный режим",
         "desc": "Эта конфигурация основана на радикальных предустановках, обеспечивающих крайне осторожные параметры сети:",
         "no-ip": "Нет IP",
-        "no-mc": "",
+        "no-mc": "Без микрофона",
         "tor-only": "Только Tor"
       },
       "save": "СОХРАНИТЬ",
@@ -229,14 +229,17 @@
       "title": "Bluetooth",
       "desc": "Bluetooth позволяет пользоваться приложением Berty, даже если вы не имеете подключения к сети Интернет (wifi или мобильного интернета), соединяя ваше устройство напрямую с ближайшими узлами",
       "activate-button": "Активировать Bluetooth",
-      "permission-title": "",
-      "permission-description": "",
-      "tag-neutral": "",
+      "permission-title": "Разрешить Bluetooth Berty",
+      "permission-description": "Авторизуйтесь в приложении Berty для использования возможностей Bluetooth на вашем телефоне",
+      "tag-neutral": "Спросить позже",
       "tag-negative": "Отменить",
-      "tag-positive": ""
+      "tag-positive": "ОК"
     },
     "mc": {
       "activate-button": "Активировать Multipeer Connectivity"
+    },
+    "nearby": {
+      "activate-button": "Активировать Android поблизости"
     },
     "services-auth": {
       "title": "Внешние сервисы",
@@ -312,6 +315,10 @@
       "debug-button": "Debug",
       "log-button": {
         "name": "Формат журнала",
+        "bullet-point": "Перезапустите приложение после изменения этого поля"
+      },
+      "log-filters-button": {
+        "name": "",
         "bullet-point": "Перезапустите приложение после изменения этого поля"
       },
       "add-dev-conversations-button": "Добавить dev беседы",
@@ -408,7 +415,7 @@
       "devices": "Устройства"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Введите здесь..."
     },
     "multi-member-settings": {
       "header-left-button": "Поиск",
@@ -450,7 +457,7 @@
       },
       "betabot-input-placeholder": "Добавьте бетабота, чтобы писать здесь...",
       "incoming-input-placeholder": "Примите запрос, чтобы писать здесь...",
-      "input-placeholder": ""
+      "input-placeholder": "Введите здесь..."
     },
     "one-to-one-settings": {
       "header-left-button": "Поиск",
@@ -574,11 +581,11 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
+        "usage": "Удерживайте для записи, отпустите чтобы отправить",
+        "not-sent": "Аудиосообщение не отправлено",
+        "permission-denied": "Приложению не разрешено записывать звук"
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< Свайп для отмены",
       "cancel-button": "Отменить"
     }
   }
