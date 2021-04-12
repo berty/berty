@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Aktivovat propojení více uživatelů"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Externí služby",
       "operated-services-button": "Použít služby provozované Berty",
@@ -311,6 +314,10 @@
       "system-info-button": "Systémové informace",
       "debug-button": "Debugging",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },
