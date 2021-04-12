@@ -88,6 +88,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 		{ windowWidth, scaleSize },
 	] = useStyles()
 
+	console.log('Disabled', disabled)
 	return (
 		<TouchableOpacity
 			activeOpacity={
@@ -107,7 +108,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
 				alone ? margin.top.scale(20) : null,
-				disabled ? opacity(0.5) : null,
+				disabled ? opacity(0.5) : opacity(1),
 			]}
 			onPress={onPress}
 		>
@@ -280,7 +281,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 				border.shadow.medium,
 				border.radius.medium,
 				padding.horizontal.medium,
-				disabled && opacity(0.5),
+				disabled ? opacity(0.5) : opacity(1),
 				style,
 			]}
 		>
