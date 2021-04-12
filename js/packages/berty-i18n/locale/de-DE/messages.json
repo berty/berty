@@ -1,16 +1,16 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "Die sichere Peer-to-Peer-Messaging-App, die mit oder ohne Internetzugang, Mobilfunkdaten oder Vertrauen im Netzwerk funktioniert",
-      "open-registered-account": "Eröffnen eines registrierten Kontos",
+      "desc": "Ein sicherer Peer-to-Peer-Messenger der mit und ohne Internetzugang funktioniert und sicher über überwachte Netzwerke kommuniziert",
+      "open-registered-account": "In ein registriertes Konto einloggen",
       "import-button": "Daten von einem bestehenden Konto importieren",
-      "account-selector-create-button": "Erstelle ein neues Konto",
+      "account-selector-create-button": "Ein neues Konto erstellen",
       "more-options": "Weitere Optionen",
-      "button": "Leg los"
+      "button": "Leg los!"
     },
     "select-mode": {
       "title": "Wähle eine Voreinstellung",
-      "change-later": "Du hast die Wahl, es später zu ändern!",
+      "change-later": "Du kannst dies später ändern!",
       "performance": {
         "title": "Leistung",
         "desc": "Einfach zu bedienen - Alle Funktionen",
@@ -25,7 +25,7 @@
         "disable-push-notif": "Push Benachrichtigungen deaktiviert",
         "disable-local-peer-discovery": "Lokale Peer-Entdeckung deaktiviert",
         "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
-        "disable-contact-request": "Kontaktanfragen deaktiviert",
+        "disable-contact-request": "Kontaktanfragen sind deaktiviert",
         "on-same-network": "Lokal im gleichen Netzwerk/Wlan"
       }
     },
@@ -34,26 +34,26 @@
       "desc": "Ein Spitzname ist die einzige erforderliche Information",
       "required": "Erforderlich",
       "placeholder": "Name",
-      "button": "MEIN KONTO ERSTELLEN",
+      "button": "Account erstellen",
       "import-account": "Importiere ein Konto"
     },
     "services-auth": {
       "header": "Authentifizieren bei Diensten",
       "title": "Dienste",
       "recommended": "Empfohlen",
-      "desc": "Dadurch werden Ihre Unterhaltungen automatisch auf einen Server kopiert",
-      "button": "Von Berty betriebene Dienste verwenden",
+      "desc": "Dadurch werden deine Unterhaltungen automatisch auf einen Server kopiert",
+      "button": "Von Berty betriebene Dienste nutzen",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "generate-key": {
       "title": "Starte den Berty Knotenpunkt…",
-      "desc": "Dies könnte einige Sekunden dauern"
+      "desc": "Dies kann einige Sekunden dauern"
     },
     "notifications": {
-      "header": "Verpassen Sie keine neue Nachricht oder Kontaktanfrage",
+      "header": "Verpasse keine neuen Nachrichten oder Kontaktanfragen",
       "recommended": "Empfohlen",
       "title": "Benachrichtigungen",
-      "desc": "Du musst Push-Benachrichtigungen von Berty auf deinem Handy autorisieren",
+      "desc": "Um diese Funktion nutzen zu können, musst du Berty den Zugriff auf Push-Benachrichtigungen gestatten",
       "button": "BENACHRICHTIGUNGEN AUTHORISIEREN",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
@@ -61,7 +61,7 @@
       "header": "Kommuniziere ohne Internetverbindung (WiFi oder Moblile Daten), indem Sie Ihr Telefon direkt mit Anderen in der Nähe verbinden",
       "optional": "Optional",
       "title": "Bluetooth",
-      "desc": "Um diese Funktion nutzen zu können, müssen Sie die Benutzung von Bluetooth auf Ihrem Smartphone erlauben",
+      "desc": "Um diese Funktion nutzen zu können, musst du Berty den Zugriff auf Bluetooth gestatten",
       "button": "BLUETOOTH AUTORISIEREN",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Verbindung zu mehreren Partnern aktivieren"
     },
+    "nearby": {
+      "activate-button": "\"Android in der Nähe\" aktivieren"
+    },
     "services-auth": {
       "title": "Externe Dienste",
       "operated-services-button": "Von Berty betriebene Dienste verwenden",
@@ -312,6 +315,10 @@
       "debug-button": "Debug",
       "log-button": {
         "name": "Log-Format",
+        "bullet-point": "App nach dem Ändern dieses Feldes neu starten"
+      },
+      "log-filters-button": {
+        "name": "",
         "bullet-point": "App nach dem Ändern dieses Feldes neu starten"
       },
       "add-dev-conversations-button": "Entwickler-Unterhaltungen hinzufügen",
