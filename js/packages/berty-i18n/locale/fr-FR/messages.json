@@ -236,10 +236,10 @@
       "tag-positive": ""
     },
     "mc": {
-      "activate-button": "Activer Apple Multipeer Connectivity"
+      "activate-button": "Activer la connectivité multi-pair"
     },
     "nearby": {
-      "activate-button": "Activer Android Nearby"
+      "activate-button": ""
     },
     "services-auth": {
       "title": "Services externes",
@@ -314,6 +314,10 @@
       "system-info-button": "Infos système",
       "debug-button": "Debug",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },
