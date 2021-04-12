@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Multipeer verbindingen activeren"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Externe diensten",
       "operated-services-button": "Gebruik diensten van Berty",
@@ -311,6 +314,10 @@
       "system-info-button": "Systeem informatie",
       "debug-button": "Debug",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },
