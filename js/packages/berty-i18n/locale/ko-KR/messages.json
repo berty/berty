@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": ""
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "",
       "operated-services-button": "",
@@ -311,6 +314,10 @@
       "system-info-button": "",
       "debug-button": "",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },
