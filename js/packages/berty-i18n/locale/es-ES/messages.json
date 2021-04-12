@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Activar conectividad con múltiples compañeros"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Servicios externos",
       "operated-services-button": "Usar los servicios operados por Berty",
@@ -311,6 +314,10 @@
       "system-info-button": "Información del sistema",
       "debug-button": "Depurar",
       "log-button": {
+        "name": "",
+        "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
       },
