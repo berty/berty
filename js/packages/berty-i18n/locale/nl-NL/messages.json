@@ -15,7 +15,7 @@
         "title": "Prestaties",
         "desc": "Eenvoudig in gebruik - alle functies",
         "push-notif": "Ontvang push notificaties",
-        "offline-message": "",
+        "offline-message": "Offline berichten met Bluetooth",
         "add-contact": "Voeg eenvoudig contacten toe",
         "fast-message": "Snelste aflevering van berichten"
       },
@@ -26,7 +26,7 @@
         "disable-local-peer-discovery": "Lokale peer detectie uitgeschakeld",
         "disable-local-peer-discovery-desc": "",
         "disable-contact-request": "Contact verzoeken uitgeschakeld",
-        "on-same-network": ""
+        "on-same-network": "Lokaal op hetzelfde netwerk/wifi"
       }
     },
     "create-account": {
@@ -86,15 +86,15 @@
       },
       "multi-account": {
         "create-button": "Nieuw account aanmaken",
-        "import-button": ""
+        "import-button": "Importeer account"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Nieuwe Groep",
+        "add-members": "Deelnemers toevoegen",
+        "group-info": "Groep info",
         "search-placeholder": "Zoeken",
-        "continue": "",
-        "create-group": ""
+        "continue": "DOORGAAN",
+        "create-group": "MAAK EEN GROEP"
       }
     },
     "home-modal": {
@@ -104,12 +104,12 @@
     "suggestion-display-name-initial": "Klik hier om toe te voegen",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Netwerk configuratie",
+        "desc": "Klik hier om de netwerkconfiguratie te voltooien"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Notificatie configuratie",
+        "desc": "Klik hier voor push-notificatie configuratie"
       }
     },
     "network-options": {
