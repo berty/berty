@@ -22,6 +22,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
+	"berty.tech/go-orbit-db/pubsub/directchannel"
 )
 
 var _ Service = (*service)(nil)
@@ -128,7 +129,6 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		if opts.DatastoreDir != InMemoryDirectory {
 			orbitDirectory = filepath.Join(opts.DatastoreDir, NamespaceOrbitDBDirectory)
 		}
-
 		odbOpts := &NewOrbitDBOptions{
 			NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 				Directory: &orbitDirectory,
@@ -136,6 +136,10 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 			},
 			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
 			DeviceKeystore: opts.DeviceKeystore,
+		}
+
+		if opts.Host != nil {
+			odbOpts.NewOrbitDBOptions.DirectChannelFactory = directchannel.InitDirectChannelFactory(opts.Host)
 		}
 
 		odb, err := NewBertyOrbitDB(ctx, opts.IpfsCoreAPI, odbOpts)
