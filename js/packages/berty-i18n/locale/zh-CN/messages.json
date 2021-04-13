@@ -2,40 +2,40 @@
   "onboarding": {
     "getstarted": {
       "desc": "安全的点对点消息应用程序，无论是否有互联网接入、蜂窝数据或网络信任",
-      "open-registered-account": "打开注册账户",
+      "open-registered-account": "登入账号",
       "import-button": "从现有帐户导入数据",
       "account-selector-create-button": "创建新账户",
       "more-options": "更多选项",
       "button": "开始"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "选择预设",
+      "change-later": "你可以选择稍后更改！",
       "performance": {
         "title": "性能",
         "desc": "简单使用 - 所有功能",
         "push-notif": "接收新消息通知",
-        "offline-message": "",
+        "offline-message": "蓝牙离线消息",
         "add-contact": "添加联系人",
         "fast-message": "快速发送消息"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "完全匿名",
+        "desc": "对于谨慎的用户",
         "disable-push-notif": "已禁用新消息通知",
         "disable-local-peer-discovery": "本地对等用户发现已禁用",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "多点广播DNS和蓝牙",
         "disable-contact-request": "已禁用联系人请求",
-        "on-same-network": ""
+        "on-same-network": "本地网络/wifi"
       }
     },
     "create-account": {
-      "title": "创建您的帐户",
+      "title": "创建您的帐号",
       "desc": "名称是唯一需要的信息",
       "required": "必需的",
       "placeholder": "名称",
       "button": "创建我的帐户",
-      "import-account": ""
+      "import-account": "导入账户"
     },
     "services-auth": {
       "header": "认证服务",
@@ -85,50 +85,50 @@
         "no-results": "未找到结果"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "创建新账号",
+        "import-button": "导入帐号"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "新建群组",
+        "add-members": "添加新成员",
+        "group-info": "群组信息",
         "search-placeholder": "搜索",
-        "continue": "",
-        "create-group": ""
+        "continue": "继续",
+        "create-group": "创建群组"
       }
     },
     "home-modal": {
       "top-button": "创建新群组",
       "bottom-button": "扫描联系人或群组"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "单击这里添加",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "网络设置",
+        "desc": "点击此处完成网络设置"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "通知设置",
+        "desc": "点击此处查看通知设置"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "welcome-title": "欢迎使用网络设置",
+      "full-anon-mode": "完全匿名模式",
+      "simple-tor-compatible": "简单兼容TOR",
+      "allow-expert-mode": "允许专家模式",
       "tor-compatible": {
-        "title": "",
-        "desc": ""
+        "title": "兼容TOR",
+        "desc": "此配置将允许您连接到Tor网络并与完全匿名的用户进行讨论，而无需处于极端匿名模式"
       },
       "full-anon": {
-        "title": "",
-        "desc": "",
-        "no-ip": "",
+        "title": "完全匿名模式",
+        "desc": "此配置基于基本预设，提供极为谨慎的网络参数:",
+        "no-ip": "没有 ip",
         "no-mc": "",
-        "tor-only": ""
+        "tor-only": "仅Tor"
       },
-      "save": "",
+      "save": "保存",
       "skip": "跳过并稍后再做"
     }
   },
@@ -229,14 +229,17 @@
       "title": "蓝牙",
       "desc": "在您没有网络连接(wifi或数据) 时，您可以使用蓝牙来连接附件的节点来使用Berty应用",
       "activate-button": "激活蓝牙",
-      "permission-title": "",
-      "permission-description": "",
-      "tag-neutral": "",
+      "permission-title": "Berty蓝牙权限",
+      "permission-description": "授权Berty在您的手机上使用蓝牙设备",
+      "tag-neutral": "稍后询问我",
       "tag-negative": "取消",
-      "tag-positive": ""
+      "tag-positive": "确定"
     },
     "mc": {
       "activate-button": "激活多节点连接"
+    },
+    "nearby": {
+      "activate-button": ""
     },
     "services-auth": {
       "title": "外部服务",
@@ -263,7 +266,7 @@
       "title": "帮助",
       "security-privacy-button": {
         "title": "安全与隐私",
-        "desc": "保护您的数据和生活隐私"
+        "desc": "保护您的数据和隐私"
       },
       "updates-button": "更新",
       "about-button": "关于 Berty",
@@ -300,7 +303,7 @@
       "title": "开发工具",
       "header-left-button": "设备信息",
       "simulate-button": "模拟流错误",
-      "simulate-js-error-button": "",
+      "simulate-js-error-button": "模拟 JavaScript 错误",
       "simulate-native-error-button": "",
       "tor-button": "Tor{{option}}",
       "tor-optional-option": "可选",
@@ -311,8 +314,12 @@
       "system-info-button": "系统信息",
       "debug-button": "Debug",
       "log-button": {
+        "name": "日志格式",
+        "bullet-point": "更改之后重新启动应用"
+      },
+      "log-filters-button": {
         "name": "",
-        "bullet-point": ""
+        "bullet-point": "更改之后重新启动应用"
       },
       "add-dev-conversations-button": "添加开发者会话",
       "share-button": {
@@ -393,9 +400,9 @@
     },
     "welcome-configuration": {
       "title": "",
-      "desc": "",
+      "desc": "让我们快速了解设置并完成您的第一个配置！",
       "skip": "跳过",
-      "next": ""
+      "next": "下一步"
     }
   },
   "chat": {
@@ -408,7 +415,7 @@
       "devices": "设备"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "在此输入..."
     },
     "multi-member-settings": {
       "header-left-button": "搜索",
@@ -450,7 +457,7 @@
       },
       "betabot-input-placeholder": "添加测试版机器人以在此写入...",
       "incoming-input-placeholder": "接受此请求以在这里写入...",
-      "input-placeholder": ""
+      "input-placeholder": "在此输入..."
     },
     "one-to-one-settings": {
       "header-left-button": "搜索",
@@ -487,35 +494,35 @@
       "image-saved": "图片已保存到相册"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
-      "links": "",
-      "documents": ""
+      "title": "共享媒体",
+      "medias": "媒体",
+      "links": "链接",
+      "documents": "文件"
     }
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "检测BUG",
+      "crash": "检测崩溃"
     },
-    "restart-app": "",
+    "restart-app": "重启应用",
     "wtf-screen": {
       "title": "",
       "desc": "",
-      "desc-report": ""
+      "desc-report": "摇动手机报告错误，然后单击按钮退出并重新启动应用程序。"
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "对不起，这是个BUG",
+      "desc": "这是Berty的实习生Francis的错，他一定犯了个错误。Francis真是个混蛋！",
+      "desc-buy": "你见到他时，他会给你买啤酒的！",
+      "desc-em": "*好吧，伯蒂的团队里没有 Francis",
+      "desc-report": "摇一摇你的手机，我们又来了！"
     }
   },
   "debug": {
     "inspector": {
       "show-button": "",
-      "hide-button": "",
+      "hide-button": "关闭",
       "title": "",
       "accounts": {
         "title": "",
@@ -537,12 +544,12 @@
           "action-cancel": "取消"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "metadata-found": "找到元数据文件",
+          "metadata-not-found": "未找到元数据文件",
+          "ipfs-repo-config-found": "找到 IPFS 配置文件",
+          "ipfs-repo-config-not-found": "未找到 IPFS 配置文件",
+          "messenger-db-found": "发现Messenger DB",
+          "messenger-db-not-found": "未找到Messenger DB"
         },
         "infos": {
           "aligned": {
@@ -574,8 +581,8 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
+        "usage": "按住来记录，释放以发送",
+        "not-sent": "音频消息未发送",
         "permission-denied": ""
       },
       "slide-to-cancel": "",

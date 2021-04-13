@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Çok eşli bağlantıyı etkinleştir"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Dış hizmetler",
       "operated-services-button": "Berty servislerini kullan",
@@ -311,6 +314,10 @@
       "system-info-button": "Sistem bilgisi",
       "debug-button": "Hata ayıklama",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },

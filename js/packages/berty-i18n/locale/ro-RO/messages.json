@@ -1,115 +1,115 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
+      "desc": "Aplicația securizată de mesagerie peer-to-peer, care funcționează cu sau fără acces la internet, date mobile sau încredere în rețea",
+      "open-registered-account": "Deschide un cont înregistrat",
+      "import-button": "Importă datele dintr-un cont existent",
+      "account-selector-create-button": "Creează un cont nou",
+      "more-options": "Mai multe opțiuni",
       "button": ""
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Alege o presetare",
+      "change-later": "Vei avea posibilitatea de a schimba modul mai târziu!",
       "performance": {
-        "title": "",
+        "title": "Performanță",
         "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "push-notif": "Primește notificări push",
+        "offline-message": "Mesagerie offline prin Bluetooth",
+        "add-contact": "Adaugă cu ușurință contacte",
+        "fast-message": "Cea mai rapidă livrare a mesajelor"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
+        "title": "Anonimitate deplină",
+        "desc": "Pentru utilizatorii extrem de precauți",
+        "disable-push-notif": "Notificări push dezactivate",
         "disable-local-peer-discovery": "",
-        "disable-local-peer-discovery-desc": "",
-        "disable-contact-request": "",
-        "on-same-network": ""
+        "disable-local-peer-discovery-desc": "Multicast DNS și Bluetooth",
+        "disable-contact-request": "Cereri de contact dezactivate",
+        "on-same-network": "Local pe aceeași rețea/wifi"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": "",
-      "import-account": ""
+      "title": "Creează un cont nou",
+      "desc": "Numele este singura informație necesară",
+      "required": "Obligatoriu",
+      "placeholder": "Nume",
+      "button": "CREAZĂ CONTUL MEU",
+      "import-account": "IMPORTĂ UN CONT"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Autentificare la servicii",
+      "title": "Servicii",
+      "recommended": "Recomandate",
+      "desc": "Acest lucru va reproduce automat conversațiile tale pe un server",
+      "button": "Utilizează servicii gestionate de Berty",
+      "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Se pornește nodul Berty…",
+      "desc": "Asta ar putea dura câteva secunde"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
+      "header": "Nu rata niciun mesaj nou sau cerere de contact",
+      "recommended": "Recomandate",
+      "title": "Notificări",
+      "desc": "Trebuie să autorizezi notificări push de la Berty pe telefonul tău",
       "button": "",
-      "skip": ""
+      "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
+      "header": "Comunicați fără o conexiune la internet (wifi sau date) conectând telefonul direct cu parteneri din apropiere",
+      "optional": "Opţional",
       "title": "Bluetooth",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "desc": "Pentru a utiliza această funcție, trebuie să permiți utilizarea Bluetooth de pe telefonul tău",
+      "button": "AUTORIZARE BLUETOOTH",
+      "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
     },
     "setup-finished": {
-      "title": "",
+      "title": "Configurare finalizată!",
       "desc": "",
-      "button": ""
+      "button": "ÎNCEPE SĂ UTILIZEZI BERTY"
     }
   },
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Cereri",
+        "received-at": "Primite",
+        "accept": "Acceptă",
+        "card-title": "Cerere de contact!"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Căutare după cuvânt cheie",
+      "no-contacts": "Nu ai niciun contact sau conversații încă",
       "search": {
-        "no-results": ""
+        "no-results": "Niciun rezultat găsit"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Creează un cont nou",
+        "import-button": "Importă cont"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
-        "search-placeholder": "",
-        "continue": "",
-        "create-group": ""
+        "title": "Grup nou",
+        "add-members": "Adaugă membri",
+        "group-info": "Informații grup",
+        "search-placeholder": "Caută",
+        "continue": "CONTINUĂ",
+        "create-group": "CREEAZĂ UN GRUP"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Creează un grup nou",
+      "bottom-button": "Scanează contactul sau grupul"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Apasă aici pentru a adăuga",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configurație rețea",
+        "desc": "Apăsați aici pentru a termina configurația rețelei"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configurație notificări",
+        "desc": "Faceți clic aici pentru configurarea notificărilor push"
       }
     },
     "network-options": {
@@ -118,17 +118,17 @@
       "simple-tor-compatible": "",
       "allow-expert-mode": "",
       "tor-compatible": {
-        "title": "",
+        "title": "Compatibil cu TOR",
         "desc": ""
       },
       "full-anon": {
-        "title": "",
+        "title": "Mod Anononim Deplin",
         "desc": "",
-        "no-ip": "",
+        "no-ip": "Fără ip",
         "no-mc": "",
         "tor-only": ""
       },
-      "save": "",
+      "save": "SALVEAZĂ",
       "skip": ""
     }
   },
@@ -146,80 +146,80 @@
       "online-peers": ""
     },
     "mode": {
-      "title": "",
+      "title": "Setări",
       "desc": "",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Notificări",
+        "tag-enabled": "Activate",
+        "tag-disabled": "Dezactivate"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "Activat",
+        "tag-disabled": "Dezactivat"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
+        "title": "Modul aplicației",
+        "performance-tag": "Performanță",
+        "privacy-tag": "Confidențialitate",
         "description-tag": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
+        "first-bullet-point": "Primește notificări push",
+        "second-bullet-point": "Primește cereri de contact",
         "third-bullet-point": ""
       },
-      "dark-mode-button": "",
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "dark-mode-button": "Mod întunecat",
+      "receive-contact-requests-button": "Primește cereri de contact",
+      "external-services-button": "Servicii externe",
+      "auto-replicate-button": "Replicare automată",
       "multicast-dns-button": {
-        "title": "",
+        "title": "DNS Multicast",
         "desc": ""
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Contacte blocate",
+        "tag": "blocat"
       },
-      "delete-account-button": "",
+      "delete-account-button": "Șterge contul meu",
       "backup-account-button": ""
     },
     "edit-profile": {
-      "title": "",
-      "qr-will-update": "",
-      "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
-      "name-input-label": ""
+      "title": "Modifică profilul",
+      "qr-will-update": "ID-ul Berty (cod QR) va fi actualizat",
+      "ocr-wont-update": "Cererile tale de contact în așteptare nu vor fi actualizate",
+      "save": "Salvează modificările",
+      "cancel": "Anulează",
+      "name-input-placeholder": "Nume...",
+      "name-input-label": "Nume"
     },
     "notifications": {
-      "title": "",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "title": "Notificări",
+      "enabled-desc": "Ai activat notificările!",
+      "disabled-desc": "Nu ai activat notificările pentru această aplicație",
+      "activate-button": "Activează notificările",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "Cerere de contact",
+        "desc": "Primește o notificare de fiecare dată când cineva îți trimite o cerere de contact"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Notificări mesaje",
+        "display-button": "Afişare notificări",
+        "preview-button": "Previzualizare mesaje",
+        "sound-button": "Sunet",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "Excepţii",
+          "preview-value": "Adaugă",
           "tag": "",
           "tag_plural": ""
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Notificări de grupuri",
+        "display-button": "Afişare notificări",
+        "preview-button": "Previzualizare mesaje",
+        "sound-button": "Sunet",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "Excepţii",
+          "preview-value": "Adaugă",
           "tag": "",
           "tag_plural": ""
         }
@@ -227,78 +227,81 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
-      "activate-button": "",
+      "desc": "Bluetooth permite utilizarea aplicației Berty atunci când nu ai o conexiune la rețea (wifi sau date) conectând telefonul direct cu partenerii din apropiere",
+      "activate-button": "Activează bluetooth",
       "permission-title": "",
-      "permission-description": "",
-      "tag-neutral": "",
-      "tag-negative": "",
-      "tag-positive": ""
+      "permission-description": "Autorizează aplicația Berty să folosească funcțiile Bluetooth pe telefonul tău",
+      "tag-neutral": "Întreabă-mă mai târziu",
+      "tag-negative": "Anulează",
+      "tag-positive": "Ok"
     },
     "mc": {
       "activate-button": ""
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "Servicii externe",
+      "operated-services-button": "Utilizează servicii gestionate de Berty",
       "register-service-button": {
         "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "input-placeholder": "URL-ul serviciului",
+        "action": "Adaugă"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "Servicii înregistrate în prezent",
+        "sample-no-services": "Niciun serviciu înregistrat",
+        "sample-unknown-service": "Serviciu necunoscut"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
+      "title": "Șterge contul meu!",
+      "first-desc": "Ești sigur că vrei să ștergi contul?",
       "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "cancel-button": "Anulează",
+      "delete-button": "Şterge"
     },
     "help": {
-      "title": "",
+      "title": "Ajutor",
       "security-privacy-button": {
-        "title": "",
+        "title": "Securitate & Confidențialitate",
         "desc": ""
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
+      "updates-button": "Actualizări",
+      "about-button": "Despre Berty",
+      "account-button": "Cont & ID Berty",
+      "contact-button": "Contacte & Cereri",
+      "message-button": "Mesaje",
+      "group-button": "Grupuri",
+      "settings-button": "Setări",
+      "ask-button": "Pune o întrebare",
+      "report-button": "Raportează o eroare"
     },
     "about": {
-      "title": "",
+      "title": "Despre Berty",
       "top-left-button": "",
       "top-right-button": "",
-      "bottom-left-button": "",
+      "bottom-left-button": "Nu sunt necesare date sau internet",
       "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": ""
+      "terms-button": "Termeni de utilizare",
+      "privacy-button": "Politica de confidenţialitate",
+      "software-button": "Licență software",
+      "contact-button": "Contactează-ne",
+      "website-button": "Website"
     },
     "updates": {
-      "title": "",
-      "up-to-date-desc": "",
-      "version": "",
+      "title": "Actualizări aplicație",
+      "up-to-date-desc": "Aplicația este actualizată",
+      "version": "Versiune",
       "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
+      "installed-tag": "Instalată",
+      "initial-tag": "Instalare iniţială",
       "not-installed-tag": ""
     },
     "devtools": {
       "title": "",
-      "header-left-button": "",
+      "header-left-button": "Informații dispozitiv",
       "simulate-button": "",
       "simulate-js-error-button": "",
       "simulate-native-error-button": "",
@@ -306,21 +309,25 @@
       "tor-optional-option": "",
       "tor-required-option": "",
       "tor-disabled-option": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "system-info-button": "",
+      "header-middle-button": "Generează date false",
+      "header-right-button": "Reporneşte daemonul",
+      "system-info-button": "Informații sistem",
       "debug-button": "",
       "log-button": {
         "name": "",
         "bullet-point": ""
       },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": ""
+      },
       "add-dev-conversations-button": "",
       "share-button": {
-        "title": "",
+        "title": "Partajează ID-ul pe Discord",
         "alert-title": "",
         "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
+        "alert-accept-button": "Da 👍",
+        "alert-cancel-button": "Nu"
       },
       "native-bridge-button": "",
       "dump-account-button": "",
@@ -333,76 +340,76 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Notificări",
       "send-to-all-button": {
         "title": "",
-        "sending": "",
+        "sending": "Se trimite...",
         "test": "",
         "tried": ""
       },
-      "footer-left-button": "",
+      "footer-left-button": "Informații dispozitiv",
       "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-right-button": "Reporneşte daemonul"
     },
     "system-info": {
-      "title": ""
+      "title": "Informații sistem"
     },
     "fake-data": {
-      "title": "",
+      "title": "Generează date false",
       "contacts-button": "",
       "multi-members-button": "",
       "messages-button": "",
-      "delete-button": ""
+      "delete-button": "Șterge datele false"
     },
     "add-dev-conversations": {
       "title": "",
       "add": "",
-      "tag-bot": "",
-      "tag-contact": "",
+      "tag-bot": "Bot",
+      "tag-contact": "Contact",
       "tag-conversation": ""
     },
     "ipfs-webui": {
       "title": ""
     },
     "my-berty-ID": {
-      "qr": "",
-      "fingerprint": "",
-      "devices": ""
+      "qr": "QR",
+      "fingerprint": "Amprentă",
+      "devices": "Dispozitive"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": "",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
+      "invalid-link": "Link invalid!",
+      "invalid-qr": "Cod QR invalid!",
+      "error": "Eroare!",
+      "contact-already-added": "Contactul este deja adăugat",
+      "contact-already-added-message": "Nu puteți adăuga același contact de mai multe ori"
     },
     "invalid-scan": {
       "dismiss-button": ""
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Amprentă",
+      "info": "Informaţii",
+      "devices": "Dispozitive"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Amprentă",
+      "info": "Informaţii",
+      "devices": "Dispozitive"
     },
     "welcome-configuration": {
-      "title": "",
-      "desc": "",
-      "skip": "",
-      "next": ""
+      "title": "Bun venit la bord!",
+      "desc": "Hai să avem o privire de ansamblu rapidă asupra setărilor și să terminăm prima configurație!",
+      "skip": "Omite",
+      "next": "Continuă"
     }
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
+      "mark-button": "Marchează ca verificat",
+      "block-button": "Blochează contact",
+      "delete-button": "Şterge contact",
       "fingerprint": "",
       "info": "",
       "devices": ""
@@ -411,8 +418,8 @@
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
+      "header-left-button": "Caută",
+      "header-middle-button": "Apelează",
       "header-right-button": "",
       "media-button": "",
       "notifications-button": "",

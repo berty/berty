@@ -104,16 +104,16 @@
     "suggestion-display-name-initial": "Clicca qui per aggiungere",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configurazione di Rete",
+        "desc": "Clicca qui per completare la configurazione di rete"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configurazione delle Notifiche",
+        "desc": "Clicca qui per configurare le notifiche push"
       }
     },
     "network-options": {
-      "welcome-title": "",
+      "welcome-title": "Benvenuto nelle Opzioni di Rete",
       "full-anon-mode": "",
       "simple-tor-compatible": "",
       "allow-expert-mode": "",
@@ -126,9 +126,9 @@
         "desc": "",
         "no-ip": "",
         "no-mc": "",
-        "tor-only": ""
+        "tor-only": "Solo Tor"
       },
-      "save": "",
+      "save": "SALVA",
       "skip": "SALTA E FALLO DOPO"
     }
   },
@@ -233,10 +233,13 @@
       "permission-description": "",
       "tag-neutral": "",
       "tag-negative": "Annulla",
-      "tag-positive": ""
+      "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Attiva Multipeer Connectivity"
+    },
+    "nearby": {
+      "activate-button": ""
     },
     "services-auth": {
       "title": "Servizi esterni",
@@ -311,6 +314,10 @@
       "system-info-button": "Informazioni di sistema",
       "debug-button": "Debug",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },
@@ -490,7 +497,7 @@
       "title": "",
       "medias": "",
       "links": "",
-      "documents": ""
+      "documents": "Documenti"
     }
   },
   "error": {
@@ -533,11 +540,11 @@
           "action-force-delete-confirm": "",
           "error-close": "",
           "error-delete": "",
-          "success-feedback": "",
+          "success-feedback": "Account eliminato",
           "action-cancel": "Annulla"
         },
         "status": {
-          "metadata-found": "",
+          "metadata-found": "File metadati trovato",
           "metadata-not-found": "",
           "ipfs-repo-config-found": "",
           "ipfs-repo-config-not-found": "",
@@ -564,9 +571,9 @@
       "dump": {
         "button": ""
       },
-      "refresh": "",
+      "refresh": "Aggiorna",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Conferma",
         "button-cancel": "Annulla"
       }
     }

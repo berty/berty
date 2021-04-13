@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Multipeer kapcsolat aktiválása"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Külső szolgáltatások",
       "operated-services-button": "",
@@ -312,6 +315,10 @@
       "debug-button": "Hibakeresés",
       "log-button": {
         "name": "Naplózás formázása",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
+        "name": "",
         "bullet-point": ""
       },
       "add-dev-conversations-button": "",

@@ -89,12 +89,12 @@
         "import-button": "Importuj konto"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Nowa Grupa",
+        "add-members": "Dodaj członków",
+        "group-info": "Informacje o grupie",
         "search-placeholder": "Szukaj",
-        "continue": "",
-        "create-group": ""
+        "continue": "KONTYNUUJ",
+        "create-group": "UTWÓRZ GRUPĘ"
       }
     },
     "home-modal": {
@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Aktywuj połączenia z wieloma peerami"
     },
+    "nearby": {
+      "activate-button": "Aktywuj Android Nearby"
+    },
     "services-auth": {
       "title": "Zewnętrzne usługi",
       "operated-services-button": "Używanie usług świadczonych przez Berty",
@@ -312,6 +315,10 @@
       "debug-button": "Debuguj",
       "log-button": {
         "name": "Format dziennika",
+        "bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
+      },
+      "log-filters-button": {
+        "name": "",
         "bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
       },
       "add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
@@ -408,7 +415,7 @@
       "devices": "Urządzenia"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Wpisz tutaj..."
     },
     "multi-member-settings": {
       "header-left-button": "Szukaj",
@@ -450,7 +457,7 @@
       },
       "betabot-input-placeholder": "Dodaj betabota, aby napisać tutaj...",
       "incoming-input-placeholder": "Zaakceptuj prośbę aby pisać tutaj...",
-      "input-placeholder": ""
+      "input-placeholder": "Wpisz tutaj..."
     },
     "one-to-one-settings": {
       "header-left-button": "Szukaj",
@@ -574,11 +581,11 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
+        "usage": "Przytrzymaj aby nagrywać, puść, aby wysłać",
+        "not-sent": "Wiadomość audio nie została wysłana",
+        "permission-denied": "Aplikacja nie może nagrywać dźwięku"
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< Przesuń aby anulować",
       "cancel-button": "Anuluj"
     }
   }

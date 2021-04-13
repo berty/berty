@@ -238,6 +238,9 @@
     "mc": {
       "activate-button": "Активирай Multipeer Connectivity"
     },
+    "nearby": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "Външни услуги",
       "operated-services-button": "Използвай услуги управлявани от Berty",
@@ -311,6 +314,10 @@
       "system-info-button": "Система информация",
       "debug-button": "Debug",
       "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
         "name": "",
         "bullet-point": ""
       },
