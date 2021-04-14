@@ -80,6 +80,7 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 					<QRCode
 						size={_contentScaleFactor * Math.min(windowHeight, windowWidth)}
 						value={conv.link}
+						mode='circle'
 					/>
 				</View>
 			</View>

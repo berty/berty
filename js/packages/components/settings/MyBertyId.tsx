@@ -75,7 +75,7 @@ const ContactRequestQR = () => {
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
 		<View style={[padding.top.big]}>
-			<QRCode logo={logo} size={qrCodeSize} value={account.link} color='#3845E0' />
+			<QRCode logo={logo} size={qrCodeSize} value={account.link} color='#3845E0' mode='circle' />
 		</View>
 	)
 }

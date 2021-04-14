@@ -64,7 +64,7 @@
 		"react-native-popover-view": "^3.1.1",
 		"react-native-progress": "^4.1.2",
 		"react-native-qrcode-scanner": "^1.6.0",
-		"react-native-qrcode-svg": "git+https://github.com/sakul-budhathoki/react-native-qrcode-svg.git#feature/circle-lines-qr-code",
+		"react-native-qrcode-svg": "git+https://github.com/sakul-budhathoki/react-native-qrcode-svg.git#feat/circles",
 		"react-native-reanimated": "^1.13.2",
 		"react-native-restart": "^0.0.20",
 		"react-native-safe-area-context": "^3.1.9",

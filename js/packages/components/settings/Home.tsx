@@ -108,7 +108,13 @@ const HomeHeaderAvatar: React.FC = () => {
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
 						{(account?.link && (
-							<QRCode size={qrCodeSize} value={account.link} logo={logo} color='#3845E0' />
+							<QRCode
+								size={qrCodeSize}
+								value={account.link}
+								logo={logo}
+								color='#3845E0'
+								mode='circle'
+							/>
 						)) ||
 							null}
 					</View>
