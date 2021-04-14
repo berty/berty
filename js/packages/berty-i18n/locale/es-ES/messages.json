@@ -1,7 +1,7 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "La aplicación de mensajería segura entre pares que funciona con o sin acceso a Internet, datos celulares o confianza en la red",
+      "desc": "La aplicación de mensajería segura entre pares que funciona con o sin acceso a Internet, datos móviles o confianza en la red",
       "open-registered-account": "Abrir una cuenta registrada",
       "import-button": "Importar datos de una cuenta existente",
       "account-selector-create-button": "Crear una nueva cuenta",
@@ -9,7 +9,7 @@
       "button": "EMPEZAR"
     },
     "select-mode": {
-      "title": "",
+      "title": "Elige un preajuste",
       "change-later": "¡Trendrás la opción de cambiarlo más tarde!",
       "performance": {
         "title": "Rendimiento",
@@ -89,12 +89,12 @@
         "import-button": "Importar cuenta"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Grupo nuevo",
+        "add-members": "Agregar usuarios",
+        "group-info": "Información del grupo",
         "search-placeholder": "Buscar",
-        "continue": "",
-        "create-group": ""
+        "continue": "CONTINUAR",
+        "create-group": "CREAR UN GRUPO"
       }
     },
     "home-modal": {
@@ -109,7 +109,7 @@
       },
       "notification": {
         "display-name": "Configuración de notificaciones",
-        "desc": ""
+        "desc": "Clickee aquí para configurar notificaciones push"
       }
     },
     "network-options": {
@@ -585,7 +585,7 @@
         "not-sent": "",
         "permission-denied": ""
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< Desliza para cancelar",
       "cancel-button": "Cancelar"
     }
   }
