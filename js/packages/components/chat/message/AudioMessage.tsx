@@ -164,14 +164,7 @@ export const AudioMessage: React.FC<{ medias: Array<beapi.messenger.Media> }> = 
 	}, [cid, isPlaying, globalPlayer.player, globalPlayerLoad, client, protocolClient, filename])
 
 	return (
-		<View
-			style={[
-				{
-					flex: 1,
-					alignItems: 'center',
-				},
-			]}
-		>
+		<View style={{ alignItems: 'center' }}>
 			<View
 				style={[
 					{
