@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { ActivityIndicator, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { BlurView } from '@react-native-community/blur'
 import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +19,6 @@ import {
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
 
-import BlurView from '../shared-components/BlurView'
 import { ContactAvatar } from '../avatars'
 import { useLayout } from '../hooks'
 import { ChatDate, ChatFooter } from './common'
@@ -62,6 +62,7 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
 			<BlurView
+				overlayColor=''
 				blurType='light'
 				blurAmount={30}
 				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}

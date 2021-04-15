@@ -19,7 +19,7 @@ import { useClient, useMsgrContext, useContact } from '@berty-tech/store/hooks'
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
 import { TabItems } from './file-uploads/types'
-import BlurView from '../shared-components/BlurView'
+import { BlurView } from '@react-native-community/blur'
 import moment from 'moment'
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
@@ -234,319 +234,319 @@ export const ChatFooter: React.FC<{
 	}
 
 	return (
-		<BlurView
-			blurType='light'
-			blurAmount={30}
-			style={{
-				overflow: 'visible',
-				paddingTop: _isFocused && inputHeight > 35 ? (inputHeight - 35) * scaleSize : 0,
-			}}
+		<SafeAreaView
+			style={[
+				{
+					zIndex: 10,
+					minHeight: 80 * scaleSize,
+				},
+			]}
 		>
-			<SafeAreaView
-				style={[
-					{
-						zIndex: 10,
-						minHeight: 80 * scaleSize,
-					},
-				]}
-			>
-				{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
-				{isSecurityAccessVisible && (
-					<SecurityAccess
-						activeTab={activateTab}
-						close={() => setSecurityAccessVisibility(false)}
-					/>
-				)}
-				<RecordComponent
-					aFixMicro={aFixMicro}
-					component={
-						<Animated.View
-							style={[
-								{
-									justifyContent: 'center',
-									alignItems: 'center',
-									borderRadius: 100,
-									backgroundColor: color.blue,
-									width: 36 * scaleSize,
-									height: 36 * scaleSize,
-									opacity: aOpacity,
-								},
-							]}
-						>
-							<Icon
-								name='microphone-footer'
-								pack='custom'
-								height={18 * scaleSize}
-								width={18 * scaleSize}
-								fill={color.white}
-							/>
-						</Animated.View>
-					}
-					convPk={convPk}
-					disableLockMode={false}
-				>
-					<View
+			<BlurView
+				overlayColor=''
+				blurType='light'
+				blurAmount={32}
+				style={{
+					position: 'absolute',
+					right: 0,
+					left: 0,
+					bottom: 0,
+					top: 0,
+				}}
+			/>
+			{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
+			{isSecurityAccessVisible && (
+				<SecurityAccess activeTab={activateTab} close={() => setSecurityAccessVisibility(false)} />
+			)}
+			<RecordComponent
+				aFixMicro={aFixMicro}
+				component={
+					<Animated.View
 						style={[
-							flex.tiny,
-							border.radius.medium,
-							padding.left.small,
-							!_isFocused && padding.right.small,
 							{
-								alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
-								flexDirection: 'row',
+								justifyContent: 'center',
+								alignItems: 'center',
+								borderRadius: 100,
+								backgroundColor: color.blue,
+								width: 36 * scaleSize,
+								height: 36 * scaleSize,
+								opacity: aOpacity,
 							},
 						]}
 					>
-						<TouchableOpacity
+						<Icon
+							name='microphone-footer'
+							pack='custom'
+							height={18 * scaleSize}
+							width={18 * scaleSize}
+							fill={color.white}
+						/>
+					</Animated.View>
+				}
+				convPk={convPk}
+				disableLockMode={false}
+			>
+				<View
+					style={[
+						flex.tiny,
+						border.radius.medium,
+						padding.left.small,
+						!_isFocused && padding.right.small,
+						{
+							alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
+							flexDirection: 'row',
+						},
+					]}
+				>
+					<TouchableOpacity
+						style={[
+							{
+								backgroundColor: '#F7F8FF',
+								zIndex: 3,
+								elevation: 3,
+								width: 37 * scaleSize,
+								height: 37 * scaleSize,
+								justifyContent: 'center',
+								alignItems: 'center',
+							},
+							padding.small,
+							border.radius.small,
+						]}
+						onPress={() => {
+							setSwipe(false)
+							setShowAddFileMenu(true)
+						}}
+					>
+						{mediaCids.length > 0 && <Text>{mediaCids.length}</Text>}
+						<Icon name='plus' width={26 * scaleSize} height={26 * scaleSize} fill='#C7C8D8' />
+					</TouchableOpacity>
+					<View
+						style={{
+							flex: 1,
+							paddingLeft: 9 * scaleSize,
+							paddingRight: 4 * scaleSize,
+							alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
+							flexDirection: 'row',
+						}}
+					>
+						<Animated.View style={[{ right: aPaddingLeft, opacity: aOpacity }]}>
+							<View style={[{ alignItems: 'center' }]}>
+								<Icon
+									pack='custom'
+									name='bertyzzz'
+									height={37 * scaleSize}
+									width={37 * scaleSize}
+								/>
+							</View>
+						</Animated.View>
+						<Animated.View
 							style={[
+								border.radius.medium,
+
 								{
-									backgroundColor: '#F7F8FF',
-									zIndex: 3,
-									elevation: 3,
-									width: 37 * scaleSize,
-									height: 37 * scaleSize,
-									justifyContent: 'center',
-									alignItems: 'center',
+									alignSelf: 'flex-end',
+									backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
+									marginRight: aMaxWidth,
+									right: aFixLeft,
+									marginLeft: 9 * scaleSize,
+									zIndex: 100,
+									elevation: 100,
+
+									flex: 1,
 								},
-								padding.small,
-								border.radius.small,
 							]}
-							onPress={() => {
-								setSwipe(false)
-								setShowAddFileMenu(true)
-							}}
 						>
-							{mediaCids.length > 0 && <Text>{mediaCids.length}</Text>}
-							<Icon name='plus' width={26 * scaleSize} height={26 * scaleSize} fill='#C7C8D8' />
-						</TouchableOpacity>
-						<View
-							style={{
-								flex: 1,
-								paddingLeft: 9 * scaleSize,
-								paddingRight: 4 * scaleSize,
-								alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
-								flexDirection: 'row',
-							}}
-						>
-							<Animated.View style={[{ right: aPaddingLeft, opacity: aOpacity }]}>
-								<View style={[{ alignItems: 'center' }]}>
-									<Icon
-										pack='custom'
-										name='bertyzzz'
-										height={37 * scaleSize}
-										width={37 * scaleSize}
-									/>
-								</View>
-							</Animated.View>
-							<Animated.View
+							{!!activeReplyInte && (
+								<Animated.View
+									style={[
+										border.radius.top.medium,
+										{
+											backgroundColor: activeReplyInte?.backgroundColor,
+											paddingVertical: 4,
+											paddingHorizontal: 10,
+											zIndex: 0,
+										},
+									]}
+								>
+									<View
+										style={{
+											position: 'absolute',
+											top: -20,
+											alignSelf: 'center',
+											backgroundColor: '#F7F8FF',
+											borderColor: '#E4E5EF',
+											paddingVertical: 2,
+											paddingHorizontal: 20,
+											borderWidth: 1,
+											borderRadius: 20,
+										}}
+									>
+										<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
+											You're replying to {contact?.displayName || ''}
+										</Text>
+									</View>
+									<Text
+										numberOfLines={1}
+										style={{
+											width: aMaxWidth?.value,
+											color: activeReplyInte?.textColor,
+											fontSize: 12,
+											lineHeight: 17,
+										}}
+									>
+										{activeReplyInte?.payload?.body || ''}
+									</Text>
+								</Animated.View>
+							)}
+							<View
 								style={[
-									border.radius.medium,
-
+									(message.length > 0 || _isFocused) && { color: '#3443D9' },
+									text.bold.small,
+									padding.left.small,
 									{
-										alignSelf: 'flex-end',
-										backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
-										marginRight: aMaxWidth,
-										right: aFixLeft,
-										marginLeft: 9 * scaleSize,
-										zIndex: 100,
-										elevation: 100,
-
-										flex: 1,
+										paddingVertical: 5 * scaleSize,
 									},
 								]}
 							>
-								{!!activeReplyInte && (
-									<Animated.View
-										style={[
-											border.radius.top.medium,
-											{
-												backgroundColor: activeReplyInte?.backgroundColor,
-												paddingVertical: 4,
-												paddingHorizontal: 10,
-												zIndex: 0,
-											},
-										]}
-									>
-										<View
-											style={{
-												position: 'absolute',
-												top: -20,
-												alignSelf: 'center',
-												backgroundColor: '#F7F8FF',
-												borderColor: '#E4E5EF',
-												paddingVertical: 2,
-												paddingHorizontal: 20,
-												borderWidth: 1,
-												borderRadius: 20,
-											}}
-										>
-											<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
-												You're replying to {contact?.displayName || ''}
-											</Text>
-										</View>
-										<Text
-											numberOfLines={1}
-											style={{
-												width: aMaxWidth?.value,
-												color: activeReplyInte?.textColor,
-												fontSize: 12,
-												lineHeight: 17,
-											}}
-										>
-											{activeReplyInte?.payload?.body || ''}
-										</Text>
-									</Animated.View>
-								)}
-								<View
-									style={[
-										(message.length > 0 || _isFocused) && { color: '#3443D9' },
-										text.bold.small,
-										padding.left.small,
-										{
-											paddingVertical: 5 * scaleSize,
-										},
-									]}
-								>
-									<TextInput
-										value={message}
-										ref={inputRef}
-										multiline
-										editable={disabled ? false : true}
-										onBlur={() => {
-											activeReplyInte && setActiveReplyInte()
-										}}
-										onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
-										onContentSizeChange={({ nativeEvent }) =>
-											setInputHeight(
-												nativeEvent?.contentSize.height > 80 ? 80 : nativeEvent?.contentSize.height,
-											)
-										}
-										autoCorrect
-										style={[
-											_isFocused ? { color: '#3443D9' } : { maxHeight: 35 * scaleSize },
-											text.bold.small,
-											{
-												height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
-												fontFamily: 'Open Sans',
-												marginTop: 3 * scaleSize,
-												fontSize: 15 * scaleSize,
-												paddingRight: 12 * scaleSize,
-											},
-										]}
-										placeholder={placeholder}
-										placeholderTextColor={_isFocused ? '#3443D9' : '#AFB1C0'}
-										returnKeyType={isTablet ? 'send' : 'default'}
-										onSubmitEditing={() => isTablet && handlePressSend()}
-									/>
-								</View>
-							</Animated.View>
-							<Animated.View
-								style={{
-									opacity: aOpacitySendButton,
-									position: 'absolute',
-									right: aFixSend,
-									padding: 8 * scaleSize,
-								}}
-							>
-								<TouchableOpacity
-									style={[
-										{
-											alignItems: 'center',
-											justifyContent: 'center',
-											width: 36 * scaleSize,
-											height: 36 * scaleSize,
-											backgroundColor: sendEnabled ? color.blue : '#AFB1C0',
-											borderRadius: 18,
-										},
-									]}
-									disabled={!sendEnabled}
-									onPress={handlePressSend}
-								>
-									<Icon
-										name='paper-plane-outline'
-										width={20 * scaleSize}
-										height={20 * scaleSize}
-										fill={color.white}
-									/>
-								</TouchableOpacity>
-							</Animated.View>
-							<Animated.View
-								style={{
-									opacity: aOpacity,
-									flexDirection: 'row',
-									paddingLeft: 15 * scaleSize,
-									right: aFixMicro,
-								}}
-							>
-								<TouchableOpacity
-									style={[
-										{
-											alignItems: 'center',
-											justifyContent: 'center',
-											borderRadius: 100,
-											backgroundColor: color.blue,
-											width: 36 * scaleSize,
-											height: 36 * scaleSize,
-										},
-									]}
-									onPress={async () => {
-										setActivateTab(TabItems.Camera)
-										try {
-											const status = await check(
-												Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
-											)
-											if (status !== RESULTS.GRANTED) {
-												try {
-													const status = await request(
-														Platform.OS === 'ios'
-															? PERMISSIONS.IOS.CAMERA
-															: PERMISSIONS.ANDROID.CAMERA,
-													)
-													if (status !== RESULTS.GRANTED) {
-														setSecurityAccessVisibility(true)
-														return
-													}
-												} catch (err) {
-													console.log(err)
-												}
-											}
-										} catch (err) {
-											console.log(err)
-										}
-										try {
-											await ImagePicker.clean()
-										} catch (err) {}
-										try {
-											const image = await ImagePicker.openCamera({
-												cropping: false,
-											})
-
-											prepareMediaAndSend([
-												{
-													filename: '',
-													uri: image.path || image.sourceURL || '',
-													mimeType: image.mime,
-												},
-											])
-										} catch (err) {
-											console.log(err)
-										}
+								<TextInput
+									value={message}
+									ref={inputRef}
+									multiline
+									editable={disabled ? false : true}
+									onBlur={() => {
+										activeReplyInte && setActiveReplyInte()
 									}}
-								>
-									<Icon
-										name='camera'
-										pack='custom'
-										height={16 * scaleSize}
-										width={16 * scaleSize}
-										fill={color.white}
-									/>
-								</TouchableOpacity>
-							</Animated.View>
-						</View>
+									onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
+									onContentSizeChange={({ nativeEvent }) =>
+										setInputHeight(
+											nativeEvent?.contentSize.height > 80 ? 80 : nativeEvent?.contentSize.height,
+										)
+									}
+									autoCorrect
+									style={[
+										_isFocused ? { color: '#3443D9' } : { maxHeight: 35 * scaleSize },
+										text.bold.small,
+										{
+											height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
+											fontFamily: 'Open Sans',
+											marginTop: 3 * scaleSize,
+											fontSize: 15 * scaleSize,
+											paddingRight: 12 * scaleSize,
+										},
+									]}
+									placeholder={placeholder}
+									placeholderTextColor={_isFocused ? '#3443D9' : '#AFB1C0'}
+									returnKeyType={isTablet ? 'send' : 'default'}
+									onSubmitEditing={() => isTablet && handlePressSend()}
+								/>
+							</View>
+						</Animated.View>
+						<Animated.View
+							style={{
+								opacity: aOpacitySendButton,
+								position: 'absolute',
+								right: aFixSend,
+								padding: 8 * scaleSize,
+							}}
+						>
+							<TouchableOpacity
+								style={[
+									{
+										alignItems: 'center',
+										justifyContent: 'center',
+										width: 36 * scaleSize,
+										height: 36 * scaleSize,
+										backgroundColor: sendEnabled ? color.blue : '#AFB1C0',
+										borderRadius: 18,
+									},
+								]}
+								disabled={!sendEnabled}
+								onPress={handlePressSend}
+							>
+								<Icon
+									name='paper-plane-outline'
+									width={20 * scaleSize}
+									height={20 * scaleSize}
+									fill={color.white}
+								/>
+							</TouchableOpacity>
+						</Animated.View>
+						<Animated.View
+							style={{
+								opacity: aOpacity,
+								flexDirection: 'row',
+								paddingLeft: 15 * scaleSize,
+								right: aFixMicro,
+							}}
+						>
+							<TouchableOpacity
+								style={[
+									{
+										alignItems: 'center',
+										justifyContent: 'center',
+										borderRadius: 100,
+										backgroundColor: color.blue,
+										width: 36 * scaleSize,
+										height: 36 * scaleSize,
+									},
+								]}
+								onPress={async () => {
+									setActivateTab(TabItems.Camera)
+									try {
+										const status = await check(
+											Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
+										)
+										if (status !== RESULTS.GRANTED) {
+											try {
+												const status = await request(
+													Platform.OS === 'ios'
+														? PERMISSIONS.IOS.CAMERA
+														: PERMISSIONS.ANDROID.CAMERA,
+												)
+												if (status !== RESULTS.GRANTED) {
+													setSecurityAccessVisibility(true)
+													return
+												}
+											} catch (err) {
+												console.log(err)
+											}
+										}
+									} catch (err) {
+										console.log(err)
+									}
+									try {
+										await ImagePicker.clean()
+									} catch (err) {}
+									try {
+										const image = await ImagePicker.openCamera({
+											cropping: false,
+										})
+
+										prepareMediaAndSend([
+											{
+												filename: '',
+												uri: image.path || image.sourceURL || '',
+												mimeType: image.mime,
+											},
+										])
+									} catch (err) {
+										console.log(err)
+									}
+								}}
+							>
+								<Icon
+									name='camera'
+									pack='custom'
+									height={16 * scaleSize}
+									width={16 * scaleSize}
+									fill={color.white}
+								/>
+							</TouchableOpacity>
+						</Animated.View>
 					</View>
-				</RecordComponent>
-			</SafeAreaView>
-		</BlurView>
+				</View>
+			</RecordComponent>
+		</SafeAreaView>
 	)
 }
 

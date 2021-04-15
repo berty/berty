@@ -10,7 +10,7 @@ import {
 import { Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import Avatar from './Buck_Berty_Icon_Card.svg'
-import BlurView from '../shared-components/BlurView'
+import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
 import { requestNotifications, RESULTS } from 'react-native-permissions'
 import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'

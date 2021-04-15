@@ -1,19 +1,12 @@
 import React, { useEffect } from 'react'
-import {
-	View,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
-	Text as TextNative,
-	StyleSheet,
-} from 'react-native'
+import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import { useNavigation } from '@react-navigation/native'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
-import BlurView from '../shared-components/BlurView'
+import { BlurView } from '@react-native-community/blur'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { base64ToURLBase64 } from '@berty-tech/components/utils'
 import { Buffer } from 'buffer'

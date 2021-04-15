@@ -1,0 +1,11 @@
+diff --git a/node_modules/@react-native-community/blur/android/build.gradle b/node_modules/@react-native-community/blur/android/build.gradle
+index 8177235..b401cb8 100644
+--- a/node_modules/@react-native-community/blur/android/build.gradle
++++ b/node_modules/@react-native-community/blur/android/build.gradle
+@@ -43,5 +43,5 @@ repositories {
+ dependencies {
+     //noinspection GradleDynamicVersion
+     implementation 'com.facebook.react:react-native:+'
+-    implementation 'com.eightbitlab:blurview:1.6.3'
++    implementation 'com.eightbitlab:blurview:1.6.6'
+ }
