@@ -45,6 +45,7 @@
 		"react": "16.13.1",
 		"react-i18next": "^11.8.6",
 		"react-native": "0.63.4",
+		"react-native-android-keyboard-adjust": "^1.2.0",
 		"react-native-audiowaveform": "^2.0.5",
 		"react-native-bootsplash": "^3.1.2",
 		"react-native-camera": "^3.42.0",

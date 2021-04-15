@@ -25,6 +25,8 @@ import { ChatDate, ChatFooter } from './common'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MessageList } from '@berty-tech/components/chat/MessageList'
 import { ReplyReactionProvider } from './ReplyReactionContext'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+import { useFocusEffect } from '@react-navigation/native'
 
 //
 // Chat
@@ -154,6 +156,13 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const [showStickyDate, setShowStickyDate] = useState(false)
 	const [isSwipe, setSwipe] = useState(true)
 
+	useFocusEffect(
+		React.useCallback(() => {
+			AndroidKeyboardAdjust?.setAdjustResize()
+			return () => AndroidKeyboardAdjust?.setAdjustPan()
+		}, []),
+	)
+
 	return (
 		<ReplyReactionProvider>
 			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }) => (
@@ -172,6 +181,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						<KeyboardAvoidingView
 							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 							style={[flex.tiny, { justifyContent: 'flex-start' }]}
+							bottomFixedViewPadding={20}
 						>
 							<MessageList
 								id={params?.convId}

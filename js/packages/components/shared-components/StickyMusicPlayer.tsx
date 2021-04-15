@@ -6,7 +6,6 @@ import { useMusicPlayer } from '@berty-tech/music-player'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const HEIGHT_OF_PLAYER = 60
-export const MARGIN_FIX = 10
 
 export const StickMusicPlayer = () => {
 	const [{ border, padding, margin }, { windowWidth, scaleSize }] = useStyles()
@@ -52,8 +51,8 @@ export const StickMusicPlayer = () => {
 					justifyContent: 'center',
 					width: '100%',
 					position: 'relative',
-					marginBottom: -top + MARGIN_FIX,
-					marginTop: (top + 10) * scaleSize,
+					marginBottom: -top,
+					marginTop: top,
 					zIndex: 9,
 					backgroundColor: '#4F58C0',
 					height: HEIGHT_OF_PLAYER,
