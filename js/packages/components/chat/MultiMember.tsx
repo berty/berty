@@ -25,6 +25,8 @@ import { MultiMemberAvatar } from '../avatars'
 import { MessageList } from '@berty-tech/components/chat/MessageList'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ReplyReactionProvider } from './ReplyReactionContext'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+import { useFocusEffect } from '@react-navigation/native'
 
 //
 // MultiMember
@@ -129,6 +131,13 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 
 	const [isSwipe, setSwipe] = useState(true)
 
+	useFocusEffect(
+		React.useCallback(() => {
+			AndroidKeyboardAdjust?.setAdjustResize()
+			return () => AndroidKeyboardAdjust?.setAdjustPan()
+		}, []),
+	)
+
 	return (
 		<ReplyReactionProvider>
 			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }) => (
@@ -147,6 +156,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 						<KeyboardAvoidingView
 							style={[flex.tiny]}
 							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+							bottomFixedViewPadding={20}
 						>
 							<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
 							<ChatFooter

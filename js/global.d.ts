@@ -10,6 +10,7 @@ declare module 'react-native-audiowaveform'
 declare module 'linkify-it'
 declare module 'react-native-flags'
 declare module 'react-native-emoji-board'
+declare module 'react-native-android-keyboard-adjust'
 
 declare module 'google-palette' {
 	const content: (type: string, count: number) => string[]
