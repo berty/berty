@@ -1,7 +1,7 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "La aplicación de mensajería segura entre pares que funciona con o sin acceso a Internet, datos móviles o confianza en la red",
+      "desc": "La aplicación de mensajería segura entre pares que funciona con o sin acceso a Internet, datos celulares o confianza en la red",
       "open-registered-account": "Abrir una cuenta registrada",
       "import-button": "Importar datos de una cuenta existente",
       "account-selector-create-button": "Crear una nueva cuenta",
@@ -116,7 +116,7 @@
       "welcome-title": "Bienvenido a las opciones de redes",
       "full-anon-mode": "Modo anónimo completo",
       "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "allow-expert-mode": "Permitir modo experto",
       "tor-compatible": {
         "title": "Compatible con TOR",
         "desc": "Esta configuración te permitirá conectarte a la red Tor y chatear con usuarios en modo anónimo completo sin estar tu mismo en este modo."
@@ -124,7 +124,7 @@
       "full-anon": {
         "title": "Modo anónimo completo",
         "desc": "",
-        "no-ip": "",
+        "no-ip": "Sin ip",
         "no-mc": "",
         "tor-only": "Solo Tor"
       },
@@ -229,7 +229,7 @@
       "title": "Bluetooth",
       "desc": "Bluetooth te permite usar mejor la aplicación Berty cuando no tienes una conexión de red (wifi o datos) conectando tu teléfono directamente con los contactos cercanos",
       "activate-button": "Activar bluetooth",
-      "permission-title": "",
+      "permission-title": "Permiso de bluetooth de Berty",
       "permission-description": "Autoriza a la aplicación Berty para usar las funciones de Bluetooth en tu dispositivo",
       "tag-neutral": "Pregúntame más tarde",
       "tag-negative": "Cancelar",
@@ -239,7 +239,7 @@
       "activate-button": "Activar conectividad con múltiples compañeros"
     },
     "nearby": {
-      "activate-button": ""
+      "activate-button": "Activar Android Nearby"
     },
     "services-auth": {
       "title": "Servicios externos",
@@ -303,7 +303,7 @@
       "title": "Herramientas de desarrollo",
       "header-left-button": "Información del dispositivo",
       "simulate-button": "Simular error de flujo",
-      "simulate-js-error-button": "",
+      "simulate-js-error-button": "Simular error de JavaScript",
       "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "opcional",
@@ -314,11 +314,11 @@
       "system-info-button": "Información del sistema",
       "debug-button": "Depurar",
       "log-button": {
-        "name": "",
+        "name": "Formato de registro",
         "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
       },
       "log-filters-button": {
-        "name": "",
+        "name": "Filtros de registro",
         "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
       },
       "add-dev-conversations-button": "Agregar conversaciones de desarrollo",
@@ -402,7 +402,7 @@
       "title": "¡Bienvenido a bordo!",
       "desc": "¡Veamos un resumen de los ajustes y terminemos tu primera configuración!",
       "skip": "SALTAR",
-      "next": ""
+      "next": "SIGUIENTE"
     }
   },
   "chat": {
@@ -415,7 +415,7 @@
       "devices": "Dispositivos"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Escribe aquí..."
     },
     "multi-member-settings": {
       "header-left-button": "Buscar",
@@ -457,7 +457,7 @@
       },
       "betabot-input-placeholder": "Añadir betabot para escribir aquí...",
       "incoming-input-placeholder": "Acepta la solicitud para escribir aquí...",
-      "input-placeholder": ""
+      "input-placeholder": "Escribe aquí..."
     },
     "one-to-one-settings": {
       "header-left-button": "Buscar",
@@ -512,10 +512,10 @@
       "desc-report": ""
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
+      "title": "¡Perdón por este error!",
+      "desc": "Es culpa de Francisco, desarrollador interno de Berty, quien debió haber cometido un error. ¡Qué tonto este Francisco!",
+      "desc-buy": "¡Te comprará una cerveza cuando lo veas!",
+      "desc-em": "*Bueno, está bien, no hay un Francisco en el equipo de Berty.",
       "desc-report": ""
     }
   },
@@ -581,9 +581,9 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
+        "usage": "Mantén para grabar, suelta para enviar",
+        "not-sent": "El mensaje de audio no ha sido enviado",
+        "permission-denied": "La aplicación no tiene permitido grabar sonido"
       },
       "slide-to-cancel": "<< Desliza para cancelar",
       "cancel-button": "Cancelar"
