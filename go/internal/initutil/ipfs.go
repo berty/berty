@@ -61,6 +61,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
+	fs.BoolVar(&m.Node.Protocol.UseStaticRelays, "p2p.use-static-relays", true, "if true will use static relays form the config, otherwise it will try to discover relays over the dht")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
@@ -360,7 +361,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		case ble.Supported:
 			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
 		default:
-			m.initLogger.Warn("cannot enable BLE on an unsupported platform")
+			logger.Warn("cannot enable BLE on an unsupported platform")
 		}
 		p2popts = append(p2popts, bleOpt)
 	}
@@ -372,7 +373,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 			p2popts = append(p2popts,
 				libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Nearby.Driver)))
 		} else {
-			m.initLogger.Warn("cannot enable Android Nearby on an unsupported platform")
+			logger.Warn("cannot enable Android Nearby on an unsupported platform")
 		}
 	}
 
@@ -384,54 +385,9 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 				libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
 			)
 		} else {
-			m.initLogger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
+			logger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
 		}
 	}
-
-	// if m.Node.Protocol.RelayHack {
-	// 	// Resolving addresses
-	// 	pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
-	// 	if err != nil {
-	// 		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
-	// 	}
-
-	// 	lenPis := len(pis)
-	// 	pickFrom := make([]peer.AddrInfo, lenPis)
-	// 	for lenPis > 0 {
-	// 		lenPis--
-	// 		pickFrom[lenPis] = *pis[lenPis]
-	// 	}
-
-	// 	// Selecting 2 random one
-	// 	rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
-	// 	var relays []peer.AddrInfo
-	// 	if len(pickFrom) <= 2 {
-	// 		relays = pickFrom
-	// 	} else {
-	// 		for i := 2; i > 0; i-- {
-	// 			lenPickFrom := len(pickFrom)
-	// 			n := rng.Intn(lenPickFrom)
-	// 			relays = append(relays, pickFrom[n])
-	// 			if n == 0 {
-	// 				pickFrom = pickFrom[1:]
-	// 				continue
-	// 			}
-	// 			if n == lenPickFrom-1 {
-	// 				pickFrom = pickFrom[:n-1]
-	// 				continue
-	// 			}
-	// 			pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
-	// 		}
-	// 	}
-
-	// for _, relay := range relays {
-	// 	for _, addr := range relay.Addrs {
-	// 		cfg.Addresses.Announce = append(cfg.Addresses.Announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
-	// 	}
-	// }
-
-	// 	p2popts = append(p2popts, libp2p.StaticRelays(relays))
-	// }
 
 	// localdisc driver
 	if !m.Node.Protocol.LocalDiscovery {
@@ -440,6 +396,21 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 
 	// enable autorelay
 	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+
+	if m.Node.Protocol.UseStaticRelays {
+		// Resolving addresses
+		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), logger, config.Config.P2P.StaticRelays)
+		if err != nil {
+			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+		}
+
+		peers := make([]peer.AddrInfo, len(pis))
+		for i, p := range pis {
+			peers[i] = *p
+		}
+
+		p2popts = append(p2popts, libp2p.StaticRelays(peers))
+	}
 
 	// prefill peerstore with known rdvp servers
 	if m.Node.Protocol.Tor.Mode != TorRequired {

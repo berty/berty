@@ -75,6 +75,7 @@ type Manager struct {
 			Announce          string `json:"Announce,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
 			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
+			UseStaticRelays   bool   `json:"UseStaticRelays,omitempty"`
 			Ble               struct {
 				Enable bool                   `json:"Enable,omitempty"`
 				Driver proximity.NativeDriver `json:"Driver,omitempty"`
