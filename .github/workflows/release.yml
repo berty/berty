@@ -16,13 +16,16 @@ jobs:
         uses: actions/checkout@master
       - name: Unshallow
         run: git fetch --prune --unshallow
-      - name: Install libgl
-        run: sudo apt-get install -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
       - name: Run Semantic Release
         id: semantic
         uses: docker://ghcr.io/codfish/semantic-release-action:v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install libgl
+        run: |
+          sudo apt update
+          sudo apt install -f
+          sudo apt install -f -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
       - name: Set up Go
         if: steps.semantic.outputs.new-release-published == 'true'
         uses: actions/setup-go@v2
