@@ -341,7 +341,7 @@ the conversation can begin
 
 When an Account A (the Requester) wants to add an Account B (the Responder) to
 its contacts, it needs to know the Responder's Public rendezvous point. This
-[rendezvous point](#rendezvous-points) is derived from the RDV Seed and the
+[rendezvous point](#rendezvous-point) is derived from the RDV Seed and the
 Account ID. Thus the Responder first needs to share his RDV Seed and his
 Account ID with the Requester, so that the latter can compute the RDV Point.
 This information can be sent by different means: an URL sent by message, a
@@ -665,7 +665,7 @@ an invitation.
 
 An invitation is composed of the Group ID, the Group Secret, the Group Secret
 Sig and the Attachment Key. An invitation can thus be created by any member of
-the Group. With the invitation, a Berty user can compute the [Rendezvous Point](#rendezvous-points)
+the Group. With the invitation, a Berty user can compute the [Rendezvous Point](#rendezvous-point)
 of the Group, which is derived from the Group ID.
 
 Once the RDV Point has been computed, the user is able to download the
