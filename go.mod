@@ -78,7 +78,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.3.1
-	github.com/multiformats/go-multiaddr-dns v0.3.0
+	github.com/multiformats/go-multiaddr-dns v0.3.1
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.0.15
 	github.com/multiformats/go-multistream v0.2.1
@@ -103,7 +103,7 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/tools v0.0.0-20210106214847-113979e3529a
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
