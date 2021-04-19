@@ -152,8 +152,11 @@ func TestFlow(t *testing.T) {
 		require.True(t, lastProgress.Completed > 1)
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
-		require.True(t, lastProgress.Delay > uint64(time.Duration(time.Millisecond).Microseconds())) // in general, it's around 40ms on Manfred's Linux server
-		require.True(t, lastProgress.Delay < uint64(time.Duration(60*time.Second).Microseconds()))   // in general, it's around 40ms on Manfred's Linux server
+
+		// check if duration is between 100us and 1m
+		// in general, it's around 40ms on Manfred's Linux server
+		require.True(t, lastProgress.Delay > uint64(time.Duration(100*time.Microsecond).Microseconds()))
+		require.True(t, lastProgress.Delay < uint64(time.Duration(1*time.Minute).Microseconds()))
 	}
 
 	// try closing the account again, even if no account should be loaded anymore
@@ -194,10 +197,14 @@ func TestFlow(t *testing.T) {
 		require.Equal(t, lastProgress.Doing, "")
 		require.Equal(t, lastProgress.State, "done")
 		require.True(t, lastProgress.Completed > 1)
+		require.Equal(t, int(lastProgress.Completed), 11) // this test can be disabled if it breaks, the test just above can be considered as enough
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
-		require.True(t, lastProgress.Delay > uint64(time.Duration(50*time.Millisecond).Microseconds())) // in general, it's around 600ms on Manfred's Linux server
-		require.True(t, lastProgress.Delay < uint64(time.Duration(60*time.Second).Microseconds()))      // in general, it's around 600ms on Manfred's Linux server
+
+		// check if duration is between 50ms and 1m
+		// in general, it's around 600ms on Manfred's Linux server
+		require.True(t, lastProgress.Delay > uint64(time.Duration(50*time.Millisecond).Microseconds()))
+		require.True(t, lastProgress.Delay < uint64(time.Duration(1*time.Minute).Microseconds()))
 	}
 
 	// try closing the account again, even if no account should be loaded anymore
@@ -262,10 +269,14 @@ func TestFlow(t *testing.T) {
 		require.Equal(t, lastProgress.Doing, "")
 		require.Equal(t, lastProgress.State, "done")
 		require.True(t, lastProgress.Completed > 1)
+		require.Equal(t, int(lastProgress.Completed), 14) // this test can be disabled if it breaks, the test just above can be considered as enough
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
-		require.True(t, lastProgress.Delay > uint64(time.Duration(10*time.Millisecond).Microseconds())) // in general, it's around 40ms on Manfred's Linux server
-		require.True(t, lastProgress.Delay < uint64(time.Duration(60*time.Second).Microseconds()))      // in general, it's around 40ms on Manfred's Linux server
+
+		// check if duration is between 100us and 1m
+		// in general, it's around 40ms on Manfred's Linux server
+		require.True(t, lastProgress.Delay > uint64(time.Duration(100*time.Microsecond).Microseconds()))
+		require.True(t, lastProgress.Delay < uint64(time.Duration(1*time.Minute).Microseconds()))
 	}
 }
 
