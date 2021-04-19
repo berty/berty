@@ -73,7 +73,7 @@ export const HomeHeader: React.FC<
 								padding.horizontal.scale(27),
 								{
 									alignItems: 'center',
-									paddingTop: paddingTop * scaleHeight,
+									paddingTop: Platform.OS === 'ios' ? paddingTop * scaleHeight : 0,
 								},
 							]}
 						>
