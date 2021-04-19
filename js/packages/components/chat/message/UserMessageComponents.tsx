@@ -13,6 +13,7 @@ import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/typ
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 import { pbDateToNum, timeFormat } from '../../helpers'
+import Markdown from '@berty-tech/components/chat/message/Markdown'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
@@ -98,18 +99,11 @@ export const HyperlinkUserMessage: React.FC<{
 				linkStyle={{ textDecorationLine: 'underline' }}
 				linkify={linkify_conf}
 			>
-				<Text
-					style={[
-						{
-							color: msgTextColor,
-							fontSize: 12,
-							lineHeight: 17,
-						},
-					]}
-					selectable={true}
-				>
-					{isReadMore ? message.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
-				</Text>
+				<Markdown
+					msgBackgroundColor={msgBackgroundColor}
+					msgTextColor={msgTextColor}
+					message={isReadMore ? message?.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
+				/>
 
 				{isReadMore && (
 					<TouchableOpacity onPress={() => setReadMore(false)}>
