@@ -4945,6 +4945,8 @@ export namespace berty {
                 public mediaGetRelated(request: berty.messenger.v1.MediaGetRelated.IRequest): Promise<berty.messenger.v1.MediaGetRelated.Reply>;
                 public messageSearch(request: berty.messenger.v1.MessageSearch.IRequest, callback: berty.messenger.v1.MessengerService.MessageSearchCallback): void;
                 public messageSearch(request: berty.messenger.v1.MessageSearch.IRequest): Promise<berty.messenger.v1.MessageSearch.Reply>;
+                public setMultiMemberInfo(request: berty.messenger.v1.SetMultiMemberInfo.IRequest, callback: berty.messenger.v1.MessengerService.SetMultiMemberInfoCallback): void;
+                public setMultiMemberInfo(request: berty.messenger.v1.SetMultiMemberInfo.IRequest): Promise<berty.messenger.v1.SetMultiMemberInfo.Reply>;
             }
 
             namespace MessengerService {
@@ -5014,6 +5016,8 @@ export namespace berty {
                 type MediaGetRelatedCallback = (error: (Error|null), response?: berty.messenger.v1.MediaGetRelated.Reply) => void;
 
                 type MessageSearchCallback = (error: (Error|null), response?: berty.messenger.v1.MessageSearch.Reply) => void;
+
+                type SetMultiMemberInfoCallback = (error: (Error|null), response?: berty.messenger.v1.SetMultiMemberInfo.Reply) => void;
             }
 
             interface IPaginatedInteractionsOptions {
@@ -6498,6 +6502,7 @@ export namespace berty {
                 replyOptionsCid?: (string|null);
                 replyOptions?: (berty.messenger.v1.IInteraction|null);
                 replicationInfo?: (berty.messenger.v1.IConversationReplicationInfo[]|null);
+                infoDate?: (Long|null);
             }
 
             class Conversation implements IConversation {
@@ -6519,6 +6524,7 @@ export namespace berty {
                 public replyOptionsCid: string;
                 public replyOptions?: (berty.messenger.v1.IInteraction|null);
                 public replicationInfo: berty.messenger.v1.IConversationReplicationInfo[];
+                public infoDate: Long;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8113,6 +8119,65 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch.Reply;
                     public static toObject(message: berty.messenger.v1.MessageSearch.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface ISetMultiMemberInfo {
+            }
+
+            class SetMultiMemberInfo implements ISetMultiMemberInfo {
+
+                public static create(properties?: berty.messenger.v1.ISetMultiMemberInfo): berty.messenger.v1.SetMultiMemberInfo;
+                public static encode(message: berty.messenger.v1.ISetMultiMemberInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.ISetMultiMemberInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.SetMultiMemberInfo;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.SetMultiMemberInfo;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SetMultiMemberInfo;
+                public static toObject(message: berty.messenger.v1.SetMultiMemberInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace SetMultiMemberInfo {
+
+                interface IRequest {
+                    displayName?: (string|null);
+                    avatarCid?: (string|null);
+                    convPk?: (string|null);
+                    attachmentCids?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public displayName: string;
+                    public avatarCid: string;
+                    public convPk: string;
+                    public attachmentCids: string;
+                    public static create(properties?: berty.messenger.v1.SetMultiMemberInfo.IRequest): berty.messenger.v1.SetMultiMemberInfo.Request;
+                    public static encode(message: berty.messenger.v1.SetMultiMemberInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.SetMultiMemberInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.SetMultiMemberInfo.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.SetMultiMemberInfo.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SetMultiMemberInfo.Request;
+                    public static toObject(message: berty.messenger.v1.SetMultiMemberInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.SetMultiMemberInfo.IReply): berty.messenger.v1.SetMultiMemberInfo.Reply;
+                    public static encode(message: berty.messenger.v1.SetMultiMemberInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.SetMultiMemberInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.SetMultiMemberInfo.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.SetMultiMemberInfo.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SetMultiMemberInfo.Reply;
+                    public static toObject(message: berty.messenger.v1.SetMultiMemberInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

@@ -264,6 +264,14 @@ func (d *dbWrapper) updateConversation(c messengertypes.Conversation) (bool, err
 		columns = append(columns, "account_member_public_key")
 	}
 
+	if c.AvatarCID != "" {
+		columns = append(columns, "avatar_cid")
+	}
+
+	if c.InfoDate != 0 {
+		columns = append(columns, "info_date")
+	}
+
 	db := d.db
 
 	if len(columns) > 0 {

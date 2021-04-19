@@ -1480,3 +1480,10 @@ func (svc *service) MessageSearch(ctx context.Context, request *messengertypes.M
 
 	return &messengertypes.MessageSearch_Reply{Results: results}, nil
 }
+
+func (svc *service) SetMultiMemberInfo(ctx context.Context, request *messengertypes.SetMultiMemberInfo_Request) (*messengertypes.SetMultiMemberInfo_Reply, error) {
+	if err := svc.sendGroupInfo(request.GetConvPK(), request.GetDisplayName(), request.GetAvatarCID(), request.GetAttachmentCIDs()); err != nil {
+		svc.logger.Error("failed to set multimember group info", zap.Error(err))
+	}
+	return &messengertypes.SetMultiMemberInfo_Reply{}, nil
+}

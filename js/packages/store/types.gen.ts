@@ -292,6 +292,13 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useSetMultiMemberInfo: () => {
+		error: any
+		call: (req?: beapi.messenger.SetMultiMemberInfo.IRequest) => void
+		reply: beapi.messenger.SetMultiMemberInfo.IReply | null
+		done: boolean
+		called: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {
