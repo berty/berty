@@ -13,7 +13,6 @@ import {
 } from './providerEffects'
 import {
 	setPersistentOption,
-	createNewAccount,
 	importAccount,
 	updateAccount,
 	switchAccount,
@@ -21,6 +20,7 @@ import {
 	restart,
 	setReaction,
 } from './providerCallbacks'
+import { createNewAccount } from './effectableCallbacks'
 import { reducer } from './providerReducer'
 import { playSound, SoundKey } from './sounds'
 
