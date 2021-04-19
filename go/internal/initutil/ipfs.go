@@ -482,7 +482,9 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		Logger:                 logger,
 		AdvertiseResetInterval: time.Minute,
 		AdvertiseGracePeriod:   time.Minute,
-		BackoffStratFactory:    backoffstrat,
+		BackoffStrategy: &tinder.BackoffOpts{
+			StratFactory: backoffstrat,
+		},
 	}
 
 	m.Node.Protocol.discovery, err = tinder.NewService(tinderOpts, h, drivers...)

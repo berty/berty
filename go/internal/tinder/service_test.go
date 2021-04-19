@@ -3,6 +3,7 @@ package tinder
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
 	"testing"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
+	idisc "github.com/libp2p/go-libp2p-discovery"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/tj/assert"
@@ -22,6 +24,14 @@ type mockedService struct {
 	Drivers []*Driver
 	Host    host.Host
 	Service Service
+}
+
+var fixedSecondBackoff = &BackoffOpts{
+	StratFactory: idisc.NewFixedBackoff(time.Second),
+}
+
+var veryLongBackoff = &BackoffOpts{
+	StratFactory: idisc.NewFixedBackoff(time.Hour),
 }
 
 func TestNewService(t *testing.T) {
@@ -181,51 +191,73 @@ func TestFindPeersCache(t *testing.T) {
 	const advertisekey = "test_key"
 	const nDriver = 10
 
+	cases := []struct {
+		name          string
+		ndriver       int
+		foundExpected int
+		backoffStrat  *BackoffOpts
+	}{
+		{name: "1 driver/no cache", ndriver: 1, foundExpected: 1},
+		{name: "10 driver/no cache", ndriver: 10, foundExpected: 10},
+		{name: "100 driver/no cache", ndriver: 100, foundExpected: 100},
+		{name: "1 driver/with cache", ndriver: 1, foundExpected: 1, backoffStrat: veryLongBackoff},
+		{name: "10 driver/with cache", ndriver: 10, foundExpected: 1, backoffStrat: veryLongBackoff},
+		{name: "100 driver/with cache", ndriver: 100, foundExpected: 1, backoffStrat: veryLongBackoff},
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	l, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	m := mocknet.New(ctx)
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			m := mocknet.New(ctx)
+			server := NewMockedDriverServer()
 
-	server := NewMockedDriverServer()
+			driverh, err := m.GenPeer()
+			require.NoError(t, err)
 
-	h, err := m.GenPeer()
-	require.NoError(t, err)
+			drivers := make([]*Driver, tc.ndriver)
+			for i := range drivers {
+				drivers[i] = NewMockedDriverClient("MockedDriver", driverh, server)
+			}
 
-	drivers := make([]*Driver, nDriver)
-	for i := range drivers {
-		drivers[i] = NewMockedDriverClient(fmt.Sprintf("MockedDriver #%d", i), h, server)
+			// client host should be different than the driver so he wont be skipped
+			clienth, err := m.GenPeer()
+			require.NoError(t, err)
+
+			// test with cache enable
+			opts := &Opts{
+				BackoffStrategy:        tc.backoffStrat,
+				Logger:                 l,
+				AdvertiseResetInterval: time.Minute,
+			}
+			client, err := NewService(opts, clienth, drivers...)
+			require.NoError(t, err)
+			defer client.Close()
+
+			_, err = client.Advertise(ctx, advertisekey, discovery.TTL(time.Minute))
+			require.NoError(t, err)
+
+			// wait for at last one advertise to succeed. we dont care to wait for
+			// each driver here, since they share the same host
+			<-server.WaitForAdvertise(advertisekey, driverh.ID())
+
+			cc, err := client.FindPeers(ctx, advertisekey)
+			require.NoError(t, err)
+
+			count := 0
+			for p := range cc {
+				assert.Equal(t, driverh.ID(), p.ID)
+				count++
+			}
+
+			assert.Equal(t, tc.foundExpected, count)
+		})
 	}
 
-	opts := &Opts{
-		Logger:                 l,
-		AdvertiseResetInterval: time.Minute,
-	}
-
-	client, err := NewService(opts, h, drivers...)
-	require.NoError(t, err)
-
-	defer client.Close()
-
-	_, err = client.Advertise(ctx, advertisekey, discovery.TTL(time.Minute))
-	require.NoError(t, err)
-
-	// wait for at last one advertise to succeed. we dont care to wait for
-	// each driver here, since they share the same host
-	<-server.WaitForAdvertise(advertisekey, h.ID())
-
-	cc, err := client.FindPeers(ctx, advertisekey)
-	require.NoError(t, err)
-
-	// should return one peer
-	count := 0
-	for range cc {
-		count++
-	}
-
-	assert.Equal(t, 1, count)
 }
 
 func TestFindPeers(t *testing.T) {
@@ -290,6 +322,7 @@ func TestFindPeers(t *testing.T) {
 			require.NoError(t, err)
 
 			opts := &Opts{
+				BackoffStrategy:        veryLongBackoff,
 				Logger:                 l,
 				AdvertiseResetInterval: time.Minute,
 			}
@@ -315,6 +348,7 @@ func TestFindPeers(t *testing.T) {
 
 			count := 0
 			for p := range cc {
+				log.Printf("peer: %+v\n", p)
 				links := m.LinksBetweenPeers(hcl.ID(), p.ID)
 				assert.Len(t, links, 2)
 

@@ -171,9 +171,10 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 			Logger:                 opts.Logger,
 			AdvertiseResetInterval: time.Minute,
 			AdvertiseGracePeriod:   time.Minute,
-			BackoffStratFactory:    discovery.NewFixedBackoff(time.Second),
+			BackoffStrategy: &tinder.BackoffOpts{
+				StratFactory: discovery.NewFixedBackoff(time.Second),
+			},
 			// BackoffStratFactory: discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
-
 		}
 
 		// enable discovery monitor

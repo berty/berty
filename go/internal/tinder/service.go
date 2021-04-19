@@ -11,9 +11,7 @@ import (
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_event "github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
-
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	"go.uber.org/zap"
 )
@@ -61,14 +59,24 @@ type service struct {
 	muAdvertiser  sync.Mutex
 }
 
+type BackoffOpts struct {
+	StratFactory     discovery.BackoffFactory
+	DiscoveryOptions []discovery.BackoffDiscoveryOption
+}
+
 type Opts struct {
 	Logger *zap.Logger
 
-	FindPeerResetInterval  time.Duration
+	EnableDiscoveryMonitor bool
+
 	AdvertiseResetInterval time.Duration
 	AdvertiseGracePeriod   time.Duration
-	BackoffStratFactory    discovery.BackoffFactory
-	DiscovertyOptions      []discovery.BackoffDiscoveryOption
+	FindPeerResetInterval  time.Duration
+
+	// BackoffStrategy describes how backoff will be implemented on the
+	// FindPeer method. If none are provided, it will be disable alongside
+	// cache.
+	BackoffStrategy *BackoffOpts
 }
 
 func (o *Opts) applyDefault() {
@@ -104,25 +112,25 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 		return nil, err
 	}
 
+	var disc p2p_discovery.Discovery = s
+
 	// add backoff strategy if provided
-	var disc p2p_discovery.Discovery
-	if opts.BackoffStratFactory != nil {
+	if opts.BackoffStrategy != nil {
 		// wrap backoff/cache discovery
-		disc, err = discovery.NewBackoffDiscovery(s, opts.BackoffStratFactory, opts.DiscovertyOptions...)
+		disc, err = discovery.NewBackoffDiscovery(disc, opts.BackoffStrategy.StratFactory, opts.BackoffStrategy.DiscoveryOptions...)
 		if err != nil {
 			return nil, err
 		}
-	} else {
-		disc = s
 	}
 
-	// disc = s
-
-	discm := &discoveryMonitor{
-		host:    h,
-		logger:  opts.Logger,
-		disc:    disc,
-		emitter: s.emitter,
+	// enable monitor if needed
+	if opts.EnableDiscoveryMonitor {
+		disc = &discoveryMonitor{
+			host:    h,
+			logger:  opts.Logger,
+			disc:    disc,
+			emitter: s.emitter,
+		}
 	}
 
 	// compose backoff with tinder service
@@ -134,9 +142,8 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 	}
 
 	wctx, cancel := context.WithCancel(context.Background())
-
-	composer.Advertiser = discm
-	composer.Discoverer = newWatchdogsDiscoverer(wctx, opts.Logger, opts.AdvertiseResetInterval, discm)
+	composer.Discoverer = newWatchdogsDiscoverer(wctx, opts.Logger, opts.AdvertiseResetInterval, disc)
+	composer.Advertiser = disc
 	composer.Unregisterer = s
 	composer.Closer = newCloserCompose(func() error {
 		cancel()
@@ -259,16 +266,6 @@ func (s *service) advertise(ctx context.Context, d *Driver, ns string, opts ...p
 
 			deadline = s.resetInterval
 		} else {
-			s.Emit(&EvtDriverMonitor{
-				EventType: TypeEventMonitorDriverAdvertise,
-				AddrInfo: p2p_peer.AddrInfo{
-					ID:    s.host.ID(),
-					Addrs: currentAddrs,
-				},
-				Topic:      ns,
-				DriverName: d.Name,
-			})
-
 			if ttl == 0 {
 				ttl = s.ttl
 			}
@@ -326,8 +323,7 @@ func (s *service) FindPeers(ctx context.Context, ns string, opts ...p2p_discover
 			continue
 		}
 
-		s.logger.Debug("finder driver started", zap.String("key", ns), zap.String("driver", driver.Name))
-
+		s.logger.Debug("findpeer for driver started", zap.String("key", ns), zap.String("driver", driver.Name))
 		cdrivers = append(cdrivers, &driverChan{
 			cc:     ch,
 			driver: driver,
@@ -341,7 +337,7 @@ func (s *service) FindPeers(ctx context.Context, ns string, opts ...p2p_discover
 
 		// use optimized method for few drivers
 		err := s.selectFindPeers(ctx, cc, cdrivers)
-		s.logger.Warn("find peers done", zap.String("topic", ns), zap.Error(err))
+		s.logger.Debug("find peers done", zap.String("topic", ns), zap.Error(err))
 	}()
 
 	return cc, nil
@@ -368,7 +364,6 @@ func (s *service) selectFindPeers(ctx context.Context, out chan<- p2p_peer.AddrI
 	for n > 0 {
 		sel, value, ok := reflect.Select(selCases)
 		if sel == selDone {
-			s.logger.Warn("context done")
 			return ctx.Err()
 		}
 
@@ -380,7 +375,6 @@ func (s *service) selectFindPeers(ctx context.Context, out chan<- p2p_peer.AddrI
 		}
 
 		driver := in[sel].driver
-		topic := in[sel].topic
 		// we can safly get our peer
 		peer := value.Interface().(p2p_peer.AddrInfo)
 
@@ -399,18 +393,12 @@ func (s *service) selectFindPeers(ctx context.Context, out chan<- p2p_peer.AddrI
 				Addrs: addrs,
 			}
 
+			topic := in[sel].topic
 			// protect this peer to avoid to be pruned
 			s.ProtectPeer(peer.ID)
-
-			s.Emit(&EvtDriverMonitor{
-				EventType:  TypeEventMonitorDriverFoundPeer,
-				Topic:      topic,
-				AddrInfo:   filterpeer,
-				DriverName: driver.Name,
-			})
-
-			s.logger.Debug("found a matching peer!",
+			s.logger.Debug("found a peer",
 				zap.String("driver", driver.Name),
+				zap.String("topic", topic),
 				zap.String("peer", filterpeer.ID.String()),
 				zap.Any("addrs", filterpeer.Addrs))
 
@@ -436,13 +424,6 @@ func (s *service) Unregister(ctx context.Context, ns string) error {
 
 	s.unregister(ctx, ns)
 	return nil
-}
-
-func (s *service) Emit(evt *EvtDriverMonitor) {
-	// s.logger.Info("emitting", zap.Any("event", evt))
-	if err := s.emitter.Emit(*evt); err != nil {
-		s.logger.Warn("unable to emit `EvtDriverMonitor`", zap.Error(err))
-	}
 }
 
 func (s *service) Close() error {
@@ -522,6 +503,7 @@ func (w *watchdogsDiscoverer) FindPeers(_ context.Context, ns string, opts ...p2
 	return c, nil
 }
 
+// discovery monitor will send a event everytime we found/advertise a peer
 type discoveryMonitor struct {
 	host    host.Host
 	logger  *zap.Logger
@@ -547,13 +529,13 @@ func (d *discoveryMonitor) Advertise(ctx context.Context, ns string, opts ...p2p
 }
 
 // FindPeers discovers peers providing a service
-func (d *discoveryMonitor) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan peer.AddrInfo, error) {
+func (d *discoveryMonitor) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
 	c, err := d.disc.FindPeers(ctx, ns, opts...)
 	if err != nil {
 		return nil, err
 	}
 
-	retc := make(chan peer.AddrInfo)
+	retc := make(chan p2p_peer.AddrInfo)
 	go func() {
 		for p := range c {
 			d.Emit(&EvtDriverMonitor{
