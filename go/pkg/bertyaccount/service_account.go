@@ -53,7 +53,14 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	prog.AddStep("init")
 	prog.AddStep("setup-logger")
 	prog.AddStep("setup-manager")
-	prog.AddStep("setup-grpc")
+	prog.AddStep("setup-manager-logger")
+	prog.AddStep("setup-local-ipfs")
+	prog.AddStep("setup-grpc-server")
+	prog.AddStep("setup-local-messenger-server")
+	prog.AddStep("setup-notification-manager")
+	prog.AddStep("setup-grpc-client")
+	prog.AddStep("setup-grpc-services")
+	prog.AddStep("finishing")
 	prog.Get("init").Start()
 
 	args = append(args, "--store.dir", accountStorePath)
@@ -86,30 +93,79 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 		}
 	}
 
-	// get manager client conn
-	prog.Get("setup-grpc").SetAsCurrent()
-	var ccServices *grpc.ClientConn
+	errCleanup := func() {
+		initManager.Close(nil)
+	}
+
+	// setup manager logger
+	prog.Get("setup-manager-logger").SetAsCurrent()
+	{
+		if _, err = initManager.GetLogger(); err != nil {
+			errCleanup()
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// setup local IPFS
+	prog.Get("setup-local-ipfs").SetAsCurrent()
+	{
+		if _, _, err = initManager.GetLocalIPFS(); err != nil {
+			errCleanup()
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// setup gRPC server
+	prog.Get("setup-grpc-server").SetAsCurrent()
 	var srvServices *grpc.Server
 	{
 		var err error
 		if srvServices, _, err = initManager.GetGRPCServer(); err != nil {
-			initManager.Close(nil)
+			errCleanup()
 			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
 		}
+	}
 
+	// setup local messenger server
+	prog.Get("setup-local-messenger-server").SetAsCurrent()
+	{
+		if _, err = initManager.GetLocalMessengerServer(); err != nil {
+			errCleanup()
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// setup notification manager
+	prog.Get("setup-notification-manager").SetAsCurrent()
+	{
+		if _, err = initManager.GetNotificationManager(); err != nil {
+			errCleanup()
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// setup gRPC client
+	prog.Get("setup-grpc-client").SetAsCurrent()
+	var ccServices *grpc.ClientConn
+	{
 		if ccServices, err = initManager.GetGRPCClientConn(); err != nil {
-			initManager.Close(nil)
+			errCleanup()
 			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
 		}
 	}
 
-	if s.sclients != nil {
-		for serviceName := range srvServices.GetServiceInfo() {
-			s.sclients.RegisterService(serviceName, ccServices)
+	// register gRPC services
+	prog.Get("setup-grpc-services").SetAsCurrent()
+	{
+		if s.sclients != nil {
+			for serviceName := range srvServices.GetServiceInfo() {
+				s.sclients.RegisterService(serviceName, ccServices)
+			}
 		}
 	}
+
 	s.initManager = initManager
-	prog.Get("setup-grpc").Done()
+	prog.Get("finishing").SetAsCurrent().Done()
 
 	return meta, nil
 }
@@ -269,52 +325,11 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 		// here we can add various checks that return an error early if some settings are invalid or missing
 	}
 
+	// set custom drivers
 	manager.SetLogger(logger)
 	manager.SetNotificationManager(s.notifManager)
 	manager.SetBleDriver(s.bleDriver)
 	manager.SetNBDriver(s.nbDriver)
-
-	// setup `InitManager`
-	{
-		var err error
-
-		// close and cleanup manager in case of failure
-		defer func() {
-			if err != nil {
-				manager.Close(nil)
-			}
-		}()
-
-		// ensure requirement for manager
-
-		// get logger
-		if _, err = manager.GetLogger(); err != nil {
-			return nil, fmt.Errorf("unable to setup logger: %w", err)
-		}
-
-		// get local IPFS node
-		if _, _, err = manager.GetLocalIPFS(); err != nil {
-			return nil, fmt.Errorf("unable to setup Local IPFS Node: %w", err)
-		}
-
-		// get gRPC server
-		if _, _, err = manager.GetGRPCServer(); err != nil {
-			return nil, fmt.Errorf("unable to setup GRPC Server: %w", err)
-		}
-
-		if _, err = manager.GetLocalMessengerServer(); err != nil {
-			return nil, fmt.Errorf("unable to setup Messenger Server: %w", err)
-		}
-
-		if _, err = manager.GetNotificationManager(); err != nil {
-			return nil, fmt.Errorf("unable to setup Notification Manager: %w", err)
-		}
-
-		// get manager client conn
-		if _, err = manager.GetGRPCClientConn(); err != nil {
-			return nil, fmt.Errorf("unable to setup GRPC Client Conn: %w", err)
-		}
-	}
 
 	s.logger.Info("init", zap.Any("manager", &manager))
 	return &manager, nil
@@ -391,7 +406,7 @@ func (s *service) DeleteAccount(_ context.Context, request *DeleteAccount_Reques
 	}
 
 	if _, err := s.getAccountMetaForName(request.AccountID); err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	if err := os.RemoveAll(path.Join(s.rootdir, request.AccountID)); err != nil {

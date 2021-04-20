@@ -22,6 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install libgl
+        if: steps.semantic.outputs.new-release-published == 'true'
         run: |
           sudo apt update
           sudo apt install -f
