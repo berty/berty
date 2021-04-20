@@ -75,40 +75,6 @@ const RestartButton: React.FC<{}> = ({}) => {
 	)
 }
 
-const ShowAppInspectorButton: React.FC<{}> = ({}) => {
-	const [{ border, margin, padding }] = useStyles()
-	const { t }: { t: any } = useTranslation()
-	const { setDebugMode } = useMsgrContext()
-
-	return (
-		<TouchableOpacity
-			onPress={() => setDebugMode(true)}
-			activeOpacity={0.7}
-			style={[
-				margin.top.big,
-				margin.bottom.medium,
-				border.radius.small,
-				padding.medium,
-				{
-					backgroundColor: '#CED2FF',
-					alignItems: 'center',
-					width: '100%',
-				},
-			]}
-		>
-			<Text
-				style={{
-					color: '#3F49EA',
-					fontWeight: '700',
-					textTransform: 'uppercase',
-				}}
-			>
-				{t('error.restart-app')}
-			</Text>
-		</TouchableOpacity>
-	)
-}
-
 const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.ReactElement[] }> = ({
 	labelTitle,
 	children,
@@ -153,7 +119,6 @@ const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.React
 					>
 						{children}
 						<RestartButton />
-						<ShowAppInspectorButton />
 					</View>
 				</Body>
 			</View>
