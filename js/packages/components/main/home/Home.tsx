@@ -170,16 +170,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		<>
 			<Translation>
 				{(t: any): React.ReactNode => (
-					<View
-						style={[
-							flex.tiny,
-							styleBackground,
-							{
-								position: 'relative',
-								flex: 1,
-							},
-						]}
-					>
+					<View style={[flex.tiny, styleBackground]}>
 						<StatusBar backgroundColor='white' barStyle='dark-content' />
 						<SwipeNavRecognizer onSwipeLeft={() => !isModalVisible && navigate('Settings.Home')}>
 							<SafeAreaConsumer>

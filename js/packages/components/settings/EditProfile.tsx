@@ -346,71 +346,35 @@ export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
 	const [{ padding }] = useStyles()
 	const { goBack } = useNavigation()
 	return (
-		<Pressable onPress={goBack}>
-			<BlurView style={{ justifyContent: 'flex-end', height: '100%' }}>
-				<KeyboardAvoidingView behavior='padding'>
-					<Pressable>
-						<View
-							style={[
-								{ backgroundColor: 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30 },
-								padding.horizontal.big,
-							]}
-						>
-							<Header />
-							<EditMyProfile />
-						</View>
-					</Pressable>
-				</KeyboardAvoidingView>
-			</BlurView>
+		<Pressable
+			onPress={goBack}
+			style={{
+				position: 'absolute',
+				bottom: 0,
+				right: 0,
+				left: 0,
+				top: 0,
+				justifyContent: 'flex-end',
+			}}
+		>
+			<BlurView style={{ position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+			<KeyboardAvoidingView behavior='padding'>
+				<Pressable>
+					<View
+						style={[
+							{
+								backgroundColor: 'white',
+								borderTopLeftRadius: 30,
+								borderTopRightRadius: 30,
+							},
+							padding.horizontal.big,
+						]}
+					>
+						<Header />
+						<EditMyProfile />
+					</View>
+				</Pressable>
+			</KeyboardAvoidingView>
 		</Pressable>
 	)
 }
-
-/*const ResetMyQrCode: React.FC<{}> = () => {
-	const [{padding, margin, row, background, border, text, color}] = useStyles()
-	return (
-		<View style={[margin.vertical.big]}>
-						<TouchableOpacity
-							style={[
-								row.fill,
-								padding.horizontal.medium,
-								background.white,
-								border.shadow.medium,
-								border.radius.small,
-								margin.bottom.medium,
-								{ alignItems: 'center' },
-								_stylesEditProfile.profileInfo,
-							]}
-						>
-							<Icon name='info-outline' width={30} height={30} />
-							<Text style={[padding.right.big]}>Why reset my QR Code ?</Text>
-							<Icon name='arrow-ios-downward-outline' width={30} height={30} />
-						</TouchableOpacity>
-						<View style={[padding.horizontal.medium, padding.top.medium]}>
-							<View style={[padding.top.small, row.left, { alignItems: 'center' }]}>
-								<Icon name='checkmark-outline' width={20} height={20} fill={color.green} />
-								<Text style={[text.color.grey, margin.left.medium, text.size.scale(11)]}>
-									Your name and avatar will be updated on all your conversations
-					</Text>
-							</View>
-						</View>
-						<TouchableOpacity
-							style={[
-								_stylesEditProfile.profileButton,
-								row.center,
-								border.radius.small,
-								background.light.red,
-								margin.top.big,
-								row.item.justify,
-							]}
-						>
-							<Text style={[text.align.center, text.color.red, text.bold.medium, text.size.scale(16)]}>
-								RESET MY QR CODE
-				</Text>
-						</TouchableOpacity>
-						<Text style={[text.align.center, text.color.red, padding.top.small, text.size.small]}>
-							This action can't be undone
-			</Text>
-					</View>
-	)
-}*/
