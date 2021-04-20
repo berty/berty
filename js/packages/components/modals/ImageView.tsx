@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useStyles } from '@berty-tech/styles'
-import { View, Modal, TouchableOpacity } from 'react-native'
+import { View, Modal, TouchableOpacity, Image } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import CameraRoll from '@react-native-community/cameraroll'
@@ -16,11 +16,12 @@ export const ImageView: React.FC<{
 	route: {
 		params: {
 			images: beapi.messenger.IMedia[]
+			previewOnly?: boolean
 		}
 	}
 }> = ({
 	route: {
-		params: { images },
+		params: { images, previewOnly = false },
 	},
 }) => {
 	const [{ color, border, padding }] = useStyles()
@@ -80,7 +81,9 @@ export const ImageView: React.FC<{
 	return (
 		<Modal transparent>
 			<ImageViewer
-				imageUrls={images.map(({ uri }) => ({ url: uri }))}
+				imageUrls={images.map((image) => ({
+					url: image.uri || Image.resolveAssetSource(image).uri,
+				}))}
 				index={0}
 				onClick={() => {
 					setModalVisibility((prev) => !prev)
@@ -89,6 +92,7 @@ export const ImageView: React.FC<{
 					index && setCurrentIndex(index)
 				}}
 				renderFooter={() => <></>}
+				renderIndicator={previewOnly ? () => <></> : undefined}
 				enablePreload
 				enableSwipeDown
 				onSwipeDown={goBack}
@@ -117,31 +121,33 @@ export const ImageView: React.FC<{
 							flex: 1,
 						}}
 					/>
-					<View
-						style={[
-							{
-								position: 'absolute',
-								left: 0,
-								bottom: 0,
-								right: 0,
-								backgroundColor: color.white,
-							},
-							padding.medium,
-							border.radius.top.large,
-						]}
-					>
-						{MENU_LIST.map((item) => (
-							<TouchableOpacity key={item.title} onPress={item.onPress} style={[padding.medium]}>
-								<Text
-									style={{
-										textAlign: 'center',
-									}}
-								>
-									{item.title}
-								</Text>
-							</TouchableOpacity>
-						))}
-					</View>
+					{!previewOnly && (
+						<View
+							style={[
+								{
+									position: 'absolute',
+									left: 0,
+									bottom: 0,
+									right: 0,
+									backgroundColor: color.white,
+								},
+								padding.medium,
+								border.radius.top.large,
+							]}
+						>
+							{MENU_LIST.map((item) => (
+								<TouchableOpacity key={item.title} onPress={item.onPress} style={[padding.medium]}>
+									<Text
+										style={{
+											textAlign: 'center',
+										}}
+									>
+										{item.title}
+									</Text>
+								</TouchableOpacity>
+							))}
+						</View>
+					)}
 				</Modal>
 			)}
 			{!!message && (

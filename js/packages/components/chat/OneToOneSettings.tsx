@@ -34,7 +34,7 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 
 	return (
 		<View style={[_styles.headerAvatar, { alignItems: 'center' }]}>
-			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} />
+			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} pressable />
 			<Text
 				numberOfLines={1}
 				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}

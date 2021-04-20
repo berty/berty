@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 'react-native'
 
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import { navigate } from '@berty-tech/navigation'
+import { useNavigation } from '@berty-tech/navigation'
 import { getSource } from './utils'
 
 const AttachmentImage: React.FC<
-	{ cid: string; notPressable?: boolean } & Omit<ImageProps, 'source'>
+	{ cid: string; pressable?: boolean } & Omit<ImageProps, 'source'>
 > = (props) => {
+	const { navigate } = useNavigation()
 	const { protocolClient, medias } = useMsgrContext()
 	const [source, setSource] = useState('')
 	const { cid, ...imageProps } = props
@@ -38,10 +39,14 @@ const AttachmentImage: React.FC<
 		)
 	}
 
-	return props.notPressable ? (
+	return !props.pressable ? (
 		<Image source={{ uri: source }} {...imageProps} />
 	) : (
-		<TouchableOpacity onPress={() => navigate('Image', { cid })}>
+		<TouchableOpacity
+			onPress={() => {
+				navigate.modals.imageView({ images: [{ uri: source }], previewOnly: true })
+			}}
+		>
 			<Image source={{ uri: source }} {...imageProps} />
 		</TouchableOpacity>
 	)
