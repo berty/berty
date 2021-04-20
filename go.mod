@@ -66,7 +66,7 @@ require (
 	github.com/libp2p/go-libp2p-quic-transport v0.10.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
-	github.com/libp2p/go-libp2p-transport-upgrader v0.4.0
+	github.com/libp2p/go-libp2p-transport-upgrader v0.4.2
 	github.com/libp2p/go-netroute v0.1.4 // indirect
 	github.com/markbates/pkger v0.17.1
 	github.com/mattn/go-sqlite3 v1.14.7
