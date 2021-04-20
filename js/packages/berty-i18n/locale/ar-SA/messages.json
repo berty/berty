@@ -9,24 +9,24 @@
       "button": "الحصول على بداية"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "اختر الإعداد المسبق",
+      "change-later": "سيكون لديك خيار لتغيير ذلك لاحقاً!",
       "performance": {
         "title": "الأداء",
         "desc": "سهل الاستخدام - جميع الميزات",
         "push-notif": "تلقي الإشعارات",
-        "offline-message": "",
+        "offline-message": "إرسال غير متصل/ بالبلوتوث",
         "add-contact": "إضافة جهات الاتصال بسهولة",
         "fast-message": "أسرع توصيل للرسائل"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "إخفاء الهوية بالكامل",
+        "desc": "للمستخدمين الأكثر حذراً",
         "disable-push-notif": "تم تعطيل الإشعارات",
         "disable-local-peer-discovery": "اكتشاف الأقران المحلي معطل",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "DNS متعدد و البلوتوث",
         "disable-contact-request": "تم تعطيل طلبات الاتصال",
-        "on-same-network": ""
+        "on-same-network": "محلي على نفس الشبكة/واى فاى"
       }
     },
     "create-account": {
@@ -35,7 +35,7 @@
       "required": "مطلوب",
       "placeholder": "الاسم",
       "button": "إنشاء حسابي",
-      "import-account": ""
+      "import-account": "استيراد حساب"
     },
     "services-auth": {
       "header": "المصادقة على الخدمات",
@@ -85,36 +85,36 @@
         "no-results": "لا توجد نتائج"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "إنشاء حساب جديد",
+        "import-button": "استيراد الحساب"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "مجموعة جديدة",
+        "add-members": "إضافة أعضاء",
+        "group-info": "معلومات المجموعة",
         "search-placeholder": "البحث",
-        "continue": "",
-        "create-group": ""
+        "continue": "متابعة",
+        "create-group": "إنشاء مجموعة"
       }
     },
     "home-modal": {
       "top-button": "أنشئ مجموعة جديدة",
       "bottom-button": "فحص جهة الاتصال أو المجموعة"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "انقر هنا للإضافة",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "اعدادات الشبكة",
+        "desc": "انقر هنا لإنهاء اعدادات الشبكة"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "اعدادات الإشعارات",
+        "desc": "انقر هنا لضبط الإشعارات"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
+      "welcome-title": "مرحباً بك في خيارات الشبكات",
+      "full-anon-mode": "وضع الإخفاء الكامل",
       "simple-tor-compatible": "",
       "allow-expert-mode": "",
       "tor-compatible": {
