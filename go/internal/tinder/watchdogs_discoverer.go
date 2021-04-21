@@ -47,8 +47,7 @@ func newWatchdogsDiscoverer(ctx context.Context, l *zap.Logger, h host.Host, res
 	if backoff != nil && backoff.StratFactory != nil {
 		// wrap backoff/cache discovery
 		var err error
-		disc, err = discovery.NewBackoffDiscovery(disc, backoff.StratFactory, backoff.DiscoveryOptions...)
-		if err != nil {
+		if disc, err = discovery.NewBackoffDiscovery(disc, backoff.StratFactory, backoff.DiscoveryOptions...); err != nil {
 			return nil, err
 		}
 	}
@@ -69,8 +68,6 @@ func (w *watchdogsDiscoverer) FindPeers(_ context.Context, ns string, opts ...p2
 	w.mufindpeers.Lock()
 	defer w.mufindpeers.Unlock()
 
-	timer := time.Now()
-
 	if ft, ok := w.findpeers[ns]; ok {
 		// already running find peers
 		if !ft.T.Stop() {
@@ -81,6 +78,7 @@ func (w *watchdogsDiscoverer) FindPeers(_ context.Context, ns string, opts ...p2
 		return w.disc.FindPeers(ft.Ctx, ns, opts...)
 	}
 
+	timer := time.Now()
 	ctx, cancel := context.WithCancel(ctx)
 
 	w.logger.Debug("watchdogs looking for peers", zap.String("ns", ns))

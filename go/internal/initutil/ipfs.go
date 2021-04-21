@@ -61,9 +61,11 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
+	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, "p2p.tinder-rdvp-driver", true, "if true rdvp driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.UseStaticRelays, "p2p.use-static-relays", true, "if true will use static relays form the config, otherwise it will try to discover relays over the dht")
-	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
-	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
@@ -446,22 +448,29 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 
-	// rdvp driver
+	// configure tinder drivers
 	var drivers []*tinder.Driver
-	if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
-		for _, peer := range rdvpeers {
-			h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-			udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
 
-			name := fmt.Sprintf("rdvp#%.6s", peer.ID)
-			drivers = append(drivers,
-				tinder.NewDriverFromUnregisterDiscovery(name, udisc, tinder.FilterPublicAddrs))
+	// rdvp driver
+	if m.Node.Protocol.TinderRDVPDriver {
+		if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
+			for _, peer := range rdvpeers {
+				h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
+				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+
+				name := fmt.Sprintf("rdvp#%.6s", peer.ID)
+				drivers = append(drivers,
+					tinder.NewDriverFromUnregisterDiscovery(name, udisc, tinder.FilterPublicAddrs))
+			}
 		}
 	}
 
 	// dht driver
-	drivers = append(drivers,
-		tinder.NewDriverFromRouting("dht", r, nil))
+	if m.Node.Protocol.TinderDHTDriver {
+		// dht driver
+		drivers = append(drivers,
+			tinder.NewDriverFromRouting("dht", r, nil))
+	}
 
 	// localdisc driver
 	if m.Node.Protocol.LocalDiscovery {
@@ -480,7 +489,8 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	tinderOpts := &tinder.Opts{
 		Logger:                 logger,
-		AdvertiseResetInterval: time.Minute,
+		AdvertiseResetInterval: time.Minute * 2,
+		FindPeerResetInterval:  time.Minute * 2,
 		AdvertiseGracePeriod:   time.Minute,
 		BackoffStrategy: &tinder.BackoffOpts{
 			StratFactory: backoffstrat,

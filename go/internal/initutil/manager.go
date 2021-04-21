@@ -75,6 +75,8 @@ type Manager struct {
 			Announce          string `json:"Announce,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
 			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
+			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
+			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
 			UseStaticRelays   bool   `json:"UseStaticRelays,omitempty"`
 			Ble               struct {
 				Enable bool                   `json:"Enable,omitempty"`

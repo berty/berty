@@ -4,7 +4,6 @@ package tinder
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"time"
 
@@ -112,11 +111,8 @@ func (s *MockDriverServer) HasPeerRecord(ns string, pid p2p_peer.ID) bool {
 	if peers, ok := s.db[ns]; ok {
 		if p, ok := peers[pid]; ok {
 			now := time.Now()
-			if p.expiration.After(now) {
-				fmt.Printf("will expire in: %dms\n", p.expiration.Sub(now).Milliseconds())
-				return true
-			}
-			fmt.Printf("expired since: %dms\n", now.Sub(p.expiration).Milliseconds())
+			return p.expiration.After(now)
+			// log.Printf("expired since: %dms\n", now.Sub(p.expiration).Milliseconds())
 		}
 	}
 	return false

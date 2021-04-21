@@ -74,11 +74,11 @@ func (wa *watchdogsAdvertiser) Advertise(_ context.Context, ns string, opts ...p
 			// wa.unregister(ctx, ns)
 		})
 		wa.advertises(wctx, ns, opts...)
+		wa.logger.Debug("advertise started", zap.String("ns", ns))
 	}
 
 	wa.muAdvertiser.Unlock()
 
-	wa.logger.Debug("advertise started", zap.String("ns", ns))
 	return wa.ttl, nil
 }
 

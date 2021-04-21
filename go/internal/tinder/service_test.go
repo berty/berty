@@ -3,7 +3,6 @@ package tinder
 import (
 	"context"
 	"fmt"
-	"log"
 	"math/rand"
 	"testing"
 	"time"
@@ -348,7 +347,6 @@ func TestFindPeers(t *testing.T) {
 
 			count := 0
 			for p := range cc {
-				log.Printf("peer: %+v\n", p)
 				links := m.LinksBetweenPeers(hcl.ID(), p.ID)
 				assert.Len(t, links, 2)
 
