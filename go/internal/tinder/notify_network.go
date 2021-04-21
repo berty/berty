@@ -38,8 +38,8 @@ func NewNetworkUpdate(logger *zap.Logger, h host.Host) (*NetworkUpdate, error) {
 	}
 
 	go nu.subscribeToNetworkUpdate()
-	nu.logger.Debug("network update subscribe started")
 
+	nu.logger.Debug("network update subscribe started")
 	return nu, nil
 }
 
