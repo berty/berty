@@ -492,6 +492,12 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
 
+	// @FIXME(gfanton): hacky way to to handle close on context done
+	go func() {
+		<-m.getContext().Done()
+		m.Node.Protocol.discovery.Close()
+	}()
+
 	pt, err := ipfsutil.NewPubsubMonitor(logger, h)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)

@@ -57,6 +57,9 @@ type service struct {
 	ttl           time.Duration
 	watchdogs     map[string]*time.Timer
 	muAdvertiser  sync.Mutex
+
+	rootCtx context.Context
+	doneCtx context.CancelFunc
 }
 
 type BackoffOpts struct {
@@ -133,7 +136,7 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 		}
 	}
 
-	// compose backoff with tinder service
+	// compose backoff & watchdogsDiscoverer with tinder service
 	var composer struct {
 		p2p_discovery.Discoverer
 		p2p_discovery.Advertiser
@@ -141,26 +144,13 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 		io.Closer
 	}
 
-	wctx, cancel := context.WithCancel(context.Background())
-	composer.Discoverer = newWatchdogsDiscoverer(wctx, opts.Logger, opts.AdvertiseResetInterval, disc)
+	composer.Discoverer = newWatchdogsDiscoverer(s.rootCtx, opts.Logger, opts.AdvertiseResetInterval, disc)
 	composer.Advertiser = disc
 	composer.Unregisterer = s
-	composer.Closer = newCloserCompose(func() error {
-		cancel()
-		return s.Close()
-	})
+	composer.Closer = s
 
 	return &composer, nil
 }
-
-type closerCompose struct {
-	closer func() error
-}
-
-func newCloserCompose(closer func() error) io.Closer {
-	return &closerCompose{closer}
-}
-func (c *closerCompose) Close() error { return c.closer() }
 
 func newService(opts *Opts, h host.Host, drivers ...*Driver) (*service, error) {
 	nn, err := NewNetworkUpdate(opts.Logger, h)
@@ -174,6 +164,7 @@ func newService(opts *Opts, h host.Host, drivers ...*Driver) (*service, error) {
 		return nil, err
 	}
 
+	rootctx, donectx := context.WithCancel(context.Background())
 	s := &service{
 		watchdogs:     make(map[string]*time.Timer),
 		emitter:       emitter,
@@ -183,6 +174,9 @@ func newService(opts *Opts, h host.Host, drivers ...*Driver) (*service, error) {
 		logger:        opts.Logger,
 		ttl:           opts.AdvertiseResetInterval,
 		resetInterval: opts.AdvertiseResetInterval + opts.AdvertiseGracePeriod,
+
+		rootCtx: rootctx,
+		doneCtx: donectx,
 	}
 
 	return s, nil
@@ -192,11 +186,13 @@ func (s *service) ProtectPeer(id p2p_peer.ID) {
 	s.host.ConnManager().Protect(id, TinderPeer)
 }
 
-func (s *service) Advertise(ctx context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
+func (s *service) Advertise(_ context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
 	if len(s.drivers) == 0 {
 		return 0, fmt.Errorf("no drivers to advertise")
 	}
 
+	// override given ctx with root ctx
+	ctx := s.rootCtx
 	s.muAdvertiser.Lock()
 
 	timer := time.Now()
@@ -335,7 +331,7 @@ func (s *service) FindPeers(ctx context.Context, ns string, opts ...p2p_discover
 		defer cancel()
 		defer close(cc)
 
-		// use optimized method for few drivers
+		// @TODO(gfanton): use optimized method for few drivers
 		err := s.selectFindPeers(ctx, cc, cdrivers)
 		s.logger.Debug("find peers done", zap.String("topic", ns), zap.Error(err))
 	}()
@@ -378,7 +374,7 @@ func (s *service) selectFindPeers(ctx context.Context, out chan<- p2p_peer.AddrI
 		// we can safly get our peer
 		peer := value.Interface().(p2p_peer.AddrInfo)
 
-		// skip self id if found
+		// skip self
 		if peer.ID == s.host.ID() {
 			continue
 		}
@@ -427,6 +423,10 @@ func (s *service) Unregister(ctx context.Context, ns string) error {
 }
 
 func (s *service) Close() error {
+	// close rootCtx
+	s.doneCtx()
+
+	// close notifier
 	return s.networkNotify.Close()
 }
 

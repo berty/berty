@@ -18,6 +18,7 @@ type NetworkUpdate struct {
 	notify       *notify.Notify
 	locker       *sync.Mutex
 	sub          event.Subscription
+	once         sync.Once
 	currentAddrs []ma.Multiaddr
 }
 
@@ -102,8 +103,10 @@ func (n *NetworkUpdate) subscribeToNetworkUpdate() {
 	}
 }
 
-func (n *NetworkUpdate) Close() error {
-	return n.sub.Close()
+func (n *NetworkUpdate) Close() (err error) {
+	// use once to avoid panic if called twice
+	n.once.Do(func() { err = n.sub.Close() })
+	return err
 }
 
 func diffAddrs(a, b []ma.Multiaddr) []ma.Multiaddr {
