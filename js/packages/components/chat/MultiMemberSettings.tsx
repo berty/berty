@@ -1,7 +1,8 @@
-import React from 'react'
-import { View, ScrollView, Share, StatusBar } from 'react-native'
+import React, { useState } from 'react'
+import { View, ScrollView, Share, StatusBar, TouchableOpacity } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
@@ -16,6 +17,7 @@ import {
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
+import beapi from '@berty-tech/api'
 
 //
 // GroupChatSettings
@@ -70,12 +72,77 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
+	const ctx = useMsgrContext()
+	const [picture, setPicture] = useState<ImageOrVideo | undefined>(undefined)
 	const [{ text, margin, row }] = useStyles()
+
+	const handleSave = React.useCallback(async () => {
+		try {
+			if (picture) {
+				const stream = await ctx.client?.mediaPrepare({})
+				if (!stream) {
+					throw new Error('failed to open prepareAttachment stream')
+				}
+
+				const avatarURI = picture?.path
+				await stream.emit({
+					info: {
+						mimeType: picture.mime,
+						filename: picture.filename,
+						displayName: picture.filename,
+					},
+					uri: avatarURI,
+				})
+
+				const reply = await stream.stopAndRecv()
+				if (!reply?.cid) {
+					throw new Error('invalid PrepareAttachment reply, missing cid')
+				}
+
+				const buf = beapi.messenger.AppMessage.SetGroupInfo.encode({
+					avatarCid: reply.cid,
+				}).finish()
+				await ctx.client?.interact({
+					conversationPublicKey: conv?.publicKey,
+					type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
+					payload: buf,
+					mediaCids: [reply.cid],
+				})
+			}
+		} catch (err) {
+			console.warn(err)
+		}
+	}, [conv?.publicKey, ctx.client, picture])
+
+	React.useEffect(() => {
+		if (picture !== undefined) {
+			return () => handleSave()
+		}
+		return () => {}
+	}, [picture, handleSave])
 	return (
 		<View>
-			<View style={[row.center]}>
-				<MultiMemberAvatar publicKey={publicKey} size={80} pressable />
-			</View>
+			<TouchableOpacity
+				style={[row.center]}
+				onPress={async () => {
+					try {
+						const pic = await ImagePicker.openPicker({
+							width: 400,
+							height: 400,
+							cropping: true,
+							cropperCircleOverlay: true,
+							mediaType: 'photo',
+						})
+						if (pic) {
+							setPicture(pic)
+						}
+					} catch (err) {
+						console.log(err)
+					}
+				}}
+			>
+				<MultiMemberAvatar publicKey={publicKey} size={80} />
+			</TouchableOpacity>
 			<Text
 				numberOfLines={1}
 				ellipsizeMode='tail'

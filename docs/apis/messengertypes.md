@@ -127,9 +127,6 @@
     - [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply)
     - [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request)
     - [ServiceToken](#berty.messenger.v1.ServiceToken)
-    - [SetMultiMemberInfo](#berty.messenger.v1.SetMultiMemberInfo)
-    - [SetMultiMemberInfo.Reply](#berty.messenger.v1.SetMultiMemberInfo.Reply)
-    - [SetMultiMemberInfo.Request](#berty.messenger.v1.SetMultiMemberInfo.Request)
     - [ShareableBertyGroup](#berty.messenger.v1.ShareableBertyGroup)
     - [ShareableBertyGroup.Reply](#berty.messenger.v1.ShareableBertyGroup.Reply)
     - [ShareableBertyGroup.Request](#berty.messenger.v1.ShareableBertyGroup.Request)
@@ -1125,25 +1122,6 @@ Composite primary key
 | authentication_url | [string](#string) |  |  |
 | expiration | [int64](#int64) |  |  |
 
-<a name="berty.messenger.v1.SetMultiMemberInfo"></a>
-
-### SetMultiMemberInfo
-
-<a name="berty.messenger.v1.SetMultiMemberInfo.Reply"></a>
-
-### SetMultiMemberInfo.Reply
-
-<a name="berty.messenger.v1.SetMultiMemberInfo.Request"></a>
-
-### SetMultiMemberInfo.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| display_name | [string](#string) |  |  |
-| avatar_cid | [string](#string) |  |  |
-| conv_pk | [string](#string) |  |  |
-| attachment_cids | [string](#string) |  |  |
-
 <a name="berty.messenger.v1.ShareableBertyGroup"></a>
 
 ### ShareableBertyGroup
@@ -1502,7 +1480,6 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | MediaRetrieve | [MediaRetrieve.Request](#berty.messenger.v1.MediaRetrieve.Request) | [MediaRetrieve.Reply](#berty.messenger.v1.MediaRetrieve.Reply) stream | MediaRetrieve allows to download a file attached to a message |
 | MediaGetRelated | [MediaGetRelated.Request](#berty.messenger.v1.MediaGetRelated.Request) | [MediaGetRelated.Reply](#berty.messenger.v1.MediaGetRelated.Reply) | MediaGetRelated Gets previous/next media to be played after current |
 | MessageSearch | [MessageSearch.Request](#berty.messenger.v1.MessageSearch.Request) | [MessageSearch.Reply](#berty.messenger.v1.MessageSearch.Reply) | MessageSearch |
-| SetMultiMemberInfo | [SetMultiMemberInfo.Request](#berty.messenger.v1.SetMultiMemberInfo.Request) | [SetMultiMemberInfo.Reply](#berty.messenger.v1.SetMultiMemberInfo.Reply) | SetGroupInfo |
 
  
 

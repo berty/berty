@@ -91,9 +91,6 @@ service MessengerService {
 
   // MessageSearch
   rpc MessageSearch (MessageSearch.Request) returns (MessageSearch.Reply);
-
-  // SetGroupInfo
-  rpc SetMultiMemberInfo (SetMultiMemberInfo.Request) returns (SetMultiMemberInfo.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -503,7 +500,7 @@ message Conversation {
   string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
   Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
   repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
-  // info_date is used when SetGroupInfo was called
+  // info_date is used when SetGroupInfo is called
   int64 info_date = 18;
 
   enum Type {
@@ -849,14 +846,4 @@ message MessageSearch {
   message Reply {
     repeated Interaction results = 1;
   }
-}
-
-message SetMultiMemberInfo {
-  message Request {
-    string display_name = 1;
-    string avatar_cid = 2 [(gogoproto.customname) = "AvatarCID"];
-    string conv_pk = 3 [(gogoproto.customname) = "ConvPK"];
-    string attachment_cids = 4 [(gogoproto.customname) = "AttachmentCIDs"];
-  }
-  message Reply {}
 }

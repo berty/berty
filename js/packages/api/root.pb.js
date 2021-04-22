@@ -3408,10 +3408,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   MessageSearch: {
                     requestType: "MessageSearch.Request",
                     responseType: "MessageSearch.Reply"
-                  },
-                  SetMultiMemberInfo: {
-                    requestType: "SetMultiMemberInfo.Request",
-                    responseType: "SetMultiMemberInfo.Reply"
                   }
                 }
               },
@@ -5426,43 +5422,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 1
                       }
                     }
-                  }
-                }
-              },
-              SetMultiMemberInfo: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      displayName: {
-                        type: "string",
-                        id: 1
-                      },
-                      avatarCid: {
-                        type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "AvatarCID"
-                        }
-                      },
-                      convPk: {
-                        type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "ConvPK"
-                        }
-                      },
-                      attachmentCids: {
-                        type: "string",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "AttachmentCIDs"
-                        }
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
                   }
                 }
               }

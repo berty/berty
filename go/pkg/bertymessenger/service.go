@@ -488,38 +488,6 @@ func (svc *service) attachmentRetrieve(cid string) (*io.PipeReader, error) {
 	}, svc.logger), nil
 }
 
-func (svc *service) sendGroupInfo(groupPK string, displayName string, avatarCID string, attachmentCID string) error {
-	am, err := mt.AppMessage_TypeSetGroupInfo.MarshalPayload(
-		timestampMs(time.Now()),
-		"",
-		nil,
-		&mt.AppMessage_SetGroupInfo{DisplayName: displayName, AvatarCid: avatarCID},
-	)
-	if err != nil {
-		return errcode.ErrSerialization.Wrap(err)
-	}
-	pk, err := b64DecodeBytes(groupPK)
-	if err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-	if attachmentCID != "" {
-		attachmentCIDBytes, err := b64DecodeBytes(attachmentCID)
-		if err != nil {
-			return errcode.ErrDeserialization.Wrap(err)
-		}
-		_, err = svc.protocolClient.AppMetadataSend(svc.ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am, AttachmentCIDs: [][]byte{attachmentCIDBytes}})
-		if err != nil {
-			return errcode.ErrProtocolSend.Wrap(err)
-		}
-	} else {
-		_, err = svc.protocolClient.AppMetadataSend(svc.ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
-		if err != nil {
-			return errcode.ErrProtocolSend.Wrap(err)
-		}
-	}
-	return nil
-}
-
 func (svc *service) sendAccountUserInfo(groupPK string) error {
 	acc, err := svc.db.getAccount()
 	if err != nil {

@@ -102,6 +102,3 @@ http:
  - selector: berty.messenger.v1.MessengerService.MessageSearch
    post: /berty.messenger.v1/MessengerService/MessageSearch
    body: "*"
- - selector: berty.messenger.v1.MessengerService.SetMultiMemberInfo
-   post: /berty.messenger.v1/MessengerService/SetMultiMemberInfo
-   body: "*"

@@ -1096,39 +1096,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/SetMultiMemberInfo": {
-      "post": {
-        "summary": "SetGroupInfo",
-        "operationId": "MessengerService_SetMultiMemberInfo",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SetMultiMemberInfoReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1SetMultiMemberInfoRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/ShareableBertyGroup": {
       "post": {
         "summary": "ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.",
@@ -2638,26 +2605,6 @@
     },
     "v1ServicesTokenListRequest": {
       "type": "object"
-    },
-    "v1SetMultiMemberInfoReply": {
-      "type": "object"
-    },
-    "v1SetMultiMemberInfoRequest": {
-      "type": "object",
-      "properties": {
-        "display_name": {
-          "type": "string"
-        },
-        "avatar_cid": {
-          "type": "string"
-        },
-        "conv_pk": {
-          "type": "string"
-        },
-        "attachment_cids": {
-          "type": "string"
-        }
-      }
     },
     "v1ShareableBertyGroupReply": {
       "type": "object",

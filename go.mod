@@ -4,7 +4,6 @@ go 1.15
 
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
-	berty.tech/berty/tool/tyber/go/v2 v2.0.0-20210420104727-50e50bcdaa65
 	berty.tech/go-ipfs-log v1.2.6
 	berty.tech/go-libp2p-tor-transport v0.8.4
 	berty.tech/go-orbit-db v1.10.11
