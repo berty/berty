@@ -51,37 +51,42 @@ func TestNewService(t *testing.T) {
 }
 
 func TestAdvertiseWatchdogs(t *testing.T) {
+	const advertisekey = "test_key"
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	l, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	tick := 500 * time.Millisecond
+	tick := 200 * time.Millisecond
 
 	m := mocknet.New(ctx)
 	opts := &Opts{
 		Logger: l,
 		// should expired after 4 ticks
 		AdvertiseResetInterval: tick * 4,
-		AdvertiseGracePeriod:   time.Millisecond,
+		AdvertiseGracePeriod:   0,
 	}
 
 	ms, mc := testingMockedService(t, opts, m, 1)
 	client := mc[0]
 
-	ttl, err := client.Service.Advertise(ctx, "test", discovery.TTL(tick))
+	ttl, err := client.Service.Advertise(ctx, advertisekey, discovery.TTL(tick))
 	require.NoError(t, err)
 	assert.Equal(t, opts.AdvertiseResetInterval, ttl)
 
+	// wait for advertise
+	<-ms.WaitForAdvertise(advertisekey, client.Host.ID())
+
 	// should still be advertise after 2 tick
 	time.Sleep(tick * 2)
-	ok := ms.HasPeerRecord("test", client.Host.ID())
+	ok := ms.HasPeerRecord(advertisekey, client.Host.ID())
 	require.True(t, ok)
 
 	// should be expired after 5 ticks
 	time.Sleep(tick * 3)
-	ok = ms.HasPeerRecord("test", client.Host.ID())
+	ok = ms.HasPeerRecord(advertisekey, client.Host.ID())
 	require.False(t, ok)
 }
 
