@@ -279,7 +279,7 @@ func TestFindPeers(t *testing.T) {
 	}{
 		{name: "with 1 driver", driver: 1},
 		{name: "with 10 driver", driver: 10},
-		{name: "with 100 driver", driver: 100},
+		// {name: "with 100 driver", driver: 100}, // FIXME(gfanton): race: limit on 8128 simultaneously alive goroutines is exceeded
 		{name: "with 10 driver & 1 broken driver", driver: 10, brokenDriver: 1},
 		{name: "with 1 driver & 10 broken driver", driver: 1, brokenDriver: 10},
 		{name: "with 10 broken driver", brokenDriver: 10},
