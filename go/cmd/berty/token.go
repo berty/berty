@@ -41,12 +41,20 @@ import (
 // Where a_token will follow this construction:
 //    sig(sk, crypt(secret, (uuid, "replication,contacts,backup"])))
 //
+// -no-click flag allows automation, ie. the following line will take a
+//      AuthServiceInitFlow issued URL and outputs an URL which can be provided
+//      to AuthServiceCompleteFlow
+//
+//      curl "http://localhost:8080/authorize?..." -s | grep href= | cut -d'"' -f2 | sed 's/&amp;/\&/'
+//
 func tokenServerCommand() *ffcli.Command {
 	var (
 		secretFlag    = ""
 		authSKFlag    = ""
 		listenerFlag  = "127.0.0.1:8080"
 		supportedFlag = ""
+		generate      = false
+		noClick       = false
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("token issuer server p", flag.ExitOnError)
@@ -56,6 +64,8 @@ func tokenServerCommand() *ffcli.Command {
 		fs.StringVar(&authSKFlag, "auth.sk", authSKFlag, "base64 encoded signature key")
 		fs.StringVar(&listenerFlag, "http.listener", listenerFlag, "http listener")
 		fs.StringVar(&supportedFlag, "svc", supportedFlag, "comma separated list of supported services as name@ip:port")
+		fs.BoolVar(&generate, "generate", false, "generate a single token and output it on stdout")
+		fs.BoolVar(&noClick, "no-click", false, "disable the login screen and redirect to the next token step directly")
 		return fs, nil
 	}
 
@@ -118,9 +128,22 @@ func tokenServerCommand() *ffcli.Command {
 				services[values[0]] = values[1]
 			}
 
-			server, err := bertyprotocol.NewAuthTokenServer(secret, sk, services, logger)
+			server, err := bertyprotocol.NewAuthTokenServer(secret, sk, services, &bertyprotocol.AuthTokenOptions{
+				Logger:  logger,
+				NoClick: noClick,
+			})
 			if err != nil {
 				return err
+			}
+
+			if generate {
+				token, err := server.IssueRandomTokenForServices()
+				if err != nil {
+					return err
+				}
+
+				fmt.Println(token)
+				return nil
 			}
 
 			g.Add(func() error {
