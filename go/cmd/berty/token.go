@@ -47,6 +47,7 @@ func tokenServerCommand() *ffcli.Command {
 		authSKFlag    = ""
 		listenerFlag  = "127.0.0.1:8080"
 		supportedFlag = ""
+		generate 	  = false
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("token issuer server p", flag.ExitOnError)
@@ -56,6 +57,7 @@ func tokenServerCommand() *ffcli.Command {
 		fs.StringVar(&authSKFlag, "auth.sk", authSKFlag, "base64 encoded signature key")
 		fs.StringVar(&listenerFlag, "http.listener", listenerFlag, "http listener")
 		fs.StringVar(&supportedFlag, "svc", supportedFlag, "comma separated list of supported services as name@ip:port")
+		fs.BoolVar(&generate, "generate", false, "generate a single token and output it on stdout")
 		return fs, nil
 	}
 
@@ -121,6 +123,16 @@ func tokenServerCommand() *ffcli.Command {
 			server, err := bertyprotocol.NewAuthTokenServer(secret, sk, services, logger)
 			if err != nil {
 				return err
+			}
+
+			if generate {
+				token, err := server.IssueRandomTokenForServices()
+				if err != nil {
+					return err
+				}
+
+				fmt.Println(token)
+				return nil
 			}
 
 			g.Add(func() error {

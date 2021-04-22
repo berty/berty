@@ -168,3 +168,29 @@ func (a *AuthTokenServer) authTokenServerHTTPOAuthToken(w http.ResponseWriter, r
 		"services":     a.services,
 	}, 200, a.logger)
 }
+
+func (a *AuthTokenServer) IssueRandomTokenForServices() (string, error) {
+	servicesKeys := []string(nil)
+	for key := range a.services {
+		servicesKeys = append(servicesKeys, key)
+	}
+
+	token, err := a.issuer.IssueToken(servicesKeys)
+	if err != nil {
+		return "", err
+	}
+
+	data := map[string]interface{}{
+		"access_token": token,
+		"token_type":   "bearer",
+		"scope":        strings.Join(servicesKeys, ","),
+		"services":     a.services,
+	}
+
+	jsoned, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+
+	return string(jsoned), nil
+}
