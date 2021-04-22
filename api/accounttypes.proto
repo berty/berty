@@ -5,8 +5,6 @@ package berty.account.v1;
 import "gogoproto/gogo.proto";
 import "pushtypes.proto";
 import "protocoltypes.proto";
-import "messengertypes.proto";
-import "errcode.proto";
 
 option go_package = "berty.tech/berty/go/pkg/accounttypes";
 
@@ -342,6 +340,5 @@ message PushPlatformTokenRegister {
   message Request {
     protocol.v1.PushServiceReceiver receiver = 1;
   }
-
   message Reply {}
 }

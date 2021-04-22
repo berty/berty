@@ -344,7 +344,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	// })
 	// require.NoError(t, err)
 
-	groupReplicable, err := group.FilterForReplication()
+	groupReplicable, err := bertyprotocol.FilterGroupForReplication(group)
 	require.NoError(t, err)
 
 	subCtx := context.WithValue(ctx, authtypes.ContextTokenHashField, "token1")

@@ -165,7 +165,7 @@ func attachmentCIDDecrypt(sk *[KeySize]byte, eCID []byte) ([]byte, error) {
 }
 
 func AttachmentCIDSliceEncrypt(g *protocoltypes.Group, cids [][]byte) ([][]byte, error) {
-	sk, err := attachmentCIDEncryptionKey(g.GetSharedSecret())
+	sk, err := attachmentCIDEncryptionKey(GetSharedSecret(g))
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyDerivation.Wrap(err)
 	}
@@ -173,7 +173,7 @@ func AttachmentCIDSliceEncrypt(g *protocoltypes.Group, cids [][]byte) ([][]byte,
 }
 
 func AttachmentCIDSliceDecrypt(g *protocoltypes.Group, eCIDs [][]byte) ([][]byte, error) {
-	sk, err := attachmentCIDEncryptionKey(g.GetSharedSecret())
+	sk, err := attachmentCIDEncryptionKey(GetSharedSecret(g))
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyDerivation.Wrap(err)
 	}

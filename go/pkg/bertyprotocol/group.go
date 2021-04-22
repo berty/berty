@@ -56,6 +56,18 @@ func NewGroupMultiMember() (*protocoltypes.Group, crypto.PrivKey, error) {
 		GroupType: protocoltypes.GroupTypeMultiMember,
 	}
 
+	updateKey, err := cryptoutil.GetLinkKeyArray(group)
+	if err != nil {
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
+	}
+
+	linkKeySig, err := priv.Sign(updateKey[:])
+	if err != nil {
+		return nil, nil, errcode.ErrCryptoSignature.Wrap(err)
+	}
+
+	group.LinkKeySig = linkKeySig
+
 	return group, priv, nil
 }
 

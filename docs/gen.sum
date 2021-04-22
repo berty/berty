@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 0875befdd531a7a6e2a95ca3c4c784d3f1a08765  ../api/accounttypes.proto
+=======
+c2d69f1cf2217644bb193cede4b957044f6884ee  ../api/accounttypes.proto
+>>>>>>> 66387ac60 (feat: encrypted orbitdb links)
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
-c9892aab5fe409e86f63e53183e5773896145621  ../api/bertyreplication.proto
+762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 905a4386f317f51d3965a531d39a783c25ad8d0b  ../api/bertyreplication.yaml
 9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
 ee235ce8e4bb451ccfaf31556e2f8c78318c395f  ../api/messengertypes.proto
 e429792d67306c523841d03023b09407c83710cd  ../api/messengertypes.yaml
+<<<<<<< HEAD
 4595926666e922ec5f465b35762298031c78cb31  ../api/protocoltypes.proto
+=======
+d8eb31c1f165912016604e753b61da6e507b9e90  ../api/protocoltypes.proto
+>>>>>>> 66387ac60 (feat: encrypted orbitdb links)
 da5bd1312cf80e89c0d78f67aeaede38c53c9a75  ../api/protocoltypes.yaml
 a658b3797030d0f3ada12d122f460f87071e9d88  ../api/pushtypes.proto
 00284c7d54f219f2d66852350c00cbff87a14620  ../api/pushtypes.yaml

@@ -18,6 +18,7 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
@@ -147,11 +148,17 @@ func (s *service) exportOrbitDBGroupHeads(gc *GroupContext, headsMetadata []cid.
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
+	linkKeyArr, err := cryptoutil.GetLinkKeyArray(gc.group)
+	if err != nil {
+		return errcode.ErrSerialization.Wrap(err)
+	}
+
 	headsExport := &protocoltypes.GroupHeadsExport{
 		PublicKey:         gc.group.PublicKey,
 		SignPub:           spkBytes,
 		MetadataHeadsCIDs: cidsMeta,
 		MessagesHeadsCIDs: cidsMessages,
+		LinkKey:           linkKeyArr[:],
 	}
 
 	entryName := base64.RawURLEncoding.EncodeToString(gc.group.PublicKey)
@@ -423,6 +430,7 @@ func restoreOrbitDBHeads(ctx context.Context, odb *BertyOrbitDB) RestoreAccountH
 			if err := odb.setHeadsForGroup(ctx, &protocoltypes.Group{
 				PublicKey: heads.PublicKey,
 				SignPub:   heads.SignPub,
+				LinkKey:   heads.LinkKey,
 			}, metaCIDs, messageCIDs); err != nil {
 				return true, errcode.ErrOrbitDBAppend.Wrap(fmt.Errorf("error while restoring db head: %w", err))
 			}

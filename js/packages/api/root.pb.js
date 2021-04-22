@@ -1327,6 +1327,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   signPub: {
                     type: "bytes",
                     id: 5
+                  },
+                  linkKey: {
+                    type: "bytes",
+                    id: 6
+                  },
+                  linkKeySig: {
+                    type: "bytes",
+                    id: 7
                   }
                 }
               },
@@ -1355,6 +1363,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "MessagesHeadsCIDs"
                     }
+                  },
+                  linkKey: {
+                    type: "bytes",
+                    id: 5
                   }
                 }
               },
@@ -3811,6 +3823,500 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           }
         }
       },
+      bridge: {
+        nested: {
+          v1: {
+            options: {
+              go_package: "berty.tech/berty/go/pkg/bertybridge",
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
+            },
+            nested: {
+              BridgeService: {
+                methods: {
+                  ClientInvokeUnary: {
+                    requestType: "ClientInvokeUnary.Request",
+                    responseType: "ClientInvokeUnary.Reply"
+                  },
+                  CreateClientStream: {
+                    requestType: "ClientCreateStream.Request",
+                    responseType: "ClientCreateStream.Reply"
+                  },
+                  ClientStreamSend: {
+                    requestType: "ClientStreamSend.Request",
+                    responseType: "ClientStreamSend.Reply"
+                  },
+                  ClientStreamRecv: {
+                    requestType: "ClientStreamRecv.Request",
+                    responseType: "ClientStreamRecv.Reply"
+                  },
+                  ClientStreamClose: {
+                    requestType: "ClientStreamClose.Request",
+                    responseType: "ClientStreamClose.Reply"
+                  },
+                  ClientStreamCloseAndRecv: {
+                    requestType: "ClientStreamCloseAndRecv.Request",
+                    responseType: "ClientStreamCloseAndRecv.Reply"
+                  }
+                }
+              },
+              ClientInvokeUnary: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      methodDesc: {
+                        type: "MethodDesc",
+                        id: 2
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 3
+                      },
+                      header: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 3
+                      },
+                      error: {
+                        type: "Error",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
+              ClientCreateStream: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      methodDesc: {
+                        type: "MethodDesc",
+                        id: 2
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 3
+                      },
+                      header: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 2
+                      },
+                      error: {
+                        type: "Error",
+                        id: 3
+                      }
+                    }
+                  }
+                }
+              },
+              ClientStreamSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 2
+                      },
+                      error: {
+                        type: "Error",
+                        id: 3
+                      }
+                    }
+                  }
+                }
+              },
+              ClientStreamRecv: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 3
+                      },
+                      error: {
+                        type: "Error",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
+              ClientStreamClose: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 2
+                      },
+                      error: {
+                        type: "Error",
+                        id: 3
+                      }
+                    }
+                  }
+                }
+              },
+              ClientStreamCloseAndRecv: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 3
+                      },
+                      error: {
+                        type: "Error",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
+              MethodDesc: {
+                fields: {
+                  name: {
+                    type: "string",
+                    id: 1
+                  },
+                  isClientStream: {
+                    type: "bool",
+                    id: 2
+                  },
+                  isServerStream: {
+                    type: "bool",
+                    id: 3
+                  }
+                }
+              },
+              Metadata: {
+                fields: {
+                  key: {
+                    type: "string",
+                    id: 1
+                  },
+                  values: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              Error: {
+                fields: {
+                  grpcErrorCode: {
+                    type: "GRPCErrCode",
+                    id: 1
+                  },
+                  errorCode: {
+                    type: "errcode.ErrCode",
+                    id: 2
+                  },
+                  message: {
+                    type: "string",
+                    id: 3
+                  },
+                  errorDetails: {
+                    type: "errcode.ErrDetails",
+                    id: 4
+                  }
+                }
+              },
+              GRPCErrCode: {
+                values: {
+                  OK: 0,
+                  CANCELED: 1,
+                  UNKNOWN: 2,
+                  INVALID_ARGUMENT: 3,
+                  DEADLINE_EXCEEDED: 4,
+                  NOT_FOUND: 5,
+                  ALREADY_EXISTS: 6,
+                  PERMISSION_DENIED: 7,
+                  RESOURCE_EXHAUSTED: 8,
+                  FAILED_PRECONDITION: 9,
+                  ABORTED: 10,
+                  OUT_OF_RANGE: 11,
+                  UNIMPLEMENTED: 12,
+                  INTERNAL: 13,
+                  UNAVAILABLE: 14,
+                  DATA_LOSS: 15,
+                  UNAUTHENTICATED: 16
+                }
+              }
+            }
+          }
+        }
+      },
+      errcode: {
+        options: {
+          go_package: "berty.tech/berty/go/pkg/errcode",
+          "(gogoproto.goproto_enum_prefix_all)": false,
+          "(gogoproto.marshaler_all)": true,
+          "(gogoproto.unmarshaler_all)": true,
+          "(gogoproto.sizer_all)": true
+        },
+        nested: {
+          ErrCode: {
+            values: {
+              Undefined: 0,
+              TODO: 666,
+              ErrNotImplemented: 777,
+              ErrInternal: 888,
+              ErrInvalidInput: 100,
+              ErrInvalidRange: 101,
+              ErrMissingInput: 102,
+              ErrSerialization: 103,
+              ErrDeserialization: 104,
+              ErrStreamRead: 105,
+              ErrStreamWrite: 106,
+              ErrStreamTransform: 110,
+              ErrStreamSendAndClose: 111,
+              ErrStreamHeaderWrite: 112,
+              ErrStreamHeaderRead: 115,
+              ErrStreamSink: 113,
+              ErrStreamCloseAndRecv: 114,
+              ErrMissingMapKey: 107,
+              ErrDBWrite: 108,
+              ErrDBRead: 109,
+              ErrDBOpen: 124,
+              ErrDBDestroy: 120,
+              ErrDBMigrate: 121,
+              ErrDBReplay: 122,
+              ErrDBRestore: 123,
+              ErrCryptoRandomGeneration: 200,
+              ErrCryptoKeyGeneration: 201,
+              ErrCryptoNonceGeneration: 202,
+              ErrCryptoSignature: 203,
+              ErrCryptoSignatureVerification: 204,
+              ErrCryptoDecrypt: 205,
+              ErrCryptoDecryptPayload: 206,
+              ErrCryptoEncrypt: 207,
+              ErrCryptoKeyConversion: 208,
+              ErrCryptoCipherInit: 209,
+              ErrCryptoKeyDerivation: 210,
+              ErrMap: 300,
+              ErrForEach: 301,
+              ErrKeystoreGet: 400,
+              ErrKeystorePut: 401,
+              ErrNotFound: 404,
+              ErrOrbitDBInit: 1000,
+              ErrOrbitDBOpen: 1001,
+              ErrOrbitDBAppend: 1002,
+              ErrOrbitDBDeserialization: 1003,
+              ErrOrbitDBStoreCast: 1004,
+              ErrIPFSAdd: 1050,
+              ErrIPFSGet: 1051,
+              ErrIPFSInit: 1052,
+              ErrIPFSSetupConfig: 1053,
+              ErrIPFSSetupRepo: 1054,
+              ErrIPFSSetupHost: 1055,
+              ErrHandshakeOwnEphemeralKeyGenSend: 1100,
+              ErrHandshakePeerEphemeralKeyRecv: 1101,
+              ErrHandshakeRequesterAuthenticateBoxKeyGen: 1102,
+              ErrHandshakeResponderAcceptBoxKeyGen: 1103,
+              ErrHandshakeRequesterHello: 1104,
+              ErrHandshakeResponderHello: 1105,
+              ErrHandshakeRequesterAuthenticate: 1106,
+              ErrHandshakeResponderAccept: 1107,
+              ErrHandshakeRequesterAcknowledge: 1108,
+              ErrContactRequestSameAccount: 1200,
+              ErrContactRequestContactAlreadyAdded: 1201,
+              ErrContactRequestContactBlocked: 1202,
+              ErrContactRequestContactUndefined: 1203,
+              ErrContactRequestIncomingAlreadyReceived: 1204,
+              ErrGroupMemberLogEventOpen: 1300,
+              ErrGroupMemberLogEventSignature: 1301,
+              ErrGroupMemberUnknownGroupID: 1302,
+              ErrGroupSecretOtherDestMember: 1303,
+              ErrGroupSecretAlreadySentToMember: 1304,
+              ErrGroupInvalidType: 1305,
+              ErrGroupMissing: 1306,
+              ErrGroupActivate: 1307,
+              ErrGroupDeactivate: 1308,
+              ErrGroupInfo: 1309,
+              ErrEventListMetadata: 1400,
+              ErrEventListMessage: 1401,
+              ErrMessageKeyPersistencePut: 1500,
+              ErrMessageKeyPersistenceGet: 1501,
+              ErrBridgeInterrupted: 1600,
+              ErrBridgeNotRunning: 1601,
+              ErrMessengerInvalidDeepLink: 2000,
+              ErrMessengerDeepLinkRequiresPassphrase: 2001,
+              ErrMessengerDeepLinkInvalidPassphrase: 2002,
+              ErrMessengerStreamEvent: 2003,
+              ErrMessengerContactMetadataUnmarshal: 2004,
+              ErrDBEntryAlreadyExists: 2100,
+              ErrDBAddConversation: 2101,
+              ErrDBAddContactRequestOutgoingSent: 2102,
+              ErrDBAddContactRequestOutgoingEnqueud: 2103,
+              ErrDBAddContactRequestIncomingReceived: 2104,
+              ErrDBAddContactRequestIncomingAccepted: 2105,
+              ErrDBAddGroupMemberDeviceAdded: 2106,
+              ErrDBMultipleRecords: 2107,
+              ErrReplayProcessGroupMetadata: 2200,
+              ErrReplayProcessGroupMessage: 2201,
+              ErrAttachmentPrepare: 2300,
+              ErrAttachmentRetrieve: 2301,
+              ErrProtocolSend: 2302,
+              ErrProtocolEventUnmarshal: 2303,
+              ErrProtocolGetGroupInfo: 2304,
+              ErrTestEcho: 2401,
+              ErrTestEchoRecv: 2402,
+              ErrTestEchoSend: 2403,
+              ErrCLINoTermcaps: 3001,
+              ErrServicesAuth: 4000,
+              ErrServicesAuthNotInitialized: 4001,
+              ErrServicesAuthWrongState: 4002,
+              ErrServicesAuthInvalidResponse: 4003,
+              ErrServicesAuthServer: 4004,
+              ErrServicesAuthCodeChallenge: 4005,
+              ErrServicesAuthServiceInvalidToken: 4006,
+              ErrServicesAuthServiceNotSupported: 4007,
+              ErrServicesAuthUnknownToken: 4008,
+              ErrServicesAuthInvalidURL: 4009,
+              ErrServiceReplication: 4100,
+              ErrServiceReplicationServer: 4101,
+              ErrServiceReplicationMissingEndpoint: 4102,
+              ErrBertyAccount: 5000,
+              ErrBertyAccountNoIDSpecified: 5001,
+              ErrBertyAccountAlreadyOpened: 5002,
+              ErrBertyAccountInvalidIDFormat: 5003,
+              ErrBertyAccountLoggerDecorator: 5004,
+              ErrBertyAccountGRPCClient: 5005,
+              ErrBertyAccountOpenAccount: 5006,
+              ErrBertyAccountDataNotFound: 5007,
+              ErrBertyAccountMetadataUpdate: 5008,
+              ErrBertyAccountManagerOpen: 5009,
+              ErrBertyAccountManagerClose: 5010,
+              ErrBertyAccountInvalidCLIArgs: 5011,
+              ErrBertyAccountFSError: 5012,
+              ErrBertyAccountAlreadyExists: 5013,
+              ErrBertyAccountNoBackupSpecified: 5014,
+              ErrBertyAccountIDGenFailed: 5015,
+              ErrBertyAccountCreationFailed: 5016,
+              ErrBertyAccountUpdateFailed: 5017,
+              ErrPush: 6000,
+              ErrPushWrongAccount: 6001,
+              ErrPushUnableToDecrypt: 6002,
+              ErrPushInvalidPayload: 6003,
+              ErrPushInvalidServerConfig: 6004,
+              ErrPushMissingBundleID: 6005,
+              ErrPushUnknownDestination: 6006,
+              ErrPushProvider: 6007,
+              ErrPushUnknownProvider: 6008,
+              ErrNoProvidersConfigured: 6009,
+              ErrInvalidPrivateKey: 6010
+            }
+          },
+          ErrDetails: {
+            fields: {
+              codes: {
+                rule: "repeated",
+                type: "ErrCode",
+                id: 1
+              }
+            }
+          }
+        }
+      },
       messenger: {
         nested: {
           v1: {
@@ -5954,6 +6460,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   samplingRate: {
                     type: "uint32",
                     id: 5
+<<<<<<< HEAD
                   }
                 }
               },
@@ -6123,27 +6630,28 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   alreadyReceived: {
                     type: "bool",
                     id: 3
+=======
+>>>>>>> 66387ac60 (feat: encrypted orbitdb links)
                   }
                 }
               },
-              PushReceive: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      payload: {
-                        type: "bytes",
-                        id: 1
-                      }
+              Reaction: {
+                fields: {
+                  targetCid: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:target_cid;primaryKey",
+                      "(gogoproto.customname)": "TargetCID"
                     }
                   },
-                  Reply: {
-                    fields: {
-                      data: {
-                        type: "PushReceivedData",
-                        id: 1
-                      }
+                  memberPublicKey: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
                     }
+<<<<<<< HEAD
                   }
                 }
               }
@@ -6344,303 +6852,176 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   CreateClientStream: {
                     requestType: "ClientCreateStream.Request",
                     responseType: "ClientCreateStream.Reply"
+=======
+>>>>>>> 66387ac60 (feat: encrypted orbitdb links)
                   },
-                  ClientStreamSend: {
-                    requestType: "ClientStreamSend.Request",
-                    responseType: "ClientStreamSend.Reply"
-                  },
-                  ClientStreamRecv: {
-                    requestType: "ClientStreamRecv.Request",
-                    responseType: "ClientStreamRecv.Reply"
-                  },
-                  ClientStreamClose: {
-                    requestType: "ClientStreamClose.Request",
-                    responseType: "ClientStreamClose.Reply"
-                  },
-                  ClientStreamCloseAndRecv: {
-                    requestType: "ClientStreamCloseAndRecv.Request",
-                    responseType: "ClientStreamCloseAndRecv.Reply"
-                  }
-                }
-              },
-              ClientInvokeUnary: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      methodDesc: {
-                        type: "MethodDesc",
-                        id: 2
-                      },
-                      payload: {
-                        type: "bytes",
-                        id: 3
-                      },
-                      header: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 4
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      payload: {
-                        type: "bytes",
-                        id: 2
-                      },
-                      trailer: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 3
-                      },
-                      error: {
-                        type: "Error",
-                        id: 4
-                      }
-                    }
-                  }
-                }
-              },
-              ClientCreateStream: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      methodDesc: {
-                        type: "MethodDesc",
-                        id: 2
-                      },
-                      payload: {
-                        type: "bytes",
-                        id: 3
-                      },
-                      header: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 4
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      },
-                      trailer: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 2
-                      },
-                      error: {
-                        type: "Error",
-                        id: 3
-                      }
-                    }
-                  }
-                }
-              },
-              ClientStreamSend: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      },
-                      payload: {
-                        type: "bytes",
-                        id: 2
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      },
-                      trailer: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 2
-                      },
-                      error: {
-                        type: "Error",
-                        id: 3
-                      }
-                    }
-                  }
-                }
-              },
-              ClientStreamRecv: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      },
-                      payload: {
-                        type: "bytes",
-                        id: 2
-                      },
-                      trailer: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 3
-                      },
-                      error: {
-                        type: "Error",
-                        id: 4
-                      }
-                    }
-                  }
-                }
-              },
-              ClientStreamClose: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      },
-                      trailer: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 2
-                      },
-                      error: {
-                        type: "Error",
-                        id: 3
-                      }
-                    }
-                  }
-                }
-              },
-              ClientStreamCloseAndRecv: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      streamId: {
-                        type: "string",
-                        id: 1
-                      },
-                      payload: {
-                        type: "bytes",
-                        id: 2
-                      },
-                      trailer: {
-                        rule: "repeated",
-                        type: "Metadata",
-                        id: 3
-                      },
-                      error: {
-                        type: "Error",
-                        id: 4
-                      }
-                    }
-                  }
-                }
-              },
-              MethodDesc: {
-                fields: {
-                  name: {
+                  emoji: {
                     type: "string",
-                    id: 1
+                    id: 4,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
                   },
-                  isClientStream: {
+                  isMine: {
                     type: "bool",
-                    id: 2
+                    id: 5
                   },
-                  isServerStream: {
+                  state: {
                     type: "bool",
-                    id: 3
+                    id: 6
+                  },
+                  stateDate: {
+                    type: "int64",
+                    id: 7
                   }
                 }
               },
-              Metadata: {
+              MessageSearch: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      query: {
+                        type: "string",
+                        id: 1
+                      },
+                      beforeDate: {
+                        type: "int64",
+                        id: 2
+                      },
+                      afterDate: {
+                        type: "int64",
+                        id: 3
+                      },
+                      limit: {
+                        type: "int32",
+                        id: 4
+                      },
+                      refCid: {
+                        type: "string",
+                        id: 5,
+                        options: {
+                          "(gogoproto.customname)": "RefCID"
+                        }
+                      },
+                      oldestToNewest: {
+                        type: "bool",
+                        id: 6
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      results: {
+                        rule: "repeated",
+                        type: "Interaction",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              TyberHostSearch: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      hostname: {
+                        type: "string",
+                        id: 1
+                      },
+                      ipv4: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "IPv4"
+                        }
+                      },
+                      ipv6: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "IPv6"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              TyberHostAttach: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      addresses: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      address: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              PushSetAutoShare: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      enabled: {
+                        type: "bool",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushReceivedData: {
                 fields: {
-                  key: {
-                    type: "string",
+                  protocolData: {
+                    type: "protocol.v1.PushReceive.Reply",
                     id: 1
                   },
-                  values: {
-                    rule: "repeated",
-                    type: "string",
+                  interaction: {
+                    type: "Interaction",
                     id: 2
                   }
                 }
               },
-              Error: {
-                fields: {
-                  grpcErrorCode: {
-                    type: "GRPCErrCode",
-                    id: 1
+              PushReceive: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      payload: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
                   },
-                  errorCode: {
-                    type: "errcode.ErrCode",
-                    id: 2
-                  },
-                  message: {
-                    type: "string",
-                    id: 3
-                  },
-                  errorDetails: {
-                    type: "errcode.ErrDetails",
-                    id: 4
+                  Reply: {
+                    fields: {
+                      data: {
+                        type: "PushReceivedData",
+                        id: 1
+                      }
+                    }
                   }
-                }
-              },
-              GRPCErrCode: {
-                values: {
-                  OK: 0,
-                  CANCELED: 1,
-                  UNKNOWN: 2,
-                  INVALID_ARGUMENT: 3,
-                  DEADLINE_EXCEEDED: 4,
-                  NOT_FOUND: 5,
-                  ALREADY_EXISTS: 6,
-                  PERMISSION_DENIED: 7,
-                  RESOURCE_EXHAUSTED: 8,
-                  FAILED_PRECONDITION: 9,
-                  ABORTED: 10,
-                  OUT_OF_RANGE: 11,
-                  UNIMPLEMENTED: 12,
-                  INTERNAL: 13,
-                  UNAVAILABLE: 14,
-                  DATA_LOSS: 15,
-                  UNAUTHENTICATED: 16
                 }
               }
             }

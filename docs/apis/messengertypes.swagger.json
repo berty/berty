@@ -2273,6 +2273,16 @@
           "type": "string",
           "format": "byte",
           "title": "sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided"
+        },
+        "link_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "link_key is the secret key used to exchange group updates and links to attachments, useful for replication services"
+        },
+        "link_key_sig": {
+          "type": "string",
+          "format": "byte",
+          "title": "link_key_sig is the signature of the link_key using the group private key"
         }
       },
       "title": "Group define a group and is enough to invite someone to it"

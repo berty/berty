@@ -27,12 +27,13 @@ service ReplicationService {
 message ReplicatedGroup {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string sign_pub = 2;
-  int64 created_at = 3;
-  int64 updated_at = 4;
-  int64 metadata_entries_count = 5;
-  string metadata_latest_head = 6;
-  int64 message_entries_count = 7;
-  string message_latest_head = 8;
+  string link_key = 3;
+  int64 created_at = 100;
+  int64 updated_at = 101;
+  int64 metadata_entries_count = 102;
+  string metadata_latest_head = 103;
+  int64 message_entries_count = 104;
+  string message_latest_head = 105;
 }
 
 message ReplicatedGroupToken {
