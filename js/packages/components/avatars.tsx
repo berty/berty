@@ -249,7 +249,8 @@ export const MemberAvatar: React.FC<{
 	publicKey: Maybe<string>
 	conversationPublicKey: Maybe<string>
 	size: number
-}> = ({ publicKey, conversationPublicKey, size }) => {
+	pressable?: boolean
+}> = ({ publicKey, conversationPublicKey, size, pressable }) => {
 	const member = useMember({ publicKey, conversationPublicKey })
 	return (
 		<GenericAvatar
@@ -257,6 +258,7 @@ export const MemberAvatar: React.FC<{
 			size={size}
 			colorSeed={publicKey}
 			nameSeed={member?.displayName}
+			pressable={pressable}
 		/>
 	)
 }
@@ -266,7 +268,8 @@ export const MultiMemberAvatar: React.FC<{
 	style?: AvatarStyle
 	publicKey?: Maybe<string>
 	fallbackNameSeed?: Maybe<string>
-}> = ({ size, style, publicKey, fallbackNameSeed }) => {
+	pressable?: boolean
+}> = ({ size, style, publicKey, fallbackNameSeed, pressable }) => {
 	const ctx = useMsgrContext()
 	const conv = useConversation(publicKey)
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
@@ -274,7 +277,14 @@ export const MultiMemberAvatar: React.FC<{
 	)
 	let content: React.ReactElement
 	if (suggestion) {
-		content = <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
+		content = (
+			<HardcodedAvatar
+				size={size}
+				style={style}
+				name={suggestion.icon as any}
+				pressable={pressable}
+			/>
+		)
 	} else {
 		content = (
 			<GenericAvatar
@@ -283,6 +293,7 @@ export const MultiMemberAvatar: React.FC<{
 				cid={conv?.avatarCid}
 				colorSeed={publicKey}
 				nameSeed={conv?.displayName || fallbackNameSeed}
+				pressable={pressable}
 			/>
 		)
 	}
