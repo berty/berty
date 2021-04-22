@@ -50,7 +50,6 @@ func (n *NetworkUpdate) WaitForUpdate(ctx context.Context, currentAddrs []ma.Mul
 	for {
 		// check for new/removed addrs
 		if diff := diffAddrs(currentAddrs, n.currentAddrs); len(diff) > 0 {
-
 			// filter addrs
 			if factory == nil {
 				return true

@@ -47,8 +47,7 @@ type service struct {
 	p2p_discovery.Discovery
 	Unregisterer
 
-	drivers []*Driver
-	logger  *zap.Logger
+	logger *zap.Logger
 
 	nnotify *NetworkUpdate
 	emitter p2p_event.Emitter
@@ -110,12 +109,7 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	wa, err := newWatchdogsAdvertiser(ctx, opts.Logger, h, notify, opts.AdvertiseResetInterval, opts.AdvertiseGracePeriod, drivers)
-	if err != nil {
-		cancel()
-		return nil, err
-	}
-
+	wa := newWatchdogsAdvertiser(ctx, opts.Logger, h, notify, opts.AdvertiseResetInterval, opts.AdvertiseGracePeriod, drivers)
 	wd, err := newWatchdogsDiscoverer(ctx, opts.Logger, h, opts.FindPeerResetInterval, opts.BackoffStrategy, drivers)
 	if err != nil {
 		cancel()

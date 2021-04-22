@@ -7,7 +7,6 @@ import (
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_event "github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
-
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
 )

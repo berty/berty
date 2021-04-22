@@ -12,8 +12,8 @@ type Notify struct {
 	mu sync.Mutex
 }
 
-func New(L sync.Locker) *Notify {
-	return &Notify{L: L}
+func New(l sync.Locker) *Notify {
+	return &Notify{L: l}
 }
 
 func (n *Notify) getChan() <-chan struct{} {

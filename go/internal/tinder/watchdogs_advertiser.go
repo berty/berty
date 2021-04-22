@@ -23,11 +23,10 @@ type watchdogsAdvertiser struct {
 	muAdvertiser  sync.Mutex
 
 	rootCtx context.Context
-	doneCtx context.CancelFunc
 }
 
 func newWatchdogsAdvertiser(ctx context.Context, l *zap.Logger, h host.Host, n *NetworkUpdate,
-	resetInterval time.Duration, gracePeriod time.Duration, drivers []*Driver) (*watchdogsAdvertiser, error) {
+	resetInterval time.Duration, gracePeriod time.Duration, drivers []*Driver) *watchdogsAdvertiser {
 	return &watchdogsAdvertiser{
 		logger:        l,
 		drivers:       drivers,
@@ -38,7 +37,7 @@ func newWatchdogsAdvertiser(ctx context.Context, l *zap.Logger, h host.Host, n *
 		watchdogs:     make(map[string]*time.Timer),
 
 		rootCtx: ctx,
-	}, nil
+	}
 }
 
 func (wa *watchdogsAdvertiser) Advertise(_ context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {

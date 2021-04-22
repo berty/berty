@@ -256,7 +256,6 @@ func TestFindPeersCache(t *testing.T) {
 			assert.Equal(t, tc.foundExpected, count)
 		})
 	}
-
 }
 
 func TestFindPeers(t *testing.T) {
