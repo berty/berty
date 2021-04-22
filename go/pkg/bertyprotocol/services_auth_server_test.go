@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func mustReadAllBytes(t *testing.T, reader io.ReadCloser) []byte {
@@ -27,19 +26,19 @@ func TestNewAuthTokenServer(t *testing.T) {
 	}
 	secret, _, sk := helperGenerateTokenIssuerSecrets(t)
 
-	ats, err := NewAuthTokenServer(secret, nil, services, zap.NewNop())
+	ats, err := NewAuthTokenServer(secret, nil, services, nil)
 	require.Error(t, err)
 	require.Nil(t, ats)
 
-	ats, err = NewAuthTokenServer(secret, sk, nil, zap.NewNop())
+	ats, err = NewAuthTokenServer(secret, sk, nil, nil)
 	require.Error(t, err)
 	require.Nil(t, ats)
 
-	ats, err = NewAuthTokenServer(secret, sk, map[string]string{}, zap.NewNop())
+	ats, err = NewAuthTokenServer(secret, sk, map[string]string{}, nil)
 	require.Error(t, err)
 	require.Nil(t, ats)
 
-	ats, err = NewAuthTokenServer(nil, sk, services, zap.NewNop())
+	ats, err = NewAuthTokenServer(nil, sk, services, nil)
 	require.Error(t, err)
 	require.Nil(t, ats)
 
@@ -47,7 +46,7 @@ func TestNewAuthTokenServer(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, ats)
 
-	ats, err = NewAuthTokenServer(secret, sk, services, zap.NewNop())
+	ats, err = NewAuthTokenServer(secret, sk, services, nil)
 	require.NoError(t, err)
 	require.NotNil(t, ats)
 

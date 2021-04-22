@@ -18,11 +18,21 @@ type AuthTokenServer struct {
 	issuer   *AuthTokenIssuer
 	services map[string]string
 	logger   *zap.Logger
+	noClick  bool
 }
 
-func NewAuthTokenServer(secret []byte, sk ed25519.PrivateKey, services map[string]string, logger *zap.Logger) (*AuthTokenServer, error) {
-	if logger == nil {
-		logger = zap.NewNop()
+type AuthTokenOptions struct {
+	NoClick bool
+	Logger  *zap.Logger
+}
+
+func NewAuthTokenServer(secret []byte, sk ed25519.PrivateKey, services map[string]string, opts *AuthTokenOptions) (*AuthTokenServer, error) {
+	if opts == nil {
+		opts = &AuthTokenOptions{}
+	}
+
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
 	}
 
 	if len(services) == 0 {
@@ -37,7 +47,8 @@ func NewAuthTokenServer(secret []byte, sk ed25519.PrivateKey, services map[strin
 	return &AuthTokenServer{
 		issuer:   issuer,
 		services: services,
-		logger:   logger,
+		logger:   opts.Logger,
+		noClick:  opts.NoClick,
 	}, nil
 }
 
@@ -119,7 +130,7 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 		return
 	}
 
-	if r.Method == "POST" {
+	if r.Method == "POST" || a.noClick {
 		// TODO: allow client scope from "scope" query parameter
 		servicesIDs := []string{ServiceReplicationID}
 
