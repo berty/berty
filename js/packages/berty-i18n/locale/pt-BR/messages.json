@@ -20,7 +20,7 @@
         "fast-message": "Entrega de mensagem mais rápida"
       },
       "high-level": {
-        "title": "",
+        "title": "Anonimato completo",
         "desc": "",
         "disable-push-notif": "Notificação de push desativada",
         "disable-local-peer-discovery": "Descoberta de par local desativada",
@@ -35,7 +35,7 @@
       "required": "Obrigatório",
       "placeholder": "Nome",
       "button": "CRIAR UMA CONTA",
-      "import-account": ""
+      "import-account": "IMPORTAR UMA CONTA"
     },
     "services-auth": {
       "header": "Autenticar-se em serviços",
@@ -86,14 +86,14 @@
       },
       "multi-account": {
         "create-button": "",
-        "import-button": ""
+        "import-button": "Importar conta"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
+        "title": "Novo Grupo",
+        "add-members": "Adicionar membros",
         "group-info": "",
         "search-placeholder": "Pesquisar",
-        "continue": "",
+        "continue": "CONTINUAR",
         "create-group": ""
       }
     },
@@ -128,7 +128,7 @@
         "no-mc": "",
         "tor-only": ""
       },
-      "save": "",
+      "save": "SALVAR",
       "skip": "PULAR E FAZER MAIS TARDE"
     }
   },
@@ -231,9 +231,9 @@
       "activate-button": "Ativar bluetooth",
       "permission-title": "",
       "permission-description": "",
-      "tag-neutral": "",
+      "tag-neutral": "Pergunte-me mais tarde",
       "tag-negative": "Cancelar",
-      "tag-positive": ""
+      "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Ativar Conexão Multiponto"
@@ -303,7 +303,7 @@
       "title": "Ferramentas de desenvolvedor",
       "header-left-button": "Informações do dispositivo",
       "simulate-button": "Simular erro de transmissão",
-      "simulate-js-error-button": "",
+      "simulate-js-error-button": "Simular erro de JavaScript",
       "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "opcional",
@@ -399,10 +399,10 @@
       "devices": "Dispositivos"
     },
     "welcome-configuration": {
-      "title": "",
+      "title": "Bem-vindo(a) a bordo!",
       "desc": "",
       "skip": "PULAR",
-      "next": ""
+      "next": "PRÓXIMO"
     }
   },
   "chat": {
@@ -415,7 +415,7 @@
       "devices": "Dispositivos"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Digite aqui..."
     },
     "multi-member-settings": {
       "header-left-button": "Pesquisar",
@@ -457,7 +457,7 @@
       },
       "betabot-input-placeholder": "Adicionar betabot para escrever aqui...",
       "incoming-input-placeholder": "Aceite o pedido para escrever aqui...",
-      "input-placeholder": ""
+      "input-placeholder": "Digite aqui..."
     },
     "one-to-one-settings": {
       "header-left-button": "Pesquisar",
@@ -505,11 +505,11 @@
       "bug": "",
       "crash": ""
     },
-    "restart-app": "",
+    "restart-app": "Reiniciar o aplicativo",
     "wtf-screen": {
       "title": "",
-      "desc": "",
-      "desc-report": ""
+      "desc": "O aplicativo simplesmente travou.",
+      "desc-report": "Agite o seu telefone para relatar o erro e clique no botão para sair e reiniciar o aplicativo."
     },
     "sorry-screen": {
       "title": "",
@@ -522,10 +522,10 @@
   "debug": {
     "inspector": {
       "show-button": "",
-      "hide-button": "",
+      "hide-button": "Fechar",
       "title": "",
       "accounts": {
-        "title": "",
+        "title": "Contas",
         "unsupported-remote-mode": "",
         "data-not-found": "",
         "action-delete": {
@@ -535,7 +535,7 @@
           "fs-read-error": "",
           "actions-title": "",
           "action-account-manager": "",
-          "action-account-manager-confirm": "",
+          "action-account-manager-confirm": "Confirmar a exclusão da conta",
           "action-force-delete": "",
           "action-force-delete-confirm": "",
           "error-close": "",
@@ -556,24 +556,24 @@
             "name": "",
             "created": "",
             "opened": "",
-            "error": ""
+            "error": "Erro: {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
+        "title": "Erros",
+        "header-reported": "Erro relatado:",
+        "header-all-clear": "Nenhum erro relatado",
+        "listing-files-failed": "Erro ao listar conteúdos do diretório",
         "listing-accounts-failed": "",
         "listing-accounts-failed-grpc": ""
       },
       "dump": {
         "button": ""
       },
-      "refresh": "",
+      "refresh": "Atualizar",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Confirmar",
         "button-cancel": "Cancelar"
       }
     }
@@ -581,11 +581,11 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
+        "usage": "Segure para gravar, solte para enviar",
+        "not-sent": "A mensagem de áudio não foi enviada",
+        "permission-denied": "O app não tem permissão para gravar som"
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< Deslize para cancelar",
       "cancel-button": "Cancelar"
     }
   }
