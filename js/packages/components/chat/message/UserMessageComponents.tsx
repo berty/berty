@@ -5,7 +5,6 @@ import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Icon, Text } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import tlds from 'tlds'
-import Emoji from 'react-native-emoji'
 
 import { Maybe, useClient } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
@@ -51,7 +50,15 @@ export const HyperlinkUserMessage: React.FC<{
 	isFollowedMessage: boolean | undefined
 	msgBackgroundColor: any
 	msgTextColor: any
-}> = ({ inte, msgBorderColor, isFollowedMessage, msgBackgroundColor, msgTextColor }) => {
+	isHighlight: boolean
+}> = ({
+	inte,
+	msgBorderColor,
+	isFollowedMessage,
+	msgBackgroundColor,
+	msgTextColor,
+	isHighlight,
+}) => {
 	const {
 		payload: { body: message },
 	} = inte
@@ -79,8 +86,17 @@ export const HyperlinkUserMessage: React.FC<{
 				{
 					backgroundColor: msgBackgroundColor,
 				},
-				inte?.reactions?.length && {
-					marginBottom: 14,
+				isHighlight && {
+					borderColor: '#525BEC',
+					borderWidth: 1,
+					shadowColor: '#525BEC',
+					shadowOffset: {
+						width: 0,
+						height: 8,
+					},
+					shadowOpacity: 0.44,
+					shadowRadius: 10.32,
+					elevation: 16,
 				},
 			]}
 		>
@@ -106,7 +122,6 @@ export const HyperlinkUserMessage: React.FC<{
 							lineHeight: 17,
 						},
 					]}
-					selectable={true}
 				>
 					{isReadMore ? message.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
 				</Text>
@@ -121,29 +136,6 @@ export const HyperlinkUserMessage: React.FC<{
 					</TouchableOpacity>
 				)}
 			</Hyperlink>
-			{!!inte?.reactions?.length && (
-				<View
-					style={[
-						border.radius.large,
-						{
-							flexDirection: 'row',
-							backgroundColor: '#F7F8FF',
-							borderRadius: 20,
-							borderWidth: 1,
-							borderColor: '#E3E4EE',
-							paddingVertical: 2,
-							paddingHorizontal: 4,
-							position: 'absolute',
-							bottom: -14,
-							right: 10,
-						},
-					]}
-				>
-					{inte.reactions.map(({ emoji }) => (
-						<Emoji key={emoji} name={emoji} style={{ marginHorizontal: 2, fontSize: 10 }} />
-					))}
-				</View>
-			)}
 		</View>
 	)
 }

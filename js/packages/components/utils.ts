@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer'
 import { WelshProtocolServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import beapi from '@berty-tech/api'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
 
@@ -49,4 +50,17 @@ export const getSource = async (
 		throw new Error('unexpected cache miss')
 	}
 	return cached.prom
+}
+
+export const getMediaTypeFromMedias = (
+	medias: beapi.messenger.Interaction['medias'] | null | undefined,
+): string => {
+	let type = 'file'
+	if (medias?.[0]?.mimeType?.startsWith('image')) {
+		type = 'picture'
+	} else if (medias?.[0]?.mimeType?.startsWith('audio')) {
+		type = 'audio'
+	}
+
+	return type
 }

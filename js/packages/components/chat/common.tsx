@@ -15,6 +15,8 @@ import { Icon, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { useClient, useMsgrContext, useContact } from '@berty-tech/store/hooks'
+import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
+import { useTranslation } from 'react-i18next'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
@@ -72,6 +74,87 @@ export const createAnimationTiming = (
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
+
+const ReplyMessageBar: React.FC<{ activeReplyInte: any; maxWidth: number; contact: any }> = ({
+	activeReplyInte,
+	maxWidth,
+	contact,
+}) => {
+	const [{ border }] = useStyles()
+	const { t }: { t: any } = useTranslation()
+	return (
+		<Animated.View
+			style={[
+				border.radius.top.medium,
+				{
+					backgroundColor: activeReplyInte?.backgroundColor,
+					paddingVertical: 4,
+					paddingHorizontal: 10,
+					zIndex: 0,
+				},
+			]}
+		>
+			<View
+				style={{
+					position: 'absolute',
+					top: -20,
+					alignSelf: 'center',
+					backgroundColor: '#F7F8FF',
+					borderColor: '#E4E5EF',
+					paddingVertical: 2,
+					paddingHorizontal: 20,
+					borderWidth: 1,
+					borderRadius: 20,
+				}}
+			>
+				<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
+					{t('chat.reply.replying-to')} {contact?.displayName || ''}
+				</Text>
+			</View>
+
+			{activeReplyInte?.payload?.body ? (
+				<Text
+					numberOfLines={1}
+					style={{
+						width: maxWidth,
+						color: activeReplyInte?.textColor,
+						fontSize: 12,
+						lineHeight: 17,
+					}}
+				>
+					{activeReplyInte?.payload?.body}
+				</Text>
+			) : (
+				<View
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+					}}
+				>
+					<Icon
+						name='attach-outline'
+						height={15}
+						width={15}
+						fill={activeReplyInte?.textColor}
+						style={{ marginTop: 4 }}
+					/>
+					<Text
+						numberOfLines={1}
+						style={{
+							width: maxWidth,
+							color: activeReplyInte?.textColor,
+							fontSize: 12,
+							lineHeight: 17,
+							marginLeft: 10,
+						}}
+					>
+						{t(`medias.${getMediaTypeFromMedias(activeReplyInte?.medias)}`)}
+					</Text>
+				</View>
+			)}
+		</Animated.View>
+	)
+}
 
 export const ChatFooter: React.FC<{
 	convPk: string
@@ -357,46 +440,11 @@ export const ChatFooter: React.FC<{
 							]}
 						>
 							{!!activeReplyInte && (
-								<Animated.View
-									style={[
-										border.radius.top.medium,
-										{
-											backgroundColor: activeReplyInte?.backgroundColor,
-											paddingVertical: 4,
-											paddingHorizontal: 10,
-											zIndex: 0,
-										},
-									]}
-								>
-									<View
-										style={{
-											position: 'absolute',
-											top: -20,
-											alignSelf: 'center',
-											backgroundColor: '#F7F8FF',
-											borderColor: '#E4E5EF',
-											paddingVertical: 2,
-											paddingHorizontal: 20,
-											borderWidth: 1,
-											borderRadius: 20,
-										}}
-									>
-										<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
-											You're replying to {contact?.displayName || ''}
-										</Text>
-									</View>
-									<Text
-										numberOfLines={1}
-										style={{
-											width: aMaxWidth?.value,
-											color: activeReplyInte?.textColor,
-											fontSize: 12,
-											lineHeight: 17,
-										}}
-									>
-										{activeReplyInte?.payload?.body || ''}
-									</Text>
-								</Animated.View>
+								<ReplyMessageBar
+									activeReplyInte={activeReplyInte}
+									contact={contact}
+									maxWidth={aMaxWidth?.value}
+								/>
 							)}
 							<View
 								style={[

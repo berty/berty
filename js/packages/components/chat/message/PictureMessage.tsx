@@ -7,7 +7,11 @@ import { ImageCounter } from '../ImageCounter'
 
 import { useNavigation } from '@berty-tech/navigation'
 
-export const PictureMessage: React.FC<{ medias: any }> = ({ medias }) => {
+export const PictureMessage: React.FC<{
+	medias: any
+	onLongPress: () => void
+	isHighlight: boolean
+}> = ({ medias, onLongPress, isHighlight }) => {
 	const [{ border }] = useStyles()
 	const { protocolClient } = useMsgrContext()
 	const [images, setImages] = useState<any[]>([])
@@ -51,6 +55,7 @@ export const PictureMessage: React.FC<{ medias: any }> = ({ medias }) => {
 						onPress={() => {
 							navigation.navigate.modals.imageView({ images })
 						}}
+						onLongPress={onLongPress}
 						activeOpacity={1}
 						style={{
 							position: 'absolute',
@@ -72,6 +77,18 @@ export const PictureMessage: React.FC<{ medias: any }> = ({ medias }) => {
 								},
 								border.radius.small,
 								border.shadow.small,
+								isHighlight && {
+									borderColor: '#525BEC',
+									borderWidth: 1,
+									shadowColor: '#525BEC',
+									shadowOffset: {
+										width: 0,
+										height: 8,
+									},
+									shadowOpacity: 0.44,
+									shadowRadius: 10.32,
+									elevation: 16,
+								},
 							]}
 						>
 							<Image
