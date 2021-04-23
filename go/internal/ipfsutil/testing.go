@@ -133,19 +133,6 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	var disc tinder.Service
 	configureRouting := func(h host.Host, r routing.Routing) error {
 		var err error
-		// if opts.RDVPeer.ID != "" {
-		// 	// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
-		// 	h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
-		// 	// @FIXME(gfanton): use rand as argument
-		// 	// disc = tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
-
-		// 	if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
-		// 		return err
-		// 	}
-		// } else {
-		// 	disc = tinder.NewDriverRouting(opts.Logger, "dht", r)
-		// }
-
 		drivers := []*tinder.Driver{}
 		if opts.RDVPeer.ID != "" {
 			// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
@@ -160,10 +147,10 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 			drivers = append(drivers, driver)
 		}
 
-		// if r != nil {
-		// 	driver := tinder.NewDriverFromRouting("dht", r, nil)
-		// 	drivers = append(drivers, driver)
-		// }
+		if r != nil {
+			driver := tinder.NewDriverFromRouting("dht", r, nil)
+			drivers = append(drivers, driver)
+		}
 
 		// minBackoff, maxBackoff := time.Second, time.Minute
 		// rng := rand.New(rand.NewSource(rand.Int63()))

@@ -381,7 +381,7 @@ func TestFindPeersMultipleDriver(t *testing.T) {
 		{name: "no peers", npeers: 0},
 		{name: "find peers 1 peers", npeers: 1},
 		{name: "find peers 10 peers", npeers: 10},
-		{name: "find peers 100 peers", npeers: 100},
+		// {name: "find peers 100 peers", npeers: 100}, // FIXME(gfanton): race: limit on 8128 simultaneously alive goroutines is exceeded
 	}
 
 	for _, tc := range cases {
