@@ -28,3 +28,13 @@ func FilterPrivateAddrs(ms []ma.Multiaddr) []ma.Multiaddr {
 
 	return filetred
 }
+
+// no filters
+func NoFilter(ms []ma.Multiaddr) []ma.Multiaddr {
+	return ms
+}
+
+// filter all addrs
+func FilterAll(ms []ma.Multiaddr) []ma.Multiaddr {
+	return []ma.Multiaddr{}
+}

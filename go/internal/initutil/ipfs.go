@@ -460,7 +460,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 				name := fmt.Sprintf("rdvp#%.6s", peer.ID)
 				drivers = append(drivers,
-					tinder.NewDriverFromUnregisterDiscovery(name, udisc, tinder.FilterPublicAddrs))
+					tinder.NewDriverFromUnregisterDiscovery(name, udisc, tinder.NoFilter))
 			}
 		}
 	}
