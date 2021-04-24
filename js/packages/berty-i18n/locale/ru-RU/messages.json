@@ -314,11 +314,11 @@
       "system-info-button": "Информация о системе",
       "debug-button": "Debug",
       "log-button": {
-        "name": "Формат журнала",
+        "name": "Формат логов",
         "bullet-point": "Перезапустите приложение после изменения этого поля"
       },
       "log-filters-button": {
-        "name": "",
+        "name": "Фильтры логов",
         "bullet-point": "Перезапустите приложение после изменения этого поля"
       },
       "add-dev-conversations-button": "Добавить dev беседы",
