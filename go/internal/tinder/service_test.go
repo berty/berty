@@ -85,7 +85,7 @@ func TestAdvertiseWatchdogs(t *testing.T) {
 	require.True(t, ok)
 
 	// should be expired after 5 ticks
-	time.Sleep(tick * 3)
+	time.Sleep(tick * 5)
 	ok = ms.HasPeerRecord(advertisekey, client.Host.ID())
 	require.False(t, ok)
 }
