@@ -63,7 +63,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, "p2p.tinder-rdvp-driver", true, "if true rdvp driver will be enable for tinder")
-	fs.BoolVar(&m.Node.Protocol.UseStaticRelays, "p2p.use-static-relays", true, "if true will use static relays form the config, otherwise it will try to discover relays over the dht")
+	fs.StringVar(&m.Node.Protocol.StaticRelays, "p2p.static-relays", ":default:", "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
@@ -399,13 +399,12 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// enable autorelay
 	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
 
-	if m.Node.Protocol.UseStaticRelays {
-		// Resolving addresses
-		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), logger, config.Config.P2P.StaticRelays)
-		if err != nil {
-			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
-		}
+	pis, err := m.getStaticRelays()
+	if err != nil {
+		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+	}
 
+	if len(pis) > 0 {
 		peers := make([]peer.AddrInfo, len(pis))
 		for i, p := range pis {
 			peers[i] = *p
@@ -564,7 +563,27 @@ func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 		}
 	}
 
-	return ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, addrs)
+	return ipfsutil.ParseAndResolveMaddrs(m.getContext(), m.initLogger, addrs)
+}
+
+func (m *Manager) getStaticRelays() ([]*peer.AddrInfo, error) {
+	m.applyDefaults()
+
+	defaultMaddrs := config.Config.P2P.StaticRelays
+
+	var addrs []string
+	for _, v := range strings.Split(m.Node.Protocol.RdvpMaddrs, ",") {
+		switch v {
+		case ":default:":
+			addrs = append(addrs, defaultMaddrs...)
+		case ":none:", "":
+			continue
+		default:
+			addrs = append(addrs, v)
+		}
+	}
+
+	return ipfsutil.ParseAndResolveMaddrs(m.getContext(), m.initLogger, addrs)
 }
 
 func (m *Manager) getSwarmAddrs() []string {

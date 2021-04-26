@@ -59,7 +59,7 @@ func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, 
 	return &info, nil
 }
 
-func ParseAndResolveRdvpMaddrs(ctx context.Context, log *zap.Logger, addrs []string) ([]*peer.AddrInfo, error) {
+func ParseAndResolveMaddrs(ctx context.Context, log *zap.Logger, addrs []string) ([]*peer.AddrInfo, error) {
 	// Resolve all addresses
 	outPeersUnmatched := make([]*peer.AddrInfo, len(addrs))
 	var errs error
