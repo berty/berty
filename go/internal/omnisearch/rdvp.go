@@ -61,18 +61,6 @@ func NewRdvpConstructorFromPeerInfo(pis ...peer.AddrInfo) func(*zap.Logger, host
 			return nil, err
 		}
 
-		// var rdvClient tinder.AsyncableDriver
-
-		// switch len(rdvClients) {
-		// case 0:
-		// 	// FIXME: Check if this isn't called when DisableIPFSNetwork true.
-		// 	return nil, fmt.Errorf("can't create a discovery provider without any discovery")
-		// case 1:
-		// 	rdvClient = rdvClients[0]
-		// default:
-		// 	rdvClient = tinder.NewAsyncMultiDriver(log, rdvClients...)
-		// }
-
 		return rdvpProvider{rdvp: service}, nil
 	}
 }
