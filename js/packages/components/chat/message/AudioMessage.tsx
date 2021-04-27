@@ -115,7 +115,11 @@ const AudioPreview: React.FC<{
 	)
 }
 
-export const AudioMessage: React.FC<{ medias: Array<beapi.messenger.Media> }> = ({ medias }) => {
+export const AudioMessage: React.FC<{
+	medias: Array<beapi.messenger.Media>
+	onLongPress: () => void
+	isHighlight: boolean
+}> = ({ medias, onLongPress, isHighlight }) => {
 	const { protocolClient, client } = useMsgrContext()
 	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
 	const { player: globalPlayer, load: globalPlayerLoad, handlePlayPause } = useMusicPlayer()
@@ -164,7 +168,11 @@ export const AudioMessage: React.FC<{ medias: Array<beapi.messenger.Media> }> = 
 	}, [cid, isPlaying, globalPlayer.player, globalPlayerLoad, client, protocolClient, filename])
 
 	return (
-		<View style={{ alignItems: 'center' }}>
+		<TouchableOpacity
+			style={{ alignItems: 'center' }}
+			onLongPress={onLongPress}
+			activeOpacity={0.9}
+		>
 			<View
 				style={[
 					{
@@ -177,6 +185,18 @@ export const AudioMessage: React.FC<{ medias: Array<beapi.messenger.Media> }> = 
 						flexDirection: 'row',
 					},
 					border.radius.small,
+					isHighlight && {
+						borderColor: '#525BEC',
+						borderWidth: 1,
+						shadowColor: '#525BEC',
+						shadowOffset: {
+							width: 0,
+							height: 8,
+						},
+						shadowOpacity: 0.44,
+						shadowRadius: 10.32,
+						elevation: 16,
+					},
 				]}
 			>
 				<TouchableOpacity
@@ -219,6 +239,6 @@ export const AudioMessage: React.FC<{ medias: Array<beapi.messenger.Media> }> = 
 					currentTime={isPlaying ? globalPlayer.player?.currentTime : 0}
 				/>
 			</View>
-		</View>
+		</TouchableOpacity>
 	)
 }

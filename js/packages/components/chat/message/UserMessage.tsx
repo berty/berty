@@ -6,10 +6,13 @@ import Color from 'color'
 import { Text, Icon } from '@ui-kitten/components'
 import Popover from 'react-native-popover-view'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
+import Emoji from 'react-native-emoji'
+import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { useLastConvInteraction, useContact, useMsgrContext } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
+import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
@@ -21,6 +24,22 @@ import { FileMessage } from './FileMessage'
 import { useReplyReaction } from '../ReplyReactionContext'
 import PopoverView from './Popover'
 const pal = palette('tol-rainbow', 256)
+
+const getPositionStyleForReactionView = (
+	messageWidth: number,
+	reactionWidth: number,
+	isMine: boolean,
+) => {
+	if (messageWidth - reactionWidth > 15 || isMine) {
+		return {
+			right: 15,
+		}
+	} else {
+		return {
+			left: messageWidth - 15,
+		}
+	}
+}
 
 const useStylesMessage = () => {
 	const [{ row, text, width }] = useStyles()
@@ -142,13 +161,18 @@ export const UserMessage: React.FC<{
 	const _styles = useStylesMessage()
 	const ctx = useMsgrContext()
 	const [{ row, margin, padding, column, text, border, color }, { scaleSize }] = useStyles()
+	const { t }: { t: any } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
+	const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
+	const [reactionLayoutWidth, setReactionLayoutWidth] = useState(0)
 
 	const {
 		activePopoverCid,
 		setActivePopoverCid,
 		setActiveReplyInte,
 		setActiveEmojiKeyboardCid,
+		highlightCid,
+		setHighlightCid,
 	} = useReplyReaction()
 
 	const {
@@ -166,6 +190,24 @@ export const UserMessage: React.FC<{
 	let repliedToColors =
 		repliedTo &&
 		getUserMessageState(replyOf, members, convKind, undefined, undefined, border, color)
+
+	const togglePopover = () => {
+		if (inte.isMine) {
+			return
+		}
+		if (activePopoverCid === inte.cid) {
+			setActivePopoverCid(null)
+		} else if (animatedValue._value === 0) {
+			setActivePopoverCid(inte.cid)
+		}
+		Animated.timing(animatedValue, {
+			toValue: 0,
+			duration: 50,
+			useNativeDriver: false,
+		}).start(() => {})
+	}
+
+	const isHighlight = highlightCid === inte.cid
 
 	return (
 		<View
@@ -247,12 +289,15 @@ export const UserMessage: React.FC<{
 								}}
 							>
 								<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
-									Replied to {repliedTo?.displayName || ''}
+									{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
 								</Text>
 							</View>
 
 							<TouchableOpacity
-								onPress={() => scrollToCid(replyOf?.cid)}
+								onPress={() => {
+									scrollToCid(replyOf?.cid)
+									setHighlightCid(replyOf?.cid)
+								}}
 								style={[
 									border.radius.top.medium,
 									inte.isMine ? border.radius.left.medium : border.radius.right.medium,
@@ -268,32 +313,21 @@ export const UserMessage: React.FC<{
 									numberOfLines={1}
 									style={{ color: repliedToColors?.msgTextColor, fontSize: 10, lineHeight: 17 }}
 								>
-									{replyOf?.payload?.body}
+									{replyOf?.payload?.body
+										? replyOf.payload.body
+										: `${t('chat.reply.response-to')} ${t(
+												`medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
+										  )}`}
 								</Text>
 							</TouchableOpacity>
 						</View>
 					)}
-					{(inte.medias?.length || 0) > 0 && (
-						<View
-							style={[
-								isFollowedMessage && margin.left.scale(40),
-								previousMessage?.medias?.[0]?.mimeType ? margin.top.tiny : margin.top.small,
-								nextMessage?.medias?.[0]?.mimeType ? margin.bottom.tiny : margin.bottom.small,
-							]}
-						>
-							{(() => {
-								if (inte?.medias?.[0]?.mimeType?.startsWith('image')) {
-									return <PictureMessage medias={inte.medias} />
-								} else if (inte?.medias?.[0]?.mimeType?.startsWith('audio')) {
-									return <AudioMessage medias={inte.medias} />
-								} else {
-									return <FileMessage medias={inte.medias} />
-								}
-							})()}
-						</View>
-					)}
 
-					{!!inte.payload.body && (
+					<View
+						style={{
+							position: 'relative',
+						}}
+					>
 						<PanGestureHandler
 							enabled={!inte.isMine}
 							onGestureEvent={({ nativeEvent }) => {
@@ -401,28 +435,69 @@ export const UserMessage: React.FC<{
 									}}
 									from={
 										<TouchableOpacity
+											onLayout={(event) => {
+												setMessageLayoutWidth(event.nativeEvent.layout.width)
+											}}
 											disabled={inte.isMine}
 											activeOpacity={0.9}
-											onPress={() => {
-												if (activePopoverCid === inte.cid) {
-													setActivePopoverCid(null)
-												} else if (animatedValue._value === 0) {
-													setActivePopoverCid(inte.cid)
-												}
-												Animated.timing(animatedValue, {
-													toValue: 0,
-													duration: 50,
-													useNativeDriver: false,
-												}).start(() => {})
+											onLongPress={togglePopover}
+											style={{
+												marginBottom: inte?.reactions?.length ? 10 : 0,
 											}}
 										>
-											<HyperlinkUserMessage
-												inte={inte}
-												msgBorderColor={msgBorderColor}
-												isFollowedMessage={isFollowedMessage}
-												msgBackgroundColor={msgBackgroundColor}
-												msgTextColor={msgTextColor}
-											/>
+											<>
+												{!!inte.medias?.length && (
+													<View
+														style={[
+															isFollowedMessage && margin.left.scale(40),
+															previousMessage?.medias?.[0]?.mimeType
+																? margin.top.tiny
+																: margin.top.small,
+															nextMessage?.medias?.[0]?.mimeType
+																? margin.bottom.tiny
+																: margin.bottom.small,
+														]}
+													>
+														{(() => {
+															if (inte.medias[0]?.mimeType?.startsWith('image')) {
+																return (
+																	<PictureMessage
+																		medias={inte.medias}
+																		onLongPress={togglePopover}
+																		isHighlight={isHighlight}
+																	/>
+																)
+															} else if (inte.medias[0]?.mimeType?.startsWith('audio')) {
+																return (
+																	<AudioMessage
+																		medias={inte.medias}
+																		onLongPress={togglePopover}
+																		isHighlight={isHighlight}
+																	/>
+																)
+															} else {
+																return (
+																	<FileMessage
+																		medias={inte.medias}
+																		onLongPress={togglePopover}
+																		isHighlight={isHighlight}
+																	/>
+																)
+															}
+														})()}
+													</View>
+												)}
+												{!!inte.payload.body && (
+													<HyperlinkUserMessage
+														inte={inte}
+														msgBorderColor={msgBorderColor}
+														isFollowedMessage={isFollowedMessage}
+														msgBackgroundColor={msgBackgroundColor}
+														msgTextColor={msgTextColor}
+														isHighlight={isHighlight}
+													/>
+												)}
+											</>
 										</TouchableOpacity>
 									}
 								>
@@ -465,9 +540,39 @@ export const UserMessage: React.FC<{
 								</Popover>
 							</Animated.View>
 						</PanGestureHandler>
-					)}
 
-					{activePopoverCid === inte.cid && <Popover />}
+						{activePopoverCid === inte.cid && <Popover />}
+						{!!inte?.reactions?.length && !!messageLayoutWidth && (
+							<View
+								onLayout={(event) => {
+									setReactionLayoutWidth(event.nativeEvent.layout.width)
+								}}
+								style={[
+									border.radius.large,
+									{
+										flexDirection: 'row',
+										backgroundColor: '#F7F8FF',
+										borderRadius: 20,
+										borderWidth: 1,
+										borderColor: '#E3E4EE',
+										paddingVertical: 2,
+										paddingHorizontal: 4,
+										position: 'absolute',
+										bottom: inte?.payload?.body ? 0 : 9,
+									},
+									getPositionStyleForReactionView(
+										messageLayoutWidth,
+										reactionLayoutWidth,
+										!!inte.isMine,
+									),
+								]}
+							>
+								{inte.reactions.map(({ emoji }) => (
+									<Emoji key={emoji} name={emoji} style={{ marginHorizontal: 2, fontSize: 10 }} />
+								))}
+							</View>
+						)}
+					</View>
 					{!isWithinCollapseDuration && (
 						<TimestampStatusUserMessage
 							inte={inte}

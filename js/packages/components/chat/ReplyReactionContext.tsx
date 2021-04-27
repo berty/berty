@@ -14,6 +14,8 @@ export const ReplyReactionContext = createContext<{
 	setActiveEmojiKeyboardCid: (cid: CID) => void
 	activeReplyInte: Interaction | undefined
 	setActiveReplyInte: (inte?: Interaction) => void
+	highlightCid: CID
+	setHighlightCid: (cid: CID) => void
 }>({
 	activePopoverCid: null,
 	setActivePopoverCid: () => {},
@@ -21,12 +23,14 @@ export const ReplyReactionContext = createContext<{
 	setActiveEmojiKeyboardCid: () => {},
 	activeReplyInte: undefined,
 	setActiveReplyInte: () => {},
+	highlightCid: null,
+	setHighlightCid: () => {},
 })
 
 export const ReplyReactionProvider: React.FC = ({ children }) => {
 	const [activePopoverCid, setActivePopoverCid] = useState<CID>()
+	const [highlightCid, setHighlight] = useState<CID>()
 	const [activeEmojiKeyboardCid, setActiveEmojiKeyboardCid] = useState<CID>()
-
 	const [activeReplyInte, setActiveReplyInte] = useState<Interaction | undefined>()
 
 	const value = {
@@ -36,6 +40,11 @@ export const ReplyReactionProvider: React.FC = ({ children }) => {
 		setActiveEmojiKeyboardCid,
 		activeReplyInte,
 		setActiveReplyInte,
+		highlightCid,
+		setHighlightCid: (cid: CID) => {
+			setTimeout(() => setHighlight(cid), 400)
+			setTimeout(() => setHighlight(null), 2000)
+		},
 	}
 
 	return (
