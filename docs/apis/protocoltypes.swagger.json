@@ -1826,7 +1826,12 @@
       }
     },
     "v1AuthServiceCompleteFlowReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "token_id": {
+          "type": "string"
+        }
+      }
     },
     "v1AuthServiceCompleteFlowRequest": {
       "type": "object",

@@ -1123,7 +1123,9 @@ message AuthServiceCompleteFlow {
   message Request{
     string callback_url = 1 [(gogoproto.customname) = "CallbackURL"];
   }
-  message Reply{}
+  message Reply{
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+  }
 }
 
 message AuthServiceInitFlow {

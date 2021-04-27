@@ -205,16 +205,20 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		i++
 	}
 
-	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
+	svcToken := &protocoltypes.ServiceToken{
 		Token:             resMsg.AccessToken,
 		AuthenticationURL: auth.baseURL,
 		SupportedServices: services,
 		Expiration:        -1,
-	}); err != nil {
+	}
+
+	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, svcToken); err != nil {
 		return nil, err
 	}
 
-	return &protocoltypes.AuthServiceCompleteFlow_Reply{}, nil
+	return &protocoltypes.AuthServiceCompleteFlow_Reply{
+		TokenID: svcToken.TokenID(),
+	}, nil
 }
 
 func (s *service) AuthServiceInitFlow(ctx context.Context, request *protocoltypes.AuthServiceInitFlow_Request) (*protocoltypes.AuthServiceInitFlow_Reply, error) {
