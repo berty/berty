@@ -239,6 +239,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Chat.MultiMemberSettings}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Chat.MultiMemberSettingsAddMembers}
+				component={Components.Chat.MultiMemberSettingsAddMembers}
+			/>
+			<NavigationStack.Screen
 				name={Routes.Chat.MultiMemberQR}
 				component={Components.Chat.MultiMemberQR}
 			/>

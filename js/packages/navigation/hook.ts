@@ -78,6 +78,10 @@ const createNavigation = ({
 					navigate,
 					Routes.Chat.MultiMemberSettings,
 				),
+				multiMemberSettingsAddMembers: createNavigateFunc<ScreenProps.Chat.MultiMemberSettingsAddMembers>(
+					navigate,
+					Routes.Chat.MultiMemberSettingsAddMembers,
+				),
 				multiMemberQR: createNavigateFunc<ScreenProps.Chat.MultiMemberQR>(
 					navigate,
 					Routes.Chat.MultiMemberQR,
