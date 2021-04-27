@@ -10,6 +10,7 @@ import { useAccount, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MultiMemberAvatar } from '../avatars'
+import logo from '../main/1_berty_picto.png'
 
 const _contentScaleFactor = 0.66
 
@@ -80,7 +81,9 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 					<QRCode
 						size={_contentScaleFactor * Math.min(windowHeight, windowWidth)}
 						value={conv.link}
+						logo={logo}
 						mode='circle'
+						color='#3845E0'
 					/>
 				</View>
 			</View>
