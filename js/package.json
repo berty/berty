@@ -64,6 +64,7 @@
 		"react-native-inappbrowser-reborn": "^3.5.1",
 		"react-native-interactable": "^2.0.1",
 		"react-native-linear-gradient": "^2.5.6",
+		"react-native-markdown-display": "^7.0.0-alpha.2",
 		"react-native-permissions": "^3.0.0",
 		"react-native-popover-view": "^3.1.1",
 		"react-native-progress": "^4.1.2",

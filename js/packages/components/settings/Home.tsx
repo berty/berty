@@ -302,12 +302,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 		<>
 			<View style={[flex.tiny, background.white]}>
 				<StatusBar backgroundColor='#585AF1' barStyle='light-content' />
-				<SwipeNavRecognizer
-					// onSwipeUp={() => navigation.goBack()}
-					// onSwipeLeft={() => navigation.goBack()}
-					onSwipeRight={() => navigation.goBack()}
-					// onSwipeDown={() => navigation.goBack()}
-				>
+				<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
 					{account == null ? (
 						<ActivityIndicator size='large' style={[row.center]} />
 					) : (
