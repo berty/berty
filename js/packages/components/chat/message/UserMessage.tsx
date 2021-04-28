@@ -232,6 +232,7 @@ export const UserMessage: React.FC<{
 						publicKey={inte.memberPublicKey}
 						conversationPublicKey={inte.conversationPublicKey}
 						size={30 * scaleSize}
+						pressable
 					/>
 				</View>
 			)}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, View, ViewStyle, Text } from 'react-native'
+import { Image, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
 import palette from 'google-palette'
 import { SHA3 } from 'sha3'
 import { Buffer } from 'buffer'
@@ -14,6 +14,7 @@ import {
 	Maybe,
 	useMsgrContext,
 } from '@berty-tech/store/hooks'
+import { useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
@@ -38,7 +39,8 @@ export const GenericAvatar: React.FC<{
 	style?: AvatarStyle
 	isEditable?: boolean
 	nameSeed: Maybe<string>
-}> = ({ cid, size, colorSeed, style, isEditable = false, nameSeed }) => {
+	pressable?: boolean
+}> = ({ cid, size, colorSeed, style, isEditable = false, nameSeed, pressable }) => {
 	const [{ border, background, color }] = useStyles()
 	const padding = Math.round(size / 14)
 	let innerSize = Math.round(size - 2 * padding)
@@ -52,7 +54,7 @@ export const GenericAvatar: React.FC<{
 				<AttachmentImage
 					cid={cid}
 					style={{ width: innerSize, height: innerSize, borderRadius: innerSize / 2 }}
-					notPressable
+					pressable={pressable}
 				/>
 				{isEditable ? (
 					<View
@@ -132,7 +134,9 @@ export const HardcodedAvatar: React.FC<{
 	size: number
 	style?: AvatarStyle
 	name: HardcodedAvatarKey
-}> = ({ size, style, name }) => {
+	pressable?: boolean
+}> = ({ size, style, name, pressable }) => {
+	const { navigate } = useNavigation()
 	const [{ border }] = useStyles()
 	let avatar = hardcodedAvatars[name]
 	if (!avatar) {
@@ -140,7 +144,12 @@ export const HardcodedAvatar: React.FC<{
 	}
 
 	return (
-		<View
+		<TouchableOpacity
+			activeOpacity={0.9}
+			disabled={!pressable}
+			onPress={() => {
+				navigate.modals.imageView({ images: [avatar], previewOnly: true })
+			}}
 			style={[{ borderRadius: size / 2, backgroundColor: 'white' }, border.shadow.medium, style]}
 		>
 			<Image
@@ -151,7 +160,7 @@ export const HardcodedAvatar: React.FC<{
 					borderRadius: size / 2,
 				}}
 			/>
-		</View>
+		</TouchableOpacity>
 	)
 }
 
@@ -207,14 +216,22 @@ export const ContactAvatar: React.FC<{
 	size: number
 	style?: AvatarStyle
 	fallbackNameSeed?: Maybe<string>
-}> = ({ publicKey, size, style, fallbackNameSeed }) => {
+	pressable?: boolean
+}> = ({ publicKey, size, style, fallbackNameSeed, pressable }) => {
 	const contact = useContact(publicKey)
 	const ctx = useMsgrContext()
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
 		(v) => v.pk === publicKey,
 	)
 	if (suggestion) {
-		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
+		return (
+			<HardcodedAvatar
+				size={size}
+				style={style}
+				name={suggestion.icon as any}
+				pressable={pressable}
+			/>
+		)
 	}
 	return (
 		<GenericAvatar
@@ -223,6 +240,7 @@ export const ContactAvatar: React.FC<{
 			size={size}
 			colorSeed={publicKey}
 			style={style}
+			pressable={pressable}
 		/>
 	)
 }
@@ -231,7 +249,8 @@ export const MemberAvatar: React.FC<{
 	publicKey: Maybe<string>
 	conversationPublicKey: Maybe<string>
 	size: number
-}> = ({ publicKey, conversationPublicKey, size }) => {
+	pressable?: boolean
+}> = ({ publicKey, conversationPublicKey, size, pressable }) => {
 	const member = useMember({ publicKey, conversationPublicKey })
 	return (
 		<GenericAvatar
@@ -239,6 +258,7 @@ export const MemberAvatar: React.FC<{
 			size={size}
 			colorSeed={publicKey}
 			nameSeed={member?.displayName}
+			pressable={pressable}
 		/>
 	)
 }
@@ -248,7 +268,8 @@ export const MultiMemberAvatar: React.FC<{
 	style?: AvatarStyle
 	publicKey?: Maybe<string>
 	fallbackNameSeed?: Maybe<string>
-}> = ({ size, style, publicKey, fallbackNameSeed }) => {
+	pressable?: boolean
+}> = ({ size, style, publicKey, fallbackNameSeed, pressable }) => {
 	const ctx = useMsgrContext()
 	const conv = useConversation(publicKey)
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
@@ -256,7 +277,14 @@ export const MultiMemberAvatar: React.FC<{
 	)
 	let content: React.ReactElement
 	if (suggestion) {
-		content = <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
+		content = (
+			<HardcodedAvatar
+				size={size}
+				style={style}
+				name={suggestion.icon as any}
+				pressable={pressable}
+			/>
+		)
 	} else {
 		content = (
 			<GenericAvatar
@@ -265,6 +293,7 @@ export const MultiMemberAvatar: React.FC<{
 				cid={conv?.avatarCid}
 				colorSeed={publicKey}
 				nameSeed={conv?.displayName || fallbackNameSeed}
+				pressable={pressable}
 			/>
 		)
 	}

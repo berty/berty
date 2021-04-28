@@ -74,7 +74,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 	return (
 		<View>
 			<View style={[row.center]}>
-				<MultiMemberAvatar publicKey={publicKey} size={80} />
+				<MultiMemberAvatar publicKey={publicKey} size={80} pressable />
 			</View>
 			<Text
 				numberOfLines={1}

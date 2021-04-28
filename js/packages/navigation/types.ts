@@ -54,7 +54,10 @@ export namespace ScreenProps {
 	}
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
-		export type ImageView = RouteProps<{ images: beapi.messenger.IMedia[] }>
+		export type ImageView = RouteProps<{
+			images: beapi.messenger.IMedia[]
+			previewOnly?: boolean
+		}>
 	}
 }
 
