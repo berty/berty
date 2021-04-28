@@ -498,6 +498,11 @@
       "medias": "媒体",
       "links": "链接",
       "documents": "文件"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +593,10 @@
       "slide-to-cancel": "",
       "cancel-button": "取消"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
