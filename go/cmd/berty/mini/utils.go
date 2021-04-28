@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )

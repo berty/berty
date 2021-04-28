@@ -16,7 +16,7 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/internal/sysutil"
