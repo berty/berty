@@ -498,6 +498,11 @@
       "medias": "Medien",
       "links": "Links",
       "documents": "Dokumente"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +593,10 @@
       "slide-to-cancel": "Streichen um abbzubrechen",
       "cancel-button": "Abbrechen"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
