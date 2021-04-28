@@ -498,6 +498,11 @@
       "medias": "",
       "links": "Koppelingen",
       "documents": "Documenten"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +593,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Annuleren"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
