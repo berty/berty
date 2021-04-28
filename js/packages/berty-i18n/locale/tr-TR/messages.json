@@ -2,9 +2,9 @@
   "onboarding": {
     "getstarted": {
       "desc": "İnternet erişimi, hücresel veri veya ağda güven varken veya yokken çalışan güvenli eşler arası mesajlaşma uygulaması",
-      "open-registered-account": "Giriş yap",
+      "open-registered-account": "Kaydedilmiş bir hesap açın",
       "import-button": "Mevcut olan hesaba veri ekle",
-      "account-selector-create-button": "Yeni hesap oluştur",
+      "account-selector-create-button": "Yeni bir hesap oluştur",
       "more-options": "Daha fazla seçenek",
       "button": "BAŞLA"
     },
@@ -25,7 +25,7 @@
         "disable-push-notif": "Anlık bildirimler devre dışı",
         "disable-local-peer-discovery": "Yerel eş keşfi devre dışı",
         "disable-local-peer-discovery-desc": "",
-        "disable-contact-request": "Kişi istekleri devre dışı",
+        "disable-contact-request": "Kişi listesi istekleri devre dışı",
         "on-same-network": ""
       }
     },
@@ -47,7 +47,7 @@
     },
     "generate-key": {
       "title": "Berty düğümü(node) başlatılıyor…",
-      "desc": "Bu işlem birkaç saniye sürebilir"
+      "desc": "Bu birkaç saniye sürebilir"
     },
     "notifications": {
       "header": "Yeni mesajı veya iletişim talebini kaçırmayın",
@@ -164,7 +164,7 @@
         "privacy-tag": "Gizlilik",
         "description-tag": "Kullanımı Kolay - Tüm Özellikler",
         "first-bullet-point": "Anlık bildirimler alın",
-        "second-bullet-point": "Bağlantı istekleri alın",
+        "second-bullet-point": "İletişim istekleri alın",
         "third-bullet-point": "Yerel Kişi Keşfi (BLE & Multicast DNS)"
       },
       "dark-mode-button": "Koyu tema",
@@ -488,31 +488,36 @@
       "security-access": "Güvenlik Erişimi",
       "security-access-desc": "",
       "save-to-gallery": "",
-      "share": "",
+      "share": "Paylaş",
       "forward-berty": "",
       "forward": "",
-      "image-saved": ""
+      "image-saved": "Resim galeriye kaydedildi"
     },
     "shared-medias": {
       "title": "",
       "medias": "",
-      "links": "",
-      "documents": ""
+      "links": "Bağlantılar",
+      "documents": "Belgeler"
+    },
+    "reply": {
+      "response-to": "Yanıtla",
+      "replying-to": "Yanıtlıyorsun",
+      "replied-to": "Yanıtlandı"
     }
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Hata algılandı",
+      "crash": "Kilitlenme algılandı"
     },
-    "restart-app": "",
+    "restart-app": "Uygulamayı yeniden başlatın",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Hata nedir?",
+      "desc": "Uygulama az önce çöktü.",
+      "desc-report": "Hatayı bildirmek için telefonunuzu sallayın ve uygulamayı kapatıp yeniden başlatmak için düğmeye basın."
     },
     "sorry-screen": {
-      "title": "",
+      "title": "Bu hata için üzgünüm!",
       "desc": "",
       "desc-buy": "",
       "desc-em": "",
@@ -588,5 +593,10 @@
       "slide-to-cancel": "",
       "cancel-button": "İptal"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
