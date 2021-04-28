@@ -498,6 +498,11 @@
       "medias": "メディア",
       "links": "リンク",
       "documents": "ドキュメント"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +593,10 @@
       "slide-to-cancel": "スライドして中止",
       "cancel-button": "キャンセル"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
