@@ -498,6 +498,11 @@
       "medias": "Медиа",
       "links": "Ссылки",
       "documents": "Документы"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +593,10 @@
       "slide-to-cancel": "<< Свайп для отмены",
       "cancel-button": "Отменить"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
