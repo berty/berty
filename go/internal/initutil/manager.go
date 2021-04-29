@@ -73,11 +73,13 @@ type Manager struct {
 			IPFSAPIListeners  string `json:"IPFSAPIListeners,omitempty"`
 			IPFSWebUIListener string `json:"IPFSWebUIListener,omitempty"`
 			Announce          string `json:"Announce,omitempty"`
+			Bootstrap         string `json:"Bootstrap,omitempty"`
+			DHT               string `json:"DHT,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
 			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
-			StaticRelays      string `json:"StaticRelays,omitempty"`
+			UseStaticRelays   bool   `json:"UseStaticRelays,omitempty"`
 			Ble               struct {
 				Enable bool                   `json:"Enable,omitempty"`
 				Driver proximity.NativeDriver `json:"Driver,omitempty"`

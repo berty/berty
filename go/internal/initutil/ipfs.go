@@ -59,6 +59,10 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "/ip4/127.0.0.1/tcp/5001", "IPFS API listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
+
+	fs.StringVar(&m.Node.Protocol.Bootstrap, "p2p.bootstrap", ":default:", "ipfs bootstrap node, `:default:` will set ipfs default bootstrap node")
+	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `client`, `server`, `auto`, `autoserver`,") // @TODO(gfanton): add disabled mode
+
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
@@ -104,7 +108,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	defer m.prepareForGetter()()
-
 	return m.getLocalIPFS()
 }
 
@@ -132,11 +135,26 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
+	var dhtmode p2p_dht.ModeOpt
+	switch m.Node.Protocol.DHT {
+	case "client":
+		dhtmode = p2p_dht.ModeClient
+	case "server":
+		dhtmode = p2p_dht.ModeServer
+	case "auto":
+		dhtmode = p2p_dht.ModeAuto
+	case "autoserver":
+		dhtmode = p2p_dht.ModeAutoServer
+	default:
+		err := fmt.Errorf("invalid dht mode `%s`", dhtmode)
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
 	mopts := ipfsutil.MobileOptions{
 		IpfsConfigPatch: m.setupIPFSConfig,
 		// HostConfigFunc:    m.setupIPFSHost,
 		RoutingConfigFunc: m.configIPFSRouting,
-		RoutingOption:     ipfsutil.CustomRoutingOption(p2p_dht.ModeClient, p2p_dht.Concurrency(2)),
+		RoutingOption:     ipfsutil.CustomRoutingOption(p2p_dht.Mode(dhtmode), p2p_dht.Concurrency(2)),
 		ExtraOpts: map[string]bool{
 			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
 			"pubsub": false,
@@ -272,7 +290,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	cfg.Addresses.Swarm = m.getSwarmAddrs()
-	cfg.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
+	cfg.Bootstrap = m.getBootstrapAddrs()
 
 	if m.Node.Protocol.IPFSAPIListeners != "" {
 		cfg.Addresses.API = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
@@ -584,6 +602,26 @@ func (m *Manager) getStaticRelays() ([]*peer.AddrInfo, error) {
 	}
 
 	return ipfsutil.ParseAndResolveMaddrs(m.getContext(), m.initLogger, addrs)
+}
+
+func (m *Manager) getBootstrapAddrs() []string {
+	if m.Node.Protocol.Bootstrap == "" {
+		return nil
+	}
+
+	bootstrapAddrs := []string{}
+	for _, addr := range strings.Split(m.Node.Protocol.Bootstrap, ",") {
+		switch addr {
+		case ":default:":
+			bootstrapAddrs = append(bootstrapAddrs, ipfs_cfg.DefaultBootstrapAddresses...)
+		case ":none:", "":
+			continue
+		default:
+			bootstrapAddrs = append(bootstrapAddrs, addr)
+		}
+	}
+
+	return bootstrapAddrs
 }
 
 func (m *Manager) getSwarmAddrs() []string {
