@@ -3494,10 +3494,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    tokenId?: (string|null);
                 }
 
                 class Reply implements IReply {
 
+                    public tokenId: string;
                     public static create(properties?: berty.protocol.v1.AuthServiceCompleteFlow.IReply): berty.protocol.v1.AuthServiceCompleteFlow.Reply;
                     public static encode(message: berty.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;

@@ -466,6 +466,10 @@ AppMetadata is an app defined message, accessible to future group members
 
 ### AuthServiceCompleteFlow.Reply
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+
 <a name="berty.protocol.v1.AuthServiceCompleteFlow.Request"></a>
 
 ### AuthServiceCompleteFlow.Request
