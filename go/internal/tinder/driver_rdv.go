@@ -38,7 +38,7 @@ type rpRecord struct {
 	expire int64
 }
 
-func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID, rng *mrand.Rand) AsyncableDriver {
+func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID, rng *mrand.Rand) UnregisterDiscovery {
 	rp := p2p_rp.NewRendezvousPoint(host, rdvPeer)
 	return &rendezvousDiscovery{
 		logger:    logger.Named("tinder/rdvp"),
@@ -172,107 +172,6 @@ func (c *rendezvousDiscovery) FindPeers(ctx context.Context, ns string, opts ...
 	return chPeer, err
 }
 
-func (c *rendezvousDiscovery) FindPeersAsync(ctx context.Context, chPeer chan<- peer.AddrInfo, ns string, opts ...discovery.Option) error {
-	// Get options
-	var options discovery.Options
-	err := options.Apply(opts...)
-	if err != nil {
-		return err
-	}
-
-	go func() {
-		const maxLimit = 1000
-		limit := options.Limit
-		if limit == 0 || limit > maxLimit {
-			limit = maxLimit
-		}
-
-		// Get cached peers
-		var cache *rpCache
-
-		c.peerCacheMux.RLock()
-		cache, ok := c.peerCache[ns]
-		c.peerCacheMux.RUnlock()
-		if !ok {
-			c.peerCacheMux.Lock()
-			cache, ok = c.peerCache[ns]
-			if !ok {
-				cache = &rpCache{recs: make(map[peer.ID]*rpRecord)}
-				c.peerCache[ns] = cache
-			}
-			c.peerCacheMux.Unlock()
-		}
-
-		cache.mux.Lock()
-		defer cache.mux.Unlock()
-
-		// Remove all expired entries from cache
-		currentTime := time.Now().Unix()
-		newCacheSize := len(cache.recs)
-
-		for p := range cache.recs {
-			rec := cache.recs[p]
-			if rec.expire < currentTime {
-				newCacheSize--
-				delete(cache.recs, p)
-			}
-		}
-
-		cookie := cache.cookie
-
-		// Discover new records if we don't have enough
-		if newCacheSize < limit {
-			// TODO: Should we return error even if we have valid cached results?
-			var regs []p2p_rp.Registration
-			var newCookie []byte
-			if regs, newCookie, err = c.rp.Discover(ctx, ns, limit, cookie); err == nil {
-				for _, reg := range regs {
-					rec := &rpRecord{peer: reg.Peer, expire: int64(reg.Ttl) + currentTime}
-					cache.recs[rec.peer.ID] = rec
-				}
-				cache.cookie = newCookie
-			}
-		}
-
-		// Randomize and fill channel with available records
-		count := len(cache.recs)
-		if limit < count {
-			count = limit
-		}
-
-		// c.logger.Debug("found peers", zap.String("key", ns), zap.Int("count", count))
-
-		// fmt.Printf("rdvp findpeers found [%s]: %d peers found\n", ns, count)
-
-		c.rngMux.Lock()
-		perm := c.rng.Perm(len(cache.recs))[0:count]
-		c.rngMux.Unlock()
-
-		permSet := make(map[int]int)
-		for i, v := range perm {
-			permSet[v] = i
-		}
-
-		sendLst := make([]*peer.AddrInfo, count)
-		iter := 0
-		for k := range cache.recs {
-			if sendIndex, ok := permSet[iter]; ok {
-				sendLst[sendIndex] = &cache.recs[k].peer
-			}
-			iter++
-		}
-
-		for _, send := range sendLst {
-			select {
-			case chPeer <- *send:
-			case <-ctx.Done():
-				return
-			}
-		}
-	}()
-	return nil
-}
-
 func (c *rendezvousDiscovery) Unregister(ctx context.Context, ns string) error {
 	c.peerCacheMux.RLock()
 	cache, ok := c.peerCache[ns]
@@ -284,5 +183,3 @@ func (c *rendezvousDiscovery) Unregister(ctx context.Context, ns string) error {
 	}
 	return c.rp.Unregister(ctx, ns)
 }
-
-func (*rendezvousDiscovery) Name() string { return "rdvp" }

@@ -1,7 +1,6 @@
 package ipfsutil
 
 import (
-	"strings"
 	"sync"
 
 	"github.com/libp2p/go-libp2p-core/event"
@@ -66,7 +65,7 @@ func (pt *PubsubMonitor) EventTracerOption() ps.Option {
 func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 	switch e.GetType() {
 	case ps_pb.TraceEvent_JOIN:
-		topic := strings.TrimPrefix(e.GetJoin().GetTopic(), "floodsub:")
+		topic := e.GetJoin().GetTopic()
 		peer := pt.h.ID()
 		pt.Emit(&EvtPubSubTopic{
 			EventType: TypeEventMonitorPeerJoined,
@@ -75,7 +74,7 @@ func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 		})
 
 	case ps_pb.TraceEvent_LEAVE:
-		topic := strings.TrimPrefix(e.GetLeave().GetTopic(), "floodsub:")
+		topic := e.GetLeave().GetTopic()
 		peer := pt.h.ID()
 		pt.Emit(&EvtPubSubTopic{
 			EventType: TypeEventMonitorPeerLeaved,
@@ -94,7 +93,6 @@ func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 
 		topics := pt.popTopicFromPeer(peerid)
 		for _, topic := range topics {
-			topic = strings.TrimPrefix(topic, "floodsub:")
 			pt.Emit(&EvtPubSubTopic{
 				EventType: TypeEventMonitorPeerLeaved,
 				Topic:     topic,
@@ -112,7 +110,6 @@ func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 			return
 		}
 
-		topic = strings.TrimPrefix(topic, "floodsub:")
 		pt.addTopicToPeer(peerid, topic)
 		pt.Emit(&EvtPubSubTopic{
 			EventType: TypeEventMonitorPeerJoined,

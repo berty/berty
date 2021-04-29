@@ -19,7 +19,8 @@ import (
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/peerstore"
+	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -60,8 +61,11 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
-	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
-	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
+	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, "p2p.tinder-rdvp-driver", true, "if true rdvp driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.UseStaticRelays, "p2p.use-static-relays", true, "if true will use static relays form the config, otherwise it will try to discover relays over the dht")
+	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
@@ -130,8 +134,9 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	mopts := ipfsutil.MobileOptions{
 		IpfsConfigPatch: m.setupIPFSConfig,
-		HostConfigFunc:  m.setupIPFSHost,
-		RoutingOption:   ipfsutil.CustomRoutingOption(p2p_dht.ModeClient, p2p_dht.Concurrency(2)),
+		// HostConfigFunc:    m.setupIPFSHost,
+		RoutingConfigFunc: m.configIPFSRouting,
+		RoutingOption:     ipfsutil.CustomRoutingOption(p2p_dht.ModeClient, p2p_dht.Concurrency(2)),
 		ExtraOpts: map[string]bool{
 			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
 			"pubsub": false,
@@ -358,7 +363,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		case ble.Supported:
 			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
 		default:
-			m.initLogger.Warn("cannot enable BLE on an unsupported platform")
+			logger.Warn("cannot enable BLE on an unsupported platform")
 		}
 		p2popts = append(p2popts, bleOpt)
 	}
@@ -370,7 +375,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 			p2popts = append(p2popts,
 				libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Nearby.Driver)))
 		} else {
-			m.initLogger.Warn("cannot enable Android Nearby on an unsupported platform")
+			logger.Warn("cannot enable Android Nearby on an unsupported platform")
 		}
 	}
 
@@ -382,53 +387,31 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 				libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
 			)
 		} else {
-			m.initLogger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
+			logger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
 		}
 	}
 
-	if m.Node.Protocol.RelayHack {
+	// localdisc driver
+	if !m.Node.Protocol.LocalDiscovery {
+		cfg.Discovery.MDNS.Enabled = false
+	}
+
+	// enable autorelay
+	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+
+	if m.Node.Protocol.UseStaticRelays {
 		// Resolving addresses
-		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
+		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), logger, config.Config.P2P.StaticRelays)
 		if err != nil {
 			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
 		}
 
-		lenPis := len(pis)
-		pickFrom := make([]peer.AddrInfo, lenPis)
-		for lenPis > 0 {
-			lenPis--
-			pickFrom[lenPis] = *pis[lenPis]
+		peers := make([]peer.AddrInfo, len(pis))
+		for i, p := range pis {
+			peers[i] = *p
 		}
 
-		// Selecting 2 random one
-		rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
-		var relays []peer.AddrInfo
-		if len(pickFrom) <= 2 {
-			relays = pickFrom
-		} else {
-			for i := 2; i > 0; i-- {
-				lenPickFrom := len(pickFrom)
-				n := rng.Intn(lenPickFrom)
-				relays = append(relays, pickFrom[n])
-				if n == 0 {
-					pickFrom = pickFrom[1:]
-					continue
-				}
-				if n == lenPickFrom-1 {
-					pickFrom = pickFrom[:n-1]
-					continue
-				}
-				pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
-			}
-		}
-
-		for _, relay := range relays {
-			for _, addr := range relay.Addrs {
-				cfg.Addresses.Announce = append(cfg.Addresses.Announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
-			}
-		}
-
-		p2popts = append(p2popts, libp2p.StaticRelays(relays))
+		p2popts = append(p2popts, libp2p.StaticRelays(peers))
 	}
 
 	// prefill peerstore with known rdvp servers
@@ -441,7 +424,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	return p2popts, nil
 }
 
-func (m *Manager) setupIPFSHost(h host.Host) error {
+func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	logger, err := m.getLogger()
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
@@ -463,56 +446,84 @@ func (m *Manager) setupIPFSHost(h host.Host) error {
 		}
 	}
 
-	var rdvClients []tinder.AsyncableDriver
-	if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
-		drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
-		for i, peer := range rdvpeers {
-			h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-			rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-			disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 
-			// monitor this driver
-			disc, err := tinder.MonitorDriverAsync(logger, h, disc)
-			if err != nil {
-				return errcode.ErrIPFSSetupHost.Wrap(err)
+	// configure tinder drivers
+	var drivers []*tinder.Driver
+
+	// rdvp driver
+	if m.Node.Protocol.TinderRDVPDriver {
+		if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
+			for _, peer := range rdvpeers {
+				h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
+				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+
+				name := fmt.Sprintf("rdvp#%.6s", peer.ID)
+				drivers = append(drivers,
+					tinder.NewDriverFromUnregisterDiscovery(name, udisc, tinder.NoFilter))
 			}
-
-			drivers[i] = disc
 		}
-		rdvClients = append(rdvClients, drivers...)
 	}
 
-	var rdvClient tinder.Driver
-	switch len(rdvClients) {
-	case 0:
-		// FIXME: Check if this isn't called when DisableIPFSNetwork true.
-		return errcode.ErrIPFSSetupHost.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
-	case 1:
-		rdvClient = rdvClients[0]
-	default:
-		rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
+	// dht driver
+	if m.Node.Protocol.TinderDHTDriver {
+		// dht driver
+		drivers = append(drivers,
+			tinder.NewDriverFromRouting("dht", r, nil))
+	}
+
+	// localdisc driver
+	if m.Node.Protocol.LocalDiscovery {
+		localdisc := tinder.NewLocalDiscovery(logger, h, rng)
+		drivers = append(drivers,
+			tinder.NewDriverFromUnregisterDiscovery("localdisc", localdisc, tinder.FilterPrivateAddrs))
 	}
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-	m.Node.Protocol.discovery, err = tinder.NewService(
-		logger,
-		rdvClient,
-		discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serverRng),
-	)
+
+	backoffstrat := discovery.NewExponentialBackoff(
+		m.Node.Protocol.MinBackoff,
+		m.Node.Protocol.MaxBackoff,
+		discovery.FullJitter,
+		time.Second, 5.0, 0, serverRng)
+
+	tinderOpts := &tinder.Opts{
+		Logger:                 logger,
+		AdvertiseResetInterval: time.Minute * 2,
+		FindPeerResetInterval:  time.Minute * 2,
+		AdvertiseGracePeriod:   time.Minute,
+		BackoffStrategy: &tinder.BackoffOpts{
+			StratFactory: backoffstrat,
+		},
+	}
+
+	m.Node.Protocol.discovery, err = tinder.NewService(tinderOpts, h, drivers...)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
+
+	// @FIXME(gfanton): hacky way to to handle close on context done
+	go func() {
+		<-m.getContext().Done()
+		m.Node.Protocol.discovery.Close()
+	}()
 
 	pt, err := ipfsutil.NewPubsubMonitor(logger, h)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
 
-	pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
+	cacheSize := 100
+	dialTimeout := time.Second * 20
+	backoffconnector := func(host host.Host) (*discovery.BackoffConnector, error) {
+		return discovery.NewBackoffConnector(host, cacheSize, dialTimeout, backoffstrat)
+	}
+
+	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
 		pubsub.WithMessageSigning(true),
-		pubsub.WithFloodPublish(true),
-		pubsub.WithDiscovery(m.Node.Protocol.discovery),
+		pubsub.WithDiscovery(m.Node.Protocol.discovery,
+			pubsub.WithDiscoverConnector(backoffconnector)),
 		pubsub.WithPeerExchange(true),
 		pt.EventTracerOption(),
 	)

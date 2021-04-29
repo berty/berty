@@ -2,11 +2,13 @@ package bertyprotocol
 
 import (
 	"context"
+	"strings"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
@@ -117,6 +119,9 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 
 		switch e := evt.(type) {
 		case ipfsutil.EvtPubSubTopic:
+			// trim floodsub topic (if present)
+			e.Topic = strings.TrimPrefix(e.Topic, "floodsub:")
+
 			if topic != "" && topic != e.Topic {
 				continue
 			}
@@ -124,6 +129,10 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 			// handle this event
 			monitorEvent = monitorHandlePubsubEvent(&e, s.host)
 		case tinder.EvtDriverMonitor:
+			// trim floodsub topic (if present)
+			e.Topic = strings.TrimPrefix(e.Topic, "floodsub:")
+
+			s.logger.Debug("got topic", zap.String("ns", e.Topic), zap.String("ns to match", topic))
 			// skip if we are filtering by topic
 			if topic != "" && topic != e.Topic {
 				continue
@@ -146,14 +155,14 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 		}
 
 		// FIXME: @gfanton promised to do something about this part
-		_ = monitorEvent
-		// err := srv.Send(&protocoltypes.MonitorGroup_Reply{
-		// 	GroupPK: req.GetGroupPK(),
-		// 	Event:   monitorEvent,
-		// })
-		// if err != nil {
-		// 	return err
-		// }
+		// _ = monitorEvent
+		err := srv.Send(&protocoltypes.MonitorGroup_Reply{
+			GroupPK: req.GetGroupPK(),
+			Event:   monitorEvent,
+		})
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -195,25 +204,25 @@ func monitorHandleDiscoveryEvent(e *tinder.EvtDriverMonitor, _ host.Host) *proto
 	var m protocoltypes.MonitorGroup_EventMonitor
 
 	switch e.EventType {
-	case tinder.TypeEventMonitorAdvertise:
+	case tinder.TypeEventMonitorAdvertise, tinder.TypeEventMonitorDriverAdvertise:
 		m.Type = protocoltypes.TypeEventMonitorAdvertiseGroup
 		m.AdvertiseGroup = &protocoltypes.MonitorGroup_EventMonitorAdvertiseGroup{}
 
 		m.AdvertiseGroup.Topic = e.Topic
 		m.AdvertiseGroup.PeerID = e.AddrInfo.ID.String()
-		m.AdvertiseGroup.DriverName = e.DriverName
+		m.AdvertiseGroup.DriverName = e.DriverName // empty if e == tinder.TypeEventMonitorAdvertise
 		m.AdvertiseGroup.Maddrs = make([]string, len(e.AddrInfo.Addrs))
 		for i, addr := range e.AddrInfo.Addrs {
 			m.AdvertiseGroup.Maddrs[i] = addr.String()
 		}
 
-	case tinder.TypeEventMonitorFoundPeer:
+	case tinder.TypeEventMonitorFoundPeer, tinder.TypeEventMonitorDriverFoundPeer:
 		m.Type = protocoltypes.TypeEventMonitorPeerFound
 		m.PeerFound = &protocoltypes.MonitorGroup_EventMonitorPeerFound{}
 
 		m.PeerFound.Topic = e.Topic
 		m.PeerFound.PeerID = e.AddrInfo.ID.String()
-		m.PeerFound.DriverName = e.DriverName
+		m.PeerFound.DriverName = e.DriverName // empty if e == tinder.TypeEventMonitorFoundPeer
 		m.PeerFound.Maddrs = make([]string, len(e.AddrInfo.Addrs))
 		for i, addr := range e.AddrInfo.Addrs {
 			m.PeerFound.Maddrs[i] = addr.String()

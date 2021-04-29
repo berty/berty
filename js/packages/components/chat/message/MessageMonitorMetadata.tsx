@@ -24,15 +24,15 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 		case eventMonitorTypes.TypeEventMonitorAdvertiseGroup:
 			const msgAdvertise = `local peer advertised ${me.advertiseGroup?.peerId?.substr(
 				me.advertiseGroup.peerId.length - 10,
-			)} on ${me.advertiseGroup?.driverName}, with ${me.advertiseGroup?.maddrs?.length} maddrs:`
-			monitorPayloadSubtitle = me.advertiseGroup?.maddrs?.map((addr: string) => `--${addr}`)
+			)} on ${me.advertiseGroup?.driverName}, with ${me.advertiseGroup?.maddrs?.length} maddrs`
+			// monitorPayloadSubtitle = me.advertiseGroup?.maddrs?.map((addr: string) => `--${addr}`)  // @NOTE(gfanton): disable this for the moment (too much verbose)
 			monitorPayloadTitle = msgAdvertise
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerFound:
 			monitorPayloadTitle = `new peer found ${me.peerFound?.peerId?.substr(
 				me.peerFound.peerId.length - 10,
 			)} on ${me.peerFound?.driverName}, with ${me.peerFound?.maddrs?.length} maddrs:`
-			monitorPayloadSubtitle = me.peerFound?.maddrs?.map((addr: string) => `--${addr}`)
+			// monitorPayloadSubtitle = me.peerFound?.maddrs?.map((addr: string) => `--${addr}`) // @NOTE(gfanton): disable this for the moment (too much verbose)
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerJoin:
 			if (me.peerJoin?.isSelf) {

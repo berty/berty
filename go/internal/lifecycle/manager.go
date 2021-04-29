@@ -3,62 +3,52 @@ package lifecycle
 import (
 	"context"
 	"sync"
+
+	"berty.tech/berty/v2/go/internal/notify"
 )
 
 type State int
 
 type Manager struct {
-	condState    *sync.Cond
+	notify       *notify.Notify
 	currentState State
 }
 
 func NewManager(initialState State) *Manager {
 	return &Manager{
 		currentState: initialState,
-		condState:    sync.NewCond(&sync.Mutex{}),
+		notify:       notify.New(&sync.Mutex{}),
 	}
 }
 
 // UpdateState update the current state of the manager
 func (m *Manager) UpdateState(state State) {
-	m.condState.L.Lock()
+	m.notify.L.Lock()
 	if m.currentState != state {
 		m.currentState = state
-		m.condState.Broadcast()
+		m.notify.Broadcast()
 	}
-	m.condState.L.Unlock()
+	m.notify.L.Unlock()
 }
 
 // WaitForStateChange waits until the currentState changes from sourceState or ctx expires. A true value is returned in former case and false in latter.
 func (m *Manager) WaitForStateChange(ctx context.Context, sourceState State) bool {
-	m.condState.L.Lock()
-	defer m.condState.L.Unlock()
+	m.notify.L.Lock()
 
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	go func() {
-		<-ctx.Done()
-		m.condState.Broadcast()
-	}()
-
-	for sourceState == m.currentState {
-		select {
-		case <-ctx.Done():
-			return false
-		default:
-			// wait until state has been changed or context has been cancel
-			m.condState.Wait()
-		}
+	ok := true
+	for sourceState == m.currentState && ok {
+		// wait until state has been changed or context has been cancel
+		ok = m.notify.Wait(ctx)
 	}
 
-	return true
+	m.notify.L.Unlock()
+	return ok
 }
 
 // GetCurrentState return the current state of the manager
 func (m *Manager) GetCurrentState() (state State) {
-	m.condState.L.Lock()
+	m.notify.L.Lock()
 	state = m.currentState
-	m.condState.L.Unlock()
+	m.notify.L.Unlock()
 	return
 }
