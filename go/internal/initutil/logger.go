@@ -60,7 +60,7 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		return m.Logging.zapLogger, nil
 	}
 
-	m.Logging.Filters = strings.ReplaceAll(m.Logging.Filters, ":default:", defaultLoggingFilters)
+	m.Logging.Filters = strings.ReplaceAll(m.Logging.Filters, KeywordDefault, defaultLoggingFilters)
 
 	tracerFlush := tracer.InitTracer(m.Logging.Tracer, m.Logging.Service)
 	streams := []logutil.Stream{

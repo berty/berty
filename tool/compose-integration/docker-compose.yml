@@ -57,7 +57,7 @@ services:
       mv /shared/testbot_daemon1.txt.tmp /shared/testbot_daemon1.txt;
       berty daemon
         -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
-        -p2p.local-discovery=false
+        -p2p.mdns=false
         -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
       "
     depends_on:
@@ -78,7 +78,7 @@ services:
       mv /shared/testbot_daemon2.txt.tmp /shared/testbot_daemon2.txt;
       berty daemon
         -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
-        -p2p.local-discovery=false
+        -p2p.mdns=false
         -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
       "
     depends_on:

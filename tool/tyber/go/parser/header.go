@@ -48,7 +48,6 @@ type Header struct {
 					Mode       string `json:"mode,omitempty"`
 					BinaryPath string `json:"binaryPath,omitempty"`
 				} `json:"tor,omitempty"`
-				RelayHack bool `json:"relayHack,omitempty"`
 			}
 			Messenger struct {
 				DisableGroupMonitor  bool   `json:"disableGroupMonitor,omitempty"`
