@@ -59,10 +59,9 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "/ip4/127.0.0.1/tcp/5001", "IPFS API listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
-
 	fs.StringVar(&m.Node.Protocol.Bootstrap, "p2p.bootstrap", ":default:", "ipfs bootstrap node, `:default:` will set ipfs default bootstrap node")
-	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `client`, `server`, `auto`, `autoserver`,") // @TODO(gfanton): add disabled mode
-
+	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `client`, `server`, `auto`, `autoserver`") // @TODO(gfanton): add disabled mode
+	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
@@ -79,7 +78,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.BoolVar(&m.Node.Protocol.RelayHack, "p2p.relay-hack", false, "*temporary flag*; if set, Berty will use relays from the config optimistically")
-
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
 		fmt.Sprintf("equivalent to -p2p.swarm-listeners=%s,CUSTOM", strings.Join(ipfsutil.DefaultSwarmListeners, ",")),
@@ -146,15 +144,20 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	case "autoserver":
 		dhtmode = p2p_dht.ModeAutoServer
 	default:
-		err := fmt.Errorf("invalid dht mode `%s`", dhtmode)
+		err := fmt.Errorf("invalid dht mode")
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
+	dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
+	if m.Node.Protocol.DHTRandomWalk {
+		dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
 	}
 
 	mopts := ipfsutil.MobileOptions{
 		IpfsConfigPatch: m.setupIPFSConfig,
 		// HostConfigFunc:    m.setupIPFSHost,
 		RoutingConfigFunc: m.configIPFSRouting,
-		RoutingOption:     ipfsutil.CustomRoutingOption(p2p_dht.Mode(dhtmode), p2p_dht.Concurrency(2)),
+		RoutingOption:     ipfsutil.CustomRoutingOption(dhtmode, dhtopts...),
 		ExtraOpts: map[string]bool{
 			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
 			"pubsub": false,
@@ -490,11 +493,12 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	}
 
 	// localdisc driver
-	if m.Node.Protocol.LocalDiscovery {
-		localdisc := tinder.NewLocalDiscovery(logger, h, rng)
-		drivers = append(drivers,
-			tinder.NewDriverFromUnregisterDiscovery("localdisc", localdisc, tinder.FilterPrivateAddrs))
-	}
+	// @TODO(gfanton): check if this is useful
+	// if m.Node.Protocol.MDNS {
+	// 	localdisc := tinder.NewLocalDiscovery(logger, h, rng)
+	// 	drivers = append(drivers,
+	// 		tinder.NewDriverFromUnregisterDiscovery("localdisc", localdisc, tinder.FilterPrivateAddrs))
+	// }
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 
