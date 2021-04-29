@@ -45,7 +45,7 @@ func Example() {
 		"--node.display-name=",
 		"--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws",
 		"--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/::/tcp/0",
-		"--p2p.local-discovery=false",
+		"--p2p.mdns=false",
 		"--p2p.webui-listener=:3000",
 		"--store.dir=" + tmpdir,
 	}

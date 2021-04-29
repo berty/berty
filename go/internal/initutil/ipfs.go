@@ -55,27 +55,28 @@ func (m *Manager) SetNBDriver(d proximity.NativeDriver) {
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	m.SetupPresetFlags(fs)
-	fs.StringVar(&m.Node.Protocol.SwarmListeners, "p2p.swarm-listeners", ":default:", "IPFS swarm listeners")
+	fs.StringVar(&m.Node.Protocol.SwarmListeners, "p2p.swarm-listeners", KeywordDefault, "IPFS swarm listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "/ip4/127.0.0.1/tcp/5001", "IPFS API listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
+	fs.StringVar(&m.Node.Protocol.Bootstrap, "p2p.bootstrap", KeywordDefault, "ipfs bootstrap node, `:default:` will set ipfs default bootstrap node")
+	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `client`, `server`, `auto`, `autoserver`") // @TODO(gfanton): add disabled mode
+	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
-	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
+	fs.BoolVar(&m.Node.Protocol.MDNS, "p2p.mdns", true, "if true mdns will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, "p2p.tinder-rdvp-driver", true, "if true rdvp driver will be enable for tinder")
-	fs.StringVar(&m.Node.Protocol.StaticRelays, "p2p.static-relays", ":default:", "list of static relay maddrs, `:default:` will use statics relays from the config")
+	fs.StringVar(&m.Node.Protocol.StaticRelays, "p2p.static-relays", KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
-	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
+	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", KeywordDefault, "list of rendezvous point maddr, `:dev:` will add the default devs servers, `:none:` will disable rdvp")
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
 	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, "p2p.nearby", nb.Supported, "if true Android Nearby will be enabled")
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
-	fs.BoolVar(&m.Node.Protocol.RelayHack, "p2p.relay-hack", false, "*temporary flag*; if set, Berty will use relays from the config optimistically")
-
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
 		fmt.Sprintf("equivalent to -p2p.swarm-listeners=%s,CUSTOM", strings.Join(ipfsutil.DefaultSwarmListeners, ",")),
@@ -104,7 +105,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	defer m.prepareForGetter()()
-
 	return m.getLocalIPFS()
 }
 
@@ -132,11 +132,31 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
+	var dhtmode p2p_dht.ModeOpt
+	switch m.Node.Protocol.DHT {
+	case "client":
+		dhtmode = p2p_dht.ModeClient
+	case "server":
+		dhtmode = p2p_dht.ModeServer
+	case "auto":
+		dhtmode = p2p_dht.ModeAuto
+	case "autoserver":
+		dhtmode = p2p_dht.ModeAutoServer
+	default:
+		err := fmt.Errorf("invalid dht mode")
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
+	dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
+	if m.Node.Protocol.DHTRandomWalk {
+		dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
+	}
+
 	mopts := ipfsutil.MobileOptions{
 		IpfsConfigPatch: m.setupIPFSConfig,
 		// HostConfigFunc:    m.setupIPFSHost,
 		RoutingConfigFunc: m.configIPFSRouting,
-		RoutingOption:     ipfsutil.CustomRoutingOption(p2p_dht.ModeClient, p2p_dht.Concurrency(2)),
+		RoutingOption:     ipfsutil.CustomRoutingOption(dhtmode, dhtopts...),
 		ExtraOpts: map[string]bool{
 			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
 			"pubsub": false,
@@ -272,7 +292,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	cfg.Addresses.Swarm = m.getSwarmAddrs()
-	cfg.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
+	cfg.Bootstrap = m.getBootstrapAddrs()
 
 	if m.Node.Protocol.IPFSAPIListeners != "" {
 		cfg.Addresses.API = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
@@ -392,7 +412,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// localdisc driver
-	if !m.Node.Protocol.LocalDiscovery {
+	if !m.Node.Protocol.MDNS {
 		cfg.Discovery.MDNS.Enabled = false
 	}
 
@@ -472,11 +492,12 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	}
 
 	// localdisc driver
-	if m.Node.Protocol.LocalDiscovery {
-		localdisc := tinder.NewLocalDiscovery(logger, h, rng)
-		drivers = append(drivers,
-			tinder.NewDriverFromUnregisterDiscovery("localdisc", localdisc, tinder.FilterPrivateAddrs))
-	}
+	// @TODO(gfanton): check if this is useful
+	// if m.Node.Protocol.MDNS {
+	// 	localdisc := tinder.NewLocalDiscovery(logger, h, rng)
+	// 	drivers = append(drivers,
+	// 		tinder.NewDriverFromUnregisterDiscovery("localdisc", localdisc, tinder.FilterPrivateAddrs))
+	// }
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 
@@ -554,9 +575,9 @@ func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 	var addrs []string
 	for _, v := range strings.Split(m.Node.Protocol.RdvpMaddrs, ",") {
 		switch v {
-		case ":default:":
+		case KeywordDefault:
 			addrs = append(addrs, defaultMaddrs...)
-		case ":none:":
+		case KeywordNone:
 			return nil, nil
 		default:
 			addrs = append(addrs, v)
@@ -574,9 +595,9 @@ func (m *Manager) getStaticRelays() ([]*peer.AddrInfo, error) {
 	var addrs []string
 	for _, v := range strings.Split(m.Node.Protocol.RdvpMaddrs, ",") {
 		switch v {
-		case ":default:":
+		case KeywordDefault:
 			addrs = append(addrs, defaultMaddrs...)
-		case ":none:", "":
+		case KeywordNone, "":
 			continue
 		default:
 			addrs = append(addrs, v)
@@ -584,6 +605,26 @@ func (m *Manager) getStaticRelays() ([]*peer.AddrInfo, error) {
 	}
 
 	return ipfsutil.ParseAndResolveMaddrs(m.getContext(), m.initLogger, addrs)
+}
+
+func (m *Manager) getBootstrapAddrs() []string {
+	if m.Node.Protocol.Bootstrap == "" {
+		return nil
+	}
+
+	bootstrapAddrs := []string{}
+	for _, addr := range strings.Split(m.Node.Protocol.Bootstrap, ",") {
+		switch addr {
+		case KeywordDefault:
+			bootstrapAddrs = append(bootstrapAddrs, ipfs_cfg.DefaultBootstrapAddresses...)
+		case KeywordNone, "":
+			continue
+		default:
+			bootstrapAddrs = append(bootstrapAddrs, addr)
+		}
+	}
+
+	return bootstrapAddrs
 }
 
 func (m *Manager) getSwarmAddrs() []string {
@@ -594,9 +635,9 @@ func (m *Manager) getSwarmAddrs() []string {
 	swarmAddrs := []string{}
 	for _, addr := range strings.Split(m.Node.Protocol.SwarmListeners, ",") {
 		switch addr {
-		case ":default:":
+		case KeywordDefault:
 			swarmAddrs = append(swarmAddrs, ipfsutil.DefaultSwarmListeners...)
-		case ":none:":
+		case KeywordNone:
 			return nil
 		default:
 			swarmAddrs = append(swarmAddrs, addr)

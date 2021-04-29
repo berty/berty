@@ -78,8 +78,6 @@ Usage of integration:
     	if true Multipeer Connectivity will be enabled (default true)
   -p2p.rdvp string
     	list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp (default ":default:")
-  -p2p.relay-hack
-    	*temporary flag*; if set, Berty will use relays from the config optimistically
   -p2p.swarm-listeners string
     	IPFS swarm listeners (default ":default:")
   -p2p.webui-listener string

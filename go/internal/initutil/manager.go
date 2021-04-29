@@ -37,6 +37,11 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
+const (
+	KeywordDefault string = ":default:"
+	KeywordNone    string = ":none:"
+)
+
 type Manager struct {
 	Logging struct {
 		Format      string `json:"Format,omitempty"`
@@ -73,8 +78,11 @@ type Manager struct {
 			IPFSAPIListeners  string `json:"IPFSAPIListeners,omitempty"`
 			IPFSWebUIListener string `json:"IPFSWebUIListener,omitempty"`
 			Announce          string `json:"Announce,omitempty"`
+			Bootstrap         string `json:"Bootstrap,omitempty"`
+			DHT               string `json:"DHT,omitempty"`
+			DHTRandomWalk     bool   `json:"DHTRandomWalk,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
-			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
+			MDNS              bool   `json:"LocalDiscovery,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
 			StaticRelays      string `json:"StaticRelays,omitempty"`
@@ -98,8 +106,6 @@ type Manager struct {
 				Mode       string `json:"Mode,omitempty"`
 				BinaryPath string `json:"BinaryPath,omitempty"`
 			} `json:"Tor,omitempty"`
-			// FIXME: Remove this option, this is a temporary fix
-			RelayHack bool `json:"RelayHack,omitempty"`
 
 			// internal
 			needAuth          bool
