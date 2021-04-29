@@ -223,9 +223,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 					<View
 						key={url + sentDate}
 						style={{
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							alignItems: 'center',
+							alignItems: 'flex-end',
 							marginTop: 10,
 						}}
 					>
@@ -250,7 +248,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 							</Text>
 						</Hyperlink>
 
-						<Text style={{ fontSize: 12 }}>{timeFormat.fmtTimestamp3(sentDate)}</Text>
+						<Text style={{ fontSize: 12, marginTop: 8 }}>{timeFormat.fmtTimestamp3(sentDate)}</Text>
 					</View>
 				))}
 			</View>
