@@ -93,7 +93,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
 	const navigation = useNavigation()
-	const memberLength = Object.values(members).length + 1
+	const memberLength = Object.values(members).length
 	const memberText = memberLength < 2 ? 'member' : 'members'
 	const { t } = useTranslation()
 	const accountMember = Object.values(members).find((m) => m?.isMe)

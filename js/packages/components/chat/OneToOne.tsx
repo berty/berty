@@ -165,76 +165,86 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 
 	return (
 		<ReplyReactionProvider>
-			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }) => (
-				<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
-					<SwipeNavRecognizer
-						onSwipeLeft={() =>
-							isSwipe &&
-							dispatch(
-								CommonActions.navigate({
-									name: Routes.Chat.OneToOneSettings,
-									params: { convId: params?.convId },
-								}),
-							)
-						}
-					>
-						<KeyboardAvoidingView
-							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-							style={[flex.tiny, { justifyContent: 'flex-start' }]}
-							bottomFixedViewPadding={20}
+			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }) => {
+				const onRemoveEmojiBoard = () => {
+					setActivePopoverCid(activeEmojiKeyboardCid)
+					setActiveEmojiKeyboardCid(null)
+				}
+				return (
+					<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
+						<SwipeNavRecognizer
+							onSwipeLeft={() =>
+								isSwipe &&
+								dispatch(
+									CommonActions.navigate({
+										name: Routes.Chat.OneToOneSettings,
+										params: { convId: params?.convId },
+									}),
+								)
+							}
 						>
-							<MessageList
-								id={params?.convId}
-								scrollToMessage={params?.scrollToMessage || '0'}
-								{...{ setStickyDate, setShowStickyDate }}
-							/>
+							<KeyboardAvoidingView
+								behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+								style={[flex.tiny, { justifyContent: 'flex-start' }]}
+								bottomFixedViewPadding={20}
+							>
+								<MessageList
+									id={params?.convId}
+									scrollToMessage={params?.scrollToMessage || '0'}
+									{...{ setStickyDate, setShowStickyDate }}
+								/>
 
-							<ChatFooter
-								convPk={params?.convId}
-								disabled={isFooterDisable}
-								placeholder={placeholder}
-								setSwipe={setSwipe}
-							/>
+								<ChatFooter
+									convPk={params?.convId}
+									disabled={isFooterDisable}
+									placeholder={placeholder}
+									setSwipe={setSwipe}
+								/>
 
-							<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
-						</KeyboardAvoidingView>
-					</SwipeNavRecognizer>
-					{!!activeEmojiKeyboardCid && (
-						<EmojiBoard
-							showBoard={true}
-							onClick={(emoji) => {
-								ctx.client
-									?.interact({
-										conversationPublicKey: conv?.publicKey,
-										type: beapi.messenger.AppMessage.Type.TypeUserReaction,
-										payload: beapi.messenger.AppMessage.UserReaction.encode({
-											emoji: `:${emoji.name}:`,
-											state: true,
-										}).finish(),
-										targetCid: activeEmojiKeyboardCid,
-									})
-									.then(() => {
-										ctx.playSound('messageSent')
-										setActivePopoverCid(null)
-										setActiveEmojiKeyboardCid(null)
-									})
-									.catch((e) => {
-										console.warn('e sending message:', e)
-									})
-							}}
-							onRemove={() => {
-								setActivePopoverCid(activeEmojiKeyboardCid)
-								setActiveEmojiKeyboardCid(null)
-							}}
-							containerStyle={{
-								position: 'absolute',
-								bottom: 0,
-								paddingBottom: insets.bottom,
-							}}
-						/>
-					)}
-				</View>
-			)}
+								<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
+							</KeyboardAvoidingView>
+						</SwipeNavRecognizer>
+						{!!activeEmojiKeyboardCid && (
+							<View style={StyleSheet.absoluteFill}>
+								<TouchableOpacity
+									style={[StyleSheet.absoluteFill, { flex: 1 }]}
+									activeOpacity={0.9}
+									onPress={onRemoveEmojiBoard}
+								/>
+								<EmojiBoard
+									showBoard={true}
+									onClick={(emoji) => {
+										ctx.client
+											?.interact({
+												conversationPublicKey: conv?.publicKey,
+												type: beapi.messenger.AppMessage.Type.TypeUserReaction,
+												payload: beapi.messenger.AppMessage.UserReaction.encode({
+													emoji: `:${emoji.name}:`,
+													state: true,
+												}).finish(),
+												targetCid: activeEmojiKeyboardCid,
+											})
+											.then(() => {
+												ctx.playSound('messageSent')
+												setActivePopoverCid(null)
+												setActiveEmojiKeyboardCid(null)
+											})
+											.catch((e) => {
+												console.warn('e sending message:', e)
+											})
+									}}
+									onRemove={onRemoveEmojiBoard}
+									containerStyle={{
+										position: 'absolute',
+										bottom: 0,
+										paddingBottom: insets.bottom,
+									}}
+								/>
+							</View>
+						)}
+					</View>
+				)
+			}}
 		</ReplyReactionProvider>
 	)
 }
