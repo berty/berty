@@ -116,7 +116,7 @@ func (m *Manager) applyPreset() error {
 		// FIXME: raise an error if tor is not available on the node
 
 		// Disable proximity communications
-		m.Node.Protocol.LocalDiscovery = false
+		m.Node.Protocol.MDNS = false
 		m.Node.Protocol.MultipeerConnectivity = false
 		m.Node.Protocol.Ble.Enable = false
 		m.Node.Protocol.Nearby.Enable = false

@@ -77,7 +77,7 @@ type Manager struct {
 			DHT               string `json:"DHT,omitempty"`
 			DHTRandomWalk     bool   `json:"DHTRandomWalk,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
-			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
+			MDNS              bool   `json:"LocalDiscovery,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
 			UseStaticRelays   bool   `json:"UseStaticRelays,omitempty"`

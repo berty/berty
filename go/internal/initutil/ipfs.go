@@ -63,7 +63,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `client`, `server`, `auto`, `autoserver`") // @TODO(gfanton): add disabled mode
 	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
-	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
+	fs.BoolVar(&m.Node.Protocol.MDNS, "p2p.mdns", true, "if true mdns will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, "p2p.tinder-rdvp-driver", true, "if true rdvp driver will be enable for tinder")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, "p2p.static-relays", ":default:", "list of static relay maddrs, `:default:` will use statics relays from the config")
@@ -413,7 +413,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// localdisc driver
-	if !m.Node.Protocol.LocalDiscovery {
+	if !m.Node.Protocol.MDNS {
 		cfg.Discovery.MDNS.Enabled = false
 	}
 
