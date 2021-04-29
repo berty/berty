@@ -24,7 +24,7 @@ func NewRdvpConstructorFromStr(addrs ...string) func(context.Context, *zap.Logge
 	return func(ctx context.Context, log *zap.Logger, h host.Host) (Provider, error) {
 		var pis []peer.AddrInfo
 		{
-			maddrs, err := ipfsutil.ParseAndResolveRdvpMaddrs(ctx, log, addrs)
+			maddrs, err := ipfsutil.ParseAndResolveMaddrs(ctx, log, addrs)
 			if err != nil {
 				return nil, err
 			}

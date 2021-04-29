@@ -77,7 +77,7 @@ type Manager struct {
 			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
-			UseStaticRelays   bool   `json:"UseStaticRelays,omitempty"`
+			StaticRelays      string `json:"StaticRelays,omitempty"`
 			Ble               struct {
 				Enable bool                   `json:"Enable,omitempty"`
 				Driver proximity.NativeDriver `json:"Driver,omitempty"`
