@@ -70,6 +70,7 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		mt.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
 		mt.AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, false},
 		mt.AppMessage_TypeUserReaction:    {h.handleAppMessageUserReaction, false},
+		mt.AppMessage_TypeSetGroupInfo:    {h.handleAppMessageSetGroupInfo, false},
 	}
 
 	return h
@@ -1200,4 +1201,51 @@ func (h *eventHandler) indexMessage(tx *dbWrapper, id string, am *mt.AppMessage)
 	}
 
 	return nil
+}
+
+func (h *eventHandler) handleAppMessageSetGroupInfo(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	payload := amPayload.(*mt.AppMessage_SetGroupInfo)
+
+	if i.GetConversation().GetType() == mt.Conversation_MultiMemberType {
+		cpk := i.GetConversationPublicKey()
+		c, err := tx.getConversationByPK(cpk)
+		if err != nil {
+			return nil, false, err
+		}
+
+		if c.GetInfoDate() > i.GetSentDate() {
+			return i, false, nil
+		}
+		h.logger.Debug("interesting conversation SetGroupInfo")
+
+		if payload.GetDisplayName() != "" {
+			c.DisplayName = payload.GetDisplayName()
+		}
+		if payload.GetAvatarCid() != "" {
+			c.AvatarCID = payload.GetAvatarCid()
+		}
+		c.InfoDate = i.GetSentDate()
+
+		_, err = tx.updateConversation(mt.Conversation{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
+		if err != nil {
+			return nil, false, err
+		}
+
+		c, err = tx.getConversationByPK(cpk)
+		if err != nil {
+			return nil, false, err
+		}
+
+		if h.svc != nil {
+			err := h.svc.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: c}, false)
+			if err != nil {
+				return nil, false, err
+			}
+			h.logger.Debug("dispatched conversation update", zap.String("name", c.GetDisplayName()), zap.String("conv", i.ConversationPublicKey))
+		}
+
+		return i, false, nil
+	}
+
+	return nil, false, errcode.ErrInternal
 }

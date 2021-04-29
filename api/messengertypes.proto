@@ -500,6 +500,8 @@ message Conversation {
   string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
   Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
   repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
+  // info_date is used when SetGroupInfo is called
+  int64 info_date = 18;
 
   enum Type {
     Undefined = 0;

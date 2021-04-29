@@ -1870,6 +1870,11 @@
           "items": {
             "$ref": "#/definitions/v1ConversationReplicationInfo"
           }
+        },
+        "info_date": {
+          "type": "string",
+          "format": "int64",
+          "title": "info_date is used when SetGroupInfo was called"
         }
       }
     },

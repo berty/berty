@@ -461,6 +461,7 @@ to test more false-positive guesses.
 | reply_options_cid | [string](#string) |  |  |
 | reply_options | [Interaction](#berty.messenger.v1.Interaction) |  |  |
 | replication_info | [ConversationReplicationInfo](#berty.messenger.v1.ConversationReplicationInfo) | repeated |  |
+| info_date | [int64](#int64) |  | info_date is used when SetGroupInfo was called |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 

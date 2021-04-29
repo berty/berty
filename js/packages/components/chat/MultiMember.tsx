@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, Platform, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, Platform, TextInput, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { BlurView } from '@react-native-community/blur'
 import { CommonActions } from '@react-navigation/native'
@@ -39,12 +39,24 @@ const HeaderMultiMember: React.FC<{
 	stickyDate?: number
 	showStickyDate?: boolean
 }> = ({ id, stickyDate, showStickyDate }) => {
+	const [isEdit, setIsEdit] = useState(false)
+	const ctx = useMsgrContext()
 	const { navigate, goBack } = useNavigation()
 	const insets = useSafeAreaInsets()
-	const [{ row, padding, flex, text, color }, { scaleSize }] = useStyles()
+	const [{ row, padding, flex, text, color, border }, { scaleSize }] = useStyles()
 	const conversation = useConversation(id)
+	const [editValue, setEditValue] = useState(conversation?.displayName || '')
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
 
+	const editDisplayName = async () => {
+		const buf = beapi.messenger.AppMessage.SetGroupInfo.encode({ displayName: editValue }).finish()
+		await ctx.client?.interact({
+			conversationPublicKey: conversation?.publicKey,
+			type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
+			payload: buf,
+		})
+		setIsEdit(false)
+	}
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
 			<BlurView
@@ -72,14 +84,55 @@ const HeaderMultiMember: React.FC<{
 						fill={color.black}
 					/>
 				</TouchableOpacity>
-				<View style={[flex.large]}>
-					<Text
-						numberOfLines={1}
-						style={[text.align.center, text.bold.medium, text.size.scale(20)]}
+				{isEdit ? (
+					<View
+						style={[
+							flex.medium,
+							border.radius.small,
+							{
+								flexDirection: 'row',
+								alignItems: 'center',
+								backgroundColor: color.light.grey,
+							},
+						]}
 					>
-						{conversation?.displayName || ''}
-					</Text>
-				</View>
+						<View style={[flex.medium]} />
+						<TextInput
+							style={[
+								flex.large,
+								text.color.black,
+								text.align.center,
+								text.bold.medium,
+								text.size.scale(20),
+								padding.vertical.small,
+							]}
+							autoFocus
+							onSubmitEditing={editDisplayName}
+							onBlur={() => {
+								setIsEdit(false)
+								setEditValue(conversation?.displayName || '')
+							}}
+							value={editValue}
+							onChange={({ nativeEvent }) => setEditValue(nativeEvent.text)}
+						/>
+						<TouchableOpacity
+							style={[flex.medium, { alignItems: 'flex-end' }]}
+							onPress={editDisplayName}
+						>
+							<Icon name='checkmark-outline' height={25} width={25} fill={color.grey} />
+						</TouchableOpacity>
+					</View>
+				) : (
+					<TouchableOpacity style={[flex.large]} onLongPress={() => setIsEdit(true)}>
+						<Text
+							numberOfLines={1}
+							style={[text.align.center, text.bold.medium, text.size.scale(20)]}
+						>
+							{conversation?.displayName || ''}
+						</Text>
+					</TouchableOpacity>
+				)}
+
 				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
 					<TouchableOpacity
 						style={[flex.small, row.right]}

@@ -6498,6 +6498,7 @@ export namespace berty {
                 replyOptionsCid?: (string|null);
                 replyOptions?: (berty.messenger.v1.IInteraction|null);
                 replicationInfo?: (berty.messenger.v1.IConversationReplicationInfo[]|null);
+                infoDate?: (Long|null);
             }
 
             class Conversation implements IConversation {
@@ -6519,6 +6520,7 @@ export namespace berty {
                 public replyOptionsCid: string;
                 public replyOptions?: (berty.messenger.v1.IInteraction|null);
                 public replicationInfo: berty.messenger.v1.IConversationReplicationInfo[];
+                public infoDate: Long;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;

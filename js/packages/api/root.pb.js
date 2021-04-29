@@ -4518,6 +4518,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
                     }
+                  },
+                  infoDate: {
+                    type: "int64",
+                    id: 18
                   }
                 },
                 nested: {
