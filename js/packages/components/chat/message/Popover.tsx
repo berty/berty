@@ -1,8 +1,8 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 
 import { Icon } from '@ui-kitten/components'
-import Emoji from 'react-native-emoji'
+import { getEmojiByName } from '@berty-tech/components/utils'
 
 const emojis = [':+1:', ':heart:', ':ok_hand:', ':sunglasses:', ':joy:']
 
@@ -34,12 +34,13 @@ const Popover: React.FC<{
 				onPress={onReply}
 			/>
 			{emojis.map((item) => (
-				<Emoji
+				<Text
 					key={item}
-					name={item}
 					style={{ marginHorizontal: 4, fontSize: 26 }}
 					onPress={() => onSelectEmoji(item)}
-				/>
+				>
+					{getEmojiByName(item)}
+				</Text>
 			))}
 			<Icon
 				name='more-horizontal'

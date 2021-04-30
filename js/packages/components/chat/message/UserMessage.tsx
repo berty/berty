@@ -6,13 +6,12 @@ import Color from 'color'
 import { Text, Icon } from '@ui-kitten/components'
 import Popover from 'react-native-popover-view'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
-import Emoji from 'react-native-emoji'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { useLastConvInteraction, useContact, useMsgrContext } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
+import { getEmojiByName, getMediaTypeFromMedias } from '@berty-tech/components/utils'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
@@ -569,7 +568,7 @@ export const UserMessage: React.FC<{
 								]}
 							>
 								{inte.reactions.map(({ emoji }) => (
-									<Emoji key={emoji} name={emoji} style={{ marginHorizontal: 2, fontSize: 10 }} />
+									<Text style={{ marginHorizontal: 2, fontSize: 10 }}>{getEmojiByName(emoji)}</Text>
 								))}
 							</View>
 						)}
