@@ -118,7 +118,7 @@ require (
 	moul.io/progress v1.4.0
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
-	moul.io/u v1.21.0
+	moul.io/u v1.22.0
 	moul.io/zapconfig v1.3.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.0.3
