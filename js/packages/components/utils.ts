@@ -2,6 +2,9 @@ import { Buffer } from 'buffer'
 import { WelshProtocolServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import beapi from '@berty-tech/api'
 
+import emojiSource from 'emoji-datasource'
+import 'string.fromcodepoint'
+
 let cache: { cid: string; prom: Promise<string> }[] = []
 
 export const base64ToURLBase64 = (str: string) =>
@@ -63,4 +66,15 @@ export const getMediaTypeFromMedias = (
 	}
 
 	return type
+}
+
+export const toEmoji = (code: any) => {
+	return String.fromCodePoint(...code.split('-').map((u: string) => '0x' + u))
+}
+
+export const getEmojiByName = (name: string) => {
+	const requiredSource = emojiSource.find(
+		(item: any) => item.short_name === name.replaceAll(':', ''),
+	)
+	return toEmoji(requiredSource?.unified)
 }

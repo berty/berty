@@ -29,6 +29,7 @@
 		"@ui-kitten/eva-icons": "^5.0.0",
 		"buffer": "^6.0.3",
 		"case": "^1.6.3",
+		"emoji-datasource": "^6.0.1",
 		"faker": "^5.2.0",
 		"google-palette": "^1.1.0",
 		"google-protobuf": "^3.14.0",
@@ -51,7 +52,6 @@
 		"react-native-camera": "^3.42.0",
 		"react-native-document-picker": "^4.1.1",
 		"react-native-elements": "^3.3.2",
-		"react-native-emoji": "^1.8.0",
 		"react-native-emoji-board": "^1.2.1",
 		"react-native-exception-handler": "^2.10.9",
 		"react-native-flags": "^1.0.0",
@@ -80,6 +80,7 @@
 		"react-native-webview": "^11.2.1",
 		"rn-fetch-blob": "^0.12.0",
 		"sha3": "^2.1.4",
+		"string.fromcodepoint": "^1.0.0",
 		"tlds": "^1.217.0"
 	},
 	"devDependencies": {
