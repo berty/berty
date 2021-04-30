@@ -88,6 +88,8 @@ export const DropDownPicker: React.FC<{
 						maxHeight: animateHeight,
 					},
 				]}
+				nestedScrollEnabled
+				showsVerticalScrollIndicator={false}
 			>
 				{items.map((item, key) => (
 					<TouchableOpacity
