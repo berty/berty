@@ -16,7 +16,9 @@ import { pbDateToNum, timeFormat } from '../../helpers'
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
 
-const linkify_conf = linkify().tlds(tlds, true)
+const additionalTlds = ['crypto']
+
+const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
 
 const useStylesMessage = () => {
 	const [{ text, padding }] = useStyles()
