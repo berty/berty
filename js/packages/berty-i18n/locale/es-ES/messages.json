@@ -123,9 +123,9 @@
       },
       "full-anon": {
         "title": "Modo anónimo completo",
-        "desc": "",
+        "desc": "Esta configuración se basa en preajustes radicales que proporcionan parámetros de redes extremadamente cuidadosas:",
         "no-ip": "Sin ip",
-        "no-mc": "",
+        "no-mc": "No mc",
         "tor-only": "Solo Tor"
       },
       "save": "GUARDAR",
