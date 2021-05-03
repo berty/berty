@@ -1,49 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
 	View,
 	ScrollView,
 	TouchableOpacity,
-	TextInput,
 	Text as TextNative,
 	TouchableWithoutFeedback,
 	StatusBar,
 } from 'react-native'
-import { Layout, Text, Icon, CheckBox } from '@ui-kitten/components'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useContactList, useAccountContactSearchResults } from '@berty-tech/store/hooks'
-
-import beapi from '@berty-tech/api'
+import { useContactList } from '@berty-tech/store/hooks'
+import { ContactPicker } from '@berty-tech/components/shared-components'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
 import { useTranslation } from 'react-i18next'
-
-// Styles
-const useStylesCreateGroup = () => {
-	const [{ border }] = useStyles()
-	return {
-		separateBar: [border.scale(0.6), border.color.light.grey], // opacity
-	}
-}
-
-// Type
-type AddMembersItemProps = {
-	separateBar?: boolean
-	contact: any
-	added: boolean
-	onSetMember: (contact: any) => void
-	onRemoveMember: (id: string) => void
-}
-
-type AddMembersProps = {
-	onSetMember: (contact: any) => void
-	onRemoveMember: (id: string) => void
-	members: any[]
-}
 
 export const Header: React.FC<{
 	title: string
@@ -118,116 +93,11 @@ export const Header: React.FC<{
 	)
 }
 
-const AddMembersItem: React.FC<AddMembersItemProps> = ({
-	onSetMember,
-	onRemoveMember,
-	contact,
-	added,
-	separateBar = true,
-}) => {
-	const [{ row, margin, padding }, { scaleSize }] = useStyles()
-	const _styles = useStylesCreateGroup()
-	return (
-		<View>
-			<TouchableOpacity
-				onPress={() => {
-					if (added) {
-						onRemoveMember(contact.publicKey)
-					} else {
-						onSetMember(contact)
-					}
-				}}
-				style={[row.fill, padding.right.small]}
-			>
-				<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
-					<ContactAvatar size={50 * scaleSize} publicKey={contact.publicKey} />
-					<Text numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
-						{contact.displayName}
-					</Text>
-				</View>
-				<View style={[row.item.justify]}>
-					<CheckBox
-						checked={added}
-						onChange={(isChecked: any) => {
-							if (isChecked) {
-								onSetMember(contact)
-							} else {
-								onRemoveMember(contact.publicKey)
-							}
-						}}
-					/>
-				</View>
-			</TouchableOpacity>
-			{separateBar && <View style={[_styles.separateBar]} />}
-		</View>
-	)
-}
-
-const AddMembers: React.FC<AddMembersProps> = ({ onSetMember, onRemoveMember, members }) => {
-	const [{ padding, background, row, margin, border }, { scaleHeight, scaleSize }] = useStyles()
-	const [searchText, setSearchText] = useState('')
-	const searchContacts = useAccountContactSearchResults(searchText)
-	const accountContacts = useContactList()
-	const { t }: { t: any } = useTranslation()
-	let contacts = searchText.length ? searchContacts : accountContacts
-	contacts = contacts.filter(
-		(contact: any) => contact.state === beapi.messenger.Contact.State.Accepted,
-	)
-
-	return (
-		<View style={[padding.horizontal.large, padding.top.small, background.white, { flex: 1 }]}>
-			<View
-				style={[
-					padding.small,
-					row.left,
-					border.radius.medium,
-					{ backgroundColor: '#F7F8FF', alignItems: 'center' },
-				]}
-			>
-				<Icon
-					name='search-outline'
-					width={30 * scaleHeight}
-					height={30 * scaleHeight}
-					fill='#AFB1C0'
-					style={row.item.justify}
-				/>
-				<TextInput
-					style={[
-						margin.left.small,
-						{
-							color: '#AFB1C0',
-							paddingVertical: 8 * scaleHeight,
-							flex: 1,
-						},
-					]}
-					placeholder={t('main.home.create-group.search-placeholder')}
-					placeholderTextColor='#AFB1C090'
-					onChangeText={setSearchText}
-					autoCorrect={false}
-				/>
-			</View>
-
-			<ScrollView
-				contentContainerStyle={[padding.top.medium, { paddingBottom: 75 * scaleSize }]}
-				style={[margin.top.small, { flex: 1 }]}
-				showsVerticalScrollIndicator={false}
-			>
-				{contacts.map((contact, index) => (
-					<AddMembersItem
-						key={contact.publicKey}
-						onSetMember={onSetMember}
-						onRemoveMember={onRemoveMember}
-						added={!!members.find((member) => member.publicKey === contact.publicKey)}
-						contact={contact}
-						separateBar={index < contacts.length - 1}
-					/>
-				))}
-			</ScrollView>
-		</View>
-	)
-}
-
-const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, onRemove }) => {
+const MemberItem: React.FC<{
+	member: any
+	onRemove: () => void
+	canRemove: boolean | undefined
+}> = ({ member, onRemove, canRemove }) => {
 	const [
 		{ padding, column, text, color, row, maxWidth, border, background },
 		{ scaleSize },
@@ -250,30 +120,33 @@ const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, o
 					{member.displayName}
 				</TextNative>
 			</View>
-			<TouchableOpacity
-				style={[
-					border.shadow.medium,
-					border.radius.medium,
-					background.white,
-					column.justify,
-					{
-						height: 25 * scaleSize,
-						width: 25 * scaleSize,
-						position: 'absolute',
-						top: 5 * scaleSize,
-						right: 9 * scaleSize,
-					},
-				]}
-				onPress={onRemove}
-			>
-				<Icon
-					name='close-outline'
-					width={20 * scaleSize}
-					height={20 * scaleSize}
-					fill={color.red}
-					style={row.item.justify}
-				/>
-			</TouchableOpacity>
+			{canRemove === undefined ||
+				(canRemove === true && (
+					<TouchableOpacity
+						style={[
+							border.shadow.medium,
+							border.radius.medium,
+							background.white,
+							column.justify,
+							{
+								height: 25 * scaleSize,
+								width: 25 * scaleSize,
+								position: 'absolute',
+								top: 5 * scaleSize,
+								right: 9 * scaleSize,
+							},
+						]}
+						onPress={onRemove}
+					>
+						<Icon
+							name='close-outline'
+							width={20 * scaleSize}
+							height={20 * scaleSize}
+							fill={color.red}
+							style={row.item.justify}
+						/>
+					</TouchableOpacity>
+				))}
 		</View>
 	)
 }
@@ -281,7 +154,8 @@ const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, o
 export const MemberList: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
-}> = ({ members, onRemoveMember }) => {
+	initialMembers?: any[]
+}> = ({ members, onRemoveMember, initialMembers = [] }) => {
 	const [{ padding }] = useStyles()
 
 	return (
@@ -296,6 +170,13 @@ export const MemberList: React.FC<{
 						key={member.publicKey}
 						member={member}
 						onRemove={() => onRemoveMember(member.publicKey)}
+						canRemove={
+							initialMembers
+								? !initialMembers.find(
+										(initialMember) => initialMember.publicKey === member.publicKey,
+								  )
+								: undefined
+						}
 					/>
 				))}
 			</ScrollView>
@@ -378,6 +259,7 @@ export const CreateGroupAddMembers: React.FC<{
 	const [{ flex, background, margin, color }, { scaleHeight }] = useStyles()
 	const navigation = useNavigation()
 	const { t }: { t: any } = useTranslation()
+	const accountContacts = useContactList()
 
 	return (
 		<Layout style={[flex.tiny]}>
@@ -394,10 +276,11 @@ export const CreateGroupAddMembers: React.FC<{
 							first
 							style={[margin.bottom.scale(-1)]}
 						/>
-						<AddMembers
+						<ContactPicker
 							members={members}
 							onSetMember={onSetMember}
 							onRemoveMember={onRemoveMember}
+							accountContacts={accountContacts}
 						/>
 					</View>
 				</View>

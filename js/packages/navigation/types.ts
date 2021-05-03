@@ -27,6 +27,7 @@ export namespace ScreenProps {
 		export type OneToOneSettings = RouteProps<{ convId: string }>
 		export type ContactSettings = RouteProps<{ contactId: string }>
 		export type MultiMemberSettings = RouteProps<{ convId: string }>
+		export type MultiMemberSettingsAddMembers = RouteProps<{}>
 		export type ReplicateGroupSettings = RouteProps<{ convId: string }>
 		export type MultiMemberQR = RouteProps<{ convId: string }>
 		export type SharedMedias = RouteProps<{}>
@@ -88,6 +89,7 @@ export namespace Routes {
 		OneToOneSettings = 'Chat.OneToOneSettings',
 		ContactSettings = 'Chat.ContactSettings',
 		MultiMemberSettings = 'Group.MultiMemberSettings',
+		MultiMemberSettingsAddMembers = 'Group.MultiMemberSettingsAddMembers',
 		MultiMemberQR = 'Chat.MultiMemberQR',
 		ReplicateGroupSettings = 'Chat.ReplicateGroupSettings',
 		SharedMedias = 'Chat.SharedMedias',

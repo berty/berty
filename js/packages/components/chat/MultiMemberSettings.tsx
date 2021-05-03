@@ -245,7 +245,9 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				name={t('chat.multi-member-settings.add-member-button')}
 				icon='user-plus'
 				iconPack='custom'
-				disabled
+				onPress={() =>
+					navigation.navigate.chat.multiMemberSettingsAddMembers({ convPK: publicKey })
+				}
 			/>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.invite-button')}
