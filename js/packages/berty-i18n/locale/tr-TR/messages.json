@@ -433,6 +433,11 @@
       "erase-button": "Konuşmayı sil",
       "leave-button": "Gruptan çık"
     },
+    "add-members": {
+      "members": "Üyeler",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Grubu"
     },
