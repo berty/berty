@@ -433,6 +433,11 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "add-members": {
+      "members": "Člani",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
