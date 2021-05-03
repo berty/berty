@@ -77,6 +77,7 @@ func runMain(args []string) error {
 				exportCommand(),
 				omnisearchCommand(),
 				remoteLogsCommand(),
+				serviceKeyCommand(),
 			},
 		}
 
