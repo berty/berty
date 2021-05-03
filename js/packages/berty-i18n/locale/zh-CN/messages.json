@@ -433,6 +433,11 @@
       "erase-button": "清除对话",
       "leave-button": "离开群组"
     },
+    "add-members": {
+      "members": "成员",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "二维码组"
     },
