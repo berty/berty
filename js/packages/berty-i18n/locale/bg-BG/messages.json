@@ -433,6 +433,11 @@
       "erase-button": "Изтрии разговора",
       "leave-button": "Напусни групата"
     },
+    "add-members": {
+      "members": "Участници",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR код на групата"
     },
