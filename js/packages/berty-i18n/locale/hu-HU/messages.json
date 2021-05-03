@@ -433,6 +433,11 @@
       "erase-button": "Beszélgetés törlése",
       "leave-button": "Csoport elhagyása"
     },
+    "add-members": {
+      "members": "Tagok",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Csoport"
     },
