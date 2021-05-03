@@ -433,6 +433,11 @@
       "erase-button": "Limpar conversa",
       "leave-button": "Sair do grupo"
     },
+    "add-members": {
+      "members": "Membros",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "Grupo QR"
     },
