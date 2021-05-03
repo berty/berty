@@ -433,6 +433,11 @@
       "erase-button": "Radera konversation",
       "leave-button": "Lämna grupp"
     },
+    "add-members": {
+      "members": "Medlemmar",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Grupp"
     },
