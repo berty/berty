@@ -200,6 +200,7 @@ export const ChatFooter: React.FC<{
 				})
 				.then(() => {
 					setMessage('')
+					setInputHeight(35)
 					setMediaCids([])
 					ctx.playSound('messageSent')
 					setActiveReplyInte()
@@ -425,16 +426,13 @@ export const ChatFooter: React.FC<{
 						<Animated.View
 							style={[
 								border.radius.medium,
-
 								{
-									alignSelf: 'flex-end',
 									backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
 									marginRight: aMaxWidth,
 									right: aFixLeft,
 									marginLeft: 9 * scaleSize,
 									zIndex: 100,
 									elevation: 100,
-
 									flex: 1,
 								},
 							]}
@@ -477,8 +475,6 @@ export const ChatFooter: React.FC<{
 										{
 											height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
 											fontFamily: 'Open Sans',
-											marginTop: 3 * scaleSize,
-											fontSize: 15 * scaleSize,
 											paddingRight: 12 * scaleSize,
 										},
 									]}

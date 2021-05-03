@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, ActivityIndicator } from 'react-native'
+import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -132,7 +132,7 @@ export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ ro
 	const { contactId } = route.params
 	const { goBack } = useNavigation()
 	const contact: any = (useContacts() as any)[contactId] || null
-	const [{ background, flex, padding }] = useStyles()
+	const [{ background, flex, padding, color }] = useStyles()
 	if (!contact) {
 		goBack()
 		return (
@@ -144,17 +144,22 @@ export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ ro
 		)
 	}
 	return (
-		<ScrollView
-			style={[flex.tiny, background.white]}
-			contentContainerStyle={[padding.bottom.huge]}
-			bounces={false}
-		>
-			<SwipeNavRecognizer>
-				<HeaderSettings actionIcon='upload' undo={goBack}>
-					<ContactSettingsHeader contact={contact} />
-				</HeaderSettings>
-				<ContactSettingsBody id={contact.publicKey} />
-			</SwipeNavRecognizer>
-		</ScrollView>
+		<>
+			<View style={[flex.tiny]}>
+				<StatusBar backgroundColor={color.blue} barStyle='light-content' />
+				<ScrollView
+					style={[flex.tiny, background.white]}
+					contentContainerStyle={[padding.bottom.huge]}
+					bounces={false}
+				>
+					<SwipeNavRecognizer>
+						<HeaderSettings actionIcon='upload' undo={goBack}>
+							<ContactSettingsHeader contact={contact} />
+						</HeaderSettings>
+						<ContactSettingsBody id={contact.publicKey} />
+					</SwipeNavRecognizer>
+				</ScrollView>
+			</View>
+		</>
 	)
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -130,7 +130,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	route: { params },
 }) => {
 	const { goBack, navigate } = useNavigation()
-	const [{ flex, background, padding }] = useStyles()
+	const [{ flex, background, padding, color }] = useStyles()
 	const { convId } = params
 	const conv = useConversation(convId)
 	const contact = useContact(conv?.contactPublicKey)
@@ -143,6 +143,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	return (
 		<>
 			<View style={[flex.tiny]}>
+				<StatusBar backgroundColor={color.blue} barStyle='light-content' />
 				<ScrollView
 					style={[flex.tiny, background.white]}
 					contentContainerStyle={[padding.bottom.huge]}
