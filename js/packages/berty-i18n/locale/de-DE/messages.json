@@ -433,6 +433,11 @@
       "erase-button": "Unterhaltung löschen",
       "leave-button": "Gruppe verlassen"
     },
+    "add-members": {
+      "members": "Mitglieder",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR-Gruppe"
     },
