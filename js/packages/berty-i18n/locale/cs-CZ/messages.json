@@ -433,6 +433,11 @@
       "erase-button": "Smazat konverzaci",
       "leave-button": "Opustit skupinu"
     },
+    "add-members": {
+      "members": "Členové",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR skupina"
     },
