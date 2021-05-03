@@ -433,6 +433,11 @@
       "erase-button": "Gesprek wissen",
       "leave-button": "Groep verlaten"
     },
+    "add-members": {
+      "members": "Leden",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Groep"
     },
