@@ -433,6 +433,11 @@
       "erase-button": "",
       "leave-button": "グループから退出"
     },
+    "add-members": {
+      "members": "メンバー",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
