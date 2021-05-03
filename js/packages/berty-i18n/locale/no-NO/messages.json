@@ -433,6 +433,11 @@
       "erase-button": "Slett samtale",
       "leave-button": "Forlat gruppen"
     },
+    "add-members": {
+      "members": "Medlemmer",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR-Gruppe"
     },
