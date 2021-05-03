@@ -433,6 +433,11 @@
       "erase-button": "Очистить беседу",
       "leave-button": "Покинуть группу"
     },
+    "add-members": {
+      "members": "Участники",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "Группа QR"
     },
