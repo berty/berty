@@ -15,7 +15,6 @@ require (
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/atotto/clipboard v0.1.4
-	github.com/btcsuite/btcd v0.21.0-beta // indirect
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/daixiang0/gci v0.2.8
@@ -44,7 +43,7 @@ require (
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipfs/go-datastore v0.4.5
 	github.com/ipfs/go-ds-badger v0.2.6
-	github.com/ipfs/go-ipfs v0.7.1-0.20201116220946-79a55305e935
+	github.com/ipfs/go-ipfs v0.8.0
 	github.com/ipfs/go-ipfs-config v0.12.0
 	github.com/ipfs/go-ipfs-files v0.0.8
 	github.com/ipfs/go-ipfs-keystore v0.0.2
@@ -129,6 +128,8 @@ require (
 
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
+	berty.tech/go-ipfs-log => ../go-ipfs-log
+	berty.tech/go-orbit-db => ../go-orbit-db
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 	github.com/ipfs/go-ipfs => github.com/Jorropo/go-ipfs v0.4.20-0.20201127133049-9632069f4448 // temporary, see https://github.com/ipfs/go-ipfs/issues/7791
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a // use berty fork of go-libp2p-rendezvous

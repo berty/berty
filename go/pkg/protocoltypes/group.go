@@ -2,10 +2,14 @@ package protocoltypes
 
 import (
 	"encoding/hex"
+	"io"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/ed25519"
+	"golang.org/x/crypto/hkdf"
+	"golang.org/x/crypto/sha3"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -41,6 +45,31 @@ func (m *Group) GetSigningPubKey() (crypto.PubKey, error) {
 	return sk.GetPublic(), nil
 }
 
+func ComputeUpdatesKey(publicKey, secret []byte) (*[cryptoutil.KeySize]byte, error) {
+	arr := [cryptoutil.KeySize]byte{}
+
+	kdf := hkdf.New(sha3.New256, secret, nil, publicKey)
+	if _, err := io.ReadFull(kdf, arr[:]); err != nil {
+		return nil, errcode.ErrStreamRead.Wrap(err)
+	}
+
+	return &arr, nil
+}
+
+func (m *Group) GetUpdatesKeyArray() (*[cryptoutil.KeySize]byte, error) {
+	if len(m.UpdatesKey) == cryptoutil.KeySize {
+		arr := [cryptoutil.KeySize]byte{}
+
+		for i, c := range m.UpdatesKey {
+			arr[i] = c
+		}
+
+		return &arr, nil
+	}
+
+	return ComputeUpdatesKey(m.PublicKey, m.Secret)
+}
+
 func (m *Group) IsValid() error {
 	pk, err := m.GetPubKey()
 	if err != nil {
@@ -64,8 +93,8 @@ func (m *Group) GroupIDAsString() string {
 	return hex.EncodeToString(m.PublicKey)
 }
 
-func (m *Group) GetSharedSecret() *[32]byte {
-	sharedSecret := [32]byte{}
+func (m *Group) GetSharedSecret() *[cryptoutil.KeySize]byte {
+	sharedSecret := [cryptoutil.KeySize]byte{}
 	copy(sharedSecret[:], m.Secret)
 
 	return &sharedSecret
@@ -82,8 +111,14 @@ func (m *Group) FilterForReplication() (*Group, error) {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
+	updatesKey, err := m.GetUpdatesKeyArray()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	return &Group{
-		PublicKey: m.PublicKey,
-		SignPub:   groupSigPKBytes,
+		PublicKey:  m.PublicKey,
+		SignPub:    groupSigPKBytes,
+		UpdatesKey: updatesKey[:],
 	}, nil
 }

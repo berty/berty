@@ -1874,7 +1874,7 @@
         "info_date": {
           "type": "string",
           "format": "int64",
-          "title": "info_date is used when SetGroupInfo was called"
+          "title": "info_date is used when SetGroupInfo is called"
         }
       }
     },
@@ -2133,6 +2133,11 @@
           "type": "string",
           "format": "byte",
           "title": "sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided"
+        },
+        "updates_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "updates_key is the secret key used to exchange group updates"
         }
       },
       "title": "Group define a group and is enough to invite someone to it"

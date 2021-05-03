@@ -147,11 +147,17 @@ func (s *service) exportOrbitDBGroupHeads(gc *groupContext, headsMetadata []cid.
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
+	updateKeyArr, err := gc.group.GetUpdatesKeyArray()
+	if err != nil {
+		return errcode.ErrSerialization.Wrap(err)
+	}
+
 	headsExport := &protocoltypes.GroupHeadsExport{
 		PublicKey:         gc.group.PublicKey,
 		SignPub:           spkBytes,
 		MetadataHeadsCIDs: cidsMeta,
 		MessagesHeadsCIDs: cidsMessages,
+		UpdatesKey:        updateKeyArr[:],
 	}
 
 	entryName := base64.RawURLEncoding.EncodeToString(gc.group.PublicKey)
@@ -421,8 +427,9 @@ func restoreOrbitDBHeads(ctx context.Context, odb *BertyOrbitDB) RestoreAccountH
 			}
 
 			if err := odb.setHeadsForGroup(ctx, &protocoltypes.Group{
-				PublicKey: heads.PublicKey,
-				SignPub:   heads.SignPub,
+				PublicKey:  heads.PublicKey,
+				SignPub:    heads.SignPub,
+				UpdatesKey: heads.UpdatesKey,
 			}, metaCIDs, messageCIDs); err != nil {
 				return true, errcode.ErrOrbitDBAppend.Wrap(fmt.Errorf("error while restoring db head: %w", err))
 			}

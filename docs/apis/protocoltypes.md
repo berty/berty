@@ -790,6 +790,7 @@ Group define a group and is enough to invite someone to it
 | secret_sig | [bytes](#bytes) |  | secret_sig is the signature of the secret used to ensure the validity of the group |
 | group_type | [GroupType](#berty.protocol.v1.GroupType) |  | group_type specifies the type of the group, used to determine how device secrets are generated |
 | sign_pub | [bytes](#bytes) |  | sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided |
+| updates_key | [bytes](#bytes) |  | updates_key is the secret key used to exchange group updates |
 
 <a name="berty.protocol.v1.GroupAddAdditionalRendezvousSeed"></a>
 
@@ -847,6 +848,7 @@ GroupEnvelope is a publicly exposed structure containing a group metadata event
 | sign_pub | [bytes](#bytes) |  | sign_pub is the signature public key used to verify entries |
 | metadata_heads_cids | [bytes](#bytes) | repeated | metadata_heads_cids are the heads of the metadata store that should be restored from an export |
 | messages_heads_cids | [bytes](#bytes) | repeated | messages_heads_cids are the heads of the metadata store that should be restored from an export |
+| updates_key | [bytes](#bytes) |  | updates_key |
 
 <a name="berty.protocol.v1.GroupInfo"></a>
 

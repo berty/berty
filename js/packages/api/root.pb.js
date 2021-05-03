@@ -623,6 +623,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   signPub: {
                     type: "bytes",
                     id: 5
+                  },
+                  updatesKey: {
+                    type: "bytes",
+                    id: 6
                   }
                 }
               },
@@ -651,6 +655,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "MessagesHeadsCIDs"
                     }
+                  },
+                  updatesKey: {
+                    type: "bytes",
+                    id: 5
                   }
                 }
               },

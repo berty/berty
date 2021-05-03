@@ -2,9 +2,11 @@ package bertyprotocol
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/go-ipfs-log/enc"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/accesscontroller"
@@ -35,6 +37,18 @@ func DefaultOrbitDBOptions(g *protocoltypes.Group, options *orbitdb.CreateDBOpti
 		options.AccessController, err = defaultACForGroup(g, storeType)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	updateKey, err := g.GetUpdatesKeyArray()
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to get an updates key for group: %w", err))
+	}
+
+	if updateKey != nil {
+		options.SharedKey, err = enc.NewSecretbox(updateKey[:])
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
 		}
 	}
 

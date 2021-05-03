@@ -895,6 +895,7 @@ export namespace berty {
                 secretSig?: (Uint8Array|null);
                 groupType?: (berty.protocol.v1.GroupType|null);
                 signPub?: (Uint8Array|null);
+                updatesKey?: (Uint8Array|null);
             }
 
             class Group implements IGroup {
@@ -904,6 +905,7 @@ export namespace berty {
                 public secretSig: Uint8Array;
                 public groupType: berty.protocol.v1.GroupType;
                 public signPub: Uint8Array;
+                public updatesKey: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IGroup): berty.protocol.v1.Group;
                 public static encode(message: berty.protocol.v1.IGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -920,6 +922,7 @@ export namespace berty {
                 signPub?: (Uint8Array|null);
                 metadataHeadsCids?: (Uint8Array[]|null);
                 messagesHeadsCids?: (Uint8Array[]|null);
+                updatesKey?: (Uint8Array|null);
             }
 
             class GroupHeadsExport implements IGroupHeadsExport {
@@ -928,6 +931,7 @@ export namespace berty {
                 public signPub: Uint8Array;
                 public metadataHeadsCids: Uint8Array[];
                 public messagesHeadsCids: Uint8Array[];
+                public updatesKey: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IGroupHeadsExport): berty.protocol.v1.GroupHeadsExport;
                 public static encode(message: berty.protocol.v1.IGroupHeadsExport, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IGroupHeadsExport, writer?: $protobuf.Writer): $protobuf.Writer;

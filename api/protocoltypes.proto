@@ -254,6 +254,9 @@ message Group {
 
   // sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided
   bytes sign_pub = 5;
+
+  // updates_key is the secret key used to exchange group updates
+  bytes updates_key = 6;
 }
 
 message GroupHeadsExport {
@@ -268,6 +271,9 @@ message GroupHeadsExport {
 
   // messages_heads_cids are the heads of the metadata store that should be restored from an export
   repeated bytes messages_heads_cids = 4 [(gogoproto.customname) = "MessagesHeadsCIDs"];
+
+  // updates_key
+  bytes updates_key = 5;
 }
 
 // GroupMetadata is used in GroupEnvelope and only readable by invited group members

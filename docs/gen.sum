@@ -3,8 +3,8 @@ f38608d3592f35d6893da0c9b81a6e330329642b  ../api/bertyaccount.proto
 e468c5b7be0fa5ff2cb312a9ba282a9610e775d2  ../api/bertyreplication.proto
 efe05c869eb27277829aa4018133888bf41f5e9e  ../api/bertyreplication.yaml
 6b4870d7f2f738b2f14e1cfef3b79b12401a5a53  ../api/errcode.proto
-2ade2c4bbc834459bd43ed5132858cdc0c66ca0a  ../api/messengertypes.proto
+db20a426364ff890c3084ea8af586b0d2290d00d  ../api/messengertypes.proto
 95d24758843b2838d744dbb86f24bc06b3cc5a33  ../api/messengertypes.yaml
-89ed19f2302bc29a7eb95bef8e29dab38e56d5e3  ../api/protocoltypes.proto
+36668539fb5405bfaf959eeed6323ae77808e064  ../api/protocoltypes.proto
 14884bc268447c0e1d04ed82b7603c0371f66a0d  ../api/protocoltypes.yaml
 e73d7b4c87fee9e43333c611dec70198b1103044  Makefile

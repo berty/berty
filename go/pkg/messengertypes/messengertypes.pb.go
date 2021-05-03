@@ -3651,7 +3651,7 @@ type Conversation struct {
 	ReplyOptionsCID        string                         `protobuf:"bytes,14,opt,name=reply_options_cid,json=replyOptionsCid,proto3" json:"reply_options_cid,omitempty" gorm:"column:reply_options_cid"`
 	ReplyOptions           *Interaction                   `protobuf:"bytes,15,opt,name=reply_options,json=replyOptions,proto3" json:"reply_options,omitempty"`
 	ReplicationInfo        []*ConversationReplicationInfo `protobuf:"bytes,16,rep,name=replication_info,json=replicationInfo,proto3" json:"replication_info,omitempty" gorm:"foreignKey:ConversationPublicKey"`
-	// info_date is used when SetGroupInfo was called
+	// info_date is used when SetGroupInfo is called
 	InfoDate int64 `protobuf:"varint,18,opt,name=info_date,json=infoDate,proto3" json:"info_date,omitempty"`
 }
 
