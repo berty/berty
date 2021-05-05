@@ -33,8 +33,9 @@ android_gomobile_cache=android/.gomobile-cache
 ## if (PWD != Makefile directory) then exit
 
 makefile_dir = $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
-ifneq ($(PWD),$(makefile_dir))
-    $(error make should be executed from '$(makefile_dir)' instead of '$(PWD)')
+real_pwd = $(realpath $(PWD))
+ifneq ($(real_pwd),$(makefile_dir))
+    $(error make should be executed from '$(makefile_dir)' instead of '$(real_pwd)')
 endif
 
 ## User commands
