@@ -211,6 +211,35 @@ android {
     }
 }
 
+// Auto-build gomobile.aar by running Makefile rule
+task makeDeps(description: 'Build gomobile.arr (Berty go core)') {
+    outputs.files fileTree(dir: "${rootDir.getPath()}/libs", include: ["*.jar", "*.aar"])
+
+    doLast {
+        if (System.properties['os.name'].toLowerCase().contains('windows')) {
+            logger.warn("Warning: can't run make on Windows, you must build gomobile.aar manually")
+            return
+        }
+
+        def checkMakeInPath = exec {
+            standardOutput = new ByteArrayOutputStream() // equivalent to '> /dev/null'
+            ignoreExitValue = true
+            commandLine 'bash', '-l', '-c', 'command -v make'
+        }
+
+        if (checkMakeInPath.getExitValue() == 0) {
+            exec {
+                def makefileDir = "${rootDir.getPath()}/.."
+                workingDir makefileDir
+                environment 'PWD', makefileDir
+                commandLine 'make', 'android.app_deps'
+            }
+        } else {
+            logger.warn('Warning: make command not found in PATH')
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
@@ -249,7 +278,7 @@ dependencies {
         implementation jscFlavor
     }
 
-    implementation fileTree(dir: "../libs", include: ["*.jar", "*.aar"]) // go lib
+    implementation makeDeps.outputs.files
 }
 
 // Run this once to be able to run the application with BUCK
