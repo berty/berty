@@ -315,9 +315,9 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
-  - react-native-shake (10.0.4):
+  - react-native-shake (14.1.3):
     - React
-    - Shake (~> 10.0.0)
+    - Shake (~> 14.1.0-rc)
   - react-native-webview (11.2.1):
     - React-Core
   - React-RCTActionSheet (0.63.4):
@@ -426,7 +426,7 @@ PODS:
     - React
   - RNVectorIcons (7.1.0):
     - React
-  - Shake (10.0.7)
+  - Shake (14.1.2)
   - TOCropViewController (2.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -721,7 +721,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: 44ecae7103090b6789cca010f06f5205fd1cb66e
   react-native-restart: a01029aadfe8e71f9e8205fdb17da2f0a4472d50
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
-  react-native-shake: 168b18d4656c9c90a787ecf41822f88be7b532ec
+  react-native-shake: 8048c196ab884399df8397d7a9e9e48b3f2996ff
   react-native-webview: a4751ec8f0a6a397026f22ed54c1efeec4540555
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
@@ -751,7 +751,7 @@ SPEC CHECKSUMS:
   RNShare: d22507fa5e80c72f236b5622556cf831de5b1e93
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
-  Shake: 5dbd59e3e3363cea29bef608cc14aa13b09f96fc
+  Shake: 79184e72759c59c9d9369f7748fd69d8d8e8a147
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
