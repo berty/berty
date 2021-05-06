@@ -10,39 +10,39 @@
     },
     "select-mode": {
       "title": "Выберите шаблон",
-      "change-later": "У вас будет возможность изменить его позже!",
+      "change-later": "Вы сможете изменить это позже!",
       "performance": {
-        "title": "Производительность",
+        "title": "Скорость",
         "desc": "Простота в использовании, все функции",
         "push-notif": "Получать push-уведомления",
-        "offline-message": "Автономные сообщения через Bluetooth",
-        "add-contact": "Простое добавление контактов",
-        "fast-message": "Самая быстрая доставка сообщений"
+        "offline-message": "Офлайн переписки через Bluetooth",
+        "add-contact": "Легко добавляйте контакте",
+        "fast-message": "Наибыстрейшая доставка сообщений"
       },
       "high-level": {
-        "title": "Полная анонимность",
+        "title": "Максимальная анонимность",
         "desc": "Для очень осторожных пользователей",
         "disable-push-notif": "Push-уведомления отключены",
         "disable-local-peer-discovery": "Обнаружение узлов рядом отключено",
-        "disable-local-peer-discovery-desc": "Многоадресный DNS и Bluetooth",
+        "disable-local-peer-discovery-desc": "Multicast DNS и Bluetooth",
         "disable-contact-request": "Запросы в контакты отключены",
-        "on-same-network": "Локально в той же сети/Wi-Fi"
+        "on-same-network": "Локально в одинаковой сети/Wi-Fi"
       }
     },
     "create-account": {
       "title": "Создайте свой аккаунт",
-      "desc": "Имя - единственная необходимая информация",
+      "desc": "Необходимо указать только имя",
       "required": "Обязательно",
       "placeholder": "Имя",
       "button": "СОЗДАТЬ МОЙ АККАУНТ",
-      "import-account": "ИМПОРТ УЧЕТНОЙ ЗАПИСИ"
+      "import-account": "ИМПОРТИРОВАТЬ АККАУНТ"
     },
     "services-auth": {
       "header": "Аутентифицироваться в сервисы",
       "title": "Сервисы",
-      "recommended": "Рекомендовано",
+      "recommended": "Рекомендуется",
       "desc": "Это будет автоматически сохранять ваши беседы на сервере",
-      "button": "Использовать сервисы управляемые Berty",
+      "button": "Использовать сервисы Berty",
       "skip": "ПРОПУСТИТЬ И СДЕЛАТЬ ПОЗЖЕ"
     },
     "generate-key": {
@@ -67,7 +67,7 @@
     },
     "setup-finished": {
       "title": "Настройка завершена!",
-      "desc": "Теперь вы можете использовать приложение, начать добавлять контакты и общаться с ними свободно и приватно",
+      "desc": "Теперь вы можете использовать приложение, начните добавлять контакты и общайтесь с ними свободно и приватно",
       "button": "НАЧАТЬ ИСПОЛЬЗОВАТЬ BERTY"
     }
   },
@@ -160,12 +160,12 @@
       },
       "app-mode-button": {
         "title": "Режим приложения",
-        "performance-tag": "Производительность",
+        "performance-tag": "Скорость",
         "privacy-tag": "Приватность",
         "description-tag": "Простота в использовании, все функции",
         "first-bullet-point": "Получать push-уведомления",
         "second-bullet-point": "Получать запросы в контакты",
-        "third-bullet-point": "Обнаружение узлов рядом (BLE & Multicast DNS)"
+        "third-bullet-point": "Обнаружение узлов рядом (BLE и Multicast DNS)"
       },
       "dark-mode-button": "Тёмная тема",
       "receive-contact-requests-button": "Получать запросы в контакты",
@@ -243,7 +243,7 @@
     },
     "services-auth": {
       "title": "Внешние сервисы",
-      "operated-services-button": "Использовать сервисы управляемые Berty",
+      "operated-services-button": "Использовать сервисы Berty",
       "register-service-button": {
         "title": "Зарегистрировать другого поставщика услуг",
         "input-placeholder": "URL-адрес сервиса",
@@ -312,7 +312,7 @@
       "header-middle-button": "Сгенерировать фальшивые данные",
       "header-right-button": "Перезапустить демон",
       "system-info-button": "Информация о системе",
-      "debug-button": "Debug",
+      "debug-button": "Дебаг",
       "log-button": {
         "name": "Формат логов",
         "bullet-point": "Перезапустите приложение после изменения этого поля"
@@ -399,8 +399,8 @@
       "devices": "Устройства"
     },
     "welcome-configuration": {
-      "title": "Добро пожаловать на борт!",
-      "desc": "Давайте сделаем краткий обзор настроек и завершим вашу первую настройку!",
+      "title": "Добро пожаловать!",
+      "desc": "Давайте быстро пробежимся по настройкам и сделаем вашу первую конфигурацию!",
       "skip": "ПРОПУСТИТЬ",
       "next": "ДАЛЕЕ"
     }
@@ -435,8 +435,8 @@
     },
     "add-members": {
       "members": "Участники",
-      "contacts": "",
-      "add": ""
+      "contacts": "Контакты",
+      "add": "Добавить!"
     },
     "multi-member-qr": {
       "title": "Группа QR"
@@ -505,9 +505,9 @@
       "documents": "Документы"
     },
     "reply": {
-      "response-to": "",
-      "replying-to": "",
-      "replied-to": ""
+      "response-to": "Ответить",
+      "replying-to": "Вы отвечаете",
+      "replied-to": "В ответ"
     }
   },
   "error": {
@@ -600,8 +600,8 @@
     }
   },
   "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
+    "audio": "аудио",
+    "picture": "картинка",
+    "file": "файл"
   }
 }
