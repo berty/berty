@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = "OpenSSL-Universal"
-  s.version      = "1.0.2.20"
+  s.version      = "1.1.180"
   s.summary      = "OpenSSL for iOS"
   s.description  = "OpenSSL is an SSL/TLS and Crypto toolkit. Supports iOS 64 bits archs including Simulator (arm64,armv64e,x86_64)."
   s.homepage     = "https://github.com/krzyzanowskim/OpenSSL"
   s.license	     = { :type => 'OpenSSL (OpenSSL/SSLeay)' }
-  s.source       = { :git => "https://github.com/krzyzanowskim/OpenSSL.git", :tag => "1.0.220" }
+  s.source       = { :git => "https://github.com/krzyzanowskim/OpenSSL.git", :tag => "1.1.180" }
 
   s.authors       =  {'Mark J. Cox' => 'mark@openssl.org',
                      'Ralf S. Engelschall' => 'rse@openssl.org',
