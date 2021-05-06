@@ -93,6 +93,9 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		ds = datastore.NewMapDatastore()
 	} else {
 		opts := ipfsbadger.DefaultOptions
+		opts.NumCompactors = 0
+		opts.SyncWrites = true
+
 		if m.Datastore.LowMemoryProfile {
 			applyBadgerLowMemoryProfile(m.initLogger, &opts)
 		}

@@ -55,16 +55,18 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 		n.Cache = NewOrbitDatastoreCache(n.Datastore)
 	}
 
+	if n.Logger == nil {
+		n.Logger = zap.NewNop()
+	}
+
 	if n.MessageKeystore == nil {
-		n.MessageKeystore = newMessageKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceMessageKeystore)))
+		devLog, _ := zap.NewDevelopment()
+
+		n.MessageKeystore = newMessageKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceMessageKeystore)), devLog)
 	}
 
 	if n.DeviceKeystore == nil {
 		n.DeviceKeystore = NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))))
-	}
-
-	if n.Logger == nil {
-		n.Logger = zap.NewNop()
 	}
 
 	if n.Tracer == nil {

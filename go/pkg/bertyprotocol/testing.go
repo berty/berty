@@ -31,7 +31,7 @@ type TestingProtocol struct {
 
 	Service Service
 	Client  Client
-	IPFS    ipfsutil.CoreAPIMock
+	//IPFS    ipfsutil.CoreAPIMock
 }
 
 type TestingReplicationPeer struct {
@@ -141,7 +141,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		Opts:    &serviceOpts,
 		Client:  client,
 		Service: service,
-		IPFS:    node,
+		//IPFS:    node,
 	}
 	cleanup := func() {
 		server.Stop()

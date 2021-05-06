@@ -1168,7 +1168,7 @@ func (h *eventHandler) dispatchVisibleInteraction(i *mt.Interaction) error {
 		return nil
 	}
 
-	return h.db.tx(h.ctx, func(tx *dbWrapper) error {
+	if err := h.db.tx(h.ctx, func(tx *dbWrapper) error {
 		// FIXME: check if app is in foreground
 		// if conv is not open, increment the unread_count
 		opened, err := tx.isConversationOpened(i.ConversationPublicKey)
@@ -1183,20 +1183,24 @@ func (h *eventHandler) dispatchVisibleInteraction(i *mt.Interaction) error {
 			return err
 		}
 
-		// expr-based (see above) gorm updates don't update the go object
-		// next query could be easily replace by a simple increment, but this way we're 100% sure to be up-to-date
-		conv, err := tx.getConversationByPK(i.GetConversationPublicKey())
-		if err != nil {
-			return err
-		}
-
-		// dispatch update event
-		if err := h.svc.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
-			return err
-		}
-
 		return nil
-	})
+	}); err != nil {
+		return err
+	}
+
+	// expr-based (see above) gorm updates don't update the go object
+	// next query could be easily replace by a simple increment, but this way we're 100% sure to be up-to-date
+	conv, err := h.db.getConversationByPK(i.GetConversationPublicKey())
+	if err != nil {
+		return err
+	}
+
+	// dispatch update event
+	if err := h.svc.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (h *eventHandler) sendAck(cid, conversationPK string) error {

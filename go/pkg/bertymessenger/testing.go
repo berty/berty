@@ -90,18 +90,20 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 	protocols, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &bertyprotocol.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
 	clients := make([]messengertypes.MessengerServiceClient, amount)
 
+	// setup client
 	for i, p := range protocols {
 		// new messenger service
 		svc, cleanupMessengerService := TestingService(ctx, t, &TestingServiceOpts{Logger: logger, Client: p.Client, Index: i})
 
 		// new messenger client
-		lis := bufconn.Listen(1024 * 1024)
+		lis := bufconn.Listen(4 * 1024 * 1024)
 		s := grpc.NewServer()
 		messengertypes.RegisterMessengerServiceServer(s, svc)
 		go func() {
 			err := s.Serve(lis)
 			require.NoError(t, err)
 		}()
+
 		conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(lis)), grpc.WithInsecure())
 		require.NoError(t, err)
 		cleanup = u.CombineFuncs(func() {
@@ -177,6 +179,7 @@ type TestingAccount struct {
 	closedMutex    sync.RWMutex
 	processMutex   sync.Mutex
 	tryNextMutex   sync.Mutex
+	cstream        <-chan *RecvEvent
 
 	// store
 	account       *messengertypes.Account
@@ -185,6 +188,11 @@ type TestingAccount struct {
 	members       map[string]*messengertypes.Member
 	interactions  map[string]*messengertypes.Interaction
 	medias        map[string]*messengertypes.Media
+}
+
+type RecvEvent struct {
+	e   *messengertypes.EventStream_Reply
+	err error
 }
 
 func NewTestingAccount(ctx context.Context, t *testing.T, client messengertypes.MessengerServiceClient, protocolClient protocoltypes.ProtocolServiceClient, logger *zap.Logger) *TestingAccount {
@@ -196,6 +204,7 @@ func NewTestingAccount(ctx context.Context, t *testing.T, client messengertypes.
 		client:         client,
 		protocolClient: protocolClient,
 		logger:         logger,
+		cstream:        make(chan *RecvEvent),
 		conversations:  make(map[string]*messengertypes.Conversation),
 		contacts:       make(map[string]*messengertypes.Contact),
 		members:        make(map[string]*messengertypes.Member),
@@ -217,6 +226,8 @@ func (a *TestingAccount) openStream(t *testing.T) {
 		var err error
 		a.stream, err = a.client.EventStream(a.ctx, &messengertypes.EventStream_Request{})
 		require.NoError(t, err)
+
+		a.cstream = monitorEventStream(t, a.stream, time.Second*10)
 	})
 }
 
@@ -226,11 +237,12 @@ func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
 	a.openStream(t)
 	go func() {
 		for {
-			rsp, err := a.stream.Recv()
-			if err == io.EOF {
+			rsp := <-a.cstream
+
+			if rsp.err == io.EOF {
 				return
 			}
-			if e, ok := status.FromError(err); ok && e.Code() == codes.Canceled {
+			if e, ok := status.FromError(rsp.err); ok && e.Code() == codes.Canceled {
 				return
 			}
 			select {
@@ -240,11 +252,10 @@ func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
 				}
 			default:
 			}
-			require.NoError(t, err)
-			evt := rsp.GetEvent()
+			require.NoError(t, rsp.err)
+			evt := rsp.e.GetEvent()
 			require.NotNil(t, evt)
 			a.processEvent(t, evt)
-
 		}
 	}()
 
@@ -298,15 +309,19 @@ func (a *TestingAccount) GetClient() messengertypes.MessengerServiceClient {
 func (a *TestingAccount) DrainInitEvents(t *testing.T) {
 	for {
 		event := a.TryNextEvent(t, 100*time.Millisecond)
+		if event == nil {
+			continue
+		}
+
 		if event.Type == messengertypes.StreamEvent_TypeListEnded {
 			return
 		}
 	}
 }
 
-func (a *TestingAccount) GetStream(t *testing.T) messengertypes.MessengerService_EventStreamClient {
+func (a *TestingAccount) GetStream(t *testing.T) <-chan *RecvEvent {
 	a.openStream(t)
-	return a.stream
+	return a.cstream
 }
 
 func (a *TestingAccount) SetName(t *testing.T, name string) {
@@ -331,7 +346,7 @@ func (a *TestingAccount) NextEvent(t *testing.T) *messengertypes.StreamEvent {
 	t.Helper()
 	a.openStream(t)
 
-	entry, err := a.stream.Recv()
+	entry := <-a.cstream
 
 	a.closedMutex.RLock()
 	if a.closed {
@@ -340,12 +355,12 @@ func (a *TestingAccount) NextEvent(t *testing.T) *messengertypes.StreamEvent {
 	}
 	a.closedMutex.RUnlock()
 
-	require.NotEqual(t, err, io.EOF, "EOF while draining events")
-	require.NoError(t, err)
+	require.NotEqual(t, entry.err, io.EOF, "EOF while draining events")
+	require.NoError(t, entry.err)
 
-	a.processEvent(t, entry.Event)
+	a.processEvent(t, entry.e.Event)
 
-	return entry.Event
+	return entry.e.Event
 }
 
 func (a *TestingAccount) GetAccount() *messengertypes.Account {
@@ -378,6 +393,14 @@ func (a *TestingAccount) GetConversation(t *testing.T, pk string) *messengertype
 	conv, ok := a.conversations[pk]
 	require.True(t, ok)
 	return conv
+}
+
+func (a *TestingAccount) GetMember(t *testing.T, pk string) *messengertypes.Member {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	member, ok := a.members[pk]
+	require.True(t, ok)
+	return member
 }
 
 func (a *TestingAccount) GetInteraction(t *testing.T, cid string) *messengertypes.Interaction {
@@ -425,4 +448,30 @@ func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *mess
 	case <-time.After(timeout):
 	}
 	return nil
+}
+
+func monitorEventStream(t *testing.T, stream messengertypes.MessengerService_EventStreamClient, expire time.Duration) <-chan *RecvEvent {
+	t.Helper()
+
+	cstream := make(chan *RecvEvent)
+	go func() {
+		defer close(cstream)
+
+		var err error
+		for err == nil {
+			var e *messengertypes.EventStream_Reply
+
+			e, err = stream.Recv()
+			evt := &RecvEvent{e, err}
+
+			select {
+			case cstream <- evt:
+			case <-time.After(expire):
+				err := fmt.Sprintf("event not consumed after %f ms", expire.Seconds())
+				panic(err)
+			}
+		}
+	}()
+
+	return cstream
 }

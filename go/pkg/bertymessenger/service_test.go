@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -31,6 +32,7 @@ func TestServiceStream(t *testing.T) {
 	time.Sleep(time.Second)
 
 	account := node.GetAccount()
+	require.NotEmpty(t, account)
 	require.NotEmpty(t, account.Link)
 	require.NotEmpty(t, account.PublicKey)
 	require.Empty(t, account.DisplayName)
@@ -107,7 +109,8 @@ func TestUnstableServiceStreamCancel(t *testing.T) {
 	{
 		var err error
 		for err == nil {
-			_, err = node.GetStream(t).Recv()
+			e := <-node.GetStream(t)
+			err = e.err
 		}
 		require.True(t, isGRPCCanceledError(err))
 	}
@@ -324,9 +327,9 @@ func TestBroken1To1Exchange(t *testing.T) {
 }
 
 func TestBrokenPeersCreateJoinConversation(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
+	//testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
@@ -370,12 +373,13 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	}
 
 	// wait for events propagation
-	time.Sleep(10 * time.Second)
+	time.Sleep(time.Second)
 
 	// open streams and drain lists on all nodes
 	accounts := append([]*TestingAccount{creator}, joiners...)
 	for _, account := range accounts {
 		account.DrainInitEvents(t)
+		account.Close()
 	}
 
 	// no more event
@@ -406,6 +410,97 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 			require.Equal(t, gpk, member.GetConversationPublicKey())
 		}
 	}
+
+	subCtx, subCancel := context.WithTimeout(ctx, time.Second*45)
+	cl, err := clients[1].EventStream(subCtx, &messengertypes.EventStream_Request{
+		ShallowAmount: 1,
+	})
+	require.NoError(t, err)
+
+	const messageCount = 100
+
+	ce := make(chan *messengertypes.EventStream_Reply, messageCount)
+	var subErr error
+	go func() {
+		defer close(ce)
+		defer subCancel()
+
+		var evt *messengertypes.EventStream_Reply
+		for {
+			evt, subErr = cl.Recv()
+			if subErr != nil {
+				return
+			}
+
+			ce <- evt
+		}
+	}()
+
+	for i := 0; i < messageCount; i++ {
+		payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
+			Body: fmt.Sprintf("message %d", i),
+		})
+		require.NoError(t, err)
+
+		_, err = clients[0].Interact(
+			ctx,
+			&messengertypes.Interact_Request{
+				Type:                  messengertypes.AppMessage_TypeUserMessage,
+				Payload:               payload,
+				ConversationPublicKey: gpk,
+			},
+		)
+		require.NoError(t, err, fmt.Sprintf("sent %d items", i))
+	}
+
+	expectedMessages := make([]string, messageCount)
+	for i := 0; i < messageCount; i++ {
+		expectedMessages[i] = fmt.Sprintf("message %d", i)
+	}
+
+	for evt := range ce {
+		if evt.Event.Type != messengertypes.StreamEvent_TypeInteractionUpdated {
+			continue
+		}
+
+		interaction := &messengertypes.StreamEvent_InteractionUpdated{}
+		err := proto.Unmarshal(evt.Event.Payload, interaction)
+		require.NoError(t, err)
+
+		if interaction.Interaction.Type != messengertypes.AppMessage_TypeUserMessage {
+			continue
+		}
+
+		message := &messengertypes.AppMessage_UserMessage{}
+		err = proto.Unmarshal(interaction.Interaction.Payload, message)
+		require.NoError(t, err)
+
+		foundMessage := false
+		for i, ref := range expectedMessages {
+			if message.Body == ref {
+				expectedMessages = append(expectedMessages[:i], expectedMessages[i+1:]...)
+				foundMessage = true
+				t.Log(fmt.Sprintf("     found message : %s", message.Body))
+				break
+			}
+		}
+
+		if !foundMessage {
+			t.Log(fmt.Sprintf("unexpected message : %s", message.Body))
+		}
+
+		if len(expectedMessages) == 0 {
+			break
+		}
+
+		t.Logf("remaining messages : %s", strings.Join(expectedMessages, ","))
+	}
+
+	assert.Empty(t, len(expectedMessages))
+
+	require.NoError(t, err)
+	require.NoError(t, subErr)
+	cl.CloseSend()
 }
 
 func TestBroken3PeersExchange(t *testing.T) {

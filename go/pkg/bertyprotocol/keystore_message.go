@@ -3,7 +3,10 @@ package bertyprotocol
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"sync"
+	"time"
 
 	"github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
@@ -16,8 +19,44 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
+type Mutex struct {
+	sync.Mutex
+	ref  string
+	name string
+	log  *zap.Logger
+	time time.Time
+}
+
+func (m *Mutex) Lock() {
+	m.Mutex.Lock()
+	id, err := uuid.NewRandom()
+	if err != nil {
+		m.ref = "no-identifier"
+	} else {
+		m.ref = id.String()
+	}
+	m.time = time.Now()
+
+	m.log.Info("locked", zap.String("name", m.name), zap.String("id", m.ref))
+}
+
+func (m *Mutex) Unlock() {
+	m.log.Info("unlocked", zap.String("name", m.name), zap.String("id", m.ref), zap.String("took", time.Now().Sub(m.time).String()))
+	m.ref = ""
+	m.time = time.Unix(0, 0)
+	m.Mutex.Unlock()
+}
+
+func NewDebugMutex(name string, log *zap.Logger) *Mutex {
+	if log == nil {
+		log = zap.NewNop()
+	}
+
+	return &Mutex{name: name, log: log}
+}
+
 type messageKeystore struct {
-	lock                 sync.Mutex
+	lock                 *Mutex
 	preComputedKeysCount int
 	store                datastore.Datastore
 }
@@ -582,10 +621,11 @@ func (m *messageKeystore) updateCurrentKey(groupPK, pk crypto.PubKey, ds *protoc
 }
 
 // newMessageKeystore instantiate a new messageKeystore
-func newMessageKeystore(s datastore.Datastore) *messageKeystore {
+func newMessageKeystore(s datastore.Datastore, log *zap.Logger) *messageKeystore {
 	return &messageKeystore{
 		preComputedKeysCount: 100,
 		store:                s,
+		lock:                 NewDebugMutex("message keystore", log),
 	}
 }
 
@@ -593,5 +633,5 @@ func newMessageKeystore(s datastore.Datastore) *messageKeystore {
 func newInMemMessageKeystore() (*messageKeystore, func()) {
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
 
-	return newMessageKeystore(ds), func() { _ = ds.Close() }
+	return newMessageKeystore(ds, nil), func() { _ = ds.Close() }
 }
