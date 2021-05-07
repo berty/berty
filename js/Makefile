@@ -353,11 +353,13 @@ _write_gen_sum:
 
 ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && $(GO) mod download
+	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	# Download required go-libtor deps if needed
 	../tool/build/shell/dl-go-libtor-ios.sh
 	mkdir -p ios/Frameworks
 	cd .. && \
+		PATH="$(PATH):`go env GOPATH`/bin" \
 		GO111MODULE=on \
 		LIBRARY_PATH="$(PWD)/ios/tor-deps/lib" \
 		CPATH="$(PWD)/ios/tor-deps/include" \
