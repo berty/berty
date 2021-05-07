@@ -8,7 +8,7 @@
 		"start": "react-native start",
 		"test": "jest",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-		"postinstall": "patch-package"
+		"postinstall": "patch-package && npx jetify"
 	},
 	"dependencies": {
 		"@eva-design/eva": "^2.0.0",
