@@ -1,15 +1,15 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "Сигурна peer-to-peer апликација за поруке која функционише са или без интернет приступа, мобилног интернета или поверења у мрежу",
+      "open-registered-account": "Отвори регистровани налог",
+      "import-button": "Унеси податке са постојећег налога",
+      "account-selector-create-button": "Направи нови налог",
+      "more-options": "Више опција",
+      "button": "ПОЧНИМО"
     },
     "select-mode": {
-      "title": "",
+      "title": "Изабери опцију",
       "change-later": "",
       "performance": {
         "title": "",
@@ -433,6 +433,11 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "add-members": {
+      "members": "",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
@@ -498,6 +503,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +598,10 @@
       "slide-to-cancel": "",
       "cancel-button": ""
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
