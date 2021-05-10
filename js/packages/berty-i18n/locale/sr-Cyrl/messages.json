@@ -10,38 +10,38 @@
     },
     "select-mode": {
       "title": "Изабери опцију",
-      "change-later": "",
+      "change-later": "Биће могућности да се промени касније!",
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Перформансе",
+        "desc": "Лако за коришћење - Све функције",
+        "push-notif": "Прими push нотификације",
+        "offline-message": "Без интернета порукање преко Bluetooth-а",
+        "add-contact": "Лако додај контакте",
+        "fast-message": "Најбржа достава порука"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
+        "title": "Пуна анонимност",
+        "desc": "За екстремно опрезне кориснике",
+        "disable-push-notif": "Push нотификације онемогућене",
+        "disable-local-peer-discovery": "Проналажење локалних peer-ова онемогућено",
         "disable-local-peer-discovery-desc": "",
-        "disable-contact-request": "",
-        "on-same-network": ""
+        "disable-contact-request": "Захтеви за контакт су онемогућени",
+        "on-same-network": "Локално на истој мрежи/wifi-у"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": "",
-      "import-account": ""
+      "title": "Направи свој налог",
+      "desc": "Име је једина потребна информација",
+      "required": "Потребно",
+      "placeholder": "Име",
+      "button": "НАПРАВИ МОЈ НАЛОГ",
+      "import-account": "Убаци стари налог"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
+      "header": "Повежи се(сигурносно) са сервисима",
+      "title": "Сервиси",
+      "recommended": "Препоручено",
+      "desc": "Ово ће аутоматски дуплирати твоје конверзације на сервер",
       "button": "",
       "skip": ""
     },
