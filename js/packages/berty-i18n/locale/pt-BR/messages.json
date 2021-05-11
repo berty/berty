@@ -433,6 +433,11 @@
       "erase-button": "Limpar conversa",
       "leave-button": "Sair do grupo"
     },
+    "add-members": {
+      "members": "Membros",
+      "contacts": "Contatos",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "Grupo QR"
     },
@@ -494,10 +499,15 @@
       "image-saved": "Imagem salva na Galeria"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
+      "title": "Mídias compartilhadas",
+      "medias": "Mídias",
       "links": "",
-      "documents": ""
+      "documents": "Documentos"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": "Respondeu para"
     }
   },
   "error": {
@@ -530,17 +540,17 @@
         "data-not-found": "",
         "action-delete": {
           "file-exists": "",
-          "account-exists": "",
+          "account-exists": "Conta {{accountId}} atualmente existente.",
           "directory-exists-load-error": "",
           "fs-read-error": "",
-          "actions-title": "",
+          "actions-title": "O que devemos fazer?",
           "action-account-manager": "",
           "action-account-manager-confirm": "Confirmar a exclusão da conta",
           "action-force-delete": "",
           "action-force-delete-confirm": "",
           "error-close": "",
           "error-delete": "",
-          "success-feedback": "",
+          "success-feedback": "Conta excluída",
           "action-cancel": "Cancelar"
         },
         "status": {
@@ -553,9 +563,9 @@
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
+            "name": "Nome: {{name}}",
+            "created": "Criado: {{created}}",
+            "opened": "Aberto:  {{opened}}",
             "error": "Erro: {{error}}"
           }
         }
@@ -565,7 +575,7 @@
         "header-reported": "Erro relatado:",
         "header-all-clear": "Nenhum erro relatado",
         "listing-files-failed": "Erro ao listar conteúdos do diretório",
-        "listing-accounts-failed": "",
+        "listing-accounts-failed": "Erro ao listar contas",
         "listing-accounts-failed-grpc": ""
       },
       "dump": {
@@ -588,5 +598,10 @@
       "slide-to-cancel": "<< Deslize para cancelar",
       "cancel-button": "Cancelar"
     }
+  },
+  "medias": {
+    "audio": "áudio",
+    "picture": "imagem",
+    "file": "arquivo"
   }
 }
