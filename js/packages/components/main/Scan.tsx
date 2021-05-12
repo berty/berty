@@ -6,6 +6,7 @@ import {
 	TouchableOpacity,
 	Vibration,
 	Text as TextNative,
+	StatusBar,
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
@@ -15,7 +16,7 @@ import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
 
 import ScanTarget from './scan_target.svg'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer.tsx'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -211,11 +212,12 @@ const ScanComponent: React.FC<any> = () => {
 }
 
 export const Scan: React.FC<{}> = () => {
-	const [{ flex }] = useStyles()
+	const [{ flex, color }] = useStyles()
 	const navigation = useNavigation()
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
+			<StatusBar backgroundColor={color.red} barStyle='light-content' />
 			<SwipeNavRecognizer
 				onSwipeRight={() => navigation.goBack()}
 				onSwipeLeft={() => navigation.goBack()}
