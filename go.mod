@@ -26,7 +26,7 @@ require (
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/eknkc/basex v1.0.1
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
-	github.com/fatih/color v1.10.0
+	github.com/fatih/color v1.11.0
 	github.com/gdamore/tcell v1.4.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.2.1
@@ -34,7 +34,6 @@ require (
 	github.com/gofrs/uuid v3.4.0+incompatible
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
-	github.com/google/gopacket v1.1.19 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/huandu/xstrings v1.3.2 // indirect
@@ -59,14 +58,13 @@ require (
 	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/libp2p/go-libp2p-discovery v0.5.0
-	github.com/libp2p/go-libp2p-kad-dht v0.11.1
+	github.com/libp2p/go-libp2p-kad-dht v0.12.0
 	github.com/libp2p/go-libp2p-noise v0.1.2 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.4.1
 	github.com/libp2p/go-libp2p-quic-transport v0.10.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
 	github.com/libp2p/go-libp2p-transport-upgrader v0.4.0
-	github.com/libp2p/go-netroute v0.1.4 // indirect
 	github.com/markbates/pkger v0.17.1
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/mdomke/git-semver/v5 v5.0.0
@@ -102,8 +100,7 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08
-	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
-	golang.org/x/text v0.3.4 // indirect
+	golang.org/x/net v0.0.0-20210423184538-5f58ad60dda6
 	golang.org/x/tools v0.1.0
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
@@ -121,7 +118,7 @@ require (
 	moul.io/u v1.22.0
 	moul.io/zapconfig v1.3.0
 	moul.io/zapfilter v1.6.1
-	moul.io/zapgorm2 v1.0.3
+	moul.io/zapgorm2 v1.1.0
 	moul.io/zapring v1.3.0
 	mvdan.cc/gofumpt v0.1.1
 	nhooyr.io/websocket v1.8.6 // indirect
