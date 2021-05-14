@@ -33,7 +33,7 @@ func replicationServerCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
-			var err error
+			manager.Session.Kind = "cmd.berty.replication"
 
 			if manager.Node.Protocol.AuthSecret == "" {
 				return fmt.Errorf("node.auth-secret cannot be empty")
@@ -43,6 +43,7 @@ func replicationServerCommand() *ffcli.Command {
 				return fmt.Errorf("node.auth-pk cannot be empty")
 			}
 
+			var err error
 			server, mux, err := manager.GetGRPCServer()
 			if err != nil {
 				return err

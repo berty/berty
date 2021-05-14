@@ -52,6 +52,7 @@ func daemonCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
+			manager.Session.Kind = "cmd.berty.daemon"
 			logger, err := manager.GetLogger()
 			if err != nil {
 				return err

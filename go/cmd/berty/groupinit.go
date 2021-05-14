@@ -43,6 +43,7 @@ func groupinitCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
+			// manager.Session.Kind = "cmd.berty.groupinit"
 			g, _, err := bertyprotocol.NewGroupMultiMember()
 			if err != nil {
 				return err

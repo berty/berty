@@ -48,6 +48,8 @@ func guiCommand() (*ffcli.Command, func() error) {
 				return flag.ErrHelp
 			}
 
+			manager.Session.Kind = "cmd.berty.gui"
+
 			// logger
 			logger, err := manager.GetLogger()
 			if err != nil {

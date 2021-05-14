@@ -70,6 +70,7 @@ func (i *integration) init() error {
 		return err
 	}
 
+	i.manager.Session.Kind = "cmd.berty-integration.main"
 	i.manager.Datastore.Dir = i.tempdir
 	i.manager.Logging.Format = "light-color"
 	i.manager.Logging.Filters = "warn:*,-ipfs.* error+:*" // (level==warn for everything except ipfs.*) || (levels >= error)

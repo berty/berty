@@ -45,6 +45,8 @@ func shareInviteCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
+			manager.Session.Kind = "cmd.berty.share-invite"
+
 			manager.DisableIPFSNetwork()
 
 			// messenger

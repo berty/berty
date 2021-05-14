@@ -36,6 +36,8 @@ func miniCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
+			manager.Session.Kind = "cmd.berty.mini"
+
 			// mini only supports file-based logging
 			if manager.Logging.Logfile == "" {
 				manager.Logging.Filters = ""
