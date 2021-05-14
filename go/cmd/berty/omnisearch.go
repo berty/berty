@@ -15,6 +15,8 @@ import (
 func omnisearchCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty omnisearch", flag.ExitOnError)
+		manager.Node.Preset = initutil.VolatilePreset
+		manager.SetLogger(zap.NewNop())
 		manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
 		manager.SetupDefaultGRPCListenersFlags(fs)
 		return fs, nil
@@ -37,10 +39,6 @@ berty omnisearch https://berty.tech/id#key=CiDnVU4YlFPkjTbSggoZAWbFdAIsnuv5qoruQ
 			if len(args) == 0 {
 				return flag.ErrHelp
 			}
-
-			manager.Node.Preset = initutil.VolatilePreset
-
-			manager.SetLogger(zap.NewNop())
 
 			rc, err := omnisearch.DefaultSearch(ctx, manager, args...)
 			if err != nil {

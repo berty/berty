@@ -14,7 +14,6 @@ import (
 	madns "github.com/multiformats/go-multiaddr-dns"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, error) {
@@ -59,12 +58,14 @@ func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, 
 	return &info, nil
 }
 
-func ParseAndResolveMaddrs(ctx context.Context, log *zap.Logger, addrs []string) ([]*peer.AddrInfo, error) {
+func ParseAndResolveMaddrs(ctx context.Context, logger *zap.Logger, addrs []string) ([]*peer.AddrInfo, error) {
 	// Resolve all addresses
 	outPeersUnmatched := make([]*peer.AddrInfo, len(addrs))
-	var errs error
-	var outLock sync.Mutex
-	var wg sync.WaitGroup
+	var (
+		errs    error
+		outLock sync.Mutex
+		wg      sync.WaitGroup
+	)
 	wg.Add(len(addrs))
 	for i, v := range addrs {
 		go func(j int, addr string) {
@@ -78,12 +79,15 @@ func ParseAndResolveMaddrs(ctx context.Context, log *zap.Logger, addrs []string)
 				return
 			}
 
-			fds := make([]zapcore.Field, len(rdvpeer.Addrs))
+			addrStrings := make([]string, len(rdvpeer.Addrs))
 			for i, maddr := range rdvpeer.Addrs {
-				key := fmt.Sprintf("#%d", i)
-				fds[i] = zap.String(key, maddr.String())
+				addrStrings[i] = maddr.String()
 			}
-			log.Debug("rdvp peer resolved addrs", fds...)
+			logger.Debug("rdvp peer resolved addrs",
+				zap.String("input", addr),
+				// zap.String("ID", rdvpeer.ID.Pretty()),
+				zap.Strings("addrs", addrStrings),
+			)
 			outPeersUnmatched[j] = rdvpeer
 		}(i, v)
 	}
