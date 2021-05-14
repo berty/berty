@@ -43,6 +43,21 @@ const (
 )
 
 type Manager struct {
+	// Session contains metadata for the current running session.
+	Session struct {
+		// Kind is a string describing the context of the app.
+		// When set, it is appended to the session-specific logging file.
+		// It follows the following format: '${driver}.${package}.${command}'.
+		// Examples:
+		//   cmd.berty.daemon                -> `go run ./cmd/berty daemon`
+		//   cmd.berty.mini                  -> `go run ./cmd/berty mini`
+		//   cmd.rdvp.main                   -> `go run ./cmd/rdvp`
+		//   framework.bertybridge.messenger -> Berty Messenger app using the bertybridge
+		Kind string `json:"Kind,omitempty"`
+
+		// ID is an auto-generated UUID that can be used by Tyber.
+		ID string `json:"ID,omitempty"`
+	} `json:"Session,omitempty"`
 	Logging struct {
 		Format      string `json:"Format,omitempty"`
 		Logfile     string `json:"Logfile,omitempty"`
@@ -155,7 +170,6 @@ type Manager struct {
 		} `json:"GRPC,omitempty"`
 	} `json:"Node,omitempty"`
 	InitTimeout time.Duration `json:"InitTimeout,omitempty"`
-	SessionID   string        `json:"sessionID,omitempty"`
 
 	// internal
 	ctx        context.Context
@@ -190,8 +204,7 @@ func New(ctx context.Context) (*Manager, error) {
 	m.Logging.TyberHost = ""
 
 	// generate SessionID using uuidv4 to identify each run
-
-	m.SessionID = tyber.NewSessionID()
+	m.Session.ID = tyber.NewSessionID()
 
 	// storage path
 	{
