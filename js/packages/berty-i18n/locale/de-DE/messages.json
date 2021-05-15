@@ -433,6 +433,11 @@
       "erase-button": "Unterhaltung löschen",
       "leave-button": "Gruppe verlassen"
     },
+    "add-members": {
+      "members": "Mitglieder",
+      "contacts": "Kontakte",
+      "add": "Hinzufügen!"
+    },
     "multi-member-qr": {
       "title": "QR-Gruppe"
     },
@@ -498,6 +503,11 @@
       "medias": "Medien",
       "links": "Links",
       "documents": "Dokumente"
+    },
+    "reply": {
+      "response-to": "Antwort an",
+      "replying-to": "Du antwortest an",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +598,10 @@
       "slide-to-cancel": "Streichen um abbzubrechen",
       "cancel-button": "Abbrechen"
     }
+  },
+  "medias": {
+    "audio": "Audio",
+    "picture": "Bild",
+    "file": "Datei"
   }
 }
