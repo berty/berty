@@ -70,6 +70,7 @@ GEM
     nap (1.1.0)
     netrc (0.11.0)
     public_suffix (4.0.6)
+    rexml (3.2.5)
     ruby-macho (1.4.0)
     thread_safe (0.3.6)
     typhoeus (1.4.0)
@@ -88,6 +89,7 @@ PLATFORMS
 
 DEPENDENCIES
   cocoapods (~> 1.10.O)
+  rexml (~> 3.2)
 
 BUNDLED WITH
-   2.1.4
+   2.2.15
