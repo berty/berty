@@ -1,0 +1,31 @@
+peers:
+    - name: test peers
+      amount: 1
+      groups:
+        - name: group1
+        - name: group2
+      connections:
+        - name: connection_1
+          to: internet
+          protocol: tcp
+
+#tokenServer:
+#    - name: token server
+#      amount: 1
+#      groups:
+#        - name: group1
+#      connections:
+#          - name: connection 1
+#            to: internet
+#            protocol: tcp
+#
+#replicationServer:
+#    - name: repl server
+#      amount: 1
+#      groups:
+#          - name: group1
+#      connections:
+#          - name: connection 1
+#            to: internet
+#            protocol: tcp
+

@@ -1,0 +1,102 @@
+package ec2
+
+import (
+	"errors"
+	"fmt"
+	"github.com/google/uuid"
+	"infratesting/composeTerraform"
+	"infratesting/composeTerraform/components/networking"
+)
+
+type Instance struct {
+	Name         string
+	Ami          string
+	InstanceType string
+	KeyName      string
+
+	RootBlockDevice RootBlockDevice
+	UserData string
+
+	NodeType NodeType
+
+	// NETWORKING
+	NetworkInterfaces          []*networking.NetworkInterface
+	NetworkInterfaceAttachment []NetworkInterfaceAttachment
+
+
+}
+
+type NodeType interface {
+	ExecuteTemplate() (string, error)
+}
+
+
+type NetworkInterfaceAttachment struct {
+	DeviceIndex        int
+	NetworkInterfaceId string
+}
+
+func NewInstance() Instance {
+	// with defaults in place
+	return Instance{
+		Name:         fmt.Sprintf("%s-%s", Ec2NamePrefix, uuid.NewString()),
+		Ami:          Ec2InstanceAmiDefault,
+		InstanceType: Ec2InstanceTypeDefault,
+		KeyName:      Ec2InstanceKeyNameDefault,
+
+		RootBlockDevice: NewRootBlockDevice(),
+	}
+}
+
+func NewInstanceWithAttributes(ni *networking.NetworkInterface) (c Instance) {
+	c = NewInstance()
+	c.NetworkInterfaces = []*networking.NetworkInterface {
+		ni,
+	}
+
+	return c
+}
+
+func (c Instance) GetTemplates() []string {
+	return []string{
+		Ec2HCLTemplate,
+	}
+}
+
+func (c Instance) GetType() string {
+	return Ec2Type
+}
+
+func (c Instance) GetPrivateIp() string {
+	return fmt.Sprintf("aws_instance.%s.private_ip", c.Name)
+}
+
+func (c Instance) Validate() (composeTerraform.HCLComponent, error) {
+
+	// checks if NetworkInterface is attached/configured
+	if len(c.NetworkInterfaces) > 0 {
+		// generates NetworkInterfaceAttachment form c.NetworkInterfaces
+		for i, ni := range c.NetworkInterfaces {
+			var nia = NetworkInterfaceAttachment{
+				DeviceIndex:        i,
+				NetworkInterfaceId: ni.GetId(),
+			}
+			c.NetworkInterfaceAttachment = append(c.NetworkInterfaceAttachment, nia)
+		}
+	} else {
+		return c, errors.New(Ec2ErrNoNetworkConfigured)
+	}
+
+	// checks RootBlockDevice size
+	// we don't check the VolumeType because it doesn't really matter for now
+	if c.RootBlockDevice.VolumeSize < 8 {
+		return c, errors.New(Ec2ErrRootBlockDeviceTooSmall)
+	}
+
+	if c.NodeType != nil {
+		c.UserData, _ = c.NodeType.ExecuteTemplate()
+	}
+
+
+	return c, nil
+}

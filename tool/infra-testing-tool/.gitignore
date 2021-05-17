@@ -1,0 +1,6 @@
+# Terraform output
+.terraform.*
+terraform.*
+.terraform/
+
+THOUGHTS.md
