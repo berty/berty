@@ -9,7 +9,6 @@ func NewRootBlockDevice() RootBlockDevice {
 	return RootBlockDevice{
 		VolumeType: rootBlockDeviceTypeDefault,
 		VolumeSize: rootBlockDeviceSizeDefault,
-
 	}
 }
 

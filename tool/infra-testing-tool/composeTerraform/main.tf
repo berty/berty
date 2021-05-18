@@ -1,38 +1,40 @@
 provider "aws" {
-  region = "eu-central-1"
+    region = "eu-central-1"
 }
 
+
 resource "aws_vpc" "connection_1" {
-    cidr_block = "10.0.1.0/24"
+    cidr_block = "10.1.0.0/16"
     enable_dns_hostnames = true
     enable_dns_support = true
 }
 
 
-resource "aws_subnet" subnet-30c4d05a-0d79-4b73-804a-6388f99d2278 {
+resource "aws_subnet" subnet-7e09af42-e282-4048-972a-2fcd3f5e9e8f {
     vpc_id = aws_vpc.connection_1.id
     cidr_block = "10.0.1.0/24"
+    availability_zone = "eu-central-1a"
     map_public_ip_on_launch = true
 }
 
 
-resource "aws_internet_gateway" "igateway-f81220f2-097d-4098-b95e-5cf998845640" {
+resource "aws_internet_gateway" "igateway-83a2fe52-6a9f-4735-b496-0701d77b559c" {
     vpc_id = aws_vpc.connection_1.id
 }
 
 
-resource "aws_default_route_table" "rt-cba77743-a645-45fd-b0a5-ce73e8ad00b9" {
+resource "aws_default_route_table" "rt-505ac9b9-9b7d-4084-98f9-1fda19375c87" {
     default_route_table_id = aws_vpc.connection_1.default_route_table_id
 
     route {
         cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.igateway-f81220f2-097d-4098-b95e-5cf998845640.id
+        gateway_id = aws_internet_gateway.igateway-83a2fe52-6a9f-4735-b496-0701d77b559c.id
     }
 }
 
 
-resource "aws_security_group" "secgr-47002daf-5c07-4626-9e1f-25bb5c7e97d4" {
-    name = "secgr-47002daf-5c07-4626-9e1f-25bb5c7e97d4"
+resource "aws_security_group" "secgr-35e2978f-a576-41b6-a240-d00e42dcdadb" {
+    name = "secgr-35e2978f-a576-41b6-a240-d00e42dcdadb"
     vpc_id = aws_vpc.connection_1.id
 
     ingress {
@@ -66,17 +68,21 @@ resource "aws_security_group" "secgr-47002daf-5c07-4626-9e1f-25bb5c7e97d4" {
 }
 
 
-resource "aws_network_interface" "ni-92f71220-7e3d-4720-b1ed-c2de2d2ab582" {
-    subnet_id = aws_subnet.subnet-30c4d05a-0d79-4b73-804a-6388f99d2278.id
+resource "aws_network_interface" "ni-3945d610-5460-47c1-98a7-c8fdeccb2f75" {
+    subnet_id = aws_subnet.subnet-7e09af42-e282-4048-972a-2fcd3f5e9e8f.id
     security_groups = [
-        aws_security_group.secgr-47002daf-5c07-4626-9e1f-25bb5c7e97d4.id,
+        aws_security_group.secgr-35e2978f-a576-41b6-a240-d00e42dcdadb.id,
     ]
 }
 
-resource "aws_instance" "ec2-1a829a28-3c07-4000-98e3-4bc0608ca7ce" {
+resource "aws_instance" "test_peers" {
     ami = "ami-018917cd40aae0c4e"
     instance_type = "t2.micro"
     key_name = "berty_key"
+
+    // availability zone
+
+    availability_zone = "eu-central-1a"
 
     // root block device
     root_block_device {
@@ -87,11 +93,7 @@ resource "aws_instance" "ec2-1a829a28-3c07-4000-98e3-4bc0608ca7ce" {
     // networking
     network_interface {
         device_index = 0
-        network_interface_id = aws_network_interface.ni-92f71220-7e3d-4720-b1ed-c2de2d2ab582.id
+        network_interface_id = aws_network_interface.ni-3945d610-5460-47c1-98a7-c8fdeccb2f75.id
     }
 
 }
-
-
-
-

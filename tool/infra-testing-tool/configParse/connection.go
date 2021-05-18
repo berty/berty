@@ -1,15 +1,12 @@
 package configParse
 
 import (
+	"errors"
+	"fmt"
 	"infratesting/composeTerraform"
 	"infratesting/composeTerraform/components/networking"
 	"strings"
 )
-
-var (
-	connections = make(map[string]Connection)
-	HCLConnectionComponents = make(map[string][]composeTerraform.HCLComponent)
-	)
 
 type Connection struct {
 	Name     string `yaml:"name"`
@@ -17,53 +14,55 @@ type Connection struct {
 	Protocol string `yaml:"protocol"`
 
 	connType string
-	Hcl		 map[string][]composeTerraform.HCLComponent
 }
 
 const (
 	ConnTypeInternet = "internet"
-	ConnTypeLan = "lan"
+	ConnTypeLan      = "lan"
 )
 
-func (n Node) ParseConnections() {
-	for _, con := range n.Connections {
-		connections[con.To] = con
-	}
-}
+// Validate validates the connections
+func (c *Connection) Validate() error {
 
-func (c *Connection) Validate() bool {
+	// replace spaces in name
+	// would cause error in terraform otherwise
 	c.Name = strings.ReplaceAll(c.Name, " ", "_")
 
-	return true
-}
-
-func (c *Connection) ParseConnectionType() {
-	a := strings.Split(c.To, "_")
-
-	switch a[0] {
+	switch strings.Split(c.To, "_")[0] {
 	case ConnTypeInternet:
 		c.connType = ConnTypeInternet
 	case ConnTypeLan:
 		c.connType = ConnTypeLan
 	default:
-		c.connType = ""
+		return errors.New("no valid connection type")
 	}
+
+	return nil
 }
 
+func (c *Connection) composeComponents() {
+	var components []composeTerraform.Component
 
-func (c *Connection) MakeHCLComponents() {
 
-	// abstraction to make it cleaner.
-	// gets merged back in the end
-	components := HCLConnectionComponents[c.To]
+	if VPC == nil {
+		vpc := networking.NewVpc()
+		vpc.Name = c.Name
+		components = append(components, vpc)
 
-	vpc := networking.NewVpc()
-	vpc.Name = c.Name
-	components = append(components, vpc)
+		VPC = vpc
+	}
+
+	vpc := VPC.(networking.Vpc)
+
 
 	subnet := networking.NewSubnetWithAttributes(&vpc)
+	subnet.CidrBlock = fmt.Sprintf("10.0.%v.0/24", countSubnets())
+
 	components = append(components, subnet)
 
+	// we only need these types if it's actually connected to the internet
+	// CAUTION!
+	// this will also not allow you to SSH into the peer
 	if c.connType == ConnTypeInternet {
 		ig := networking.NewInternetGatewayWithAttributes(&vpc)
 		components = append(components, ig)
@@ -75,17 +74,18 @@ func (c *Connection) MakeHCLComponents() {
 	sg := networking.NewSecurityGroupWithAttributes(&vpc)
 	components = append(components, sg)
 
-	HCLConnectionComponents[c.To] = components
-}
-
-func (c Connection) GetHCLComponents() (hcl []composeTerraform.HCLComponent){
-	for key, _ := range c.Hcl {
-		for _, value := range c.Hcl[key] {
-			hcl = append(hcl, value)
-		}
+	// range over components, append them to ConnectionComponents
+	for _, component := range components {
+		ConnectionComponents[c.To] = append(ConnectionComponents[c.To], component)
 	}
-
-	return hcl
 }
 
+func countSubnets() int {
+	// ConnectionComponents will always represent the amount of subnets
+	// as there is a maximum and minimum of 1 subnet per network stack
+	// we add one because ie: 10.0.0.0/24 is not a valid CIDR on AWS
+	return len(ConnectionComponents) + 1
+}
 
+// TODO:
+// write better CIDR construction function

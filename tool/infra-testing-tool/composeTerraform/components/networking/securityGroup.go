@@ -30,10 +30,8 @@ func NewSecurityGroupWithAttributes(vpc *Vpc) (c SecurityGroup) {
 	return c
 }
 
-func (c SecurityGroup) GetTemplates() []string {
-	return []string{
-		SecurityGroupHCLTemplate,
-	}
+func (c SecurityGroup) GetTemplate() string {
+	return SecurityGroupHCLTemplate
 }
 
 func (c SecurityGroup) GetId() string {
@@ -44,7 +42,7 @@ func (c SecurityGroup) GetType() string {
 	return SecurityGroupType
 }
 
-func (c SecurityGroup) Validate() (composeTerraform.HCLComponent, error) {
+func (c SecurityGroup) Validate() (composeTerraform.Component, error) {
 	if c.Vpc == nil {
 		if c.VpcId == "" {
 			return c, errors.New(SecurityGroupErrNoVpc)

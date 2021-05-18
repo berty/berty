@@ -32,10 +32,8 @@ func NewNetworkInterfaceWithAttributes(subnet *Subnet, sg *SecurityGroup) (c Net
 	return c
 }
 
-func (c NetworkInterface) GetTemplates() []string {
-	return []string{
-		NetworkInterfaceHCLTemplate,
-	}
+func (c NetworkInterface) GetTemplate() string {
+	return NetworkInterfaceHCLTemplate
 }
 
 func (c NetworkInterface) GetId() string {
@@ -46,7 +44,11 @@ func (c NetworkInterface) GetType() string {
 	return NetworkInterfaceType
 }
 
-func (c NetworkInterface) Validate() ( composeTerraform.HCLComponent, error) {
+func (c NetworkInterface) GetAvailabilityZone() string {
+	return c.Subnet.AvailabilityZone
+}
+
+func (c NetworkInterface) Validate() (composeTerraform.Component, error) {
 
 	// Subnet
 	if c.Subnet == nil {

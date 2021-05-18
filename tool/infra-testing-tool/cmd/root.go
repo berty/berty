@@ -8,7 +8,7 @@ import (
 var (
 	File string
 
-	rootCmd = &cobra.Command {
+	rootCmd = &cobra.Command{
 		Use: "infra",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("yahoo")
@@ -22,7 +22,6 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(resourcesCmd)
-
 
 	rootCmd.PersistentFlags().StringVarP(&File, "file", "f", "", "config file to generate from")
 

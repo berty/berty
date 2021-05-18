@@ -14,22 +14,21 @@ type Instance struct {
 	InstanceType string
 	KeyName      string
 
+	AvailabilityZone string
+
 	RootBlockDevice RootBlockDevice
-	UserData string
+	UserData        string
 
 	NodeType NodeType
 
 	// NETWORKING
 	NetworkInterfaces          []*networking.NetworkInterface
 	NetworkInterfaceAttachment []NetworkInterfaceAttachment
-
-
 }
 
 type NodeType interface {
 	ExecuteTemplate() (string, error)
 }
-
 
 type NetworkInterfaceAttachment struct {
 	DeviceIndex        int
@@ -50,17 +49,15 @@ func NewInstance() Instance {
 
 func NewInstanceWithAttributes(ni *networking.NetworkInterface) (c Instance) {
 	c = NewInstance()
-	c.NetworkInterfaces = []*networking.NetworkInterface {
+	c.NetworkInterfaces = []*networking.NetworkInterface{
 		ni,
 	}
 
 	return c
 }
 
-func (c Instance) GetTemplates() []string {
-	return []string{
-		Ec2HCLTemplate,
-	}
+func (c Instance) GetTemplate() string {
+	return Ec2HCLTemplate
 }
 
 func (c Instance) GetType() string {
@@ -71,7 +68,7 @@ func (c Instance) GetPrivateIp() string {
 	return fmt.Sprintf("aws_instance.%s.private_ip", c.Name)
 }
 
-func (c Instance) Validate() (composeTerraform.HCLComponent, error) {
+func (c Instance) Validate() (composeTerraform.Component, error) {
 
 	// checks if NetworkInterface is attached/configured
 	if len(c.NetworkInterfaces) > 0 {
@@ -83,8 +80,22 @@ func (c Instance) Validate() (composeTerraform.HCLComponent, error) {
 			}
 			c.NetworkInterfaceAttachment = append(c.NetworkInterfaceAttachment, nia)
 		}
+	} else if len(c.NetworkInterfaces) > 2 && c.InstanceType == Ec2InstanceTypeDefault {
+		// more than 2 network interfaces on a t2.micro is not allowed
+		return c, errors.New(Ec2ErrTooManyNetworkInterfaces)
 	} else {
-		return c, errors.New(Ec2ErrNoNetworkConfigured)
+		// can't have no network interfaces, there is just no point
+		return c, errors.New(Ec2ErrNoNetworkInterfaceConfigured)
+	}
+
+	// checks if all network interfaces are on the same Availability Zone
+	for _, networkInterface := range c.NetworkInterfaces {
+		if c.AvailabilityZone == "" {
+			c.AvailabilityZone = networkInterface.GetAvailabilityZone()
+		} else if c.AvailabilityZone != networkInterface.GetAvailabilityZone() {
+			return c, errors.New(Ec2ErrNetworkInterfaceAZMismatch)
+		}
+
 	}
 
 	// checks RootBlockDevice size
@@ -96,7 +107,6 @@ func (c Instance) Validate() (composeTerraform.HCLComponent, error) {
 	if c.NodeType != nil {
 		c.UserData, _ = c.NodeType.ExecuteTemplate()
 	}
-
 
 	return c, nil
 }

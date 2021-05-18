@@ -7,11 +7,15 @@ const (
 resource "aws_subnet" {{.Name }} {
   vpc_id = {{.VpcId }}
   cidr_block = "{{.CidrBlock }}"
+  availability_zone = "{{.AvailabilityZone }}"
   map_public_ip_on_launch = true
 }
 `
 	// SubnetCidrBlockDefault is the default value for CidrBlock
 	SubnetCidrBlockDefault = "10.0.1.0/24"
+
+	// SubnetAvailabilityZoneDefault is the default availability zone
+	SubnetAvailabilityZoneDefault = "eu-central-1a"
 
 	// SubnetNamePrefix is the prefix for the subnet type
 	SubnetNamePrefix = "subnet"

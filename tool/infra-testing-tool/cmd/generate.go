@@ -18,14 +18,7 @@ var (
 				return err
 			}
 
-
 			return nil
 		},
 	}
 )
-
-
-func Spoop(c configParse.Config) {
-
-}
-

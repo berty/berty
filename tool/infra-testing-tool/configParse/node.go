@@ -1,9 +1,12 @@
 package configParse
 
 import (
-	"infratesting/composeTerraform"
+	"bytes"
+	"html/template"
 	"infratesting/composeTerraform/components/ec2"
 	"infratesting/composeTerraform/components/networking"
+	"reflect"
+	"strings"
 )
 
 const (
@@ -12,55 +15,107 @@ const (
 	NodeTypeTokenServer
 )
 
-var HCLNodeComponents []composeTerraform.HCLComponent
-
 type Node struct {
-	Name string `yaml:"name"`
-	Amount int `yaml:"amount"`
-	Groups []Group `yaml:"groups"`
+	Name        string       `yaml:"name"`
+	Amount      int          `yaml:"amount"`
+	Groups      []Group      `yaml:"groups"`
 	Connections []Connection `yaml:"connections"`
+
 	nodeType int
 }
 
-func (c *Config) ParseNodeTypes() {
-	for _, peer := range c.Peers {
-		peer.nodeType = NodeTypePeer
-	}
+func (c *Node) validate() bool {
 
-	for _, replicationServer := range c.ReplicationServers {
-		replicationServer.nodeType = NodeTypeReplicationSever
-	}
+	// replace spaces in name
+	// would cause error in terraform otherwise
+	c.Name = strings.ReplaceAll(c.Name, " ", "_")
 
-	for _, tokenServer := range c.TokenServers {
-		tokenServer.nodeType = NodeTypeTokenServer
+	return true
+}
+
+// ParseConnections takes the connection, adds it to the global connections
+func (c Node) parseConnections() {
+	for _, con := range c.Connections {
+		connections[con.To] = con
 	}
 }
 
-
-func (n Node) MakeHCLComponents() {
-	for _, connection := range n.Connections {
+//
+func (c Node) composeComponents() {
+	var networkInterfaces []*networking.NetworkInterface
+	for _, connection := range c.Connections {
 		key := connection.To
-		networkStack := HCLConnectionComponents[key]
+		networkStack := ConnectionComponents[key]
 
+		var assignedSecurityGroup networking.SecurityGroup
+		var assignedSubnet networking.Subnet
 
-		var assignedSecurityGroup = networking.SecurityGroup{}
-		var assignedSubnet = networking.Subnet{}
-
-		for _, HCLComponent := range networkStack {
-			if HCLComponent.GetType() == networking.SecurityGroupType {
-				assignedSecurityGroup = HCLComponent.(networking.SecurityGroup)
+		for _, component := range networkStack {
+			if component.GetType() == networking.SecurityGroupType {
+				assignedSecurityGroup = component.(networking.SecurityGroup)
 			}
 
-			if HCLComponent.GetType() == networking.SubnetType {
-				assignedSubnet = HCLComponent.(networking.Subnet)
+			if component.GetType() == networking.SubnetType {
+				assignedSubnet = component.(networking.Subnet)
 			}
 		}
 
 		ni := networking.NewNetworkInterfaceWithAttributes(&assignedSubnet, &assignedSecurityGroup)
-		HCLNodeComponents = append(HCLNodeComponents, ni)
-
-		instance := ec2.NewInstanceWithAttributes(&ni)
-		HCLNodeComponents = append(HCLNodeComponents, instance)
-
+		networkInterfaces = append(networkInterfaces, &ni)
+		NodeComponents = append(NodeComponents, ni)
 	}
+
+	instance := ec2.NewInstance()
+	instance.Name = c.Name
+	instance.NetworkInterfaces = networkInterfaces
+
+	var err error
+	instance.UserData, err = c.GenerateUserData()
+	if err != nil {
+		panic(err)
+	}
+
+	NodeComponents = append(NodeComponents, instance)
+
+}
+
+func (c Node) GenerateUserData() (string, error) {
+
+	switch c.nodeType {
+	case NodeTypeTokenServer:
+		return "", nil
+	case NodeTypeReplicationSever:
+		return "", nil
+	case NodeTypePeer:
+		return "", nil
+	default:
+		return "", nil
+	}
+
+}
+
+func (c Node) ExecuteTemplate() (string, error) {
+	v := reflect.ValueOf(c)
+	values := make(map[string]interface{}, v.NumField())
+	for i := 0; i < v.NumField(); i++ {
+		if v.Field(i).CanInterface() {
+			values[v.Type().Field(i).Name] = v.Field(i).Interface()
+		}
+	}
+
+	// template
+	var templ string
+
+	var s string
+
+	t := template.Must(template.New("").Parse(templ))
+	buf := &bytes.Buffer{}
+	err := t.Execute(buf, values)
+	if err != nil {
+		return s, err
+	}
+
+	s += buf.String()
+
+	return s, nil
 }

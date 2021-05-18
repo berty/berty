@@ -11,7 +11,7 @@ resource "aws_vpc" "{{.Name }}" {
 }
 `
 	// VpcCidrBlockDefault is the default value for CidrBlock
-	VpcCidrBlockDefault = "10.0.1.0/24"
+	VpcCidrBlockDefault = "10.1.0.0/16"
 
 	// VpcNamePrefix is the prefix for the Vpc type
 	VpcNamePrefix = "vpc"

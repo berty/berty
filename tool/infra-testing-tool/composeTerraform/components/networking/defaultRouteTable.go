@@ -22,24 +22,22 @@ func NewDefaultRouteTable() DefaultRouteTable {
 }
 
 func NewDefaultRouteTableWithAttributes(vpc *Vpc, ig *InternetGateway) (c DefaultRouteTable) {
-	c  = NewDefaultRouteTable()
+	c = NewDefaultRouteTable()
 	c.Vpc = vpc
 	c.InternetGateway = ig
 
 	return c
 }
 
-func (c DefaultRouteTable) GetTemplates() []string {
-	return []string{
-		DefaultRouteTableHCLTemplate,
-	}
+func (c DefaultRouteTable) GetTemplate() string {
+	return DefaultRouteTableHCLTemplate
 }
 
 func (c DefaultRouteTable) GetType() string {
 	return DefaultRouteTableType
 }
 
-func (c DefaultRouteTable) Validate() (composeTerraform.HCLComponent, error) {
+func (c DefaultRouteTable) Validate() (composeTerraform.Component, error) {
 
 	if c.Vpc == nil {
 		if c.VpcDefaultRouteTableId == "" {

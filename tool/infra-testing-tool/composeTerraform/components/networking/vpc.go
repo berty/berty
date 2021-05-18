@@ -19,10 +19,8 @@ func NewVpc() Vpc {
 	}
 }
 
-func (c Vpc) GetTemplates() []string {
-	return []string{
-		VpcHCLTemplate,
-	}
+func (c Vpc) GetTemplate() string {
+	return VpcHCLTemplate
 }
 
 func (c Vpc) GetId() string {
@@ -37,8 +35,7 @@ func (c Vpc) GetType() string {
 	return VpcType
 }
 
-
-func (c Vpc) Validate() (composeTerraform.HCLComponent, error) {
+func (c Vpc) Validate() (composeTerraform.Component, error) {
 	// Validate CidrBlock
 	_, _, err := net.ParseCIDR(c.CidrBlock)
 	if err != nil {

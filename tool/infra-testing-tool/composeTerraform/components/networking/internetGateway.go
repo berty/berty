@@ -26,10 +26,8 @@ func NewInternetGatewayWithAttributes(vpc *Vpc) (c InternetGateway) {
 	return c
 }
 
-func (c InternetGateway) GetTemplates() []string {
-	return []string{
-		InternetGatewayHCLTemplate,
-	}
+func (c InternetGateway) GetTemplate() string {
+	return InternetGatewayHCLTemplate
 }
 
 func (c InternetGateway) GetId() string {
@@ -40,7 +38,7 @@ func (c InternetGateway) GetType() string {
 	return InternetGatewayType
 }
 
-func (c InternetGateway) Validate() (composeTerraform.HCLComponent, error) {
+func (c InternetGateway) Validate() (composeTerraform.Component, error) {
 
 	if c.Vpc == nil {
 		if c.VpcId == "" {
