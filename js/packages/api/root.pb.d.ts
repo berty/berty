@@ -2631,10 +2631,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    cid?: (Uint8Array|null);
                 }
 
                 class Reply implements IReply {
 
+                    public cid: Uint8Array;
                     public static create(properties?: berty.protocol.v1.AppMetadataSend.IReply): berty.protocol.v1.AppMetadataSend.Reply;
                     public static encode(message: berty.protocol.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4311,6 +4313,7 @@ export namespace berty {
             ErrMessengerDeepLinkRequiresPassphrase = 2001,
             ErrMessengerDeepLinkInvalidPassphrase = 2002,
             ErrMessengerStreamEvent = 2003,
+            ErrMessengerContactMetadataUnmarshal = 2004,
             ErrDBEntryAlreadyExists = 2100,
             ErrDBAddConversation = 2101,
             ErrDBAddContactRequestOutgoingSent = 2102,
@@ -4324,6 +4327,8 @@ export namespace berty {
             ErrAttachmentPrepare = 2300,
             ErrAttachmentRetrieve = 2301,
             ErrProtocolSend = 2302,
+            ErrProtocolEventUnmarshal = 2303,
+            ErrProtocolGetGroupInfo = 2304,
             ErrTestEcho = 2401,
             ErrTestEchoRecv = 2402,
             ErrTestEchoSend = 2403,

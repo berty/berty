@@ -16,12 +16,19 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 type dbWrapper struct {
 	db         *gorm.DB
 	log        *zap.Logger
+	ctx        context.Context
 	disableFTS bool
+	inTx       bool
+}
+
+func (d *dbWrapper) logStep(text string, muts ...tyber.StepMutator) {
+	tyber.LogStep(d.ctx, d.log, text, muts...)
 }
 
 func isFTS5Enabled(db *gorm.DB) (bool, error) {
@@ -77,6 +84,8 @@ func newDBWrapper(db *gorm.DB, log *zap.Logger) *dbWrapper {
 		db:         db,
 		log:        log,
 		disableFTS: !fts5Enabled,
+		ctx:        context.TODO(),
+		inTx:       false,
 	}
 }
 
@@ -85,6 +94,8 @@ func (d *dbWrapper) DisableFTS() *dbWrapper {
 		db:         d.db,
 		log:        d.log,
 		disableFTS: true,
+		ctx:        d.ctx,
+		inTx:       d.inTx,
 	}
 }
 
@@ -158,10 +169,22 @@ func isSQLiteError(err error, sqliteErr sqlite3.ErrNo) bool {
 	return e.Code == sqliteErr
 }
 
-func (d *dbWrapper) tx(txFunc func(*dbWrapper) error) error {
+func (d *dbWrapper) tx(ctx context.Context, txFunc func(*dbWrapper) error) (err error) {
+	if !d.inTx {
+		tctx, _, endSection := tyber.Section(ctx, d.log, "Starting database transaction")
+		ctx = tctx
+		defer func() {
+			if err == nil {
+				endSection(nil, "Database transaction succeeded")
+			} else {
+				endSection(err, "Database transaction failed")
+			}
+		}()
+	}
+
 	// Use this to propagate scope, ie. opened account
 	return d.db.Transaction(func(tx *gorm.DB) error {
-		return txFunc(&dbWrapper{db: tx, log: d.log, disableFTS: d.disableFTS})
+		return txFunc(&dbWrapper{ctx: ctx, db: tx, log: d.log, disableFTS: d.disableFTS, inTx: true})
 	})
 }
 
@@ -174,16 +197,15 @@ func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*messe
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no contact public key specified"))
 	}
 
-	if err := d.tx(func(tx *dbWrapper) error {
-		conversation := &messengertypes.Conversation{
-			PublicKey:        groupPK,
-			ContactPublicKey: contactPK,
-			Type:             messengertypes.Conversation_ContactType,
-			DisplayName:      "", // empty on account conversations
-			Link:             "", // empty on account conversations
-			CreatedDate:      timestampMs(time.Now()),
-		}
-
+	conversation := &messengertypes.Conversation{
+		PublicKey:        groupPK,
+		ContactPublicKey: contactPK,
+		Type:             messengertypes.Conversation_ContactType,
+		DisplayName:      "", // empty on account conversations
+		Link:             "", // empty on account conversations
+		CreatedDate:      timestampMs(time.Now()),
+	}
+	if err := d.tx(d.ctx, func(tx *dbWrapper) error {
 		// Check if a conversation already exists for this contact with another pk (or for this conversation pk and another contact)
 		{
 			count := int64(0)
@@ -209,7 +231,12 @@ func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*messe
 		return nil, err
 	}
 
-	return d.getConversationByPK(groupPK)
+	finalConv, err := d.getConversationByPK(groupPK)
+	if err != nil {
+		return nil, err
+	}
+	d.logStep("Maybed added conversation to db", tyber.WithJSONDetail("ConversationToSave", conversation), tyber.WithJSONDetail("FinalConversation", finalConv))
+	return finalConv, nil
 }
 
 func (d *dbWrapper) addConversation(groupPK string) (*messengertypes.Conversation, error) {
@@ -231,7 +258,13 @@ func (d *dbWrapper) addConversation(groupPK string) (*messengertypes.Conversatio
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
-	return d.getConversationByPK(groupPK)
+	finalConv, err := d.getConversationByPK(groupPK)
+	if err != nil {
+		return nil, err
+	}
+
+	d.logStep("Added conversation to db", tyber.WithJSONDetail("ConversationToCreate", conversation), tyber.WithJSONDetail("FinalConversation", finalConv))
+	return finalConv, nil
 }
 
 func (d *dbWrapper) updateConversation(c messengertypes.Conversation) (bool, error) {
@@ -282,6 +315,11 @@ func (d *dbWrapper) updateConversation(c messengertypes.Conversation) (bool, err
 		return isNew, errcode.ErrInternal.Wrap(err)
 	}
 
+	text := "Added conversation to db"
+	if !isNew {
+		text = "Updated conversation in db"
+	}
+	d.logStep(text, tyber.WithJSONDetail("Conversation", c), tyber.WithJSONDetail("Columns", columns))
 	return isNew, nil
 }
 
@@ -317,10 +355,11 @@ func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, event
 		return errcode.ErrDBWrite.Wrap(fmt.Errorf("record not found"))
 	}
 
+	d.logStep("Updated conversation in db", tyber.WithJSONDetail("Updates", updates))
 	return nil
 }
 
-func (d *dbWrapper) addAccount(pk, link string) error {
+func (d *dbWrapper) firstOrCreateAccount(pk, link string) error {
 	if pk == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
@@ -361,6 +400,7 @@ func (d *dbWrapper) updateAccount(pk, url, displayName, avatarCID string) (*mess
 		return nil, tx.Error
 	}
 
+	d.logStep("Updated account in db", tyber.WithJSONDetail("AfterUpdate", acc))
 	return acc, nil
 }
 
@@ -604,6 +644,7 @@ func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, co
 	// TODO: better handle case where the state is "IncomingRequest", should end up as in "Established" state in this case IMO
 	// }
 
+	d.logStep("Added contact to db", tyber.WithDetail("ContactPublicKey", contactPK), tyber.WithDetail("ContactDisplayName", displayName), tyber.WithDetail("ConversationPublicKey", convPK), tyber.WithJSONDetail("FinalContact", contact))
 	return contact, tx.Error
 }
 
@@ -611,8 +652,6 @@ func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*messengert
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
-
-	contact := &messengertypes.Contact{}
 
 	if res := d.db.
 		Where(&messengertypes.Contact{
@@ -628,7 +667,13 @@ func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*messengert
 		return nil, errcode.ErrDBAddContactRequestOutgoingSent.Wrap(fmt.Errorf("nothing found"))
 	}
 
-	return contact, d.db.Where(&messengertypes.Contact{PublicKey: contactPK}).First(&contact).Error
+	contact := &messengertypes.Contact{}
+	if err := d.db.Where(&messengertypes.Contact{PublicKey: contactPK}).First(&contact).Error; err != nil {
+		return nil, err
+	}
+
+	d.logStep("Contact request state set to sent in db", tyber.WithDetail("ContactPublicKey", contactPK), tyber.WithJSONDetail("FinalContact", contact))
+	return contact, nil
 }
 
 func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, groupPk string) (*messengertypes.Contact, error) {
@@ -643,19 +688,26 @@ func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, gr
 		return nil, err
 	}
 
+	toCreate := &messengertypes.Contact{
+		DisplayName:           displayName,
+		PublicKey:             contactPK,
+		State:                 messengertypes.Contact_IncomingRequest,
+		CreatedDate:           timestampMs(time.Now()),
+		ConversationPublicKey: groupPk,
+	}
 	if err := d.db.
-		Create(&messengertypes.Contact{
-			DisplayName:           displayName,
-			PublicKey:             contactPK,
-			State:                 messengertypes.Contact_IncomingRequest,
-			CreatedDate:           timestampMs(time.Now()),
-			ConversationPublicKey: groupPk,
-		}).
+		Create(toCreate).
 		Error; err != nil {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
-	return d.getContactByPK(contactPK)
+	finalContact, err := d.getContactByPK(contactPK)
+	if err != nil {
+		return nil, err
+	}
+
+	d.logStep("Added contact to db", tyber.WithJSONDetail("ContactToCreate", toCreate), tyber.WithJSONDetail("FinalContact", finalContact))
+	return finalContact, nil
 }
 
 func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string) (*messengertypes.Contact, error) {
@@ -676,24 +728,14 @@ func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string)
 		return nil, errcode.ErrInvalidInput.Wrap(errors.New("no incoming request"))
 	}
 
-	if err := d.db.Transaction(func(db *gorm.DB) error {
-		contact.State = messengertypes.Contact_Accepted
-		contact.ConversationPublicKey = groupPK
+	contact.State = messengertypes.Contact_Accepted
+	contact.ConversationPublicKey = groupPK
 
-		if err := db.Save(&contact).Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
-		}
-
-		return db.
-			Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "public_key"}},
-				DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-			}).
-			Error
-	}); err != nil {
+	if err := d.db.Save(&contact).Error; err != nil {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
+	d.logStep("Saved contact in db", tyber.WithJSONDetail("Contact", contact))
 	return contact, nil
 }
 
@@ -722,7 +764,13 @@ func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (*messengertypes.I
 		return nil, nil
 	}
 
-	return d.getInteractionByCID(cid)
+	finalInte, err := d.getInteractionByCID(cid)
+	if err != nil {
+		return nil, err
+	}
+
+	d.logStep("Marked interaction as acknowledged in db", tyber.WithDetail("CID", cid), tyber.WithJSONDetail("FinalInteraction", finalInte))
+	return finalInte, nil
 }
 
 func (d *dbWrapper) getAcknowledgementsCIDsForInteraction(cid string) ([]string, error) {
@@ -747,7 +795,13 @@ func (d *dbWrapper) deleteInteractions(cids []string) error {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a list of cids is required"))
 	}
 
-	return d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{}, &cids).Error
+	db := d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{}, &cids)
+	if db.Error != nil {
+		return db.Error
+	}
+
+	d.logStep(fmt.Sprintf("Removed %d interactions from db", db.RowsAffected), tyber.WithJSONDetail("CIDs", cids))
+	return nil
 }
 
 func (d *dbWrapper) getDBInfo() (*messengertypes.SystemInfo_DB, error) {
@@ -793,7 +847,7 @@ func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*messengertypes
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
 	}
 
-	if err := d.tx(func(tx *dbWrapper) error {
+	if err := d.tx(d.ctx, func(tx *dbWrapper) error {
 		// Check if this device already exists for another member
 		{
 			count := int64(0)
@@ -822,7 +876,13 @@ func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*messengertypes
 		return nil, err
 	}
 
-	return d.getDeviceByPK(devicePK)
+	finalDevice, err := d.getDeviceByPK(devicePK)
+	if err != nil {
+		return nil, err
+	}
+
+	d.logStep("Maybed added device to db", tyber.WithDetail("DevicePublicKey", devicePK), tyber.WithDetail("MemberPublicKey", memberPK), tyber.WithJSONDetail("FinalDevice", finalDevice))
+	return finalDevice, nil
 }
 
 func (d *dbWrapper) updateContact(pk string, contact messengertypes.Contact) error {
@@ -839,7 +899,12 @@ func (d *dbWrapper) updateContact(pk string, contact messengertypes.Contact) err
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("contact not found"))
 	}
 
-	return d.db.Model(&messengertypes.Contact{PublicKey: pk}).Updates(&contact).Error
+	if err := d.db.Model(&messengertypes.Contact{PublicKey: pk}).Updates(&contact).Error; err != nil {
+		return err
+	}
+
+	d.logStep("Updated contact in db", tyber.WithJSONDetail("Contact", contact))
+	return nil
 }
 
 func (d *dbWrapper) addInteraction(rawInte messengertypes.Interaction) (*messengertypes.Interaction, bool, error) {
@@ -859,7 +924,12 @@ func (d *dbWrapper) addInteraction(rawInte messengertypes.Interaction) (*messeng
 	}
 
 	i, err := d.getInteractionByCID(rawInte.CID)
-	return i, isNew, err
+	if err != nil {
+		return i, isNew, err
+	}
+
+	d.logStep("Added interaction to db", tyber.WithJSONDetail("InteractionToAdd", rawInte), tyber.WithJSONDetail("FinalInteraction", i))
+	return i, isNew, nil
 }
 
 func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error) {
@@ -909,7 +979,8 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 		cids    []string
 	)
 
-	if err := d.tx(func(tx *dbWrapper) error {
+	attributed := []string(nil)
+	if err := d.tx(d.ctx, func(tx *dbWrapper) error {
 		res := tx.db.
 			Model(&messengertypes.Interaction{}).
 			Where("device_public_key = ? AND conversation_public_key = ? AND member_public_key = \"\"", devicePK, groupPK).
@@ -924,6 +995,7 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 		if len(cids) == 0 {
 			return nil
 		}
+		attributed = cids
 
 		if err := res.Update("member_public_key", memberPK).Error; err != nil {
 			return err
@@ -938,6 +1010,9 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 		return nil, err
 	}
 
+	if len(attributed) > 0 {
+		d.logStep(fmt.Sprintf("Attributed %d interactions to member in db", len(attributed)), tyber.WithDetail("MemberPublicKey", memberPK), tyber.WithDetail("DevicePublicKey", devicePK), tyber.WithDetail("GroupPublicKey", groupPK), tyber.WithJSONDetail("AttributedCIDs", cids))
+	}
 	return backlog, nil
 }
 
@@ -958,7 +1033,7 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName, avatarCID string, 
 		IsMe:                  isMe,
 	}
 
-	if err := d.tx(func(tx *dbWrapper) error {
+	if err := d.tx(d.ctx, func(tx *dbWrapper) error {
 		// Check if member already exists
 		if m, err := tx.getMemberByPK(memberPK, groupPK); err == nil {
 			member = m
@@ -984,6 +1059,7 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName, avatarCID string, 
 		return nil, err
 	}
 
+	d.logStep("Added member to db", tyber.WithJSONDetail("Member", member))
 	return member, nil
 }
 
@@ -1028,6 +1104,12 @@ func (d *dbWrapper) upsertMember(memberPK, groupPK string, m messengertypes.Memb
 		return nil, false, errcode.ErrDBRead.Wrap(err)
 	}
 
+	commonDetails := []tyber.StepMutator{tyber.WithJSONDetail("FinalMember", um)}
+	if isNew {
+		d.logStep("Added member to db", append(commonDetails, tyber.WithJSONDetail("MemberToCreate", m))...)
+	} else {
+		d.logStep("Updated member in db", append(commonDetails, tyber.WithJSONDetail("MemberUpdate", m))...)
+	}
 	return um, isNew, nil
 }
 
@@ -1063,6 +1145,11 @@ func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bo
 		return nil, false, err
 	}
 
+	prefix := "Opened"
+	if !status {
+		prefix = "Closed"
+	}
+	d.logStep(prefix+" conversation in db", tyber.WithJSONDetail("Conversation", conversation))
 	return conversation, true, err
 }
 
@@ -1103,7 +1190,7 @@ func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *protocoltype
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
-	if err := d.tx(func(tx *dbWrapper) error {
+	if err := d.tx(d.ctx, func(tx *dbWrapper) error {
 		for _, s := range serviceToken.SupportedServices {
 			res := tx.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&messengertypes.ServiceToken{
 				AccountPK:         accountPK,
@@ -1123,6 +1210,7 @@ func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *protocoltype
 		return err
 	}
 
+	d.logStep("Maybe added service token to db", tyber.WithJSONDetail("ServiceToken", serviceToken))
 	return nil
 }
 
@@ -1142,6 +1230,11 @@ func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) err
 		return errcode.ErrDBWrite.Wrap(fmt.Errorf("record not found"))
 	}
 
+	prefix := "Enabled"
+	if !enabled {
+		prefix = "Disabled"
+	}
+	d.logStep(prefix+" auto-replication in db", tyber.WithJSONDetail("Updates", updates))
 	return nil
 }
 
@@ -1155,6 +1248,7 @@ func (d *dbWrapper) saveConversationReplicationInfo(c messengertypes.Conversatio
 		return errcode.ErrDBWrite.Wrap(tx.Error)
 	}
 
+	d.logStep("Maybe added replication info to db", tyber.WithJSONDetail("Info", c))
 	return nil
 }
 
@@ -1162,6 +1256,7 @@ func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
 	if len(medias) == 0 {
 		return []bool{}, nil
 	}
+
 	for _, m := range medias {
 		if err := ensureValidBase64CID(m.GetCID()); err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -1173,8 +1268,7 @@ func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
 	for i, m := range medias {
 		cids[i] = m.GetCID()
 	}
-	err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error
-	if err != nil {
+	if err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error; err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
@@ -1196,6 +1290,7 @@ func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
+	d.logStep(fmt.Sprintf("Maybe added %d/%d medias to db", len(willAdd), len(medias)), tyber.WithJSONDetail("InputMedias", medias), tyber.WithJSONDetail("Added", willAdd))
 	return willAdd, nil
 }
 
@@ -1309,7 +1404,7 @@ func (d *dbWrapper) getNextMedia(lastCID string, opts nextMediaOpts) (*messenger
 }
 
 func (d *dbWrapper) interactionIndexText(interactionCID string, text string) error {
-	return d.tx(func(wrapper *dbWrapper) error {
+	if err := d.tx(d.ctx, func(wrapper *dbWrapper) error {
 		if d.disableFTS {
 			d.log.Info("full text search is not enabled")
 			return nil
@@ -1330,7 +1425,12 @@ func (d *dbWrapper) interactionIndexText(interactionCID string, text string) err
 		}
 
 		return nil
-	})
+	}); err != nil {
+		return err
+	}
+
+	d.logStep("Indexed interaction in db", tyber.WithDetail("CID", interactionCID), tyber.WithDetail("Text", text))
+	return nil
 }
 
 type SearchOptions struct {
@@ -1430,6 +1530,7 @@ func (d *dbWrapper) setupVirtualTablesAndTriggers() error {
 		return errcode.ErrDBWrite.Wrap(err)
 	}
 
+	d.logStep("FTS db setup succeeded")
 	return nil
 }
 

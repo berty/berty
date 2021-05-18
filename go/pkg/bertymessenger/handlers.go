@@ -5,6 +5,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
@@ -16,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 type eventHandler struct {
@@ -47,6 +50,12 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		replay:         replay,
 	}
 
+	h.bindHandlers()
+
+	return h
+}
+
+func (h *eventHandler) bindHandlers() {
 	h.metadataHandlers = map[protocoltypes.EventType]func(gme *protocoltypes.GroupMetadataEvent) error{
 		protocoltypes.EventTypeAccountGroupJoined:                     h.accountGroupJoined,
 		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued:  h.accountContactRequestOutgoingEnqueued,
@@ -59,7 +68,6 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		protocoltypes.EventTypeGroupReplicating:                       h.groupReplicating,
 		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
 	}
-
 	h.appMessageHandlers = map[mt.AppMessage_Type]struct {
 		handler        func(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error)
 		isVisibleEvent bool
@@ -72,93 +80,114 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		mt.AppMessage_TypeUserReaction:    {h.handleAppMessageUserReaction, false},
 		mt.AppMessage_TypeSetGroupInfo:    {h.handleAppMessageSetGroupInfo, false},
 	}
+}
 
-	return h
+func (h *eventHandler) withContext(ctx context.Context) *eventHandler {
+	nh := eventHandler{
+		ctx:            ctx,
+		db:             h.db,
+		protocolClient: h.protocolClient,
+		logger:         h.logger,
+		svc:            h.svc,
+		replay:         h.replay,
+	}
+	nh.bindHandlers()
+	return &nh
 }
 
 func (h *eventHandler) handleMetadataEvent(gme *protocoltypes.GroupMetadataEvent) error {
 	et := gme.GetMetadata().GetEventType()
-	h.logger.Info("received protocol event", zap.String("type", et.String()))
+	// FIXME(@n0izn0iz): tyber will crash on my machine if I remove the next line (blank screen in traces list in all sessions)
+	h.logger.Info("Received protocol event in MessengerService", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{{Name: "Type", Description: et.String()}}, tyber.ForceReopen)...)
 
 	handler, ok := h.metadataHandlers[et]
-
 	if !ok {
-		h.logger.Info("event ignored", zap.String("type", et.String()))
+		tyber.LogStep(h.ctx, h.logger, "Event ignored", tyber.WithDetail("Type", et.String()), tyber.ForceReopen)
 		return nil
 	}
 
-	return handler(gme)
+	if err := handler(gme); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (h *eventHandler) handleAppMessage(gpk string, gme *protocoltypes.GroupMessageEvent, am *mt.AppMessage) error {
+func (h *eventHandler) handleAppMessage(gpk string, gme *protocoltypes.GroupMessageEvent, am *mt.AppMessage) (err error) {
 	// TODO: override logger with fields
 
-	if am.GetType() != mt.AppMessage_TypeAcknowledge {
-		cidStr := ""
-		if cid, err := ipfscid.Cast(gme.EventContext.ID); err != nil {
-			h.logger.Error("failed to cast cid for logging", zap.String("type", am.GetType().String()), zap.Binary("cid-bytes", gme.EventContext.ID))
-		} else {
-			cidStr = cid.String()
+	{
+		groupType := ""
+		if reply, err := h.protocolClient.GroupInfo(h.ctx, &protocoltypes.GroupInfo_Request{GroupPK: gme.GetEventContext().GetGroupPK()}); err == nil {
+			groupType = strings.TrimPrefix(reply.GetGroup().GetGroupType().String(), "GroupType")
 		}
-		payload, err := am.UnmarshalPayload()
-		if err != nil {
-			h.logger.Error("failed to unmarshal payload for logging", zap.String("type", am.GetType().String()), zap.String("cid", cidStr), zap.Binary("payload-bytes", am.Payload))
-			payload = nil
-		}
-		h.logger.Info("handling app message", zap.String("type", am.GetType().String()), zap.Int("numMedias", len(am.GetMedias())), zap.String("cid", cidStr), zap.Any("target-cid", am.GetTargetCID()), zap.Any("payload", payload))
+		stepTitle := fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(am.GetType().String(), "Type"), groupType, gpk)
+		h.logger.Debug(stepTitle, tyber.FormatStepLogFields(h.ctx, []tyber.Detail{}, tyber.ForceReopen, tyber.UpdateTraceName(stepTitle))...)
 	}
+
+	// get handler
+	handler, ok := h.appMessageHandlers[am.Type]
+	if !ok {
+		h.logger.Warn("Unsupported AppMessage_Type in messenger", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{{Name: "Type", Description: am.GetType().String()}})...)
+		return nil
+	}
+
+	logError := func(text string, err error, muts ...tyber.StepMutator) error {
+		return tyber.LogError(h.ctx, h.logger, text, err, append(muts, tyber.ForceReopen)...)
+	}
+
+	// unmarshal payload
+	muts := []tyber.StepMutator{
+		tyber.WithDetail("Type", am.GetType().String()),
+		tyber.WithCIDDetail("CID", gme.GetEventContext().GetID()),
+		tyber.WithDetail("MediasCount", strconv.Itoa(len(am.GetMedias()))),
+		tyber.WithDetail("TargetCID", am.GetTargetCID()),
+	}
+	amPayload, err := am.UnmarshalPayload()
+	if err != nil {
+		muts = append(muts, tyber.WithDetail("RawPayload", string(am.Payload)))
+		return logError("Failed to unmarshal payload", err, muts...)
+	}
+	muts = append(muts, tyber.WithJSONDetail("Payload", amPayload))
+	tyber.LogStep(h.ctx, h.logger, "Unmarshaled AppMessage payload", muts...)
 
 	// build interaction
 	i, err := interactionFromAppMessage(h, gpk, gme, am)
 	if err != nil {
-		return err
+		return logError("Failed to generate interaction", err)
 	}
-
-	handler, ok := h.appMessageHandlers[am.Type]
-
-	if !ok {
-		h.logger.Warn("unsupported app message type", zap.String("type", i.GetType().String()))
-
-		return nil
-	}
+	tyber.LogStep(h.ctx, h.logger, "Generated interaction", tyber.WithJSONDetail("Interaction", i))
 
 	medias := i.GetMedias()
 	var mediasAdded []bool
 
 	// start a transaction
 	var isNew bool
-	if err := h.db.tx(func(tx *dbWrapper) error {
+	if err := h.db.tx(h.ctx, func(tx *dbWrapper) error {
 		if mediasAdded, err = tx.addMedias(medias); err != nil {
-			return err
+			return logError("Failed to add medias", err)
 		}
 
-		if err := h.interactionFetchRelations(tx, i); err != nil {
-			return err
-		}
+		h.interactionFetchRelations(tx, i)
 
 		if err := h.interactionConsumeAck(tx, i); err != nil {
-			return err
+			return logError("Failed to consume acknowledge", err)
 		}
 
-		// parse payload
-		amPayload, err := am.UnmarshalPayload()
-		if err != nil {
-			return err
-		}
-
-		h.logger.Debug("will handle app message", zap.Any("interaction", i), zap.Any("payload", amPayload))
+		h.logger.Debug("Will handle app message", zap.Any("interaction", i), zap.Any("payload", amPayload))
 
 		i, isNew, err = handler.handler(tx, i, amPayload)
 		if err != nil {
-			return err
+			return logError("Failed to handle AppMessage", err)
 		}
 
 		if i == nil {
-			println(am.Type.String())
+			h.logger.Debug("Handler returned no interaction", zap.Any("payload", amPayload))
+			return nil
 		}
 
 		if err := h.indexMessage(tx, i.CID, am); err != nil {
-			return err
+			return logError("Failed to index AppMessage", err)
 		}
 
 		return nil
@@ -168,14 +197,14 @@ func (h *eventHandler) handleAppMessage(gpk string, gme *protocoltypes.GroupMess
 
 	if handler.isVisibleEvent && isNew {
 		if err := h.dispatchVisibleInteraction(i); err != nil {
-			h.logger.Error("unable to dispatch notification for interaction", zap.String("cid", i.CID), zap.Error(err))
+			h.logger.Error("Unable to dispatch notification for interaction", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(zap.String("cid", i.CID), zap.Error(err)))...)
 		}
 	}
 
 	for i, media := range medias {
 		if mediasAdded[i] {
 			if err := h.svc.dispatcher.StreamEvent(mt.StreamEvent_TypeMediaUpdated, &mt.StreamEvent_MediaUpdated{Media: media}, true); err != nil {
-				h.logger.Error("unable to dispatch notification for media", zap.String("cid", media.CID), zap.Error(err))
+				h.logger.Error("Unable to dispatch notification for media", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(zap.String("cid", media.CID), zap.Error(err)))...)
 			}
 		}
 	}
@@ -305,9 +334,14 @@ func (h *eventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 		}
 
 		// subscribe to group
-		if err := h.svc.subscribeToGroup(gpkb); err != nil {
+		if err := h.svc.subscribeToGroup(context.Background(), gpkb); err != nil {
 			return err
 		}
+
+		h.logger.Debug("Subscribed to group", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+			{Name: "GroupPublicKey", Description: conversation.GetPublicKey()},
+			{Name: "GroupType", Description: conversation.GetType().String()},
+		})...)
 
 		h.logger.Info("AccountGroupJoined", zap.String("pk", groupPK), zap.String("known-as", conversation.GetDisplayName()))
 	}
@@ -318,7 +352,7 @@ func (h *eventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 func (h *eventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.GroupMetadataEvent) error {
 	var ev protocoltypes.AccountContactRequestEnqueued
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return err
+		return errcode.ErrProtocolEventUnmarshal.Wrap(err)
 	}
 
 	contactPKBytes := ev.GetContact().GetPK()
@@ -327,14 +361,17 @@ func (h *eventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 	var cm mt.ContactMetadata
 	err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
 	if err != nil {
-		return err
+		h.logger.Error("Failed to unmarshal ContactMetadata", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+			{Name: "Payload", Description: string(ev.GetContact().GetMetadata())},
+			{Name: "Error", Description: err.Error()},
+		}, tyber.Status(tyber.Failed))...)
 	}
 
 	gpk := b64EncodeBytes(ev.GetGroupPK())
 	if gpk == "" {
 		groupInfoReply, err := h.protocolClient.GroupInfo(h.ctx, &protocoltypes.GroupInfo_Request{ContactPK: contactPKBytes})
 		if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrProtocolGetGroupInfo.Wrap(err)
 		}
 		gpk = b64EncodeBytes(groupInfoReply.GetGroup().GetPublicKey())
 	}
@@ -350,12 +387,12 @@ func (h *eventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 	var conversation *mt.Conversation
 
 	// update db
-	if err := h.db.tx(func(tx *dbWrapper) error {
+	if err := h.db.tx(h.ctx, func(tx *dbWrapper) error {
 		var err error
 
 		// create new conversation
 		if conversation, err = tx.addConversationForContact(contact.ConversationPublicKey, contact.PublicKey); err != nil {
-			return err
+			return errcode.ErrDBAddConversation.Wrap(err)
 		}
 
 		return nil
@@ -365,11 +402,11 @@ func (h *eventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 
 	if h.svc != nil {
 		if err := h.svc.dispatcher.StreamEvent(mt.StreamEvent_TypeContactUpdated, &mt.StreamEvent_ContactUpdated{Contact: contact}, true); err != nil {
-			return err
+			return errcode.ErrMessengerStreamEvent.Wrap(err)
 		}
 
 		if err = h.svc.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conversation}, true); err != nil {
-			return err
+			return errcode.ErrMessengerStreamEvent.Wrap(err)
 		}
 	}
 
@@ -382,12 +419,20 @@ func (h *eventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 		return err
 	}
 
+	h.logger.Debug("Unmarshaled AccountContactRequestSent", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+		{Name: "Value", Description: fmt.Sprint(ev)},
+	})...)
+
 	contactPK := b64EncodeBytes(ev.GetContactPK())
 
 	contact, err := h.db.addContactRequestOutgoingSent(contactPK)
 	if err != nil {
 		return errcode.ErrDBAddContactRequestOutgoingSent.Wrap(err)
 	}
+
+	h.logger.Debug("Got contact from db", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+		{Name: "Contact", Description: fmt.Sprint(contact)},
+	})...)
 
 	// dispatch event and subscribe to group metadata
 	if h.svc != nil {
@@ -403,7 +448,9 @@ func (h *eventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 			&mt.StreamEvent_Notified_ContactRequestSent{Contact: contact},
 		)
 		if err != nil {
-			h.logger.Warn("failed to notify", zap.Error(err))
+			h.logger.Warn("Failed to notify", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+				{Name: "Error", Description: err.Error()},
+			})...)
 		}
 
 		groupPK, err := groupPKFromContactPK(h.ctx, h.protocolClient, ev.GetContactPK())
@@ -412,14 +459,30 @@ func (h *eventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 		}
 
 		if _, err = h.protocolClient.ActivateGroup(h.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
-			h.logger.Warn("failed to activate group", zap.String("pk", b64EncodeBytes(groupPK)))
+			h.logger.Warn("Failed to activate group", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+				{Name: "Error", Description: err.Error()},
+				{Name: "GroupPublicKey", Description: b64EncodeBytes(groupPK)},
+			})...)
 		}
 
-		if err := h.svc.sendAccountUserInfo(b64EncodeBytes(groupPK)); err != nil {
-			h.svc.logger.Error("failed to set user info after outgoing request sent", zap.Error(err))
+		// FIXME: if multiple devices, will be sent multiple times
+		if err := h.svc.sendAccountUserInfo(h.ctx, b64EncodeBytes(groupPK)); err != nil {
+			h.logger.Error("Failed to set user info after outgoing request sent", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+				{Name: "Error", Description: err.Error()},
+				{Name: "GroupPublicKey", Description: b64EncodeBytes(groupPK)},
+			})...)
 		}
 
-		return h.svc.subscribeToMetadata(groupPK)
+		if err := h.svc.subscribeToMetadata(context.Background(), groupPK); err != nil {
+			return err
+		}
+
+		h.logger.Debug("Subscribed to contact metadata", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+			{Name: "GroupPublicKey", Description: b64EncodeBytes(groupPK)},
+			{Name: "ContactPublicKey", Description: contactPK},
+		})...)
+
+		return nil
 	}
 
 	return nil
@@ -435,7 +498,10 @@ func (h *eventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 	var m mt.ContactMetadata
 	err := proto.Unmarshal(ev.GetContactMetadata(), &m)
 	if err != nil {
-		return err
+		h.logger.Error("Failed to unmarshal ContactMetadata", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+			{Name: "Payload", Description: string(ev.GetContactMetadata())},
+			{Name: "Error", Description: err.Error()},
+		}, tyber.Status(tyber.Failed))...)
 	}
 
 	groupPK, err := groupPKFromContactPK(h.ctx, h.protocolClient, ev.GetContactPK())
@@ -455,7 +521,7 @@ func (h *eventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 	var conversation *mt.Conversation
 
 	// update db
-	if err := h.db.tx(func(tx *dbWrapper) error {
+	if err := h.db.tx(h.ctx, func(tx *dbWrapper) error {
 		var err error
 
 		// create new conversation
@@ -518,16 +584,25 @@ func (h *eventHandler) accountContactRequestIncomingAccepted(gme *protocoltypes.
 		}
 
 		// activate group
-		if _, err := h.protocolClient.ActivateGroup(h.svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
+		if _, err := h.protocolClient.ActivateGroup(h.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
 			h.svc.logger.Warn("failed to activate group", zap.String("pk", b64EncodeBytes(groupPK)))
 		}
 
-		if err := h.svc.sendAccountUserInfo(b64EncodeBytes(groupPK)); err != nil {
+		if err := h.svc.sendAccountUserInfo(h.ctx, b64EncodeBytes(groupPK)); err != nil {
 			h.svc.logger.Error("failed to set user info after incoming request accepted", zap.Error(err))
 		}
 
-		// subscribe to group messages
-		return h.svc.subscribeToGroup(groupPK)
+		// subscribe to group messages and metadata
+		if err := h.svc.subscribeToGroup(context.Background(), groupPK); err != nil {
+			return err
+		}
+
+		h.logger.Debug("Subscribed to contact group", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+			{Name: "GroupPublicKey", Description: b64EncodeBytes(groupPK)},
+			{Name: "ContactPublicKey", Description: contactPK},
+		})...)
+
+		return nil
 	}
 
 	return nil
@@ -548,7 +623,7 @@ func (h *eventHandler) contactRequestAccepted(contact *mt.Contact, memberPK []by
 	}
 
 	// update db
-	if err := h.db.tx(func(tx *dbWrapper) error {
+	if err := h.db.tx(h.ctx, func(tx *dbWrapper) error {
 		var err error
 
 		// update existing contact
@@ -568,11 +643,20 @@ func (h *eventHandler) contactRequestAccepted(contact *mt.Contact, memberPK []by
 		}
 
 		// activate group and subscribe to message events
-		if _, err := h.protocolClient.ActivateGroup(h.svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
+		if _, err := h.protocolClient.ActivateGroup(h.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
 			h.svc.logger.Warn("failed to activate group", zap.String("pk", b64EncodeBytes(groupPK)))
 		}
 
-		return h.svc.subscribeToMessages(groupPK)
+		if err := h.svc.subscribeToMessages(context.Background(), groupPK); err != nil {
+			return err
+		}
+
+		h.logger.Debug("Subscribed to contact messages", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+			{Name: "GroupPublicKey", Description: contact.ConversationPublicKey},
+			{Name: "ContactPublicKey", Description: contact.PublicKey},
+		})...)
+
+		return nil
 	}
 
 	return nil
@@ -589,7 +673,7 @@ func (h *eventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 	gpkb := gme.GetEventContext().GetGroupPK()
 	gpk := b64EncodeBytes(gpkb)
 
-	if err := h.db.tx(func(tx *dbWrapper) error {
+	if err := h.db.tx(h.ctx, func(tx *dbWrapper) error {
 		// create or update member
 
 		member, err := tx.getMemberByPK(mpk, gpk)
@@ -757,7 +841,6 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 
 func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
 	target, err := tx.markInteractionAsAcknowledged(i.TargetCID)
-
 	switch {
 	case err == gorm.ErrRecordNotFound:
 		h.logger.Debug("added ack in backlog", zap.String("target", i.TargetCID), zap.String("cid", i.GetCID()))
@@ -772,6 +855,8 @@ func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *mt.Interact
 		return nil, false, err
 
 	default:
+		h.logger.Debug(tyber.WKENAcknowledgeReceived, tyber.FormatEventLogFields(h.ctx, []tyber.Detail{{Name: "TargetCID", Description: i.TargetCID}})...)
+
 		if target != nil {
 			if err := h.svc.streamInteraction(tx, target.CID, false); err != nil {
 				h.logger.Error("error while sending stream event", zap.String("public-key", i.ConversationPublicKey), zap.String("cid", i.CID), zap.Error(err))
@@ -1051,7 +1136,7 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 	return &i, nil
 }
 
-func (h *eventHandler) interactionFetchRelations(tx *dbWrapper, i *mt.Interaction) error {
+func (h *eventHandler) interactionFetchRelations(tx *dbWrapper, i *mt.Interaction) {
 	// fetch conv from db
 	if conversation, err := tx.getConversationByPK(i.ConversationPublicKey); err != nil {
 		h.logger.Warn("conversation related to interaction not found")
@@ -1076,8 +1161,6 @@ func (h *eventHandler) interactionFetchRelations(tx *dbWrapper, i *mt.Interactio
 
 		i.Member = member
 	}
-
-	return nil
 }
 
 func (h *eventHandler) dispatchVisibleInteraction(i *mt.Interaction) error {
@@ -1085,7 +1168,7 @@ func (h *eventHandler) dispatchVisibleInteraction(i *mt.Interaction) error {
 		return nil
 	}
 
-	return h.db.tx(func(tx *dbWrapper) error {
+	return h.db.tx(h.ctx, func(tx *dbWrapper) error {
 		// FIXME: check if app is in foreground
 		// if conv is not open, increment the unread_count
 		opened, err := tx.isConversationOpened(i.ConversationPublicKey)
@@ -1117,26 +1200,29 @@ func (h *eventHandler) dispatchVisibleInteraction(i *mt.Interaction) error {
 }
 
 func (h *eventHandler) sendAck(cid, conversationPK string) error {
-	h.logger.Debug("sending ack", zap.String("target", cid))
+	tyber.LogStep(h.ctx, h.logger, fmt.Sprintf("Sending acknowledge with target %s on group %s", cid, conversationPK))
+	logError := func(text string, err error) error { return tyber.LogError(h.ctx, h.logger, text, err) }
 
-	// Don't send ack if message is already acked to prevent spam in multimember groups
+	// TODO: Don't send ack if message is already acked to prevent spam in multimember groups
 	// Maybe wait a few seconds before checking since we're likely to receive the message before any ack
 	amp, err := mt.AppMessage_TypeAcknowledge.MarshalPayload(0, cid, nil, &mt.AppMessage_Acknowledge{})
 	if err != nil {
-		return err
+		return logError("Failed to marshal acknowledge", err)
 	}
 
 	cpk, err := b64DecodeBytes(conversationPK)
 	if err != nil {
-		return err
+		return logError("Failed to decode conversation public key", err)
 	}
 
-	if _, err = h.protocolClient.AppMessageSend(h.ctx, &protocoltypes.AppMessageSend_Request{
+	reply, err := h.protocolClient.AppMessageSend(h.ctx, &protocoltypes.AppMessageSend_Request{
 		GroupPK: cpk,
 		Payload: amp,
-	}); err != nil {
-		return err
+	})
+	if err != nil {
+		return logError("Protocol error", err)
 	}
+	tyber.LogStep(h.ctx, h.logger, "Acknowledge sent", tyber.WithCIDDetail("CID", reply.GetCID()))
 
 	return nil
 }
@@ -1187,6 +1273,10 @@ func (h *eventHandler) handleAppMessageReplyOptions(tx *dbWrapper, i *mt.Interac
 }
 
 func (h *eventHandler) indexMessage(tx *dbWrapper, id string, am *mt.AppMessage) error {
+	if len(id) == 0 {
+		return nil
+	}
+
 	amText, err := am.TextRepresentation()
 	if err != nil {
 		return errcode.ErrInternal.Wrap(err)

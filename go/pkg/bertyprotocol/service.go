@@ -2,6 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
+	"fmt"
 	"path/filepath"
 	"sync"
 	"sync/atomic"
@@ -12,7 +13,10 @@ import (
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/pkg/errors"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -20,6 +24,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
@@ -167,28 +172,33 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 	if err := opts.applyDefaults(ctx); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+
 	opts.Logger = opts.Logger.Named("pt")
-	opts.Logger.Debug("initializing protocol", zap.String("version", bertyversion.Version))
+
+	tctx, _ := tyber.ContextWithTraceID(ctx)
+	opts.Logger.Debug(fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version), tyber.FormatTraceLogFields(tctx)...)
 
 	dbOpts := &iface.CreateDBOptions{LocalOnly: &opts.LocalOnly}
 
-	acc, err := opts.OrbitDB.openAccountGroup(ctx, dbOpts, opts.IpfsCoreAPI)
+	acc, err := opts.OrbitDB.openAccountGroup(tctx, dbOpts, opts.IpfsCoreAPI)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
+
 	if opts.TinderDriver != nil {
 		s := NewSwiper(opts.Logger, opts.PubSub, opts.RendezvousRotationBase)
-		opts.Logger.Debug("tinder swiper is enabled")
+		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(tctx, []tyber.Detail{})...)
 
 		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	} else {
-		opts.Logger.Warn("no tinder driver provided, incoming and outgoing contact requests won't be enabled")
+		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(tctx, []tyber.Detail{})...)
 	}
 
-	return &service{
+	s := &service{
 		ctx:            ctx,
 		host:           opts.Host,
 		ipfsCoreAPI:    opts.IpfsCoreAPI,
@@ -204,7 +214,13 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		openedGroups: map[string]*groupContext{
 			string(acc.Group().PublicKey): acc,
 		},
-	}, nil
+	}
+
+	s.startTyberTinderMonitor()
+
+	s.logger.Debug("ProtocolService initialized", tyber.FormatStepLogFields(tctx, []tyber.Detail{}, tyber.EndTrace)...)
+
+	return s, nil
 }
 
 func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
@@ -212,12 +228,90 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
-	s.odb.Close()
+	var err error
+	_, _, endSection := tyber.Section(context.TODO(), s.logger, "Closing ProtocolService")
+	defer func() { endSection(err, "") }()
+
+	err = multierr.Append(err, s.odb.Close())
+
 	if s.close != nil {
-		_ = s.close()
+		err = multierr.Append(err, s.close())
 	}
 
-	return nil
+	return err
+}
+
+func (s *service) startTyberTinderMonitor() {
+	if s.host == nil {
+		return
+	}
+
+	sub, err := s.host.EventBus().Subscribe([]interface{}{
+		new(ipfsutil.EvtPubSubTopic),
+		new(tinder.EvtDriverMonitor),
+	})
+	if err != nil {
+		s.logger.Error("failed to create sub", zap.Error(errors.Wrap(err, "unable to subscribe pubsub topic event")))
+		return
+	}
+
+	// @FIXME(gfanton): cached found peers should be done inside driver monitor
+	cachedFoundPeers := make(map[peer.ID]ipfsutil.Multiaddrs)
+	ch := sub.Out()
+	go func() {
+		for {
+			select {
+			case <-s.ctx.Done():
+				return
+			case evt := <-ch:
+				var monitorEvent *protocoltypes.MonitorGroup_EventMonitor
+
+				switch e := evt.(type) {
+				case ipfsutil.EvtPubSubTopic:
+					// handle this event
+					monitorEvent = monitorHandlePubsubEvent(&e, s.host)
+				case tinder.EvtDriverMonitor:
+					// check if we already know this peer in case of found peer
+					newMS := ipfsutil.NewMultiaddrs(e.AddrInfo.Addrs)
+					if ms, ok := cachedFoundPeers[e.AddrInfo.ID]; ok {
+						if ipfsutil.MultiaddrIsEqual(ms, newMS) {
+							continue
+						}
+					}
+
+					cachedFoundPeers[e.AddrInfo.ID] = newMS
+					monitorEvent = monitorHandleDiscoveryEvent(&e, s.host)
+				default:
+					monitorEvent = &protocoltypes.MonitorGroup_EventMonitor{
+						Type: protocoltypes.TypeEventMonitorUndefined,
+					}
+				}
+
+				switch monitorEvent.Type {
+				case protocoltypes.TypeEventMonitorPeerFound:
+					s.logger.Debug(tyber.WKENTinderPeerFound, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+						{Name: "Topic", Description: monitorEvent.PeerFound.Topic},
+						{Name: "PeerID", Description: monitorEvent.PeerFound.PeerID},
+						{Name: "DriverName", Description: monitorEvent.PeerFound.DriverName},
+						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerFound.Maddrs)},
+					})...)
+				case protocoltypes.TypeEventMonitorPeerJoin:
+					s.logger.Debug(tyber.WKENTinderPeerJoined, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+						{Name: "Topic", Description: monitorEvent.PeerJoin.Topic},
+						{Name: "PeerID", Description: monitorEvent.PeerJoin.PeerID},
+						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerJoin.IsSelf)},
+						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerJoin.Maddrs)},
+					})...)
+				case protocoltypes.TypeEventMonitorPeerLeave:
+					s.logger.Debug(tyber.WKENTinderPeerLeft, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+						{Name: "Topic", Description: monitorEvent.PeerLeave.Topic},
+						{Name: "PeerID", Description: monitorEvent.PeerLeave.PeerID},
+						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerLeave.IsSelf)},
+					})...)
+				}
+			}
+		}
+	}()
 }
 
 // Status contains results of status checks

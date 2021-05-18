@@ -407,6 +407,10 @@ AppMetadata is an app defined message, accessible to future group members
 
 ### AppMetadataSend.Reply
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [bytes](#bytes) |  |  |
+
 <a name="berty.protocol.v1.AppMetadataSend.Request"></a>
 
 ### AppMetadataSend.Request

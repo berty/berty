@@ -11,11 +11,13 @@ type Header struct {
 	baseLog
 	Manager struct {
 		Logging struct {
-			Format  string `json:"format,omitempty"`
-			Logfile string `json:"logfile,omitempty"`
-			Filters string `json:"filters,omitempty"`
-			Tracer  string `json:"tracer,omitempty"`
-			Service string `json:"service,omitempty"`
+			Format      string `json:"Format,omitempty"`
+			Logfile     string `json:"Logfile,omitempty"`
+			Filters     string `json:"Filters,omitempty"`
+			Tracer      string `json:"Tracer,omitempty"`
+			Service     string `json:"Service,omitempty"`
+			RingFilters string `json:"RingFilters,omitempty"`
+			RingSize    uint   `json:"RingSize,omitempty"`
 		} `json:"logging,omitempty"`
 		Metrics struct {
 			Listener string `json:"listener,omitempty"`
@@ -29,14 +31,19 @@ type Header struct {
 		Node struct {
 			Preset   string `json:"preset"`
 			Protocol struct {
-				SwarmListeners        string        `json:"swarmListeners,omitempty"`
-				IPFSAPIListeners      string        `json:"iPFSAPIListeners,omitempty"`
-				IPFSWebUIListener     string        `json:"iPFSWebUIListener,omitempty"`
-				Announce              string        `json:"announce,omitempty"`
-				NoAnnounce            string        `json:"noAnnounce,omitempty"`
-				LocalDiscovery        bool          `json:"localDiscovery,omitempty"`
-				Ble                   bool          `json:"ble,omitempty"`
-				MultipeerConnectivity bool          `json:"multipeerConnectivity,omitempty"`
+				SwarmListeners    string `json:"swarmListeners,omitempty"`
+				IPFSAPIListeners  string `json:"iPFSAPIListeners,omitempty"`
+				IPFSWebUIListener string `json:"iPFSWebUIListener,omitempty"`
+				Announce          string `json:"announce,omitempty"`
+				NoAnnounce        string `json:"noAnnounce,omitempty"`
+				LocalDiscovery    bool   `json:"localDiscovery,omitempty"`
+				Ble               struct {
+					Enable bool `json:"Enable,omitempty"`
+				}
+				Nearby struct {
+					Enable bool `json:"Enable,omitempty"`
+				}
+				MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 				MinBackoff            time.Duration `json:"minBackoff,omitempty"`
 				MaxBackoff            time.Duration `json:"maxBackoff,omitempty"`
 				DisableIPFSNetwork    bool          `json:"disableIPFSNetwork,omitempty"`
@@ -87,7 +94,7 @@ func (s *Session) parseHeader() error {
 	s.Header = h
 	s.ID = h.Manager.SessionID
 	s.DisplayName = h.Manager.Node.Messenger.DisplayName
-	s.setStartedTime(h.Time)
+	s.Started = h.Time
 
 	return nil
 }

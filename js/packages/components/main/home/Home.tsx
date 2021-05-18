@@ -109,7 +109,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [earliestResult, setEarliestResult] = React.useState('')
 
 	useEffect(() => {
-		let cancelled = false
+		let canceled = false
 		searchInteractions.current = []
 
 		if (searchText.trim() === '') {
@@ -120,7 +120,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 			await new Promise((resolve) => {
 				setTimeout(() => resolve(true), 200)
 			})
-			if (cancelled) {
+			if (canceled) {
 				return
 			}
 
@@ -135,10 +135,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 					})
 
 					if (!results || results.results.length === 0) {
-						cancelled = true
+						canceled = true
 					}
 
-					if (cancelled) {
+					if (canceled) {
 						return
 					}
 
@@ -148,13 +148,13 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 					// TODO: remove this loop, add loading on scroll
 				}
 			} catch (e) {
-				cancelled = true
+				canceled = true
 				console.warn(e)
 			}
 		})()
 
 		return () => {
-			cancelled = true
+			canceled = true
 		}
 	}, [client, searchInteractions, searchText])
 

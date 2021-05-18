@@ -21,7 +21,8 @@
 RCT_EXTERN_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(initBridge:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(initBridge:(NSString)tyberHost
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(log:(NSDictionary)opts);

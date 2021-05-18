@@ -7,10 +7,11 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 // ContactRequestReference retrieves the necessary information to create a contact link
-func (s *service) ContactRequestReference(context.Context, *protocoltypes.ContactRequestReference_Request) (*protocoltypes.ContactRequestReference_Reply, error) {
+func (s *service) ContactRequestReference(ctx context.Context, _ *protocoltypes.ContactRequestReference_Request) (*protocoltypes.ContactRequestReference_Reply, error) {
 	enabled, shareableContact := s.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
 	rdvSeed := []byte(nil)
 
@@ -25,7 +26,10 @@ func (s *service) ContactRequestReference(context.Context, *protocoltypes.Contac
 }
 
 // ContactRequestDisable disables incoming contact requests
-func (s *service) ContactRequestDisable(ctx context.Context, _ *protocoltypes.ContactRequestDisable_Request) (*protocoltypes.ContactRequestDisable_Reply, error) {
+func (s *service) ContactRequestDisable(ctx context.Context, _ *protocoltypes.ContactRequestDisable_Request) (_ *protocoltypes.ContactRequestDisable_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Disabling contact requests")
+	defer func() { endSection(err, "") }()
+
 	if _, err := s.accountGroup.MetadataStore().ContactRequestDisable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -34,7 +38,10 @@ func (s *service) ContactRequestDisable(ctx context.Context, _ *protocoltypes.Co
 }
 
 // ContactRequestEnable enables incoming contact requests
-func (s *service) ContactRequestEnable(ctx context.Context, _ *protocoltypes.ContactRequestEnable_Request) (*protocoltypes.ContactRequestEnable_Reply, error) {
+func (s *service) ContactRequestEnable(ctx context.Context, _ *protocoltypes.ContactRequestEnable_Request) (_ *protocoltypes.ContactRequestEnable_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Enabling contact requests")
+	defer func() { endSection(err, "") }()
+
 	if _, err := s.accountGroup.MetadataStore().ContactRequestEnable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -52,7 +59,10 @@ func (s *service) ContactRequestEnable(ctx context.Context, _ *protocoltypes.Con
 }
 
 // ContactRequestResetReference generates a new contact request reference
-func (s *service) ContactRequestResetReference(ctx context.Context, _ *protocoltypes.ContactRequestResetReference_Request) (*protocoltypes.ContactRequestResetReference_Reply, error) {
+func (s *service) ContactRequestResetReference(ctx context.Context, _ *protocoltypes.ContactRequestResetReference_Request) (_ *protocoltypes.ContactRequestResetReference_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Resetting contact requests reference")
+	defer func() { endSection(err, "") }()
+
 	if _, err := s.accountGroup.MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -70,7 +80,10 @@ func (s *service) ContactRequestResetReference(ctx context.Context, _ *protocolt
 }
 
 // ContactRequestSend enqueues a new contact request to be sent
-func (s *service) ContactRequestSend(ctx context.Context, req *protocoltypes.ContactRequestSend_Request) (*protocoltypes.ContactRequestSend_Reply, error) {
+func (s *service) ContactRequestSend(ctx context.Context, req *protocoltypes.ContactRequestSend_Request) (_ *protocoltypes.ContactRequestSend_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Sending contact request")
+	defer func() { endSection(err, "") }()
+
 	shareableContact := req.Contact
 	if shareableContact == nil {
 		return nil, errcode.ErrInvalidInput
@@ -84,7 +97,10 @@ func (s *service) ContactRequestSend(ctx context.Context, req *protocoltypes.Con
 }
 
 // ContactRequestAccept accepts a contact request
-func (s *service) ContactRequestAccept(ctx context.Context, req *protocoltypes.ContactRequestAccept_Request) (*protocoltypes.ContactRequestAccept_Reply, error) {
+func (s *service) ContactRequestAccept(ctx context.Context, req *protocoltypes.ContactRequestAccept_Request) (_ *protocoltypes.ContactRequestAccept_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Accepting contact request")
+	defer func() { endSection(err, "") }()
+
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -102,7 +118,10 @@ func (s *service) ContactRequestAccept(ctx context.Context, req *protocoltypes.C
 }
 
 // ContactRequestDiscard ignores a contact request without informing the request sender
-func (s *service) ContactRequestDiscard(ctx context.Context, req *protocoltypes.ContactRequestDiscard_Request) (*protocoltypes.ContactRequestDiscard_Reply, error) {
+func (s *service) ContactRequestDiscard(ctx context.Context, req *protocoltypes.ContactRequestDiscard_Request) (_ *protocoltypes.ContactRequestDiscard_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Discarding contact request")
+	defer func() { endSection(err, "") }()
+
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)

@@ -113,7 +113,6 @@ export const MainPanel = withStyles(mainPanel, (theme) => ({
 		width: "100%",
 		height: 60,
 		maxHeight: 60,
-		flex: 1,
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",

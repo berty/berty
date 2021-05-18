@@ -20,6 +20,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 const accountMetafileName = "account_meta"
@@ -171,9 +172,12 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 }
 
 // OpenAccount starts a Berty node.
-func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*OpenAccount_Reply, error) {
+func (s *service) OpenAccount(ctx context.Context, req *OpenAccount_Request) (_ *OpenAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
+	defer func() { endSection(err, "") }()
 
 	if _, err := s.openAccount(req, nil); err != nil {
 		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
@@ -183,9 +187,12 @@ func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*Ope
 }
 
 // OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
-func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, server AccountService_OpenAccountWithProgressServer) error {
+func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, server AccountService_OpenAccountWithProgressServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(server.Context(), s.logger, fmt.Sprintf("Opening account %s with progress (AccountService)", req.AccountID))
+	defer func() { endSection(err, "") }()
 
 	prog := progress.New()
 	defer prog.Close()
@@ -230,9 +237,12 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 	return nil
 }
 
-func (s *service) CloseAccount(_ context.Context, req *CloseAccount_Request) (*CloseAccount_Reply, error) {
+func (s *service) CloseAccount(ctx context.Context, req *CloseAccount_Request) (_ *CloseAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(ctx, s.logger, "Closing account (AccountService)")
+	defer func() { endSection(err, "") }()
 
 	if s.initManager == nil {
 		return &CloseAccount_Reply{}, nil
@@ -251,9 +261,12 @@ func (s *service) CloseAccount(_ context.Context, req *CloseAccount_Request) (*C
 	return &CloseAccount_Reply{}, nil
 }
 
-func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request, server AccountService_CloseAccountWithProgressServer) error {
+func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request, server AccountService_CloseAccountWithProgressServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(server.Context(), s.logger, "Closing account with progress (AccountService)")
+	defer func() { endSection(err, "") }()
 
 	if s.initManager == nil {
 		return nil
@@ -393,9 +406,12 @@ func (s *service) getAccountMetaForName(accountID string) (*AccountMetadata, err
 	return meta, nil
 }
 
-func (s *service) DeleteAccount(_ context.Context, request *DeleteAccount_Request) (*DeleteAccount_Reply, error) {
+func (s *service) DeleteAccount(ctx context.Context, request *DeleteAccount_Request) (_ *DeleteAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(ctx, s.logger, fmt.Sprintf("Deleting account %s (AccountService)", request.AccountID))
+	defer func() { endSection(err, "") }()
 
 	if s.initManager != nil {
 		return nil, errcode.ErrBertyAccountAlreadyOpened
@@ -477,9 +493,12 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 	return meta, nil
 }
 
-func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request) (*ImportAccount_Reply, error) {
+func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request) (_ *ImportAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(ctx, s.logger, fmt.Sprintf("Importing account '%s' with id '%s' (AccountService)", req.AccountName, req.AccountID))
+	defer func() { endSection(err, "") }()
 
 	if req.BackupPath == "" {
 		return nil, errcode.ErrBertyAccountNoBackupSpecified
@@ -559,9 +578,12 @@ func (s *service) createAccount(req *CreateAccount_Request) (*AccountMetadata, e
 	return meta, nil
 }
 
-func (s *service) CreateAccount(_ context.Context, req *CreateAccount_Request) (*CreateAccount_Reply, error) {
+func (s *service) CreateAccount(ctx context.Context, req *CreateAccount_Request) (_ *CreateAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(ctx, s.logger, fmt.Sprintf("Creating account '%s' with id '%s' (AccountService)", req.GetAccountName(), req.GetAccountID()))
+	defer func() { endSection(err, "") }()
 
 	meta, err := s.createAccount(req)
 	if err != nil {
@@ -605,9 +627,12 @@ func (s *service) updateAccount(req *UpdateAccount_Request) (*AccountMetadata, e
 	return meta, nil
 }
 
-func (s *service) UpdateAccount(_ context.Context, req *UpdateAccount_Request) (*UpdateAccount_Reply, error) {
+func (s *service) UpdateAccount(ctx context.Context, req *UpdateAccount_Request) (_ *UpdateAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
+
+	_, _, endSection := tyber.Section(ctx, s.logger, fmt.Sprintf("Updating account %s (AccountService)", req.AccountID))
+	defer func() { endSection(err, "") }()
 
 	meta, err := s.updateAccount(req)
 	if err != nil {

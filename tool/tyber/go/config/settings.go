@@ -15,6 +15,7 @@ type Settings struct {
 	Notification     bool
 	AutoScroll       bool
 	TraceUncollapsed bool
+	Address          string
 }
 
 var defaultSettings = Settings{
@@ -22,6 +23,7 @@ var defaultSettings = Settings{
 	Notification:     true,
 	AutoScroll:       false,
 	TraceUncollapsed: false,
+	Address:          "127.0.0.1",
 }
 
 const (
@@ -36,6 +38,15 @@ func (c *Config) GetPortSetting() (string, error) {
 	settings := c.getSettings()
 
 	return strconv.Itoa(settings.Port), nil
+}
+
+func (c *Config) GetAddressSetting() (string, error) {
+	if !c.isInitialized() {
+		return "", errors.New("config not initialized")
+	}
+	settings := c.getSettings()
+
+	return settings.Address, nil
 }
 
 func (c *Config) SetPortSetting(port string) error {

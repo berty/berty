@@ -12,6 +12,7 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 // Servicex is AccountServiceServer
@@ -72,7 +73,10 @@ func (o *Options) applyDefault() {
 	}
 }
 
-func NewService(opts *Options) (Service, error) {
+func NewService(opts *Options) (_ Service, err error) {
+	_, _, endSection := tyber.Section(context.TODO(), opts.Logger, "Initializing AccountService")
+	defer func() { endSection(err, "") }()
+
 	opts.applyDefault()
 
 	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
@@ -96,7 +100,10 @@ func NewService(opts *Options) (Service, error) {
 	return s, nil
 }
 
-func (s *service) Close() error {
+func (s *service) Close() (err error) {
+	_, _, endSection := tyber.Section(context.TODO(), s.logger, "Closing AccountService")
+	defer func() { endSection(err, "") }()
+
 	s.muService.Lock()
 	defer s.muService.Unlock()
 

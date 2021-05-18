@@ -99,3 +99,12 @@ $(node_modules): $(js_dir)/package.json
 	$(call check-program, yarn)
 	cd $(js_dir) && yarn
 	touch $@
+
+
+# go types to ts types
+
+# TODO: gen.sum for CI
+generate:
+	cd go && go run ./gen > ../js/app/types/goTypes.ts
+.PHONY: generate
+	

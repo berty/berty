@@ -11,9 +11,13 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
-func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *protocoltypes.ReplicationServiceRegisterGroup_Request) (*protocoltypes.ReplicationServiceRegisterGroup_Reply, error) {
+func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *protocoltypes.ReplicationServiceRegisterGroup_Request) (_ *protocoltypes.ReplicationServiceRegisterGroup_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Registering replication service for group")
+	defer func() { endSection(err, "") }()
+
 	gc, err := s.getContextGroupForID(request.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)

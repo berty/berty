@@ -1874,7 +1874,7 @@
         "info_date": {
           "type": "string",
           "format": "int64",
-          "title": "info_date is used when SetGroupInfo was called"
+          "title": "info_date is used when SetGroupInfo is called"
         }
       }
     },

@@ -87,7 +87,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   //////////////
 
   @ReactMethod
-  public void initBridge(Promise promise) {
+  public void initBridge(String tyberHost, Promise promise) {
     try {
       if (this.bridgeMessenger != null) {
         promise.resolve(false);
@@ -98,6 +98,8 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       if (config == null) {
         throw new Exception("");
       }
+
+      config.setTyberHost(tyberHost);
 
       // init logger
       LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");

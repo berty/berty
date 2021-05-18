@@ -102,8 +102,13 @@ const getPersistentOptions = async (
 	}
 }
 
+export const tyberHostStorageKey = 'global-storage_tyber-host'
+
 export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
-	await GoBridge.initBridge()
+	const tyberHost =
+		(await AsyncStorage.getItem(tyberHostStorageKey)) ||
+		defaultPersistentOptions().tyberHost.address
+	await GoBridge.initBridge(tyberHost)
 		.then(() => console.log('bridge init done'))
 		.catch((err) => {
 			console.warn('unable to init bridge ', Object.keys(err), err.domain)
@@ -190,7 +195,13 @@ export const openingDaemon = async (
 			? [...bridgeOpts.cliArgs!, `--log.format=${opts?.log?.format}`]
 			: [...bridgeOpts.cliArgs!, '--log.format=console']
 
-		// set log filter flag
+		// set tyber host flag
+		if (opts?.tyberHost?.address) {
+			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter((arg) => !arg.startsWith('--log.tyber-host='))
+			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${opts?.tyberHost?.address}`]
+		}
+
+		// set log filter opt
 		bridgeOpts.logFilters = opts?.logFilters?.format
 			? opts?.logFilters?.format
 			: 'info+:bty*,-*.grpc warn+:*.grpc error+:*'

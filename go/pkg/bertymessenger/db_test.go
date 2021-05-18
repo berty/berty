@@ -9,6 +9,7 @@ import (
 	"github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
+	"golang.org/x/net/context"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
@@ -199,14 +200,14 @@ func Test_dbWrapper_addAccount(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	err := db.addAccount("", "http://url1/")
+	err := db.firstOrCreateAccount("", "http://url1/")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 
-	err = db.addAccount("pk_1", "http://url1/")
+	err = db.firstOrCreateAccount("pk_1", "http://url1/")
 	require.NoError(t, err)
 
-	err = db.addAccount("pk_1", "http://url2/")
+	err = db.firstOrCreateAccount("pk_1", "http://url2/")
 	require.NoError(t, err)
 }
 
@@ -1208,10 +1209,12 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 }
 
 func Test_dbWrapper_tx(t *testing.T) {
+	ctx := context.TODO()
+
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	err := db.tx(func(tx *dbWrapper) error {
+	err := db.tx(ctx, func(tx *dbWrapper) error {
 		return fmt.Errorf("some error")
 	})
 	require.Error(t, err)
@@ -1220,8 +1223,8 @@ func Test_dbWrapper_tx(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, int64(0), count)
 
-	err = db.tx(func(tx *dbWrapper) error {
-		err := tx.addAccount("some pk", "some url")
+	err = db.tx(ctx, func(tx *dbWrapper) error {
+		err := tx.firstOrCreateAccount("some pk", "some url")
 		require.NoError(t, err)
 		return nil
 	})
@@ -1231,8 +1234,8 @@ func Test_dbWrapper_tx(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, int64(1), count)
 
-	err = db.tx(func(tx *dbWrapper) error {
-		err := tx.addAccount("some pk 2", "some url 2")
+	err = db.tx(ctx, func(tx *dbWrapper) error {
+		err := tx.firstOrCreateAccount("some pk 2", "some url 2")
 		require.NoError(t, err)
 		return fmt.Errorf("some error")
 	})

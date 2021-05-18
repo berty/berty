@@ -1,46 +1,75 @@
 package parser
 
-import "berty.tech/berty/tool/tyber/go/v2/format"
+import (
+	"berty.tech/berty/v2/go/pkg/tyber"
+)
 
-type Trace struct {
-	ID    string  `json:"id"`
-	Name  string  `json:"name"`
-	Steps []*Step `json:"steps"`
+// Trace
+
+type AppTrace struct {
+	ID    string     `json:"id"`
+	Name  string     `json:"name"`
+	Steps []*AppStep `json:"steps"`
+	Subs  []SubTarget
 	Status
 }
 
-type Step struct {
-	Name    string          `json:"name"`
-	Details []format.Detail `json:"details"`
+type SubTarget struct {
+	TargetName    string
+	TargetDetails []tyber.Detail
+	StepToAdd     tyber.Step
+}
+
+func (t *AppTrace) ToCreateTraceEvent() CreateTraceEvent {
+	return CreateTraceEvent{*t}
+}
+
+func (t *AppTrace) ToUpdateTraceEvent() UpdateTraceEvent {
+	return UpdateTraceEvent{
+		ID:     t.ID,
+		Status: t.Status,
+		Name:   t.Name,
+	}
+}
+
+// TODO
+// func (s *AppStep) ToUpdateStepEvent() UpdateStepEvent {
+// 	return UpdateStepEvent{
+// 		ID:     s.ID,
+// 		Detail: s.Detail,
+// 		Status: s.Status,
+// 	}
+// }
+
+// Step
+
+type AppStep struct {
+	Name    string         `json:"name"`
+	Details []tyber.Detail `json:"details"`
 	Status
+	ForceReopen     bool   `json:"forceReopen"`
+	UpdateTraceName string `json:"updateTraceName"`
 }
 
-func traceLogToTrace(tl *traceLog) *Trace {
-	return &Trace{
-		ID:    tl.Trace.TraceID,
-		Name:  tl.Message,
-		Steps: []*Step{},
-		Status: Status{
-			StatusType: format.Running,
-			Started:    tl.Time,
-		},
+func (s *AppStep) ToCreateStepEvent(id string) CreateStepEvent {
+	return CreateStepEvent{
+		ID:      id,
+		AppStep: *s,
 	}
 }
 
-func stepLogToStep(sl *stepLog) *Step {
-	s := &Step{
-		Name:    sl.Message,
-		Details: sl.Step.Details,
-		Status: Status{
-			StatusType: sl.Step.Status,
-			Started:    sl.Time,
-		},
+// Subscribe
+
+type AppSubscribe struct {
+	TargetDetails []tyber.Detail `json:"details"`
+	TargetName    string         `json:"targetName"`
+	ParentTraceID string
+	SubscribeStep *AppStep
+}
+
+func (sub *AppSubscribe) ToInitialCreateStepEvent(id string) CreateStepEvent {
+	return CreateStepEvent{
+		ID:      id,
+		AppStep: *sub.SubscribeStep,
 	}
-
-	// TODO
-	// if s.Status != format.Running {
-	// 	s.Finished = s.Started
-	// }
-
-	return s
 }

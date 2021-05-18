@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"berty.tech/berty/tool/tyber/go/v2/logger"
+	"berty.tech/berty/tool/tyber/go/logger"
 	"github.com/pkg/errors"
 )
 

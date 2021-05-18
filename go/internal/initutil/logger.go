@@ -25,6 +25,7 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Logging.Tracer, "log.tracer", m.Logging.Tracer, `specify "stdout" to output tracing on stdout or <hostname:port> to trace on Jaeger`)
 	fs.StringVar(&m.Logging.Service, "log.service", m.Logging.Service, `service name, used by the tracer`)
 	fs.UintVar(&m.Logging.RingSize, "log.ring-size", m.Logging.RingSize, `logging ring buffer size in MB`)
+	fs.StringVar(&m.Logging.TyberHost, "log.tyber-host", m.Logging.TyberHost, `Tyber server HOST[:PORT] to stream logs to`)
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-log.filters=':default: CUSTOM'",
@@ -69,6 +70,9 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 	if m.Logging.RingSize > 0 {
 		m.Logging.ring = zapring.New(m.Logging.RingSize * 1024 * 1024)
 		streams = append(streams, logutil.NewRingStream(m.Logging.RingFilters, "json", m.Logging.ring))
+	}
+	if m.Logging.TyberHost != "" {
+		streams = append(streams, logutil.NewTyberStream(m.Logging.TyberHost))
 	}
 
 	logger, loggerCleanup, err := logutil.NewLogger(streams...)

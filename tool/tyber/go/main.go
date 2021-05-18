@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"syscall"
 
-	"berty.tech/berty/tool/tyber/go/v2/bind"
-	"berty.tech/berty/tool/tyber/go/v2/bridge"
+	"berty.tech/berty/tool/tyber/go/bind"
+	"berty.tech/berty/tool/tyber/go/bridge"
 	"github.com/asticode/go-astikit"
 	"github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
@@ -36,7 +38,8 @@ func main() {
 	l := log.New(log.Writer(), log.Prefix(), log.Flags())
 
 	// Init Go <-> JS bridge
-	b := bridge.New(l)
+	b := bridge.New(l, nil)
+	defer b.Close()
 
 	// Run bootstrap
 	l.Printf("Running app built at %s\n", BuiltAt)
@@ -82,8 +85,10 @@ func main() {
 		RestoreAssets: bind.RestoreAssets,
 		ResourcesPath: "bundler/resources",
 		Windows: []*bootstrap.Window{{
-			Homepage:       "index.html",
-			MessageHandler: b.HandleMessages,
+			Homepage: "index.html",
+			MessageHandler: func(w *astilectron.Window, m bootstrap.MessageIn) (interface{}, error) {
+				return nil, b.HandleMessages(m.Name, m.Payload)
+			},
 			Options: &astilectron.WindowOptions{
 				Center:    astikit.BoolPtr(center),
 				MinHeight: astikit.IntPtr(minHeight),
@@ -92,6 +97,7 @@ func main() {
 				Width:     astikit.IntPtr(width),
 			},
 		}},
+		IgnoredSignals: []os.Signal{syscall.SIGURG},
 	}); err != nil {
 		l.Fatal(fmt.Errorf("Running bootstrap failed: %w", err))
 	}

@@ -7,9 +7,13 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
-func (s *service) InstanceExportData(_ *protocoltypes.InstanceExportData_Request, server protocoltypes.ProtocolService_InstanceExportDataServer) error {
+func (s *service) InstanceExportData(_ *protocoltypes.InstanceExportData_Request, server protocoltypes.ProtocolService_InstanceExportDataServer) (err error) {
+	ctx, _, endSection := tyber.Section(server.Context(), s.logger, "Exporting protocol instance data")
+	defer func() { endSection(err, "") }()
+
 	r, w := io.Pipe()
 
 	var exportErr error
@@ -38,7 +42,7 @@ func (s *service) InstanceExportData(_ *protocoltypes.InstanceExportData_Request
 		}
 	}()
 
-	if err := s.export(server.Context(), w); err != nil {
+	if err := s.export(ctx, w); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 	_ = w.Close()

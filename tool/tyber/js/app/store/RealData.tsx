@@ -1,11 +1,12 @@
 import { Node, GoSessionsToNodes, GoSessionToNode } from "../types/NodeType";
 import {
 	Trace,
-	GoTracesToTraces,
-	GoTraceToTrace,
-	GoStepAddToTrace,
+	parserCreateTraceEventToTrace,
+	parserCreateStepEventToTrace,
+	parserUpdateTraceEventToTrace,
 } from "../types/TraceType";
 import { OpenSession } from "../bridge/JsToGo";
+import { ParserCreateTraceEvent, ParserUpdateTraceEvent, ParserCreateStepEvent } from "../types/goTypes"
 
 let onInitNodeListCallback: (nodes: Node[]) => void;
 
@@ -50,8 +51,8 @@ export const OnInitTraceList = (
 	onInitTraceListCallback = updateCallback;
 };
 
-export const InitTraceList = (goTraces: any[]) => {
-	onInitTraceListCallback(GoTracesToTraces(goTraces));
+export const InitTraceList = (goPayload: ParserCreateTraceEvent[]) => {
+	onInitTraceListCallback((goPayload || []).map(parserCreateTraceEventToTrace));
 };
 
 let onAddToTraceListCallback: (trace: Trace) => void;
@@ -60,8 +61,8 @@ export const OnAddToTraceList = (updateCallback: (trace: Trace) => void) => {
 	onAddToTraceListCallback = updateCallback;
 };
 
-export const AddToTraceList = (goTrace: any) => {
-	onAddToTraceListCallback(GoTraceToTrace(goTrace));
+export const AddToTraceList = (goPayload: ParserCreateTraceEvent) => {
+	onAddToTraceListCallback(parserCreateTraceEventToTrace(goPayload));
 };
 
 let onUpdateTraceListCallback: (trace: Trace) => void;
@@ -70,8 +71,8 @@ export const OnUpdateTraceList = (updateCallback: (trace: Trace) => void) => {
 	onUpdateTraceListCallback = updateCallback;
 };
 
-export const UpdateTraceList = (goTrace: any) => {
-	onUpdateTraceListCallback(GoTraceToTrace(goTrace));
+export const UpdateTraceList = (goPayload: ParserUpdateTraceEvent) => {
+	onUpdateTraceListCallback(parserUpdateTraceEventToTrace(goPayload));
 };
 
 let onAddToStepListCallback: (trace: Trace) => void;
@@ -80,6 +81,6 @@ export const OnAddToStepList = (updateCallback: (trace: Trace) => void) => {
 	onAddToStepListCallback = updateCallback;
 };
 
-export const AddToStepList = (goStepAdd: any) => {
-	onAddToStepListCallback(GoStepAddToTrace(goStepAdd));
+export const AddToStepList = (goPayload: ParserCreateStepEvent) => {
+	onAddToStepListCallback(parserCreateStepEventToTrace(goPayload));
 };

@@ -1,5 +1,23 @@
 package parser
 
+import (
+	"time"
+
+	"berty.tech/berty/v2/go/pkg/tyber"
+)
+
+type Status struct {
+	StatusType tyber.StatusType `json:"status"`
+	Started    time.Time        `json:"started"`
+	Finished   time.Time        `json:"finished"`
+}
+
+func (s *Status) isRunning() bool {
+	return s.StatusType == tyber.Running
+}
+
+// Session
+
 type CreateSessionEvent struct {
 	ID          string  `json:"id"`
 	DisplayName string  `json:"displayName"`
@@ -7,37 +25,6 @@ type CreateSessionEvent struct {
 	SrcType     SrcType `json:"srcType"`
 	Header      Header  `json:"header"`
 	Status
-}
-
-type CreateTraceEvent struct {
-	Trace
-}
-
-type CreateStepEvent struct {
-	ID string `json:"parentID"`
-	Step
-}
-
-type UpdateSessionEvent struct {
-	ID          string `json:"id"`
-	DisplayName string `json:"displayName"`
-	Status
-}
-
-type UpdateTraceEvent struct {
-	ID string `json:"id"`
-	Status
-}
-
-// TODO
-// type UpdateStepEvent struct {
-// 	ID     string `json:"id"`
-// 	Detail string `json:"detail"`
-// 	Status
-// }
-
-type DeleteSessionEvent struct {
-	ID string `json:"id"`
 }
 
 func sessionToCreateEvent(s *Session) CreateSessionEvent {
@@ -51,15 +38,10 @@ func sessionToCreateEvent(s *Session) CreateSessionEvent {
 	}
 }
 
-func traceToCreateEvent(t *Trace) CreateTraceEvent {
-	return CreateTraceEvent{*t}
-}
-
-func stepToCreateEvent(id string, s *Step) CreateStepEvent {
-	return CreateStepEvent{
-		ID:   id,
-		Step: *s,
-	}
+type UpdateSessionEvent struct {
+	ID          string `json:"id"`
+	DisplayName string `json:"displayName"`
+	Status
 }
 
 func sessionToUpdateEvent(s *Session) UpdateSessionEvent {
@@ -70,22 +52,38 @@ func sessionToUpdateEvent(s *Session) UpdateSessionEvent {
 	}
 }
 
-func traceToUpdateEvent(t *Trace) UpdateTraceEvent {
-	return UpdateTraceEvent{
-		ID:     t.ID,
-		Status: t.Status,
-	}
+type DeleteSessionEvent struct {
+	ID string `json:"id"`
 }
 
-// TODO
-// func stepToUpdateEvent(s *Step) UpdateStepEvent {
-// 	return UpdateStepEvent{
-// 		ID:     s.ID,
-// 		Detail: s.Detail,
-// 		Status: s.Status,
-// 	}
-// }
-
+/*
 func sessionToDeleteEvent(s *Session) DeleteSessionEvent {
 	return DeleteSessionEvent{s.ID}
 }
+*/
+
+// Trace
+
+type CreateTraceEvent struct {
+	AppTrace
+}
+
+type UpdateTraceEvent struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	Status
+}
+
+// Step
+
+type CreateStepEvent struct {
+	ID string `json:"parentID"`
+	AppStep
+}
+
+// TODO
+// type UpdateStepEvent struct {
+// 	ID     string `json:"id"`
+// 	Detail string `json:"detail"`
+// 	Status
+// }

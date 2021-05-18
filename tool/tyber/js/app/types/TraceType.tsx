@@ -1,3 +1,4 @@
+import { ParserAppStep, ParserCreateStepEvent, ParserCreateTraceEvent, ParserUpdateTraceEvent, TyberDetail } from "./goTypes";
 import { Status } from "./StatusType";
 
 export interface Detail {
@@ -11,6 +12,7 @@ export interface Step {
 	started: Date;
 	finished: Date;
 	status: Status;
+	updateTraceName: string
 }
 
 export interface Trace {
@@ -22,68 +24,44 @@ export interface Trace {
 	status: Status;
 }
 
-export const GoDetailsToDetails = (goDetails: any[]) => {
-	let details: Detail[] = [];
+export const tyberDetailToDetail = (goDetail: TyberDetail) => ({
+	name: goDetail.name,
+	description: goDetail.description,
+})
 
-	for (let goDetail of goDetails || []) {
-		details.push({
-			name: goDetail.name,
-			description: goDetail.description,
-		});
-	}
+export const parserAppStepToStep = (goStep: ParserAppStep): Step => ({
+	name: goStep.name,
+	details: (goStep.details || []).map(tyberDetailToDetail),
+	started: new Date(goStep.started),
+	finished: new Date(goStep.finished),
+	status: goStep.status as Status,
+	updateTraceName: goStep.updateTraceName,
+})
 
-	return details;
-};
+export const parserCreateTraceEventToTrace = (event: ParserCreateTraceEvent): Trace => ({
+	id: event.id,
+	name: event.name,
+	steps: (event.steps || []).map(parserAppStepToStep),
+	started: new Date(event.started),
+	finished: new Date(event.finished),
+	status: event.status as Status,
+});
 
-export const GoStepToStep = (goStep: any) => {
-	const step: Step = {
-		name: goStep.name,
-		details: GoDetailsToDetails(goStep.details),
-		started: new Date(goStep.started),
-		finished: new Date(goStep.finished),
-		status: goStep.status,
-	};
+export const parserUpdateTraceEventToTrace = (event: ParserUpdateTraceEvent): Trace => ({
+	id: event.id,
+	name: event.name,
+	steps: [],
+	started: new Date(event.started),
+	finished: new Date(event.finished),
+	status: event.status as Status,
+});
 
-	return step;
-};
-
-export const GoStepAddToTrace = (goStepAdd: any) => {
-	const trace: Trace = {
-		id: goStepAdd.id,
-		steps: [GoStepToStep(goStepAdd)],
-		// All values bellow will be ignored
-		name: "",
-		started: new Date(),
-		finished: new Date(),
-		status: Status.running,
-	};
-
-	return trace;
-};
-
-export const GoTraceToTrace = (goTrace: any) => {
-	const trace: Trace = {
-		id: goTrace.parentID,
-		name: goTrace.name,
-		steps: [],
-		started: new Date(goTrace.started),
-		finished: new Date(goTrace.finished),
-		status: goTrace.status,
-	};
-
-	for (let goStep of goTrace.steps || []) {
-		trace.steps.push(GoStepToStep(goStep));
-	}
-
-	return trace;
-};
-
-export const GoTracesToTraces = (goTraces: any[]) => {
-	let traces: Trace[] = [];
-
-	for (let goTrace of goTraces || []) {
-		traces.push(GoTraceToTrace(goTrace));
-	}
-
-	return traces;
-};
+export const parserCreateStepEventToTrace = (event: ParserCreateStepEvent): Trace => ({
+	id: event.parentID,
+	steps: [parserAppStepToStep(event)],
+	// All values bellow will be ignored
+	name: "",
+	started: new Date(),
+	finished: new Date(),
+	status: Status.running,
+});

@@ -1,5 +1,12 @@
-import React from "react";
-import { Clipboard, View } from "react-native";
+import React, { useMemo } from "react";
+import { Clipboard, View, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import {
+	ListItem,
+	Spinner,
+	Text,
+	withStyles,
+} from "@ui-kitten/components";
+
 import { Trace, Step } from "../types/TraceType";
 import { Status } from "../types/StatusType";
 import { StatusIcon } from "./StatusIcon";
@@ -9,20 +16,83 @@ import {
 	OnUpdateTraceList,
 	OnAddToStepList,
 } from "../store/Store";
-import CollapsibleView from "@eliav2/react-native-collapsible-view";
-import {
-	List,
-	ListItem,
-	Spinner,
-	Text,
-	withStyles,
-} from "@ui-kitten/components";
+import TraceName from "./TraceName"
 
 interface State {
 	traces: Trace[] | null;
 }
 
-export class traceList extends React.Component<any, State> {
+const StepView: React.FC<{ step: Step, style: any }> = ({ step, style }) => (
+	<ListItem
+		title={step.name}
+		description={(props) => {
+			let details = "";
+			for (let detail of step.details || []) {
+				details += "\n" + detail.name + ": " + detail.description;
+			}
+
+			return (
+				<Text style={[props?.style, { marginTop: 6 }]}>
+					{step.started.toLocaleDateString() +
+						" " +
+						step.started.toLocaleTimeString() +
+						(step.updateTraceName ? "\n\nUpdated trace name to: " + step.updateTraceName : "") +
+						(details !== "" ? "\n" : "") +
+						details}
+				</Text>
+			);
+		}}
+		accessoryRight={() => <StatusIcon status={step.status} size={16} />}
+		onPress={() => Clipboard.setString(JSON.stringify(step, null, 2))}
+		style={style.step}
+		activeOpacity={0.7}
+	/>
+);
+
+
+const TraceView: React.FC<{ trace: Trace, eva?: any }> = ({ trace, eva }) => {
+	const [collapsed, setCollapsed] = React.useState(true)
+	const toggleCollapsed = React.useCallback(() => setCollapsed(!collapsed), [collapsed])
+	return useMemo(() => {
+		const style = eva
+		return <>
+			<TouchableOpacity onPress={toggleCollapsed}><View style={style.traceHeader}>
+				<View style={style.traceHeaderText}>
+					<Text
+						numberOfLines={1}
+						ellipsizeMode="tail"
+						style={style.traceTitle}
+					>
+						{collapsed ? "⇢" : "⇣"} <TraceName eva={eva} traceName={trace.name} />
+					</Text>
+					<Text
+						numberOfLines={1}
+						ellipsizeMode="tail"
+						style={style.tracePeriod}
+					>
+						{"Started: " +
+							trace.started.toLocaleDateString() +
+							" " +
+							trace.started.toLocaleTimeString() +
+							"  |  Finished: " +
+							(trace.status === Status.running
+								? "-"
+								: trace.finished.toLocaleDateString() +
+								" " +
+								trace.finished.toLocaleTimeString()) +
+							"  |  ID: " + trace.id}
+					</Text>
+				</View>
+				<View style={style.traceStatus}>
+					<StatusIcon status={trace.status} size={18} />
+				</View>
+			</View></TouchableOpacity>
+			{collapsed || <View style={style.stepList}>{(trace.steps || []).map((step, index) => <StepView key={index} step={step} style={style} />)}</View>}
+		</>
+	}, [trace, eva, collapsed, toggleCollapsed])
+};
+
+export class TraceListView extends React.Component<any, State> {
 	constructor(props: any) {
 		super(props);
 
@@ -49,6 +119,9 @@ export class traceList extends React.Component<any, State> {
 				let traceCopy = { ...trace };
 				traceCopy.finished = updateTrace.finished;
 				traceCopy.status = updateTrace.status;
+				if (updateTrace.name) {
+					traceCopy.name = updateTrace.name;
+				}
 
 				return traceCopy;
 			}
@@ -92,10 +165,10 @@ export class traceList extends React.Component<any, State> {
 	}
 
 	componentWillUnmount() {
-		OnInitTraceList("", () => {});
-		OnAddToTraceList(() => {});
-		OnUpdateTraceList(() => {});
-		OnAddToStepList(() => {});
+		OnInitTraceList("", () => { });
+		OnAddToTraceList(() => { });
+		OnUpdateTraceList(() => { });
+		OnAddToStepList(() => { });
 	}
 
 	componentWillReceiveProps(newProps: any) {
@@ -105,84 +178,6 @@ export class traceList extends React.Component<any, State> {
 		}
 	}
 
-	private renderStep = (step: Step, style: any) => (
-		<ListItem
-			title={step.name}
-			description={(props) => {
-				let details = "";
-				for (let detail of step.details || []) {
-					details += "\n" + detail.name + ": " + detail.description;
-				}
-
-				return (
-					<Text style={[props?.style, { marginTop: 6 }]}>
-						{step.started.toLocaleDateString() +
-							" " +
-							step.started.toLocaleTimeString() +
-							(details !== "" ? "\n" : "") +
-							details}
-					</Text>
-				);
-			}}
-			accessoryRight={() => <StatusIcon status={step.status} size={16} />}
-			onPress={() => Clipboard.setString(JSON.stringify(step, null, 2))}
-			style={style.step}
-			activeOpacity={0.7}
-		/>
-	);
-
-	private renderTrace = (trace: Trace, style: any) => (
-		<CollapsibleView
-			title={
-				<View style={style.traceHeader}>
-					<View style={style.traceHeaderText}>
-						<Text
-							numberOfLines={1}
-							ellipsizeMode="tail"
-							style={style.traceTitle}
-						>
-							{trace.name}
-						</Text>
-						<Text
-							numberOfLines={1}
-							ellipsizeMode="tail"
-							style={style.tracePeriod}
-						>
-							{"Started: " +
-								trace.started.toLocaleDateString() +
-								" " +
-								trace.started.toLocaleTimeString() +
-								"  |  Finished: " +
-								(trace.status === Status.running
-									? "-"
-									: trace.finished.toLocaleDateString() +
-									  " " +
-									  trace.finished.toLocaleTimeString())}
-						</Text>
-					</View>
-					<View style={style.traceStatus}>
-						<StatusIcon status={trace.status} size={18} />
-					</View>
-				</View>
-			}
-			key={trace.id}
-			style={style.trace}
-			titleStyle={{ width: "100%" }}
-			collapsibleContainerStyle={style.traceCollapsible}
-			unmountOnCollapse={true}
-			arrowStyling={{
-				color: this.props.eva.theme["text-basic-color"],
-				size: 20,
-				thickness: 3,
-			}}
-		>
-			<List
-				style={style.stepList}
-				data={trace.steps}
-				renderItem={({ item }: { item: any }) => this.renderStep(item, style)}
-			/>
-		</CollapsibleView>
-	);
 
 	render() {
 		const { style } = this.props.eva;
@@ -200,20 +195,17 @@ export class traceList extends React.Component<any, State> {
 				</View>
 			);
 		} else {
-			return (
-				<List
-					style={style.traceList}
-					data={this.state.traces}
-					renderItem={({ item }: { item: any }) =>
-						this.renderTrace(item, style)
-					}
-				/>
-			);
+			return <FlatList inverted data={[...this.state.traces].reverse()} renderItem={(info) =>
+				<TraceView key={info.item.id} eva={style} trace={info.item} />
+			} />
+			/*return <ScrollView>{this.state.traces.map(trace =>
+				<TraceView key={trace.id} eva={style} trace={trace} />
+			)}</ScrollView>*/
 		}
 	}
 }
 
-export const TraceList = withStyles(traceList, (theme) => ({
+export const TraceList = withStyles(TraceListView, (theme) => ({
 	container: {
 		flex: 1,
 		justifyContent: "center",
@@ -277,3 +269,4 @@ export const TraceList = withStyles(traceList, (theme) => ({
 		marginVertical: 5,
 	},
 }));
+

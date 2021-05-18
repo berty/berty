@@ -162,6 +162,12 @@ func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reve
 }
 
 func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
+	ctx, newTrace := tyber.ContextWithTraceID(ctx)
+
+	if newTrace {
+		m.logger.Debug("Sending message to group "+base64.RawURLEncoding.EncodeToString(m.g.PublicKey), tyber.FormatTraceLogFields(ctx)...)
+	}
+
 	m.logger.Debug(
 		fmt.Sprintf("Adding message to store with payload of %d bytes and %d attachment(s)", len(payload), len(attachmentsCIDs)),
 		tyber.FormatStepLogFields(
@@ -170,8 +176,6 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 				{Name: "Payload", Description: string(payload)},
 				{Name: "Attachments cIDs", Description: fmt.Sprintf("%q", attachmentsCIDs)},
 			},
-			tyber.Succeeded,
-			false,
 		)...,
 	)
 
@@ -186,7 +190,7 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 	}
 	m.logger.Debug(
 		"Secrets to encrypt message content retrieved successfully",
-		tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.Succeeded, false)...,
+		tyber.FormatStepLogFields(ctx, []tyber.Detail{})...,
 	)
 
 	msg, err := (&protocoltypes.EncryptedMessage{
@@ -209,8 +213,6 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 				{Name: "Cleartext size", Description: fmt.Sprintf("%d bytes", len(msg))},
 				{Name: "Cyphertext size", Description: fmt.Sprintf("%d bytes", len(env))},
 			},
-			tyber.Succeeded,
-			false,
 		)...,
 	)
 
@@ -222,7 +224,7 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 	}
 	m.logger.Debug(
 		"Envelope added to orbit-DB log successfully",
-		tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.Succeeded, false)...,
+		tyber.FormatStepLogFields(ctx, []tyber.Detail{})...,
 	)
 
 	op, err = operation.ParseOperation(e)
@@ -287,16 +289,28 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 					continue
 				}
 
-				store.logger.Debug("store_message: received store event", zap.Any("raw event", e))
+				tctx := tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
+				store.logger.Debug("Received message store event", tyber.FormatTraceLogFields(tctx)...)
 
-				messageEvent, err := store.openMessage(ctx, entry, true)
+				store.logger.Debug(
+					"Message store event",
+					tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "RawEvent", Description: fmt.Sprint(e)}})...,
+				)
+
+				messageEvent, err := store.openMessage(tctx, entry, true)
 				if err != nil {
-					store.logger.Error("unable to open message", zap.Error(err))
+					store.logger.Error("Unable to open message",
+						tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "Error", Description: err.Error()}}, tyber.Fatal)...,
+					)
 					continue
 				}
 
-				store.logger.Debug("store_message: received payload", zap.String("payload", string(messageEvent.Message)))
-				store.Emit(ctx, messageEvent)
+				store.logger.Debug(
+					"Got message store payload",
+					tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "Payload", Description: string(messageEvent.Message)}}, tyber.EndTrace)...,
+				)
+
+				store.Emit(tctx, messageEvent)
 			}
 		}()
 

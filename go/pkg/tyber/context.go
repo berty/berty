@@ -6,17 +6,23 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
+	"google.golang.org/grpc/metadata"
 )
 
 type traceIDKeyType string
 
 const (
 	traceIDKey   traceIDKeyType = "TyberTraceID"
+	noTraceID    string         = "no_trace_id"
 	uuidFallback string         = "409123fa-4dd5-11eb-a4a1-675173c25b22"
 )
 
-func ContextWithTraceID(ctx context.Context) context.Context {
-	id, err := uuid.NewV4()
+func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
+	if eid := GetTraceIDFromContext(ctx); eid != noTraceID {
+		return ctx, false
+	}
+
+	uid, err := uuid.NewV4()
 	// If error while reading random, fallback on uuid v5
 	if err != nil {
 		ns, err := uuid.FromString(uuidFallback)
@@ -24,17 +30,33 @@ func ContextWithTraceID(ctx context.Context) context.Context {
 			panic(err) // Should never happen
 		}
 		n := strconv.FormatInt(time.Now().UnixNano(), 10)
-		id = uuid.NewV5(ns, n)
+		uid = uuid.NewV5(ns, n)
 	}
 
-	return context.WithValue(ctx, traceIDKey, id.String())
+	return ContextWithConstantTraceID(ctx, uid.String()), true
 }
 
-func getTraceIDFromContext(ctx context.Context) string {
-	id, ok := ctx.Value(traceIDKey).(string)
-	if !ok {
-		return "no_trace_id"
+func ContextWithConstantTraceID(ctx context.Context, traceID string) context.Context {
+	if existingTraceID := GetTraceIDFromContext(ctx); existingTraceID != noTraceID {
+		md, _ := metadata.FromOutgoingContext(ctx)
+		md.Set(string(traceIDKey), traceID)
+		return metadata.NewOutgoingContext(ctx, md)
 	}
+	return metadata.AppendToOutgoingContext(ctx, string(traceIDKey), traceID)
+}
 
-	return id
+func GetTraceIDFromContext(ctx context.Context) string {
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		ids := md.Get(string(traceIDKey))
+		if len(ids) > 0 && len(ids[0]) > 0 {
+			return ids[0]
+		}
+	}
+	if md, ok := metadata.FromOutgoingContext(ctx); ok {
+		ids := md.Get(string(traceIDKey))
+		if len(ids) > 0 && len(ids[0]) > 0 {
+			return ids[0]
+		}
+	}
+	return noTraceID
 }

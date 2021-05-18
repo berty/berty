@@ -114,9 +114,18 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 		case typeRing:
 			ring := opts.ring.SetEncoder(enc)
 			core = ring
-
 		case typeLumberjack:
 			w := zapcore.AddSync(opts.lumberOpts)
+			core = zapcore.NewCore(enc, w, config.Level)
+		case typeTyber:
+			tyberLogger, err := NewTyberLogger(opts.tyberHost)
+			if err != nil {
+				return nil, nil, err
+			}
+			cleanup = u.CombineFuncs(cleanup, func() {
+				tyberLogger.Close()
+			})
+			w := zapcore.AddSync(tyberLogger)
 			core = zapcore.NewCore(enc, w, config.Level)
 		default:
 			return nil, nil, fmt.Errorf("unknown logger type: %q", opts.kind)

@@ -1,14 +1,17 @@
 package handshake
 
 import (
+	"context"
 	crand "crypto/rand"
 	"sync"
 	"testing"
 	"time"
 
+	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
@@ -16,6 +19,22 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
+
+// Request init a handshake with the responder
+func Request(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey, peerAccountID p2pcrypto.PubKey) error {
+	reader := ggio.NewDelimitedReader(stream, 2048)
+	writer := ggio.NewDelimitedWriter(stream)
+
+	return RequestUsingReaderWriter(context.TODO(), zap.NewNop(), reader, writer, ownAccountID, peerAccountID)
+}
+
+// Response handle the handshake inited by the requester
+func Response(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
+	reader := ggio.NewDelimitedReader(stream, 2048)
+	writer := ggio.NewDelimitedWriter(stream)
+
+	return ResponseUsingReaderWriter(context.TODO(), zap.NewNop(), reader, writer, ownAccountID)
+}
 
 func TestValidHandshake(t *testing.T) {
 	testutil.FilterSpeed(t, testutil.Slow)

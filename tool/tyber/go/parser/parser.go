@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/tool/tyber/go/v2/format"
-	"berty.tech/berty/tool/tyber/go/v2/logger"
+	"berty.tech/berty/tool/tyber/go/logger"
+	"berty.tech/berty/v2/go/pkg/tyber"
 	"github.com/pkg/errors"
 	orderedmap "github.com/wk8/go-ordered-map"
 )
@@ -25,7 +25,7 @@ type Parser struct {
 	sessions      *orderedmap.OrderedMap
 	sessionsLock  sync.RWMutex
 	openedSession *Session
-	EventChan     chan interface{}
+	EventChan     chan interface{} // TODO: base event definition
 }
 
 func New(l *logger.Logger) *Parser {
@@ -97,7 +97,7 @@ func (p *Parser) ParseFile(path string) error {
 	return nil
 }
 
-func (p *Parser) NetworkListen(port string) error {
+func (p *Parser) NetworkListen(address, port string) error {
 	if !p.isInitialized() {
 		return errors.New("parser not initialized")
 	}
@@ -110,7 +110,7 @@ func (p *Parser) NetworkListen(port string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	p.cancelNetwork = cancel
 
-	localAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf(":%s", port))
+	localAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%s", address, port))
 	if err != nil {
 		return err
 	}
@@ -180,7 +180,7 @@ func (p *Parser) OpenSession(sessionID string) error {
 	s.tracesLock.Lock()
 	s.openned = true
 	for _, t := range s.Traces {
-		events = append(events, traceToCreateEvent(t))
+		events = append(events, t.ToCreateTraceEvent())
 	}
 	p.EventChan <- events
 	s.tracesLock.Unlock()
@@ -260,7 +260,7 @@ func (p *Parser) startSession(srcName string, srcType SrcType, srcIO io.ReadClos
 	}
 	p.logger.Infof("started session %s with logs from %s (%s)", s.ID, srcType, srcName)
 
-	s.setStatus(format.Running)
+	s.StatusType = tyber.Running
 	p.sessionsLock.Lock()
 	p.sessions.Set(s.ID, s)
 	p.sessionsLock.Unlock()
