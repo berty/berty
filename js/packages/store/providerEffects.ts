@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
+import { logger } from '@berty-tech/grpc-bridge/middleware/logs'
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
@@ -212,7 +213,7 @@ export const openingDaemon = async (
 }
 
 // handle state OpeningWaitingForClients
-export const openingClients = (
+export const openingClients = async (
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
 	eventEmitter: EventEmitter,
@@ -225,7 +226,8 @@ export const openingClients = (
 
 	console.log('starting stream')
 
-	const messengerMiddlewares = null
+	const messengerMiddleware = await logger.create('messenger')
+	const protocolMiddleware = await logger.create('protocol')
 	let rpc
 	if (embedded) {
 		rpc = rpcBridge
@@ -237,9 +239,9 @@ export const openingClients = (
 		rpc = rpcWeb(opts)
 	}
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpc, messengerMiddlewares)
+	const messengerClient = Service(beapi.messenger.MessengerService, rpc, messengerMiddleware)
 
-	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, null)
+	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, protocolMiddleware)
 
 	let precancel = false
 	let cancel = () => {

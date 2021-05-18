@@ -6,26 +6,28 @@ const logStyle = {
 	title: 'font-weight:normal;font-style:italic;color:#FFFFFF;background-color:#000000;',
 }
 
-const rpcLogger = (name, title, req, res, err) => {
-	try {
-		if (err) {
-			console.group(`%c ${name} %c %s`, logStyle.rpcERROR, logStyle.title, title)
-			console.warn(err.message)
-		} else {
-			console.groupCollapsed(`%c ${name} %c %s`, logStyle.rpcOK, logStyle.title, title)
-		}
+const rpcLogger = (method, id, time, req, res, err, stream) => {
+	var log = ''
 
-		if (req) {
-			console.dir(req)
-		}
+	if (stream) {
+		log = `GRPCLOG STREAM - method: ${method} id: ${id}`
+	} else if (time) {
+		log = `GRPCLOG END - method: [${method}], id: [${id}], took: [${time}]`
+	} else {
+		log = `GRPCLOG START - method: ${method} id: ${id}`
+	}
 
-		if (res) {
-			console.dir(res)
-		}
-
-		console.groupEnd()
-	} catch (err) {
-		console.log(`[${name}]`, title, req, res, err)
+	if (req) {
+		log += `, req: [${req}]`
+	}
+	if (res) {
+		log += `, res: [${res}]`
+	}
+	if (err) {
+		log += `, err: [${err}]`
+		console.error(log)
+	} else {
+		console.info(log)
 	}
 }
 
@@ -33,34 +35,34 @@ const create = (name) => (method, call) => async (payload, metadata) => {
 	const request = method.resolvedRequestType.create(payload)
 
 	const start = new Date().getTime()
+	const id = '_' + Math.random().toString(36).substr(2, 9)
+
+	rpcLogger(method.name, id, null, null, null, null, false)
+
 	try {
 		const res = await call(payload, metadata)
 		const end = new Date().getTime()
 
 		// stream
 		if (method.requestStream || method.responseStream) {
-			const title = `[${end - start}ms] ${method.name}`
-			rpcLogger(name, title, request, null, null)
+			rpcLogger(method.name, id, end - start, request.toString(), null, null, true)
 
-			const eventTitle = `<= ${method.name} event`
 			res.onMessage((msg, err) => {
 				if (err) {
-					rpcLogger(name, eventTitle, null, null, err)
+					rpcLogger(method.name, id, end - start, null, null, err, true)
 				} else {
-					rpcLogger(name, eventTitle, null, msg, null)
+					rpcLogger(method.name, id, end - start, null, msg.toString(), null, true)
 				}
 			})
 		} else {
 			// unary
-			const title = `[${end - start}ms] ${method.name}`
-			rpcLogger(name, title, request, res, null)
+			rpcLogger(method.name, id, end - start, request.toString(), res.toString(), null, false)
 		}
 
 		return res
 	} catch (err) {
 		const end = new Date().getTime()
-		const title = `[${end - start}ms] ${method.name}`
-		rpcLogger(name, title, request, null, err)
+		rpcLogger(method.name, id, end - start, request.toString(), null, err, false)
 
 		throw err
 	}

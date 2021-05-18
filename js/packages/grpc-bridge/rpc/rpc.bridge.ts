@@ -24,6 +24,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 			this.events.forEach((listener) => listener.apply(this, args))
 		},
 		onMessage(listener: (...a: unknown[]) => void) {
+			console.log(`onMessage ${this.events}`)
 			this.events.push(listener)
 		},
 		async emit(payload: Uint8Array) {
