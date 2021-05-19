@@ -26,9 +26,9 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	// fs.StringVar(&m.Logging.Tracer, "log.tracer", m.Logging.Tracer, `specify "stdout" to output tracing on stdout or <hostname:port> to trace on Jaeger`)
 
 	// expert flags
-	fs.StringVar(&m.Logging.Service, "exp.log.service", m.Logging.Service, `service name, used by the tracer`)
-	fs.StringVar(&m.Logging.RingFilters, "exp.log.ring-filters", m.Logging.RingFilters, "in-memory ring buffer: zapfilter configuration")
-	fs.UintVar(&m.Logging.RingSize, "exp.log.ring-size", m.Logging.RingSize, `in-memory ring buffer: size in MB`)
+	expFS.StringVar(&m.Logging.Service, "exp.log.service", m.Logging.Service, `service name, used by the tracer`)
+	expFS.StringVar(&m.Logging.RingFilters, "exp.log.ring-filters", m.Logging.RingFilters, "in-memory ring buffer: zapfilter configuration")
+	expFS.UintVar(&m.Logging.RingSize, "exp.log.ring-size", m.Logging.RingSize, `in-memory ring buffer: size in MB`)
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-log.filters=':default: CUSTOM'",
