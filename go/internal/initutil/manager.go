@@ -347,7 +347,6 @@ func (m *Manager) AdvancedHelp() string {
 		return ""
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "ADVANCED\n")
 	tw := tabwriter.NewWriter(&b, 0, 2, 2, ' ', 0)
 	seen := map[string]bool{}
 	for _, entry := range m.longHelp {
