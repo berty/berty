@@ -14,7 +14,7 @@ import {
 	Maybe,
 	useMsgrContext,
 } from '@berty-tech/store/hooks'
-import { useNavigation } from '@berty-tech/navigation'
+import { navigate } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
@@ -136,7 +136,6 @@ export const HardcodedAvatar: React.FC<{
 	name: HardcodedAvatarKey
 	pressable?: boolean
 }> = ({ size, style, name, pressable }) => {
-	const { navigate } = useNavigation()
 	const [{ border }] = useStyles()
 	let avatar = hardcodedAvatars[name]
 	if (!avatar) {
@@ -148,7 +147,7 @@ export const HardcodedAvatar: React.FC<{
 			activeOpacity={0.9}
 			disabled={!pressable}
 			onPress={() => {
-				navigate.modals.imageView({ images: [avatar], previewOnly: true })
+				navigate('ImageView', { images: [avatar], previewOnly: true })
 			}}
 			style={[{ borderRadius: size / 2, backgroundColor: 'white' }, border.shadow.medium, style]}
 		>
