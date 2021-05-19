@@ -1,3 +1,5 @@
 source "https://rubygems.org"
 
 gem "cocoapods", "~> 1.10.O"
+
+gem "rexml", "~> 3.2"
