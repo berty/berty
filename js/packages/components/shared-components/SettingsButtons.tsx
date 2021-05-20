@@ -88,7 +88,6 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 		{ windowWidth, scaleSize },
 	] = useStyles()
 
-	console.log('Disabled', disabled)
 	return (
 		<TouchableOpacity
 			activeOpacity={

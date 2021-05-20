@@ -211,6 +211,7 @@ export const UserMessage: React.FC<{
 				padding.horizontal.medium,
 				padding.top.scale(2),
 			]}
+			key={inte.cid}
 		>
 			{!inte.isMine && isGroup && !isFollowedMessage && (
 				<View

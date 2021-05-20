@@ -217,6 +217,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 									flexDirection: 'row',
 									alignItems: 'center',
 								}}
+								key={k}
 							>
 								<View
 									style={[
