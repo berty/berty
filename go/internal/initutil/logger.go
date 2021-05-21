@@ -54,6 +54,7 @@ func (m *Manager) SetLogger(logger *zap.Logger) {
 	}
 
 	m.Logging.zapLogger = logger
+	logger.Named("init").Debug("logger initialized", zap.Any("manager", m))
 }
 
 func (m *Manager) getLogger() (*zap.Logger, error) {

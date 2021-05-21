@@ -344,7 +344,6 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 	manager.SetBleDriver(s.bleDriver)
 	manager.SetNBDriver(s.nbDriver)
 
-	s.logger.Info("init", zap.Any("manager", &manager))
 	return &manager, nil
 }
 

@@ -3,7 +3,7 @@ module berty.tech/berty/tool/tyber/go
 go 1.13
 
 require (
-	berty.tech/berty/v2 v2.284.6
+	berty.tech/berty/v2 v2.0.0
 	github.com/asticode/go-astikit v0.6.0
 	github.com/asticode/go-astilectron v0.18.0
 	github.com/asticode/go-astilectron-bootstrap v0.4.3
@@ -14,4 +14,4 @@ require (
 	go.uber.org/multierr v1.7.0
 )
 
-replace berty.tech/berty/v2 => ../../../
+replace berty.tech/berty/v2 v2.0.0 => ../../../
