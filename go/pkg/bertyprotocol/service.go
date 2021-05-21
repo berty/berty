@@ -168,34 +168,34 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 }
 
 // New initializes a new Service
-func New(ctx context.Context, opts Opts) (Service, error) {
+func New(ctx context.Context, opts Opts) (_ Service, err error) {
 	if err := opts.applyDefaults(ctx); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	opts.Logger = opts.Logger.Named("pt")
 
-	tctx, _ := tyber.ContextWithTraceID(ctx)
-	opts.Logger.Debug(fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version), tyber.FormatTraceLogFields(tctx)...)
+	ctx, _, endSection := tyber.Section(tyber.ContextWithNewTraceID(ctx), opts.Logger, fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version))
+	defer func() { endSection(err, "") }()
 
 	dbOpts := &iface.CreateDBOptions{LocalOnly: &opts.LocalOnly}
 
-	acc, err := opts.OrbitDB.openAccountGroup(tctx, dbOpts, opts.IpfsCoreAPI)
+	acc, err := opts.OrbitDB.openAccountGroup(ctx, dbOpts, opts.IpfsCoreAPI)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
+	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
 
 	if opts.TinderDriver != nil {
 		s := NewSwiper(opts.Logger, opts.PubSub, opts.RendezvousRotationBase)
-		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(tctx, []tyber.Detail{})...)
+		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	} else {
-		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(tctx, []tyber.Detail{})...)
+		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 	}
 
 	s := &service{
@@ -218,8 +218,6 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 
 	s.startTyberTinderMonitor()
 
-	s.logger.Debug("ProtocolService initialized", tyber.FormatStepLogFields(tctx, []tyber.Detail{}, tyber.EndTrace)...)
-
 	return s, nil
 }
 
@@ -228,16 +226,15 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
-	var err error
-	_, _, endSection := tyber.Section(context.TODO(), s.logger, "Closing ProtocolService")
-	defer func() { endSection(err, "") }()
+	endSection := tyber.FastSection(tyber.ContextWithNewTraceID(s.ctx), s.logger, "Closing ProtocolService")
 
-	err = multierr.Append(err, s.odb.Close())
+	err := s.odb.Close()
 
 	if s.close != nil {
 		err = multierr.Append(err, s.close())
 	}
 
+	endSection(err)
 	return err
 }
 

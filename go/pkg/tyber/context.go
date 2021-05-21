@@ -17,11 +17,7 @@ const (
 	uuidFallback string         = "409123fa-4dd5-11eb-a4a1-675173c25b22"
 )
 
-func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
-	if eid := GetTraceIDFromContext(ctx); eid != noTraceID {
-		return ctx, false
-	}
-
+func NewTraceID() string {
 	uid, err := uuid.NewV4()
 	// If error while reading random, fallback on uuid v5
 	if err != nil {
@@ -33,7 +29,14 @@ func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
 		uid = uuid.NewV5(ns, n)
 	}
 
-	return ContextWithConstantTraceID(ctx, uid.String()), true
+	return uid.String()
+}
+
+func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
+	if eid := GetTraceIDFromContext(ctx); eid != noTraceID {
+		return ctx, false
+	}
+	return ContextWithConstantTraceID(ctx, NewTraceID()), true
 }
 
 func ContextWithConstantTraceID(ctx context.Context, traceID string) context.Context {
@@ -59,4 +62,8 @@ func GetTraceIDFromContext(ctx context.Context) string {
 		}
 	}
 	return noTraceID
+}
+
+func ContextWithNewTraceID(ctx context.Context) context.Context {
+	return ContextWithConstantTraceID(ctx, NewTraceID())
 }

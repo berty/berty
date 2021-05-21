@@ -287,14 +287,8 @@ func (b *Bridge) WillTerminate() {
 	}
 }
 
-func (b *Bridge) Close() (err error) {
-	_, _, endSection := tyber.Section(context.TODO(), b.logger, "Closing Berty framework")
-	defer func() {
-		endSection(err, "")
-		if b.closeLogger != nil {
-			b.closeLogger()
-		}
-	}()
+func (b *Bridge) Close() error {
+	endSection := tyber.FastSection(context.Background(), b.logger, "Closing Berty framework")
 
 	var errs error
 
@@ -321,6 +315,12 @@ func (b *Bridge) Close() (err error) {
 		}
 
 		cancel()
+	}
+
+	endSection(errs)
+	if b.closeLogger != nil {
+		b.closeLogger()
+		b.closeLogger = nil
 	}
 
 	return errs

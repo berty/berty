@@ -74,12 +74,12 @@ func (o *Options) applyDefault() {
 }
 
 func NewService(opts *Options) (_ Service, err error) {
-	_, _, endSection := tyber.Section(context.TODO(), opts.Logger, "Initializing AccountService")
-	defer func() { endSection(err, "") }()
+	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
+
+	endSection := tyber.FastSection(rootCtx, opts.Logger, "Initializing AccountService")
+	defer func() { endSection(err) }()
 
 	opts.applyDefault()
-
-	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
 	s := &service{
 		rootdir:          opts.RootDirectory,
 		rootCtx:          rootCtx,
@@ -101,8 +101,8 @@ func NewService(opts *Options) (_ Service, err error) {
 }
 
 func (s *service) Close() (err error) {
-	_, _, endSection := tyber.Section(context.TODO(), s.logger, "Closing AccountService")
-	defer func() { endSection(err, "") }()
+	endSection := tyber.FastSection(tyber.ContextWithNewTraceID(s.rootCtx), s.logger, "Closing AccountService")
+	defer func() { endSection(err) }()
 
 	s.muService.Lock()
 	defer s.muService.Unlock()
