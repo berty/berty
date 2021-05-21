@@ -75,22 +75,25 @@ type Header struct {
 }
 
 func (s *Session) parseHeader() error {
-	if !s.srcScanner.Scan() {
-		return s.srcScanner.Err()
-	}
-
 	h := &Header{}
-	initLog := s.srcScanner.Text()
-	if err := json.Unmarshal([]byte(initLog), h); err != nil {
-		return err
+	for s.srcScanner.Scan() {
+		log := s.srcScanner.Text()
+		if err := json.Unmarshal([]byte(log), h); err != nil {
+			return err
+		}
+
+		if h.Manager.SessionID != "" {
+			break
+		}
 	}
-	h.epochToTime()
 
 	if h.Manager.SessionID == "" {
-		return errors.New("invalid header / init log")
+		return errors.New("invalid log: header not found")
 	}
+
 	// TODO: add other checks
 
+	h.epochToTime()
 	s.Header = h
 	s.ID = h.Manager.SessionID
 	s.DisplayName = h.Manager.Node.Messenger.DisplayName
