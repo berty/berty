@@ -3,7 +3,7 @@ module berty.tech/berty/tool/tyber/go
 go 1.13
 
 require (
-	berty.tech/berty/v2 latest
+	berty.tech/berty/v2 v2.284.6
 	github.com/asticode/go-astikit v0.6.0
 	github.com/asticode/go-astilectron v0.18.0
 	github.com/asticode/go-astilectron-bootstrap v0.4.3

@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"berty.tech/berty/tool/tyber/go/logger"
+	"berty.tech/berty/tool/tyber/go/parser"
 	"github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 )
@@ -67,6 +68,16 @@ func (b *Bridge) UpdateFront(e interface{}) {
 
 	kind := interfaceToEventKind(e)
 	eventName := kind.String()
+
+	if kind == CreateSessionEventKind {
+		cse := e.(parser.CreateSessionEvent)
+		if cse.SrcType == parser.NetworkType {
+			b.DisplayNotification(
+				fmt.Sprintf("New incoming connection %s", cse.SrcName),
+				fmt.Sprintf("Started session %s from %s", cse.ID, cse.DisplayName),
+			)
+		}
+	}
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
