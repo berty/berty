@@ -9,20 +9,17 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 const bufListenerSize = 256 * 1024
@@ -42,7 +39,6 @@ type Bridge struct {
 	bleDriver      proximity.NativeDriver
 	nbDriver       proximity.NativeDriver
 	logger         *zap.Logger
-	closeLogger    func()
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
@@ -69,64 +65,15 @@ func NewBridge(config *Config) (*Bridge, error) {
 	}
 
 	// setup logger
-
-	cores := []zapcore.Core(nil)
-
-	// tyber core
-	if config.TyberHost != "" {
-		mutex := &sync.Mutex{}
-		canceled := false
-		ch := make(chan struct{})
-		go func() {
-			defer func() { ch <- struct{}{}; close(ch) }()
-			logger, clean, err := logutil.NewLogger(logutil.NewTyberStream(config.TyberHost))
-			if err == nil {
-				mutex.Lock()
-				defer mutex.Unlock()
-				if canceled {
-					clean()
-					return
-				}
-				b.closeLogger = clean
-				cores = append(cores, logger.Core())
-			}
-		}()
-		select {
-		case <-time.After(time.Second * 2):
-			mutex.Lock()
-			canceled = true
-			mutex.Unlock()
-		case <-ch:
-		}
-	}
-
-	// native core
-	if nativeLogger := config.dLogger; nativeLogger != nil {
-		nl := newLogger(nativeLogger)
-		cores = append(cores, nl.Core())
-	}
-
-	// create logger
-	if len(cores) == 0 {
-		b.logger = zap.NewNop()
-	} else {
-		b.logger = zap.New(
-			zapcore.NewTee(cores...),
-			zap.AddCaller(),
-		)
-		b.logger.Debug("logger initialized", zap.Any("manager", &initutil.Manager{
-			SessionID: tyber.NewSessionID(),
-		}))
-	}
-
-	// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
-	initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
-
 	{
-		tyberCtx, _ := tyber.ContextWithTraceID(context.TODO())
-		tyber.LogTraceStart(tyberCtx, b.logger, "Initializing Berty framework")
-		tyber.LogStep(tyberCtx, b.logger, "Berty framework config", tyber.WithJSONDetail("Config", config))
-		tyber.LogTraceEnd(tyberCtx, b.logger, "Done")
+		if nativeLogger := config.dLogger; nativeLogger != nil {
+			b.logger = newLogger(nativeLogger)
+		} else {
+			b.logger = zap.NewNop()
+		}
+
+		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
+		initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
 	}
 
 	// setup notification manager
@@ -280,7 +227,7 @@ func (b *Bridge) WillTerminate() {
 }
 
 func (b *Bridge) Close() error {
-	endSection := tyber.FastSection(context.Background(), b.logger, "Closing Berty framework")
+	b.logger.Info("Bridge.Close called")
 
 	var errs error
 
@@ -307,12 +254,6 @@ func (b *Bridge) Close() error {
 		}
 
 		cancel()
-	}
-
-	endSection(errs)
-	if b.closeLogger != nil {
-		b.closeLogger()
-		b.closeLogger = nil
 	}
 
 	return errs
