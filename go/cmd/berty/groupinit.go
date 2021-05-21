@@ -27,6 +27,7 @@ func groupinitCommand() *ffcli.Command {
 		fs.String("config", "", "config file (optional)")
 		fs.BoolVar(&noQRFlag, "no-qr", noQRFlag, "do not print the QR code in terminal")
 		fs.StringVar(&passphrase, "passphrase", passphrase, "optional encryption passphrase")
+		// manager.Session.Kind = "cmd.berty.groupinit"
 		manager.SetupLoggingFlags(fs) // also available at root level
 		return fs, nil
 	}
@@ -43,7 +44,6 @@ func groupinitCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
-			// manager.Session.Kind = "cmd.berty.groupinit"
 			g, _, err := bertyprotocol.NewGroupMultiMember()
 			if err != nil {
 				return err

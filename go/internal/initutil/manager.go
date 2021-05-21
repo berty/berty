@@ -49,24 +49,23 @@ type Manager struct {
 		// When set, it is appended to the session-specific logging file.
 		// It follows the following format: '${driver}.${package}.${command}'.
 		// Examples:
-		//   cmd.berty.daemon                -> `go run ./cmd/berty daemon`
-		//   cmd.berty.mini                  -> `go run ./cmd/berty mini`
-		//   cmd.rdvp.main                   -> `go run ./cmd/rdvp`
-		//   framework.bertybridge.messenger -> Berty Messenger app using the bertybridge
+		//   cli.daemon       -> `go run ./cmd/berty daemon`
+		//   cli.mini         -> `go run ./cmd/berty mini`
+		//   cli.rdvp         -> `go run ./cmd/rdvp`
+		//   mobile.messenger -> Berty Messenger app using the bertybridge
 		Kind string `json:"Kind,omitempty"`
 
 		// ID is an auto-generated UUID that can be used by Tyber.
 		ID string `json:"ID,omitempty"`
 	} `json:"Session,omitempty"`
 	Logging struct {
-		Format      string `json:"Format,omitempty"`
-		Logfile     string `json:"Logfile,omitempty"`
-		Filters     string `json:"Filters,omitempty"`
-		Tracer      string `json:"Tracer,omitempty"`
-		Service     string `json:"Service,omitempty"`
-		RingFilters string `json:"RingFilters,omitempty"`
-		RingSize    uint   `json:"RingSize,omitempty"`
-		TyberHost   string `json:"TyberHost,omitempty"`
+		StderrFormat  string `json:"StderrFormat,omitempty"`
+		StderrFilters string `json:"StderrFilters,omitempty"`
+		FilePath      string `json:"FilePath,omitempty"`
+		FileFilters   string `json:"FileFilters,omitempty"`
+		RingFilters   string `json:"RingFilters,omitempty"`
+		RingSize      uint   `json:"RingSize,omitempty"`
+		TyberHost     string `json:"TyberHost,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
@@ -196,10 +195,10 @@ func New(ctx context.Context) (*Manager, error) {
 	// * values that are reused across various CLI depths.
 	//
 	// the good location for other variables is in the initutil.SetupFoo functions.
-	m.Logging.Filters = defaultLoggingFilters
+	m.Logging.StderrFilters = defaultLoggingFilters
 	m.Logging.RingFilters = defaultLoggingFilters
-	m.Logging.Format = "color"
-	m.Logging.Service = "berty"
+	m.Logging.FileFilters = "*"
+	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer
 	m.Logging.TyberHost = ""
 
