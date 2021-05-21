@@ -303,10 +303,7 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 }
 
 func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Manager, error) {
-	manager, err := initutil.New(context.Background())
-	if err != nil {
-		return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
-	}
+	manager := initutil.Manager{}
 
 	// configure flagset options
 	fs := flag.NewFlagSet("account", flag.ContinueOnError)
@@ -315,7 +312,7 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 	manager.SetupEmptyGRPCListenersFlags(fs)
 
 	// manager.SetupMetricsFlags(fs)
-	err = fs.Parse(args)
+	err := fs.Parse(args)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountInvalidCLIArgs.Wrap(err)
 	}
@@ -335,7 +332,7 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 	manager.SetNBDriver(s.nbDriver)
 
 	s.logger.Info("init", zap.Any("manager", &manager))
-	return manager, nil
+	return &manager, nil
 }
 
 func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*ListAccounts_Reply, error) {
