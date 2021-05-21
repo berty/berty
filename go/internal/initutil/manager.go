@@ -10,7 +10,6 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/gofrs/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
@@ -35,6 +34,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 const (
@@ -190,11 +190,8 @@ func New(ctx context.Context) (*Manager, error) {
 	m.Logging.TyberHost = ""
 
 	// generate SessionID using uuidv4 to identify each run
-	id, err := uuid.NewV4()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	m.SessionID = id.String()
+
+	m.SessionID = tyber.NewSessionID()
 
 	// storage path
 	{

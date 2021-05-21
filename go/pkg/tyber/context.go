@@ -17,7 +17,12 @@ const (
 	uuidFallback string         = "409123fa-4dd5-11eb-a4a1-675173c25b22"
 )
 
-func NewTraceID() string {
+var (
+	NewSessionID = newID
+	NewTraceID   = newID
+)
+
+func newID() string {
 	uid, err := uuid.NewV4()
 	// If error while reading random, fallback on uuid v5
 	if err != nil {

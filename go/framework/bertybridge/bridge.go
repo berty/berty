@@ -2,8 +2,6 @@ package bertybridge
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/base64"
 	"sync"
 	"time"
 
@@ -48,12 +46,6 @@ type Bridge struct {
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
-}
-
-func randomID() string {
-	bytes := make([]byte, 256/8)
-	_, _ = rand.Read(bytes)
-	return base64.RawURLEncoding.EncodeToString(bytes)
 }
 
 func NewBridge(config *Config) (*Bridge, error) {
@@ -123,7 +115,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 			zap.AddCaller(),
 		)
 		b.logger.Debug("logger initialized", zap.Any("manager", &initutil.Manager{
-			SessionID: randomID(),
+			SessionID: tyber.NewSessionID(),
 		}))
 	}
 
