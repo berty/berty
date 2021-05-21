@@ -22,6 +22,61 @@ var (
 	NewTraceID   = newID
 )
 
+func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
+	if eid := GetTraceIDFromContext(ctx); eid != noTraceID {
+		return ctx, false
+	}
+	return ContextWithConstantTraceID(ctx, NewTraceID()), true
+}
+
+func ContextWithConstantTraceID(ctx context.Context, traceID string) context.Context {
+	return metadata.AppendToOutgoingContext(ContextWithoutTraceID(ctx), string(traceIDKey), traceID)
+}
+
+func GetTraceIDFromContext(ctx context.Context) string {
+	if md, ok := metadata.FromOutgoingContext(ctx); ok {
+		ids := md.Get(string(traceIDKey))
+		if len(ids) > 0 && len(ids[0]) > 0 {
+			return ids[0]
+		}
+	}
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		ids := md.Get(string(traceIDKey))
+		if len(ids) > 0 && len(ids[0]) > 0 {
+			return ids[0]
+		}
+	}
+	return noTraceID
+}
+
+func ContextWithoutTraceID(ctx context.Context) context.Context {
+	{
+		md, _ := metadata.FromOutgoingContext(ctx)
+		if vals := md.Get(string(traceIDKey)); len(vals) != 0 {
+			nmd := metadata.New(map[string]string{})
+			for k, v := range md {
+				if k != string(traceIDKey) {
+					nmd.Append(k, v...)
+				}
+			}
+			ctx = metadata.NewOutgoingContext(ctx, nmd)
+		}
+	}
+	{
+		md, _ := metadata.FromIncomingContext(ctx)
+		if vals := md.Get(string(traceIDKey)); len(vals) != 0 {
+			nmd := metadata.New(map[string]string{})
+			for k, v := range md {
+				if k != string(traceIDKey) {
+					nmd.Append(k, v...)
+				}
+			}
+			ctx = metadata.NewIncomingContext(ctx, nmd)
+		}
+	}
+	return ctx
+}
+
 func newID() string {
 	uid, err := uuid.NewV4()
 	// If error while reading random, fallback on uuid v5
@@ -35,41 +90,4 @@ func newID() string {
 	}
 
 	return uid.String()
-}
-
-func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
-	if eid := GetTraceIDFromContext(ctx); eid != noTraceID {
-		return ctx, false
-	}
-	return ContextWithConstantTraceID(ctx, NewTraceID()), true
-}
-
-func ContextWithConstantTraceID(ctx context.Context, traceID string) context.Context {
-	if existingTraceID := GetTraceIDFromContext(ctx); existingTraceID != noTraceID {
-		md, _ := metadata.FromOutgoingContext(ctx)
-		md = md.Copy()
-		md.Set(string(traceIDKey), traceID)
-		return metadata.NewOutgoingContext(ctx, md)
-	}
-	return metadata.AppendToOutgoingContext(ctx, string(traceIDKey), traceID)
-}
-
-func GetTraceIDFromContext(ctx context.Context) string {
-	if md, ok := metadata.FromIncomingContext(ctx); ok {
-		ids := md.Get(string(traceIDKey))
-		if len(ids) > 0 && len(ids[0]) > 0 {
-			return ids[0]
-		}
-	}
-	if md, ok := metadata.FromOutgoingContext(ctx); ok {
-		ids := md.Get(string(traceIDKey))
-		if len(ids) > 0 && len(ids[0]) > 0 {
-			return ids[0]
-		}
-	}
-	return noTraceID
-}
-
-func ContextWithNewTraceID(ctx context.Context) context.Context {
-	return ContextWithConstantTraceID(ctx, NewTraceID())
 }

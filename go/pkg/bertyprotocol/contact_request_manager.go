@@ -95,20 +95,20 @@ func cidBytesString(bytes []byte) string {
 }
 
 func (c *contactRequestsManager) metadataRequestEnqueued(evt *protocoltypes.GroupMetadataEvent) error {
-	tyberCtx := tyber.ContextWithConstantTraceID(context.Background(), "msgrcvd-"+cidBytesString(evt.EventContext.ID))
+	ctx := tyber.ContextWithConstantTraceID(c.ctx, "msgrcvd-"+cidBytesString(evt.EventContext.ID))
 	traceName := fmt.Sprintf("Received %s on group %s", strings.TrimPrefix(evt.Metadata.EventType.String(), "EventType"), base64.RawURLEncoding.EncodeToString(evt.EventContext.GroupPK))
-	c.logger.Debug(traceName, tyber.FormatStepLogFields(tyberCtx, []tyber.Detail{}, tyber.UpdateTraceName(traceName))...)
+	c.logger.Debug(traceName, tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.UpdateTraceName(traceName))...)
 
 	e := &protocoltypes.AccountContactRequestEnqueued{}
 	if err := e.Unmarshal(evt.Event); err != nil {
-		return tyber.LogError(tyberCtx, c.logger, "Failed to unmarshal event", err)
+		return tyber.LogError(ctx, c.logger, "Failed to unmarshal event", err)
 	}
 
 	if err := c.enqueueRequest(context.TODO(), &protocoltypes.ShareableContact{
 		PK:                   e.Contact.PK,
 		PublicRendezvousSeed: e.Contact.PublicRendezvousSeed,
 	}, e.OwnMetadata); err != nil {
-		return tyber.LogError(tyberCtx, c.logger, "Failed to enqueue request", err)
+		return tyber.LogError(ctx, c.logger, "Failed to enqueue request", err)
 	}
 
 	return nil

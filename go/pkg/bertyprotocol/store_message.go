@@ -289,28 +289,28 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 					continue
 				}
 
-				tctx := tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
-				store.logger.Debug("Received message store event", tyber.FormatTraceLogFields(tctx)...)
+				ctx = tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
+				store.logger.Debug("Received message store event", tyber.FormatTraceLogFields(ctx)...)
 
 				store.logger.Debug(
 					"Message store event",
-					tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "RawEvent", Description: fmt.Sprint(e)}})...,
+					tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "RawEvent", Description: fmt.Sprint(e)}})...,
 				)
 
-				messageEvent, err := store.openMessage(tctx, entry, true)
+				messageEvent, err := store.openMessage(ctx, entry, true)
 				if err != nil {
 					store.logger.Error("Unable to open message",
-						tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "Error", Description: err.Error()}}, tyber.Fatal)...,
+						tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Error", Description: err.Error()}}, tyber.Fatal)...,
 					)
 					continue
 				}
 
 				store.logger.Debug(
 					"Got message store payload",
-					tyber.FormatStepLogFields(tctx, []tyber.Detail{{Name: "Payload", Description: string(messageEvent.Message)}}, tyber.EndTrace)...,
+					tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Payload", Description: string(messageEvent.Message)}}, tyber.EndTrace)...,
 				)
 
-				store.Emit(tctx, messageEvent)
+				store.Emit(ctx, messageEvent)
 			}
 		}()
 

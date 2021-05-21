@@ -175,7 +175,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 
 	opts.Logger = opts.Logger.Named("pt")
 
-	ctx, _, endSection := tyber.Section(tyber.ContextWithNewTraceID(ctx), opts.Logger, fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version))
+	ctx, _, endSection := tyber.Section(tyber.ContextWithoutTraceID(ctx), opts.Logger, fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version))
 	defer func() { endSection(err, "") }()
 
 	dbOpts := &iface.CreateDBOptions{LocalOnly: &opts.LocalOnly}
@@ -226,7 +226,7 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
-	endSection := tyber.FastSection(tyber.ContextWithNewTraceID(s.ctx), s.logger, "Closing ProtocolService")
+	endSection := tyber.FastSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
 
 	err := s.odb.Close()
 

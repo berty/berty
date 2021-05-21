@@ -101,7 +101,7 @@ func NewService(opts *Options) (_ Service, err error) {
 }
 
 func (s *service) Close() (err error) {
-	endSection := tyber.FastSection(tyber.ContextWithNewTraceID(s.rootCtx), s.logger, "Closing AccountService")
+	endSection := tyber.FastSection(tyber.ContextWithoutTraceID(s.rootCtx), s.logger, "Closing AccountService")
 	defer func() { endSection(err) }()
 
 	s.muService.Lock()
