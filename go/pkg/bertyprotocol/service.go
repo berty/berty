@@ -286,21 +286,21 @@ func (s *service) startTyberTinderMonitor() {
 
 				switch monitorEvent.Type {
 				case protocoltypes.TypeEventMonitorPeerFound:
-					s.logger.Debug(tyber.WKENTinderPeerFound, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+					s.logger.Debug(TyberEventTinderPeerFound, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
 						{Name: "Topic", Description: monitorEvent.PeerFound.Topic},
 						{Name: "PeerID", Description: monitorEvent.PeerFound.PeerID},
 						{Name: "DriverName", Description: monitorEvent.PeerFound.DriverName},
 						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerFound.Maddrs)},
 					})...)
 				case protocoltypes.TypeEventMonitorPeerJoin:
-					s.logger.Debug(tyber.WKENTinderPeerJoined, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+					s.logger.Debug(TyberEventTinderPeerJoined, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
 						{Name: "Topic", Description: monitorEvent.PeerJoin.Topic},
 						{Name: "PeerID", Description: monitorEvent.PeerJoin.PeerID},
 						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerJoin.IsSelf)},
 						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerJoin.Maddrs)},
 					})...)
 				case protocoltypes.TypeEventMonitorPeerLeave:
-					s.logger.Debug(tyber.WKENTinderPeerLeft, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+					s.logger.Debug(TyberEventTinderPeerLeft, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
 						{Name: "Topic", Description: monitorEvent.PeerLeave.Topic},
 						{Name: "PeerID", Description: monitorEvent.PeerLeave.PeerID},
 						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerLeave.IsSelf)},

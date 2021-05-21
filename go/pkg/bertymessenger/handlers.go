@@ -855,7 +855,7 @@ func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *mt.Interact
 		return nil, false, err
 
 	default:
-		h.logger.Debug(tyber.WKENAcknowledgeReceived, tyber.FormatEventLogFields(h.ctx, []tyber.Detail{{Name: "TargetCID", Description: i.TargetCID}})...)
+		h.logger.Debug(TyberEventAcknowledgeReceived, tyber.FormatEventLogFields(h.ctx, []tyber.Detail{{Name: "TargetCID", Description: i.TargetCID}})...)
 
 		if target != nil {
 			if err := h.svc.streamInteraction(tx, target.CID, false); err != nil {

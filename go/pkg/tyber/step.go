@@ -20,15 +20,6 @@ type Step struct {
 
 type StepMutator = func(Step) Step
 
-type WellKnownEventName = string
-
-const (
-	WKENAcknowledgeReceived = "Acknowledge received"
-	WKENTinderPeerFound     = "Tinder peer found"
-	WKENTinderPeerJoined    = "Tinder peer joined"
-	WKENTinderPeerLeft      = "Tinder peer left"
-)
-
 // zap format
 
 func FormatStepLogFields(ctx context.Context, details []Detail, mutators ...StepMutator) []zapcore.Field {

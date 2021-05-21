@@ -64,7 +64,7 @@ func tyberLogGroupContext(ctx context.Context, logger *zap.Logger, gc *groupCont
 
 func tyberSubscribeToTinderEvents(ctx context.Context, logger *zap.Logger, topic string) {
 	targetDetails := []tyber.Detail{{Name: "Topic", Description: topic}}
-	logger.Debug("Subscribing to tinder PeerFound events", tyber.FormatSubscribeLogFields(ctx, tyber.WKENTinderPeerFound, targetDetails)...)
-	logger.Debug("Subscribing to tinder PeerJoin events", tyber.FormatSubscribeLogFields(ctx, tyber.WKENTinderPeerJoined, targetDetails)...)
-	logger.Debug("Subscribing to tinder PeerLeave events", tyber.FormatSubscribeLogFields(ctx, tyber.WKENTinderPeerLeft, targetDetails)...)
+	logger.Debug("Subscribing to tinder PeerFound events", tyber.FormatSubscribeLogFields(ctx, TyberEventTinderPeerFound, targetDetails)...)
+	logger.Debug("Subscribing to tinder PeerJoin events", tyber.FormatSubscribeLogFields(ctx, TyberEventTinderPeerJoined, targetDetails)...)
+	logger.Debug("Subscribing to tinder PeerLeave events", tyber.FormatSubscribeLogFields(ctx, TyberEventTinderPeerLeft, targetDetails)...)
 }

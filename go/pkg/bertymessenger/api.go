@@ -1040,7 +1040,7 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 			muts = append(muts, tyber.EndTrace)
 		}
 		tyber.LogStep(ctx, svc.logger, "Waiting for an Acknowledge", tyber.WithDetail("TargetCID", cid.String()))
-		svc.logger.Debug("Subscribing to acks", tyber.FormatSubscribeLogFields(ctx, tyber.WKENAcknowledgeReceived, []tyber.Detail{
+		svc.logger.Debug("Subscribing to acks", tyber.FormatSubscribeLogFields(ctx, TyberEventAcknowledgeReceived, []tyber.Detail{
 			{Name: "TargetCID", Description: cid.String()},
 		}, muts...)...)
 	} else if newTrace {
