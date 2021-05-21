@@ -11,7 +11,7 @@ type EventKind int
 
 //
 const (
-	UnknownEventKind = iota
+	UnknownEventKind = EventKind(iota)
 	ErrorEventKind
 	CreateStepEventKind
 	CreateTraceEventKind
@@ -73,5 +73,5 @@ func (ek EventKind) String() string {
 	if s, ok := eventKindNames[ek]; ok {
 		return s
 	}
-	return fmt.Sprintf("unknown-%d", ek)
+	return fmt.Sprintf("unknown_%d", ek)
 }
