@@ -42,6 +42,7 @@ func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
 func ContextWithConstantTraceID(ctx context.Context, traceID string) context.Context {
 	if existingTraceID := GetTraceIDFromContext(ctx); existingTraceID != noTraceID {
 		md, _ := metadata.FromOutgoingContext(ctx)
+		md = md.Copy()
 		md.Set(string(traceIDKey), traceID)
 		return metadata.NewOutgoingContext(ctx, md)
 	}
