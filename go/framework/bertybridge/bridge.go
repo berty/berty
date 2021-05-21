@@ -81,13 +81,14 @@ func NewBridge(config *Config) (*Bridge, error) {
 	cores := []zapcore.Core(nil)
 
 	// tyber core
-	if len(config.TyberHost) != 0 {
+	if config.TyberHost != "" {
 		mutex := &sync.Mutex{}
 		canceled := false
 		ch := make(chan struct{})
 		go func() {
 			defer func() { ch <- struct{}{}; close(ch) }()
-			if logger, clean, err := logutil.NewLogger(logutil.NewTyberStream(config.TyberHost)); err == nil {
+			logger, clean, err := logutil.NewLogger(logutil.NewTyberStream(config.TyberHost))
+			if err == nil {
 				mutex.Lock()
 				defer mutex.Unlock()
 				if canceled {
