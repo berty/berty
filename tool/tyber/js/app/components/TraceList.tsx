@@ -195,12 +195,9 @@ export class TraceListView extends React.Component<any, State> {
 				</View>
 			);
 		} else {
-			return <FlatList inverted data={[...this.state.traces].reverse()} renderItem={(info) =>
+			return <FlatList data={this.state.traces} renderItem={(info) =>
 				<TraceView key={info.item.id} eva={style} trace={info.item} />
 			} />
-			/*return <ScrollView>{this.state.traces.map(trace =>
-				<TraceView key={trace.id} eva={style} trace={trace} />
-			)}</ScrollView>*/
 		}
 	}
 }
