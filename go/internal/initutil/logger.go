@@ -18,13 +18,17 @@ import (
 const defaultLoggingFilters = "info+:bty*,-*.grpc error+:*"
 
 func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Logging.Filters, "log.filters", m.Logging.Filters, "zapfilter configuration")
-	fs.StringVar(&m.Logging.RingFilters, "log.ring-filters", m.Logging.RingFilters, "zapfilter configuration for ring")
+	fs.StringVar(&m.Logging.Filters, "log.filters", m.Logging.Filters, "zapfilter configuration for stderr output")
+	fs.StringVar(&m.Logging.Format, "log.format", m.Logging.Format, "logging format for stderr output (can be: json, console, color, light-console, light-color)")
 	fs.StringVar(&m.Logging.Logfile, "log.file", m.Logging.Logfile, "if specified, will log everything in JSON into a file and nothing on stderr")
-	fs.StringVar(&m.Logging.Format, "log.format", m.Logging.Format, "can be: json, console, color, light-console, light-color")
-	fs.StringVar(&m.Logging.Tracer, "log.tracer", m.Logging.Tracer, `specify "stdout" to output tracing on stdout or <hostname:port> to trace on Jaeger`)
-	fs.StringVar(&m.Logging.Service, "log.service", m.Logging.Service, `service name, used by the tracer`)
-	fs.UintVar(&m.Logging.RingSize, "log.ring-size", m.Logging.RingSize, `logging ring buffer size in MB`)
+
+	// TODO: remove completely the tracer
+	// fs.StringVar(&m.Logging.Tracer, "log.tracer", m.Logging.Tracer, `specify "stdout" to output tracing on stdout or <hostname:port> to trace on Jaeger`)
+
+	// expert flags
+	expFS.StringVar(&m.Logging.Service, "exp.log.service", m.Logging.Service, `service name, used by the tracer`)
+	expFS.StringVar(&m.Logging.RingFilters, "exp.log.ring-filters", m.Logging.RingFilters, "in-memory ring buffer: zapfilter configuration")
+	expFS.UintVar(&m.Logging.RingSize, "exp.log.ring-size", m.Logging.RingSize, `in-memory ring buffer: size in MB`)
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-log.filters=':default: CUSTOM'",
