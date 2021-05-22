@@ -1,0 +1,18 @@
+diff --git a/node_modules/react-native/scripts/ios-configure-glog.sh b/node_modules/react-native/scripts/ios-configure-glog.sh
+index 73a892c..9763875 100755
+--- a/node_modules/react-native/scripts/ios-configure-glog.sh
++++ b/node_modules/react-native/scripts/ios-configure-glog.sh
+@@ -28,6 +28,13 @@ if [ -h "test-driver" ]; then
+     rm test-driver
+ fi
+ 
++## @NOTE(gfanton): patch config.sub to work with apple silicon
++# download patched config.sub for darwin arm64
++curl -sSL --fail -o config.sub 'https://gist.githubusercontent.com/gfanton/f7dd19c299bef99d323cb08c650bb02e/raw/2f5a76ffd38cdac678adf6a9f12600e9d16e7345/config.darwin-arm-patch.sub'
++
++# check shasum of the file
++echo 'a743811464b00f3e2372f5368035fdc38f322a3a config.sub' | sha1sum -c || exit 1
++
+ ./configure --host arm-apple-darwin
+ 
+ # Fix build for tvOS
