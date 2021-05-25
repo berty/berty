@@ -16,9 +16,9 @@ services:
       - 4040:4040
       - 4040:4040/udp
     command:
+      - serve
       - "-log.format=json"
       - "-log.filters=info:*,-ipfs.rendezvous error+:*"
-      - serve
       - "--db=:memory:"
       - "--pk=$RDVP_PK"
       - "-metrics=:8888"
