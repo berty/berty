@@ -153,8 +153,7 @@ func TestMultiple(t *testing.T) {
 		t.Skip("unittest not consistent on windows, skipping.")
 	}
 
-	// lumberjack
-	tempdir, err := ioutil.TempDir("", "logutil-lumberjack")
+	tempdir, err := ioutil.TempDir("", "logutil-file")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempdir)
 
@@ -181,18 +180,18 @@ func TestMultiple(t *testing.T) {
 	{
 		lines := strings.Split(strings.TrimSpace(closer()), "\n")
 		require.Equal(t, 2, len(lines))
-		require.Equal(t, "INFO \tbty               \tlogutil/logutil_test.go:176\thello world!", lines[0])
-		require.Equal(t, "WARN \tbty               \tlogutil/logutil_test.go:177\thello world!", lines[1])
+		require.Equal(t, "INFO \tbty               \tlogutil/logutil_test.go:175\thello world!", lines[0])
+		require.Equal(t, "WARN \tbty               \tlogutil/logutil_test.go:176\thello world!", lines[1])
 	}
 
-	// lumberjack
+	// file
 	{
 		content, err := ioutil.ReadFile(filepath.Join(tempdir, "test.log"))
 		require.NoError(t, err)
 		lines := strings.Split(string(content), "\n")
 		require.Equal(t, 3, len(lines))
-		require.Equal(t, "INFO \tbty               \tlogutil/logutil_test.go:176\thello world!", lines[0])
-		require.Equal(t, "WARN \tbty               \tlogutil/logutil_test.go:177\thello world!", lines[1])
+		require.Equal(t, "INFO \tbty               \tlogutil/logutil_test.go:175\thello world!", lines[0])
+		require.Equal(t, "WARN \tbty               \tlogutil/logutil_test.go:176\thello world!", lines[1])
 		require.Equal(t, "", lines[2])
 	}
 
@@ -206,9 +205,9 @@ func TestMultiple(t *testing.T) {
 		}()
 		scanner := bufio.NewScanner(r)
 		scanner.Scan()
-		require.Equal(t, "INFO \tbty               \tlogutil/logutil_test.go:176\thello world!", scanner.Text())
+		require.Equal(t, "INFO \tbty               \tlogutil/logutil_test.go:175\thello world!", scanner.Text())
 		scanner.Scan()
-		require.Equal(t, "WARN \tbty               \tlogutil/logutil_test.go:177\thello world!", scanner.Text())
+		require.Equal(t, "WARN \tbty               \tlogutil/logutil_test.go:176\thello world!", scanner.Text())
 	}
 
 	// FIXME: test that each logger can have its own format and filters
