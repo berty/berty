@@ -173,9 +173,6 @@ func (svc *service) ShareableBertyGroup(ctx context.Context, req *messengertypes
 		return nil, errcode.ErrInvalidInput
 	}
 
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
 	grpInfo, err := svc.protocolClient.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		GroupPK: req.GroupPK,
 	})
@@ -206,9 +203,6 @@ func (svc *service) SendContactRequest(ctx context.Context, req *messengertypes.
 	if req == nil || req.BertyID == nil || req.BertyID.AccountPK == nil || req.BertyID.PublicRendezvousSeed == nil {
 		return nil, errcode.ErrMissingInput
 	}
-
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
 
 	contactRequest := protocoltypes.ContactRequestSend_Request{
 		Contact: &protocoltypes.ShareableContact{
@@ -325,10 +319,8 @@ func (svc *service) SystemInfo(ctx context.Context, req *messengertypes.SystemIn
 	return &reply, nil
 }
 
+// Remove ?
 func (svc *service) SendAck(ctx context.Context, req *messengertypes.SendAck_Request) (*messengertypes.SendAck_Reply, error) {
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
 	gInfo, err := svc.protocolClient.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		GroupPK: req.GroupPK,
 	})
@@ -901,9 +893,6 @@ func (svc *service) ContactRequest(ctx context.Context, req *messengertypes.Cont
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
 
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
 	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -947,9 +936,6 @@ func (svc *service) ContactAccept(ctx context.Context, req *messengertypes.Conta
 		return nil, errcode.ErrInvalidInput
 	}
 
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
 	svc.logger.Debug("retrieving contact", zap.String("contact_pk", pk))
 
 	c, err := svc.db.getContactByPK(pk)
@@ -991,9 +977,6 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
 	medias, err := svc.db.getMedias(req.GetMediaCids())
 	if err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
@@ -1021,9 +1004,6 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 }
 
 func (svc *service) AccountGet(ctx context.Context, req *messengertypes.AccountGet_Request) (*messengertypes.AccountGet_Reply, error) {
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
 	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, err
@@ -1188,9 +1168,6 @@ func (svc *service) GetUsername(ctx context.Context, req *messengertypes.GetUser
 }
 
 func (svc *service) SendReplyOptions(ctx context.Context, req *messengertypes.SendReplyOptions_Request) (*messengertypes.SendReplyOptions_Reply, error) {
-	svc.handlerMutex.Lock()
-	defer svc.handlerMutex.Unlock()
-
 	payload, err := messengertypes.AppMessage_TypeReplyOptions.MarshalPayload(timestampMs(time.Now()), "", nil, req.Options)
 	if err != nil {
 		return nil, err

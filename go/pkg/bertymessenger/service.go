@@ -207,7 +207,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	{
 		acc, err := svc.db.getAccount()
 		switch {
-		case err == gorm.ErrRecordNotFound: // account not found, create a new one
+		case errcode.Is(err, errcode.ErrNotFound): // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
 			ret, err := svc.internalInstanceShareableBertyID(ctx, &mt.InstanceShareableBertyID_Request{})
 			if err != nil {

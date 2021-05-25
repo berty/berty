@@ -364,18 +364,20 @@ func (d *dbWrapper) updateAccount(pk, url, displayName, avatarCID string) (*mess
 	return acc, nil
 }
 
+// atomic
 func (d *dbWrapper) getAccount() (*messengertypes.Account, error) {
-	var (
-		account = &messengertypes.Account{}
-		count   int64
-	)
-
-	d.db.Model(&messengertypes.Account{}).Count(&count)
-	if count > 1 {
+	var accounts []messengertypes.Account
+	if err := d.db.Model(&messengertypes.Account{}).Preload("ServiceTokens").Find(&accounts).Error; err != nil {
+		return nil, err
+	}
+	if len(accounts) == 0 {
+		return nil, errcode.ErrNotFound
+	}
+	if len(accounts) > 1 {
 		return nil, errcode.ErrDBMultipleRecords
 	}
 
-	return account, d.db.Model(&messengertypes.Account{}).Preload("ServiceTokens").First(&account).Error
+	return &accounts[0], nil
 }
 
 func (d *dbWrapper) getDeviceByPK(publicKey string) (*messengertypes.Device, error) {
@@ -392,6 +394,7 @@ func (d *dbWrapper) getDeviceByPK(publicKey string) (*messengertypes.Device, err
 	return device, nil
 }
 
+// atomic
 func (d *dbWrapper) getContactByPK(publicKey string) (*messengertypes.Contact, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
@@ -1196,6 +1199,7 @@ func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
 	return willAdd, nil
 }
 
+// atomic
 func (d *dbWrapper) getMedias(cids []string) ([]*messengertypes.Media, error) {
 	if len(cids) == 0 {
 		return nil, nil
