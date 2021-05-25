@@ -21,6 +21,7 @@ func systemInfoCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("info", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
+		manager.Session.Kind = "cli.info"
 		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead

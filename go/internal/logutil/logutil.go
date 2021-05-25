@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	ipfs_log "github.com/ipfs/go-log/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"moul.io/u"
 	"moul.io/zapfilter"
 )
@@ -114,9 +117,6 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 		case typeRing:
 			ring := opts.ring.SetEncoder(enc)
 			core = ring
-		case typeLumberjack:
-			w := zapcore.AddSync(opts.lumberOpts)
-			core = zapcore.NewCore(enc, w, config.Level)
 		case typeTyber:
 			tyberLogger, err := NewTyberLogger(opts.tyberHost)
 			if err != nil {
@@ -127,6 +127,25 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			})
 			w := zapcore.AddSync(tyberLogger)
 			core = zapcore.NewCore(enc, w, config.Level)
+		case typeFile:
+			lumber := &lumberjack.Logger{
+				MaxSize:    100, // megabytes
+				MaxAge:     7,   // days
+				MaxBackups: 10,
+				Compress:   true,
+			}
+			switch {
+			case strings.HasSuffix(opts.path, ".log"): // use the indicated 'path' as filename
+				lumber.Filename = opts.path
+			default: // automatically create a new file in the 'path' directory following a pattern
+				filedir := opts.path
+				startTime := time.Now().Format("2006-01-02T15-04-05.000")
+				filename := fmt.Sprintf("%s-%s.log", opts.sessionKind, startTime)
+				lumber.Filename = filepath.Join(filedir, filename)
+			}
+			w := zapcore.AddSync(lumber)
+			core = zapcore.NewCore(enc, w, config.Level)
+			cleanup = u.CombineFuncs(cleanup, func() { _ = lumber.Close() })
 		default:
 			return nil, nil, fmt.Errorf("unknown logger type: %q", opts.kind)
 		}

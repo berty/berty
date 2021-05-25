@@ -1,27 +1,24 @@
 package logutil
 
-import (
-	lumberjack "gopkg.in/natefinch/lumberjack.v2"
-	"moul.io/zapring"
-)
+import "moul.io/zapring"
 
 const (
-	typeStd        = "std"
-	typeRing       = "ring"
-	typeLumberjack = "lumberjack"
-	typeTyber      = "tyber"
+	typeStd   = "std"
+	typeRing  = "ring"
+	typeFile  = "file"
+	typeTyber = "tyber"
 )
 
 const tyberFilters = "*"
 
 type Stream struct {
-	kind       string
-	filters    string
-	format     string
-	path       string
-	ring       *zapring.Core
-	lumberOpts *lumberjack.Logger
-	tyberHost  string
+	kind        string
+	filters     string
+	format      string
+	path        string
+	ring        *zapring.Core
+	sessionKind string
+	tyberHost   string
 }
 
 func NewStdStream(filters, format, path string) Stream {
@@ -42,12 +39,24 @@ func NewRingStream(filters, format string, ring *zapring.Core) Stream {
 	}
 }
 
-func NewLumberjackStream(filters, format string, opts *lumberjack.Logger) Stream {
+// NewFileStream creates a new file stream backed by Lumberjack with sane default values.
+//
+// Usually, Lumberjack is used as a rolling log file and is intended to be reused from a session to another,
+// In Berty, we want one file per session named with the start time instead of the rotation time.
+//
+// If the provided path is a directory, it will create files in that directory with the following pattern:
+// `<path>/<session-kind>-<start-time>.log`.
+//
+// If the provided path is a path finishing with ".log", then, the path will be taken as it,
+// instead of creating a new file, it will append new lines to the existing one;
+// this can be particularly useful to keep a `tail -f` running.
+func NewFileStream(filters, format, path, sessionKind string) Stream {
 	return Stream{
-		kind:       typeLumberjack,
-		filters:    filters,
-		format:     format,
-		lumberOpts: opts,
+		kind:        typeFile,
+		filters:     filters,
+		format:      format,
+		path:        path,
+		sessionKind: sessionKind,
 	}
 }
 

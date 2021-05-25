@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"strings"
 	"sync"
-	"time"
 
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"go.uber.org/zap"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -20,7 +18,7 @@ const defaultLoggingFilters = "info+:bty*,-*.grpc error+:*"
 
 func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	if m.Logging.FilePath == "" && m.Session.Kind != "" {
-		m.Logging.FilePath = fmt.Sprintf("<store-dir>/logs/%s-<start-time>.log", m.Session.Kind)
+		m.Logging.FilePath = "<store-dir>/logs"
 	}
 	fs.StringVar(&m.Logging.StderrFilters, "log.filters", m.Logging.StderrFilters, "stderr zapfilter configuration")
 	fs.StringVar(&m.Logging.StderrFormat, "log.format", m.Logging.StderrFormat, "stderr logging format. can be: json, console, color, light-console, light-color")
@@ -80,16 +78,7 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 	}
 	if m.Logging.FilePath != "" && m.Logging.FileFilters != "" {
 		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<store-dir>", m.Datastore.Dir)
-		startTime := time.Now().Format("2006-01-02T15-04-05.000")
-		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<start-time>", startTime)
-		opts := lumberjack.Logger{
-			Filename:   m.Logging.FilePath,
-			MaxSize:    100, // megabytes
-			MaxBackups: 10,
-			MaxAge:     7, // days
-			Compress:   true,
-		}
-		streams = append(streams, logutil.NewLumberjackStream(m.Logging.FileFilters, "json", &opts))
+		streams = append(streams, logutil.NewFileStream(m.Logging.FileFilters, "json", m.Logging.FilePath, m.Session.Kind))
 	}
 	logger, loggerCleanup, err := logutil.NewLogger(streams...)
 	if err != nil {
