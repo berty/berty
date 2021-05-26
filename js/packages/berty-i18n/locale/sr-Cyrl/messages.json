@@ -1,47 +1,47 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "Сигурна peer-to-peer апликација за поруке која функционише са или без интернет приступа, мобилног интернета или поверења у мрежу",
+      "open-registered-account": "Отвори регистровани налог",
+      "import-button": "Унеси податке са постојећег налога",
+      "account-selector-create-button": "Направи нови налог",
+      "more-options": "Више опција",
+      "button": "ПОЧНИМО"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Изабери опцију",
+      "change-later": "Биће могућности да се промени касније!",
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Перформансе",
+        "desc": "Лако за коришћење - Све функције",
+        "push-notif": "Прими push нотификације",
+        "offline-message": "Без интернета порукање преко Bluetooth-а",
+        "add-contact": "Лако додај контакте",
+        "fast-message": "Најбржа достава порука"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
+        "title": "Пуна анонимност",
+        "desc": "За екстремно опрезне кориснике",
+        "disable-push-notif": "Push нотификације онемогућене",
+        "disable-local-peer-discovery": "Проналажење локалних peer-ова онемогућено",
         "disable-local-peer-discovery-desc": "",
-        "disable-contact-request": "",
-        "on-same-network": ""
+        "disable-contact-request": "Захтеви за контакт су онемогућени",
+        "on-same-network": "Локално на истој мрежи/wifi-у"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": "",
-      "import-account": ""
+      "title": "Направи свој налог",
+      "desc": "Име је једина потребна информација",
+      "required": "Потребно",
+      "placeholder": "Име",
+      "button": "НАПРАВИ МОЈ НАЛОГ",
+      "import-account": "Убаци стари налог"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
+      "header": "Повежи се(сигурносно) са сервисима",
+      "title": "Сервиси",
+      "recommended": "Препоручено",
+      "desc": "Ово ће аутоматски дуплирати твоје конверзације на сервер",
       "button": "",
       "skip": ""
     },
@@ -433,6 +433,11 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "add-members": {
+      "members": "",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
@@ -498,6 +503,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +598,10 @@
       "slide-to-cancel": "",
       "cancel-button": ""
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }

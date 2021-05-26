@@ -99,6 +99,7 @@ export const MessageList: React.FC<{
 				<>
 					{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
 					<Message
+						key={index}
 						inte={item}
 						convKind={conversation?.type || beapi.messenger.Conversation.Type.Undefined}
 						convPK={id || ''}

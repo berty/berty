@@ -700,7 +700,7 @@ func Test_dbWrapper_getAccount(t *testing.T) {
 
 	acc, err := db.getAccount()
 	require.Error(t, err)
-	require.True(t, errors.Is(err, gorm.ErrRecordNotFound))
+	require.True(t, errcode.Is(err, errcode.ErrNotFound))
 	require.Empty(t, acc)
 
 	db.db.Create(refAccount)

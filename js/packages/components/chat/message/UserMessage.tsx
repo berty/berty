@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, Animated } from 'react-native'
 import { SHA3 } from 'sha3'
 import palette from 'google-palette'
-import Color from 'color'
 import { Text, Icon } from '@ui-kitten/components'
 import Popover from 'react-native-popover-view'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
@@ -118,12 +117,8 @@ const getUserMessageState = (
 				: cmd
 				? color.grey
 				: baseColor
-			: baseColor
-		msgBackgroundColor = inte.isMine
-			? inte.acknowledged
-				? baseColor
-				: color.white
-			: Color(baseColor).lighten(0.55).string()
+			: color.white
+		msgBackgroundColor = inte.isMine ? (inte.acknowledged ? baseColor : color.white) : baseColor
 		msgBorderColor = inte.isMine && (cmd ? border.color.grey : { borderColor: baseColor })
 		msgSenderColor = inte.isMine ? 'red' : baseColor
 	}
@@ -216,6 +211,7 @@ export const UserMessage: React.FC<{
 				padding.horizontal.medium,
 				padding.top.scale(2),
 			]}
+			key={inte.cid}
 		>
 			{!inte.isMine && isGroup && !isFollowedMessage && (
 				<View
@@ -567,8 +563,10 @@ export const UserMessage: React.FC<{
 									),
 								]}
 							>
-								{inte.reactions.map(({ emoji }) => (
-									<Text style={{ marginHorizontal: 2, fontSize: 10 }}>{getEmojiByName(emoji)}</Text>
+								{inte.reactions.map(({ emoji }, key) => (
+									<Text style={{ marginHorizontal: 2, fontSize: 10 }} key={key}>
+										{getEmojiByName(emoji)}
+									</Text>
 								))}
 							</View>
 						)}

@@ -19,6 +19,7 @@
 		"@react-native-community/cameraroll": "^4.0.2",
 		"@react-native-community/hooks": "^2.6.0",
 		"@react-native-community/masked-view": "^0.1.10",
+		"@react-native-community/viewpager": "^5.0.11",
 		"@react-native-firebase/app": "^10.5.0",
 		"@react-native-firebase/crashlytics": "^10.5.1",
 		"@react-navigation/material-top-tabs": "^5.3.13",
@@ -76,12 +77,14 @@
 		"react-native-share": "^4.1.2",
 		"react-native-svg": "^12.1.0",
 		"react-native-tab-view": ">= 2.0.0",
+		"react-native-v8": "^0.64.0-patch.0",
 		"react-native-vector-icons": "^7.1.0",
 		"react-native-webview": "^11.2.1",
 		"rn-fetch-blob": "^0.12.0",
 		"sha3": "^2.1.4",
 		"string.fromcodepoint": "^1.0.0",
-		"tlds": "^1.217.0"
+		"tlds": "^1.217.0",
+		"v8-android-jit": "^9.88.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.13",
