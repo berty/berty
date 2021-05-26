@@ -124,8 +124,8 @@
       "full-anon": {
         "title": "完全匿名模式",
         "desc": "此配置基于基本预设，提供极为谨慎的网络参数:",
-        "no-ip": "没有 ip",
-        "no-mc": "",
+        "no-ip": "无 ip",
+        "no-mc": "无 mc",
         "tor-only": "仅Tor"
       },
       "save": "保存",
@@ -239,7 +239,7 @@
       "activate-button": "激活多节点连接"
     },
     "nearby": {
-      "activate-button": ""
+      "activate-button": "激活附近的 Android 设备"
     },
     "services-auth": {
       "title": "外部服务",
@@ -304,7 +304,7 @@
       "header-left-button": "设备信息",
       "simulate-button": "模拟流错误",
       "simulate-js-error-button": "模拟 JavaScript 错误",
-      "simulate-native-error-button": "",
+      "simulate-native-error-button": "模拟本机错误",
       "tor-button": "Tor{{option}}",
       "tor-optional-option": "可选",
       "tor-required-option": "必需的",
@@ -318,7 +318,7 @@
         "bullet-point": "更改之后重新启动应用"
       },
       "log-filters-button": {
-        "name": "",
+        "name": "日志过滤器",
         "bullet-point": "更改之后重新启动应用"
       },
       "add-dev-conversations-button": "添加开发者会话",
@@ -433,6 +433,11 @@
       "erase-button": "清除对话",
       "leave-button": "离开群组"
     },
+    "add-members": {
+      "members": "成员",
+      "contacts": "联系人列表",
+      "add": "添加！"
+    },
     "multi-member-qr": {
       "title": "二维码组"
     },
@@ -498,6 +503,11 @@
       "medias": "媒体",
       "links": "链接",
       "documents": "文件"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "你正在回复",
+      "replied-to": "回复至"
     }
   },
   "error": {
@@ -507,8 +517,8 @@
     },
     "restart-app": "重启应用",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
+      "title": "失败的原因是什么？",
+      "desc": "应用程序崩溃。",
       "desc-report": "摇动手机报告错误，然后单击按钮退出并重新启动应用程序。"
     },
     "sorry-screen": {
@@ -521,26 +531,26 @@
   },
   "debug": {
     "inspector": {
-      "show-button": "",
+      "show-button": "显示应用检查器",
       "hide-button": "关闭",
-      "title": "",
+      "title": "检查器",
       "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "title": "账户",
+        "unsupported-remote-mode": "远程模式下不支持帐户检查器",
+        "data-not-found": "帐户不在列表中",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
+          "file-exists": "帐户 {{accountId}} 不存在，但文件有此名称。",
+          "account-exists": "帐户 {{accountId}} 当前存在。",
+          "directory-exists-load-error": "帐户 {{accountId}} 不存在，但目录有此名称。",
+          "fs-read-error": "获取有关帐户的FS信息时出错",
+          "actions-title": "我们应该怎么做？",
+          "action-account-manager": "通过帐户管理器删除",
+          "action-account-manager-confirm": "确认删除帐户",
+          "action-force-delete": "强制删除",
+          "action-force-delete-confirm": "确认强制删除帐户",
+          "error-close": "关闭帐户时出错",
+          "error-delete": "删除帐户时出错",
+          "success-feedback": "帐户已删除",
           "action-cancel": "取消"
         },
         "status": {
@@ -553,27 +563,27 @@
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
+            "name": "名称: {{name}}",
+            "created": "创建: {{created}}",
+            "opened": "打开:  {{opened}}",
+            "error": "错误: {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "title": "错误",
+        "header-reported": "错误报告:",
+        "header-all-clear": "未报告错误",
+        "listing-files-failed": "列出目录内容时出错",
+        "listing-accounts-failed": "列出账户时出错",
+        "listing-accounts-failed-grpc": "列出帐户时发生GRPC错误"
       },
       "dump": {
-        "button": ""
+        "button": "转储应用状态"
       },
-      "refresh": "",
+      "refresh": "刷新",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "确认",
         "button-cancel": "取消"
       }
     }
@@ -583,10 +593,15 @@
       "tooltip": {
         "usage": "按住来记录，释放以发送",
         "not-sent": "音频消息未发送",
-        "permission-denied": ""
+        "permission-denied": "不允许应用程序录制声音"
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< 滑动取消",
       "cancel-button": "取消"
     }
+  },
+  "medias": {
+    "audio": "音频",
+    "picture": "图片",
+    "file": "文件"
   }
 }
