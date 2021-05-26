@@ -5,11 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 
 	ipfs_log "github.com/ipfs/go-log/v2"
 	"go.uber.org/zap"
@@ -130,40 +127,10 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			w := zapcore.AddSync(tyberLogger)
 			core = zapcore.NewCore(enc, w, config.Level)
 		case typeFile:
-			var filename string
-			switch {
-			case strings.HasSuffix(opts.path, ".log"): // use the indicated 'path' as filename
-				filename = opts.path
-			default: // automatically create a new file in the 'path' directory following a pattern
-				startTime := time.Now().Format("2006-01-02T15-04-05.000")
-				filename = filepath.Join(
-					opts.path,
-					fmt.Sprintf("%s-%s.log", opts.sessionKind, startTime),
-				)
+			writer, err := newFileWriteCloser(opts.path, opts.sessionKind)
+			if err != nil {
+				return nil, nil, errcode.TODO.Wrap(err)
 			}
-
-			if dir := filepath.Dir(filename); !u.DirExists(dir) {
-				err := os.MkdirAll(dir, 0o711)
-				if err != nil {
-					return nil, nil, errcode.TODO.Wrap(err)
-				}
-			}
-
-			var writer io.WriteCloser
-			if u.FileExists(filename) {
-				var err error
-				writer, err = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-				if err != nil {
-					return nil, nil, errcode.TODO.Wrap(err)
-				}
-			} else {
-				var err error
-				writer, err = os.Create(filename)
-				if err != nil {
-					return nil, nil, errcode.TODO.Wrap(err)
-				}
-			}
-
 			w := zapcore.AddSync(writer)
 			core = zapcore.NewCore(enc, w, config.Level)
 			cleanup = u.CombineFuncs(cleanup, func() { _ = writer.Close() })
