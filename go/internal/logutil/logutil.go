@@ -200,8 +200,6 @@ func DecorateLogger(base *zap.Logger, filters string) (*zap.Logger, func(), erro
 }
 
 func setupIPFSLogProxy(logger *zap.Logger) func() {
-	return func () {}
-
 	// FIXME: write a better bridge for IPFS logger.
 	//        depends on https://github.com/ipfs/go-log/issues/102
 

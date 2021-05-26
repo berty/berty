@@ -563,7 +563,6 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 		if err != nil {
 			return err
 		}
-
 		if err := sub.Send(&messengertypes.EventStream_Reply{Event: &messengertypes.StreamEvent{Type: messengertypes.StreamEvent_TypeListEnded, Payload: p, IsNew: false}}); err != nil {
 			return err
 		}

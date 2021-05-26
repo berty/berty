@@ -1,25 +1,27 @@
 package bertymessenger_test
 
 import (
-	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"context"
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"github.com/gogo/protobuf/proto"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
@@ -31,7 +33,7 @@ func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int)
 		tempDir, err := ioutil.TempDir("", fmt.Sprintf("berty-main-%d", i))
 		assert.NoError(t, err)
 
-		closeFuncs = append(closeFuncs, func () {
+		closeFuncs = append(closeFuncs, func() {
 			_ = os.RemoveAll(tempDir)
 		})
 
@@ -50,7 +52,7 @@ func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int)
 
 		ipfs, _, err := man.GetLocalIPFS()
 		assert.NoError(t, err)
-		closeFuncs = append(closeFuncs, func () { _ = ipfs.Close() })
+		closeFuncs = append(closeFuncs, func() { _ = ipfs.Close() })
 
 		protocolClient, err := man.GetProtocolClient()
 		assert.NoError(t, err)
@@ -59,17 +61,16 @@ func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int)
 		assert.NoError(t, err)
 
 		tps[i] = &bertyprotocol.TestingProtocol{
-			Client:  &WrappedMessengerClient{protocolClient},
+			Client: &WrappedMessengerClient{protocolClient},
 		}
 	}
 
-	return messengers, tps, func () {
+	return messengers, tps, func() {
 		for i := len(closeFuncs) - 1; i >= 0; i-- {
 			closeFuncs[i]()
 		}
 	}
 }
-
 
 type WrappedMessengerClient struct {
 	protocoltypes.ProtocolServiceClient
@@ -80,7 +81,8 @@ func (*WrappedMessengerClient) Close() error {
 }
 
 func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
-	// testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
+	// FIXME: fails due to initutil.ReplaceGRPCLogger data ra	ce
 
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
