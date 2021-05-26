@@ -1,28 +1,43 @@
 package configParse
 
+import "C"
 import (
 	"fmt"
+	//relay "github.com/libp2p/go-libp2p-circuit"
 	"gopkg.in/yaml.v3"
 	"log"
 )
 
 type Config struct {
-	Peers              []Node `yaml:"peers"`
-	ReplicationServers []Node `yaml:"replicationServer"`
-	TokenServers       []Node `yaml:"tokenServer"`
+
+	RDVP []Node `yaml:"rdvp"`
+	Relay []Node `yaml:"relay"`
+	Bootstrap []Node `yaml:"bootstrap"`
+
+	Peer              []Node `yaml:"peer"`
+	Replication []Node `yaml:"replication"`
 }
 
 func (c *Config) validate() error {
-	for _, peer := range c.Peers {
-		peer.nodeType = NodeTypePeer
+
+	for i, _ := range c.RDVP {
+		c.RDVP[i].nodeType = NodeTypeRDVP
 	}
 
-	for _, replicationServer := range c.ReplicationServers {
-		replicationServer.nodeType = NodeTypeReplicationSever
+	for i, _ := range c.Relay {
+		c.Relay[i].nodeType = NodeTypeRelay
 	}
 
-	for _, tokenServer := range c.TokenServers {
-		tokenServer.nodeType = NodeTypeTokenServer
+	for i, _ := range c.Bootstrap {
+		c.Bootstrap[i].nodeType = NodeTypeBootstrap
+	}
+
+	for i, _ := range c.Peer {
+		c.Peer[i].nodeType = NodeTypePeer
+	}
+
+	for i, _ := range c.Replication {
+		c.Replication[i].nodeType = NodeTypeReplication
 	}
 
 	// TODO

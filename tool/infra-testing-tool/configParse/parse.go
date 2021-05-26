@@ -5,9 +5,9 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
 	"infratesting/composeTerraform"
+	"infratesting/composeTerraform/components/networking"
 	"infratesting/composeTerraform/components/various"
 	"os"
-	"time"
 )
 
 var (
@@ -31,7 +31,7 @@ var (
 	// VPC defines the current VPC in the networking stack.
 	// for the moment we only want one VPC per config file.
 	// this could be changed later
-	VPC composeTerraform.Component
+	VPC networking.Vpc
 )
 
 func Parse(b []byte) (err error) {
@@ -90,18 +90,12 @@ func Parse(b []byte) (err error) {
 
 	// iterate over network stacks
 	for _, networkStack := range ConnectionComponents {
-		// iterate over components in said network stack
-		for _, components := range networkStack {
-			// add components to Components
-			Components = append(Components, components)
-		}
+		// add networkStack to Components
+		Components = append(Components, networkStack...)
 	}
 
-	// loop over components
-	for _, components := range NodeComponents {
-		// add components to Components
-		Components = append(Components, components)
-	}
+	// add NodeComponents to Components
+	Components = append(Components, NodeComponents...)
 
 	// prepend new provider
 	provider := various.NewProvider()
@@ -117,8 +111,7 @@ func Parse(b []byte) (err error) {
 		fmt.Println(s)
 
 	}
-
-	fmt.Printf("generated HCL at %s\n", time.Now().Format(time.ANSIC))
+	//fmt.Printf("generated HCL at %s\n", time.Now().Format(time.ANSIC))
 
 	return err
 }

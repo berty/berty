@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"infratesting/composeTerraform"
 	"infratesting/composeTerraform/components/networking"
+	"strconv"
 	"strings"
 )
 
@@ -43,8 +44,7 @@ func (c *Connection) Validate() error {
 func (c *Connection) composeComponents() {
 	var components []composeTerraform.Component
 
-
-	if VPC == nil {
+	if VPC == *new(networking.Vpc) {
 		vpc := networking.NewVpc()
 		vpc.Name = c.Name
 		components = append(components, vpc)
@@ -52,11 +52,10 @@ func (c *Connection) composeComponents() {
 		VPC = vpc
 	}
 
-	vpc := VPC.(networking.Vpc)
-
+	vpc := VPC
 
 	subnet := networking.NewSubnetWithAttributes(&vpc)
-	subnet.CidrBlock = fmt.Sprintf("10.0.%v.0/24", countSubnets())
+	subnet.CidrBlock = generateNewSubnetCIDR()
 
 	components = append(components, subnet)
 
@@ -74,18 +73,40 @@ func (c *Connection) composeComponents() {
 	sg := networking.NewSecurityGroupWithAttributes(&vpc)
 	components = append(components, sg)
 
-	// range over components, append them to ConnectionComponents
-	for _, component := range components {
-		ConnectionComponents[c.To] = append(ConnectionComponents[c.To], component)
-	}
+	// append components to ConnectionComponents
+	ConnectionComponents[c.To] = append(ConnectionComponents[c.To], components...)
+
 }
 
+//
 func countSubnets() int {
-	// ConnectionComponents will always represent the amount of subnets
+	// ConnectionComponents (map[string][]composeTerraform.Component)will always represent the amount of subnets
 	// as there is a maximum and minimum of 1 subnet per network stack
 	// we add one because ie: 10.0.0.0/24 is not a valid CIDR on AWS
 	return len(ConnectionComponents) + 1
 }
 
-// TODO:
-// write better CIDR construction function
+// generateNewSubnetCIDR generates a new, valid CIDR Block for subnets to use based on the VPC and other subnets
+func generateNewSubnetCIDR() string {
+	var ip []string
+	var cidr int
+
+	vpcCidrBlock := VPC.CidrBlock
+
+	//TODO:
+	// replace this with the `net` package, use IP and net.IPMask, etc
+
+	split := strings.Split(vpcCidrBlock, ".")
+	ip = append(ip, split[:len(split)-1]...)
+
+	split = strings.Split(split[len(split)-1], "/")
+	ip = append(ip, split[0])
+	cidr, _ = strconv.Atoi(split[1])
+
+	switch cidr {
+	case 16:
+		return fmt.Sprintf("%v.%v.%v.%v/%v", ip[0], ip[1], countSubnets(), 0, 24)
+	default:
+		return ""
+	}
+}

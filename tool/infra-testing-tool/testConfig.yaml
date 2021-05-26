@@ -1,34 +1,32 @@
-peers:
-    - name: test peers
-      amount: 1
-      groups:
-        - name: group1
-#        - name: group2
-      connections:
-        - name: connection 1
-          to: internet
-          protocol: tcp
-#        - name: test 1
-#          to: lan_1
-#          protocol: tcp
-
-#tokenServer:
-#    - name: token server
+#peer:
+#    - name: test peers
 #      amount: 1
 #      groups:
 #        - name: group1
+#        - name: group2
 #      connections:
-#          - name: connection 1
-#            to: lan_1
-#            protocol: tcp
+#        - name: connection 1
+#          to: internet
+#          protocol: tcp
+##        - name: test 1
+##          to: lan
+##          protocol: tcp
+##
 #
-#replicationServer:
-#    - name: repl server
+relay:
+    - name: test relay
+      amount: 1
+      groups:
+      connections:
+          - name: connection
+            to: internet
+            protocol: tcp
+
+#rdvp:
+#    - name: test relay
 #      amount: 1
 #      groups:
-#          - name: group1
 #      connections:
-#          - name: connection 1
+#          - name: connection
 #            to: internet
 #            protocol: tcp
-

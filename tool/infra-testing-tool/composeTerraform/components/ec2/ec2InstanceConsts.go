@@ -28,14 +28,12 @@ resource "aws_instance" "{{.Name }}" {
   }
   {{- end }}
 {{if .UserData }}
-  user_data = <<EOF
-{{.UserData }}
-EOF
+  user_data = <<EOF{{.UserData }}EOF
 {{- end}}
 }
 `
 	// Default Ec2 Values
-	Ec2InstanceAmiDefault     = "ami-018917cd40aae0c4e"
+	Ec2InstanceAmiDefault     = "ami-0886094d9531e6f03"
 	Ec2InstanceCountDefault   = 1
 	Ec2InstanceTypeDefault    = "t2.micro"
 	Ec2InstanceKeyNameDefault = "berty_key"
