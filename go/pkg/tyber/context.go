@@ -26,55 +26,34 @@ func ContextWithTraceID(ctx context.Context) (context.Context, bool) {
 	if eid := GetTraceIDFromContext(ctx); eid != noTraceID {
 		return ctx, false
 	}
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		if vals := md.Get(string(traceIDKey)); len(vals) != 0 {
+			return ContextWithConstantTraceID(ctx, vals[0]), false
+		}
+	}
 	return ContextWithConstantTraceID(ctx, NewTraceID()), true
 }
 
 func ContextWithConstantTraceID(ctx context.Context, traceID string) context.Context {
-	return metadata.AppendToOutgoingContext(ContextWithoutTraceID(ctx), string(traceIDKey), traceID)
+	md, ok := metadata.FromOutgoingContext(ctx)
+	if ok {
+		md = md.Copy()
+	} else {
+		md = metadata.New(nil)
+	}
+	md.Set(string(traceIDKey), traceID)
+	return metadata.NewOutgoingContext(context.WithValue(ctx, traceIDKey, traceID), md)
 }
 
 func GetTraceIDFromContext(ctx context.Context) string {
-	if md, ok := metadata.FromOutgoingContext(ctx); ok {
-		ids := md.Get(string(traceIDKey))
-		if len(ids) > 0 && len(ids[0]) > 0 {
-			return ids[0]
-		}
-	}
-	if md, ok := metadata.FromIncomingContext(ctx); ok {
-		ids := md.Get(string(traceIDKey))
-		if len(ids) > 0 && len(ids[0]) > 0 {
-			return ids[0]
-		}
+	if val, ok := ctx.Value(traceIDKey).(string); ok {
+		return val
 	}
 	return noTraceID
 }
 
 func ContextWithoutTraceID(ctx context.Context) context.Context {
-	{
-		md, _ := metadata.FromOutgoingContext(ctx)
-		if vals := md.Get(string(traceIDKey)); len(vals) != 0 {
-			nmd := metadata.New(map[string]string{})
-			for k, v := range md {
-				if k != string(traceIDKey) {
-					nmd.Append(k, v...)
-				}
-			}
-			ctx = metadata.NewOutgoingContext(ctx, nmd)
-		}
-	}
-	{
-		md, _ := metadata.FromIncomingContext(ctx)
-		if vals := md.Get(string(traceIDKey)); len(vals) != 0 {
-			nmd := metadata.New(map[string]string{})
-			for k, v := range md {
-				if k != string(traceIDKey) {
-					nmd.Append(k, v...)
-				}
-			}
-			ctx = metadata.NewIncomingContext(ctx, nmd)
-		}
-	}
-	return ctx
+	return ContextWithConstantTraceID(ctx, noTraceID)
 }
 
 func newID() string {
