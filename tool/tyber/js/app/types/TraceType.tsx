@@ -18,6 +18,7 @@ export interface Step {
 export interface Trace {
 	id: string;
 	name: string;
+	initialName?: string;
 	steps: Step[];
 	started: Date;
 	finished: Date;
@@ -41,6 +42,7 @@ export const parserAppStepToStep = (goStep: ParserAppStep): Step => ({
 export const parserCreateTraceEventToTrace = (event: ParserCreateTraceEvent): Trace => ({
 	id: event.id,
 	name: event.name,
+	initialName: event.initialName,
 	steps: (event.steps || []).map(parserAppStepToStep),
 	started: new Date(event.started),
 	finished: new Date(event.finished),

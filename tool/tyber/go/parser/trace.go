@@ -7,10 +7,11 @@ import (
 // Trace
 
 type AppTrace struct {
-	ID    string     `json:"id"`
-	Name  string     `json:"name"`
-	Steps []*AppStep `json:"steps"`
-	Subs  []SubTarget
+	ID          string     `json:"id"`
+	Name        string     `json:"name"`
+	InitialName string     `json:"initialName"`
+	Steps       []*AppStep `json:"steps"`
+	Subs        []SubTarget
 	Status
 }
 

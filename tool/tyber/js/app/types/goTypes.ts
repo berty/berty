@@ -46,6 +46,7 @@ export interface ParserSubTarget {
 export interface ParserCreateTraceEvent {
   id: string
   name: string
+  initialName: string
   steps: ParserAppStep[]
   Subs: ParserSubTarget[]
   status: TyberStatusType

@@ -65,9 +65,10 @@ func parseTraceLog(log string) (*traceLog, error) {
 
 func (tl *traceLog) toAppTrace() *AppTrace {
 	return &AppTrace{
-		ID:    tl.Trace.TraceID,
-		Name:  tl.Message,
-		Steps: []*AppStep{},
+		ID:          tl.Trace.TraceID,
+		Name:        tl.Message,
+		InitialName: tl.Message,
+		Steps:       []*AppStep{},
 		Status: Status{
 			StatusType: tyber.Running,
 			Started:    tl.Time,

@@ -87,7 +87,10 @@ const TraceView: React.FC<{ trace: Trace, eva?: any }> = ({ trace, eva }) => {
 					<StatusIcon status={trace.status} size={18} />
 				</View>
 			</View></TouchableOpacity>
-			{collapsed || <View style={style.stepList}>{(trace.steps || []).map((step, index) => <StepView key={index} step={step} style={style} />)}</View>}
+			{collapsed || <View style={style.stepList}>
+				{trace.initialName !== trace.name && <View style={[style.step, { padding: 10 }]}><Text>Initial trace name: {trace.initialName || ""}</Text></View>}
+				{(trace.steps || []).map((step, index) => <StepView key={index} step={step} style={style} />)}
+			</View>}
 		</>
 	}, [trace, eva, collapsed, toggleCollapsed])
 };
