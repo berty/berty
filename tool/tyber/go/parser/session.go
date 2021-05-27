@@ -177,6 +177,7 @@ func (s *Session) parseLogs() error {
 
 			s.tracesLock.Lock()
 			for _, parentTrace := range s.runningTraces {
+				changed := false
 				for _, sub := range parentTrace.Subs {
 					if sub.TargetName == el.Message {
 						match := true
@@ -200,9 +201,13 @@ func (s *Session) parseLogs() error {
 								parentTrace.Finished = step.Started
 								parentTrace.StatusType = step.StatusType
 								delete(s.runningTraces, parentTrace.ID)
+								changed = true
 							}
 						}
 					}
+				}
+				if changed {
+					s.eventChan <- parentTrace.ToUpdateTraceEvent()
 				}
 			}
 			s.tracesLock.Unlock()
