@@ -1,41 +1,65 @@
 package bridge
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"path/filepath"
 	"sync"
 
-	"berty.tech/berty/tool/tyber/go/v2/config"
-	"berty.tech/berty/tool/tyber/go/v2/logger"
-	"berty.tech/berty/tool/tyber/go/v2/parser"
+	"berty.tech/berty/tool/tyber/go/config"
+	"berty.tech/berty/tool/tyber/go/logger"
+	"berty.tech/berty/tool/tyber/go/parser"
 	"github.com/asticode/go-astilectron"
 )
 
 type Bridge struct {
-	logger         *logger.Logger
-	parser         *parser.Parser
-	config         *config.Config
-	asti           *astilectron.Astilectron
-	windows        []*astilectron.Window
-	menu           *astilectron.Menu
-	tray           *astilectron.Tray
-	trayMenu       *astilectron.Menu
-	devToolsOpened bool
-	devToolsLock   sync.Mutex
-	initialized    bool
-	initLock       sync.RWMutex
+	logger          *logger.Logger
+	parser          *parser.Parser
+	config          *config.Config
+	asti            *astilectron.Astilectron
+	windows         []*astilectron.Window
+	menu            *astilectron.Menu
+	tray            *astilectron.Tray
+	trayMenu        *astilectron.Menu
+	devToolsOpened  bool
+	devToolsLock    sync.Mutex
+	initialized     bool
+	initLock        sync.RWMutex
+	websocketBridge WebsocketBridge
+	receiver        *func(string, []byte) error
 }
 
-func New(goLogger *log.Logger) *Bridge {
-	b := &Bridge{}
+// WebsocketBridge ...
+type WebsocketBridge interface {
+	AddReceiver(*func(name string, payload []byte) error)
+	RemoveReceiver(*func(name string, payload []byte) error)
+	Send(name string, payload []byte) error
+}
+
+func New(goLogger *log.Logger, w WebsocketBridge) *Bridge {
+	b := &Bridge{websocketBridge: w}
 
 	baseLogger := logger.New(goLogger, b.ConsoleLog)
 
 	b.logger = baseLogger.Named("bridge")
 	b.config = config.New(baseLogger)
 	b.parser = parser.New(baseLogger)
+	receiver := b.HandleMessages
+	b.receiver = &receiver
+
+	if b.websocketBridge != nil {
+		b.websocketBridge.AddReceiver(b.receiver)
+	}
 
 	return b
+}
+
+func (b *Bridge) Close() error {
+	if b.websocketBridge != nil {
+		b.websocketBridge.RemoveReceiver(b.receiver)
+	}
+	return nil
 }
 
 func (b *Bridge) Init(a *astilectron.Astilectron, ws []*astilectron.Window, m *astilectron.Menu, t *astilectron.Tray, tm *astilectron.Menu) error {
@@ -51,6 +75,13 @@ func (b *Bridge) Init(a *astilectron.Astilectron, ws []*astilectron.Window, m *a
 
 	go func() {
 		for event := range b.parser.EventChan {
+			if b.websocketBridge != nil {
+				eventBytes, err := json.Marshal(event)
+				if err == nil {
+					fmt.Println("sending", string(eventBytes))
+					b.websocketBridge.Send(interfaceToEventKind(event).String(), eventBytes)
+				}
+			}
 			b.UpdateFront(event)
 		}
 	}()

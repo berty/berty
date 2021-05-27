@@ -8,6 +8,7 @@ import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
 
 import { ParsedInteraction } from './types.gen'
 import { SoundKey } from './sounds'
+import { Platform } from 'react-native'
 
 export enum MessengerAppState {
 	Init = 0,
@@ -145,6 +146,7 @@ export enum PersistentOptionsKeys {
 	WelcomeModal = 'welcomeModal',
 	Preset = 'preset',
 	LogFilters = 'logFilters',
+	TyberHost = 'tyberHost',
 }
 
 export type PersistentOptionsI18N = {
@@ -214,6 +216,10 @@ export type PersistentOptionsLogFilters = {
 	format: string
 }
 
+export type PersistentOptionsTyberHost = {
+	address: string
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -267,6 +273,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.LogFilters
 			payload: PersistentOptionsLogFilters
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.TyberHost
+			payload: PersistentOptionsTyberHost
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -282,6 +292,7 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.WelcomeModal]: PersistentOptionsWelcomeModal
 	[PersistentOptionsKeys.Preset]: PersistentOptionsPreset
 	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
+	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => {
@@ -324,7 +335,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			flag: 'disabled',
 		},
 		[PersistentOptionsKeys.Log]: {
-			format: 'console',
+			format: 'json',
 		},
 		[PersistentOptionsKeys.Configurations]: {
 			network: {
@@ -351,7 +362,10 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			value: 'performance',
 		},
 		[PersistentOptionsKeys.LogFilters]: {
-			format: 'info+:bty*,-*.grpc warn+:*.grpc error+:*',
+			format: '*:bty*',
+		},
+		[PersistentOptionsKeys.TyberHost]: {
+			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
 		},
 	}
 }

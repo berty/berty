@@ -2,6 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
+	"fmt"
 	"path/filepath"
 	"sync"
 	"sync/atomic"
@@ -12,7 +13,10 @@ import (
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/pkg/errors"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -20,6 +24,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
@@ -163,12 +168,15 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 }
 
 // New initializes a new Service
-func New(ctx context.Context, opts Opts) (Service, error) {
+func New(ctx context.Context, opts Opts) (_ Service, err error) {
 	if err := opts.applyDefaults(ctx); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+
 	opts.Logger = opts.Logger.Named("pt")
-	opts.Logger.Debug("initializing protocol", zap.String("version", bertyversion.Version))
+
+	ctx, _, endSection := tyber.Section(tyber.ContextWithoutTraceID(ctx), opts.Logger, fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version))
+	defer func() { endSection(err, "") }()
 
 	dbOpts := &iface.CreateDBOptions{LocalOnly: &opts.LocalOnly}
 
@@ -177,18 +185,20 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
+
 	if opts.TinderDriver != nil {
 		s := NewSwiper(opts.Logger, opts.PubSub, opts.RendezvousRotationBase)
-		opts.Logger.Debug("tinder swiper is enabled")
+		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	} else {
-		opts.Logger.Warn("no tinder driver provided, incoming and outgoing contact requests won't be enabled")
+		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 	}
 
-	return &service{
+	s := &service{
 		ctx:            ctx,
 		host:           opts.Host,
 		ipfsCoreAPI:    opts.IpfsCoreAPI,
@@ -204,7 +214,11 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		openedGroups: map[string]*groupContext{
 			string(acc.Group().PublicKey): acc,
 		},
-	}, nil
+	}
+
+	s.startTyberTinderMonitor()
+
+	return s, nil
 }
 
 func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
@@ -212,12 +226,89 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
-	s.odb.Close()
+	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
+
+	err := s.odb.Close()
+
 	if s.close != nil {
-		_ = s.close()
+		err = multierr.Append(err, s.close())
 	}
 
-	return nil
+	endSection(err)
+	return err
+}
+
+func (s *service) startTyberTinderMonitor() {
+	if s.host == nil {
+		return
+	}
+
+	sub, err := s.host.EventBus().Subscribe([]interface{}{
+		new(ipfsutil.EvtPubSubTopic),
+		new(tinder.EvtDriverMonitor),
+	})
+	if err != nil {
+		s.logger.Error("failed to create sub", zap.Error(errors.Wrap(err, "unable to subscribe pubsub topic event")))
+		return
+	}
+
+	// @FIXME(gfanton): cached found peers should be done inside driver monitor
+	cachedFoundPeers := make(map[peer.ID]ipfsutil.Multiaddrs)
+	ch := sub.Out()
+	go func() {
+		for {
+			select {
+			case <-s.ctx.Done():
+				return
+			case evt := <-ch:
+				var monitorEvent *protocoltypes.MonitorGroup_EventMonitor
+
+				switch e := evt.(type) {
+				case ipfsutil.EvtPubSubTopic:
+					// handle this event
+					monitorEvent = monitorHandlePubsubEvent(&e, s.host)
+				case tinder.EvtDriverMonitor:
+					// check if we already know this peer in case of found peer
+					newMS := ipfsutil.NewMultiaddrs(e.AddrInfo.Addrs)
+					if ms, ok := cachedFoundPeers[e.AddrInfo.ID]; ok {
+						if ipfsutil.MultiaddrIsEqual(ms, newMS) {
+							continue
+						}
+					}
+
+					cachedFoundPeers[e.AddrInfo.ID] = newMS
+					monitorEvent = monitorHandleDiscoveryEvent(&e, s.host)
+				default:
+					monitorEvent = &protocoltypes.MonitorGroup_EventMonitor{
+						Type: protocoltypes.TypeEventMonitorUndefined,
+					}
+				}
+
+				switch monitorEvent.Type {
+				case protocoltypes.TypeEventMonitorPeerFound:
+					s.logger.Debug(TyberEventTinderPeerFound, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+						{Name: "Topic", Description: monitorEvent.PeerFound.Topic},
+						{Name: "PeerID", Description: monitorEvent.PeerFound.PeerID},
+						{Name: "DriverName", Description: monitorEvent.PeerFound.DriverName},
+						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerFound.Maddrs)},
+					})...)
+				case protocoltypes.TypeEventMonitorPeerJoin:
+					s.logger.Debug(TyberEventTinderPeerJoined, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+						{Name: "Topic", Description: monitorEvent.PeerJoin.Topic},
+						{Name: "PeerID", Description: monitorEvent.PeerJoin.PeerID},
+						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerJoin.IsSelf)},
+						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerJoin.Maddrs)},
+					})...)
+				case protocoltypes.TypeEventMonitorPeerLeave:
+					s.logger.Debug(TyberEventTinderPeerLeft, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
+						{Name: "Topic", Description: monitorEvent.PeerLeave.Topic},
+						{Name: "PeerID", Description: monitorEvent.PeerLeave.PeerID},
+						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerLeave.IsSelf)},
+					})...)
+				}
+			}
+		}
+	}()
 }
 
 // Status contains results of status checks

@@ -1,19 +1,21 @@
 package handshake
 
 import (
+	"context"
 	"errors"
 
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 // ResponseUsingReaderWriter handle the handshake inited by the requester, using provided ggio reader and writer
-func ResponseUsingReaderWriter(reader ggio.Reader, writer ggio.Writer, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
+func ResponseUsingReaderWriter(ctx context.Context, logger *zap.Logger, reader ggio.Reader, writer ggio.Writer, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
 	hc := &handshakeContext{
 		reader:          reader,
 		writer:          writer,
@@ -25,28 +27,25 @@ func ResponseUsingReaderWriter(reader ggio.Reader, writer ggio.Writer, ownAccoun
 	if err := hc.receiveRequesterHello(); err != nil {
 		return nil, errcode.ErrHandshakeRequesterHello.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Received hello", hc.toTyberStepMutator(), tyber.ForceReopen)
 	if err := hc.sendResponderHello(); err != nil {
 		return nil, errcode.ErrHandshakeResponderHello.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Sent hello", hc.toTyberStepMutator(), tyber.ForceReopen)
 	if err := hc.receiveRequesterAuthenticate(); err != nil {
 		return nil, errcode.ErrHandshakeRequesterAuthenticate.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Received authenticate", hc.toTyberStepMutator(), tyber.ForceReopen)
 	if err := hc.sendResponderAccept(); err != nil {
 		return nil, errcode.ErrHandshakeResponderAccept.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Sent accept", hc.toTyberStepMutator(), tyber.ForceReopen)
 	if err := hc.receiveRequesterAcknowledge(); err != nil {
 		return nil, errcode.ErrHandshakeRequesterAcknowledge.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Received acknowledge", hc.toTyberStepMutator(), tyber.ForceReopen)
 
 	return hc.peerAccountID, nil
-}
-
-// Response handle the handshake inited by the requester
-func Response(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
-	reader := ggio.NewDelimitedReader(stream, 2048)
-	writer := ggio.NewDelimitedWriter(stream)
-
-	return ResponseUsingReaderWriter(reader, writer, ownAccountID)
 }
 
 // 1st step - Responder receives: a

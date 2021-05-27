@@ -1,4 +1,6 @@
+import { Platform } from "react-native";
 import electron from "./Electron";
+import { shouldUseWebsocket, WebsocketClient } from "../store/WebsocketData"
 
 export const OpenFiles = () => {
 	if (__DEV__) {
@@ -24,7 +26,7 @@ export const OpenFiles = () => {
 		});
 };
 
-export const InitConfig = () => {
+export const InitAstilectronConfig = () => {
 	astilectron.sendMessage({
 		name: "init_config",
 		payload: electron.remote.app.getPath("appData"),
@@ -32,10 +34,17 @@ export const InitConfig = () => {
 };
 
 export const OpenSession = (sessionID: string) => {
-	astilectron.sendMessage({
-		name: "open_session",
-		payload: sessionID,
-	});
+	if (shouldUseWebsocket) {
+		WebsocketClient.send(
+			"open_session",
+			sessionID,
+		);
+	} else {
+		astilectron.sendMessage({
+			name: "open_session",
+			payload: sessionID,
+		})
+	}
 };
 
 export const ClearAllSessions = () => {

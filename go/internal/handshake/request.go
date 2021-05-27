@@ -1,19 +1,21 @@
 package handshake
 
 import (
+	"context"
 	"errors"
 
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 // RequestUsingReaderWriter init a handshake with the responder, using provided ggio reader and writer
-func RequestUsingReaderWriter(reader ggio.Reader, writer ggio.Writer, ownAccountID p2pcrypto.PrivKey, peerAccountID p2pcrypto.PubKey) error {
+func RequestUsingReaderWriter(ctx context.Context, logger *zap.Logger, reader ggio.Reader, writer ggio.Writer, ownAccountID p2pcrypto.PrivKey, peerAccountID p2pcrypto.PubKey) error {
 	hc := &handshakeContext{
 		reader:          reader,
 		writer:          writer,
@@ -26,28 +28,25 @@ func RequestUsingReaderWriter(reader ggio.Reader, writer ggio.Writer, ownAccount
 	if err := hc.sendRequesterHello(); err != nil {
 		return errcode.ErrHandshakeRequesterHello.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Sent hello", hc.toTyberStepMutator())
 	if err := hc.receiveResponderHello(); err != nil {
 		return errcode.ErrHandshakeResponderHello.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Received hello", hc.toTyberStepMutator())
 	if err := hc.sendRequesterAuthenticate(); err != nil {
 		return errcode.ErrHandshakeRequesterAuthenticate.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Sent authenticate", hc.toTyberStepMutator())
 	if err := hc.receiveResponderAccept(); err != nil {
 		return errcode.ErrHandshakeResponderAccept.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Received accept", hc.toTyberStepMutator())
 	if err := hc.sendRequesterAcknowledge(); err != nil {
 		return errcode.ErrHandshakeRequesterAcknowledge.Wrap(err)
 	}
+	tyber.LogStep(ctx, logger, "Sent acknowledge", hc.toTyberStepMutator())
 
 	return nil
-}
-
-// Request init a handshake with the responder
-func Request(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey, peerAccountID p2pcrypto.PubKey) error {
-	reader := ggio.NewDelimitedReader(stream, 2048)
-	writer := ggio.NewDelimitedWriter(stream)
-
-	return RequestUsingReaderWriter(reader, writer, ownAccountID, peerAccountID)
 }
 
 // 1st step - Requester sends: a

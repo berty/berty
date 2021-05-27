@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"strings"
 
 	"github.com/gogo/protobuf/proto"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
@@ -17,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
 	ipliface "berty.tech/go-ipfs-log/iface"
@@ -266,28 +268,42 @@ func signProto(message proto.Message, sk crypto.PrivKey) ([]byte, error) {
 }
 
 func metadataStoreAddEvent(ctx context.Context, m *metadataStore, g *protocoltypes.Group, eventType protocoltypes.EventType, event proto.Marshaler, sig []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
+	ctx, newTrace := tyber.ContextWithTraceID(ctx)
+	tyberLogError := tyber.LogError
+	if newTrace {
+		m.logger.Debug(fmt.Sprintf("Sending %s to %s group %s", strings.TrimPrefix(eventType.String(), "EventType"), strings.TrimPrefix(g.GroupType.String(), "GroupType"), base64.RawURLEncoding.EncodeToString(g.PublicKey)), tyber.FormatTraceLogFields(ctx)...)
+		tyberLogError = tyber.LogFatalError
+	}
+
 	attachmentsSecrets, err := m.devKS.AttachmentSecretSlice(attachmentsCIDs)
 	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
+		return nil, tyberLogError(ctx, m.logger, "Failed to get attachments' secrets", errcode.ErrKeystoreGet.Wrap(err))
 	}
+	m.logger.Debug(fmt.Sprintf("Got %d attachment secrets", len(attachmentsSecrets)), tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	env, err := sealGroupEnvelope(g, eventType, event, sig, attachmentsCIDs, attachmentsSecrets)
 	if err != nil {
-		return nil, errcode.ErrCryptoSignature.Wrap(err)
+		return nil, tyberLogError(ctx, m.logger, "Failed to seal group envelope", errcode.ErrCryptoSignature.Wrap(err))
 	}
+	m.logger.Debug(fmt.Sprintf("Sealed group envelope (%d bytes)", len(env)), tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	op := operation.NewOperation(nil, "ADD", env)
-
 	e, err := m.AddOperation(ctx, op, nil)
 	if err != nil {
-		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
+		return nil, tyberLogError(ctx, m.logger, "Failed to add operation on log", errcode.ErrOrbitDBAppend.Wrap(err))
 	}
+	m.logger.Debug("Added operation on log", tyber.FormatStepLogFields(ctx, []tyber.Detail{
+		{Name: "CID", Description: e.GetHash().String()},
+	})...)
 
 	op, err = operation.ParseOperation(e)
 	if err != nil {
-		return nil, errcode.ErrOrbitDBDeserialization.Wrap(err)
+		return nil, tyberLogError(ctx, m.logger, "Failed to parse operation returned by log", errcode.ErrOrbitDBDeserialization.Wrap(err))
 	}
 
+	if newTrace {
+		m.logger.Debug("Added metadata on log successfully", tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.EndTrace)...)
+	}
 	return op, nil
 }
 
@@ -537,6 +553,10 @@ func (m *metadataStore) ContactRequestReferenceReset(ctx context.Context) (opera
 
 // ContactRequestOutgoingEnqueue indicates the payload includes that the deviceKeystore will attempt to send a new contact request
 func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, contact *protocoltypes.ShareableContact, ownMetadata []byte) (operation.Operation, error) {
+	ctx, _ = tyber.ContextWithTraceID(ctx)
+
+	m.logger.Debug("Enqueuing contact request", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	if !m.typeChecker(isAccountGroup) {
 		return nil, errcode.ErrGroupInvalidType
 	}
@@ -567,7 +587,7 @@ func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, conta
 		return m.ContactRequestOutgoingSent(ctx, pk)
 	}
 
-	return m.attributeSignAndAddEvent(ctx, &protocoltypes.AccountContactRequestEnqueued{
+	op, err := m.attributeSignAndAddEvent(ctx, &protocoltypes.AccountContactRequestEnqueued{
 		Contact: &protocoltypes.ShareableContact{
 			PK:                   contact.PK,
 			PublicRendezvousSeed: contact.PublicRendezvousSeed,
@@ -575,6 +595,10 @@ func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, conta
 		},
 		OwnMetadata: ownMetadata,
 	}, protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, nil)
+
+	m.logger.Debug("Enqueued contact request", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
+	return op, err
 }
 
 // ContactRequestOutgoingSent indicates the payload includes that the deviceKeystore has sent a contact request
@@ -604,6 +628,8 @@ func (m *metadataStore) ContactRequestOutgoingSent(ctx context.Context, pk crypt
 
 // ContactRequestIncomingReceived indicates the payload includes that the deviceKeystore has received a contact request
 func (m *metadataStore) ContactRequestIncomingReceived(ctx context.Context, contact *protocoltypes.ShareableContact) (operation.Operation, error) {
+	m.logger.Debug("Sending ContactRequestIncomingReceived on Account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	if !m.typeChecker(isAccountGroup) {
 		return nil, errcode.ErrGroupInvalidType
 	}
@@ -822,10 +848,14 @@ func (m *metadataStore) attributeSignAndAddEvent(ctx context.Context, evt accoun
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
+	m.logger.Debug("Got member device", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "MemberDevice", Description: fmt.Sprint(md)}})...)
+
 	device, err := md.device.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
+
+	m.logger.Debug("Got member device public key", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "MemberDevicePublicKey", Description: base64.RawURLEncoding.EncodeToString(device)}})...)
 
 	evt.SetDevicePK(device)
 
@@ -834,10 +864,21 @@ func (m *metadataStore) attributeSignAndAddEvent(ctx context.Context, evt accoun
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
+	m.logger.Debug("Signed event", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Signature", Description: base64.RawURLEncoding.EncodeToString(sig)}})...)
+
 	return metadataStoreAddEvent(ctx, m, m.g, eventType, evt, sig, attachmentsCIDs)
 }
 
 func (m *metadataStore) contactAction(ctx context.Context, pk crypto.PubKey, event accountContactEvent, evtType protocoltypes.EventType) (operation.Operation, error) {
+	ctx, newTrace := tyber.ContextWithTraceID(ctx)
+	var tyberFields []zap.Field
+	if newTrace {
+		tyberFields = tyber.FormatTraceLogFields(ctx)
+	} else {
+		tyberFields = tyber.FormatStepLogFields(ctx, []tyber.Detail{})
+	}
+	m.logger.Debug("Sending "+strings.TrimPrefix(evtType.String(), "EventType")+" on Account group", tyberFields...)
+
 	if pk == nil || event == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -849,7 +890,15 @@ func (m *metadataStore) contactAction(ctx context.Context, pk crypto.PubKey, eve
 
 	event.SetContactPK(pkBytes)
 
-	return m.attributeSignAndAddEvent(ctx, event, evtType, nil)
+	op, err := m.attributeSignAndAddEvent(ctx, event, evtType, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if newTrace {
+		m.logger.Debug("Event added successfully", tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.EndTrace)...)
+	}
+	return op, nil
 }
 
 func (m *metadataStore) groupAction(ctx context.Context, pk crypto.PubKey, event accountGroupEvent, evtType protocoltypes.EventType) (operation.Operation, error) {
@@ -916,6 +965,8 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
+		shortGroupType := strings.TrimPrefix(g.GetGroupType().String(), "GroupType")
+		b64GroupPK := base64.RawURLEncoding.EncodeToString(g.PublicKey)
 
 		var (
 			md          *ownMemberDevice
@@ -969,15 +1020,22 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 					continue
 				}
 
-				store.logger.Debug("received store event", zap.Any("raw event", e))
+				ctx = tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
+				tyber.LogTraceStart(ctx, store.logger, fmt.Sprintf("Received metadata from %s group %s", shortGroupType, b64GroupPK))
 
 				metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g, store.devKS)
 				if err != nil {
-					store.logger.Error("unable to open metadata payload", zap.Error(err))
+					_ = tyber.LogFatalError(ctx, store.logger, "Unable to open metadata event", err, tyber.WithDetail("RawEvent", fmt.Sprint(e)), tyber.ForceReopen)
 					continue
 				}
 
-				store.logger.Debug("received payload", zap.String("payload", metaEvent.Metadata.EventType.String()))
+				tyber.LogStep(ctx, store.logger, "Opened metadata store event",
+					tyber.ForceReopen,
+					tyber.EndTrace,
+					tyber.WithJSONDetail("MetaEvent", metaEvent),
+					tyber.WithJSONDetail("Event", event),
+					tyber.UpdateTraceName(fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(metaEvent.GetMetadata().GetEventType().String(), "EventType"), shortGroupType, b64GroupPK)),
+				)
 
 				store.Emit(ctx, &EventMetadataReceived{
 					MetaEvent: metaEvent,

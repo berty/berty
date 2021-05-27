@@ -2,6 +2,7 @@ package handshake
 
 import (
 	crand "crypto/rand"
+	"encoding/base64"
 
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -9,6 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 // Constant nonces
@@ -26,6 +28,32 @@ type handshakeContext struct {
 	ownEphemeral    *[cryptoutil.KeySize]byte
 	peerEphemeral   *[cryptoutil.KeySize]byte
 	sharedEphemeral *[cryptoutil.KeySize]byte
+}
+
+func (hc *handshakeContext) toTyberStepMutator() tyber.StepMutator {
+	return func(s tyber.Step) tyber.Step {
+		if hc == nil {
+			return s
+		}
+		if hc.peerAccountID != nil {
+			if cpkb, err := hc.peerAccountID.Raw(); err == nil {
+				s.Details = append(s.Details, tyber.Detail{Name: "ContactPublicKey", Description: base64.RawURLEncoding.EncodeToString(cpkb)})
+			}
+		}
+		for key, val := range map[string]*[cryptoutil.KeySize]byte{
+			"OwnEphemeral":    hc.ownEphemeral,
+			"PeerEphemeral":   hc.peerEphemeral,
+			"SharedEphemeral": hc.sharedEphemeral,
+		} {
+			if val != nil {
+				s.Details = append(s.Details, tyber.Detail{
+					Name:        key,
+					Description: base64.RawURLEncoding.EncodeToString(val[:]),
+				})
+			}
+		}
+		return s
+	}
 }
 
 // Generates own Ephemeral key pair and send pub key to peer

@@ -1,8 +1,9 @@
 import { Node, Session, SessionType } from "../types/NodeType";
-import { Trace, Step, Detail } from "../types/TraceType";
+import { Trace, Detail, parserCreateTraceEventToTrace, parserUpdateTraceEventToTrace, parserCreateStepEventToTrace } from "../types/TraceType";
 import { Status } from "../types/StatusType";
-import { v4 as uuid } from "uuid/dist";
+import { v4 as uuid } from "uuid";
 import { loremIpsum } from "lorem-ipsum";
+import { ParserCreateTraceEvent, ParserAppStep, ParserUpdateTraceEvent, ParserCreateStepEvent } from "../types/goTypes"
 
 const minSessionsPerNode = 3;
 const maxSessionsPerNode = 8;
@@ -188,20 +189,21 @@ const randomDetails = () => {
 };
 
 const generateFakeTraces = () => {
-	let traces: Trace[] = [];
+	let traces: ParserCreateTraceEvent[] = [];
 	let tracesAmount = randomIntBetween(minTracesPerSession, maxTracesPerSession);
 
 	for (let i = 0; i < tracesAmount; i++) {
 		let started = randomDateBetween(minDate, maxDate);
 		let finished = randomDateBetween(started, maxDate);
 
-		let trace: Trace = {
+		let trace: ParserCreateTraceEvent = {
 			id: uuid(),
 			name: randomTraceName(),
 			steps: [],
-			started: started,
-			finished: finished,
+			started: started.toString(),
+			finished: finished.toString(),
 			status: randomStatus(),
+			Subs: [],
 		};
 
 		let stepsAmount = randomIntBetween(minStepsPerTrace, maxStepsPerTrace);
@@ -210,12 +212,14 @@ const generateFakeTraces = () => {
 			let started = randomDateBetween(minDate, maxDate);
 			let finished = randomDateBetween(started, maxDate);
 
-			let step: Step = {
+			let step: ParserAppStep = {
 				name: randomStepName(),
 				details: randomDetails(),
-				started: started,
-				finished: finished,
+				started: started.toString(),
+				finished: finished.toString(),
 				status: randomStatus(),
+				forceReopen: false,
+				updateTraceName: "",
 			};
 			trace.steps.push(step);
 		}
@@ -266,7 +270,7 @@ export const UpdateNodeList = (node: Node) => {
 	onUpdateNodeListCallback(node);
 };
 
-let fakeTracesData: Map<string, Trace[]> = new Map<string, Trace[]>();
+let fakeTracesData: Map<string, ParserCreateTraceEvent[]> = new Map<string, ParserCreateTraceEvent[]>();
 
 let onInitTraceListCallback: (traces: Trace[]) => void;
 let sessionTraceListRequested: string;
@@ -294,8 +298,8 @@ export const OnInitTraceList = (
 	}, 3000);
 };
 
-export const InitTraceList = (traces: Trace[]) => {
-	onInitTraceListCallback(traces);
+export const InitTraceList = (traces: ParserCreateTraceEvent[]) => {
+	onInitTraceListCallback(traces.map(parserCreateTraceEventToTrace));
 };
 
 let onAddToTraceListCallback: (trace: Trace) => void;
@@ -304,8 +308,8 @@ export const OnAddToTraceList = (updateCallback: (trace: Trace) => void) => {
 	onAddToTraceListCallback = updateCallback;
 };
 
-export const AddToTraceList = (trace: Trace) => {
-	onAddToTraceListCallback(trace);
+export const AddToTraceList = (trace: ParserCreateTraceEvent) => {
+	onAddToTraceListCallback(parserCreateTraceEventToTrace(trace));
 };
 
 let onUpdateTraceListCallback: (trace: Trace) => void;
@@ -314,8 +318,8 @@ export const OnUpdateTraceList = (updateCallback: (trace: Trace) => void) => {
 	onUpdateTraceListCallback = updateCallback;
 };
 
-export const UpdateTraceList = (trace: Trace) => {
-	onUpdateTraceListCallback(trace);
+export const UpdateTraceList = (trace: ParserUpdateTraceEvent) => {
+	onUpdateTraceListCallback(parserUpdateTraceEventToTrace(trace));
 };
 
 let onAddToStepListCallback: (trace: Trace) => void;
@@ -324,6 +328,6 @@ export const OnAddToStepList = (updateCallback: (trace: Trace) => void) => {
 	onAddToStepListCallback = updateCallback;
 };
 
-export const AddToStepList = (trace: Trace) => {
-	onAddToStepListCallback(trace);
+export const AddToStepList = (trace: ParserCreateStepEvent) => {
+	onAddToStepListCallback(parserCreateStepEventToTrace(trace));
 };

@@ -1651,7 +1651,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -2872,6 +2880,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrMessengerDeepLinkRequiresPassphrase: 2001,
               ErrMessengerDeepLinkInvalidPassphrase: 2002,
               ErrMessengerStreamEvent: 2003,
+              ErrMessengerContactMetadataUnmarshal: 2004,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
               ErrDBAddContactRequestOutgoingSent: 2102,
@@ -2885,6 +2894,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrAttachmentPrepare: 2300,
               ErrAttachmentRetrieve: 2301,
               ErrProtocolSend: 2302,
+              ErrProtocolEventUnmarshal: 2303,
+              ErrProtocolGetGroupInfo: 2304,
               ErrTestEcho: 2401,
               ErrTestEchoRecv: 2402,
               ErrTestEchoSend: 2403,

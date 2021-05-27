@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Alert,
 	ScrollView,
@@ -29,9 +29,15 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { Player } from '@react-native-community/audio-toolkit'
-import { MessengerActions, PersistentOptionsKeys } from '@berty-tech/store/context'
+import {
+	defaultPersistentOptions,
+	MessengerActions,
+	PersistentOptionsKeys,
+} from '@berty-tech/store/context'
 
 import Long from 'long'
+import AsyncStorage from '@react-native-community/async-storage'
+import { tyberHostStorageKey } from '@berty-tech/store/providerEffects'
 
 //
 // DevTools
@@ -310,14 +316,19 @@ const PlaySound: React.FC = () => {
 	)
 }
 
-const LogButton: React.FC<{
+const StringOptionInput: React.FC<{
 	name: string
-	type: PersistentOptionsKeys.Log | PersistentOptionsKeys.LogFilters
+	getOptionValue: () => Promise<string> | string
+	setOptionValue: (value: string) => Promise<void> | void
 	bulletPointValue: string
-}> = ({ name, type, bulletPointValue }) => {
+}> = ({ name, bulletPointValue, getOptionValue, setOptionValue }) => {
 	const [{ flex, row, color, text, margin, padding, border }] = useStyles()
-	const ctx = useMsgrContext()
-	const [value, setValue] = useState<string>(ctx.persistentOptions[type].format)
+	const [value, setValue] = useState('')
+	useEffect(() => {
+		;(async () => {
+			setValue(await getOptionValue())
+		})()
+	}, [getOptionValue])
 
 	return (
 		<ButtonSetting
@@ -350,12 +361,7 @@ const LogButton: React.FC<{
 					/>
 					<TouchableOpacity
 						onPress={async () => {
-							await ctx.setPersistentOption({
-								type,
-								payload: {
-									format: value,
-								},
-							})
+							await setOptionValue(value)
 						}}
 					>
 						<Icon name='checkmark-outline' fill={color.dark.grey} width={20} height={20} />
@@ -477,15 +483,36 @@ const BodyDevTools: React.FC<{}> = () => {
 					})
 				}}
 			/>
-			<LogButton
+			<StringOptionInput
 				name={t('settings.devtools.log-button.name')}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
-				type={PersistentOptionsKeys.Log}
+				getOptionValue={() => ctx.persistentOptions.log.format}
+				setOptionValue={(val) =>
+					ctx.setPersistentOption({
+						type: PersistentOptionsKeys.Log,
+						payload: { format: val },
+					})
+				}
 			/>
-			<LogButton
+			<StringOptionInput
 				name={t('settings.devtools.log-filters-button.name')}
 				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
-				type={PersistentOptionsKeys.LogFilters}
+				getOptionValue={() => ctx.persistentOptions.logFilters.format}
+				setOptionValue={(val) =>
+					ctx.setPersistentOption({
+						type: PersistentOptionsKeys.LogFilters,
+						payload: { format: val },
+					})
+				}
+			/>
+			<StringOptionInput
+				name={t('settings.devtools.tyber-host-button.name')}
+				bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
+				getOptionValue={async () =>
+					(await AsyncStorage.getItem(tyberHostStorageKey)) ||
+					defaultPersistentOptions().tyberHost.address
+				}
+				setOptionValue={(val) => AsyncStorage.setItem(tyberHostStorageKey, val)}
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.add-dev-conversations-button')}

@@ -13,6 +13,7 @@ import (
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
+	ipfscid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
@@ -29,6 +30,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 type Service interface {
@@ -134,19 +136,26 @@ func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipf
 	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
-func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error) {
+func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err error) {
+	l := opts.Logger
+	if l == nil {
+		l = zap.NewNop()
+	}
+	tyberCtx, _, tyberEndSection := tyber.Section(context.Background(), l, "Initializing MessengerService version "+bertyversion.Version)
+	defer func() { tyberEndSection(err, "") }()
+
 	optsCleanup, err := opts.applyDefaults()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("error while applying default of messenger opts: %w", err))
 	}
 	opts.Logger = opts.Logger.Named("msg")
-	opts.Logger.Debug("initializing messenger", zap.String("version", bertyversion.Version))
+	l = opts.Logger
 
 	ctx, cancel := context.WithCancel(context.Background())
 	db := newDBWrapper(opts.DB, opts.Logger)
 
 	if opts.StateBackup != nil {
-		opts.Logger.Info("restoring db state")
+		tyber.LogStep(tyberCtx, l, "Restoring db state")
 
 		if err := dropAllTables(db.db); err != nil {
 			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to drop database schema: %w", err))
@@ -167,14 +176,18 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 		return nil, errcode.TODO.Wrap(fmt.Errorf("error during db init: %w", err))
 	}
 
+	tyber.LogStep(tyberCtx, l, "Database initialization succeeded")
+
 	cancel()
 
 	ctx, cancel = context.WithCancel(context.Background())
+
 	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	cancel()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
 	}
+	tyber.LogStep(tyberCtx, l, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
 	pkStr := b64EncodeBytes(icr.GetAccountGroupPK())
 	shortPkStr := pkStr
 	const shortLen = 6
@@ -183,6 +196,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	}
 
 	opts.Logger = opts.Logger.With(zap.String("a", shortPkStr))
+	l = opts.Logger
 
 	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
@@ -208,13 +222,13 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 		acc, err := svc.db.getAccount()
 		switch {
 		case errcode.Is(err, errcode.ErrNotFound): // account not found, create a new one
-			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
+			tyber.LogStep(tyberCtx, l, "Account not found, creating a new one", tyber.WithDetail("PublicKey", pkStr))
 			ret, err := svc.internalInstanceShareableBertyID(ctx, &mt.InstanceShareableBertyID_Request{})
 			if err != nil {
 				return nil, errcode.TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
 			}
 
-			if err = svc.db.addAccount(pkStr, ret.GetWebURL()); err != nil {
+			if err = svc.db.firstOrCreateAccount(pkStr, ret.GetWebURL()); err != nil {
 				return nil, err
 			}
 		case err != nil: // internal error
@@ -224,6 +238,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 			return nil, errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
 		default: // account exists, and public keys match
 			// noop
+			tyber.LogStep(tyberCtx, l, "Found account", tyber.WithDetail("PublicKey", pkStr))
 		}
 	}
 
@@ -240,7 +255,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 		{
 			payload, err := se.UnmarshalPayload()
 			if err != nil {
-				opts.Logger.Error("unable to unmarshal Notified", zap.Error(err))
+				l.Error("unable to unmarshal Notified", zap.Error(err))
 				return nil
 			}
 			notif = payload.(*mt.StreamEvent_Notified)
@@ -251,15 +266,18 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 				Title: notif.GetTitle(),
 				Body:  notif.GetBody(),
 			}); err != nil {
-				opts.Logger.Error("unable to trigger notify", zap.Error(err))
+				l.Error("unable to trigger notify", zap.Error(err))
 			}
 		}
 
 		return nil
 	}})
 
+	tyberSubsCtx, _, endSection := tyber.Section(context.TODO(), l, "Subscribing to groups on MessengerService init")
+	defer func() { endSection(err, "") }()
+
 	// Subscribe to account group metadata
-	err = svc.subscribeToMetadata(icr.GetAccountGroupPK())
+	err = svc.subscribeToMetadata(tyberSubsCtx, icr.GetAccountGroupPK())
 	if err != nil {
 		return nil, fmt.Errorf("error while subscribing to account metadata: %w", err)
 	}
@@ -281,7 +299,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating group: %w", err))
 			}
 
-			if err := svc.subscribeToGroup(gpkb); err != nil {
+			if err := svc.subscribeToGroup(tyberSubsCtx, gpkb); err != nil {
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to group metadata: %w", err))
 			}
 		}
@@ -304,7 +322,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating contact group: %w", err))
 			}
 
-			if err := svc.subscribeToMetadata(gpkb); err != nil {
+			if err := svc.subscribeToMetadata(tyberSubsCtx, gpkb); err != nil {
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to contact group metadata: %w", err))
 			}
 		}
@@ -313,7 +331,16 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	return &svc, nil
 }
 
-func (svc *service) subscribeToMetadata(gpkb []byte) error {
+func (svc *service) subscribeToMetadata(tctx context.Context, gpkb []byte) error {
+	tctx, newTrace := tyber.ContextWithTraceID(tctx)
+	traceName := "Subscribing to metadata on group " + b64EncodeBytes(gpkb)
+	if newTrace {
+		svc.logger.Debug(traceName, tyber.FormatTraceLogFields(tctx)...)
+		defer tyber.LogTraceEnd(tctx, svc.logger, "Successfully subscribed to metadata")
+	} else {
+		tyber.LogStep(tctx, svc.logger, traceName)
+	}
+
 	// subscribe
 	s, err := svc.protocolClient.GroupMetadataList(
 		svc.ctx,
@@ -330,9 +357,21 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 				return
 			}
 
+			cid, err := ipfscid.Cast(gme.EventContext.ID)
+			eventHandler := svc.eventHandler
+			if err != nil {
+				svc.logger.Error("failed to cast cid for logging", zap.Binary("cid-bytes", gme.EventContext.ID))
+				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.ctx)
+				eventHandler = eventHandler.withContext(ctx)
+			} else {
+				eventHandler = eventHandler.withContext(tyber.ContextWithConstantTraceID(svc.eventHandler.ctx, "msgrcvd-"+cid.String()))
+			}
+
 			svc.handlerMutex.Lock()
-			if err := svc.eventHandler.handleMetadataEvent(gme); err != nil {
-				svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
+			if err := eventHandler.handleMetadataEvent(gme); err != nil {
+				_ = tyber.LogFatalError(eventHandler.ctx, eventHandler.logger, "Failed to handle protocol event", err)
+			} else {
+				eventHandler.logger.Debug("Messenger event handler succeeded", tyber.FormatStepLogFields(eventHandler.ctx, []tyber.Detail{}, tyber.EndTrace)...)
 			}
 			svc.handlerMutex.Unlock()
 		}
@@ -340,7 +379,16 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 	return nil
 }
 
-func (svc *service) subscribeToMessages(gpkb []byte) error {
+func (svc *service) subscribeToMessages(tctx context.Context, gpkb []byte) error {
+	tctx, newTrace := tyber.ContextWithTraceID(tctx)
+	traceName := "Subscribing to messages on group " + b64EncodeBytes(gpkb)
+	if newTrace {
+		svc.logger.Debug(traceName, tyber.FormatTraceLogFields(tctx)...)
+		defer tyber.LogTraceEnd(tctx, svc.logger, "Successfully subscribed to messages")
+	} else {
+		tyber.LogStep(tctx, svc.logger, traceName)
+	}
+
 	ms, err := svc.protocolClient.GroupMessageList(
 		svc.ctx,
 		&protocoltypes.GroupMessageList_Request{
@@ -365,9 +413,21 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 				return
 			}
 
+			cid, err := ipfscid.Cast(gme.EventContext.ID)
+			eventHandler := svc.eventHandler
+			if err != nil {
+				svc.logger.Error("failed to cast cid for logging", zap.String("type", am.GetType().String()), zap.Binary("cid-bytes", gme.EventContext.ID))
+				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.ctx)
+				eventHandler = eventHandler.withContext(ctx)
+			} else {
+				eventHandler = eventHandler.withContext(tyber.ContextWithConstantTraceID(svc.eventHandler.ctx, "msgrcvd-"+cid.String()))
+			}
+
 			svc.handlerMutex.Lock()
-			if err := svc.eventHandler.handleAppMessage(b64EncodeBytes(gpkb), gme, &am); err != nil {
-				svc.logger.Error("failed to handle app message", zap.Any("type", am.GetType()), zap.Error(errcode.ErrInternal.Wrap(err)))
+			if err := eventHandler.handleAppMessage(b64EncodeBytes(gpkb), gme, &am); err != nil {
+				_ = tyber.LogFatalError(eventHandler.ctx, eventHandler.logger, "Failed to handle AppMessage", err)
+			} else {
+				eventHandler.logger.Debug("AppMessage handler succeeded", tyber.FormatStepLogFields(eventHandler.ctx, []tyber.Detail{}, tyber.EndTrace)...)
 			}
 			svc.handlerMutex.Unlock()
 		}
@@ -431,22 +491,28 @@ func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
 	return nil
 }
 
-func (svc *service) subscribeToGroup(gpkb []byte) error {
+func (svc *service) subscribeToGroup(tctx context.Context, gpkb []byte) error {
+	tctx, newTrace := tyber.ContextWithTraceID(tctx)
+	if newTrace {
+		svc.logger.Debug("Subscribing to group "+b64EncodeBytes(gpkb), tyber.FormatTraceLogFields(tctx)...)
+		defer tyber.LogTraceEnd(tctx, svc.logger, "Successfully subscribed to group")
+	}
+
 	if svc.isGroupMonitorEnabled {
 		if err := svc.subscribeToGroupMonitor(gpkb); err != nil {
 			return err
 		}
 	}
 
-	if err := svc.subscribeToMetadata(gpkb); err != nil {
+	if err := svc.subscribeToMetadata(tctx, gpkb); err != nil {
 		return err
 	}
 
-	return svc.subscribeToMessages(gpkb)
+	return svc.subscribeToMessages(tctx, gpkb)
 }
 
-func (svc *service) attachmentPrepare(attachment io.Reader) ([]byte, error) {
-	stream, err := svc.protocolClient.AttachmentPrepare(svc.ctx)
+func (svc *service) attachmentPrepare(ctx context.Context, attachment io.Reader) ([]byte, error) {
+	stream, err := svc.protocolClient.AttachmentPrepare(ctx)
 	if err != nil {
 		return nil, errcode.ErrAttachmentPrepare.Wrap(err)
 	}
@@ -471,13 +537,13 @@ func (svc *service) attachmentPrepare(attachment io.Reader) ([]byte, error) {
 	return reply.GetAttachmentCID(), nil
 }
 
-func (svc *service) attachmentRetrieve(cid string) (*io.PipeReader, error) {
+func (svc *service) attachmentRetrieve(ctx context.Context, cid string) (*io.PipeReader, error) {
 	cidBytes, err := b64DecodeBytes(cid)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	stream, err := svc.protocolClient.AttachmentRetrieve(svc.ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
+	stream, err := svc.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
 	if err != nil {
 		return nil, errcode.ErrAttachmentRetrieve.Wrap(err)
 	}
@@ -488,7 +554,19 @@ func (svc *service) attachmentRetrieve(cid string) (*io.PipeReader, error) {
 	}, svc.logger), nil
 }
 
-func (svc *service) sendAccountUserInfo(groupPK string) error {
+func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (err error) {
+	ctx, _, endSection := tyber.Section(ctx, svc.logger, fmt.Sprintf("Sending account info to group %s", groupPK))
+	defer func() {
+		if err != nil {
+			endSection(err, "")
+		}
+	}()
+
+	pk, err := b64DecodeBytes(groupPK)
+	if err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
 	acc, err := svc.db.getAccount()
 	if err != nil {
 		return errcode.ErrDBRead.Wrap(err)
@@ -499,11 +577,11 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 	var medias []*mt.Media
 	if acc.GetAvatarCID() != "" {
 		// TODO: add AttachmentRecrypt to bertyprotocol
-		avatar, err := svc.attachmentRetrieve(acc.GetAvatarCID())
+		avatar, err := svc.attachmentRetrieve(ctx, acc.GetAvatarCID())
 		if err != nil {
 			return errcode.ErrAttachmentRetrieve.Wrap(err)
 		}
-		avatarCIDBytes, err := svc.attachmentPrepare(avatar)
+		avatarCIDBytes, err := svc.attachmentPrepare(ctx, avatar)
 		if err != nil {
 			return errcode.ErrAttachmentPrepare.Wrap(err)
 		}
@@ -517,6 +595,11 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 			return errcode.ErrInternal
 		}
 		medias[0].CID = avatarCID
+
+		svc.logger.Debug("Re-encrypted avatar", tyber.FormatStepLogFields(ctx, []tyber.Detail{
+			{Name: "OldAvatarCID", Description: acc.GetAvatarCID()},
+			{Name: "NewAvatarCID", Description: avatarCID},
+		})...)
 	}
 
 	am, err := mt.AppMessage_TypeSetUserInfo.MarshalPayload(
@@ -528,15 +611,13 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
-	pk, err := b64DecodeBytes(groupPK)
-	if err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-	_, err = svc.protocolClient.AppMetadataSend(svc.ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am, AttachmentCIDs: attachmentCIDs})
+
+	sendReply, err := svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am, AttachmentCIDs: attachmentCIDs})
 	if err != nil {
 		return errcode.ErrProtocolSend.Wrap(err)
 	}
 
+	endSection(nil, "Sent account info", tyber.WithCIDDetail("CID", sendReply.CID))
 	return nil
 }
 
@@ -570,8 +651,10 @@ func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionVi
 }
 
 func (svc *service) Close() {
-	svc.logger.Debug("closing service")
+	ctx, _ := tyber.ContextWithTraceID(svc.ctx)
+	svc.logger.Debug("Closing MessengerService", tyber.FormatTraceLogFields(ctx)...)
 	svc.dispatcher.UnregisterAll()
 	svc.cancelFn()
 	svc.optsCleanup()
+	svc.logger.Debug("Closed MessengerService successfully", tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.EndTrace)...)
 }

@@ -1,12 +1,13 @@
 import React from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Platform } from "react-native";
 import { Session } from "./types/NodeType";
-import { HandleMessages } from "./bridge/GoToJs";
-import { InitConfig } from "./bridge/JsToGo";
+import { HandleAstilectronMessages } from "./bridge/GoToJs";
+import { InitAstilectronConfig } from "./bridge/JsToGo";
 import { Sidebar } from "./components/Sidebar";
 import { MainPanel } from "./components/MainPanel";
 import { ApplicationProvider, Layout } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
+import { shouldUseWebsocket, WebsocketClient } from "./store/WebsocketData";
 
 interface State {
 	theme: any;
@@ -38,15 +39,20 @@ export class App extends React.Component<{}, State> {
 	componentDidMount() {
 		this.themeMediaQuery.addEventListener("change", this.updateTheme);
 		Dimensions.addEventListener("change", this.updateDimension);
-		document.addEventListener("astilectron-ready", HandleMessages);
-		document.addEventListener("astilectron-ready", InitConfig);
+		if (shouldUseWebsocket) {
+			//HandleMessages()
+			WebsocketClient.send("init_config", "/tmp/tyber-websocket")
+		} else {
+			document.addEventListener("astilectron-ready", HandleAstilectronMessages);
+			document.addEventListener("astilectron-ready", InitAstilectronConfig);
+		}
 	}
 
 	componentWillUnmount() {
 		this.themeMediaQuery.removeEventListener("change", this.updateTheme);
 		Dimensions.removeEventListener("change", this.updateDimension);
-		document.removeEventListener("astilectron-ready", HandleMessages);
-		document.removeEventListener("astilectron-ready", InitConfig);
+		document.removeEventListener("astilectron-ready", HandleAstilectronMessages);
+		document.removeEventListener("astilectron-ready", InitAstilectronConfig);
 	}
 
 	render() {

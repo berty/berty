@@ -1,7 +1,21 @@
+import { Platform } from "react-native";
 import * as Fake from "./FakeData";
 import * as Real from "./RealData";
+import * as Websocket from "./WebsocketData";
 
-const ns = __DEV__ ? Fake : Real;
+const ns = (() => {
+    if (Websocket.shouldUseWebsocket) {
+        return Websocket
+    }
+
+    // Warning for fakedata
+    if (__DEV__) {
+        alert("Go backend not bridged: fake data will be displayed");
+        return Fake
+    }
+
+    return Real;
+})()
 
 // Node
 export const InitNodeList = ns.InitNodeList;

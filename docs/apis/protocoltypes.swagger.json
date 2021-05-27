@@ -1756,7 +1756,13 @@
       }
     },
     "v1AppMetadataSendReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "v1AppMetadataSendRequest": {
       "type": "object",

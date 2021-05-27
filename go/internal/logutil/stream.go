@@ -9,7 +9,10 @@ const (
 	typeStd        = "std"
 	typeRing       = "ring"
 	typeLumberjack = "lumberjack"
+	typeTyber      = "tyber"
 )
+
+const tyberFilters = "*"
 
 type Stream struct {
 	kind       string
@@ -18,6 +21,7 @@ type Stream struct {
 	path       string
 	ring       *zapring.Core
 	lumberOpts *lumberjack.Logger
+	tyberHost  string
 }
 
 func NewStdStream(filters, format, path string) Stream {
@@ -44,5 +48,14 @@ func NewLumberjackStream(filters, format string, opts *lumberjack.Logger) Stream
 		filters:    filters,
 		format:     format,
 		lumberOpts: opts,
+	}
+}
+
+func NewTyberStream(host string) Stream {
+	return Stream{
+		kind:      typeTyber,
+		filters:   tyberFilters,
+		format:    jsonEncoding,
+		tyberHost: host,
 	}
 }

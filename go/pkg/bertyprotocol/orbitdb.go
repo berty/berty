@@ -2,6 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"sync"
 
@@ -17,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/baseorbitdb"
@@ -160,31 +162,45 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 }
 
 func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions, ipfsCoreAPI ipfsutil.ExtendedCoreAPI) (*groupContext, error) {
+	l := s.Logger()
+
 	sk, err := s.deviceKeystore.AccountPrivKey()
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
+
+	l.Debug("Got AccountPrivKey", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	skProof, err := s.deviceKeystore.AccountProofPrivKey()
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
+	l.Debug("Got AccountProofPrivKey", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	g, err := getGroupForAccount(sk, skProof)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
+
+	l.Debug("Got account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}})...)
 
 	gc, err := s.openGroup(ctx, g, options)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	l.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	if err := ActivateGroupContext(ctx, gc, nil); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	l.Debug("Account group context activated", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	TagGroupContextPeers(ctx, gc, ipfsCoreAPI, 84)
+
+	l.Debug("TagGroupContextPeers done", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	return gc, nil
 }
@@ -271,30 +287,47 @@ func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, op
 		return nil, err
 	}
 
-	s.Logger().Debug("openGroup", zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType))
+	s.Logger().Debug("openGroup", tyber.FormatStepLogFields(ctx, tyber.ZapFieldsToDetails(zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType)))...)
 
 	memberDevice, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
+	mpkb, err := memberDevice.Public().member.Bytes()
+	if err != nil {
+		mpkb = []byte{}
+	}
+	s.Logger().Debug("Got member device", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "DevicePublicKey", Description: base64.RawURLEncoding.EncodeToString(mpkb)}})...)
+
 	// Force secret generation if missing
 	if _, err := s.messageKeystore.GetDeviceSecret(g, s.deviceKeystore); err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
+
+	s.Logger().Debug("Got device secret", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	metaImpl, err := s.groupMetadataStore(ctx, g, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
+	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	messagesImpl, err := s.groupMessageStore(ctx, g, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
+	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	gc := newContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
+
+	s.Logger().Debug("Created group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+
 	s.groupContexts.Store(groupID, gc)
+
+	s.Logger().Debug("Stored group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	return gc, nil
 }
@@ -356,10 +389,14 @@ func (s *BertyOrbitDB) SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) e
 }
 
 func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g *protocoltypes.Group, options *orbitdb.CreateDBOptions, storeType string, groupOpenMode GroupOpenMode) (iface.Store, error) {
+	l := s.Logger()
+
 	options, err := DefaultOrbitDBOptions(g, options, s.keyStore, storeType, groupOpenMode)
 	if err != nil {
 		return nil, err
 	}
+
+	l.Debug("Opening store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "Options", Description: fmt.Sprint(options)}}, tyber.Status(tyber.Running))...)
 
 	options.StoreType = &storeType
 
@@ -368,21 +405,32 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
+	l.Debug("Loading store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "StoreType", Description: store.Type()}, {Name: "Store", Description: fmt.Sprint(store)}}, tyber.Status(tyber.Running))...)
+
 	_ = store.Load(ctx, -1)
+
+	l.Debug("Loaded store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}})...)
 
 	return store, nil
 }
 
 func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*metadataStore, error) {
+	l := s.Logger()
+	l.Debug("Opening group metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "Options", Description: fmt.Sprint(options)}}, tyber.Status(tyber.Running))...)
+
 	store, err := s.storeForGroup(ctx, s, g, options, groupMetadataStoreType, GroupOpenModeWrite)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to open database")
+		return nil, tyber.LogFatalError(ctx, l, "Failed to get group store", errors.Wrap(err, "unable to open database"))
 	}
+
+	l.Debug("Got group store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "DBName", Description: store.DBName()}})...)
 
 	sStore, ok := store.(*metadataStore)
 	if !ok {
-		return nil, errors.New("unable to cast store to metadata store")
+		return nil, tyber.LogFatalError(ctx, l, "Failed to cast group store", errors.New("unable to cast store to metadata store"))
 	}
+
+	l.Debug("Opened group metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}})...)
 
 	return sStore, nil
 }

@@ -7,9 +7,13 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
-func (s *service) ContactAliasKeySend(ctx context.Context, req *protocoltypes.ContactAliasKeySend_Request) (*protocoltypes.ContactAliasKeySend_Reply, error) {
+func (s *service) ContactAliasKeySend(ctx context.Context, req *protocoltypes.ContactAliasKeySend_Request) (_ *protocoltypes.ContactAliasKeySend_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Sending contact alias key")
+	defer func() { endSection(err, "") }()
+
 	g, err := s.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMissing.Wrap(err)
@@ -22,7 +26,10 @@ func (s *service) ContactAliasKeySend(ctx context.Context, req *protocoltypes.Co
 	return &protocoltypes.ContactAliasKeySend_Reply{}, nil
 }
 
-func (s *service) ContactBlock(ctx context.Context, req *protocoltypes.ContactBlock_Request) (*protocoltypes.ContactBlock_Reply, error) {
+func (s *service) ContactBlock(ctx context.Context, req *protocoltypes.ContactBlock_Request) (_ *protocoltypes.ContactBlock_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Blocking contact")
+	defer func() { endSection(err, "") }()
+
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -35,7 +42,10 @@ func (s *service) ContactBlock(ctx context.Context, req *protocoltypes.ContactBl
 	return &protocoltypes.ContactBlock_Reply{}, nil
 }
 
-func (s *service) ContactUnblock(ctx context.Context, req *protocoltypes.ContactUnblock_Request) (*protocoltypes.ContactUnblock_Reply, error) {
+func (s *service) ContactUnblock(ctx context.Context, req *protocoltypes.ContactUnblock_Request) (_ *protocoltypes.ContactUnblock_Reply, err error) {
+	ctx, _, endSection := tyber.Section(ctx, s.logger, "Unblocking contact")
+	defer func() { endSection(err, "") }()
+
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)

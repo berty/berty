@@ -219,6 +219,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 	}
 
 	trClient := tracer.New("grpc-client")
+
 	clientOpts := []grpc.DialOption{
 		grpc.WithUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
 		grpc.WithStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
@@ -245,6 +246,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 					return nil, errcode.TODO.Wrap(err)
 				}
 			}
+
 			if m.Node.Messenger.requiredByClient {
 				_, err := m.getLocalMessengerServer()
 				if err != nil {
@@ -329,9 +331,11 @@ func (m *Manager) getMessengerClient() (messengertypes.MessengerServiceClient, e
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+
 	m.Node.Messenger.client = messengertypes.NewMessengerServiceClient(grpcClient)
 
 	m.initLogger.Debug("messenger client initialized and cached")
+
 	return m.Node.Messenger.client, nil
 }
 

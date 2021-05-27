@@ -135,7 +135,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 	// setup berty account service
 	{
 		opts := account_svc.Options{
-			RootDirectory: config.rootDir,
+			RootDirectory: config.RootDirPath,
 
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,

@@ -150,6 +150,7 @@ enum ErrCode {
   ErrMessengerDeepLinkRequiresPassphrase = 2001;
   ErrMessengerDeepLinkInvalidPassphrase = 2002;
   ErrMessengerStreamEvent = 2003;
+  ErrMessengerContactMetadataUnmarshal = 2004;
 
   // DB errors
 
@@ -172,6 +173,8 @@ enum ErrCode {
   ErrAttachmentPrepare = 2300;
   ErrAttachmentRetrieve = 2301;
   ErrProtocolSend = 2302;
+  ErrProtocolEventUnmarshal = 2303;
+  ErrProtocolGetGroupInfo = 2304;
 
   // Test Error
   ErrTestEcho = 2401;
