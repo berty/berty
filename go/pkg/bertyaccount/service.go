@@ -76,7 +76,7 @@ func (o *Options) applyDefault() {
 func NewService(opts *Options) (_ Service, err error) {
 	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
 
-	endSection := tyber.FastSection(rootCtx, opts.Logger, "Initializing AccountService")
+	endSection := tyber.SimpleSection(rootCtx, opts.Logger, "Initializing AccountService")
 	defer func() { endSection(err) }()
 
 	opts.applyDefault()
@@ -101,7 +101,7 @@ func NewService(opts *Options) (_ Service, err error) {
 }
 
 func (s *service) Close() (err error) {
-	endSection := tyber.FastSection(tyber.ContextWithoutTraceID(s.rootCtx), s.logger, "Closing AccountService")
+	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.rootCtx), s.logger, "Closing AccountService")
 	defer func() { endSection(err) }()
 
 	s.muService.Lock()

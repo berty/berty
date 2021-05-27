@@ -38,7 +38,7 @@ func Section(ctx context.Context, logger *zap.Logger, name string) (context.Cont
 	}
 }
 
-func FastSection(ctx context.Context, logger *zap.Logger, name string) func(error, ...StepMutator) {
+func SimpleSection(ctx context.Context, logger *zap.Logger, name string) func(error, ...StepMutator) {
 	_, _, end := Section(ctx, logger, name)
 	return func(err error, muts ...StepMutator) { end(err, "", muts...) }
 }

@@ -226,7 +226,7 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
-	endSection := tyber.FastSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
+	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
 
 	err := s.odb.Close()
 

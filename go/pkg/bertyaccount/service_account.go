@@ -176,7 +176,7 @@ func (s *service) OpenAccount(ctx context.Context, req *OpenAccount_Request) (_ 
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
+	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
 	defer func() { endSection(err) }()
 
 	if _, err := s.openAccount(req, nil); err != nil {
@@ -191,7 +191,7 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(server.Context(), s.logger, fmt.Sprintf("Opening account %s with progress (AccountService)", req.AccountID))
+	endSection := tyber.SimpleSection(server.Context(), s.logger, fmt.Sprintf("Opening account %s with progress (AccountService)", req.AccountID))
 	defer func() { endSection(err) }()
 
 	prog := progress.New()
@@ -241,7 +241,7 @@ func (s *service) CloseAccount(ctx context.Context, req *CloseAccount_Request) (
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(ctx, s.logger, "Closing account (AccountService)")
+	endSection := tyber.SimpleSection(ctx, s.logger, "Closing account (AccountService)")
 	defer func() { endSection(err) }()
 
 	if s.initManager == nil {
@@ -265,7 +265,7 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(server.Context(), s.logger, "Closing account with progress (AccountService)")
+	endSection := tyber.SimpleSection(server.Context(), s.logger, "Closing account with progress (AccountService)")
 	defer func() { endSection(err) }()
 
 	if s.initManager == nil {
@@ -409,7 +409,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *DeleteAccount_Requ
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(ctx, s.logger, fmt.Sprintf("Deleting account %s (AccountService)", request.AccountID))
+	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Deleting account %s (AccountService)", request.AccountID))
 	defer func() { endSection(err) }()
 
 	if s.initManager != nil {
@@ -496,7 +496,7 @@ func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request)
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(ctx, s.logger, fmt.Sprintf("Importing account '%s' with id '%s' (AccountService)", req.AccountName, req.AccountID))
+	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Importing account '%s' with id '%s' (AccountService)", req.AccountName, req.AccountID))
 	defer func() { endSection(err) }()
 
 	if req.BackupPath == "" {
@@ -581,7 +581,7 @@ func (s *service) CreateAccount(ctx context.Context, req *CreateAccount_Request)
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(ctx, s.logger, fmt.Sprintf("Creating account '%s' with id '%s' (AccountService)", req.GetAccountName(), req.GetAccountID()))
+	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Creating account '%s' with id '%s' (AccountService)", req.GetAccountName(), req.GetAccountID()))
 	defer func() { endSection(err) }()
 
 	meta, err := s.createAccount(req)
@@ -630,7 +630,7 @@ func (s *service) UpdateAccount(ctx context.Context, req *UpdateAccount_Request)
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.FastSection(ctx, s.logger, fmt.Sprintf("Updating account %s (AccountService)", req.AccountID))
+	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Updating account %s (AccountService)", req.AccountID))
 	defer func() { endSection(err) }()
 
 	meta, err := s.updateAccount(req)
