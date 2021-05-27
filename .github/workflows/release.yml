@@ -41,7 +41,7 @@ jobs:
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
       - name: Run GoReleaser
         if: steps.semantic.outputs.new-release-published == 'true'
-        uses: goreleaser/goreleaser-action@v2.5.0
+        uses: goreleaser/goreleaser-action@v2.6.0
         with:
           version: latest
           args: release --rm-dist
