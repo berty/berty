@@ -258,6 +258,7 @@ export const TraceList = withStyles(TraceListView, (theme) => ({
 	stepList: {
 		paddingVertical: 5,
 		backgroundColor: theme["background-basic-color-1"],
+		width: "100%",
 	},
 	step: {
 		backgroundColor: theme["background-basic-color-2"],
