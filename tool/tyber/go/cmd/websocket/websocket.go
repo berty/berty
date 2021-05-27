@@ -130,7 +130,8 @@ func (w *wsb) Send(name string, msg []byte) error {
 			Payload string `json:"payload"`
 		}{Name: name, Payload: string(msg)})
 		if oerr != nil {
-			return multierr.Append(err, oerr)
+			err = multierr.Append(err, oerr)
+			continue
 		}
 		err = multierr.Append(err, c.WriteMessage(1, m))
 	}
