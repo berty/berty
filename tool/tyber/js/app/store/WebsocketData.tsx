@@ -14,7 +14,7 @@ export const WebsocketClient = {
     send: (name: string, data: any) => { }
 }
 
-export const shouldUseWebsocket = Platform.OS == "web" && window.location.href.endsWith("websocket")
+export const shouldUseWebsocket = Platform.OS == "web" && window.location.pathname.endsWith("websocket")
 
 if (shouldUseWebsocket) {
     const preconnectQueue: { name: string, data: any }[] = []
@@ -23,7 +23,14 @@ if (shouldUseWebsocket) {
         preconnectQueue.push({ name, data })
     }
 
-    const socket = new WebSocket("ws://localhost:9342/ws");
+    let address = `ws://localhost:9342/ws`
+    const params = new URLSearchParams(document.location.search.substring(1));
+    const addressParam = params.get("wsaddr")
+    if (addressParam) {
+        address = addressParam
+    }
+
+    const socket = new WebSocket(address);
     socket.onopen = function () {
         WebsocketClient.send = (name: string, data: any) => {
             socket.send(JSON.stringify({ name, payload: JSON.stringify(data) }))
