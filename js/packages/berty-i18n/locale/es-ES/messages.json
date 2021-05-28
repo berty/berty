@@ -16,7 +16,7 @@
         "desc": "Fácil de usar - Todas las funciones",
         "push-notif": "Recibir notificaciones push",
         "offline-message": "Mensajería sin conexión a través de Bluetooth",
-        "add-contact": "Añadir contactos de forma fácil",
+        "add-contact": "Añadir contactos fácilmente",
         "fast-message": "Envío de mensajes más rápido"
       },
       "high-level": {
@@ -24,7 +24,7 @@
         "desc": "Para usuarios extremadamente cautelosos",
         "disable-push-notif": "Notificaciones push desactivadas",
         "disable-local-peer-discovery": "Descubrimiento local de pares desactivado",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS y Bluetooth",
         "disable-contact-request": "Solicitudes de contacto desactivadas",
         "on-same-network": "Local en la misma red/wifi"
       }
@@ -123,9 +123,9 @@
       },
       "full-anon": {
         "title": "Modo anónimo completo",
-        "desc": "",
+        "desc": "Esta configuración se basa en preajustes radicales que proporcionan parámetros de redes extremadamente cuidadosas:",
         "no-ip": "Sin ip",
-        "no-mc": "",
+        "no-mc": "No mc",
         "tor-only": "Solo Tor"
       },
       "save": "GUARDAR",
@@ -433,6 +433,11 @@
       "erase-button": "Eliminar conversación",
       "leave-button": "Abandonar grupo"
     },
+    "add-members": {
+      "members": "Miembros",
+      "contacts": "Contactos",
+      "add": "Añadir!"
+    },
     "multi-member-qr": {
       "title": "QR del grupo"
     },
@@ -498,6 +503,11 @@
       "medias": "Multimedia",
       "links": "Enlaces",
       "documents": "Documentos"
+    },
+    "reply": {
+      "response-to": "Responder a",
+      "replying-to": "Estás respondiendo a",
+      "replied-to": "Respondido a"
     }
   },
   "error": {
@@ -509,7 +519,7 @@
     "wtf-screen": {
       "title": "",
       "desc": "La aplicación ha fallado.",
-      "desc-report": ""
+      "desc-report": "Agita tu teléfono para reportar el error y haz clic en el botón para salir y reiniciar la aplicación."
     },
     "sorry-screen": {
       "title": "¡Perdón por este error!",
@@ -521,12 +531,12 @@
   },
   "debug": {
     "inspector": {
-      "show-button": "",
+      "show-button": "Mostrar inspector de la aplicación",
       "hide-button": "Cerrar",
-      "title": "",
+      "title": "Inspector",
       "accounts": {
         "title": "Cuentas",
-        "unsupported-remote-mode": "",
+        "unsupported-remote-mode": "Inspector de cuentas no soportado en modo remoto",
         "data-not-found": "La cuenta no está en la lista",
         "action-delete": {
           "file-exists": "La cuenta {{accountId}} no existe, pero un archivo tiene este mismo nombre.",
@@ -569,7 +579,7 @@
         "listing-accounts-failed-grpc": "Error GRPC al mostrar las cuentas"
       },
       "dump": {
-        "button": ""
+        "button": "Volcar el estado de la aplicación"
       },
       "refresh": "Actualizar",
       "confirm-alert": {
@@ -588,5 +598,10 @@
       "slide-to-cancel": "<< Desliza para cancelar",
       "cancel-button": "Cancelar"
     }
+  },
+  "medias": {
+    "audio": "audio",
+    "picture": "imagen",
+    "file": "fichero"
   }
 }
