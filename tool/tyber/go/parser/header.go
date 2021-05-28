@@ -9,6 +9,9 @@ import (
 
 type Header struct {
 	baseLog
+
+	// Manager is a copy of go/internal/initutil/manager.go's Manager.
+	// We can inherit the real struct as soon as initutil becomes public.
 	Manager struct {
 		Logging struct {
 			Format      string `json:"Format,omitempty"`
@@ -27,7 +30,7 @@ type Header struct {
 			Dir              string `json:"dir,omitempty"`
 			InMemory         bool   `json:"inMemory,omitempty"`
 			LowMemoryProfile bool   `json:"lowMemoryProfile,omitempty"`
-		} `json:"Datastore,omitempty"`
+		} `json:"datastore,omitempty"`
 		Node struct {
 			Preset   string `json:"preset"`
 			Protocol struct {
@@ -70,7 +73,10 @@ type Header struct {
 			} `json:"gRPC,omitempty"`
 		} `json:"node,omitempty"`
 		InitTimeout time.Duration `json:"initTimeout,omitempty"`
-		SessionID   string        `json:"sessionID,omitempty"`
+		Session     struct {
+			ID   string `json:"id,omitempty"`
+			Kind string `json:"kind,omitempty"`
+		} `json:"session,omitempty"`
 	} `json:"manager"`
 }
 
@@ -82,12 +88,12 @@ func (s *Session) parseHeader() error {
 			return err
 		}
 
-		if h.Manager.SessionID != "" {
+		if h.Manager.Session.ID != "" {
 			break
 		}
 	}
 
-	if h.Manager.SessionID == "" {
+	if h.Manager.Session.ID == "" {
 		return errors.New("invalid log: header not found")
 	}
 
@@ -95,7 +101,7 @@ func (s *Session) parseHeader() error {
 
 	h.epochToTime()
 	s.Header = h
-	s.ID = h.Manager.SessionID
+	s.ID = h.Manager.Session.ID
 	s.DisplayName = h.Manager.Node.Messenger.DisplayName
 	s.Started = h.Time
 

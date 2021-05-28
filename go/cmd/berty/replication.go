@@ -14,6 +14,7 @@ func replicationServerCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty repl-server", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
+		manager.Session.Kind = "cli.replication"
 		manager.SetupLoggingFlags(fs) // also available at root level
 		manager.SetupProtocolAuth(fs)
 		manager.SetupLocalProtocolServerFlags(fs)
@@ -33,8 +34,6 @@ func replicationServerCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
-			var err error
-
 			if manager.Node.Protocol.AuthSecret == "" {
 				return fmt.Errorf("node.auth-secret cannot be empty")
 			}
@@ -43,6 +42,7 @@ func replicationServerCommand() *ffcli.Command {
 				return fmt.Errorf("node.auth-pk cannot be empty")
 			}
 
+			var err error
 			server, mux, err := manager.GetGRPCServer()
 			if err != nil {
 				return err

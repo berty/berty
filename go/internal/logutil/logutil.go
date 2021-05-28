@@ -13,6 +13,8 @@ import (
 	"go.uber.org/zap/zapcore"
 	"moul.io/u"
 	"moul.io/zapfilter"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const (
@@ -114,9 +116,6 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 		case typeRing:
 			ring := opts.ring.SetEncoder(enc)
 			core = ring
-		case typeLumberjack:
-			w := zapcore.AddSync(opts.lumberOpts)
-			core = zapcore.NewCore(enc, w, config.Level)
 		case typeTyber:
 			tyberLogger, err := NewTyberLogger(opts.tyberHost)
 			if err != nil {
@@ -127,6 +126,14 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			})
 			w := zapcore.AddSync(tyberLogger)
 			core = zapcore.NewCore(enc, w, config.Level)
+		case typeFile:
+			writer, err := newFileWriteCloser(opts.path, opts.sessionKind)
+			if err != nil {
+				return nil, nil, errcode.TODO.Wrap(err)
+			}
+			w := zapcore.AddSync(writer)
+			core = zapcore.NewCore(enc, w, config.Level)
+			cleanup = u.CombineFuncs(cleanup, func() { _ = writer.Close() })
 		default:
 			return nil, nil, fmt.Errorf("unknown logger type: %q", opts.kind)
 		}

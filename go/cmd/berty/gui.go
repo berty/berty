@@ -18,6 +18,7 @@ func guiCommand() (*ffcli.Command, func() error) {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty gui", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
+		manager.Session.Kind = "cli.gui"
 		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupMetricsFlags(fs)              // add flags to enable metrics
 		manager.SetupLocalMessengerServerFlags(fs) // add flags to allow creating a full node in the same process

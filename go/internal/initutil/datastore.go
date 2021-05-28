@@ -60,7 +60,11 @@ func (m *Manager) getDatastoreDir() (string, error) {
 		return "", errcode.TODO.Wrap(err)
 	}
 
-	m.initLogger.Debug("datastore dir", zap.String("dir", m.Datastore.dir))
+	inMemory := m.Datastore.dir == InMemoryDir
+	m.initLogger.Debug("datastore dir",
+		zap.String("dir", m.Datastore.dir),
+		zap.Bool("in-memory", inMemory),
+	)
 	return m.Datastore.dir, nil
 }
 
@@ -102,7 +106,6 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 	ds = sync_ds.MutexWrap(ds)
 	m.Datastore.rootDS = ds
 
-	m.initLogger.Debug("datastore", zap.Bool("in-memory", inMemory))
 	return ds, nil
 }
 

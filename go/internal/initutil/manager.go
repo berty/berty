@@ -43,15 +43,29 @@ const (
 )
 
 type Manager struct {
+	// Session contains metadata for the current running session.
+	Session struct {
+		// Kind is a string describing the context of the app.
+		// When set, it is appended to the session-specific logging file.
+		// It follows the following format: '${driver}.${package}.${command}'.
+		// Examples:
+		//   cli.daemon       -> `go run ./cmd/berty daemon`
+		//   cli.mini         -> `go run ./cmd/berty mini`
+		//   cli.rdvp         -> `go run ./cmd/rdvp`
+		//   mobile.messenger -> Berty Messenger app using the bertybridge
+		Kind string `json:"Kind,omitempty"`
+
+		// ID is an auto-generated UUID that can be used by Tyber.
+		ID string `json:"ID,omitempty"`
+	} `json:"Session,omitempty"`
 	Logging struct {
-		Format      string `json:"Format,omitempty"`
-		Logfile     string `json:"Logfile,omitempty"`
-		Filters     string `json:"Filters,omitempty"`
-		Tracer      string `json:"Tracer,omitempty"`
-		Service     string `json:"Service,omitempty"`
-		RingFilters string `json:"RingFilters,omitempty"`
-		RingSize    uint   `json:"RingSize,omitempty"`
-		TyberHost   string `json:"TyberHost,omitempty"`
+		StderrFormat  string `json:"StderrFormat,omitempty"`
+		StderrFilters string `json:"StderrFilters,omitempty"`
+		FilePath      string `json:"FilePath,omitempty"`
+		FileFilters   string `json:"FileFilters,omitempty"`
+		RingFilters   string `json:"RingFilters,omitempty"`
+		RingSize      uint   `json:"RingSize,omitempty"`
+		TyberHost     string `json:"TyberHost,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
@@ -155,7 +169,6 @@ type Manager struct {
 		} `json:"GRPC,omitempty"`
 	} `json:"Node,omitempty"`
 	InitTimeout time.Duration `json:"InitTimeout,omitempty"`
-	SessionID   string        `json:"sessionID,omitempty"`
 
 	// internal
 	ctx        context.Context
@@ -182,16 +195,15 @@ func New(ctx context.Context) (*Manager, error) {
 	// * values that are reused across various CLI depths.
 	//
 	// the good location for other variables is in the initutil.SetupFoo functions.
-	m.Logging.Filters = defaultLoggingFilters
+	m.Logging.StderrFilters = defaultLoggingFilters
 	m.Logging.RingFilters = defaultLoggingFilters
-	m.Logging.Format = "color"
-	m.Logging.Service = "berty"
+	m.Logging.FileFilters = "*"
+	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer
 	m.Logging.TyberHost = ""
 
 	// generate SessionID using uuidv4 to identify each run
-
-	m.SessionID = tyber.NewSessionID()
+	m.Session.ID = tyber.NewSessionID()
 
 	// storage path
 	{

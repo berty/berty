@@ -28,6 +28,7 @@ func daemonCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty daemon", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
+		manager.Session.Kind = "cli.daemon"
 		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
 		manager.SetupDefaultGRPCListenersFlags(fs)

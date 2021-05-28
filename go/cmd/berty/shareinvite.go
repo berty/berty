@@ -23,6 +23,9 @@ func shareInviteCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
+		// manager.Node.Preset = initutil.NoNetPreset
+		manager.Session.Kind = "cli.share-invite"
+		manager.Logging.StderrFilters = "error+:*"
 		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
@@ -69,8 +72,7 @@ func shareInviteCommand() *ffcli.Command {
 			}
 			fmt.Println(ret.WebURL)
 			if !noQRFlag {
-				// fmt.Fprintln(os.Stderr, ret.InternalURL)
-				fmt.Fprintln(os.Stderr, ret.WebURL)
+				fmt.Fprintln(os.Stderr, ret.InternalURL)
 				qrterminal.GenerateHalfBlock(ret.InternalURL, qrterminal.L, os.Stderr)
 			}
 			if shareOnDevChannelFlag {

@@ -320,6 +320,7 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 
 	// configure flagset options
 	fs := flag.NewFlagSet("account", flag.ContinueOnError)
+	manager.Session.Kind = "mobile" // FIXME: allow setting the session kind from the initialization of this package
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalMessengerServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)

@@ -15,6 +15,7 @@ func miniCommand() *ffcli.Command {
 		fs := flag.NewFlagSet("berty mini", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
 		fs.StringVar(&groupFlag, "mini.group", groupFlag, "group to join, leave empty to create a new group")
+		manager.Session.Kind = "cli.mini"
 		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupMetricsFlags(fs)              // add flags to enable metrics
 		manager.SetupLocalMessengerServerFlags(fs) // add flags to allow creating a full node in the same process
@@ -36,10 +37,8 @@ func miniCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
-			// mini only supports file-based logging
-			if manager.Logging.Logfile == "" {
-				manager.Logging.Filters = ""
-			}
+			// mini does not support stderr logging
+			manager.Logging.StderrFilters = ""
 
 			// logger
 			logger, err := manager.GetLogger()

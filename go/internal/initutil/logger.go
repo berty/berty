@@ -11,20 +11,20 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/logutil"
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const defaultLoggingFilters = "info+:bty*,-*.grpc error+:*"
 
 func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Logging.Filters, "log.filters", m.Logging.Filters, "zapfilter configuration")
-	fs.StringVar(&m.Logging.RingFilters, "log.ring-filters", m.Logging.RingFilters, "zapfilter configuration for ring")
-	fs.StringVar(&m.Logging.Logfile, "log.file", m.Logging.Logfile, "if specified, will log everything in JSON into a file and nothing on stderr")
-	fs.StringVar(&m.Logging.Format, "log.format", m.Logging.Format, "can be: json, console, color, light-console, light-color")
-	fs.StringVar(&m.Logging.Tracer, "log.tracer", m.Logging.Tracer, `specify "stdout" to output tracing on stdout or <hostname:port> to trace on Jaeger`)
-	fs.StringVar(&m.Logging.Service, "log.service", m.Logging.Service, `service name, used by the tracer`)
-	fs.UintVar(&m.Logging.RingSize, "log.ring-size", m.Logging.RingSize, `logging ring buffer size in MB`)
+	if m.Logging.FilePath == "" && m.Session.Kind != "" {
+		m.Logging.FilePath = "<store-dir>/logs"
+	}
+	fs.StringVar(&m.Logging.StderrFilters, "log.filters", m.Logging.StderrFilters, "stderr zapfilter configuration")
+	fs.StringVar(&m.Logging.StderrFormat, "log.format", m.Logging.StderrFormat, "stderr logging format. can be: json, console, color, light-console, light-color")
+	fs.StringVar(&m.Logging.FilePath, "log.file", m.Logging.FilePath, "log file path (pattern)")
+	fs.UintVar(&m.Logging.RingSize, "log.ring-size", m.Logging.RingSize, `ring buffer size in MB`)
+	fs.StringVar(&m.Logging.RingFilters, "log.ring-filters", m.Logging.RingFilters, "ring zapfilter configuration")
 	fs.StringVar(&m.Logging.TyberHost, "log.tyber-host", m.Logging.TyberHost, `Tyber server HOST[:PORT] to stream logs to`)
 
 	m.longHelp = append(m.longHelp, [2]string{
@@ -62,11 +62,12 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		return m.Logging.zapLogger, nil
 	}
 
-	m.Logging.Filters = strings.ReplaceAll(m.Logging.Filters, KeywordDefault, defaultLoggingFilters)
+	m.Logging.StderrFilters = strings.ReplaceAll(m.Logging.StderrFilters, KeywordDefault, defaultLoggingFilters)
+	m.Logging.FileFilters = strings.ReplaceAll(m.Logging.FileFilters, KeywordDefault, defaultLoggingFilters)
 
-	tracerFlush := tracer.InitTracer(m.Logging.Tracer, m.Logging.Service)
-	streams := []logutil.Stream{
-		logutil.NewStdStream(m.Logging.Filters, m.Logging.Format, m.Logging.Logfile),
+	streams := []logutil.Stream{}
+	if m.Logging.StderrFilters != "" {
+		streams = append(streams, logutil.NewStdStream(m.Logging.StderrFilters, m.Logging.StderrFormat, "stderr"))
 	}
 	if m.Logging.RingSize > 0 {
 		m.Logging.ring = zapring.New(m.Logging.RingSize * 1024 * 1024)
@@ -75,19 +76,20 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 	if m.Logging.TyberHost != "" {
 		streams = append(streams, logutil.NewTyberStream(m.Logging.TyberHost))
 	}
-
+	if m.Logging.FilePath != "" && m.Logging.FileFilters != "" {
+		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<store-dir>", m.Datastore.Dir)
+		streams = append(streams, logutil.NewFileStream(m.Logging.FileFilters, "json", m.Logging.FilePath, m.Session.Kind))
+	}
 	logger, loggerCleanup, err := logutil.NewLogger(streams...)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 	m.Logging.zapLogger = logger
-
 	m.Logging.cleanup = func() {
-		tracerFlush()
 		loggerCleanup()
 	}
 	m.initLogger = logger.Named("init")
-	m.initLogger.Debug("logger initialized", zap.Any("manager", m))
+	m.initLogger.Info("logger initialized", zap.Any("manager", m))
 
 	return m.Logging.zapLogger, nil
 }

@@ -70,10 +70,10 @@ func (i *integration) init() error {
 		return err
 	}
 
+	i.manager.Session.Kind = "cli.integration"
 	i.manager.Datastore.Dir = i.tempdir
-	i.manager.Logging.Format = "light-color"
-	i.manager.Logging.Filters = "warn:*,-ipfs.* error+:*" // (level==warn for everything except ipfs.*) || (levels >= error)
-	i.manager.Logging.Service = "berty-integration"
+	i.manager.Logging.StderrFormat = "light-color"
+	i.manager.Logging.StderrFilters = "warn:*,-ipfs.* error+:*" // (level==warn for everything except ipfs.*) || (levels >= error)
 	fs := flag.NewFlagSet("integration", flag.ExitOnError)
 	fs.StringVar(&i.opts.betabotAddr, "integration.betabot", config.Config.Berty.Contacts["betabot-dev"].Link, "betabot addr")
 	fs.StringVar(&i.opts.testbotAddr, "integration.testbot", config.Config.Berty.Contacts["testbot-dev"].Link, "testbot addr")
