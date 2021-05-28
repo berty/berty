@@ -50,21 +50,21 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Cache Go modules
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
 
       - name: Cache Node modules
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
           key:          ${{ runner.OS }}-node-${{ matrix.node }}-v1-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v1-
 
       - name: Cache Gomobile .aar
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: js/android/libs/gobridge.aar
           key:          android-gomobile-${{ matrix.golang }}-v1-${{ hashFiles('go/**/*.go', 'go.sum') }}

@@ -34,7 +34,7 @@ jobs:
           go-version: ${{ matrix.golang }}
       - name: Cache Go modules
         if: steps.semantic.outputs.new-release-published == 'true'
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
