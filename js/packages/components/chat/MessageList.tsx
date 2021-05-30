@@ -63,7 +63,11 @@ export const MessageList: React.FC<{
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
 	const members = ctx.members[id]
-	const messages = useConvInteractions(id)
+	const rawMessages = useConvInteractions(id)
+	const messages = useMemo(
+		() => rawMessages.filter((message) => !message.payload?.options?.length),
+		[rawMessages],
+	)
 	const oldestMessage = useMemo(() => messages[messages.length - 1], [messages])
 
 	const [fetchingFrom, setFetchingFrom] = useState<string | null>(null)
@@ -155,14 +159,27 @@ export const MessageList: React.FC<{
 	}, [fetchingFrom, oldestMessage?.cid])
 
 	const replyOptions = useMemo(() => {
+		let options = []
 		try {
-			return beapi.messenger.AppMessage.ReplyOptions.decode(
+			options = beapi.messenger.AppMessage.ReplyOptions.decode(
 				conversation?.replyOptions?.payload!,
 			).options.filter((o) => o.payload && o.display)
 		} catch (e) {
-			return []
+			console.log('decode reply options error', e)
 		}
-	}, [conversation?.replyOptions?.payload])
+
+		if (!options.length) {
+			let optionsFromMessages = rawMessages
+				.slice()
+				.reverse()
+				.find((item) => item?.payload?.options?.length)?.payload?.options
+			if (optionsFromMessages?.length) {
+				options = optionsFromMessages
+			}
+		}
+
+		return options.filter((o) => o.payload && o.display)
+	}, [conversation?.replyOptions?.payload, rawMessages])
 
 	return (
 		<FlatList
