@@ -116,9 +116,9 @@
       "welcome-title": "Benvenuto nelle Opzioni di Rete",
       "full-anon-mode": "",
       "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "allow-expert-mode": "Consenti Modalità Esperto",
       "tor-compatible": {
-        "title": "",
+        "title": "Compatibile TOR",
         "desc": ""
       },
       "full-anon": {
@@ -314,11 +314,11 @@
       "system-info-button": "Informazioni di sistema",
       "debug-button": "Debug",
       "log-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Formato log",
+        "bullet-point": "Riavvia l'app dopo aver cambiato questo campo"
       },
       "log-filters-button": {
-        "name": "",
+        "name": "Filtri log",
         "bullet-point": ""
       },
       "add-dev-conversations-button": "Aggiungi conversazioni dev",
@@ -433,6 +433,11 @@
       "erase-button": "Cancella conversazione",
       "leave-button": "Lascia il gruppo"
     },
+    "add-members": {
+      "members": "Membri",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "Gruppo QR"
     },
@@ -498,6 +503,11 @@
       "medias": "",
       "links": "",
       "documents": "Documenti"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +598,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Annulla"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
