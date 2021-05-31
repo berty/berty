@@ -9,7 +9,7 @@ import (
 )
 
 
-func () {
+func PrintInvite() {
 	ctx := context.Background()
 	host := "127.0.0.1:9091" // default daemon gRPC listener
 
