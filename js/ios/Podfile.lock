@@ -329,6 +329,8 @@ PODS:
   - react-native-shake (14.1.3):
     - React
     - Shake (~> 14.1.0-rc)
+  - react-native-viewpager (5.0.11):
+    - React-Core
   - react-native-webview (11.2.1):
     - React-Core
   - React-RCTActionSheet (0.63.4):
@@ -497,6 +499,7 @@ DEPENDENCIES:
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-shake (from `../node_modules/@shakebugs/react-native-shake`)"
+  - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -619,6 +622,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-shake:
     :path: "../node_modules/@shakebugs/react-native-shake"
+  react-native-viewpager:
+    :path: "../node_modules/@react-native-community/viewpager"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
@@ -733,6 +738,7 @@ SPEC CHECKSUMS:
   react-native-restart: a01029aadfe8e71f9e8205fdb17da2f0a4472d50
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-shake: 8048c196ab884399df8397d7a9e9e48b3f2996ff
+  react-native-viewpager: b99b53127d830885917ef84809c5065edd614a78
   react-native-webview: a4751ec8f0a6a397026f22ed54c1efeec4540555
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
