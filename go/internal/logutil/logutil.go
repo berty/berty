@@ -134,6 +134,8 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			w := zapcore.AddSync(writer)
 			core = zapcore.NewCore(enc, w, config.Level)
 			cleanup = u.CombineFuncs(cleanup, func() { _ = writer.Close() })
+		case typeCustom:
+			core = opts.baseLogger.Core()
 		default:
 			return nil, nil, fmt.Errorf("unknown logger type: %q", opts.kind)
 		}

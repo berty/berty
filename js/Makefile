@@ -35,7 +35,7 @@ android_gomobile_cache=android/.gomobile-cache
 makefile_dir = $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 real_pwd = $(realpath $(PWD))
 ifneq ($(real_pwd),$(makefile_dir))
-    $(error make should be executed from '$(makefile_dir)' instead of '$(real_pwd)')
+	$(error make should be executed from '$(makefile_dir)' instead of '$(real_pwd)')
 endif
 
 ## User commands
@@ -334,7 +334,7 @@ _gen.config:
 
 ##### gen.sum
 
-gensum_src := Makefile ../api/protocoltypes.proto ../api/messengertypes.proto
+gensum_src := Makefile ../api/protocoltypes.proto ../api/messengertypes.proto ../api/bertyaccount.proto
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp

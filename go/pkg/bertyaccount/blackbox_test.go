@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -47,6 +48,13 @@ func TestFlow(t *testing.T) {
 		require.Empty(t, rep.Accounts)
 	}
 
+	// no logs by default
+	{
+		rep, err := cl.LogfileList(ctx, &bertyaccount.LogfileList_Request{})
+		require.NoError(t, err)
+		require.Empty(t, rep.Entries)
+	}
+
 	// try closing an account even if none were loaded
 	{
 		stream, err := cl.CloseAccountWithProgress(ctx, &bertyaccount.CloseAccountWithProgress_Request{})
@@ -86,6 +94,20 @@ func TestFlow(t *testing.T) {
 		require.NoError(t, err)
 		_, err = stream.Recv()
 		require.True(t, errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened))
+	}
+
+	// one log file
+	{
+		rep, err := cl.LogfileList(ctx, &bertyaccount.LogfileList_Request{})
+		require.NoError(t, err)
+		require.Len(t, rep.Entries, 1)
+		require.Equal(t, rep.Entries[0].AccountID, "account 1")
+		require.Equal(t, rep.Entries[0].Kind, "mobile")
+		require.True(t, strings.HasPrefix(rep.Entries[0].Name, "mobile-"))
+		require.NotEmpty(t, rep.Entries[0].Path)
+		require.NotEmpty(t, rep.Entries[0].Time)
+		require.NotEmpty(t, rep.Entries[0].Size)
+		require.True(t, rep.Entries[0].Latest)
 	}
 
 	// close the account
@@ -277,6 +299,13 @@ func TestFlow(t *testing.T) {
 		// in general, it's around 40ms on Manfred's Linux server
 		require.True(t, lastProgress.Delay > uint64(time.Duration(100*time.Microsecond).Microseconds()))
 		require.True(t, lastProgress.Delay < uint64(time.Duration(1*time.Minute).Microseconds()))
+	}
+
+	// two log files
+	{
+		rep, err := cl.LogfileList(ctx, &bertyaccount.LogfileList_Request{})
+		require.NoError(t, err)
+		require.Len(t, rep.Entries, 2)
 	}
 }
 
