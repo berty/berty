@@ -1,0 +1,676 @@
+{
+	"RDVP": [
+		{
+			"Name": "test-rdvp-a93b38d7",
+			"Amount": 1,
+			"Groups": null,
+			"Connections": [
+				{
+					"Name": "connection",
+					"To": "internet",
+					"Protocol": "tcp"
+				}
+			],
+			"NodeType": 3,
+			"NodeAttributes": {
+				"Port": 4081,
+				"Protocol": "tcp",
+				"Pk": "CAESQMaZoSIQ9J9vwbsSN9GI6YaABc6aM4ZmM8mB436xt6yIAPwHfLbFXgoKOB0QESAPzSIk+0NuqqZdpCQcT9CufOw=",
+				"PeerId": "12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M"
+			},
+			"Components": [
+				{
+					"Name": "ni-f75e088f-826d-4b2a-86f2-9a7b5dc67657",
+					"Subnet": {
+						"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+						"Vpc": {
+							"Name": "connection_1",
+							"CidrBlock": "10.1.0.0/16"
+						},
+						"VpcId": "",
+						"CidrBlock": "10.1.1.0/24",
+						"AvailabilityZone": "eu-central-1a"
+					},
+					"SubnetId": "",
+					"SecurityGroups": [
+						{
+							"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+							"Vpc": {
+								"Name": "connection_1",
+								"CidrBlock": "10.1.0.0/16"
+							},
+							"VpcId": ""
+						}
+					],
+					"SecurityGroupIds": null
+				},
+				{
+					"Name": "test-rdvp-a93b38d7",
+					"Ami": "ami-0886094d9531e6f03",
+					"InstanceType": "t2.micro",
+					"KeyName": "berty_key",
+					"AvailabilityZone": "",
+					"RootBlockDevice": {
+						"VolumeType": "gp2",
+						"VolumeSize": 8
+					},
+					"UserData": "\n#!/bin/bash\nexport PUBLIC_IP=0.0.0.0\nexport PROTOC=tcp\nexport PORT=4081\nexport PEER_ID=12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M\nrdvp serve -pk CAESQMaZoSIQ9J9vwbsSN9GI6YaABc6aM4ZmM8mB436xt6yIAPwHfLbFXgoKOB0QESAPzSIk+0NuqqZdpCQcT9CufOw= \\\n    -l \"/ip4/$PUBLIC_IP/$PROTOC/$PORT\" \\\n\t-log.file=/home/ubuntu/log\n",
+					"NetworkInterfaces": [
+						{
+							"Name": "ni-f75e088f-826d-4b2a-86f2-9a7b5dc67657",
+							"Subnet": {
+								"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+								"Vpc": {
+									"Name": "connection_1",
+									"CidrBlock": "10.1.0.0/16"
+								},
+								"VpcId": "",
+								"CidrBlock": "10.1.1.0/24",
+								"AvailabilityZone": "eu-central-1a"
+							},
+							"SubnetId": "",
+							"SecurityGroups": [
+								{
+									"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+									"Vpc": {
+										"Name": "connection_1",
+										"CidrBlock": "10.1.0.0/16"
+									},
+									"VpcId": ""
+								}
+							],
+							"SecurityGroupIds": null
+						}
+					],
+					"NetworkInterfaceAttachment": null
+				}
+			]
+		}
+	],
+	"Relay": null,
+	"Bootstrap": null,
+	"Replication": null,
+	"Peer": [
+		{
+			"Name": "test-peers1-9449b9c0",
+			"Amount": 1,
+			"Groups": null,
+			"Connections": [
+				{
+					"Name": "connection 1",
+					"To": "internet",
+					"Protocol": "tcp"
+				}
+			],
+			"NodeType": 1,
+			"NodeAttributes": {
+				"Port": 9887,
+				"Protocol": "tcp",
+				"Pk": "CAESQKr/N7SVwL3he9YJTZuCfKTdDtLp5cJzo4ItnjAJh4iW2YmUgoCF2KuWNOmfXPJY+6yD3SNTz37bn/ehvAuUG1w=",
+				"PeerId": "12D3KooWQTYKGXWU1CtPPjp1A9pbja92auVFrTC8qcoJFqRqwWbd"
+			},
+			"Components": [
+				{
+					"Name": "ni-3083483a-a0cc-4d47-a1c5-aba38543e77c",
+					"Subnet": {
+						"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+						"Vpc": {
+							"Name": "connection_1",
+							"CidrBlock": "10.1.0.0/16"
+						},
+						"VpcId": "",
+						"CidrBlock": "10.1.1.0/24",
+						"AvailabilityZone": "eu-central-1a"
+					},
+					"SubnetId": "",
+					"SecurityGroups": [
+						{
+							"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+							"Vpc": {
+								"Name": "connection_1",
+								"CidrBlock": "10.1.0.0/16"
+							},
+							"VpcId": ""
+						}
+					],
+					"SecurityGroupIds": null
+				},
+				{
+					"Name": "test-peers1-9449b9c0",
+					"Ami": "ami-0886094d9531e6f03",
+					"InstanceType": "t2.micro",
+					"KeyName": "berty_key",
+					"AvailabilityZone": "",
+					"RootBlockDevice": {
+						"VolumeType": "gp2",
+						"VolumeSize": 8
+					},
+					"UserData": "\n#!/bin/bash\nexport PUBLIC_IP=0.0.0.0\nexport PROTOC=tcp\nexport PORT=9887\nberty daemon \\\n  -p2p.mdns=false \\\n  -p2p.static-relays=':none' \\\n  -p2p.bootstrap=':none:' \\\n  -p2p.dht-randomwalk=false \\\n  -p2p.tinder-dht-driver=false \\\n  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \\\n  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-a93b38d7.public_ip}/tcp/4081/p2p/12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M \\\n  -p2p.tinder-rdvp-driver=true \\\n  -log.file=/home/ubuntu/log\n",
+					"NetworkInterfaces": [
+						{
+							"Name": "ni-3083483a-a0cc-4d47-a1c5-aba38543e77c",
+							"Subnet": {
+								"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+								"Vpc": {
+									"Name": "connection_1",
+									"CidrBlock": "10.1.0.0/16"
+								},
+								"VpcId": "",
+								"CidrBlock": "10.1.1.0/24",
+								"AvailabilityZone": "eu-central-1a"
+							},
+							"SubnetId": "",
+							"SecurityGroups": [
+								{
+									"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+									"Vpc": {
+										"Name": "connection_1",
+										"CidrBlock": "10.1.0.0/16"
+									},
+									"VpcId": ""
+								}
+							],
+							"SecurityGroupIds": null
+						}
+					],
+					"NetworkInterfaceAttachment": null
+				}
+			]
+		},
+		{
+			"Name": "test-peers2-97036a41",
+			"Amount": 1,
+			"Groups": null,
+			"Connections": [
+				{
+					"Name": "connection 1",
+					"To": "internet",
+					"Protocol": "tcp"
+				}
+			],
+			"NodeType": 1,
+			"NodeAttributes": {
+				"Port": 5847,
+				"Protocol": "tcp",
+				"Pk": "CAESQEMZyhnX+UIo4gJ77HtanLSKN8n97w259kDuaZKt3dOb1GUpvIMaebcey/QD6ci5BBWW9yQ06vhfEtZAev7wbUw=",
+				"PeerId": "12D3KooWQ7U51BFCVwA9hLAzTXWVWHDVwtmpNGAZizGZsJpeHLvo"
+			},
+			"Components": [
+				{
+					"Name": "ni-4a554779-ca1e-4154-9238-6f83a3b7bdba",
+					"Subnet": {
+						"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+						"Vpc": {
+							"Name": "connection_1",
+							"CidrBlock": "10.1.0.0/16"
+						},
+						"VpcId": "",
+						"CidrBlock": "10.1.1.0/24",
+						"AvailabilityZone": "eu-central-1a"
+					},
+					"SubnetId": "",
+					"SecurityGroups": [
+						{
+							"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+							"Vpc": {
+								"Name": "connection_1",
+								"CidrBlock": "10.1.0.0/16"
+							},
+							"VpcId": ""
+						}
+					],
+					"SecurityGroupIds": null
+				},
+				{
+					"Name": "test-peers2-97036a41",
+					"Ami": "ami-0886094d9531e6f03",
+					"InstanceType": "t2.micro",
+					"KeyName": "berty_key",
+					"AvailabilityZone": "",
+					"RootBlockDevice": {
+						"VolumeType": "gp2",
+						"VolumeSize": 8
+					},
+					"UserData": "\n#!/bin/bash\nexport PUBLIC_IP=0.0.0.0\nexport PROTOC=tcp\nexport PORT=5847\nberty daemon \\\n  -p2p.mdns=false \\\n  -p2p.static-relays=':none' \\\n  -p2p.bootstrap=':none:' \\\n  -p2p.dht-randomwalk=false \\\n  -p2p.tinder-dht-driver=false \\\n  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \\\n  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-a93b38d7.public_ip}/tcp/4081/p2p/12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M \\\n  -p2p.tinder-rdvp-driver=true \\\n  -log.file=/home/ubuntu/log\n",
+					"NetworkInterfaces": [
+						{
+							"Name": "ni-4a554779-ca1e-4154-9238-6f83a3b7bdba",
+							"Subnet": {
+								"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+								"Vpc": {
+									"Name": "connection_1",
+									"CidrBlock": "10.1.0.0/16"
+								},
+								"VpcId": "",
+								"CidrBlock": "10.1.1.0/24",
+								"AvailabilityZone": "eu-central-1a"
+							},
+							"SubnetId": "",
+							"SecurityGroups": [
+								{
+									"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+									"Vpc": {
+										"Name": "connection_1",
+										"CidrBlock": "10.1.0.0/16"
+									},
+									"VpcId": ""
+								}
+							],
+							"SecurityGroupIds": null
+						}
+					],
+					"NetworkInterfaceAttachment": null
+				}
+			]
+		},
+		{
+			"Name": "test-peers3-01273010",
+			"Amount": 1,
+			"Groups": null,
+			"Connections": [
+				{
+					"Name": "connection 1",
+					"To": "internet",
+					"Protocol": "tcp"
+				}
+			],
+			"NodeType": 1,
+			"NodeAttributes": {
+				"Port": 2059,
+				"Protocol": "tcp",
+				"Pk": "CAESQIix1QaQpBmWeYHidgmGbjaAeVbkBPttES/hrvx1R/ZjnnE82/tw/tdNjRneCcafD/z7HvtfSr/wrm2/Bq+c568=",
+				"PeerId": "12D3KooWLUrjULUDcCH8xuZhx9dEBfjcWkmEcnLb2ef2NMFLBM9G"
+			},
+			"Components": [
+				{
+					"Name": "ni-2f18bfec-3a31-41a9-bfa9-23991e92c975",
+					"Subnet": {
+						"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+						"Vpc": {
+							"Name": "connection_1",
+							"CidrBlock": "10.1.0.0/16"
+						},
+						"VpcId": "",
+						"CidrBlock": "10.1.1.0/24",
+						"AvailabilityZone": "eu-central-1a"
+					},
+					"SubnetId": "",
+					"SecurityGroups": [
+						{
+							"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+							"Vpc": {
+								"Name": "connection_1",
+								"CidrBlock": "10.1.0.0/16"
+							},
+							"VpcId": ""
+						}
+					],
+					"SecurityGroupIds": null
+				},
+				{
+					"Name": "test-peers3-01273010",
+					"Ami": "ami-0886094d9531e6f03",
+					"InstanceType": "t2.micro",
+					"KeyName": "berty_key",
+					"AvailabilityZone": "",
+					"RootBlockDevice": {
+						"VolumeType": "gp2",
+						"VolumeSize": 8
+					},
+					"UserData": "\n#!/bin/bash\nexport PUBLIC_IP=0.0.0.0\nexport PROTOC=tcp\nexport PORT=2059\nberty daemon \\\n  -p2p.mdns=false \\\n  -p2p.static-relays=':none' \\\n  -p2p.bootstrap=':none:' \\\n  -p2p.dht-randomwalk=false \\\n  -p2p.tinder-dht-driver=false \\\n  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \\\n  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-a93b38d7.public_ip}/tcp/4081/p2p/12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M \\\n  -p2p.tinder-rdvp-driver=true \\\n  -log.file=/home/ubuntu/log\n",
+					"NetworkInterfaces": [
+						{
+							"Name": "ni-2f18bfec-3a31-41a9-bfa9-23991e92c975",
+							"Subnet": {
+								"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+								"Vpc": {
+									"Name": "connection_1",
+									"CidrBlock": "10.1.0.0/16"
+								},
+								"VpcId": "",
+								"CidrBlock": "10.1.1.0/24",
+								"AvailabilityZone": "eu-central-1a"
+							},
+							"SubnetId": "",
+							"SecurityGroups": [
+								{
+									"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+									"Vpc": {
+										"Name": "connection_1",
+										"CidrBlock": "10.1.0.0/16"
+									},
+									"VpcId": ""
+								}
+							],
+							"SecurityGroupIds": null
+						}
+					],
+					"NetworkInterfaceAttachment": null
+				}
+			]
+		},
+		{
+			"Name": "test-peers4-a6308447",
+			"Amount": 1,
+			"Groups": null,
+			"Connections": [
+				{
+					"Name": "connection 1",
+					"To": "internet",
+					"Protocol": "tcp"
+				}
+			],
+			"NodeType": 1,
+			"NodeAttributes": {
+				"Port": 8081,
+				"Protocol": "tcp",
+				"Pk": "CAESQM+mPaOu5ItCn6XDF9ZHoAqbstE23Y47JIP/7uvkIrCFEtmMkqL2sMwUONnLlEq/orcsfPSuf/ba8nx/N3yoS0M=",
+				"PeerId": "12D3KooWB5wufpWcwyKV47Vsyo68vuVbb5wsWaE3y6Zz7SgTqHnJ"
+			},
+			"Components": [
+				{
+					"Name": "ni-c8a72554-6b92-4acc-91cf-47eed896174c",
+					"Subnet": {
+						"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+						"Vpc": {
+							"Name": "connection_1",
+							"CidrBlock": "10.1.0.0/16"
+						},
+						"VpcId": "",
+						"CidrBlock": "10.1.1.0/24",
+						"AvailabilityZone": "eu-central-1a"
+					},
+					"SubnetId": "",
+					"SecurityGroups": [
+						{
+							"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+							"Vpc": {
+								"Name": "connection_1",
+								"CidrBlock": "10.1.0.0/16"
+							},
+							"VpcId": ""
+						}
+					],
+					"SecurityGroupIds": null
+				},
+				{
+					"Name": "test-peers4-a6308447",
+					"Ami": "ami-0886094d9531e6f03",
+					"InstanceType": "t2.micro",
+					"KeyName": "berty_key",
+					"AvailabilityZone": "",
+					"RootBlockDevice": {
+						"VolumeType": "gp2",
+						"VolumeSize": 8
+					},
+					"UserData": "\n#!/bin/bash\nexport PUBLIC_IP=0.0.0.0\nexport PROTOC=tcp\nexport PORT=8081\nberty daemon \\\n  -p2p.mdns=false \\\n  -p2p.static-relays=':none' \\\n  -p2p.bootstrap=':none:' \\\n  -p2p.dht-randomwalk=false \\\n  -p2p.tinder-dht-driver=false \\\n  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \\\n  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-a93b38d7.public_ip}/tcp/4081/p2p/12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M \\\n  -p2p.tinder-rdvp-driver=true \\\n  -log.file=/home/ubuntu/log\n",
+					"NetworkInterfaces": [
+						{
+							"Name": "ni-c8a72554-6b92-4acc-91cf-47eed896174c",
+							"Subnet": {
+								"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+								"Vpc": {
+									"Name": "connection_1",
+									"CidrBlock": "10.1.0.0/16"
+								},
+								"VpcId": "",
+								"CidrBlock": "10.1.1.0/24",
+								"AvailabilityZone": "eu-central-1a"
+							},
+							"SubnetId": "",
+							"SecurityGroups": [
+								{
+									"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+									"Vpc": {
+										"Name": "connection_1",
+										"CidrBlock": "10.1.0.0/16"
+									},
+									"VpcId": ""
+								}
+							],
+							"SecurityGroupIds": null
+						}
+					],
+					"NetworkInterfaceAttachment": null
+				}
+			]
+		},
+		{
+			"Name": "test-peers5-0654e5ac",
+			"Amount": 1,
+			"Groups": null,
+			"Connections": [
+				{
+					"Name": "connection 1",
+					"To": "internet",
+					"Protocol": "tcp"
+				}
+			],
+			"NodeType": 1,
+			"NodeAttributes": {
+				"Port": 7318,
+				"Protocol": "tcp",
+				"Pk": "CAESQMdVW/icQE7G+WUa3pKv7SQ1MlWSLxrKvgf5kvKpitbYtSTYLUXDshaSVT17Ur2Cfxt/DLXKfNJRdnCK23UrZjE=",
+				"PeerId": "12D3KooWN1UYi6UTQqzuxxKnbP2UatC6cZk2zATmmXxzxLttEj9a"
+			},
+			"Components": [
+				{
+					"Name": "ni-a8e8933a-b08c-4014-a9e5-ba55463977f9",
+					"Subnet": {
+						"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+						"Vpc": {
+							"Name": "connection_1",
+							"CidrBlock": "10.1.0.0/16"
+						},
+						"VpcId": "",
+						"CidrBlock": "10.1.1.0/24",
+						"AvailabilityZone": "eu-central-1a"
+					},
+					"SubnetId": "",
+					"SecurityGroups": [
+						{
+							"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+							"Vpc": {
+								"Name": "connection_1",
+								"CidrBlock": "10.1.0.0/16"
+							},
+							"VpcId": ""
+						}
+					],
+					"SecurityGroupIds": null
+				},
+				{
+					"Name": "test-peers5-0654e5ac",
+					"Ami": "ami-0886094d9531e6f03",
+					"InstanceType": "t2.micro",
+					"KeyName": "berty_key",
+					"AvailabilityZone": "",
+					"RootBlockDevice": {
+						"VolumeType": "gp2",
+						"VolumeSize": 8
+					},
+					"UserData": "\n#!/bin/bash\nexport PUBLIC_IP=0.0.0.0\nexport PROTOC=tcp\nexport PORT=7318\nberty daemon \\\n  -p2p.mdns=false \\\n  -p2p.static-relays=':none' \\\n  -p2p.bootstrap=':none:' \\\n  -p2p.dht-randomwalk=false \\\n  -p2p.tinder-dht-driver=false \\\n  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \\\n  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-a93b38d7.public_ip}/tcp/4081/p2p/12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M \\\n  -p2p.tinder-rdvp-driver=true \\\n  -log.file=/home/ubuntu/log\n",
+					"NetworkInterfaces": [
+						{
+							"Name": "ni-a8e8933a-b08c-4014-a9e5-ba55463977f9",
+							"Subnet": {
+								"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+								"Vpc": {
+									"Name": "connection_1",
+									"CidrBlock": "10.1.0.0/16"
+								},
+								"VpcId": "",
+								"CidrBlock": "10.1.1.0/24",
+								"AvailabilityZone": "eu-central-1a"
+							},
+							"SubnetId": "",
+							"SecurityGroups": [
+								{
+									"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+									"Vpc": {
+										"Name": "connection_1",
+										"CidrBlock": "10.1.0.0/16"
+									},
+									"VpcId": ""
+								}
+							],
+							"SecurityGroupIds": null
+						}
+					],
+					"NetworkInterfaceAttachment": null
+				}
+			]
+		},
+		{
+			"Name": "test-peers6-31b4d4cc",
+			"Amount": 1,
+			"Groups": null,
+			"Connections": [
+				{
+					"Name": "connection 1",
+					"To": "internet",
+					"Protocol": "tcp"
+				}
+			],
+			"NodeType": 1,
+			"NodeAttributes": {
+				"Port": 4425,
+				"Protocol": "tcp",
+				"Pk": "CAESQHbkgrg1NvTsFITJt+SuOKowes4avqwFQgnT2WBE70PjpQDn5peOnRfp5WdxueQGd7ykknY6bKdk2I+cp8ai2LE=",
+				"PeerId": "12D3KooWLvUEsv8WtuZtF432Bx5qU2x9GvdHdQv84WNrxnXwAv5E"
+			},
+			"Components": [
+				{
+					"Name": "ni-38fae329-8320-4042-b0a6-194a52b7afc5",
+					"Subnet": {
+						"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+						"Vpc": {
+							"Name": "connection_1",
+							"CidrBlock": "10.1.0.0/16"
+						},
+						"VpcId": "",
+						"CidrBlock": "10.1.1.0/24",
+						"AvailabilityZone": "eu-central-1a"
+					},
+					"SubnetId": "",
+					"SecurityGroups": [
+						{
+							"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+							"Vpc": {
+								"Name": "connection_1",
+								"CidrBlock": "10.1.0.0/16"
+							},
+							"VpcId": ""
+						}
+					],
+					"SecurityGroupIds": null
+				},
+				{
+					"Name": "test-peers6-31b4d4cc",
+					"Ami": "ami-0886094d9531e6f03",
+					"InstanceType": "t2.micro",
+					"KeyName": "berty_key",
+					"AvailabilityZone": "",
+					"RootBlockDevice": {
+						"VolumeType": "gp2",
+						"VolumeSize": 8
+					},
+					"UserData": "\n#!/bin/bash\nexport PUBLIC_IP=0.0.0.0\nexport PROTOC=tcp\nexport PORT=4425\nberty daemon \\\n  -p2p.mdns=false \\\n  -p2p.static-relays=':none' \\\n  -p2p.bootstrap=':none:' \\\n  -p2p.dht-randomwalk=false \\\n  -p2p.tinder-dht-driver=false \\\n  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \\\n  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-a93b38d7.public_ip}/tcp/4081/p2p/12D3KooW9tD4i5u71a6NFBAd9CQuGKLDpmCL5d3XbzUVAymJzS7M \\\n  -p2p.tinder-rdvp-driver=true \\\n  -log.file=/home/ubuntu/log\n",
+					"NetworkInterfaces": [
+						{
+							"Name": "ni-38fae329-8320-4042-b0a6-194a52b7afc5",
+							"Subnet": {
+								"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+								"Vpc": {
+									"Name": "connection_1",
+									"CidrBlock": "10.1.0.0/16"
+								},
+								"VpcId": "",
+								"CidrBlock": "10.1.1.0/24",
+								"AvailabilityZone": "eu-central-1a"
+							},
+							"SubnetId": "",
+							"SecurityGroups": [
+								{
+									"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+									"Vpc": {
+										"Name": "connection_1",
+										"CidrBlock": "10.1.0.0/16"
+									},
+									"VpcId": ""
+								}
+							],
+							"SecurityGroupIds": null
+						}
+					],
+					"NetworkInterfaceAttachment": null
+				}
+			]
+		}
+	]
+} {
+	"Connections": {
+		"internet": {
+			"Name": "connection 1",
+			"To": "internet",
+			"Protocol": "tcp"
+		}
+	},
+	"Groups": {},
+	"Vpc": {
+		"Name": "connection_1",
+		"CidrBlock": "10.1.0.0/16"
+	},
+	"ConnectionComponents": {
+		"internet": [
+			{
+				"Name": "connection_1",
+				"CidrBlock": "10.1.0.0/16"
+			},
+			{
+				"Name": "subnet-6b697886-3f83-4e41-bd4f-936cf0400287",
+				"Vpc": {
+					"Name": "connection_1",
+					"CidrBlock": "10.1.0.0/16"
+				},
+				"VpcId": "",
+				"CidrBlock": "10.1.1.0/24",
+				"AvailabilityZone": "eu-central-1a"
+			},
+			{
+				"Name": "igateway-68c38565-3fce-462a-a1bf-c46beccbe2d3",
+				"Vpc": {
+					"Name": "connection_1",
+					"CidrBlock": "10.1.0.0/16"
+				},
+				"VpcId": ""
+			},
+			{
+				"Name": "rt-2190fe81-4f14-487a-a70d-eee20a522233",
+				"Vpc": {
+					"Name": "connection_1",
+					"CidrBlock": "10.1.0.0/16"
+				},
+				"VpcDefaultRouteTableId": "",
+				"InternetGateway": {
+					"Name": "igateway-68c38565-3fce-462a-a1bf-c46beccbe2d3",
+					"Vpc": {
+						"Name": "connection_1",
+						"CidrBlock": "10.1.0.0/16"
+					},
+					"VpcId": ""
+				},
+				"InternetGatewayId": ""
+			},
+			{
+				"Name": "secgr-f874b416-6565-4669-b4ca-dd4285a2c30a",
+				"Vpc": {
+					"Name": "connection_1",
+					"CidrBlock": "10.1.0.0/16"
+				},
+				"VpcId": ""
+			}
+		]
+	}
+}
+

@@ -3,41 +3,71 @@ package configParse
 import "C"
 import (
 	"fmt"
+	"infratesting/composeTerraform"
+	"infratesting/composeTerraform/components/networking"
+
 	//relay "github.com/libp2p/go-libp2p-circuit"
 	"gopkg.in/yaml.v3"
 	"log"
 )
 
 type Config struct {
-
-	RDVP []Node `yaml:"rdvp"`
-	Relay []Node `yaml:"relay"`
+	RDVP      []Node `yaml:"rdvp"`
+	Relay     []Node `yaml:"relay"`
 	Bootstrap []Node `yaml:"bootstrap"`
 
-	Peer              []Node `yaml:"peer"`
 	Replication []Node `yaml:"replication"`
+	Peer        []Node `yaml:"peer"`
 }
 
+type ConfigAttributes struct {
+	Connections map[string]Connection
+	Groups      map[string]Group
+
+	Vpc                  networking.Vpc
+	ConnectionComponents map[string][]composeTerraform.Component
+}
+
+var (
+	config           = Config{}
+	configAttributes = ConfigAttributes{}
+)
+
+func init() {
+	configAttributes.Connections = make(map[string]Connection)
+	configAttributes.Groups = make(map[string]Group)
+	configAttributes.ConnectionComponents = make(map[string][]composeTerraform.Component)
+}
 func (c *Config) validate() error {
 
-	for i, _ := range c.RDVP {
-		c.RDVP[i].nodeType = NodeTypeRDVP
+	for i := range c.RDVP {
+
+		_ = c.RDVP[i].validate()
+		c.RDVP[i].NodeType = NodeTypeRDVP
 	}
 
-	for i, _ := range c.Relay {
-		c.Relay[i].nodeType = NodeTypeRelay
+	for i := range c.Relay {
+
+		_ = c.Relay[i].validate()
+		c.Relay[i].NodeType = NodeTypeRelay
 	}
 
-	for i, _ := range c.Bootstrap {
-		c.Bootstrap[i].nodeType = NodeTypeBootstrap
+	for i := range c.Bootstrap {
+
+		_ = c.Bootstrap[i].validate()
+		c.Bootstrap[i].NodeType = NodeTypeBootstrap
 	}
 
-	for i, _ := range c.Peer {
-		c.Peer[i].nodeType = NodeTypePeer
+	for i := range c.Replication {
+
+		_ = c.Replication[i].validate()
+		c.Replication[i].NodeType = NodeTypeReplication
 	}
 
-	for i, _ := range c.Replication {
-		c.Replication[i].nodeType = NodeTypeReplication
+	for i := range c.Peer {
+
+		_ = c.Peer[i].validate()
+		c.Peer[i].NodeType = NodeTypePeer
 	}
 
 	// TODO

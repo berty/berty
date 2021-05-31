@@ -22,6 +22,14 @@ const (
 	ConnTypeLan      = "lan"
 )
 
+// ParseConnections takes the connection, adds it to the global connections
+func (c Node) parseConnections() {
+	for _, con := range c.Connections {
+		configAttributes.Connections[con.To] = con
+	}
+
+}
+
 // Validate validates the connections
 func (c *Connection) Validate() error {
 
@@ -44,15 +52,16 @@ func (c *Connection) Validate() error {
 func (c *Connection) composeComponents() {
 	var components []composeTerraform.Component
 
-	if VPC == *new(networking.Vpc) {
-		vpc := networking.NewVpc()
+	var vpc networking.Vpc
+	if configAttributes.Vpc == *new(networking.Vpc) {
+		vpc = networking.NewVpc()
 		vpc.Name = c.Name
 		components = append(components, vpc)
 
-		VPC = vpc
+		configAttributes.Vpc = vpc
+	} else {
+		vpc = configAttributes.Vpc
 	}
-
-	vpc := VPC
 
 	subnet := networking.NewSubnetWithAttributes(&vpc)
 	subnet.CidrBlock = generateNewSubnetCIDR()
@@ -74,7 +83,7 @@ func (c *Connection) composeComponents() {
 	components = append(components, sg)
 
 	// append components to ConnectionComponents
-	ConnectionComponents[c.To] = append(ConnectionComponents[c.To], components...)
+	configAttributes.ConnectionComponents[c.To] = append(configAttributes.ConnectionComponents[c.To], components...)
 
 }
 
@@ -83,7 +92,7 @@ func countSubnets() int {
 	// ConnectionComponents (map[string][]composeTerraform.Component)will always represent the amount of subnets
 	// as there is a maximum and minimum of 1 subnet per network stack
 	// we add one because ie: 10.0.0.0/24 is not a valid CIDR on AWS
-	return len(ConnectionComponents) + 1
+	return len(configAttributes.ConnectionComponents) + 1
 }
 
 // generateNewSubnetCIDR generates a new, valid CIDR Block for subnets to use based on the VPC and other subnets
@@ -91,7 +100,7 @@ func generateNewSubnetCIDR() string {
 	var ip []string
 	var cidr int
 
-	vpcCidrBlock := VPC.CidrBlock
+	vpcCidrBlock := configAttributes.Vpc.CidrBlock
 
 	//TODO:
 	// replace this with the `net` package, use IP and net.IPMask, etc

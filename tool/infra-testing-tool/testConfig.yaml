@@ -1,20 +1,5 @@
-#peer:
-#    - name: test peers
-#      amount: 1
-#      groups:
-#        - name: group1
-#        - name: group2
-#      connections:
-#        - name: connection 1
-#          to: internet
-#          protocol: tcp
-##        - name: test 1
-##          to: lan
-##          protocol: tcp
-##
-#
-relay:
-    - name: test relay
+rdvp:
+    - name: test rdvp
       amount: 1
       groups:
       connections:
@@ -22,7 +7,21 @@ relay:
             to: internet
             protocol: tcp
 
-#rdvp:
+peer:
+    - name: test peers1
+      amount: 1
+      connections:
+        - name: connection 1
+          to: internet
+          protocol: tcp
+    - name: test peers2
+      amount: 1
+      connections:
+        - name: connection 1
+          to: internet
+          protocol: tcp
+
+#relay:
 #    - name: test relay
 #      amount: 1
 #      groups:

@@ -22,6 +22,8 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(resourcesCmd)
+	rootCmd.AddCommand(configCmd)
+	rootCmd.AddCommand(getIpsCmd)
 
 	rootCmd.PersistentFlags().StringVarP(&File, "file", "f", "", "config file to generate from")
 

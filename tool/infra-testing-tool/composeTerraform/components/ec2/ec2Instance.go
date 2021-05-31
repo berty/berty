@@ -17,17 +17,13 @@ type Instance struct {
 	AvailabilityZone string
 
 	RootBlockDevice RootBlockDevice
-	UserData        string
 
-	NodeType NodeType
+	NodeType 		string
+	UserData        string
 
 	// NETWORKING
 	NetworkInterfaces          []*networking.NetworkInterface
 	NetworkInterfaceAttachment []NetworkInterfaceAttachment
-}
-
-type NodeType interface {
-	ExecuteTemplate() (string, error)
 }
 
 type NetworkInterfaceAttachment struct {
@@ -68,6 +64,10 @@ func (c Instance) GetPrivateIp() string {
 	return fmt.Sprintf("aws_instance.%s.private_ip", c.Name)
 }
 
+func (c *Instance) SetNodeType(s string) {
+	c.NodeType = s
+}
+
 func (c Instance) Validate() (composeTerraform.Component, error) {
 
 	// checks if NetworkInterface is attached/configured
@@ -102,10 +102,6 @@ func (c Instance) Validate() (composeTerraform.Component, error) {
 	// we don't check the VolumeType because it doesn't really matter for now
 	if c.RootBlockDevice.VolumeSize < 8 {
 		return c, errors.New(Ec2ErrRootBlockDeviceTooSmall)
-	}
-
-	if c.NodeType != nil {
-		c.UserData, _ = c.NodeType.ExecuteTemplate()
 	}
 
 	return c, nil

@@ -6,6 +6,7 @@ type Group struct {
 
 func (c Node) parseGroups() {
 	for _, group := range c.Groups {
-		groups[group.Name] = group
+		configAttributes.Groups[group.Name] = group
 	}
+
 }

@@ -9,6 +9,7 @@ import (
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"html/template"
+	"infratesting/composeTerraform"
 	"infratesting/composeTerraform/components/ec2"
 	"infratesting/composeTerraform/components/networking"
 	"math/rand"
@@ -17,12 +18,11 @@ import (
 )
 
 const (
-	// NodeTypePeer = iota + 1 to offset from it not being a valid type
-	NodeTypePeer = iota + 1
-	NodeTypeReplication
-	NodeTypeRDVP
-	NodeTypeRelay
-	NodeTypeBootstrap
+	NodeTypePeer = "peer"
+	NodeTypeReplication = "repl"
+	NodeTypeRDVP = "rdvp"
+	NodeTypeRelay = "relay"
+	NodeTypeBootstrap = "bootstrap"
 
 	lowerLimitPort = 2000
 	upperLimitPort = 9999
@@ -34,38 +34,34 @@ type Node struct {
 	Groups      []Group      `yaml:"groups"`
 	Connections []Connection `yaml:"connections"`
 
-	nodeType int
-	nodeAttributes struct {
-		port int
-		protocol string
-		pk string
-		peerId string
+	NodeType       string
+	NodeAttributes struct {
+		Port     int
+		Protocol string
+		Pk       string
+		PeerId   string
 	}
+
+	// attached components
+	Components []composeTerraform.Component
 }
 
 func (c *Node) validate() bool {
 
-	// replace spaces in name
-	// would cause error in terraform otherwise
-
+	// replace spaces in name and add uuid to it.
 	c.Name = fmt.Sprintf("%s-%s", strings.ReplaceAll(c.Name, " ", "-"), uuid.NewString()[:8])
 
 	return true
 }
 
-// ParseConnections takes the connection, adds it to the global connections
-func (c Node) parseConnections() {
-	for _, con := range c.Connections {
-		connections[con.To] = con
-	}
-}
-
-//
-func (c Node) composeComponents() {
-	var networkInterfaces []*networking.NetworkInterface
+func (c *Node) composeComponents() () {
+	var (
+		comps []composeTerraform.Component
+		networkInterfaces []*networking.NetworkInterface
+	)
 	for _, connection := range c.Connections {
 		key := connection.To
-		networkStack := ConnectionComponents[key]
+		networkStack := configAttributes.ConnectionComponents[key]
 
 		var assignedSecurityGroup networking.SecurityGroup
 		var assignedSubnet networking.Subnet
@@ -82,12 +78,20 @@ func (c Node) composeComponents() {
 
 		ni := networking.NewNetworkInterfaceWithAttributes(&assignedSubnet, &assignedSecurityGroup)
 		networkInterfaces = append(networkInterfaces, &ni)
-		NodeComponents = append(NodeComponents, ni)
+		comps = append(comps, ni)
 	}
 
 	instance := ec2.NewInstance()
 	instance.Name = c.Name
 	instance.NetworkInterfaces = networkInterfaces
+	instance.NodeType = c.NodeType
+
+
+	c.NodeAttributes.Port = generatePort()
+	c.NodeAttributes.Protocol = "tcp"
+	c.NodeAttributes.Pk, c.NodeAttributes.PeerId, _ = genkey()
+
+
 
 	var err error
 	instance.UserData, err = c.GenerateUserData()
@@ -95,8 +99,9 @@ func (c Node) composeComponents() {
 		panic(err)
 	}
 
-	NodeComponents = append(NodeComponents, instance)
+	comps = append(comps, instance)
 
+	c.Components = comps
 }
 
 func (c *Node) GenerateUserData() (s string, err error) {
@@ -108,24 +113,34 @@ func (c *Node) GenerateUserData() (s string, err error) {
 
 	var typeSpecific string
 
-	switch c.nodeType {
+	switch c.NodeType {
 	case NodeTypePeer:
-		typeSpecific = `berty daemon \
+
+		// arbitrary choice for now
+		// wondering how we group these normally though.
+		// this will be a challenge!
+		rdvp := config.RDVP[0]
+
+		typeSpecific = `export PUBLIC_IP=0.0.0.0
+export PROTOC=tcp
+export PORT=%d
+berty daemon \
   -p2p.mdns=false \
   -p2p.static-relays=':none' \
   -p2p.bootstrap=':none:' \
   -p2p.dht-randomwalk=false \
-
   -p2p.tinder-dht-driver=false \
-  -p2p.rdvp=':none' \
-  -p2p.tinder-rdvp-driver=false \
-  -p2p.swarm-listeners='/ip4/$PRIVATE_IP_LAN_1/udp/$PORT/quic'
+  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \
+  -p2p.rdvp=%s \
+  -p2p.tinder-rdvp-driver=true \
+  -log.file=/home/ubuntu/log
 `
+		typeSpecific = fmt.Sprintf(typeSpecific, c.NodeAttributes.Port, rdvp.getFullMultiAddr())
 
 	case NodeTypeBootstrap:
 
 		typeSpecific = `export PUBLIC_IP=0.0.0.0
-export PORT=4424
+export port=4424
 berty daemon \
   -p2p.mdns=false \
   -p2p.bootstrap=':none:' \
@@ -134,45 +149,32 @@ berty daemon \
   -p2p.tinder-dht-driver=false \
   -p2p.tinder-rdvp-driver=false \
   -p2p.swarm-listeners="/ip4/$PUBLIC_IP/tcp/$PORT" \
-  -log.file=/tmp/log \
+  -log.file=/home/ubuntu/log
 `
 
 	case NodeTypeRDVP:
-		c.nodeAttributes.port = generatePort()
-
-		c.nodeAttributes.pk, c.nodeAttributes.peerId, err = genkey()
-		if err != nil {
-			return s, err
-		}
-
 		typeSpecific = `export PUBLIC_IP=0.0.0.0
 export PROTOC=tcp
 export PORT=%d
 export PEER_ID=%s
 rdvp serve -pk %s \
-    -l "/ip4/$PUBLIC_IP4/$PROTOC/$PORT"
+    -l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
+	-log.file=/home/ubuntu/log
 `
 
-		typeSpecific = fmt.Sprintf(typeSpecific, c.nodeAttributes.port, c.nodeAttributes.peerId, c.nodeAttributes.pk)
+		typeSpecific = fmt.Sprintf(typeSpecific, c.NodeAttributes.Port, c.NodeAttributes.PeerId, c.NodeAttributes.Pk)
 
 	case NodeTypeRelay:
-		c.nodeAttributes.port = generatePort()
-
-		c.nodeAttributes.pk, c.nodeAttributes.peerId, err = genkey()
-		if err != nil {
-			return s, err
-		}
-
 		typeSpecific = `export PUBLIC_IP4=0.0.0.0
 export PROTOC=tcp
 export PORT=%d
 export PEER_ID=%s
 rdvp serve -pk %s \
-	-announce "/ip4/$PUBLIC_IP4/$PROTOC/$PORT" \
-	-l "/ip4/$PUBLIC_IP4/$PROTOC/$PORT" \
-	-log.file=/tmp/log
+	-announce "/ip4/$PUBLIC_IP4/$PROTOC/$port" \
+	-l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
+	-log.file=/home/ubuntu/log
 `
-		typeSpecific = fmt.Sprintf(typeSpecific, c.nodeAttributes.port, c.nodeAttributes.peerId, c.nodeAttributes.pk)
+		typeSpecific = fmt.Sprintf(typeSpecific, c.NodeAttributes.Port, c.NodeAttributes.PeerId, c.NodeAttributes.Pk)
 	case NodeTypeReplication:
 		typeSpecific = ""
 	}
@@ -206,7 +208,17 @@ func (c Node) executeTemplate() (string, error) {
 }
 
 func toHCLStringFormat(s string) string {
-	 return fmt.Sprintf("${%s}", s)
+	return fmt.Sprintf("${%s}", s)
+}
+
+func (c Node) getPublicIP() string {
+	return toHCLStringFormat(fmt.Sprintf("aws_instance.%s.public_ip", c.Name))
+}
+
+// getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
+func (c Node) getFullMultiAddr() string {
+	fmt.Printf("%+v\n", c)
+	return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.getPublicIP(), c.NodeAttributes.Protocol, c.NodeAttributes.Port, c.NodeAttributes.PeerId)
 }
 
 // generatePort generates a random port number between lowerLimitPort and upperLimitPort
@@ -214,22 +226,23 @@ func generatePort() int {
 	return lowerLimitPort + rand.Intn(upperLimitPort-lowerLimitPort+1)
 }
 
-func genkey() (string, string, error) {
+// genkey generates a private and public key
+func genkey() (pk string, pid string, err error) {
 	priv, _, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.Ed25519, -1, crand.Reader)
 	if err != nil {
-		return "", "", err
+		return pk, pid, err
 	}
 
 	pkBytes, err := libp2p_ci.MarshalPrivateKey(priv)
 	if err != nil {
-		return "", "", err
+		return pk, pid, err
 	}
 
-	pk := base64.StdEncoding.EncodeToString(pkBytes)
+	pk = base64.StdEncoding.EncodeToString(pkBytes)
 
 	peerId, err := libp2p_peer.IDFromPublicKey(priv.GetPublic())
 	if err != nil {
-		return "", "", err
+		return pk, pid, err
 	}
 
 	return pk, peerId.String(), err

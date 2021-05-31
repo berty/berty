@@ -30,6 +30,11 @@ resource "aws_instance" "{{.Name }}" {
 {{if .UserData }}
   user_data = <<EOF{{.UserData }}EOF
 {{- end}}
+
+   tags = {
+       Name = "{{.Name }}"
+       Type = "{{.NodeType }}"
+   }
 }
 `
 	// Default Ec2 Values
