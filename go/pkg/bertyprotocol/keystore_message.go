@@ -3,7 +3,6 @@ package bertyprotocol
 import (
 	"context"
 	"fmt"
-	"sync"
 
 	"github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
@@ -17,9 +16,8 @@ import (
 )
 
 type messageKeystore struct {
-	lock                 sync.Mutex
 	preComputedKeysCount int
-	store                datastore.Datastore
+	store                *dssync.MutexDatastore
 }
 
 type decryptInfo struct {
@@ -142,9 +140,6 @@ func (m *messageKeystore) GetDeviceSecret(g *protocoltypes.Group, acc DeviceKeys
 		return nil, errcode.ErrInvalidInput
 	}
 
-	m.lock.Lock()
-	defer m.lock.Unlock()
-
 	md, err := acc.MemberDeviceForGroup(g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
@@ -181,9 +176,6 @@ func (m *messageKeystore) RegisterChainKey(g *protocoltypes.Group, devicePK cryp
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
-
-	m.lock.Lock()
-	defer m.lock.Unlock()
 
 	return m.registerChainKey(g, devicePK, ds, isOwnPK)
 }
@@ -223,6 +215,11 @@ func (m *messageKeystore) registerChainKey(g *protocoltypes.Group, devicePK cryp
 	return nil
 }
 
+type computedKey struct {
+	counter uint64
+	mk      *[32]byte
+}
+
 func (m *messageKeystore) preComputeKeys(device crypto.PubKey, g *protocoltypes.Group, ds *protocoltypes.DeviceSecret) (*protocoltypes.DeviceSecret, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
@@ -241,7 +238,8 @@ func (m *messageKeystore) preComputeKeys(device crypto.PubKey, g *protocoltypes.
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	for i := 1; i <= m.getPrecomputedKeyExpectedCount(); i++ {
+	preComputedKeys := []computedKey{}
+	for i := 0; i < m.getPrecomputedKeyExpectedCount(); i++ {
 		counter++
 
 		knownMK, err := m.getPrecomputedKey(groupPK, device, counter)
@@ -261,12 +259,14 @@ func (m *messageKeystore) preComputeKeys(device crypto.PubKey, g *protocoltypes.
 			return nil, errcode.TODO.Wrap(err)
 		}
 
-		err = m.putPrecomputedKey(groupPK, device, counter, &mk)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
+		preComputedKeys = append(preComputedKeys, computedKey{counter, &mk})
 
 		ck = newCK
+	}
+
+	err = m.putPrecomputedKeys(groupPK, device, preComputedKeys...)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return &protocoltypes.DeviceSecret{
@@ -309,8 +309,8 @@ func (m *messageKeystore) getPrecomputedKey(groupPK, device crypto.PubKey, count
 	return keyArray, nil
 }
 
-func (m *messageKeystore) putPrecomputedKey(groupPK, device crypto.PubKey, counter uint64, mk *[32]byte) error {
-	if m == nil {
+func (m *messageKeystore) putPrecomputedKeys(groupPK, device crypto.PubKey, preComputedKeys ...computedKey) error {
+	if m == nil || len(preComputedKeys) == 0 {
 		return errcode.ErrInvalidInput
 	}
 
@@ -324,9 +324,29 @@ func (m *messageKeystore) putPrecomputedKey(groupPK, device crypto.PubKey, count
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	id := idForCachedKey(groupRaw, deviceRaw, counter)
+	batch, err := m.store.Batch()
+	if err == datastore.ErrBatchUnsupported {
+		for _, preComputedKey := range preComputedKeys {
+			id := idForCachedKey(groupRaw, deviceRaw, preComputedKey.counter)
+			if err := m.store.Put(id, preComputedKey.mk[:]); err != nil {
+				return errcode.ErrMessageKeyPersistencePut.Wrap(err)
+			}
+		}
 
-	if err := m.store.Put(id, mk[:]); err != nil {
+		return nil
+	} else if err != nil {
+		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
+	}
+
+	// Batch put and commit
+	for _, preComputedKey := range preComputedKeys {
+		id := idForCachedKey(groupRaw, deviceRaw, preComputedKey.counter)
+		if err := batch.Put(id, preComputedKey.mk[:]); err != nil {
+			return errcode.ErrMessageKeyPersistencePut.Wrap(err)
+		}
+	}
+
+	if err := batch.Commit(); err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
@@ -354,9 +374,6 @@ func (m *messageKeystore) OpenEnvelope(ctx context.Context, g *protocoltypes.Gro
 	if m == nil || g == nil {
 		return nil, nil, nil, errcode.ErrInvalidInput
 	}
-
-	m.lock.Lock()
-	defer m.lock.Unlock()
 
 	gPK, err := g.GetPubKey()
 	if err != nil {
@@ -493,9 +510,6 @@ func (m *messageKeystore) SealEnvelope(ctx context.Context, g *protocoltypes.Gro
 		return nil, errcode.ErrInvalidInput
 	}
 
-	m.lock.Lock()
-	defer m.lock.Unlock()
-
 	if deviceSK == nil || g == nil || m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -553,7 +567,7 @@ func (m *messageKeystore) deriveDeviceSecret(g *protocoltypes.Group, deviceSK cr
 		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	if err = m.putPrecomputedKey(groupPK, deviceSK.GetPublic(), ds.Counter+1, &mk); err != nil {
+	if err = m.putPrecomputedKeys(groupPK, deviceSK.GetPublic(), computedKey{ds.Counter + 1, &mk}); err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
@@ -585,7 +599,7 @@ func (m *messageKeystore) updateCurrentKey(groupPK, pk crypto.PubKey, ds *protoc
 func newMessageKeystore(s datastore.Datastore) *messageKeystore {
 	return &messageKeystore{
 		preComputedKeysCount: 100,
-		store:                s,
+		store:                dssync.MutexWrap(s),
 	}
 }
 
