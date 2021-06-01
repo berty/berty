@@ -85,6 +85,9 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 			streams = append(streams, fileStream)
 		}
 
+		if req.LoggerFilters == "" {
+			req.LoggerFilters = "debug+:bty*,-*.grpc warn+:*.grpc error+:*"
+		}
 		nativeStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
 		streams = append(streams, nativeStream)
 		zapLogger, loggerCleanup, err := logutil.NewLogger(streams...)
