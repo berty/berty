@@ -84,10 +84,9 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 			fileStream := logutil.NewFileStream("*", "json", logfileDir, "mobile")
 			streams = append(streams, fileStream)
 		}
-		if filters := req.LoggerFilters; filters != "" {
-			nativeStream := logutil.NewCustomStream(filters, s.logger)
-			streams = append(streams, nativeStream)
-		}
+
+		nativeStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
+		streams = append(streams, nativeStream)
 		zapLogger, loggerCleanup, err := logutil.NewLogger(streams...)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
