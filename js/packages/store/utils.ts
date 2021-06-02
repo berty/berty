@@ -1,6 +1,10 @@
 import beapi from '@berty-tech/api'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
+import Shake, { ShakeFile } from '@shakebugs/react-native-shake'
+
+import { accountService } from './context'
+
 type TypeNameDict = { [key: string]: beapi.messenger.AppMessage.Type | undefined }
 
 export const parseInteraction = (i: beapi.messenger.Interaction): ParsedInteraction => {
@@ -21,5 +25,22 @@ export const parseInteraction = (i: beapi.messenger.Interaction): ParsedInteract
 	return {
 		...i,
 		payload: pbobj.decode(i.payload),
+	}
+}
+
+export const updateShakeAttachments = async () => {
+	try {
+		const reply = await accountService.logfileList({ latest: true })
+		if (reply.entries.length <= 0) {
+			return
+		}
+		Shake.setMetadata('logfileList', JSON.stringify(reply.entries, null, 2))
+		Shake.setShakeReportData(
+			reply.entries
+				.filter((entry) => !!entry.path && entry.latest)
+				.map((entry) => ShakeFile.create(entry.path as string)),
+		)
+	} catch (e) {
+		console.warn('Failed to update shake attachments:', e)
 	}
 }
