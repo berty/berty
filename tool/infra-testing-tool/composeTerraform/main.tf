@@ -3,14 +3,14 @@ provider "aws" {
 }
 
 
-resource "aws_network_interface" "ni-3a690641-a0da-4995-8569-41f5760afdf3" {
-  subnet_id = aws_subnet.subnet-b8517278-ccde-434f-902d-dbed7144581f.id
+resource "aws_network_interface" "ni-1ad6f497-3146-4919-992e-1b183a5da017" {
+  subnet_id = aws_subnet.subnet-0c5b1af7-61be-4335-8827-67a7ccf59c13.id
   security_groups = [
-    aws_security_group.secgr-6c1b6e13-6421-4eb7-866e-177eea097c9d.id,
+    aws_security_group.secgr-1addeab7-1861-40e0-8073-d3e0d1cdecf7.id,
   ]
 }
 
-resource "aws_instance" "test-rdvp-e744a16c" {
+resource "aws_instance" "test-rdvp-818ec43c" {
   ami = "ami-0886094d9531e6f03"
   instance_type = "t2.micro"
   key_name = "berty_key"
@@ -28,7 +28,7 @@ resource "aws_instance" "test-rdvp-e744a16c" {
   // networking
   network_interface {
 	device_index = 0
-	network_interface_id = aws_network_interface.ni-3a690641-a0da-4995-8569-41f5760afdf3.id
+	network_interface_id = aws_network_interface.ni-1ad6f497-3146-4919-992e-1b183a5da017.id
   }
 
   user_data = <<EOF
@@ -36,27 +36,27 @@ resource "aws_instance" "test-rdvp-e744a16c" {
 export PUBLIC_IP=0.0.0.0
 export PROTOC=tcp
 export PORT=4081
-export PEER_ID=12D3KooWFzu5ph4EUqjoNW9dZhfjkgXJFYotuA8AFmA1ZWyLRweX
-rdvp serve -pk CAESQM2SDhClUvs/DiAQ0XLVnHqgdpEj6gxMQe+TAGTrI4bcW9jisVy7XRLEvy4ExBbB5Rodxr06uy2BxRTWsrDTVEg= \
+export PEER_ID=12D3KooWRyznDgFG21F3u6fR81WjThXcGeGxaDgHaX9xt8ppZAbK
+rdvp serve -pk CAESQPuH7Br5GqSGFsSmWUc1ccignpYJTxx4vpE7ngBusAXm8DKdcXzUJz01j/bI0BDxx29LfgoYNzfFECDT9+8oC5o= \
     -l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
 	-log.file=/home/ubuntu/log
 EOF
 
    tags = {
-       Name = "test-rdvp-e744a16c"
+       Name = "test-rdvp-818ec43c"
        Type = "rdvp"
    }
 }
 
 
-resource "aws_network_interface" "ni-e7367328-d17b-47b9-bd67-72d864d83287" {
-  subnet_id = aws_subnet.subnet-b8517278-ccde-434f-902d-dbed7144581f.id
+resource "aws_network_interface" "ni-cfc67bea-0a7f-4490-a61f-bc32ab033b70" {
+  subnet_id = aws_subnet.subnet-0c5b1af7-61be-4335-8827-67a7ccf59c13.id
   security_groups = [
-    aws_security_group.secgr-6c1b6e13-6421-4eb7-866e-177eea097c9d.id,
+    aws_security_group.secgr-1addeab7-1861-40e0-8073-d3e0d1cdecf7.id,
   ]
 }
 
-resource "aws_instance" "test-peers1-e60a7d61" {
+resource "aws_instance" "test-peers1-ed476443" {
   ami = "ami-0886094d9531e6f03"
   instance_type = "t2.micro"
   key_name = "berty_key"
@@ -74,7 +74,7 @@ resource "aws_instance" "test-peers1-e60a7d61" {
   // networking
   network_interface {
 	device_index = 0
-	network_interface_id = aws_network_interface.ni-e7367328-d17b-47b9-bd67-72d864d83287.id
+	network_interface_id = aws_network_interface.ni-cfc67bea-0a7f-4490-a61f-bc32ab033b70.id
   }
 
   user_data = <<EOF
@@ -83,32 +83,33 @@ export PUBLIC_IP=0.0.0.0
 export PROTOC=tcp
 export PORT=9887
 berty daemon \
+  -node.listeners="/ip4/$PUBLIC_IP/tcp/9091/grpc" \
   -p2p.mdns=false \
   -p2p.static-relays=':none' \
   -p2p.bootstrap=':none:' \
   -p2p.dht-randomwalk=false \
   -p2p.tinder-dht-driver=false \
   -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \
-  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-e744a16c.public_ip}/tcp/4081/p2p/12D3KooWFzu5ph4EUqjoNW9dZhfjkgXJFYotuA8AFmA1ZWyLRweX \
+  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-818ec43c.public_ip}/tcp/4081/p2p/12D3KooWRyznDgFG21F3u6fR81WjThXcGeGxaDgHaX9xt8ppZAbK \
   -p2p.tinder-rdvp-driver=true \
   -log.file=/home/ubuntu/log
 EOF
 
    tags = {
-       Name = "test-peers1-e60a7d61"
+       Name = "test-peers1-ed476443"
        Type = "peer"
    }
 }
 
 
-resource "aws_network_interface" "ni-8e6c1e67-028b-47c6-b629-bb8d62b966c7" {
-  subnet_id = aws_subnet.subnet-b8517278-ccde-434f-902d-dbed7144581f.id
+resource "aws_network_interface" "ni-792c8e79-be76-40f0-a2a9-751f3eed85cf" {
+  subnet_id = aws_subnet.subnet-0c5b1af7-61be-4335-8827-67a7ccf59c13.id
   security_groups = [
-    aws_security_group.secgr-6c1b6e13-6421-4eb7-866e-177eea097c9d.id,
+    aws_security_group.secgr-1addeab7-1861-40e0-8073-d3e0d1cdecf7.id,
   ]
 }
 
-resource "aws_instance" "test-peers2-17087df5" {
+resource "aws_instance" "test-peers2-ab0d2a0e" {
   ami = "ami-0886094d9531e6f03"
   instance_type = "t2.micro"
   key_name = "berty_key"
@@ -126,7 +127,7 @@ resource "aws_instance" "test-peers2-17087df5" {
   // networking
   network_interface {
 	device_index = 0
-	network_interface_id = aws_network_interface.ni-8e6c1e67-028b-47c6-b629-bb8d62b966c7.id
+	network_interface_id = aws_network_interface.ni-792c8e79-be76-40f0-a2a9-751f3eed85cf.id
   }
 
   user_data = <<EOF
@@ -135,57 +136,58 @@ export PUBLIC_IP=0.0.0.0
 export PROTOC=tcp
 export PORT=5847
 berty daemon \
+  -node.listeners="/ip4/$PUBLIC_IP/tcp/9091/grpc" \
   -p2p.mdns=false \
   -p2p.static-relays=':none' \
   -p2p.bootstrap=':none:' \
   -p2p.dht-randomwalk=false \
   -p2p.tinder-dht-driver=false \
   -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \
-  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-e744a16c.public_ip}/tcp/4081/p2p/12D3KooWFzu5ph4EUqjoNW9dZhfjkgXJFYotuA8AFmA1ZWyLRweX \
+  -p2p.rdvp=/ip4/${aws_instance.test-rdvp-818ec43c.public_ip}/tcp/4081/p2p/12D3KooWRyznDgFG21F3u6fR81WjThXcGeGxaDgHaX9xt8ppZAbK \
   -p2p.tinder-rdvp-driver=true \
   -log.file=/home/ubuntu/log
 EOF
 
    tags = {
-       Name = "test-peers2-17087df5"
+       Name = "test-peers2-ab0d2a0e"
        Type = "peer"
    }
 }
 
 
-resource "aws_vpc" "connection" {
+resource "aws_vpc" "connection_1" {
   cidr_block = "10.1.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support = true
 }
 
 
-resource "aws_subnet" subnet-b8517278-ccde-434f-902d-dbed7144581f {
-  vpc_id = aws_vpc.connection.id
+resource "aws_subnet" subnet-0c5b1af7-61be-4335-8827-67a7ccf59c13 {
+  vpc_id = aws_vpc.connection_1.id
   cidr_block = "10.1.1.0/24"
   availability_zone = "eu-central-1a"
   map_public_ip_on_launch = true
 }
 
 
-resource "aws_internet_gateway" "igateway-2c5dcc0a-1a23-446e-9f02-4a078e91000e" {
-  vpc_id = aws_vpc.connection.id
+resource "aws_internet_gateway" "igateway-0707de96-bb27-43a6-a96e-a4f69fc82d6d" {
+  vpc_id = aws_vpc.connection_1.id
 }
 
 
-resource "aws_default_route_table" "rt-dd6736bd-4c82-46ba-8b82-0f68256f4d26" {
-  default_route_table_id = aws_vpc.connection.default_route_table_id
+resource "aws_default_route_table" "rt-07f1cb46-0add-4e7a-bb2d-ab33e9f38853" {
+  default_route_table_id = aws_vpc.connection_1.default_route_table_id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igateway-2c5dcc0a-1a23-446e-9f02-4a078e91000e.id
+    gateway_id = aws_internet_gateway.igateway-0707de96-bb27-43a6-a96e-a4f69fc82d6d.id
   }
 }
 
 
-resource "aws_security_group" "secgr-6c1b6e13-6421-4eb7-866e-177eea097c9d" {
-  name = "secgr-6c1b6e13-6421-4eb7-866e-177eea097c9d"
-  vpc_id = aws_vpc.connection.id
+resource "aws_security_group" "secgr-1addeab7-1861-40e0-8073-d3e0d1cdecf7" {
+  name = "secgr-1addeab7-1861-40e0-8073-d3e0d1cdecf7"
+  vpc_id = aws_vpc.connection_1.id
 
   ingress {
     cidr_blocks = [

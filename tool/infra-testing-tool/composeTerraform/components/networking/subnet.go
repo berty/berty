@@ -30,18 +30,22 @@ func NewSubnetWithAttributes(vpc *Vpc) (c Subnet) {
 	return c
 }
 
+// GetTemplate returns the subnet template
 func (c Subnet) GetTemplate() string {
 	return SubnetHCLTemplate
 }
 
+// GetId returns the terraform formatting of this Subnets' id
 func (c Subnet) GetId() string {
 	return fmt.Sprintf("aws_subnet.%s.id", c.Name)
 }
 
+// GetType returns the Subnets type
 func (c Subnet) GetType() string {
 	return SubnetType
 }
 
+// Validate validates the component
 func (c Subnet) Validate() (composeTerraform.Component, error) {
 	// Validate CidrBlock
 	_, _, err := net.ParseCIDR(c.CidrBlock)

@@ -4,38 +4,43 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"context"
-	"fmt"
-	"google.golang.org/grpc"
 )
 
-
-func PrintInvite() {
+func (p *Peer) GetInvite(groupName string) (invite *messengertypes.ShareableBertyGroup_Reply, err error) {
 	ctx := context.Background()
-	host := "127.0.0.1:9091" // default daemon gRPC listener
 
-	// Init gRPC services (protocol and messenger)
-	cc, err := grpc.DialContext(ctx, host, grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-	if err != nil {
-		panic(err)
-	}
+	protocol := protocoltypes.NewProtocolServiceClient(p.Cc)
+	messenger := messengertypes.NewMessengerServiceClient(p.Cc)
 
-	protocol := protocoltypes.NewProtocolServiceClient(cc)
-	messenger := messengertypes.NewMessengerServiceClient(cc)
-
-	// Create group using protocol
 	resCreate, err := protocol.MultiMemberGroupCreate(ctx, &protocoltypes.MultiMemberGroupCreate_Request{})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	// Print group invit on stdout using messenger
-	resInvit, err := messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-		GroupPK:   resCreate.GroupPK,
-		GroupName: "foo",
+	invite, err = messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
+		GroupPK: resCreate.GroupPK,
+		GroupName: groupName,
+	})
+
+	// add group to peers' groups
+	p.Groups[groupName] = resCreate.GroupPK
+
+	return invite, err
+}
+
+func (p *Peer)JoinInvite(invite *messengertypes.ShareableBertyGroup_Reply, groupName string) (err error) {
+	link := invite.GetLink()
+
+	protocol := protocoltypes.NewProtocolServiceClient(p.Cc)
+
+	_, err = protocol.MultiMemberGroupJoin(context.Background(), &protocoltypes.MultiMemberGroupJoin_Request{
+		Group: link.GetBertyGroup().GetGroup(),
 	})
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	fmt.Println(resInvit.GetWebURL())
+	// add group to peers' groups
+	p.Groups[groupName] = link.GetBertyGroup().Group.PublicKey
+	return err
 }

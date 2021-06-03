@@ -30,18 +30,22 @@ func NewSecurityGroupWithAttributes(vpc *Vpc) (c SecurityGroup) {
 	return c
 }
 
+// GetTemplate returns the SecurityGroup template
 func (c SecurityGroup) GetTemplate() string {
 	return SecurityGroupHCLTemplate
 }
 
+// GetId returns the terraform formatting of this SecurityGroup id
 func (c SecurityGroup) GetId() string {
 	return fmt.Sprintf("aws_security_group.%s.id", c.Name)
 }
 
+// GetType returns the SecurityGroup type
 func (c SecurityGroup) GetType() string {
 	return SecurityGroupType
 }
 
+// Validate validates the component
 func (c SecurityGroup) Validate() (composeTerraform.Component, error) {
 	if c.Vpc == nil {
 		if c.VpcId == "" {

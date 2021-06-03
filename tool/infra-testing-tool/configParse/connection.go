@@ -27,7 +27,6 @@ func (c Node) parseConnections() {
 	for _, con := range c.Connections {
 		configAttributes.Connections[con.To] = con
 	}
-
 }
 
 // Validate validates the connections
@@ -49,9 +48,11 @@ func (c *Connection) Validate() error {
 	return nil
 }
 
+// composeComponents composes the terraform components based on the Connection
 func (c *Connection) composeComponents() {
 	var components []composeTerraform.Component
 
+	// create VPC
 	var vpc networking.Vpc
 	if configAttributes.Vpc == *new(networking.Vpc) {
 		vpc = networking.NewVpc()
@@ -59,18 +60,18 @@ func (c *Connection) composeComponents() {
 		components = append(components, vpc)
 
 		configAttributes.Vpc = vpc
-	} else {
-		vpc = configAttributes.Vpc
 	}
 
+	vpc = configAttributes.Vpc
+
+	// create a subnet
 	subnet := networking.NewSubnetWithAttributes(&vpc)
 	subnet.CidrBlock = generateNewSubnetCIDR()
 
 	components = append(components, subnet)
 
+	// add internet gateway and route table
 	// we only need these types if it's actually connected to the internet
-	// CAUTION!
-	// this will also not allow you to SSH into the peer
 	if c.connType == ConnTypeInternet {
 		ig := networking.NewInternetGatewayWithAttributes(&vpc)
 		components = append(components, ig)
@@ -79,17 +80,18 @@ func (c *Connection) composeComponents() {
 		components = append(components, rt)
 	}
 
+	// add security group
 	sg := networking.NewSecurityGroupWithAttributes(&vpc)
 	components = append(components, sg)
 
-	// append components to ConnectionComponents
+	// append components to configs' ConnectionComponents
 	configAttributes.ConnectionComponents[c.To] = append(configAttributes.ConnectionComponents[c.To], components...)
 
 }
 
-//
+// countSubnets returns the amount of subnets
 func countSubnets() int {
-	// ConnectionComponents (map[string][]composeTerraform.Component)will always represent the amount of subnets
+	// configAttributes.ConnectionComponents will always represent the amount of subnets
 	// as there is a maximum and minimum of 1 subnet per network stack
 	// we add one because ie: 10.0.0.0/24 is not a valid CIDR on AWS
 	return len(configAttributes.ConnectionComponents) + 1
@@ -104,6 +106,7 @@ func generateNewSubnetCIDR() string {
 
 	//TODO:
 	// replace this with the `net` package, use IP and net.IPMask, etc
+	// because this is really sketchy
 
 	split := strings.Split(vpcCidrBlock, ".")
 	ip = append(ip, split[:len(split)-1]...)

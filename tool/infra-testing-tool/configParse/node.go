@@ -125,6 +125,7 @@ func (c *Node) GenerateUserData() (s string, err error) {
 export PROTOC=tcp
 export PORT=%d
 berty daemon \
+  -node.listeners="/ip4/$PUBLIC_IP/tcp/9091/grpc" \
   -p2p.mdns=false \
   -p2p.static-relays=':none' \
   -p2p.bootstrap=':none:' \
@@ -171,7 +172,7 @@ export PORT=%d
 export PEER_ID=%s
 rdvp serve -pk %s \
 	-announce "/ip4/$PUBLIC_IP4/$PROTOC/$port" \
-	-l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
+	-l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \p
 	-log.file=/home/ubuntu/log
 `
 		typeSpecific = fmt.Sprintf(typeSpecific, c.NodeAttributes.Port, c.NodeAttributes.PeerId, c.NodeAttributes.Pk)
@@ -217,7 +218,6 @@ func (c Node) getPublicIP() string {
 
 // getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
 func (c Node) getFullMultiAddr() string {
-	fmt.Printf("%+v\n", c)
 	return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.getPublicIP(), c.NodeAttributes.Protocol, c.NodeAttributes.Port, c.NodeAttributes.PeerId)
 }
 

@@ -1,14 +1,19 @@
 package testing
 
 import (
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-func GetEc2Information() (s []string) {
-	sess, err := session.NewSessionWithOptions(session.Options{
+var (
+	sess *session.Session
+	ec2sess *ec2.EC2
+)
+
+func init () {
+	var err error
+	sess, err = session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
 			Region: aws.String("eu-central-1"),
 		},
@@ -17,10 +22,12 @@ func GetEc2Information() (s []string) {
 		panic(err)
 	}
 
-	ec2sess := ec2.New(sess)
+	ec2sess = ec2.New(sess)
+}
 
-
-	input := &ec2.DescribeInstancesInput{
+func DescribeInstances() (instances []*ec2.Instance, err error) {
+	//get all running/pending instances
+	resp, err := ec2sess.DescribeInstances(&ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			{
 				Name: aws.String("instance-state-name"),
@@ -30,32 +37,15 @@ func GetEc2Information() (s []string) {
 				},
 			},
 		},
-	}
+	})
 
-	resp, err := ec2sess.DescribeInstances(input)
 	if err != nil {
-		panic(err)
+		return instances, err
 	}
 
 	for _, reservation := range resp.Reservations {
-		for _, instance := range reservation.Instances {
-
-			var name string
-			var nodeType string
-
-			for _, tag := range instance.Tags {
-				if *tag.Key == "Name" {
-					name = *tag.Value
-				}
-
-				if *tag.Key == "Type" {
-					nodeType = *tag.Value
-				}
-			}
-
-			s = append(s, fmt.Sprintf("%s, %s, %s, %s\n", name, nodeType, *instance.InstanceId, *instance.PublicIpAddress))
-		}
+		instances = append(instances, reservation.Instances...)
 	}
 
-	return s
+	return instances, err
 }

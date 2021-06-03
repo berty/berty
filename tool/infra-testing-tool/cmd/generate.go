@@ -13,6 +13,7 @@ var (
 			if err != nil {
 				return err
 			}
+
 			err = configParse.Parse(b)
 			if err != nil {
 				return err

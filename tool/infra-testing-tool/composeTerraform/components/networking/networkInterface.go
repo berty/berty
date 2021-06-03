@@ -32,22 +32,27 @@ func NewNetworkInterfaceWithAttributes(subnet *Subnet, sg *SecurityGroup) (c Net
 	return c
 }
 
+// GetTemplate returns the NetworkInterfaces' template
 func (c NetworkInterface) GetTemplate() string {
 	return NetworkInterfaceHCLTemplate
 }
 
+// GetId returns the terraform formatting of this NetworkInterfaces' id
 func (c NetworkInterface) GetId() string {
 	return fmt.Sprintf("aws_network_interface.%s.id", c.Name)
 }
 
+// GetType returns the NetworkInterfaces' type
 func (c NetworkInterface) GetType() string {
 	return NetworkInterfaceType
 }
 
+// GetAvailabilityZone returns the NetworkInterfaces' AWS Availability Zone
 func (c NetworkInterface) GetAvailabilityZone() string {
 	return c.Subnet.AvailabilityZone
 }
 
+// Validate validates the component
 func (c NetworkInterface) Validate() (composeTerraform.Component, error) {
 
 	// Subnet

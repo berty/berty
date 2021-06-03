@@ -3,8 +3,7 @@ package various
 const (
 	// ProviderTemplate is the Provider template
 	// refer to https://golang.org/pkg/text/template/ for templating syntax
-	ProviderTemplate = `
-provider "aws" {
+	ProviderTemplate = `provider "aws" {
   region = "{{.Region}}"
 }
 `

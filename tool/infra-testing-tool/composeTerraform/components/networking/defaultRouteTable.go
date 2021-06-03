@@ -29,14 +29,17 @@ func NewDefaultRouteTableWithAttributes(vpc *Vpc, ig *InternetGateway) (c Defaul
 	return c
 }
 
+// GetTemplate returns the RouteTable template
 func (c DefaultRouteTable) GetTemplate() string {
 	return DefaultRouteTableHCLTemplate
 }
 
+// GetType returns the RouteTable type
 func (c DefaultRouteTable) GetType() string {
 	return DefaultRouteTableType
 }
 
+// Validate validates the component
 func (c DefaultRouteTable) Validate() (composeTerraform.Component, error) {
 
 	if c.Vpc == nil {

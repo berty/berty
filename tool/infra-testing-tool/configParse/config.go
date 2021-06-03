@@ -38,6 +38,8 @@ func init() {
 	configAttributes.Groups = make(map[string]Group)
 	configAttributes.ConnectionComponents = make(map[string][]composeTerraform.Component)
 }
+
+// validate validates the config
 func (c *Config) validate() error {
 
 	for i := range c.RDVP {

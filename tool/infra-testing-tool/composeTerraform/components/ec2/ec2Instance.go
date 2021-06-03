@@ -52,22 +52,27 @@ func NewInstanceWithAttributes(ni *networking.NetworkInterface) (c Instance) {
 	return c
 }
 
+// GetTemplate returns Ec2 template
 func (c Instance) GetTemplate() string {
 	return Ec2HCLTemplate
 }
 
+// GetType returns Ec2 type
 func (c Instance) GetType() string {
 	return Ec2Type
 }
 
+// GetPrivateIp returns the terraform formatting of this instances' ip
 func (c Instance) GetPrivateIp() string {
 	return fmt.Sprintf("aws_instance.%s.private_ip", c.Name)
 }
 
+// SetNodeType sets the node type
 func (c *Instance) SetNodeType(s string) {
 	c.NodeType = s
 }
 
+// Validate validates the component
 func (c Instance) Validate() (composeTerraform.Component, error) {
 
 	// checks if NetworkInterface is attached/configured

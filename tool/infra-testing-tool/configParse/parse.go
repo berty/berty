@@ -10,6 +10,14 @@ import (
 	"os"
 )
 
+// Parse parses the config bytes.
+// it does this in multiple steps.
+// first it converts it to a map containing nodes
+// then it figures out the different groups and networks
+// then it creates the network stacks (internet, lan_1, lan_2, etc)
+// then it ranges over the nodes and composes a config for them
+// then it iterates over every component in Components and generates HCL
+// for now it just gets printed out to console
 func Parse(b []byte) (err error) {
 	// unmarshal into Config struct
 	err = yaml.Unmarshal(b, &config)
@@ -42,6 +50,9 @@ func Parse(b []byte) (err error) {
 		}
 	}
 
+	// Components holds all HCLComponents
+	var Components []*[]composeTerraform.Component
+
 	// iterate over connections and compose appropriate HCL components
 	for _, connection := range configAttributes.Connections {
 		err = connection.Validate()
@@ -51,9 +62,13 @@ func Parse(b []byte) (err error) {
 		connection.composeComponents()
 	}
 
-	// Components holds all HCLComponents
-	var Components []*[]composeTerraform.Component
+	// iterate over network stacks
+	for _, networkStack := range configAttributes.ConnectionComponents {
+		// add networkStack to Components
+		Components = append(Components, &networkStack)
+	}
 
+	// iterate over individual node types
 	var types = []string{"RDVP", "Bootstrap", "Relay", "Peer", "Replication"}
 	// iterate over type of nodes
 	for _, t := range types {
@@ -63,19 +78,16 @@ func Parse(b []byte) (err error) {
 		}
 	}
 
-	// iterate over network stacks
-	for _, networkStack := range configAttributes.ConnectionComponents {
-		// add networkStack to Components
-		Components = append(Components, &networkStack)
-	}
 
-	// prepend new provider
+	// prepend new provider (provider aws)
+	// this is always required!
 	provider := various.NewProvider()
 	Components = prependComponents(Components, provider)
 
 	// iterate over components
 	for _, component := range Components {
 		for _, subcomponent := range *component {
+			// convert the components into HCL compatible strings
 			s, err := composeTerraform.ToHCL(subcomponent)
 			if err != nil {
 				panic(err)

@@ -26,18 +26,22 @@ func NewInternetGatewayWithAttributes(vpc *Vpc) (c InternetGateway) {
 	return c
 }
 
+// GetTemplate returns the InternetGateway template
 func (c InternetGateway) GetTemplate() string {
 	return InternetGatewayHCLTemplate
 }
 
+// GetId returns the terraform formatting of this InternetGateways' id
 func (c InternetGateway) GetId() string {
 	return fmt.Sprintf("aws_internet_gateway.%s.id", c.Name)
 }
 
+// GetType returns the InternetGateways type
 func (c InternetGateway) GetType() string {
 	return InternetGatewayType
 }
 
+// Validate validates the component
 func (c InternetGateway) Validate() (composeTerraform.Component, error) {
 
 	if c.Vpc == nil {

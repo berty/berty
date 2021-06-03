@@ -15,10 +15,8 @@ type Component interface {
 	GetType() string
 }
 
-type HCLShell interface {
-	Validate() (HCLShell, error)
-}
-
+// ToHCL converts the component to an HCL compatible string
+// https://github.com/hashicorp/hcl
 func ToHCL(comp Component) (s string, err error) {
 
 	// Validate
@@ -48,6 +46,7 @@ func ToHCL(comp Component) (s string, err error) {
 	return s, err
 }
 
+// GenerateName generates a name based off a UUID
 func GenerateName(prefix string) string {
-	return fmt.Sprintf("%s-%s", prefix, uuid.NewString())
+	return fmt.Sprintf("%s-%s", prefix, uuid.NewString()[:8])
 }

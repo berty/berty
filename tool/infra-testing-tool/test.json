@@ -608,7 +608,7 @@
 			]
 		}
 	]
-} {
+},{
 	"Connections": {
 		"internet": {
 			"Name": "connection 1",
@@ -673,4 +673,3 @@
 		]
 	}
 }
-
