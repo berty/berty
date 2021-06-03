@@ -1,12 +1,16 @@
 package logutil
 
-import "moul.io/zapring"
+import (
+	"go.uber.org/zap"
+	"moul.io/zapring"
+)
 
 const (
-	typeStd   = "std"
-	typeRing  = "ring"
-	typeFile  = "file"
-	typeTyber = "tyber"
+	typeStd    = "std"
+	typeRing   = "ring"
+	typeFile   = "file"
+	typeTyber  = "tyber"
+	typeCustom = "custom"
 )
 
 const tyberFilters = "*"
@@ -19,6 +23,7 @@ type Stream struct {
 	ring        *zapring.Core
 	sessionKind string
 	tyberHost   string
+	baseLogger  *zap.Logger
 }
 
 func NewStdStream(filters, format, path string) Stream {
@@ -66,5 +71,13 @@ func NewTyberStream(host string) Stream {
 		filters:   tyberFilters,
 		format:    jsonEncoding,
 		tyberHost: host,
+	}
+}
+
+func NewCustomStream(filters string, logger *zap.Logger) Stream {
+	return Stream{
+		kind:       typeCustom,
+		filters:    filters,
+		baseLogger: logger,
 	}
 }

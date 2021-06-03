@@ -212,3 +212,5 @@ func TestMultiple(t *testing.T) {
 
 	// FIXME: test that each logger can have its own format and filters
 }
+
+// FIXME: add unit test for NewCustomStream

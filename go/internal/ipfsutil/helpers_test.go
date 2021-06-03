@@ -3,6 +3,7 @@ package ipfsutil
 import (
 	"bytes"
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -18,7 +19,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/pnet"
 	"moul.io/srand"
 )
-import "encoding/hex"
 
 const closeTestPid = "/testing/close/0.1.0"
 

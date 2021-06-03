@@ -44,6 +44,9 @@ service AccountService {
 
   // GetGRPCListenerAddrs return current listeners addrs available on this bridge.
   rpc GetGRPCListenerAddrs (GetGRPCListenerAddrs.Request) returns (GetGRPCListenerAddrs.Reply);
+
+  // LogfileList returns a list of logfiles that can be used with Tyber.
+  rpc LogfileList (LogfileList.Request) returns (LogfileList.Reply);
 }
 
 message OpenAccount {
@@ -149,6 +152,24 @@ message GetGRPCListenerAddrs {
     message Entry {
       string proto = 1;
       string maddr = 2;
+    }
+  }
+}
+
+message LogfileList {
+  message Request {}
+  message Reply {
+    repeated Logfile entries = 1;
+
+    message Logfile {
+      string account_id = 1 [(gogoproto.customname) = "AccountID"];
+      string name = 2;
+      string path = 3;
+      int64 size = 4;
+      string kind = 5;
+      int64 time = 6;
+      bool latest = 7;
+      string errs = 8;
     }
   }
 }

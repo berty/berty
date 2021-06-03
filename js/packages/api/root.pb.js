@@ -58,6 +58,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   GetGRPCListenerAddrs: {
                     requestType: "GetGRPCListenerAddrs.Request",
                     responseType: "GetGRPCListenerAddrs.Reply"
+                  },
+                  LogfileList: {
+                    requestType: "LogfileList.Request",
+                    responseType: "LogfileList.Reply"
                   }
                 }
               },
@@ -364,6 +368,64 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                           maddr: {
                             type: "string",
                             id: 2
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              LogfileList: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      entries: {
+                        rule: "repeated",
+                        type: "Logfile",
+                        id: 1
+                      }
+                    },
+                    nested: {
+                      Logfile: {
+                        fields: {
+                          accountId: {
+                            type: "string",
+                            id: 1,
+                            options: {
+                              "(gogoproto.customname)": "AccountID"
+                            }
+                          },
+                          name: {
+                            type: "string",
+                            id: 2
+                          },
+                          path: {
+                            type: "string",
+                            id: 3
+                          },
+                          size: {
+                            type: "int64",
+                            id: 4
+                          },
+                          kind: {
+                            type: "string",
+                            id: 5
+                          },
+                          time: {
+                            type: "int64",
+                            id: 6
+                          },
+                          latest: {
+                            type: "bool",
+                            id: 7
+                          },
+                          errs: {
+                            type: "string",
+                            id: 8
                           }
                         }
                       }

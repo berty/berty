@@ -1729,6 +1729,254 @@ func (m *GetGRPCListenerAddrs_Reply_Entry) GetMaddr() string {
 	return ""
 }
 
+type LogfileList struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogfileList) Reset()         { *m = LogfileList{} }
+func (m *LogfileList) String() string { return proto.CompactTextString(m) }
+func (*LogfileList) ProtoMessage()    {}
+func (*LogfileList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{11}
+}
+
+func (m *LogfileList) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *LogfileList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LogfileList.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *LogfileList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogfileList.Merge(m, src)
+}
+
+func (m *LogfileList) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *LogfileList) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogfileList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogfileList proto.InternalMessageInfo
+
+type LogfileList_Request struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogfileList_Request) Reset()         { *m = LogfileList_Request{} }
+func (m *LogfileList_Request) String() string { return proto.CompactTextString(m) }
+func (*LogfileList_Request) ProtoMessage()    {}
+func (*LogfileList_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{11, 0}
+}
+
+func (m *LogfileList_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *LogfileList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LogfileList_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *LogfileList_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogfileList_Request.Merge(m, src)
+}
+
+func (m *LogfileList_Request) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *LogfileList_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogfileList_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogfileList_Request proto.InternalMessageInfo
+
+type LogfileList_Reply struct {
+	Entries              []*LogfileList_Reply_Logfile `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
+	XXX_unrecognized     []byte                       `json:"-"`
+	XXX_sizecache        int32                        `json:"-"`
+}
+
+func (m *LogfileList_Reply) Reset()         { *m = LogfileList_Reply{} }
+func (m *LogfileList_Reply) String() string { return proto.CompactTextString(m) }
+func (*LogfileList_Reply) ProtoMessage()    {}
+func (*LogfileList_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{11, 1}
+}
+
+func (m *LogfileList_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *LogfileList_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LogfileList_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *LogfileList_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogfileList_Reply.Merge(m, src)
+}
+
+func (m *LogfileList_Reply) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *LogfileList_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogfileList_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogfileList_Reply proto.InternalMessageInfo
+
+func (m *LogfileList_Reply) GetEntries() []*LogfileList_Reply_Logfile {
+	if m != nil {
+		return m.Entries
+	}
+	return nil
+}
+
+type LogfileList_Reply_Logfile struct {
+	AccountID            string   `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Path                 string   `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
+	Size_                int64    `protobuf:"varint,4,opt,name=size,proto3" json:"size,omitempty"`
+	Kind                 string   `protobuf:"bytes,5,opt,name=kind,proto3" json:"kind,omitempty"`
+	Time                 int64    `protobuf:"varint,6,opt,name=time,proto3" json:"time,omitempty"`
+	Latest               bool     `protobuf:"varint,7,opt,name=latest,proto3" json:"latest,omitempty"`
+	Errs                 string   `protobuf:"bytes,8,opt,name=errs,proto3" json:"errs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogfileList_Reply_Logfile) Reset()         { *m = LogfileList_Reply_Logfile{} }
+func (m *LogfileList_Reply_Logfile) String() string { return proto.CompactTextString(m) }
+func (*LogfileList_Reply_Logfile) ProtoMessage()    {}
+func (*LogfileList_Reply_Logfile) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{11, 1, 0}
+}
+
+func (m *LogfileList_Reply_Logfile) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *LogfileList_Reply_Logfile) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LogfileList_Reply_Logfile.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *LogfileList_Reply_Logfile) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogfileList_Reply_Logfile.Merge(m, src)
+}
+
+func (m *LogfileList_Reply_Logfile) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *LogfileList_Reply_Logfile) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogfileList_Reply_Logfile.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogfileList_Reply_Logfile proto.InternalMessageInfo
+
+func (m *LogfileList_Reply_Logfile) GetAccountID() string {
+	if m != nil {
+		return m.AccountID
+	}
+	return ""
+}
+
+func (m *LogfileList_Reply_Logfile) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *LogfileList_Reply_Logfile) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+func (m *LogfileList_Reply_Logfile) GetSize_() int64 {
+	if m != nil {
+		return m.Size_
+	}
+	return 0
+}
+
+func (m *LogfileList_Reply_Logfile) GetKind() string {
+	if m != nil {
+		return m.Kind
+	}
+	return ""
+}
+
+func (m *LogfileList_Reply_Logfile) GetTime() int64 {
+	if m != nil {
+		return m.Time
+	}
+	return 0
+}
+
+func (m *LogfileList_Reply_Logfile) GetLatest() bool {
+	if m != nil {
+		return m.Latest
+	}
+	return false
+}
+
+func (m *LogfileList_Reply_Logfile) GetErrs() string {
+	if m != nil {
+		return m.Errs
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*OpenAccount)(nil), "berty.account.v1.OpenAccount")
 	proto.RegisterType((*OpenAccount_Request)(nil), "berty.account.v1.OpenAccount.Request")
@@ -1762,67 +2010,78 @@ func init() {
 	proto.RegisterType((*GetGRPCListenerAddrs_Request)(nil), "berty.account.v1.GetGRPCListenerAddrs.Request")
 	proto.RegisterType((*GetGRPCListenerAddrs_Reply)(nil), "berty.account.v1.GetGRPCListenerAddrs.Reply")
 	proto.RegisterType((*GetGRPCListenerAddrs_Reply_Entry)(nil), "berty.account.v1.GetGRPCListenerAddrs.Reply.Entry")
+	proto.RegisterType((*LogfileList)(nil), "berty.account.v1.LogfileList")
+	proto.RegisterType((*LogfileList_Request)(nil), "berty.account.v1.LogfileList.Request")
+	proto.RegisterType((*LogfileList_Reply)(nil), "berty.account.v1.LogfileList.Reply")
+	proto.RegisterType((*LogfileList_Reply_Logfile)(nil), "berty.account.v1.LogfileList.Reply.Logfile")
 }
 
 func init() { proto.RegisterFile("bertyaccount.proto", fileDescriptor_2e9b7fcde47f62fe) }
 
 var fileDescriptor_2e9b7fcde47f62fe = []byte{
-	// 874 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0x41, 0x6f, 0xdc, 0x44,
-	0x14, 0xd6, 0x24, 0xbb, 0x4d, 0xf6, 0x6d, 0xdc, 0x56, 0x43, 0x24, 0xac, 0x45, 0x24, 0xe9, 0xb6,
-	0x81, 0x1c, 0x2a, 0x6f, 0xb3, 0x3d, 0xf4, 0x84, 0x44, 0x9b, 0xd0, 0x2a, 0xa2, 0xd0, 0x60, 0x54,
-	0x21, 0x10, 0x92, 0x35, 0xb1, 0x1f, 0x8e, 0x15, 0xc7, 0x36, 0xe3, 0xd9, 0x95, 0xf6, 0x84, 0xc4,
-	0xb1, 0x27, 0x2e, 0x9c, 0x39, 0xf6, 0xc6, 0x91, 0xdf, 0xc0, 0x0d, 0x7e, 0x01, 0x42, 0xfb, 0x3b,
-	0x10, 0x42, 0x9e, 0x19, 0x7b, 0x6d, 0xaf, 0xbb, 0xdb, 0x05, 0x02, 0xa7, 0x1d, 0xbf, 0xf9, 0xde,
-	0xfb, 0xde, 0xfb, 0x66, 0xde, 0x1b, 0x2d, 0xd0, 0x33, 0xe4, 0x62, 0xc2, 0x5c, 0x37, 0x1e, 0x45,
-	0xc2, 0x4a, 0x78, 0x2c, 0x62, 0x7a, 0x53, 0xda, 0xac, 0xdc, 0x38, 0x3e, 0xec, 0x6d, 0xfb, 0xb1,
-	0x1f, 0xcb, 0xcd, 0x41, 0xb6, 0x52, 0xb8, 0xde, 0x1b, 0xf2, 0xc7, 0x8d, 0x43, 0x31, 0x49, 0x30,
-	0xd5, 0x46, 0x03, 0x39, 0x77, 0x63, 0x0f, 0xd5, 0x67, 0xff, 0x05, 0x81, 0xee, 0xb3, 0x04, 0xa3,
-	0x87, 0x2a, 0x58, 0x8f, 0xc3, 0x86, 0x8d, 0x5f, 0x8f, 0x30, 0x15, 0x94, 0x42, 0x8b, 0x71, 0x3f,
-	0x35, 0xc9, 0xde, 0xfa, 0x41, 0xc7, 0x96, 0x6b, 0x7a, 0x17, 0x40, 0xd3, 0x3a, 0x81, 0x67, 0xae,
-	0xed, 0x91, 0x83, 0xce, 0x23, 0x63, 0xfa, 0xdb, 0x6e, 0x47, 0xfb, 0x9f, 0x1c, 0xdb, 0x1d, 0x0d,
-	0x38, 0xf1, 0xe8, 0x3e, 0x5c, 0x0f, 0x63, 0xdf, 0x47, 0xee, 0x7c, 0x15, 0x84, 0x02, 0x79, 0x6a,
-	0xae, 0x67, 0x1e, 0xb6, 0xa1, 0xac, 0x8f, 0x95, 0xb1, 0xb7, 0x01, 0x6d, 0x1b, 0x93, 0x70, 0xd2,
-	0xff, 0x85, 0xc0, 0x9b, 0xa5, 0x64, 0x3e, 0x0b, 0xc4, 0xf9, 0x29, 0x8f, 0x7d, 0x8e, 0x69, 0xfa,
-	0xbf, 0x24, 0xf6, 0xbe, 0x4e, 0x8c, 0x3e, 0x80, 0xcd, 0x44, 0x27, 0x62, 0x92, 0x3d, 0x72, 0xd0,
-	0x1d, 0xbe, 0x65, 0xa9, 0x43, 0xc8, 0x25, 0xb6, 0xc6, 0x87, 0x56, 0x9e, 0xab, 0x5d, 0x80, 0xfb,
-	0x7d, 0xd8, 0x3a, 0x0a, 0xe3, 0x14, 0x73, 0x79, 0x3b, 0x45, 0x15, 0xb3, 0xaa, 0x7d, 0x30, 0xcb,
-	0x98, 0x4a, 0xd5, 0x25, 0xfc, 0x3f, 0x4f, 0xe6, 0x0f, 0x02, 0x37, 0x34, 0xc9, 0x47, 0x28, 0x98,
-	0xc7, 0x04, 0xab, 0xe9, 0x46, 0x96, 0xe8, 0x46, 0xa1, 0x15, 0xb1, 0x4b, 0x54, 0xfa, 0xda, 0x72,
-	0x2d, 0x23, 0x8c, 0x99, 0x60, 0xdc, 0x71, 0x03, 0x4f, 0xe9, 0xa8, 0x23, 0x48, 0xeb, 0x91, 0x8c,
-	0xa0, 0x96, 0x81, 0x47, 0xdf, 0x06, 0x48, 0x46, 0x67, 0x61, 0xe0, 0x3a, 0x17, 0x38, 0x31, 0x5b,
-	0x32, 0x4e, 0x47, 0x59, 0x3e, 0xc4, 0x09, 0xdd, 0x85, 0x6e, 0xc8, 0x52, 0xe1, 0xc4, 0x09, 0x46,
-	0xe8, 0x99, 0xed, 0x3d, 0x72, 0xb0, 0x6e, 0x43, 0x66, 0x7a, 0x26, 0x2d, 0xf4, 0x36, 0x18, 0x2e,
-	0x47, 0x26, 0x82, 0x38, 0x72, 0x3c, 0x26, 0xd0, 0xbc, 0x26, 0x21, 0x5b, 0xb9, 0xf1, 0x98, 0x09,
-	0xa4, 0xdb, 0xd0, 0x46, 0xce, 0x63, 0x6e, 0x6e, 0xc8, 0xf8, 0xea, 0xa3, 0xcf, 0x60, 0xeb, 0x69,
-	0x90, 0x0a, 0x5d, 0x58, 0x45, 0xdb, 0xc7, 0xb9, 0xb6, 0xef, 0xc1, 0xa6, 0xae, 0x56, 0x5d, 0xaf,
-	0xee, 0xf0, 0x96, 0x55, 0xef, 0x36, 0xab, 0xa6, 0xa1, 0x5d, 0xb8, 0xf4, 0x3f, 0x01, 0xe3, 0x18,
-	0x43, 0x14, 0xc5, 0x79, 0x3f, 0x98, 0xdd, 0xda, 0x95, 0x94, 0x9e, 0xdd, 0x8e, 0x1f, 0xd6, 0xc0,
-	0x38, 0xb9, 0x4c, 0x62, 0x9e, 0x27, 0xde, 0xfb, 0x89, 0xfc, 0xcd, 0xa0, 0xf4, 0x16, 0x6c, 0xe5,
-	0xe8, 0xd2, 0x31, 0x76, 0xb5, 0xed, 0xe3, 0xec, 0x34, 0x77, 0xa1, 0x7b, 0xc6, 0xdc, 0x8b, 0x51,
-	0xe2, 0x24, 0x4c, 0x9c, 0xeb, 0xb6, 0x00, 0x65, 0x3a, 0x65, 0xe2, 0xbc, 0x68, 0xbe, 0x56, 0xa9,
-	0xf9, 0xe6, 0xdb, 0xa9, 0xdd, 0xd4, 0x4e, 0xcf, 0x73, 0x95, 0x9f, 0xc2, 0xcd, 0x3c, 0x8f, 0x4b,
-	0x2d, 0xa2, 0xbe, 0xc9, 0xaf, 0xa1, 0xf6, 0x0d, 0x56, 0x35, 0xf4, 0xff, 0x24, 0x60, 0x1c, 0x65,
-	0xc7, 0x5f, 0xa8, 0xfe, 0xfd, 0x55, 0x2a, 0x94, 0x0b, 0xb0, 0xbe, 0x50, 0x80, 0xd6, 0x7f, 0x28,
-	0xc0, 0x77, 0x6b, 0x60, 0x3c, 0x4f, 0xbc, 0x92, 0x00, 0x2f, 0xaf, 0x52, 0x80, 0x7f, 0xb3, 0xe1,
-	0xaf, 0x4a, 0x92, 0x1f, 0x09, 0x6c, 0x3f, 0x41, 0xf1, 0xc4, 0x3e, 0x3d, 0xca, 0x7a, 0x1e, 0x23,
-	0xe4, 0x0f, 0x3d, 0x8f, 0x57, 0x9a, 0xfe, 0x05, 0x99, 0x71, 0x6f, 0x60, 0x24, 0x78, 0x80, 0x79,
-	0xd3, 0x0f, 0xe7, 0x29, 0x9b, 0xa2, 0x59, 0xd2, 0xdd, 0xfa, 0x20, 0x12, 0x7c, 0x62, 0xe7, 0x21,
-	0x7a, 0xf7, 0xa1, 0x2d, 0x2d, 0xd9, 0x18, 0x92, 0x13, 0x59, 0x89, 0x6e, 0xab, 0x8f, 0xcc, 0x7a,
-	0xc9, 0x3c, 0x8f, 0x6b, 0x69, 0xd5, 0xc7, 0xf0, 0xe5, 0x26, 0x5c, 0xd7, 0x55, 0x7d, 0x8a, 0x7c,
-	0x1c, 0xb8, 0x48, 0x3f, 0xaf, 0xbc, 0xcc, 0x74, 0x7f, 0x3e, 0xa7, 0xd2, 0xb6, 0x95, 0x57, 0x75,
-	0x7b, 0x19, 0x2c, 0x2b, 0xf8, 0x9b, 0x57, 0xbe, 0xb3, 0xf4, 0x70, 0xa1, 0x7f, 0x19, 0x5a, 0x50,
-	0x0e, 0x56, 0x71, 0x49, 0xc2, 0xc9, 0x3d, 0x42, 0xbf, 0xac, 0xbe, 0x8b, 0xf4, 0x9d, 0xf9, 0x10,
-	0xe5, 0xfd, 0x82, 0xea, 0xce, 0x52, 0x5c, 0x56, 0xde, 0xb7, 0xe4, 0xd5, 0x4f, 0x2a, 0x1d, 0x2e,
-	0x0e, 0xd1, 0x58, 0xe1, 0xbd, 0x95, 0x7c, 0x8a, 0x12, 0xcb, 0xcf, 0x4d, 0x53, 0x89, 0xe5, 0xfd,
-	0x45, 0x25, 0xd6, 0x70, 0x59, 0x89, 0x4e, 0xed, 0xa5, 0xa1, 0xef, 0xce, 0xbb, 0x55, 0x00, 0x45,
-	0xfc, 0xfd, 0xe5, 0x40, 0x4d, 0x50, 0x79, 0x76, 0x9a, 0x08, 0x2a, 0x80, 0x45, 0x04, 0x75, 0xa0,
-	0x26, 0xa8, 0x4c, 0xed, 0x26, 0x82, 0x0a, 0x60, 0x11, 0x41, 0x1d, 0xa8, 0x09, 0x2a, 0x53, 0xb1,
-	0x89, 0xa0, 0x02, 0x58, 0x44, 0x50, 0x07, 0x66, 0x04, 0xa2, 0x79, 0xc6, 0x50, 0xeb, 0xb5, 0xa7,
-	0x87, 0xa2, 0xbb, 0xbb, 0xca, 0xb4, 0x79, 0x34, 0xfc, 0x79, 0xba, 0x43, 0x7e, 0x9d, 0xee, 0x90,
-	0xdf, 0xa7, 0x3b, 0xe4, 0x8b, 0x3b, 0xca, 0x55, 0xa0, 0x7b, 0x3e, 0x90, 0xcb, 0x81, 0x1f, 0x0f,
-	0x92, 0x0b, 0x7f, 0x50, 0xfe, 0xdf, 0x70, 0x76, 0x4d, 0x8e, 0x9e, 0xfb, 0x7f, 0x05, 0x00, 0x00,
-	0xff, 0xff, 0xb1, 0x14, 0xd1, 0xd9, 0x4e, 0x0c, 0x00, 0x00,
+	// 988 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0x4f, 0x6f, 0x1b, 0x45,
+	0x14, 0xd7, 0xc4, 0x76, 0x1c, 0x3f, 0xc7, 0x6d, 0x35, 0x44, 0xb0, 0x32, 0x22, 0x49, 0xdd, 0x06,
+	0x22, 0x51, 0xad, 0x1b, 0xf7, 0xd0, 0x13, 0x12, 0x6d, 0xd2, 0x56, 0x11, 0x81, 0x86, 0x45, 0x15,
+	0x02, 0x21, 0x59, 0x93, 0xdd, 0xd7, 0xcd, 0x2a, 0x6b, 0xef, 0x32, 0x3b, 0x89, 0x64, 0x2e, 0x48,
+	0x3d, 0xf6, 0xc4, 0x05, 0x89, 0x1b, 0x47, 0x6e, 0x5c, 0x90, 0xf8, 0x0a, 0x70, 0x83, 0x4f, 0x80,
+	0x50, 0x3e, 0x07, 0x42, 0x68, 0xfe, 0xec, 0x7a, 0x77, 0xbd, 0x71, 0x1a, 0x68, 0xe8, 0xc9, 0x33,
+	0xbf, 0xfd, 0xbd, 0x7f, 0xbf, 0xd9, 0xf7, 0x66, 0x0d, 0xf4, 0x00, 0xb9, 0x98, 0x30, 0xd7, 0x8d,
+	0x8e, 0xc7, 0xc2, 0x8e, 0x79, 0x24, 0x22, 0x7a, 0x4d, 0x61, 0x76, 0x0a, 0x9e, 0x6c, 0x75, 0x57,
+	0xfc, 0xc8, 0x8f, 0xd4, 0xc3, 0xbe, 0x5c, 0x69, 0x5e, 0xf7, 0x35, 0xf5, 0xe3, 0x46, 0xa1, 0x98,
+	0xc4, 0x98, 0x18, 0xb0, 0x83, 0x9c, 0xbb, 0x91, 0x87, 0x7a, 0xdb, 0x7b, 0x4e, 0xa0, 0xfd, 0x38,
+	0xc6, 0xf1, 0x3d, 0xed, 0xac, 0xcb, 0xa1, 0xe9, 0xe0, 0x97, 0xc7, 0x98, 0x08, 0x4a, 0xa1, 0xce,
+	0xb8, 0x9f, 0x58, 0x64, 0xbd, 0xb6, 0xd9, 0x72, 0xd4, 0x9a, 0xde, 0x02, 0x30, 0x61, 0x87, 0x81,
+	0x67, 0x2d, 0xac, 0x93, 0xcd, 0xd6, 0xfd, 0xce, 0xe9, 0x1f, 0x6b, 0x2d, 0x63, 0xbf, 0xbb, 0xe3,
+	0xb4, 0x0c, 0x61, 0xd7, 0xa3, 0x1b, 0x70, 0x25, 0x8c, 0x7c, 0x1f, 0xf9, 0xf0, 0x69, 0x10, 0x0a,
+	0xe4, 0x89, 0x55, 0x93, 0x16, 0x4e, 0x47, 0xa3, 0x0f, 0x35, 0xd8, 0x6d, 0x42, 0xc3, 0xc1, 0x38,
+	0x9c, 0xf4, 0x7e, 0x23, 0xf0, 0x46, 0x2e, 0x99, 0x4f, 0x03, 0x71, 0xb8, 0xcf, 0x23, 0x9f, 0x63,
+	0x92, 0xbc, 0x92, 0xc4, 0xde, 0x37, 0x89, 0xd1, 0xbb, 0xb0, 0x14, 0x9b, 0x44, 0x2c, 0xb2, 0x4e,
+	0x36, 0xdb, 0x83, 0x37, 0x6d, 0x7d, 0x08, 0xa9, 0xc4, 0xf6, 0xc9, 0x96, 0x9d, 0xe6, 0xea, 0x64,
+	0xe4, 0x5e, 0x0f, 0x96, 0xb7, 0xc3, 0x28, 0xc1, 0x54, 0xde, 0x56, 0x56, 0xc5, 0xb4, 0x6a, 0x1f,
+	0xac, 0x3c, 0xa7, 0x50, 0x75, 0x8e, 0xff, 0xdf, 0x93, 0xf9, 0x8b, 0xc0, 0x55, 0x13, 0xe4, 0x43,
+	0x14, 0xcc, 0x63, 0x82, 0x95, 0x74, 0x23, 0xe7, 0xe8, 0x46, 0xa1, 0x3e, 0x66, 0x23, 0xd4, 0xfa,
+	0x3a, 0x6a, 0xad, 0x3c, 0x9c, 0x30, 0xc1, 0xf8, 0xd0, 0x0d, 0x3c, 0xad, 0xa3, 0xf1, 0xa0, 0xd0,
+	0x6d, 0xe5, 0x41, 0x2f, 0x03, 0x8f, 0xbe, 0x05, 0x10, 0x1f, 0x1f, 0x84, 0x81, 0x3b, 0x3c, 0xc2,
+	0x89, 0x55, 0x57, 0x7e, 0x5a, 0x1a, 0xf9, 0x00, 0x27, 0x74, 0x0d, 0xda, 0x21, 0x4b, 0xc4, 0x30,
+	0x8a, 0x71, 0x8c, 0x9e, 0xd5, 0x58, 0x27, 0x9b, 0x35, 0x07, 0x24, 0xf4, 0x58, 0x21, 0xf4, 0x06,
+	0x74, 0x5c, 0x8e, 0x4c, 0x04, 0xd1, 0x78, 0xe8, 0x31, 0x81, 0xd6, 0xa2, 0xa2, 0x2c, 0xa7, 0xe0,
+	0x0e, 0x13, 0x48, 0x57, 0xa0, 0x81, 0x9c, 0x47, 0xdc, 0x6a, 0x2a, 0xff, 0x7a, 0xd3, 0x63, 0xb0,
+	0xbc, 0x17, 0x24, 0xc2, 0x14, 0x56, 0xd0, 0xf6, 0x61, 0xaa, 0xed, 0x7b, 0xb0, 0x64, 0xaa, 0xd5,
+	0xaf, 0x57, 0x7b, 0x70, 0xdd, 0x2e, 0x77, 0x9b, 0x5d, 0xd2, 0xd0, 0xc9, 0x4c, 0x7a, 0x1f, 0x43,
+	0x67, 0x07, 0x43, 0x14, 0xd9, 0x79, 0xdf, 0x9d, 0xbe, 0xb5, 0x17, 0x52, 0x7a, 0xfa, 0x76, 0x7c,
+	0xbf, 0x00, 0x9d, 0xdd, 0x51, 0x1c, 0xf1, 0x34, 0xf1, 0xee, 0xcf, 0xe4, 0x5f, 0x3a, 0xa5, 0xd7,
+	0x61, 0x39, 0x65, 0xe7, 0x8e, 0xb1, 0x6d, 0xb0, 0x8f, 0xe4, 0x69, 0xae, 0x41, 0xfb, 0x80, 0xb9,
+	0x47, 0xc7, 0xf1, 0x30, 0x66, 0xe2, 0xd0, 0xb4, 0x05, 0x68, 0x68, 0x9f, 0x89, 0xc3, 0xac, 0xf9,
+	0xea, 0xb9, 0xe6, 0x9b, 0x6d, 0xa7, 0x46, 0x55, 0x3b, 0x3d, 0x49, 0x55, 0xde, 0x83, 0x6b, 0x69,
+	0x1e, 0x23, 0x23, 0xa2, 0x79, 0x93, 0x5f, 0x40, 0xed, 0xab, 0xac, 0x08, 0xf4, 0xfe, 0x26, 0xd0,
+	0xd9, 0x96, 0xc7, 0x9f, 0xa9, 0xfe, 0xed, 0x65, 0x2a, 0x94, 0x0a, 0x50, 0x9b, 0x2b, 0x40, 0xfd,
+	0x7f, 0x14, 0xe0, 0x9b, 0x05, 0xe8, 0x3c, 0x89, 0xbd, 0x9c, 0x00, 0x3f, 0x5c, 0xa6, 0x00, 0x2f,
+	0xb3, 0xe1, 0x2f, 0x4b, 0x92, 0x1f, 0x09, 0xac, 0x3c, 0x42, 0xf1, 0xc8, 0xd9, 0xdf, 0x96, 0x3d,
+	0x8f, 0x63, 0xe4, 0xf7, 0x3c, 0x8f, 0x17, 0x9a, 0xfe, 0x39, 0x99, 0xc6, 0x6e, 0xe2, 0x58, 0xf0,
+	0x00, 0xd3, 0xa6, 0x1f, 0xcc, 0x86, 0xac, 0xf2, 0x66, 0x2b, 0x73, 0xfb, 0xc1, 0x58, 0xf0, 0x89,
+	0x93, 0xba, 0xe8, 0xde, 0x81, 0x86, 0x42, 0xe4, 0x18, 0x52, 0x13, 0x59, 0x8b, 0xee, 0xe8, 0x8d,
+	0x44, 0x47, 0xcc, 0xf3, 0xb8, 0x91, 0x56, 0x6f, 0x7a, 0x3f, 0x2d, 0x40, 0x7b, 0x2f, 0xf2, 0x9f,
+	0x06, 0x21, 0xca, 0x10, 0xf9, 0x3c, 0xbf, 0x5b, 0x48, 0xf3, 0x7c, 0x50, 0xce, 0xf3, 0xdd, 0xd9,
+	0x3c, 0x73, 0x4e, 0x4c, 0x7a, 0x06, 0x99, 0x26, 0xf8, 0x0b, 0x81, 0xa6, 0x01, 0x5f, 0xc2, 0xfc,
+	0xa7, 0x50, 0xcf, 0x8d, 0x0a, 0xb5, 0x96, 0x58, 0x12, 0x7c, 0x85, 0xea, 0xb8, 0x6b, 0x8e, 0x5a,
+	0x4b, 0xec, 0x28, 0x18, 0x7b, 0x66, 0x34, 0xa8, 0xb5, 0xc4, 0x44, 0x30, 0x4a, 0x87, 0xb8, 0x5a,
+	0xd3, 0xd7, 0x61, 0x31, 0x64, 0x02, 0x13, 0xa1, 0xa6, 0xf7, 0x92, 0x63, 0x76, 0x92, 0x8b, 0x9c,
+	0x27, 0xd6, 0x92, 0xb6, 0x97, 0xeb, 0xc1, 0xb3, 0x16, 0x5c, 0x31, 0x89, 0x7e, 0x82, 0xfc, 0x24,
+	0x70, 0x91, 0x7e, 0x56, 0xf8, 0x9e, 0xa1, 0x1b, 0xb3, 0x0a, 0xe5, 0x1e, 0xdb, 0xa9, 0xc6, 0x37,
+	0xce, 0xa3, 0x49, 0xf9, 0xbf, 0x3e, 0xf3, 0xeb, 0x84, 0x6e, 0xcd, 0xb5, 0xcf, 0x53, 0xb3, 0x90,
+	0xfd, 0x8b, 0x98, 0xc4, 0xe1, 0xe4, 0x36, 0xa1, 0x5f, 0x14, 0xbf, 0x26, 0xe8, 0xdb, 0xb3, 0x2e,
+	0xf2, 0xcf, 0xb3, 0x50, 0x37, 0xcf, 0xe5, 0xc9, 0xf2, 0x9e, 0x91, 0xb3, 0x3f, 0x44, 0xe8, 0x60,
+	0xbe, 0x8b, 0xca, 0x0a, 0x6f, 0x5f, 0xc8, 0x26, 0x2b, 0x31, 0x7f, 0x49, 0x57, 0x95, 0x98, 0x7f,
+	0x3e, 0xaf, 0xc4, 0x12, 0x4f, 0x96, 0x38, 0x2c, 0xdd, 0xcf, 0xf4, 0x9d, 0x59, 0xb3, 0x02, 0x21,
+	0xf3, 0xbf, 0x71, 0x3e, 0xd1, 0x04, 0x28, 0x5c, 0xd6, 0x55, 0x01, 0x0a, 0x84, 0x79, 0x01, 0xca,
+	0x44, 0x13, 0xa0, 0x70, 0xd7, 0x55, 0x05, 0x28, 0x10, 0xe6, 0x05, 0x28, 0x13, 0x4d, 0x80, 0xc2,
+	0x5d, 0x52, 0x15, 0xa0, 0x40, 0x98, 0x17, 0xa0, 0x4c, 0x94, 0x01, 0x44, 0xf5, 0x64, 0xa6, 0xf6,
+	0x0b, 0xcf, 0x5c, 0x1d, 0xee, 0xd6, 0x45, 0x66, 0xb4, 0x1c, 0x0b, 0xb9, 0xc9, 0x58, 0x35, 0x16,
+	0x8a, 0x83, 0xf3, 0xcc, 0xb1, 0x30, 0x33, 0x5f, 0xef, 0x0f, 0x7e, 0x3d, 0x5d, 0x25, 0xbf, 0x9f,
+	0xae, 0x92, 0x3f, 0x4f, 0x57, 0xc9, 0xe7, 0x37, 0xb5, 0x85, 0x40, 0xf7, 0xb0, 0xaf, 0x96, 0x7d,
+	0x3f, 0xea, 0xc7, 0x47, 0x7e, 0x3f, 0xff, 0x47, 0xee, 0x60, 0x51, 0xdd, 0x05, 0x77, 0xfe, 0x09,
+	0x00, 0x00, 0xff, 0xff, 0x5b, 0xaf, 0x05, 0x07, 0xdf, 0x0d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1859,6 +2118,8 @@ type AccountServiceClient interface {
 	UpdateAccount(ctx context.Context, in *UpdateAccount_Request, opts ...grpc.CallOption) (*UpdateAccount_Reply, error)
 	// GetGRPCListenerAddrs return current listeners addrs available on this bridge.
 	GetGRPCListenerAddrs(ctx context.Context, in *GetGRPCListenerAddrs_Request, opts ...grpc.CallOption) (*GetGRPCListenerAddrs_Reply, error)
+	// LogfileList returns a list of logfiles that can be used with Tyber.
+	LogfileList(ctx context.Context, in *LogfileList_Request, opts ...grpc.CallOption) (*LogfileList_Reply, error)
 }
 
 type accountServiceClient struct {
@@ -2005,6 +2266,15 @@ func (c *accountServiceClient) GetGRPCListenerAddrs(ctx context.Context, in *Get
 	return out, nil
 }
 
+func (c *accountServiceClient) LogfileList(ctx context.Context, in *LogfileList_Request, opts ...grpc.CallOption) (*LogfileList_Reply, error) {
+	out := new(LogfileList_Reply)
+	err := c.cc.Invoke(ctx, "/berty.account.v1.AccountService/LogfileList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 type AccountServiceServer interface {
 	// OpenAccount starts a Berty node.
@@ -2027,6 +2297,8 @@ type AccountServiceServer interface {
 	UpdateAccount(context.Context, *UpdateAccount_Request) (*UpdateAccount_Reply, error)
 	// GetGRPCListenerAddrs return current listeners addrs available on this bridge.
 	GetGRPCListenerAddrs(context.Context, *GetGRPCListenerAddrs_Request) (*GetGRPCListenerAddrs_Reply, error)
+	// LogfileList returns a list of logfiles that can be used with Tyber.
+	LogfileList(context.Context, *LogfileList_Request) (*LogfileList_Reply, error)
 }
 
 // UnimplementedAccountServiceServer can be embedded to have forward compatible implementations.
@@ -2070,6 +2342,10 @@ func (*UnimplementedAccountServiceServer) UpdateAccount(ctx context.Context, req
 
 func (*UnimplementedAccountServiceServer) GetGRPCListenerAddrs(ctx context.Context, req *GetGRPCListenerAddrs_Request) (*GetGRPCListenerAddrs_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGRPCListenerAddrs not implemented")
+}
+
+func (*UnimplementedAccountServiceServer) LogfileList(ctx context.Context, req *LogfileList_Request) (*LogfileList_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LogfileList not implemented")
 }
 
 func RegisterAccountServiceServer(s *grpc.Server, srv AccountServiceServer) {
@@ -2262,6 +2538,24 @@ func _AccountService_GetGRPCListenerAddrs_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_LogfileList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogfileList_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).LogfileList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.account.v1.AccountService/LogfileList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).LogfileList(ctx, req.(*LogfileList_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _AccountService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "berty.account.v1.AccountService",
 	HandlerType: (*AccountServiceServer)(nil),
@@ -2297,6 +2591,10 @@ var _AccountService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGRPCListenerAddrs",
 			Handler:    _AccountService_GetGRPCListenerAddrs_Handler,
+		},
+		{
+			MethodName: "LogfileList",
+			Handler:    _AccountService_LogfileList_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
@@ -3473,6 +3771,183 @@ func (m *GetGRPCListenerAddrs_Reply_Entry) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
+func (m *LogfileList) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LogfileList) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LogfileList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LogfileList_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LogfileList_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LogfileList_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LogfileList_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LogfileList_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LogfileList_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Entries) > 0 {
+		for iNdEx := len(m.Entries) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Entries[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LogfileList_Reply_Logfile) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LogfileList_Reply_Logfile) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LogfileList_Reply_Logfile) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Errs) > 0 {
+		i -= len(m.Errs)
+		copy(dAtA[i:], m.Errs)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Errs)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if m.Latest {
+		i--
+		if m.Latest {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.Time != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.Time))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.Kind) > 0 {
+		i -= len(m.Kind)
+		copy(dAtA[i:], m.Kind)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Kind)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Size_ != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.Size_))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Path) > 0 {
+		i -= len(m.Path)
+		copy(dAtA[i:], m.Path)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Path)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintBertyaccount(dAtA []byte, offset int, v uint64) int {
 	offset -= sovBertyaccount(v)
 	base := offset
@@ -4014,6 +4489,89 @@ func (m *GetGRPCListenerAddrs_Reply_Entry) Size() (n int) {
 		n += 1 + l + sovBertyaccount(uint64(l))
 	}
 	l = len(m.Maddr)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *LogfileList) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *LogfileList_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *LogfileList_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Entries) > 0 {
+		for _, e := range m.Entries {
+			l = e.Size()
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *LogfileList_Reply_Logfile) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	l = len(m.Path)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.Size_ != 0 {
+		n += 1 + sovBertyaccount(uint64(m.Size_))
+	}
+	l = len(m.Kind)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.Time != 0 {
+		n += 1 + sovBertyaccount(uint64(m.Time))
+	}
+	if m.Latest {
+		n += 2
+	}
+	l = len(m.Errs)
 	if l > 0 {
 		n += 1 + l + sovBertyaccount(uint64(l))
 	}
@@ -6821,6 +7379,466 @@ func (m *GetGRPCListenerAddrs_Reply_Entry) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Maddr = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *LogfileList) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LogfileList: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LogfileList: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *LogfileList_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *LogfileList_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Entries", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Entries = append(m.Entries, &LogfileList_Reply_Logfile{})
+			if err := m.Entries[len(m.Entries)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *LogfileList_Reply_Logfile) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Logfile: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Logfile: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Path", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Path = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Size_", wireType)
+			}
+			m.Size_ = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Size_ |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Kind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+			}
+			m.Time = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Time |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Latest", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Latest = bool(v != 0)
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Errs", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Errs = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"moul.io/progress"
+	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -37,11 +38,11 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 		return nil, errcode.ErrBertyAccountAlreadyOpened
 	}
 
-	if strings.ContainsAny(path.Clean(req.AccountID), "/\\") {
+	if strings.ContainsAny(filepath.Clean(req.AccountID), "/\\") {
 		return nil, errcode.ErrBertyAccountInvalidIDFormat
 	}
 
-	accountStorePath := path.Join(s.rootdir, req.AccountID)
+	accountStorePath := filepath.Join(s.rootdir, req.AccountID)
 
 	if _, err := os.Stat(accountStorePath); err != nil {
 		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
@@ -71,16 +72,30 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 		return nil, errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
 	}
 
+	errCleanup := func() {}
+
 	// setup manager logger
 	prog.Get("setup-logger").SetAsCurrent()
-	logger := s.logger
+	var logger *zap.Logger
 	{
-		var err error
-		if filters := req.LoggerFilters; filters != "" {
-			if logger, _, err = logutil.DecorateLogger(logger, filters); err != nil {
-				return nil, errcode.ErrBertyAccountLoggerDecorator.Wrap(err)
-			}
+		streams := []logutil.Stream{}
+		{
+			logfileDir := filepath.Join(accountStorePath, "logs")
+			fileStream := logutil.NewFileStream("*", "json", logfileDir, "mobile")
+			streams = append(streams, fileStream)
 		}
+
+		if req.LoggerFilters == "" {
+			req.LoggerFilters = "debug+:bty*,-*.grpc warn+:*.grpc error+:*"
+		}
+		nativeStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
+		streams = append(streams, nativeStream)
+		zapLogger, loggerCleanup, err := logutil.NewLogger(streams...)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+		errCleanup = u.CombineFuncs(errCleanup, loggerCleanup)
+		logger = zapLogger
 	}
 	s.logger.Info("opening account", zap.Strings("args", args), zap.String("account-id", req.AccountID))
 
@@ -94,9 +109,7 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 		}
 	}
 
-	errCleanup := func() {
-		initManager.Close(nil)
-	}
+	errCleanup = u.CombineFuncs(errCleanup, func() { initManager.Close(nil) })
 
 	// setup manager logger
 	prog.Get("setup-manager-logger").SetAsCurrent()
@@ -386,7 +399,7 @@ func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*Lis
 }
 
 func (s *service) getAccountMetaForName(accountID string) (*AccountMetadata, error) {
-	metafileName := path.Join(s.rootdir, accountID, accountMetafileName)
+	metafileName := filepath.Join(s.rootdir, accountID, accountMetafileName)
 
 	metaBytes, err := ioutil.ReadFile(metafileName)
 	if os.IsNotExist(err) {
@@ -425,7 +438,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *DeleteAccount_Requ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if err := os.RemoveAll(path.Join(s.rootdir, request.AccountID)); err != nil {
+	if err := os.RemoveAll(filepath.Join(s.rootdir, request.AccountID)); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
@@ -445,7 +458,7 @@ func (s *service) updateAccountMetadataLastOpened(accountID string) (*AccountMet
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := path.Join(s.rootdir, accountID, accountMetafileName)
+	metafileName := filepath.Join(s.rootdir, accountID, accountMetafileName)
 	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -462,7 +475,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	accountStorePath := path.Join(s.rootdir, accountID)
+	accountStorePath := filepath.Join(s.rootdir, accountID)
 	if err := os.MkdirAll(accountStorePath, 0o700); err != nil {
 		return nil, err
 	}
@@ -483,7 +496,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := path.Join(s.rootdir, accountID, accountMetafileName)
+	metafileName := filepath.Join(s.rootdir, accountID, accountMetafileName)
 	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -617,7 +630,7 @@ func (s *service) updateAccount(req *UpdateAccount_Request) (*AccountMetadata, e
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := path.Join(s.rootdir, req.AccountID, accountMetafileName)
+	metafileName := filepath.Join(s.rootdir, req.AccountID, accountMetafileName)
 	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -648,7 +661,7 @@ func (s *service) generateNewAccountID() (string, error) {
 	for i := 0; ; i++ {
 		candidateID := fmt.Sprintf("%d", i)
 
-		accountDir := path.Join(s.rootdir, candidateID)
+		accountDir := filepath.Join(s.rootdir, candidateID)
 		_, err := os.Stat(accountDir)
 		if os.IsNotExist(err) {
 			return candidateID, nil
