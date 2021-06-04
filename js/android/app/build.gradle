@@ -126,6 +126,7 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    // TODO: improve this, e.g: check if there is a way to get installed NDK version
     android.ndkVersion "22.1.7171670"
 
     compileOptions {
@@ -264,7 +265,7 @@ dependencies {
 
     // crashlytics
     implementation 'com.google.firebase:firebase-crashlytics'
-    
+
     // Add Android Nearby
     implementation "com.google.android.gms:play-services-nearby:16.0.0"
     implementation 'com.google.android.gms:play-services-location:17.0.0'

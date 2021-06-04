@@ -2,7 +2,6 @@ package tech.berty.gobridge.bledriver;
 
 import android.util.Log;
 
-import java.util.Base64;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -23,9 +22,9 @@ public class BleQueue {
     private int mIndex = 0;
 
     private class TaskDelay {
-        private Runnable task;
-        private long delay;
-        private int index;
+        private final Runnable task;
+        private final long delay;
+        private final int index;
 
         public TaskDelay(Runnable t, long d) {
             task = t;

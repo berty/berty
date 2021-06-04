@@ -1,28 +1,16 @@
 package tech.berty.gobridge.bledriver;
 
-import android.annotation.SuppressLint;
-import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.AdvertiseData;
-import android.bluetooth.le.AdvertiseSettings;
-import android.bluetooth.le.BluetoothLeAdvertiser;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.Base64;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
 
 // Make the BleDriver class a Singleton
 // see https://medium.com/@kevalpatel2106/how-to-make-the-perfect-singleton-de6b951dfdb0
@@ -42,7 +30,7 @@ public class BleDriver {
     public static Handler mainHandler = new Handler(Looper.getMainLooper());
     public static Handler mHandler;
     private static Looper mLooper;
-    private static Thread mThread = new Thread(new Runnable() {
+    private static final Thread mThread = new Thread(new Runnable() {
         @Override
         public void run() {
             Looper.prepare();
@@ -189,7 +177,7 @@ public class BleDriver {
     }
 
     public boolean SendToPeer(String remotePID, byte[] payload) {
-        Log.d(TAG, "SendToPeer(): remotePID=" + remotePID + " payload=" + Base64.getEncoder().encodeToString(payload));
+        Log.d(TAG, "SendToPeer(): remotePID=" + remotePID + " payload=" + Base64.encodeToString(payload, Base64.DEFAULT));
         PeerDevice peerDevice;
         BluetoothGattCharacteristic writer;
 

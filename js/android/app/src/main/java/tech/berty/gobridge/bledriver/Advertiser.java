@@ -24,7 +24,7 @@ public class Advertiser extends AdvertiseCallback {
 
     private final BluetoothAdapter mBluetoothAdapter;
     private CountDownLatch mStartedLock;
-    private Lock mLock = new ReentrantLock();
+    private final Lock mLock = new ReentrantLock();
 
     public Advertiser(BluetoothAdapter bluetoothAdapter) {
         mBluetoothAdapter = bluetoothAdapter;
@@ -81,7 +81,7 @@ public class Advertiser extends AdvertiseCallback {
             mBluetoothLeAdvertiser.startAdvertising(mAdvertiseSettings, mAdvertiseData, this);
             try {
                 // Need to set a max time because AVD hangs without that
-                if (mStartedLock.await(1000, TimeUnit.MILLISECONDS) == false) {
+                if (!mStartedLock.await(1000, TimeUnit.MILLISECONDS)) {
                     return false;
                 }
             } catch (InterruptedException e) {

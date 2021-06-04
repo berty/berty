@@ -8,9 +8,9 @@ import bertybridge.NativeLoggerDriver;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 public class LoggerDriver implements NativeLoggerDriver {
-    private String subsystem;
-    private String category;
-    private boolean isEnabled;
+    private final String subsystem;
+    private final String category;
+    private final boolean isEnabled;
 
     public LoggerDriver() {
         this("logger", "log");

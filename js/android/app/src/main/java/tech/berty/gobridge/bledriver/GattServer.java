@@ -1,6 +1,5 @@
 package tech.berty.gobridge.bledriver;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
@@ -9,8 +8,6 @@ import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
 
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
@@ -21,7 +18,6 @@ import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
-import static android.content.Context.BLUETOOTH_SERVICE;
 
 public class GattServer {
     private final String TAG = "bty.ble.GattServer";
@@ -42,15 +38,15 @@ public class GattServer {
     private BluetoothGattCharacteristic mPIDCharacteristic;
     private BluetoothGattCharacteristic mWriterCharacteristic;
 
-    private Context mContext;
-    private BluetoothManager mBluetoothManager;
+    private final Context mContext;
+    private final BluetoothManager mBluetoothManager;
     private CountDownLatch mDoneSignal;
     private GattServerCallback mGattServerCallback;
     private BluetoothGattServer mBluetoothGattServer;
     private volatile boolean mInit = false;
     private volatile boolean mStarted = false;
 
-    private Lock mLock = new ReentrantLock();
+    private final Lock mLock = new ReentrantLock();
 
     public GattServer(Context context, BluetoothManager bluetoothManager) {
         mContext = context;

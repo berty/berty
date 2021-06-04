@@ -16,7 +16,7 @@ public class BleInterface implements NativeBleDriver {
     public static final int ProtocolCode = 0x0042;
     public static final String ProtocolName = "ble";
 
-    private Context mContext;
+    private final Context mContext;
     private static ProximityTransport mTransport;
     private BleDriver mBleDriver;
 
@@ -27,7 +27,7 @@ public class BleInterface implements NativeBleDriver {
     public void start(String localPID) {
         Log.d(TAG, "start driver");
 
-        this.mTransport = Bertybridge.getProximityTransport(ProtocolName);
+        mTransport = Bertybridge.getProximityTransport(ProtocolName);
         if (mTransport == null) {
             Log.e(TAG, "proximityTransporter not found");
             return ;
@@ -49,10 +49,7 @@ public class BleInterface implements NativeBleDriver {
     }
 
     public boolean dialPeer(String remotePID) {
-        if (PeerManager.get(remotePID) != null) {
-            return true;
-        }
-        return false;
+        return PeerManager.get(remotePID) != null;
     }
 
     public boolean sendToPeer(String remotePID, byte[] payload) {

@@ -1,6 +1,5 @@
 package tech.berty.gobridge.bledriver;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -8,7 +7,7 @@ import java.util.HashMap;
 public class PeerManager {
     private static final String TAG = "bty.ble.PeerManager";
 
-    private static HashMap<String, Peer> mPeers = new HashMap<>();
+    private static final HashMap<String, Peer> mPeers = new HashMap<>();
 
     public static synchronized Peer register(String peerID) {
         Peer peer;

@@ -3,16 +3,14 @@ package tech.berty.gobridge;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
+import android.util.Base64;
 
 import bertybridge.Bertybridge;
 import bertybridge.NativeNBDriver;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 import bertybridge.ProximityTransport;
 import tech.berty.gobridge.proximitydriverssdk.base.NearbyDriverSDK;
@@ -44,8 +42,8 @@ public class BertyNearbyDriver implements NativeNBDriver {
     public static final int ProtocolCode = 0x0044;
     public static final String ProtocolName = "nearby";
 
-    private NearbyDriverSDK nearby;
-    private Context mContext;
+    private final NearbyDriverSDK nearby;
+    private final Context mContext;
     private String localPID;
 
     private static ProximityTransport mTransport;
@@ -87,7 +85,7 @@ public class BertyNearbyDriver implements NativeNBDriver {
     UserMessageCallback userMessageCallback = new UserMessageCallback() {
         @Override
         public void onMessageReceived(String userId, byte[] payload) {
-            Log.d(TAG, String.format("onMessageReceived: userId=%s payload=%s payload(hex)=%s", userId, Base64.getEncoder().encodeToString(payload), bytesToHex(payload)));
+            Log.d(TAG, String.format("onMessageReceived: userId=%s payload=%s payload(hex)=%s", userId, Base64.encodeToString(payload, Base64.DEFAULT), bytesToHex(payload)));
             Endpoint endpoint = nearby.getConnectedUser(userId);
             if (endpoint == null) {
                 Log.e(TAG, String.format("onMessageReceived error: endpointId=%s not found", userId));
@@ -120,10 +118,10 @@ public class BertyNearbyDriver implements NativeNBDriver {
         }
     };
 
-    private UserAcceptCallback userAcceptCallback = new UserAcceptCallback() {
+    private final UserAcceptCallback userAcceptCallback = new UserAcceptCallback() {
         @Override
         public void onConnectionAccepted(boolean success, String userId, int error) {
-            Log.i(TAG, String.format("Connection accept: " + success + " : " + userId));
+            Log.i(TAG, "Connection accept: " + success + " : " + userId);
 
             // Check if connection is not accepted and request
             // We could handle error case here also accept request
@@ -133,10 +131,10 @@ public class BertyNearbyDriver implements NativeNBDriver {
         }
     };
 
-    private UserRequestCallback userRequestCallback = new UserRequestCallback() {
+    private final UserRequestCallback userRequestCallback = new UserRequestCallback() {
         @Override
         public void onConnectionRequested(boolean requested, String userName, String userId, int error) {
-            Log.i(TAG, String.format("Connection request: " + requested + " : " + userName + " : " + userId));
+            Log.i(TAG, "Connection request: " + requested + " : " + userName + " : " + userId);
 
             // Handle multiple requests when error code
             if (error == 8012) {
@@ -160,7 +158,7 @@ public class BertyNearbyDriver implements NativeNBDriver {
                 return false;
             }
         }
-        Log.d(TAG, String.format("hasPermissions: all permissions are GRANTED"));
+        Log.d(TAG, "hasPermissions: all permissions are GRANTED");
         return true;
     }
 
@@ -168,7 +166,7 @@ public class BertyNearbyDriver implements NativeNBDriver {
     public void start(String localPID) {
         this.localPID = localPID;
 
-        this.mTransport = Bertybridge.getProximityTransport(ProtocolName);
+        mTransport = Bertybridge.getProximityTransport(ProtocolName);
         if (mTransport == null) {
             Log.e(TAG, "proximityTransporter not found");
             return ;
@@ -192,15 +190,12 @@ public class BertyNearbyDriver implements NativeNBDriver {
 
     @Override
     public boolean dialPeer(String remotePID) {
-        if (nearby.getEndpointFromName(remotePID) != null) {
-            return true;
-        }
-        return false;
+        return nearby.getEndpointFromName(remotePID) != null;
     }
 
     @Override
     public boolean sendToPeer(String remotePID, byte[] payload) {
-        Log.d(TAG, String.format("sendToPeer: userName=%s payload=%s payload(hex)=%s", remotePID, Base64.getEncoder().encodeToString(payload), bytesToHex(payload)));
+        Log.d(TAG, String.format("sendToPeer: userName=%s payload=%s payload(hex)=%s", remotePID, Base64.encodeToString(payload, Base64.DEFAULT), bytesToHex(payload)));
         Endpoint endpoint = nearby.getEndpointFromName(remotePID);
 
         if (endpoint != null) {
