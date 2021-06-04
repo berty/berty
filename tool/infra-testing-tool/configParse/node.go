@@ -4,6 +4,7 @@ import (
 	"bytes"
 	crand "crypto/rand"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
@@ -13,7 +14,7 @@ import (
 	"infratesting/composeTerraform/components/ec2"
 	"infratesting/composeTerraform/components/networking"
 	"math/rand"
-	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -26,6 +27,8 @@ const (
 
 	lowerLimitPort = 2000
 	upperLimitPort = 9999
+
+	defaultGrpcPort = "9091"
 )
 
 type Node struct {
@@ -89,9 +92,11 @@ func (c *Node) composeComponents() () {
 
 	c.NodeAttributes.Port = generatePort()
 	c.NodeAttributes.Protocol = "tcp"
-	c.NodeAttributes.Pk, c.NodeAttributes.PeerId, _ = genkey()
 
-
+	// only do this for RDVP and Relay
+	if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
+		c.NodeAttributes.Pk, c.NodeAttributes.PeerId, _ = genkey()
+	}
 
 	var err error
 	instance.UserData, err = c.GenerateUserData()
@@ -104,121 +109,90 @@ func (c *Node) composeComponents() () {
 	c.Components = comps
 }
 
+
+// GenerateUserData generates the user data for the node
+// it combines the userdata templates for each type with the variables inside the node
+// Look at userdata.go for more information on the user data
 func (c *Node) GenerateUserData() (s string, err error) {
 
-	var base = `
-#!/bin/bash
-`
-	//var flags = make(map[string]string)
-
-	var typeSpecific string
+	// template
+	var templ string
+	// values
+	values := make(map[string]string)
 
 	switch c.NodeType {
 	case NodeTypePeer:
 
-		// arbitrary choice for now
-		// wondering how we group these normally though.
-		// this will be a challenge!
-		rdvp := config.RDVP[0]
+		templ = peerUserData
 
-		typeSpecific = `export PUBLIC_IP=0.0.0.0
-export PROTOC=tcp
-export PORT=%d
-berty daemon \
-  -node.listeners="/ip4/$PUBLIC_IP/tcp/9091/grpc" \
-  -p2p.mdns=false \
-  -p2p.static-relays=':none' \
-  -p2p.bootstrap=':none:' \
-  -p2p.dht-randomwalk=false \
-  -p2p.tinder-dht-driver=false \
-  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \
-  -p2p.rdvp=%s \
-  -p2p.tinder-rdvp-driver=true \
-  -log.file=/home/ubuntu/log
-`
-		typeSpecific = fmt.Sprintf(typeSpecific, c.NodeAttributes.Port, rdvp.getFullMultiAddr())
+		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["defaultGrpcPort"] = defaultGrpcPort
+
+		// arbitrary choice for now
+		// TODO decide RDVP (if not multiple) based on connections
+		rdvp := config.RDVP[0]
+		values["RDVPMaddr"] = rdvp.getFullMultiAddr()
 
 	case NodeTypeBootstrap:
 
-		typeSpecific = `export PUBLIC_IP=0.0.0.0
-export port=4424
-berty daemon \
-  -p2p.mdns=false \
-  -p2p.bootstrap=':none:' \
-  -p2p.rdvp=':none' \
-  -p2p.static-relays=':none' \
-  -p2p.tinder-dht-driver=false \
-  -p2p.tinder-rdvp-driver=false \
-  -p2p.swarm-listeners="/ip4/$PUBLIC_IP/tcp/$PORT" \
-  -log.file=/home/ubuntu/log
-`
+		templ = bootstrapUserData
 
 	case NodeTypeRDVP:
-		typeSpecific = `export PUBLIC_IP=0.0.0.0
-export PROTOC=tcp
-export PORT=%d
-export PEER_ID=%s
-rdvp serve -pk %s \
-    -l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
-	-log.file=/home/ubuntu/log
-`
 
-		typeSpecific = fmt.Sprintf(typeSpecific, c.NodeAttributes.Port, c.NodeAttributes.PeerId, c.NodeAttributes.Pk)
+		templ = rdvpUserData
+
+		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["PeerId"] = c.NodeAttributes.PeerId
+		values["Pk"] = c.NodeAttributes.Pk
+
 
 	case NodeTypeRelay:
-		typeSpecific = `export PUBLIC_IP4=0.0.0.0
-export PROTOC=tcp
-export PORT=%d
-export PEER_ID=%s
-rdvp serve -pk %s \
-	-announce "/ip4/$PUBLIC_IP4/$PROTOC/$port" \
-	-l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \p
-	-log.file=/home/ubuntu/log
-`
-		typeSpecific = fmt.Sprintf(typeSpecific, c.NodeAttributes.Port, c.NodeAttributes.PeerId, c.NodeAttributes.Pk)
+		templ = relayUserData
+
+		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["PeerId"] = c.NodeAttributes.PeerId
+		values["Pk"] = c.NodeAttributes.Pk
+
 	case NodeTypeReplication:
-		typeSpecific = ""
+		templ = replicationUserData
 	}
 
-	return base + typeSpecific, nil
-}
 
-func (c Node) executeTemplate() (string, error) {
-	v := reflect.ValueOf(c)
-	values := make(map[string]interface{}, v.NumField())
-	for i := 0; i < v.NumField(); i++ {
-		if v.Field(i).CanInterface() {
-			values[v.Type().Field(i).Name] = v.Field(i).Interface()
+	// execute the template
+	// fill with values
+	if len(values) > 0 {
+		t := template.Must(template.New("").Parse(templ))
+		buf := &bytes.Buffer{}
+		err = t.Execute(buf, values)
+		if err != nil {
+			return s, err
 		}
+
+		s = baseUserData + buf.String()
 	}
-
-	// template
-	var templ string
-	var s string
-
-	t := template.Must(template.New("").Parse(templ))
-	buf := &bytes.Buffer{}
-	err := t.Execute(buf, values)
-	if err != nil {
-		return s, err
-	}
-
-	s += buf.String()
 
 	return s, nil
 }
 
+// toHCLStringFormat wraps a string so it can be compiled by the HCL compiler
 func toHCLStringFormat(s string) string {
 	return fmt.Sprintf("${%s}", s)
 }
 
+// getPublicIP returns the terraform formatting of this Nodes ip
 func (c Node) getPublicIP() string {
 	return toHCLStringFormat(fmt.Sprintf("aws_instance.%s.public_ip", c.Name))
 }
 
 // getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
 func (c Node) getFullMultiAddr() string {
-	return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.getPublicIP(), c.NodeAttributes.Protocol, c.NodeAttributes.Port, c.NodeAttributes.PeerId)
+	// this can only be done for RDVP and Relay
+	// as other node types don't have a peerId pre-configured
+	if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
+		return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.getPublicIP(), c.NodeAttributes.Protocol, c.NodeAttributes.Port, c.NodeAttributes.PeerId)
+	}
+
+	panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
 }
 
 // generatePort generates a random port number between lowerLimitPort and upperLimitPort

@@ -31,9 +31,10 @@ type MessageHistory struct {
 }
 
 const (
-	grpcPort = "9091"
+	defaultGrpcPort = "9091"
 )
 
+// NewPeer returns a peer with default variables already instantiated
 func NewPeer(ip string) (p Peer, err error) {
 	p.Ip = ip
 
@@ -61,5 +62,5 @@ func NewPeer(ip string) (p Peer, err error) {
 }
 
 func (p *Peer) GetHost() string {
-	return fmt.Sprintf("%s:%s", p.Ip, grpcPort)
+	return fmt.Sprintf("%s:%s", p.Ip, defaultGrpcPort)
 }
