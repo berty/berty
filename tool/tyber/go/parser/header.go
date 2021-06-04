@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"berty.tech/berty/v2/go/pkg/tyber"
 	"github.com/pkg/errors"
 )
 
@@ -88,13 +89,17 @@ func (s *Session) parseHeader() error {
 			return err
 		}
 
-		if h.Manager.Session.ID != "" {
+		if h.Manager.Session.ID != "" || h.Manager.Session.Kind != "" {
 			break
 		}
 	}
 
-	if h.Manager.Session.ID == "" {
+	if h.Manager.Session.ID == "" && h.Manager.Session.Kind == "" {
 		return errors.New("invalid log: header not found")
+	}
+
+	if h.Manager.Session.ID == "" {
+		h.Manager.Session.ID = tyber.NewSessionID()
 	}
 
 	// TODO: add other checks
