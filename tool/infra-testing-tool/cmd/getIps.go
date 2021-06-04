@@ -12,6 +12,8 @@ var (
 		Use: "getIps",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
+			var states = make(map[string][]string)
+
 			instances, err := testing.DescribeInstances()
 			if err != nil {
 				return err
@@ -36,7 +38,13 @@ var (
 					}
 				}
 
-				fmt.Printf("%s, %s, %s, %s\n", name, nodeType, *instance.InstanceId, *instance.PublicIpAddress)
+				s := fmt.Sprintf("%s, %s, %s, %s", name, nodeType, *instance.InstanceId, *instance.PublicIpAddress)
+
+				states[*instance.State.Name] = append(states[*instance.State.Name], s)
+			}
+
+			for key, value := range states {
+				printAll(key, value)
 			}
 
 			return nil
@@ -44,3 +52,13 @@ var (
 		},
 	}
 )
+
+func printAll(category string, slice []string) {
+	if len(slice) > 0 {
+		fmt.Printf("%s:\n", category)
+	}
+
+	for _, item := range slice {
+		fmt.Println(item)
+	}
+}
