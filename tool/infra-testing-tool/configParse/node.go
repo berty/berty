@@ -19,11 +19,11 @@ import (
 )
 
 const (
-	NodeTypePeer = "peer"
+	NodeTypePeer        = "peer"
 	NodeTypeReplication = "repl"
-	NodeTypeRDVP = "rdvp"
-	NodeTypeRelay = "relay"
-	NodeTypeBootstrap = "bootstrap"
+	NodeTypeRDVP        = "rdvp"
+	NodeTypeRelay       = "relay"
+	NodeTypeBootstrap   = "bootstrap"
 
 	lowerLimitPort = 2000
 	upperLimitPort = 9999
@@ -57,9 +57,9 @@ func (c *Node) validate() bool {
 	return true
 }
 
-func (c *Node) composeComponents() () {
+func (c *Node) composeComponents() {
 	var (
-		comps []composeTerraform.Component
+		comps             []composeTerraform.Component
 		networkInterfaces []*networking.NetworkInterface
 	)
 	for _, connection := range c.Connections {
@@ -89,7 +89,6 @@ func (c *Node) composeComponents() () {
 	instance.NetworkInterfaces = networkInterfaces
 	instance.NodeType = c.NodeType
 
-
 	c.NodeAttributes.Port = generatePort()
 	c.NodeAttributes.Protocol = "tcp"
 
@@ -108,7 +107,6 @@ func (c *Node) composeComponents() () {
 
 	c.Components = comps
 }
-
 
 // GenerateUserData generates the user data for the node
 // it combines the userdata templates for each type with the variables inside the node
@@ -145,7 +143,6 @@ func (c *Node) GenerateUserData() (s string, err error) {
 		values["PeerId"] = c.NodeAttributes.PeerId
 		values["Pk"] = c.NodeAttributes.Pk
 
-
 	case NodeTypeRelay:
 		templ = relayUserData
 
@@ -156,7 +153,6 @@ func (c *Node) GenerateUserData() (s string, err error) {
 	case NodeTypeReplication:
 		templ = replicationUserData
 	}
-
 
 	// execute the template
 	// fill with values

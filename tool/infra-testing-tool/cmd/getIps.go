@@ -1,3 +1,7 @@
+// getIps prints out all the IPs of running nodes
+// prints them grouped by state
+// very useful when debugging or looking at state of instances
+
 package cmd
 
 import (

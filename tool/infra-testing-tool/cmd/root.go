@@ -6,7 +6,8 @@ import (
 )
 
 var (
-	File string
+	File      string
+	OutputFmt string
 
 	rootCmd = &cobra.Command{
 		Use: "infra",
@@ -16,17 +17,32 @@ var (
 	}
 )
 
+const (
+	fileUsage = "config file to generate infra from"
+
+	OutputFmtUsage = "select output format (JSON/YAML/HCL)"
+	OutputFmtHCL   = "hcl"
+	OutputFmtYaml  = "yaml"
+	OutputFmtJson  = "json"
+)
+
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(generateCmd)
-	rootCmd.AddCommand(resourcesCmd)
+	generateCmd.Flags().StringVarP(&File, "file", "f", "", fileUsage)
+	generateCmd.Flags().StringVarP(&OutputFmt, "output-format", "o", "", OutputFmtUsage)
+	_ = generateCmd.MarkFlagRequired("file")
+	configCmd.AddCommand(generateCmd)
+
 	rootCmd.AddCommand(configCmd)
+
+	resourcesCmd.Flags().StringVarP(&File, "file", "f", "", fileUsage)
+	_ = configCmd.MarkFlagRequired("file")
+	rootCmd.AddCommand(resourcesCmd)
+
+	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(getIpsCmd)
 	rootCmd.AddCommand(groupCmd)
-
-	rootCmd.PersistentFlags().StringVarP(&File, "file", "f", "", "config file to generate from")
 
 }
 

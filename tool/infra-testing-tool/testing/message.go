@@ -20,8 +20,8 @@ func (p *Peer) SendMessage(groupName string) error {
 	pk := p.Groups[groupName]
 
 	_, err := protocol.AppMessageSend(context.Background(), &protocoltypes.AppMessageSend_Request{
-		GroupPK:              pk,
-		Payload:              []byte("hello"),
+		GroupPK: pk,
+		Payload: []byte("hello"),
 	})
 
 	return err
@@ -32,7 +32,7 @@ func (p *Peer) GetMessageList(groupName string) error {
 	pk := p.Groups[groupName]
 
 	req := &protocoltypes.GroupMessageList_Request{
-		GroupPK: pk,
+		GroupPK:  pk,
 		UntilNow: true,
 	}
 
@@ -57,7 +57,9 @@ func (p *Peer) GetMessageList(groupName string) error {
 			continue
 		}
 
-		switch am.GetType(){
+		p.Protocol.GroupInfo(context.Background(), &protocoltypes.GroupInfo_Request{})
+
+		switch am.GetType() {
 		case messengertypes.AppMessage_TypeAcknowledge:
 			if !bytes.Equal(evt.Headers.DevicePK, p.DevicePK) {
 				continue
@@ -89,13 +91,12 @@ func (p *Peer) GetMessageList(groupName string) error {
 	return nil
 }
 
-func (p *Peer) ack (ctx context.Context, evt *protocoltypes.GroupMessageEvent) {
+func (p *Peer) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent) {
 	_, err := p.Messenger.SendAck(ctx, &messengertypes.SendAck_Request{
-		GroupPK: evt.EventContext.GroupPK,
+		GroupPK:   evt.EventContext.GroupPK,
 		MessageID: evt.EventContext.ID,
 	})
 	if err != nil {
 		log.Println(err)
 	}
 }
-

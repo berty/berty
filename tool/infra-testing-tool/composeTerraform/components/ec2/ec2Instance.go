@@ -18,8 +18,8 @@ type Instance struct {
 
 	RootBlockDevice RootBlockDevice
 
-	NodeType 		string
-	UserData        string
+	NodeType string
+	UserData string
 
 	// NETWORKING
 	NetworkInterfaces          []*networking.NetworkInterface

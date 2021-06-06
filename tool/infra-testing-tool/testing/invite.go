@@ -18,7 +18,7 @@ func (p *Peer) GetInvite(groupName string) (invite *messengertypes.ShareableBert
 	}
 
 	invite, err = messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-		GroupPK: resCreate.GroupPK,
+		GroupPK:   resCreate.GroupPK,
 		GroupName: groupName,
 	})
 
@@ -28,7 +28,7 @@ func (p *Peer) GetInvite(groupName string) (invite *messengertypes.ShareableBert
 	return invite, err
 }
 
-func (p *Peer)JoinInvite(invite *messengertypes.ShareableBertyGroup_Reply, groupName string) (err error) {
+func (p *Peer) JoinInvite(invite *messengertypes.ShareableBertyGroup_Reply, groupName string) (err error) {
 	link := invite.GetLink()
 
 	protocol := protocoltypes.NewProtocolServiceClient(p.Cc)

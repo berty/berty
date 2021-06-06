@@ -7,7 +7,6 @@ import (
 	"gopkg.in/yaml.v3"
 	"infratesting/composeTerraform"
 	"infratesting/composeTerraform/components/various"
-	"os"
 )
 
 // Parse parses the config bytes.
@@ -18,16 +17,16 @@ import (
 // then it ranges over the nodes and composes a config for them
 // then it iterates over every component in Components and generates HCL
 // for now it just gets printed out to console
-func Parse(b []byte) (err error) {
+func Parse(b []byte) (c Config, components []*[]composeTerraform.Component, err error) {
 	// unmarshal into Config struct
 	err = yaml.Unmarshal(b, &config)
 	if err != nil {
-		return err
+		return config, components, err
 	}
 
 	err = config.validate()
 	if err != nil {
-		panic(err)
+		return config, components, err
 	}
 
 	// converting to a map[string]interface{} allows us to iterate over the config instead of having to manually do
@@ -36,7 +35,7 @@ func Parse(b []byte) (err error) {
 	var cMap map[string][]Node
 	err = mapstructure.Decode(config, &cMap)
 	if err != nil {
-		return err
+		return config, components, err
 	}
 
 	// gathering information about networking and groups
@@ -50,9 +49,6 @@ func Parse(b []byte) (err error) {
 		}
 	}
 
-	// Components holds all HCLComponents
-	var Components []*[]composeTerraform.Component
-
 	// iterate over connections and compose appropriate HCL components
 	for _, connection := range configAttributes.Connections {
 		err = connection.Validate()
@@ -65,7 +61,7 @@ func Parse(b []byte) (err error) {
 	// iterate over network stacks
 	for _, networkStack := range configAttributes.ConnectionComponents {
 		// add networkStack to Components
-		Components = append(Components, &networkStack)
+		components = append(components, &networkStack)
 	}
 
 	// iterate over individual node types
@@ -74,49 +70,16 @@ func Parse(b []byte) (err error) {
 	for _, t := range types {
 		for j := range cMap[t] {
 			cMap[t][j].composeComponents()
-			Components = append(Components, &cMap[t][j].Components)
+			components = append(components, &cMap[t][j].Components)
 		}
 	}
-
 
 	// prepend new provider (provider aws)
 	// this is always required!
 	provider := various.NewProvider()
-	Components = prependComponents(Components, provider)
+	components = prependComponents(components, provider)
 
-	// iterate over components
-	for _, component := range Components {
-		for _, subcomponent := range *component {
-			// convert the components into HCL compatible strings
-			s, err := composeTerraform.ToHCL(subcomponent)
-			if err != nil {
-				panic(err)
-			}
-
-			fmt.Println(s)
-		}
-
-	}
-	//fmt.Printf("generated HCL at %s\n", time.Now().Format(time.ANSIC))
-
-	return err
-}
-
-func OpenConfig(filename string) (b []byte, err error) {
-	f, err := os.OpenFile(filename, os.O_RDONLY, 0775)
-	if err != nil {
-		return nil, err
-	}
-
-	stat, err := f.Stat()
-	if err != nil {
-		return nil, err
-	}
-
-	b = make([]byte, stat.Size())
-	_, err = f.Read(b)
-
-	return b, err
+	return config, components, err
 }
 
 func prependComponents(array []*[]composeTerraform.Component, item composeTerraform.Component) []*[]composeTerraform.Component {
@@ -139,10 +102,18 @@ func GetConfigMarshalled() (string, error) {
 
 }
 
-// requirements
-// generate userdata and all other information before generating HCL
-// generate data for RDVP, Relay & Bootstrap before peers/replication servers
-//
-// separate config for networking
-// needs to be generated before the other ones.
+func ToHCL(components []*[]composeTerraform.Component) (hcl string) {
+	for _, component := range components {
+		for _, subcomponent := range *component {
+			// convert the components into HCL compatible strings
+			s, err := composeTerraform.ToHCL(subcomponent)
+			if err != nil {
+				panic(err)
+			}
 
+			hcl += s
+		}
+	}
+
+	return hcl
+}

@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	sess *session.Session
+	sess    *session.Session
 	ec2sess *ec2.EC2
 )
 
-func init () {
+func init() {
 	var err error
 	sess, err = session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{

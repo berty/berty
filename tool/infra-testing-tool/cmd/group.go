@@ -49,7 +49,7 @@ var (
 			}
 
 			//shuffle for good measure
-			rand.Shuffle(len(availablePeers), func(i, j int) {availablePeers[i], availablePeers[j] = availablePeers[j], availablePeers[i]})
+			rand.Shuffle(len(availablePeers), func(i, j int) { availablePeers[i], availablePeers[j] = availablePeers[j], availablePeers[i] })
 
 			// pick a "leader"
 			leader := availablePeers[0]
@@ -84,7 +84,6 @@ var (
 			fmt.Println(slaves)
 
 			fmt.Println("waiting ...")
-
 
 			fmt.Println("sending msg")
 
