@@ -1,10 +1,7 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 	"infratesting/configParse"
 	"strings"
 )
@@ -21,42 +18,14 @@ var (
 
 			switch strings.ToLower(OutputFmt) {
 			case OutputFmtHCL:
-				_, comp, err := configParse.Parse(b)
-				if err != nil {
-					return err
-				}
-
-				s := configParse.ToHCL(comp)
-				fmt.Println(s)
-
+				return configParse.OutputHcl(b)
 			case OutputFmtJson:
-				c, _, err := configParse.Parse(b)
-				if err != nil {
-					return err
-				}
-
-				s, err := json.MarshalIndent(c, "", "	")
-				if err != nil {
-					panic(err)
-				}
-
-				fmt.Println(string(s))
-
+				return configParse.OutputJson(b)
 			case OutputFmtYaml:
-				c, _, err := configParse.Parse(b)
-				if err != nil {
-					return err
-				}
-
-				s, err := yaml.Marshal(c)
-				if err != nil {
-					panic(err)
-				}
-
-				fmt.Println(string(s))
+				return configParse.OutputYaml(b)
+			default:
+				return configParse.OutputHcl(b)
 			}
-
-			return nil
 		},
 	}
 )

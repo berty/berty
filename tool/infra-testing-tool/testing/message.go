@@ -3,6 +3,7 @@ package testing
 import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"bytes"
+	"fmt"
 	"github.com/gogo/protobuf/proto"
 	"log"
 	"time"
@@ -14,18 +15,14 @@ import (
 )
 
 func (p *Peer) SendMessage(groupName string) error {
-	protocol := protocoltypes.NewProtocolServiceClient(p.Cc)
-	//messenger :=  messengertypes.NewMessengerServiceClient(p.Cc)
-
 	pk := p.Groups[groupName]
 
-	_, err := protocol.AppMessageSend(context.Background(), &protocoltypes.AppMessageSend_Request{
+	_, err := p.Protocol.AppMessageSend(context.Background(), &protocoltypes.AppMessageSend_Request{
 		GroupPK: pk,
 		Payload: []byte("hello"),
 	})
 
 	return err
-
 }
 
 func (p *Peer) GetMessageList(groupName string) error {
@@ -36,8 +33,7 @@ func (p *Peer) GetMessageList(groupName string) error {
 		UntilNow: true,
 	}
 
-	protocol := protocoltypes.NewProtocolServiceClient(p.Cc)
-	cl, err := protocol.GroupMessageList(context.Background(), req)
+	cl, err := p.Protocol.GroupMessageList(context.Background(), req)
 	if err != nil {
 		return err
 	}
@@ -51,13 +47,17 @@ func (p *Peer) GetMessageList(groupName string) error {
 			break
 		}
 
+		fmt.Println(string(evt.Message))
+
 		_, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
-		p.Protocol.GroupInfo(context.Background(), &protocoltypes.GroupInfo_Request{})
+		repl, err := p.Protocol.GroupInfo(context.Background(), &protocoltypes.GroupInfo_Request{})
+		fmt.Println(repl.Size())
+
 
 		switch am.GetType() {
 		case messengertypes.AppMessage_TypeAcknowledge:
@@ -77,6 +77,8 @@ func (p *Peer) GetMessageList(groupName string) error {
 			if err != nil {
 				return err
 			}
+
+			fmt.Println(payload.GetBody())
 
 			p.Messages = append(p.Messages, MessageHistory{
 				MessageType: uint64(am.GetType()),

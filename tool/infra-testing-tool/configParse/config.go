@@ -89,3 +89,7 @@ func NewConfig() Config {
 
 	return c
 }
+
+func GetConfig() Config {
+	return config
+}

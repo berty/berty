@@ -5,10 +5,9 @@ import (
 )
 
 var (
-	configCmd = &cobra.Command{
-		Use: "config",
+	messagesCmd = &cobra.Command{
+		Use: "messages",
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			return nil
 		},
 	}

@@ -6,8 +6,12 @@ import (
 )
 
 var (
+
+
 	File      string
 	OutputFmt string
+
+	GroupPK string
 
 	rootCmd = &cobra.Command{
 		Use: "infra",
@@ -27,7 +31,8 @@ const (
 )
 
 func init() {
-	cobra.OnInitialize(initConfig)
+
+	cobra.OnInitialize()
 
 	generateCmd.Flags().StringVarP(&File, "file", "f", "", fileUsage)
 	generateCmd.Flags().StringVarP(&OutputFmt, "output-format", "o", "", OutputFmtUsage)
@@ -36,10 +41,15 @@ func init() {
 
 	rootCmd.AddCommand(configCmd)
 
-	resourcesCmd.Flags().StringVarP(&File, "file", "f", "", fileUsage)
-	_ = configCmd.MarkFlagRequired("file")
-	rootCmd.AddCommand(resourcesCmd)
+	messagesCmd.AddCommand(joinGroupCmd)
 
+	messagesCmd.AddCommand(sendMessageCmd)
+	sendMessageCmd.Flags().StringVarP(&GroupPK, "groupPk", "p", "", "")
+	_ = sendMessageCmd.MarkFlagRequired("groupPk")
+
+
+	rootCmd.AddCommand(messagesCmd)
+	rootCmd.AddCommand(testCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(getIpsCmd)
 	rootCmd.AddCommand(groupCmd)
@@ -50,6 +60,3 @@ func Execute() error {
 	return rootCmd.Execute()
 }
 
-func initConfig() {
-
-}

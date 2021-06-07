@@ -1,8 +1,6 @@
 package configParse
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
 	"infratesting/composeTerraform"
@@ -84,22 +82,6 @@ func Parse(b []byte) (c Config, components []*[]composeTerraform.Component, err 
 
 func prependComponents(array []*[]composeTerraform.Component, item composeTerraform.Component) []*[]composeTerraform.Component {
 	return append([]*[]composeTerraform.Component{{item}}, array...)
-}
-
-func GetConfigMarshalled() (string, error) {
-
-	c, err := json.MarshalIndent(config, "", "	")
-	if err != nil {
-		return "", err
-	}
-
-	ca, err := json.MarshalIndent(configAttributes, "", "	")
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintln(string(c), string(ca)), err
-
 }
 
 func ToHCL(components []*[]composeTerraform.Component) (hcl string) {
