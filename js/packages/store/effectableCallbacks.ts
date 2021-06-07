@@ -1,5 +1,6 @@
 import beapi from '@berty-tech/api'
 
+import { updateShakeAttachments } from './utils'
 import { accountService, MessengerActions, reducerAction } from './context'
 
 export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
@@ -40,6 +41,8 @@ export const refreshAccountList = async (
 	try {
 		if (embedded) {
 			const resp = await accountService.listAccounts({})
+
+			updateShakeAttachments()
 
 			if (!resp.accounts) {
 				return []
