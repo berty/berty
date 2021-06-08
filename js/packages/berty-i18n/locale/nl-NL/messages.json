@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Apparaat informatie",
       "footer-middle-button": "Toon gebeurtenissen",
-      "footer-right-button": "Herstart daemon"
+      "footer-right-button": "Herstart daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Systeem informatie"
@@ -433,6 +434,11 @@
       "erase-button": "Gesprek wissen",
       "leave-button": "Groep verlaten"
     },
+    "add-members": {
+      "members": "Leden",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Groep"
     },
@@ -498,6 +504,11 @@
       "medias": "",
       "links": "Koppelingen",
       "documents": "Documenten"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +599,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Annuleren"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
