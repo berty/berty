@@ -349,7 +349,8 @@
       },
       "footer-left-button": "",
       "footer-middle-button": "قائمة الأحداث",
-      "footer-right-button": "إعادة تشغيل الرديمون"
+      "footer-right-button": "إعادة تشغيل الرديمون",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "معلومات النظام"
@@ -433,6 +434,11 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "add-members": {
+      "members": "",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
@@ -498,6 +504,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +599,10 @@
       "slide-to-cancel": "",
       "cancel-button": ""
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
