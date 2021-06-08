@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 
 // TODO: remove this after closed beta
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 import com.android.build.OutputFile
@@ -178,10 +179,6 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-
-            firebaseCrashlytics {
-                nativeSymbolUploadEnabled true
-            }
         }
         releaseStaff {
             initWith release
@@ -265,8 +262,7 @@ dependencies {
 
     // crashlytics
     implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-analytics'
-
+    
     // Add Android Nearby
     implementation "com.google.android.gms:play-services-nearby:16.0.0"
     implementation 'com.google.android.gms:play-services-location:17.0.0'
