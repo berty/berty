@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Geräteinformationen",
       "footer-middle-button": "Events auflisten",
-      "footer-right-button": "Daemon neu starten"
+      "footer-right-button": "Daemon neu starten",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "System-Info"
