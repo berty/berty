@@ -9,19 +9,19 @@
       "button": "COMMENCER"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Choisir un pré-réglage",
+      "change-later": "Vous aurez le choix de le modifier plus tard !",
       "performance": {
         "title": "Performance",
         "desc": "Utilisation simple - Toutes les options",
         "push-notif": "Recevoir les notifications push",
-        "offline-message": "",
+        "offline-message": "Messagerie hors-ligne grâce au Bluetooth",
         "add-contact": "Ajout facile de contacts",
         "fast-message": "Messagerie instantanée"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Anonymat complet",
+        "desc": "Pour les utilisateurs extrêmement prudents",
         "disable-push-notif": "Notifications push désactivées",
         "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
         "disable-local-peer-discovery-desc": "",
@@ -85,50 +85,50 @@
         "no-results": "Aucun résultat trouvé"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Créer un nouveau compte",
+        "import-button": "Importer un compte"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Nouveau groupe",
+        "add-members": "Ajouter des membres",
+        "group-info": "Informations du groupe",
         "search-placeholder": "Rechercher",
-        "continue": "",
-        "create-group": ""
+        "continue": "CONTINUER",
+        "create-group": "CRÉER UN GROUPE"
       }
     },
     "home-modal": {
       "top-button": "Créer un nouveau groupe",
       "bottom-button": "Scanner le contact ou le groupe"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Cliquer ici pour ajouter",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configuration réseau",
+        "desc": "Cliquez ici pour finaliser la configuration réseau"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configuration des notifications",
+        "desc": "Cliquez ici pour configurer les notifications push"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
+      "welcome-title": "Bienvenue dans les Options Réseaux",
+      "full-anon-mode": "Mode Anonymat complet",
       "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "allow-expert-mode": "Autoriser le mode Expert",
       "tor-compatible": {
-        "title": "",
+        "title": "Compatible avec TOR",
         "desc": ""
       },
       "full-anon": {
-        "title": "",
+        "title": "Mode Anonymat complet",
         "desc": "",
-        "no-ip": "",
+        "no-ip": "Sans adresse IP",
         "no-mc": "",
-        "tor-only": ""
+        "tor-only": "Tor uniquement"
       },
-      "save": "",
+      "save": "SAUVEGARDER",
       "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     }
   },
@@ -231,9 +231,9 @@
       "activate-button": "Activer le bluetooth",
       "permission-title": "",
       "permission-description": "",
-      "tag-neutral": "",
+      "tag-neutral": "Me demander plus tard",
       "tag-negative": "Annuler",
-      "tag-positive": ""
+      "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Activer la connectivité multi-pair"
@@ -303,7 +303,7 @@
       "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
       "simulate-button": "Simuler une erreur de stream",
-      "simulate-js-error-button": "",
+      "simulate-js-error-button": "Simuler une erreur JavaScript",
       "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "optionnel",
@@ -315,11 +315,11 @@
       "debug-button": "Debug",
       "log-button": {
         "name": "",
-        "bullet-point": ""
+        "bullet-point": "Redémarrer l'application après avoir modifié ce champ"
       },
       "log-filters-button": {
         "name": "",
-        "bullet-point": ""
+        "bullet-point": "Redémarrer l'application après avoir modifié ce champ"
       },
       "add-dev-conversations-button": "Ajouter conversations de dev",
       "share-button": {
@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Infos sur l'appareil",
       "footer-middle-button": "Lister les événements",
-      "footer-right-button": "Redémarrer le démon"
+      "footer-right-button": "Redémarrer le démon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Infos système"
@@ -399,10 +400,10 @@
       "devices": "Appareils"
     },
     "welcome-configuration": {
-      "title": "",
+      "title": "Bienvenue à bord !",
       "desc": "",
       "skip": "PASSER",
-      "next": ""
+      "next": "SUIVANT"
     }
   },
   "chat": {
@@ -415,7 +416,7 @@
       "devices": "Appareils"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Écrivez ici..."
     },
     "multi-member-settings": {
       "header-left-button": "Rechercher",
@@ -432,6 +433,11 @@
       "save-button": "Enregistrer la conversation sur un serveur",
       "erase-button": "Effacer la conversation",
       "leave-button": "Quitter le groupe"
+    },
+    "add-members": {
+      "members": "Membres",
+      "contacts": "",
+      "add": ""
     },
     "multi-member-qr": {
       "title": "Groupe QR"
@@ -457,7 +463,7 @@
       },
       "betabot-input-placeholder": "Ajouter le BetaBot pour écrire ici...",
       "incoming-input-placeholder": "Accepter la demande pour écrire ici...",
-      "input-placeholder": ""
+      "input-placeholder": "Écrivez ici..."
     },
     "one-to-one-settings": {
       "header-left-button": "Rechercher",
@@ -494,38 +500,43 @@
       "image-saved": "Image enregistrée dans la galerie"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
-      "links": "",
-      "documents": ""
+      "title": "Médias partagés",
+      "medias": "Médias",
+      "links": "Liens",
+      "documents": "Documents"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "Vous répondez à",
+      "replied-to": "Répondu à"
     }
   },
   "error": {
     "labels": {
-      "bug": "",
+      "bug": "Bug détecté",
       "crash": ""
     },
-    "restart-app": "",
+    "restart-app": "Redémarrez l'application",
     "wtf-screen": {
-      "title": "",
+      "title": "Quelle est l'erreur ?",
       "desc": "",
-      "desc-report": ""
+      "desc-report": "Secouez votre téléphone pour signaler le bug et cliquez sur le bouton pour quitter et redémarrer l'application."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "Désolé pour ce bug !",
+      "desc": "C'est la faute de Francis, le développeur stagiaire de Berty, qui a dû faire une erreur, quel idiot ce Francis !",
+      "desc-buy": "Il vous offrira une bière quand vous le verrez !",
+      "desc-em": "*Bon, ok, il n'y a pas de Francis dans l'équipe de Berty.",
+      "desc-report": "Secouez votre téléphone et c'est reparti !"
     }
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
+      "show-button": "Afficher l'inspecteur de l'application",
+      "hide-button": "Fermer",
+      "title": "Inspecteur",
       "accounts": {
-        "title": "",
+        "title": "Comptes",
         "unsupported-remote-mode": "",
         "data-not-found": "",
         "action-delete": {
@@ -533,37 +544,37 @@
           "account-exists": "",
           "directory-exists-load-error": "",
           "fs-read-error": "",
-          "actions-title": "",
+          "actions-title": "Que devrions-nous faire?",
           "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
+          "action-account-manager-confirm": "Confirmer la suppression du compte",
+          "action-force-delete": "Forcer la suppression",
+          "action-force-delete-confirm": "Confirmer la suppression forcée du compte",
+          "error-close": "Erreur lors de la fermeture du compte",
+          "error-delete": "Erreur lors de la suppression du compte",
+          "success-feedback": "Le compte a été supprimé",
           "action-cancel": "Annuler"
         },
         "status": {
-          "metadata-found": "",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
+          "metadata-found": "Fichier de métadonnées trouvé",
+          "metadata-not-found": "Fichier de métadonnées introuvable",
+          "ipfs-repo-config-found": "Fichier de configuration IPFS trouvé",
+          "ipfs-repo-config-not-found": "Fichier de configuration IPFS introuvable",
           "messenger-db-found": "",
           "messenger-db-not-found": ""
         },
         "infos": {
           "aligned": {
-            "name": "",
+            "name": "Nom : {{name}}",
             "created": "",
             "opened": "",
-            "error": ""
+            "error": "Erreur : {{error}}"
           }
         }
       },
       "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
+        "title": "Erreurs",
+        "header-reported": "Erreur signalée :",
+        "header-all-clear": "Aucune erreur signalée",
         "listing-files-failed": "",
         "listing-accounts-failed": "",
         "listing-accounts-failed-grpc": ""
@@ -571,9 +582,9 @@
       "dump": {
         "button": ""
       },
-      "refresh": "",
+      "refresh": "Actualiser",
       "confirm-alert": {
-        "button-confirm": "",
+        "button-confirm": "Confirmer",
         "button-cancel": "Annuler"
       }
     }
@@ -581,12 +592,17 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
+        "usage": "Maintenir pour enregistrer, relâcher pour envoyer",
+        "not-sent": "Le message audio n’a pas été envoyé",
         "permission-denied": ""
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< Glisser pour annuler",
       "cancel-button": "Annuler"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": "fichier"
   }
 }
