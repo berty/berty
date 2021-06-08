@@ -34,10 +34,10 @@ import {
 	MessengerActions,
 	PersistentOptionsKeys,
 } from '@berty-tech/store/context'
-
 import Long from 'long'
 import AsyncStorage from '@react-native-community/async-storage'
 import { tyberHostStorageKey } from '@berty-tech/store/providerEffects'
+import crashlytics from '@react-native-firebase/crashlytics'
 
 //
 // DevTools
@@ -599,6 +599,14 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
 				onPress={() => ctx.setDebugMode(true)}
+			/>
+			<ButtonSetting
+				name={t('settings.devtools.trigger-crashlytics-button')}
+				icon='umbrella-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				actionIcon='arrow-ios-forward'
+				onPress={() => crashlytics().crash()}
 			/>
 			<ButtonSettingRow
 				state={[

@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Device infos",
       "footer-middle-button": "List events",
-      "footer-right-button": "Restart daemon"
+      "footer-right-button": "Restart daemon",
+      "trigger-crashlytics-button": "Trigger crashlytics crash"
     },
     "system-info": {
       "title": "System info"
@@ -506,8 +507,8 @@
     },
     "reply": {
       "response-to": "Response to",
-      "replying-to":"You're replying to",
-      "replied-to":"Replied to"
+      "replying-to": "You're replying to",
+      "replied-to": "Replied to"
     }
   },
   "error": {
@@ -600,8 +601,8 @@
     }
   },
   "medias": {
-    "audio":"audio",
-    "picture":"picture",
-    "file":"file"
+    "audio": "audio",
+    "picture": "picture",
+    "file": "file"
   }
 }
