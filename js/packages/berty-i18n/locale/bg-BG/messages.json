@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Информация за устройства",
       "footer-middle-button": "Списък от събития",
-      "footer-right-button": "Рестартирай daemon-а"
+      "footer-right-button": "Рестартирай daemon-а",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Система информация"
@@ -433,6 +434,11 @@
       "erase-button": "Изтрии разговора",
       "leave-button": "Напусни групата"
     },
+    "add-members": {
+      "members": "Участници",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR код на групата"
     },
@@ -498,6 +504,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +599,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Отказ"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
