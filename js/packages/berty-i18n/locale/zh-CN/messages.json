@@ -349,7 +349,8 @@
       },
       "footer-left-button": "设备信息",
       "footer-middle-button": "显示事件",
-      "footer-right-button": "重启守护进程"
+      "footer-right-button": "重启守护进程",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "系统信息"
