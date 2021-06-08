@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Informazioni sul dispositivo",
       "footer-middle-button": "Elenca eventi",
-      "footer-right-button": "Riavvia il daemon"
+      "footer-right-button": "Riavvia il daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Informazioni di sistema"
