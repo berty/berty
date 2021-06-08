@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Informacje o urządzeniu",
       "footer-middle-button": "Lista wydarzeń",
-      "footer-right-button": "Zrestartuj daemon"
+      "footer-right-button": "Zrestartuj daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Informacje systemowe"
@@ -433,6 +434,11 @@
       "erase-button": "Usuń konwersację",
       "leave-button": "Opuść grupę"
     },
+    "add-members": {
+      "members": "Członkowie",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Grupy"
     },
@@ -498,6 +504,11 @@
       "medias": "Media",
       "links": "Linki",
       "documents": "Dokumenty"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +599,10 @@
       "slide-to-cancel": "<< Przesuń aby anulować",
       "cancel-button": "Anuluj"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
