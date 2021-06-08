@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Informace o zařízení",
       "footer-middle-button": "Zobrazit události",
-      "footer-right-button": "Restartovat démona"
+      "footer-right-button": "Restartovat démona",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Systémové informace"
@@ -433,6 +434,11 @@
       "erase-button": "Smazat konverzaci",
       "leave-button": "Opustit skupinu"
     },
+    "add-members": {
+      "members": "Členové",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR skupina"
     },
@@ -498,6 +504,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +599,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Zrušit"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
