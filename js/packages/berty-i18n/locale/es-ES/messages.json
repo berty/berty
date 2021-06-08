@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Información del dispositivo",
       "footer-middle-button": "Lista de eventos",
-      "footer-right-button": "Reiniciar el servicio"
+      "footer-right-button": "Reiniciar el servicio",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Información del sistema"
