@@ -2,6 +2,7 @@ package bertybridge
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -96,14 +97,6 @@ func NewBridge(config *Config) (*Bridge, error) {
 		b.nbDriver = config.nbDriver
 	}
 
-	// setup lifecycle manager
-	{
-		b.lifecycleManager = lifecycle.NewManager(bertymessenger.StateActive)
-		if lifecycleHandler := config.lc; lifecycleHandler != nil {
-			lifecycleHandler.RegisterHandler(b)
-		}
-	}
-
 	// setup native bridge client
 	{
 		opts := &bridge_svc.Options{
@@ -178,7 +171,13 @@ func NewBridge(config *Config) (*Bridge, error) {
 		}
 	}
 
-	// setup native bridge client
+	// setup lifecycle manager
+	{
+		b.lifecycleManager = lifecycle.NewManager(bertymessenger.StateActive)
+		if lifecycleHandler := config.lc; lifecycleHandler != nil {
+			lifecycleHandler.RegisterHandler(b)
+		}
+	}
 
 	// start Bridge
 	b.logger.Debug("starting Bridge")
@@ -206,9 +205,14 @@ func (b *Bridge) HandleState(appstate int) {
 
 func (b *Bridge) HandleTask() LifeCycleBackgroundTask {
 	return newBackgroundTask(b.logger, func(ctx context.Context) error {
+		if b.serviceAccount == nil {
+			return fmt.Errorf("service accnunt not initialized")
+		}
+
 		b.lifecycleManager.UpdateState(bertymessenger.StateActive)
 		err := b.serviceAccount.WakeUp(ctx)
 		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+
 		return err
 	})
 }
