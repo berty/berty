@@ -3,7 +3,7 @@ package networking
 import (
 	"errors"
 	"fmt"
-	"infratesting/composeTerraform"
+	"infratesting/iac"
 )
 
 type NetworkInterface struct {
@@ -18,7 +18,7 @@ type NetworkInterface struct {
 
 func NewNetworkInterface() NetworkInterface {
 	return NetworkInterface{
-		Name: composeTerraform.GenerateName(NetworkInterfaceNamePrefix),
+		Name: iac.GenerateName(NetworkInterfaceNamePrefix),
 	}
 }
 
@@ -53,7 +53,7 @@ func (c NetworkInterface) GetAvailabilityZone() string {
 }
 
 // Validate validates the component
-func (c NetworkInterface) Validate() (composeTerraform.Component, error) {
+func (c NetworkInterface) Validate() (iac.Component, error) {
 
 	// Subnet
 	if c.Subnet == nil {

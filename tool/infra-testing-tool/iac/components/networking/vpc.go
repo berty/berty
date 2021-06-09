@@ -3,7 +3,7 @@ package networking
 import (
 	"errors"
 	"fmt"
-	"infratesting/composeTerraform"
+	"infratesting/iac"
 	"net"
 )
 
@@ -14,7 +14,7 @@ type Vpc struct {
 
 func NewVpc() Vpc {
 	return Vpc{
-		Name:      composeTerraform.GenerateName(VpcNamePrefix),
+		Name:      iac.GenerateName(VpcNamePrefix),
 		CidrBlock: VpcCidrBlockDefault,
 	}
 }
@@ -40,7 +40,7 @@ func (c Vpc) GetType() string {
 }
 
 // Validate validates the component
-func (c Vpc) Validate() (composeTerraform.Component, error) {
+func (c Vpc) Validate() (iac.Component, error) {
 	// Validate CidrBlock
 	_, _, err := net.ParseCIDR(c.CidrBlock)
 	if err != nil {

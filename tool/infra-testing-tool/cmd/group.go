@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
-	"infratesting/configParse"
+	"infratesting/config"
 	"infratesting/testing"
 	"log"
 	"math/rand"
@@ -33,7 +33,7 @@ var (
 			for _, instance := range instances {
 				for _, tag := range instance.Tags {
 					// if instance is peer
-					if *tag.Key == "Type" && *tag.Value == configParse.NodeTypePeer {
+					if *tag.Key == "Type" && *tag.Value == config.NodeTypePeer {
 						p, err := testing.NewPeer(*instance.PublicIpAddress)
 						if err != nil {
 							return err

@@ -4,7 +4,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"infratesting/configParse"
+	"infratesting/config"
 )
 
 var (
@@ -60,7 +60,7 @@ func GetAllEligiblePeers() (peers []Peer, err error) {
 	for _, instance := range instances {
 		for _, tag := range instance.Tags {
 			// if instance is peer
-			if *tag.Key == "Type" && *tag.Value == configParse.NodeTypePeer {
+			if *tag.Key == "Type" && *tag.Value == config.NodeTypePeer {
 				p, err := NewPeer(*instance.PublicIpAddress)
 				if err != nil {
 

@@ -4,13 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	"infratesting/composeTerraform"
-	"infratesting/composeTerraform/components/networking"
+	"infratesting/iac"
+	"infratesting/iac/components/networking"
 )
 
 type Instance struct {
 	Name         string
-	Ami          string
 	InstanceType string
 	KeyName      string
 
@@ -35,7 +34,6 @@ func NewInstance() Instance {
 	// with defaults in place
 	return Instance{
 		Name:         fmt.Sprintf("%s-%s", Ec2NamePrefix, uuid.NewString()),
-		Ami:          Ec2InstanceAmiDefault,
 		InstanceType: Ec2InstanceTypeDefault,
 		KeyName:      Ec2InstanceKeyNameDefault,
 
@@ -73,8 +71,7 @@ func (c *Instance) SetNodeType(s string) {
 }
 
 // Validate validates the component
-func (c Instance) Validate() (composeTerraform.Component, error) {
-
+func (c Instance) Validate() (iac.Component, error) {
 	// checks if NetworkInterface is attached/configured
 	if len(c.NetworkInterfaces) > 0 {
 		// generates NetworkInterfaceAttachment form c.NetworkInterfaces

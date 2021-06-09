@@ -5,7 +5,7 @@ const (
 	// refer to https://golang.org/pkg/text/template/ for templating syntax
 	Ec2HCLTemplate = `
 resource "aws_instance" "{{.Name }}" {
-  ami = "{{.Ami }}"
+  ami = var.ami
   instance_type = "{{.InstanceType }}"
   key_name = "{{.KeyName}}"
 
@@ -38,9 +38,7 @@ resource "aws_instance" "{{.Name }}" {
 }
 `
 	// Default Ec2 Values
-	Ec2InstanceAmiDefault     = "ami-0886094d9531e6f03"
-	Ec2InstanceCountDefault   = 1
-	Ec2InstanceTypeDefault    = "t2.micro"
+	Ec2InstanceTypeDefault    = "t3.small"
 	Ec2InstanceKeyNameDefault = "berty_key"
 
 	// Ec2NamePrefix is the prefix for the Ec2 type

@@ -1,10 +1,10 @@
-package configParse
+package config
 
 import "C"
 import (
 	"fmt"
-	"infratesting/composeTerraform"
-	"infratesting/composeTerraform/components/networking"
+	"infratesting/iac"
+	"infratesting/iac/components/networking"
 
 	//relay "github.com/libp2p/go-libp2p-circuit"
 	"gopkg.in/yaml.v3"
@@ -25,7 +25,7 @@ type ConfigAttributes struct {
 	Groups      map[string]Group
 
 	Vpc                  networking.Vpc
-	ConnectionComponents map[string][]composeTerraform.Component
+	ConnectionComponents map[string][]iac.Component
 }
 
 var (
@@ -36,7 +36,7 @@ var (
 func init() {
 	configAttributes.Connections = make(map[string]Connection)
 	configAttributes.Groups = make(map[string]Group)
-	configAttributes.ConnectionComponents = make(map[string][]composeTerraform.Component)
+	configAttributes.ConnectionComponents = make(map[string][]iac.Component)
 }
 
 // validate validates the config

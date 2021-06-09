@@ -2,7 +2,7 @@ package networking
 
 import (
 	"errors"
-	"infratesting/composeTerraform"
+	"infratesting/iac"
 )
 
 type DefaultRouteTable struct {
@@ -17,7 +17,7 @@ type DefaultRouteTable struct {
 
 func NewDefaultRouteTable() DefaultRouteTable {
 	return DefaultRouteTable{
-		Name: composeTerraform.GenerateName(DefaultRouteTableNamePrefix),
+		Name: iac.GenerateName(DefaultRouteTableNamePrefix),
 	}
 }
 
@@ -40,7 +40,7 @@ func (c DefaultRouteTable) GetType() string {
 }
 
 // Validate validates the component
-func (c DefaultRouteTable) Validate() (composeTerraform.Component, error) {
+func (c DefaultRouteTable) Validate() (iac.Component, error) {
 
 	if c.Vpc == nil {
 		if c.VpcDefaultRouteTableId == "" {

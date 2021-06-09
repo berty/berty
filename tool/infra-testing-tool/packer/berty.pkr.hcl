@@ -8,7 +8,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-    ami_name = "berty-ami-build"
+    ami_name = "berty-ami"
     instance_type = "t3.2xlarge"
     region = "eu-central-1"
     source_ami_filter {

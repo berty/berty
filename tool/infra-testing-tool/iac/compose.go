@@ -1,4 +1,4 @@
-package composeTerraform
+package iac
 
 import (
 	"bytes"

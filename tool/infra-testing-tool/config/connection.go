@@ -1,10 +1,10 @@
-package configParse
+package config
 
 import (
 	"errors"
 	"fmt"
-	"infratesting/composeTerraform"
-	"infratesting/composeTerraform/components/networking"
+	"infratesting/iac"
+	"infratesting/iac/components/networking"
 	"strconv"
 	"strings"
 )
@@ -50,7 +50,7 @@ func (c *Connection) Validate() error {
 
 // composeComponents composes the terraform components based on the Connection
 func (c *Connection) composeComponents() {
-	var components []composeTerraform.Component
+	var components []iac.Component
 
 	// create VPC
 	var vpc networking.Vpc

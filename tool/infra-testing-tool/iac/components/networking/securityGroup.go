@@ -3,7 +3,7 @@ package networking
 import (
 	"errors"
 	"fmt"
-	"infratesting/composeTerraform"
+	"infratesting/iac"
 )
 
 type SecurityGroup struct {
@@ -12,14 +12,13 @@ type SecurityGroup struct {
 	Vpc   *Vpc
 	VpcId string
 
-	// TODO
-	// add components to modify ingress and egress rules
-	// ports, protocols, etc
+	// TODO: add components to modify ingress and egress rules, ports, protocols, etc
+	// for now it doesn't really matter
 }
 
 func NewSecurityGroup() SecurityGroup {
 	return SecurityGroup{
-		Name: composeTerraform.GenerateName(SecurityGroupNamePrefix),
+		Name: iac.GenerateName(SecurityGroupNamePrefix),
 	}
 }
 
@@ -46,7 +45,7 @@ func (c SecurityGroup) GetType() string {
 }
 
 // Validate validates the component
-func (c SecurityGroup) Validate() (composeTerraform.Component, error) {
+func (c SecurityGroup) Validate() (iac.Component, error) {
 	if c.Vpc == nil {
 		if c.VpcId == "" {
 			return c, errors.New(SecurityGroupErrNoVpc)

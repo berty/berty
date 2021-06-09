@@ -1,10 +1,10 @@
-package configParse
+package config
 
 import (
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
-	"infratesting/composeTerraform"
-	"infratesting/composeTerraform/components/various"
+	"infratesting/iac"
+	"infratesting/iac/components/various"
 )
 
 // Parse parses the config bytes.
@@ -15,7 +15,7 @@ import (
 // then it ranges over the nodes and composes a config for them
 // then it iterates over every component in Components and generates HCL
 // for now it just gets printed out to console
-func Parse(b []byte) (c Config, components []*[]composeTerraform.Component, err error) {
+func Parse(b []byte) (c Config, components []*[]iac.Component, err error) {
 	// unmarshal into Config struct
 	err = yaml.Unmarshal(b, &config)
 	if err != nil {
@@ -72,23 +72,29 @@ func Parse(b []byte) (c Config, components []*[]composeTerraform.Component, err 
 		}
 	}
 
+
+	// prepend AMI
+	ami := various.NewAmi()
+	components = prependComponents(components, ami)
+
 	// prepend new provider (provider aws)
 	// this is always required!
 	provider := various.NewProvider()
 	components = prependComponents(components, provider)
 
+
 	return config, components, err
 }
 
-func prependComponents(array []*[]composeTerraform.Component, item composeTerraform.Component) []*[]composeTerraform.Component {
-	return append([]*[]composeTerraform.Component{{item}}, array...)
+func prependComponents(array []*[]iac.Component, item iac.Component) []*[]iac.Component {
+	return append([]*[]iac.Component{{item}}, array...)
 }
 
-func ToHCL(components []*[]composeTerraform.Component) (hcl string) {
+func ToHCL(components []*[]iac.Component) (hcl string) {
 	for _, component := range components {
 		for _, subcomponent := range *component {
 			// convert the components into HCL compatible strings
-			s, err := composeTerraform.ToHCL(subcomponent)
+			s, err := iac.ToHCL(subcomponent)
 			if err != nil {
 				panic(err)
 			}

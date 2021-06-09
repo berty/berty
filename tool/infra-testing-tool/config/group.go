@@ -1,4 +1,4 @@
-package configParse
+package config
 
 type Group struct {
 	Name string `yaml:"name"`

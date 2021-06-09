@@ -3,7 +3,7 @@ package networking
 import (
 	"errors"
 	"fmt"
-	"infratesting/composeTerraform"
+	"infratesting/iac"
 	"net"
 )
 
@@ -17,7 +17,7 @@ type Subnet struct {
 
 func NewSubnet() Subnet {
 	return Subnet{
-		Name:             composeTerraform.GenerateName(SubnetNamePrefix),
+		Name:             iac.GenerateName(SubnetNamePrefix),
 		CidrBlock:        SubnetCidrBlockDefault,
 		AvailabilityZone: SubnetAvailabilityZoneDefault,
 	}
@@ -46,7 +46,7 @@ func (c Subnet) GetType() string {
 }
 
 // Validate validates the component
-func (c Subnet) Validate() (composeTerraform.Component, error) {
+func (c Subnet) Validate() (iac.Component, error) {
 	// Validate CidrBlock
 	_, _, err := net.ParseCIDR(c.CidrBlock)
 	if err != nil {

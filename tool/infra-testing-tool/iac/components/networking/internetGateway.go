@@ -3,7 +3,7 @@ package networking
 import (
 	"errors"
 	"fmt"
-	"infratesting/composeTerraform"
+	"infratesting/iac"
 )
 
 type InternetGateway struct {
@@ -15,7 +15,7 @@ type InternetGateway struct {
 
 func NewInternetGateway() InternetGateway {
 	return InternetGateway{
-		Name: composeTerraform.GenerateName(InternetGatewayNamePrefix),
+		Name: iac.GenerateName(InternetGatewayNamePrefix),
 	}
 }
 
@@ -42,7 +42,7 @@ func (c InternetGateway) GetType() string {
 }
 
 // Validate validates the component
-func (c InternetGateway) Validate() (composeTerraform.Component, error) {
+func (c InternetGateway) Validate() (iac.Component, error) {
 
 	if c.Vpc == nil {
 		if c.VpcId == "" {

@@ -2,7 +2,7 @@ package various
 
 import (
 	"errors"
-	"infratesting/composeTerraform"
+	"infratesting/iac"
 )
 
 type Provider struct {
@@ -35,7 +35,7 @@ func (c Provider) GetType() string {
 	return ProviderType
 }
 
-func (c Provider) Validate() (composeTerraform.Component, error) {
+func (c Provider) Validate() (iac.Component, error) {
 	if c.Region == "" {
 		return c, errors.New(ProviderErrNoRegion)
 	}

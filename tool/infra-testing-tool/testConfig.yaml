@@ -8,14 +8,8 @@ rdvp:
             protocol: tcp
 
 peer:
-    - name: test peers1
-      amount: 1
-      connections:
-        - name: connection 1
-          to: internet
-          protocol: tcp
-    - name: test peers2
-      amount: 1
+    - name: test peers 1
+      amount: 4
       connections:
         - name: connection 1
           to: internet
