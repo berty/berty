@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
-	"sync"
 	"time"
 )
 
@@ -16,10 +15,10 @@ type Peer struct {
 	Protocol  protocoltypes.ProtocolServiceClient
 
 	Ip       string
-	Groups   map[string][]byte
+	Groups   map[string]*protocoltypes.Group
 	DevicePK []byte
-	Acks     sync.Map
 	Messages []MessageHistory
+	lastMessageID []byte
 }
 
 type MessageHistory struct {
@@ -37,7 +36,7 @@ const (
 func NewPeer(ip string) (p Peer, err error) {
 	p.Ip = ip
 
-	p.Groups = make(map[string][]byte)
+	p.Groups = make(map[string]*protocoltypes.Group)
 
 	ctx := context.Background()
 	cc, err := grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())

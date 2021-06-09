@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"infratesting/testing"
 	"log"
+	"time"
 )
 
 var (
@@ -31,25 +32,42 @@ var (
 				log.Println(err)
 			}
 
+			err = leader.ActivateGroup(groupName)
+			if err != nil {
+				log.Println(err)
+			}
+
 			for _, follower := range availablePeers[1:] {
 				err := follower.JoinInvite(inv, groupName)
 				if err != nil {
 					log.Println(err)
 				}
+
+				err = follower.ActivateGroup(groupName)
+				if err != nil {
+					log.Println(err)
+				}
+
 			}
 
-			for i:=0; i<=100; i+=1 {
+			for i:=0; i<5; i+=1 {
 				err = leader.SendMessage(groupName)
+				time.Sleep(time.Second * 1)
 				if err != nil {
 					panic(err)
 				}
 			}
+
+			time.Sleep(time.Second * 8)
 
 			for _, follower := range availablePeers[1:] {
 				err = follower.GetMessageList(groupName)
 				if err != nil {
 					panic(err)
 				}
+
+
+				fmt.Println(follower.Messages)
 			}
 
 

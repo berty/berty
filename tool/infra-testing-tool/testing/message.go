@@ -3,11 +3,11 @@ package testing
 import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"bytes"
+	"encoding/base64"
 	"fmt"
-	"github.com/gogo/protobuf/proto"
+	"github.com/golang/protobuf/proto"
+	"github.com/google/uuid"
 	"log"
-	"time"
-
 	//"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"context"
@@ -15,12 +15,26 @@ import (
 )
 
 func (p *Peer) SendMessage(groupName string) error {
-	pk := p.Groups[groupName]
+	s := uuid.NewString()[:5]
 
-	_, err := p.Protocol.AppMessageSend(context.Background(), &protocoltypes.AppMessageSend_Request{
-		GroupPK: pk,
-		Payload: []byte("hello"),
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
+		Body: s,
 	})
+	if err != nil {
+		return err
+	}
+
+	_, err = p.Messenger.Interact(context.Background(), &messengertypes.Interact_Request{
+		Type: messengertypes.AppMessage_TypeUserMessage,
+		Payload: payload,
+		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(p.Groups[groupName].GetPublicKey()),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("sent: " + s)
 
 	return err
 }
@@ -28,14 +42,18 @@ func (p *Peer) SendMessage(groupName string) error {
 func (p *Peer) GetMessageList(groupName string) error {
 	pk := p.Groups[groupName]
 
-	req := &protocoltypes.GroupMessageList_Request{
-		GroupPK:  pk,
-		UntilNow: true,
+	ctx := context.Background()
+
+	var req protocoltypes.GroupMessageList_Request
+	if p.lastMessageID == nil {
+		req = protocoltypes.GroupMessageList_Request{GroupPK: pk.PublicKey, UntilNow: true}
+	} else {
+		req = protocoltypes.GroupMessageList_Request{GroupPK: pk.PublicKey, UntilID: p.lastMessageID}
 	}
 
-	cl, err := p.Protocol.GroupMessageList(context.Background(), req)
+	cl, err := p.Protocol.GroupMessageList(ctx, &req)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	for {
@@ -46,54 +64,45 @@ func (p *Peer) GetMessageList(groupName string) error {
 			}
 			break
 		}
+		p.lastMessageID = evt.EventContext.ID
 
-		fmt.Println(string(evt.Message))
-
-		_, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
+		amp, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
 		if err != nil {
 			log.Println(err)
 			continue
 		}
-
-		repl, err := p.Protocol.GroupInfo(context.Background(), &protocoltypes.GroupInfo_Request{})
-		fmt.Println(repl.Size())
-
 
 		switch am.GetType() {
 		case messengertypes.AppMessage_TypeAcknowledge:
 			if !bytes.Equal(evt.Headers.DevicePK, p.DevicePK) {
 				continue
 			}
-			var payload messengertypes.AppMessage_Acknowledge
-			err := proto.Unmarshal(am.GetPayload(), &payload)
-			if err != nil {
-				return err
-			}
-			p.Acks.Store(am.TargetCID, true)
+			log.Println("new ack")
 
 		case messengertypes.AppMessage_TypeUserMessage:
-			var payload messengertypes.AppMessage_UserMessage
-			err := proto.Unmarshal(am.GetPayload(), &payload)
-			if err != nil {
-				return err
-			}
-
-			fmt.Println(payload.GetBody())
-
-			p.Messages = append(p.Messages, MessageHistory{
-				MessageType: uint64(am.GetType()),
-				Sender:      evt.Headers.DevicePK,
-				ReceivedAt:  time.Time{},
-				Payload:     []byte(payload.GetBody()),
-			})
-			p.ack(context.Background(), evt)
+			payload := amp.(*messengertypes.AppMessage_UserMessage)
+			fmt.Println(payload.Body)
+		default:
+			fmt.Println(am.GetType())
 		}
 	}
 
 	return nil
 }
 
-func (p *Peer) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent) {
+func (p *Peer) ActivateGroup (groupName string) error {
+	pk := p.Groups[groupName].GetPublicKey()
+
+	_, err := p.Protocol.ActivateGroup(context.Background(), &protocoltypes.ActivateGroup_Request{GroupPK: pk})
+	return err
+}
+
+
+func (p *Peer) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent, groupName string) {
+	if p.Groups[groupName].GroupType != protocoltypes.GroupTypeContact {
+		return
+	}
+
 	_, err := p.Messenger.SendAck(ctx, &messengertypes.SendAck_Request{
 		GroupPK:   evt.EventContext.GroupPK,
 		MessageID: evt.EventContext.ID,

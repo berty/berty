@@ -23,7 +23,7 @@ func (p *Peer) GetInvite(groupName string) (invite *messengertypes.ShareableBert
 	})
 
 	// add group to peers' groups
-	p.Groups[groupName] = resCreate.GroupPK
+	p.Groups[groupName] = invite.Link.GetBertyGroup().Group
 
 	return invite, err
 }
@@ -41,6 +41,6 @@ func (p *Peer) JoinInvite(invite *messengertypes.ShareableBertyGroup_Reply, grou
 	}
 
 	// add group to peers' groups
-	p.Groups[groupName] = link.GetBertyGroup().Group.PublicKey
+	p.Groups[groupName] = invite.Link.GetBertyGroup().Group
 	return err
 }
