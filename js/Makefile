@@ -112,7 +112,6 @@ endif
 	rm -rf ios/build
 	rm -rf ios/Pods
 	rm -rf ios/Frameworks/Bertybridge.framework
-	rm -rf ios/tor-deps
 	rm -rf ios/vendor
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
@@ -370,7 +369,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 			./go/framework/bertybridge
 	touch $@
 
-ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json ios/OpenSSL-Universal-Override.podspec node_modules
+ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json node_modules
 	$(call check-program, bundle)
 	cd ios && bundle exec pod install $(if $(filter-out $(CI), true),--repo-update)
 	touch $@

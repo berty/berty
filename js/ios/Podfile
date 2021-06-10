@@ -8,9 +8,6 @@ target 'Berty' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  # override OpenSSL-Universal with own openssl static lib
-  # pod 'OpenSSL-Universal', :path => "./OpenSSL-Universal-Override.podspec"
-
   # required custom import of permission handler
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-BluetoothPeripheral', :path => "#{permissions_path}/BluetoothPeripheral"
