@@ -50,16 +50,15 @@ var (
 
 			}
 
-			for i:=0; i<100; i+=1 {
-				//go func() {
+			time.Sleep(time.Second*5)
+
+			for i:=0; i<5; i+=1 {
+				go func() {
 					err = leader.SendMessage(groupName)
-					//time.Sleep(time.Second * 1)
 					if err != nil {
 						panic(err)
 					}
-				//}()
-
-
+				}()
 			}
 
 			time.Sleep(time.Second*3)
@@ -69,7 +68,6 @@ var (
 				if err != nil {
 					panic(err)
 				}
-
 
 				fmt.Println(follower.Messages)
 			}

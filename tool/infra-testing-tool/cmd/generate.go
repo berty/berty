@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"infratesting/config"
 	"strings"
@@ -9,23 +10,34 @@ import (
 var (
 	generateCmd = &cobra.Command{
 		Use: "generate",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			b, err := config.OpenConfig(File)
 			if err != nil {
 				return err
 			}
 
+			var output string
+
 			switch strings.ToLower(OutputFmt) {
 			case OutputFmtHCL:
-				return config.OutputHcl(b)
+				output, err = config.OutputHcl(b)
 			case OutputFmtJson:
-				return config.OutputJson(b)
+				output, err = config.OutputJson(b)
 			case OutputFmtYaml:
-				return config.OutputYaml(b)
+				output, err = config.OutputYaml(b)
 			default:
-				return config.OutputHcl(b)
+				output, err = config.OutputHcl(b)
 			}
+
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(output)
+			return nil
 		},
 	}
 )
+
+

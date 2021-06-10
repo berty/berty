@@ -30,7 +30,7 @@ func Parse(b []byte) (c Config, components []*[]iac.Component, err error) {
 	// converting to a map[string]interface{} allows us to iterate over the config instead of having to manually do
 	// ```for _, peer := range c.Peers {}```
 	// for every type (of which there might be many in the future)
-	var cMap map[string][]Node
+	var cMap map[string][]NodeGroup
 	err = mapstructure.Decode(config, &cMap)
 	if err != nil {
 		return config, components, err

@@ -12,12 +12,12 @@ import (
 )
 
 type Config struct {
-	RDVP      []Node `yaml:"rdvp"`
-	Relay     []Node `yaml:"relay"`
-	Bootstrap []Node `yaml:"bootstrap"`
+	RDVP      []NodeGroup `yaml:"rdvp"`
+	Relay     []NodeGroup `yaml:"relay"`
+	Bootstrap []NodeGroup `yaml:"bootstrap"`
 
-	Replication []Node `yaml:"replication"`
-	Peer        []Node `yaml:"peer"`
+	Replication []NodeGroup `yaml:"replication"`
+	Peer        []NodeGroup `yaml:"peer"`
 }
 
 type ConfigAttributes struct {

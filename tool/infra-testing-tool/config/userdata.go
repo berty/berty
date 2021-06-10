@@ -2,14 +2,10 @@ package config
 
 import (
 	"bytes"
-	crand "crypto/rand"
-	"encoding/base64"
 	"errors"
 	"fmt"
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
-	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
-	"html/template"
 	"strconv"
+	"text/template"
 )
 
 // This file contains all the user data / startup scripts for each of the different node types
@@ -59,7 +55,7 @@ berty daemon \
 export PROTOC=tcp
 export PORT={{.Port }}
 export PEER_ID={{.PeerId }}
-rdvp serve -pk {{.Pk }} \
+rdvp serve -pk {{.Pk | printf "%s" }} \
     -l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
 	-log.file=/home/ubuntu/log
 `
@@ -71,7 +67,7 @@ export PORT={{.Port }}
 export PEER_ID={{.PeerId }}
 rdvp serve -pk {{.Pk }} \
 	-announce "/ip4/$PUBLIC_IP4/$PROTOC/$port" \
-	-l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \p
+	-l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
 	-log.file=/home/ubuntu/log
 `
 
@@ -83,16 +79,15 @@ rdvp serve -pk {{.Pk }} \
 // GenerateUserData generates the user data for the node
 // it combines the userdata templates for each type with the variables inside the node
 // Look at userdata.go for more information on the user data
-func (c *Node) GenerateUserData(i int) (s string, err error) {
+func (c *NodeGroup) GenerateUserData(i int) (s string, err error) {
 
 	// template
 	var templ string
 	// values
-	values := make(map[string]string)
+	values := make(map[string]interface{})
 
 	switch c.NodeType {
 	case NodeTypePeer:
-
 		templ = peerUserData
 
 		values["Port"] = strconv.Itoa(c.NodeAttributes[i].Port)
@@ -104,11 +99,9 @@ func (c *Node) GenerateUserData(i int) (s string, err error) {
 		values["RDVPMaddr"] = rdvp.getFullMultiAddr(0)
 
 	case NodeTypeBootstrap:
-
 		templ = bootstrapUserData
 
 	case NodeTypeRDVP:
-
 		templ = rdvpUserData
 
 		values["Port"] = strconv.Itoa(c.NodeAttributes[i].Port)
@@ -148,12 +141,12 @@ func toHCLStringFormat(s string) string {
 }
 
 // getPublicIP returns the terraform formatting of this Nodes ip
-func (c Node) getPublicIP(i int) string {
+func (c NodeGroup) getPublicIP(i int) string {
 	return toHCLStringFormat(fmt.Sprintf("aws_instance.%s.public_ip", c.Names[i]))
 }
 
 // getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
-func (c Node) getFullMultiAddr(i int) string {
+func (c NodeGroup) getFullMultiAddr(i int) string {
 	// this can only be done for RDVP and Relay
 	// as other node types don't have a peerId pre-configured
 	if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
@@ -161,26 +154,4 @@ func (c Node) getFullMultiAddr(i int) string {
 	}
 
 	panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
-}
-
-// genkey generates a private and public key
-func genkey() (pk string, pid string, err error) {
-	priv, _, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.Ed25519, -1, crand.Reader)
-	if err != nil {
-		return pk, pid, err
-	}
-
-	pkBytes, err := libp2p_ci.MarshalPrivateKey(priv)
-	if err != nil {
-		return pk, pid, err
-	}
-
-	pk = base64.StdEncoding.EncodeToString(pkBytes)
-
-	peerId, err := libp2p_peer.IDFromPublicKey(priv.GetPublic())
-	if err != nil {
-		return pk, pid, err
-	}
-
-	return pk, peerId.String(), err
 }

@@ -10,6 +10,7 @@ require (
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/spf13/cobra v1.1.3
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	google.golang.org/grpc v1.37.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )

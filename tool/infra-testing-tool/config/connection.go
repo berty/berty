@@ -23,7 +23,7 @@ const (
 )
 
 // ParseConnections takes the connection, adds it to the global connections
-func (c Node) parseConnections() {
+func (c NodeGroup) parseConnections() {
 	for _, con := range c.Connections {
 		configAttributes.Connections[con.To] = con
 	}

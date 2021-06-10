@@ -82,8 +82,6 @@ func (p *Peer) GetMessageList(groupName string) error {
 		case messengertypes.AppMessage_TypeUserMessage:
 			payload := amp.(*messengertypes.AppMessage_UserMessage)
 			fmt.Println(payload.Body)
-		default:
-			fmt.Println(am.GetType())
 		}
 	}
 

@@ -2,48 +2,44 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"gopkg.in/yaml.v3"
 )
 
-func OutputYaml(b []byte) error {
+func OutputYaml(b []byte) (s string, err error) {
 	c, _, err := Parse(b)
 	if err != nil {
-		return err
+		return s, err
 	}
 
-	s, err := yaml.Marshal(c)
+	b, err = yaml.Marshal(c)
 	if err != nil {
-		panic(err)
+		return s, err
 	}
 
-	fmt.Println(string(s))
-	return nil
+	return string(b), nil
 }
 
-func OutputJson(b []byte) error {
+func OutputJson(b []byte) (s string, err error) {
 	c, _, err := Parse(b)
 	if err != nil {
-		return err
+		return s, err
 	}
 
-	s, err := json.MarshalIndent(c, "", "	")
+	b, err = json.MarshalIndent(c, "", "	")
 	if err != nil {
-		panic(err)
+		return s, err
 	}
 
-	fmt.Println(string(s))
-	return nil
+	return string(b), nil
 }
 
-func OutputHcl(b []byte) error {
+func OutputHcl(b []byte) (s string, err error) {
 	_, comp, err := Parse(b)
 	if err != nil {
-		return err
+		return s, err
 	}
 
-	s := ToHCL(comp)
-	fmt.Println(s)
-	return err
+	s = ToHCL(comp)
+	return s, err
 }
 

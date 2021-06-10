@@ -9,7 +9,7 @@ rdvp:
 
 peer:
     - name: test peers 1
-      amount: 4
+      amount: 8
       connections:
         - name: connection 1
           to: internet
