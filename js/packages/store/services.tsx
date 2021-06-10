@@ -1,6 +1,6 @@
 import InAppBrowser from 'react-native-inappbrowser-reborn'
 import { MsgrState } from './context'
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import { useAccount } from './hooks'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { Service } from '@berty-tech/grpc-bridge'
@@ -83,16 +83,20 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 
 	if (await InAppBrowser.isAvailable()) {
 		try {
-			const response: any = await InAppBrowser.openAuth(authURL, 'berty://', {
-				dismissButtonStyle: 'cancel',
-				readerMode: false,
-				modalPresentationStyle: 'pageSheet',
-				modalEnabled: true,
-				showTitle: true,
-				enableDefaultShare: false,
-				ephemeralWebSession: true,
-				// forceCloseOnRedirection: false,
-			})
+			const response: any = await InAppBrowser.openAuth(
+				authURL,
+				Platform.OS == 'ios' ? 'berty' : 'berty://',
+				{
+					dismissButtonStyle: 'cancel',
+					readerMode: false,
+					modalPresentationStyle: 'pageSheet',
+					modalEnabled: true,
+					showTitle: true,
+					enableDefaultShare: false,
+					ephemeralWebSession: true,
+					// forceCloseOnRedirection: false,
+				},
+			)
 
 			if (!response.url) {
 				return
