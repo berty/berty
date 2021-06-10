@@ -131,15 +131,15 @@ PODS:
   - OpenSSL-Universal (1.1.180):
     - OpenSSL-Universal/Static (= 1.1.180)
   - OpenSSL-Universal/Static (1.1.180)
-  - Permission-BluetoothPeripheral (3.0.0):
+  - Permission-BluetoothPeripheral (3.0.4):
     - RNPermissions
-  - Permission-Camera (3.0.0):
+  - Permission-Camera (3.0.4):
     - RNPermissions
-  - Permission-Microphone (3.0.0):
+  - Permission-Microphone (3.0.4):
     - RNPermissions
-  - Permission-Notifications (3.0.0):
+  - Permission-Notifications (3.0.4):
     - RNPermissions
-  - Permission-PhotoLibrary (3.0.0):
+  - Permission-PhotoLibrary (3.0.4):
     - RNPermissions
   - PromisesObjC (1.2.12)
   - RCTRequired (0.63.4)
@@ -427,7 +427,7 @@ PODS:
     - TOCropViewController
   - RNInAppBrowser (3.5.1):
     - React-Core
-  - RNPermissions (3.0.0):
+  - RNPermissions (3.0.4):
     - React-Core
   - RNReanimated (1.13.2):
     - React-Core
@@ -439,7 +439,7 @@ PODS:
     - React
   - RNVectorIcons (7.1.0):
     - React
-  - Shake (14.1.3)
+  - Shake (14.1.6)
   - TOCropViewController (2.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -715,11 +715,11 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OGReactNativeWaveform: f789fabadbf3904c7cba84d183405395861b8fed
   OpenSSL-Universal: 26d2c5d1491ecb6cefbe93252904169b0398bf8a
-  Permission-BluetoothPeripheral: 0111f6d0b7c3e9013c6b93ab6fa6446875facf03
-  Permission-Camera: 119b01de97a5b3edb637999e38476b68143b9d17
-  Permission-Microphone: e426a115ddf9591e8c30c55ea2b28572d4cbd07e
-  Permission-Notifications: 5c69bf2f6c1e30345af4f25e2981dc1c8dafbc22
-  Permission-PhotoLibrary: cb9cdc1e3744e26ab404297a8e289d50c8ee27e8
+  Permission-BluetoothPeripheral: 742b306312f329b809e2f62e475b0b61b206962b
+  Permission-Camera: 74dc395c37a06ebe915069c5dca954c7a2a5a2e3
+  Permission-Microphone: 450ff628a7146c415cfb98025e518810d9fa76ad
+  Permission-Notifications: 5b4a12a9b52866667423c93d3af8e43b81872cf4
+  Permission-PhotoLibrary: 440f206f0d36e5951c4c9b28567f60471fdddfb5
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
@@ -762,13 +762,13 @@ SPEC CHECKSUMS:
   RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
   RNImageCropPicker: 9e0bf18cf4184a846fed55747c8e622208b39947
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
-  RNPermissions: 99dd8d4a30ff13509b949ca63cd1f69edc461775
+  RNPermissions: c46788f4cd402287425983e04a4c9bb4356036eb
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: b6c9607e6fe47c1b6e2f1910d2acd46dd7ecea3a
   RNShare: d22507fa5e80c72f236b5622556cf831de5b1e93
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
-  Shake: 947d11f465693f75b391c46ca9527f8f835ce6c8
+  Shake: b5fdaf455492a402285781ad81918808458523eb
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
