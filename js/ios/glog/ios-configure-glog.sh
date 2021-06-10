@@ -33,7 +33,7 @@ fi
 curl -sSL --fail -o config.sub 'https://gist.githubusercontent.com/gfanton/f7dd19c299bef99d323cb08c650bb02e/raw/2f5a76ffd38cdac678adf6a9f12600e9d16e7345/config.darwin-arm-patch.sub'
 
 # check shasum of the file
-echo 'a743811464b00f3e2372f5368035fdc38f322a3a config.sub' | sha1sum -c || exit 1
+echo 'a743811464b00f3e2372f5368035fdc38f322a3a  config.sub' | shasum -a 1 -c || exit 1
 
 ./configure --host arm-apple-darwin
 
