@@ -50,9 +50,9 @@ var (
 
 			}
 
-			time.Sleep(time.Second*5)
+			time.Sleep(time.Second * 5)
 
-			for i:=0; i<5; i+=1 {
+			for i := 0; i < 5; i += 1 {
 				go func() {
 					err = leader.SendMessage(groupName)
 					if err != nil {
@@ -61,7 +61,7 @@ var (
 				}()
 			}
 
-			time.Sleep(time.Second*3)
+			time.Sleep(time.Second * 3)
 
 			for _, follower := range availablePeers[1:] {
 				err = follower.GetMessageList(groupName)

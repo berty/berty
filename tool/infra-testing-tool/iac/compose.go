@@ -17,13 +17,7 @@ type Component interface {
 
 // ToHCL converts the component to an HCL compatible string
 // https://github.com/hashicorp/hcl
-func ToHCL(comp Component) (s string, err error) {
-
-	// Validate
-	comp, err = comp.Validate()
-	if err != nil {
-		return s, err
-	}
+func ToHCL(comp Component) (_ Component, s string, err error) {
 
 	// convert struct to map[string]interface{}
 	v := reflect.ValueOf(comp)
@@ -38,12 +32,12 @@ func ToHCL(comp Component) (s string, err error) {
 	buf := &bytes.Buffer{}
 	err = t.Execute(buf, values)
 	if err != nil {
-		return s, err
+		return comp, s, err
 	}
 
 	s += buf.String()
 
-	return s, err
+	return comp, s, err
 }
 
 // GenerateName generates a name based off a UUID

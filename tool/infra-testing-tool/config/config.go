@@ -44,32 +44,37 @@ func (c *Config) validate() error {
 
 	for i := range c.RDVP {
 
-		_ = c.RDVP[i].validate()
 		c.RDVP[i].NodeType = NodeTypeRDVP
+		_ = c.RDVP[i].validate()
+
 	}
 
 	for i := range c.Relay {
 
-		_ = c.Relay[i].validate()
 		c.Relay[i].NodeType = NodeTypeRelay
+		_ = c.Relay[i].validate()
+
 	}
 
 	for i := range c.Bootstrap {
 
-		_ = c.Bootstrap[i].validate()
 		c.Bootstrap[i].NodeType = NodeTypeBootstrap
+		_ = c.Bootstrap[i].validate()
+
 	}
 
 	for i := range c.Replication {
 
-		_ = c.Replication[i].validate()
 		c.Replication[i].NodeType = NodeTypeReplication
+		_ = c.Replication[i].validate()
+
 	}
 
 	for i := range c.Peer {
 
-		_ = c.Peer[i].validate()
 		c.Peer[i].NodeType = NodeTypePeer
+		_ = c.Peer[i].validate()
+
 	}
 
 	// TODO

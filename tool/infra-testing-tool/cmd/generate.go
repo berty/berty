@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"infratesting/config"
-	"strings"
 )
 
 var (
@@ -17,27 +15,22 @@ var (
 				return err
 			}
 
-			var output string
-
-			switch strings.ToLower(OutputFmt) {
-			case OutputFmtHCL:
-				output, err = config.OutputHcl(b)
-			case OutputFmtJson:
-				output, err = config.OutputJson(b)
-			case OutputFmtYaml:
-				output, err = config.OutputYaml(b)
-			default:
-				output, err = config.OutputHcl(b)
-			}
-
+			hcl, y, err := config.OutputNormal(b)
 			if err != nil {
 				return err
 			}
 
-			fmt.Println(output)
+			err = writeFile(hcl, DefaultTFFile)
+			if err != nil {
+				return err
+			}
+
+			err = writeFile(y, DefaultStateFile)
+			if err != nil {
+				return err
+			}
+
 			return nil
 		},
 	}
 )
-
-

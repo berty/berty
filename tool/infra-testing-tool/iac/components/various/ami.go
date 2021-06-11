@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/sts"
 	"infratesting/iac"
+	"log"
 )
 
 var (
@@ -52,6 +53,7 @@ func (c Ami) GetType() string {
 }
 
 func (c Ami) Validate() (iac.Component, error) {
+	log.Println("getting CalledIdentity & AMI's")
 	r, err := stssess.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 	if err != nil {
 		return c, err

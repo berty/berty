@@ -32,17 +32,25 @@ type NodeGroup struct {
 	// name prefix given in config
 	Name        string       `yaml:"name"`
 	// name given to individual nodes
-	Names 		[]string
+
+	Nodes []Node `yaml:"nodes"`
 
 	Amount      int          `yaml:"amount"`
 	Groups      []Group      `yaml:"groups"`
 	Connections []Connection `yaml:"connections"`
 
-	NodeType       string
-	NodeAttributes []NodeAttributes
+	NodeType       string `yaml:"nodeType"`
 
 	// attached components
 	Components []iac.Component
+
+}
+
+type Node struct {
+	Name string `yaml:"name"`
+	Ip  string `yaml:"ip"`
+	NodeType       string `yaml:"nodeType"`
+	NodeAttributes NodeAttributes `yaml:"nodeAttributes"`
 }
 
 type NodeAttributes struct {
@@ -54,7 +62,7 @@ type NodeAttributes struct {
 
 func (c *NodeGroup) validate() bool {
 	for i:=0; i<c.Amount; i+=1 {
-		c.Names = append(c.Names, c.generateName())
+		c.Nodes = append(c.Nodes, Node{Name: c.generateName(), NodeType: c.NodeType})
 	}
 
 	return true
@@ -65,9 +73,8 @@ func (c *NodeGroup) composeComponents() {
 		comps             []iac.Component
 	)
 
-	for i:=0; i<c.Amount; i+=1 {
+	for i, node := range c.Nodes {
 		var networkInterfaces []*networking.NetworkInterface
-		c.NodeAttributes = append(c.NodeAttributes, NodeAttributes{})
 
 		for _, connection := range c.Connections {
 			key := connection.To
@@ -91,13 +98,15 @@ func (c *NodeGroup) composeComponents() {
 			comps = append(comps, ni)
 		}
 
+		var na NodeAttributes
+
 		instance := ec2.NewInstance()
-		instance.Name = c.Names[i]
+		instance.Name = node.Name
 		instance.NetworkInterfaces = networkInterfaces
 		instance.NodeType = c.NodeType
 
-		c.NodeAttributes[i].Port = generatePort()
-		c.NodeAttributes[i].Protocol = "tcp"
+		na.Port = generatePort()
+		na.Protocol = "tcp"
 
 		// only do this for RDVP and Relay
 		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
@@ -106,22 +115,34 @@ func (c *NodeGroup) composeComponents() {
 				log.Println(err)
 			}
 
-			c.NodeAttributes[i].Pk = pk
-			c.NodeAttributes[i].PeerId = peerId
+			na.Pk = pk
+			na.PeerId = peerId
 
-
-			//fmt.Println(c.getFullMultiAddr(i))
 		}
 
-		var err error
-		instance.UserData, err = c.GenerateUserData(i)
+		node.NodeAttributes = na
+
+		s, err := node.GenerateUserData()
 		if err != nil {
 			panic(err)
 		}
 
+		instance.UserData = s
+
 		comps = append(comps, instance)
 
+		c.Nodes[i] = node
 	}
+
+	for i, comp := range comps {
+		c, err := comp.Validate()
+		if err != nil {
+			panic(err)
+		}
+
+		comps[i] = c
+	}
+
 	c.Components = comps
 }
 

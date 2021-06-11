@@ -71,3 +71,7 @@ func (p *Peer) getSvcClients() {
 func (p *Peer) GetHost() string {
 	return fmt.Sprintf("%s:%s", p.Ip, defaultGrpcPort)
 }
+
+func MatchNodesToPeers() {
+
+}

@@ -2,6 +2,8 @@
 .terraform.*
 terraform.*
 .terraform/
-*.tf
+.main.tf
+*main.tf
+state.yaml
 
 THOUGHTS.md

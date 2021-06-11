@@ -23,10 +23,12 @@ const (
 )
 
 // ParseConnections takes the connection, adds it to the global connections
-func (c NodeGroup) parseConnections() {
+func (c NodeGroup) parseConnections() error {
 	for _, con := range c.Connections {
 		configAttributes.Connections[con.To] = con
 	}
+
+	return nil
 }
 
 // Validate validates the connections
@@ -86,7 +88,6 @@ func (c *Connection) composeComponents() {
 
 	// append components to configs' ConnectionComponents
 	configAttributes.ConnectionComponents[c.To] = append(configAttributes.ConnectionComponents[c.To], components...)
-
 }
 
 // countSubnets returns the amount of subnets

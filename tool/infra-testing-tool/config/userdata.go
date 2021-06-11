@@ -79,7 +79,7 @@ rdvp serve -pk {{.Pk }} \
 // GenerateUserData generates the user data for the node
 // it combines the userdata templates for each type with the variables inside the node
 // Look at userdata.go for more information on the user data
-func (c *NodeGroup) GenerateUserData(i int) (s string, err error) {
+func (c *Node) GenerateUserData() (s string, err error) {
 
 	// template
 	var templ string
@@ -90,7 +90,7 @@ func (c *NodeGroup) GenerateUserData(i int) (s string, err error) {
 	case NodeTypePeer:
 		templ = peerUserData
 
-		values["Port"] = strconv.Itoa(c.NodeAttributes[i].Port)
+		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
 		values["defaultGrpcPort"] = defaultGrpcPort
 
 		// arbitrary choice for now
@@ -99,23 +99,25 @@ func (c *NodeGroup) GenerateUserData(i int) (s string, err error) {
 		values["RDVPMaddr"] = rdvp.getFullMultiAddr(0)
 
 	case NodeTypeBootstrap:
+		//TODO make this
 		templ = bootstrapUserData
 
 	case NodeTypeRDVP:
 		templ = rdvpUserData
 
-		values["Port"] = strconv.Itoa(c.NodeAttributes[i].Port)
-		values["PeerId"] = c.NodeAttributes[i].PeerId
-		values["Pk"] = c.NodeAttributes[i].Pk
+		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["PeerId"] = c.NodeAttributes.PeerId
+		values["Pk"] = c.NodeAttributes.Pk
 
 	case NodeTypeRelay:
 		templ = relayUserData
 
-		values["Port"] = strconv.Itoa(c.NodeAttributes[i].Port)
-		values["PeerId"] = c.NodeAttributes[i].PeerId
-		values["Pk"] = c.NodeAttributes[i].Pk
+		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["PeerId"] = c.NodeAttributes.PeerId
+		values["Pk"] = c.NodeAttributes.Pk
 
 	case NodeTypeReplication:
+		//TODO make this
 		templ = replicationUserData
 	}
 
@@ -140,18 +142,21 @@ func toHCLStringFormat(s string) string {
 	return fmt.Sprintf("${%s}", s)
 }
 
-// getPublicIP returns the terraform formatting of this Nodes ip
-func (c NodeGroup) getPublicIP(i int) string {
-	return toHCLStringFormat(fmt.Sprintf("aws_instance.%s.public_ip", c.Names[i]))
-}
-
 // getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
 func (c NodeGroup) getFullMultiAddr(i int) string {
 	// this can only be done for RDVP and Relay
 	// as other node types don't have a peerId pre-configured
-	if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
-		return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.getPublicIP(i), c.NodeAttributes[i].Protocol, c.NodeAttributes[i].Port, c.NodeAttributes[i].PeerId)
+	if len(c.Nodes) >= i-1 {
+		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
+			return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.Nodes[i].getPublicIP(), c.Nodes[i].NodeAttributes.Protocol, c.Nodes[i].NodeAttributes.Port, c.Nodes[i].NodeAttributes.PeerId)
+		}
+		panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
 	}
 
-	panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
+	panic(errors.New("that node doesn't exist"))
+}
+
+// getPublicIP returns the terraform formatting of this Nodes ip
+func (c Node) getPublicIP() string {
+	return toHCLStringFormat(fmt.Sprintf("aws_instance.%s.public_ip", c.Name))
 }

@@ -1,7 +1,6 @@
 rdvp:
     - name: test rdvp
       amount: 1
-      groups:
       connections:
           - name: connection
             to: internet
@@ -9,7 +8,13 @@ rdvp:
 
 peer:
     - name: test peers 1
-      amount: 8
+      amount: 3
+      groups:
+      - name: group 1
+        tests:
+        - type: text
+          size: 40KB
+          interval: 50
       connections:
         - name: connection 1
           to: internet
@@ -21,5 +26,6 @@ peer:
 #      groups:
 #      connections:
 #          - name: connection
+
 #            to: internet
 #            protocol: tcp

@@ -5,6 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"infratesting/iac"
 	"infratesting/iac/components/various"
+	"log"
 )
 
 // Parse parses the config bytes.
@@ -15,16 +16,18 @@ import (
 // then it ranges over the nodes and composes a config for them
 // then it iterates over every component in Components and generates HCL
 // for now it just gets printed out to console
-func Parse(b []byte) (c Config, components []*[]iac.Component, err error) {
+func Parse(b []byte) (components []iac.Component, err error) {
+	log.Println("loading config")
+
 	// unmarshal into Config struct
 	err = yaml.Unmarshal(b, &config)
 	if err != nil {
-		return config, components, err
+		return components, err
 	}
 
 	err = config.validate()
 	if err != nil {
-		return config, components, err
+		return components, err
 	}
 
 	// converting to a map[string]interface{} allows us to iterate over the config instead of having to manually do
@@ -33,19 +36,29 @@ func Parse(b []byte) (c Config, components []*[]iac.Component, err error) {
 	var cMap map[string][]NodeGroup
 	err = mapstructure.Decode(config, &cMap)
 	if err != nil {
-		return config, components, err
+		return components, err
 	}
+
+	log.Println("parsing config")
 
 	// gathering information about networking and groups
 	// this needs to be done in a separate pass
 	// to make sure we don't create multiple networking stacks for the same connection type
-
 	for _, component := range cMap {
 		for _, subComponent := range component {
-			subComponent.parseConnections()
-			subComponent.parseGroups()
+			err = subComponent.parseConnections()
+			if err != nil {
+				return components, err
+			}
+
+			err = subComponent.parseGroups()
+			if err != nil {
+				return components, err
+			}
 		}
 	}
+
+	log.Println("generating components")
 
 	// iterate over connections and compose appropriate HCL components
 	for _, connection := range configAttributes.Connections {
@@ -59,7 +72,7 @@ func Parse(b []byte) (c Config, components []*[]iac.Component, err error) {
 	// iterate over network stacks
 	for _, networkStack := range configAttributes.ConnectionComponents {
 		// add networkStack to Components
-		components = append(components, &networkStack)
+		components = append(components, networkStack...)
 	}
 
 	// iterate over individual node types
@@ -68,10 +81,9 @@ func Parse(b []byte) (c Config, components []*[]iac.Component, err error) {
 	for _, t := range types {
 		for j := range cMap[t] {
 			cMap[t][j].composeComponents()
-			components = append(components, &cMap[t][j].Components)
+			components = append(components, cMap[t][j].Components...)
 		}
 	}
-
 
 	// prepend AMI
 	ami := various.NewAmi()
@@ -82,26 +94,34 @@ func Parse(b []byte) (c Config, components []*[]iac.Component, err error) {
 	provider := various.NewProvider()
 	components = prependComponents(components, provider)
 
+	//for i, component := range components {
+	//	components[i], err = component.Validate()
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//}
 
-	return config, components, err
+	return components, err
 }
 
-func prependComponents(array []*[]iac.Component, item iac.Component) []*[]iac.Component {
-	return append([]*[]iac.Component{{item}}, array...)
+func prependComponents(array []iac.Component, item iac.Component) []iac.Component {
+	return append([]iac.Component{item}, array...)
 }
 
-func ToHCL(components []*[]iac.Component) (hcl string) {
-	for _, component := range components {
-		for _, subcomponent := range *component {
-			// convert the components into HCL compatible strings
-			s, err := iac.ToHCL(subcomponent)
-			if err != nil {
-				panic(err)
-			}
+func ToHCL(components []iac.Component) (_ []iac.Component, hcl string) {
+	log.Println("converting components to HCL")
 
-			hcl += s
+	for i, component := range components {
+		// convert the components into HCL compatible strings
+		c, s, err := iac.ToHCL(component)
+		if err != nil {
+			panic(err)
 		}
+
+		components[i] = c
+		hcl += s
+
 	}
 
-	return hcl
+	return components, hcl
 }

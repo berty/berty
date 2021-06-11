@@ -42,7 +42,6 @@ var (
 				return nil
 			}
 
-
 			leader := availablePeers[0]
 
 			err = leader.SendMessage("")
