@@ -8,9 +8,9 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.util.Log;
+import android.util.Base64;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
@@ -22,9 +22,9 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     // see Bluetooth Core Specification 5.1: 4.8 Characteristic Value Read (p.2380)
     private static final int ATT_HEADER_READ_SIZE = 1;
 
-    private Context mContext;
-    private GattServer mGattServer;
-    private CountDownLatch mDoneSignal;
+    private final Context mContext;
+    private final GattServer mGattServer;
+    private final CountDownLatch mDoneSignal;
     private String mLocalPID;
 
     public GattServerCallback(Context context, GattServer gattServer, CountDownLatch doneSignal) {
@@ -138,7 +138,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
 
                         final byte[] toWrite = Arrays.copyOfRange(payload, offset, payload.length);
 
-                        Log.v(TAG, String.format("onCharacteristicReadRequest: writing data: device=%s base64=%s value=%s length=%d offset=%d", peerDevice.getMACAddress(), Base64.getEncoder().encodeToString(toWrite), BleDriver.bytesToHex(toWrite), toWrite.length, offset));
+                        Log.v(TAG, String.format("onCharacteristicReadRequest: writing data: device=%s base64=%s value=%s length=%d offset=%d", peerDevice.getMACAddress(), Base64.encodeToString(toWrite, Base64.DEFAULT), BleDriver.bytesToHex(toWrite), toWrite.length, offset));
                         mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, toWrite);
 
                         if (full) {
@@ -185,11 +185,11 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                 } else {
                     synchronized (peerDevice.mLockServer) {
                         if (peerDevice.getServerState() != PeerDevice.CONNECTION_STATE.CONNECTED) {
-                            Log.e(TAG, String.format("onCharacteristicWriteRequest: device not connected", device.getAddress()));
+                            Log.e(TAG, String.format("onCharacteristicWriteRequest: device %s not connected", device.getAddress()));
                         } else if (prepareWrite) {
                             Log.e(TAG, "onCharacteristicWriteRequest: chunk data length is bigger than MTU");
                         } else {
-                            Log.d(TAG, String.format("onCharacteristicWriteRequest: device=%s base64=%s value=%s length=%d offset=%d", device.getAddress(), Base64.getEncoder().encodeToString(value), BleDriver.bytesToHex(value), value.length, offset));
+                            Log.d(TAG, String.format("onCharacteristicWriteRequest: device=%s base64=%s value=%s length=%d offset=%d", device.getAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length, offset));
                             if (characteristic.getUuid().equals(GattServer.WRITER_UUID)) {
                                 status = peerDevice.handleServerDataReceived(value);
                             } else if (characteristic.getUuid().equals(GattServer.PID_UUID)) {

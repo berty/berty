@@ -1,17 +1,14 @@
 package tech.berty.gobridge.bledriver;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Peer {
     private static final String TAG = "bty.ble.Peer";
 
-    private String mPeerID;
+    private final String mPeerID;
 
-    private ArrayList<PeerDevice> mClientDevices = new ArrayList<>();
-    private ArrayList<PeerDevice> mServerDevices = new ArrayList<>();
+    private final ArrayList<PeerDevice> mClientDevices = new ArrayList<>();
+    private final ArrayList<PeerDevice> mServerDevices = new ArrayList<>();
 
     public Peer(String peerID) {
         mPeerID = peerID;

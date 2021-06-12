@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class JavaPromiseBlock implements PromiseBlock {
-    public static List<JavaPromiseBlock> promises = new ArrayList<JavaPromiseBlock>();
-    private Promise promise;
+    public static List<JavaPromiseBlock> promises = new ArrayList<>();
+    private final Promise promise;
 
     public JavaPromiseBlock(Promise promise) {
         this.promise = promise;
@@ -24,10 +24,10 @@ class JavaPromiseBlock implements PromiseBlock {
     }
 
     private void remove() {
-        this.promises.remove(this);
+        promises.remove(this);
     }
 
     private void store() {
-        this.promises.add(this);
+        promises.add(this);
     }
 }

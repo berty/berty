@@ -7,24 +7,14 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
+import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import static android.bluetooth.BluetoothDevice.BOND_BONDED;
-import static android.bluetooth.BluetoothDevice.BOND_BONDING;
-import static android.bluetooth.BluetoothDevice.BOND_NONE;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
 
 public class PeerDevice {
@@ -52,10 +42,10 @@ public class PeerDevice {
     private CONNECTION_STATE mServerState = CONNECTION_STATE.DISCONNECTED;
 
 
-    private Context mContext;
-    private BluetoothDevice mBluetoothDevice;
+    private final Context mContext;
+    private final BluetoothDevice mBluetoothDevice;
     private BluetoothGatt mBluetoothGatt;
-    private BleQueue mBleQueue = new BleQueue();
+    private final BleQueue mBleQueue = new BleQueue();
     private Runnable mTimeoutRunnable;
 
     private final Object mLockRemotePID = new Object();
@@ -69,7 +59,7 @@ public class PeerDevice {
 
     private Peer mPeer;
     private String mRemotePID;
-    private String mLocalPID;
+    private final String mLocalPID;
 
     private byte[] mClientBuffer;
     private byte[] mServerBuffer;
@@ -340,7 +330,7 @@ public class PeerDevice {
             status = BleDriver.mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.v(TAG, String.format("BleDriver Queue: handleServerDataReceived: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.getEncoder().encodeToString(payload), BleDriver.bytesToHex(payload), payload.length));
+                    Log.v(TAG, String.format("BleDriver Queue: handleServerDataReceived: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
                     BleInterface.BLEReceiveFromPeer(getRemotePID(), payload);
                 }
             }, 0);
@@ -359,7 +349,6 @@ public class PeerDevice {
         if (new String(payload).equals(EOD)) {
             Log.v(TAG, String.format("handleServerPIDReceived: device=%s EOD received", getMACAddress()));
 
-            Peer peer;
             String remotePID = new String(mServerBuffer);
             mServerBuffer = null;
 
@@ -393,7 +382,7 @@ public class PeerDevice {
         setBertyService(getBluetoothGatt().getService(GattServer.SERVICE_UUID));
 
         if (getBertyService() == null) {
-            Log.i(TAG, String.format("Berty service not found for device", getMACAddress()));
+            Log.i(TAG, String.format("Berty service not found for device %s", getMACAddress()));
             return false;
         }
 
@@ -438,7 +427,7 @@ public class PeerDevice {
                     }*/
                 }
             } else if (characteristic.getUuid().equals(GattServer.WRITER_UUID)) {
-                Log.d(TAG, String.format("writer characteristic found for device: ", getMACAddress()));
+                Log.d(TAG, String.format("writer characteristic found for device: %s", getMACAddress()));
                 if (checkCharacteristicProperties(characteristic,
                         BluetoothGattCharacteristic.PROPERTY_WRITE)) {
                     setWriterCharacteristic(characteristic);
@@ -489,7 +478,7 @@ public class PeerDevice {
         return mBleQueue.add(new Runnable() {
             @Override
             public void run() {
-                Log.v(TAG, String.format("BleQueue: internalWrite: device %s base64=%s value=%s length=%d characteristicUUID=%s", getMACAddress(), Base64.getEncoder().encodeToString(payload), BleDriver.bytesToHex(payload), payload.length, characteristic.getUuid()));
+                Log.v(TAG, String.format("BleQueue: internalWrite: device %s base64=%s value=%s length=%d characteristicUUID=%s", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length, characteristic.getUuid()));
                 synchronized(mLockClient) {
                     if (isClientConnected()) {
                         if (!characteristic.setValue(payload) || !getBluetoothGatt().writeCharacteristic(characteristic)) {
@@ -512,7 +501,7 @@ public class PeerDevice {
     // write sends payload over the GATT connection.
     // EOD identifies the end of the transfer, useful for the handshake.
     public boolean write(BluetoothGattCharacteristic characteristic, byte[] payload, boolean withEOD) {
-        Log.v(TAG, String.format("write called: device=%s base64=%s value=%s length=%d characteristicUUID=%s", getMACAddress(), Base64.getEncoder().encodeToString(payload), BleDriver.bytesToHex(payload), payload.length, characteristic.getUuid()));
+        Log.v(TAG, String.format("write called: device=%s base64=%s value=%s length=%d characteristicUUID=%s", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length, characteristic.getUuid()));
 
         if (!isClientConnected()) {
             Log.e(TAG, "write error: device not connected");
@@ -527,7 +516,7 @@ public class PeerDevice {
             maxOffset = minOffset + getMtu() - GattServer.ATT_HEADER_SIZE > payload.length ? payload.length : minOffset + getMtu() - GattServer.ATT_HEADER_SIZE;
             final byte[] toWrite = Arrays.copyOfRange(payload, minOffset, maxOffset);
             minOffset = maxOffset;
-            Log.v(TAG, String.format("write: data chunk: device=%s base64=%s value=%s length=%d characteristicUUID=%s", getMACAddress(), Base64.getEncoder().encodeToString(toWrite), BleDriver.bytesToHex(toWrite), toWrite.length, characteristic.getUuid()));
+            Log.v(TAG, String.format("write: data chunk: device=%s base64=%s value=%s length=%d characteristicUUID=%s", getMACAddress(), Base64.encodeToString(toWrite, Base64.DEFAULT), BleDriver.bytesToHex(toWrite), toWrite.length, characteristic.getUuid()));
             if (!internalWrite(characteristic, toWrite)) {
                 Log.e(TAG, String.format("write payload failed: device=%s", getMACAddress()));
                 return false;
@@ -669,7 +658,7 @@ public class PeerDevice {
         }
     }
 
-    private BluetoothGattCallback mGattCallback =
+    private final BluetoothGattCallback mGattCallback =
             new BluetoothGattCallback() {
                 @Override
                 public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -751,7 +740,7 @@ public class PeerDevice {
                             mBleQueue.completedCommand();
                             return ;
                         } else {
-                            Log.v(TAG, String.format("onCharacteristicRead: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.getEncoder().encodeToString(value), BleDriver.bytesToHex(value), value.length));
+                            Log.v(TAG, String.format("onCharacteristicRead: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
                             handleClientPIDReceived(value);
                         }
                     } else {
@@ -799,7 +788,7 @@ public class PeerDevice {
                     byte[] copy;
                     byte[] value = characteristic.getValue();
 
-                    Log.v(TAG, String.format("onCharacteristicChanged: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.getEncoder().encodeToString(value), BleDriver.bytesToHex(value), value.length));
+                    Log.v(TAG, String.format("onCharacteristicChanged: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
 
                     if (value.length == 0) { // end of transmission
                         copy = new byte[mClientBuffer.length];

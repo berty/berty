@@ -12,7 +12,7 @@ public enum LoggerLevel {
     VERBOSE("VERBOSE"),
     UNKNOW("UNKNOW");
 
-    private String level;
+    private final String level;
 
     LoggerLevel(String level) {
         this.level = level;

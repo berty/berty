@@ -9,3 +9,4 @@
 
 # Add any project specific keep options here:
 -keep class com.shakebugs.** { *; }
+-keep public class com.horcrux.svg.** {*;}

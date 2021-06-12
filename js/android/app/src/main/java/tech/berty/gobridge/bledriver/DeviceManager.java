@@ -11,7 +11,7 @@ import java.util.Map;
 public class DeviceManager {
     private static final String TAG = "bty.ble.DeviceManager";
 
-    private static HashMap<String, PeerDevice> mPeerDevices = new HashMap<>();
+    private static final HashMap<String, PeerDevice> mPeerDevices = new HashMap<>();
 
     public static synchronized PeerDevice put(String key, PeerDevice value) {
         Log.d(TAG, "put() called");
