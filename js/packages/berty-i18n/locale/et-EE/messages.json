@@ -46,29 +46,29 @@
       "skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Käivitan Berty sõlme…",
+      "desc": "Võib minna mõni hetk aega"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Märka kõiki uusi sõnumeid ja kontakti soove",
+      "recommended": "Soovituslikud",
+      "title": "Teavitused",
+      "desc": "Vajalik on oma telefonis Berty rakenduses lubada tõukemärguanded",
+      "button": "LUBA TEAVITUSED",
+      "skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Suhtle ilma interneti ühenduseta (kohtvõrk või mobiilne andmeside) ühendudes läheduses olevate seadmetega otse",
+      "optional": "Valikuline",
+      "title": "Bluetooth",
+      "desc": "Selle võimaluse kasutaimseks peate lubama Bluetooth ühenduse oma telefonis",
+      "button": "LUBA BLUETOOTH",
+      "skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Seadistamine valmis!",
+      "desc": "Võid hakata rakendust kohe kasutama, alusta kontaktide lisamisega ja suhtle nendega vabalt ja privaatselt",
+      "button": "ALUSTA BERTY KASUTAMIST"
     }
   },
   "main": {
@@ -156,14 +156,14 @@
       "bluetooth-button": {
         "title": "",
         "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-disabled": "Välja lülitatud"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "title": "Rakenduse režiim",
+        "performance-tag": "Jõudlus",
+        "privacy-tag": "Privaatsus",
+        "description-tag": "Lihtne kasutada - Kõik võimalused",
+        "first-bullet-point": "Saa tõukemärguandeid",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
