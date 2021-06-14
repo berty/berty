@@ -74,51 +74,51 @@
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Kontakti kutsed",
+        "received-at": "Vastu võetud",
+        "accept": "Võta vastu",
+        "card-title": "Uus kontakti kutse!"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Otsingu märgusõna",
+      "no-contacts": "Sul pole veel ühtegi kontakti ega vestlust",
       "search": {
-        "no-results": ""
+        "no-results": "Otsingu vasteid ei leitud"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Loo uus konto",
+        "import-button": "Impordi konto"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
-        "search-placeholder": "",
-        "continue": "",
-        "create-group": ""
+        "title": "Uus Grupp",
+        "add-members": "Lisa liikmeid",
+        "group-info": "Grupi info",
+        "search-placeholder": "Otsing",
+        "continue": "JÄTKA",
+        "create-group": "LOO GRUPP"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Loo uus grupp",
+      "bottom-button": "Skaneeri kontakt või grupp"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Lisamiseks vajuta siia",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Võrgu Sätted",
+        "desc": "Võrgu sätete kinnitamiseks vajuta siia"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Teavituste Sätted",
+        "desc": "Tõukemärguannete seadistuseks vajuta siia"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "welcome-title": "Tere tulemast Võrgu Sätete lehele",
+      "full-anon-mode": "Täieliku Anonüümsuse režiim",
+      "simple-tor-compatible": "Lihtsustatud TOR Ühilduv",
+      "allow-expert-mode": "Luba Ekspert režiimi",
       "tor-compatible": {
-        "title": "",
+        "title": "TOR Ühilduv",
         "desc": ""
       },
       "full-anon": {
