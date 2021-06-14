@@ -146,8 +146,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-genjs-${{ matrix.node}}-v1-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-genjs-${{ matrix.node}}-v1-
+          key:          ${{ runner.OS }}-genjs-${{ matrix.node}}-v2-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-genjs-${{ matrix.node}}-v2-
 
       - name: "Fetch deps"
         # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image

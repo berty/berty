@@ -156,18 +156,6 @@ targets:
       link: true
     - framework: ./Frameworks/Bertybridge.framework
       embed: false
-    - framework: ./tor-deps/lib/libz.a
-      embed: false
-      link: true
-    - framework: ./tor-deps/lib/libssl.a
-      embed: false
-      link: true
-    - framework: ./tor-deps/lib/libevent.a
-      embed: false
-      link: true
-    - framework: ./tor-deps/lib/libcrypto.a
-      embed: false
-      link: true
 
     preBuildScripts:
     - name: Copy GoogleService

@@ -36,7 +36,7 @@
 		"google-protobuf": "^3.14.0",
 		"i18next": "^19.8.5",
 		"linkify-it": "^3.0.2",
-		"lottie-react-native": "^3.5.0",
+		"lottie-react-native": "^4.0.2",
 		"mem": "^8.0.0",
 		"moment": "^2.29.1",
 		"node-libs-react-native": "^1.2.1",

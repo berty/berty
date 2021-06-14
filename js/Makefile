@@ -112,7 +112,6 @@ endif
 	rm -rf ios/build
 	rm -rf ios/Pods
 	rm -rf ios/Frameworks/Bertybridge.framework
-	rm -rf ios/tor-deps
 	rm -rf ios/vendor
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
@@ -356,14 +355,10 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	# Download required go-libtor deps if needed
-	../tool/build/shell/dl-go-libtor-ios.sh
 	mkdir -p ios/Frameworks
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		GO111MODULE=on \
-		LIBRARY_PATH="$(PWD)/ios/tor-deps/lib" \
-		CPATH="$(PWD)/ios/tor-deps/include" \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
@@ -374,7 +369,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 			./go/framework/bertybridge
 	touch $@
 
-ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json ios/OpenSSL-Universal-Override.podspec node_modules
+ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json node_modules
 	$(call check-program, bundle)
 	cd ios && bundle exec pod install $(if $(filter-out $(CI), true),--repo-update)
 	touch $@
