@@ -4,15 +4,30 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"github.com/golang/protobuf/proto"
 	"github.com/google/uuid"
 	"log"
-	//"berty.tech/berty/v2/go/pkg/messengertypes"
+	"time"
+
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"context"
 	"io"
 )
+
+type MessageHistory struct {
+	MessageType messengertypes.AppMessage_Type
+	ReceivedAt  time.Time
+	Payload     []byte
+}
+
+func ToMessageHistory(a messengertypes.AppMessage, ) MessageHistory {
+	return MessageHistory{
+		MessageType: a.GetType(),
+		ReceivedAt: time.Now(),
+		Payload: a.Payload,
+	}
+
+}
 
 func (p *Peer) SendMessage(groupName string) error {
 	s := uuid.NewString()[:5]
@@ -33,8 +48,6 @@ func (p *Peer) SendMessage(groupName string) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("sent: " + s)
 
 	return err
 }
@@ -66,7 +79,7 @@ func (p *Peer) GetMessageList(groupName string) error {
 		}
 		p.lastMessageID = evt.EventContext.ID
 
-		amp, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
+		_, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
 		if err != nil {
 			log.Println(err)
 			continue
@@ -77,11 +90,11 @@ func (p *Peer) GetMessageList(groupName string) error {
 			if !bytes.Equal(evt.Headers.DevicePK, p.DevicePK) {
 				continue
 			}
-			log.Println("new ack")
 
 		case messengertypes.AppMessage_TypeUserMessage:
-			payload := amp.(*messengertypes.AppMessage_UserMessage)
-			fmt.Println(payload.Body)
+			p.Lock.Lock()
+			p.Messages = append(p.Messages, ToMessageHistory(am))
+			p.Lock.Unlock()
 		}
 	}
 
@@ -96,16 +109,15 @@ func (p *Peer) ActivateGroup (groupName string) error {
 }
 
 
-func (p *Peer) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent, groupName string) {
+func (p *Peer) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent, groupName string) error {
 	if p.Groups[groupName].GroupType != protocoltypes.GroupTypeContact {
-		return
+		return nil
 	}
 
 	_, err := p.Messenger.SendAck(ctx, &messengertypes.SendAck_Request{
 		GroupPK:   evt.EventContext.GroupPK,
 		MessageID: evt.EventContext.ID,
 	})
-	if err != nil {
-		log.Println(err)
-	}
+
+	return err
 }

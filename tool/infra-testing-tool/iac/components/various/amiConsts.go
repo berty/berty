@@ -12,4 +12,6 @@ variable "ami" {
 	AmiDefaultName = "berty-ami"
 
 	AmiType = "ami"
+
+	ErrNoAMI = "no valid AMI found, use packer to make one"
 )

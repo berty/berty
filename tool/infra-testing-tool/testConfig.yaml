@@ -14,7 +14,7 @@ peer:
         tests:
         - type: text
           size: 40KB
-          interval: 50
+          interval: 2
       connections:
         - name: connection 1
           to: internet
@@ -26,6 +26,5 @@ peer:
 #      groups:
 #      connections:
 #          - name: connection
-
 #            to: internet
 #            protocol: tcp

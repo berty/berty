@@ -20,8 +20,8 @@ const (
 	fileUsage = "config file to generate infra from"
 
 	DefaultFolderName = "infraState"
-	DefaultTFFile     = "infraState/main.tf"
-	DefaultStateFile  = "infraState/state.yaml"
+	DefaultTFFile     = DefaultFolderName + "/main.tf"
+	DefaultStateFile  = DefaultFolderName + "/state.yaml"
 )
 
 func init() {

@@ -18,30 +18,31 @@ type Config struct {
 
 	Replication []NodeGroup `yaml:"replication"`
 	Peer        []NodeGroup `yaml:"peer"`
+
+	Attributes Attributes `yaml:"attributes"`
 }
 
-type ConfigAttributes struct {
+// Attributes are used at infra-compile time to aid with the generation of HCL
+type Attributes struct {
 	Connections map[string]Connection
 	Groups      map[string]Group
 
-	Vpc                  networking.Vpc
-	ConnectionComponents map[string][]iac.Component
+	vpc                  networking.Vpc
+	connectionComponents map[string][]iac.Component
 }
 
 var (
 	config           = Config{}
-	configAttributes = ConfigAttributes{}
 )
 
 func init() {
-	configAttributes.Connections = make(map[string]Connection)
-	configAttributes.Groups = make(map[string]Group)
-	configAttributes.ConnectionComponents = make(map[string][]iac.Component)
+	config.Attributes.Connections = make(map[string]Connection)
+	config.Attributes.Groups = make(map[string]Group)
+	config.Attributes.connectionComponents = make(map[string][]iac.Component)
 }
 
-// validate validates the config
-func (c *Config) validate() error {
-
+// Validate function validates the config, gives all NodeGroup's their correct type.
+func (c *Config) Validate() error {
 	for i := range c.RDVP {
 
 		c.RDVP[i].NodeType = NodeTypeRDVP
@@ -76,7 +77,6 @@ func (c *Config) validate() error {
 		_ = c.Peer[i].validate()
 
 	}
-
 	// TODO
 	// add more checks to validate if network topology is correct, etc
 

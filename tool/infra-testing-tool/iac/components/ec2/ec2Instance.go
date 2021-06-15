@@ -23,11 +23,18 @@ type Instance struct {
 	// NETWORKING
 	NetworkInterfaces          []*networking.NetworkInterface
 	NetworkInterfaceAttachment []NetworkInterfaceAttachment
+
+	Tags []Tag
 }
 
 type NetworkInterfaceAttachment struct {
 	DeviceIndex        int
 	NetworkInterfaceId string
+}
+
+type Tag struct {
+	Key string
+	Value string
 }
 
 func NewInstance() Instance {
@@ -105,6 +112,16 @@ func (c Instance) Validate() (iac.Component, error) {
 	if c.RootBlockDevice.VolumeSize < 8 {
 		return c, errors.New(Ec2ErrRootBlockDeviceTooSmall)
 	}
+
+	c.Tags = append(c.Tags, Tag{
+		Key:   Ec2TagName,
+		Value: c.Name,
+	})
+
+	c.Tags = append(c.Tags, Tag{
+		Key:   Ec2TagType,
+		Value: c.NodeType,
+	})
 
 	return c, nil
 }

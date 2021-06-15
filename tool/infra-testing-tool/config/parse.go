@@ -25,16 +25,31 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		return components, err
 	}
 
-	err = config.validate()
+	err = config.Validate()
 	if err != nil {
 		return components, err
 	}
+
+	var k struct {
+		RDVP      []NodeGroup `yaml:"rdvp"`
+		Relay     []NodeGroup `yaml:"relay"`
+		Bootstrap []NodeGroup `yaml:"bootstrap"`
+
+		Replication []NodeGroup `yaml:"replication"`
+		Peer        []NodeGroup `yaml:"peer"`
+	}
+
+	k.RDVP = config.RDVP
+	k.Relay = config.Relay
+	k.Bootstrap = config.Bootstrap
+	k.Replication = config.Replication
+	k.Peer = config.Peer
 
 	// converting to a map[string]interface{} allows us to iterate over the config instead of having to manually do
 	// ```for _, peer := range c.Peers {}```
 	// for every type (of which there might be many in the future)
 	var cMap map[string][]NodeGroup
-	err = mapstructure.Decode(config, &cMap)
+	err = mapstructure.Decode(k, &cMap)
 	if err != nil {
 		return components, err
 	}
@@ -61,7 +76,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	log.Println("generating components")
 
 	// iterate over connections and compose appropriate HCL components
-	for _, connection := range configAttributes.Connections {
+	for _, connection := range config.Attributes.Connections {
 		err = connection.Validate()
 		if err != nil {
 			panic(err)
@@ -70,7 +85,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	}
 
 	// iterate over network stacks
-	for _, networkStack := range configAttributes.ConnectionComponents {
+	for _, networkStack := range config.Attributes.connectionComponents {
 		// add networkStack to Components
 		components = append(components, networkStack...)
 	}
@@ -81,13 +96,17 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	for _, t := range types {
 		for j := range cMap[t] {
 			cMap[t][j].composeComponents()
-			components = append(components, cMap[t][j].Components...)
+			components = append(components, cMap[t][j].components...)
 		}
 	}
 
 	// prepend AMI
 	ami := various.NewAmi()
-	components = prependComponents(components, ami)
+	comp, err := ami.Validate()
+	if err != nil {
+		return nil, err
+	}
+	components = prependComponents(components, comp)
 
 	// prepend new provider (provider aws)
 	// this is always required!

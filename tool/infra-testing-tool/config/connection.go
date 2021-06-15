@@ -25,7 +25,7 @@ const (
 // ParseConnections takes the connection, adds it to the global connections
 func (c NodeGroup) parseConnections() error {
 	for _, con := range c.Connections {
-		configAttributes.Connections[con.To] = con
+		config.Attributes.Connections[con.To] = con
 	}
 
 	return nil
@@ -56,15 +56,15 @@ func (c *Connection) composeComponents() {
 
 	// create VPC
 	var vpc networking.Vpc
-	if configAttributes.Vpc == *new(networking.Vpc) {
+	if config.Attributes.vpc == *new(networking.Vpc) {
 		vpc = networking.NewVpc()
 		vpc.Name = c.Name
 		components = append(components, vpc)
 
-		configAttributes.Vpc = vpc
+		config.Attributes.vpc = vpc
 	}
 
-	vpc = configAttributes.Vpc
+	vpc = config.Attributes.vpc
 
 	// create a subnet
 	subnet := networking.NewSubnetWithAttributes(&vpc)
@@ -86,16 +86,25 @@ func (c *Connection) composeComponents() {
 	sg := networking.NewSecurityGroupWithAttributes(&vpc)
 	components = append(components, sg)
 
+	for i, comp := range components {
+		comp, err := comp.Validate()
+		if err != nil {
+			panic(err)
+		}
+
+		components[i] = comp
+	}
+
 	// append components to configs' ConnectionComponents
-	configAttributes.ConnectionComponents[c.To] = append(configAttributes.ConnectionComponents[c.To], components...)
+	config.Attributes.connectionComponents[c.To] = append(config.Attributes.connectionComponents[c.To], components...)
 }
 
 // countSubnets returns the amount of subnets
 func countSubnets() int {
-	// configAttributes.ConnectionComponents will always represent the amount of subnets
+	// config.Attributes.ConnectionComponents will always represent the amount of subnets
 	// as there is a maximum and minimum of 1 subnet per network stack
 	// we add one because ie: 10.0.0.0/24 is not a valid CIDR on AWS
-	return len(configAttributes.ConnectionComponents) + 1
+	return len(config.Attributes.connectionComponents) + 1
 }
 
 // generateNewSubnetCIDR generates a new, valid CIDR Block for subnets to use based on the VPC and other subnets
@@ -103,7 +112,7 @@ func generateNewSubnetCIDR() string {
 	var ip []string
 	var cidr int
 
-	vpcCidrBlock := configAttributes.Vpc.CidrBlock
+	vpcCidrBlock := config.Attributes.vpc.CidrBlock
 
 	//TODO:
 	// replace this with the `net` package, use IP and net.IPMask, etc

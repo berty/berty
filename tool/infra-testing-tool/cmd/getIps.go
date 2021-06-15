@@ -7,8 +7,10 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	iacec2 "infratesting/iac/components/ec2"
 	"infratesting/testing"
 	"log"
+	"strings"
 )
 
 var (
@@ -29,20 +31,29 @@ var (
 			}
 
 			for _, instance := range instances {
-				var name string
-				var nodeType string
+				var name, nodeType string
+				var instanceId = "No ID"
+				var publicIpAddress = "No IP"
 
 				for _, tag := range instance.Tags {
-					if *tag.Key == "Name" {
+					if *tag.Key == iacec2.Ec2TagName {
 						name = *tag.Value
 					}
 
-					if *tag.Key == "Type" {
+					if *tag.Key == iacec2.Ec2TagType {
 						nodeType = *tag.Value
 					}
 				}
 
-				s := fmt.Sprintf("%s, %s, %s, %s", name, nodeType, *instance.InstanceId, *instance.PublicIpAddress)
+				if *instance.InstanceId != "" {
+					instanceId = *instance.InstanceId
+				}
+
+				if *instance.State.Name == "running" || *instance.State.Name == "pending" {
+					publicIpAddress = *instance.PublicIpAddress
+				}
+
+				s := fmt.Sprintf("%s, %s, %s, %s", name, nodeType, instanceId, publicIpAddress)
 
 				states[*instance.State.Name] = append(states[*instance.State.Name], s)
 			}
@@ -59,7 +70,7 @@ var (
 
 func printAll(category string, slice []string) {
 	if len(slice) > 0 {
-		fmt.Printf("%s:\n", category)
+		fmt.Printf("%s:\n", strings.ToUpper(category))
 	}
 
 	for _, item := range slice {

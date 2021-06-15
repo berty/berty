@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"infratesting/config"
+	iacec2 "infratesting/iac/components/ec2"
 )
 
 var (
@@ -35,6 +36,9 @@ func DescribeInstances() (instances []*ec2.Instance, err error) {
 				Values: []*string{
 					aws.String("running"),
 					aws.String("pending"),
+					aws.String("shutting-down"),
+					aws.String("stopped"),
+					aws.String("terminated"),
 				},
 			},
 		},
@@ -58,13 +62,20 @@ func GetAllEligiblePeers() (peers []Peer, err error) {
 	}
 
 	for _, instance := range instances {
-		for _, tag := range instance.Tags {
-			// if instance is peer
-			if *tag.Key == "Type" && *tag.Value == config.NodeTypePeer {
-				p, err := NewPeer(*instance.PublicIpAddress)
-				if err != nil {
+		if *instance.State.Name != "running" {
+			continue
+		}
 
+		for _, tag := range instance.Tags {
+
+			// if instance is peer
+			if *tag.Key == iacec2.Ec2TagType && *tag.Value == config.NodeTypePeer {
+				p, err := NewPeer(*instance.PublicIpAddress, instance.Tags)
+				if err != nil {
+					return nil, err
 				}
+				p.Name = *instance.InstanceId
+
 				peers = append(peers, p)
 			}
 		}

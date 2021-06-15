@@ -32,8 +32,9 @@ resource "aws_instance" "{{.Name }}" {
 {{- end}}
 
    tags = {
-       Name = "{{.Name }}"
-       Type = "{{.NodeType }}"
+{{- range $tag := .Tags }}
+       {{$tag.Key}} = "{{$tag.Value }}"
+{{- end}}
    }
 }
 `
@@ -59,4 +60,7 @@ resource "aws_instance" "{{.Name }}" {
 
 	// Ec2ErrRootBlockDeviceTooSmall means the attached rbd is smaller than 6Gb
 	Ec2ErrRootBlockDeviceTooSmall = "the root block storage attached to the ec2 instance is too small. needs to be >= 8"
+
+	Ec2TagName = "name"
+	Ec2TagType = "type"
 )

@@ -1,6 +1,7 @@
 package various
 
 import (
+	"errors"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -53,12 +54,14 @@ func (c Ami) GetType() string {
 }
 
 func (c Ami) Validate() (iac.Component, error) {
-	log.Println("getting CalledIdentity & AMI's")
+	log.Println("getting CalledIdentity & AMI's (AWS)")
+	// gets caller identity to get accountid
 	r, err := stssess.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 	if err != nil {
 		return c, err
 	}
 
+	// describes all AMI's with AmiDefaultName
 	resp, err := ec2sess.DescribeImages(&ec2.DescribeImagesInput{
 		Filters: []*ec2.Filter{
 			{
@@ -75,6 +78,12 @@ func (c Ami) Validate() (iac.Component, error) {
 		return c, err
 	}
 
+	if len(resp.Images) < 1 {
+		return nil, errors.New(ErrNoAMI)
+	}
+
+	// takes the first one
+	// TODO improve this so it doesn't take the first one
 	c.AmiID = *resp.Images[0].ImageId
 	return c, nil
 }

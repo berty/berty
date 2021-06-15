@@ -13,25 +13,34 @@ type Group struct {
 }
 
 const (
-	TestTypeText = iota
-	TestTypeMedia
+	TestTypeText = "text"
+	TestTypeMedia = "media"
 )
 
 type Test struct {
+	// here we have to work with "input" & "internal"
+	// because the inputs and post-compilation values are different types
+
+	// Input -> parsed straight from yaml
+	// Internal -> compiled value from Input
+
 	// inputs
 	TypeInput string `yaml:"type"`
 	SizeInput string `yaml:"size"`
 	IntervalInput int `yaml:"interval"`
 
 	// parsed values
-	TypeInternal int
-	SizeInternal int
-	IntervalInternal int
+	TypeInternal string `yaml:"typeInternal"`
+	SizeInternal int `yaml:"sizeInternal"` // in KB
+	IntervalInternal int `yaml:"intervalInternal"` // in Seconds
 
 }
 
 func (c *NodeGroup) parseGroups() error {
 
+	// we check if the user doesn't try to add groups to types that are not supposed to have group
+	// only types that support groups are:
+	// Peer & Replication
 
 	switch c.NodeType {
 	case NodeTypeRDVP:
@@ -52,26 +61,31 @@ func (c *NodeGroup) parseGroups() error {
 			return errors.New("can't have groups in type Replication yet")
 		}
 	case NodeTypePeer:
-		//
+		// groups a re allowed here
+		// do nothing
 	}
 
 
+	// parse the test cases for each individual group
 	for i, group := range c.Groups {
-		configAttributes.Groups[group.Name] = group
+		config.Attributes.Groups[group.Name] = group
 
 		// parse the tests
 		for j, test := range c.Groups[i].Tests {
-			t := strings.ToLower(test.TypeInput)
+				 t := strings.ToLower(test.TypeInput)
 
+
+			// parse group type
 			switch {
-			case strings.Contains(t, "text"):
-				c.Groups[j].Tests[j].TypeInternal = TestTypeText
-			case strings.Contains(t, "media"):
-				c.Groups[j].Tests[j].TypeInternal = TestTypeMedia
+			case strings.Contains(t, TestTypeText):
+				c.Groups[i].Tests[j].TypeInternal = TestTypeText
+			case strings.Contains(t, TestTypeMedia):
+				c.Groups[i].Tests[j].TypeInternal = TestTypeMedia
 			default:
 				return errors.New(fmt.Sprintf("invalid test type in test in group: %s test: %v", group.Name, i+1))
 			}
 
+			// parse message size
 			s := strings.ToLower(test.SizeInput)
 			var unit int
 
@@ -86,15 +100,16 @@ func (c *NodeGroup) parseGroups() error {
 				return errors.New(fmt.Sprintf("invalid test size in test in group: %s test: %v", group.Name, i+1))
 			}
 
-			size, err := strconv.Atoi(s[:len(s)-3])
+			size, err := strconv.Atoi(s[:len(s)-2])
 			if err != nil {
 				return errors.New(fmt.Sprintf("invalid test size in test in group: %s test: %v", group.Name, i+1))
 			}
 
-			c.Groups[j].Tests[j].SizeInternal = size * unit
+			c.Groups[i].Tests[j].SizeInternal = size * unit
 
+			// parse interval
 			if test.IntervalInput > 0 {
-				c.Groups[j].Tests[j].IntervalInternal = test.IntervalInput
+				c.Groups[i].Tests[j].IntervalInternal = test.IntervalInput
 			} else {
 				return errors.New(fmt.Sprintf("invterval needs to be bigger than 0 in group: %s test: %v", group.Name, i+1))
 
