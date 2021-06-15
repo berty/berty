@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
-import { View, ActivityIndicator as Spinner, Vibration } from 'react-native'
-import { Translation } from 'react-i18next'
+import { View, Linking, ActivityIndicator as Spinner, Vibration } from 'react-native'
+import { Translation, useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
-import { requestBluetoothPermission } from '../settings/Bluetooth'
+import {
+	checkBluetoothPermission,
+	requestBluetoothPermission,
+	permissionExplanation,
+} from '../settings/Bluetooth'
 
 const SetupFinishedBody = () => {
 	const [isGeneration, setIsGeneration] = useState(1)
@@ -15,36 +19,56 @@ const SetupFinishedBody = () => {
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
 	const { setPersistentOption, dispatch } = useMsgrContext()
+	const { t } = useTranslation()
 
 	React.useEffect(() => {
 		const handlePersistentOptions = async () => {
-			// Ask for Android bluetooth permissions
-			let hasBluetoothPermission = await requestBluetoothPermission()
-
-			await setPersistentOption({
-				type: PersistentOptionsKeys.BLE,
-				payload: {
-					enable: hasBluetoothPermission,
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.MC,
-				payload: {
-					enable: hasBluetoothPermission,
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.Nearby,
-				payload: {
-					enable: hasBluetoothPermission,
-				},
-			})
+			const setPermissions = async (state) => {
+				console.log('Bluetooth permissions: ' + state)
+				await setPersistentOption({
+					type: PersistentOptionsKeys.BLE,
+					payload: {
+						enable: state,
+					},
+				})
+				await setPersistentOption({
+					type: PersistentOptionsKeys.MC,
+					payload: {
+						enable: state,
+					},
+				})
+				await setPersistentOption({
+					type: PersistentOptionsKeys.Nearby,
+					payload: {
+						enable: state,
+					},
+				})
+			}
+			checkBluetoothPermission()
+				.then(async (result) => {
+					if (result === 'granted') {
+						setPermissions(result)
+					} else if (result === 'blocked') {
+						permissionExplanation(t, () => {
+							Linking.openSettings()
+						})
+					} else {
+						permissionExplanation(t, () => {
+							requestBluetoothPermission().then((permission) => {
+								setPermissions(permission)
+							})
+						})
+					}
+				})
+				.catch((err) => {
+					console.log('The Bluetooth permission cannot be retrieved:', err)
+				})
 		}
 
 		return () => {
 			handlePersistentOptions().catch((e) => console.warn(e))
 		}
-	}, [setPersistentOption])
+	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Translation>
