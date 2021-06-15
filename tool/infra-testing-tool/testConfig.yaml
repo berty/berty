@@ -8,7 +8,7 @@ rdvp:
 
 peer:
     - name: test peers 1
-      amount: 3
+      amount: 0
       groups:
       - name: group 1
         tests:

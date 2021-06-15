@@ -113,11 +113,20 @@ func (c Instance) Validate() (iac.Component, error) {
 		return c, errors.New(Ec2ErrRootBlockDeviceTooSmall)
 	}
 
+	// used to identify which tags were launched by the infra tool (in case the account has other instance running
+	// that we don't want to interfere with).
+	c.Tags = append(c.Tags, Tag{
+		Key: Ec2TagBerty,
+		Value: Ec2TagBertyValue,
+	})
+
+	// name tag
 	c.Tags = append(c.Tags, Tag{
 		Key:   Ec2TagName,
 		Value: c.Name,
 	})
 
+	// type tag
 	c.Tags = append(c.Tags, Tag{
 		Key:   Ec2TagType,
 		Value: c.NodeType,

@@ -27,9 +27,10 @@ func init() {
 	ec2sess = ec2.New(sess)
 }
 
+// DescribeInstances returns all ec2 instances
 func DescribeInstances() (instances []*ec2.Instance, err error) {
 	//get all running/pending instances
-	resp, err := ec2sess.DescribeInstances(&ec2.DescribeInstancesInput{
+	diResp, err := ec2sess.DescribeInstances(&ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			{
 				Name: aws.String("instance-state-name"),
@@ -48,13 +49,24 @@ func DescribeInstances() (instances []*ec2.Instance, err error) {
 		return instances, err
 	}
 
-	for _, reservation := range resp.Reservations {
-		instances = append(instances, reservation.Instances...)
+
+	// check if instance has "berty - infra" key-value tag
+	for _, reservation := range diResp.Reservations {
+		for _, instance := range reservation.Instances {
+			for _, tag := range  instance.Tags {
+				if *tag.Key == iacec2.Ec2TagBerty && *tag.Value == iacec2.Ec2TagBertyValue {
+					instances = append(instances, instance)
+				}
+			}
+		}
 	}
+
+
 
 	return instances, err
 }
 
+// GetAllEligiblePeers returns all peers who are potentially eligible to connect to via gRPC
 func GetAllEligiblePeers() (peers []Peer, err error) {
 	instances, err := DescribeInstances()
 	if err != nil {

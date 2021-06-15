@@ -61,6 +61,17 @@ resource "aws_instance" "{{.Name }}" {
 	// Ec2ErrRootBlockDeviceTooSmall means the attached rbd is smaller than 6Gb
 	Ec2ErrRootBlockDeviceTooSmall = "the root block storage attached to the ec2 instance is too small. needs to be >= 8"
 
+	// Ec2TagName tag used to identify peers by name
 	Ec2TagName = "name"
+	// value is a variable
+
+	// Ec2TagType tag used to identify peers by tag
 	Ec2TagType = "type"
+	//value is a variable
+
+	// Ec2TagBerty tag used to identify if instance is created by infra-testing-tool
+	Ec2TagBerty = "berty"
+	// Ec2TagBertyValue value used to double check if instance are actually created by infra-testing-tool
+	// (in case some other instances on the account have a tag with the key "berty")
+	Ec2TagBertyValue = "infra"
 )
