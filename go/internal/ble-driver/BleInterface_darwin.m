@@ -20,30 +20,32 @@ static BleManager *manager = nil;
 os_log_t OS_LOG_BLE = nil;
 
 void handleException(NSException* exception) {
-    os_log_error(OS_LOG_BLE, "Unhandled exception %{public}@", exception);
+    os_log_error(OS_LOG_BLE, "🔴 Unhandled exception %{public}@", exception);
 }
 
 BleManager* getManager(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        os_log(OS_LOG_BLE, "getManager() initialize");
-        manager = [[BleManager alloc] initScannerAndAdvertiser];
+        os_log(OS_LOG_BLE, "🟢 getManager() initialize");
+        manager = [[[BleManager alloc] initScannerAndAdvertiser] autorelease];
     });
     return manager;
 }
 
 void BLEStart(char *localPID) {
     OS_LOG_BLE = os_log_create("tech.berty.bty.BLE", "protocol");
-    os_log_debug(OS_LOG_BLE, "BLEStart()");
-    [getManager() setPeerID:[NSString stringWithUTF8String:localPID]];
-    [getManager() startScanning];
-    [getManager() startAdvertising];
-    NSSetUncaughtExceptionHandler(handleException);
+    os_log_debug(OS_LOG_BLE, "🟢 BLEStart()");
+    @autoreleasepool {
+        [getManager() setLocalPID:[NSString stringWithUTF8String:localPID]];
+        [getManager() startScanning];
+        [getManager() startAdvertising];
+        NSSetUncaughtExceptionHandler(handleException);
+    }
 }
 
 // TODO: Implement this, check if error
 void BLEStop(void) {
-    os_log_debug(OS_LOG_BLE, "BLEStop()");
+    os_log_debug(OS_LOG_BLE, "🟢 BLEStop()");
     [getManager() stopScanning];
     [getManager() stopAdvertising];
     [getManager() cancelAllPeripheralConnections];
@@ -51,26 +53,19 @@ void BLEStop(void) {
 
 // TODO: Check if write succeeded?
 int BLESendToPeer(char *remotePID, void *payload, int length) {
+    int status = 0;
+    
     NSString *cPID = [[NSString alloc] initWithUTF8String:remotePID];
     NSData *cPayload = [[NSData alloc] initWithBytes:payload length:length];
     BertyDevice *bDevice = [getManager() findPeripheralFromPID:cPID];
     if (bDevice != nil) {
-        __block NSError *blockError = nil;
-        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-
-        [bDevice writeToCharacteristic:[NSMutableData dataWithData:cPayload] forCharacteristic:bDevice.writer withEOD:FALSE andBlock:^(NSError *error) {
-            blockError = [error copy];
-            dispatch_semaphore_signal(sema);
-        }];
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        dispatch_release(sema);
-        if (blockError == nil) {
-            return 1;
-        }
+        status = [bDevice writeToCharacteristic:[NSMutableData dataWithData:cPayload] forCharacteristic:bDevice.writer withEOD:FALSE tryL2cap:TRUE];
+    } else {
+        os_log_error(OS_LOG_BLE, "🔴 BLESendToPeer() no device found can't write");
     }
-
-    os_log_error(OS_LOG_BLE, "writeNSData() no device found can't write");
-    return 0;
+    [cPID release];
+    [cPayload release];
+    return status;
 }
 
 int BLEDialPeer(char *remotePID) {
@@ -83,7 +78,7 @@ int BLEDialPeer(char *remotePID) {
 
 // TODO: Implement this
 void BLECloseConnWithPeer(char *remotePID) {
-    os_log_error(OS_LOG_BLE, "BLECloseConnWithPeer()");
+    os_log_error(OS_LOG_BLE, "🟢 BLECloseConnWithPeer()");
     BertyDevice *bDevice = [getManager() findPeripheralFromPID:[NSString stringWithUTF8String:remotePID]];
     if (bDevice != nil) {
         [getManager() cancelPeripheralConnection:bDevice.peripheral];
@@ -91,6 +86,7 @@ void BLECloseConnWithPeer(char *remotePID) {
 }
 
 int BLEBridgeHandleFoundPeer(NSString *remotePID) {
+    os_log_debug(OS_LOG_BLE, "BLEBridgeHandleFoundPeer called");
     char *cPID = (char *)[remotePID UTF8String];
     if (BLEHandleFoundPeer(cPID)) {
         return (1);
@@ -99,6 +95,7 @@ int BLEBridgeHandleFoundPeer(NSString *remotePID) {
 }
 
 void BLEBridgeHandleLostPeer(NSString *remotePID) {
+    os_log_debug(OS_LOG_BLE, "BLEBridgeHandleLostPeer called");
     char *cPID = (char *)[remotePID UTF8String];
     BLEHandleLostPeer(cPID);
 }

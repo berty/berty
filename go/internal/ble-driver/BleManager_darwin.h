@@ -13,9 +13,8 @@
 
 #ifndef BleManager_h
 #define BleManager_h
-@class BertyDevice;
 
-#define _BERTY_ON_M_THREAD(block) dispatch_async(self.dQueue, block)
+@class BertyDevice;
 
 @interface BleManager : NSObject <CBPeripheralManagerDelegate, CBCentralManagerDelegate>
 
@@ -25,27 +24,30 @@
 
 @property (readwrite) BOOL pmEnable;
 @property (readwrite) BOOL cmEnable;
+@property (readwrite) int psm;
 @property (nonatomic, strong, nonnull) CBMutableService *bertyService;
+@property (nonatomic, strong, nonnull) CBMutableService *nameService;
 @property (nonatomic, strong, nonnull) CBMutableCharacteristic *peerIDCharacteristic;
 @property (nonatomic, strong, nonnull) CBMutableCharacteristic *writerCharacteristic;
-@property (nonatomic, strong, nullable) NSString *peerID;
+@property (nonatomic, strong, nullable) NSString *localPID;
 @property (nonatomic, strong, nonnull) CBUUID *serviceUUID;
 @property (nonatomic, strong, nonnull) CBUUID *peerUUID;
 @property (nonatomic, strong, nonnull) CBUUID *writerUUID;
 @property (nonatomic, strong, nonnull) NSMutableArray *bDevices;
 @property (nonatomic, strong, nonnull) CBCentralManager* cManager;
 @property (nonatomic, strong, nonnull) CBPeripheralManager* pManager;
-@property (nonatomic, strong, nonnull) dispatch_queue_t dQueue;
 @property (nonatomic, readwrite, strong) CountDownLatch* __nonnull bleOn;
 @property (nonatomic, readwrite, strong) CountDownLatch* __nonnull serviceAdded;
+@property (nonatomic, strong, nullable) NSTimer *scannerTimer;
 
 - (instancetype __nonnull) initScannerAndAdvertiser;
 - (void)addService;
 - (void)startScanning;
+- (void)toggleScanner:(NSTimer *__nonnull)timer;
 - (void)stopScanning;
 - (void)startAdvertising;
 - (void)stopAdvertising;
-- (void)cancelPeripheralConnection:(CBPeripheral *__nonnull)peripheral;
+- (void)cancelPeripheralConnection:(CBPeripheral *__nullable)peripheral;
 - (void)cancelAllPeripheralConnections;
 - (BertyDevice *__nullable)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier;
 - (BertyDevice *__nullable)findPeripheralFromPID:(NSString *__nonnull)peerID;
