@@ -17,10 +17,10 @@ type Driver struct {
 	defaultAddr  string
 }
 
-// Driver is a proximity.NativeDriver
-var _ proximity.NativeDriver = (*Driver)(nil)
+// Driver is a proximity.ProximityDriver
+var _ proximity.ProximityDriver = (*Driver)(nil)
 
-func NewDriver(logger *zap.Logger) proximity.NativeDriver {
+func NewDriver(logger *zap.Logger) proximity.ProximityDriver {
 	logger = logger.Named("MC")
 	logger.Debug("NewDriver()")
 

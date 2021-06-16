@@ -7,7 +7,7 @@ import android.util.Log;
 import android.util.Base64;
 
 import bertybridge.Bertybridge;
-import bertybridge.NativeNBDriver;
+import bertybridge.ProximityDriver;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +23,7 @@ import tech.berty.gobridge.nearbydriversdk.model.Endpoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
-public class BertyNearbyDriver implements NativeNBDriver {
+public class BertyNearbyDriver implements ProximityDriver {
     private static final String TAG = "bty.NearbyDriver";
 
     private static final String SERVICE_ID = "tech.berty.bty.nearby";
