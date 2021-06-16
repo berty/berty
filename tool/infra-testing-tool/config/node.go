@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
+	ma "github.com/multiformats/go-multiaddr"
 	"infratesting/iac"
 	"infratesting/iac/components/ec2"
 	"infratesting/iac/components/networking"
@@ -28,6 +29,11 @@ const (
 	defaultGrpcPort = "9091"
 )
 
+// NodeGroup contains the information about a "group" of nodes declared together (by the 'NodeGroup.Amount' field)
+// Some attributes have slices as types ie: NodeGroup.Groups, NodeGroup.Connections, etc this is because it is possible that
+// multiples of that type exist (like multiple connections/groups, etc.)
+// The individual node parameters that are not shared between nodes reside in NodeGroup.Nodes and further Node.NodeAttributes
+// Each node is named as following: Node.Name = NodeGroup.Name + uuid.NewString()[:8]
 type NodeGroup struct {
 	// name prefix given in config
 	Name        string       `yaml:"name"`
@@ -35,15 +41,16 @@ type NodeGroup struct {
 
 	Nodes []Node `yaml:"nodes"`
 
+	// Amount is the amount of nodes with this config you want to generate
 	Amount      int          `yaml:"amount"`
 	Groups      []Group      `yaml:"groups"`
 	Connections []Connection `yaml:"connections"`
+	Routers		[]Router
 
 	NodeType       string `yaml:"nodeType"`
 
 	// attached components
 	components []iac.Component
-
 }
 
 type Node struct {
@@ -52,12 +59,23 @@ type Node struct {
 	NodeAttributes NodeAttributes `yaml:"nodeAttributes"`
 }
 
+// NodeAttributes contains the node specific attributes
+// like port, protocol
+// for nodes of type NodeTypeRDVP or NodeTypeRelay an additional 2 attributes are generated:
+// NodeAttributes.Pk and NodeAttributes.PeerId
 type NodeAttributes struct {
 	Port     int
 	Protocol string
 	Pk       string
 	PeerId   string
+	RDVPMaddr string
 }
+
+type Router struct {
+	RouterType string `yaml:"type"`
+	Address string `yaml:"address"`
+}
+
 
 func (c *NodeGroup) validate() bool {
 	for i:=0; i<c.Amount; i+=1 {
@@ -132,6 +150,42 @@ func (c *NodeGroup) composeComponents() {
 
 		}
 
+		var RDVPmaddrs []string
+
+		// generate router data
+		for _, router := range c.Routers {
+			switch strings.ToLower(router.RouterType) {
+			case NodeTypeRDVP:
+				maddr, err := ma.NewMultiaddr(router.Address)
+				if err == nil {
+					RDVPmaddrs = append(RDVPmaddrs, maddr.String())
+					continue
+				}
+
+				for _, rdvp := range config.RDVP {
+					if rdvp.Name == router.Address {
+						for j, _ := range rdvp.Nodes {
+							RDVPmaddrs = append(RDVPmaddrs, rdvp.getFullMultiAddr(j))
+						}
+					}
+				}
+			}
+		}
+
+
+		var s string
+		for j, RDVPMaddr := range RDVPmaddrs {
+			s += RDVPMaddr
+
+			// check if this is the last iteration
+			if j+1 != len(RDVPmaddrs) {
+				s += ","
+			}
+		}
+
+		na.RDVPMaddr = s
+
+
 		node.NodeAttributes = na
 
 		// generate the actual userdata
@@ -140,6 +194,7 @@ func (c *NodeGroup) composeComponents() {
 			panic(err)
 		}
 
+		fmt.Println(s)
 		instance.UserData = s
 
 		comps = append(comps, instance)

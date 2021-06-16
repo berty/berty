@@ -31,8 +31,9 @@ berty daemon \
   -p2p.bootstrap=':none:' \
   -p2p.dht-randomwalk=false \
   -p2p.tinder-dht-driver=false \
-  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \
-  -p2p.rdvp={{.RDVPMaddr }} \
+  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \{{if .RDVPMaddr }}
+  -p2p.rdvp="{{.RDVPMaddr }}" \
+{{- end}}
   -p2p.tinder-rdvp-driver=true \
   -log.file=/home/ubuntu/log
 `
@@ -93,10 +94,8 @@ func (c *Node) GenerateUserData() (s string, err error) {
 		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
 		values["defaultGrpcPort"] = defaultGrpcPort
 
-		// arbitrary choice for now
-		// TODO decide RDVP (if not multiple) based on connections
-		rdvp := config.RDVP[0]
-		values["RDVPMaddr"] = rdvp.getFullMultiAddr(0)
+		values["RDVPMaddr"] = c.NodeAttributes.RDVPMaddr
+		fmt.Println(c.NodeAttributes.RDVPMaddr)
 
 	case NodeTypeBootstrap:
 		//TODO make this

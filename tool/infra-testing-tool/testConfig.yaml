@@ -8,17 +8,20 @@ rdvp:
 
 peer:
     - name: test peers 1
-      amount: 0
+      amount: 2
       groups:
-      - name: group 1
+      - name: message group
         tests:
         - type: text
           size: 40KB
-          interval: 2
+          interval: 10
       connections:
-        - name: connection 1
+        - name: connection
           to: internet
           protocol: tcp
+      routers:
+        - type: rdvp
+          address: test rdvp
 
 #relay:
 #    - name: test relay

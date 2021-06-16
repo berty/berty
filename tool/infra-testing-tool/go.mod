@@ -10,6 +10,7 @@ require (
 	github.com/gruntwork-io/terratest v0.35.4
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/mitchellh/mapstructure v1.1.2
+	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/spf13/cobra v1.1.3
 	google.golang.org/grpc v1.37.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b

@@ -30,6 +30,9 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		return components, err
 	}
 
+
+	// temporary nodegroup placeholder so we don't have to decode Attributes in the mapstructure.
+	// this wouldn't work anyways.
 	var k struct {
 		RDVP      []NodeGroup `yaml:"rdvp"`
 		Relay     []NodeGroup `yaml:"relay"`
@@ -45,7 +48,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	k.Replication = config.Replication
 	k.Peer = config.Peer
 
-	// converting to a map[string]interface{} allows us to iterate over the config instead of having to manually do
+	// converting to a map[string][]NodeGroup allows us to iterate over the config instead of having to manually do
 	// ```for _, peer := range c.Peers {}```
 	// for every type (of which there might be many in the future)
 	var cMap map[string][]NodeGroup
