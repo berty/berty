@@ -1,17 +1,65 @@
 package tech.berty.gobridge.bledriver;
 
+import android.bluetooth.BluetoothSocket;
+import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class Peer {
     private static final String TAG = "bty.ble.Peer";
 
+    private static final long TIMEOUT = 30000;
+    public final Object SocketLock = new Object();
     private final String mPeerID;
-
     private final ArrayList<PeerDevice> mClientDevices = new ArrayList<>();
     private final ArrayList<PeerDevice> mServerDevices = new ArrayList<>();
+    private BluetoothSocket bluetoothSocket;
+    private InputStream inputStream;
+    private OutputStream outputStream;
+
+    private Runnable mTimeoutRunnable;
 
     public Peer(String peerID) {
         mPeerID = peerID;
+    }
+
+    public BluetoothSocket getBluetoothSocket() {
+        synchronized (SocketLock) {
+            return bluetoothSocket;
+        }
+    }
+
+    public void setBluetoothSocket(BluetoothSocket bluetoothSocket) {
+        synchronized (SocketLock) {
+            this.bluetoothSocket = bluetoothSocket;
+        }
+    }
+
+    public InputStream getInputStream() {
+        synchronized (SocketLock) {
+            return inputStream;
+        }
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        synchronized (SocketLock) {
+            this.inputStream = inputStream;
+        }
+    }
+
+    public OutputStream getOutputStream() {
+        synchronized (SocketLock) {
+            return outputStream;
+        }
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        synchronized (SocketLock) {
+            this.outputStream = outputStream;
+        }
     }
 
     public synchronized String getPeerID() {
@@ -27,6 +75,20 @@ public class Peer {
     }
 
     public synchronized void disconnectAndRemoveDevices() {
+        synchronized (SocketLock) {
+            if (getBluetoothSocket() != null) {
+                try {
+                    getBluetoothSocket().close();
+                } catch (IOException e) {
+                    Log.e(TAG, String.format("disconnectAndRemoveDevices: peer=%s BluetoothSocket close error: ", getPeerID()), e);
+                } finally {
+                    setBluetoothSocket(null);
+                    setInputStream(null);
+                    setOutputStream(null);
+                }
+            }
+        }
+
         for (PeerDevice device : mClientDevices) {
             device.disconnect();
         }
@@ -45,15 +107,34 @@ public class Peer {
         return null;
     }
 
-    public synchronized  boolean isClientReady() {
+    public synchronized boolean isClientReady() {
         return mClientDevices.size() > 0;
     }
 
-    public synchronized  boolean isServerReady() {
+    public synchronized boolean isServerReady() {
         return mServerDevices.size() > 0;
     }
 
     public synchronized boolean isHandshakeSuccessful() {
         return isClientReady() && isServerReady();
+    }
+
+    public synchronized void enableTimeout() {
+        disableTimeout();
+
+        mTimeoutRunnable = () -> {
+            Log.d(TAG, String.format("enableTimeout: peerId=%s id=%s device=%s", getPeerID(), getPeerClientDevice().getId(), getPeerClientDevice().getMACAddress()));
+
+            getPeerClientDevice().disconnect();
+        };
+
+        BleDriver.mainHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
+    }
+
+    public synchronized void disableTimeout() {
+        if (mTimeoutRunnable != null) {
+            BleDriver.mainHandler.removeCallbacks(mTimeoutRunnable);
+            mTimeoutRunnable = null;
+        }
     }
 }

@@ -13,13 +13,13 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import bertybridge.ProximityTransport;
-import tech.berty.gobridge.proximitydriverssdk.base.NearbyDriverSDK;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserAcceptCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserConnectionCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserMessageCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserRequestCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserSearchCallback;
-import tech.berty.gobridge.proximitydriverssdk.model.Endpoint;
+import tech.berty.gobridge.nearbydriversdk.base.NearbyDriverSDK;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserAcceptCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserConnectionCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserMessageCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserRequestCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserSearchCallback;
+import tech.berty.gobridge.nearbydriversdk.model.Endpoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 

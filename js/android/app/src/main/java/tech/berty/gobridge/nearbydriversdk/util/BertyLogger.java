@@ -1,4 +1,4 @@
-package tech.berty.gobridge.proximitydriverssdk.util;
+package tech.berty.gobridge.nearbydriversdk.util;
 
 
 import tech.berty.android.BuildConfig;

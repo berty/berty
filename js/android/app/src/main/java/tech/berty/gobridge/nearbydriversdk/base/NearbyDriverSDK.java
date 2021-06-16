@@ -1,4 +1,4 @@
-package tech.berty.gobridge.proximitydriverssdk.base;
+package tech.berty.gobridge.nearbydriversdk.base;
 
 import android.content.Context;
 import android.util.Log;
@@ -29,13 +29,13 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserAcceptCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserConnectionCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserMessageCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserRequestCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserSearchCallback;
-import tech.berty.gobridge.proximitydriverssdk.model.Endpoint;
-import tech.berty.gobridge.proximitydriverssdk.util.BertyLogger;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserAcceptCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserConnectionCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserMessageCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserRequestCallback;
+import tech.berty.gobridge.nearbydriversdk.lifecycle.UserSearchCallback;
+import tech.berty.gobridge.nearbydriversdk.model.Endpoint;
+import tech.berty.gobridge.nearbydriversdk.util.BertyLogger;
 
 // Make the NBDriver class a Singleton
 public class NearbyDriverSDK {

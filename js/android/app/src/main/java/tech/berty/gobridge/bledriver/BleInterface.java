@@ -4,24 +4,41 @@ import android.content.Context;
 import android.util.Log;
 
 import bertybridge.Bertybridge;
-import bertybridge.NativeBleDriver;
+import bertybridge.ProximityDriver;
 import bertybridge.ProximityTransport;
 
 // BleInterface implements the Golang NativeDriver interface
 // berty/go/internal/proximitytransport/nativedriver.go
-public class BleInterface implements NativeBleDriver {
-    private static final String TAG = "bty.ble.BleInterface";
-
+public class BleInterface implements ProximityDriver {
     public static final String DefaultAddr = "/ble/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
     public static final int ProtocolCode = 0x0042;
     public static final String ProtocolName = "ble";
-
-    private final Context mContext;
+    private static final String TAG = "bty.ble.BleInterface";
     private static ProximityTransport mTransport;
+    private final Context mContext;
     private BleDriver mBleDriver;
 
     public BleInterface(Context context) {
         mContext = context;
+    }
+
+    public static boolean BLEHandleFoundPeer(String remotePID) {
+        if (mTransport != null) {
+            return mTransport.handleFoundPeer(remotePID);
+        }
+        return false;
+    }
+
+    public static void BLEHandleLostPeer(String remotePID) {
+        if (mTransport != null) {
+            mTransport.handleLostPeer(remotePID);
+        }
+    }
+
+    public static void BLEReceiveFromPeer(String remotePID, byte[] payload) {
+        if (mTransport != null) {
+            mTransport.receiveFromPeer(remotePID, payload);
+        }
     }
 
     public void start(String localPID) {
@@ -30,12 +47,12 @@ public class BleInterface implements NativeBleDriver {
         mTransport = Bertybridge.getProximityTransport(ProtocolName);
         if (mTransport == null) {
             Log.e(TAG, "proximityTransporter not found");
-            return ;
+            return;
         }
 
         if ((this.mBleDriver = BleDriver.getInstance(mContext)) == null) {
             Log.e(TAG, "can't get BleDriver instance");
-            return ;
+            return;
         }
         this.mBleDriver.StartBleDriver(localPID);
     }
@@ -73,24 +90,5 @@ public class BleInterface implements NativeBleDriver {
 
     public String defaultAddr() {
         return DefaultAddr;
-    }
-
-    public static boolean BLEHandleFoundPeer(String remotePID) {
-        if (mTransport != null) {
-            return mTransport.handleFoundPeer(remotePID);
-        }
-        return false;
-    }
-
-    public static void BLEHandleLostPeer(String remotePID) {
-        if (mTransport != null) {
-            mTransport.handleLostPeer(remotePID);
-        }
-    }
-
-    public static void BLEReceiveFromPeer(String remotePID, byte[] payload) {
-        if (mTransport != null) {
-            mTransport.receiveFromPeer(remotePID, payload);
-        }
     }
 }

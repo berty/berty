@@ -1,4 +1,4 @@
-package tech.berty.gobridge.proximitydriverssdk.model;
+package tech.berty.gobridge.nearbydriversdk.model;
 
 import androidx.annotation.NonNull;
 

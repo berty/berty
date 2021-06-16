@@ -4,10 +4,13 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothServerSocket;
 import android.content.Context;
+import android.os.Build;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
@@ -20,11 +23,8 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 
 public class GattServer {
-    private final String TAG = "bty.ble.GattServer";
-
     // BLE protocol reserves 3 bytes out of MTU_SIZE for metadata
     public static final int ATT_HEADER_SIZE = 3;
-
     // GATT service UUID
     static final UUID SERVICE_UUID = UUID.fromString("00004240-0000-1000-8000-00805F9B34FB");
     // GATT characteristic used for peer ID exchange
@@ -32,49 +32,51 @@ public class GattServer {
     // GATT characteristic used for data exchange
     static final UUID WRITER_UUID = UUID.fromString("00004242-0000-1000-8000-00805F9B34FB");
     static final ParcelUuid P_SERVICE_UUID = new ParcelUuid(SERVICE_UUID);
-
+    private final String TAG = "bty.ble.GattServer";
     // GATT service objects
     private BluetoothGattService mService;
-    private BluetoothGattCharacteristic mPIDCharacteristic;
-    private BluetoothGattCharacteristic mWriterCharacteristic;
 
     private final Context mContext;
     private final BluetoothManager mBluetoothManager;
     private CountDownLatch mDoneSignal;
     private GattServerCallback mGattServerCallback;
     private BluetoothGattServer mBluetoothGattServer;
+    private BluetoothServerSocket mBluetoothServerSocket;
+    private int PSM = 0;
     private volatile boolean mInit = false;
     private volatile boolean mStarted = false;
-
     private final Lock mLock = new ReentrantLock();
-
     public GattServer(Context context, BluetoothManager bluetoothManager) {
         mContext = context;
         mBluetoothManager = bluetoothManager;
-        initGattService();
     }
 
-    private void initGattService() {
+    public BluetoothServerSocket getBluetoothServerSocket() {
+        return mBluetoothServerSocket;
+    }
+
+    private boolean initGattService() {
         Log.i(TAG, "initGattService called");
 
         mService = new BluetoothGattService(SERVICE_UUID, SERVICE_TYPE_PRIMARY);
-        mPIDCharacteristic = new BluetoothGattCharacteristic(PID_UUID, PROPERTY_READ | PROPERTY_WRITE, PERMISSION_READ | PERMISSION_WRITE);
-        mWriterCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
+        BluetoothGattCharacteristic mPIDCharacteristic = new BluetoothGattCharacteristic(PID_UUID, PROPERTY_READ | PROPERTY_WRITE, PERMISSION_READ | PERMISSION_WRITE);
+        BluetoothGattCharacteristic mWriterCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
 
         if (!mPIDCharacteristic.setValue("") || !mWriterCharacteristic.setValue("")) {
             Log.e(TAG, "setupService failed: setValue error");
-            return ;
+            return false;
         }
 
         if (!mService.addCharacteristic(mPIDCharacteristic) || !mService.addCharacteristic(mWriterCharacteristic)) {
             Log.e(TAG, "setupService failed: can't add characteristics to service");
-            return ;
+            return false;
         }
 
         mDoneSignal = new CountDownLatch(1);
         mGattServerCallback = new GattServerCallback(mContext, this, mDoneSignal);
 
         mInit = true;
+        return true;
     }
 
     // After adding a new service, the success of this operation will be given to the callback
@@ -83,7 +85,7 @@ public class GattServer {
     public boolean start(final String peerID) {
         Log.i(TAG, "start called");
 
-        if (!mInit) {
+        if (!mInit && !initGattService()) {
             Log.e(TAG, "start: GATT service not init");
             return false;
         }
@@ -96,6 +98,20 @@ public class GattServer {
 
         mBluetoothGattServer = mBluetoothManager.openGattServer(mContext, mGattServerCallback);
 
+        // listen for l2cap connections
+        // TODO: fix l2cap
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            try {
+//                Log.d(TAG, "start: listenUsingL2capChannel");
+//                mBluetoothServerSocket = mBluetoothManager.getAdapter().listenUsingInsecureL2capChannel();
+//                PSM = mBluetoothServerSocket.getPsm();
+//                Log.d(TAG, String.format("start: listenUsingL2capChannel: PSM=%d", PSM));
+//            } catch (IOException e) {
+//                Log.e(TAG, "start error: listenUsingL2capChannel: ", e);
+//                mBluetoothServerSocket = null;
+//            }
+//        }
+
         if (!mBluetoothGattServer.addService(mService)) {
             Log.e(TAG, "setupGattServer error: cannot add a new service");
             mBluetoothGattServer.close();
@@ -105,13 +121,17 @@ public class GattServer {
 
         // wait that service starts
         try {
-           mDoneSignal.await();
+            mDoneSignal.await();
         } catch (InterruptedException e) {
             Log.e(TAG, "start: interrupted exception:", e);
         }
 
         // mStarted is updated by GattServerCallback
         return isStarted();
+    }
+
+    public int getL2capPSM() {
+        return PSM;
     }
 
     public BluetoothGattServer getGattServer() {
@@ -125,15 +145,6 @@ public class GattServer {
         return gattServer;
     }
 
-    public void setStarted(boolean started) {
-        mLock.lock();
-        try {
-            mStarted = started;
-        } finally {
-            mLock.unlock();
-        }
-    }
-
     public boolean isStarted() {
         boolean started;
         mLock.lock();
@@ -145,10 +156,29 @@ public class GattServer {
         return started;
     }
 
+    public void setStarted(boolean started) {
+        mLock.lock();
+        try {
+            mStarted = started;
+        } finally {
+            mLock.unlock();
+        }
+    }
+
     public void stop() {
         Log.i(TAG, "stop() called");
         if (isStarted()) {
             setStarted(false);
+            if (mBluetoothServerSocket != null) {
+                try {
+                    Log.d(TAG, "stop BluetoothServerSocket (L2cap)");
+                    mBluetoothServerSocket.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "stop error: cannot close BluetoothServerSocket (L2cap)");
+                } finally {
+                    mBluetoothServerSocket = null;
+                }
+            }
             mBluetoothGattServer.close();
             mLock.lock();
             try {
@@ -157,6 +187,7 @@ public class GattServer {
                 mLock.unlock();
             }
         }
+        mInit = false;
     }
 
     /*public boolean writeAndNotify(PeerDevice device, byte[] payload) {
