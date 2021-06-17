@@ -49,19 +49,16 @@ func DescribeInstances() (instances []*ec2.Instance, err error) {
 		return instances, err
 	}
 
-
 	// check if instance has "berty - infra" key-value tag
 	for _, reservation := range diResp.Reservations {
 		for _, instance := range reservation.Instances {
-			for _, tag := range  instance.Tags {
+			for _, tag := range instance.Tags {
 				if *tag.Key == iacec2.Ec2TagBerty && *tag.Value == iacec2.Ec2TagBertyValue {
 					instances = append(instances, instance)
 				}
 			}
 		}
 	}
-
-
 
 	return instances, err
 }

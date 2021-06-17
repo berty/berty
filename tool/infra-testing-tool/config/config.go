@@ -32,7 +32,7 @@ type Attributes struct {
 }
 
 var (
-	config           = Config{}
+	config = Config{}
 )
 
 func init() {

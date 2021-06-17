@@ -20,15 +20,15 @@ type Peer struct {
 
 	Lock sync.Mutex
 
-	Cc *grpc.ClientConn
+	Cc        *grpc.ClientConn
 	Messenger messengertypes.MessengerServiceClient
 	Protocol  protocoltypes.ProtocolServiceClient
 
-	Ip       string
-	Groups   map[string]*protocoltypes.Group
-	ConfigGroups []config.Group
-	DevicePK []byte
-	Messages []MessageHistory
+	Ip            string
+	Groups        map[string]*protocoltypes.Group
+	ConfigGroups  []config.Group
+	DevicePK      []byte
+	Messages      []MessageHistory
 	lastMessageID []byte
 }
 
@@ -86,13 +86,13 @@ func (p *Peer) GetHost() string {
 // loop over individual peers in config.Peer
 // if tags are identical, consider match the groups
 func (p *Peer) MatchNodeToPeer(c config.Config) {
-		for _, cPeerNg := range c.Peer {
-			// config.NodeGroup.Nodes
-			for _, cIndividualPeer := range cPeerNg.Nodes {
-				if p.Tags[iacec2.Ec2TagName] == cIndividualPeer.Name {
-					p.ConfigGroups = cPeerNg.Groups
-				}
+	for _, cPeerNg := range c.Peer {
+		// config.NodeGroup.Nodes
+		for _, cIndividualPeer := range cPeerNg.Nodes {
+			if p.Tags[iacec2.Ec2TagName] == cIndividualPeer.Name {
+				p.ConfigGroups = cPeerNg.Groups
 			}
 		}
+	}
 
 }

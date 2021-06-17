@@ -20,11 +20,11 @@ type MessageHistory struct {
 	Payload     []byte
 }
 
-func ToMessageHistory(a messengertypes.AppMessage, ) MessageHistory {
+func ToMessageHistory(a messengertypes.AppMessage) MessageHistory {
 	return MessageHistory{
 		MessageType: a.GetType(),
-		ReceivedAt: time.Now(),
-		Payload: a.Payload,
+		ReceivedAt:  time.Now(),
+		Payload:     a.Payload,
 	}
 
 }
@@ -40,8 +40,8 @@ func (p *Peer) SendMessage(groupName string) error {
 	}
 
 	_, err = p.Messenger.Interact(context.Background(), &messengertypes.Interact_Request{
-		Type: messengertypes.AppMessage_TypeUserMessage,
-		Payload: payload,
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
+		Payload:               payload,
 		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(p.Groups[groupName].GetPublicKey()),
 	})
 
@@ -101,13 +101,12 @@ func (p *Peer) GetMessageList(groupName string) error {
 	return nil
 }
 
-func (p *Peer) ActivateGroup (groupName string) error {
+func (p *Peer) ActivateGroup(groupName string) error {
 	pk := p.Groups[groupName].GetPublicKey()
 
 	_, err := p.Protocol.ActivateGroup(context.Background(), &protocoltypes.ActivateGroup_Request{GroupPK: pk})
 	return err
 }
-
 
 func (p *Peer) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent, groupName string) error {
 	if p.Groups[groupName].GroupType != protocoltypes.GroupTypeContact {

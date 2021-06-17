@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	File      string
+	File string
 
 	rootCmd = &cobra.Command{
 		Use: "infra",

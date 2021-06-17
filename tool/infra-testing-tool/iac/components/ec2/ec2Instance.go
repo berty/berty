@@ -33,7 +33,7 @@ type NetworkInterfaceAttachment struct {
 }
 
 type Tag struct {
-	Key string
+	Key   string
 	Value string
 }
 
@@ -116,7 +116,7 @@ func (c Instance) Validate() (iac.Component, error) {
 	// used to identify which tags were launched by the infra tool (in case the account has other instance running
 	// that we don't want to interfere with).
 	c.Tags = append(c.Tags, Tag{
-		Key: Ec2TagBerty,
+		Key:   Ec2TagBerty,
 		Value: Ec2TagBertyValue,
 	})
 

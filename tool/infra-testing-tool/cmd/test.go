@@ -25,7 +25,7 @@ var (
 				return err
 			}
 
-			for i, _ := range availablePeers {
+			for i := range availablePeers {
 				availablePeers[i].MatchNodeToPeer(c)
 			}
 
@@ -36,7 +36,6 @@ var (
 				fmt.Printf("%v available peers\n", len(availablePeers))
 			}
 
-
 			var groups = make(map[string]*testing.Group)
 			for _, group := range c.Attributes.Groups {
 				groups[group.Name] = &testing.Group{
@@ -45,14 +44,14 @@ var (
 				}
 			}
 
-			for i, _ := range availablePeers {
+			for i := range availablePeers {
 				for _, group := range availablePeers[i].ConfigGroups {
 
 					availablePeers[i].ConfigGroups = nil
 
 					if groups[group.Name].Name == "" {
 						groups[group.Name] = &testing.Group{
-							Name: group.Name,
+							Name:  group.Name,
 							Tests: group.Tests,
 							Peers: []*testing.Peer{&availablePeers[i]},
 						}
@@ -66,8 +65,7 @@ var (
 				}
 			}
 
-
-			for i, _ := range groups {
+			for i := range groups {
 				fmt.Printf("GROUP: %s\n", groups[i].Name)
 				groups[i].Name = uuid.NewString()[:8]
 
@@ -83,7 +81,7 @@ var (
 					log.Println(err)
 				}
 
-				for j:=1; j<=len(groups[i].Peers)-1; j+=1 {
+				for j := 1; j <= len(groups[i].Peers)-1; j += 1 {
 					err := groups[i].Peers[j].JoinInvite(inv, groups[i].Name)
 					if err != nil {
 						log.Println(err)
@@ -97,11 +95,11 @@ var (
 
 				time.Sleep(time.Second * 5)
 
-				for j, _ := range groups[i].Tests {
-					fmt.Println("test: " + strconv.Itoa(j + 1))
+				for j := range groups[i].Tests {
+					fmt.Println("test: " + strconv.Itoa(j+1))
 					fmt.Println(len(groups[i].Peers))
 					wg := sync.WaitGroup{}
-					for k, _ := range groups[i].Peers {
+					for k := range groups[i].Peers {
 						wg.Add(1)
 
 						groupIndex := i
@@ -121,22 +119,18 @@ var (
 
 							fmt.Printf("%s sent %d messages\n", groups[groupIndex].Peers[peerIndex].Name, x)
 
-
 							wg.Done()
 						}()
 					}
 
 					wg.Wait()
 
-
-
-					for k, _ := range availablePeers {
+					for k := range availablePeers {
 						err = groups[i].Peers[k].GetMessageList(groups[i].Name)
 						if err != nil {
 							panic(err)
 						}
 					}
-
 
 					for _, peer := range availablePeers {
 						fmt.Println(peer.Name)
@@ -144,7 +138,6 @@ var (
 					}
 				}
 			}
-
 
 			return nil
 		},

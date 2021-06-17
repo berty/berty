@@ -8,12 +8,12 @@ import (
 )
 
 type Group struct {
-	Name string `yaml:"name"`
+	Name  string `yaml:"name"`
 	Tests []Test `yaml:"tests"`
 }
 
 const (
-	TestTypeText = "text"
+	TestTypeText  = "text"
 	TestTypeMedia = "media"
 )
 
@@ -25,14 +25,14 @@ type Test struct {
 	// Internal -> compiled value from Input
 
 	// inputs
-	TypeInput string `yaml:"type"`
-	SizeInput string `yaml:"size"`
-	IntervalInput int `yaml:"interval"`
+	TypeInput     string `yaml:"type"`
+	SizeInput     string `yaml:"size"`
+	IntervalInput int    `yaml:"interval"`
 
 	// parsed values
-	TypeInternal string `yaml:"typeInternal"`
-	SizeInternal int `yaml:"sizeInternal"` // in KB
-	IntervalInternal int `yaml:"intervalInternal"` // in Seconds
+	TypeInternal     string `yaml:"typeInternal"`
+	SizeInternal     int    `yaml:"sizeInternal"`     // in KB
+	IntervalInternal int    `yaml:"intervalInternal"` // in Seconds
 
 }
 
@@ -65,15 +65,13 @@ func (c *NodeGroup) parseGroups() error {
 		// do nothing
 	}
 
-
 	// parse the test cases for each individual group
 	for i, group := range c.Groups {
 		config.Attributes.Groups[group.Name] = group
 
 		// parse the tests
 		for j, test := range c.Groups[i].Tests {
-				 t := strings.ToLower(test.TypeInput)
-
+			t := strings.ToLower(test.TypeInput)
 
 			// parse group type
 			switch {

@@ -36,7 +36,7 @@ const (
 // Each node is named as following: Node.Name = NodeGroup.Name + uuid.NewString()[:8]
 type NodeGroup struct {
 	// name prefix given in config
-	Name        string       `yaml:"name"`
+	Name string `yaml:"name"`
 	// name given to individual nodes
 
 	Nodes []Node `yaml:"nodes"`
@@ -45,17 +45,17 @@ type NodeGroup struct {
 	Amount      int          `yaml:"amount"`
 	Groups      []Group      `yaml:"groups"`
 	Connections []Connection `yaml:"connections"`
-	Routers		[]Router
+	Routers     []Router
 
-	NodeType       string `yaml:"nodeType"`
+	NodeType string `yaml:"nodeType"`
 
 	// attached components
 	components []iac.Component
 }
 
 type Node struct {
-	Name string `yaml:"name"`
-	NodeType       string `yaml:"nodeType"`
+	Name           string         `yaml:"name"`
+	NodeType       string         `yaml:"nodeType"`
 	NodeAttributes NodeAttributes `yaml:"nodeAttributes"`
 }
 
@@ -69,19 +69,18 @@ type NodeAttributes struct {
 	Pk       string
 	PeerId   string
 
-	RDVPMaddr string
-	RelayMaddr string
+	RDVPMaddr      string
+	RelayMaddr     string
 	BootstrapMaddr string
 }
 
 type Router struct {
 	RouterType string `yaml:"type"`
-	Address string `yaml:"address"`
+	Address    string `yaml:"address"`
 }
 
-
 func (c *NodeGroup) validate() bool {
-	for i:=0; i<c.Amount; i+=1 {
+	for i := 0; i < c.Amount; i += 1 {
 		c.Nodes = append(c.Nodes, Node{Name: c.generateName(), NodeType: c.NodeType})
 	}
 
@@ -123,7 +122,6 @@ func (c *NodeGroup) composeComponents() {
 			networkInterfaces = append(networkInterfaces, &ni)
 			comps = append(comps, ni)
 		}
-
 
 		// make interface with name, networkInterface & nodeType
 		instance := ec2.NewInstance()
@@ -213,11 +211,11 @@ func genkey() (string, string, error) {
 		return "", "", err
 	}
 
-	return  pid.String(), base64.StdEncoding.EncodeToString(kBytes), nil
+	return pid.String(), base64.StdEncoding.EncodeToString(kBytes), nil
 }
 
 // parseRouters parses the router part of the config
-func (c NodeGroup)parseRouters() (RDVP, Relay, Bootstrap string) {
+func (c NodeGroup) parseRouters() (RDVP, Relay, Bootstrap string) {
 	var RDVPMaddrs, RelayMaddrs, BootstrapMaddrs []string
 	// generate router data
 	for _, router := range c.Routers {
@@ -231,12 +229,11 @@ func (c NodeGroup)parseRouters() (RDVP, Relay, Bootstrap string) {
 
 			for _, configrdvp := range config.RDVP {
 				if configrdvp.Name == router.Address {
-					for j, _ := range configrdvp.Nodes {
+					for j := range configrdvp.Nodes {
 						RDVPMaddrs = append(RDVPMaddrs, configrdvp.getFullMultiAddr(j))
 					}
 				}
 			}
-
 
 			for j, RDVPMaddr := range RDVPMaddrs {
 				RDVP += RDVPMaddr
@@ -247,7 +244,6 @@ func (c NodeGroup)parseRouters() (RDVP, Relay, Bootstrap string) {
 				}
 			}
 
-
 		case NodeTypeRelay:
 			maddr, err := ma.NewMultiaddr(router.Address)
 			if err == nil {
@@ -257,7 +253,7 @@ func (c NodeGroup)parseRouters() (RDVP, Relay, Bootstrap string) {
 
 			for _, configrelay := range config.Relay {
 				if configrelay.Name == router.Address {
-					for j, _ := range configrelay.Nodes {
+					for j := range configrelay.Nodes {
 						RelayMaddrs = append(RelayMaddrs, configrelay.getFullMultiAddr(j))
 					}
 				}
@@ -281,7 +277,7 @@ func (c NodeGroup)parseRouters() (RDVP, Relay, Bootstrap string) {
 
 			for _, configbs := range config.Bootstrap {
 				if configbs.Name == router.Address {
-					for j, _ := range configbs.Nodes {
+					for j := range configbs.Nodes {
 						BootstrapMaddrs = append(BootstrapMaddrs, configbs.getFullMultiAddr(j))
 					}
 				}
@@ -297,8 +293,6 @@ func (c NodeGroup)parseRouters() (RDVP, Relay, Bootstrap string) {
 			}
 		}
 	}
-
-
 
 	// if no RDVP is assigned, set RDVP to none
 	if len(RDVPMaddrs) == 0 {

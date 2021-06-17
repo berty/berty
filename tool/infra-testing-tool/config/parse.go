@@ -30,7 +30,6 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		return components, err
 	}
 
-
 	// temporary nodegroup placeholder so we don't have to decode Attributes in the mapstructure.
 	// this wouldn't work anyways.
 	var k struct {
