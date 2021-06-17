@@ -27,13 +27,12 @@ export PORT={{.Port }}
 berty daemon \
   -node.listeners="/ip4/$PUBLIC_IP/tcp/{{.defaultGrpcPort }}/grpc" \
   -p2p.mdns=false \
-  -p2p.static-relays=':none' \
-  -p2p.bootstrap=':none:' \
+  -p2p.static-relays='{{.Relay }}' \
+  -p2p.bootstrap='{{.Bootstrap }}' \
   -p2p.dht-randomwalk=false \
   -p2p.tinder-dht-driver=false \
-  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \{{if .RDVPMaddr }}
-  -p2p.rdvp="{{.RDVPMaddr }}" \
-{{- end}}
+  -p2p.swarm-listeners=/ip4/$PUBLIC_IP/$PROTOC/$PORT/ \
+  -p2p.rdvp='{{.RDVPMaddr }}' \
   -p2p.tinder-rdvp-driver=true \
   -log.file=/home/ubuntu/log
 `
@@ -62,12 +61,12 @@ rdvp serve -pk {{.Pk | printf "%s" }} \
 `
 
 	// TODO: this isn't correct
-	relayUserData = `export PUBLIC_IP4=0X.0.0.0
+	relayUserData = `export PUBLIC_IP=0.0.0.0
 export PROTOC=tcp
 export PORT={{.Port }}
 export PEER_ID={{.PeerId }}
-rdvp serve -pk {{.Pk }} \
-	-announce "/ip4/$PUBLIC_IP4/$PROTOC/$port" \
+rdvp serve \
+	-announce "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
 	-l "/ip4/$PUBLIC_IP/$PROTOC/$PORT" \
 	-log.file=/home/ubuntu/log
 `
@@ -93,9 +92,9 @@ func (c *Node) GenerateUserData() (s string, err error) {
 
 		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
 		values["defaultGrpcPort"] = defaultGrpcPort
-
 		values["RDVPMaddr"] = c.NodeAttributes.RDVPMaddr
-		fmt.Println(c.NodeAttributes.RDVPMaddr)
+		values["Relay"] = c.NodeAttributes.RelayMaddr
+		values["Bootstrap"] = c.NodeAttributes.BootstrapMaddr
 
 	case NodeTypeBootstrap:
 		//TODO make this

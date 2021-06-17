@@ -68,7 +68,10 @@ type NodeAttributes struct {
 	Protocol string
 	Pk       string
 	PeerId   string
+
 	RDVPMaddr string
+	RelayMaddr string
+	BootstrapMaddr string
 }
 
 type Router struct {
@@ -150,42 +153,7 @@ func (c *NodeGroup) composeComponents() {
 
 		}
 
-		var RDVPmaddrs []string
-
-		// generate router data
-		for _, router := range c.Routers {
-			switch strings.ToLower(router.RouterType) {
-			case NodeTypeRDVP:
-				maddr, err := ma.NewMultiaddr(router.Address)
-				if err == nil {
-					RDVPmaddrs = append(RDVPmaddrs, maddr.String())
-					continue
-				}
-
-				for _, rdvp := range config.RDVP {
-					if rdvp.Name == router.Address {
-						for j, _ := range rdvp.Nodes {
-							RDVPmaddrs = append(RDVPmaddrs, rdvp.getFullMultiAddr(j))
-						}
-					}
-				}
-			}
-		}
-
-
-		var s string
-		for j, RDVPMaddr := range RDVPmaddrs {
-			s += RDVPMaddr
-
-			// check if this is the last iteration
-			if j+1 != len(RDVPmaddrs) {
-				s += ","
-			}
-		}
-
-		na.RDVPMaddr = s
-
-
+		na.RDVPMaddr, na.RelayMaddr, na.BootstrapMaddr = c.parseRouters()
 		node.NodeAttributes = na
 
 		// generate the actual userdata
@@ -194,7 +162,6 @@ func (c *NodeGroup) composeComponents() {
 			panic(err)
 		}
 
-		fmt.Println(s)
 		instance.UserData = s
 
 		comps = append(comps, instance)
@@ -221,7 +188,7 @@ func generatePort() int {
 	return lowerLimitPort + mrand.Intn(upperLimitPort-lowerLimitPort+1)
 }
 
-// generate a HCL compatible name
+// generateName generates an HCL compatible name
 func (c *NodeGroup) generateName() string {
 	return fmt.Sprintf("%s-%s", strings.ReplaceAll(c.Name, " ", "-"), uuid.NewString()[:8])
 }
@@ -247,4 +214,82 @@ func genkey() (string, string, error) {
 	}
 
 	return  pid.String(), base64.StdEncoding.EncodeToString(kBytes), nil
+}
+
+// parseRouters parses the router part of the config
+func (c NodeGroup)parseRouters() (RDVP, Relay, Boostrap string) {
+	var RDVPMaddrs, RelayMaddrs, BootstrapMaddrs []string
+	// generate router data
+	for _, router := range c.Routers {
+		switch strings.ToLower(router.RouterType) {
+		case NodeTypeRDVP:
+			maddr, err := ma.NewMultiaddr(router.Address)
+			if err == nil {
+				RDVPMaddrs = append(RDVPMaddrs, maddr.String())
+				continue
+			}
+
+			for _, configrdvp := range config.RDVP {
+				if configrdvp.Name == router.Address {
+					for j, _ := range configrdvp.Nodes {
+						RDVPMaddrs = append(RDVPMaddrs, configrdvp.getFullMultiAddr(j))
+					}
+				}
+			}
+
+
+			for j, RDVPMaddr := range RDVPMaddrs {
+				RDVP += RDVPMaddr
+
+				// check if this is the last iteration
+				if j+1 != len(RDVPMaddrs) {
+					RDVP += ","
+				}
+			}
+
+
+		case NodeTypeRelay:
+			maddr, err := ma.NewMultiaddr(router.Address)
+			if err == nil {
+				RelayMaddrs = append(RelayMaddrs, maddr.String())
+				continue
+			}
+
+			for _, configrelay := range config.Relay {
+				if configrelay.Name == router.Address {
+					for j, _ := range configrelay.Nodes {
+						RelayMaddrs = append(RelayMaddrs, configrelay.getFullMultiAddr(j))
+					}
+				}
+			}
+
+			for j, RelayMaddr := range RelayMaddrs {
+				Relay += RelayMaddr
+
+				// check if this is the last iteration
+				if j+1 != len(RelayMaddrs) {
+					Relay += ","
+				}
+			}
+		}
+	}
+
+
+
+	// if no RDVP is assigned, set RDVP to none
+	if len(RDVPMaddrs) == 0 {
+		RDVP = ":none:"
+	}
+
+	// if no Relay is assigned, set RDVP to none
+	if len(RelayMaddrs) == 0 {
+		Relay = ":none:"
+	}
+
+	// if no Bootstrap is assigned, set RDVP to none
+	if len(BootstrapMaddrs) == 0 {
+		Boostrap = ":none:"
+	}
+
+	return RDVP, Relay, Boostrap
 }
