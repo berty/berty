@@ -94,7 +94,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	}
 
 	// iterate over individual node types
-	var types = []string{"RDVP", "Bootstrap", "Relay", "Peer", "Replication"}
+	var types = []string{"RDVP", "Relay", "Bootstrap", "Peer", "Replication"}
 	// iterate over type of nodes
 	for _, t := range types {
 		for j := range cMap[t] {

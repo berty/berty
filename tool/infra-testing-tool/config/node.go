@@ -217,7 +217,7 @@ func genkey() (string, string, error) {
 }
 
 // parseRouters parses the router part of the config
-func (c NodeGroup)parseRouters() (RDVP, Relay, Boostrap string) {
+func (c NodeGroup)parseRouters() (RDVP, Relay, Bootstrap string) {
 	var RDVPMaddrs, RelayMaddrs, BootstrapMaddrs []string
 	// generate router data
 	for _, router := range c.Routers {
@@ -271,6 +271,30 @@ func (c NodeGroup)parseRouters() (RDVP, Relay, Boostrap string) {
 					Relay += ","
 				}
 			}
+
+		case NodeTypeBootstrap:
+			maddr, err := ma.NewMultiaddr(router.Address)
+			if err == nil {
+				BootstrapMaddrs = append(BootstrapMaddrs, maddr.String())
+				continue
+			}
+
+			for _, configbs := range config.Bootstrap {
+				if configbs.Name == router.Address {
+					for j, _ := range configbs.Nodes {
+						BootstrapMaddrs = append(BootstrapMaddrs, configbs.getFullMultiAddr(j))
+					}
+				}
+			}
+
+			for j, BootstrapMaddr := range BootstrapMaddrs {
+				Bootstrap += BootstrapMaddr
+
+				// check if this is the last iteration
+				if j+1 != len(BootstrapMaddrs) {
+					Bootstrap += ","
+				}
+			}
 		}
 	}
 
@@ -288,8 +312,8 @@ func (c NodeGroup)parseRouters() (RDVP, Relay, Boostrap string) {
 
 	// if no Bootstrap is assigned, set RDVP to none
 	if len(BootstrapMaddrs) == 0 {
-		Boostrap = ":none:"
+		Bootstrap = ":none:"
 	}
 
-	return RDVP, Relay, Boostrap
+	return RDVP, Relay, Bootstrap
 }
