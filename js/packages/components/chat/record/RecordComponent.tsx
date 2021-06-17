@@ -284,7 +284,7 @@ export const RecordComponent: React.FC<{
 					const duration = recordDuration || Date.now() - recordingStart
 
 					if (err !== null) {
-						if (recordDuration) {
+						if (duration) {
 							sendComplete({ duration })
 						} else {
 							console.warn(err)
