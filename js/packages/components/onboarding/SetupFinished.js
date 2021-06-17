@@ -51,6 +51,24 @@ const SetupFinishedBody = () => {
 			{(t) =>
 				isAccount ? (
 					<>
+						{isFinished && (
+							<LottieView
+								source={require('./confetti.json')}
+								autoPlay
+								loop={false}
+								style={{
+									position: 'absolute',
+									top: 20,
+									left: 0,
+									transform: [
+										{
+											scale: 1.4,
+										},
+									],
+									zIndex: 9,
+								}}
+							/>
+						)}
 						<View style={{ flex: 1 }}>
 							<LottieView
 								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
@@ -58,52 +76,31 @@ const SetupFinishedBody = () => {
 								loop
 								style={{ width: '100%' }}
 							/>
-							{!isGenerated ? (
-								<>
-									<LottieView
-										source={require('./Berty_onboard_animation_assets2/Startup animation assets/Circle spin.json')}
-										autoPlay
-										loop={false}
-									/>
-									<LottieView
-										source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code Generated.json')}
-										autoPlay
-										loop={false}
-										onAnimationFinish={() => {
-											setIsGenerated(true)
-										}}
-									/>
-								</>
-							) : (
-								<>
-									{!isFinished ? (
+
+							{!isFinished &&
+								(!isGenerated ? (
+									<>
 										<LottieView
-											source={require('./Berty_onboard_animation_assets2/Startup animation assets/Finish appear.json')}
+											source={require('./Berty_onboard_animation_assets2/Startup animation assets/Circle spin.json')}
+											autoPlay
+											loop={false}
+										/>
+										<LottieView
+											source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code Generated.json')}
 											autoPlay
 											loop={false}
 											onAnimationFinish={() => {
-												setIsFinished(true)
+												setIsGenerated(true)
 											}}
 										/>
-									) : (
-										<LottieView
-											source={require('./confetti.json')}
-											autoPlay
-											loop={false}
-											style={{
-												position: 'absolute',
-												top: 50,
-												left: 0,
-												transform: [
-													{
-														scale: 1.4,
-													},
-												],
-											}}
-										/>
-									)}
-								</>
-							)}
+									</>
+								) : (
+									<LottieView
+										source={require('./Berty_onboard_animation_assets2/Startup animation assets/Finish appear.json')}
+										autoPlay
+										loop={false}
+									/>
+								))}
 						</View>
 						<View style={{ flex: 1 }}>
 							<SwiperCard
@@ -112,8 +109,9 @@ const SetupFinishedBody = () => {
 								button={{
 									text: t('onboarding.setup-finished.button'),
 									onPress: () => {
+										setIsFinished(true)
 										Vibration.vibrate([500])
-										dispatch({ type: MessengerActions.SetStateReady })
+										setTimeout(() => dispatch({ type: MessengerActions.SetStateReady }), 2000)
 									},
 								}}
 							/>
