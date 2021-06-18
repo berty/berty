@@ -115,23 +115,25 @@ func (v *tabbedGroupsView) recomputeChannelList(viewChanged bool) {
 
 func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *protocoltypes.Group) {
 	v.lock.Lock()
-	defer v.lock.Unlock()
 
 	// Check if group already opened
 	switch g.GroupType {
 	case protocoltypes.GroupTypeContact:
 		for _, vg := range v.contactGroupViews {
 			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
+				v.lock.Unlock()
 				return
 			}
 		}
 	case protocoltypes.GroupTypeMultiMember:
 		for _, vg := range v.multiMembersGroupViews {
 			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
+				v.lock.Unlock()
 				return
 			}
 		}
 	default:
+		v.lock.Unlock()
 		return
 	}
 
@@ -139,8 +141,10 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *protocoltypes
 		GroupPK: g.PublicKey,
 	})
 	if err != nil {
+		v.lock.Unlock()
 		return
 	}
+	v.lock.Unlock()
 
 	vg := newViewGroup(v, g, info.MemberPK, info.DevicePK, globalLogger)
 	vg.welcomeGroupEventDisplay()
