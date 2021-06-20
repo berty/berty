@@ -59,7 +59,7 @@ public class MainApplication extends Application implements ReactApplication {
         Shake.getReportConfiguration().setShowFloatingReportButton(false);
         Shake.getReportConfiguration().setInvokeShakeOnShakeDeviceEvent(true);
     }
-	Shake.start(this);
+    Shake.start(this);
   }
 
   /**

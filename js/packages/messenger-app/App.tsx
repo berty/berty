@@ -32,6 +32,7 @@ const BootSplashInhibitor = () => {
 export const App: React.FC = () => {
 	React.useEffect(() => {
 		Shake.start()
+		Shake.setEnabled(true)
 
 		return () => {
 			isReadyRef.current = false
