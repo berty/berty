@@ -7,25 +7,22 @@ packer {
     }
 }
 
-source "amazon-ebs" "ubuntu" {
+variable "region" {
+    type = string
+    default = "eu-central-1"
+}
+
+source "amazon-ebs" "amazon-linux" {
     ami_name = "berty-ami"
     instance_type = "t3.2xlarge"
-    region = "eu-central-1"
-    source_ami_filter {
-        filters = {
-            name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
-            root-device-type    = "ebs"
-            virtualization-type = "hvm"
-        }
-        most_recent = true
-        owners      = ["099720109477"]
-    }
-    ssh_username = "ubuntu"
+    region = var.region
+    source_ami = "ami-0bad4a5e987bdebde"
+    ssh_username = "ec2-user"
 }
 
 build {
     sources = [
-        "source.amazon-ebs.ubuntu"
+        "source.amazon-ebs.amazon-linux"
     ]
 
     provisioner "shell" {
