@@ -581,6 +581,7 @@ Just type 'yes' to let me know you copy that.`
 // internal stuff
 
 func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversationPK string, replyOption []*messengertypes.ReplyOption) error {
+	time.Sleep(3 * time.Second)
 	userMessage, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: body})
 	if err != nil {
 		return fmt.Errorf("marshal user message failed: %w", err)
