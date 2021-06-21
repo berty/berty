@@ -39,9 +39,12 @@ export const ChoosePreset = () => {
 			<TouchableOpacity
 				activeOpacity={0.7}
 				onPress={async () => {
-					!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable
-						? navigation.goBack()
-						: dispatch({ type: MessengerActions.SetStateOnBoarding })
+					if (!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable) {
+						navigation.goBack()
+					} else {
+						dispatch({ type: MessengerActions.SetStateOnBoarding })
+						navigation.navigate('Onboarding.CreateAccount', {})
+					}
 					await setPersistentOption({
 						type: PersistentOptionsKeys.Preset,
 						payload: {
@@ -159,9 +162,12 @@ export const ChoosePreset = () => {
 				]}
 				activeOpacity={0.7}
 				onPress={async () => {
-					!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable
-						? navigation.goBack()
-						: dispatch({ type: MessengerActions.SetStateOnBoarding })
+					if (!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable) {
+						navigation.goBack()
+					} else {
+						dispatch({ type: MessengerActions.SetStateOnBoarding })
+						navigation.navigate('Onboarding.CreateAccount', {})
+					}
 					await setPersistentOption({
 						type: PersistentOptionsKeys.Preset,
 						payload: {

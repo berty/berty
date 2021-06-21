@@ -258,10 +258,13 @@ export const reducerActions: {
 		return ret
 	},
 
-	[MessengerActions.SetStateOnBoarding]: (oldState, _) => ({
-		...oldState,
-		appState: oldState.account ? MessengerAppState.OnBoarding : oldState.appState,
-	}),
+	[MessengerActions.SetStateOnBoarding]: (oldState, _) => {
+		console.log(oldState.account)
+		return {
+			...oldState,
+			appState: oldState.account ? MessengerAppState.OnBoarding : oldState.appState,
+		}
+	},
 
 	[MessengerActions.SetNextAccount]: (oldState, action) => {
 		if (
