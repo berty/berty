@@ -14,7 +14,7 @@ import mapValues from 'lodash/mapValues'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
 import { MessengerAppState } from '@berty-tech/store/context'
-import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
+import { dispatch } from '@berty-tech/navigation/rootRef'
 
 const CustomTransitionOptions: StackNavigationOptions = {
 	headerShown: false,
@@ -184,10 +184,6 @@ export const Navigation: React.FC = () => {
 						routes: [{ name: Routes.Onboarding.GetStarted }],
 					}),
 				)
-				return
-
-			case MessengerAppState.OnBoarding:
-				navigate(Routes.Onboarding.CreateAccount, {})
 				return
 
 			case MessengerAppState.Ready:

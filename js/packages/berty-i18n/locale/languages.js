@@ -38,7 +38,7 @@ export const languages = {
 	'ca-ES': { englishName: 'Catalan', localName: 'Català', translation: caES },
 	'cs-CZ': { englishName: 'Czech', localName: 'čeština', translation: csCZ },
 	'da-DK': { englishName: 'Danish', localName: 'Dansk', translation: daDK },
-	'de-DE': { englishName: 'German', localName: 'Deutsche', translation: deDE },
+	'de-DE': { englishName: 'German', localName: 'Deutsch', translation: deDE },
 	'el-GR': { englishName: 'Greek', localName: 'Ελληνικά', translation: elGR },
 	'en-US': { englishName: 'English', localName: 'English', translation: enUS },
 	'es-ES': { englishName: 'Spanish', localName: 'Español', translation: esES },

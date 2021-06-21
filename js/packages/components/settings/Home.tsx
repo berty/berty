@@ -180,6 +180,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 	}))
 
 	items.push({ label: 'Debug', value: 'cimode' })
+	console.log(ctx.persistentOptions.preset)
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
