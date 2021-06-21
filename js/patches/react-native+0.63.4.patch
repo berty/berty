@@ -1,3 +1,15 @@
+diff --git a/node_modules/react-native/react.gradle b/node_modules/react-native/react.gradle
+index c28cbd4..3b4bc55 100644
+--- a/node_modules/react-native/react.gradle
++++ b/node_modules/react-native/react.gradle
+@@ -305,6 +305,7 @@ afterEvaluate {
+         // mergeResources task runs before the bundle file is copied to the intermediate asset directory from Android plugin 4.1+.
+         // This ensures to copy the bundle file before mergeResources task starts
+         def mergeResourcesTask = tasks.findByName("merge${targetName}Resources")
++        currentAssetsCopyTask.dependsOn(currentBundleTask) // See: https://github.com/facebook/react-native/issues/31157
+         mergeResourcesTask.dependsOn(currentAssetsCopyTask)
+ 
+         packageTask.dependsOn(currentAssetsCopyTask)
 diff --git a/node_modules/react-native/scripts/ios-configure-glog.sh b/node_modules/react-native/scripts/ios-configure-glog.sh
 index 73a892c..de3e9cf 100755
 --- a/node_modules/react-native/scripts/ios-configure-glog.sh
