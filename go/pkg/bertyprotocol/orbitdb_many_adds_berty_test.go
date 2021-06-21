@@ -24,6 +24,7 @@ import (
 func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *protocoltypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
 	testutil.FilterSpeed(t, testutil.Slow)
+	t.Logf("TestAddBerty: amountToAdd: %d, amountCurrentlyPresent: %d\n", amountToAdd, amountCurrentlyPresent)
 
 	api := node.API()
 	ctx, cancel := context.WithCancel(ctx)
@@ -74,19 +75,15 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	wg := sync.WaitGroup{}
 	wg.Add(amountToAdd * 2)
-	wg.Add(1)
 
 	amountCurrentlyFound := 0
 
-	go func() {
-		messages, err := gc.MessageStore().ListEvents(ctx, nil, nil, false)
-		require.NoError(t, err)
+	messages, err := gc.MessageStore().ListEvents(ctx, nil, nil, false)
+	require.NoError(t, err)
 
-		for range messages {
-			amountCurrentlyFound++
-		}
-		wg.Done()
-	}()
+	for range messages {
+		amountCurrentlyFound++
+	}
 
 	// Watch for incoming new messages
 	go func() {
@@ -111,9 +108,18 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 		wg.Done()
 	}
 
-	wg.Wait()
+	done := make(chan struct{})
+	go func() {
+		wg.Wait()
+		close(done)
+	}()
 
-	require.Equal(t, amountCurrentlyFound, amountCurrentlyPresent)
+	select {
+	case <-done:
+	case <-time.After(30 * time.Second):
+	}
+
+	require.Equal(t, amountCurrentlyPresent, amountCurrentlyFound)
 }
 
 func TestAddBerty(t *testing.T) {

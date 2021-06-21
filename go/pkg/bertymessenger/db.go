@@ -273,11 +273,9 @@ func (d *dbWrapper) updateConversation(c messengertypes.Conversation) (bool, err
 	}
 
 	isNew := false
-	_, err := d.getConversationByPK(c.GetPublicKey())
-	if err == gorm.ErrRecordNotFound {
+	count := int64(0)
+	if err := d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: c.GetPublicKey()}).Count(&count).Error; err == gorm.ErrRecordNotFound || err == nil && count == 0 {
 		isNew = true
-	} else if err != nil {
-		return isNew, err
 	}
 
 	columns := []string(nil)
@@ -457,7 +455,7 @@ func (d *dbWrapper) getConversationByPK(publicKey string) (*messengertypes.Conve
 	conversation := &messengertypes.Conversation{}
 
 	if err := d.db.
-		Preload("ReplyOptions").
+		Joins("ReplyOptions").
 		Preload("ReplicationInfo").
 		First(
 			&conversation,
@@ -490,7 +488,7 @@ func (d *dbWrapper) getMemberByPK(publicKey string, convPK string) (*messengerty
 func (d *dbWrapper) getAllConversations() ([]*messengertypes.Conversation, error) {
 	convs := []*messengertypes.Conversation(nil)
 
-	return convs, d.db.Preload("ReplyOptions").Preload("ReplicationInfo").Find(&convs).Error
+	return convs, d.db.Joins("ReplyOptions").Preload("ReplicationInfo").Find(&convs).Error
 }
 
 func (d *dbWrapper) getAllMembers() ([]*messengertypes.Member, error) {
@@ -1404,12 +1402,12 @@ func (d *dbWrapper) getNextMedia(lastCID string, opts nextMediaOpts) (*messenger
 }
 
 func (d *dbWrapper) interactionIndexText(interactionCID string, text string) error {
-	if err := d.tx(d.ctx, func(wrapper *dbWrapper) error {
-		if d.disableFTS {
-			d.log.Info("full text search is not enabled")
-			return nil
-		}
+	if d.disableFTS {
+		d.log.Info("full text search is not enabled")
+		return nil
+	}
 
+	if err := d.tx(d.ctx, func(wrapper *dbWrapper) error {
 		var rowID int
 
 		if err := d.db.Model(&messengertypes.Interaction{}).Where("CID = ?", interactionCID).Pluck("ROWID", &rowID).Error; err != nil {

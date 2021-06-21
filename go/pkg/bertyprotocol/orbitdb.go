@@ -55,16 +55,16 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 		n.Cache = NewOrbitDatastoreCache(n.Datastore)
 	}
 
+	if n.Logger == nil {
+		n.Logger = zap.NewNop()
+	}
+
 	if n.MessageKeystore == nil {
 		n.MessageKeystore = newMessageKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceMessageKeystore)))
 	}
 
 	if n.DeviceKeystore == nil {
 		n.DeviceKeystore = NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))))
-	}
-
-	if n.Logger == nil {
-		n.Logger = zap.NewNop()
 	}
 
 	if n.Tracer == nil {
@@ -405,7 +405,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	l.Debug("Loading store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "StoreType", Description: store.Type()}, {Name: "Store", Description: fmt.Sprint(store)}}, tyber.Status(tyber.Running))...)
+	l.Debug("Loading store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "StoreType", Description: store.Type()}, {Name: "Store", Description: store.Address().String()}}, tyber.Status(tyber.Running))...)
 
 	_ = store.Load(ctx, -1)
 

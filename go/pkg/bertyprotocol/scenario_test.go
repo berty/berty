@@ -82,6 +82,27 @@ func TestScenario_MessageMultiMemberGroup(t *testing.T) {
 	})
 }
 
+//
+//func TestScenario_MessageMultiMemberGroup2(t *testing.T) {
+//	cases := []testCase{
+//		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Stable, time.Second * 60},
+//	}
+//
+//	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
+//		// Create MultiMember Group
+//		groupID := createMultiMemberGroup(ctx, t, tps...)
+//
+//		const messageCount = 100
+//		// Each member sends 3 messages on MultiMember Group
+//		messages := make([]string, messageCount)
+//		for i := 0; i < messageCount; i++ {
+//			messages[i] = fmt.Sprintf("test%d", i)
+//		}
+//
+//		sendMessageOnGroup(ctx, t, tps, tps, groupID, messages)
+//	})
+//}
+
 func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 	const ngroup = 3
 
@@ -149,6 +170,23 @@ func TestScenario_MessageAccountGroup(t *testing.T) {
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
+		// Get account config
+		config, err := tps[0].Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		require.NoError(t, err)
+		require.NotNil(t, config)
+
+		// Send messages on account group
+		messages := []string{"test1", "test2", "test3"}
+		sendMessageOnGroup(ctx, t, tps, tps, config.AccountGroupPK, messages)
+	})
+}
+
+func TestScenario_MessageAccountGroup_NonMocked(t *testing.T) {
+	cases := []testCase{
+		{"1 client/connectAll", 1, ConnectAll, testutil.Fast, testutil.Stable, time.Second * 10},
+	}
+
+	testingScenarioNonMocked(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
 		// Get account config
 		config, err := tps[0].Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 		require.NoError(t, err)
@@ -371,6 +409,67 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 // Helpers
 
 func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
+	var tracerName string
+	pc, _, _, ok := runtime.Caller(1)
+	fun := runtime.FuncForPC(pc)
+	if ok && fun != nil {
+		funcName := strings.Split(fun.Name(), ".")
+		tracerName = funcName[len(funcName)-1]
+	} else {
+		tracerName = "TestingScenario"
+	}
+	tr := tracer.NewTestingProvider(t, tracerName).Tracer("testing")
+
+	if os.Getenv("WITH_GOLEAK") == "1" {
+		defer goleak.VerifyNone(t,
+			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),       // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"), // inherited from github.com/ipfs/go-ipfs/core.NewNode
+			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),        // inherited from github.com/ipfs/go-ipfs/core.NewNode
+			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),         // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                    // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                        // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.wrapClientStream.func1"),
+			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.StreamClientInterceptor.func1.1"),
+		)
+	}
+
+	for _, tc := range tcs {
+		t.Run(tc.Name, func(t *testing.T) {
+			testutil.FilterStabilityAndSpeed(t, tc.Stability, tc.Speed)
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			logger, cleanup := testutil.Logger(t)
+			defer cleanup()
+
+			opts := TestingOpts{
+				Mocknet:     libp2p_mocknet.New(ctx),
+				Logger:      logger,
+				ConnectFunc: tc.ConnectFunc,
+			}
+
+			tps, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, tc.NumberOfClient)
+			defer cleanup()
+
+			var cctx context.Context
+
+			if tc.Timeout > 0 {
+				cctx, cancel = context.WithTimeout(ctx, tc.Timeout)
+			} else {
+				cctx, cancel = context.WithCancel(ctx)
+			}
+			spanctx, span := tr.Start(cctx, tc.Name)
+
+			tf(spanctx, t, tps...)
+
+			span.End()
+			cancel()
+		})
+	}
+}
+
+func testingScenarioNonMocked(t *testing.T, tcs []testCase, tf testFunc) {
 	var tracerName string
 	pc, _, _, ok := runtime.Caller(1)
 	fun := runtime.FuncForPC(pc)
