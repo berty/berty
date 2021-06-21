@@ -79,7 +79,7 @@ jobs:
         if: failure()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_PROD_WEBHOOK }}
-        uses: Ilshidur/action-discord@0.3.0
+        uses: Ilshidur/action-discord@0.3.2
         with:
           args: 'Integration failed, see ${{ steps.url.outputs.runUrl }}'
 
@@ -153,6 +153,6 @@ jobs:
         if: github.event_name == 'schedule' && failure()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_PROD_WEBHOOK }}
-        uses: Ilshidur/action-discord@0.3.0
+        uses: Ilshidur/action-discord@0.3.2
         with:
           args: 'Doctor failed, see ${{ steps.url.outputs.runUrl }}'
