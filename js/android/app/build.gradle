@@ -264,6 +264,7 @@ dependencies {
     implementation project(':react-native-share')
 
     // crashlytics
+    implementation platform('com.google.firebase:firebase-bom:28.1.0')
     implementation 'com.google.firebase:firebase-crashlytics'
 
     // Add Android Nearby
