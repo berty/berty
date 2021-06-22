@@ -7,13 +7,15 @@ import {
 	Platform,
 	ActivityIndicator,
 } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { Icon } from '@ui-kitten/components'
 import CameraRoll from '@react-native-community/cameraroll'
 import RNFS from 'react-native-fs'
+
+import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 
 import { ImageCounter } from '../ImageCounter'
+
 const GALLERY_IMAGE_PER_PAGE = 30
 
 export const GallerySection: React.FC<{

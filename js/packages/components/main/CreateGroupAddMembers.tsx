@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
@@ -18,7 +19,6 @@ import { ContactPicker } from '@berty-tech/components/shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
-import { useTranslation } from 'react-i18next'
 
 export const Header: React.FC<{
 	title: string

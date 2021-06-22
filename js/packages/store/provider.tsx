@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
-import MsgrContext, { initialState, PersistentOptionsKeys } from './context'
 import { EventEmitter } from 'events'
+
+import MsgrContext, { initialState, PersistentOptionsKeys } from './context'
 import {
 	initialLaunch,
 	openingDaemon,

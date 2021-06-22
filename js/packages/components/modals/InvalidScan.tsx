@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
-import { Translation } from 'react-i18next'
+import { Translation, useTranslation } from 'react-i18next'
+
 import { useStyles } from '@berty-tech/styles'
-import { useTranslation } from 'react-i18next'
 import beapi from '@berty-tech/api'
 
 //

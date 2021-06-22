@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
 import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
+import { BlurView } from '@react-native-community/blur'
+import { Buffer } from 'buffer'
+
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMsgrContext } from '@berty-tech/store/hooks'
+import { base64ToURLBase64 } from '@berty-tech/components/utils'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
-import { BlurView } from '@react-native-community/blur'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
-import { base64ToURLBase64 } from '@berty-tech/components/utils'
-import { Buffer } from 'buffer'
 
 const useStylesAddBetabot = () => {
 	const [{ width, border, padding, margin }] = useStyles()

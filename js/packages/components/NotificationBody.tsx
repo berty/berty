@@ -7,10 +7,10 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { usePersistentOptions, useMsgrContext } from '@berty-tech/store/hooks'
 import { NotificationsInhibitor } from '@berty-tech/store/context'
+import { SoundKey } from '@berty-tech/store/sounds'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
-import { SoundKey } from '@berty-tech/store/sounds'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }

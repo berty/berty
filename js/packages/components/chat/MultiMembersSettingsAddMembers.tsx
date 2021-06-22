@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
+import { StatusBar, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Layout, Text } from '@ui-kitten/components'
-import { StatusBar, TouchableOpacity, View } from 'react-native'
-import { SwipeNavRecognizer } from '@berty-tech/components/shared-components/SwipeNavRecognizer'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
+import beapi from '@berty-tech/api'
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@berty-tech/navigation'
+import { SwipeNavRecognizer } from '@berty-tech/components/shared-components/SwipeNavRecognizer'
 import { FooterCreateGroup } from '@berty-tech/components/main/CreateGroupFooter'
 import { Header, MemberList } from '@berty-tech/components/main/CreateGroupAddMembers'
 import { ContactPicker } from '@berty-tech/components/shared-components'
@@ -15,7 +17,6 @@ import {
 	useConvMemberList,
 	useMsgrContext,
 } from '@berty-tech/store/hooks'
-import beapi from '@berty-tech/api'
 
 const _iconArrowBackSize = 30
 const _titleSize = 25

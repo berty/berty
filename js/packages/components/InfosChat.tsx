@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { Text as TextNative, View } from 'react-native'
+import { Translation } from 'react-i18next'
+import { Icon, Text } from '@ui-kitten/components'
+
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { pbDateToNum, timeFormat } from '@berty-tech/components/helpers'
 import { useMsgrContext } from '@berty-tech/store/context'
-import { Translation } from 'react-i18next'
-import { Text as TextNative, View } from 'react-native'
-import { ChatDate } from '@berty-tech/components/chat/common'
-import { MessageSystemWrapper } from '@berty-tech/components/chat/message/MessageSystemWrapper'
-import { Icon, Text } from '@ui-kitten/components'
 import { useClient } from '@berty-tech/store/hooks'
-import { ContactAvatar } from '@berty-tech/components/avatars'
-import { MessageInvitationButton } from '@berty-tech/components/chat/message/MessageInvitation'
+
+import { pbDateToNum, timeFormat } from './helpers'
+import { ContactAvatar } from './avatars'
+import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
+import { MessageInvitationButton } from './chat/message/MessageInvitation'
+import { ChatDate } from './chat/common'
 
 const useStylesOneToOne = () => {
 	const [{ text }] = useStyles()

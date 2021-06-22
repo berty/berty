@@ -3,19 +3,19 @@ import { View, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useMsgrContext } from '@berty-tech/store/context'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
-import { useMsgrContext } from '@berty-tech/store/context'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useTranslation } from 'react-i18next'
 
 const useStylesCreateGroup = () => {
 	const [

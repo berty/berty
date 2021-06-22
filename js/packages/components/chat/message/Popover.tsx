@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-
 import { Icon } from '@ui-kitten/components'
+
 import { getEmojiByName } from '@berty-tech/components/utils'
 
 const emojis = [':+1:', ':heart:', ':ok_hand:', ':sunglasses:', ':joy:']

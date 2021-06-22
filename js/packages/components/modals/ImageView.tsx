@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import { useStyles } from '@berty-tech/styles'
 import { View, Modal, TouchableOpacity, Image } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import CameraRoll from '@react-native-community/cameraroll'
 import Share from 'react-native-share'
+import ImageViewer from 'react-native-image-zoom-viewer'
 
+import { useStyles } from '@berty-tech/styles'
 import { useConversationsCount } from '@berty-tech/store/hooks'
-import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
-import ImageViewer from 'react-native-image-zoom-viewer'
+
+import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
 
 export const ImageView: React.FC<{
 	route: {

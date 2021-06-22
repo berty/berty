@@ -10,21 +10,21 @@ import {
 	Animated,
 	Easing,
 } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
+import { BlurView } from '@react-native-community/blur'
+import moment from 'moment'
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
+import ImagePicker from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { useClient, useMsgrContext, useContact } from '@berty-tech/store/hooks'
 import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
-import { useTranslation } from 'react-i18next'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
 import { TabItems } from './file-uploads/types'
-import { BlurView } from '@react-native-community/blur'
-import moment from 'moment'
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
-import ImagePicker from 'react-native-image-crop-picker'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
 import { useReplyReaction } from './ReplyReactionContext'

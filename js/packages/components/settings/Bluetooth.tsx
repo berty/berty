@@ -2,14 +2,16 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Alert, AppState, View, ScrollView, Linking, Platform } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
+
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/hooks'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 
 //
 // Bluetooth
@@ -23,7 +25,7 @@ type BluetoothProps = {
 	>
 }
 
-var toActivate: (
+let toActivate: (
 	permission: 'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined,
 ) => void = (_permission) => {}
 

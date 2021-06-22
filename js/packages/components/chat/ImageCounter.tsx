@@ -1,7 +1,8 @@
 import React from 'react'
-import { useStyles } from '@berty-tech/styles'
 import { View } from 'react-native'
+
 import { Text, Icon } from '@ui-kitten/components'
+import { useStyles } from '@berty-tech/styles'
 
 export const ImageCounter: React.FC<{ count: number }> = ({ count }) => {
 	const [{ color, border, padding }] = useStyles()

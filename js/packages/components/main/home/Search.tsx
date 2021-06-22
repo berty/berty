@@ -2,19 +2,19 @@ import React, { useEffect, useMemo } from 'react'
 import { SectionList, Text as TextNative, TouchableHighlight, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
+import { EdgeInsets } from 'react-native-safe-area-context'
+import { Translation } from 'react-i18next'
 
+import beapi from '@berty-tech/api'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useConversation, useContact, useConvInteractions } from '@berty-tech/store/hooks'
-import beapi from '@berty-tech/api'
-
-import { pbDateToNum, timeFormat } from '../../helpers'
-import { ContactAvatar, ConversationAvatar } from '../../avatars'
-import { EdgeInsets } from 'react-native-safe-area-context'
-import { Translation } from 'react-i18next'
 import { HintBody } from '@berty-tech/components/shared-components'
 import { parseInteraction } from '@berty-tech/store/utils'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
+
+import { pbDateToNum, timeFormat } from '../../helpers'
+import { ContactAvatar, ConversationAvatar } from '../../avatars'
 
 // Styles
 

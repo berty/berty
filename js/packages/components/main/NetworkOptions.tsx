@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, Image, SafeAreaView } from 'react-native'
-import { Text } from '@ui-kitten/components'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
+import { Text } from '@ui-kitten/components'
+import { RouteProp, useNavigation } from '@react-navigation/native'
+
+import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
 import { ButtonSetting } from '@berty-tech/components/shared-components/SettingsButtons'
 import Button from '@berty-tech/components/onboarding/Button'
-import { RouteProp, useNavigation } from '@react-navigation/native'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
 

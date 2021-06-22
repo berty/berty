@@ -2,11 +2,11 @@ import React from 'react'
 import { Text, TouchableOpacity, View, GestureResponderEvent, ScrollView } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import DocumentPicker from 'react-native-document-picker'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
 import { GenericAvatar } from '@berty-tech/components/avatars'
-import { useTranslation } from 'react-i18next'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined

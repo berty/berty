@@ -1,16 +1,15 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
 import { Translation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, RouteProp } from '@react-navigation/native'
 
+import { useStyles } from '@berty-tech/styles'
 import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/services'
 import { useMsgrContext, useNotificationsInhibitor } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
-import { RouteProp } from '@react-navigation/native'
-import { useStyles } from '@berty-tech/styles'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const ctx = useMsgrContext()

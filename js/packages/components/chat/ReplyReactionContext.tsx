@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
+
 import { InteractionUserMessage } from '@berty-tech/store/types.gen'
 
 interface Interaction extends InteractionUserMessage {

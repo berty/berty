@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import mem from 'mem'
 import _ from 'lodash'
+
 import { Declaration, Styles, ColorsStyles } from './types'
 import { initialScaleSize, initialFontScale, initialScaleHeight } from './constant'
 import { mapColorsDeclaration } from './map-colors'

@@ -2,11 +2,14 @@ import React from 'react'
 import { View, ScrollView, StyleSheet, StatusBar } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
+
 import { useStyles } from '@berty-tech/styles'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+
 //
 // Help
 //

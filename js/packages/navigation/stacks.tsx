@@ -8,13 +8,14 @@ import {
 	StackNavigationOptions,
 	TransitionSpecs,
 } from '@react-navigation/stack'
+import mapValues from 'lodash/mapValues'
 
 import * as RawComponents from '@berty-tech/components'
-import mapValues from 'lodash/mapValues'
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import { Routes } from './types'
 import { MessengerAppState } from '@berty-tech/store/context'
-import { dispatch } from '@berty-tech/navigation/rootRef'
+
+import { Routes } from './types'
+import { dispatch } from './rootRef'
 
 const CustomTransitionOptions: StackNavigationOptions = {
 	headerShown: false,

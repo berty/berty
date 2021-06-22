@@ -17,10 +17,10 @@ import NotificationProvider from '@berty-tech/components/NotificationProvider'
 import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
 import { MusicPlayerProvider } from '@berty-tech/music-player'
 import { useMountEffect } from '@berty-tech/store/hooks'
+import { ErrorScreen } from '@berty-tech/components/error'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
-import { ErrorScreen } from '@berty-tech/components/error'
 
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {

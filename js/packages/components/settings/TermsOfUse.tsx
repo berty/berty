@@ -1,9 +1,11 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
+
 import { useStyles } from '@berty-tech/styles'
-import { HeaderSettings } from '../shared-components/Header'
 import { useNavigation } from '@berty-tech/navigation'
+
+import { HeaderSettings } from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //

@@ -6,18 +6,18 @@ import {
 	StyleSheet,
 	ImageBackground,
 } from 'react-native'
-
 import { Text, Icon } from '@ui-kitten/components'
-import { useStyles } from '@berty-tech/styles'
-import Avatar from './Buck_Berty_Icon_Card.svg'
 import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
 import { requestNotifications, RESULTS } from 'react-native-permissions'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 
+import { useStyles } from '@berty-tech/styles'
+import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import WelcomeBackground from '@berty-tech/assets/welcome_bg.png'
 import { useNavigation } from '@berty-tech/navigation'
 import { requestBluetoothAndHandleAlert } from '@berty-tech/components/main/bluetooth'
+
+import Avatar from './Buck_Berty_Icon_Card.svg'
 
 const useStylesWelcome = () => {
 	const [{ width, border, padding, margin }] = useStyles()

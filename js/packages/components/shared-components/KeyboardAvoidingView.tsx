@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 
 import { useMusicPlayer } from '@berty-tech/music-player'
+
 import { HEIGHT_OF_PLAYER } from './StickyMusicPlayer'
 
 interface CustomKeyboardAvoidingViewProps extends KeyboardAvoidingViewProps {

@@ -3,19 +3,18 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-
 import {
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,
 	useDeleteFakeData,
 	useGenerateFakeMessages,
 } from '@berty-tech/store/hooks'
+
+import { HeaderSettings } from '../shared-components/Header'
+import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 const BodyFakeData = () => {
 	const { t } = useTranslation()

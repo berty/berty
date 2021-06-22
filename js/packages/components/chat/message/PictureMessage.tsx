@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@berty-tech/navigation'
+
 import { getSource } from '../../utils'
 import { ImageCounter } from '../ImageCounter'
-
-import { useNavigation } from '@berty-tech/navigation'
 
 export const PictureMessage: React.FC<{
 	medias: any

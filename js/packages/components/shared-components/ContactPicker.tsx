@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { useStyles } from '@berty-tech/styles'
 import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
-import { ContactAvatar } from '@berty-tech/components/avatars'
 import { CheckBox, Icon, Text } from '@ui-kitten/components'
-import { useAccountContactSearchResults } from '@berty-tech/store/hooks'
 import { useTranslation } from 'react-i18next'
+
 import beapi from '@berty-tech/api'
+import { useStyles } from '@berty-tech/styles'
+import { ContactAvatar } from '@berty-tech/components/avatars'
+import { useAccountContactSearchResults } from '@berty-tech/store/hooks'
 
 // Styles
 const useStylesCreateGroup = () => {

@@ -3,11 +3,11 @@ import { View, TouchableOpacity, ScrollView, Share, StatusBar } from 'react-nati
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCode from 'react-native-qrcode-svg'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import { useAccount } from '@berty-tech/store/hooks'
-import { useTranslation } from 'react-i18next'
 
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'

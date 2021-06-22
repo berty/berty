@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
+
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
+
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 
 //
 // App Updates

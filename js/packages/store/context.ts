@@ -1,4 +1,5 @@
 import { Dispatch, createContext, useContext } from 'react'
+import { Platform } from 'react-native'
 
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
@@ -8,7 +9,6 @@ import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
 
 import { ParsedInteraction } from './types.gen'
 import { SoundKey } from './sounds'
-import { Platform } from 'react-native'
 
 export enum MessengerAppState {
 	Init = 0,

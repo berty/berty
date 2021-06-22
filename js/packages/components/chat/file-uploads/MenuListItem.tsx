@@ -1,7 +1,8 @@
 import React from 'react'
-import { useStyles } from '@berty-tech/styles'
 import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
+
+import { useStyles } from '@berty-tech/styles'
 
 export const MenuListItem: React.FC<{
 	title: string

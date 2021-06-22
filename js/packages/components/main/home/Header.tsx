@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Platform, ScrollView, TextInput, TouchableOpacity, View, ViewProps } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { Icon } from '@ui-kitten/components'
+
+import { useStyles } from '@berty-tech/styles'
 import { AccountAvatar } from '@berty-tech/components/avatars'
 
 export const HomeHeader: React.FC<

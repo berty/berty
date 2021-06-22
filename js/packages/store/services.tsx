@@ -1,15 +1,17 @@
-import InAppBrowser from 'react-native-inappbrowser-reborn'
-import { MsgrState } from './context'
 import { Alert, Platform } from 'react-native'
-import { useAccount } from './hooks'
-import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import { Service } from '@berty-tech/grpc-bridge'
-import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import RNFS from 'react-native-fs'
-import RNFetchBlob from 'rn-fetch-blob'
-import beapi from '@berty-tech/api'
+import InAppBrowser from 'react-native-inappbrowser-reborn'
 import Share from 'react-native-share'
 import { Buffer } from 'buffer'
+import RNFS from 'react-native-fs'
+import RNFetchBlob from 'rn-fetch-blob'
+
+import beapi from '@berty-tech/api'
+import * as middleware from '@berty-tech/grpc-bridge/middleware'
+import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
+import { Service } from '@berty-tech/grpc-bridge'
+
+import { MsgrState } from './context'
+import { useAccount } from './hooks'
 
 export enum serviceTypes {
 	Replication = 'rpl',

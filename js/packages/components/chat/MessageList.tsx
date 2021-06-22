@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { ActivityIndicator, FlatList, ListRenderItem, View } from 'react-native'
+import moment from 'moment'
+
 import { useStyles } from '@berty-tech/styles'
 import {
 	fetchMore,
@@ -8,13 +11,11 @@ import {
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
-import { ActivityIndicator, FlatList, ListRenderItem, View } from 'react-native'
 import { Message } from '@berty-tech/components/chat/message'
 import { ChatDate, updateStickyDate } from '@berty-tech/components/chat/common'
 import { InfosChat } from '@berty-tech/components/InfosChat'
 import { InfosMultiMember } from '@berty-tech/components/chat/InfosMultiMember'
 import { pbDateToNum } from '@berty-tech/components/helpers'
-import moment from 'moment'
 import { QuickReplyOptions } from '@berty-tech/components/chat/message/QuickReplyOptions'
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {

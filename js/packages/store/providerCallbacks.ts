@@ -1,17 +1,18 @@
 import AsyncStorage from '@react-native-community/async-storage'
 
 import beapi from '@berty-tech/api'
-import {
-	defaultPersistentOptions,
-	MessengerActions,
-	PersistentOptionsUpdate,
-} from '@berty-tech/store/context'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 import { storageKeyForAccount } from './providerEffects'
 import { Maybe } from './hooks'
 import { createAccount, refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
-import { accountService, reducerAction } from './context'
+import {
+	accountService,
+	reducerAction,
+	defaultPersistentOptions,
+	MessengerActions,
+	PersistentOptionsUpdate,
+} from './context'
 
 export const importAccount = async (
 	embedded: boolean,

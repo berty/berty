@@ -11,9 +11,9 @@ import {
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@react-navigation/native'
 
 import ScanTarget from './scan_target.svg'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'

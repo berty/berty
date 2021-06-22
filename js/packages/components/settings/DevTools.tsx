@@ -8,17 +8,22 @@ import {
 	View,
 	StatusBar,
 } from 'react-native'
-import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 import { Layout, Icon } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
-import { useStyles } from '@berty-tech/styles'
+import { Player } from '@react-native-community/audio-toolkit'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
-import { HeaderSettings } from '../shared-components/Header'
+import Long from 'long'
+import AsyncStorage from '@react-native-community/async-storage'
+import crashlytics from '@react-native-firebase/crashlytics'
+
 import {
-	ButtonSetting,
-	ButtonSettingItem,
-	ButtonSettingRow,
-} from '../shared-components/SettingsButtons'
+	defaultPersistentOptions,
+	MessengerActions,
+	PersistentOptionsKeys,
+} from '@berty-tech/store/context'
+import { tyberHostStorageKey } from '@berty-tech/store/providerEffects'
+import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
+import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import beapi from '@berty-tech/api'
@@ -27,17 +32,14 @@ import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { Player } from '@react-native-community/audio-toolkit'
+
+import { HeaderSettings } from '../shared-components/Header'
 import {
-	defaultPersistentOptions,
-	MessengerActions,
-	PersistentOptionsKeys,
-} from '@berty-tech/store/context'
-import Long from 'long'
-import AsyncStorage from '@react-native-community/async-storage'
-import { tyberHostStorageKey } from '@berty-tech/store/providerEffects'
-import crashlytics from '@react-native-firebase/crashlytics'
+	ButtonSetting,
+	ButtonSettingItem,
+	ButtonSettingRow,
+} from '../shared-components/SettingsButtons'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // DevTools

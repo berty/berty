@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mem from 'mem'
 import { StyleSheet, Platform } from 'react-native'
+import mem from 'mem'
+
 import { Declaration, Sizes } from './types'
 import { mapSizes, mapBorderSidesSizes } from './map-sides'
 import { mapColorsDeclaration } from './map-colors'

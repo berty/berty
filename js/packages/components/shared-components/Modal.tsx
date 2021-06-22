@@ -6,11 +6,12 @@ import {
 	StyleSheet,
 	ViewStyle,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
 import { BlurView } from '@react-native-community/blur'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Icon } from '@ui-kitten/components'
+
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@berty-tech/navigation'
 
 //
 // Modal => Modals on screens requests

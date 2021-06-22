@@ -2,8 +2,9 @@ import React, { useEffect, useMemo } from 'react'
 import { TouchableOpacity, View, Animated, Easing } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import LinearGradient from 'react-native-linear-gradient'
-import { useStyles } from '@berty-tech/styles'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
+
+import { useStyles } from '@berty-tech/styles'
 
 type ButtonFooterProps = {
 	icon?: string

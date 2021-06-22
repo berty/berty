@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Buffer } from 'buffer'
+import { BlurView } from '@react-native-community/blur'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps } from '@berty-tech/navigation'
@@ -11,7 +12,6 @@ import beapi from '@berty-tech/api'
 import { ManageGroupInvitation } from './ManageGroupInvitation'
 import AddThisContact from './AddThisContact'
 import { base64ToURLBase64 } from '../utils'
-import { BlurView } from '@react-native-community/blur'
 import InvalidScan from './InvalidScan'
 
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({

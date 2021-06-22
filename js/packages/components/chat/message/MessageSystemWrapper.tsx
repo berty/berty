@@ -2,6 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
+
 import Logo from '../../main/1_berty_picto.svg'
 
 const MessageSystemLogo = () => {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
+import { View, TouchableOpacity, Animated, Easing } from 'react-native'
 import Flag from 'react-native-flags'
-import { useStyles } from '@berty-tech/styles'
 import { Text, Icon } from '@ui-kitten/components'
 
-import { View, TouchableOpacity, Animated, Easing } from 'react-native'
+import { useStyles } from '@berty-tech/styles'
 
 type Item = {
 	label: string

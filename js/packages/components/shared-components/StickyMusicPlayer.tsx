@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Icon } from '@ui-kitten/components'
 import { View, TouchableOpacity, Animated } from 'react-native'
+import { Icon } from '@ui-kitten/components'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
 import { useStyles } from '@berty-tech/styles'
 import { useMusicPlayer } from '@berty-tech/music-player'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const HEIGHT_OF_PLAYER = 60
 
