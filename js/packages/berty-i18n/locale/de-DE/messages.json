@@ -227,7 +227,7 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Wenn Sie keine Netzwerkverbindung (WLAN/Funknetz) haben, kann Berty über Bluetooth mit Partnern in Ihrer näheren Umgebung kommunizieren",
+      "desc": "",
       "activate-button": "Bluetooth aktivieren",
       "permission-title": "Berty Bluetooth Berechtigung",
       "permission-description": "Autorisiere die Berty App um Bluetooth-Funktionen auf deinem Handy zu nutzen",
@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Geräteinformationen",
       "footer-middle-button": "Events auflisten",
-      "footer-right-button": "Daemon neu starten"
+      "footer-right-button": "Daemon neu starten",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "System-Info"
