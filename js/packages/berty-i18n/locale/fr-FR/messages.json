@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Le Bluetooth vous permet d'utiliser l'application Berty lorsque vous n'avez pas de connexion réseau (wifi ou données) en connectant votre téléphone directement avec les pairs à proximité",
-      "activate-button": "Activer le bluetooth",
+      "desc": "Le Bluetooth vous permet d'échanger des messages via Berty lorsque vous n'avez pas de connexion à internet en connectant votre terminal directement aux pairs à proximité",
+      "activate-button": "Activer le Bluetooth",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "Pour échanger des messages hors ligne via Bluetooth, l'API d'Android requiert la permission de localisation.\nEn aucun cas nous n'utilisons vos données de localisation.",
+      "ios-permission-description": "Pour échanger des messages hors ligne via Bluetooth, l'API d'iOS requiert votre permission",
       "tag-neutral": "",
       "tag-negative": "Annuler",
       "tag-positive": ""

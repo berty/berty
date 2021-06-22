@@ -327,7 +327,7 @@ func TestBroken1To1Exchange(t *testing.T) {
 }
 
 func TestBrokenPeersCreateJoinConversation(t *testing.T) {
-	//testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
+	// testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
