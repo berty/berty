@@ -227,7 +227,7 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth lar deg bruke Berty-appen når du ikke har internett-tilgang (wifi eller mobilnett) ved å koble mobilen direkte til personer i nærheten",
+      "desc": "",
       "activate-button": "Aktiver Bluetooth",
       "permission-title": "",
       "permission-description": "",
@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Infoer om enheten",
       "footer-middle-button": "List opp hendelser",
-      "footer-right-button": "Restart daemon"
+      "footer-right-button": "Restart daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "System-info"
@@ -433,6 +434,11 @@
       "erase-button": "Slett samtale",
       "leave-button": "Forlat gruppen"
     },
+    "add-members": {
+      "members": "Medlemmer",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR-Gruppe"
     },
@@ -498,6 +504,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +599,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Avbryt"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
