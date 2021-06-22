@@ -227,7 +227,7 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth allows you to use the Berty app when you don't have a network connection (wifi or data) by connecting your phone directly with peers nearby",
+      "desc": "",
       "activate-button": "Activate bluetooth",
       "permission-title": "Berty Bluetooth permission",
       "permission-description": "Authorize the Berty app to use Bluetooth capabilities on your phone",
@@ -350,7 +350,7 @@
       "footer-left-button": "Device infos",
       "footer-middle-button": "List events",
       "footer-right-button": "Restart daemon",
-      "trigger-crashlytics-button": "Trigger crashlytics crash"
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "System info"
@@ -435,9 +435,9 @@
       "leave-button": "Leave group"
     },
     "add-members": {
-      "members": "Members",
-      "contacts": "Contacts",
-      "add": "Add!"
+      "members": "",
+      "contacts": "",
+      "add": ""
     },
     "multi-member-qr": {
       "title": "QR Group"
@@ -506,9 +506,9 @@
       "documents": "Documents"
     },
     "reply": {
-      "response-to": "Response to",
-      "replying-to": "You're replying to",
-      "replied-to": "Replied to"
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -601,8 +601,8 @@
     }
   },
   "medias": {
-    "audio": "audio",
-    "picture": "picture",
-    "file": "file"
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
