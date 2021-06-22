@@ -349,7 +349,8 @@
       },
       "footer-left-button": "",
       "footer-middle-button": "",
-      "footer-right-button": "Daemon újraindítása"
+      "footer-right-button": "Daemon újraindítása",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Rendszer információ"
@@ -433,6 +434,11 @@
       "erase-button": "Beszélgetés törlése",
       "leave-button": "Csoport elhagyása"
     },
+    "add-members": {
+      "members": "Tagok",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Csoport"
     },
@@ -498,6 +504,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +599,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Mégse"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
