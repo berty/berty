@@ -116,9 +116,9 @@
       "welcome-title": "Benvenuto nelle Opzioni di Rete",
       "full-anon-mode": "",
       "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "allow-expert-mode": "Consenti Modalità Esperto",
       "tor-compatible": {
-        "title": "",
+        "title": "Compatibile TOR",
         "desc": ""
       },
       "full-anon": {
@@ -227,7 +227,7 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Il Bluetooth consente di utilizzare Berty quando non si dispone di una connessione di rete (wifi o dati) collegando il telefono direttamente con gli utenti nelle vicinanze",
+      "desc": "",
       "activate-button": "Attiva bluetooth",
       "permission-title": "",
       "permission-description": "",
@@ -314,12 +314,12 @@
       "system-info-button": "Informazioni di sistema",
       "debug-button": "Debug",
       "log-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Formato log",
+        "bullet-point": "Riavvia l'app dopo aver cambiato questo campo"
       },
       "log-filters-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Filtri log",
+        "bullet-point": "Riavvia l'app dopo aver cambiato questo campo"
       },
       "add-dev-conversations-button": "Aggiungi conversazioni dev",
       "share-button": {
@@ -349,7 +349,8 @@
       },
       "footer-left-button": "Informazioni sul dispositivo",
       "footer-middle-button": "Elenca eventi",
-      "footer-right-button": "Riavvia il daemon"
+      "footer-right-button": "Riavvia il daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Informazioni di sistema"
@@ -399,7 +400,7 @@
       "devices": "Dispositivi"
     },
     "welcome-configuration": {
-      "title": "",
+      "title": "Benvenuto a bordo!",
       "desc": "",
       "skip": "SALTA",
       "next": ""
@@ -415,7 +416,7 @@
       "devices": "Dispositivi"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Scrivi qui..."
     },
     "multi-member-settings": {
       "header-left-button": "Cerca",
@@ -432,6 +433,11 @@
       "save-button": "Salva la conversazione sul server",
       "erase-button": "Cancella conversazione",
       "leave-button": "Lascia il gruppo"
+    },
+    "add-members": {
+      "members": "Membri",
+      "contacts": "Contatti",
+      "add": "Aggiungi!"
     },
     "multi-member-qr": {
       "title": "Gruppo QR"
@@ -457,7 +463,7 @@
       },
       "betabot-input-placeholder": "Aggiungi betabot per scrivere qui...",
       "incoming-input-placeholder": "Accetta la richiesta per scrivere qui...",
-      "input-placeholder": ""
+      "input-placeholder": "Scrivi qui..."
     },
     "one-to-one-settings": {
       "header-left-button": "Cerca",
@@ -496,8 +502,13 @@
     "shared-medias": {
       "title": "",
       "medias": "",
-      "links": "",
+      "links": "Collegamenti",
       "documents": "Documenti"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -535,28 +546,28 @@
           "fs-read-error": "",
           "actions-title": "",
           "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
+          "action-account-manager-confirm": "Conferma l'eliminazione dell'account",
+          "action-force-delete": "Forza la cancellazione",
+          "action-force-delete-confirm": "Conferma l'eliminazione forzata dell'account",
+          "error-close": "Errore nella chiusura dell'account",
+          "error-delete": "Errore durante l'eliminazione dell'account",
           "success-feedback": "Account eliminato",
           "action-cancel": "Annulla"
         },
         "status": {
           "metadata-found": "File metadati trovato",
-          "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "metadata-not-found": "File dei metadati non trovato",
+          "ipfs-repo-config-found": "File di configurazione IPFS trovato",
+          "ipfs-repo-config-not-found": "File di configurazione IPFS non trovato",
+          "messenger-db-found": "Messenger DB trovato",
+          "messenger-db-not-found": "Messenger DB non trovato"
         },
         "infos": {
           "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
+            "name": "Nome: {{name}}",
+            "created": "Creato: {{created}}",
+            "opened": "Aperto:  {{opened}}",
+            "error": "Errore: {{error}}"
           }
         }
       },
@@ -581,12 +592,17 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
+        "usage": "Tieni premuto per registrare, rilascia per inviare",
+        "not-sent": "Messaggio audio non è stato inviato",
         "permission-denied": ""
       },
       "slide-to-cancel": "",
       "cancel-button": "Annulla"
     }
+  },
+  "medias": {
+    "audio": "audio",
+    "picture": "immagine",
+    "file": "file"
   }
 }
