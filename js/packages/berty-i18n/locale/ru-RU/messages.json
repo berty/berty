@@ -228,9 +228,10 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Активировать Bluetooth",
+      "activate-button": "",
       "permission-title": "Разрешить Bluetooth Berty",
-      "permission-description": "Авторизуйтесь в приложении Berty для использования возможностей Bluetooth на вашем телефоне",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Спросить позже",
       "tag-negative": "Отменить",
       "tag-positive": "ОК"
