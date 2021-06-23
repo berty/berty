@@ -228,9 +228,10 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Bluetooth aktivieren",
+      "activate-button": "",
       "permission-title": "Berty Bluetooth Berechtigung",
-      "permission-description": "Autorisiere die Berty App um Bluetooth-Funktionen auf deinem Handy zu nutzen",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Später nachfragen",
       "tag-negative": "Abbrechen",
       "tag-positive": "OK"
