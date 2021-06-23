@@ -228,9 +228,10 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Bluetooth'u etkinleştir",
+      "activate-button": "",
       "permission-title": "Berty Bluetooth izni",
-      "permission-description": "Berty uygulamasına cihazınızda Bluetooth yetkisi kullanmasına izin verin",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Daha sonra sor",
       "tag-negative": "İptal",
       "tag-positive": "TAMAM"
