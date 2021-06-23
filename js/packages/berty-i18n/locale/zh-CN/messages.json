@@ -228,9 +228,10 @@
     "bluetooth": {
       "title": "蓝牙",
       "desc": "",
-      "activate-button": "激活蓝牙",
+      "activate-button": "",
       "permission-title": "Berty蓝牙权限",
-      "permission-description": "授权Berty在您的手机上使用蓝牙设备",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "稍后询问我",
       "tag-negative": "取消",
       "tag-positive": "确定"
