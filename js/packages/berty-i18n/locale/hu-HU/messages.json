@@ -228,9 +228,10 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Aktív bluetooth kapcsolat",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "",
       "tag-negative": "Mégse",
       "tag-positive": ""
