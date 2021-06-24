@@ -11,64 +11,36 @@ peer:
           - name: connection
             to: internet
             protocol: tcp
-#rdvp:
-#    - name: test rdvp
-#      amount: 2
-#      connections:
-#          - name: connection
-#            to: internet
-#            protocol: tcp
-#          - name: thing
-#            to: lan
-#            protocol: udp
-#
-#peer:
-#    - name: test peers 1
-#      amount: 5
-#      daemon:
-#      - name: message group
-#        tests:
-#        - type: text
-#          size: 3KB
-#          interval: 2
-#      - name: mg 1
-#        tests:
-#            - type: text
-#              size: 1KB
-#              interval: 1
-#            - type: text
-#              size: 3KB
-#              interval: 1
-#            - type: text
-#              size: 3KB
-#              interval: 1
-#      connections:
-#        - name: connection
-#          to: internet
-#          protocol: tcp
-#        - name: thing
-#          to: lan
-#          protocol: udp
-#      routers:
-#        - type: rdvp
-#          address: test rdvp
-#        - type: relay
-#          address: test relay
-#
-replication:
-    - name: repl1
-      amount: 1
+          - name: thing
+            to: lan
+            protocol: udp
+
+peer:
+    - name: test peers 1
+      amount: 2
       groups:
       - name: message group
+        tests:
+        - type: text
+          size: 40KB
+          interval: 2
+      - name: mg 1
+        tests:
+            - type: text
+              size: 40KB
+              interval: 1
       connections:
-          - name: connection
-            to: internet
-            protocol: tcp
-#          - name: thing
-#            to: lan
-#            protocol: udp
-#
-#
+        - name: connection
+          to: internet
+          protocol: tcp
+        - name: thing
+          to: lan
+          protocol: udp
+
+      routers:
+        - type: rdvp
+          address: test rdvp
+
 #relay:
 #    - name: test relay
 #      amount: 1

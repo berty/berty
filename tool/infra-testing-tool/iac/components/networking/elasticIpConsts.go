@@ -6,8 +6,7 @@ const (
 	ElasticIpHCLTemplate = `
 resource "aws_eip" "{{.Name }}" {
   network_interface = {{.NetworkInterfaceId }}
-}
-`
+}`
 
 	// ElasticIpNamePrefix is the prefix for the ElasticIp type
 	ElasticIpNamePrefix = "eip"

@@ -139,6 +139,10 @@ func (c *NodeGroup) composeComponents() {
 
 		// loop over all connections (internet, lan_1, etc)
 		for _, connection := range c.Connections {
+			err := connection.validate()
+			if err != nil {
+				panic(err)
+			}
 			networkStack := config.Attributes.connectionComponents[connection.To]
 
 			var assignedSecurityGroup networking.SecurityGroup
@@ -161,17 +165,16 @@ func (c *NodeGroup) composeComponents() {
 			ni := networking.NewNetworkInterfaceWithAttributes(&assignedSubnet, &assignedSecurityGroup)
 			ni.Connection = connection.Name
 
-			if len(c.Connections) > 1 {
-				if connection.connType == ConnTypeInternet {
-					eip := networking.NewElasticIpWithAttributes(&ni)
-					comps = append(comps, eip)
-				}
-			}
-
 			// add networkInterface to node's network interface array
 			networkInterfaces = append(networkInterfaces, &ni)
 			comps = append(comps, ni)
+
+			if connection.connType == ConnTypeInternet {
+				eip := networking.NewElasticIpWithAttributes(&ni)
+				comps = append(comps, eip)
+			}
 		}
+
 
 		// make interface with name, networkInterface & nodeType
 		instance := ec2.NewInstance()

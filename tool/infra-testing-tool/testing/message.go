@@ -64,15 +64,11 @@ func (p *Peer) GetMessageList(groupName string, testn int) error {
 	ctx := context.Background()
 
 	var req protocoltypes.GroupMessageList_Request
-	// TODO figure out how to not receive duplicate messages
-
-	//if p.lastMessageID[groupName] == nil {
-	//	req = protocoltypes.GroupMessageList_Request{GroupPK: pk.PublicKey, UntilNow: true}
-	//} else {
-	//	req = protocoltypes.GroupMessageList_Request{GroupPK: pk.PublicKey, SinceID: p.lastMessageID[groupName]}
-	//}
-
-	req = protocoltypes.GroupMessageList_Request{GroupPK: pk.PublicKey, UntilNow: true}
+	if p.lastMessageID[groupName] == nil {
+		req = protocoltypes.GroupMessageList_Request{GroupPK: pk.PublicKey, UntilNow: true}
+	} else {
+		req = protocoltypes.GroupMessageList_Request{GroupPK: pk.PublicKey, UntilID: p.lastMessageID[groupName]}
+	}
 
 	cl, err := p.Protocol.GroupMessageList(ctx, &req)
 	if err != nil {
@@ -87,11 +83,8 @@ func (p *Peer) GetMessageList(groupName string, testn int) error {
 			}
 			break
 		}
-
-
 		p.Lock.Lock()
 		p.lastMessageID[groupName] = evt.EventContext.ID
-
 		p.Lock.Unlock()
 
 		_, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
@@ -130,10 +123,7 @@ func (p *Peer) GetMessageList(groupName string, testn int) error {
 
 
 			p.Lock.Lock()
-			if !isDupe {
-				p.Messages[groupName] = append(p.Messages[groupName], currentMessage)
-			}
-
+			p.Messages[groupName] = append(p.Messages[groupName], ToMessageHistory(am))
 			p.Lock.Unlock()
 		}
 	}

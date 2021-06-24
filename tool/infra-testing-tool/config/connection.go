@@ -28,29 +28,28 @@ func (c NodeGroup) parseConnections() error {
 		return errors.New(fmt.Sprintf("%s needs at least 1 connection", c.NodeType))
 	}
 
-	// replace spaces in name
-	// would cause error in terraform otherwise
-	c.Name = strings.ReplaceAll(c.Name, " ", "_")
-
-	for i, _ := range c.Connections {
-
-		switch strings.Contains(c.Connections[i].To, ConnTypeLan) {
-		case false:
-			c.Connections[i].connType = ConnTypeInternet
-		case true:
-			c.Connections[i].connType = ConnTypeLan
-		default:
-			return errors.New("no valid connection type")
-		}
-
-		config.Attributes.Connections[c.Connections[i].To] = &c.Connections[i]
+	for _, con := range c.Connections {
+		config.Attributes.Connections[con.To] = con
 	}
 
 	return nil
 }
 
 // Validate validates the connections
-func (c Connection) validate() error {
+func (c *Connection) validate() error {
+
+	// replace spaces in name
+	// would cause error in terraform otherwise
+	c.Name = strings.ReplaceAll(c.Name, " ", "_")
+
+	switch strings.Split(c.To, "_")[0] {
+	case ConnTypeInternet:
+		c.connType = ConnTypeInternet
+	case ConnTypeLan:
+		c.connType = ConnTypeLan
+	default:
+		return errors.New("no valid connection type")
+	}
 
 	return nil
 }

@@ -17,7 +17,7 @@ var (
 	testCmd = &cobra.Command{
 		Use: "test",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			availablePeers,  err := testing.GetAllEligiblePeers(ec2.Ec2TagType, []string{config.NodeTypePeer})
+			availablePeers,  err := testing.GetAllEligiblePeers(ec2.Ec2TagType, config.NodeTypePeer)
 			if err != nil {
 				return err
 			}
@@ -95,29 +95,24 @@ var (
 					}
 				}
 
-				//testWg := sync.WaitGroup{}
-				//testWg.Add(len(daemon[i].Tests))
-				//go func() {
-					for j := range groups[i].Tests {
 
-						fmt.Println("test: " + strconv.Itoa(j+1))
-						peerWg := sync.WaitGroup{}
-						for k := range groups[i].Peers {
-							peerWg.Add(1)
+				for j := range groups[i].Tests {
+					fmt.Println("test: " + strconv.Itoa(j+1))
+					wg := sync.WaitGroup{}
+					for k := range groups[i].Peers {
+						wg.Add(1)
 
 							peerIndex := k
 							groupIndex := i
 							testIndex := j
 
-							go func() {
-								fmt.Println("Started messaging goroutine on: " + groups[i].Peers[peerIndex].Name)
-								var x int
-								for x = 0; x < 5; x += 1 {
-									err = groups[groupIndex].Peers[peerIndex].SendMessage(groups[groupIndex].Name, testing.ConstructMessage(groups[i].Tests[j].SizeInternal))
-									if err != nil {
-										panic(err)
-									}
-									time.Sleep(time.Second * time.Duration(groups[groupIndex].Tests[testIndex].IntervalInternal))
+						go func(wg *sync.WaitGroup) {
+							fmt.Println("Started messaging goroutine on: " + groups[i].Peers[peerIndex].Name)
+							var x int
+							for x = 0; x <= 15; x += 1 {
+								err = groups[groupIndex].Peers[peerIndex].SendMessage(groups[groupIndex].Name)
+								if err != nil {
+									panic(err)
 								}
 
 								fmt.Printf("%s sent %d messages\n", groups[groupIndex].Peers[peerIndex].Name, x)
@@ -139,11 +134,20 @@ var (
 							amount := groups[i].Peers[k].CountMessages(groups[i].Name, j)
 							size := groups[i].Peers[k].CountSize(groups[i].Name, j)
 
-							fmt.Printf("%s reveived %d messages with average size of +-%d bytes in group: %s\n", groups[i].Peers[k].Name, amount, size/amount, groups[i].Name)
+							wg.Done()
+						}(&wg)
+					}
+
+					wg.Wait()
+
+					for k := range availablePeers {
+						err = groups[i].Peers[k].GetMessageList(groups[i].Name)
+						if err != nil {
+							panic(err)
 						}
 
-
-
+					for p, _ := range availablePeers {
+						fmt.Printf("%s reveived %d messages in group: %s\n", availablePeers[p].Name, len(availablePeers[p].Messages[groups[i].Name]), groups[i].Name)
 					}
 				//}()
 				//testWg.Wait()

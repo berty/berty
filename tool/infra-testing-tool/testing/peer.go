@@ -52,45 +52,23 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 		p.Tags[strings.ToLower(*tag.Key)] = *tag.Value
 	}
 
+	var retries int
 	var cc *grpc.ClientConn
 	ctx := context.Background()
 
-
-	// connection retry logic
-
-	var retries int
-
-	var resp *protocoltypes.InstanceGetConfiguration_Reply
 	for {
 
-		if retries >= 6 {
-			// failed more than 3 times, this is bad
-			log.Printf("could not make connection with %s over grpc\n", p.GetHost())
-			return p, err
-		} else {
-			cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-			if err != nil {
+		cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+		if err != nil {
+			if retries > 3 {
 				return p, err
 			}
 
-			p.Cc = cc
-			p.getProtocolServiceClient()
-			if p.Tags[iacec2.Ec2TagType] != config.NodeTypeReplication {
-				p.getMessengerServiceClient()
-			}
+			retries += 1
 
-			resp, err = p.Protocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-			fmt.Println(err)
-			fmt.Println(resp)
-			if err != nil {
-				fmt.Println("failed")
-				retries += 1
-				fmt.Println(retries)
-				time.Sleep(time.Second * time.Duration(retries))
-			} else {
-				break
-			}
+			return p, err
 		}
+		break
 	}
 
 	if resp != nil {
@@ -130,7 +108,7 @@ func (p *Peer) MatchNodeToPeer(c config.Config) {
 }
 
 // GetAllEligiblePeers returns all peers who are potentially eligible to connect to via gRPC
-func GetAllEligiblePeers(tagKey string, tagValues []string) (peers []Peer, err error) {
+func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 	instances, err := aws.DescribeInstances()
 	if err != nil {
 		return peers, err
@@ -144,18 +122,14 @@ func GetAllEligiblePeers(tagKey string, tagValues []string) (peers []Peer, err e
 		for _, tag := range instance.Tags {
 
 			// if instance is peer
-			if *tag.Key == tagKey {
-				for _, value := range tagValues {
-					if *tag.Value == value {
-						p, err := NewPeer(*instance.PublicIpAddress, instance.Tags)
-						if err != nil {
-							return nil, err
-						}
-						p.Name = *instance.InstanceId
-
-						peers = append(peers, p)
-					}
+			if *tag.Key == tagKey && *tag.Value == tagValue {
+				p, err := NewPeer(*instance.PublicIpAddress, instance.Tags)
+				if err != nil {
+					return nil, err
 				}
+				p.Name = *instance.InstanceId
+
+				peers = append(peers, p)
 			}
 		}
 	}
