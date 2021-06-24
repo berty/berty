@@ -138,8 +138,6 @@ android {
         applicationId "tech.berty.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0"
 
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true // fix for "The number of method references in a .dex file cannot exceed 64K"
@@ -153,6 +151,25 @@ android {
 
         addEnvVar("SHAKE_API_ID")
         addEnvVar("SHAKE_API_SECRET")
+
+        def generateVersionCode = {
+            def result = "git rev-list HEAD --count".execute().text.trim() //unix
+            if(result.empty) result = "PowerShell -Command git rev-list HEAD --count".execute().text.trim() //windows
+            if(result.empty) throw new RuntimeException("Could not generate versionCode on this platform? Cmd output: ${result.text}")
+            return result.toInteger()
+        }
+
+        def generateVersionName = {
+            def result = "go run -mod=readonly -modfile=${rootDir.getPath()}/../../go.mod github.com/mdomke/git-semver/v5".execute().text.trim() // unix
+            if(result.empty) result = "PowerShell -Command go run -mod=readonly -modfile=${rootDir.getPath()}/../../go.mod github.com/mdomke/git-semver/v5".execute().text.trim() //windows
+            if(result.empty) throw new RuntimeException("Could not generate versionName on this platform? Cmd output: ${result.text}")
+            result = result.substring(1)
+            result = result.split('-')[0]
+            return result
+        }
+
+        versionCode generateVersionCode()
+        versionName generateVersionName()
     }
     splits {
         abi {
