@@ -201,7 +201,7 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := m.mks.SealEnvelope(ctx, m.g, md.device, msg, attachmentsCIDs)
+	env, err := m.mks.SealEnvelope(m.g, md.device, msg, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}

@@ -5,7 +5,6 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/events"
@@ -204,9 +203,7 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 				continue
 			}
 
-			_, span := tracer.SpanFromMessageHeaders(sub.Context(), e.Headers, "Receive Group Message")
 			err := sub.Send(e)
-			span.End()
 			if err != nil {
 				if sub.Context().Err() != nil {
 					return nil

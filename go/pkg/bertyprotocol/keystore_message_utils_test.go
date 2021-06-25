@@ -293,7 +293,7 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	err = mkh2.RegisterChainKey(g, omd1.device.GetPublic(), ds1, false)
 	assert.NoError(t, err)
 
-	env1, err := sealEnvelopeInternal(ctx, payloadRef1, ds1, omd1.device, g, nil)
+	env1, err := sealEnvelopeInternal(payloadRef1, ds1, omd1.device, g, nil)
 	assert.NoError(t, err)
 
 	headers, payloadClr1, _, err := mkh2.OpenEnvelope(ctx, g, omd2.device.GetPublic(), env1, cid.Undef)
@@ -354,7 +354,7 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	for i := 0; i < 1000; i++ {
 		payloadRef, err := (&protocoltypes.EncryptedMessage{Plaintext: []byte("Test payload 1")}).Marshal()
 		assert.NoError(t, err)
-		envEncrypted, err := mkh1.SealEnvelope(ctx, g, omd1.device, payloadRef, nil)
+		envEncrypted, err := mkh1.SealEnvelope(g, omd1.device, payloadRef, nil)
 		assert.NoError(t, err)
 
 		ds, err := mkh1.getDeviceChainKey(gPK, gc1.DevicePubKey())
