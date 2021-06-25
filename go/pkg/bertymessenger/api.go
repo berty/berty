@@ -26,6 +26,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tempdir"
 	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/berty/v2/go/pkg/username"
 )
@@ -1253,7 +1254,7 @@ func (svc *service) ReplicationSetAutoEnable(ctx context.Context, req *messenger
 }
 
 func (svc *service) InstanceExportData(_ *messengertypes.InstanceExportData_Request, server messengertypes.MessengerService_InstanceExportDataServer) error {
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "export-")
+	tmpFile, err := ioutil.TempFile(tempdir.TempDir(), "export-")
 	if err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
@@ -1272,7 +1273,6 @@ func (svc *service) InstanceExportData(_ *messengertypes.InstanceExportData_Requ
 		} else if err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}
-
 		if _, err := tmpFile.Write(chunk.ExportedData); err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}

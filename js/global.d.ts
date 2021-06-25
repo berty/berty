@@ -12,6 +12,7 @@ declare module 'react-native-flags'
 declare module 'react-native-emoji-board'
 declare module 'react-native-android-keyboard-adjust'
 declare module 'emoji-datasource'
+declare module '@flyerhq/react-native-android-uri-path'
 
 declare module 'google-palette' {
 	const content: (type: string, count: number) => string[]

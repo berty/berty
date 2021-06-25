@@ -1,5 +1,6 @@
 import React from 'react'
-import { ScrollView, Vibration, View } from 'react-native'
+import { withInAppNotification } from 'react-native-in-app-notification'
+import { Platform, ScrollView, Vibration, View } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
@@ -14,27 +15,20 @@ import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
-//
-// Mode
-//
-
-// Types
-type BodyModeProps = {}
-
 // Styles
 const useStylesMode = () => {
 	const [{ text, margin }] = useStyles()
 	return {
 		buttonListUnderStateText: [text.bold.small, text.size.tiny, margin.right.scale(60)],
-		buttonSettingText: [text.bold.small, text.size.small, { color: 'rgba(43,46,77,0.8)' }], // TODO: Fix horizontal alignment
+		buttonSettingText: [text.bold.small, text.size.small, { color: 'rgba(43,46,77,0.8)' }],
 	}
 }
 
-const BodyMode: React.FC<BodyModeProps> = () => {
+const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text }, { scaleSize }] = useStyles()
 	const navigation = useReactNavigation()
-	const account: beapi.messenger.Account = useAccount()
+	const account: beapi.messenger.IAccount | null | undefined = useAccount()
 	const services = useAccountServices()
 	const replicationServices = services.filter(
 		(s: any) => s.serviceType === serviceTypes.Replication,
@@ -74,13 +68,16 @@ const BodyMode: React.FC<BodyModeProps> = () => {
 						icon='cloud-upload-outline'
 						iconColor={color.blue}
 						toggled
-						varToggle={replicationServices.length !== 0 && account.replicateNewGroupsAutomatically}
+						varToggle={
+							(replicationServices.length !== 0 && account?.replicateNewGroupsAutomatically) ||
+							undefined
+						}
 						actionToggle={async () => {
 							if (replicationServices.length === 0) {
 								return
 							}
 							await ctx.client?.replicationSetAutoEnable({
-								enabled: !account.replicateNewGroupsAutomatically,
+								enabled: !account?.replicateNewGroupsAutomatically,
 							})
 						}}
 						disabled={replicationServices.length === 0}
@@ -122,7 +119,16 @@ const BodyMode: React.FC<BodyModeProps> = () => {
 						iconSize={30}
 						iconColor={color.blue}
 						actionIcon='arrow-ios-forward'
-						onPress={() => exportAccountToFile()}
+						onPress={async () => {
+							await exportAccountToFile(ctx.selectedAccount)
+							if (Platform.OS === 'android') {
+								showNotification({
+									title: t('settings.mode.notification-file-saved.title'),
+									message: t('settings.mode.notification-file-saved.desc'),
+									additionalProps: { type: 'message' },
+								})
+							}
+						}}
 					/>
 					<ButtonSetting
 						name={t('settings.mode.delete-account-button')}
@@ -139,7 +145,7 @@ const BodyMode: React.FC<BodyModeProps> = () => {
 			)}
 		</Translation>
 	)
-}
+})
 
 export const Mode: React.FC<{}> = () => {
 	const { goBack } = useNavigation()

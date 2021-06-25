@@ -812,6 +812,11 @@
   resolved "https://registry.yarnpkg.com/@eva-design/processor/-/processor-2.0.0.tgz#b291fd94e11fd342fb06af6c333b2be99f4696a9"
   integrity sha512-k+WUjj877u9SoRbSuQ4DO15AF5FkIqIhGzraBNQKDki8J8Xq/4VpOv1YiKEkRF6XjbZU89GKq+e/ipL+VZxI3Q==
 
+"@flyerhq/react-native-android-uri-path@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@flyerhq/react-native-android-uri-path/-/react-native-android-uri-path-2.1.0.tgz#2eedb8290a8d9213c162a4ee3c5fee04f47559c5"
+  integrity sha512-/+qrqRWHx3COSLBd8jdYtqnVTdkIGHb7S9r5fbD/DXAKNk5avbG4diEz6Ik8l7HN+R4Z1Ou//l2kxNNOpg7sAg==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"

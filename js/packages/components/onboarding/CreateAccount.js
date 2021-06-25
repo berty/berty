@@ -4,7 +4,6 @@ import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
-import DocumentPicker from 'react-native-document-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
@@ -12,6 +11,7 @@ import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
+import { openDocumentPicker } from '../helpers'
 
 const CreateAccountBody = ({ next }) => {
 	const ctx = useMsgrContext()
@@ -43,23 +43,6 @@ const CreateAccountBody = ({ next }) => {
 			publicKey: ctx.account.publicKey,
 		})
 	}, [ctx, name])
-
-	const onImportPress = async () => {
-		try {
-			const res = await DocumentPicker.pick({
-				// @ts-ignore
-				type: ['public.tar-archive', '*/*'],
-			})
-
-			await ctx.importAccount(res.uri.replace(/^file:\/\//, ''))
-		} catch (err) {
-			if (DocumentPicker.isCancel(err)) {
-				// ignore
-			} else {
-				console.error(err)
-			}
-		}
-	}
 
 	return (
 		<Translation>
@@ -102,7 +85,7 @@ const CreateAccountBody = ({ next }) => {
 							}}
 							secondButton={{
 								text: t('onboarding.create-account.import-account'),
-								onPress: onImportPress,
+								onPress: () => openDocumentPicker(ctx),
 							}}
 						>
 							<TextInput
