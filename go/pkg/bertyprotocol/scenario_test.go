@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"runtime"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -23,7 +21,6 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -409,17 +406,6 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 // Helpers
 
 func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
-	var tracerName string
-	pc, _, _, ok := runtime.Caller(1)
-	fun := runtime.FuncForPC(pc)
-	if ok && fun != nil {
-		funcName := strings.Split(fun.Name(), ".")
-		tracerName = funcName[len(funcName)-1]
-	} else {
-		tracerName = "TestingScenario"
-	}
-	tr := tracer.NewTestingProvider(t, tracerName).Tracer("testing")
-
 	if os.Getenv("WITH_GOLEAK") == "1" {
 		defer goleak.VerifyNone(t,
 			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
@@ -459,28 +445,14 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 			} else {
 				cctx, cancel = context.WithCancel(ctx)
 			}
-			spanctx, span := tr.Start(cctx, tc.Name)
 
-			tf(spanctx, t, tps...)
-
-			span.End()
+			tf(cctx, t, tps...)
 			cancel()
 		})
 	}
 }
 
 func testingScenarioNonMocked(t *testing.T, tcs []testCase, tf testFunc) {
-	var tracerName string
-	pc, _, _, ok := runtime.Caller(1)
-	fun := runtime.FuncForPC(pc)
-	if ok && fun != nil {
-		funcName := strings.Split(fun.Name(), ".")
-		tracerName = funcName[len(funcName)-1]
-	} else {
-		tracerName = "TestingScenario"
-	}
-	tr := tracer.NewTestingProvider(t, tracerName).Tracer("testing")
-
 	if os.Getenv("WITH_GOLEAK") == "1" {
 		defer goleak.VerifyNone(t,
 			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
@@ -520,11 +492,8 @@ func testingScenarioNonMocked(t *testing.T, tcs []testCase, tf testFunc) {
 			} else {
 				cctx, cancel = context.WithCancel(ctx)
 			}
-			spanctx, span := tr.Start(cctx, tc.Name)
 
-			tf(spanctx, t, tps...)
-
-			span.End()
+			tf(cctx, t, tps...)
 			cancel()
 		})
 	}

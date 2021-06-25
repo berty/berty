@@ -6,7 +6,6 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
@@ -55,7 +54,6 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 			Cache:     cache,
 			Directory: &orbitDirectory,
 			Logger:    logger,
-			Tracer:    tracer.New("orbitdb"),
 		},
 		Datastore:      rootDS,
 		DeviceKeystore: deviceKS,
