@@ -17,7 +17,7 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
-	github.com/daixiang0/gci v0.2.8
+	github.com/daixiang0/gci v0.2.9
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
