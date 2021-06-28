@@ -6,8 +6,8 @@ berty.tech/go-libp2p-tor-transport v0.8.4 h1:/GyXnO8ngHaJ7SGk9nP1tepCX8HzyC2Ebr2
 berty.tech/go-libp2p-tor-transport v0.8.4/go.mod h1:ng3uORmnjkr5ZYxLd0sxra3z+ScbqS0u+x7Zqdin608=
 berty.tech/go-libtor v1.0.345 h1:i39HFWq5oRN1wf30Dhlo2cVnyXMdjn9Sb4zYfzuZZ4s=
 berty.tech/go-libtor v1.0.345/go.mod h1:9swOOQVb+kmvuAlsgWUK/4c52pm69AdbJsxLzk+fJEw=
-berty.tech/go-orbit-db v1.11.2 h1:i4rtQ/tFf3zUd0YeflexU0NVfNs7Yb1/XqO91kHyNBk=
-berty.tech/go-orbit-db v1.11.2/go.mod h1:FUAfBzbk3BpNfkCG4eVp6Dy7NV4FzXXlLrU0alVy0Pw=
+berty.tech/go-orbit-db v1.11.3 h1:0AKur8JOYS8rYuhKXhlMeGkg4dOfA8GIgbC7bSNoX4E=
+berty.tech/go-orbit-db v1.11.3/go.mod h1:FUAfBzbk3BpNfkCG4eVp6Dy7NV4FzXXlLrU0alVy0Pw=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
