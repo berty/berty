@@ -179,18 +179,24 @@ export const Navigation: React.FC = () => {
 
 	useEffect(() => {
 		switch (context.appState) {
-			case MessengerAppState.GetStarted:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: Routes.Onboarding.GetStarted }],
-					}),
-				)
-				return
-
 			case MessengerAppState.Ready:
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: Routes.Main.Home }],
+					}),
+				)
+				return
+			case MessengerAppState.PreReady:
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Onboarding.SetupFinished }],
+					}),
+				)
+				return
+			case MessengerAppState.GetStarted:
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Onboarding.GetStarted }],
 					}),
 				)
 				return

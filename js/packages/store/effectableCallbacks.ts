@@ -89,19 +89,12 @@ export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerA
 export const createNewAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
-	clearClients?: any,
 ) => {
 	if (!embedded) {
 		return
 	}
 
-	if (clearClients) {
-		await clearClients()
-		console.log('createNewAccount: clearClients')
-	}
-
 	try {
-		await closeAccountWithProgress(dispatch)
 		await createAccount(embedded, dispatch)
 	} catch (e) {
 		console.warn('unable to close account', e)

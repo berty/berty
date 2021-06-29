@@ -3,6 +3,7 @@ import { View, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
@@ -44,7 +45,10 @@ export const GetStarted = () => {
 						<Button
 							style={{ ...column.item.center, backgroundColor: '#3744DE' }}
 							textStyle={{ textTransform: 'uppercase', color: 'white' }}
-							onPress={() => navigate.onboarding.choosePreset()}
+							onPress={async () => {
+								await AsyncStorage.setItem('isNewAccount', 'isNew')
+								navigate.onboarding.choosePreset()
+							}}
 						>
 							{t('onboarding.getstarted.button')}
 						</Button>

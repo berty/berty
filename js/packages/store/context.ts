@@ -25,6 +25,7 @@ export enum MessengerAppState {
 	DeletingClosingDaemon,
 	DeletingClearingStorage,
 	StreamDone,
+	PreReady,
 }
 
 export enum MessengerActions {
@@ -44,7 +45,9 @@ export enum MessengerActions {
 	SetStateOpeningMarkConversationsClosed = 'SET_STATE_OPENING_MARK_CONVERSATION_CLOSED',
 	SetStateStreamInProgress = 'SET_STATE_STREAM_IN_PROGRESS',
 	SetStateStreamDone = 'SET_STATE_STREAM_DONE',
+	SetStatePreReady = 'SET_STATE_PRE_READY',
 	SetStateReady = 'SET_STATE_READY',
+	SetStateOnBoardingReady = 'SET_ON_BOARDING_READY',
 	SetAccounts = 'SET_ACCOUNTS',
 	BridgeClosed = 'BRIDGE_CLOSED',
 	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
@@ -70,9 +73,9 @@ export const isReadyingBasics = (state: MessengerAppState): boolean =>
 
 const expectedAppStateChanges: any = {
 	[MessengerAppState.Init]: [
-		MessengerAppState.Closed,
 		MessengerAppState.OpeningWaitingForClients,
 		MessengerAppState.OpeningWaitingForDaemon,
+		MessengerAppState.GetStarted,
 	],
 	[MessengerAppState.Closed]: [
 		MessengerAppState.OpeningWaitingForClients,
@@ -81,6 +84,7 @@ const expectedAppStateChanges: any = {
 	],
 	[MessengerAppState.OpeningWaitingForDaemon]: [MessengerAppState.OpeningWaitingForClients],
 	[MessengerAppState.OpeningWaitingForClients]: [
+		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.OpeningListingEvents,
 		MessengerAppState.OpeningMarkConversationsAsClosed,
 	],
@@ -88,19 +92,13 @@ const expectedAppStateChanges: any = {
 	[MessengerAppState.OpeningGettingLocalSettings]: [
 		MessengerAppState.OpeningMarkConversationsAsClosed,
 	],
-	[MessengerAppState.OpeningMarkConversationsAsClosed]: [
-		MessengerAppState.Ready,
-		MessengerAppState.OnBoarding,
-		MessengerAppState.GetStarted,
-	],
+	[MessengerAppState.OpeningMarkConversationsAsClosed]: [MessengerAppState.PreReady],
 	[MessengerAppState.GetStarted]: [
+		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.OnBoarding,
-		MessengerAppState.DeletingClosingDaemon,
-		MessengerAppState.Closed,
-		MessengerAppState.Ready,
 	],
 	[MessengerAppState.OnBoarding]: [
-		MessengerAppState.Closed,
+		MessengerAppState.PreReady,
 		MessengerAppState.Ready,
 		MessengerAppState.DeletingClosingDaemon,
 	],
@@ -108,6 +106,8 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.DeletingClosingDaemon,
 		MessengerAppState.ClosingDaemon,
 		MessengerAppState.OpeningWaitingForClients,
+		MessengerAppState.OnBoarding,
+		MessengerAppState.StreamDone,
 	],
 	[MessengerAppState.ClosingDaemon]: [
 		MessengerAppState.Closed,
@@ -119,6 +119,8 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.Closed,
 		MessengerAppState.OpeningWaitingForDaemon,
 	],
+	[MessengerAppState.PreReady]: [MessengerAppState.Ready],
+	[MessengerAppState.StreamDone]: [MessengerAppState.GetStarted],
 }
 
 export const isExpectedAppStateChange = (
@@ -209,7 +211,7 @@ export type PersistentOptionsWelcomeModal = {
 export type PersistentOptionsConfigurations = { [key: string]: Configuration }
 
 export type PersistentOptionsPreset = {
-	value: 'performance' | 'full-anonymity'
+	value: 'performance' | 'fullAnonymity'
 }
 
 export type PersistentOptionsLogFilters = {
@@ -386,7 +388,6 @@ export type MsgrState = {
 	nextSelectedAccount: string | null
 	daemonAddress: string
 	streamInProgress: StreamInProgress | null
-	isNewAccount: boolean | null
 
 	appState: MessengerAppState
 	account?: beapi.messenger.IAccount | null
@@ -456,7 +457,6 @@ export const initialState = {
 	protocolClient: null,
 	streamError: null,
 	streamInProgress: null,
-	isNewAccount: null,
 
 	addNotificationListener: () => {},
 	removeNotificationListener: () => {},

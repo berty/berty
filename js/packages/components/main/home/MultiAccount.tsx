@@ -4,7 +4,8 @@ import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/context'
+import { useMsgrContext, MessengerActions } from '@berty-tech/store/context'
+import { closeAccountWithProgress } from '@berty-tech/store/effectableCallbacks'
 
 import { GenericAvatar } from '../../avatars'
 import { openDocumentPicker } from '../../helpers'
@@ -61,6 +62,7 @@ const AccountButton: React.FC<{
 export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 	const ctx = useMsgrContext()
 	const [{ padding, color }, { scaleSize }] = useStyles()
+	const { dispatch } = useMsgrContext()
 	const { t } = useTranslation()
 
 	return (
@@ -105,7 +107,8 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 				<AccountButton
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
-						await ctx.createNewAccount()
+						await closeAccountWithProgress(dispatch)
+						dispatch({ type: MessengerActions.SetStateOnBoardingReady })
 					}}
 					avatar={
 						<View

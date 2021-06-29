@@ -11,6 +11,7 @@ import {
 	openingCloseConvos,
 	closingDaemon,
 	deletingStorage,
+	updateAccountsPreReady,
 } from './providerEffects'
 import {
 	setPersistentOption,
@@ -60,11 +61,13 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		state.selectedAccount,
 	])
 
-	useEffect(() => openingCloseConvos(state.appState, dispatch, state.client, state.conversations), [
-		state.appState,
-		state.client,
-		state.conversations,
-	])
+	useEffect(() => {
+		openingCloseConvos(state.appState, embedded, dispatch, state.client, state.conversations)
+	}, [state.appState, state.client, state.conversations, embedded])
+
+	useEffect(() => {
+		updateAccountsPreReady(state, embedded, dispatch)
+	}, [state, embedded, dispatch])
 
 	useEffect(() => closingDaemon(state.appState, state.clearClients, dispatch), [
 		state.clearClients,
@@ -97,10 +100,9 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[embedded],
 	)
 
-	const callbackCreateNewAccount = useCallback(
-		() => createNewAccount(embedded, dispatch, state.clearClients),
-		[embedded, state.clearClients],
-	)
+	const callbackCreateNewAccount = useCallback(() => createNewAccount(embedded, dispatch), [
+		embedded,
+	])
 
 	const callbackUpdateAccount = useCallback(
 		(payload: any) => updateAccount(embedded, dispatch, payload),
