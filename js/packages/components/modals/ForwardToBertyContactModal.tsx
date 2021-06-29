@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
-import { useStyles } from '@berty-tech/styles'
 import { View, Modal, TouchableOpacity, ScrollView } from 'react-native'
+import RNFS from 'react-native-fs'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+
+import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { ConversationAvatar } from '../avatars'
+import { useSortedConversationList, useMsgrContext } from '@berty-tech/store/hooks'
 import { useClient } from '@berty-tech/store/hooks'
 
-import { useSortedConversationList, useMsgrContext } from '@berty-tech/store/hooks'
-
-import RNFS from 'react-native-fs'
+import { ConversationAvatar } from '../avatars'
 
 export const ForwardToBertyContactModal: React.FC<{
 	image: any

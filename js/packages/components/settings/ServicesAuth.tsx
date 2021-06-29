@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Input } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
+
 import { useStyles } from '@berty-tech/styles'
-import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import {
@@ -12,6 +12,8 @@ import {
 	useAccountServices,
 	serviceNames,
 } from '@berty-tech/store/services'
+
+import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../shared-components'
 
 const BodyServicesAuth = () => {
 	const [{ flex, padding, margin, color }] = useStyles()

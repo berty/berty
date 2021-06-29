@@ -1,10 +1,11 @@
 import React from 'react'
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
 import { View } from 'react-native'
-import { ChatDate } from '@berty-tech/components/chat/common'
-import { MessageSystemWrapper } from '@berty-tech/components/chat/message/MessageSystemWrapper'
 import { Text } from '@ui-kitten/components'
+
+import { MessageSystemWrapper } from '@berty-tech/components/chat/message/MessageSystemWrapper'
+import { ChatDate } from '@berty-tech/components/chat/common'
+import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty-tech/api'
 
 export const InfosMultiMember: React.FC<beapi.messenger.IConversation> = ({
 	createdDate: createdDateStr,

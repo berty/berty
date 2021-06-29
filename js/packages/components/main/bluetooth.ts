@@ -1,5 +1,5 @@
-import { request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 import { Platform, Alert, Linking } from 'react-native'
+import { request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 
 export const requestBluetoothPermission = async (): Promise<boolean> => {
 	let permission =

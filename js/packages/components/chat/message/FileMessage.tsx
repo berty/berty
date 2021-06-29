@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import RNFS from 'react-native-fs'
+
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
+
 import { getSource } from '../../utils'
 
 export const FileMessage: React.FC<{

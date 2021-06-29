@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { createContext, useContext, useState } from 'react'
+import { useDimensions } from '@react-native-community/hooks'
+import { PixelRatio } from 'react-native'
+
 import { Declaration, Styles, ScaleSizes } from './types'
 import { defaultStylesDeclaration, mapScaledDeclarationWithDims } from './map-declaration'
 import {
@@ -13,8 +16,6 @@ import {
 	iPadShortEdge,
 	iPadLongEdge,
 } from './constant'
-import { useDimensions } from '@react-native-community/hooks'
-import { PixelRatio } from 'react-native'
 
 const defaultStyles = mapScaledDeclarationWithDims(defaultStylesDeclaration, {
 	scaleSize: initialScaleSize,

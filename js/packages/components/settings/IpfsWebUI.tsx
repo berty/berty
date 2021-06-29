@@ -2,10 +2,12 @@ import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { HeaderSettings } from '../shared-components/Header'
 import { WebView } from 'react-native-webview'
+
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+
+import { HeaderSettings } from '../shared-components/Header'
 
 //
 // IpfsWebUI

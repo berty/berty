@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { View, Modal, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
-import ImagePicker from 'react-native-image-crop-picker'
 import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
+import ImagePicker from 'react-native-image-crop-picker'
+
+import { useStyles } from '@berty-tech/styles'
+import { useClient } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
 import { MenuListItem } from './MenuListItem'
@@ -12,7 +14,6 @@ import { GallerySection } from './GallerySection'
 import { GifSection } from './GifSection'
 import { TabItems } from './types'
 import { SecurityAccess } from './SecurityAccess'
-import { useClient } from '@berty-tech/store/hooks'
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))

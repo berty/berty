@@ -4,6 +4,7 @@ import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
+import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { Maybe, useConversation, useMsgrContext } from '@berty-tech/store/hooks'
@@ -17,7 +18,6 @@ import {
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
-import beapi from '@berty-tech/api'
 
 //
 // GroupChatSettings

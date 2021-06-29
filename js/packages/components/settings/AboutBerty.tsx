@@ -2,10 +2,12 @@ import React from 'react'
 import { View, ScrollView, Linking } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
+
 import { useStyles } from '@berty-tech/styles'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //

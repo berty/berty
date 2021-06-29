@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
+
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/hooks'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
+
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Notifications

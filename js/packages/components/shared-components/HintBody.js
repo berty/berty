@@ -3,7 +3,6 @@ import { View, Text as TextNative } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-
 import messengerMethodsHooks from '@berty-tech/store/methods'
 
 const useStylesHint = () => {

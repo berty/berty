@@ -10,10 +10,10 @@ import {
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
+import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()

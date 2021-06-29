@@ -11,16 +11,17 @@ import beapi from '@berty-tech/api'
 import { useLastConvInteraction, useContact, useMsgrContext } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { getEmojiByName, getMediaTypeFromMedias } from '@berty-tech/components/utils'
+import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 import { pbDateToNum } from '../../helpers'
-import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 import { PictureMessage } from './PictureMessage'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
 import { useReplyReaction } from '../ReplyReactionContext'
 import PopoverView from './Popover'
+
 const pal = palette('tol-rainbow', 256)
 
 const getPositionStyleForReactionView = (

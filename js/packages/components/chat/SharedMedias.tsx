@@ -9,23 +9,23 @@ import {
 	Dimensions,
 	Linking,
 } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { Text, Icon } from '@ui-kitten/components'
-import { useNavigation } from '@berty-tech/navigation'
 import { useTranslation } from 'react-i18next'
-import beapi from '@berty-tech/api'
-import { useMsgrContext, useConvInteractions, useClient } from '@berty-tech/store/hooks'
-import { getSource } from '@berty-tech/components/utils'
 import RNFS from 'react-native-fs'
-import { timeFormat } from '@berty-tech/components/helpers'
-const initialLayout = { width: Dimensions.get('window').width }
 import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
 import linkifyFn from 'linkify-it'
 import Hyperlink from 'react-native-hyperlink'
 
+import beapi from '@berty-tech/api'
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@berty-tech/navigation'
 import { isBertyDeepLink } from '@berty-tech/components/chat/message/UserMessageComponents'
+import { useMsgrContext, useConvInteractions, useClient } from '@berty-tech/store/hooks'
+import { getSource } from '@berty-tech/components/utils'
+import { timeFormat } from '@berty-tech/components/helpers'
 
+const initialLayout = { width: Dimensions.get('window').width }
 const linkify = linkifyFn().tlds(tlds, true)
 
 export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> = ({

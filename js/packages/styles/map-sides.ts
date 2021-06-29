@@ -2,6 +2,7 @@
 import Case from 'case'
 import { StyleSheet } from 'react-native'
 import mem from 'mem'
+
 import { SizesDeclaration, ScaleSizes } from './types'
 import { initialScaleSize } from './constant'
 

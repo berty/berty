@@ -3,12 +3,11 @@ import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { pbDateToNum } from '@berty-tech/components/helpers'
-import { MessengerActions } from '@berty-tech/store/context'
+import { Routes } from '@berty-tech/navigation'
 
-import { MsgrContext, useMsgrContext, NotificationsInhibitor } from './context'
+import { MsgrContext, useMsgrContext, NotificationsInhibitor, MessengerActions } from './context'
 import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
 import { ParsedInteraction } from './types.gen'
-import { Routes } from '@berty-tech/navigation'
 
 export { useMsgrContext }
 

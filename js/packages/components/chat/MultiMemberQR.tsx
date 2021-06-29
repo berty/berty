@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
+
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'

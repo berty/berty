@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, View, ScrollView, Image, TextInput } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import beapi from '@berty-tech/api'
 import RNFS from 'react-native-fs'
+
+import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty-tech/api'
 
 const GIF_IMAGE_PER_PAGE = 10
 

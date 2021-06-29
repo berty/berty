@@ -10,13 +10,14 @@ import {
 	StatusBar,
 } from 'react-native'
 import RNFS from 'react-native-fs'
+import { useTranslation } from 'react-i18next'
+import { SafeAreaView } from 'react-native-safe-area-context'
+
+import beapi from '@berty-tech/api'
 import { berty } from '@berty-tech/api/root.pb'
 import { GRPCError, Service } from '@berty-tech/grpc-bridge'
-import beapi from '@berty-tech/api'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { useTranslation } from 'react-i18next'
 import { useMsgrContext } from '@berty-tech/store/context'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
 

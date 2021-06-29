@@ -6,12 +6,12 @@ import beapi from '@berty-tech/api'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
+import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { MessageInvitation } from './MessageInvitation'
 import { MessageMonitorMetadata } from './MessageMonitorMetadata'
 import { UserMessage } from './UserMessage'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 //
 // Message => All messages (group/contact)

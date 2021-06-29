@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { View, Linking, ActivityIndicator as Spinner, Vibration } from 'react-native'
 import { Translation, useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
+
 import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import {

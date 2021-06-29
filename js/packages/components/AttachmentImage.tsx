@@ -3,6 +3,7 @@ import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 're
 
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { useNavigation } from '@berty-tech/navigation'
+
 import { getSource } from './utils'
 
 const AttachmentImage: React.FC<

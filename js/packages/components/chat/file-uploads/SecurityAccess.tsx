@@ -1,9 +1,11 @@
 import React, { useEffect, useCallback } from 'react'
 import { View, TouchableOpacity, AppState, Platform } from 'react-native'
 import { check, RESULTS, PERMISSIONS, openSettings } from 'react-native-permissions'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
 import { Text, Icon } from '@ui-kitten/components'
+
+import { useStyles } from '@berty-tech/styles'
+
 import { TabItems } from './types'
 
 export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }> = ({

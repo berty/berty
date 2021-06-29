@@ -1,7 +1,7 @@
 import beapi from '@berty-tech/api'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
-
 import Shake, { ShakeFile } from '@shakebugs/react-native-shake'
+
+import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 import { accountService } from './context'
 

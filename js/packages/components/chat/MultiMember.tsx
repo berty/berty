@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 import { TouchableOpacity, View, Platform, TextInput, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { BlurView } from '@react-native-community/blur'
-import { CommonActions } from '@react-navigation/native'
+import { CommonActions, useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import EmojiBoard from 'react-native-emoji-board'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
+import { MessageList } from '@berty-tech/components/chat/MessageList'
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
@@ -22,11 +25,7 @@ import { ChatFooter, ChatDate } from './common'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useLayout } from '../hooks'
 import { MultiMemberAvatar } from '../avatars'
-import { MessageList } from '@berty-tech/components/chat/MessageList'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ReplyReactionProvider } from './ReplyReactionContext'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
-import { useFocusEffect } from '@react-navigation/native'
 
 //
 // MultiMember

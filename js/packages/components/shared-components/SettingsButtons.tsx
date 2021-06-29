@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, StyleProp, Animated, Easing } from 'react-native'
 import { Text, Icon, Toggle } from '@ui-kitten/components'
+
 import { useStyles } from '@berty-tech/styles'
-// import { CircleAvatar } from './CircleAvatar'
 
 //
 // Button Setting
@@ -88,7 +88,6 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 		{ windowWidth, scaleSize },
 	] = useStyles()
 
-	console.log('Disabled', disabled)
 	return (
 		<TouchableOpacity
 			activeOpacity={

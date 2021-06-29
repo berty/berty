@@ -1,8 +1,10 @@
 import React from 'react'
-import { Request } from '../shared-components/Request'
+
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+
+import { Request } from '../shared-components/Request'
 
 //
 // ContactRequest => Accept/Refuse

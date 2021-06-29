@@ -4,11 +4,13 @@ import { Buffer } from 'buffer'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
+
 import { useStyles } from '@berty-tech/styles'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 import { MultiMemberAvatar } from '../avatars'
 
 const useStylesModal = () => {

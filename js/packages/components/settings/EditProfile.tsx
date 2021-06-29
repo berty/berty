@@ -7,19 +7,17 @@ import {
 	ActivityIndicator,
 	Pressable,
 } from 'react-native'
-
-import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
+import { BlurView } from '@react-native-community/blur'
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
+import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps } from '@berty-tech/navigation'
-import { useNavigation } from '@berty-tech/navigation'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 
 import { AccountAvatar } from '../avatars'
-import { BlurView } from '@react-native-community/blur'
 
 //
 // Edit Profile

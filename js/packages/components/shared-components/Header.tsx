@@ -1,8 +1,9 @@
 import React from 'react'
 import { View, TouchableOpacity, Insets } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import { useStyles, defaultStylesDeclaration } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
+import { useStyles, defaultStylesDeclaration } from '@berty-tech/styles'
 
 const largeHitSlop: Insets = {
 	top: 20,

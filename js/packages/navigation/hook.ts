@@ -5,6 +5,7 @@ import {
 	CommonActions,
 } from '@react-navigation/native'
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
+
 import { Routes, RouteProps, ScreenProps } from './types'
 
 export type NavigateParams<R> = R extends RouteProps<infer T> ? T : never

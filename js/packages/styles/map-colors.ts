@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import _ from 'lodash'
+
 import { Colors, ColorsDeclaration, ColorsBrightness, ColorsStyles } from './types'
 
 export const mapColor = <T extends {}>(v: string, map: (v: string) => T, opacity = '') =>

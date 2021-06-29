@@ -1,13 +1,14 @@
 import React from 'react'
 import { ImageBackground, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
-import { useStyles } from '@berty-tech/styles'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
+import { useNavigation as useNativeNavigation } from '@react-navigation/core'
+
+import { useStyles } from '@berty-tech/styles'
 import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import FullAnonBackground from '@berty-tech/assets/full_anon_bg.png'
 import PerformanceBackground from '@berty-tech/assets/performance_bg.png'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 
 export const ChoosePreset = () => {
 	const { t }: { t: any } = useTranslation()

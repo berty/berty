@@ -1,7 +1,7 @@
 import faker from 'faker'
+import { keyBy, flatten } from 'lodash'
 
 import beapi from '@berty-tech/api'
-import { keyBy, flatten } from 'lodash'
 
 const fakeArray = (length) => new Array(length).fill({})
 

@@ -8,6 +8,10 @@ import { Translation, useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import i18n from '@berty-tech/berty-i18n'
+import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
+import { languages } from '@berty-tech/berty-i18n/locale/languages'
 
 import {
 	ButtonSetting,
@@ -18,10 +22,6 @@ import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
-import i18n from '@berty-tech/berty-i18n'
-import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
-import { languages } from '@berty-tech/berty-i18n/locale/languages'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -180,7 +180,6 @@ const HomeBodySettings: React.FC<{}> = () => {
 	}))
 
 	items.push({ label: 'Debug', value: 'cimode' })
-	console.log(ctx.persistentOptions.preset)
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -303,12 +302,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 		<>
 			<View style={[flex.tiny, background.white]}>
 				<StatusBar backgroundColor='#585AF1' barStyle='light-content' />
-				<SwipeNavRecognizer
-					// onSwipeUp={() => navigation.goBack()}
-					// onSwipeLeft={() => navigation.goBack()}
-					onSwipeRight={() => navigation.goBack()}
-					// onSwipeDown={() => navigation.goBack()}
-				>
+				<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
 					{account == null ? (
 						<ActivityIndicator size='large' style={[row.center]} />
 					) : (

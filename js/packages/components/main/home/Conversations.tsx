@@ -4,6 +4,7 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 import { requestNotifications, RESULTS } from 'react-native-permissions'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
@@ -14,7 +15,6 @@ import { Routes, useNavigation } from '@berty-tech/navigation'
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
-import { useTranslation } from 'react-i18next'
 import { requestBluetoothAndHandleAlert } from '../bluetooth'
 
 type ConversationsProps = ViewProps & {

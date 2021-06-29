@@ -18,6 +18,7 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
 import { WelcomeConfiguration } from '@berty-tech/components/modals'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import { useLayout } from '../../hooks'
 import { SwipeNavRecognizer } from '../../shared-components/SwipeNavRecognizer'
@@ -29,7 +30,6 @@ import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
