@@ -8,6 +8,7 @@ export const GoBridgeDefaultOpts: GoBridgeOpts = {
 		'--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/::/tcp/0',
 		'--p2p.mdns=false',
 		'--p2p.webui-listener=:3000',
+		'--log.filters=debug+:bty*,-*.grpc warn+:*.grpc error+:*',
 	],
 	persistence: true,
 }

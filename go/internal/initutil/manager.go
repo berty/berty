@@ -26,6 +26,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/tinder"
@@ -59,13 +60,14 @@ type Manager struct {
 		ID string `json:"ID,omitempty"`
 	} `json:"Session,omitempty"`
 	Logging struct {
-		StderrFormat  string `json:"StderrFormat,omitempty"`
-		StderrFilters string `json:"StderrFilters,omitempty"`
-		FilePath      string `json:"FilePath,omitempty"`
-		FileFilters   string `json:"FileFilters,omitempty"`
-		RingFilters   string `json:"RingFilters,omitempty"`
-		RingSize      uint   `json:"RingSize,omitempty"`
-		TyberHost     string `json:"TyberHost,omitempty"`
+		DefaultLoggerStreams []logutil.Stream
+		StderrFormat         string `json:"StderrFormat,omitempty"`
+		StderrFilters        string `json:"StderrFilters,omitempty"`
+		FilePath             string `json:"FilePath,omitempty"`
+		FileFilters          string `json:"FileFilters,omitempty"`
+		RingFilters          string `json:"RingFilters,omitempty"`
+		RingSize             uint   `json:"RingSize,omitempty"`
+		TyberHost            string `json:"TyberHost,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
@@ -179,7 +181,16 @@ type Manager struct {
 	longHelp   [][2]string
 }
 
-func New(ctx context.Context) (*Manager, error) {
+type ManagerOpts struct {
+	DoNotSetDefaultDir   bool
+	DefaultLoggerStreams []logutil.Stream
+}
+
+func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
+	if opts == nil {
+		opts = &ManagerOpts{}
+	}
+
 	m := Manager{}
 	m.ctx, m.ctxCancel = context.WithCancel(ctx)
 
@@ -195,6 +206,7 @@ func New(ctx context.Context) (*Manager, error) {
 	// * values that are reused across various CLI depths.
 	//
 	// the good location for other variables is in the initutil.SetupFoo functions.
+	m.Logging.DefaultLoggerStreams = opts.DefaultLoggerStreams
 	m.Logging.StderrFilters = defaultLoggingFilters
 	m.Logging.RingFilters = defaultLoggingFilters
 	m.Logging.FileFilters = "*"
@@ -206,7 +218,7 @@ func New(ctx context.Context) (*Manager, error) {
 	m.Session.ID = tyber.NewSessionID()
 
 	// storage path
-	{
+	if !opts.DoNotSetDefaultDir {
 		storagePath := configdir.New("berty-tech", "berty")
 		storageDirs := storagePath.QueryFolders(configdir.Global)
 		if len(storageDirs) == 0 {
