@@ -12,11 +12,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import tech.berty.gobridge.GoBridgePackage;
 
+// needed for unimodules
+import tech.berty.android.generated.BasePackageList;
+import java.util.Arrays;
+import org.unimodules.adapters.react.ModuleRegistryAdapter;
+import org.unimodules.adapters.react.ReactModuleRegistryProvider;
+import org.unimodules.core.interfaces.SingletonModule;
+
 import com.wix.interactable.Interactable; // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
 
 import com.shakebugs.shake.Shake;
 
 public class MainApplication extends Application implements ReactApplication {
+  private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(new BasePackageList().getPackageList(), null);
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -31,6 +39,11 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          // Add unimodules
+          List<ReactPackage> unimodules = Arrays.<ReactPackage>asList(
+            new ModuleRegistryAdapter(mModuleRegistryProvider)
+          );
+          packages.addAll(unimodules);
           packages.add(new GoBridgePackage());
           packages.add(new Interactable()); // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
           return packages;

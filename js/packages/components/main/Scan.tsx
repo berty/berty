@@ -9,7 +9,7 @@ import {
 	StatusBar,
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import QRCodeScanner from 'react-native-qrcode-scanner'
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 
@@ -70,20 +70,14 @@ const ScanBody: React.FC<{}> = () => {
 				},
 			]}
 		>
-			<QRCodeScanner
-				onRead={({ data, type }) => {
-					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
-						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-						navigation.navigate('ManageDeepLink', { type: 'qr', value: data })
-						Vibration.vibrate(1000)
-					}
+			<View style={[borderRadius, { width: '100%', height: '100%', overflow: 'hidden' }]}><BarCodeScanner
+				onBarCodeScanned={({ data, type }) => {
+					navigation.navigate('ManageDeepLink', { type: 'qr', value: data })
+					Vibration.vibrate(1000)
 				}}
-				cameraProps={{ captureAudio: false }}
-				containerStyle={[borderRadius, { width: '100%', height: '100%', overflow: 'hidden' }]}
-				cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
-				reactivate
-				// flashMode={RNCamera.Constants.FlashMode.torch}
-			/>
+				style={{ width: '100%', height: '100%', aspectRatio: 1 }}
+				barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+			/></View>
 			<ScanTarget height='75%' width='75%' style={{ position: 'absolute' }} />
 		</View>
 	)
