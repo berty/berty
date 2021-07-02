@@ -3547,6 +3547,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   MessageSearch: {
                     requestType: "MessageSearch.Request",
                     responseType: "MessageSearch.Reply"
+                  },
+                  TyberHostSearch: {
+                    requestType: "TyberHostSearch.Request",
+                    responseType: "TyberHostSearch.Reply",
+                    responseStream: true
+                  },
+                  TyberHostAttach: {
+                    requestType: "TyberHostAttach.Request",
+                    responseType: "TyberHostAttach.Reply"
                   }
                 }
               },
@@ -5542,6 +5551,60 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       results: {
                         rule: "repeated",
                         type: "Interaction",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              TyberHostSearch: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      hostname: {
+                        type: "string",
+                        id: 1
+                      },
+                      ipv4: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "IPv4"
+                        }
+                      },
+                      ipv6: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "IPv6"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              TyberHostAttach: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      addresses: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      address: {
+                        type: "string",
                         id: 1
                       }
                     }

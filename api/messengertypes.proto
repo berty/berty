@@ -88,6 +88,11 @@ service MessengerService {
 
   // MessageSearch
   rpc MessageSearch (MessageSearch.Request) returns (MessageSearch.Reply);
+
+  // TyberHostSearch
+  rpc TyberHostSearch (TyberHostSearch.Request) returns (stream TyberHostSearch.Reply);
+  // TyberHostAttach
+  rpc TyberHostAttach (TyberHostAttach.Request) returns (TyberHostAttach.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -835,5 +840,24 @@ message MessageSearch {
   }
   message Reply {
     repeated Interaction results = 1;
+  }
+}
+
+message TyberHostSearch {
+  message Request {
+  }
+  message Reply {
+    string hostname = 1;
+    repeated string ipv4 = 2 [(gogoproto.customname) = "IPv4"];
+    repeated string ipv6 = 3 [(gogoproto.customname) = "IPv6"];
+  }
+}
+
+message TyberHostAttach {
+  message Request {
+    repeated string addresses = 1;
+  }
+  message Reply {
+    string address = 1;
   }
 }

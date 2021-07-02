@@ -3,6 +3,7 @@ package bridge
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/asticode/go-astilectron"
 )
@@ -49,7 +50,7 @@ func (b *Bridge) HandleMessages(name string, payload []byte) error {
 			return err
 		}
 
-		if err := b.parser.NetworkListen(address, port); err != nil {
+		if err := b.parser.NetworkListen(address, strconv.Itoa(port)); err != nil {
 			b.logger.Errorf("parser network listening failed: %v", err)
 			b.DisplayError("Parser listen network error", err.Error(), false)
 		}

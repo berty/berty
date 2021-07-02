@@ -61,7 +61,7 @@ class mainPanel extends React.Component<Props, State> {
 			return (
 				<View style={style.placeholder}>
 					<ArrowLeftOutlined style={style.placeholderIcon} />
-					<Text category="h6">Select a session on the left pannel</Text>
+					<Text category="h6">Select a session on the left panel</Text>
 				</View>
 			);
 		}

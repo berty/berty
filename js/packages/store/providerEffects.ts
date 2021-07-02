@@ -181,7 +181,9 @@ export const openingDaemon = async (
 	let tyberHost = ''
 	try {
 		tyberHost = (await AsyncStorage.getItem(tyberHostStorageKey)) || ''
-		console.warn(`connecting to ${tyberHost}`)
+		if (tyberHost !== '') {
+			console.warn(`connecting to ${tyberHost}`)
+		}
 	} catch (e) {
 		console.warn(e)
 	}

@@ -1,6 +1,7 @@
 package bridge
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -37,13 +38,14 @@ type WebsocketBridge interface {
 	Send(name string, payload []byte) error
 }
 
-func New(goLogger *log.Logger, w WebsocketBridge) *Bridge {
+func New(ctx context.Context, goLogger *log.Logger, w WebsocketBridge) *Bridge {
 	b := &Bridge{websocketBridge: w}
 
 	baseLogger := logger.New(goLogger, b.ConsoleLog)
 
 	b.logger = baseLogger.Named("bridge")
-	b.config = config.New(baseLogger)
+
+	b.config = config.New(ctx, baseLogger)
 	b.parser = parser.New(baseLogger)
 	receiver := b.HandleMessages
 	b.receiver = &receiver
