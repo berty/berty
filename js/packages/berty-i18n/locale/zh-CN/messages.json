@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "蓝牙",
-      "desc": "在您没有网络连接(wifi或数据) 时，您可以使用蓝牙来连接附件的节点来使用Berty应用",
-      "activate-button": "激活蓝牙",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "Berty蓝牙权限",
-      "permission-description": "授权Berty在您的手机上使用蓝牙设备",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "稍后询问我",
       "tag-negative": "取消",
       "tag-positive": "确定"
@@ -324,7 +325,7 @@
       "add-dev-conversations-button": "添加开发者会话",
       "share-button": {
         "title": "分享ID到Discord",
-        "alert-title": "您想要在 Berty Discord 上分享您的二维码到\"#dev-logs\"吗？",
+        "alert-title": "",
         "alert-message": "这将允许其他工作人员扫描您的二维码或复制您的联系链接。",
         "alert-accept-button": "好",
         "alert-cancel-button": "不"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "设备信息",
       "footer-middle-button": "显示事件",
-      "footer-right-button": "重启守护进程"
+      "footer-right-button": "重启守护进程",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "系统信息"
@@ -450,7 +452,7 @@
       },
       "betabot-box": {
         "title": "添加BETA BOT？",
-        "desc": "您还没有任何联系人，要添加Beta Bot来发现和测试会话吗？",
+        "desc": "",
         "skip-button": "跳过",
         "add-button": "添加！"
       },
