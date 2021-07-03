@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth ви позволява да използвате приложението Berty най-добре, когато нямате мрежова връзка (wifi или данни), като свързвате телефона си директно с peers наблизо",
-      "activate-button": "Активирай bluetooth",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "",
       "tag-negative": "Отказ",
       "tag-positive": ""
@@ -324,7 +325,7 @@
       "add-dev-conversations-button": "Добави програмистка грешка",
       "share-button": {
         "title": "Сподели ID в discord",
-        "alert-title": "Желаеш ли да споделиш своя QR код в Berty групата в Discord - \"#dev-logs\"?",
+        "alert-title": "",
         "alert-message": "Това ще позволи на други служители да сканират вашия QR код или да копират връзката ви за контакт.",
         "alert-accept-button": "Да 👍",
         "alert-cancel-button": "Не"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "Информация за устройства",
       "footer-middle-button": "Списък от събития",
-      "footer-right-button": "Рестартирай daemon-а"
+      "footer-right-button": "Рестартирай daemon-а",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Система информация"
@@ -433,6 +435,11 @@
       "erase-button": "Изтрии разговора",
       "leave-button": "Напусни групата"
     },
+    "add-members": {
+      "members": "Участници",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR код на групата"
     },
@@ -445,7 +452,7 @@
       },
       "betabot-box": {
         "title": "ДОБАВИ BETA БОТ?",
-        "desc": "Все още нямаш контакти искаш ли да добавиш Beta Bot за да разбереш как работят разговорите?",
+        "desc": "",
         "skip-button": "ПРОПУСНИ",
         "add-button": "ДОБАВИ !"
       },
@@ -498,6 +505,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +600,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Отказ"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
