@@ -1,7 +1,7 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "La aplicación de mensajería segura entre pares que funciona con o sin acceso a Internet, datos celulares o confianza en la red",
+      "desc": "La aplicación de mensajería segura de punto a punto que funciona con o sin acceso a Internet, datos móviles o sin tener que confiar en la red",
       "open-registered-account": "Abrir una cuenta registrada",
       "import-button": "Importar datos de una cuenta existente",
       "account-selector-create-button": "Crear una nueva cuenta",
@@ -16,7 +16,7 @@
         "desc": "Fácil de usar - Todas las funciones",
         "push-notif": "Recibir notificaciones push",
         "offline-message": "Mensajería sin conexión a través de Bluetooth",
-        "add-contact": "Añadir contactos de forma fácil",
+        "add-contact": "Añadir contactos fácilmente",
         "fast-message": "Envío de mensajes más rápido"
       },
       "high-level": {
@@ -24,7 +24,7 @@
         "desc": "Para usuarios extremadamente cautelosos",
         "disable-push-notif": "Notificaciones push desactivadas",
         "disable-local-peer-discovery": "Descubrimiento local de pares desactivado",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS y Bluetooth",
         "disable-contact-request": "Solicitudes de contacto desactivadas",
         "on-same-network": "Local en la misma red/wifi"
       }
@@ -115,7 +115,7 @@
     "network-options": {
       "welcome-title": "Bienvenido a las opciones de redes",
       "full-anon-mode": "Modo anónimo completo",
-      "simple-tor-compatible": "",
+      "simple-tor-compatible": "Simple - Compatible con Tor",
       "allow-expert-mode": "Permitir modo experto",
       "tor-compatible": {
         "title": "Compatible con TOR",
@@ -123,9 +123,9 @@
       },
       "full-anon": {
         "title": "Modo anónimo completo",
-        "desc": "",
+        "desc": "Esta configuración se basa en preajustes radicales que proporcionan parámetros de redes extremadamente cuidadosas:",
         "no-ip": "Sin ip",
-        "no-mc": "",
+        "no-mc": "No mc",
         "tor-only": "Solo Tor"
       },
       "save": "GUARDAR",
@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth te permite usar mejor la aplicación Berty cuando no tienes una conexión de red (wifi o datos) conectando tu teléfono directamente con los contactos cercanos",
-      "activate-button": "Activar bluetooth",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "Permiso de bluetooth de Berty",
-      "permission-description": "Autoriza a la aplicación Berty para usar las funciones de Bluetooth en tu dispositivo",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Pregúntame más tarde",
       "tag-negative": "Cancelar",
       "tag-positive": "OK"
@@ -304,7 +305,7 @@
       "header-left-button": "Información del dispositivo",
       "simulate-button": "Simular error de flujo",
       "simulate-js-error-button": "Simular error de JavaScript",
-      "simulate-native-error-button": "",
+      "simulate-native-error-button": "Simular error nativo",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "opcional",
       "tor-required-option": "requerido",
@@ -324,7 +325,7 @@
       "add-dev-conversations-button": "Agregar conversaciones de desarrollo",
       "share-button": {
         "title": "Compartir ID en discord",
-        "alert-title": "¿Quieres compartir tu código QR en \"#dev-logs\" en Berty Discord?",
+        "alert-title": "",
         "alert-message": "Esto permitirá al resto del personal escanear su código QR o copiar su enlace de contacto.",
         "alert-accept-button": "Sí 👍",
         "alert-cancel-button": "Nop"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "Información del dispositivo",
       "footer-middle-button": "Lista de eventos",
-      "footer-right-button": "Reiniciar el servicio"
+      "footer-right-button": "Reiniciar el servicio",
+      "trigger-crashlytics-button": "Desencadenar fallo (crash) crashlytics"
     },
     "system-info": {
       "title": "Información del sistema"
@@ -433,6 +435,11 @@
       "erase-button": "Eliminar conversación",
       "leave-button": "Abandonar grupo"
     },
+    "add-members": {
+      "members": "Miembros",
+      "contacts": "Contactos",
+      "add": "Añadir!"
+    },
     "multi-member-qr": {
       "title": "QR del grupo"
     },
@@ -445,7 +452,7 @@
       },
       "betabot-box": {
         "title": "¿AGREGAR BETA BOT?",
-        "desc": "¿Aún no tienes ningún contacto, quieres añadir el Beta para descubrir y probar conversaciones?",
+        "desc": "",
         "skip-button": "SALTAR",
         "add-button": "¡AÑADIR!"
       },
@@ -498,6 +505,11 @@
       "medias": "Multimedia",
       "links": "Enlaces",
       "documents": "Documentos"
+    },
+    "reply": {
+      "response-to": "Responder a",
+      "replying-to": "Estás respondiendo a",
+      "replied-to": "Respondido a"
     }
   },
   "error": {
@@ -507,37 +519,37 @@
     },
     "restart-app": "Reinicia la aplicación",
     "wtf-screen": {
-      "title": "",
+      "title": "¿Cuál es el fallo?",
       "desc": "La aplicación ha fallado.",
-      "desc-report": ""
+      "desc-report": "Agita tu teléfono para reportar el error y haz clic en el botón para salir y reiniciar la aplicación."
     },
     "sorry-screen": {
       "title": "¡Perdón por este error!",
       "desc": "Es culpa de Francisco, desarrollador interno de Berty, quien debió haber cometido un error. ¡Qué tonto este Francisco!",
       "desc-buy": "¡Te comprará una cerveza cuando lo veas!",
       "desc-em": "*Bueno, está bien, no hay un Francisco en el equipo de Berty.",
-      "desc-report": ""
+      "desc-report": "Agíta tu teléfono y aquí vamos de nuevo!"
     }
   },
   "debug": {
     "inspector": {
-      "show-button": "",
+      "show-button": "Mostrar inspector de la aplicación",
       "hide-button": "Cerrar",
-      "title": "",
+      "title": "Inspector",
       "accounts": {
         "title": "Cuentas",
-        "unsupported-remote-mode": "",
+        "unsupported-remote-mode": "Inspector de cuentas no soportado en modo remoto",
         "data-not-found": "La cuenta no está en la lista",
         "action-delete": {
           "file-exists": "La cuenta {{accountId}} no existe, pero un archivo tiene este mismo nombre.",
           "account-exists": "La cuenta {{accountId}} ya existe.",
           "directory-exists-load-error": "La cuenta {{accountId}} no existe, pero un directorio tiene este mismo nombre.",
-          "fs-read-error": "",
+          "fs-read-error": "Error al obtener información FS de tu cuenta",
           "actions-title": "¿Qué deberíamos hacer?",
           "action-account-manager": "Eliminar a través del gestor de cuentas",
           "action-account-manager-confirm": "Confirmar eliminación de la cuenta",
           "action-force-delete": "Forzar la eliminación",
-          "action-force-delete-confirm": "Confirmar la eliminación de la cuenta",
+          "action-force-delete-confirm": "Confirmar la eliminación forzada de la cuenta",
           "error-close": "Error al cerrar la cuenta",
           "error-delete": "Error al eliminar la cuenta",
           "success-feedback": "Cuenta eliminada",
@@ -548,8 +560,8 @@
           "metadata-not-found": "No se encontró el archivo de metadatos",
           "ipfs-repo-config-found": "Se encontró el archivo IPFS",
           "ipfs-repo-config-not-found": "No se encontró el archivo IPFS",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "messenger-db-found": "La base de datos de mensajes fue encontrada",
+          "messenger-db-not-found": "La base de datos de mensajes no fue encontrada"
         },
         "infos": {
           "aligned": {
@@ -564,12 +576,12 @@
         "title": "Errores",
         "header-reported": "Error reportado:",
         "header-all-clear": "Ningún error reportado",
-        "listing-files-failed": "Error al mostrar el contenido del directorio",
-        "listing-accounts-failed": "Error al mostrar las cuentas",
-        "listing-accounts-failed-grpc": "Error GRPC al mostrar las cuentas"
+        "listing-files-failed": "Error al enumerar los contenido del directorio",
+        "listing-accounts-failed": "Error al enumerar las cuentas",
+        "listing-accounts-failed-grpc": "Error de GRPC al enumerar las cuentas"
       },
       "dump": {
-        "button": ""
+        "button": "Volcar el estado de la aplicación"
       },
       "refresh": "Actualizar",
       "confirm-alert": {
@@ -581,12 +593,17 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "Mantén para grabar, suelta para enviar",
+        "usage": "Mantén presionado para grabar, suelta para enviar",
         "not-sent": "El mensaje de audio no ha sido enviado",
         "permission-denied": "La aplicación no tiene permitido grabar sonido"
       },
       "slide-to-cancel": "<< Desliza para cancelar",
       "cancel-button": "Cancelar"
     }
+  },
+  "medias": {
+    "audio": "audio",
+    "picture": "imagen",
+    "file": "archivos"
   }
 }
