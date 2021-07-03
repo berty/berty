@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 
 // TODO: remove this after closed beta
 apply plugin: 'com.google.gms.google-services'
@@ -138,7 +139,6 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true // fix for "The number of method references in a .dex file cannot exceed 64K"
         vectorDrawables.useSupportLibrary = true // needed for image picker
 
@@ -278,6 +278,8 @@ dependencies {
     implementation 'com.facebook.fresco:animated-gif:2.0.0' // For animated GIF support
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    addUnimodulesDependencies()
 
     implementation project(':react-native-share')
 

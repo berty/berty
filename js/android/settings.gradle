@@ -8,6 +8,8 @@ if (!file("${rootDir.getPath()}/../node_modules").exists()) {
     }
 }
 
+apply from: '../node_modules/react-native-unimodules/gradle.groovy'; includeUnimodulesProjects()
+
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 
 // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
