@@ -1,53 +1,53 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "İnternet erişimi, hücresel veri veya ağda güven varken veya yokken çalışan güvenli eşler arası mesajlaşma uygulaması",
-      "open-registered-account": "Giriş yap",
-      "import-button": "Mevcut olan hesaba veri ekle",
-      "account-selector-create-button": "Yeni hesap oluştur",
+      "desc": "Güvenli ağ hücresel veri ya da internet erişimi olmadan, çalışan eşler arası mesajlaşma uygulaması",
+      "open-registered-account": "Kaydedilmiş bir hesap açın",
+      "import-button": "Mevcut bir hesaptan verileri içeri aktarın",
+      "account-selector-create-button": "Yeni bir hesap oluştur",
       "more-options": "Daha fazla seçenek",
       "button": "BAŞLA"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Bir ön ayar seçin",
+      "change-later": "Bunu daha sonra değiştirebileceksiniz!",
       "performance": {
         "title": "Performans",
         "desc": "Kullanımı kolay - Tüm özellikler",
         "push-notif": "Anlık bildirimler alın",
-        "offline-message": "",
+        "offline-message": "Bluetooth ile çevrimdışı mesajlaşma",
         "add-contact": "Kolayca kişi ekleyin",
         "fast-message": "En hızlı mesaj teslimi"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Tam anonimlik",
+        "desc": "Son derece dikkatli kullanıcılar için",
         "disable-push-notif": "Anlık bildirimler devre dışı",
         "disable-local-peer-discovery": "Yerel eş keşfi devre dışı",
-        "disable-local-peer-discovery-desc": "",
-        "disable-contact-request": "Kişi istekleri devre dışı",
-        "on-same-network": ""
+        "disable-local-peer-discovery-desc": "Çoklu nokta DNS ve Bluetooth",
+        "disable-contact-request": "Kişi listesi istekleri devre dışı",
+        "on-same-network": "Yerel aynı ağ üzerinde/wifi"
       }
     },
     "create-account": {
       "title": "Hesabınızı oluşturun",
-      "desc": "Hesap oluşturmak için gereken tek bilgi bir isim",
+      "desc": "Bir isim gerekli olan tek bilgidir",
       "required": "Gerekli",
       "placeholder": "İsim",
       "button": "HESABIMI OLUŞTUR",
-      "import-account": ""
+      "import-account": "BİR HESAP AKTAR"
     },
     "services-auth": {
-      "header": "Servislere izin ver",
-      "title": "Servisler",
+      "header": "Hizmetlere izin ver",
+      "title": "Hizmetler",
       "recommended": "Önerilen",
-      "desc": "Bu işlem sohbetlerinizi otomatik olarak bir servera kopyalar",
-      "button": "Berty servislerini kullan",
+      "desc": "Bu seçenek konuşmalarınızı bir sunucuya kopyalar",
+      "button": "Berty hizmetlerini kullanın",
       "skip": "ATLA VE DAHA SONRA YAP"
     },
     "generate-key": {
       "title": "Berty düğümü(node) başlatılıyor…",
-      "desc": "Bu işlem birkaç saniye sürebilir"
+      "desc": "Bu birkaç saniye sürebilir"
     },
     "notifications": {
       "header": "Yeni mesajı veya iletişim talebini kaçırmayın",
@@ -89,56 +89,56 @@
         "import-button": "Hesabı içeri aktar"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
+        "title": "Yeni Grup",
+        "add-members": "Üyeler ekle",
+        "group-info": "Grup bilgisi",
         "search-placeholder": "Sorgula",
-        "continue": "",
-        "create-group": ""
+        "continue": "DEVAM ET",
+        "create-group": "YENİ BİR GRUP YARAT"
       }
     },
     "home-modal": {
       "top-button": "Yeni grup oluştur",
       "bottom-button": "Kişi veya grup tara"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Eklemek için buraya tıkla",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Ağ yapılandırması",
+        "desc": "Ağ yapılandırmasını bitirmek için buraya tıkla"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Bildirim Yapılandırması",
+        "desc": "Anlık bildirimleri yapılandırmak için buraya tıklayın"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "welcome-title": "Ağ Seçeneklerine Hoş geldiniz",
+      "full-anon-mode": "Tam Gizli Seçenek",
+      "simple-tor-compatible": "Basit TOR uyumlu",
+      "allow-expert-mode": "Uzman Seçeneğine İzin ver",
       "tor-compatible": {
-        "title": "",
-        "desc": ""
+        "title": "TOR Uyumlu",
+        "desc": "Bu yapılandırma Tor ağına bağlanmanıza izin verecek ve tam gizli kullanıcılarla olağanüstü gizlilik içinde kendiniz olmadan konuşabileceksiniz."
       },
       "full-anon": {
-        "title": "",
-        "desc": "",
-        "no-ip": "",
-        "no-mc": "",
-        "tor-only": ""
+        "title": "Tam Gizli Seçenek",
+        "desc": "Bu yapılandırma son derece dikkat edilmesi gereken bir radikal ön ayara dayanmaktadır:",
+        "no-ip": "İp yok",
+        "no-mc": "Mc yok",
+        "tor-only": "Sadece tor"
       },
-      "save": "",
+      "save": "KAYDET",
       "skip": "ATLA VE DAHA SONRA YAP"
     }
   },
   "settings": {
     "home": {
       "header-left-button": "Yardım",
-      "header-center-button": "Devtools",
+      "header-center-button": "Geliştirme araçları",
       "header-right-button": "Ayarlar",
       "network-button": "Ağ Listesi",
-      "switch-accounts": "Hesap Degiştir",
+      "switch-accounts": "Diğer hesabı kullan",
       "edit-profile": "Profili Düzenle"
     },
     "network-map": {
@@ -164,7 +164,7 @@
         "privacy-tag": "Gizlilik",
         "description-tag": "Kullanımı Kolay - Tüm Özellikler",
         "first-bullet-point": "Anlık bildirimler alın",
-        "second-bullet-point": "Bağlantı istekleri alın",
+        "second-bullet-point": "İletişim istekleri alın",
         "third-bullet-point": "Yerel Kişi Keşfi (BLE & Multicast DNS)"
       },
       "dark-mode-button": "Koyu tema",
@@ -227,19 +227,20 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth, ağ bağlantınız (wifi veya veri) olmadığında telefonunuzu yakındaki eşlere bağlayarak Berty uygulamasını kullanmanızı sağlar",
-      "activate-button": "Bluetooth'u etkinleştir",
-      "permission-title": "",
-      "permission-description": "",
-      "tag-neutral": "",
+      "desc": "",
+      "activate-button": "",
+      "permission-title": "Berty Bluetooth izni",
+      "android-permission-description": "",
+      "ios-permission-description": "",
+      "tag-neutral": "Daha sonra sor",
       "tag-negative": "İptal",
-      "tag-positive": ""
+      "tag-positive": "TAMAM"
     },
     "mc": {
       "activate-button": "Çok eşli bağlantıyı etkinleştir"
     },
     "nearby": {
-      "activate-button": ""
+      "activate-button": "Yakındaki Android'i Etkinleştir"
     },
     "services-auth": {
       "title": "Dış hizmetler",
@@ -314,17 +315,17 @@
       "system-info-button": "Sistem bilgisi",
       "debug-button": "Hata ayıklama",
       "log-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Günlük biçimi",
+        "bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
       },
       "log-filters-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Günlük filtreleri",
+        "bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
       },
       "add-dev-conversations-button": "Geliştirici konuşmalarını ekle",
       "share-button": {
         "title": "ID'yi Discord'da paylaş",
-        "alert-title": "QR kodunuzu Berty Discord'unda \"#dev-logs\" ile paylaşmak ister misiniz?",
+        "alert-title": "",
         "alert-message": "Bu diğer çalışanların QR kodunuzu taramasını veya kişi linkinizi kopyalamasını sağlayacaktır.",
         "alert-accept-button": "Evet 👍",
         "alert-cancel-button": "Hayır"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "Aygıt bilgileri",
       "footer-middle-button": "Olayları listele",
-      "footer-right-button": "Arka plan programını yeniden başlat"
+      "footer-right-button": "Arka plan programını yeniden başlat",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Sistem bilgisi"
@@ -399,10 +401,10 @@
       "devices": "Aygıtlar"
     },
     "welcome-configuration": {
-      "title": "",
-      "desc": "",
+      "title": "Gemiye hoş geldiniz!",
+      "desc": "Hadi ayarlara hızlı bir bakış atalım ve ilk yapılandırmanızı bitirelim!",
       "skip": "ATLA",
-      "next": ""
+      "next": "SONRAKİ"
     }
   },
   "chat": {
@@ -415,7 +417,7 @@
       "devices": "Aygıtlar"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Buraya yaz..."
     },
     "multi-member-settings": {
       "header-left-button": "Sorgula",
@@ -433,6 +435,11 @@
       "erase-button": "Konuşmayı sil",
       "leave-button": "Gruptan çık"
     },
+    "add-members": {
+      "members": "Üyeler",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Grubu"
     },
@@ -445,7 +452,7 @@
       },
       "betabot-box": {
         "title": "BETA BOT EKLE?",
-        "desc": "Henüz hiçbir kişi kayıtlı değil, Beta Bot'u ekleyip konuşmaları keşfedip test etmesini ister misiniz?",
+        "desc": "",
         "skip-button": "ATLA",
         "add-button": "EKLE !"
       },
@@ -457,7 +464,7 @@
       },
       "betabot-input-placeholder": "Buraya yazmak için Beta Bot'u ekle",
       "incoming-input-placeholder": "Buraya yazmak için isteği kabul et...",
-      "input-placeholder": ""
+      "input-placeholder": "Buraya yaz..."
     },
     "one-to-one-settings": {
       "header-left-button": "Sorgula",
@@ -486,54 +493,59 @@
       "gif": "GIF",
       "search-gif": "Gif ara",
       "security-access": "Güvenlik Erişimi",
-      "security-access-desc": "",
-      "save-to-gallery": "",
-      "share": "",
-      "forward-berty": "",
-      "forward": "",
-      "image-saved": ""
+      "security-access-desc": "Hesabınıza erişime izin vermek üzere ayarı açmak için dokunun",
+      "save-to-gallery": "Bu dosyayı galeriye kaydet",
+      "share": "Paylaş",
+      "forward-berty": "Berty kişisine ilet",
+      "forward": "İlet",
+      "image-saved": "Resim galeriye kaydedildi"
     },
     "shared-medias": {
-      "title": "",
+      "title": "Paylaşılan medyalar",
       "medias": "",
-      "links": "",
-      "documents": ""
+      "links": "Bağlantılar",
+      "documents": "Belgeler"
+    },
+    "reply": {
+      "response-to": "Yanıtla",
+      "replying-to": "Yanıtlıyorsun",
+      "replied-to": "Yanıtlandı"
     }
   },
   "error": {
     "labels": {
-      "bug": "",
-      "crash": ""
+      "bug": "Hata algılandı",
+      "crash": "Kilitlenme algılandı"
     },
-    "restart-app": "",
+    "restart-app": "Uygulamayı yeniden başlatın",
     "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
+      "title": "Hata nedir?",
+      "desc": "Uygulama az önce çöktü.",
+      "desc-report": "Hatayı bildirmek için telefonunuzu sallayın ve uygulamayı kapatıp yeniden başlatmak için düğmeye basın."
     },
     "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-buy": "",
-      "desc-em": "",
-      "desc-report": ""
+      "title": "Bu hata için üzgünüm!",
+      "desc": "Bu Francis'in hatası, Berty'de geliştirici stajyer bir hata yapmış olması gereken. Bu Francis ne kadar aptal!",
+      "desc-buy": "Onu gördüğün zaman sana bir bira alacak!",
+      "desc-em": "Pekala, tamam, Berty takımında Francis yok.",
+      "desc-report": "Telefonunuzu sallayın ve işte yine başlıyoruz!"
     }
   },
   "debug": {
     "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
+      "show-button": "Uygulama denetçisini göster",
+      "hide-button": "Kapat",
+      "title": "Müfettiş",
       "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "title": "Hesaplar",
+        "unsupported-remote-mode": "Uzak seçenekte hesap denetçisi desteklenmez",
+        "data-not-found": "Hesap listede değil",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
+          "file-exists": "Hesap mevcut değil{{accountId}}, ancak bu dosyada bir isim var.",
+          "account-exists": "{{accountId}} Hesabı şuanda mevcut.",
+          "directory-exists-load-error": "{{accountId}} Hesap mevcut değil, ancak bir dizin bu isme sahiptir.",
+          "fs-read-error": "Hesapla ilgili Yazı tipi boyutu bilgisi alınırken hata oluştu",
+          "actions-title": "Ne yapmalıyız?",
           "action-account-manager": "Hesap yöneticisiyle sil",
           "action-account-manager-confirm": "Hesabın silinmesini onayla",
           "action-force-delete": "Silmeye zorla",
@@ -553,10 +565,10 @@
         },
         "infos": {
           "aligned": {
-            "name": "",
+            "name": "İsim: {{name}}",
             "created": "Oluşturuldu: {{created}}",
             "opened": "Açıldı:  {{opened}}",
-            "error": ""
+            "error": "Hata: {{error}}"
           }
         }
       },
@@ -581,12 +593,17 @@
   "audio": {
     "record": {
       "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
+        "usage": "Kaydetmek için basılı tut, göndermek için bırak",
+        "not-sent": "Sesli mesaj gönderilemedi",
+        "permission-denied": "Uygulamanın ses kaydetme yetkisi yok"
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< İptal için kaydırın",
       "cancel-button": "İptal"
     }
+  },
+  "medias": {
+    "audio": "ses",
+    "picture": "resim",
+    "file": "dosya"
   }
 }
