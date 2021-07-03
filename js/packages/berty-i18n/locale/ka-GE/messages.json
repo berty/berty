@@ -1,0 +1,609 @@
+{
+  "onboarding": {
+    "getstarted": {
+      "desc": "",
+      "open-registered-account": "",
+      "import-button": "",
+      "account-selector-create-button": "ახალი ანგარიშის შექმნა",
+      "more-options": "",
+      "button": ""
+    },
+    "select-mode": {
+      "title": "",
+      "change-later": "",
+      "performance": {
+        "title": "",
+        "desc": "",
+        "push-notif": "",
+        "offline-message": "",
+        "add-contact": "",
+        "fast-message": ""
+      },
+      "high-level": {
+        "title": "სრული ანონიმურობა",
+        "desc": "",
+        "disable-push-notif": "",
+        "disable-local-peer-discovery": "",
+        "disable-local-peer-discovery-desc": "",
+        "disable-contact-request": "",
+        "on-same-network": ""
+      }
+    },
+    "create-account": {
+      "title": "შექმენი შენი ანგარიში",
+      "desc": "",
+      "required": "სავალდებულოა",
+      "placeholder": "სახელი",
+      "button": "",
+      "import-account": ""
+    },
+    "services-auth": {
+      "header": "",
+      "title": "სერვისები",
+      "recommended": "რეკომენდებულია",
+      "desc": "",
+      "button": "",
+      "skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
+    },
+    "generate-key": {
+      "title": "",
+      "desc": ""
+    },
+    "notifications": {
+      "header": "",
+      "recommended": "რეკომენდებულია",
+      "title": "შეტყობინებები",
+      "desc": "",
+      "button": "",
+      "skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
+    },
+    "bluetooth": {
+      "header": "",
+      "optional": "",
+      "title": "",
+      "desc": "",
+      "button": "",
+      "skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
+    },
+    "setup-finished": {
+      "title": "",
+      "desc": "",
+      "button": ""
+    }
+  },
+  "main": {
+    "home": {
+      "requests": {
+        "title": "",
+        "received-at": "",
+        "accept": "",
+        "card-title": ""
+      },
+      "input-placeholder": "",
+      "no-contacts": "",
+      "search": {
+        "no-results": ""
+      },
+      "multi-account": {
+        "create-button": "",
+        "import-button": ""
+      },
+      "create-group": {
+        "title": "",
+        "add-members": "",
+        "group-info": "",
+        "search-placeholder": "ძებნა",
+        "continue": "გაგრძელება",
+        "create-group": "ჯგუფის შექმნა"
+      }
+    },
+    "home-modal": {
+      "top-button": "ჯგუფის შექმნა",
+      "bottom-button": ""
+    },
+    "suggestion-display-name-initial": "დააჭირეთ აქ რომ დაამატოთ",
+    "configurations": {
+      "network": {
+        "display-name": "ქსელის კონფიგურაცია",
+        "desc": "დააჭირეთ აქ რომ დაასრულოთ ქსელის კონფიგურაცია"
+      },
+      "notification": {
+        "display-name": "შეტყობინების კონფიგურაცია",
+        "desc": ""
+      }
+    },
+    "network-options": {
+      "welcome-title": "",
+      "full-anon-mode": "",
+      "simple-tor-compatible": "",
+      "allow-expert-mode": "",
+      "tor-compatible": {
+        "title": "",
+        "desc": ""
+      },
+      "full-anon": {
+        "title": "",
+        "desc": "",
+        "no-ip": "",
+        "no-mc": "",
+        "tor-only": ""
+      },
+      "save": "",
+      "skip": ""
+    }
+  },
+  "settings": {
+    "home": {
+      "header-left-button": "",
+      "header-center-button": "",
+      "header-right-button": "",
+      "network-button": "",
+      "switch-accounts": "",
+      "edit-profile": ""
+    },
+    "network-map": {
+      "title": "",
+      "online-peers": ""
+    },
+    "mode": {
+      "title": "",
+      "desc": "",
+      "notifications-button": {
+        "title": "",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "bluetooth-button": {
+        "title": "",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "app-mode-button": {
+        "title": "",
+        "performance-tag": "",
+        "privacy-tag": "",
+        "description-tag": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "dark-mode-button": "",
+      "receive-contact-requests-button": "",
+      "external-services-button": "",
+      "auto-replicate-button": "",
+      "multicast-dns-button": {
+        "title": "",
+        "desc": ""
+      },
+      "blocked-contacts-button": {
+        "title": "",
+        "tag": ""
+      },
+      "delete-account-button": "",
+      "backup-account-button": ""
+    },
+    "edit-profile": {
+      "title": "",
+      "qr-will-update": "",
+      "ocr-wont-update": "",
+      "save": "",
+      "cancel": "",
+      "name-input-placeholder": "",
+      "name-input-label": ""
+    },
+    "notifications": {
+      "title": "",
+      "enabled-desc": "",
+      "disabled-desc": "",
+      "activate-button": "",
+      "contact-request-button": {
+        "title": "",
+        "desc": ""
+      },
+      "messages-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": "",
+          "tag_plural": ""
+        }
+      },
+      "group-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": "",
+          "tag_plural": ""
+        }
+      }
+    },
+    "bluetooth": {
+      "title": "",
+      "desc": "",
+      "activate-button": "",
+      "permission-title": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
+      "tag-neutral": "",
+      "tag-negative": "",
+      "tag-positive": ""
+    },
+    "mc": {
+      "activate-button": ""
+    },
+    "nearby": {
+      "activate-button": ""
+    },
+    "services-auth": {
+      "title": "",
+      "operated-services-button": "",
+      "register-service-button": {
+        "title": "",
+        "input-placeholder": "",
+        "action": ""
+      },
+      "registered-services-button": {
+        "title": "",
+        "sample-no-services": "",
+        "sample-unknown-service": ""
+      }
+    },
+    "delete-account": {
+      "title": "",
+      "first-desc": "",
+      "desc": "",
+      "cancel-button": "",
+      "delete-button": ""
+    },
+    "help": {
+      "title": "",
+      "security-privacy-button": {
+        "title": "",
+        "desc": ""
+      },
+      "updates-button": "",
+      "about-button": "",
+      "account-button": "",
+      "contact-button": "",
+      "message-button": "",
+      "group-button": "",
+      "settings-button": "",
+      "ask-button": "",
+      "report-button": ""
+    },
+    "about": {
+      "title": "",
+      "top-left-button": "",
+      "top-right-button": "",
+      "bottom-left-button": "",
+      "bottom-right-button": "",
+      "terms-button": "",
+      "privacy-button": "",
+      "software-button": "",
+      "contact-button": "",
+      "website-button": ""
+    },
+    "updates": {
+      "title": "",
+      "up-to-date-desc": "",
+      "version": "",
+      "current-tag": "",
+      "installed-tag": "",
+      "initial-tag": "",
+      "not-installed-tag": ""
+    },
+    "devtools": {
+      "title": "",
+      "header-left-button": "",
+      "simulate-button": "",
+      "simulate-js-error-button": "",
+      "simulate-native-error-button": "",
+      "tor-button": "",
+      "tor-optional-option": "",
+      "tor-required-option": "",
+      "tor-disabled-option": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "system-info-button": "",
+      "debug-button": "",
+      "log-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "log-filters-button": {
+        "name": "",
+        "bullet-point": ""
+      },
+      "add-dev-conversations-button": "",
+      "share-button": {
+        "title": "",
+        "alert-title": "",
+        "alert-message": "",
+        "alert-accept-button": "",
+        "alert-cancel-button": ""
+      },
+      "native-bridge-button": "",
+      "dump-account-button": "",
+      "dump-contacts-button": "",
+      "dump-conversations-button": "",
+      "dump-interactions-button": "",
+      "dump-members-button": "",
+      "stop-node-button": "",
+      "bot-mode-button": "",
+      "local-grpc-button": "",
+      "console-logs-button": "",
+      "ipfs-webui-button": "",
+      "notifications-button": "",
+      "send-to-all-button": {
+        "title": "",
+        "sending": "",
+        "test": "",
+        "tried": ""
+      },
+      "footer-left-button": "",
+      "footer-middle-button": "",
+      "footer-right-button": "",
+      "trigger-crashlytics-button": ""
+    },
+    "system-info": {
+      "title": ""
+    },
+    "fake-data": {
+      "title": "",
+      "contacts-button": "",
+      "multi-members-button": "",
+      "messages-button": "",
+      "delete-button": ""
+    },
+    "add-dev-conversations": {
+      "title": "",
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
+    },
+    "ipfs-webui": {
+      "title": ""
+    },
+    "my-berty-ID": {
+      "qr": "",
+      "fingerprint": "",
+      "devices": ""
+    }
+  },
+  "modals": {
+    "manage-deep-link": {
+      "invalid-link": "",
+      "invalid-qr": "",
+      "error": "",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
+    },
+    "invalid-scan": {
+      "dismiss-button": ""
+    },
+    "add-this-contact": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "group-invitation": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "welcome-configuration": {
+      "title": "",
+      "desc": "",
+      "skip": "",
+      "next": ""
+    }
+  },
+  "chat": {
+    "contact-settings": {
+      "mark-button": "",
+      "block-button": "",
+      "delete-button": "",
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "multi-member": {
+      "input-placeholder": ""
+    },
+    "multi-member-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "members-button": {
+        "title": "",
+        "unknown": ""
+      },
+      "add-member-button": "",
+      "invite-button": "",
+      "save-button": "",
+      "erase-button": "",
+      "leave-button": ""
+    },
+    "add-members": {
+      "members": "",
+      "contacts": "",
+      "add": ""
+    },
+    "multi-member-qr": {
+      "title": ""
+    },
+    "one-to-one": {
+      "contact-request-box": {
+        "title": "",
+        "refuse-button": "",
+        "accept-button": "",
+        "accepted-button": ""
+      },
+      "betabot-box": {
+        "title": "",
+        "desc": "",
+        "skip-button": "",
+        "add-button": ""
+      },
+      "infos-chat": {
+        "connection-confirmed": "",
+        "request-sent": "",
+        "incoming": "",
+        "outgoing": ""
+      },
+      "betabot-input-placeholder": "",
+      "incoming-input-placeholder": "",
+      "input-placeholder": ""
+    },
+    "one-to-one-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "mutual-button": "",
+      "save-button": "",
+      "erase-button": ""
+    },
+    "replicate-group-settings": {
+      "title": "",
+      "no-registered-button": "",
+      "connect-button": "",
+      "manage-add-button": ""
+    },
+    "files": {
+      "record-sound": "",
+      "recording": "",
+      "gallery": "",
+      "camera": "",
+      "record": "",
+      "files": "",
+      "microphone": "",
+      "gif": "",
+      "search-gif": "",
+      "security-access": "",
+      "security-access-desc": "",
+      "save-to-gallery": "",
+      "share": "",
+      "forward-berty": "",
+      "forward": "",
+      "image-saved": ""
+    },
+    "shared-medias": {
+      "title": "",
+      "medias": "",
+      "links": "",
+      "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
+    }
+  },
+  "error": {
+    "labels": {
+      "bug": "",
+      "crash": ""
+    },
+    "restart-app": "",
+    "wtf-screen": {
+      "title": "",
+      "desc": "",
+      "desc-report": ""
+    },
+    "sorry-screen": {
+      "title": "",
+      "desc": "",
+      "desc-buy": "",
+      "desc-em": "",
+      "desc-report": ""
+    }
+  },
+  "debug": {
+    "inspector": {
+      "show-button": "",
+      "hide-button": "",
+      "title": "",
+      "accounts": {
+        "title": "",
+        "unsupported-remote-mode": "",
+        "data-not-found": "",
+        "action-delete": {
+          "file-exists": "",
+          "account-exists": "",
+          "directory-exists-load-error": "",
+          "fs-read-error": "",
+          "actions-title": "",
+          "action-account-manager": "",
+          "action-account-manager-confirm": "",
+          "action-force-delete": "",
+          "action-force-delete-confirm": "",
+          "error-close": "",
+          "error-delete": "",
+          "success-feedback": "",
+          "action-cancel": ""
+        },
+        "status": {
+          "metadata-found": "",
+          "metadata-not-found": "",
+          "ipfs-repo-config-found": "",
+          "ipfs-repo-config-not-found": "",
+          "messenger-db-found": "",
+          "messenger-db-not-found": ""
+        },
+        "infos": {
+          "aligned": {
+            "name": "",
+            "created": "",
+            "opened": "",
+            "error": ""
+          }
+        }
+      },
+      "errors": {
+        "title": "",
+        "header-reported": "",
+        "header-all-clear": "",
+        "listing-files-failed": "",
+        "listing-accounts-failed": "",
+        "listing-accounts-failed-grpc": ""
+      },
+      "dump": {
+        "button": ""
+      },
+      "refresh": "",
+      "confirm-alert": {
+        "button-confirm": "",
+        "button-cancel": ""
+      }
+    }
+  },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": ""
+    }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
+  }
+}
