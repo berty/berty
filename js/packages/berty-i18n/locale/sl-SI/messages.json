@@ -228,9 +228,10 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Omogočite bluetooth",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "",
       "tag-negative": "Prekini",
       "tag-positive": ""
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "",
       "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-right-button": "",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": ""
@@ -433,6 +435,11 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "add-members": {
+      "members": "Člani",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
@@ -498,6 +505,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +600,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Prekini"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
