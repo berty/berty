@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth permite utilizarea aplicației Berty atunci când nu ai o conexiune la rețea (wifi sau date) conectând telefonul direct cu partenerii din apropiere",
-      "activate-button": "Activează bluetooth",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "Autorizează aplicația Berty să folosească funcțiile Bluetooth pe telefonul tău",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Întreabă-mă mai târziu",
       "tag-negative": "Anulează",
       "tag-positive": "Ok"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "Informații dispozitiv",
       "footer-middle-button": "",
-      "footer-right-button": "Reporneşte daemonul"
+      "footer-right-button": "Reporneşte daemonul",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Informații sistem"
@@ -433,6 +435,11 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "add-members": {
+      "members": "",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
@@ -498,6 +505,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +600,10 @@
       "slide-to-cancel": "",
       "cancel-button": ""
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
