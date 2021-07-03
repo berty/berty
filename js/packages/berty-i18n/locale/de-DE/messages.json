@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Wenn Sie keine Netzwerkverbindung (WLAN/Funknetz) haben, kann Berty über Bluetooth mit Partnern in Ihrer näheren Umgebung kommunizieren",
+      "desc": "Bluetooth ermöglicht es dir, Nachrichten mit Berty ohne Internetzugriff auszutauschen, indem du dein Gerät direkt mit anderen Geräten in der Nähe verbindest",
       "activate-button": "Bluetooth aktivieren",
       "permission-title": "Berty Bluetooth Berechtigung",
-      "permission-description": "Autorisiere die Berty App um Bluetooth-Funktionen auf deinem Handy zu nutzen",
+      "android-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die Android API die Standortberechtigung.\nWir verwenden Ihre Standortdaten in keiner Weise.",
+      "ios-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die iOS-API diese Berechtigung.",
       "tag-neutral": "Später nachfragen",
       "tag-negative": "Abbrechen",
       "tag-positive": "OK"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "Geräteinformationen",
       "footer-middle-button": "Events auflisten",
-      "footer-right-button": "Daemon neu starten"
+      "footer-right-button": "Daemon neu starten",
+      "trigger-crashlytics-button": "Crashlytics Absturz auslösen"
     },
     "system-info": {
       "title": "System-Info"
@@ -507,7 +509,7 @@
     "reply": {
       "response-to": "Antwort an",
       "replying-to": "Du antwortest an",
-      "replied-to": ""
+      "replied-to": "Antwort auf"
     }
   },
   "error": {
