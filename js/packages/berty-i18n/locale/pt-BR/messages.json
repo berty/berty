@@ -9,24 +9,24 @@
       "button": "PRIMEIROS PASSOS"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Escolha uma predefinição",
+      "change-later": "Você poderá alterar isso depois!",
       "performance": {
         "title": "Desempenho",
         "desc": "Fácil de usar - Todas as funcionalidades",
         "push-notif": "Receber notificações de push",
-        "offline-message": "",
-        "add-contact": "Adicione contatos facilmente",
+        "offline-message": "Conversar offline com Bluetooth",
+        "add-contact": "Adicionar contatos facilmente",
         "fast-message": "Entrega de mensagem mais rápida"
       },
       "high-level": {
         "title": "Anonimato completo",
-        "desc": "",
+        "desc": "Para usuários extremamente cautelosos",
         "disable-push-notif": "Notificação de push desativada",
         "disable-local-peer-discovery": "Descoberta de par local desativada",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS e Bluetooth",
         "disable-contact-request": "Solicitações de contato desativadas",
-        "on-same-network": ""
+        "on-same-network": "Localmente na mesma rede/wifi"
       }
     },
     "create-account": {
@@ -85,36 +85,36 @@
         "no-results": "Nenhum resultado encontrado"
       },
       "multi-account": {
-        "create-button": "",
+        "create-button": "Criar nova conta",
         "import-button": "Importar conta"
       },
       "create-group": {
         "title": "Novo Grupo",
         "add-members": "Adicionar membros",
-        "group-info": "",
+        "group-info": "Informações do grupo",
         "search-placeholder": "Pesquisar",
         "continue": "CONTINUAR",
-        "create-group": ""
+        "create-group": "CRIAR UM GRUPO"
       }
     },
     "home-modal": {
       "top-button": "Criar novo grupo",
       "bottom-button": "Escanear contato ou grupo"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Clique aqui para adicionar",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configuração de Rede",
+        "desc": "Clique aqui para finalizar a configuração da rede"
       },
       "notification": {
-        "display-name": "",
+        "display-name": "Configuração de Notificações",
         "desc": ""
       }
     },
     "network-options": {
       "welcome-title": "",
-      "full-anon-mode": "",
+      "full-anon-mode": "Modo de Anonimato Completo",
       "simple-tor-compatible": "",
       "allow-expert-mode": "",
       "tor-compatible": {
@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "O Bluetooth permite que você use o aplicativo Berty quando você não está conectado (wifi ou dados) ao conectar seu telefone diretamente com pares próximos",
-      "activate-button": "Ativar bluetooth",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Pergunte-me mais tarde",
       "tag-negative": "Cancelar",
       "tag-positive": "OK"
@@ -324,7 +325,7 @@
       "add-dev-conversations-button": "Adicionar conversas de desenvolvimento",
       "share-button": {
         "title": "Compartilhar ID no Discord",
-        "alert-title": "Você deseja compartilhar seu código QR com \"#dev-logs\" no Discord do Berty?",
+        "alert-title": "",
         "alert-message": "Isto permitirá que outros funcionários digitalizem seu código QR ou copiem seu link de contato.",
         "alert-accept-button": "Sim 👍",
         "alert-cancel-button": "Não"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "Informações do dispositivo",
       "footer-middle-button": "Listar eventos",
-      "footer-right-button": "Reiniciar daemon"
+      "footer-right-button": "Reiniciar daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Informações do sistema"
@@ -450,7 +452,7 @@
       },
       "betabot-box": {
         "title": "ADICIONAR BOT BETA?",
-        "desc": "Você ainda não tem contatos, gostaria de adicionar o Bot Beta para descobrir e testar conversas?",
+        "desc": "",
         "skip-button": "PULAR",
         "add-button": "ADICIONAR !"
       },
