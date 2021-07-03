@@ -227,10 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Med Bluetooth kan du använda appen Berty när du inte har någon nätverksanslutning (wifi eller data) genom att ansluta telefonen direkt med andra i närheten",
-      "activate-button": "Aktivera Bluetooth",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "",
       "tag-negative": "Avbryt",
       "tag-positive": ""
@@ -324,7 +325,7 @@
       "add-dev-conversations-button": "Lägg till utvecklarkonversationer",
       "share-button": {
         "title": "Dela ID via Discord",
-        "alert-title": "Vill du dela din QR-kod till \"#dev-logs\" på Berty's Discord?",
+        "alert-title": "",
         "alert-message": "Detta kommer att tillåta annan personal att skanna din QR-kod eller kopiera din kontaktlänk.",
         "alert-accept-button": "Javisst 👍",
         "alert-cancel-button": "Nej"
@@ -349,7 +350,8 @@
       },
       "footer-left-button": "Enhetsinformation",
       "footer-middle-button": "Visa händelser",
-      "footer-right-button": "Starta om bakgrundstjänst"
+      "footer-right-button": "Starta om bakgrundstjänst",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Systeminformation"
@@ -433,6 +435,11 @@
       "erase-button": "Radera konversation",
       "leave-button": "Lämna grupp"
     },
+    "add-members": {
+      "members": "Medlemmar",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Grupp"
     },
@@ -445,7 +452,7 @@
       },
       "betabot-box": {
         "title": "LÄGG TILL BETA-BOT?",
-        "desc": "Du har inga kontakter ännu vill du lägga till Beta-boten för att upptäcka och testa konversationer?",
+        "desc": "",
         "skip-button": "HOPPA ÖVER",
         "add-button": "LÄGG TILL !"
       },
@@ -498,6 +505,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +600,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Avbryt"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
