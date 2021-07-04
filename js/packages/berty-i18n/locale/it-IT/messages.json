@@ -114,18 +114,18 @@
     },
     "network-options": {
       "welcome-title": "Benvenuto nelle Opzioni di Rete",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
+      "full-anon-mode": "Modalità anonima piena",
+      "simple-tor-compatible": "Semplice Compatibile con TOR",
       "allow-expert-mode": "Consenti Modalità Esperto",
       "tor-compatible": {
         "title": "Compatibile TOR",
-        "desc": ""
+        "desc": "Questa configurazione ti permetterà di connetterti con la rete Tor e di discutere con gli utenti a Piena Anonimità senza essere in modalità anonima estrema."
       },
       "full-anon": {
-        "title": "",
-        "desc": "",
-        "no-ip": "",
-        "no-mc": "",
+        "title": "Modalità a Piena Anonimità",
+        "desc": "Questa configurazione si basa su impostazioni radicali che forniscono parametri di rete estremamente cautelativi:",
+        "no-ip": "Nessun ip",
+        "no-mc": "No mc",
         "tor-only": "Solo Tor"
       },
       "save": "SALVA",
@@ -227,12 +227,12 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "",
+      "desc": "Il Bluetooth consente di scambiare messaggi utilizzando Berty senza accesso a Internet connettendo il dispositivo direttamente con i peer vicini",
+      "activate-button": "Attiva bluetooth",
+      "permission-title": "Autorizzazione Bluetooth Berty",
+      "android-permission-description": "Per scambiare messaggi offline tramite Bluetooth, le API di Android richiedono l'autorizzazione ai permessi sulla posizione.\nNon utilizziamo in alcun modo i dati relativi alla tua posizione.",
+      "ios-permission-description": "Per scambiare messaggi offline tramite Bluetooth, l'API iOS richiede la concessione dell'autorizzazione.",
+      "tag-neutral": "Chiedimelo più tardi",
       "tag-negative": "Annulla",
       "tag-positive": "OK"
     },
@@ -240,7 +240,7 @@
       "activate-button": "Attiva Multipeer Connectivity"
     },
     "nearby": {
-      "activate-button": ""
+      "activate-button": "Attiva Android Nelle Vicinanze"
     },
     "services-auth": {
       "title": "Servizi esterni",
@@ -259,7 +259,7 @@
     "delete-account": {
       "title": "Elimina account!",
       "first-desc": "Sei sicuro di voler eliminare il tuo account?",
-      "desc": "Digita elimina per confermare",
+      "desc": "Digita \"delete\" per confermare",
       "cancel-button": "ANNULLA",
       "delete-button": "ELIMINA"
     },
@@ -325,7 +325,7 @@
       "add-dev-conversations-button": "Aggiungi conversazioni dev",
       "share-button": {
         "title": "Condividi ID su Discord",
-        "alert-title": "",
+        "alert-title": "Vuoi condividere il tuo codice QR in \"#dev-logs\" sul server Discord di Berty?",
         "alert-message": "Questo permetterà ad altri membri dello staff di scansionare il codice QR o copiare il tuo link di contatto.",
         "alert-accept-button": "Yep 👍",
         "alert-cancel-button": "Nope"
@@ -351,7 +351,7 @@
       "footer-left-button": "Informazioni sul dispositivo",
       "footer-middle-button": "Elenca eventi",
       "footer-right-button": "Riavvia il daemon",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "Attiva crash di crashlytics"
     },
     "system-info": {
       "title": "Informazioni di sistema"
@@ -402,9 +402,9 @@
     },
     "welcome-configuration": {
       "title": "Benvenuto a bordo!",
-      "desc": "",
+      "desc": "Diamo un rapido sguardo delle Impostazioni e terminiamo la tua prima configurazione!",
       "skip": "SALTA",
-      "next": ""
+      "next": "PROSSIMO"
     }
   },
   "chat": {
@@ -452,7 +452,7 @@
       },
       "betabot-box": {
         "title": "AGGIUNGI BOT BETA?",
-        "desc": "",
+        "desc": "Non hai ancora contatti. Vorresti aggiungere il Bot Beta per scoprire e testare le conversazioni?",
         "skip-button": "SALTA",
         "add-button": "AGGIUNGI !"
       },
@@ -501,15 +501,15 @@
       "image-saved": "Immagine salvata in Galleria"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
+      "title": "Media condivisi",
+      "medias": "Media",
       "links": "Collegamenti",
       "documents": "Documenti"
     },
     "reply": {
-      "response-to": "",
-      "replying-to": "",
-      "replied-to": ""
+      "response-to": "Risposta a",
+      "replying-to": "Stai rispondendo a",
+      "replied-to": "Risposto a"
     }
   },
   "error": {
@@ -537,16 +537,16 @@
       "hide-button": "Chiudi",
       "title": "Ispettore",
       "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "title": "Account",
+        "unsupported-remote-mode": "Accounts inspector non supportato in modalità remota",
+        "data-not-found": "Account non in lista",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
+          "file-exists": "L'account {{accountId}} non esiste, un file ha questo nome però.",
+          "account-exists": "Account {{accountId}} attualmente esiste.",
+          "directory-exists-load-error": "L'account {{accountId}} non esiste, una cartella ha questo nome però.",
+          "fs-read-error": "Errore nel recupero delle informazioni dell'account sul FS",
+          "actions-title": "Che cosa dovremmo fare?",
+          "action-account-manager": "Eliminalo tramite il gestore account",
           "action-account-manager-confirm": "Conferma l'eliminazione dell'account",
           "action-force-delete": "Forza la cancellazione",
           "action-force-delete-confirm": "Conferma l'eliminazione forzata dell'account",
@@ -574,14 +574,14 @@
       },
       "errors": {
         "title": "Errori",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "header-reported": "Errore segnalato:",
+        "header-all-clear": "Nessun errore segnalato",
+        "listing-files-failed": "Errore durante l'elenco dei contenuti della cartella",
+        "listing-accounts-failed": "Errore nella chiusura dell'account",
+        "listing-accounts-failed-grpc": "Errore GRPC durante l'elenco degli account"
       },
       "dump": {
-        "button": ""
+        "button": "Dump stato app"
       },
       "refresh": "Aggiorna",
       "confirm-alert": {
@@ -595,9 +595,9 @@
       "tooltip": {
         "usage": "Tieni premuto per registrare, rilascia per inviare",
         "not-sent": "Messaggio audio non è stato inviato",
-        "permission-denied": ""
+        "permission-denied": "L'app non è autorizzata a registrare l'audio"
       },
-      "slide-to-cancel": "",
+      "slide-to-cancel": "<< Scorri per annullare",
       "cancel-button": "Annulla"
     }
   },
