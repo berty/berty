@@ -460,7 +460,7 @@
         "connection-confirmed": "👋 Connexion Berty confirmée ! 🎉",
         "request-sent": "Demande envoyée ✈",
         "incoming": "Accepter cette demande pour répondre !",
-        "outgoing": "En attente de votre réponse pour vous connecter !"
+        "outgoing": "En attente de la réponse de votre contact pour vous connecter !"
       },
       "betabot-input-placeholder": "Ajouter le BetaBot pour écrire ici...",
       "incoming-input-placeholder": "Accepter la demande pour écrire ici...",
