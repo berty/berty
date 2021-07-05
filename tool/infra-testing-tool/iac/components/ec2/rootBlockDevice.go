@@ -7,7 +7,7 @@ type RootBlockDevice struct {
 
 func NewRootBlockDevice() RootBlockDevice {
 	return RootBlockDevice{
-		VolumeType: rootBlockDeviceTypeDefault,
+		VolumeType: rootBlockDeviceTypeSlow,
 		VolumeSize: rootBlockDeviceSizeDefault,
 	}
 }

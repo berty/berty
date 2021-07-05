@@ -26,7 +26,7 @@ var (
 			terraform.Destroy(&t, terraformOptions)
 
 			if t.Failed() {
-				panic("something went wrong while applying")
+				panic("something went wrong while destroying")
 			}
 
 			return nil

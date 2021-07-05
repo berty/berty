@@ -1,0 +1,50 @@
+syntax = "proto3";
+package daemon;
+option go_package = "./daemon";
+
+// ConnectToPeer
+message ConnectToPeer_Request {
+  string host = 1;
+  string port = 2;
+}
+
+message ConnectToPeer_Response {}
+
+// CreateInvite
+message CreateInvite_Request {
+  string groupName = 1;
+}
+
+message CreateInvite_Response {
+  // invite gob
+  bytes invite = 1;
+}
+
+// JoinGroup
+message JoinGroup_Request {
+  string groupName = 1;
+  // invite gob
+  bytes invite = 2;
+}
+
+message JoinGroup_Response {}
+
+// TestConnection
+message TestConnection_Request {
+  string message = 1;
+}
+
+message TestConnection_Response {
+  bool success = 1;
+}
+
+service Peer {
+  rpc TestConnection(TestConnection_Request) returns (TestConnection_Response) {}
+  rpc ConnectToPeer(ConnectToPeer_Request) returns (ConnectToPeer_Response) {}
+}
+
+service Group {
+  rpc CreateInvite(CreateInvite_Request) returns (CreateInvite_Response) {}
+  rpc JoinGroup(JoinGroup_Request) returns (JoinGroup_Response) {}
+  rpc TestConnection(TestConnection_Request) returns (TestConnection_Response) {}
+}

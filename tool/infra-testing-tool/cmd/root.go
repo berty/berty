@@ -38,7 +38,6 @@ func init() {
 	rootCmd.AddCommand(testCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(getIpsCmd)
-
 }
 
 func Execute() error {

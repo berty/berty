@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -38,36 +39,33 @@ type Test struct {
 
 func (c *NodeGroup) parseGroups() error {
 
-	// we check if the user doesn't try to add groups to types that are not supposed to have group
-	// only types that support groups are:
+	// we check if the user doesn't try to add daemon to types that are not supposed to have group
+	// only types that support daemon are:
 	// Peer & Replication
 
 	switch c.NodeType {
 	case NodeTypeRDVP:
 		if len(c.Groups) > 0 {
-			return errors.New("can't have groups in type RDVP")
+			return errors.New("can't have daemon in type RDVP")
 		}
 	case NodeTypeBootstrap:
 		if len(c.Groups) > 0 {
-			return errors.New("can't have groups in type Bootstrap")
+			return errors.New("can't have daemon in type Bootstrap")
 		}
 	case NodeTypeRelay:
 		if len(c.Groups) > 0 {
-			return errors.New("can't have groups in type Relay")
+			return errors.New("can't have daemon in type Relay")
 		}
 	case NodeTypeReplication:
-		//TODO add replication
-		if len(c.Groups) > 0 {
-			return errors.New("can't have groups in type Replication yet")
-		}
+		// allowed
 	case NodeTypePeer:
-		// groups a re allowed here
+		// daemon a re allowed here
 		// do nothing
 	}
 
 	// parse the test cases for each individual group
 	for i, group := range c.Groups {
-		config.Attributes.Groups[group.Name] = group
+		config.Attributes.Groups[c.Groups[i].Name] = &c.Groups[i]
 
 		// parse the tests
 		for j, test := range c.Groups[i].Tests {
@@ -89,11 +87,14 @@ func (c *NodeGroup) parseGroups() error {
 
 			switch {
 			case strings.Contains(s, "kb"):
-				unit = 1
-			case strings.Contains(s, "mb"):
 				unit = 1000
-			case strings.Contains(s, "gb"):
+			case strings.Contains(s, "mb"):
 				unit = 1000000
+			case strings.Contains(s, "gb"):
+				unit = 1000000000
+			case strings.Contains(s, "b"):
+				// this one has to go last because of the single "b"
+				unit = 1
 			default:
 				return errors.New(fmt.Sprintf("invalid test size in test in group: %s test: %v", group.Name, i+1))
 			}
@@ -104,6 +105,10 @@ func (c *NodeGroup) parseGroups() error {
 			}
 
 			c.Groups[i].Tests[j].SizeInternal = size * unit
+
+			if unit > 10000000 && c.Groups[i].Tests[j].TypeInternal == TestTypeText {
+				log.Printf("caution big text size group: %s test: %v\n", group.Name, i+1)
+			}
 
 			// parse interval
 			if test.IntervalInput > 0 {

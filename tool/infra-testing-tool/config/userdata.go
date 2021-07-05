@@ -2,8 +2,7 @@ package config
 
 import (
 	"bytes"
-	"errors"
-	"fmt"
+	"encoding/base64"
 	"strconv"
 	"text/template"
 )
@@ -22,38 +21,54 @@ func (c *Node) GenerateUserData() (s string, err error) {
 	case NodeTypePeer:
 		templ = peerUserData
 
-		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
 		values["defaultGrpcPort"] = defaultGrpcPort
-		values["RDVP"] = c.NodeAttributes.RDVPMaddr
-		values["Relay"] = c.NodeAttributes.RelayMaddr
-		values["Bootstrap"] = c.NodeAttributes.BootstrapMaddr
+		values["rdvp"] = c.NodeAttributes.RDVPMaddr
+		values["relay"] = c.NodeAttributes.RelayMaddr
+		values["bootstrap"] = c.NodeAttributes.BootstrapMaddr
+		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeBootstrap:
-		//TODO make this
 		templ = bootstrapUserData
 
-		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
-		values["RDVP"] = c.NodeAttributes.RDVPMaddr
-		values["Relay"] = c.NodeAttributes.RelayMaddr
-		values["Bootstrap"] = c.NodeAttributes.BootstrapMaddr
+		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["rdvp"] = c.NodeAttributes.RDVPMaddr
+		values["relay"] = c.NodeAttributes.RelayMaddr
+		values["bootstrap"] = c.NodeAttributes.BootstrapMaddr
+		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeRDVP:
 		templ = rdvpUserData
 
-		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
-		values["PeerId"] = c.NodeAttributes.PeerId
-		values["Pk"] = c.NodeAttributes.Pk
+		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["peerId"] = c.NodeAttributes.PeerId
+		values["pk"] = c.NodeAttributes.Pk
+		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeRelay:
 		templ = relayUserData
 
-		values["Port"] = strconv.Itoa(c.NodeAttributes.Port)
-		values["PeerId"] = c.NodeAttributes.PeerId
-		values["Pk"] = c.NodeAttributes.Pk
+		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["peerId"] = c.NodeAttributes.PeerId
+		values["pk"] = c.NodeAttributes.Pk
+		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeReplication:
-		//TODO make this
 		templ = replicationUserData
+
+		values["defaultGrpcPort"] = defaultGrpcPort
+		values["sk"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Sk)
+		values["secret"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Secret)
+
+	case NodeTypeTokenServer:
+		templ = tokenServerUserData
+
+		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["replIp"] = c.NodeAttributes.ReplIp
+		values["replPort"] = strconv.Itoa(c.NodeAttributes.ReplPort)
+		values["sk"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Sk)
+		values["secret"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Secret)
+
 	}
 
 	// execute the template
@@ -72,26 +87,3 @@ func (c *Node) GenerateUserData() (s string, err error) {
 	return s, nil
 }
 
-// toHCLStringFormat wraps a string so it can be compiled by the HCL compiler
-func toHCLStringFormat(s string) string {
-	return fmt.Sprintf("${%s}", s)
-}
-
-// getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
-func (c NodeGroup) getFullMultiAddr(i int) string {
-	// this can only be done for RDVP and Relay
-	// as other node types don't have a peerId pre-configured
-	if len(c.Nodes) >= i-1 {
-		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
-			return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.Nodes[i].getPublicIP(), c.Nodes[i].NodeAttributes.Protocol, c.Nodes[i].NodeAttributes.Port, c.Nodes[i].NodeAttributes.PeerId)
-		}
-		panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
-	}
-
-	panic(errors.New("that node doesn't exist"))
-}
-
-// getPublicIP returns the terraform formatting of this Nodes ip
-func (c Node) getPublicIP() string {
-	return toHCLStringFormat(fmt.Sprintf("aws_instance.%s.public_ip", c.Name))
-}

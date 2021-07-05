@@ -2,35 +2,9 @@ package various
 
 import (
 	"errors"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/aws/aws-sdk-go/service/sts"
+	"infratesting/aws"
 	"infratesting/iac"
-	"log"
 )
-
-var (
-	sess    *session.Session
-	ec2sess *ec2.EC2
-	stssess *sts.STS
-)
-
-func init() {
-	var err error
-	sess, err = session.NewSessionWithOptions(session.Options{
-		Config: aws.Config{
-			Region: aws.String("eu-central-1"),
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	ec2sess = ec2.New(sess)
-	stssess = sts.New(sess)
-
-}
 
 type Ami struct {
 	AmiID string
@@ -54,25 +28,7 @@ func (c Ami) GetType() string {
 }
 
 func (c Ami) Validate() (iac.Component, error) {
-	log.Println("getting CalledIdentity & AMI's (AWS)")
-	// gets caller identity to get accountid
-	r, err := stssess.GetCallerIdentity(&sts.GetCallerIdentityInput{})
-	if err != nil {
-		return c, err
-	}
-
-	// describes all AMI's with AmiDefaultName
-	resp, err := ec2sess.DescribeImages(&ec2.DescribeImagesInput{
-		Filters: []*ec2.Filter{
-			{
-				Name: aws.String("name"),
-				Values: []*string{
-					aws.String(AmiDefaultName),
-				},
-			},
-		},
-		Owners: []*string{r.Account},
-	})
+	resp, err := aws.GetImages(AmiDefaultName)
 
 	if err != nil {
 		return c, err

@@ -5,7 +5,7 @@
 ### Dependencies
 In order to use the infra-testing-tool you need a handful of other tools installed.
 - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) (to the tool supply tool with credentials) If already installed,
-  Make sure it is set to the `eu-central-1` (**frankfurt**) region.
+  Make sure it is set to the `eu-central-1` (**frankfurt**) region. Depending on howmuch infrastructure you want to generate and launch on AWS, you might need to increase your ElasticIP service quota. The default is 5 (meaning you could only have 5 nodes). If you want more, visit [this link](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html#using-instance-addressing-limit).
 - [Terraform](https://www.terraform.io/downloads.html) (to provision infrastructure)
 - [Packer](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli) (to create the berty AMI)
 

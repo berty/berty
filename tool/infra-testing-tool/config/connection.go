@@ -22,43 +22,47 @@ const (
 	ConnTypeLan      = "lan"
 )
 
-// ParseConnections takes the connection, adds it to the global connections
+// parseConnections takes the connection, adds it to the global connections
 func (c NodeGroup) parseConnections() error {
-	for _, con := range c.Connections {
-		config.Attributes.Connections[con.To] = con
+	if len(c.Connections) == 0 {
+		return errors.New(fmt.Sprintf("%s needs at least 1 connection", c.NodeType))
+	}
+
+	// replace spaces in name
+	// would cause error in terraform otherwise
+	c.Name = strings.ReplaceAll(c.Name, " ", "_")
+
+	for i, _ := range c.Connections {
+
+		switch strings.Contains(c.Connections[i].To, ConnTypeLan) {
+		case false:
+			c.Connections[i].connType = ConnTypeInternet
+		case true:
+			c.Connections[i].connType = ConnTypeLan
+		default:
+			return errors.New("no valid connection type")
+		}
+
+		config.Attributes.Connections[c.Connections[i].To] = &c.Connections[i]
 	}
 
 	return nil
 }
 
 // Validate validates the connections
-func (c *Connection) Validate() error {
-
-	// replace spaces in name
-	// would cause error in terraform otherwise
-	c.Name = strings.ReplaceAll(c.Name, " ", "_")
-
-	switch strings.Split(c.To, "_")[0] {
-	case ConnTypeInternet:
-		c.connType = ConnTypeInternet
-	case ConnTypeLan:
-		c.connType = ConnTypeLan
-	default:
-		return errors.New("no valid connection type")
-	}
+func (c Connection) validate() error {
 
 	return nil
 }
 
 // composeComponents composes the terraform components based on the Connection
-func (c *Connection) composeComponents() {
+func (c Connection) composeComponents() {
 	var components []iac.Component
 
 	// create VPC
 	var vpc networking.Vpc
 	if config.Attributes.vpc == *new(networking.Vpc) {
 		vpc = networking.NewVpc()
-		vpc.Name = c.Name
 		components = append(components, vpc)
 
 		config.Attributes.vpc = vpc

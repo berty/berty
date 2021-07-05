@@ -1,47 +1,91 @@
-rdvp:
-    - name: test rdvp
-      amount: 1
+peer:
+    - name: peers
+      amount: 2
+      daemon:
+          - name: group1
+            tests:
+                - type: text
+                  size: 4KB
+                  interval: 3
       connections:
           - name: connection
             to: internet
             protocol: tcp
-
-peer:
-    - name: test peers 1
-      amount: 2
+#rdvp:
+#    - name: test rdvp
+#      amount: 2
+#      connections:
+#          - name: connection
+#            to: internet
+#            protocol: tcp
+#          - name: thing
+#            to: lan
+#            protocol: udp
+#
+#peer:
+#    - name: test peers 1
+#      amount: 5
+#      daemon:
+#      - name: message group
+#        tests:
+#        - type: text
+#          size: 3KB
+#          interval: 2
+#      - name: mg 1
+#        tests:
+#            - type: text
+#              size: 1KB
+#              interval: 1
+#            - type: text
+#              size: 3KB
+#              interval: 1
+#            - type: text
+#              size: 3KB
+#              interval: 1
+#      connections:
+#        - name: connection
+#          to: internet
+#          protocol: tcp
+#        - name: thing
+#          to: lan
+#          protocol: udp
+#      routers:
+#        - type: rdvp
+#          address: test rdvp
+#        - type: relay
+#          address: test relay
+#
+replication:
+    - name: repl1
+      amount: 1
       groups:
       - name: message group
-        tests:
-        - type: text
-          size: 40KB
-          interval: 10
-      connections:
-        - name: connection
-          to: internet
-          protocol: tcp
-      routers:
-        - type: rdvp
-          address: test rdvp
-        - type: relay
-          address: test relay
-
-relay:
-    - name: test relay
-      amount: 1
       connections:
           - name: connection
             to: internet
             protocol: tcp
-
-bootstrap:
-    - name: test bs
-      amount: 1
-      connections:
-          - name: connection
-            to: internet
-            protocol: tcp
-      routers:
-          - type: rdvp
-            address: test rdvp
-          - type: relay
-            address: test relay
+#          - name: thing
+#            to: lan
+#            protocol: udp
+#
+#
+#relay:
+#    - name: test relay
+#      amount: 1
+#      connections:
+#          - name: connection
+#            to: internet
+#            protocol: tcp
+#
+#bootstrap:
+#    - name: test bs
+#      amount: 1
+#      connections:
+#          - name: connection
+#            to: internet
+#            protocol: tcp
+#      routers:
+#          - type: rdvp
+#            address: test rdvp
+#          - type: relay
+#            address: test relay

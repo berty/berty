@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+	"infratesting/config"
+	"infratesting/iac/components/ec2"
 	"infratesting/testing"
 	"log"
 	"strconv"
@@ -15,7 +17,7 @@ var (
 	testCmd = &cobra.Command{
 		Use: "test",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			availablePeers, err := testing.GetAllEligiblePeers()
+			availablePeers,  err := testing.GetAllEligiblePeers(ec2.Ec2TagType, []string{config.NodeTypePeer})
 			if err != nil {
 				return err
 			}
@@ -67,7 +69,7 @@ var (
 
 			for i := range groups {
 				fmt.Printf("GROUP: %s\n", groups[i].Name)
-				groups[i].Name = uuid.NewString()[:8]
+				groups[i].Name = fmt.Sprintf("%s-%s", groups[i].Name, uuid.NewString()[:8])
 
 				leader := groups[i].Peers[0]
 
@@ -81,62 +83,72 @@ var (
 					log.Println(err)
 				}
 
-				for j := 1; j <= len(groups[i].Peers)-1; j += 1 {
-					err := groups[i].Peers[j].JoinInvite(inv, groups[i].Name)
+				for peerIndex := 1; peerIndex <= len(groups[i].Peers)-1; peerIndex += 1 {
+					err := groups[i].Peers[peerIndex].JoinInvite(inv, groups[i].Name)
 					if err != nil {
 						log.Println(err)
 					}
 
-					err = groups[i].Peers[j].ActivateGroup(groups[i].Name)
+					err = groups[i].Peers[peerIndex].ActivateGroup(groups[i].Name)
 					if err != nil {
 						log.Println(err)
 					}
 				}
 
-				time.Sleep(time.Second * 5)
+				//testWg := sync.WaitGroup{}
+				//testWg.Add(len(daemon[i].Tests))
+				//go func() {
+					for j := range groups[i].Tests {
 
-				for j := range groups[i].Tests {
-					fmt.Println("test: " + strconv.Itoa(j+1))
-					fmt.Println(len(groups[i].Peers))
-					wg := sync.WaitGroup{}
-					for k := range groups[i].Peers {
-						wg.Add(1)
+						fmt.Println("test: " + strconv.Itoa(j+1))
+						peerWg := sync.WaitGroup{}
+						for k := range groups[i].Peers {
+							peerWg.Add(1)
 
-						groupIndex := i
-						testIndex := j
-						peerIndex := k
+							peerIndex := k
+							groupIndex := i
+							testIndex := j
 
-						go func() {
-							fmt.Println("Started messaging goroutine on: " + groups[i].Peers[peerIndex].Name)
-							var x int
-							for x = 0; x <= 5; x += 1 {
-								err = groups[groupIndex].Peers[peerIndex].SendMessage(groups[groupIndex].Name)
-								if err != nil {
-									panic(err)
+							go func() {
+								fmt.Println("Started messaging goroutine on: " + groups[i].Peers[peerIndex].Name)
+								var x int
+								for x = 0; x < 5; x += 1 {
+									err = groups[groupIndex].Peers[peerIndex].SendMessage(groups[groupIndex].Name, testing.ConstructMessage(groups[i].Tests[j].SizeInternal))
+									if err != nil {
+										panic(err)
+									}
+									time.Sleep(time.Second * time.Duration(groups[groupIndex].Tests[testIndex].IntervalInternal))
 								}
-								time.Sleep(time.Second * time.Duration(groups[groupIndex].Tests[testIndex].IntervalInternal))
+
+								fmt.Printf("%s sent %d messages\n", groups[groupIndex].Peers[peerIndex].Name, x)
+
+								peerWg.Done()
+							}()
+
+						}
+						peerWg.Wait()
+
+						//testWg.Done()
+
+						for k := range availablePeers {
+							err = groups[i].Peers[k].GetMessageList(groups[i].Name, j)
+							if err != nil {
+								panic(err)
 							}
 
-							fmt.Printf("%s sent %d messages\n", groups[groupIndex].Peers[peerIndex].Name, x)
+							amount := groups[i].Peers[k].CountMessages(groups[i].Name, j)
+							size := groups[i].Peers[k].CountSize(groups[i].Name, j)
 
-							wg.Done()
-						}()
-					}
-
-					wg.Wait()
-
-					for k := range availablePeers {
-						err = groups[i].Peers[k].GetMessageList(groups[i].Name)
-						if err != nil {
-							panic(err)
+							fmt.Printf("%s reveived %d messages with average size of +-%d bytes in group: %s\n", groups[i].Peers[k].Name, amount, size/amount, groups[i].Name)
 						}
-					}
 
-					for _, peer := range availablePeers {
-						fmt.Println(peer.Name)
-						fmt.Println(len(peer.Messages))
+
+
 					}
-				}
+				//}()
+				//testWg.Wait()
+
+
 			}
 
 			return nil

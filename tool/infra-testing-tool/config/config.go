@@ -16,19 +16,21 @@ type Config struct {
 	Relay     []NodeGroup `yaml:"relay"`
 	Bootstrap []NodeGroup `yaml:"bootstrap"`
 
-	Replication []NodeGroup `yaml:"replication"`
 	Peer        []NodeGroup `yaml:"peer"`
+	Token		[]NodeGroup
+	Replication []NodeGroup `yaml:"replication"`
 
 	Attributes Attributes `yaml:"attributes"`
 }
 
 // Attributes are used at infra-compile time to aid with the generation of HCL
 type Attributes struct {
-	Connections map[string]Connection
-	Groups      map[string]Group
+	Connections map[string]*Connection
+	Groups      map[string]*Group
 
 	vpc                  networking.Vpc
 	connectionComponents map[string][]iac.Component
+
 }
 
 var (
@@ -36,8 +38,8 @@ var (
 )
 
 func init() {
-	config.Attributes.Connections = make(map[string]Connection)
-	config.Attributes.Groups = make(map[string]Group)
+	config.Attributes.Connections = make(map[string]*Connection)
+	config.Attributes.Groups = make(map[string]*Group)
 	config.Attributes.connectionComponents = make(map[string][]iac.Component)
 }
 
@@ -69,6 +71,19 @@ func (c *Config) Validate() error {
 		c.Replication[i].NodeType = NodeTypeReplication
 		_ = c.Replication[i].validate()
 
+		// create new token server per replication server
+		c.Token = append(c.Token, NodeGroup{
+			Name:        fmt.Sprintf("token-%s", c.Replication[i].Name),
+			Amount:      1,
+			Connections: c.Replication[i].Connections,
+			Routers:     c.Replication[i].Routers,
+			ReplicationAttachment: i,
+		})
+	}
+
+	for i := range c.Token {
+		c.Token[i].NodeType = NodeTypeTokenServer
+		_ = c.Token[i].validate()
 	}
 
 	for i := range c.Peer {

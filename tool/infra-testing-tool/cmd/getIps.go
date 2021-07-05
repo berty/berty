@@ -7,8 +7,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"infratesting/aws"
 	iacec2 "infratesting/iac/components/ec2"
-	"infratesting/testing"
 	"log"
 	"strings"
 )
@@ -20,7 +20,7 @@ var (
 
 			var states = make(map[string][]string)
 
-			instances, err := testing.DescribeInstances()
+			instances, err := aws.DescribeInstances()
 			if err != nil {
 				return err
 			}

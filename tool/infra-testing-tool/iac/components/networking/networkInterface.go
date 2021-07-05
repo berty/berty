@@ -14,6 +14,8 @@ type NetworkInterface struct {
 
 	SecurityGroups   []*SecurityGroup
 	SecurityGroupIds []string
+
+	Connection string
 }
 
 func NewNetworkInterface() NetworkInterface {

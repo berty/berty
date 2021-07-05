@@ -7,10 +7,13 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"google.golang.org/grpc"
+	"infratesting/aws"
 	"infratesting/config"
 	iacec2 "infratesting/iac/components/ec2"
+	"log"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Peer struct {
@@ -28,8 +31,8 @@ type Peer struct {
 	Groups        map[string]*protocoltypes.Group
 	ConfigGroups  []config.Group
 	DevicePK      []byte
-	Messages      []MessageHistory
-	lastMessageID []byte
+	Messages      map[string][]MessageHistory
+	lastMessageID map[string][]byte
 }
 
 const (
@@ -42,38 +45,68 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 
 	p.Groups = make(map[string]*protocoltypes.Group)
 	p.Tags = make(map[string]string)
+	p.Messages = make(map[string][]MessageHistory)
+	p.lastMessageID = make(map[string][]byte)
 
 	for _, tag := range tags {
 		p.Tags[strings.ToLower(*tag.Key)] = *tag.Value
 	}
 
+	var cc *grpc.ClientConn
 	ctx := context.Background()
-	cc, err := grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-	if err != nil {
-		return p, err
+
+
+	// connection retry logic
+
+	var retries int
+
+	var resp *protocoltypes.InstanceGetConfiguration_Reply
+	for {
+
+		if retries >= 6 {
+			// failed more than 3 times, this is bad
+			log.Printf("could not make connection with %s over grpc\n", p.GetHost())
+			return p, err
+		} else {
+			cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+			if err != nil {
+				return p, err
+			}
+
+			p.Cc = cc
+			p.getProtocolServiceClient()
+			if p.Tags[iacec2.Ec2TagType] != config.NodeTypeReplication {
+				p.getMessengerServiceClient()
+			}
+
+			resp, err = p.Protocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+			fmt.Println(err)
+			fmt.Println(resp)
+			if err != nil {
+				fmt.Println("failed")
+				retries += 1
+				fmt.Println(retries)
+				time.Sleep(time.Second * time.Duration(retries))
+			} else {
+				break
+			}
+		}
 	}
 
-	p.Cc = cc
-
-	p.getSvcClients()
-
-	//resp, err := p.Messenger.AccountGet(ctx, &messengertypes.AccountGet_Request{})
-	//if err != nil {
-	//	return p, err
-	//}
-
-	resp, err := p.Protocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-	if err != nil {
-		return p, err
+	if resp != nil {
+		p.DevicePK = resp.DevicePK
+	} else {
+		panic("something went wrong, DevicePK is unknown")
 	}
-
-	p.DevicePK = resp.DevicePK
 
 	return p, err
 }
 
-func (p *Peer) getSvcClients() {
+func (p *Peer) getMessengerServiceClient() {
 	p.Messenger = messengertypes.NewMessengerServiceClient(p.Cc)
+}
+
+func (p *Peer) getProtocolServiceClient() {
 	p.Protocol = protocoltypes.NewProtocolServiceClient(p.Cc)
 }
 
@@ -84,7 +117,7 @@ func (p *Peer) GetHost() string {
 // MatchNodeToPeer matches nodes to peers (to get the group info)
 // loop over peers
 // loop over individual peers in config.Peer
-// if tags are identical, consider match the groups
+// if tags are identical, consider match the daemon
 func (p *Peer) MatchNodeToPeer(c config.Config) {
 	for _, cPeerNg := range c.Peer {
 		// config.NodeGroup.Nodes
@@ -94,5 +127,39 @@ func (p *Peer) MatchNodeToPeer(c config.Config) {
 			}
 		}
 	}
-
 }
+
+// GetAllEligiblePeers returns all peers who are potentially eligible to connect to via gRPC
+func GetAllEligiblePeers(tagKey string, tagValues []string) (peers []Peer, err error) {
+	instances, err := aws.DescribeInstances()
+	if err != nil {
+		return peers, err
+	}
+
+	for _, instance := range instances {
+		if *instance.State.Name != "running" {
+			continue
+		}
+
+		for _, tag := range instance.Tags {
+
+			// if instance is peer
+			if *tag.Key == tagKey {
+				for _, value := range tagValues {
+					if *tag.Value == value {
+						p, err := NewPeer(*instance.PublicIpAddress, instance.Tags)
+						if err != nil {
+							return nil, err
+						}
+						p.Name = *instance.InstanceId
+
+						peers = append(peers, p)
+					}
+				}
+			}
+		}
+	}
+
+	return peers, nil
+}
+

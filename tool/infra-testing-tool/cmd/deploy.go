@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/spf13/cobra"
+	"infratesting/config"
+	"infratesting/iac/components/ec2"
+	infratesting "infratesting/testing"
 	"os"
 	"testing"
 )
@@ -29,6 +32,14 @@ var (
 				panic("something went wrong while applying")
 			}
 
+			peers, err := infratesting.GetAllEligiblePeers(ec2.Ec2TagType, config.AllPeerTypes)
+			if err != nil {
+				return err
+			}
+
+			for _, peer := range peers {
+				fmt.Println(peer.Name)
+			}
 			return nil
 		},
 	}
