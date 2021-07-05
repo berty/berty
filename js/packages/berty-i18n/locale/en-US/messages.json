@@ -227,11 +227,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "Bluetooth allows you to exchange messages using Berty without internet access by connecting your device directly with nearby peers",
       "activate-button": "Activate Bluetooth",
       "permission-title": "Berty Bluetooth permission",
-      "android-permission-description": "",
-      "ios-permission-description": "",
+      "android-permission-description": "To exchange messages offline via Bluetooth, the Android API requires the location permission to be granted.\nWe do not use your location data in any way.",
+      "ios-permission-description": "To exchange messages offline via Bluetooth, the iOS API requires the permission to be granted.",
       "tag-neutral": "Ask me later",
       "tag-negative": "Cancel",
       "tag-positive": "OK"
@@ -325,7 +325,7 @@
       "add-dev-conversations-button": "Add dev conversations",
       "share-button": {
         "title": "Share ID on discord",
-        "alert-title": "",
+        "alert-title": "Do you want to share your QR code to \"#dev-logs\" on the Berty Discord server?",
         "alert-message": "This will allow other staff to scan your QR code or copy your contact link.",
         "alert-accept-button": "Yep 👍",
         "alert-cancel-button": "Nope"
@@ -452,7 +452,7 @@
       },
       "betabot-box": {
         "title": "ADD BETA BOT?",
-        "desc": "",
+        "desc": "You don't have any contacts yet. Would you like to add the Beta Bot to discover and test conversations?",
         "skip-button": "SKIP",
         "add-button": "ADD !"
       },
