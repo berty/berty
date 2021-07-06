@@ -27,6 +27,8 @@ type dbWrapper struct {
 	inTx       bool
 }
 
+func noopReplayer(_ *dbWrapper) error { return nil }
+
 func (d *dbWrapper) logStep(text string, muts ...tyber.StepMutator) {
 	tyber.LogStep(d.ctx, d.log, text, muts...)
 }
