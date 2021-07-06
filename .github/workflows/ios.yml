@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         golang: ['1.16.x']
-        xcode: ['12.0']
+        xcode: ['12.4']
         node: ['14.x']
     steps:
       - name: Checkout
@@ -96,7 +96,7 @@ jobs:
     strategy:
       matrix:
         golang: ['1.16.x']
-        xcode: ['12.0']
+        xcode: ['12.4']
         node: ['14.x']
     steps:
       - name: Checkout
