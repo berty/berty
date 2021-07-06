@@ -92,7 +92,10 @@ const expectedAppStateChanges: any = {
 	[MessengerAppState.OpeningGettingLocalSettings]: [
 		MessengerAppState.OpeningMarkConversationsAsClosed,
 	],
-	[MessengerAppState.OpeningMarkConversationsAsClosed]: [MessengerAppState.PreReady],
+	[MessengerAppState.OpeningMarkConversationsAsClosed]: [
+		MessengerAppState.PreReady,
+		MessengerAppState.Ready,
+	],
 	[MessengerAppState.GetStarted]: [
 		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.OnBoarding,
@@ -120,7 +123,10 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.OpeningWaitingForDaemon,
 	],
 	[MessengerAppState.PreReady]: [MessengerAppState.Ready],
-	[MessengerAppState.StreamDone]: [MessengerAppState.GetStarted],
+	[MessengerAppState.StreamDone]: [
+		MessengerAppState.GetStarted,
+		MessengerAppState.OpeningWaitingForDaemon,
+	],
 }
 
 export const isExpectedAppStateChange = (
@@ -208,6 +214,7 @@ export type Configuration = {
 export type PersistentOptionsWelcomeModal = {
 	enable: boolean
 }
+
 export type PersistentOptionsConfigurations = { [key: string]: Configuration }
 
 export type PersistentOptionsPreset = {
@@ -427,6 +434,7 @@ export type MsgrState = {
 	switchAccount: (arg0: string) => Promise<void>
 	updateAccount: (arg0: any) => Promise<void>
 	deleteAccount: () => Promise<void>
+	getUsername: () => Promise<beapi.account.GetUsername.Reply | null>
 	restart: () => Promise<void>
 	playSound: (arg0: SoundKey) => void
 	addReaction: (
@@ -476,6 +484,9 @@ export const initialState = {
 	switchAccount: async () => {},
 	updateAccount: async () => {},
 	deleteAccount: async () => {},
+	getUsername: async () => {
+		return null
+	},
 	restart: async () => {},
 	setDebugMode: () => {},
 	playSound: () => {},

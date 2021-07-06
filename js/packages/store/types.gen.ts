@@ -271,13 +271,6 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
-	useGetUsername: () => {
-		error: any
-		call: (req?: beapi.messenger.GetUsername.IRequest) => void
-		reply: beapi.messenger.GetUsername.IReply | null
-		done: boolean
-		called: boolean
-	}
 	useMediaGetRelated: () => {
 		error: any
 		call: (req?: beapi.messenger.MediaGetRelated.IRequest) => void

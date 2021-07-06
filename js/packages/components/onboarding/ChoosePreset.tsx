@@ -1,5 +1,5 @@
 import React from 'react'
-import { ImageBackground, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, StatusBar, TouchableOpacity, View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Icon, Text } from '@ui-kitten/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -18,7 +18,7 @@ export const ChoosePreset = () => {
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 
-	const [{ text, padding, border, margin, flex, color }, { scaleSize }] = useStyles()
+	const [{ text, padding, border, margin, flex, color, background }, { scaleSize }] = useStyles()
 	const performanceCheckList = [
 		{ title: t('onboarding.select-mode.performance.push-notif') },
 		{ title: t('onboarding.select-mode.performance.offline-message') },
@@ -36,7 +36,8 @@ export const ChoosePreset = () => {
 	]
 
 	return (
-		<View style={[flex.tiny, padding.big, margin.top.scale(insets.top)]}>
+		<View style={[flex.tiny, padding.big, margin.top.scale(insets.top), background.white]}>
+			<StatusBar backgroundColor={color.white} barStyle='dark-content' />
 			<Text style={[text.align.center, text.size.huge, text.bold.medium, margin.bottom.huge]}>
 				{t('onboarding.select-mode.title')}
 			</Text>

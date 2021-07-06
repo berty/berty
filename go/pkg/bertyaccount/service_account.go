@@ -22,6 +22,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/berty/v2/go/pkg/username"
 )
 
 const accountMetafileName = "account_meta"
@@ -654,6 +655,12 @@ func (s *service) UpdateAccount(ctx context.Context, req *UpdateAccount_Request)
 
 	return &UpdateAccount_Reply{
 		AccountMetadata: meta,
+	}, nil
+}
+
+func (s *service) GetUsername(_ context.Context, _ *GetUsername_Request) (_ *GetUsername_Reply, err error) {
+	return &GetUsername_Reply{
+		Username: username.GetUsername(),
 	}, nil
 }
 

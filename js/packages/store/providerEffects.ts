@@ -363,6 +363,7 @@ export const openingCloseConvos = async (
 	dispatch: (arg0: reducerAction) => void,
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	conversations: { [key: string]: any },
+	welcomeModal: boolean,
 ) => {
 	if (appState !== MessengerAppState.OpeningMarkConversationsAsClosed) {
 		return
@@ -379,7 +380,9 @@ export const openingCloseConvos = async (
 		})
 	}
 
-	dispatch({ type: MessengerActions.SetStatePreReady })
+	welcomeModal
+		? dispatch({ type: MessengerActions.SetStatePreReady })
+		: dispatch({ type: MessengerActions.SetStateReady })
 }
 
 // handle state PreReady

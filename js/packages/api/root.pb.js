@@ -62,6 +62,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   LogfileList: {
                     requestType: "LogfileList.Request",
                     responseType: "LogfileList.Reply"
+                  },
+                  GetUsername: {
+                    requestType: "GetUsername.Request",
+                    responseType: "GetUsername.Reply"
                   }
                 }
               },
@@ -428,6 +432,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                             id: 8
                           }
                         }
+                      }
+                    }
+                  }
+                }
+              },
+              GetUsername: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      username: {
+                        type: "string",
+                        id: 1
                       }
                     }
                   }
@@ -3455,10 +3475,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "BannerQuote.Request",
                     responseType: "BannerQuote.Reply"
                   },
-                  GetUsername: {
-                    requestType: "GetUsername.Request",
-                    responseType: "GetUsername.Reply"
-                  },
                   InstanceExportData: {
                     requestType: "InstanceExportData.Request",
                     responseType: "InstanceExportData.Reply",
@@ -5170,22 +5186,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       author: {
                         type: "string",
                         id: 2
-                      }
-                    }
-                  }
-                }
-              },
-              GetUsername: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {}
-                  },
-                  Reply: {
-                    fields: {
-                      username: {
-                        type: "string",
-                        id: 1
                       }
                     }
                   }

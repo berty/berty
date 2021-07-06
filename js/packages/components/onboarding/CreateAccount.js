@@ -25,6 +25,13 @@ const CreateAccountBody = ({ next }) => {
 	const [name, setName] = React.useState('')
 	const [isPressed, setIsPressed] = useState(false)
 
+	React.useEffect(() => {
+		ctx
+			.getUsername()
+			.then(({ username }) => setName(username))
+			.catch((err2) => console.warn('Failed to fetch username:', err2))
+	}, [ctx])
+
 	const handlePersistentOptions = React.useCallback(async () => {
 		const setPermissions = async (state) => {
 			console.log('Bluetooth permissions: ' + state)
@@ -56,13 +63,11 @@ const CreateAccountBody = ({ next }) => {
 						Linking.openSettings()
 					})
 				} else if (result !== 'unavailable') {
-					await permissionExplanation(t, () => {
-						requestBluetoothPermission().then(async (permission) => {
-							console.log('Request perms', permission)
-							await setPermissions(permission)
-						})
-					})
+					await permissionExplanation(t, () => {})
+					const permission = await requestBluetoothPermission()
+					await setPermissions(permission)
 				}
+				await ctx.createNewAccount()
 				setIsPressed(true)
 			})
 			.catch((err) => {
@@ -104,7 +109,6 @@ const CreateAccountBody = ({ next }) => {
 								loop={false}
 								onAnimationFinish={async () => {
 									Vibration.vibrate(500)
-									await ctx.createNewAccount()
 									next()
 								}}
 							/>
