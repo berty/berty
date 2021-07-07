@@ -11,7 +11,7 @@
 		"postinstall": "patch-package && npx jetify"
 	},
 	"dependencies": {
-		"@eva-design/eva": "^2.0.0",
+		"@eva-design/eva": "^2.1.0",
 		"@flyerhq/react-native-android-uri-path": "^2.1.0",
 		"@improbable-eng/grpc-web": "^0.13.0",
 		"@react-native-community/async-storage": "^1.12.1",
