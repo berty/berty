@@ -148,6 +148,10 @@
     "mode": {
       "title": "설정",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "알림",
         "tag-enabled": "켜짐",
