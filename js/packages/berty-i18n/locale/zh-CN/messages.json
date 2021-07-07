@@ -148,6 +148,10 @@
     "mode": {
       "title": "设置",
       "desc": "所有功能皆可自定义",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "消息通知",
         "tag-enabled": "已启用",
