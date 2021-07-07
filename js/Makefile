@@ -111,7 +111,7 @@ endif
 	# iOS files
 	rm -rf ios/build
 	rm -rf ios/Pods
-	rm -rf ios/Frameworks/Bertybridge.framework
+	rm -rf ios/Frameworks/Bertybridge.xcframework
 	rm -rf ios/vendor
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
@@ -205,7 +205,7 @@ ios.log:
 ios.project: ios/Berty.xcworkspace
 
 .PHONY: ios.gomobile
-ios.gomobile: ios/Frameworks/Bertybridge.framework
+ios.gomobile: ios/Frameworks/Bertybridge.xcframework
 
 #### Android
 
@@ -351,7 +351,7 @@ _write_gen_sum:
 
 #### iOS
 
-ios/Frameworks/Bertybridge.framework: $(bridge_src)
+ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && ANDROID_HOME= ANDROID_NDK_HOME= $(GO) run golang.org/x/mobile/cmd/gomobile init

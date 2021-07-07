@@ -1,4 +1,4 @@
-// +build !android,!ios
+// +build !android,!ios ios,catalyst
 
 package username
 

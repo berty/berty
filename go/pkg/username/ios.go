@@ -1,4 +1,4 @@
-// +build ios
+// +build ios,!catalyst
 
 package username
 

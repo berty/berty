@@ -1,4 +1,4 @@
-// +build !darwin !cgo
+// +build !darwin darwin,!cgo catalyst
 
 package mc
 

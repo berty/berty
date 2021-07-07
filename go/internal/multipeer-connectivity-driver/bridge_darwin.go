@@ -1,20 +1,11 @@
-// +build darwin,cgo
+// +build darwin,cgo,!catalyst
 
 package mc
 
-/*
-#cgo CFLAGS: -x objective-c
-#cgo darwin LDFLAGS: -framework Foundation -framework MultipeerConnectivity
-#include <stdlib.h>
-#include "mc-driver.h"
-*/
-import "C"
-
 import (
-	"unsafe"
-
 	"go.uber.org/zap"
 
+	native "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver/driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 )
 
@@ -33,6 +24,8 @@ func NewDriver(logger *zap.Logger) proximity.NativeDriver {
 	logger = logger.Named("MC")
 	logger.Debug("NewDriver()")
 
+	native.ProtocolName = ProtocolName
+
 	return &Driver{
 		protocolCode: ProtocolCode,
 		protocolName: ProtocolName,
@@ -40,75 +33,24 @@ func NewDriver(logger *zap.Logger) proximity.NativeDriver {
 	}
 }
 
-//export HandleFoundPeer
-func HandleFoundPeer(remotePID *C.char) int {
-	goPID := C.GoString(remotePID)
-
-	t, ok := proximity.TransportMap.Load(ProtocolName)
-	if !ok {
-		return 0
-	}
-	if t.(proximity.ProximityTransport).HandleFoundPeer(goPID) {
-		return 1
-	}
-	return 0
-}
-
-//export HandleLostPeer
-func HandleLostPeer(remotePID *C.char) {
-	goPID := C.GoString(remotePID)
-
-	t, ok := proximity.TransportMap.Load(ProtocolName)
-	if !ok {
-		return
-	}
-	t.(proximity.ProximityTransport).HandleLostPeer(goPID)
-}
-
-//export ReceiveFromPeer
-func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
-	goPID := C.GoString(remotePID)
-	goPayload := C.GoBytes(payload, length)
-
-	t, ok := proximity.TransportMap.Load(ProtocolName)
-	if !ok {
-		return
-	}
-	t.(proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
-}
-
 func (d *Driver) Start(localPID string) {
-	cPID := C.CString(localPID)
-	defer C.free(unsafe.Pointer(cPID))
-
-	C.StartMCDriver(cPID)
+	native.Start(localPID)
 }
 
 func (d *Driver) Stop() {
-	C.StopMCDriver()
+	native.Stop()
 }
 
 func (d *Driver) DialPeer(remotePID string) bool {
-	cPID := C.CString(remotePID)
-	defer C.free(unsafe.Pointer(cPID))
-
-	return C.DialPeer(cPID) == 1
+	return native.DialPeer(remotePID)
 }
 
 func (d *Driver) SendToPeer(remotePID string, payload []byte) bool {
-	cPID := C.CString(remotePID)
-	defer C.free(unsafe.Pointer(cPID))
-	cPayload := C.CBytes(payload)
-	defer C.free(cPayload)
-
-	return C.SendToPeer(cPID, cPayload, C.int(len(payload))) == 1
+	return native.SendToPeer(remotePID, payload)
 }
 
 func (d *Driver) CloseConnWithPeer(remotePID string) {
-	cPID := C.CString(remotePID)
-	defer C.free(unsafe.Pointer(cPID))
-
-	C.CloseConnWithPeer(cPID)
+	native.CloseConnWithPeer(remotePID)
 }
 
 func (d *Driver) ProtocolCode() int {
