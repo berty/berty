@@ -148,6 +148,10 @@
     "mode": {
       "title": "الإعدادات",
       "desc": "تخصيص كل شيء للحصول على التطبيق الذي يلائم احتياجاتك",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "الإشعارات",
         "tag-enabled": "مفعّل",
