@@ -148,6 +148,10 @@
     "mode": {
       "title": "Pengaturan",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Notifikasi",
         "tag-enabled": "Diaktifkan",
