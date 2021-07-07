@@ -148,6 +148,10 @@
     "mode": {
       "title": "Instellingen",
       "desc": "Pas alles aan om de app te krijgen die aan je behoeften voldoet",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Notificaties",
         "tag-enabled": "Ingeschakeld",
