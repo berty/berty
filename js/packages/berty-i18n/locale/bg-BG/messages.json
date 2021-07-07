@@ -148,6 +148,10 @@
     "mode": {
       "title": "Настройки",
       "desc": "Персонализирайте всичко, за да получите приложението, което отговаря на вашите нужди",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Известия",
         "tag-enabled": "Включено",
