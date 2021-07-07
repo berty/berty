@@ -148,6 +148,10 @@
     "mode": {
       "title": "Einstellungen",
       "desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Benachrichtigungen",
         "tag-enabled": "Aktiviert",
