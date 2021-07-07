@@ -148,6 +148,10 @@
     "mode": {
       "title": "",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "消息通知",
         "tag-enabled": "",
