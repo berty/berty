@@ -148,6 +148,10 @@
     "mode": {
       "title": "Inställningar",
       "desc": "Anpassa allt för att få appen som passar just dina behov",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Aviseringar",
         "tag-enabled": "Aktiv",
