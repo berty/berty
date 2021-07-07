@@ -148,6 +148,10 @@
     "mode": {
       "title": "Nastavení",
       "desc": "Zde si můžete všechno přizpůsobit, aby aplikace lépe vyhovovala vašim potřebám",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Oznámení",
         "tag-enabled": "Povolit",
