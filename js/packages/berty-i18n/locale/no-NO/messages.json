@@ -148,6 +148,10 @@
     "mode": {
       "title": "Innstillinger",
       "desc": "Tilpass alt for å få appen som passer dine behov",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Varsler",
         "tag-enabled": "Aktivert",
