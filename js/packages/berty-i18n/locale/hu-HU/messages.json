@@ -148,6 +148,10 @@
     "mode": {
       "title": "Beállítások",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Értesítések",
         "tag-enabled": "Engedélyezve",
