@@ -148,6 +148,10 @@
     "mode": {
       "title": "Настройки",
       "desc": "Просигнализируйте всё, чтобы приложение подходило под ваши нужды",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Уведомления",
         "tag-enabled": "Включены",
