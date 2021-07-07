@@ -148,6 +148,10 @@
     "mode": {
       "title": "Setări",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Notificări",
         "tag-enabled": "Activate",
