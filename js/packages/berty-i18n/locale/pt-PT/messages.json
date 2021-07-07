@@ -148,6 +148,10 @@
     "mode": {
       "title": "Definições",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Notificações",
         "tag-enabled": "Ativado",
