@@ -148,6 +148,10 @@
     "mode": {
       "title": "Nastavitve",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Obvestila",
         "tag-enabled": "Vključeno",
