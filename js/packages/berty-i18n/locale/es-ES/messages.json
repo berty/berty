@@ -148,6 +148,10 @@
     "mode": {
       "title": "Ajustes",
       "desc": "Personaliza todo para obtener la aplicación que se ajuste a tus necesidades",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Notificaciones",
         "tag-enabled": "Activado",
