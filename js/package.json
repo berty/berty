@@ -12,6 +12,7 @@
 	},
 	"dependencies": {
 		"@eva-design/eva": "^2.0.0",
+		"@flyerhq/react-native-android-uri-path": "^2.1.0",
 		"@improbable-eng/grpc-web": "^0.13.0",
 		"@react-native-community/async-storage": "^1.12.1",
 		"@react-native-community/audio-toolkit": "git+https://github.com/sakul-budhathoki/react-native-audio-toolkit.git#3e81181e97154ce84b6927fd5e5a484782d36d70",
@@ -51,7 +52,7 @@
 		"react-native-audiowaveform": "^2.0.5",
 		"react-native-bootsplash": "^3.1.2",
 		"react-native-camera": "^3.42.0",
-		"react-native-document-picker": "^4.1.1",
+		"react-native-document-picker": "^5.2.0",
 		"react-native-elements": "^3.3.2",
 		"react-native-emoji-board": "^1.2.1",
 		"react-native-exception-handler": "^2.10.9",

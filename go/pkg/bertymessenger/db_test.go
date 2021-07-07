@@ -19,8 +19,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func noopReplayer(_ *dbWrapper) error { return nil }
-
 type getInMemoryTestDBOpts int32
 
 const (

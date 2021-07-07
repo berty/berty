@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
+import RNFS from 'react-native-fs'
 
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import beapi from '@berty-tech/api'
@@ -128,6 +129,17 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 					accountSelected = account
 				}
 			})
+
+			// Delete berty-backup account
+			const outFile =
+				RNFS.TemporaryDirectoryPath + `/berty-backup-${accountSelected.accountId}` + '.tar'
+			RNFS.unlink(outFile)
+				.then(() => {
+					console.log('File deleted')
+				})
+				.catch(() => {
+					console.log('File berty backup does not exist')
+				})
 			dispatch({ type: MessengerActions.SetNextAccount, payload: accountSelected.accountId })
 			return
 		}

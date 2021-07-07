@@ -161,8 +161,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to drop database schema: %w", err))
 		}
 
-		if err := db.db.AutoMigrate(getDBModels()...); err != nil {
-			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to create database schema: %w", err))
+		if err := db.getUpdatedDB(getDBModels(), noopReplayer, l); err != nil {
+			return nil, err
 		}
 
 		if err := replayLogsToDB(ctx, client, db); err != nil {

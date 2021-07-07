@@ -1,12 +1,13 @@
 import React from 'react'
 import { Text, TouchableOpacity, View, GestureResponderEvent, ScrollView } from 'react-native'
 import { Icon } from '@ui-kitten/components'
-import DocumentPicker from 'react-native-document-picker'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
-import { GenericAvatar } from '@berty-tech/components/avatars'
+
+import { GenericAvatar } from '../../avatars'
+import { openDocumentPicker } from '../../helpers'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -58,14 +59,8 @@ const AccountButton: React.FC<{
 }
 
 export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
+	const ctx = useMsgrContext()
 	const [{ padding, color }, { scaleSize }] = useStyles()
-	const {
-		accounts,
-		createNewAccount,
-		selectedAccount,
-		switchAccount,
-		importAccount,
-	} = useMsgrContext()
 	const { t } = useTranslation()
 
 	return (
@@ -81,7 +76,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 				contentContainerStyle={{ paddingBottom: 10 }}
 				showsVerticalScrollIndicator={false}
 			>
-				{accounts
+				{ctx.accounts
 					.sort((a, b) => a.creationDate - b.creationDate)
 					.map((account, key) => {
 						return (
@@ -89,9 +84,9 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 								key={key}
 								name={account?.error ? `Incompatible account ${account.name}` : account.name}
 								onPress={async () => {
-									if (selectedAccount !== account.accountId) {
-										await switchAccount(account.accountId)
-									} else if (selectedAccount === account.accountId && !account?.error) {
+									if (ctx.selectedAccount !== account.accountId) {
+										await ctx.switchAccount(account.accountId)
+									} else if (ctx.selectedAccount === account.accountId && !account?.error) {
 										onPress()
 									}
 								}}
@@ -102,7 +97,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 										fallbackSeed={account?.publicKey}
 									/>
 								}
-								selected={selectedAccount === account.accountId}
+								selected={ctx.selectedAccount === account.accountId}
 								incompatible={account?.error}
 							/>
 						)
@@ -110,7 +105,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 				<AccountButton
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
-						await createNewAccount()
+						await ctx.createNewAccount()
 					}}
 					avatar={
 						<View
@@ -129,22 +124,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 				/>
 				<AccountButton
 					name={t('main.home.multi-account.import-button')}
-					onPress={async () => {
-						try {
-							const res = await DocumentPicker.pick({
-								// @ts-ignore
-								type: ['public.tar-archive', '*/*'],
-							})
-
-							await importAccount(res.uri.replace(/^file:\/\//, ''))
-						} catch (err) {
-							if (DocumentPicker.isCancel(err)) {
-								// ignore
-							} else {
-								console.error(err)
-							}
-						}
-					}}
+					onPress={() => openDocumentPicker(ctx)}
 					avatar={
 						<View
 							style={{

@@ -1,5 +1,10 @@
 import moment from 'moment'
 import { Long } from 'protobufjs/light'
+import DocumentPicker from 'react-native-document-picker'
+import { Platform } from 'react-native'
+import getPath from '@flyerhq/react-native-android-uri-path'
+
+import { MsgrState } from '@berty-tech/store/context'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 // export const promiseRejected = (): Promise<void> =>
@@ -79,5 +84,24 @@ export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number
 	} catch (e) {
 		console.warn(`Error parsing date ${pbTimestamp}; returning zero`)
 		return 0
+	}
+}
+
+export const openDocumentPicker = async (ctx: MsgrState) => {
+	try {
+		const res = await DocumentPicker.pick({
+			// @ts-ignore
+			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
+		})
+
+		const replaced =
+			Platform.OS === 'android' ? getPath(res.uri) : res.uri.replace(/^file:\/\//, '')
+		await ctx.importAccount(replaced)
+	} catch (err) {
+		if (DocumentPicker.isCancel(err)) {
+			// ignore
+		} else {
+			console.error(err)
+		}
 	}
 }

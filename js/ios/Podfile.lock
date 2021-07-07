@@ -318,7 +318,7 @@ PODS:
     - React-Core
   - react-native-cameraroll (4.0.2):
     - React-Core
-  - react-native-document-picker (4.2.0):
+  - react-native-document-picker (5.2.0):
     - React-Core
   - react-native-restart (0.0.20):
     - React-Core
@@ -731,7 +731,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: cf8a153d33138dcc457172fc3c33fdf4e5d288d2
   react-native-cameraroll: 1965db75c851b15e77a22ca0ac78e32af6b571ae
-  react-native-document-picker: 44ecae7103090b6789cca010f06f5205fd1cb66e
+  react-native-document-picker: f1b5398801b332c77bc62ae0eae2116f49bdff26
   react-native-restart: a01029aadfe8e71f9e8205fdb17da2f0a4472d50
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-shake: 8048c196ab884399df8397d7a9e9e48b3f2996ff

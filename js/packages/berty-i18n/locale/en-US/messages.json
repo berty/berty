@@ -148,6 +148,10 @@
     "mode": {
       "title": "Settings",
       "desc": "Customize everything to get the app that fits your needs",
+      "notification-file-saved": {
+        "title": "Data saved!",
+        "desc": "Available in downloads directory"
+      },
       "notifications-button": {
         "title": "Notifications",
         "tag-enabled": "Enabled",
