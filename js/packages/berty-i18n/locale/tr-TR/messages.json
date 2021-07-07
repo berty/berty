@@ -148,6 +148,10 @@
     "mode": {
       "title": "Ayarlar",
       "desc": "İhtiyaçlarınıza uygun uygulamayı almak için her şeyi özelleştirin",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Bildirimler",
         "tag-enabled": "Aktif",
