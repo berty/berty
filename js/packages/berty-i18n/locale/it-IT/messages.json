@@ -234,7 +234,7 @@
       "desc": "Il Bluetooth consente di scambiare messaggi utilizzando Berty senza accesso a Internet connettendo il dispositivo direttamente con i peer vicini",
       "activate-button": "Attiva bluetooth",
       "permission-title": "Autorizzazione Bluetooth Berty",
-      "android-permission-description": "Per scambiare messaggi offline tramite Bluetooth, le API di Android richiedono l'autorizzazione ai permessi sulla posizione.\nNon utilizziamo in alcun modo i dati relativi alla tua posizione.",
+      "android-permission-description": "",
       "ios-permission-description": "Per scambiare messaggi offline tramite Bluetooth, l'API iOS richiede la concessione dell'autorizzazione.",
       "tag-neutral": "Chiedimelo più tardi",
       "tag-negative": "Annulla",
