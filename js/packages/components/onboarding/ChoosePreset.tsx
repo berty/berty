@@ -1,22 +1,24 @@
 import React from 'react'
-import { ImageBackground, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, StatusBar, TouchableOpacity, View } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { Icon, Text } from '@ui-kitten/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty-tech/styles'
-import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+
 import FullAnonBackground from '@berty-tech/assets/full_anon_bg.png'
 import PerformanceBackground from '@berty-tech/assets/performance_bg.png'
 
 export const ChoosePreset = () => {
 	const { t }: { t: any } = useTranslation()
-	const { dispatch, setPersistentOption, persistentOptions } = useMsgrContext()
+	const { setPersistentOption } = useMsgrContext()
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 
-	const [{ text, padding, border, margin, flex, color }, { scaleSize }] = useStyles()
+	const [{ text, padding, border, margin, flex, color, background }, { scaleSize }] = useStyles()
 	const performanceCheckList = [
 		{ title: t('onboarding.select-mode.performance.push-notif') },
 		{ title: t('onboarding.select-mode.performance.offline-message') },
@@ -32,26 +34,28 @@ export const ChoosePreset = () => {
 		},
 		{ title: t('onboarding.select-mode.high-level.on-same-network') },
 	]
+
 	return (
-		<View style={[flex.tiny, padding.big, margin.top.scale(insets.top)]}>
+		<View style={[flex.tiny, padding.big, margin.top.scale(insets.top), background.white]}>
+			<StatusBar backgroundColor={color.white} barStyle='dark-content' />
 			<Text style={[text.align.center, text.size.huge, text.bold.medium, margin.bottom.huge]}>
 				{t('onboarding.select-mode.title')}
 			</Text>
 			<TouchableOpacity
 				activeOpacity={0.7}
 				onPress={async () => {
-					if (!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable) {
-						navigation.goBack()
-					} else {
-						dispatch({ type: MessengerActions.SetStateOnBoarding })
+					if (await AsyncStorage.getItem('isNewAccount')) {
+						await AsyncStorage.setItem('preset', 'performance')
 						navigation.navigate('Onboarding.CreateAccount', {})
+					} else {
+						await setPersistentOption({
+							type: PersistentOptionsKeys.Preset,
+							payload: {
+								value: 'performance',
+							},
+						})
+						navigation.goBack()
 					}
-					await setPersistentOption({
-						type: PersistentOptionsKeys.Preset,
-						payload: {
-							value: 'performance',
-						},
-					})
 				}}
 				style={[
 					border.radius.medium,
@@ -163,18 +167,18 @@ export const ChoosePreset = () => {
 				]}
 				activeOpacity={0.7}
 				onPress={async () => {
-					if (!persistentOptions?.[PersistentOptionsKeys.WelcomeModal]?.enable) {
-						navigation.goBack()
-					} else {
-						dispatch({ type: MessengerActions.SetStateOnBoarding })
+					if (await AsyncStorage.getItem('isNewAccount')) {
+						await AsyncStorage.setItem('preset', 'fullAnonymity')
 						navigation.navigate('Onboarding.CreateAccount', {})
+					} else {
+						await setPersistentOption({
+							type: PersistentOptionsKeys.Preset,
+							payload: {
+								value: 'fullAnonymity',
+							},
+						})
+						navigation.goBack()
 					}
-					await setPersistentOption({
-						type: PersistentOptionsKeys.Preset,
-						payload: {
-							value: 'full-anonymity',
-						},
-					})
 				}}
 			>
 				<ImageBackground source={FullAnonBackground} style={[padding.horizontal.large, flex.tiny]}>

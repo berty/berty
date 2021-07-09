@@ -30,6 +30,8 @@ export namespace berty {
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest): Promise<berty.account.v1.GetGRPCListenerAddrs.Reply>;
                 public logfileList(request: berty.account.v1.LogfileList.IRequest, callback: berty.account.v1.AccountService.LogfileListCallback): void;
                 public logfileList(request: berty.account.v1.LogfileList.IRequest): Promise<berty.account.v1.LogfileList.Reply>;
+                public getUsername(request: berty.account.v1.GetUsername.IRequest, callback: berty.account.v1.AccountService.GetUsernameCallback): void;
+                public getUsername(request: berty.account.v1.GetUsername.IRequest): Promise<berty.account.v1.GetUsername.Reply>;
             }
 
             namespace AccountService {
@@ -55,6 +57,8 @@ export namespace berty {
                 type GetGRPCListenerAddrsCallback = (error: (Error|null), response?: berty.account.v1.GetGRPCListenerAddrs.Reply) => void;
 
                 type LogfileListCallback = (error: (Error|null), response?: berty.account.v1.LogfileList.Reply) => void;
+
+                type GetUsernameCallback = (error: (Error|null), response?: berty.account.v1.GetUsername.Reply) => void;
             }
 
             interface IOpenAccount {
@@ -759,6 +763,59 @@ export namespace berty {
                         public static toObject(message: berty.account.v1.LogfileList.Reply.Logfile, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
                     }
+                }
+            }
+
+            interface IGetUsername {
+            }
+
+            class GetUsername implements IGetUsername {
+
+                public static create(properties?: berty.account.v1.IGetUsername): berty.account.v1.GetUsername;
+                public static encode(message: berty.account.v1.IGetUsername, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IGetUsername, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.GetUsername;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.GetUsername;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.GetUsername;
+                public static toObject(message: berty.account.v1.GetUsername, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace GetUsername {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.account.v1.GetUsername.IRequest): berty.account.v1.GetUsername.Request;
+                    public static encode(message: berty.account.v1.GetUsername.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.GetUsername.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.GetUsername.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.GetUsername.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.GetUsername.Request;
+                    public static toObject(message: berty.account.v1.GetUsername.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    username?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public username: string;
+                    public static create(properties?: berty.account.v1.GetUsername.IReply): berty.account.v1.GetUsername.Reply;
+                    public static encode(message: berty.account.v1.GetUsername.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.GetUsername.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.GetUsername.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.GetUsername.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.GetUsername.Reply;
+                    public static toObject(message: berty.account.v1.GetUsername.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
                 }
             }
         }
@@ -5030,8 +5087,6 @@ export namespace berty {
                 public replicationSetAutoEnable(request: berty.messenger.v1.ReplicationSetAutoEnable.IRequest): Promise<berty.messenger.v1.ReplicationSetAutoEnable.Reply>;
                 public bannerQuote(request: berty.messenger.v1.BannerQuote.IRequest, callback: berty.messenger.v1.MessengerService.BannerQuoteCallback): void;
                 public bannerQuote(request: berty.messenger.v1.BannerQuote.IRequest): Promise<berty.messenger.v1.BannerQuote.Reply>;
-                public getUsername(request: berty.messenger.v1.GetUsername.IRequest, callback: berty.messenger.v1.MessengerService.GetUsernameCallback): void;
-                public getUsername(request: berty.messenger.v1.GetUsername.IRequest): Promise<berty.messenger.v1.GetUsername.Reply>;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest, callback: berty.messenger.v1.MessengerService.InstanceExportDataCallback): void;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest): Promise<berty.messenger.v1.InstanceExportData.Reply>;
                 public mediaPrepare(request: berty.messenger.v1.MediaPrepare.IRequest, callback: berty.messenger.v1.MessengerService.MediaPrepareCallback): void;
@@ -5099,8 +5154,6 @@ export namespace berty {
                 type ReplicationSetAutoEnableCallback = (error: (Error|null), response?: berty.messenger.v1.ReplicationSetAutoEnable.Reply) => void;
 
                 type BannerQuoteCallback = (error: (Error|null), response?: berty.messenger.v1.BannerQuote.Reply) => void;
-
-                type GetUsernameCallback = (error: (Error|null), response?: berty.messenger.v1.GetUsername.Reply) => void;
 
                 type InstanceExportDataCallback = (error: (Error|null), response?: berty.messenger.v1.InstanceExportData.Reply) => void;
 
@@ -7696,59 +7749,6 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BannerQuote.Reply;
                     public static toObject(message: berty.messenger.v1.BannerQuote.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IGetUsername {
-            }
-
-            class GetUsername implements IGetUsername {
-
-                public static create(properties?: berty.messenger.v1.IGetUsername): berty.messenger.v1.GetUsername;
-                public static encode(message: berty.messenger.v1.IGetUsername, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.IGetUsername, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.GetUsername;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.GetUsername;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.GetUsername;
-                public static toObject(message: berty.messenger.v1.GetUsername, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace GetUsername {
-
-                interface IRequest {
-                }
-
-                class Request implements IRequest {
-
-                    public static create(properties?: berty.messenger.v1.GetUsername.IRequest): berty.messenger.v1.GetUsername.Request;
-                    public static encode(message: berty.messenger.v1.GetUsername.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.GetUsername.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.GetUsername.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.GetUsername.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.GetUsername.Request;
-                    public static toObject(message: berty.messenger.v1.GetUsername.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    username?: (string|null);
-                }
-
-                class Reply implements IReply {
-
-                    public username: string;
-                    public static create(properties?: berty.messenger.v1.GetUsername.IReply): berty.messenger.v1.GetUsername.Reply;
-                    public static encode(message: berty.messenger.v1.GetUsername.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.GetUsername.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.GetUsername.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.GetUsername.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.GetUsername.Reply;
-                    public static toObject(message: berty.messenger.v1.GetUsername.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

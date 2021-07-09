@@ -28,7 +28,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tempdir"
 	"berty.tech/berty/v2/go/pkg/tyber"
-	"berty.tech/berty/v2/go/pkg/username"
 )
 
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *messengertypes.DevShareInstanceBertyID_Request) (*messengertypes.DevShareInstanceBertyID_Reply, error) {
@@ -1208,12 +1207,6 @@ func (svc *service) BannerQuote(ctx context.Context, req *messengertypes.BannerQ
 		Author: quote.Author,
 	}
 	return &ret, nil
-}
-
-func (svc *service) GetUsername(ctx context.Context, req *messengertypes.GetUsername_Request) (*messengertypes.GetUsername_Reply, error) {
-	return &messengertypes.GetUsername_Reply{
-		Username: username.GetUsername(),
-	}, nil
 }
 
 func (svc *service) SendReplyOptions(ctx context.Context, req *messengertypes.SendReplyOptions_Request) (*messengertypes.SendReplyOptions_Reply, error) {

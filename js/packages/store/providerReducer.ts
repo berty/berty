@@ -246,7 +246,6 @@ export const reducerActions: {
 			accounts: oldState.accounts,
 			embedded: oldState.embedded,
 			daemonAddress: oldState.daemonAddress,
-			isNewAccount: oldState.isNewAccount,
 			appState: MessengerAppState.Closed,
 			nextSelectedAccount: oldState.embedded ? oldState.nextSelectedAccount : '0',
 		}
@@ -279,7 +278,6 @@ export const reducerActions: {
 		const ret = {
 			...oldState,
 			nextSelectedAccount: action.payload,
-			isNewAccount: null,
 		}
 
 		return reducer(ret, { type: MessengerActions.SetStateClosed })
@@ -314,16 +312,17 @@ export const reducerActions: {
 		appState: MessengerAppState.OpeningMarkConversationsAsClosed,
 	}),
 
-	[MessengerActions.SetStateReady]: (oldState, _) => ({
+	[MessengerActions.SetStatePreReady]: (oldState, _) => ({
 		...oldState,
-		appState:
-			(Object.keys(oldState.accounts).length === 1 &&
-				(!oldState.account || !oldState.account.displayName)) ||
-			oldState.isNewAccount
-				? MessengerAppState.GetStarted
-				: MessengerAppState.Ready,
-		isNewAccount: null,
+		appState: MessengerAppState.PreReady,
 	}),
+
+	[MessengerActions.SetStateReady]: (oldState, _) => {
+		return {
+			...oldState,
+			appState: MessengerAppState.Ready,
+		}
+	},
 
 	[MessengerActions.SetAccounts]: (oldState, action) => ({
 		...oldState,
@@ -372,7 +371,6 @@ export const reducerActions: {
 			{
 				...oldState,
 				nextSelectedAccount: action?.payload?.accountId,
-				isNewAccount: true,
 				appState: MessengerAppState.OpeningWaitingForClients,
 			},
 			{ type: MessengerActions.SetStateClosed },
@@ -388,6 +386,11 @@ export const reducerActions: {
 		...oldState,
 		appState: MessengerAppState.StreamDone,
 		streamInProgress: null,
+	}),
+
+	[MessengerActions.SetStateOnBoardingReady]: (oldState, _) => ({
+		...oldState,
+		appState: MessengerAppState.GetStarted,
 	}),
 }
 

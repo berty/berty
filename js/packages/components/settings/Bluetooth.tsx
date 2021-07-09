@@ -93,21 +93,31 @@ export const checkBluetoothPermission = async (): Promise<
 	return 'unavailable'
 }
 
-export const permissionExplanation: (t: any, callback: () => void) => void = (t, callback) => {
-	Alert.alert(
-		t('settings.bluetooth.permission-title'),
-		Platform.OS === 'ios'
-			? t('settings.bluetooth.ios-permission-description')
-			: t('settings.bluetooth.android-permission-description'),
-		[
-			{
-				text: t('settings.bluetooth.tag-negative'),
-				style: 'cancel',
-			},
-			{ text: t('settings.bluetooth.tag-positive'), onPress: callback },
-		],
-	)
-}
+export const permissionExplanation: (t: any, callback: () => void) => void = async (t, callback) =>
+	new Promise((resolve) => {
+		Alert.alert(
+			t('settings.bluetooth.permission-title'),
+			Platform.OS === 'ios'
+				? t('settings.bluetooth.ios-permission-description')
+				: t('settings.bluetooth.android-permission-description'),
+			[
+				{
+					text: t('settings.bluetooth.tag-negative'),
+					style: 'cancel',
+					onPress: () => {
+						resolve()
+					},
+				},
+				{
+					text: t('settings.bluetooth.tag-positive'),
+					onPress: async () => {
+						await callback()
+						resolve()
+					},
+				},
+			],
+		)
+	})
 
 const BodyBluetooth: React.FC<BluetoothProps> = ({
 	bluetoothPermissions,

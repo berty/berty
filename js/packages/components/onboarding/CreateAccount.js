@@ -1,48 +1,89 @@
 import React, { useState } from 'react'
-import { View, TextInput, Vibration, StatusBar } from 'react-native'
-import { Text } from '@ui-kitten/components'
-import { Translation } from 'react-i18next'
+import { View, TextInput, Vibration, StatusBar, Linking } from 'react-native'
+import { Translation, useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/context'
+import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import { openDocumentPicker } from '../helpers'
+import {
+	checkBluetoothPermission,
+	permissionExplanation,
+	requestBluetoothPermission,
+} from '../settings/Bluetooth'
 
 const CreateAccountBody = ({ next }) => {
 	const ctx = useMsgrContext()
+	const { t } = useTranslation()
 	const [{ text, padding, margin, border }] = useStyles()
 	const [name, setName] = React.useState('')
-	const [error, setError] = React.useState()
 	const [isPressed, setIsPressed] = useState(false)
 
 	React.useEffect(() => {
-		ctx.client
+		ctx
 			.getUsername()
 			.then(({ username }) => setName(username))
 			.catch((err2) => console.warn('Failed to fetch username:', err2))
-	}, [ctx.client])
+	}, [ctx])
+
+	const handlePersistentOptions = React.useCallback(async () => {
+		const setPermissions = async (state) => {
+			console.log('Bluetooth permissions: ' + state)
+			await ctx.setPersistentOption({
+				type: PersistentOptionsKeys.BLE,
+				payload: {
+					enable: state === 'granted' ? true : false,
+				},
+			})
+			await ctx.setPersistentOption({
+				type: PersistentOptionsKeys.MC,
+				payload: {
+					enable: state === 'granted' ? true : false,
+				},
+			})
+			await ctx.setPersistentOption({
+				type: PersistentOptionsKeys.Nearby,
+				payload: {
+					enable: state === 'granted' ? true : false,
+				},
+			})
+		}
+		checkBluetoothPermission()
+			.then(async (result) => {
+				if (result === 'granted') {
+					await setPermissions(result)
+				} else if (result === 'blocked') {
+					await permissionExplanation(t, () => {
+						Linking.openSettings()
+					})
+				} else if (result !== 'unavailable') {
+					await permissionExplanation(t, () => {})
+					const permission = await requestBluetoothPermission()
+					await setPermissions(permission)
+				}
+				await ctx.createNewAccount()
+				setIsPressed(true)
+			})
+			.catch((err) => {
+				console.log('The Bluetooth permission cannot be retrieved:', err)
+			})
+	}, [ctx, t])
 
 	const onPress = React.useCallback(async () => {
 		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
-		// update account in bertymessenger
-		ctx.client
-			.accountUpdate({ displayName })
-			.then(async () => {
-				setIsPressed(true)
+		await AsyncStorage.setItem('displayName', displayName)
+		handlePersistentOptions()
+			.then(() => {})
+			.catch((err) => {
+				console.log(err)
 			})
-			.catch((err2) => setError(err2))
-		// update account in bertyaccount
-		await ctx.updateAccount({
-			accountName: displayName,
-			accountId: ctx.selectedAccount,
-			publicKey: ctx.account.publicKey,
-		})
-	}, [ctx, name])
+	}, [ctx, name, handlePersistentOptions])
 
 	return (
 		<Translation>
@@ -66,9 +107,8 @@ const CreateAccountBody = ({ next }) => {
 								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield dissapear.json')}
 								autoPlay
 								loop={false}
-								onAnimationFinish={() => {
+								onAnimationFinish={async () => {
 									Vibration.vibrate(500)
-									// @TODO: Error handling
 									next()
 								}}
 							/>
@@ -104,7 +144,6 @@ const CreateAccountBody = ({ next }) => {
 									{ backgroundColor: '#F7F8FF', fontFamily: 'Open Sans' },
 								]}
 							/>
-							{error && <Text>{error.toString()}</Text>}
 						</SwiperCard>
 					</View>
 				</>

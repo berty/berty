@@ -11,6 +11,7 @@ import {
 	openingCloseConvos,
 	closingDaemon,
 	deletingStorage,
+	updateAccountsPreReady,
 } from './providerEffects'
 import {
 	setPersistentOption,
@@ -21,7 +22,7 @@ import {
 	restart,
 	setReaction,
 } from './providerCallbacks'
-import { createNewAccount } from './effectableCallbacks'
+import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './providerReducer'
 import { playSound, SoundKey } from './sounds'
 
@@ -60,11 +61,26 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		state.selectedAccount,
 	])
 
-	useEffect(() => openingCloseConvos(state.appState, dispatch, state.client, state.conversations), [
+	useEffect(() => {
+		openingCloseConvos(
+			state.appState,
+			embedded,
+			dispatch,
+			state.client,
+			state.conversations,
+			state.persistentOptions.welcomeModal.enable,
+		)
+	}, [
 		state.appState,
 		state.client,
 		state.conversations,
+		embedded,
+		state.persistentOptions.welcomeModal.enable,
 	])
+
+	useEffect(() => {
+		updateAccountsPreReady(state, embedded, dispatch)
+	}, [state, embedded, dispatch])
 
 	useEffect(() => closingDaemon(state.appState, state.clearClients, dispatch), [
 		state.clearClients,
@@ -97,15 +113,18 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[embedded],
 	)
 
-	const callbackCreateNewAccount = useCallback(
-		() => createNewAccount(embedded, dispatch, state.clearClients),
-		[embedded, state.clearClients],
-	)
+	const callbackCreateNewAccount = useCallback(() => createNewAccount(embedded, dispatch), [
+		embedded,
+	])
 
 	const callbackUpdateAccount = useCallback(
 		(payload: any) => updateAccount(embedded, dispatch, payload),
 		[embedded],
 	)
+
+	const callbackGetUsername = useCallback(() => {
+		return getUsername()
+	}, [])
 
 	const callbackSetPersistentOption = useCallback(
 		(action) => setPersistentOption(dispatch, state.selectedAccount, action),
@@ -169,6 +188,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				switchAccount: callbackSwitchAccount,
 				updateAccount: callbackUpdateAccount,
 				deleteAccount: callbackDeleteAccount,
+				getUsername: callbackGetUsername,
 				restart: callbackRestart,
 				debugMode: debugMode,
 				playSound: callbackPlaySound,

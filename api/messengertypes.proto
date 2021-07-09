@@ -74,9 +74,6 @@ service MessengerService {
   // BannerQuote returns the quote of the day.
   rpc BannerQuote(BannerQuote.Request) returns (BannerQuote.Reply);
 
-  // GetUsername returns the name of the device/user using Android/iOS/universal API
-  rpc GetUsername(GetUsername.Request) returns (GetUsername.Reply);
-
   // InstanceExportData exports instance data
   rpc InstanceExportData (InstanceExportData.Request) returns (stream InstanceExportData.Reply);
 
@@ -717,13 +714,6 @@ message BannerQuote {
   message Reply {
     string quote = 1;
     string author = 2;
-  }
-}
-
-message GetUsername {
-  message Request {}
-  message Reply {
-    string username = 1;
   }
 }
 

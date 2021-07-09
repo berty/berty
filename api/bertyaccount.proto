@@ -47,6 +47,9 @@ service AccountService {
 
   // LogfileList returns a list of logfiles that can be used with Tyber.
   rpc LogfileList (LogfileList.Request) returns (LogfileList.Reply);
+
+  // GetUsername returns the name of the device/user using Android/iOS/universal API
+  rpc GetUsername(GetUsername.Request) returns (GetUsername.Reply);
 }
 
 message OpenAccount {
@@ -171,5 +174,12 @@ message LogfileList {
       bool latest = 7;
       string errs = 8;
     }
+  }
+}
+
+message GetUsername {
+  message Request {}
+  message Reply {
+    string username = 1;
   }
 }

@@ -78,6 +78,7 @@ export interface WelshAccountServiceClient {
 	updateAccount: UnaryType<beapi.account.AccountService['updateAccount']>
 	getGRPCListenerAddrs: UnaryType<beapi.account.AccountService['getGRPCListenerAddrs']>
 	logfileList: UnaryType<beapi.account.AccountService['logfileList']>
+	getUsername: UnaryType<beapi.account.AccountService['getUsername']>
 }
 
 export interface WelshMessengerServiceClient {
@@ -110,7 +111,6 @@ export interface WelshMessengerServiceClient {
 	>
 	replicationSetAutoEnable: UnaryType<beapi.messenger.MessengerService['replicationSetAutoEnable']>
 	bannerQuote: UnaryType<beapi.messenger.MessengerService['bannerQuote']>
-	getUsername: UnaryType<beapi.messenger.MessengerService['getUsername']>
 	instanceExportData: ResponseStreamType<beapi.messenger.MessengerService['instanceExportData']>
 	mediaPrepare: RequestStreamType<beapi.messenger.MessengerService['mediaPrepare']>
 	mediaRetrieve: ResponseStreamType<beapi.messenger.MessengerService['mediaRetrieve']>
