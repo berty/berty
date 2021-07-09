@@ -185,7 +185,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 								})
 								await requestBluetoothAndHandleAlert()
 
-								if (persistentOptions.preset.value === 'full-anonymity') {
+								if (persistentOptions.preset.value === 'fullAnonymity') {
 									navigate.main.networkOptions()
 								} else {
 									navigate.onboarding.servicesAuth()

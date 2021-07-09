@@ -56,16 +56,21 @@ const CreateAccountBody = ({ next }) => {
 		}
 		checkBluetoothPermission()
 			.then(async (result) => {
-				if (result === 'granted') {
-					await setPermissions(result)
-				} else if (result === 'blocked') {
-					await permissionExplanation(t, () => {
-						Linking.openSettings()
-					})
-				} else if (result !== 'unavailable') {
-					await permissionExplanation(t, () => {})
-					const permission = await requestBluetoothPermission()
-					await setPermissions(permission)
+				const preset = await AsyncStorage.getItem('preset')
+				if (preset === 'performance') {
+					if (result === 'granted') {
+						await setPermissions(result)
+					} else if (result === 'blocked') {
+						await permissionExplanation(t, () => {
+							Linking.openSettings()
+						})
+					} else if (result !== 'unavailable') {
+						await permissionExplanation(t, () => {})
+						const permission = await requestBluetoothPermission()
+						await setPermissions(permission)
+					}
+				} else {
+					await setPermissions('blocked')
 				}
 				await ctx.createNewAccount()
 				setIsPressed(true)
