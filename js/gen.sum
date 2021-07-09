@@ -1,4 +1,4 @@
+9a72f94224b629c409060a583680a0545c01fa53  ../api/messengertypes.proto
+ccf88ff7d52b78a66d840e4634904bc0bd2426a8  ../api/bertyaccount.proto
 d487a9684d84fb8fd517405967fcb2703120646b  ../api/protocoltypes.proto
-d58683c68ade89605ae977ade3cd4698a3d635f2  ../api/bertyaccount.proto
-db20a426364ff890c3084ea8af586b0d2290d00d  ../api/messengertypes.proto
 f15cdf909065437e4fa3c4aacf3c92354be18b4a  Makefile

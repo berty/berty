@@ -2,7 +2,7 @@ package bertyaccount
 
 import (
 	"context"
-	fmt "fmt"
+	"fmt"
 	"sync"
 
 	"go.uber.org/zap"
@@ -12,6 +12,7 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
@@ -21,11 +22,14 @@ var _ AccountServiceServer = (*service)(nil)
 type Service interface {
 	AccountServiceServer
 
-	// WakeUp should be used for background task or similar task
+	// WakeUp should be used for background task or similar task.
 	WakeUp(ctx context.Context) error
 
-	// Close the service
+	// Close the service.
 	Close() error
+
+	// GetMessengerClient returns the Messenger Client of the actual Berty account if there is one selected.
+	GetMessengerClient() (messengertypes.MessengerServiceClient, error)
 }
 
 type Options struct {

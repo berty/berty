@@ -36,6 +36,9 @@ service AccountService {
   // ImportAccount imports existing data.
   rpc ImportAccount (ImportAccount.Request) returns (ImportAccount.Reply);
 
+  // ImportAccount imports existing data.
+  rpc ImportAccountWithProgress (ImportAccountWithProgress.Request) returns (stream ImportAccountWithProgress.Reply);
+
   // CreateAccount creates a new account.
   rpc CreateAccount (CreateAccount.Request) returns (CreateAccount.Reply);
 
@@ -121,6 +124,20 @@ message ImportAccount {
   }
   message Reply {
     AccountMetadata account_metadata = 1;
+  }
+}
+
+message ImportAccountWithProgress {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_name = 2;
+    string backup_path = 3;
+    repeated string args = 4;
+    string logger_filters = 5;
+  }
+  message Reply {
+    berty.protocol.v1.Progress progress = 1;
+    AccountMetadata account_metadata = 2;
   }
 }
 

@@ -22,6 +22,8 @@ export namespace berty {
                 public deleteAccount(request: berty.account.v1.DeleteAccount.IRequest): Promise<berty.account.v1.DeleteAccount.Reply>;
                 public importAccount(request: berty.account.v1.ImportAccount.IRequest, callback: berty.account.v1.AccountService.ImportAccountCallback): void;
                 public importAccount(request: berty.account.v1.ImportAccount.IRequest): Promise<berty.account.v1.ImportAccount.Reply>;
+                public importAccountWithProgress(request: berty.account.v1.ImportAccountWithProgress.IRequest, callback: berty.account.v1.AccountService.ImportAccountWithProgressCallback): void;
+                public importAccountWithProgress(request: berty.account.v1.ImportAccountWithProgress.IRequest): Promise<berty.account.v1.ImportAccountWithProgress.Reply>;
                 public createAccount(request: berty.account.v1.CreateAccount.IRequest, callback: berty.account.v1.AccountService.CreateAccountCallback): void;
                 public createAccount(request: berty.account.v1.CreateAccount.IRequest): Promise<berty.account.v1.CreateAccount.Reply>;
                 public updateAccount(request: berty.account.v1.UpdateAccount.IRequest, callback: berty.account.v1.AccountService.UpdateAccountCallback): void;
@@ -49,6 +51,8 @@ export namespace berty {
                 type DeleteAccountCallback = (error: (Error|null), response?: berty.account.v1.DeleteAccount.Reply) => void;
 
                 type ImportAccountCallback = (error: (Error|null), response?: berty.account.v1.ImportAccount.Reply) => void;
+
+                type ImportAccountWithProgressCallback = (error: (Error|null), response?: berty.account.v1.ImportAccountWithProgress.Reply) => void;
 
                 type CreateAccountCallback = (error: (Error|null), response?: berty.account.v1.CreateAccount.Reply) => void;
 
@@ -476,6 +480,71 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount.Reply;
                     public static toObject(message: berty.account.v1.ImportAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IImportAccountWithProgress {
+            }
+
+            class ImportAccountWithProgress implements IImportAccountWithProgress {
+
+                public static create(properties?: berty.account.v1.IImportAccountWithProgress): berty.account.v1.ImportAccountWithProgress;
+                public static encode(message: berty.account.v1.IImportAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IImportAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccountWithProgress;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccountWithProgress;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress;
+                public static toObject(message: berty.account.v1.ImportAccountWithProgress, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ImportAccountWithProgress {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                    accountName?: (string|null);
+                    backupPath?: (string|null);
+                    args?: (string[]|null);
+                    loggerFilters?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public accountName: string;
+                    public backupPath: string;
+                    public args: string[];
+                    public loggerFilters: string;
+                    public static create(properties?: berty.account.v1.ImportAccountWithProgress.IRequest): berty.account.v1.ImportAccountWithProgress.Request;
+                    public static encode(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccountWithProgress.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccountWithProgress.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress.Request;
+                    public static toObject(message: berty.account.v1.ImportAccountWithProgress.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
+                    accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                }
+
+                class Reply implements IReply {
+
+                    public progress?: (berty.protocol.v1.IProgress|null);
+                    public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                    public static create(properties?: berty.account.v1.ImportAccountWithProgress.IReply): berty.account.v1.ImportAccountWithProgress.Reply;
+                    public static encode(message: berty.account.v1.ImportAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.ImportAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccountWithProgress.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccountWithProgress.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress.Reply;
+                    public static toObject(message: berty.account.v1.ImportAccountWithProgress.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
