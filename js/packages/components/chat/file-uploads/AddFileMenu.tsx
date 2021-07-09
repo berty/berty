@@ -172,6 +172,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 			transparent
 			visible
 			animationType='slide'
+			onRequestClose={onClose}
 			style={{
 				position: 'relative',
 				flex: 1,

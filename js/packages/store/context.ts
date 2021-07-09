@@ -109,6 +109,7 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.DeletingClosingDaemon,
 		MessengerAppState.ClosingDaemon,
 		MessengerAppState.OpeningWaitingForClients,
+		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.OnBoarding,
 		MessengerAppState.StreamDone,
 	],

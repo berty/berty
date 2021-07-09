@@ -1,5 +1,5 @@
 import React from 'react'
-import { ImageBackground, StatusBar, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, Linking, StatusBar, TouchableOpacity, View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Icon, Text } from '@ui-kitten/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -8,15 +8,22 @@ import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty-tech/styles'
 import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
-
 import FullAnonBackground from '@berty-tech/assets/full_anon_bg.png'
 import PerformanceBackground from '@berty-tech/assets/performance_bg.png'
 
+import {
+	checkBluetoothPermission,
+	permissionExplanation,
+	requestBluetoothPermission,
+} from '../settings/Bluetooth'
+import { NeedRestart } from '../modals/NeedRestart'
+
 export const ChoosePreset = () => {
 	const { t }: { t: any } = useTranslation()
-	const { setPersistentOption } = useMsgrContext()
+	const ctx = useMsgrContext()
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
+	const [isChange, setIsChange] = React.useState<boolean>(false)
 
 	const [{ text, padding, border, margin, flex, color, background }, { scaleSize }] = useStyles()
 	const performanceCheckList = [
@@ -35,6 +42,57 @@ export const ChoosePreset = () => {
 		{ title: t('onboarding.select-mode.high-level.on-same-network') },
 	]
 
+	const handlePersistentOptions = React.useCallback(
+		async (opt: 'performance' | 'fullAnonymity') => {
+			const setPermissions = async (
+				state: 'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited',
+			) => {
+				console.log('Bluetooth permissions: ' + state)
+				await ctx.setPersistentOption({
+					type: PersistentOptionsKeys.BLE,
+					payload: {
+						enable: state === 'granted' ? true : false,
+					},
+				})
+				await ctx.setPersistentOption({
+					type: PersistentOptionsKeys.MC,
+					payload: {
+						enable: state === 'granted' ? true : false,
+					},
+				})
+				await ctx.setPersistentOption({
+					type: PersistentOptionsKeys.Nearby,
+					payload: {
+						enable: state === 'granted' ? true : false,
+					},
+				})
+			}
+			checkBluetoothPermission()
+				.then(async (result) => {
+					if (opt === 'performance') {
+						if (result === 'granted') {
+							await setPermissions(result)
+						} else if (result === 'blocked') {
+							await permissionExplanation(t, () => {
+								Linking.openSettings()
+							})
+						} else if (result !== 'unavailable') {
+							await permissionExplanation(t, () => {})
+							const permission = await requestBluetoothPermission()
+							await setPermissions(permission)
+						}
+					} else {
+						await setPermissions('blocked')
+					}
+					setIsChange(true)
+				})
+				.catch((err) => {
+					console.log('The Bluetooth permission cannot be retrieved:', err)
+				})
+		},
+		[ctx, t],
+	)
+
 	return (
 		<View style={[flex.tiny, padding.big, margin.top.scale(insets.top), background.white]}>
 			<StatusBar backgroundColor={color.white} barStyle='dark-content' />
@@ -48,13 +106,13 @@ export const ChoosePreset = () => {
 						await AsyncStorage.setItem('preset', 'performance')
 						navigation.navigate('Onboarding.CreateAccount', {})
 					} else {
-						await setPersistentOption({
+						await ctx.setPersistentOption({
 							type: PersistentOptionsKeys.Preset,
 							payload: {
 								value: 'performance',
 							},
 						})
-						navigation.goBack()
+						await handlePersistentOptions('performance')
 					}
 				}}
 				style={[
@@ -171,13 +229,13 @@ export const ChoosePreset = () => {
 						await AsyncStorage.setItem('preset', 'fullAnonymity')
 						navigation.navigate('Onboarding.CreateAccount', {})
 					} else {
-						await setPersistentOption({
+						await ctx.setPersistentOption({
 							type: PersistentOptionsKeys.Preset,
 							payload: {
 								value: 'fullAnonymity',
 							},
 						})
-						navigation.goBack()
+						await handlePersistentOptions('fullAnonymity')
 					}
 				}}
 			>
@@ -270,6 +328,14 @@ export const ChoosePreset = () => {
 					</View>
 				</ImageBackground>
 			</TouchableOpacity>
+			{isChange && (
+				<NeedRestart
+					closeModal={() => {
+						setIsChange(false)
+						navigation.goBack()
+					}}
+				/>
+			)}
 		</View>
 	)
 }

@@ -192,7 +192,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 							]}
 							onPress={async () => {
 								closeModal()
-								if (persistentOptions.preset.value === 'full-anonymity') {
+								if (persistentOptions.preset.value === 'fullAnonymity') {
 									navigate.main.networkOptions({ checkNotificationPermission: true })
 								} else {
 									navigate.onboarding.servicesAuth({ checkNotificationPermission: true })

@@ -12,6 +12,7 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { NeedRestart } from '@berty-tech/components/modals/NeedRestart'
 
 //
 // Bluetooth
@@ -23,6 +24,7 @@ type BluetoothProps = {
 	setBluetoothPermissions: React.Dispatch<
 		React.SetStateAction<'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined>
 	>
+	setIsChange: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 let toActivate: (
@@ -122,6 +124,7 @@ export const permissionExplanation: (t: any, callback: () => void) => void = asy
 const BodyBluetooth: React.FC<BluetoothProps> = ({
 	bluetoothPermissions,
 	setBluetoothPermissions,
+	setIsChange,
 }) => {
 	const [{ flex, padding, margin, color }] = useStyles()
 	const ctx = useMsgrContext()
@@ -198,6 +201,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 				Linking.openSettings()
 			})
 		}
+		setIsChange(true)
 	}
 
 	return (
@@ -249,6 +253,7 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	>()
 	const { goBack } = useNavigation()
 	const [{ flex, background }] = useStyles()
+	const [isChange, setIsChange] = React.useState<boolean>(false)
 	const ctx = useMsgrContext()
 
 	// get Bluetooth permissions state
@@ -308,22 +313,17 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 								title={t('settings.bluetooth.title')}
 								desc={t('settings.bluetooth.desc')}
 								undo={goBack}
-							>
-								{/* {bluetoothPermissions !== undefined && (
-									<HeaderBluetooth
-										bluetoothPermissions={bluetoothPermissions}
-										setBluetoothPermissions={setBluetoothPermissions}
-									/>
-								)} */}
-							</HeaderSettings>
+							/>
 							{bluetoothPermissions !== undefined && (
 								<BodyBluetooth
 									bluetoothPermissions={bluetoothPermissions}
 									setBluetoothPermissions={setBluetoothPermissions}
+									setIsChange={setIsChange}
 								/>
 							)}
 						</ScrollView>
 					</SwipeNavRecognizer>
+					{isChange && <NeedRestart closeModal={() => setIsChange(false)} />}
 				</Layout>
 			)}
 		</Translation>

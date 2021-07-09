@@ -326,6 +326,10 @@
         "name": "Log filters",
         "bullet-point": "Restart app after changing this field"
       },
+      "tyber-host-button": {
+        "name": "Tyber host",
+        "bullet-point": "Restart app after changing this field"
+      },
       "add-dev-conversations-button": "Add dev conversations",
       "share-button": {
         "title": "Share ID on discord",
@@ -410,6 +414,12 @@
       "desc": "Let's have a quick overview of Settings and finish your first configuration!",
       "skip": "SKIP",
       "next": "NEXT"
+    },
+    "need-restart": {
+      "title": "Need restart!",
+      "desc": "For this kind of modification, you have to restart the app",
+      "restart-button": "RESTART",
+      "cancel-button": "CANCEL"
     }
   },
   "chat": {

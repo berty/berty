@@ -232,6 +232,11 @@ export const openingDaemon = async (
 			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${opts?.tyberHost?.address}`]
 		}
 
+		// set nearby flag
+		bridgeOpts.cliArgs = opts?.nearby?.enable
+			? [...bridgeOpts.cliArgs!, '--p2p.nearby=true']
+			: [...bridgeOpts.cliArgs!, '--p2p.nearby=false']
+
 		// set log filter opt
 		bridgeOpts.logFilters = opts?.logFilters?.format
 			? opts?.logFilters?.format

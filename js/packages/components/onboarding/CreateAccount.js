@@ -42,7 +42,6 @@ const CreateAccountBody = ({ next }) => {
 				isToNavigate: true,
 			})
 		}
-
 		setIsPressed(true)
 	}, [ctx])
 

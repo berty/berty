@@ -22,7 +22,6 @@ import {
 	PersistentOptionsKeys,
 } from '@berty-tech/store/context'
 import { tyberHostStorageKey } from '@berty-tech/store/providerEffects'
-import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
@@ -33,6 +32,7 @@ import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 
+import { DropDownPicker } from '../shared-components/DropDownPicker'
 import { HeaderSettings } from '../shared-components/Header'
 import {
 	ButtonSetting,
@@ -40,6 +40,7 @@ import {
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { NeedRestart } from '../modals/NeedRestart'
 
 //
 // DevTools
@@ -384,7 +385,9 @@ const StringOptionInput: React.FC<{
 	)
 }
 
-const BodyDevTools: React.FC<{}> = () => {
+const BodyDevTools: React.FC<{ setIsReload: React.Dispatch<React.SetStateAction<boolean>> }> = ({
+	setIsReload,
+}) => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
@@ -535,23 +538,25 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.log-button.name')}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
 				getOptionValue={() => ctx.persistentOptions.log.format}
-				setOptionValue={(val) =>
-					ctx.setPersistentOption({
+				setOptionValue={async (val) => {
+					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.Log,
 						payload: { format: val },
 					})
-				}
+					setIsReload(true)
+				}}
 			/>
 			<StringOptionInput
 				name={t('settings.devtools.log-filters-button.name')}
 				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
 				getOptionValue={() => ctx.persistentOptions.logFilters.format}
-				setOptionValue={(val) =>
-					ctx.setPersistentOption({
+				setOptionValue={async (val) => {
+					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.LogFilters,
 						payload: { format: val },
 					})
-				}
+					setIsReload(true)
+				}}
 			/>
 			<StringOptionInput
 				name={t('settings.devtools.tyber-host-button.name')}
@@ -560,7 +565,10 @@ const BodyDevTools: React.FC<{}> = () => {
 					(await AsyncStorage.getItem(tyberHostStorageKey)) ||
 					defaultPersistentOptions().tyberHost.address
 				}
-				setOptionValue={(val) => AsyncStorage.setItem(tyberHostStorageKey, val)}
+				setOptionValue={(val) => {
+					AsyncStorage.setItem(tyberHostStorageKey, val)
+					setIsReload(true)
+				}}
 			/>
 			{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
 				<ButtonSetting
@@ -716,6 +724,8 @@ const BodyDevTools: React.FC<{}> = () => {
 export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 	const { goBack } = useNavigation()
 	const [{ background, flex, color, padding }] = useStyles()
+	const [isReload, setIsReload] = useState<boolean>(false)
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -730,9 +740,10 @@ export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 							>
 								<HeaderDevTools />
 							</HeaderSettings>
-							<BodyDevTools />
+							<BodyDevTools setIsReload={setIsReload} />
 						</ScrollView>
 					</SwipeNavRecognizer>
+					{isReload && <NeedRestart closeModal={() => setIsReload(false)} />}
 				</Layout>
 			)}
 		</Translation>
