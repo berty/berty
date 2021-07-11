@@ -2,6 +2,7 @@ import { GoBridgeOpts } from './types'
 
 export const GoBridgeDefaultOpts: GoBridgeOpts = {
 	cliArgs: [
+		'--p2p.dht=none', // disable routing until it's more stable
 		'--node.display-name=',
 		'--store.lowmem=true',
 		'--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws',
