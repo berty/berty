@@ -14,11 +14,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
-	"go.opentelemetry.io/otel/api/kv"
-	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -45,7 +42,6 @@ func (v *groupView) View() tview.Primitive {
 }
 
 func (v *groupView) commandParser(ctx context.Context, input string) error {
-	tr := tracer.New("command")
 	input = strings.TrimSpace(input)
 
 	if len(input) > 0 && input[0] == '/' {
@@ -58,15 +54,11 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 					}
 				}
 
-				ctx, span := tr.Start(ctx, attrs.title, trace.WithAttributes(kv.String("input", input)))
-				defer span.End()
-
 				if attrs.cmd == nil {
 					return errors.New("not implemented")
 				}
 
 				trimmed := strings.TrimPrefix(input, prefix+" ")
-				span.SetAttribute("args", trimmed)
 				return attrs.cmd(ctx, v, trimmed)
 			}
 		}

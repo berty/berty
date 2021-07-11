@@ -508,7 +508,7 @@ func (m *messageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *p
 	return nil
 }
 
-func (m *messageKeystore) SealEnvelope(ctx context.Context, g *protocoltypes.Group, deviceSK crypto.PrivKey, payload []byte, attachmentsCIDs [][]byte) ([]byte, error) {
+func (m *messageKeystore) SealEnvelope(g *protocoltypes.Group, deviceSK crypto.PrivKey, payload []byte, attachmentsCIDs [][]byte) ([]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -530,7 +530,7 @@ func (m *messageKeystore) SealEnvelope(ctx context.Context, g *protocoltypes.Gro
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := sealEnvelopeInternal(ctx, payload, ds, deviceSK, g, attachmentsCIDs)
+	env, err := sealEnvelopeInternal(payload, ds, deviceSK, g, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}

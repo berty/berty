@@ -37,7 +37,7 @@ func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int)
 			_ = os.RemoveAll(tempDir)
 		})
 
-		man, err := initutil.New(ctx)
+		man, err := initutil.New(ctx, nil)
 		assert.NoError(t, err)
 
 		fs := flag.NewFlagSet("man1", flag.ExitOnError)

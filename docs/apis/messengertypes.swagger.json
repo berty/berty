@@ -574,39 +574,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/GetUsername": {
-      "post": {
-        "summary": "GetUsername returns the name of the device/user using Android/iOS/universal API",
-        "operationId": "MessengerService_GetUsername",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetUsernameReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetUsernameRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/InstanceExportData": {
       "post": {
         "summary": "InstanceExportData exports instance data",
@@ -1154,6 +1121,81 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/bertymessengerv1SystemInfoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/TyberHostAttach": {
+      "post": {
+        "summary": "TyberHostAttach",
+        "operationId": "MessengerService_TyberHostAttach",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1TyberHostAttachReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1TyberHostAttachRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/TyberHostSearch": {
+      "post": {
+        "summary": "TyberHostSearch",
+        "operationId": "MessengerService_TyberHostSearch",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1TyberHostSearchReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1TyberHostSearchReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1TyberHostSearchRequest"
             }
           }
         ],
@@ -2096,17 +2138,6 @@
         }
       }
     },
-    "v1GetUsernameReply": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "v1GetUsernameRequest": {
-      "type": "object"
-    },
     "v1Group": {
       "type": "object",
       "properties": {
@@ -2666,6 +2697,48 @@
         "TypeConversationPartialLoad"
       ],
       "default": "Undefined"
+    },
+    "v1TyberHostAttachReply": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        }
+      }
+    },
+    "v1TyberHostAttachRequest": {
+      "type": "object",
+      "properties": {
+        "addresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1TyberHostSearchReply": {
+      "type": "object",
+      "properties": {
+        "hostname": {
+          "type": "string"
+        },
+        "ipv4": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ipv6": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1TyberHostSearchRequest": {
+      "type": "object"
     }
   }
 }

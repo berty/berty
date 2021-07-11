@@ -26,7 +26,7 @@ func NewManagerFromManager(m *initutil.Manager) Provider {
 }
 
 func NewManagerFromNothing(ctx context.Context) (Provider, error) {
-	m, err := initutil.New(ctx)
+	m, err := initutil.New(ctx, nil)
 	if err != nil {
 		return nil, err
 	}

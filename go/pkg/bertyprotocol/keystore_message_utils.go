@@ -1,7 +1,6 @@
 package bertyprotocol
 
 import (
-	"context"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
@@ -17,7 +16,6 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -40,7 +38,7 @@ func sealPayload(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
 }
 
-func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto.PrivKey, g *protocoltypes.Group, attachmentsCIDs [][]byte) ([]byte, error) {
+func sealEnvelopeInternal(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto.PrivKey, g *protocoltypes.Group, attachmentsCIDs [][]byte) ([]byte, error) {
 	encryptedPayload, sig, err := sealPayload(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
@@ -56,8 +54,6 @@ func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *protocoltypes
 		DevicePK: devicePKRaw,
 		Sig:      sig,
 	}
-
-	tracer.InjectSpanContextToMessageHeaders(ctx, h)
 
 	headers, err := proto.Marshal(h)
 	if err != nil {

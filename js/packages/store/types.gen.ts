@@ -285,6 +285,13 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useTyberHostAttach: () => {
+		error: any
+		call: (req?: beapi.messenger.TyberHostAttach.IRequest) => void
+		reply: beapi.messenger.TyberHostAttach.IReply | null
+		done: boolean
+		called: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {
