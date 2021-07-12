@@ -148,6 +148,10 @@
     "mode": {
       "title": "Instellingen",
       "desc": "Pas alles aan om de app te krijgen die aan je behoeften voldoet",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Notificaties",
         "tag-enabled": "Ingeschakeld",
@@ -227,10 +231,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth staat je toe om de Berty app te gebruiken als je geen netwerkverbinding (wifi of data) hebt door je telefoon direct te verbinden met peers in de buurt",
-      "activate-button": "Bluetooth activeren",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Vraag mij later",
       "tag-negative": "Annuleren",
       "tag-positive": "Oke"
@@ -324,7 +329,7 @@
       "add-dev-conversations-button": "Voeg ontwikkelaar gesprekken toe",
       "share-button": {
         "title": "Deel ID op discord",
-        "alert-title": "Wil je je QR-code delen met \"#dev-logs\" op Berty Discord?",
+        "alert-title": "",
         "alert-message": "Hiermee kunnen andere medewerkers je QR-code scannen of je contactlink kopiëren.",
         "alert-accept-button": "Yep 👍",
         "alert-cancel-button": "Nope"
@@ -349,7 +354,8 @@
       },
       "footer-left-button": "Apparaat informatie",
       "footer-middle-button": "Toon gebeurtenissen",
-      "footer-right-button": "Herstart daemon"
+      "footer-right-button": "Herstart daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Systeem informatie"
@@ -433,6 +439,11 @@
       "erase-button": "Gesprek wissen",
       "leave-button": "Groep verlaten"
     },
+    "add-members": {
+      "members": "Leden",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Groep"
     },
@@ -445,7 +456,7 @@
       },
       "betabot-box": {
         "title": "BETA BOT TOEVOEGEN?",
-        "desc": "Je hebt nog geen contacten, wil je de Beta Bot toevoegen om gesprekken te ontdekken en te testen?",
+        "desc": "",
         "skip-button": "OVERSLAAN",
         "add-button": "TOEVOEGEN !"
       },
@@ -498,6 +509,11 @@
       "medias": "",
       "links": "Koppelingen",
       "documents": "Documenten"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +604,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Annuleren"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
