@@ -10,13 +10,16 @@ import { ButtonSetting } from '@berty-tech/components/shared-components/Settings
 import Button from '@berty-tech/components/onboarding/Button'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
+import { checkPermissions } from '../utils'
+import { RESULTS } from 'react-native-permissions'
 
 enum Modes {
 	FullAnon,
 	TORCompatible,
 }
 
-export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
+export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
+	const checkP2POnly = route?.params?.checkP2POnly
 	const { t }: { t: any } = useTranslation()
 	const { setPersistentOption, persistentOptions } = useMsgrContext()
 	const { goBack } = useNavigation()
@@ -46,6 +49,60 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
 		t('main.network-options.full-anon.no-mc'),
 		t('main.network-options.full-anon.tor-only'),
 	]
+
+	const handleComplete = async () => {
+		goBack()
+
+		const permissionsToCheck = []
+
+		const p2pStatus = await checkPermissions(['p2p'], { isToNavigate: false })
+
+		if (p2pStatus === RESULTS.GRANTED) {
+			const state = true
+			await setPersistentOption({
+				type: PersistentOptionsKeys.BLE,
+				payload: {
+					enable: state,
+				},
+			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.MC,
+				payload: {
+					enable: state,
+				},
+			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Nearby,
+				payload: {
+					enable: state,
+				},
+			})
+		} else {
+			permissionsToCheck.push('p2p')
+		}
+
+		if (!checkP2POnly) {
+			const notificationStatus = await checkPermissions(['notification'], {
+				isToNavigate: false,
+			})
+			if (notificationStatus === RESULTS.GRANTED) {
+				await setPersistentOption({
+					type: PersistentOptionsKeys.Configurations,
+					payload: {
+						...persistentOptions.configurations,
+						notification: {
+							...persistentOptions.configurations.notification,
+							state: 'added',
+						},
+					},
+				})
+			} else {
+				permissionsToCheck.push('notification')
+			}
+		}
+
+		checkPermissions(permissionsToCheck)
+	}
 	return (
 		<SafeAreaView
 			style={{
@@ -216,8 +273,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
 											},
 										})
 									}
-
-									goBack()
+									handleComplete()
 								}}
 							>
 								{t('main.network-options.save')}
@@ -236,8 +292,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
 											},
 										},
 									})
-
-									goBack()
+									handleComplete()
 								}}
 							>
 								<Text style={[text.size.small, text.color.grey, text.align.center]}>

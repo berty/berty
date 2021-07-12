@@ -227,6 +227,11 @@ export const Navigation: React.FC = () => {
 				component={Components.Main.NetworkOptions}
 				options={ModalScreenOptions}
 			/>
+			<NavigationStack.Screen
+				name={Routes.Main.Permissions}
+				component={Components.Main.Permissions}
+				options={ModalScreenOptions}
+			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
 			<NavigationStack.Screen

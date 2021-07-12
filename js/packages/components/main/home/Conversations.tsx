@@ -3,19 +3,18 @@ import { StyleProp, TouchableHighlight, View, ViewProps } from 'react-native'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
-import { requestNotifications, RESULTS } from 'react-native-permissions'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { useMsgrContext } from '@berty-tech/store/context'
 import { useLastConvInteraction } from '@berty-tech/store/hooks'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
-import { requestBluetoothAndHandleAlert } from '../bluetooth'
+import { checkPermissions } from '@berty-tech/components/utils'
 
 type ConversationsProps = ViewProps & {
 	items: Array<any>
@@ -381,7 +380,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 	const [{ background }] = useStyles()
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
-	const { persistentOptions, setPersistentOption } = useMsgrContext()
+	const { persistentOptions } = useMsgrContext()
 
 	return items.length || suggestions.length || configurations.length ? (
 		<SafeAreaConsumer>
@@ -403,25 +402,13 @@ export const Conversations: React.FC<ConversationsProps> = ({
 							icon={config.icon}
 							addBot={async () => {
 								if (config.key === 'network') {
-									await requestBluetoothAndHandleAlert()
 									if (persistentOptions.preset.value === 'full-anonymity') {
-										navigate.main.networkOptions()
+										navigate.main.networkOptions({ checkP2POnly: true })
 									} else {
-										navigate.onboarding.servicesAuth()
+										navigate.onboarding.servicesAuth({ checkP2POnly: true })
 									}
 								} else {
-									const { status } = await requestNotifications(['alert', 'badge'])
-
-									await setPersistentOption({
-										type: PersistentOptionsKeys.Configurations,
-										payload: {
-											...persistentOptions.configurations,
-											notification: {
-												...persistentOptions.configurations.notification,
-												state: status === RESULTS.GRANTED ? 'added' : 'skipped',
-											},
-										},
-									})
+									await checkPermissions(['notification'])
 								}
 							}}
 							style={{ backgroundColor: config.color }}

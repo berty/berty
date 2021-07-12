@@ -609,5 +609,29 @@
     "audio": "audio",
     "picture": "picture",
     "file": "file"
+  },
+  "permission": {
+    "notification": {
+      "title": "Push notifications",
+      "desc": "Berty app need your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
+    },
+    "p2p": {
+      "title": "Peer to Peer",
+      "desc": "Berty do not use or record in any way the user's location, the only purpose of the permission request is to exchange messages in BLE, which require location permission on Android."
+    },
+    "camera": {
+      "title": "Camera",
+      "desc": "To scan QR code and add contacts with your camera, Berty app need your permission. Camera cannot be use for anything else."
+    },
+    "audio": {
+      "title": "Audio messages",
+      "desc": "To send audio message to your contacts, you need to allow microphone permission to Berty app."
+    },
+    "button-labels": {
+      "allow": "Allow",
+      "settings": "Go to Settings"
+    },
+    "why-different": "Why Berty is different?",
+    "settings-text": "You can enable {{title}} permission from Settings."
   }
 }

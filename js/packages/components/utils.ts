@@ -1,9 +1,13 @@
+import { Platform } from 'react-native'
 import { Buffer } from 'buffer'
 import beapi from '@berty-tech/api'
 import emojiSource from 'emoji-datasource'
 import 'string.fromcodepoint'
 
 import { WelshProtocolServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { checkNotifications, check, PERMISSIONS, RESULTS } from 'react-native-permissions'
+
+import { navigate } from '@berty-tech/navigation'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
 
@@ -77,4 +81,55 @@ export const getEmojiByName = (name: string) => {
 		(item: any) => item.short_name === name.replaceAll(':', ''),
 	)
 	return toEmoji(requiredSource?.unified)
+}
+
+export const checkPermissions = async (
+	permissionTypes: any[],
+	options = {
+		isToNavigate: true,
+	},
+) => {
+	const permissionType = permissionTypes[0]
+	if (!permissionType) {
+		return
+	}
+
+	let status
+	if (permissionType === 'notification') {
+		try {
+			const res = await checkNotifications()
+			status = res.status
+			//
+		} catch (err) {
+			console.log('request notification permission err:', err)
+		}
+	} else if (permissionType === 'p2p') {
+		status = await check(
+			Platform.OS === 'ios'
+				? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
+				: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+		)
+	} else if (permissionType === 'camera') {
+		status = await check(
+			Platform.OS === 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA,
+		)
+	} else if (permissionType === 'audio') {
+		// ios only permission
+		if (Platform.OS === 'android') {
+			return RESULTS.GRANTED
+		}
+		status = await check(PERMISSIONS.IOS.MICROPHONE)
+	}
+	permissionTypes.shift()
+	if ((status === RESULTS.DENIED || status === RESULTS.BLOCKED) && options.isToNavigate) {
+		navigate('Main.Permissions', {
+			permissionType,
+			permissionStatus: status,
+			otherPermissionsToCheck: permissionTypes,
+		})
+	} else if (permissionTypes.length) {
+		checkPermissions(permissionTypes)
+	}
+
+	return status
 }

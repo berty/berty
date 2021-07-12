@@ -10,11 +10,15 @@ import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
+import { checkPermissions } from '../utils'
+import { RESULTS } from 'react-native-permissions'
 
-const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
+const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void }> = ({
+	next,
+	handleComplete,
+}) => {
 	const ctx = useMsgrContext()
 	const accountServices = useAccountServices() || []
-	const { goBack } = useNavigation()
 
 	React.useEffect(() => {
 		if (accountServices.length > 0) {
@@ -47,8 +51,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 												},
 											},
 										})
-
-										goBack()
+										handleComplete()
 									},
 							  }
 					}
@@ -62,11 +65,66 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	)
 }
 
-export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = () => {
+export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
+	const checkP2POnly = route?.params?.checkP2POnly
 	useNotificationsInhibitor(() => true)
 	const { goBack } = useNavigation()
 	const { persistentOptions, setPersistentOption } = useMsgrContext()
 	const [{ color }] = useStyles()
+
+	const handleComplete = async () => {
+		goBack()
+
+		const permissionsToCheck = []
+
+		const p2pStatus = await checkPermissions(['p2p'], { isToNavigate: false })
+
+		if (p2pStatus === RESULTS.GRANTED) {
+			const state = true
+			await setPersistentOption({
+				type: PersistentOptionsKeys.BLE,
+				payload: {
+					enable: state,
+				},
+			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.MC,
+				payload: {
+					enable: state,
+				},
+			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Nearby,
+				payload: {
+					enable: state,
+				},
+			})
+		} else {
+			permissionsToCheck.push('p2p')
+		}
+
+		if (!checkP2POnly) {
+			const notificationStatus = await checkPermissions(['notification'], {
+				isToNavigate: false,
+			})
+			if (notificationStatus === RESULTS.GRANTED) {
+				await setPersistentOption({
+					type: PersistentOptionsKeys.Configurations,
+					payload: {
+						...persistentOptions.configurations,
+						notification: {
+							...persistentOptions.configurations.notification,
+							state: 'added',
+						},
+					},
+				})
+			} else {
+				permissionsToCheck.push('notification')
+			}
+		}
+
+		checkPermissions(permissionsToCheck)
+	}
 
 	return (
 		<OnboardingWrapper>
@@ -83,9 +141,9 @@ export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = () => {
 							},
 						},
 					})
-
-					goBack()
+					handleComplete()
 				}}
+				handleComplete={handleComplete}
 			/>
 		</OnboardingWrapper>
 	)
