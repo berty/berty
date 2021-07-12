@@ -1004,6 +1004,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 		go func() {
 			for e := range chSub {
 				var entry ipfslog.Entry
+				replicating := false
 
 				switch evt := e.(type) {
 				case *stores.EventWrite:
@@ -1011,6 +1012,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 
 				case *stores.EventReplicateProgress:
 					entry = evt.Entry
+					replicating = true
 
 				default:
 					continue
@@ -1036,6 +1038,10 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 					tyber.WithJSONDetail("Event", event),
 					tyber.UpdateTraceName(fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(metaEvent.GetMetadata().GetEventType().String(), "EventType"), shortGroupType, b64GroupPK)),
 				)
+
+				if replicating {
+					store.Index().(*metadataStoreIndex).UpdateReplicatingEntry(entry, metaEvent, event)
+				}
 
 				store.Emit(ctx, &EventMetadataReceived{
 					MetaEvent: metaEvent,

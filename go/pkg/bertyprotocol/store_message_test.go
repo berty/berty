@@ -132,7 +132,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, ds0)
 
-	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*2)
+	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*5)
 	chSub := peers[1].GC.MessageStore().Subscribe(watcherCtx)
 	go func() {
 		for range chSub {
@@ -154,19 +154,25 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 
 	<-watcherCtx.Done()
 
+	peers[1].GC.MessageStore().cacheLock.Lock()
 	require.Equal(t, entriesCount, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
+	peers[1].GC.MessageStore().cacheLock.Unlock()
 
 	err = peers[1].MKS.RegisterChainKey(peers[0].GC.Group(), dPK0, ds0, false)
 	require.NoError(t, err)
 
 	peers[1].GC.MessageStore().openMessageCacheForPK(ctx, dPK0Raw)
 
+	peers[1].GC.MessageStore().cacheLock.Lock()
 	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
+	peers[1].GC.MessageStore().cacheLock.Unlock()
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
 	require.NoError(t, err)
 
 	<-time.After(time.Millisecond * 500)
 
+	peers[1].GC.MessageStore().cacheLock.Lock()
 	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
+	peers[1].GC.MessageStore().cacheLock.Unlock()
 }
