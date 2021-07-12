@@ -148,6 +148,10 @@
     "mode": {
       "title": "Innstillinger",
       "desc": "Tilpass alt for å få appen som passer dine behov",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Varsler",
         "tag-enabled": "Aktivert",
@@ -227,10 +231,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth lar deg bruke Berty-appen når du ikke har internett-tilgang (wifi eller mobilnett) ved å koble mobilen direkte til personer i nærheten",
-      "activate-button": "Aktiver Bluetooth",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "",
       "tag-negative": "Avbryt",
       "tag-positive": ""
@@ -324,7 +329,7 @@
       "add-dev-conversations-button": "Legg til utviklersamtaler",
       "share-button": {
         "title": "Del ID på Discord",
-        "alert-title": "Vil du dele QR-koden din til \"#dev-logs\" på Discord?",
+        "alert-title": "",
         "alert-message": "Dette vil tillate andre ansatte til å skanne QR-koden din eller kopiere kontaktlenken din.",
         "alert-accept-button": "Yep 👍",
         "alert-cancel-button": "Nei"
@@ -349,7 +354,8 @@
       },
       "footer-left-button": "Infoer om enheten",
       "footer-middle-button": "List opp hendelser",
-      "footer-right-button": "Restart daemon"
+      "footer-right-button": "Restart daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "System-info"
@@ -433,6 +439,11 @@
       "erase-button": "Slett samtale",
       "leave-button": "Forlat gruppen"
     },
+    "add-members": {
+      "members": "Medlemmer",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR-Gruppe"
     },
@@ -445,7 +456,7 @@
       },
       "betabot-box": {
         "title": "LEGG TIL BETA-BOT?",
-        "desc": "Du har ingen kontakter ennå. Vil du legge til Beta-Bot for å oppdage og teste samtaler?",
+        "desc": "",
         "skip-button": "HOPP OVER",
         "add-button": "LEGG TIL !"
       },
@@ -498,6 +509,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +604,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Avbryt"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
