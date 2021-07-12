@@ -509,9 +509,9 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	tinderOpts := &tinder.Opts{
 		Logger:                 logger,
-		AdvertiseResetInterval: time.Minute * 2,
-		FindPeerResetInterval:  time.Minute * 2,
-		AdvertiseGracePeriod:   time.Minute,
+		AdvertiseResetInterval: time.Minute * 10,
+		AdvertiseGracePeriod:   time.Minute * 5,
+		FindPeerResetInterval:  time.Minute * 5,
 		BackoffStrategy: &tinder.BackoffOpts{
 			StratFactory: backoffstrat,
 		},
@@ -533,17 +533,10 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
 
-	cacheSize := 100
-	dialTimeout := time.Second * 20
-	backoffconnector := func(host host.Host) (*discovery.BackoffConnector, error) {
-		return discovery.NewBackoffConnector(host, cacheSize, dialTimeout, backoffstrat)
-	}
-
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
 		pubsub.WithMessageSigning(true),
-		pubsub.WithDiscovery(m.Node.Protocol.discovery,
-			pubsub.WithDiscoverConnector(backoffconnector)),
+		pubsub.WithDiscovery(m.Node.Protocol.discovery),
 		pubsub.WithPeerExchange(true),
 		pt.EventTracerOption(),
 	)
