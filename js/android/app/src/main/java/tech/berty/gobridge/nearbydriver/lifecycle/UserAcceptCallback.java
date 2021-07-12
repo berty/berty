@@ -1,4 +1,4 @@
-package tech.berty.gobridge.nearbydriversdk.lifecycle;
+package tech.berty.gobridge.nearbydriver.lifecycle;
 
 import androidx.annotation.Keep;
 

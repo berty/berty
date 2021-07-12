@@ -13,13 +13,13 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import bertybridge.ProximityTransport;
-import tech.berty.gobridge.nearbydriversdk.base.NearbyDriverSDK;
-import tech.berty.gobridge.nearbydriversdk.lifecycle.UserAcceptCallback;
-import tech.berty.gobridge.nearbydriversdk.lifecycle.UserConnectionCallback;
-import tech.berty.gobridge.nearbydriversdk.lifecycle.UserMessageCallback;
-import tech.berty.gobridge.nearbydriversdk.lifecycle.UserRequestCallback;
-import tech.berty.gobridge.nearbydriversdk.lifecycle.UserSearchCallback;
-import tech.berty.gobridge.nearbydriversdk.model.Endpoint;
+import tech.berty.gobridge.nearbydriver.base.NearbyDriver;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserAcceptCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserConnectionCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserMessageCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserRequestCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserSearchCallback;
+import tech.berty.gobridge.nearbydriver.model.Endpoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
@@ -42,7 +42,7 @@ public class BertyNearbyDriver implements ProximityDriver {
     public static final int ProtocolCode = 0x0044;
     public static final String ProtocolName = "nearby";
 
-    private final NearbyDriverSDK nearby;
+    private final NearbyDriver nearby;
     private final Context mContext;
     private String localPID;
 
@@ -147,7 +147,7 @@ public class BertyNearbyDriver implements ProximityDriver {
         this.mContext = context;
 
         // init driver and bridge
-        nearby = NearbyDriverSDK.getInstance(context.getApplicationContext());
+        nearby = NearbyDriver.getInstance(context.getApplicationContext());
     }
 
     private boolean hasPermissions(Context context, String... permissions) {
