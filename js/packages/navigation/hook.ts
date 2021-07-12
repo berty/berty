@@ -63,6 +63,7 @@ const createNavigation = ({
 					createGroupFinalize: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroupFinalize),
 				},
 				networkOptions: createNavigateFunc(navigate, Routes.Main.NetworkOptions),
+				permissions: createNavigateFunc(navigate, Routes.Main.Permissions),
 			},
 			chat: {
 				oneToOne: createNavigateFunc(navigate, Routes.Chat.OneToOne),

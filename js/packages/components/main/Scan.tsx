@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	View,
 	TextInput,
@@ -17,6 +17,7 @@ import { useStyles } from '@berty-tech/styles'
 
 import ScanTarget from './scan_target.svg'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { checkPermissions } from '../utils'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -44,6 +45,9 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
+	useEffect(() => {
+		checkPermissions(['camera'])
+	}, [])
 	const navigation = useNavigation()
 	const [
 		{ background, margin, flex, column, border },
