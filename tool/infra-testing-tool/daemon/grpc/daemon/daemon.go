@@ -10,9 +10,12 @@ import (
 	"fmt"
 	"github.com/anaskhan96/soup"
 	"google.golang.org/grpc"
+	"infratesting/aws"
 	"infratesting/config"
 	"io"
+	"io/fs"
 	"log"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -184,11 +187,28 @@ func (s *Server) ConnectToPeer(ctx context.Context, request *ConnectToPeer_Reque
 	return response, err
 }
 
-func (s *Server) UploadLogs(ctx context.Context, request *UploadLogs_Request) (*UploadLogs_Response, error) {
-	panic("implement me")
+func (s *Server) UploadLogs(ctx context.Context, request *UploadLogs_Request) (response *UploadLogs_Response, err error) {
+	response = new(UploadLogs_Response)
+
+	err = filepath.Walk("/home/ec2-user/logs", func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return filepath.SkipDir
+		}
+		// uploads file
+		err = aws.UploadFile(path, fmt.Sprintf("%s/%s/%s", request.Folder, request.Folder, info.Name()))
+		if err != nil {
+			return err
+		}
+
+		return err
+	})
+
+
+	return response, err
 }
-
-
 
 // CreateInvite creates an invite and returns the invite blob from the berty protocoltypes api
 func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request) (response *CreateInvite_Response, err error) {

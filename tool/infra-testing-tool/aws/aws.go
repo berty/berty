@@ -5,15 +5,15 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/sts"
 	iacec2 "infratesting/iac/components/ec2"
 	"log"
+	"os"
 )
 
 var (
 	sess    *session.Session
-	ec2sess *ec2.EC2
-	stssess *sts.STS
 
 	callerIdentity *sts.GetCallerIdentityOutput
 )
@@ -22,13 +22,24 @@ func init() {
 	sess = session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
+}
 
-	ec2sess = ec2.New(sess)
-	stssess = sts.New(sess)
+func GetEc2Session() ec2.EC2 {
+	return *ec2.New(sess)
+}
+
+func GetStsSession() sts.STS {
+	return *sts.New(sess)
+}
+
+func GetS3Session() s3.S3 {
+	return *s3.New(sess)
 }
 
 // DescribeInstances returns all ec2 instances
 func DescribeInstances() (instances []*ec2.Instance, err error) {
+	ec2sess := GetEc2Session()
+
 	//get all running/pending instances
 	diResp, err := ec2sess.DescribeInstances(&ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
@@ -64,6 +75,8 @@ func DescribeInstances() (instances []*ec2.Instance, err error) {
 }
 
 func GetImages(name string) (r *ec2.DescribeImagesOutput, err error) {
+	ec2sess := GetEc2Session()
+
 	callerIdentity, err := GetCallerIdentity()
 
 	if err != nil {
@@ -91,6 +104,9 @@ func GetCallerIdentity() (*sts.GetCallerIdentityOutput, error){
 	if callerIdentity == nil {
 		log.Println("getting CalledIdentity & AMI's (AWS)")
 
+		stssess := GetStsSession()
+
+
 		// gets caller identity to get accountid
 		r, err := stssess.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 		if err != nil {
@@ -104,3 +120,18 @@ func GetCallerIdentity() (*sts.GetCallerIdentityOutput, error){
 	return callerIdentity, nil
 }
 
+func UploadFile(path, key string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+
+	s3session := GetS3Session()
+
+	_, err = s3session.PutObject(&s3.PutObjectInput{
+		Body: f,
+		Bucket: aws.String(bucketName),
+		Key: &key,
+	})
+	return err
+}
