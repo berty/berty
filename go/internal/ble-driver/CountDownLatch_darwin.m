@@ -16,13 +16,22 @@
         return nil;
     }
 
-    [super self];
+    self = [super self];
 
-    self.count = count;
-    self.semaphore = dispatch_semaphore_create(0);
-    self.dispatch_queue = dispatch_queue_create("CountDownLatchQueue", DISPATCH_QUEUE_SERIAL);
+    if (self) {
+        _count = count;
+        _semaphore = dispatch_semaphore_create(0);
+        _dispatch_queue = dispatch_queue_create("CountDownLatchQueue", DISPATCH_QUEUE_SERIAL);
+    }
 
     return self;
+}
+
+- (void)dealloc {
+    _semaphore = nil;
+    _dispatch_queue = nil;
+
+    [super dealloc];
 }
 
 - (void)countDown {

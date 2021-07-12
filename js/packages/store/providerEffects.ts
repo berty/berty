@@ -198,6 +198,12 @@ export const openingDaemon = async (
 				? [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=false']
 				: [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=true']
 
+		// set nearby flag
+		bridgeOpts.cliArgs =
+			opts?.nearby && !opts.nearby.enable
+				? [...bridgeOpts.cliArgs!, '--p2p.nearby=false']
+				: [...bridgeOpts.cliArgs!, '--p2p.nearby=true']
+
 		// set tor flag
 		bridgeOpts.cliArgs = opts?.tor?.flag.length
 			? [...bridgeOpts.cliArgs!, `--tor.mode=${opts?.tor?.flag}`]

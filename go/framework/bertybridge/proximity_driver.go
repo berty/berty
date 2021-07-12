@@ -4,12 +4,8 @@ import (
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 )
 
-type NativeBleDriver interface {
-	proximity.NativeDriver
-}
-
-type NativeNBDriver interface {
-	proximity.NativeDriver
+type ProximityDriver interface {
+	proximity.ProximityDriver
 }
 
 type ProximityTransport interface {

@@ -42,17 +42,17 @@ type proximityTransport struct {
 	cache    *RingBufferMap
 	lock     sync.RWMutex
 	listener *Listener
-	driver   NativeDriver
+	driver   ProximityDriver
 	logger   *zap.Logger
 	ctx      context.Context
 }
 
-func NewTransport(ctx context.Context, l *zap.Logger, driver NativeDriver) func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {
+func NewTransport(ctx context.Context, l *zap.Logger, driver ProximityDriver) func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {
 	l = l.Named("ProximityTransport")
 
 	if driver == nil {
 		l.Error("error: NewTransport: driver is nil")
-		driver = &NoopNativeDriver{}
+		driver = &NoopProximityDriver{}
 	}
 
 	return func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {

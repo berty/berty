@@ -1,4 +1,4 @@
-package tech.berty.gobridge.proximitydriverssdk.base;
+package tech.berty.gobridge.nearbydriver.base;
 
 import android.content.Context;
 import android.util.Log;
@@ -29,28 +29,28 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserAcceptCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserConnectionCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserMessageCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserRequestCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserSearchCallback;
-import tech.berty.gobridge.proximitydriverssdk.model.Endpoint;
-import tech.berty.gobridge.proximitydriverssdk.util.BertyLogger;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserAcceptCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserConnectionCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserMessageCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserRequestCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserSearchCallback;
+import tech.berty.gobridge.nearbydriver.model.Endpoint;
+import tech.berty.gobridge.nearbydriver.util.BertyLogger;
 
 // Make the NBDriver class a Singleton
-public class NearbyDriverSDK {
+public class NearbyDriver {
     private static final String TAG = "bty.NearbyDriverSDK";
 
     private WeakReference<Context> mAppContext;
     private ConnectionsClient mConnectionsClient;
-    private static volatile NearbyDriverSDK mNBDriver;
+    private static volatile NearbyDriver mNBDriver;
 
     private final SimpleArrayMap<Long, Payload> incomingFiles = new SimpleArrayMap<>();
 
     private Map<String, Endpoint> foundMap = new ConcurrentHashMap<>();
     private Map<String, Endpoint> connectedMap = new ConcurrentHashMap<>();
 
-    private NearbyDriverSDK(Context context) {
+    private NearbyDriver(Context context) {
         BertyLogger.d(TAG, "new NDBDriver instance");
         if (mNBDriver != null) {
             throw new RuntimeException("Use getInstance() method to get the singleton instance of this class");
@@ -62,10 +62,10 @@ public class NearbyDriverSDK {
     }
 
     // Singleton method
-    public static synchronized NearbyDriverSDK getInstance(Context appContext) {
+    public static synchronized NearbyDriver getInstance(Context appContext) {
         BertyLogger.d(TAG, "getInstance called");
         if (mNBDriver == null) {
-            mNBDriver = new NearbyDriverSDK(appContext);
+            mNBDriver = new NearbyDriver(appContext);
         }
         return mNBDriver;
     }

@@ -7,23 +7,23 @@ import android.util.Log;
 import android.util.Base64;
 
 import bertybridge.Bertybridge;
-import bertybridge.NativeNBDriver;
+import bertybridge.ProximityDriver;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import bertybridge.ProximityTransport;
-import tech.berty.gobridge.proximitydriverssdk.base.NearbyDriverSDK;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserAcceptCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserConnectionCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserMessageCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserRequestCallback;
-import tech.berty.gobridge.proximitydriverssdk.lifecycle.UserSearchCallback;
-import tech.berty.gobridge.proximitydriverssdk.model.Endpoint;
+import tech.berty.gobridge.nearbydriver.base.NearbyDriver;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserAcceptCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserConnectionCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserMessageCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserRequestCallback;
+import tech.berty.gobridge.nearbydriver.lifecycle.UserSearchCallback;
+import tech.berty.gobridge.nearbydriver.model.Endpoint;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
-public class BertyNearbyDriver implements NativeNBDriver {
+public class BertyNearbyDriver implements ProximityDriver {
     private static final String TAG = "bty.NearbyDriver";
 
     private static final String SERVICE_ID = "tech.berty.bty.nearby";
@@ -42,7 +42,7 @@ public class BertyNearbyDriver implements NativeNBDriver {
     public static final int ProtocolCode = 0x0044;
     public static final String ProtocolName = "nearby";
 
-    private final NearbyDriverSDK nearby;
+    private final NearbyDriver nearby;
     private final Context mContext;
     private String localPID;
 
@@ -147,7 +147,7 @@ public class BertyNearbyDriver implements NativeNBDriver {
         this.mContext = context;
 
         // init driver and bridge
-        nearby = NearbyDriverSDK.getInstance(context.getApplicationContext());
+        nearby = NearbyDriver.getInstance(context.getApplicationContext());
     }
 
     private boolean hasPermissions(Context context, String... permissions) {

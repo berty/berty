@@ -102,12 +102,12 @@ type Manager struct {
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
 			StaticRelays      string `json:"StaticRelays,omitempty"`
 			Ble               struct {
-				Enable bool                   `json:"Enable,omitempty"`
-				Driver proximity.NativeDriver `json:"Driver,omitempty"`
+				Enable bool                      `json:"Enable,omitempty"`
+				Driver proximity.ProximityDriver `json:"Driver,omitempty"`
 			}
 			Nearby struct {
-				Enable bool                   `json:"Enable,omitempty"`
-				Driver proximity.NativeDriver `json:"Driver,omitempty"`
+				Enable bool                      `json:"Enable,omitempty"`
+				Driver proximity.ProximityDriver `json:"Driver,omitempty"`
 			}
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`

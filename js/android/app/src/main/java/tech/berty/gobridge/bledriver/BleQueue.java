@@ -5,6 +5,8 @@ import android.util.Log;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+
 // Vastly inspired from https://medium.com/@martijn.van.welie/making-android-ble-work-part-1-a736dcd53b02
 // Github repo: https://github.com/weliem/blessed-android
 public class BleQueue {
@@ -13,7 +15,11 @@ public class BleQueue {
     // Maximum number of retries of commands
     private static final int MAX_TRIES = 3;
 
+    // timeout in ms before cancelling task
+    private static final long TIMEOUT = 10000;
     private final Queue<TaskDelay> mCommandQueue = new ConcurrentLinkedQueue<>();
+    private String mId;
+    private Runnable mTimeoutRunnable;
 
     private boolean mCommandQueueBusy = false;
     private boolean mIsRetrying = false;
@@ -21,27 +27,19 @@ public class BleQueue {
 
     private int mIndex = 0;
 
-    private class TaskDelay {
-        private final Runnable task;
-        private final long delay;
-        private final int index;
-
-        public TaskDelay(Runnable t, long d) {
-            task = t;
-            delay = d;
-            index = mIndex++;
-        }
+    public synchronized void setId(String id) {
+        mId = id;
     }
 
-    public synchronized boolean add(Runnable r, long delay) {
-        TaskDelay task = new TaskDelay(r, delay);
+    public synchronized boolean add(Runnable r, Callback callback,long delay, Runnable cancel) {
+        TaskDelay task = new TaskDelay(r, callback, delay, cancel);
         boolean result = mCommandQueue.add(task);
 
         if (result) {
-            Log.d(TAG, String.format("add: index=%d", task.index));
+            Log.d(TAG, String.format("id=%s add: index=%d", mId, task.index));
             nextCommand();
         } else {
-            Log.e(TAG, "could not enqueue task command");
+            Log.e(TAG, String.format("id=%s add error: could not enqueue task command", mId));
             return false;
         }
         return true;
@@ -50,15 +48,20 @@ public class BleQueue {
     /**
      * The current command has been completed, move to the next command in the queue (if any)
      */
-    public synchronized void completedCommand() {
-        Log.v(TAG, "completedCommand called");
+    public synchronized void completedCommand(int status) {
+        Log.v(TAG, String.format("id=%s completedCommand called", mId));
 
+        cancelTimer();
         TaskDelay currentCommand = mCommandQueue.poll();
         if (currentCommand == null) {
-            Log.e(TAG, "completedCommand error: no task found");
-            return ;
+            Log.e(TAG, String.format("id=%s completedCommand error: no task found", mId));
+            return;
         }
-        Log.d(TAG, String.format("completedCommand: index=%d", currentCommand.index));
+        Log.d(TAG, String.format("id=%s completedCommand: index=%d", mId, currentCommand.index));
+        if (currentCommand.callback != null) {
+            Log.d(TAG, String.format("id=%s completedCommand: callback for index=%d", mId, currentCommand.index));
+            BleDriver.mainHandler.post(() -> currentCommand.callback.run(status));
+        }
         mIsRetrying = false;
         mCommandQueueBusy = false;
         nextCommand();
@@ -69,14 +72,14 @@ public class BleQueue {
      */
     public synchronized void retryCommand() {
         // TODO: to implement in driver
-        Log.v(TAG, "retryCommand called");
+        Log.v(TAG, String.format("id=%s retryCommand called", mId));
 
         mCommandQueueBusy = false;
         TaskDelay currentCommand = mCommandQueue.peek();
         if (currentCommand != null) {
             if (mNrTries >= MAX_TRIES) {
                 // Max retries reached, give up on this one and proceed
-                Log.d(TAG, "max number of tries reached, not retrying operation anymore");
+                Log.d(TAG, String.format("id=%s retryCommand: max number of tries reached, not retrying operation anymore", mId));
                 mCommandQueue.poll();
             } else {
                 mIsRetrying = true;
@@ -85,40 +88,74 @@ public class BleQueue {
         nextCommand();
     }
 
+    private void startTimer() {
+        // Check if there is something to do at all
+        final TaskDelay bluetoothCommand = mCommandQueue.peek();
+        if (bluetoothCommand == null) {
+            Log.e(TAG, String.format("id=%s startTimer error: no task found", mId));
+            return;
+        }
+        Log.v(TAG, String.format("id=%s startTimer called: index=%s", mId, bluetoothCommand.index));
+
+        cancelTimer();
+        mTimeoutRunnable = () -> {
+            Log.i(TAG, String.format("mainHandler: id=%s startTimer: cancel connection: index=%s", mId, bluetoothCommand.index));
+
+            mCommandQueue.poll();
+            mIsRetrying = false;
+            mCommandQueueBusy = false;
+            bluetoothCommand.cancel.run();
+            nextCommand();
+
+            mTimeoutRunnable = null;
+        };
+
+        BleDriver.mainHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
+    }
+
+    private void cancelTimer() {
+        Log.v(TAG, String.format("id=%s cancelTimer called", mId));
+        if (mTimeoutRunnable != null) {
+            BleDriver.mainHandler.removeCallbacks(mTimeoutRunnable);
+            mTimeoutRunnable = null;
+        }
+    }
+
     /**
      * Execute the next command in the subscribe queue.
      * A queue is used because the calls have to be executed sequentially.
      * If the read or write fails, the next command in the queue is executed.
      */
     public synchronized void nextCommand() {
-        Log.v(TAG, "nextCommand called");
+        Log.v(TAG, String.format("id=%s nextCommand called", mId));
 
         // If there is still a command being executed, then bail out
         if (mCommandQueueBusy) {
-            Log.d(TAG, "nextCommand: another command is running, cancel");
+            Log.d(TAG, String.format("id=%s nextCommand: another command is running, cancel", mId));
             return;
         }
 
         // Check if there is something to do at all
         final TaskDelay bluetoothCommand = mCommandQueue.peek();
-        if (bluetoothCommand == null) return;
+        if (bluetoothCommand == null) {
+            Log.v(TAG, String.format("id=%s nextCommand: no next command", mId));
+            return;
+        }
 
-        Log.d(TAG, String.format("nextCommand: running index=%d", bluetoothCommand.index));
+        Log.d(TAG, String.format("id=%s nextCommand: running index=%d", mId, bluetoothCommand.index));
 
         // Execute the next command in the queue
         mCommandQueueBusy = true;
         if (!mIsRetrying) {
             mNrTries = 0;
         }
-        BleDriver.mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    bluetoothCommand.task.run();
-                } catch (Exception e) {
-                    Log.e(TAG, "nextCommand: command exception", e);
-                    completedCommand();
-                }
+        BleDriver.mainHandler.postDelayed(() -> {
+            try {
+                startTimer();
+                bluetoothCommand.task.run();
+            } catch (Exception e) {
+                Log.e(TAG, String.format("id=%s nextCommand: command exception", mId), e);
+                completedCommand(1);
             }
         }, bluetoothCommand.delay);
     }
@@ -126,5 +163,39 @@ public class BleQueue {
     public synchronized void clear() {
         mCommandQueue.clear();
         mCommandQueueBusy = false;
+    }
+
+    private class TaskDelay {
+        private final Runnable task;
+        private final Callback callback;
+        private final long delay;
+        private final Runnable cancel;
+        private final int index;
+
+        public TaskDelay(Runnable t, Callback cb, long d, Runnable c) {
+            task = t;
+            callback = cb;
+            delay = d;
+            cancel = c;
+            index = mIndex++;
+        }
+    }
+
+    static public class Callback {
+        private Runnable task;
+        private int status;
+
+        public void setTask(Runnable task) {
+            this.task = task;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void run(int status) {
+            this.status = status;
+            this.task.run();
+        }
     }
 }

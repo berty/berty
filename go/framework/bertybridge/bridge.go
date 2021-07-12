@@ -37,8 +37,8 @@ type Bridge struct {
 	grpcServer     *grpc.Server
 	onceCloser     sync.Once
 	workers        run.Group
-	bleDriver      proximity.NativeDriver
-	nbDriver       proximity.NativeDriver
+	bleDriver      proximity.ProximityDriver
+	nbDriver       proximity.ProximityDriver
 	logger         *zap.Logger
 
 	lifecycleManager    *lifecycle.Manager

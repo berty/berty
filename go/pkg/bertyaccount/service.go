@@ -38,8 +38,8 @@ type Options struct {
 	ServiceClientRegister bertybridge.ServiceClientRegister
 	LifecycleManager      *lifecycle.Manager
 	NotificationManager   notification.Manager
-	BleDriver             proximity.NativeDriver
-	NBDriver              proximity.NativeDriver
+	BleDriver             proximity.ProximityDriver
+	NBDriver              proximity.ProximityDriver
 	Logger                *zap.Logger
 }
 
@@ -55,8 +55,8 @@ type service struct {
 	initManager      *initutil.Manager
 	lifecycleManager *lifecycle.Manager
 	sclients         bertybridge.ServiceClientRegister
-	bleDriver        proximity.NativeDriver
-	nbDriver         proximity.NativeDriver
+	bleDriver        proximity.ProximityDriver
+	nbDriver         proximity.ProximityDriver
 }
 
 func (o *Options) applyDefault() {

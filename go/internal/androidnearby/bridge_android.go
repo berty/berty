@@ -15,9 +15,9 @@ const Supported = true
 
 // Noop implementation for Android
 // Real driver is given from Java directly here: berty/js/android/app/src/main/java/tech/berty/gobridge/nearby
-func NewDriver(logger *zap.Logger) proximity.NativeDriver {
+func NewDriver(logger *zap.Logger) proximity.ProximityDriver {
 	logger = logger.Named("Nearby")
 	logger.Info("NewDriver(): Java driver not found")
 
-	return proximity.NewNoopNativeDriver(ProtocolCode, ProtocolName, DefaultAddr)
+	return proximity.NewNoopProximityDriver(ProtocolCode, ProtocolName, DefaultAddr)
 }

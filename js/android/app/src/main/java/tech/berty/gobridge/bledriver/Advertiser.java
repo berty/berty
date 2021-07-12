@@ -7,6 +7,7 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.util.Log;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -15,16 +16,12 @@ import java.util.concurrent.locks.ReentrantLock;
 // API level 21
 public class Advertiser extends AdvertiseCallback {
     private static final String TAG = "bty.ble.Advertiser";
-
-    private AdvertiseSettings mAdvertiseSettings;
-    private AdvertiseData mAdvertiseData;
+    private final BluetoothAdapter mBluetoothAdapter;
+    private final Lock mLock = new ReentrantLock();
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
     private boolean mInit;
     private boolean mAdvertising;
-
-    private final BluetoothAdapter mBluetoothAdapter;
     private CountDownLatch mStartedLock;
-    private final Lock mLock = new ReentrantLock();
 
     public Advertiser(BluetoothAdapter bluetoothAdapter) {
         mBluetoothAdapter = bluetoothAdapter;
@@ -38,8 +35,7 @@ public class Advertiser extends AdvertiseCallback {
             Log.e(TAG, "init: hardware advertising initialization failed");
             return false;
         }
-        mAdvertiseSettings = buildAdvertiseSettings();
-        mAdvertiseData = buildAdvertiseData();
+
         Log.i(TAG, "init: hardware advertising initialization done");
         return true;
     }
@@ -52,11 +48,12 @@ public class Advertiser extends AdvertiseCallback {
         mInit = state;
     }
 
-    private AdvertiseData buildAdvertiseData() {
+    private AdvertiseData buildAdvertiseData(String id) {
         return new AdvertiseData.Builder()
             .setIncludeDeviceName(false)
             .setIncludeTxPowerLevel(false)
             .addServiceUuid(GattServer.P_SERVICE_UUID)
+            .addServiceData(GattServer.P_SERVICE_UUID, id.getBytes(StandardCharsets.UTF_8))
             .build();
     }
 
@@ -69,41 +66,54 @@ public class Advertiser extends AdvertiseCallback {
     }
 
     // enable scanning
-    public boolean start() {
+    public boolean start(String id) {
         if (!isInit()) {
             Log.e(TAG, "start: driver not init");
             return false;
         }
-        if (!isAdvertising()) {
-            Log.i(TAG, "starting advertising");
 
-            mStartedLock = new CountDownLatch(1);
-            mBluetoothLeAdvertiser.startAdvertising(mAdvertiseSettings, mAdvertiseData, this);
-            try {
-                // Need to set a max time because AVD hangs without that
-                if (!mStartedLock.await(1000, TimeUnit.MILLISECONDS)) {
-                    return false;
-                }
-            } catch (InterruptedException e) {
-                Log.e(TAG, "advertising: interrupted exception", e);
-            }
-            // advertising status is updated by callback
-            return isAdvertising();
+        if (isAdvertising()) {
+            Log.i(TAG, "start: advertiser already running");
+            mBluetoothLeAdvertiser.stopAdvertising(this);
+            setAdvertisingState(false);
         }
-        return false;
+
+        Log.i(TAG, String.format("starting advertising, id=%s", id));
+
+        AdvertiseSettings mAdvertiseSettings = buildAdvertiseSettings();
+        AdvertiseData mAdvertiseData = buildAdvertiseData(id);
+
+        mStartedLock = new CountDownLatch(1);
+        mBluetoothLeAdvertiser.startAdvertising(mAdvertiseSettings, mAdvertiseData, this);
+
+        try {
+            // Need to set a max time because AVD hangs without that
+            if (!mStartedLock.await(1000, TimeUnit.MILLISECONDS)) {
+                Log.e(TAG, "starting advertising error: timeout");
+                return false;
+            }
+        } catch (InterruptedException e) {
+            Log.e(TAG, "starting advertising: interrupted exception", e);
+        }
+        // advertising status is updated by callback
+        return isAdvertising();
     }
 
     // disable scanning
     public void stop() {
         if (!isInit()) {
             Log.e(TAG, "stop: driver not init");
-            return ;
+            return;
         }
 
         if (isAdvertising()) {
-            Log.i(TAG, "stopping advertising");
-            mBluetoothLeAdvertiser.stopAdvertising(this);
-            setAdvertisingState(false);
+            if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
+                Log.i(TAG, "stopping advertising");
+                mBluetoothLeAdvertiser.stopAdvertising(this);
+                setAdvertisingState(false);
+            } else {
+                Log.e(TAG, "stop advertiser error: BT adapter not running");
+            }
         }
     }
 
@@ -136,23 +146,29 @@ public class Advertiser extends AdvertiseCallback {
         boolean state = false;
 
         switch (errorCode) {
-            case ADVERTISE_FAILED_ALREADY_STARTED: errorString = "ADVERTISE_FAILED_ALREADY_STARTED";
+            case ADVERTISE_FAILED_ALREADY_STARTED:
+                errorString = "ADVERTISE_FAILED_ALREADY_STARTED";
                 state = true;
                 break;
 
-            case ADVERTISE_FAILED_DATA_TOO_LARGE: errorString = "ADVERTISE_FAILED_DATA_TOO_LARGE";
+            case ADVERTISE_FAILED_DATA_TOO_LARGE:
+                errorString = "ADVERTISE_FAILED_DATA_TOO_LARGE";
                 break;
 
-            case ADVERTISE_FAILED_TOO_MANY_ADVERTISERS: errorString = "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
+            case ADVERTISE_FAILED_TOO_MANY_ADVERTISERS:
+                errorString = "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
                 break;
 
-            case ADVERTISE_FAILED_INTERNAL_ERROR: errorString = "ADVERTISE_FAILED_INTERNAL_ERROR";
+            case ADVERTISE_FAILED_INTERNAL_ERROR:
+                errorString = "ADVERTISE_FAILED_INTERNAL_ERROR";
                 break;
 
-            case ADVERTISE_FAILED_FEATURE_UNSUPPORTED: errorString = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
+            case ADVERTISE_FAILED_FEATURE_UNSUPPORTED:
+                errorString = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
                 break;
 
-            default: errorString = "UNKNOWN ADVERTISE FAILURE (" + errorCode + ")";
+            default:
+                errorString = "UNKNOWN ADVERTISE FAILURE (" + errorCode + ")";
                 break;
         }
         Log.e(TAG, "onStartFailure: " + errorString);

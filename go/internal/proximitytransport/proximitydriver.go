@@ -1,6 +1,6 @@
 package proximitytransport
 
-type NativeDriver interface {
+type ProximityDriver interface {
 	// Start the native driver
 	Start(localPID string)
 
@@ -26,32 +26,32 @@ type NativeDriver interface {
 	DefaultAddr() string
 }
 
-type NoopNativeDriver struct {
+type NoopProximityDriver struct {
 	protocolCode int
 	protocolName string
 	defaultAddr  string
 }
 
-func NewNoopNativeDriver(protocolCode int, protocolName, defaultAddr string) *NoopNativeDriver {
-	return &NoopNativeDriver{
+func NewNoopProximityDriver(protocolCode int, protocolName, defaultAddr string) *NoopProximityDriver {
+	return &NoopProximityDriver{
 		protocolCode: protocolCode,
 		protocolName: protocolName,
 		defaultAddr:  defaultAddr,
 	}
 }
 
-func (d *NoopNativeDriver) Start(_ string) {}
+func (d *NoopProximityDriver) Start(_ string) {}
 
-func (d *NoopNativeDriver) Stop() {}
+func (d *NoopProximityDriver) Stop() {}
 
-func (d *NoopNativeDriver) DialPeer(_ string) bool { return false }
+func (d *NoopProximityDriver) DialPeer(_ string) bool { return false }
 
-func (d *NoopNativeDriver) SendToPeer(_ string, _ []byte) bool { return false }
+func (d *NoopProximityDriver) SendToPeer(_ string, _ []byte) bool { return false }
 
-func (d *NoopNativeDriver) CloseConnWithPeer(_ string) {}
+func (d *NoopProximityDriver) CloseConnWithPeer(_ string) {}
 
-func (d *NoopNativeDriver) ProtocolCode() int { return d.protocolCode }
+func (d *NoopProximityDriver) ProtocolCode() int { return d.protocolCode }
 
-func (d *NoopNativeDriver) ProtocolName() string { return d.protocolName }
+func (d *NoopProximityDriver) ProtocolName() string { return d.protocolName }
 
-func (d *NoopNativeDriver) DefaultAddr() string { return d.defaultAddr }
+func (d *NoopProximityDriver) DefaultAddr() string { return d.defaultAddr }

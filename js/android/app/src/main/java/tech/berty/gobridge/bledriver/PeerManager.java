@@ -9,28 +9,34 @@ public class PeerManager {
 
     private static final HashMap<String, Peer> mPeers = new HashMap<>();
 
-    public static synchronized Peer register(String peerID) {
+    public static synchronized Peer addPeer(String peerID) {
         Peer peer;
 
         if ((peer = mPeers.get(peerID)) == null) {
-            Log.d(TAG, "register: peer unknown");
+            Log.v(TAG, "addPeer: peer unknown");
             peer = new Peer(peerID);
             mPeers.put(peerID, peer);
         } else {
-            Log.d(TAG, "register: peer already known");
+            Log.v(TAG, "addPeer: peer already known");
         }
         return peer;
     }
 
     public static synchronized Peer registerDevice(String peerID, PeerDevice peerDevice, boolean isClient) {
-        Log.v(TAG, String.format("registerDevice called: peerID=%s device=%s client=%b", peerID, peerDevice.getMACAddress(), isClient));
+        Log.d(TAG, String.format("registerDevice called: peerID=%s device=%s client=%b", peerID, peerDevice.getMACAddress(), isClient));
 
-        Peer peer = register(peerID);
+        Peer peer = addPeer(peerID);
         boolean prevState = peer.isHandshakeSuccessful();
         if (isClient) {
             peer.addClientDevice(peerDevice);
+
+            // add a timeout to disconnect the client if the server side is not ready after a while
+            if (!peer.isServerReady()) {
+                peer.enableTimeout();
+            }
         } else {
             peer.addServerDevice(peerDevice);
+            peer.disableTimeout();
         }
 
         if (!prevState && peer.isHandshakeSuccessful()) {
@@ -83,6 +89,7 @@ public class PeerManager {
             BleInterface.BLEHandleLostPeer(peerID);
         }
 
+        peer.disableTimeout();
         peer.disconnectAndRemoveDevices();
         mPeers.remove(peerID);
     }

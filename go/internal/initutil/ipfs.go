@@ -44,12 +44,12 @@ import (
 )
 
 // Set the Java Android BLE driver
-func (m *Manager) SetBleDriver(d proximity.NativeDriver) {
+func (m *Manager) SetBleDriver(d proximity.ProximityDriver) {
 	m.Node.Protocol.Ble.Driver = d
 }
 
 // Set the Java Android Nearby driver
-func (m *Manager) SetNBDriver(d proximity.NativeDriver) {
+func (m *Manager) SetNBDriver(d proximity.ProximityDriver) {
 	m.Node.Protocol.Nearby.Driver = d
 }
 
