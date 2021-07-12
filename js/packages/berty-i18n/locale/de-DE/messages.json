@@ -148,6 +148,10 @@
     "mode": {
       "title": "Einstellungen",
       "desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Benachrichtigungen",
         "tag-enabled": "Aktiviert",
@@ -227,11 +231,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth ermöglicht es dir, Nachrichten mit Berty ohne Internetzugriff auszutauschen, indem du dein Gerät direkt mit anderen Geräten in der Nähe verbindest",
+      "desc": "",
       "activate-button": "Bluetooth aktivieren",
       "permission-title": "Berty Bluetooth Berechtigung",
-      "android-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die Android API die Standortberechtigung.\nWir verwenden Ihre Standortdaten in keiner Weise.",
-      "ios-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die iOS-API diese Berechtigung.",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Später nachfragen",
       "tag-negative": "Abbrechen",
       "tag-positive": "OK"
@@ -325,7 +329,7 @@
       "add-dev-conversations-button": "Entwickler-Unterhaltungen hinzufügen",
       "share-button": {
         "title": "ID auf Discord teilen",
-        "alert-title": "Möchten Sie Ihren QR-Code auf Berty Discord im Kanal \"#dev-logs\" veröffentlichen?",
+        "alert-title": "",
         "alert-message": "Das erlaubt Anderen Ihren QR-Code zu scannen bzw. Ihren Kontakt-Link zu kopieren.",
         "alert-accept-button": "Ja 👍",
         "alert-cancel-button": "Nein"
@@ -452,7 +456,7 @@
       },
       "betabot-box": {
         "title": "BETA BOT hinzufügen?",
-        "desc": "Sie haben noch keine Kontakte. Möchten Sie den Beta-Bot hinzufügen, um Nachrichten in Berty auszuprobieren?",
+        "desc": "",
         "skip-button": "Überspringen",
         "add-button": "Hinzufügen!"
       },
