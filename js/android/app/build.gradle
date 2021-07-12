@@ -281,7 +281,8 @@ dependencies {
 
     implementation project(':react-native-share')
 
-    // crashlytics
+    // Production debug, remove before release
+    implementation 'com.shakebugs:shake:14.3.0'
     implementation platform('com.google.firebase:firebase-bom:28.1.0')
     implementation 'com.google.firebase:firebase-crashlytics'
 
