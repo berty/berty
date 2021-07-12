@@ -17,7 +17,6 @@ type Config struct {
 	Bootstrap []NodeGroup `yaml:"bootstrap"`
 
 	Peer        []NodeGroup `yaml:"peer"`
-	Token		[]NodeGroup
 	Replication []NodeGroup `yaml:"replication"`
 
 	Attributes Attributes `yaml:"attributes"`
@@ -71,19 +70,6 @@ func (c *Config) Validate() error {
 		c.Replication[i].NodeType = NodeTypeReplication
 		_ = c.Replication[i].validate()
 
-		// create new token server per replication server
-		c.Token = append(c.Token, NodeGroup{
-			Name:        fmt.Sprintf("token-%s", c.Replication[i].Name),
-			Amount:      1,
-			Connections: c.Replication[i].Connections,
-			Routers:     c.Replication[i].Routers,
-			ReplicationAttachment: i,
-		})
-	}
-
-	for i := range c.Token {
-		c.Token[i].NodeType = NodeTypeTokenServer
-		_ = c.Token[i].validate()
 	}
 
 	for i := range c.Peer {

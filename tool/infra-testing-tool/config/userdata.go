@@ -59,14 +59,8 @@ func (c *Node) GenerateUserData() (s string, err error) {
 		values["sk"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Sk)
 		values["secret"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Secret)
 
-	case NodeTypeTokenServer:
-		templ = tokenServerUserData
-
-		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
-		values["replIp"] = c.NodeAttributes.ReplIp
-		values["replPort"] = strconv.Itoa(c.NodeAttributes.ReplPort)
-		values["sk"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Sk)
-		values["secret"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Secret)
+		values["tokenSk"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Sk)
+		values["tokenSecret"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Secret)
 
 	}
 

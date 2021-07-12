@@ -1,15 +1,16 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"infratesting/config"
+	"infratesting/daemon/grpc/daemon"
 	"infratesting/iac/components/ec2"
 	"infratesting/testing"
 	"log"
 	"strconv"
-	"sync"
 	"time"
 )
 
@@ -17,7 +18,10 @@ var (
 	testCmd = &cobra.Command{
 		Use: "test",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			availablePeers,  err := testing.GetAllEligiblePeers(ec2.Ec2TagType, config.NodeTypePeer)
+
+			availablePeers,  err := testing.GetAllEligiblePeers(ec2.Ec2TagType, []string{config.NodeTypePeer})
+			availableRepl, err := testing.GetAllEligiblePeers(ec2.Ec2TagType, []string{config.NodeTypeReplication})
+
 			if err != nil {
 				return err
 			}
@@ -29,6 +33,10 @@ var (
 
 			for i := range availablePeers {
 				availablePeers[i].MatchNodeToPeer(c)
+			}
+
+			for i := range availableRepl {
+				availableRepl[i].MatchNodeToPeer(c)
 			}
 
 			if len(availablePeers) == 0 {
@@ -63,98 +71,94 @@ var (
 						groups[group.Name] = groupCopy
 
 					}
-
 				}
 			}
 
+			ctx := context.Background()
 			for i := range groups {
 				fmt.Printf("GROUP: %s\n", groups[i].Name)
 				groups[i].Name = fmt.Sprintf("%s-%s", groups[i].Name, uuid.NewString()[:8])
 
 				leader := groups[i].Peers[0]
 
-				inv, err := leader.GetInvite(groups[i].Name)
+				invite, err := leader.G.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groups[i].Name})
 				if err != nil {
-					log.Println(err)
+					return err
 				}
 
-				err = leader.ActivateGroup(groups[i].Name)
-				if err != nil {
-					log.Println(err)
+				if invite == nil {
+					return err
 				}
 
 				for peerIndex := 1; peerIndex <= len(groups[i].Peers)-1; peerIndex += 1 {
-					err := groups[i].Peers[peerIndex].JoinInvite(inv, groups[i].Name)
+
+					_, err := groups[i].Peers[peerIndex].G.JoinGroup(ctx, &daemon.JoinGroup_Request{
+						GroupName: groups[i].Name,
+						Invite:    invite.Invite,
+					})
 					if err != nil {
 						log.Println(err)
 					}
 
-					err = groups[i].Peers[peerIndex].ActivateGroup(groups[i].Name)
+					_, err = groups[i].Peers[peerIndex].G.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{
+						GroupName: groups[i].Name,
+					})
 					if err != nil {
 						log.Println(err)
 					}
 				}
 
-
 				for j := range groups[i].Tests {
+
 					fmt.Println("test: " + strconv.Itoa(j+1))
-					wg := sync.WaitGroup{}
+
 					for k := range groups[i].Peers {
-						wg.Add(1)
 
-							peerIndex := k
-							groupIndex := i
-							testIndex := j
+						_, err = groups[i].Peers[k].T.NewTest(ctx, &daemon.NewTest_Request{
+							GroupName: groups[i].Name,
+							TestName:  string(j),
+							Type:      groups[i].Tests[j].TypeInternal,
+							Size:      int64(groups[i].Tests[j].SizeInternal),
+							Interval:  int64(groups[i].Tests[j].IntervalInternal),
+						})
 
-						go func(wg *sync.WaitGroup) {
-							fmt.Println("Started messaging goroutine on: " + groups[i].Peers[peerIndex].Name)
-							var x int
-							for x = 0; x <= 15; x += 1 {
-								err = groups[groupIndex].Peers[peerIndex].SendMessage(groups[groupIndex].Name)
-								if err != nil {
-									panic(err)
-								}
-
-								fmt.Printf("%s sent %d messages\n", groups[groupIndex].Peers[peerIndex].Name, x)
-
-								peerWg.Done()
-							}()
-
-						}
-						peerWg.Wait()
-
-						//testWg.Done()
-
-						for k := range availablePeers {
-							err = groups[i].Peers[k].GetMessageList(groups[i].Name, j)
-							if err != nil {
-								panic(err)
-							}
-
-							amount := groups[i].Peers[k].CountMessages(groups[i].Name, j)
-							size := groups[i].Peers[k].CountSize(groups[i].Name, j)
-
-							wg.Done()
-						}(&wg)
-					}
-
-					wg.Wait()
-
-					for k := range availablePeers {
-						err = groups[i].Peers[k].GetMessageList(groups[i].Name)
 						if err != nil {
-							panic(err)
+							log.Println(err)
+						}
+
+						_, err = groups[i].Peers[k].T.StartTest(ctx, &daemon.StartTest_Request{
+							GroupName: groups[i].Name,
+							TestName:  string(j),
+							Duration:  10,
+						})
+						if err != nil {
+							log.Println(err)
 						}
 
 					for p, _ := range availablePeers {
 						fmt.Printf("%s reveived %d messages in group: %s\n", availablePeers[p].Name, len(availablePeers[p].Messages[groups[i].Name]), groups[i].Name)
 					}
-				//}()
-				//testWg.Wait()
-
-
-			}
-
+				}
+				for j := range groups[i].Tests {
+					for k := range groups[i].Peers {
+						for {
+							isrunning, err := groups[i].Peers[k].T.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
+								GroupName: groups[i].Name,
+								TestName:  string(j),
+							})
+							if err != nil {
+								log.Println(err)
+							} else {
+								log.Println(isrunning.TestIsRunning)
+								if isrunning.TestIsRunning == false {
+									break
+								}
+								time.Sleep(time.Second * 3)
+							}
+						}
+					}
+				}
+ 			}
 			return nil
 		},
 	}

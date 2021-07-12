@@ -18,6 +18,11 @@ source "amazon-ebs" "amazon-linux" {
     region = var.region
     source_ami = "ami-0bad4a5e987bdebde"
     ssh_username = "ec2-user"
+    assume_role {
+       policy_arns = [
+           "arn:aws:iam::043039367084:policy/packer_build_policy",
+       ]
+    }
 }
 
 build {

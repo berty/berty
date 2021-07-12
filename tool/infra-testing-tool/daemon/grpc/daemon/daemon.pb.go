@@ -21,6 +21,434 @@ const (
 )
 
 // ConnectToPeer
+type ConnectToPeer struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ConnectToPeer) Reset() {
+	*x = ConnectToPeer{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ConnectToPeer) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConnectToPeer) ProtoMessage() {}
+
+func (x *ConnectToPeer) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConnectToPeer.ProtoReflect.Descriptor instead.
+func (*ConnectToPeer) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{0}
+}
+
+// ReplicationJoinGroup
+type ReplicationJoinGroup struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ReplicationJoinGroup) Reset() {
+	*x = ReplicationJoinGroup{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReplicationJoinGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReplicationJoinGroup) ProtoMessage() {}
+
+func (x *ReplicationJoinGroup) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReplicationJoinGroup.ProtoReflect.Descriptor instead.
+func (*ReplicationJoinGroup) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{1}
+}
+
+// UploadLogs
+type UploadLogs struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UploadLogs) Reset() {
+	*x = UploadLogs{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UploadLogs) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UploadLogs) ProtoMessage() {}
+
+func (x *UploadLogs) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UploadLogs.ProtoReflect.Descriptor instead.
+func (*UploadLogs) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{2}
+}
+
+// CreateInvite
+type CreateInvite struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CreateInvite) Reset() {
+	*x = CreateInvite{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateInvite) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateInvite) ProtoMessage() {}
+
+func (x *CreateInvite) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateInvite.ProtoReflect.Descriptor instead.
+func (*CreateInvite) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{3}
+}
+
+// JoinGroup
+type JoinGroup struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *JoinGroup) Reset() {
+	*x = JoinGroup{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *JoinGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinGroup) ProtoMessage() {}
+
+func (x *JoinGroup) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinGroup.ProtoReflect.Descriptor instead.
+func (*JoinGroup) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{4}
+}
+
+// StartReceiveMessage
+type StartReceiveMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *StartReceiveMessage) Reset() {
+	*x = StartReceiveMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StartReceiveMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartReceiveMessage) ProtoMessage() {}
+
+func (x *StartReceiveMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartReceiveMessage.ProtoReflect.Descriptor instead.
+func (*StartReceiveMessage) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{5}
+}
+
+// StopReceiveMessage
+type StopReceiveMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *StopReceiveMessage) Reset() {
+	*x = StopReceiveMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StopReceiveMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopReceiveMessage) ProtoMessage() {}
+
+func (x *StopReceiveMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopReceiveMessage.ProtoReflect.Descriptor instead.
+func (*StopReceiveMessage) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{6}
+}
+
+// TestConnection
+type TestConnection struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *TestConnection) Reset() {
+	*x = TestConnection{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TestConnection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestConnection) ProtoMessage() {}
+
+func (x *TestConnection) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TestConnection.ProtoReflect.Descriptor instead.
+func (*TestConnection) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{7}
+}
+
+// IsTestRunning
+type IsTestRunning struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *IsTestRunning) Reset() {
+	*x = IsTestRunning{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IsTestRunning) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsTestRunning) ProtoMessage() {}
+
+func (x *IsTestRunning) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsTestRunning.ProtoReflect.Descriptor instead.
+func (*IsTestRunning) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{8}
+}
+
+// NewTest
+type NewTest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *NewTest) Reset() {
+	*x = NewTest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NewTest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewTest) ProtoMessage() {}
+
+func (x *NewTest) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewTest.ProtoReflect.Descriptor instead.
+func (*NewTest) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{9}
+}
+
+// StartTest
+type StartTest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *StartTest) Reset() {
+	*x = StartTest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StartTest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartTest) ProtoMessage() {}
+
+func (x *StartTest) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartTest.ProtoReflect.Descriptor instead.
+func (*StartTest) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{10}
+}
+
 type ConnectToPeer_Request struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -33,7 +461,7 @@ type ConnectToPeer_Request struct {
 func (x *ConnectToPeer_Request) Reset() {
 	*x = ConnectToPeer_Request{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[0]
+		mi := &file_daemon_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -46,7 +474,7 @@ func (x *ConnectToPeer_Request) String() string {
 func (*ConnectToPeer_Request) ProtoMessage() {}
 
 func (x *ConnectToPeer_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[0]
+	mi := &file_daemon_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +487,7 @@ func (x *ConnectToPeer_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConnectToPeer_Request.ProtoReflect.Descriptor instead.
 func (*ConnectToPeer_Request) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{0}
+	return file_daemon_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (x *ConnectToPeer_Request) GetHost() string {
@@ -85,7 +513,7 @@ type ConnectToPeer_Response struct {
 func (x *ConnectToPeer_Response) Reset() {
 	*x = ConnectToPeer_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[1]
+		mi := &file_daemon_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -98,7 +526,7 @@ func (x *ConnectToPeer_Response) String() string {
 func (*ConnectToPeer_Response) ProtoMessage() {}
 
 func (x *ConnectToPeer_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[1]
+	mi := &file_daemon_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -111,10 +539,179 @@ func (x *ConnectToPeer_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConnectToPeer_Response.ProtoReflect.Descriptor instead.
 func (*ConnectToPeer_Response) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{1}
+	return file_daemon_proto_rawDescGZIP(), []int{0, 1}
 }
 
-// CreateInvite
+type ReplicationJoinGroup_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GroupName string `protobuf:"bytes,1,opt,name=groupName,proto3" json:"groupName,omitempty"`
+	// invite gob
+	Invite []byte `protobuf:"bytes,2,opt,name=invite,proto3" json:"invite,omitempty"`
+}
+
+func (x *ReplicationJoinGroup_Request) Reset() {
+	*x = ReplicationJoinGroup_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReplicationJoinGroup_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReplicationJoinGroup_Request) ProtoMessage() {}
+
+func (x *ReplicationJoinGroup_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReplicationJoinGroup_Request.ProtoReflect.Descriptor instead.
+func (*ReplicationJoinGroup_Request) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *ReplicationJoinGroup_Request) GetGroupName() string {
+	if x != nil {
+		return x.GroupName
+	}
+	return ""
+}
+
+func (x *ReplicationJoinGroup_Request) GetInvite() []byte {
+	if x != nil {
+		return x.Invite
+	}
+	return nil
+}
+
+type ReplicationJoinGroup_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ReplicationJoinGroup_Response) Reset() {
+	*x = ReplicationJoinGroup_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReplicationJoinGroup_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReplicationJoinGroup_Response) ProtoMessage() {}
+
+func (x *ReplicationJoinGroup_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReplicationJoinGroup_Response.ProtoReflect.Descriptor instead.
+func (*ReplicationJoinGroup_Response) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{1, 1}
+}
+
+type UploadLogs_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UploadLogs_Request) Reset() {
+	*x = UploadLogs_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UploadLogs_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UploadLogs_Request) ProtoMessage() {}
+
+func (x *UploadLogs_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UploadLogs_Request.ProtoReflect.Descriptor instead.
+func (*UploadLogs_Request) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{2, 0}
+}
+
+type UploadLogs_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UploadLogs_Response) Reset() {
+	*x = UploadLogs_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UploadLogs_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UploadLogs_Response) ProtoMessage() {}
+
+func (x *UploadLogs_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UploadLogs_Response.ProtoReflect.Descriptor instead.
+func (*UploadLogs_Response) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{2, 1}
+}
+
 type CreateInvite_Request struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -126,7 +723,7 @@ type CreateInvite_Request struct {
 func (x *CreateInvite_Request) Reset() {
 	*x = CreateInvite_Request{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[2]
+		mi := &file_daemon_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -139,7 +736,7 @@ func (x *CreateInvite_Request) String() string {
 func (*CreateInvite_Request) ProtoMessage() {}
 
 func (x *CreateInvite_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[2]
+	mi := &file_daemon_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -152,7 +749,7 @@ func (x *CreateInvite_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateInvite_Request.ProtoReflect.Descriptor instead.
 func (*CreateInvite_Request) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{2}
+	return file_daemon_proto_rawDescGZIP(), []int{3, 0}
 }
 
 func (x *CreateInvite_Request) GetGroupName() string {
@@ -167,13 +764,14 @@ type CreateInvite_Response struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// invite gob
 	Invite []byte `protobuf:"bytes,1,opt,name=invite,proto3" json:"invite,omitempty"`
 }
 
 func (x *CreateInvite_Response) Reset() {
 	*x = CreateInvite_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[3]
+		mi := &file_daemon_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -186,7 +784,7 @@ func (x *CreateInvite_Response) String() string {
 func (*CreateInvite_Response) ProtoMessage() {}
 
 func (x *CreateInvite_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[3]
+	mi := &file_daemon_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -199,7 +797,7 @@ func (x *CreateInvite_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateInvite_Response.ProtoReflect.Descriptor instead.
 func (*CreateInvite_Response) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{3}
+	return file_daemon_proto_rawDescGZIP(), []int{3, 1}
 }
 
 func (x *CreateInvite_Response) GetInvite() []byte {
@@ -209,20 +807,20 @@ func (x *CreateInvite_Response) GetInvite() []byte {
 	return nil
 }
 
-// JoinGroup
 type JoinGroup_Request struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	GroupName string `protobuf:"bytes,1,opt,name=groupName,proto3" json:"groupName,omitempty"`
-	Invite    []byte `protobuf:"bytes,2,opt,name=invite,proto3" json:"invite,omitempty"`
+	// invite gob
+	Invite []byte `protobuf:"bytes,2,opt,name=invite,proto3" json:"invite,omitempty"`
 }
 
 func (x *JoinGroup_Request) Reset() {
 	*x = JoinGroup_Request{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[4]
+		mi := &file_daemon_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -235,7 +833,7 @@ func (x *JoinGroup_Request) String() string {
 func (*JoinGroup_Request) ProtoMessage() {}
 
 func (x *JoinGroup_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[4]
+	mi := &file_daemon_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -248,7 +846,7 @@ func (x *JoinGroup_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinGroup_Request.ProtoReflect.Descriptor instead.
 func (*JoinGroup_Request) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{4}
+	return file_daemon_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (x *JoinGroup_Request) GetGroupName() string {
@@ -274,7 +872,7 @@ type JoinGroup_Response struct {
 func (x *JoinGroup_Response) Reset() {
 	*x = JoinGroup_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[5]
+		mi := &file_daemon_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -287,7 +885,7 @@ func (x *JoinGroup_Response) String() string {
 func (*JoinGroup_Response) ProtoMessage() {}
 
 func (x *JoinGroup_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[5]
+	mi := &file_daemon_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -300,10 +898,179 @@ func (x *JoinGroup_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinGroup_Response.ProtoReflect.Descriptor instead.
 func (*JoinGroup_Response) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{5}
+	return file_daemon_proto_rawDescGZIP(), []int{4, 1}
 }
 
-// TestConnection
+type StartReceiveMessage_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GroupName string `protobuf:"bytes,1,opt,name=groupName,proto3" json:"groupName,omitempty"`
+}
+
+func (x *StartReceiveMessage_Request) Reset() {
+	*x = StartReceiveMessage_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StartReceiveMessage_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartReceiveMessage_Request) ProtoMessage() {}
+
+func (x *StartReceiveMessage_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartReceiveMessage_Request.ProtoReflect.Descriptor instead.
+func (*StartReceiveMessage_Request) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *StartReceiveMessage_Request) GetGroupName() string {
+	if x != nil {
+		return x.GroupName
+	}
+	return ""
+}
+
+type StartReceiveMessage_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *StartReceiveMessage_Response) Reset() {
+	*x = StartReceiveMessage_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StartReceiveMessage_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartReceiveMessage_Response) ProtoMessage() {}
+
+func (x *StartReceiveMessage_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartReceiveMessage_Response.ProtoReflect.Descriptor instead.
+func (*StartReceiveMessage_Response) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{5, 1}
+}
+
+type StopReceiveMessage_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GroupName string `protobuf:"bytes,1,opt,name=groupName,proto3" json:"groupName,omitempty"`
+}
+
+func (x *StopReceiveMessage_Request) Reset() {
+	*x = StopReceiveMessage_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StopReceiveMessage_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopReceiveMessage_Request) ProtoMessage() {}
+
+func (x *StopReceiveMessage_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopReceiveMessage_Request.ProtoReflect.Descriptor instead.
+func (*StopReceiveMessage_Request) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{6, 0}
+}
+
+func (x *StopReceiveMessage_Request) GetGroupName() string {
+	if x != nil {
+		return x.GroupName
+	}
+	return ""
+}
+
+type StopReceiveMessage_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *StopReceiveMessage_Response) Reset() {
+	*x = StopReceiveMessage_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[24]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StopReceiveMessage_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopReceiveMessage_Response) ProtoMessage() {}
+
+func (x *StopReceiveMessage_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[24]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopReceiveMessage_Response.ProtoReflect.Descriptor instead.
+func (*StopReceiveMessage_Response) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{6, 1}
+}
+
 type TestConnection_Request struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -315,7 +1082,7 @@ type TestConnection_Request struct {
 func (x *TestConnection_Request) Reset() {
 	*x = TestConnection_Request{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[6]
+		mi := &file_daemon_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -328,7 +1095,7 @@ func (x *TestConnection_Request) String() string {
 func (*TestConnection_Request) ProtoMessage() {}
 
 func (x *TestConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[6]
+	mi := &file_daemon_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -341,7 +1108,7 @@ func (x *TestConnection_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestConnection_Request.ProtoReflect.Descriptor instead.
 func (*TestConnection_Request) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{6}
+	return file_daemon_proto_rawDescGZIP(), []int{7, 0}
 }
 
 func (x *TestConnection_Request) GetMessage() string {
@@ -362,7 +1129,7 @@ type TestConnection_Response struct {
 func (x *TestConnection_Response) Reset() {
 	*x = TestConnection_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_daemon_proto_msgTypes[7]
+		mi := &file_daemon_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -375,7 +1142,7 @@ func (x *TestConnection_Response) String() string {
 func (*TestConnection_Response) ProtoMessage() {}
 
 func (x *TestConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_daemon_proto_msgTypes[7]
+	mi := &file_daemon_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -388,7 +1155,7 @@ func (x *TestConnection_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestConnection_Response.ProtoReflect.Descriptor instead.
 func (*TestConnection_Response) Descriptor() ([]byte, []int) {
-	return file_daemon_proto_rawDescGZIP(), []int{7}
+	return file_daemon_proto_rawDescGZIP(), []int{7, 1}
 }
 
 func (x *TestConnection_Response) GetSuccess() bool {
@@ -398,63 +1165,468 @@ func (x *TestConnection_Response) GetSuccess() bool {
 	return false
 }
 
+type IsTestRunning_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GroupName string `protobuf:"bytes,1,opt,name=groupName,proto3" json:"groupName,omitempty"`
+	TestName  string `protobuf:"bytes,2,opt,name=testName,proto3" json:"testName,omitempty"`
+}
+
+func (x *IsTestRunning_Request) Reset() {
+	*x = IsTestRunning_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[27]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IsTestRunning_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsTestRunning_Request) ProtoMessage() {}
+
+func (x *IsTestRunning_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[27]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsTestRunning_Request.ProtoReflect.Descriptor instead.
+func (*IsTestRunning_Request) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{8, 0}
+}
+
+func (x *IsTestRunning_Request) GetGroupName() string {
+	if x != nil {
+		return x.GroupName
+	}
+	return ""
+}
+
+func (x *IsTestRunning_Request) GetTestName() string {
+	if x != nil {
+		return x.TestName
+	}
+	return ""
+}
+
+type IsTestRunning_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TestIsRunning bool `protobuf:"varint,1,opt,name=testIsRunning,proto3" json:"testIsRunning,omitempty"`
+}
+
+func (x *IsTestRunning_Response) Reset() {
+	*x = IsTestRunning_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[28]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IsTestRunning_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsTestRunning_Response) ProtoMessage() {}
+
+func (x *IsTestRunning_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[28]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsTestRunning_Response.ProtoReflect.Descriptor instead.
+func (*IsTestRunning_Response) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{8, 1}
+}
+
+func (x *IsTestRunning_Response) GetTestIsRunning() bool {
+	if x != nil {
+		return x.TestIsRunning
+	}
+	return false
+}
+
+type NewTest_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GroupName string `protobuf:"bytes,1,opt,name=groupName,proto3" json:"groupName,omitempty"`
+	TestName  string `protobuf:"bytes,2,opt,name=testName,proto3" json:"testName,omitempty"`
+	Type      string `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
+	Size      int64  `protobuf:"varint,4,opt,name=size,proto3" json:"size,omitempty"`
+	Interval  int64  `protobuf:"varint,5,opt,name=interval,proto3" json:"interval,omitempty"`
+}
+
+func (x *NewTest_Request) Reset() {
+	*x = NewTest_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[29]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NewTest_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewTest_Request) ProtoMessage() {}
+
+func (x *NewTest_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[29]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewTest_Request.ProtoReflect.Descriptor instead.
+func (*NewTest_Request) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{9, 0}
+}
+
+func (x *NewTest_Request) GetGroupName() string {
+	if x != nil {
+		return x.GroupName
+	}
+	return ""
+}
+
+func (x *NewTest_Request) GetTestName() string {
+	if x != nil {
+		return x.TestName
+	}
+	return ""
+}
+
+func (x *NewTest_Request) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *NewTest_Request) GetSize() int64 {
+	if x != nil {
+		return x.Size
+	}
+	return 0
+}
+
+func (x *NewTest_Request) GetInterval() int64 {
+	if x != nil {
+		return x.Interval
+	}
+	return 0
+}
+
+type NewTest_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *NewTest_Response) Reset() {
+	*x = NewTest_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[30]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NewTest_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewTest_Response) ProtoMessage() {}
+
+func (x *NewTest_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[30]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewTest_Response.ProtoReflect.Descriptor instead.
+func (*NewTest_Response) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{9, 1}
+}
+
+type StartTest_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GroupName string `protobuf:"bytes,1,opt,name=groupName,proto3" json:"groupName,omitempty"`
+	TestName  string `protobuf:"bytes,2,opt,name=testName,proto3" json:"testName,omitempty"`
+	Duration  int64  `protobuf:"varint,3,opt,name=duration,proto3" json:"duration,omitempty"`
+}
+
+func (x *StartTest_Request) Reset() {
+	*x = StartTest_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[31]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StartTest_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartTest_Request) ProtoMessage() {}
+
+func (x *StartTest_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[31]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartTest_Request.ProtoReflect.Descriptor instead.
+func (*StartTest_Request) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{10, 0}
+}
+
+func (x *StartTest_Request) GetGroupName() string {
+	if x != nil {
+		return x.GroupName
+	}
+	return ""
+}
+
+func (x *StartTest_Request) GetTestName() string {
+	if x != nil {
+		return x.TestName
+	}
+	return ""
+}
+
+func (x *StartTest_Request) GetDuration() int64 {
+	if x != nil {
+		return x.Duration
+	}
+	return 0
+}
+
+type StartTest_Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *StartTest_Response) Reset() {
+	*x = StartTest_Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_daemon_proto_msgTypes[32]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StartTest_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartTest_Response) ProtoMessage() {}
+
+func (x *StartTest_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_daemon_proto_msgTypes[32]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartTest_Response.ProtoReflect.Descriptor instead.
+func (*StartTest_Response) Descriptor() ([]byte, []int) {
+	return file_daemon_proto_rawDescGZIP(), []int{10, 1}
+}
+
 var File_daemon_proto protoreflect.FileDescriptor
 
 var file_daemon_proto_rawDesc = []byte{
 	0x0a, 0x0c, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06,
-	0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x22, 0x3f, 0x0a, 0x15, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
-	0x74, 0x54, 0x6f, 0x50, 0x65, 0x65, 0x72, 0x5f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x12, 0x0a, 0x04, 0x68, 0x6f, 0x73, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x68,
-	0x6f, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x22, 0x18, 0x0a, 0x16, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
-	0x63, 0x74, 0x54, 0x6f, 0x50, 0x65, 0x65, 0x72, 0x5f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x34, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x74,
-	0x65, 0x5f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x67, 0x72, 0x6f,
+	0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x22, 0x4e, 0x0a, 0x0d, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
+	0x74, 0x54, 0x6f, 0x50, 0x65, 0x65, 0x72, 0x1a, 0x31, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x68, 0x6f, 0x73, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x68, 0x6f, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x1a, 0x0a, 0x0a, 0x08, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x63, 0x0a, 0x14, 0x52, 0x65, 0x70, 0x6c, 0x69, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x1a, 0x3f,
+	0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x67, 0x72, 0x6f,
 	0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x72,
-	0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x2f, 0x0a, 0x15, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x5f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x16, 0x0a, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c,
-	0x52, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x22, 0x49, 0x0a, 0x11, 0x4a, 0x6f, 0x69, 0x6e,
-	0x47, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a,
-	0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x69,
-	0x6e, 0x76, 0x69, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06, 0x69, 0x6e, 0x76,
-	0x69, 0x74, 0x65, 0x22, 0x14, 0x0a, 0x12, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70,
-	0x5f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x32, 0x0a, 0x16, 0x54, 0x65, 0x73,
-	0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x33, 0x0a,
-	0x17, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63,
-	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65,
-	0x73, 0x73, 0x32, 0xad, 0x01, 0x0a, 0x04, 0x50, 0x65, 0x65, 0x72, 0x12, 0x53, 0x0a, 0x0e, 0x54,
-	0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1e, 0x2e,
-	0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e,
-	0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x12, 0x50, 0x0a, 0x0d, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x54, 0x6f, 0x50, 0x65, 0x65,
-	0x72, 0x12, 0x1d, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
-	0x63, 0x74, 0x54, 0x6f, 0x50, 0x65, 0x65, 0x72, 0x5f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x1e, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
-	0x74, 0x54, 0x6f, 0x50, 0x65, 0x65, 0x72, 0x5f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x00, 0x32, 0xf1, 0x01, 0x0a, 0x05, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x4d, 0x0a, 0x0c,
-	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x12, 0x1c, 0x2e, 0x64,
-	0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x76, 0x69,
-	0x74, 0x65, 0x5f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x64, 0x61, 0x65,
-	0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65,
-	0x5f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x44, 0x0a, 0x09, 0x4a,
-	0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x19, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f,
-	0x6e, 0x2e, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x4a, 0x6f, 0x69,
-	0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x00, 0x12, 0x53, 0x0a, 0x0e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x12, 0x1e, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65, 0x73,
-	0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65, 0x73,
-	0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x64, 0x61, 0x65, 0x6d,
-	0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x1a,
+	0x0a, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x23, 0x0a, 0x0a, 0x55,
+	0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4c, 0x6f, 0x67, 0x73, 0x1a, 0x09, 0x0a, 0x07, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x0a, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x5b, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65,
+	0x1a, 0x27, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x67,
+	0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x1a, 0x22, 0x0a, 0x08, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x22, 0x58, 0x0a,
+	0x09, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x1a, 0x3f, 0x0a, 0x07, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61,
+	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e,
+	0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0c, 0x52, 0x06, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x1a, 0x0a, 0x0a, 0x08, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x4a, 0x0a, 0x13, 0x53, 0x74, 0x61, 0x72, 0x74,
+	0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x27,
+	0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x67, 0x72, 0x6f,
+	0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x72,
+	0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x1a, 0x0a, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x49, 0x0a, 0x12, 0x53, 0x74, 0x6f, 0x70, 0x52, 0x65, 0x63, 0x65, 0x69,
+	0x76, 0x65, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x27, 0x0a, 0x07, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61,
+	0x6d, 0x65, 0x1a, 0x0a, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x5b,
+	0x0a, 0x0e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x1a, 0x23, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x24, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x86, 0x01, 0x0a, 0x0d,
+	0x49, 0x73, 0x54, 0x65, 0x73, 0x74, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x1a, 0x43, 0x0a,
+	0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x67, 0x72, 0x6f, 0x75,
+	0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x72, 0x6f,
+	0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65, 0x73, 0x74, 0x4e, 0x61,
+	0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65, 0x73, 0x74, 0x4e, 0x61,
+	0x6d, 0x65, 0x1a, 0x30, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24,
+	0x0a, 0x0d, 0x74, 0x65, 0x73, 0x74, 0x49, 0x73, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x74, 0x65, 0x73, 0x74, 0x49, 0x73, 0x52, 0x75, 0x6e,
+	0x6e, 0x69, 0x6e, 0x67, 0x22, 0x9f, 0x01, 0x0a, 0x07, 0x4e, 0x65, 0x77, 0x54, 0x65, 0x73, 0x74,
+	0x1a, 0x87, 0x01, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09,
+	0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65,
+	0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65,
+	0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69,
+	0x7a, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x12, 0x1a,
+	0x0a, 0x08, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x08, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x1a, 0x0a, 0x0a, 0x08, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x78, 0x0a, 0x09, 0x53, 0x74, 0x61, 0x72, 0x74, 0x54,
+	0x65, 0x73, 0x74, 0x1a, 0x5f, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c,
+	0x0a, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08,
+	0x74, 0x65, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
+	0x74, 0x65, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x75, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x64, 0x75, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x0a, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x32, 0xf6, 0x01, 0x0a, 0x04, 0x50, 0x65, 0x65, 0x72, 0x12, 0x53, 0x0a, 0x0e, 0x54, 0x65, 0x73,
+	0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1e, 0x2e, 0x64, 0x61,
+	0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x64, 0x61,
+	0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x50,
+	0x0a, 0x0d, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x54, 0x6f, 0x50, 0x65, 0x65, 0x72, 0x12,
+	0x1d, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
+	0x54, 0x6f, 0x50, 0x65, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e,
+	0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x54,
+	0x6f, 0x50, 0x65, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x47, 0x0a, 0x0a, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4c, 0x6f, 0x67, 0x73, 0x12, 0x1a,
+	0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4c, 0x6f,
+	0x67, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x64, 0x61, 0x65,
+	0x6d, 0x6f, 0x6e, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4c, 0x6f, 0x67, 0x73, 0x2e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x32, 0x9d, 0x04, 0x0a, 0x05, 0x47, 0x72,
+	0x6f, 0x75, 0x70, 0x12, 0x53, 0x0a, 0x0e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1e, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54,
+	0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54,
+	0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4d, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x12, 0x1c, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x2e, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x2e, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x44, 0x0a, 0x09, 0x4a, 0x6f, 0x69, 0x6e, 0x47,
+	0x72, 0x6f, 0x75, 0x70, 0x12, 0x19, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x4a, 0x6f,
+	0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1a, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f,
+	0x75, 0x70, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x62, 0x0a,
+	0x13, 0x53, 0x74, 0x61, 0x72, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x4d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x12, 0x23, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x53, 0x74,
+	0x61, 0x72, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x64, 0x61, 0x65, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x4d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x12, 0x5f, 0x0a, 0x12, 0x53, 0x74, 0x6f, 0x70, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65,
+	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x22, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x53, 0x74, 0x6f, 0x70, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x4d, 0x65, 0x73, 0x73,
+	0x61, 0x67, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x64, 0x61,
+	0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x53, 0x74, 0x6f, 0x70, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65,
+	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x65, 0x0a, 0x14, 0x52, 0x65, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x24, 0x2e, 0x64, 0x61, 0x65,
+	0x6d, 0x6f, 0x6e, 0x2e, 0x52, 0x65, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4a,
+	0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x25, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x52, 0x65, 0x70, 0x6c, 0x69, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x2e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x32, 0xb3, 0x02, 0x0a, 0x04, 0x54, 0x65,
+	0x73, 0x74, 0x12, 0x53, 0x0a, 0x0e, 0x54, 0x65, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1e, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65,
+	0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x54, 0x65,
+	0x73, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3e, 0x0a, 0x07, 0x4e, 0x65, 0x77, 0x54, 0x65,
+	0x73, 0x74, 0x12, 0x17, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x4e, 0x65, 0x77, 0x54,
+	0x65, 0x73, 0x74, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x64, 0x61,
+	0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x4e, 0x65, 0x77, 0x54, 0x65, 0x73, 0x74, 0x2e, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x44, 0x0a, 0x09, 0x53, 0x74, 0x61, 0x72, 0x74,
+	0x54, 0x65, 0x73, 0x74, 0x12, 0x19, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x53, 0x74,
+	0x61, 0x72, 0x74, 0x54, 0x65, 0x73, 0x74, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1a, 0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x54, 0x65,
+	0x73, 0x74, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x50, 0x0a,
+	0x0d, 0x49, 0x73, 0x54, 0x65, 0x73, 0x74, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x12, 0x1d,
+	0x2e, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x49, 0x73, 0x54, 0x65, 0x73, 0x74, 0x52, 0x75,
+	0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e,
+	0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2e, 0x49, 0x73, 0x54, 0x65, 0x73, 0x74, 0x52, 0x75, 0x6e,
+	0x6e, 0x69, 0x6e, 0x67, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42,
+	0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -469,33 +1641,74 @@ func file_daemon_proto_rawDescGZIP() []byte {
 	return file_daemon_proto_rawDescData
 }
 
-var file_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_daemon_proto_goTypes = []interface{}{
-	(*ConnectToPeer_Request)(nil),   // 0: daemon.ConnectToPeer_Request
-	(*ConnectToPeer_Response)(nil),  // 1: daemon.ConnectToPeer_Response
-	(*CreateInvite_Request)(nil),    // 2: daemon.CreateInvite_Request
-	(*CreateInvite_Response)(nil),   // 3: daemon.CreateInvite_Response
-	(*JoinGroup_Request)(nil),       // 4: daemon.JoinGroup_Request
-	(*JoinGroup_Response)(nil),      // 5: daemon.JoinGroup_Response
-	(*TestConnection_Request)(nil),  // 6: daemon.TestConnection_Request
-	(*TestConnection_Response)(nil), // 7: daemon.TestConnection_Response
+	(*ConnectToPeer)(nil),                 // 0: daemon.ConnectToPeer
+	(*ReplicationJoinGroup)(nil),          // 1: daemon.ReplicationJoinGroup
+	(*UploadLogs)(nil),                    // 2: daemon.UploadLogs
+	(*CreateInvite)(nil),                  // 3: daemon.CreateInvite
+	(*JoinGroup)(nil),                     // 4: daemon.JoinGroup
+	(*StartReceiveMessage)(nil),           // 5: daemon.StartReceiveMessage
+	(*StopReceiveMessage)(nil),            // 6: daemon.StopReceiveMessage
+	(*TestConnection)(nil),                // 7: daemon.TestConnection
+	(*IsTestRunning)(nil),                 // 8: daemon.IsTestRunning
+	(*NewTest)(nil),                       // 9: daemon.NewTest
+	(*StartTest)(nil),                     // 10: daemon.StartTest
+	(*ConnectToPeer_Request)(nil),         // 11: daemon.ConnectToPeer.Request
+	(*ConnectToPeer_Response)(nil),        // 12: daemon.ConnectToPeer.Response
+	(*ReplicationJoinGroup_Request)(nil),  // 13: daemon.ReplicationJoinGroup.Request
+	(*ReplicationJoinGroup_Response)(nil), // 14: daemon.ReplicationJoinGroup.Response
+	(*UploadLogs_Request)(nil),            // 15: daemon.UploadLogs.Request
+	(*UploadLogs_Response)(nil),           // 16: daemon.UploadLogs.Response
+	(*CreateInvite_Request)(nil),          // 17: daemon.CreateInvite.Request
+	(*CreateInvite_Response)(nil),         // 18: daemon.CreateInvite.Response
+	(*JoinGroup_Request)(nil),             // 19: daemon.JoinGroup.Request
+	(*JoinGroup_Response)(nil),            // 20: daemon.JoinGroup.Response
+	(*StartReceiveMessage_Request)(nil),   // 21: daemon.StartReceiveMessage.Request
+	(*StartReceiveMessage_Response)(nil),  // 22: daemon.StartReceiveMessage.Response
+	(*StopReceiveMessage_Request)(nil),    // 23: daemon.StopReceiveMessage.Request
+	(*StopReceiveMessage_Response)(nil),   // 24: daemon.StopReceiveMessage.Response
+	(*TestConnection_Request)(nil),        // 25: daemon.TestConnection.Request
+	(*TestConnection_Response)(nil),       // 26: daemon.TestConnection.Response
+	(*IsTestRunning_Request)(nil),         // 27: daemon.IsTestRunning.Request
+	(*IsTestRunning_Response)(nil),        // 28: daemon.IsTestRunning.Response
+	(*NewTest_Request)(nil),               // 29: daemon.NewTest.Request
+	(*NewTest_Response)(nil),              // 30: daemon.NewTest.Response
+	(*StartTest_Request)(nil),             // 31: daemon.StartTest.Request
+	(*StartTest_Response)(nil),            // 32: daemon.StartTest.Response
 }
 var file_daemon_proto_depIdxs = []int32{
-	6, // 0: daemon.Peer.TestConnection:input_type -> daemon.TestConnection_Request
-	0, // 1: daemon.Peer.ConnectToPeer:input_type -> daemon.ConnectToPeer_Request
-	2, // 2: daemon.Group.CreateInvite:input_type -> daemon.CreateInvite_Request
-	4, // 3: daemon.Group.JoinGroup:input_type -> daemon.JoinGroup_Request
-	6, // 4: daemon.Group.TestConnection:input_type -> daemon.TestConnection_Request
-	7, // 5: daemon.Peer.TestConnection:output_type -> daemon.TestConnection_Response
-	1, // 6: daemon.Peer.ConnectToPeer:output_type -> daemon.ConnectToPeer_Response
-	3, // 7: daemon.Group.CreateInvite:output_type -> daemon.CreateInvite_Response
-	5, // 8: daemon.Group.JoinGroup:output_type -> daemon.JoinGroup_Response
-	7, // 9: daemon.Group.TestConnection:output_type -> daemon.TestConnection_Response
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	25, // 0: daemon.Peer.TestConnection:input_type -> daemon.TestConnection.Request
+	11, // 1: daemon.Peer.ConnectToPeer:input_type -> daemon.ConnectToPeer.Request
+	15, // 2: daemon.Peer.UploadLogs:input_type -> daemon.UploadLogs.Request
+	25, // 3: daemon.Group.TestConnection:input_type -> daemon.TestConnection.Request
+	17, // 4: daemon.Group.CreateInvite:input_type -> daemon.CreateInvite.Request
+	19, // 5: daemon.Group.JoinGroup:input_type -> daemon.JoinGroup.Request
+	21, // 6: daemon.Group.StartReceiveMessage:input_type -> daemon.StartReceiveMessage.Request
+	23, // 7: daemon.Group.StopReceiveMessage:input_type -> daemon.StopReceiveMessage.Request
+	13, // 8: daemon.Group.ReplicationJoinGroup:input_type -> daemon.ReplicationJoinGroup.Request
+	25, // 9: daemon.Test.TestConnection:input_type -> daemon.TestConnection.Request
+	29, // 10: daemon.Test.NewTest:input_type -> daemon.NewTest.Request
+	31, // 11: daemon.Test.StartTest:input_type -> daemon.StartTest.Request
+	27, // 12: daemon.Test.IsTestRunning:input_type -> daemon.IsTestRunning.Request
+	26, // 13: daemon.Peer.TestConnection:output_type -> daemon.TestConnection.Response
+	12, // 14: daemon.Peer.ConnectToPeer:output_type -> daemon.ConnectToPeer.Response
+	16, // 15: daemon.Peer.UploadLogs:output_type -> daemon.UploadLogs.Response
+	26, // 16: daemon.Group.TestConnection:output_type -> daemon.TestConnection.Response
+	18, // 17: daemon.Group.CreateInvite:output_type -> daemon.CreateInvite.Response
+	20, // 18: daemon.Group.JoinGroup:output_type -> daemon.JoinGroup.Response
+	22, // 19: daemon.Group.StartReceiveMessage:output_type -> daemon.StartReceiveMessage.Response
+	24, // 20: daemon.Group.StopReceiveMessage:output_type -> daemon.StopReceiveMessage.Response
+	14, // 21: daemon.Group.ReplicationJoinGroup:output_type -> daemon.ReplicationJoinGroup.Response
+	26, // 22: daemon.Test.TestConnection:output_type -> daemon.TestConnection.Response
+	30, // 23: daemon.Test.NewTest:output_type -> daemon.NewTest.Response
+	32, // 24: daemon.Test.StartTest:output_type -> daemon.StartTest.Response
+	28, // 25: daemon.Test.IsTestRunning:output_type -> daemon.IsTestRunning.Response
+	13, // [13:26] is the sub-list for method output_type
+	0,  // [0:13] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_daemon_proto_init() }
@@ -505,7 +1718,7 @@ func file_daemon_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_daemon_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectToPeer_Request); i {
+			switch v := v.(*ConnectToPeer); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -517,7 +1730,7 @@ func file_daemon_proto_init() {
 			}
 		}
 		file_daemon_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectToPeer_Response); i {
+			switch v := v.(*ReplicationJoinGroup); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -529,7 +1742,7 @@ func file_daemon_proto_init() {
 			}
 		}
 		file_daemon_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateInvite_Request); i {
+			switch v := v.(*UploadLogs); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -541,7 +1754,7 @@ func file_daemon_proto_init() {
 			}
 		}
 		file_daemon_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateInvite_Response); i {
+			switch v := v.(*CreateInvite); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -553,7 +1766,7 @@ func file_daemon_proto_init() {
 			}
 		}
 		file_daemon_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JoinGroup_Request); i {
+			switch v := v.(*JoinGroup); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -565,7 +1778,7 @@ func file_daemon_proto_init() {
 			}
 		}
 		file_daemon_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JoinGroup_Response); i {
+			switch v := v.(*StartReceiveMessage); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -577,7 +1790,7 @@ func file_daemon_proto_init() {
 			}
 		}
 		file_daemon_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TestConnection_Request); i {
+			switch v := v.(*StopReceiveMessage); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -589,7 +1802,307 @@ func file_daemon_proto_init() {
 			}
 		}
 		file_daemon_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TestConnection); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*IsTestRunning); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NewTest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StartTest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectToPeer_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectToPeer_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReplicationJoinGroup_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReplicationJoinGroup_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UploadLogs_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UploadLogs_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateInvite_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateInvite_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*JoinGroup_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*JoinGroup_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StartReceiveMessage_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StartReceiveMessage_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StopReceiveMessage_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StopReceiveMessage_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TestConnection_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TestConnection_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*IsTestRunning_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*IsTestRunning_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NewTest_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NewTest_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StartTest_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_daemon_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StartTest_Response); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -607,9 +2120,9 @@ func file_daemon_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_daemon_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   33,
 			NumExtensions: 0,
-			NumServices:   2,
+			NumServices:   3,
 		},
 		GoTypes:           file_daemon_proto_goTypes,
 		DependencyIndexes: file_daemon_proto_depIdxs,

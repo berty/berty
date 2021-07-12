@@ -2,33 +2,25 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"infratesting/daemon/grpc/daemon"
+	"log"
 )
 
 func main() {
-	conn, err := grpc.Dial("192.168.1.169:9090", grpc.WithInsecure())
+	ctx := context.Background()
+
+	conn1, err := grpc.Dial("127.0.0.1:7091", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
-	defer conn.Close()
+	defer conn1.Close()
 
-	g := daemon.NewGroupClient(conn)
-	p := daemon.NewPeerClient(conn)
+	g1 := daemon.NewGroupClient(conn1)
+	p1 := daemon.NewPeerClient(conn1)
 
-	ctx := context.Background()
-	//for {
-	//	resp, err := client.TestConnection(ctx, &daemon.TestConnection_Request{Message: uuid.NewString()})
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//
-	//	log.Printf("successfull: %v", resp.Success)
-	//}
-
-	_, err = p.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+	_, err = p1.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
 		Host: "127.0.0.1",
 		Port: "9091",
 	})
@@ -38,20 +30,141 @@ func main() {
 
 	groupName := uuid.NewString()
 
-	resp, err := g.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
+	invite, err := g1.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
 	if err != nil {
 		panic(err)
 	}
 
-	r2, err := g.JoinGroup(ctx, &daemon.JoinGroup_Request{
+	conn2, err := grpc.Dial("192.168.1.177:7091", grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+	defer conn2.Close()
+
+	g2 := daemon.NewGroupClient(conn2)
+	//p := daemon.NewPeerClient(conn)
+	//t := daemon.NewTestClient(conn)
+
+
+
+	_, err = g2.ReplicationJoinGroup(ctx, &daemon.ReplicationJoinGroup_Request{
 		GroupName: groupName,
-		Invite:    resp.Invite,
+		Invite: invite.Invite,
 	})
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
-	fmt.Printf(r2.String())
-
+	//for {
+	////	resp, err := client.TestConnection(ctx, &daemon.TestConnection_Request{Message: uuid.NewString()})
+	////	if err != nil {
+	////		panic(err)
+	////	}
+	////
+	////	log.Printf("successfull: %v", resp.Success)
+	////}
+	//
+	//_, err = p.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+	//	Host: "127.0.0.1",
+	//	Port: "9091",
+	//})
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//groupName := uuid.NewString()
+	//
+	//_, err = g.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	////r2, err := g.JoinGroup(ctx, &daemon.JoinGroup_Request{
+	////	GroupName: groupName,
+	////	Invite:    resp.Invite,
+	////})
+	////if err != nil {
+	////	panic(err)
+	////}
+	////
+	////fmt.Printf(r2.String())
+	//
+	////_, err = t.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
+	////	GroupName: groupName,
+	////	TestName:  "beebop",
+	////})
+	////if err != nil {
+	////	log.Println(err)
+	////}
+	//
+	//tests := []string{"a", "b", "c"}
+	//
+	//for _, test := range tests {
+	//	_, err = t.NewTest(ctx, &daemon.NewTest_Request{
+	//		GroupName: groupName,
+	//		TestName:  test,
+	//		Type:      "text",
+	//		Size:      2000,
+	//		Interval:  1,
+	//	})
+	//	if err != nil {
+	//		log.Println(err)
+	//	}
+	//
+	//
+	//	fmt.Println("starting", test)
+	//	_, err = t.StartTest(ctx, &daemon.StartTest_Request{
+	//		GroupName: groupName,
+	//		TestName:  test,
+	//		Duration:  20,
+	//	})
+	//	if err != nil {
+	//		log.Println(err)
+	//	}
+	//}
+	//
+	//time.Sleep(time.Second * 3)
+	//
+	//_, err = g.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{GroupName: groupName})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//
+	//
+	//var wg sync.WaitGroup
+	//
+	//for _, test := range tests {
+	//	fmt.Println(test)
+	//	wg.Add(1)
+	//	go func(wg *sync.WaitGroup) {
+	//		te := test
+	//		defer wg.Done()
+	//		for {
+	//			r, err := t.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
+	//				GroupName: groupName,
+	//				TestName:  te,
+	//			})
+	//			if err != nil {
+	//				log.Println(err)
+	//			} else {
+	//				if r.GetTestIsRunning() == false {
+	//					fmt.Println("test successful!")
+	//					break
+	//				}
+	//			}
+	//
+	//			time.Sleep(time.Second * 1)
+	//		}
+	//	}(&wg)
+	//}
+	//
+	//wg.Wait()
+	//
+	//_, err = g.StopReceiveMessage(ctx, &daemon.StopReceiveMessage_Request{GroupName: groupName})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//
+	//log.Println("done")
 
 }

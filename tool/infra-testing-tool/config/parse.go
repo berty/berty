@@ -78,11 +78,6 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		components = append(components, config.Replication[i].components...)
 	}
 
-	for i := range config.Token {
-		config.Token[i].composeComponents()
-		components = append(components, config.Token[i].components...)
-	}
-
 	for i := range config.Peer {
 		config.Peer[i].composeComponents()
 		components = append(components, config.Peer[i].components...)

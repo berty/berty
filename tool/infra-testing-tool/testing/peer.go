@@ -1,7 +1,6 @@
 package testing
 
 import (
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"context"
 	"fmt"
@@ -9,11 +8,10 @@ import (
 	"google.golang.org/grpc"
 	"infratesting/aws"
 	"infratesting/config"
+	"infratesting/daemon/grpc/daemon"
 	iacec2 "infratesting/iac/components/ec2"
-	"log"
 	"strings"
 	"sync"
-	"time"
 )
 
 type Peer struct {
@@ -24,29 +22,27 @@ type Peer struct {
 	Lock sync.Mutex
 
 	Cc        *grpc.ClientConn
-	Messenger messengertypes.MessengerServiceClient
-	Protocol  protocoltypes.ProtocolServiceClient
+	P	daemon.PeerClient
+	G	daemon.GroupClient
+	T	daemon.TestClient
 
 	Ip            string
 	Groups        map[string]*protocoltypes.Group
 	ConfigGroups  []config.Group
-	DevicePK      []byte
-	Messages      map[string][]MessageHistory
-	lastMessageID map[string][]byte
 }
 
 const (
-	defaultGrpcPort = "9091"
+	usedGrpcPort = "8091"
 )
 
 // NewPeer returns a peer with default variables already instantiated
 func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 	p.Ip = ip
 
+	fmt.Println(ip)
+
 	p.Groups = make(map[string]*protocoltypes.Group)
 	p.Tags = make(map[string]string)
-	p.Messages = make(map[string][]MessageHistory)
-	p.lastMessageID = make(map[string][]byte)
 
 	for _, tag := range tags {
 		p.Tags[strings.ToLower(*tag.Key)] = *tag.Value
@@ -56,40 +52,24 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 	var cc *grpc.ClientConn
 	ctx := context.Background()
 
-	for {
+	cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+	p.G = daemon.NewGroupClient(cc)
+	p.T = daemon.NewTestClient(cc)
+	p.P = daemon.NewPeerClient(cc)
 
-		cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-		if err != nil {
-			if retries > 3 {
-				return p, err
-			}
-
-			retries += 1
-
-			return p, err
-		}
-		break
-	}
-
-	if resp != nil {
-		p.DevicePK = resp.DevicePK
-	} else {
-		panic("something went wrong, DevicePK is unknown")
+	_, err = p.P.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+		Host: "localhost",
+		Port: "9091",
+	})
+	if err != nil {
+		return p, err
 	}
 
 	return p, err
 }
 
-func (p *Peer) getMessengerServiceClient() {
-	p.Messenger = messengertypes.NewMessengerServiceClient(p.Cc)
-}
-
-func (p *Peer) getProtocolServiceClient() {
-	p.Protocol = protocoltypes.NewProtocolServiceClient(p.Cc)
-}
-
 func (p *Peer) GetHost() string {
-	return fmt.Sprintf("%s:%s", p.Ip, defaultGrpcPort)
+	return fmt.Sprintf("%s:%s", p.Ip, usedGrpcPort)
 }
 
 // MatchNodeToPeer matches nodes to peers (to get the group info)

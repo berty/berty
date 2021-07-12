@@ -7,3 +7,4 @@ type Group struct {
 	Tests []config.Test
 	Peers []*Peer
 }
+

@@ -26,7 +26,6 @@ const (
 	amountOfTypes = 6
 	NodeTypePeer        = "peer"
 	NodeTypeReplication = "repl"
-	NodeTypeTokenServer = "token"
 	NodeTypeRDVP        = "rdvp"
 	NodeTypeRelay       = "relay"
 	NodeTypeBootstrap   = "bootstrap"
@@ -37,7 +36,7 @@ const (
 	defaultGrpcPort = "9091"
 )
 
-//var AllNodeTypes = []string{NodeTypePeer, NodeTypeReplication, NodeTypeTokenServer, NodeTypeRDVP, NodeTypeRelay, NodeTypeBootstrap}
+//var AllNodeTypes = []string{NodeTypePeer, NodeTypeReplication, NodeTypeRDVP, NodeTypeRelay, NodeTypeBootstrap}
 var AllPeerTypes = []string{NodeTypePeer, NodeTypeReplication}
 
 // NodeGroup contains the information about a "group" of nodes declared together (by the 'NodeGroup.Amount' field)
@@ -63,8 +62,6 @@ type NodeGroup struct {
 	// attached components
 	components []iac.Component
 
-	// for token server to know who he's attached to
-	ReplicationAttachment 	int
 }
 
 type Node struct {
@@ -92,9 +89,8 @@ type NodeAttributes struct {
 	BootstrapMaddr string
 
 	// token server specific things
-	ReplIp string
-	ReplPort int
-}
+	TokenSecret []byte
+	TokenSk []byte}
 
 type Router struct {
 	RouterType string `yaml:"type"`
@@ -219,22 +215,14 @@ func (c *NodeGroup) composeComponents() {
 			if err != nil {
 				panic(err)
 			}
-		}
 
-		if c.NodeType == NodeTypeTokenServer {
-			repl := config.Replication[c.ReplicationAttachment]
-
-			// pick first one considering there always has to be one node
-			na.ReplPort = repl.Nodes[0].NodeAttributes.Port
-			na.ReplIp = repl.getPublicIP(0)
-
-			var err error
-			na.Sk, err = genServiceKey()
+			// this needs some work
+			na.TokenSk, err = genServiceKey()
 			if err != nil {
 				panic(err)
 			}
 
-			na.Secret, err = genSecretKey(na.Sk)
+			na.TokenSecret, err = genSecretKey(na.TokenSk)
 			if err != nil {
 				panic(err)
 			}
