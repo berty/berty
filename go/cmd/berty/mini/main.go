@@ -176,6 +176,8 @@ func Main(ctx context.Context, opts *Opts) error {
 		return nil
 	})
 
+	os.Exit(0)
+
 	if err := app.SetRoot(mainUI, true).SetFocus(mainUI).Run(); err != nil {
 		return errcode.TODO.Wrap(err)
 	}
