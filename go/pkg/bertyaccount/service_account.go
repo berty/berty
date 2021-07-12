@@ -205,7 +205,11 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.SimpleSection(server.Context(), s.logger, fmt.Sprintf("Opening account %s with progress (AccountService)", req.AccountID))
+	endSection := tyber.SimpleSection(
+		server.Context(),
+		s.logger,
+		fmt.Sprintf("Opening account %s with progress (AccountService)", req.AccountID),
+	)
 	defer func() { endSection(err) }()
 
 	prog := progress.New()
@@ -424,7 +428,11 @@ func (s *service) DeleteAccount(ctx context.Context, request *DeleteAccount_Requ
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Deleting account %s (AccountService)", request.AccountID))
+	endSection := tyber.SimpleSection(
+		ctx,
+		s.logger,
+		fmt.Sprintf("Deleting account %s (AccountService)", request.AccountID),
+	)
 	defer func() { endSection(err) }()
 
 	if s.initManager != nil {
@@ -507,17 +515,107 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 	return meta, nil
 }
 
+func (s *service) ImportAccountWithProgress(req *ImportAccountWithProgress_Request, server AccountService_ImportAccountWithProgressServer) (err error) {
+	s.muService.Lock()
+	defer s.muService.Unlock()
+
+	endSection := tyber.SimpleSection(
+		server.Context(),
+		s.logger,
+		fmt.Sprintf("Importing account %q from path %q with progress (AccountService)",
+			req.GetAccountID(),
+			req.GetBackupPath(),
+		),
+	)
+	defer func() { endSection(err) }()
+
+	prog := progress.New()
+	defer prog.Close()
+	ch := prog.Subscribe()
+	done := make(chan bool)
+
+	go func() {
+		for step := range ch {
+			_ = step
+			snapshot := prog.Snapshot()
+			err := server.Send(&ImportAccountWithProgress_Reply{
+				Progress: &protocoltypes.Progress{
+					State:     string(snapshot.State),
+					Doing:     snapshot.Doing,
+					Progress:  float32(snapshot.Progress),
+					Completed: uint64(snapshot.Completed),
+					Total:     uint64(snapshot.Total),
+					Delay:     uint64(snapshot.TotalDuration.Microseconds()),
+				},
+			})
+			if err != nil {
+				// not sure it is worth logging something here
+				break
+			}
+		}
+		done <- true
+	}()
+
+	typed := ImportAccount_Request{
+		AccountName:   req.GetAccountName(),
+		BackupPath:    req.GetBackupPath(),
+		Args:          req.GetArgs(),
+		AccountID:     req.GetAccountID(),
+		LoggerFilters: req.GetLoggerFilters(),
+	}
+	ret, err := s.importAccount(server.Context(), &typed, prog)
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	// wait
+	<-done
+
+	// send reply
+	{
+		err = server.Send(&ImportAccountWithProgress_Reply{
+			AccountMetadata: ret.AccountMetadata,
+		})
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+	}
+
+	return nil
+}
+
 func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request) (_ *ImportAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Importing account '%s' with id '%s' (AccountService)", req.AccountName, req.AccountID))
+	endSection := tyber.SimpleSection(
+		ctx,
+		s.logger,
+		fmt.Sprintf("Importing account %q with id %q (AccountService)",
+			req.AccountName, req.AccountID,
+		),
+	)
 	defer func() { endSection(err) }()
 
+	ret, err := s.importAccount(ctx, req, nil)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return ret, nil
+}
+
+func (s *service) importAccount(ctx context.Context, req *ImportAccount_Request, prog *progress.Progress) (_ *ImportAccount_Reply, err error) {
+	if prog == nil {
+		prog = progress.New()
+		defer prog.Close()
+	}
+	// FIXME: add import specific steps
+
+	// check input
 	if req.BackupPath == "" {
 		return nil, errcode.ErrBertyAccountNoBackupSpecified
 	}
-
 	if stat, err := os.Stat(req.BackupPath); err != nil {
 		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
 	} else if stat.IsDir() {
@@ -531,7 +629,7 @@ func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request)
 		AccountName:   req.AccountName,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
 		LoggerFilters: req.LoggerFilters,
-	})
+	}, prog)
 	if err != nil {
 		return nil, err
 	}
@@ -561,7 +659,13 @@ func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request)
 	}, nil
 }
 
-func (s *service) createAccount(req *CreateAccount_Request) (*AccountMetadata, error) {
+func (s *service) createAccount(req *CreateAccount_Request, prog *progress.Progress) (*AccountMetadata, error) {
+	if prog == nil {
+		prog = progress.New()
+		defer prog.Close()
+	}
+	// FIXME: add create specific steps
+
 	if req.AccountID != "" {
 		if _, err := s.getAccountMetaForName(req.AccountID); err == nil {
 			return nil, errcode.ErrBertyAccountAlreadyExists
@@ -571,22 +675,22 @@ func (s *service) createAccount(req *CreateAccount_Request) (*AccountMetadata, e
 
 		req.AccountID, err = s.generateNewAccountID()
 		if err != nil {
-			return nil, err
+			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
 	_, err := s.createAccountMetadata(req.AccountID, req.AccountName)
 	if err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	meta, err := s.openAccount(&OpenAccount_Request{
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
-	}, nil)
+	}, prog)
 	if err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return meta, nil
@@ -596,10 +700,15 @@ func (s *service) CreateAccount(ctx context.Context, req *CreateAccount_Request)
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Creating account '%s' with id '%s' (AccountService)", req.GetAccountName(), req.GetAccountID()))
+	endSection := tyber.SimpleSection(ctx,
+		s.logger,
+		fmt.Sprintf("Creating account '%s' with id '%s' (AccountService)",
+			req.GetAccountName(), req.GetAccountID(),
+		),
+	)
 	defer func() { endSection(err) }()
 
-	meta, err := s.createAccount(req)
+	meta, err := s.createAccount(req, nil)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountCreationFailed.Wrap(err)
 	}
@@ -645,7 +754,11 @@ func (s *service) UpdateAccount(ctx context.Context, req *UpdateAccount_Request)
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Updating account %s (AccountService)", req.AccountID))
+	endSection := tyber.SimpleSection(
+		ctx,
+		s.logger,
+		fmt.Sprintf("Updating account %s (AccountService)", req.AccountID),
+	)
 	defer func() { endSection(err) }()
 
 	meta, err := s.updateAccount(req)

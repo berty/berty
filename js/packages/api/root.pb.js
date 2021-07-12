@@ -47,6 +47,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ImportAccount.Request",
                     responseType: "ImportAccount.Reply"
                   },
+                  ImportAccountWithProgress: {
+                    requestType: "ImportAccountWithProgress.Request",
+                    responseType: "ImportAccountWithProgress.Reply",
+                    responseStream: true
+                  },
                   CreateAccount: {
                     requestType: "CreateAccount.Request",
                     responseType: "CreateAccount.Reply"
@@ -267,6 +272,51 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       accountMetadata: {
                         type: "AccountMetadata",
                         id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ImportAccountWithProgress: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      },
+                      accountName: {
+                        type: "string",
+                        id: 2
+                      },
+                      backupPath: {
+                        type: "string",
+                        id: 3
+                      },
+                      args: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 4
+                      },
+                      loggerFilters: {
+                        type: "string",
+                        id: 5
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      progress: {
+                        type: "berty.protocol.v1.Progress",
+                        id: 1
+                      },
+                      accountMetadata: {
+                        type: "AccountMetadata",
+                        id: 2
                       }
                     }
                   }

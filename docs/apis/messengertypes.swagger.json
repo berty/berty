@@ -574,39 +574,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/GetUsername": {
-      "post": {
-        "summary": "GetUsername returns the name of the device/user using Android/iOS/universal API",
-        "operationId": "MessengerService_GetUsername",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetUsernameReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetUsernameRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/InstanceExportData": {
       "post": {
         "summary": "InstanceExportData exports instance data",
@@ -2095,17 +2062,6 @@
           "format": "int32"
         }
       }
-    },
-    "v1GetUsernameReply": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "v1GetUsernameRequest": {
-      "type": "object"
     },
     "v1Group": {
       "type": "object",
