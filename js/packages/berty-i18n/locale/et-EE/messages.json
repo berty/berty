@@ -1,124 +1,124 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "Turvaline sõnumite saatmise ja suhtlemise rakendus, mis ei vaja mobiilset andmeside ega internetti, sest töötab seadmelt seadmele",
+      "open-registered-account": "Ava registreeritud konto",
+      "import-button": "Impordi andmed olemasolevast kontost",
+      "account-selector-create-button": "Loo uus konto",
+      "more-options": "Rohkem valikuid",
+      "button": "ALUSTA"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Vali eelseadistus",
+      "change-later": "Valikut on võimalik hiljem muuta!",
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Jõudlus",
+        "desc": "Lihtne kasutada - Kõik võimalused",
+        "push-notif": "Saa tõukemärguandeid",
+        "offline-message": "Võrgu ühenduseta sõnumid Bluetooth abil",
+        "add-contact": "Lihtne kontaktide lisamine",
+        "fast-message": "Kiireim sõnumite saatmine"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-local-peer-discovery-desc": "",
-        "disable-contact-request": "",
-        "on-same-network": ""
+        "title": "Täielik Anonüümsus",
+        "desc": "Äärmiselt ettevaatlikule kasutajatele",
+        "disable-push-notif": "Tõukemärguanded välja lülitatud",
+        "disable-local-peer-discovery": "Kohalike seadmete avastamine välja lülitatud",
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
+        "disable-contact-request": "Kontaktiks liitumine välja lülitatud",
+        "on-same-network": "Töötab samas võrgus"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": "",
-      "import-account": ""
+      "title": "Loo konto",
+      "desc": "Nimi on ainuke nõutud väli",
+      "required": "Kohustuslik",
+      "placeholder": "Nimi",
+      "button": "Loo Konto",
+      "import-account": "Impordi Konto"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Teenustega autentimine",
+      "title": "Teenused",
+      "recommended": "Soovituslikud",
+      "desc": "See samm kopeerib sinu vestlused serverisse",
+      "button": "Kasuta Berty poolt hallatud teenuseid",
+      "skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Käivitan Berty sõlme…",
+      "desc": "Võib minna mõni hetk aega"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Märka kõiki uusi sõnumeid ja kontakti soove",
+      "recommended": "Soovituslikud",
+      "title": "Teavitused",
+      "desc": "Vajalik on oma telefonis Berty rakenduses lubada tõukemärguanded",
+      "button": "LUBA TEAVITUSED",
+      "skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Suhtle ilma interneti ühenduseta (kohtvõrk või mobiilne andmeside) ühendudes läheduses olevate seadmetega otse",
+      "optional": "Valikuline",
+      "title": "Bluetooth",
+      "desc": "Selle võimaluse kasutaimseks peate lubama Bluetooth ühenduse oma telefonis",
+      "button": "LUBA BLUETOOTH",
+      "skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Seadistamine valmis!",
+      "desc": "Võid hakata rakendust kohe kasutama, alusta kontaktide lisamisega ja suhtle nendega vabalt ja privaatselt",
+      "button": "ALUSTA BERTY KASUTAMIST"
     }
   },
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Kontakti kutsed",
+        "received-at": "Vastu võetud",
+        "accept": "Võta vastu",
+        "card-title": "Uus kontakti kutse!"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Otsingu märgusõna",
+      "no-contacts": "Sul pole veel ühtegi kontakti ega vestlust",
       "search": {
-        "no-results": ""
+        "no-results": "Otsingu vasteid ei leitud"
       },
       "multi-account": {
-        "create-button": "",
-        "import-button": ""
+        "create-button": "Loo uus konto",
+        "import-button": "Impordi konto"
       },
       "create-group": {
-        "title": "",
-        "add-members": "",
-        "group-info": "",
-        "search-placeholder": "",
-        "continue": "",
-        "create-group": ""
+        "title": "Uus Grupp",
+        "add-members": "Lisa liikmeid",
+        "group-info": "Grupi info",
+        "search-placeholder": "Otsing",
+        "continue": "JÄTKA",
+        "create-group": "LOO GRUPP"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Loo uus grupp",
+      "bottom-button": "Skaneeri kontakt või grupp"
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Lisamiseks vajuta siia",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Võrgu Sätted",
+        "desc": "Võrgu sätete kinnitamiseks vajuta siia"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Teavituste Sätted",
+        "desc": "Tõukemärguannete seadistuseks vajuta siia"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "welcome-title": "Tere tulemast Võrgu Sätete lehele",
+      "full-anon-mode": "Täieliku Anonüümsuse režiim",
+      "simple-tor-compatible": "Lihtsustatud TOR Ühilduv",
+      "allow-expert-mode": "Luba Ekspert režiimi",
       "tor-compatible": {
-        "title": "",
+        "title": "TOR Ühilduv",
         "desc": ""
       },
       "full-anon": {
@@ -134,7 +134,7 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "עזרה",
+      "header-left-button": "",
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
@@ -160,14 +160,14 @@
       "bluetooth-button": {
         "title": "",
         "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-disabled": "Välja lülitatud"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "title": "Rakenduse režiim",
+        "performance-tag": "Jõudlus",
+        "privacy-tag": "Privaatsus",
+        "description-tag": "Lihtne kasutada - Kõik võimalused",
+        "first-bullet-point": "Saa tõukemärguandeid",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -268,16 +268,16 @@
       "delete-button": ""
     },
     "help": {
-      "title": "עזרה",
+      "title": "",
       "security-privacy-button": {
         "title": "",
         "desc": ""
       },
-      "updates-button": "עדכונים",
+      "updates-button": "",
       "about-button": "",
       "account-button": "",
       "contact-button": "",
-      "message-button": "הודעות",
+      "message-button": "",
       "group-button": "",
       "settings-button": "",
       "ask-button": "",

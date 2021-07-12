@@ -148,6 +148,10 @@
     "mode": {
       "title": "الإعدادات",
       "desc": "تخصيص كل شيء للحصول على التطبيق الذي يلائم احتياجاتك",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "الإشعارات",
         "tag-enabled": "مفعّل",
@@ -227,10 +231,11 @@
     },
     "bluetooth": {
       "title": "البلوتوث",
-      "desc": "يسمح لك البلوتوث بأعلى استخدام تطبيق Berty عندما لا يكون لديك اتصال بالشبكة (Wifi أو البيانات) عن طريق توصيل هاتفك مباشرة مع أقران قريبين",
-      "activate-button": "تفعيل البلوتوث",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "",
       "tag-negative": "",
       "tag-positive": ""
@@ -349,7 +354,8 @@
       },
       "footer-left-button": "",
       "footer-middle-button": "قائمة الأحداث",
-      "footer-right-button": "إعادة تشغيل الرديمون"
+      "footer-right-button": "إعادة تشغيل الرديمون",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "معلومات النظام"
@@ -433,6 +439,11 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "add-members": {
+      "members": "",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
@@ -498,6 +509,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +604,10 @@
       "slide-to-cancel": "",
       "cancel-button": ""
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }

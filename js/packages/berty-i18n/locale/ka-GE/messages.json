@@ -4,7 +4,7 @@
       "desc": "",
       "open-registered-account": "",
       "import-button": "",
-      "account-selector-create-button": "",
+      "account-selector-create-button": "ახალი ანგარიშის შექმნა",
       "more-options": "",
       "button": ""
     },
@@ -20,7 +20,7 @@
         "fast-message": ""
       },
       "high-level": {
-        "title": "",
+        "title": "სრული ანონიმურობა",
         "desc": "",
         "disable-push-notif": "",
         "disable-local-peer-discovery": "",
@@ -30,20 +30,20 @@
       }
     },
     "create-account": {
-      "title": "",
+      "title": "შექმენი შენი ანგარიში",
       "desc": "",
-      "required": "",
-      "placeholder": "",
+      "required": "სავალდებულოა",
+      "placeholder": "სახელი",
       "button": "",
       "import-account": ""
     },
     "services-auth": {
       "header": "",
-      "title": "",
-      "recommended": "",
+      "title": "სერვისები",
+      "recommended": "რეკომენდებულია",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
     },
     "generate-key": {
       "title": "",
@@ -51,11 +51,11 @@
     },
     "notifications": {
       "header": "",
-      "recommended": "",
-      "title": "",
+      "recommended": "რეკომენდებულია",
+      "title": "შეტყობინებები",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
     },
     "bluetooth": {
       "header": "",
@@ -63,7 +63,7 @@
       "title": "",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
     },
     "setup-finished": {
       "title": "",
@@ -92,23 +92,23 @@
         "title": "",
         "add-members": "",
         "group-info": "",
-        "search-placeholder": "",
-        "continue": "",
-        "create-group": ""
+        "search-placeholder": "ძებნა",
+        "continue": "გაგრძელება",
+        "create-group": "ჯგუფის შექმნა"
       }
     },
     "home-modal": {
-      "top-button": "",
+      "top-button": "ჯგუფის შექმნა",
       "bottom-button": ""
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "დააჭირეთ აქ რომ დაამატოთ",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "ქსელის კონფიგურაცია",
+        "desc": "დააჭირეთ აქ რომ დაასრულოთ ქსელის კონფიგურაცია"
       },
       "notification": {
-        "display-name": "",
+        "display-name": "შეტყობინების კონფიგურაცია",
         "desc": ""
       }
     },
@@ -134,7 +134,7 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "עזרה",
+      "header-left-button": "",
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
@@ -268,16 +268,16 @@
       "delete-button": ""
     },
     "help": {
-      "title": "עזרה",
+      "title": "",
       "security-privacy-button": {
         "title": "",
         "desc": ""
       },
-      "updates-button": "עדכונים",
+      "updates-button": "",
       "about-button": "",
       "account-button": "",
       "contact-button": "",
-      "message-button": "הודעות",
+      "message-button": "",
       "group-button": "",
       "settings-button": "",
       "ask-button": "",
