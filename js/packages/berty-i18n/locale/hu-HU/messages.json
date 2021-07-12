@@ -9,22 +9,22 @@
       "button": "Első lépések"
     },
     "select-mode": {
-      "title": "",
-      "change-later": "",
+      "title": "Válassz egy megadott értéket",
+      "change-later": "A választást később megváltoztathatod!",
       "performance": {
         "title": "Teljesítmény",
         "desc": "Könnyen használható - Minden funkcióval",
         "push-notif": "Értesítések bekapcsolása",
-        "offline-message": "",
+        "offline-message": "Offline üzenetküldés Bluetooth-szal",
         "add-contact": "Könnyen felvehet új kontaktokat",
         "fast-message": "Leggyorsabb üzenetküldés"
       },
       "high-level": {
-        "title": "",
+        "title": "Teljes névtelenség",
         "desc": "",
         "disable-push-notif": "Értesítések letiltva",
         "disable-local-peer-discovery": "",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
         "disable-contact-request": "",
         "on-same-network": ""
       }
@@ -93,8 +93,8 @@
         "add-members": "",
         "group-info": "",
         "search-placeholder": "Keresés",
-        "continue": "",
-        "create-group": ""
+        "continue": "FOLYTATÁS",
+        "create-group": "CSOPORT LÉTREHOZÁSA"
       }
     },
     "home-modal": {
@@ -148,6 +148,10 @@
     "mode": {
       "title": "Beállítások",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Értesítések",
         "tag-enabled": "Engedélyezve",
@@ -228,9 +232,10 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Aktív bluetooth kapcsolat",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "",
       "tag-negative": "Mégse",
       "tag-positive": ""
@@ -349,7 +354,8 @@
       },
       "footer-left-button": "",
       "footer-middle-button": "",
-      "footer-right-button": "Daemon újraindítása"
+      "footer-right-button": "Daemon újraindítása",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Rendszer információ"
@@ -433,6 +439,11 @@
       "erase-button": "Beszélgetés törlése",
       "leave-button": "Csoport elhagyása"
     },
+    "add-members": {
+      "members": "Tagok",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Csoport"
     },
@@ -498,6 +509,11 @@
       "medias": "",
       "links": "",
       "documents": ""
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +604,10 @@
       "slide-to-cancel": "",
       "cancel-button": "Mégse"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
