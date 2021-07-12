@@ -148,6 +148,10 @@
     "mode": {
       "title": "設定",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "通知",
         "tag-enabled": "",
@@ -227,10 +231,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetoothを使用すると、近くにいる相手と携帯電話を直接接続することで、ネットワーク接続 (WIFIまたはデータ通信) のないときでもBertyアプリを使用できます",
-      "activate-button": "Bluetoothを有効化",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "",
-      "permission-description": "",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "後で確認",
       "tag-negative": "キャンセル",
       "tag-positive": "OK"
@@ -349,7 +354,8 @@
       },
       "footer-left-button": "",
       "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-right-button": "",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": ""
@@ -433,6 +439,11 @@
       "erase-button": "",
       "leave-button": "グループから退出"
     },
+    "add-members": {
+      "members": "メンバー",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": ""
     },
@@ -498,6 +509,11 @@
       "medias": "メディア",
       "links": "リンク",
       "documents": "ドキュメント"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +604,10 @@
       "slide-to-cancel": "スライドして中止",
       "cancel-button": "キャンセル"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
