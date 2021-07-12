@@ -148,6 +148,10 @@
     "mode": {
       "title": "Ustawienia",
       "desc": "Dostosuj wszystko, aby uzyskać aplikację, która pasuje do Twoich potrzeb",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "Powiadomienia",
         "tag-enabled": "Włączone",
@@ -227,10 +231,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "Bluetooth pozwala na korzystanie z aplikacji Berty, gdy nie masz połączenia sieciowego (wifi lub danych) poprzez bezpośrednie połączenie telefonu z peerami w pobliżu",
-      "activate-button": "Aktywuj bluetooth",
+      "desc": "",
+      "activate-button": "",
       "permission-title": "Uprawnienia Berty Bluetooth",
-      "permission-description": "Autoryzuj aplikację Berty do korzystania z funkcji Bluetooth w telefonie",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "Zapytaj mnie później",
       "tag-negative": "Anuluj",
       "tag-positive": "OK"
@@ -324,7 +329,7 @@
       "add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
       "share-button": {
         "title": "Udostępnij ID na discordzie",
-        "alert-title": "Czy chcesz udostępnić swój kod QR do \"#dev-logs\" na discordzie Berty?",
+        "alert-title": "",
         "alert-message": "Umożliwi to innemu personelowi skanowanie kodu QR lub skopiowanie linku do kontaktu.",
         "alert-accept-button": "Tak👍",
         "alert-cancel-button": "Nie"
@@ -349,7 +354,8 @@
       },
       "footer-left-button": "Informacje o urządzeniu",
       "footer-middle-button": "Lista wydarzeń",
-      "footer-right-button": "Zrestartuj daemon"
+      "footer-right-button": "Zrestartuj daemon",
+      "trigger-crashlytics-button": ""
     },
     "system-info": {
       "title": "Informacje systemowe"
@@ -433,6 +439,11 @@
       "erase-button": "Usuń konwersację",
       "leave-button": "Opuść grupę"
     },
+    "add-members": {
+      "members": "Członkowie",
+      "contacts": "",
+      "add": ""
+    },
     "multi-member-qr": {
       "title": "QR Grupy"
     },
@@ -445,7 +456,7 @@
       },
       "betabot-box": {
         "title": "DODAĆ BOTA BETA?",
-        "desc": "Nie masz jeszcze żadnych kontaktów, czy chcesz dodać Beta Bota do odkrycia i przetestowania rozmów?",
+        "desc": "",
         "skip-button": "POMIŃ",
         "add-button": "DODAJ!"
       },
@@ -498,6 +509,11 @@
       "medias": "Media",
       "links": "Linki",
       "documents": "Dokumenty"
+    },
+    "reply": {
+      "response-to": "",
+      "replying-to": "",
+      "replied-to": ""
     }
   },
   "error": {
@@ -588,5 +604,10 @@
       "slide-to-cancel": "<< Przesuń aby anulować",
       "cancel-button": "Anuluj"
     }
+  },
+  "medias": {
+    "audio": "",
+    "picture": "",
+    "file": ""
   }
 }
