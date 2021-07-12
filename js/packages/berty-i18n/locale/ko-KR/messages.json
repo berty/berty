@@ -148,6 +148,10 @@
     "mode": {
       "title": "설정",
       "desc": "",
+      "notification-file-saved": {
+        "title": "",
+        "desc": ""
+      },
       "notifications-button": {
         "title": "알림",
         "tag-enabled": "켜짐",
@@ -227,11 +231,11 @@
     },
     "bluetooth": {
       "title": "블루투스",
-      "desc": "블루투스를 사용하면 가까이 있는 기기를 통해 인터넷 연결 없이도 Berty를 사용할 수 있어요",
+      "desc": "",
       "activate-button": "블루투스 활성화",
       "permission-title": "Berty 블루투스 권한",
-      "android-permission-description": "안드로이드에서 블루투스로 메세지를 교환하기 위해서는 위치 권한이 필요해요.\n실제 위치 정보는 사용하지 않아요.",
-      "ios-permission-description": "iOS에서 블루투스로 메세지를 교환하기 위해서는 권한이 필요해요.",
+      "android-permission-description": "",
+      "ios-permission-description": "",
       "tag-neutral": "나중에 물어보기",
       "tag-negative": "취소",
       "tag-positive": "확인"
