@@ -19,19 +19,19 @@ type noopNotificationDriver struct{}
 
 func (*noopNotificationDriver) Post(*LocalNotification) error { return nil }
 
-type notificationManagerAdaptater struct {
+type notificationManagerAdapter struct {
 	logger *zap.Logger
 	driver NotificationDriver
 }
 
-// notificationManagerAdaptater is a NotificationManager
-var _ notification.Manager = (*notificationManagerAdaptater)(nil)
+// notificationManagerAdapter is a NotificationManager
+var _ notification.Manager = (*notificationManagerAdapter)(nil)
 
-func newNotificationManagerAdaptater(logger *zap.Logger, driver NotificationDriver) notification.Manager {
-	return &notificationManagerAdaptater{logger, driver}
+func newNotificationManagerAdapter(logger *zap.Logger, driver NotificationDriver) notification.Manager {
+	return &notificationManagerAdapter{logger, driver}
 }
 
-func (a *notificationManagerAdaptater) Notify(notif *notification.Notification) error {
+func (a *notificationManagerAdapter) Notify(notif *notification.Notification) error {
 	a.logger.Debug("notification triggered",
 		zap.String("title", notif.Title), zap.String("body", notif.Body))
 	return a.driver.Post(&LocalNotification{
@@ -41,7 +41,7 @@ func (a *notificationManagerAdaptater) Notify(notif *notification.Notification) 
 	})
 }
 
-func (a *notificationManagerAdaptater) Schedule(notif *notification.Notification, interval time.Duration) error {
+func (a *notificationManagerAdapter) Schedule(notif *notification.Notification, interval time.Duration) error {
 	a.logger.Debug("notification scheduled",
 		zap.String("title", notif.Title), zap.String("body", notif.Body))
 	return a.driver.Post(&LocalNotification{
