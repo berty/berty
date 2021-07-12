@@ -34,6 +34,44 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 		})
 }
 
+export const importAccountWithProgress = async (
+	path: string,
+	dispatch: (arg0: reducerAction) => void,
+) => {
+	let resp: beapi.account.ImportAccountWithProgress.Reply | null = null
+	await accountService
+		.importAccountWithProgress({ backupPath: path })
+		.then(async (stream) => {
+			stream.onMessage(async (msg, _) => {
+				if (msg?.progress?.state !== 'done') {
+					dispatch({
+						type: MessengerActions.SetStateStreamInProgress,
+						payload: {
+							msg: msg,
+							stream: 'Import account',
+						},
+					})
+				} else {
+					dispatch({
+						type: MessengerActions.SetStateStreamDone,
+					})
+				}
+				if (msg?.accountMetadata) {
+					resp = msg
+				}
+				return
+			})
+			await stream.start()
+		})
+		.catch((err) => {
+			dispatch({
+				type: MessengerActions.SetStreamError,
+				payload: { error: new Error(`Failed to close node: ${err}`) },
+			})
+		})
+	return resp
+}
+
 export const refreshAccountList = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
