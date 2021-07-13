@@ -355,7 +355,8 @@
       "footer-left-button": "",
       "footer-middle-button": "",
       "footer-right-button": "",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": ""
