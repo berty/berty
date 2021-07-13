@@ -355,7 +355,8 @@
       "footer-left-button": "Geräteinformationen",
       "footer-middle-button": "Events auflisten",
       "footer-right-button": "Daemon neu starten",
-      "trigger-crashlytics-button": "Crashlytics Absturz auslösen"
+      "trigger-crashlytics-button": "Crashlytics Absturz auslösen",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "System-Info"
