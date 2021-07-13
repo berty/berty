@@ -355,7 +355,8 @@
       "footer-left-button": "设备信息",
       "footer-middle-button": "显示事件",
       "footer-right-button": "重启守护进程",
-      "trigger-crashlytics-button": "触发崩溃问题"
+      "trigger-crashlytics-button": "触发崩溃问题",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "系统信息"
