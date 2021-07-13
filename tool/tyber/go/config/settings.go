@@ -63,13 +63,13 @@ func (c *Config) SetAddressSetting(address string) error {
 	return nil
 }
 
-func (c *Config) GetPortSetting() (string, error) {
+func (c *Config) GetPortSetting() (int, error) {
 	if !c.isInitialized() {
-		return "", errors.New("config not initialized")
+		return 0, errors.New("config not initialized")
 	}
 	settings := c.getSettings()
 
-	return strconv.Itoa(settings.Port), nil
+	return settings.Port, nil
 }
 
 func (c *Config) SetPortSetting(port string) error {

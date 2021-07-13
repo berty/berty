@@ -12,7 +12,6 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -65,10 +64,6 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 
 	if n.DeviceKeystore == nil {
 		n.DeviceKeystore = NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))))
-	}
-
-	if n.Tracer == nil {
-		n.Tracer = trace.NoopTracer{}
 	}
 
 	// FIXME: add this setting back

@@ -18,7 +18,6 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
-	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -30,7 +29,6 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -218,12 +216,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 		return m.Node.GRPC.clientConn, nil
 	}
 
-	trClient := tracer.New("grpc-client")
-
-	clientOpts := []grpc.DialOption{
-		grpc.WithUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
-		grpc.WithStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
-	}
+	clientOpts := []grpc.DialOption(nil)
 
 	if m.Node.GRPC.RemoteAddr != "" {
 		clientOpts = append(clientOpts, grpc.WithInsecure()) // make a flag for this?
@@ -394,7 +387,6 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	// override grpc logger
 	ReplaceGRPCLogger(grpcLogger)
 
-	tr := tracer.New("grpc-server")
 	// noop auth func
 	authFunc := func(ctx context.Context) (context.Context, error) { return ctx, nil }
 
@@ -412,13 +404,11 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 			grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
-			grpc_trace.UnaryServerInterceptor(tr),
 			grpc_auth.UnaryServerInterceptor(authFunc),
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_recovery.StreamServerInterceptor(recoverOpts...),
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_trace.StreamServerInterceptor(tr),
 			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
 			grpc_auth.StreamServerInterceptor(authFunc),
 		),

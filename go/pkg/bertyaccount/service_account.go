@@ -77,26 +77,14 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 
 	// setup manager logger
 	prog.Get("setup-logger").SetAsCurrent()
-	var logger *zap.Logger
+	streams := []logutil.Stream(nil)
 	{
-		streams := []logutil.Stream{}
-		{
-			logfileDir := filepath.Join(accountStorePath, "logs")
-			fileStream := logutil.NewFileStream("*", "json", logfileDir, "mobile")
-			streams = append(streams, fileStream)
-		}
-
 		if req.LoggerFilters == "" {
 			req.LoggerFilters = "debug+:bty*,-*.grpc warn+:*.grpc error+:*"
 		}
-		nativeStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
-		streams = append(streams, nativeStream)
-		zapLogger, loggerCleanup, err := logutil.NewLogger(streams...)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-		errCleanup = u.CombineFuncs(errCleanup, loggerCleanup)
-		logger = zapLogger
+
+		nativeLoggerStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
+		streams = append(streams, nativeLoggerStream)
 	}
 	s.logger.Info("opening account", zap.Strings("args", args), zap.String("account-id", req.AccountID))
 
@@ -105,7 +93,7 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	var initManager *initutil.Manager
 	{
 		var err error
-		if initManager, err = s.openManager(logger, args...); err != nil {
+		if initManager, err = s.openManager(streams, args...); err != nil {
 			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
 	}
@@ -333,8 +321,14 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 	return nil
 }
 
-func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Manager, error) {
-	manager := initutil.Manager{}
+func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...string) (*initutil.Manager, error) {
+	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
+		DoNotSetDefaultDir:   true,
+		DefaultLoggerStreams: defaultLoggerStreams,
+	})
+	if err != nil {
+		panic(err)
+	}
 
 	// configure flagset options
 	fs := flag.NewFlagSet("account", flag.ContinueOnError)
@@ -344,7 +338,7 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 	manager.SetupEmptyGRPCListenersFlags(fs)
 
 	// manager.SetupMetricsFlags(fs)
-	err := fs.Parse(args)
+	err = fs.Parse(args)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountInvalidCLIArgs.Wrap(err)
 	}
@@ -358,12 +352,11 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 	}
 
 	// set custom drivers
-	manager.SetLogger(logger)
 	manager.SetNotificationManager(s.notifManager)
 	manager.SetBleDriver(s.bleDriver)
 	manager.SetNBDriver(s.nbDriver)
 
-	return &manager, nil
+	return manager, nil
 }
 
 func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*ListAccounts_Reply, error) {

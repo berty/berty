@@ -149,6 +149,12 @@
     - [SystemInfo.Messenger](#berty.messenger.v1.SystemInfo.Messenger)
     - [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply)
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
+    - [TyberHostAttach](#berty.messenger.v1.TyberHostAttach)
+    - [TyberHostAttach.Reply](#berty.messenger.v1.TyberHostAttach.Reply)
+    - [TyberHostAttach.Request](#berty.messenger.v1.TyberHostAttach.Request)
+    - [TyberHostSearch](#berty.messenger.v1.TyberHostSearch)
+    - [TyberHostSearch.Reply](#berty.messenger.v1.TyberHostSearch.Reply)
+    - [TyberHostSearch.Request](#berty.messenger.v1.TyberHostSearch.Request)
   
     - [AppMessage.Type](#berty.messenger.v1.AppMessage.Type)
     - [BertyLink.Kind](#berty.messenger.v1.BertyLink.Kind)
@@ -1307,6 +1313,44 @@ Composite primary key
 
 ### SystemInfo.Request
 
+<a name="berty.messenger.v1.TyberHostAttach"></a>
+
+### TyberHostAttach
+
+<a name="berty.messenger.v1.TyberHostAttach.Reply"></a>
+
+### TyberHostAttach.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| address | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.TyberHostAttach.Request"></a>
+
+### TyberHostAttach.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| addresses | [string](#string) | repeated |  |
+
+<a name="berty.messenger.v1.TyberHostSearch"></a>
+
+### TyberHostSearch
+
+<a name="berty.messenger.v1.TyberHostSearch.Reply"></a>
+
+### TyberHostSearch.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| hostname | [string](#string) |  |  |
+| ipv4 | [string](#string) | repeated |  |
+| ipv6 | [string](#string) | repeated |  |
+
+<a name="berty.messenger.v1.TyberHostSearch.Request"></a>
+
+### TyberHostSearch.Request
+
  
 
 <a name="berty.messenger.v1.AppMessage.Type"></a>
@@ -1460,6 +1504,8 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | MediaRetrieve | [MediaRetrieve.Request](#berty.messenger.v1.MediaRetrieve.Request) | [MediaRetrieve.Reply](#berty.messenger.v1.MediaRetrieve.Reply) stream | MediaRetrieve allows to download a file attached to a message |
 | MediaGetRelated | [MediaGetRelated.Request](#berty.messenger.v1.MediaGetRelated.Request) | [MediaGetRelated.Reply](#berty.messenger.v1.MediaGetRelated.Reply) | MediaGetRelated Gets previous/next media to be played after current |
 | MessageSearch | [MessageSearch.Request](#berty.messenger.v1.MessageSearch.Request) | [MessageSearch.Reply](#berty.messenger.v1.MessageSearch.Reply) | MessageSearch |
+| TyberHostSearch | [TyberHostSearch.Request](#berty.messenger.v1.TyberHostSearch.Request) | [TyberHostSearch.Reply](#berty.messenger.v1.TyberHostSearch.Reply) stream | TyberHostSearch |
+| TyberHostAttach | [TyberHostAttach.Request](#berty.messenger.v1.TyberHostAttach.Request) | [TyberHostAttach.Reply](#berty.messenger.v1.TyberHostAttach.Reply) | TyberHostAttach |
 
  
 

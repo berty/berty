@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
 	Alert,
 	ScrollView,
@@ -391,6 +391,52 @@ const BodyDevTools: React.FC<{}> = () => {
 	const navigation = useNativeNavigation()
 	const ctx = useMsgrContext()
 	const { t } = useTranslation()
+	const tyberHosts = useRef<{ [key: string]: string[] }>({})
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [rerender, setRerender] = useState(0)
+
+	const addTyberHost = useCallback(
+		(host: string, addresses: string[]) => {
+			if (tyberHosts.current[host]) {
+				return
+			}
+
+			tyberHosts.current[host] = addresses
+			setRerender(Date.now())
+		},
+		[tyberHosts, setRerender],
+	)
+
+	useEffect(() => {
+		let subStream: any = null
+
+		ctx.client?.tyberHostSearch({}).then(async (stream) => {
+			stream.onMessage((msg, err) => {
+				if (err) {
+					return
+				}
+
+				if (!msg) {
+					return
+				}
+
+				try {
+					addTyberHost(msg?.hostname!, [...msg?.ipv4, ...msg?.ipv6])
+				} catch (e) {
+					console.warn(e)
+				}
+			})
+
+			await stream.start()
+			subStream = stream
+		})
+
+		return () => {
+			if (subStream !== null) {
+				subStream.stop()
+			}
+		}
+	}, [addTyberHost, ctx.client])
 
 	const items =
 		t('settings.devtools.tor-button', {
@@ -516,6 +562,32 @@ const BodyDevTools: React.FC<{}> = () => {
 				}
 				setOptionValue={(val) => AsyncStorage.setItem(tyberHostStorageKey, val)}
 			/>
+			{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
+				<ButtonSetting
+					key={hostname}
+					name={t('settings.devtools.tyber-attach', { host: hostname })}
+					icon='link-2-outline'
+					iconSize={30}
+					iconColor={color.dark.grey}
+					onPress={async () => {
+						try {
+							await ctx.client?.tyberHostAttach({
+								addresses: ipAddresses,
+							})
+						} catch (e) {
+							console.warn(e)
+						}
+					}}
+				>
+					<ButtonSettingItem
+						value={ipAddresses.join('\n')}
+						iconSize={15}
+						disabled
+						styleText={[text.color.grey]}
+						styleContainer={[margin.bottom.tiny]}
+					/>
+				</ButtonSetting>
+			))}
 			<ButtonSetting
 				name={t('settings.devtools.add-dev-conversations-button')}
 				icon='plus-outline'

@@ -119,4 +119,6 @@ export interface WelshMessengerServiceClient {
 	mediaRetrieve: ResponseStreamType<beapi.messenger.MessengerService['mediaRetrieve']>
 	mediaGetRelated: UnaryType<beapi.messenger.MessengerService['mediaGetRelated']>
 	messageSearch: UnaryType<beapi.messenger.MessengerService['messageSearch']>
+	tyberHostSearch: ResponseStreamType<beapi.messenger.MessengerService['tyberHostSearch']>
+	tyberHostAttach: UnaryType<beapi.messenger.MessengerService['tyberHostAttach']>
 }

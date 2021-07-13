@@ -15,13 +15,10 @@ import (
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.opentelemetry.io/otel/api/trace"
-	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tracer"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
@@ -39,7 +36,6 @@ type TestingReplicationPeer struct {
 
 type TestingOpts struct {
 	Logger         *zap.Logger
-	TracerProvider trace.Provider
 	Mocknet        libp2p_mocknet.Mocknet
 	RDVPeer        peer.AddrInfo
 	DeviceKeystore DeviceKeystore
@@ -104,14 +100,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 
 	service, cleanupService := TestingService(ctx, t, serviceOpts)
 
-	if opts.TracerProvider == nil {
-		servicename := node.MockNode().Identity.ShortString()
-		opts.TracerProvider = tracer.NewTestingProvider(t, servicename)
-	}
-
 	// setup client
-	trClient := opts.TracerProvider.Tracer("grpc-client")
-	trServer := opts.TracerProvider.Tracer("grpc-server")
 	grpcLogger := opts.Logger.Named("grpc")
 	zapOpts := []grpc_zap.Option{}
 
@@ -119,18 +108,16 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
-			grpc_trace.UnaryServerInterceptor(trServer),
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
-			grpc_trace.StreamServerInterceptor(trServer),
 		),
 	}
 
 	clientOpts := []grpc.DialOption{
-		grpc.WithChainUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
-		grpc.WithChainStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
+		grpc.WithChainUnaryInterceptor(),
+		grpc.WithChainStreamInterceptor(),
 	}
 
 	server := grpc.NewServer(serverOpts...)
@@ -238,7 +225,6 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 	for i := range tps {
 		svcName := fmt.Sprintf("mock%d", i)
 		opts.Logger = logger.Named(svcName)
-		opts.TracerProvider = tracer.NewTestingProvider(t, svcName)
 		ds := ipfsutil.NewNamespacedDatastore(ds, datastore.NewKey(fmt.Sprintf("%d", i)))
 
 		tps[i], cls[i] = NewTestingProtocol(ctx, t, opts, ds)

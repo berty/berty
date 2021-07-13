@@ -99,3 +99,9 @@ http:
  - selector: berty.messenger.v1.MessengerService.MessageSearch
    post: /berty.messenger.v1/MessengerService/MessageSearch
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.TyberHostSearch
+   post: /berty.messenger.v1/MessengerService/TyberHostSearch
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.TyberHostAttach
+   post: /berty.messenger.v1/MessengerService/TyberHostAttach
+   body: "*"

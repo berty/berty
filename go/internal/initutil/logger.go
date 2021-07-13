@@ -65,7 +65,7 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 	m.Logging.StderrFilters = strings.ReplaceAll(m.Logging.StderrFilters, KeywordDefault, defaultLoggingFilters)
 	m.Logging.FileFilters = strings.ReplaceAll(m.Logging.FileFilters, KeywordDefault, defaultLoggingFilters)
 
-	streams := []logutil.Stream{}
+	streams := m.Logging.DefaultLoggerStreams
 	if m.Logging.StderrFilters != "" {
 		streams = append(streams, logutil.NewStdStream(m.Logging.StderrFilters, m.Logging.StderrFormat, "stderr"))
 	}

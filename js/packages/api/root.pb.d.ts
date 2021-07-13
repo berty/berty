@@ -5166,6 +5166,10 @@ export namespace berty {
                 public mediaGetRelated(request: berty.messenger.v1.MediaGetRelated.IRequest): Promise<berty.messenger.v1.MediaGetRelated.Reply>;
                 public messageSearch(request: berty.messenger.v1.MessageSearch.IRequest, callback: berty.messenger.v1.MessengerService.MessageSearchCallback): void;
                 public messageSearch(request: berty.messenger.v1.MessageSearch.IRequest): Promise<berty.messenger.v1.MessageSearch.Reply>;
+                public tyberHostSearch(request: berty.messenger.v1.TyberHostSearch.IRequest, callback: berty.messenger.v1.MessengerService.TyberHostSearchCallback): void;
+                public tyberHostSearch(request: berty.messenger.v1.TyberHostSearch.IRequest): Promise<berty.messenger.v1.TyberHostSearch.Reply>;
+                public tyberHostAttach(request: berty.messenger.v1.TyberHostAttach.IRequest, callback: berty.messenger.v1.MessengerService.TyberHostAttachCallback): void;
+                public tyberHostAttach(request: berty.messenger.v1.TyberHostAttach.IRequest): Promise<berty.messenger.v1.TyberHostAttach.Reply>;
             }
 
             namespace MessengerService {
@@ -5233,6 +5237,10 @@ export namespace berty {
                 type MediaGetRelatedCallback = (error: (Error|null), response?: berty.messenger.v1.MediaGetRelated.Reply) => void;
 
                 type MessageSearchCallback = (error: (Error|null), response?: berty.messenger.v1.MessageSearch.Reply) => void;
+
+                type TyberHostSearchCallback = (error: (Error|null), response?: berty.messenger.v1.TyberHostSearch.Reply) => void;
+
+                type TyberHostAttachCallback = (error: (Error|null), response?: berty.messenger.v1.TyberHostAttach.Reply) => void;
             }
 
             interface IPaginatedInteractionsOptions {
@@ -8281,6 +8289,118 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch.Reply;
                     public static toObject(message: berty.messenger.v1.MessageSearch.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface ITyberHostSearch {
+            }
+
+            class TyberHostSearch implements ITyberHostSearch {
+
+                public static create(properties?: berty.messenger.v1.ITyberHostSearch): berty.messenger.v1.TyberHostSearch;
+                public static encode(message: berty.messenger.v1.ITyberHostSearch, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.ITyberHostSearch, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.TyberHostSearch;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.TyberHostSearch;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostSearch;
+                public static toObject(message: berty.messenger.v1.TyberHostSearch, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace TyberHostSearch {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.messenger.v1.TyberHostSearch.IRequest): berty.messenger.v1.TyberHostSearch.Request;
+                    public static encode(message: berty.messenger.v1.TyberHostSearch.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.TyberHostSearch.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.TyberHostSearch.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.TyberHostSearch.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostSearch.Request;
+                    public static toObject(message: berty.messenger.v1.TyberHostSearch.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    hostname?: (string|null);
+                    ipv4?: (string[]|null);
+                    ipv6?: (string[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public hostname: string;
+                    public ipv4: string[];
+                    public ipv6: string[];
+                    public static create(properties?: berty.messenger.v1.TyberHostSearch.IReply): berty.messenger.v1.TyberHostSearch.Reply;
+                    public static encode(message: berty.messenger.v1.TyberHostSearch.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.TyberHostSearch.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.TyberHostSearch.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.TyberHostSearch.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostSearch.Reply;
+                    public static toObject(message: berty.messenger.v1.TyberHostSearch.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface ITyberHostAttach {
+            }
+
+            class TyberHostAttach implements ITyberHostAttach {
+
+                public static create(properties?: berty.messenger.v1.ITyberHostAttach): berty.messenger.v1.TyberHostAttach;
+                public static encode(message: berty.messenger.v1.ITyberHostAttach, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.ITyberHostAttach, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.TyberHostAttach;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.TyberHostAttach;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostAttach;
+                public static toObject(message: berty.messenger.v1.TyberHostAttach, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace TyberHostAttach {
+
+                interface IRequest {
+                    addresses?: (string[]|null);
+                }
+
+                class Request implements IRequest {
+
+                    public addresses: string[];
+                    public static create(properties?: berty.messenger.v1.TyberHostAttach.IRequest): berty.messenger.v1.TyberHostAttach.Request;
+                    public static encode(message: berty.messenger.v1.TyberHostAttach.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.TyberHostAttach.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.TyberHostAttach.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.TyberHostAttach.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostAttach.Request;
+                    public static toObject(message: berty.messenger.v1.TyberHostAttach.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    address?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public address: string;
+                    public static create(properties?: berty.messenger.v1.TyberHostAttach.IReply): berty.messenger.v1.TyberHostAttach.Reply;
+                    public static encode(message: berty.messenger.v1.TyberHostAttach.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.TyberHostAttach.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.TyberHostAttach.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.TyberHostAttach.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostAttach.Reply;
+                    public static toObject(message: berty.messenger.v1.TyberHostAttach.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

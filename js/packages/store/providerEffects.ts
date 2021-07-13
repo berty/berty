@@ -33,7 +33,6 @@ export const openAccountWithProgress = async (
 		.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
-			loggerFilters: bridgeOpts.logFilters,
 		})
 		.then(async (stream) => {
 			stream.onMessage((msg, _) => {
@@ -179,6 +178,16 @@ export const openingDaemon = async (
 		return
 	}
 
+	let tyberHost = ''
+	try {
+		tyberHost = (await AsyncStorage.getItem(tyberHostStorageKey)) || ''
+		if (tyberHost !== '') {
+			console.warn(`connecting to ${tyberHost}`)
+		}
+	} catch (e) {
+		console.warn(e)
+	}
+
 	// Apply store options
 	let bridgeOpts: GoBridgeOpts
 	try {
@@ -215,7 +224,10 @@ export const openingDaemon = async (
 			: [...bridgeOpts.cliArgs!, '--log.format=console']
 
 		// set tyber host flag
-		if (opts?.tyberHost?.address) {
+		if (tyberHost) {
+			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter((arg) => !arg.startsWith('--log.tyber-host='))
+			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${tyberHost}`]
+		} else if (opts?.tyberHost?.address) {
 			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter((arg) => !arg.startsWith('--log.tyber-host='))
 			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${opts?.tyberHost?.address}`]
 		}

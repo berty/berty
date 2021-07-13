@@ -34,7 +34,7 @@ func TestPersistentIdentity(t *testing.T) {
 	// berty1: init a new account
 	var key1 string
 	{
-		closer, err := u.CaptureStdoutAndStderr()
+		closer, err := u.CaptureStdout()
 		require.NoError(t, err)
 		err = runMain([]string{
 			"share-invite",
@@ -45,6 +45,7 @@ func TestPersistentIdentity(t *testing.T) {
 		require.NoError(t, err)
 		key1 = strings.TrimSpace(closer())
 		require.NotEmpty(t, key1)
+		require.Contains(t, key1, "https://berty.tech/id")
 	}
 
 	// berty1: export account
@@ -60,7 +61,7 @@ func TestPersistentIdentity(t *testing.T) {
 
 	// berty2: init a new account from export
 	{
-		closer, err := u.CaptureStdoutAndStderr()
+		closer, err := u.CaptureStdout()
 		require.NoError(t, err)
 		err = runMain([]string{
 			"share-invite",

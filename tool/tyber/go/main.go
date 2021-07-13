@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -34,11 +35,14 @@ var (
 )
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	// Create logger
 	l := log.New(log.Writer(), log.Prefix(), log.Flags())
 
 	// Init Go <-> JS bridge
-	b := bridge.New(l, nil)
+	b := bridge.New(ctx, l, nil)
 	defer b.Close()
 
 	// Run bootstrap
@@ -80,6 +84,17 @@ func main() {
 					Role:  astilectron.MenuItemRoleQuit,
 				},
 			},
+		}, {
+			Role: astilectron.MenuItemRoleEditMenu,
+			SubMenu: []*astilectron.MenuItemOptions{
+				{Role: astilectron.MenuItemRoleUndo},
+				{Role: astilectron.MenuItemRoleRedo},
+				{Role: astilectron.MenuItemRoleCut},
+				{Role: astilectron.MenuItemRoleCopy},
+				{Role: astilectron.MenuItemRolePaste},
+				{Role: astilectron.MenuItemRoleDelete},
+				{Role: astilectron.MenuItemRoleSelectAll},
+			},
 		}},
 		OnWait:        b.Init,
 		RestoreAssets: bind.RestoreAssets,
@@ -95,6 +110,9 @@ func main() {
 				Height:    astikit.IntPtr(height),
 				MinWidth:  astikit.IntPtr(minWidth),
 				Width:     astikit.IntPtr(width),
+				WebPreferences: &astilectron.WebPreferences{
+					EnableRemoteModule: astikit.BoolPtr(true),
+				},
 			},
 		}},
 		IgnoredSignals: []os.Signal{syscall.SIGURG},

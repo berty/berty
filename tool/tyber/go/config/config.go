@@ -1,6 +1,8 @@
 package config
 
 import (
+	"context"
+	"github.com/grandcat/zeroconf"
 	"os"
 	"path/filepath"
 	"sync"
@@ -24,11 +26,14 @@ type Config struct {
 	initLock     sync.RWMutex
 	settings     Settings
 	settingsLock sync.RWMutex
+	ctx          context.Context
 }
 
-func New(l *logger.Logger) *Config {
+func New(ctx context.Context, l *logger.Logger) *Config {
 	return &Config{
-		logger: l.Named("config"),
+		//logger: l.Named("config"),
+		logger: l, //.Named("config"),
+		ctx:    ctx,
 	}
 }
 
@@ -48,6 +53,22 @@ func (c *Config) Init(dataPath string) error {
 	c.initLock.Lock()
 	c.initialized = true
 	c.initLock.Unlock()
+
+	go func() {
+		listenerPort, err := c.GetPortSetting()
+		if err != nil {
+			c.logger.Warnf("unable to start mdns server: %w", err)
+			return
+		}
+		server, err := zeroconf.Register("TyberServer", "_tyber._tcp", "local.", listenerPort, []string{"txtv=0", "lo=1", "la=2"}, nil)
+		if err != nil {
+			panic(err)
+		}
+
+		<-c.ctx.Done()
+		c.logger.Info("stopping mdns server")
+		server.Shutdown()
+	}()
 
 	c.logger.Infof("initialization successful with data path %s", c.dataPath)
 
