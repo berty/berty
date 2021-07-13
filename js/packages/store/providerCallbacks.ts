@@ -5,7 +5,12 @@ import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clien
 
 import { storageKeyForAccount } from './providerEffects'
 import { Maybe } from './hooks'
-import { createAccount, refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
+import {
+	createAccount,
+	refreshAccountList,
+	closeAccountWithProgress,
+	importAccountWithProgress,
+} from './effectableCallbacks'
 import {
 	accountService,
 	reducerAction,
@@ -24,19 +29,21 @@ export const importAccount = async (
 	}
 
 	// TODO: check if bridge is running
-	let resp: beapi.account.CreateAccount.Reply
+	let resp: beapi.account.ImportAccountWithProgress.Reply | null
 
 	try {
 		await closeAccountWithProgress(dispatch)
-		resp = await accountService.importAccount({
-			backupPath: path,
-		})
+		resp = await importAccountWithProgress(path, dispatch)
 	} catch (e) {
 		console.warn('unable to import account', e)
 		return
 	}
 
-	if (!resp.accountMetadata?.accountId) {
+	if (!resp) {
+		throw new Error('no account returned')
+	}
+
+	if (!resp.accountMetadata.accountId) {
 		throw new Error('no account id returned')
 	}
 
