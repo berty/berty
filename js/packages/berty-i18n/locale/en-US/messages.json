@@ -356,7 +356,7 @@
       "footer-middle-button": "List events",
       "footer-right-button": "Restart daemon",
       "trigger-crashlytics-button": "Trigger crashlytics crash",
-      "tyber-attach": "Tyber attach to {{host}}"
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "System info"
