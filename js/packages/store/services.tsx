@@ -85,20 +85,16 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 
 	if (await InAppBrowser.isAvailable()) {
 		try {
-			const response: any = await InAppBrowser.openAuth(
-				authURL,
-				Platform.OS == 'ios' ? 'berty' : 'berty://',
-				{
-					dismissButtonStyle: 'cancel',
-					readerMode: false,
-					modalPresentationStyle: 'pageSheet',
-					modalEnabled: true,
-					showTitle: true,
-					enableDefaultShare: false,
-					ephemeralWebSession: true,
-					// forceCloseOnRedirection: false,
-				},
-			)
+			const response: any = await InAppBrowser.openAuth(authURL, 'berty://', {
+				dismissButtonStyle: 'cancel',
+				readerMode: false,
+				modalPresentationStyle: 'pageSheet',
+				modalEnabled: true,
+				showTitle: true,
+				enableDefaultShare: false,
+				ephemeralWebSession: true,
+				// forceCloseOnRedirection: false,
+			})
 
 			if (!response.url) {
 				return
