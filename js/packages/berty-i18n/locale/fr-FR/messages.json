@@ -355,7 +355,8 @@
       "footer-left-button": "Infos sur l'appareil",
       "footer-middle-button": "Lister les événements",
       "footer-right-button": "Redémarrer le démon",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Infos système"
