@@ -355,7 +355,8 @@
       "footer-left-button": "Informace o zařízení",
       "footer-middle-button": "Zobrazit události",
       "footer-right-button": "Restartovat démona",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Systémové informace"
