@@ -355,7 +355,8 @@
       "footer-left-button": "",
       "footer-middle-button": "قائمة الأحداث",
       "footer-right-button": "إعادة تشغيل الرديمون",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "معلومات النظام"
