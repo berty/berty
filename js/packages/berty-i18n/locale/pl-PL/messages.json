@@ -355,7 +355,8 @@
       "footer-left-button": "Informacje o urządzeniu",
       "footer-middle-button": "Lista wydarzeń",
       "footer-right-button": "Zrestartuj daemon",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Informacje systemowe"
