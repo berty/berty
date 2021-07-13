@@ -11,7 +11,6 @@ import beapi from '@berty-tech/api'
 
 import { MenuListItem } from './MenuListItem'
 import { GallerySection } from './GallerySection'
-import { GifSection } from './GifSection'
 import { TabItems } from './types'
 import { SecurityAccess } from './SecurityAccess'
 
@@ -143,17 +142,6 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 				// setActiveTab(TabItems.Bertyzz)
 			},
 		},
-		{
-			iconProps: {
-				name: 'gif',
-				fill: activeTab === TabItems.GIF ? '#383B63' : '#C7C8D8',
-				pack: 'custom',
-			},
-			title: t('chat.files.gif'),
-			onPress: async () => {
-				setActiveTab(TabItems.GIF)
-			},
-		},
 	]
 
 	const prepareMediaAndSend = async (res: beapi.messenger.IMedia[]) => {
@@ -243,11 +231,9 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 								<MenuListItem {...listItem} key={listItem.title} />
 							))}
 						</View>
-
 						{activeTab === TabItems.Gallery && (
 							<GallerySection prepareMediaAndSend={prepareMediaAndSend} isLoading={isLoading} />
 						)}
-						{activeTab === TabItems.GIF && <GifSection prepareMediaAndSend={prepareMediaAndSend} />}
 					</View>
 				</View>
 			</KeyboardAvoidingView>
