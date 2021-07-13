@@ -355,7 +355,8 @@
       "footer-left-button": "Информация за устройства",
       "footer-middle-button": "Списък от събития",
       "footer-right-button": "Рестартирай daemon-а",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Система информация"
