@@ -266,12 +266,7 @@ export const reducerActions: {
 	},
 
 	[MessengerActions.SetNextAccount]: (oldState, action) => {
-		if (
-			action.payload === null ||
-			action.payload === undefined ||
-			!oldState.embedded ||
-			action.payload === oldState.selectedAccount
-		) {
+		if (action.payload === null || action.payload === undefined || !oldState.embedded) {
 			return oldState
 		}
 
