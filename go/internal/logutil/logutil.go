@@ -119,7 +119,9 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 		case typeTyber:
 			tyberLogger, err := NewTyberLogger(opts.tyberHost)
 			if err != nil {
-				return nil, nil, err
+				// TODO: handle error properly
+				_ = err
+				continue
 			}
 			cleanup = u.CombineFuncs(cleanup, func() {
 				tyberLogger.Close()
