@@ -2,7 +2,7 @@ import React from 'react'
 import { View, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { setJSExceptionHandler, setNativeExceptionHandler } from 'react-native-exception-handler'
+import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
 
 import { useStyles } from '@berty-tech/styles'
@@ -268,7 +268,6 @@ export const ErrorScreen: React.FC<{ children: React.ReactElement }> = ({ childr
 
 	React.useEffect(() => {
 		setJSExceptionHandler(errorHandler)
-		setNativeExceptionHandler(errorHandler)
 	}, [])
 
 	if (debugMode) {
