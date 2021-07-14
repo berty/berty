@@ -21,9 +21,9 @@
       },
       "high-level": {
         "title": "Teljes névtelenség",
-        "desc": "",
+        "desc": "Rendkívül óvatos felhasználók számára",
         "disable-push-notif": "Értesítések letiltva",
-        "disable-local-peer-discovery": "",
+        "disable-local-peer-discovery": "Helyi fél felderítés kikapcsolva",
         "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
         "disable-contact-request": "Kapcsolat felkérések kikapcsolva",
         "on-same-network": "Helyi azonos hálózaton/wifi-n"
@@ -122,7 +122,7 @@
         "desc": ""
       },
       "full-anon": {
-        "title": "",
+        "title": "Teljesen névtelen mód",
         "desc": "",
         "no-ip": "Nincs ip",
         "no-mc": "Nincs mc",
@@ -233,7 +233,7 @@
       "title": "Bluetooth",
       "desc": "A Bluetooth lehetővé teszi, hogy internet-hozzáférés nélkül cserélhessen üzeneteket a Berty segítségével, közvetlenül csatlakoztatva a készüléket a közelben levő felekhez",
       "activate-button": "Bluetooth aktiválása",
-      "permission-title": "",
+      "permission-title": "Berty Bluetooth engedély",
       "android-permission-description": "",
       "ios-permission-description": "",
       "tag-neutral": "Kérdezze meg később",
@@ -329,17 +329,17 @@
       "add-dev-conversations-button": "",
       "share-button": {
         "title": "ID megosztása Discordon",
-        "alert-title": "",
-        "alert-message": "",
+        "alert-title": "Meg szeretné osztani QR-kódját a \"# dev-logs\"-al a Berty Discord szerveren?",
+        "alert-message": "Ez engedélyezni fogja több személy számára, hogy beolvassa a QR-kódját, vagy lemásolja a kapcsolati linkjét.",
         "alert-accept-button": "Igen 👍",
         "alert-cancel-button": "Nem"
       },
       "native-bridge-button": "Native Bridge tesztelése",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
+      "dump-account-button": "Fiók kiírása",
+      "dump-contacts-button": "Kapcsolatok kiírása",
+      "dump-conversations-button": "Beszélgetések kiírása",
+      "dump-interactions-button": "Interakciók kiírása",
+      "dump-members-button": "Tagok kiírása",
       "stop-node-button": "Node leállítása",
       "bot-mode-button": "Bot mód",
       "local-grpc-button": "helyi gRPC",
@@ -352,8 +352,8 @@
         "test": "Teszt, ",
         "tried": ""
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
+      "footer-left-button": "Eszköz információk",
+      "footer-middle-button": "Események listája",
       "footer-right-button": "Daemon újraindítása",
       "trigger-crashlytics-button": "",
       "tyber-attach": ""
@@ -390,7 +390,7 @@
       "invalid-qr": "Érvénytelen QR kód!",
       "error": "Hiba!",
       "contact-already-added": "A kapcsolat már hozzá lett adva",
-      "contact-already-added-message": ""
+      "contact-already-added-message": "Többször nem adhatja hozzá ugyanazt a névjegyet"
     },
     "invalid-scan": {
       "dismiss-button": "ELUTASÍTÁS"
@@ -407,7 +407,7 @@
     },
     "welcome-configuration": {
       "title": "Üdvözöllek a fedélzeten!",
-      "desc": "",
+      "desc": "Gyorsan áttekinthetjük a beállításokat és befejezhetjük az első konfigurációt!",
       "skip": "TOVÁBB",
       "next": "KÖVETKEZŐ"
     }
@@ -467,9 +467,9 @@
         "incoming": "Elfogadja ezt a kérést a válaszhoz!",
         "outgoing": "Várjuk a válaszod a kacsolódáshoz!"
       },
-      "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "betabot-input-placeholder": "Betabot hozzáadása az írj ide..-hez",
+      "incoming-input-placeholder": "Fogadja el az írási kérelmet ide...",
+      "input-placeholder": "Írjon ide..."
     },
     "one-to-one-settings": {
       "header-left-button": "Keresés",
@@ -483,8 +483,8 @@
     },
     "replicate-group-settings": {
       "title": "Beszélgetés regisztrálása a szerveren",
-      "no-registered-button": "",
-      "connect-button": "",
+      "no-registered-button": "Nincs regisztrálva replikációs szolgáltatás",
+      "connect-button": "Kapcsolódás a Berty szolgáltatásához",
       "manage-add-button": "Szolgáltatások kezelése és hozzáadása"
     },
     "files": {
@@ -498,7 +498,7 @@
       "gif": "GIF",
       "search-gif": "GIF keresése",
       "security-access": "Biztonsági Hozzáférés",
-      "security-access-desc": "",
+      "security-access-desc": "Koppintson ide a beállítás megnyitásához, hogy engedélyezze",
       "save-to-gallery": "Fájl mentése a Galériába",
       "share": "Megosztás",
       "forward-berty": "Továbbítás Berty-nek",
@@ -506,15 +506,15 @@
       "image-saved": "Kép mentve a galériába"
     },
     "shared-medias": {
-      "title": "",
-      "medias": "",
-      "links": "",
-      "documents": ""
+      "title": "Megosztott médiák",
+      "medias": "Médiák",
+      "links": "Hivatkozások",
+      "documents": "Dokumentumok"
     },
     "reply": {
-      "response-to": "",
+      "response-to": "Válasz neki",
       "replying-to": "",
-      "replied-to": ""
+      "replied-to": "Válaszolt neki"
     }
   },
   "error": {
@@ -533,29 +533,29 @@
       "desc": "Ez biztos Francis hibája, a Berty gyakornok fejlesztőjének, aki bizonyosan hibázott. Micsoda bunkó ez a Francis!",
       "desc-buy": "Ha látod, vesz majd egy sört neked!",
       "desc-em": "* Hát, oké, Francis nincs a Berty-nél.",
-      "desc-report": ""
+      "desc-report": "Rázza meg a telefonját és essünk neki újra!"
     }
   },
   "debug": {
     "inspector": {
-      "show-button": "",
+      "show-button": "Alkalmazás ellenőr megjelenítése",
       "hide-button": "Bezárás",
-      "title": "",
+      "title": "Ellenőr",
       "accounts": {
         "title": "Fiókok",
-        "unsupported-remote-mode": "",
+        "unsupported-remote-mode": "A fiókellenőr távoli módban nem támogatott",
         "data-not-found": "A fiók nem szerepel a listán",
         "action-delete": {
           "file-exists": "",
           "account-exists": "",
           "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
+          "fs-read-error": "Hiba történt a fiókkal kapcsolatos FS-információk lekérésekor",
+          "actions-title": "Mit kellene tennünk?",
+          "action-account-manager": "Törlés a fiókkezelővel",
           "action-account-manager-confirm": "Fiók törlésének megerősítése",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
+          "action-force-delete": "Kényszerített kitörlés",
+          "action-force-delete-confirm": "A fiók kényszerített törlésének megerősítése",
+          "error-close": "Hiba a fiók lezárásakor",
           "error-delete": "Hiba a fiók törlésekor",
           "success-feedback": "Fiók törölve",
           "action-cancel": "Mégse"
