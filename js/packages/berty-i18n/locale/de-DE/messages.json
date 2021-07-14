@@ -30,7 +30,7 @@
       }
     },
     "create-account": {
-      "title": "Ihr Konto erstellen",
+      "title": "Konto erstellen",
       "desc": "Ein Spitzname ist die einzige erforderliche Information",
       "required": "Erforderlich",
       "placeholder": "Name",
@@ -47,18 +47,18 @@
     },
     "generate-key": {
       "title": "Starte den Berty Knotenpunkt…",
-      "desc": "Dies kann einige Sekunden dauern"
+      "desc": "Dies könnte einige Sekunden dauern"
     },
     "notifications": {
       "header": "Verpasse keine neuen Nachrichten oder Kontaktanfragen",
       "recommended": "Empfohlen",
       "title": "Benachrichtigungen",
       "desc": "Um diese Funktion nutzen zu können, musst du Berty den Zugriff auf Push-Benachrichtigungen gestatten",
-      "button": "BENACHRICHTIGUNGEN AUTHORISIEREN",
-      "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
+      "button": "BENACHRICHTIGUNGEN ERLAUBEN",
+      "skip": "ÜBERSPRINGEN UND DIES SPÄTER ERLEDIGEN"
     },
     "bluetooth": {
-      "header": "Kommuniziere ohne Internetverbindung (WiFi oder Moblile Daten), indem Sie Ihr Telefon direkt mit Anderen in der Nähe verbinden",
+      "header": "Kommuniziere ohne Internetverbindung (Wifi oder mobile Daten) indem du dein Telefon direkt mit Peers in der Nähe verbindest",
       "optional": "Optional",
       "title": "Bluetooth",
       "desc": "Um diese Funktion nutzen zu können, musst du Berty den Zugriff auf Bluetooth gestatten",
@@ -80,12 +80,12 @@
         "card-title": "Kontaktanfrage!"
       },
       "input-placeholder": "Stichwort suchen",
-      "no-contacts": "Sie haben noch keine Kontakte oder Chats",
+      "no-contacts": "Du hast noch keine Kontakte oder Chats",
       "search": {
         "no-results": "Keine Ergebnisse gefunden"
       },
       "multi-account": {
-        "create-button": "Ihr Konto erstellen",
+        "create-button": "Konto erstellen",
         "import-button": "Konto importieren"
       },
       "create-group": {
@@ -149,8 +149,8 @@
       "title": "Einstellungen",
       "desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
       "notification-file-saved": {
-        "title": "",
-        "desc": ""
+        "title": "Daten gespeichert!",
+        "desc": "Im Download-Verzeichnis verfügbar"
       },
       "notifications-button": {
         "title": "Benachrichtigungen",
@@ -231,11 +231,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "Bluetooth ermöglicht es dir, Nachrichten mit Berty ohne Internetzugriff auszutauschen, indem du dein Gerät direkt mit anderen Geräten in der Nähe verbindest",
       "activate-button": "Bluetooth aktivieren",
       "permission-title": "Berty Bluetooth Berechtigung",
-      "android-permission-description": "",
-      "ios-permission-description": "",
+      "android-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die Android API die Standortberechtigung.\nWir verwenden Ihre Standortdaten in keiner Weise.",
+      "ios-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die iOS-API diese Berechtigung.",
       "tag-neutral": "Später nachfragen",
       "tag-negative": "Abbrechen",
       "tag-positive": "OK"
@@ -329,7 +329,7 @@
       "add-dev-conversations-button": "Entwickler-Unterhaltungen hinzufügen",
       "share-button": {
         "title": "ID auf Discord teilen",
-        "alert-title": "",
+        "alert-title": "Möchtest du deinen QR-Code auf den Berty Discord im Kanal \"#dev-logs\" veröffentlichen?",
         "alert-message": "Das erlaubt Anderen Ihren QR-Code zu scannen bzw. Ihren Kontakt-Link zu kopieren.",
         "alert-accept-button": "Ja 👍",
         "alert-cancel-button": "Nein"
@@ -457,7 +457,7 @@
       },
       "betabot-box": {
         "title": "BETA BOT hinzufügen?",
-        "desc": "",
+        "desc": "Du hastn och keine Kontakte. Möchten du den Beta-Bot hinzufügen, um Nachrichten in Berty auszuprobieren?",
         "skip-button": "Überspringen",
         "add-button": "Hinzufügen!"
       },
