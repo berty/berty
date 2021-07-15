@@ -32,7 +32,13 @@ sudo mv infra-daemon /usr/local/bin
 
 # add daemon to systemd init
 sudo mv infra-daemon.service /etc/systemd/system/
-sudo systemctl enable infra-daemon.service=
+sudo systemctl enable infra-daemon.service
+
+echo "creating aws config"
+# create config
+sudo mkdir /home/ec2-user/.aws
+sudo touch /home/ec2-user/.aws/config
+sudo echo "$(cat /home/ec2-user/infra-testing-tool/packer/config)" | sudo tee /home/ec2-user/.aws/config > /dev/null
 
 # delete go archive
 sudo rm -rf ~/*

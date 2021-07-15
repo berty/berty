@@ -20,22 +20,10 @@ func main() {
 		log.Fatalf("Failed to listen to port %v: %v", usedGrpcPort, err)
 	}
 
-	//	var s daemon.GroupServer
-	//	var opts []grpc.ServerOption
-	//	grpcServer := grpc.NewServer(opts...)
-	//	daemon.RegisterGroupServer(grpcServer, s)
-	//
-	//	err = grpcServer.Serve(lis)
-	//	if err != nil {
-	//		log.Println(err)
-	//	}
-	//}
 	grpcServer := grpc.NewServer()
 
 	s := daemon.NewServer()
-	daemon.RegisterGroupServer(grpcServer, &s)
-	daemon.RegisterPeerServer(grpcServer, &s)
-	daemon.RegisterTestServer(grpcServer, &s)
+	daemon.RegisterProxyServer(grpcServer, &s)
 
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)

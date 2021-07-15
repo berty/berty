@@ -1,6 +1,8 @@
 package config
 
 import (
+	"crypto/md5"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -121,4 +123,17 @@ func (c *NodeGroup) parseGroups() error {
 	}
 
 	return nil
+}
+
+func (g Group) Hash () [16]byte {
+	bytes, err := json.Marshal(g)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return md5.Sum(bytes)
+}
+
+func (c Config) GetAmountOfGroups() (i int) {
+	return len(c.Attributes.Groups)
 }

@@ -3,6 +3,7 @@ package config
 import (
 	"gopkg.in/yaml.v3"
 	"infratesting/iac"
+	"infratesting/iac/components/ec2"
 	"infratesting/iac/components/various"
 	"log"
 )
@@ -83,6 +84,10 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		components = append(components, config.Peer[i].components...)
 	}
 
+	// iam role
+	iamRole := ec2.NewIamRole()
+	components = prependComponents(components, iamRole)
+
 	// prepend AMI
 	ami := various.NewAmi()
 	comp, err := ami.Validate()
@@ -95,13 +100,6 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	// this is always required!
 	provider := various.NewProvider()
 	components = prependComponents(components, provider)
-
-	//for i, component := range components {
-	//	components[i], err = component.Validate()
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//}
 
 	return components, err
 }

@@ -20,6 +20,8 @@ resource "aws_instance" "{{.Name }}" {
     volume_size = {{.RootBlockDevice.VolumeSize }}
   }
 
+  iam_instance_profile = "{{.IamInstanceProfile }}"
+
   // networking
   {{- range $ni := .NetworkInterfaceAttachment }}
   network_interface {
@@ -74,4 +76,6 @@ resource "aws_instance" "{{.Name }}" {
 	// Ec2TagBertyValue value used to double check if instance are actually created by infra-testing-tool
 	// (in case some other instances on the account have a tag with the key "berty")
 	Ec2TagBertyValue = "infra"
+
+	Ec2LogBucket = "berty-logs"
 )

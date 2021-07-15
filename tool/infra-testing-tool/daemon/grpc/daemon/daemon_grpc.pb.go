@@ -14,618 +14,446 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// PeerClient is the client API for Peer service.
+// ProxyClient is the client API for Proxy service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type PeerClient interface {
+type ProxyClient interface {
 	TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error)
 	ConnectToPeer(ctx context.Context, in *ConnectToPeer_Request, opts ...grpc.CallOption) (*ConnectToPeer_Response, error)
 	UploadLogs(ctx context.Context, in *UploadLogs_Request, opts ...grpc.CallOption) (*UploadLogs_Response, error)
-}
-
-type peerClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewPeerClient(cc grpc.ClientConnInterface) PeerClient {
-	return &peerClient{cc}
-}
-
-func (c *peerClient) TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error) {
-	out := new(TestConnection_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Peer/TestConnection", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *peerClient) ConnectToPeer(ctx context.Context, in *ConnectToPeer_Request, opts ...grpc.CallOption) (*ConnectToPeer_Response, error) {
-	out := new(ConnectToPeer_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Peer/ConnectToPeer", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *peerClient) UploadLogs(ctx context.Context, in *UploadLogs_Request, opts ...grpc.CallOption) (*UploadLogs_Response, error) {
-	out := new(UploadLogs_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Peer/UploadLogs", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// PeerServer is the server API for Peer service.
-// All implementations must embed UnimplementedPeerServer
-// for forward compatibility
-type PeerServer interface {
-	TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error)
-	ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error)
-	UploadLogs(context.Context, *UploadLogs_Request) (*UploadLogs_Response, error)
-	mustEmbedUnimplementedPeerServer()
-}
-
-// UnimplementedPeerServer must be embedded to have forward compatible implementations.
-type UnimplementedPeerServer struct {
-}
-
-func (UnimplementedPeerServer) TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
-}
-func (UnimplementedPeerServer) ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConnectToPeer not implemented")
-}
-func (UnimplementedPeerServer) UploadLogs(context.Context, *UploadLogs_Request) (*UploadLogs_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadLogs not implemented")
-}
-func (UnimplementedPeerServer) mustEmbedUnimplementedPeerServer() {}
-
-// UnsafePeerServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PeerServer will
-// result in compilation errors.
-type UnsafePeerServer interface {
-	mustEmbedUnimplementedPeerServer()
-}
-
-func RegisterPeerServer(s grpc.ServiceRegistrar, srv PeerServer) {
-	s.RegisterService(&Peer_ServiceDesc, srv)
-}
-
-func _Peer_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TestConnection_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PeerServer).TestConnection(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Peer/TestConnection",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PeerServer).TestConnection(ctx, req.(*TestConnection_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Peer_ConnectToPeer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConnectToPeer_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PeerServer).ConnectToPeer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Peer/ConnectToPeer",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PeerServer).ConnectToPeer(ctx, req.(*ConnectToPeer_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Peer_UploadLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UploadLogs_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PeerServer).UploadLogs(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Peer/UploadLogs",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PeerServer).UploadLogs(ctx, req.(*UploadLogs_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// Peer_ServiceDesc is the grpc.ServiceDesc for Peer service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var Peer_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "daemon.Peer",
-	HandlerType: (*PeerServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "TestConnection",
-			Handler:    _Peer_TestConnection_Handler,
-		},
-		{
-			MethodName: "ConnectToPeer",
-			Handler:    _Peer_ConnectToPeer_Handler,
-		},
-		{
-			MethodName: "UploadLogs",
-			Handler:    _Peer_UploadLogs_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "daemon.proto",
-}
-
-// GroupClient is the client API for Group service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GroupClient interface {
-	TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error)
 	CreateInvite(ctx context.Context, in *CreateInvite_Request, opts ...grpc.CallOption) (*CreateInvite_Response, error)
 	JoinGroup(ctx context.Context, in *JoinGroup_Request, opts ...grpc.CallOption) (*JoinGroup_Response, error)
 	StartReceiveMessage(ctx context.Context, in *StartReceiveMessage_Request, opts ...grpc.CallOption) (*StartReceiveMessage_Response, error)
 	StopReceiveMessage(ctx context.Context, in *StopReceiveMessage_Request, opts ...grpc.CallOption) (*StopReceiveMessage_Response, error)
-	ReplicationJoinGroup(ctx context.Context, in *ReplicationJoinGroup_Request, opts ...grpc.CallOption) (*ReplicationJoinGroup_Response, error)
-}
-
-type groupClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewGroupClient(cc grpc.ClientConnInterface) GroupClient {
-	return &groupClient{cc}
-}
-
-func (c *groupClient) TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error) {
-	out := new(TestConnection_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Group/TestConnection", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *groupClient) CreateInvite(ctx context.Context, in *CreateInvite_Request, opts ...grpc.CallOption) (*CreateInvite_Response, error) {
-	out := new(CreateInvite_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Group/CreateInvite", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *groupClient) JoinGroup(ctx context.Context, in *JoinGroup_Request, opts ...grpc.CallOption) (*JoinGroup_Response, error) {
-	out := new(JoinGroup_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Group/JoinGroup", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *groupClient) StartReceiveMessage(ctx context.Context, in *StartReceiveMessage_Request, opts ...grpc.CallOption) (*StartReceiveMessage_Response, error) {
-	out := new(StartReceiveMessage_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Group/StartReceiveMessage", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *groupClient) StopReceiveMessage(ctx context.Context, in *StopReceiveMessage_Request, opts ...grpc.CallOption) (*StopReceiveMessage_Response, error) {
-	out := new(StopReceiveMessage_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Group/StopReceiveMessage", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *groupClient) ReplicationJoinGroup(ctx context.Context, in *ReplicationJoinGroup_Request, opts ...grpc.CallOption) (*ReplicationJoinGroup_Response, error) {
-	out := new(ReplicationJoinGroup_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Group/ReplicationJoinGroup", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// GroupServer is the server API for Group service.
-// All implementations must embed UnimplementedGroupServer
-// for forward compatibility
-type GroupServer interface {
-	TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error)
-	CreateInvite(context.Context, *CreateInvite_Request) (*CreateInvite_Response, error)
-	JoinGroup(context.Context, *JoinGroup_Request) (*JoinGroup_Response, error)
-	StartReceiveMessage(context.Context, *StartReceiveMessage_Request) (*StartReceiveMessage_Response, error)
-	StopReceiveMessage(context.Context, *StopReceiveMessage_Request) (*StopReceiveMessage_Response, error)
-	ReplicationJoinGroup(context.Context, *ReplicationJoinGroup_Request) (*ReplicationJoinGroup_Response, error)
-	mustEmbedUnimplementedGroupServer()
-}
-
-// UnimplementedGroupServer must be embedded to have forward compatible implementations.
-type UnimplementedGroupServer struct {
-}
-
-func (UnimplementedGroupServer) TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
-}
-func (UnimplementedGroupServer) CreateInvite(context.Context, *CreateInvite_Request) (*CreateInvite_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateInvite not implemented")
-}
-func (UnimplementedGroupServer) JoinGroup(context.Context, *JoinGroup_Request) (*JoinGroup_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JoinGroup not implemented")
-}
-func (UnimplementedGroupServer) StartReceiveMessage(context.Context, *StartReceiveMessage_Request) (*StartReceiveMessage_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartReceiveMessage not implemented")
-}
-func (UnimplementedGroupServer) StopReceiveMessage(context.Context, *StopReceiveMessage_Request) (*StopReceiveMessage_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StopReceiveMessage not implemented")
-}
-func (UnimplementedGroupServer) ReplicationJoinGroup(context.Context, *ReplicationJoinGroup_Request) (*ReplicationJoinGroup_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReplicationJoinGroup not implemented")
-}
-func (UnimplementedGroupServer) mustEmbedUnimplementedGroupServer() {}
-
-// UnsafeGroupServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GroupServer will
-// result in compilation errors.
-type UnsafeGroupServer interface {
-	mustEmbedUnimplementedGroupServer()
-}
-
-func RegisterGroupServer(s grpc.ServiceRegistrar, srv GroupServer) {
-	s.RegisterService(&Group_ServiceDesc, srv)
-}
-
-func _Group_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TestConnection_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupServer).TestConnection(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Group/TestConnection",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServer).TestConnection(ctx, req.(*TestConnection_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Group_CreateInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateInvite_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupServer).CreateInvite(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Group/CreateInvite",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServer).CreateInvite(ctx, req.(*CreateInvite_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Group_JoinGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(JoinGroup_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupServer).JoinGroup(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Group/JoinGroup",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServer).JoinGroup(ctx, req.(*JoinGroup_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Group_StartReceiveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StartReceiveMessage_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupServer).StartReceiveMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Group/StartReceiveMessage",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServer).StartReceiveMessage(ctx, req.(*StartReceiveMessage_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Group_StopReceiveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StopReceiveMessage_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupServer).StopReceiveMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Group/StopReceiveMessage",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServer).StopReceiveMessage(ctx, req.(*StopReceiveMessage_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Group_ReplicationJoinGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReplicationJoinGroup_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupServer).ReplicationJoinGroup(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/daemon.Group/ReplicationJoinGroup",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServer).ReplicationJoinGroup(ctx, req.(*ReplicationJoinGroup_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// Group_ServiceDesc is the grpc.ServiceDesc for Group service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var Group_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "daemon.Group",
-	HandlerType: (*GroupServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "TestConnection",
-			Handler:    _Group_TestConnection_Handler,
-		},
-		{
-			MethodName: "CreateInvite",
-			Handler:    _Group_CreateInvite_Handler,
-		},
-		{
-			MethodName: "JoinGroup",
-			Handler:    _Group_JoinGroup_Handler,
-		},
-		{
-			MethodName: "StartReceiveMessage",
-			Handler:    _Group_StartReceiveMessage_Handler,
-		},
-		{
-			MethodName: "StopReceiveMessage",
-			Handler:    _Group_StopReceiveMessage_Handler,
-		},
-		{
-			MethodName: "ReplicationJoinGroup",
-			Handler:    _Group_ReplicationJoinGroup_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "daemon.proto",
-}
-
-// TestClient is the client API for Test service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type TestClient interface {
-	TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error)
+	AddReplication(ctx context.Context, in *AddReplication_Request, opts ...grpc.CallOption) (*AddReplication_Response, error)
 	NewTest(ctx context.Context, in *NewTest_Request, opts ...grpc.CallOption) (*NewTest_Response, error)
 	StartTest(ctx context.Context, in *StartTest_Request, opts ...grpc.CallOption) (*StartTest_Response, error)
 	IsTestRunning(ctx context.Context, in *IsTestRunning_Request, opts ...grpc.CallOption) (*IsTestRunning_Response, error)
 }
 
-type testClient struct {
+type proxyClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewTestClient(cc grpc.ClientConnInterface) TestClient {
-	return &testClient{cc}
+func NewProxyClient(cc grpc.ClientConnInterface) ProxyClient {
+	return &proxyClient{cc}
 }
 
-func (c *testClient) TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error) {
+func (c *proxyClient) TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error) {
 	out := new(TestConnection_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Test/TestConnection", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/TestConnection", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *testClient) NewTest(ctx context.Context, in *NewTest_Request, opts ...grpc.CallOption) (*NewTest_Response, error) {
+func (c *proxyClient) ConnectToPeer(ctx context.Context, in *ConnectToPeer_Request, opts ...grpc.CallOption) (*ConnectToPeer_Response, error) {
+	out := new(ConnectToPeer_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/ConnectToPeer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) UploadLogs(ctx context.Context, in *UploadLogs_Request, opts ...grpc.CallOption) (*UploadLogs_Response, error) {
+	out := new(UploadLogs_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/UploadLogs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) CreateInvite(ctx context.Context, in *CreateInvite_Request, opts ...grpc.CallOption) (*CreateInvite_Response, error) {
+	out := new(CreateInvite_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/CreateInvite", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) JoinGroup(ctx context.Context, in *JoinGroup_Request, opts ...grpc.CallOption) (*JoinGroup_Response, error) {
+	out := new(JoinGroup_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/JoinGroup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) StartReceiveMessage(ctx context.Context, in *StartReceiveMessage_Request, opts ...grpc.CallOption) (*StartReceiveMessage_Response, error) {
+	out := new(StartReceiveMessage_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/StartReceiveMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) StopReceiveMessage(ctx context.Context, in *StopReceiveMessage_Request, opts ...grpc.CallOption) (*StopReceiveMessage_Response, error) {
+	out := new(StopReceiveMessage_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/StopReceiveMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) AddReplication(ctx context.Context, in *AddReplication_Request, opts ...grpc.CallOption) (*AddReplication_Response, error) {
+	out := new(AddReplication_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/AddReplication", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) NewTest(ctx context.Context, in *NewTest_Request, opts ...grpc.CallOption) (*NewTest_Response, error) {
 	out := new(NewTest_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Test/NewTest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/NewTest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *testClient) StartTest(ctx context.Context, in *StartTest_Request, opts ...grpc.CallOption) (*StartTest_Response, error) {
+func (c *proxyClient) StartTest(ctx context.Context, in *StartTest_Request, opts ...grpc.CallOption) (*StartTest_Response, error) {
 	out := new(StartTest_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Test/StartTest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/StartTest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *testClient) IsTestRunning(ctx context.Context, in *IsTestRunning_Request, opts ...grpc.CallOption) (*IsTestRunning_Response, error) {
+func (c *proxyClient) IsTestRunning(ctx context.Context, in *IsTestRunning_Request, opts ...grpc.CallOption) (*IsTestRunning_Response, error) {
 	out := new(IsTestRunning_Response)
-	err := c.cc.Invoke(ctx, "/daemon.Test/IsTestRunning", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/IsTestRunning", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// TestServer is the server API for Test service.
-// All implementations must embed UnimplementedTestServer
+// ProxyServer is the server API for Proxy service.
+// All implementations must embed UnimplementedProxyServer
 // for forward compatibility
-type TestServer interface {
+type ProxyServer interface {
 	TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error)
+	ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error)
+	UploadLogs(context.Context, *UploadLogs_Request) (*UploadLogs_Response, error)
+	CreateInvite(context.Context, *CreateInvite_Request) (*CreateInvite_Response, error)
+	JoinGroup(context.Context, *JoinGroup_Request) (*JoinGroup_Response, error)
+	StartReceiveMessage(context.Context, *StartReceiveMessage_Request) (*StartReceiveMessage_Response, error)
+	StopReceiveMessage(context.Context, *StopReceiveMessage_Request) (*StopReceiveMessage_Response, error)
+	AddReplication(context.Context, *AddReplication_Request) (*AddReplication_Response, error)
 	NewTest(context.Context, *NewTest_Request) (*NewTest_Response, error)
 	StartTest(context.Context, *StartTest_Request) (*StartTest_Response, error)
 	IsTestRunning(context.Context, *IsTestRunning_Request) (*IsTestRunning_Response, error)
-	mustEmbedUnimplementedTestServer()
+	mustEmbedUnimplementedProxyServer()
 }
 
-// UnimplementedTestServer must be embedded to have forward compatible implementations.
-type UnimplementedTestServer struct {
+// UnimplementedProxyServer must be embedded to have forward compatible implementations.
+type UnimplementedProxyServer struct {
 }
 
-func (UnimplementedTestServer) TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error) {
+func (UnimplementedProxyServer) TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
 }
-func (UnimplementedTestServer) NewTest(context.Context, *NewTest_Request) (*NewTest_Response, error) {
+func (UnimplementedProxyServer) ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConnectToPeer not implemented")
+}
+func (UnimplementedProxyServer) UploadLogs(context.Context, *UploadLogs_Request) (*UploadLogs_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadLogs not implemented")
+}
+func (UnimplementedProxyServer) CreateInvite(context.Context, *CreateInvite_Request) (*CreateInvite_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateInvite not implemented")
+}
+func (UnimplementedProxyServer) JoinGroup(context.Context, *JoinGroup_Request) (*JoinGroup_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinGroup not implemented")
+}
+func (UnimplementedProxyServer) StartReceiveMessage(context.Context, *StartReceiveMessage_Request) (*StartReceiveMessage_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartReceiveMessage not implemented")
+}
+func (UnimplementedProxyServer) StopReceiveMessage(context.Context, *StopReceiveMessage_Request) (*StopReceiveMessage_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StopReceiveMessage not implemented")
+}
+func (UnimplementedProxyServer) AddReplication(context.Context, *AddReplication_Request) (*AddReplication_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddReplication not implemented")
+}
+func (UnimplementedProxyServer) NewTest(context.Context, *NewTest_Request) (*NewTest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NewTest not implemented")
 }
-func (UnimplementedTestServer) StartTest(context.Context, *StartTest_Request) (*StartTest_Response, error) {
+func (UnimplementedProxyServer) StartTest(context.Context, *StartTest_Request) (*StartTest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartTest not implemented")
 }
-func (UnimplementedTestServer) IsTestRunning(context.Context, *IsTestRunning_Request) (*IsTestRunning_Response, error) {
+func (UnimplementedProxyServer) IsTestRunning(context.Context, *IsTestRunning_Request) (*IsTestRunning_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsTestRunning not implemented")
 }
-func (UnimplementedTestServer) mustEmbedUnimplementedTestServer() {}
+func (UnimplementedProxyServer) mustEmbedUnimplementedProxyServer() {}
 
-// UnsafeTestServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to TestServer will
+// UnsafeProxyServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProxyServer will
 // result in compilation errors.
-type UnsafeTestServer interface {
-	mustEmbedUnimplementedTestServer()
+type UnsafeProxyServer interface {
+	mustEmbedUnimplementedProxyServer()
 }
 
-func RegisterTestServer(s grpc.ServiceRegistrar, srv TestServer) {
-	s.RegisterService(&Test_ServiceDesc, srv)
+func RegisterProxyServer(s grpc.ServiceRegistrar, srv ProxyServer) {
+	s.RegisterService(&Proxy_ServiceDesc, srv)
 }
 
-func _Test_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Proxy_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TestConnection_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TestServer).TestConnection(ctx, in)
+		return srv.(ProxyServer).TestConnection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/daemon.Test/TestConnection",
+		FullMethod: "/daemon.Proxy/TestConnection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestServer).TestConnection(ctx, req.(*TestConnection_Request))
+		return srv.(ProxyServer).TestConnection(ctx, req.(*TestConnection_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Test_NewTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Proxy_ConnectToPeer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConnectToPeer_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).ConnectToPeer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/ConnectToPeer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).ConnectToPeer(ctx, req.(*ConnectToPeer_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_UploadLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadLogs_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).UploadLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/UploadLogs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).UploadLogs(ctx, req.(*UploadLogs_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_CreateInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateInvite_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).CreateInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/CreateInvite",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).CreateInvite(ctx, req.(*CreateInvite_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_JoinGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JoinGroup_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).JoinGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/JoinGroup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).JoinGroup(ctx, req.(*JoinGroup_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_StartReceiveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartReceiveMessage_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).StartReceiveMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/StartReceiveMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).StartReceiveMessage(ctx, req.(*StartReceiveMessage_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_StopReceiveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StopReceiveMessage_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).StopReceiveMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/StopReceiveMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).StopReceiveMessage(ctx, req.(*StopReceiveMessage_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_AddReplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddReplication_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).AddReplication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/AddReplication",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).AddReplication(ctx, req.(*AddReplication_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_NewTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NewTest_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TestServer).NewTest(ctx, in)
+		return srv.(ProxyServer).NewTest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/daemon.Test/NewTest",
+		FullMethod: "/daemon.Proxy/NewTest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestServer).NewTest(ctx, req.(*NewTest_Request))
+		return srv.(ProxyServer).NewTest(ctx, req.(*NewTest_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Test_StartTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Proxy_StartTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StartTest_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TestServer).StartTest(ctx, in)
+		return srv.(ProxyServer).StartTest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/daemon.Test/StartTest",
+		FullMethod: "/daemon.Proxy/StartTest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestServer).StartTest(ctx, req.(*StartTest_Request))
+		return srv.(ProxyServer).StartTest(ctx, req.(*StartTest_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Test_IsTestRunning_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Proxy_IsTestRunning_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IsTestRunning_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TestServer).IsTestRunning(ctx, in)
+		return srv.(ProxyServer).IsTestRunning(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/daemon.Test/IsTestRunning",
+		FullMethod: "/daemon.Proxy/IsTestRunning",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestServer).IsTestRunning(ctx, req.(*IsTestRunning_Request))
+		return srv.(ProxyServer).IsTestRunning(ctx, req.(*IsTestRunning_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Test_ServiceDesc is the grpc.ServiceDesc for Test service.
+// Proxy_ServiceDesc is the grpc.ServiceDesc for Proxy service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Test_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "daemon.Test",
-	HandlerType: (*TestServer)(nil),
+var Proxy_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "daemon.Proxy",
+	HandlerType: (*ProxyServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "TestConnection",
-			Handler:    _Test_TestConnection_Handler,
+			Handler:    _Proxy_TestConnection_Handler,
+		},
+		{
+			MethodName: "ConnectToPeer",
+			Handler:    _Proxy_ConnectToPeer_Handler,
+		},
+		{
+			MethodName: "UploadLogs",
+			Handler:    _Proxy_UploadLogs_Handler,
+		},
+		{
+			MethodName: "CreateInvite",
+			Handler:    _Proxy_CreateInvite_Handler,
+		},
+		{
+			MethodName: "JoinGroup",
+			Handler:    _Proxy_JoinGroup_Handler,
+		},
+		{
+			MethodName: "StartReceiveMessage",
+			Handler:    _Proxy_StartReceiveMessage_Handler,
+		},
+		{
+			MethodName: "StopReceiveMessage",
+			Handler:    _Proxy_StopReceiveMessage_Handler,
+		},
+		{
+			MethodName: "AddReplication",
+			Handler:    _Proxy_AddReplication_Handler,
 		},
 		{
 			MethodName: "NewTest",
-			Handler:    _Test_NewTest_Handler,
+			Handler:    _Proxy_NewTest_Handler,
 		},
 		{
 			MethodName: "StartTest",
-			Handler:    _Test_StartTest_Handler,
+			Handler:    _Proxy_StartTest_Handler,
 		},
 		{
 			MethodName: "IsTestRunning",
-			Handler:    _Test_IsTestRunning_Handler,
+			Handler:    _Proxy_IsTestRunning_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

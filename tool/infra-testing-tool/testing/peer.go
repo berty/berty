@@ -10,6 +10,7 @@ import (
 	"infratesting/config"
 	"infratesting/daemon/grpc/daemon"
 	iacec2 "infratesting/iac/components/ec2"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -22,9 +23,7 @@ type Peer struct {
 	Lock sync.Mutex
 
 	Cc        *grpc.ClientConn
-	P	daemon.PeerClient
-	G	daemon.GroupClient
-	T	daemon.TestClient
+	P	daemon.ProxyClient
 
 	Ip            string
 	Groups        map[string]*protocoltypes.Group
@@ -32,7 +31,8 @@ type Peer struct {
 }
 
 const (
-	usedGrpcPort = "8091"
+	daemonGRPCPort = 7091
+	internalDaemonGRPCPort = 9091
 )
 
 // NewPeer returns a peer with default variables already instantiated
@@ -44,32 +44,40 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 	p.Groups = make(map[string]*protocoltypes.Group)
 	p.Tags = make(map[string]string)
 
+	var isReplication bool
+
 	for _, tag := range tags {
 		p.Tags[strings.ToLower(*tag.Key)] = *tag.Value
+
+		if *tag.Key == iacec2.Ec2TagType && *tag.Value == config.NodeTypeReplication {
+			isReplication = true
+		}
+
 	}
 
-	var retries int
-	var cc *grpc.ClientConn
-	ctx := context.Background()
+	if !isReplication {
+		var cc *grpc.ClientConn
+		ctx := context.Background()
 
-	cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-	p.G = daemon.NewGroupClient(cc)
-	p.T = daemon.NewTestClient(cc)
-	p.P = daemon.NewPeerClient(cc)
+		cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+		p.P = daemon.NewProxyClient(cc)
 
-	_, err = p.P.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
-		Host: "localhost",
-		Port: "9091",
-	})
-	if err != nil {
-		return p, err
+
+		_, err = p.P.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+			Host: "localhost",
+			Port: strconv.Itoa(internalDaemonGRPCPort),
+		})
+		if err != nil {
+			return p, err
+		}
+
 	}
 
 	return p, err
 }
 
 func (p *Peer) GetHost() string {
-	return fmt.Sprintf("%s:%s", p.Ip, usedGrpcPort)
+	return fmt.Sprintf("%s:%d", p.Ip, daemonGRPCPort)
 }
 
 // MatchNodeToPeer matches nodes to peers (to get the group info)

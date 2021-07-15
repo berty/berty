@@ -2,25 +2,24 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"infratesting/daemon/grpc/daemon"
-	"log"
 )
 
 func main() {
 	ctx := context.Background()
 
-	conn1, err := grpc.Dial("127.0.0.1:7091", grpc.WithInsecure())
+	conn, err := grpc.Dial("192.168.1.177:7091", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
-	defer conn1.Close()
+	defer conn.Close()
 
-	g1 := daemon.NewGroupClient(conn1)
-	p1 := daemon.NewPeerClient(conn1)
+	p := daemon.NewProxyClient(conn)
 
-	_, err = p1.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+	_, err = p.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
 		Host: "127.0.0.1",
 		Port: "9091",
 	})
@@ -28,33 +27,47 @@ func main() {
 		panic(err)
 	}
 
+	//
+	//resp, err := p.UploadLogs(ctx, &daemon.UploadLogs_Request{
+	//	Folder: "thing",
+	//	Name:   "brah",
+	//})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+
+	//log.Println(resp.UploadCount)
+
+
 	groupName := uuid.NewString()
 
-	invite, err := g1.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
+	invite, err := p.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
 	if err != nil {
 		panic(err)
 	}
 
-	conn2, err := grpc.Dial("192.168.1.177:7091", grpc.WithInsecure())
-	if err != nil {
-		panic(err)
-	}
-	defer conn2.Close()
+	fmt.Println(invite.Invite)
 
-	g2 := daemon.NewGroupClient(conn2)
-	//p := daemon.NewPeerClient(conn)
-	//t := daemon.NewTestClient(conn)
-
-
-
-	_, err = g2.ReplicationJoinGroup(ctx, &daemon.ReplicationJoinGroup_Request{
-		GroupName: groupName,
-		Invite: invite.Invite,
-	})
-	if err != nil {
-		log.Println(err)
-	}
-
+	//conn2, err := grpc.Dial("192.168.1.177:7091", grpc.WithInsecure())
+	//if err != nil {
+	//	panic(err)
+	//}
+	//defer conn2.Close()
+	//
+	//g2 := daemon.NewGroupClient(conn2)
+	////p := daemon.NewPeerClient(conn)
+	////t := daemon.NewTestClient(conn)
+	//
+	//
+	//
+	//_, err = g2.ReplicationJoinGroup(ctx, &daemon.ReplicationJoinGroup_Request{
+	//	GroupName: groupName,
+	//	Invite: invite.Invite,
+	//})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//
 	//for {
 	////	resp, err := client.TestConnection(ctx, &daemon.TestConnection_Request{Message: uuid.NewString()})
 	////	if err != nil {
@@ -78,7 +91,7 @@ func main() {
 	//if err != nil {
 	//	panic(err)
 	//}
-	//
+
 	////r2, err := g.JoinGroup(ctx, &daemon.JoinGroup_Request{
 	////	GroupName: groupName,
 	////	Invite:    resp.Invite,
@@ -166,5 +179,4 @@ func main() {
 	//}
 	//
 	//log.Println("done")
-
 }

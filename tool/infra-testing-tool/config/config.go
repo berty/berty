@@ -99,3 +99,19 @@ func NewConfig() Config {
 func GetConfig() Config {
 	return config
 }
+
+func (c Config) CountPeers () (i int) {
+	for p := range c.Peer {
+		i += c.Peer[p].Amount
+	}
+
+	return i
+}
+
+func (c Config) CountRepl () (i int) {
+	for p := range c.Replication {
+		i += c.Replication[p].Amount
+	}
+
+	return i
+}

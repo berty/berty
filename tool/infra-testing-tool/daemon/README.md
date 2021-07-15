@@ -6,24 +6,20 @@
 │  ┌───────────┐   ┌───────────┐  │
 │  │ Berty     │   │Token      │  │
 │  │ Daemon    │   │Server     │  │
-│  │           │◄─►│           │  │
-│  │localhost  │   │localhost  │  │
-│  └─┬──┬──────┘   └───────────┘  │
-│    │  │                         │
-│    │  │                         │
-│    │  │                         │
-│    │  │          ┌───────────┐  │
-│    │  │          │ Infra     │  │
-│    │  └─────────►│ Daemon    │  │
-│    │   gRPC 9091 │           │  │
-│    │             │0.0.0.0    │  │
-│    │             └────┬──────┘  │
-│    │                  │         │
-└────┼──────────────────┼─────────┘
-     │                  │
-     │                  │
-     ▼                  ▼
-    WAN            Controller
+│  │           │   │           │  │
+│  │localhost  │   │0.0.0.0    │  │
+│  │:9091      │   │:8091      │  │
+│  └───────────┘   └───────────┘  │
+│                                 │
+│  ┌───────────────────────────┐  │
+│  │ Infra                     │  │
+│  │ Daemon                    │  │
+│  │                           │  │
+│  │ 0.0.0.0                   │  │
+│  │ :7091                     │  │
+│  └───────────────────────────┘  │
+│                                 │
+└─────────────────────────────────┘
 ```
 
 The infra daemon works as a smart control proxy between the actual Berty daemon.
@@ -35,24 +31,20 @@ Now we have the infra-daemon sending messages to the berty daemon on the instanc
 
 
 ```protobuf
-service Peer {
-  rpc TestConnection(TestConnection_Request) returns (TestConnection_Response) {}
-  rpc ConnectToPeer(ConnectToPeer_Request) returns (ConnectToPeer_Response) {}
-}
+service Proxy {
+    rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
+    rpc ConnectToPeer(ConnectToPeer.Request) returns (ConnectToPeer.Response) {}
+    rpc UploadLogs(UploadLogs.Request) returns (UploadLogs.Response) {}
 
-service Group {
-  rpc TestConnection(TestConnection_Request) returns (TestConnection_Response) {}
-  rpc CreateInvite(CreateInvite_Request) returns (CreateInvite_Response) {}
-  rpc JoinGroup(JoinGroup_Request) returns (JoinGroup_Response) {}
-  rpc StartReceiveMessage(StartReceiveMessage_Request) returns (StartReceiveMessage_Response) {}
-  rpc StopReceiveMessage(StopReceiveMessage_Request) returns (StopReceiveMessage_Response) {}
-}
+    rpc CreateInvite(CreateInvite.Request) returns (CreateInvite.Response) {}
+    rpc JoinGroup(JoinGroup.Request) returns (JoinGroup.Response) {}
+    rpc StartReceiveMessage(StartReceiveMessage.Request) returns (StartReceiveMessage.Response) {}
+    rpc StopReceiveMessage(StopReceiveMessage.Request) returns (StopReceiveMessage.Response) {}
+    rpc AddReplication(AddReplication.Request) returns (AddReplication.Response) {}
 
-service Test {
-  rpc TestConnection(TestConnection_Request) returns (TestConnection_Response) {}
-  rpc NewTest(NewTest_Request) returns (NewTest_Response) {}
-  rpc StartTest(StartTest_Request) returns (StartTest_Response) {}
-  rpc IsTestRunning(IsTestRunning_Request) returns (IsTestRunning_Response) {}
+    rpc NewTest(NewTest.Request) returns (NewTest.Response) {}
+    rpc StartTest(StartTest.Request) returns (StartTest.Response) {}
+    rpc IsTestRunning(IsTestRunning.Request) returns (IsTestRunning.Response) {}
 }
 ```
 

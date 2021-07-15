@@ -15,6 +15,8 @@ type Instance struct {
 
 	AvailabilityZone string
 
+	IamInstanceProfile string
+
 	RootBlockDevice RootBlockDevice
 
 	NodeType string
@@ -46,6 +48,8 @@ func NewInstance() Instance {
 		KeyName:      Ec2InstanceKeyNameDefault,
 
 		RootBlockDevice: NewRootBlockDevice(),
+
+		IamInstanceProfile: IamInstanceProfileDefaultName,
 	}
 }
 

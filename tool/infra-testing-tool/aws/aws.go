@@ -130,7 +130,7 @@ func UploadFile(path, key string) error {
 
 	_, err = s3session.PutObject(&s3.PutObjectInput{
 		Body: f,
-		Bucket: aws.String(bucketName),
+		Bucket: aws.String(iacec2.Ec2LogBucket),
 		Key: &key,
 	})
 	return err
