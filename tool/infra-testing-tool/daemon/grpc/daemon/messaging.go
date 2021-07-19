@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/golang/protobuf/proto"
+	"github.com/google/uuid"
 	"image"
 	"image/color"
 	"image/png"
@@ -46,7 +47,6 @@ func ToMessage(a messengertypes.AppMessage) Message {
 		PayloadHash: asSha256(a.Payload),
 		PayloadSize: len(a.Payload),
 	}
-
 }
 
 // SendTextMessage sends a string to a specific group
@@ -82,7 +82,7 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 
 	header := messengertypes.Media{
 		MimeType:       "image/png",
-		Filename:       "image.png",
+		Filename:       fmt.Sprintf("%s.png", uuid.NewString()),
 		DisplayName:    "random noise",
 	}
 

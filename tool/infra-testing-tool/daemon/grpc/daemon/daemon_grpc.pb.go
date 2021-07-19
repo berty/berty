@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProxyClient interface {
 	TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error)
+	TestConnectionToPeer(ctx context.Context, in *TestConnectionToPeer_Request, opts ...grpc.CallOption) (*TestConnectionToPeer_Response, error)
 	ConnectToPeer(ctx context.Context, in *ConnectToPeer_Request, opts ...grpc.CallOption) (*ConnectToPeer_Response, error)
 	UploadLogs(ctx context.Context, in *UploadLogs_Request, opts ...grpc.CallOption) (*UploadLogs_Response, error)
 	CreateInvite(ctx context.Context, in *CreateInvite_Request, opts ...grpc.CallOption) (*CreateInvite_Response, error)
@@ -42,6 +43,15 @@ func NewProxyClient(cc grpc.ClientConnInterface) ProxyClient {
 func (c *proxyClient) TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error) {
 	out := new(TestConnection_Response)
 	err := c.cc.Invoke(ctx, "/daemon.Proxy/TestConnection", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) TestConnectionToPeer(ctx context.Context, in *TestConnectionToPeer_Request, opts ...grpc.CallOption) (*TestConnectionToPeer_Response, error) {
+	out := new(TestConnectionToPeer_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/TestConnectionToPeer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,6 +153,7 @@ func (c *proxyClient) IsTestRunning(ctx context.Context, in *IsTestRunning_Reque
 // for forward compatibility
 type ProxyServer interface {
 	TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error)
+	TestConnectionToPeer(context.Context, *TestConnectionToPeer_Request) (*TestConnectionToPeer_Response, error)
 	ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error)
 	UploadLogs(context.Context, *UploadLogs_Request) (*UploadLogs_Response, error)
 	CreateInvite(context.Context, *CreateInvite_Request) (*CreateInvite_Response, error)
@@ -162,6 +173,9 @@ type UnimplementedProxyServer struct {
 
 func (UnimplementedProxyServer) TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
+}
+func (UnimplementedProxyServer) TestConnectionToPeer(context.Context, *TestConnectionToPeer_Request) (*TestConnectionToPeer_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestConnectionToPeer not implemented")
 }
 func (UnimplementedProxyServer) ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConnectToPeer not implemented")
@@ -220,6 +234,24 @@ func _Proxy_TestConnection_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProxyServer).TestConnection(ctx, req.(*TestConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_TestConnectionToPeer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TestConnectionToPeer_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).TestConnectionToPeer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/TestConnectionToPeer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).TestConnectionToPeer(ctx, req.(*TestConnectionToPeer_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -414,6 +446,10 @@ var Proxy_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TestConnection",
 			Handler:    _Proxy_TestConnection_Handler,
+		},
+		{
+			MethodName: "TestConnectionToPeer",
+			Handler:    _Proxy_TestConnectionToPeer_Handler,
 		},
 		{
 			MethodName: "ConnectToPeer",

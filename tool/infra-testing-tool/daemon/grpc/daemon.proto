@@ -85,7 +85,19 @@ message TestConnection {
   message Response {
     bool success = 1;
   }
+}
 
+// TestConnection
+message TestConnectionToPeer {
+  message Request {
+    int64 tries = 1;
+    string host = 2;
+    string port = 3;
+  }
+
+  message Response {
+    bool success = 1;
+  }
 }
 
 // IsTestRunning
@@ -126,6 +138,8 @@ message StartTest {
 
 service Proxy {
   rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
+  rpc TestConnectionToPeer(TestConnectionToPeer.Request) returns (TestConnectionToPeer.Response) {}
+
   rpc ConnectToPeer(ConnectToPeer.Request) returns (ConnectToPeer.Response) {}
   rpc UploadLogs(UploadLogs.Request) returns (UploadLogs.Response) {}
 

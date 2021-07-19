@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Peer struct {
@@ -35,11 +36,17 @@ const (
 	internalDaemonGRPCPort = 9091
 )
 
+var deploy bool
+
+// SetDeploy sets the global variable deploy to true
+func SetDeploy() {
+	deploy = true
+}
+
+
 // NewPeer returns a peer with default variables already instantiated
 func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 	p.Ip = ip
-
-	fmt.Println(ip)
 
 	p.Groups = make(map[string]*protocoltypes.Group)
 	p.Tags = make(map[string]string)
@@ -56,6 +63,33 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 	}
 
 	if !isReplication {
+		if deploy {
+			var count int
+			for {
+				var cc *grpc.ClientConn
+				ctx := context.Background()
+				cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+
+				temp := daemon.NewProxyClient(cc)
+				_, err = temp.TestConnectionToPeer(ctx, &daemon.TestConnectionToPeer_Request{
+					Tries: 10,
+					Host:  "localhost",
+					Port:  "9091",
+				})
+				if err != nil {
+					if count > 10 {
+						return p, err
+					} else {
+						count += 1
+						time.Sleep(time.Second * 5)
+					}
+				} else {
+					break
+				}
+			}
+		}
+
+
 		var cc *grpc.ClientConn
 		ctx := context.Background()
 

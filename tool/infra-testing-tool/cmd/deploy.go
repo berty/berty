@@ -7,6 +7,7 @@ import (
 	"infratesting/config"
 	"infratesting/iac/components/ec2"
 	infratesting "infratesting/testing"
+	"log"
 	"os"
 	"testing"
 )
@@ -32,14 +33,26 @@ var (
 				panic("something went wrong while applying")
 			}
 
-			peers, err := infratesting.GetAllEligiblePeers(ec2.Ec2TagType, config.AllPeerTypes)
+			infratesting.SetDeploy()
+
+			log.Println("attempting to connect to peers' infra-daemons")
+			log.Println("this could take a while ...")
+
+			_, err = infratesting.GetAllEligiblePeers(ec2.Ec2TagType, config.AllPeerTypes)
 			if err != nil {
 				return err
+			} else {
+				log.Println("successfully connected to all peers")
+				log.Println("deployment is now complete")
 			}
 
-			for _, peer := range peers {
-				fmt.Println(peer.Name)
-			}
+
+
+
+			//
+			//for _, peer := range peers {
+			//	fmt.Println(peer.Name)
+			//}
 			return nil
 		},
 	}

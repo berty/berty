@@ -3,32 +3,31 @@ package main
 // MVP
 
 //FIXME:
-// amountInternal not passing trough demon for some reason
-
-//TODO:
-// ease of configuration of certain settings
+// clean up message testing
 
 //FIXME:
 // protocol/transport selection
 
 //TODO:
-// send images via daemon
+// ease of configuration of certain settings
+
+//TODO:
+// add automatic packer builds
 
 //TODO:
 // duplicate bucket name?
+// what happens if another account tries to make a berty-logs bucket
+// create bucket if it doesn't exist with tag
+// list buckets, with tag: berty-logs
+// or something
 
 //TODO:
-// terraform js -> tf using sdk?
-
-//FIXME:
-// clean up message testing
+// terraform json -> tf using sdk?
+// seems unfeasible
 
 //TODO:
 // improve logging
-
-//FIXME:
-// connecting at deploy time
-// add exponential backoff
+// specifically the wrapError function should have one that doesn't return anything
 
 // OTHER FEATURES
 

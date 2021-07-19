@@ -123,6 +123,7 @@ func (s *Server) NewTest(ctx context.Context, request *NewTest_Request) (respons
 		TypeInternal: request.Type,
 		SizeInternal: int(request.Size),
 		IntervalInternal: int(request.Interval),
+		AmountInternal: int(request.Amount),
 	}
 
 	s.Lock.Lock()
@@ -498,5 +499,38 @@ func (s *Server) TestConnection(ctx context.Context, request *TestConnection_Req
 
 	return &TestConnection_Response{Success: true}, err
 }
+
+// TestConnectionToPeer always returns true
+func (s *Server) TestConnectionToPeer(ctx context.Context, request *TestConnectionToPeer_Request) (response *TestConnectionToPeer_Response, err error) {
+	logger.Info(fmt.Sprintf("TestConnectionToPeer - incoming request: %+v", request))
+	response = new(TestConnectionToPeer_Response)
+
+	host := fmt.Sprintf("%s:%s", request.Host, request.Port)
+
+	var count int
+	for {
+
+		cc, err := grpc.DialContext(ctx, host, grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+		if err != nil {
+			_ = wrapError(err)
+		}
+
+		temp := protocoltypes.NewProtocolServiceClient(cc)
+		_, err = temp.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		if err != nil {
+			if count > int(request.Tries) {
+				return response, wrapError(err)
+			} else {
+				count += 1
+				time.Sleep(time.Second * 5)
+			}
+		} else {
+			break
+		}
+	}
+
+	return &TestConnectionToPeer_Response{Success: true}, err
+}
+
 
 
