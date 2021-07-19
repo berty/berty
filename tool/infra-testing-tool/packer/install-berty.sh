@@ -20,7 +20,6 @@ make install -j 4
 sudo mv ~/go/bin/* /usr/local/bin
 berty version
 
-
 # daemon
 echo "installing daemon"
 cd ~/ || exit

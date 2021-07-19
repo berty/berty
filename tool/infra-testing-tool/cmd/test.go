@@ -164,6 +164,7 @@ var (
 								Type:      groupArray[g].Tests[j].TypeInternal,
 								Size:      int64(groupArray[g].Tests[j].SizeInternal),
 								Interval:  int64(groupArray[g].Tests[j].IntervalInternal),
+								Amount:    int64(groupArray[g].Tests[j].AmountInternal),
 							})
 
 							if err != nil {
@@ -179,7 +180,6 @@ var (
 							_, err = groupArray[g].Peers[peerIndex].P.StartTest(ctx, &daemon.StartTest_Request{
 								GroupName: groupArray[g].Name,
 								TestName:  strconv.Itoa(j),
-								Duration:  10,
 							})
 							if err != nil {
 								log.Println(err)

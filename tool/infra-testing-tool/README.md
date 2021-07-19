@@ -55,7 +55,7 @@ This is great for debugging.
 infra getIps
 ```
 
-## Config
+# Config
 This is an example of a working config files
 ```yaml
 peer:
@@ -67,6 +67,7 @@ peer:
                 - type: text
                   size: 40KB
                   interval: 10
+                  amount: 15
       connections:
           - name: connection
             to: internet
@@ -109,39 +110,44 @@ There are 5 categories of instances:
 - rdvp
 - instance
 - bootstrap
-- replication server (not yet implemented)
+- replication server
 
 They can be placed in any order, the tool wil automatically calculate the dependencies and instantiate them in the right order.
 
 Some quick terminology to forego any confusion about the naming. This also applies within the codebase:
-- the raw AWS instance is referred to as an **Instance**.
+- the bare AWS instance is referred to as an **Instance**.
 - a group of the same type of instances with the same config if referred to as a **NodeGroup**.
 - the individual *nodes* inside a NodeGroup are referred to as **Nodes**.
 - only when we connect to the nodes (or talk about them in a p2p context), we refer to them as **Peers**.
 
-### Name
+## Name
 Each nodeGroup needs a name. This can be anything, but it's best to keep it descriptive of what it represents.
-The name will be propagated down to the individual nodes, but they will have a unique random suffix.
+The name will be propagated down to the individual nodes, but they will have a random suffix.
 
-### Amount
+## Amount
 This is an integer bigger than 0 defining how many nodes should be in the nodeGroup.
-Each node inside the same nodegroup will have identical behaviour. The only difference is the name, IP, tags, etc.
+When `amount` is 0, there might be unexpected behaviour from the config parser building the network stack.
+For this reason it's best to comment out unused infrastructure opposed to setting the amount to 0.
+Each node inside the same nodegroup will have identical behaviour/config. The only difference is the name (different suffix), IP, tags, etc.
 For example if you add a group to a nodeGroup, all nodes inside the nodeGroup will be part of this group.
 Same with a router, if you add a RDVP to a nodeGroup, all nodes inside the nodeGroup will be connected to the same RDVP.
 
-### Groups
+## Groups
 This can only be used on **peer**s and **replication server**s.
-#### Name
+### Name
 Each group has a name. This can be anything.
-#### Tests
-##### type
+### Tests
+#### type
 This has to be either **text** or **media**
-##### size
+#### size
 This defines the size of the message. Example: 10KB, 200KB, 40MB, 4GB.
 Although not recommended, it is possible to send large text/image messages.
-##### interval
+#### interval
 This is the interval between each sent message per node in seconds. Example: 15 -> will wait 15 seconds after sending a message before sending another one.
-### Connections
+### amount
+This is the amount of messages that will be sent during the test.
+
+## Connections
 As of right now this is pretty limited with only support for connections to `internet` over `tcp`.
 Like this:
 ```yaml
@@ -151,12 +157,12 @@ connections:
     protocol: tcp
 ```
 
-### Routers
+## Routers
 This can only be used on **peer**s, **replication server**s and **bootstrap**s.
-#### type
+### type
 There exist 3 types of routers: **rdvp**, **relay** and **bootstrap**.
 The type has to be either one of these to work.
-#### address
+### address
 The address of a router can be either the name of the router nodeGroup (defined in the config) or an IPFS compliant multi address.
 This has support for multiple multi addresses at once separated by comma. If the named router nodeGroup has more than one node, it will automatically add all the nodes' multi address in that field.
 

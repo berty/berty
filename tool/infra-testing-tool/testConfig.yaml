@@ -18,6 +18,7 @@ peer:
         - type: text
           size: 3KB
           interval: 2
+          amount: 15
       connections:
         - name: connection
           to: internet

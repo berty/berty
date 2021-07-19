@@ -2,11 +2,16 @@ package daemon
 
 import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"github.com/golang/protobuf/proto"
+	"image"
+	"image/color"
+	"image/png"
+	"math"
 	"math/rand"
 	"time"
 )
@@ -18,9 +23,34 @@ const (
 	ErrTestInProgress = "test already in progress"
 
 	ErrAlreadyReceiving = "already receiving messages in group"
+
+	RandomChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
-func (s *Server) SendMessage(groupName string, message string) error {
+var (
+	letterRunes = []rune(RandomChars)
+)
+
+type Message struct {
+	MessageType messengertypes.AppMessage_Type
+	ReceivedAt  time.Time
+	Payload     []byte
+	PayloadSize int
+	PayloadHash string
+}
+
+func ToMessage(a messengertypes.AppMessage) Message {
+	return Message{
+		MessageType: a.GetType(),
+		ReceivedAt:  time.Now(),
+		PayloadHash: asSha256(a.Payload),
+		PayloadSize: len(a.Payload),
+	}
+
+}
+
+// SendTextMessage sends a string to a specific group
+func (s *Server) SendTextMessage(groupName string, message string) error {
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
 		Body: message,
 	})
@@ -42,28 +72,53 @@ func (s *Server) SendMessage(groupName string, message string) error {
 	return err
 }
 
-type Message struct {
-	MessageType messengertypes.AppMessage_Type
-	ReceivedAt  time.Time
-	Payload     []byte
-	PayloadSize int
-	PayloadHash string
-}
+func (s *Server) SendImageMessage(groupName string, content []byte) error {
+	ctx := context.Background()
 
-func ToMessage(a messengertypes.AppMessage) Message {
-	return Message{
-		MessageType: a.GetType(),
-		ReceivedAt:  time.Now(),
-		PayloadHash: asSha256(a.Payload),
-		PayloadSize: len(a.Payload),
+	cl, err := s.Messenger.MediaPrepare(ctx)
+	if err != nil {
+		return wrapError(err)
 	}
 
+	header := messengertypes.Media{
+		MimeType:       "image/png",
+		Filename:       "image.png",
+		DisplayName:    "random noise",
+	}
+
+	err = cl.Send(&messengertypes.MediaPrepare_Request{Info: &header})
+	if err != nil {
+		return wrapError(err)
+	}
+
+	err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
+	if err != nil {
+		return wrapError(err)
+	}
+
+	reply, err := cl.CloseAndRecv()
+	if err != nil {
+		return wrapError(err)
+	}
+
+	b64CID := reply.GetCid()
+
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	_, err = s.Messenger.Interact(ctx, &messengertypes.Interact_Request{
+		MediaCids: []string{b64CID},
+		Payload: payload,
+		Type:	messengertypes.AppMessage_TypeUserMessage,
+	})
+	if err != nil {
+		return wrapError(err)
+	}
+
+
+	return nil
 }
 
-// ConstructMessage constructs a string of a certain size
-func ConstructMessage(size int) string{
-	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
+// ConstructTextMessage constructs a string of a certain size
+func ConstructTextMessage(size int) string{
 	b := make([]rune, size)
 	for i := range b {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
@@ -76,4 +131,33 @@ func asSha256(o interface{}) string {
 	h.Write([]byte(fmt.Sprintf("%v", o)))
 
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+// ConstructImageMessage constructs an image of a certain size
+func ConstructImageMessage(size int) ([]byte, error){
+	// formula to most accurately approximate size or rectangle PNG consisting of random noise
+	height := int(math.Sqrt(float64(size))*1.15) / 2
+	width := height
+
+	min := image.Point{X: 0, Y: 0}
+	max := image.Point{X: width, Y: height}
+
+	img := image.NewRGBA(image.Rectangle{Min: min, Max: max})
+	for x := 0; x < width; x++ {
+		for y := 0; y < height; y++ {
+			img.Set(x, y, GetRandomColor())
+		}
+	}
+
+	var b bytes.Buffer
+	err := png.Encode(&b, img)
+	if err != nil {
+		return nil, err
+	}
+
+	return b.Bytes(), nil
+}
+
+func GetRandomColor() color.RGBA {
+	return color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 0xff}
 }

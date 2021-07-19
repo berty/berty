@@ -143,47 +143,66 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 	logger.Info(fmt.Sprintf("StartTest - incoming request: %+v", request))
 	response = new(StartTest_Response)
 
+	// checks if test exists
 	if s.Tests[request.GroupName][request.TestName] == *new(config.Test) {
 		return response, wrapError(errors.New(ErrTestNotExist))
 	}
 
+	// checks if test isn't already running
 	if s.RunningTests[request.GroupName][request.TestName] == true {
 		return response, wrapError(errors.New(ErrTestInProgress))
 	}
 
-	duration := int(request.GetDuration())
+	s.Lock.Lock()
+	// adds test to local test cache
 	test := s.Tests[request.GroupName][request.TestName]
 
-
-	s.Lock.Lock()
 	if s.RunningTests[request.GroupName] == nil {
 		s.RunningTests[request.GroupName] = make(map[string]bool)
 	}
 
+	// sets test to running
 	s.RunningTests[request.GroupName][request.TestName] = true
-
 	s.Lock.Unlock()
 
 	logger.Info(fmt.Sprintf("starting test: %+v", test))
 
 	go func() {
-		// set running state to false
 		defer func() {
+			s.Lock.Lock()
+			defer s.Lock.Unlock()
+			// set running state to false when function finishes
 			s.RunningTests[request.GroupName][request.TestName] = false
 		}()
 
 
 		var x int
-		for x = 0; x < duration; x += 1 {
-			err = s.SendMessage(request.GroupName, ConstructMessage(test.SizeInternal))
-			if err != nil {
-				_ = wrapError(err)
+		for x = 0; x < test.AmountInternal; x += 1 {
+			switch test.TypeInternal {
+			case config.TestTypeText:
+				message := ConstructTextMessage(test.SizeInternal)
+				err = s.SendTextMessage(request.GroupName, message)
+				if err != nil {
+					_ = wrapError(err)
+				}
+
+			case config.TestTypeMedia:
+				image, err := ConstructImageMessage(test.SizeInternal)
+				if err != nil {
+					_ = wrapError(err)
+				}
+
+				err = s.SendImageMessage(request.GroupName, image)
+				if err != nil {
+					_ = wrapError(err)
+				}
 			}
+
 			logger.Info(fmt.Sprintf("sent message to group: %s", request.GroupName))
 			time.Sleep(time.Second * time.Duration(test.IntervalInternal))
 		}
 
-		logger.Info(fmt.Sprintf("sent %d messages to %s\n",x ,  request.GroupName))
+		logger.Info(fmt.Sprintf("sent %d messages to %s\n",x , request.GroupName))
 
 
 	}()

@@ -108,6 +108,7 @@ message NewTest {
     string type = 3;
     int64 size = 4;
     int64 interval = 5;
+    int64 amount = 6;
   }
 
   message Response {}
@@ -118,7 +119,6 @@ message StartTest {
   message Request {
     string groupName = 1;
     string testName = 2;
-    int64 duration = 3;
   }
 
   message Response {}
