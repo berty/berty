@@ -1,7 +1,6 @@
 package various
 
 import (
-	"errors"
 	"infratesting/aws"
 	"infratesting/iac"
 )
@@ -28,18 +27,12 @@ func (c Ami) GetType() string {
 }
 
 func (c Ami) Validate() (iac.Component, error) {
-	resp, err := aws.GetImages(AmiDefaultName)
-
+	AmiID, err := aws.GetLatestAMI(AmiDefaultName)
 	if err != nil {
 		return c, err
 	}
 
-	if len(resp.Images) < 1 {
-		return nil, errors.New(ErrNoAMI)
-	}
+	c.AmiID = AmiID
 
-	// takes the first one
-	// TODO improve this so it doesn't take the first one
-	c.AmiID = *resp.Images[0].ImageId
 	return c, nil
 }

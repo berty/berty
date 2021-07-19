@@ -17,9 +17,6 @@ import (
 	"math/rand"
 )
 
-// todo
-// berty GRPC closes for no reason ..
-
 var (
 	testCmd = &cobra.Command{
 		Use: "test",
