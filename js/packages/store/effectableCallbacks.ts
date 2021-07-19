@@ -97,7 +97,7 @@ export const createNewAccount = async (
 	try {
 		await createAccount(embedded, dispatch)
 	} catch (e) {
-		console.warn('unable to close account', e)
+		console.warn('unable to create account', e)
 		return
 	}
 }

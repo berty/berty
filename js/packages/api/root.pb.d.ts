@@ -34,6 +34,10 @@ export namespace berty {
                 public logfileList(request: berty.account.v1.LogfileList.IRequest): Promise<berty.account.v1.LogfileList.Reply>;
                 public getUsername(request: berty.account.v1.GetUsername.IRequest, callback: berty.account.v1.AccountService.GetUsernameCallback): void;
                 public getUsername(request: berty.account.v1.GetUsername.IRequest): Promise<berty.account.v1.GetUsername.Reply>;
+                public networkConfigSet(request: berty.account.v1.NetworkConfigSet.IRequest, callback: berty.account.v1.AccountService.NetworkConfigSetCallback): void;
+                public networkConfigSet(request: berty.account.v1.NetworkConfigSet.IRequest): Promise<berty.account.v1.NetworkConfigSet.Reply>;
+                public networkConfigGet(request: berty.account.v1.NetworkConfigGet.IRequest, callback: berty.account.v1.AccountService.NetworkConfigGetCallback): void;
+                public networkConfigGet(request: berty.account.v1.NetworkConfigGet.IRequest): Promise<berty.account.v1.NetworkConfigGet.Reply>;
             }
 
             namespace AccountService {
@@ -63,6 +67,10 @@ export namespace berty {
                 type LogfileListCallback = (error: (Error|null), response?: berty.account.v1.LogfileList.Reply) => void;
 
                 type GetUsernameCallback = (error: (Error|null), response?: berty.account.v1.GetUsername.Reply) => void;
+
+                type NetworkConfigSetCallback = (error: (Error|null), response?: berty.account.v1.NetworkConfigSet.Reply) => void;
+
+                type NetworkConfigGetCallback = (error: (Error|null), response?: berty.account.v1.NetworkConfigGet.Reply) => void;
             }
 
             interface IOpenAccount {
@@ -87,6 +95,7 @@ export namespace berty {
                     args?: (string[]|null);
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
+                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
@@ -94,6 +103,7 @@ export namespace berty {
                     public args: string[];
                     public accountId: string;
                     public loggerFilters: string;
+                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -445,6 +455,7 @@ export namespace berty {
                     backupPath?: (string|null);
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
+                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
@@ -454,6 +465,7 @@ export namespace berty {
                     public backupPath: string;
                     public args: string[];
                     public loggerFilters: string;
+                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
                     public static create(properties?: berty.account.v1.ImportAccount.IRequest): berty.account.v1.ImportAccount.Request;
                     public static encode(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -508,6 +520,7 @@ export namespace berty {
                     backupPath?: (string|null);
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
+                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
@@ -517,6 +530,7 @@ export namespace berty {
                     public backupPath: string;
                     public args: string[];
                     public loggerFilters: string;
+                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
                     public static create(properties?: berty.account.v1.ImportAccountWithProgress.IRequest): berty.account.v1.ImportAccountWithProgress.Request;
                     public static encode(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -572,6 +586,7 @@ export namespace berty {
                     accountName?: (string|null);
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
+                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
@@ -580,6 +595,7 @@ export namespace berty {
                     public accountName: string;
                     public args: string[];
                     public loggerFilters: string;
+                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
                     public static create(properties?: berty.account.v1.CreateAccount.IRequest): berty.account.v1.CreateAccount.Request;
                     public static encode(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -884,6 +900,185 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetUsername.Reply;
                     public static toObject(message: berty.account.v1.GetUsername.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface INetworkConfig {
+                bootstrap?: (string[]|null);
+                rendezvous?: (string[]|null);
+                staticRelay?: (string[]|null);
+                dht?: (berty.account.v1.NetworkConfig.DHTFlag|null);
+                bluetoothLe?: (berty.account.v1.NetworkConfig.Flag|null);
+                appleMultipeerConnectivity?: (berty.account.v1.NetworkConfig.Flag|null);
+                androidNearby?: (berty.account.v1.NetworkConfig.Flag|null);
+                tor?: (berty.account.v1.NetworkConfig.TorFlag|null);
+                mdns?: (berty.account.v1.NetworkConfig.Flag|null);
+            }
+
+            class NetworkConfig implements INetworkConfig {
+
+                public bootstrap: string[];
+                public rendezvous: string[];
+                public staticRelay: string[];
+                public dht: berty.account.v1.NetworkConfig.DHTFlag;
+                public bluetoothLe: berty.account.v1.NetworkConfig.Flag;
+                public appleMultipeerConnectivity: berty.account.v1.NetworkConfig.Flag;
+                public androidNearby: berty.account.v1.NetworkConfig.Flag;
+                public tor: berty.account.v1.NetworkConfig.TorFlag;
+                public mdns: berty.account.v1.NetworkConfig.Flag;
+                public static create(properties?: berty.account.v1.INetworkConfig): berty.account.v1.NetworkConfig;
+                public static encode(message: berty.account.v1.INetworkConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.INetworkConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.NetworkConfig;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.NetworkConfig;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfig;
+                public static toObject(message: berty.account.v1.NetworkConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace NetworkConfig {
+
+                enum Flag {
+                    Undefined = 0,
+                    Disabled = 1,
+                    Enabled = 2
+                }
+
+                enum TorFlag {
+                    TorUndefined = 0,
+                    TorDisabled = 1,
+                    TorOptional = 2,
+                    TorRequired = 3
+                }
+
+                enum DHTFlag {
+                    DHTUndefined = 0,
+                    DHTDisabled = 1,
+                    DHTClient = 2,
+                    DHTServer = 3,
+                    DHTAuto = 4,
+                    DHTAutoServer = 5
+                }
+            }
+
+            interface INetworkConfigSet {
+            }
+
+            class NetworkConfigSet implements INetworkConfigSet {
+
+                public static create(properties?: berty.account.v1.INetworkConfigSet): berty.account.v1.NetworkConfigSet;
+                public static encode(message: berty.account.v1.INetworkConfigSet, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.INetworkConfigSet, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.NetworkConfigSet;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.NetworkConfigSet;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigSet;
+                public static toObject(message: berty.account.v1.NetworkConfigSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace NetworkConfigSet {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                    config?: (berty.account.v1.INetworkConfig|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public config?: (berty.account.v1.INetworkConfig|null);
+                    public static create(properties?: berty.account.v1.NetworkConfigSet.IRequest): berty.account.v1.NetworkConfigSet.Request;
+                    public static encode(message: berty.account.v1.NetworkConfigSet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.NetworkConfigSet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.NetworkConfigSet.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.NetworkConfigSet.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigSet.Request;
+                    public static toObject(message: berty.account.v1.NetworkConfigSet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.account.v1.NetworkConfigSet.IReply): berty.account.v1.NetworkConfigSet.Reply;
+                    public static encode(message: berty.account.v1.NetworkConfigSet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.NetworkConfigSet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.NetworkConfigSet.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.NetworkConfigSet.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigSet.Reply;
+                    public static toObject(message: berty.account.v1.NetworkConfigSet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface INetworkConfigGet {
+            }
+
+            class NetworkConfigGet implements INetworkConfigGet {
+
+                public static create(properties?: berty.account.v1.INetworkConfigGet): berty.account.v1.NetworkConfigGet;
+                public static encode(message: berty.account.v1.INetworkConfigGet, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.INetworkConfigGet, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.NetworkConfigGet;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.NetworkConfigGet;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGet;
+                public static toObject(message: berty.account.v1.NetworkConfigGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace NetworkConfigGet {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public static create(properties?: berty.account.v1.NetworkConfigGet.IRequest): berty.account.v1.NetworkConfigGet.Request;
+                    public static encode(message: berty.account.v1.NetworkConfigGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.NetworkConfigGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.NetworkConfigGet.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.NetworkConfigGet.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGet.Request;
+                    public static toObject(message: berty.account.v1.NetworkConfigGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    defaultConfig?: (berty.account.v1.INetworkConfig|null);
+                    currentConfig?: (berty.account.v1.INetworkConfig|null);
+                    customConfigExists?: (boolean|null);
+                    defaultBootstrap?: (string[]|null);
+                    defaultRendezvous?: (string[]|null);
+                    defaultStaticRelay?: (string[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public defaultConfig?: (berty.account.v1.INetworkConfig|null);
+                    public currentConfig?: (berty.account.v1.INetworkConfig|null);
+                    public customConfigExists: boolean;
+                    public defaultBootstrap: string[];
+                    public defaultRendezvous: string[];
+                    public defaultStaticRelay: string[];
+                    public static create(properties?: berty.account.v1.NetworkConfigGet.IReply): berty.account.v1.NetworkConfigGet.Reply;
+                    public static encode(message: berty.account.v1.NetworkConfigGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.NetworkConfigGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.NetworkConfigGet.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.NetworkConfigGet.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGet.Reply;
+                    public static toObject(message: berty.account.v1.NetworkConfigGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

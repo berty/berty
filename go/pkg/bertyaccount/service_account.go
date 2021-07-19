@@ -11,13 +11,18 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"moul.io/progress"
 	"moul.io/u"
 
+	nb "berty.tech/berty/v2/go/internal/androidnearby"
+	"berty.tech/berty/v2/go/internal/ble-driver"
+	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -25,10 +30,18 @@ import (
 	"berty.tech/berty/v2/go/pkg/username"
 )
 
-const accountMetafileName = "account_meta"
+const (
+	accountMetafileName    = "account_meta"
+	accountNetConfFileName = "account_net_conf"
+)
 
 func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress) (*AccountMetadata, error) {
 	args := req.GetArgs()
+
+	if req.NetworkConfig == nil {
+		req.NetworkConfig, _ = s.NetworkConfigForAccount(req.AccountID)
+	}
+	req.Args = req.NetworkConfig.AddArgs(req.Args)
 
 	if req.AccountID == "" {
 		return nil, errcode.ErrBertyAccountNoIDSpecified
@@ -555,6 +568,7 @@ func (s *service) ImportAccountWithProgress(req *ImportAccountWithProgress_Reque
 		Args:          req.GetArgs(),
 		AccountID:     req.GetAccountID(),
 		LoggerFilters: req.GetLoggerFilters(),
+		NetworkConfig: req.GetNetworkConfig(),
 	}
 	ret, err := s.importAccount(server.Context(), &typed, prog)
 	if err != nil {
@@ -622,6 +636,7 @@ func (s *service) importAccount(ctx context.Context, req *ImportAccount_Request,
 		AccountName:   req.AccountName,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
 		LoggerFilters: req.LoggerFilters,
+		NetworkConfig: req.NetworkConfig,
 	}, prog)
 	if err != nil {
 		return nil, err
@@ -677,10 +692,19 @@ func (s *service) createAccount(req *CreateAccount_Request, prog *progress.Progr
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	if req.NetworkConfig == nil {
+		req.NetworkConfig = NetworkConfigGetBlank()
+	}
+
+	if err := s.saveNetworkConfigForAccount(req.AccountID, req.NetworkConfig); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	meta, err := s.openAccount(&OpenAccount_Request{
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
+		NetworkConfig: req.NetworkConfig,
 	}, prog)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -784,4 +808,298 @@ func (s *service) generateNewAccountID() (string, error) {
 			return "", errcode.ErrBertyAccountIDGenFailed.Wrap(err)
 		}
 	}
+}
+
+func NetworkConfigGetDefault() *NetworkConfig {
+	defaultRDVPeerMaddrs := make([]string, len(config.Config.P2P.RDVP))
+	for i := range config.Config.P2P.RDVP {
+		defaultRDVPeerMaddrs[i] = config.Config.P2P.RDVP[i].Maddr
+	}
+
+	return &NetworkConfig{
+		Bootstrap:                  ipfs_cfg.DefaultBootstrapAddresses,
+		Rendezvous:                 defaultRDVPeerMaddrs,
+		StaticRelay:                config.Config.P2P.StaticRelays,
+		DHT:                        NetworkConfig_DHTClient,
+		BluetoothLE:                NetworkConfig_Disabled,
+		AndroidNearby:              NetworkConfig_Disabled,
+		AppleMultipeerConnectivity: NetworkConfig_Disabled,
+		MDNS:                       NetworkConfig_Enabled,
+		Tor:                        NetworkConfig_TorDisabled,
+	}
+}
+
+func NetworkConfigGetBlank() *NetworkConfig {
+	return &NetworkConfig{
+		Bootstrap:                  []string{":default:"},
+		Rendezvous:                 []string{":default:"},
+		StaticRelay:                []string{":default:"},
+		DHT:                        NetworkConfig_DHTUndefined,
+		BluetoothLE:                NetworkConfig_Undefined,
+		AndroidNearby:              NetworkConfig_Undefined,
+		AppleMultipeerConnectivity: NetworkConfig_Undefined,
+		MDNS:                       NetworkConfig_Undefined,
+		Tor:                        NetworkConfig_TorUndefined,
+	}
+}
+
+func (s *service) NetworkConfigForAccount(accountID string) (*NetworkConfig, bool) {
+	netConfName := filepath.Join(s.rootdir, accountID, accountNetConfFileName)
+	netConfBytes, err := ioutil.ReadFile(netConfName)
+	if os.IsNotExist(err) {
+		return NetworkConfigGetDefault(), false
+	} else if err != nil {
+		s.logger.Warn("unable to read network configuration for account", zap.Error(err), zap.String("account-id", accountID))
+		return NetworkConfigGetDefault(), false
+	}
+
+	ret := &NetworkConfig{}
+	if err := ret.Unmarshal(netConfBytes); err != nil {
+		s.logger.Warn("unable to parse network configuration for account", zap.Error(err), zap.String("account-id", accountID))
+		return NetworkConfigGetDefault(), false
+	}
+
+	return ret, true
+}
+
+func (s *service) NetworkConfigGet(ctx context.Context, request *NetworkConfigGet_Request) (*NetworkConfigGet_Reply, error) {
+	defaultConfig := NetworkConfigGetDefault()
+	currentConfig, isCustomConfig := s.NetworkConfigForAccount(request.AccountID)
+
+	return &NetworkConfigGet_Reply{
+		DefaultConfig:      defaultConfig,
+		CurrentConfig:      currentConfig,
+		CustomConfigExists: isCustomConfig,
+		DefaultBootstrap:   ipfs_cfg.DefaultBootstrapAddresses,
+		DefaultRendezvous:  config.GetDefaultRDVPMaddr(),
+		DefaultStaticRelay: config.Config.P2P.StaticRelays,
+	}, nil
+}
+
+func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *NetworkConfig) error {
+	if networkConfig == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
+	}
+
+	data, err := networkConfig.Marshal()
+	if err != nil {
+		return err
+	}
+
+	netConfName := filepath.Join(s.rootdir, accountID, accountNetConfFileName)
+	if err := ioutil.WriteFile(netConfName, data, 0o600); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *service) NetworkConfigSet(ctx context.Context, request *NetworkConfigSet_Request) (*NetworkConfigSet_Reply, error) {
+	if err := s.saveNetworkConfigForAccount(request.AccountID, request.Config); err != nil {
+		return nil, err
+	}
+
+	return &NetworkConfigSet_Reply{}, nil
+}
+
+func (m *NetworkConfig) AddArgs(args []string) []string {
+	defaultConfig := NetworkConfigGetDefault()
+	hasTorFlag := ArgsHasWithPrefix(args, initutil.FlagNameTorMode)
+	hasMDNSFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PMDNS)
+	staticRelaysFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PStaticRelays)
+	hasBootstrapFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PBootstrap)
+
+	args = m.addRadioArgs(args, defaultConfig)
+
+	if !hasTorFlag {
+		torFlag := m.Tor
+		if torFlag == NetworkConfig_TorUndefined {
+			torFlag = defaultConfig.Tor
+		}
+
+		switch torFlag {
+		case NetworkConfig_TorUndefined, NetworkConfig_TorDisabled:
+			args = append(args, ArgSet(initutil.FlagNameTorMode, "disabled"))
+		case NetworkConfig_TorOptional:
+			args = append(args, ArgSet(initutil.FlagNameTorMode, "optional"))
+		case NetworkConfig_TorRequired:
+			args = append(args, ArgSet(initutil.FlagNameTorMode, "required"))
+		}
+	}
+
+	if !hasMDNSFlag {
+		mdnsFlag := m.MDNS
+		if mdnsFlag == NetworkConfig_Undefined {
+			mdnsFlag = defaultConfig.MDNS
+		}
+
+		switch mdnsFlag {
+		case NetworkConfig_Undefined, NetworkConfig_Disabled:
+			args = append(args, ArgSet(initutil.FlagNameP2PMDNS, "true"))
+
+		case NetworkConfig_Enabled:
+			args = append(args, ArgSet(initutil.FlagNameP2PMDNS, "false"))
+		}
+	}
+
+	if !staticRelaysFlag {
+		staticRelays := m.StaticRelay
+		if len(staticRelays) == 0 {
+			staticRelays = []string{initutil.KeywordNone}
+		}
+
+		args = append(args, ArgSet(initutil.FlagNameP2PStaticRelays, strings.Join(staticRelays, ",")))
+	}
+
+	if !hasBootstrapFlag {
+		bootstrapNodes := m.Bootstrap
+		if len(bootstrapNodes) == 0 {
+			bootstrapNodes = []string{initutil.KeywordNone}
+		}
+
+		args = append(args, ArgSet(initutil.FlagNameP2PStaticRelays, strings.Join(bootstrapNodes, ",")))
+	}
+
+	args = m.addDHTArgs(args, defaultConfig)
+	args = m.addRDVPArgs(args, defaultConfig)
+
+	return args
+}
+
+func (m *NetworkConfig) addRDVPArgs(args []string, defaultConfig *NetworkConfig) []string {
+	hasRDVPFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PRDVP)
+	hasTinderRDVPDriverFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderRDVPDriver)
+
+	rdvpDisabled := false
+	if !hasRDVPFlag {
+		rdvpHosts := m.Rendezvous
+		if len(m.Rendezvous) == 0 {
+			rdvpHosts = defaultConfig.Rendezvous
+		}
+
+		if len(rdvpHosts) == 0 {
+			rdvpHosts = []string{initutil.KeywordNone}
+		}
+
+		for _, val := range rdvpHosts {
+			if val == initutil.KeywordNone {
+				rdvpDisabled = true
+				break
+			}
+		}
+
+		args = append(args, ArgSet(initutil.FlagNameP2PRDVP, strings.Join(rdvpHosts, ",")))
+	}
+
+	if !hasTinderRDVPDriverFlag {
+		if !rdvpDisabled {
+			args = append(args, ArgSet(initutil.FlagNameP2PTinderRDVPDriver, "true"))
+		} else {
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, "false"))
+		}
+	}
+
+	return args
+}
+
+func (m *NetworkConfig) addDHTArgs(args []string, defaultConfig *NetworkConfig) []string {
+	hasTinderDHTDriverFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderDHTDriver)
+	hasDHTFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PDHT)
+
+	dhtDisabled := false
+	if !hasDHTFlag {
+		dhtFlag := m.DHT
+		if dhtFlag == NetworkConfig_DHTUndefined {
+			dhtFlag = defaultConfig.DHT
+		}
+
+		switch dhtFlag {
+		case NetworkConfig_DHTClient:
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTClient))
+
+		case NetworkConfig_DHTServer:
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTServer))
+
+		case NetworkConfig_DHTAuto:
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTAuto))
+
+		case NetworkConfig_DHTAutoServer:
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTAutoServer))
+
+		case NetworkConfig_DHTDisabled, NetworkConfig_DHTUndefined:
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTDisabled))
+			dhtDisabled = true
+		}
+	}
+
+	if !hasTinderDHTDriverFlag {
+		if !dhtDisabled {
+			args = append(args, ArgSet(initutil.FlagNameP2PTinderDHTDriver, "true"))
+		} else {
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, "false"))
+		}
+	}
+
+	return args
+}
+
+func (m *NetworkConfig) addRadioArgs(args []string, defaultConfig *NetworkConfig) []string {
+	hasBleFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PBLE)
+	hasP2PMCFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PMultipeerConnectivity)
+	hasP2PNearbyFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PNearby)
+
+	if !hasBleFlag {
+		val := m.BluetoothLE
+		if val == NetworkConfig_Undefined {
+			val = defaultConfig.BluetoothLE
+		}
+
+		if ble.Supported && val == NetworkConfig_Enabled {
+			args = append(args, ArgSet(initutil.FlagNameP2PBLE, "true"))
+		} else {
+			args = append(args, ArgSet(initutil.FlagNameP2PBLE, "false"))
+		}
+	}
+
+	if !hasP2PMCFlag {
+		val := m.AppleMultipeerConnectivity
+		if val == NetworkConfig_Undefined {
+			val = defaultConfig.AppleMultipeerConnectivity
+		}
+
+		if mc.Supported && val == NetworkConfig_Enabled {
+			args = append(args, ArgSet(initutil.FlagNameP2PMultipeerConnectivity, "true"))
+		} else {
+			args = append(args, ArgSet(initutil.FlagNameP2PMultipeerConnectivity, "false"))
+		}
+	}
+
+	if !hasP2PNearbyFlag {
+		val := m.AndroidNearby
+		if val == NetworkConfig_Undefined {
+			val = defaultConfig.AndroidNearby
+		}
+
+		if nb.Supported && val == NetworkConfig_Enabled {
+			args = append(args, ArgSet(initutil.FlagNameP2PNearby, "true"))
+		} else {
+			args = append(args, ArgSet(initutil.FlagNameP2PNearby, "false"))
+		}
+	}
+
+	return args
+}
+
+func ArgSet(flagName string, value string) string {
+	return fmt.Sprintf("--%s=%s", flagName, value)
+}
+
+func ArgsHasWithPrefix(args []string, prefix string) bool {
+	for _, val := range args {
+		if strings.Contains(val, fmt.Sprintf("-%s=", prefix)) {
+			return true
+		}
+	}
+
+	return false
 }

@@ -71,6 +71,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   GetUsername: {
                     requestType: "GetUsername.Request",
                     responseType: "GetUsername.Reply"
+                  },
+                  NetworkConfigSet: {
+                    requestType: "NetworkConfigSet.Request",
+                    responseType: "NetworkConfigSet.Reply"
+                  },
+                  NetworkConfigGet: {
+                    requestType: "NetworkConfigGet.Request",
+                    responseType: "NetworkConfigGet.Reply"
                   }
                 }
               },
@@ -94,6 +102,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 3
+                      },
+                      networkConfig: {
+                        type: "NetworkConfig",
+                        id: 4
                       }
                     }
                   },
@@ -264,6 +276,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 5
+                      },
+                      networkConfig: {
+                        type: "NetworkConfig",
+                        id: 6
                       }
                     }
                   },
@@ -305,6 +321,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 5
+                      },
+                      networkConfig: {
+                        type: "NetworkConfig",
+                        id: 6
                       }
                     }
                   },
@@ -346,6 +366,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 4
+                      },
+                      networkConfig: {
+                        type: "NetworkConfig",
+                        id: 5
                       }
                     }
                   },
@@ -498,6 +522,155 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       username: {
                         type: "string",
                         id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              NetworkConfig: {
+                fields: {
+                  bootstrap: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 1
+                  },
+                  rendezvous: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 2
+                  },
+                  staticRelay: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 3
+                  },
+                  dht: {
+                    type: "DHTFlag",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "DHT"
+                    }
+                  },
+                  bluetoothLe: {
+                    type: "Flag",
+                    id: 5,
+                    options: {
+                      "(gogoproto.customname)": "BluetoothLE"
+                    }
+                  },
+                  appleMultipeerConnectivity: {
+                    type: "Flag",
+                    id: 6
+                  },
+                  androidNearby: {
+                    type: "Flag",
+                    id: 7
+                  },
+                  tor: {
+                    type: "TorFlag",
+                    id: 8
+                  },
+                  mdns: {
+                    type: "Flag",
+                    id: 9,
+                    options: {
+                      "(gogoproto.customname)": "MDNS"
+                    }
+                  }
+                },
+                nested: {
+                  Flag: {
+                    values: {
+                      Undefined: 0,
+                      Disabled: 1,
+                      Enabled: 2
+                    }
+                  },
+                  TorFlag: {
+                    values: {
+                      TorUndefined: 0,
+                      TorDisabled: 1,
+                      TorOptional: 2,
+                      TorRequired: 3
+                    }
+                  },
+                  DHTFlag: {
+                    values: {
+                      DHTUndefined: 0,
+                      DHTDisabled: 1,
+                      DHTClient: 2,
+                      DHTServer: 3,
+                      DHTAuto: 4,
+                      DHTAutoServer: 5
+                    }
+                  }
+                }
+              },
+              NetworkConfigSet: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      },
+                      config: {
+                        type: "NetworkConfig",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              NetworkConfigGet: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      defaultConfig: {
+                        type: "NetworkConfig",
+                        id: 1
+                      },
+                      currentConfig: {
+                        type: "NetworkConfig",
+                        id: 2
+                      },
+                      customConfigExists: {
+                        type: "bool",
+                        id: 3
+                      },
+                      defaultBootstrap: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 4
+                      },
+                      defaultRendezvous: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 5
+                      },
+                      defaultStaticRelay: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 6
                       }
                     }
                   }

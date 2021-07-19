@@ -33,6 +33,102 @@ var (
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type NetworkConfig_Flag int32
+
+const (
+	NetworkConfig_Undefined NetworkConfig_Flag = 0
+	NetworkConfig_Disabled  NetworkConfig_Flag = 1
+	NetworkConfig_Enabled   NetworkConfig_Flag = 2
+)
+
+var NetworkConfig_Flag_name = map[int32]string{
+	0: "Undefined",
+	1: "Disabled",
+	2: "Enabled",
+}
+
+var NetworkConfig_Flag_value = map[string]int32{
+	"Undefined": 0,
+	"Disabled":  1,
+	"Enabled":   2,
+}
+
+func (x NetworkConfig_Flag) String() string {
+	return proto.EnumName(NetworkConfig_Flag_name, int32(x))
+}
+
+func (NetworkConfig_Flag) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{14, 0}
+}
+
+type NetworkConfig_TorFlag int32
+
+const (
+	NetworkConfig_TorUndefined NetworkConfig_TorFlag = 0
+	NetworkConfig_TorDisabled  NetworkConfig_TorFlag = 1
+	NetworkConfig_TorOptional  NetworkConfig_TorFlag = 2
+	NetworkConfig_TorRequired  NetworkConfig_TorFlag = 3
+)
+
+var NetworkConfig_TorFlag_name = map[int32]string{
+	0: "TorUndefined",
+	1: "TorDisabled",
+	2: "TorOptional",
+	3: "TorRequired",
+}
+
+var NetworkConfig_TorFlag_value = map[string]int32{
+	"TorUndefined": 0,
+	"TorDisabled":  1,
+	"TorOptional":  2,
+	"TorRequired":  3,
+}
+
+func (x NetworkConfig_TorFlag) String() string {
+	return proto.EnumName(NetworkConfig_TorFlag_name, int32(x))
+}
+
+func (NetworkConfig_TorFlag) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{14, 1}
+}
+
+type NetworkConfig_DHTFlag int32
+
+const (
+	NetworkConfig_DHTUndefined  NetworkConfig_DHTFlag = 0
+	NetworkConfig_DHTDisabled   NetworkConfig_DHTFlag = 1
+	NetworkConfig_DHTClient     NetworkConfig_DHTFlag = 2
+	NetworkConfig_DHTServer     NetworkConfig_DHTFlag = 3
+	NetworkConfig_DHTAuto       NetworkConfig_DHTFlag = 4
+	NetworkConfig_DHTAutoServer NetworkConfig_DHTFlag = 5
+)
+
+var NetworkConfig_DHTFlag_name = map[int32]string{
+	0: "DHTUndefined",
+	1: "DHTDisabled",
+	2: "DHTClient",
+	3: "DHTServer",
+	4: "DHTAuto",
+	5: "DHTAutoServer",
+}
+
+var NetworkConfig_DHTFlag_value = map[string]int32{
+	"DHTUndefined":  0,
+	"DHTDisabled":   1,
+	"DHTClient":     2,
+	"DHTServer":     3,
+	"DHTAuto":       4,
+	"DHTAutoServer": 5,
+}
+
+func (x NetworkConfig_DHTFlag) String() string {
+	return proto.EnumName(NetworkConfig_DHTFlag_name, int32(x))
+}
+
+func (NetworkConfig_DHTFlag) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{14, 2}
+}
+
 type OpenAccount struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -78,12 +174,13 @@ func (m *OpenAccount) XXX_DiscardUnknown() {
 var xxx_messageInfo_OpenAccount proto.InternalMessageInfo
 
 type OpenAccount_Request struct {
-	Args                 []string `protobuf:"bytes,1,rep,name=args,proto3" json:"args,omitempty"`
-	AccountID            string   `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	LoggerFilters        string   `protobuf:"bytes,3,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Args                 []string       `protobuf:"bytes,1,rep,name=args,proto3" json:"args,omitempty"`
+	AccountID            string         `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	LoggerFilters        string         `protobuf:"bytes,3,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
+	NetworkConfig        *NetworkConfig `protobuf:"bytes,4,opt,name=network_config,json=networkConfig,proto3" json:"network_config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
 }
 
 func (m *OpenAccount_Request) Reset()         { *m = OpenAccount_Request{} }
@@ -143,6 +240,13 @@ func (m *OpenAccount_Request) GetLoggerFilters() string {
 		return m.LoggerFilters
 	}
 	return ""
+}
+
+func (m *OpenAccount_Request) GetNetworkConfig() *NetworkConfig {
+	if m != nil {
+		return m.NetworkConfig
+	}
+	return nil
 }
 
 type OpenAccount_Reply struct {
@@ -1050,14 +1154,15 @@ func (m *ImportAccount) XXX_DiscardUnknown() {
 var xxx_messageInfo_ImportAccount proto.InternalMessageInfo
 
 type ImportAccount_Request struct {
-	AccountID            string   `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	AccountName          string   `protobuf:"bytes,2,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
-	BackupPath           string   `protobuf:"bytes,3,opt,name=backup_path,json=backupPath,proto3" json:"backup_path,omitempty"`
-	Args                 []string `protobuf:"bytes,4,rep,name=args,proto3" json:"args,omitempty"`
-	LoggerFilters        string   `protobuf:"bytes,5,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	AccountID            string         `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountName          string         `protobuf:"bytes,2,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
+	BackupPath           string         `protobuf:"bytes,3,opt,name=backup_path,json=backupPath,proto3" json:"backup_path,omitempty"`
+	Args                 []string       `protobuf:"bytes,4,rep,name=args,proto3" json:"args,omitempty"`
+	LoggerFilters        string         `protobuf:"bytes,5,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
+	NetworkConfig        *NetworkConfig `protobuf:"bytes,6,opt,name=network_config,json=networkConfig,proto3" json:"network_config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
 }
 
 func (m *ImportAccount_Request) Reset()         { *m = ImportAccount_Request{} }
@@ -1131,6 +1236,13 @@ func (m *ImportAccount_Request) GetLoggerFilters() string {
 		return m.LoggerFilters
 	}
 	return ""
+}
+
+func (m *ImportAccount_Request) GetNetworkConfig() *NetworkConfig {
+	if m != nil {
+		return m.NetworkConfig
+	}
+	return nil
 }
 
 type ImportAccount_Reply struct {
@@ -1230,14 +1342,15 @@ func (m *ImportAccountWithProgress) XXX_DiscardUnknown() {
 var xxx_messageInfo_ImportAccountWithProgress proto.InternalMessageInfo
 
 type ImportAccountWithProgress_Request struct {
-	AccountID            string   `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	AccountName          string   `protobuf:"bytes,2,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
-	BackupPath           string   `protobuf:"bytes,3,opt,name=backup_path,json=backupPath,proto3" json:"backup_path,omitempty"`
-	Args                 []string `protobuf:"bytes,4,rep,name=args,proto3" json:"args,omitempty"`
-	LoggerFilters        string   `protobuf:"bytes,5,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	AccountID            string         `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountName          string         `protobuf:"bytes,2,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
+	BackupPath           string         `protobuf:"bytes,3,opt,name=backup_path,json=backupPath,proto3" json:"backup_path,omitempty"`
+	Args                 []string       `protobuf:"bytes,4,rep,name=args,proto3" json:"args,omitempty"`
+	LoggerFilters        string         `protobuf:"bytes,5,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
+	NetworkConfig        *NetworkConfig `protobuf:"bytes,6,opt,name=network_config,json=networkConfig,proto3" json:"network_config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
 }
 
 func (m *ImportAccountWithProgress_Request) Reset()         { *m = ImportAccountWithProgress_Request{} }
@@ -1311,6 +1424,13 @@ func (m *ImportAccountWithProgress_Request) GetLoggerFilters() string {
 		return m.LoggerFilters
 	}
 	return ""
+}
+
+func (m *ImportAccountWithProgress_Request) GetNetworkConfig() *NetworkConfig {
+	if m != nil {
+		return m.NetworkConfig
+	}
+	return nil
 }
 
 type ImportAccountWithProgress_Reply struct {
@@ -1418,13 +1538,14 @@ func (m *CreateAccount) XXX_DiscardUnknown() {
 var xxx_messageInfo_CreateAccount proto.InternalMessageInfo
 
 type CreateAccount_Request struct {
-	AccountID            string   `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	AccountName          string   `protobuf:"bytes,2,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
-	Args                 []string `protobuf:"bytes,3,rep,name=args,proto3" json:"args,omitempty"`
-	LoggerFilters        string   `protobuf:"bytes,4,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	AccountID            string         `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountName          string         `protobuf:"bytes,2,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
+	Args                 []string       `protobuf:"bytes,3,rep,name=args,proto3" json:"args,omitempty"`
+	LoggerFilters        string         `protobuf:"bytes,4,opt,name=logger_filters,json=loggerFilters,proto3" json:"logger_filters,omitempty"`
+	NetworkConfig        *NetworkConfig `protobuf:"bytes,5,opt,name=network_config,json=networkConfig,proto3" json:"network_config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
 }
 
 func (m *CreateAccount_Request) Reset()         { *m = CreateAccount_Request{} }
@@ -1491,6 +1612,13 @@ func (m *CreateAccount_Request) GetLoggerFilters() string {
 		return m.LoggerFilters
 	}
 	return ""
+}
+
+func (m *CreateAccount_Request) GetNetworkConfig() *NetworkConfig {
+	if m != nil {
+		return m.NetworkConfig
+	}
+	return nil
 }
 
 type CreateAccount_Reply struct {
@@ -2305,7 +2433,462 @@ func (m *GetUsername_Reply) GetUsername() string {
 	return ""
 }
 
+type NetworkConfig struct {
+	Bootstrap                  []string              `protobuf:"bytes,1,rep,name=bootstrap,proto3" json:"bootstrap,omitempty"`
+	Rendezvous                 []string              `protobuf:"bytes,2,rep,name=rendezvous,proto3" json:"rendezvous,omitempty"`
+	StaticRelay                []string              `protobuf:"bytes,3,rep,name=static_relay,json=staticRelay,proto3" json:"static_relay,omitempty"`
+	DHT                        NetworkConfig_DHTFlag `protobuf:"varint,4,opt,name=dht,proto3,enum=berty.account.v1.NetworkConfig_DHTFlag" json:"dht,omitempty"`
+	BluetoothLE                NetworkConfig_Flag    `protobuf:"varint,5,opt,name=bluetooth_le,json=bluetoothLe,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"bluetooth_le,omitempty"`
+	AppleMultipeerConnectivity NetworkConfig_Flag    `protobuf:"varint,6,opt,name=apple_multipeer_connectivity,json=appleMultipeerConnectivity,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"apple_multipeer_connectivity,omitempty"`
+	AndroidNearby              NetworkConfig_Flag    `protobuf:"varint,7,opt,name=android_nearby,json=androidNearby,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"android_nearby,omitempty"`
+	Tor                        NetworkConfig_TorFlag `protobuf:"varint,8,opt,name=tor,proto3,enum=berty.account.v1.NetworkConfig_TorFlag" json:"tor,omitempty"`
+	MDNS                       NetworkConfig_Flag    `protobuf:"varint,9,opt,name=mdns,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"mdns,omitempty"`
+	XXX_NoUnkeyedLiteral       struct{}              `json:"-"`
+	XXX_unrecognized           []byte                `json:"-"`
+	XXX_sizecache              int32                 `json:"-"`
+}
+
+func (m *NetworkConfig) Reset()         { *m = NetworkConfig{} }
+func (m *NetworkConfig) String() string { return proto.CompactTextString(m) }
+func (*NetworkConfig) ProtoMessage()    {}
+func (*NetworkConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{14}
+}
+
+func (m *NetworkConfig) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *NetworkConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkConfig.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *NetworkConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkConfig.Merge(m, src)
+}
+
+func (m *NetworkConfig) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *NetworkConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkConfig proto.InternalMessageInfo
+
+func (m *NetworkConfig) GetBootstrap() []string {
+	if m != nil {
+		return m.Bootstrap
+	}
+	return nil
+}
+
+func (m *NetworkConfig) GetRendezvous() []string {
+	if m != nil {
+		return m.Rendezvous
+	}
+	return nil
+}
+
+func (m *NetworkConfig) GetStaticRelay() []string {
+	if m != nil {
+		return m.StaticRelay
+	}
+	return nil
+}
+
+func (m *NetworkConfig) GetDHT() NetworkConfig_DHTFlag {
+	if m != nil {
+		return m.DHT
+	}
+	return NetworkConfig_DHTUndefined
+}
+
+func (m *NetworkConfig) GetBluetoothLE() NetworkConfig_Flag {
+	if m != nil {
+		return m.BluetoothLE
+	}
+	return NetworkConfig_Undefined
+}
+
+func (m *NetworkConfig) GetAppleMultipeerConnectivity() NetworkConfig_Flag {
+	if m != nil {
+		return m.AppleMultipeerConnectivity
+	}
+	return NetworkConfig_Undefined
+}
+
+func (m *NetworkConfig) GetAndroidNearby() NetworkConfig_Flag {
+	if m != nil {
+		return m.AndroidNearby
+	}
+	return NetworkConfig_Undefined
+}
+
+func (m *NetworkConfig) GetTor() NetworkConfig_TorFlag {
+	if m != nil {
+		return m.Tor
+	}
+	return NetworkConfig_TorUndefined
+}
+
+func (m *NetworkConfig) GetMDNS() NetworkConfig_Flag {
+	if m != nil {
+		return m.MDNS
+	}
+	return NetworkConfig_Undefined
+}
+
+type NetworkConfigSet struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NetworkConfigSet) Reset()         { *m = NetworkConfigSet{} }
+func (m *NetworkConfigSet) String() string { return proto.CompactTextString(m) }
+func (*NetworkConfigSet) ProtoMessage()    {}
+func (*NetworkConfigSet) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{15}
+}
+
+func (m *NetworkConfigSet) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *NetworkConfigSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkConfigSet.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *NetworkConfigSet) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkConfigSet.Merge(m, src)
+}
+
+func (m *NetworkConfigSet) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *NetworkConfigSet) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkConfigSet.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkConfigSet proto.InternalMessageInfo
+
+type NetworkConfigSet_Request struct {
+	AccountID            string         `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	Config               *NetworkConfig `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *NetworkConfigSet_Request) Reset()         { *m = NetworkConfigSet_Request{} }
+func (m *NetworkConfigSet_Request) String() string { return proto.CompactTextString(m) }
+func (*NetworkConfigSet_Request) ProtoMessage()    {}
+func (*NetworkConfigSet_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{15, 0}
+}
+
+func (m *NetworkConfigSet_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *NetworkConfigSet_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkConfigSet_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *NetworkConfigSet_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkConfigSet_Request.Merge(m, src)
+}
+
+func (m *NetworkConfigSet_Request) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *NetworkConfigSet_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkConfigSet_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkConfigSet_Request proto.InternalMessageInfo
+
+func (m *NetworkConfigSet_Request) GetAccountID() string {
+	if m != nil {
+		return m.AccountID
+	}
+	return ""
+}
+
+func (m *NetworkConfigSet_Request) GetConfig() *NetworkConfig {
+	if m != nil {
+		return m.Config
+	}
+	return nil
+}
+
+type NetworkConfigSet_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NetworkConfigSet_Reply) Reset()         { *m = NetworkConfigSet_Reply{} }
+func (m *NetworkConfigSet_Reply) String() string { return proto.CompactTextString(m) }
+func (*NetworkConfigSet_Reply) ProtoMessage()    {}
+func (*NetworkConfigSet_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{15, 1}
+}
+
+func (m *NetworkConfigSet_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *NetworkConfigSet_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkConfigSet_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *NetworkConfigSet_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkConfigSet_Reply.Merge(m, src)
+}
+
+func (m *NetworkConfigSet_Reply) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *NetworkConfigSet_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkConfigSet_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkConfigSet_Reply proto.InternalMessageInfo
+
+type NetworkConfigGet struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NetworkConfigGet) Reset()         { *m = NetworkConfigGet{} }
+func (m *NetworkConfigGet) String() string { return proto.CompactTextString(m) }
+func (*NetworkConfigGet) ProtoMessage()    {}
+func (*NetworkConfigGet) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{16}
+}
+
+func (m *NetworkConfigGet) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *NetworkConfigGet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkConfigGet.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *NetworkConfigGet) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkConfigGet.Merge(m, src)
+}
+
+func (m *NetworkConfigGet) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *NetworkConfigGet) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkConfigGet.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkConfigGet proto.InternalMessageInfo
+
+type NetworkConfigGet_Request struct {
+	AccountID            string   `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NetworkConfigGet_Request) Reset()         { *m = NetworkConfigGet_Request{} }
+func (m *NetworkConfigGet_Request) String() string { return proto.CompactTextString(m) }
+func (*NetworkConfigGet_Request) ProtoMessage()    {}
+func (*NetworkConfigGet_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{16, 0}
+}
+
+func (m *NetworkConfigGet_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *NetworkConfigGet_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkConfigGet_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *NetworkConfigGet_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkConfigGet_Request.Merge(m, src)
+}
+
+func (m *NetworkConfigGet_Request) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *NetworkConfigGet_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkConfigGet_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkConfigGet_Request proto.InternalMessageInfo
+
+func (m *NetworkConfigGet_Request) GetAccountID() string {
+	if m != nil {
+		return m.AccountID
+	}
+	return ""
+}
+
+type NetworkConfigGet_Reply struct {
+	DefaultConfig        *NetworkConfig `protobuf:"bytes,1,opt,name=default_config,json=defaultConfig,proto3" json:"default_config,omitempty"`
+	CurrentConfig        *NetworkConfig `protobuf:"bytes,2,opt,name=current_config,json=currentConfig,proto3" json:"current_config,omitempty"`
+	CustomConfigExists   bool           `protobuf:"varint,3,opt,name=custom_config_exists,json=customConfigExists,proto3" json:"custom_config_exists,omitempty"`
+	DefaultBootstrap     []string       `protobuf:"bytes,4,rep,name=default_bootstrap,json=defaultBootstrap,proto3" json:"default_bootstrap,omitempty"`
+	DefaultRendezvous    []string       `protobuf:"bytes,5,rep,name=default_rendezvous,json=defaultRendezvous,proto3" json:"default_rendezvous,omitempty"`
+	DefaultStaticRelay   []string       `protobuf:"bytes,6,rep,name=default_static_relay,json=defaultStaticRelay,proto3" json:"default_static_relay,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *NetworkConfigGet_Reply) Reset()         { *m = NetworkConfigGet_Reply{} }
+func (m *NetworkConfigGet_Reply) String() string { return proto.CompactTextString(m) }
+func (*NetworkConfigGet_Reply) ProtoMessage()    {}
+func (*NetworkConfigGet_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2e9b7fcde47f62fe, []int{16, 1}
+}
+
+func (m *NetworkConfigGet_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+
+func (m *NetworkConfigGet_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkConfigGet_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+
+func (m *NetworkConfigGet_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkConfigGet_Reply.Merge(m, src)
+}
+
+func (m *NetworkConfigGet_Reply) XXX_Size() int {
+	return m.Size()
+}
+
+func (m *NetworkConfigGet_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkConfigGet_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkConfigGet_Reply proto.InternalMessageInfo
+
+func (m *NetworkConfigGet_Reply) GetDefaultConfig() *NetworkConfig {
+	if m != nil {
+		return m.DefaultConfig
+	}
+	return nil
+}
+
+func (m *NetworkConfigGet_Reply) GetCurrentConfig() *NetworkConfig {
+	if m != nil {
+		return m.CurrentConfig
+	}
+	return nil
+}
+
+func (m *NetworkConfigGet_Reply) GetCustomConfigExists() bool {
+	if m != nil {
+		return m.CustomConfigExists
+	}
+	return false
+}
+
+func (m *NetworkConfigGet_Reply) GetDefaultBootstrap() []string {
+	if m != nil {
+		return m.DefaultBootstrap
+	}
+	return nil
+}
+
+func (m *NetworkConfigGet_Reply) GetDefaultRendezvous() []string {
+	if m != nil {
+		return m.DefaultRendezvous
+	}
+	return nil
+}
+
+func (m *NetworkConfigGet_Reply) GetDefaultStaticRelay() []string {
+	if m != nil {
+		return m.DefaultStaticRelay
+	}
+	return nil
+}
+
 func init() {
+	proto.RegisterEnum("berty.account.v1.NetworkConfig_Flag", NetworkConfig_Flag_name, NetworkConfig_Flag_value)
+	proto.RegisterEnum("berty.account.v1.NetworkConfig_TorFlag", NetworkConfig_TorFlag_name, NetworkConfig_TorFlag_value)
+	proto.RegisterEnum("berty.account.v1.NetworkConfig_DHTFlag", NetworkConfig_DHTFlag_name, NetworkConfig_DHTFlag_value)
 	proto.RegisterType((*OpenAccount)(nil), "berty.account.v1.OpenAccount")
 	proto.RegisterType((*OpenAccount_Request)(nil), "berty.account.v1.OpenAccount.Request")
 	proto.RegisterType((*OpenAccount_Reply)(nil), "berty.account.v1.OpenAccount.Reply")
@@ -2348,80 +2931,122 @@ func init() {
 	proto.RegisterType((*GetUsername)(nil), "berty.account.v1.GetUsername")
 	proto.RegisterType((*GetUsername_Request)(nil), "berty.account.v1.GetUsername.Request")
 	proto.RegisterType((*GetUsername_Reply)(nil), "berty.account.v1.GetUsername.Reply")
+	proto.RegisterType((*NetworkConfig)(nil), "berty.account.v1.NetworkConfig")
+	proto.RegisterType((*NetworkConfigSet)(nil), "berty.account.v1.NetworkConfigSet")
+	proto.RegisterType((*NetworkConfigSet_Request)(nil), "berty.account.v1.NetworkConfigSet.Request")
+	proto.RegisterType((*NetworkConfigSet_Reply)(nil), "berty.account.v1.NetworkConfigSet.Reply")
+	proto.RegisterType((*NetworkConfigGet)(nil), "berty.account.v1.NetworkConfigGet")
+	proto.RegisterType((*NetworkConfigGet_Request)(nil), "berty.account.v1.NetworkConfigGet.Request")
+	proto.RegisterType((*NetworkConfigGet_Reply)(nil), "berty.account.v1.NetworkConfigGet.Reply")
 }
 
 func init() { proto.RegisterFile("bertyaccount.proto", fileDescriptor_2e9b7fcde47f62fe) }
 
 var fileDescriptor_2e9b7fcde47f62fe = []byte{
-	// 1074 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x58, 0x4d, 0x6f, 0x1b, 0xc5,
-	0x1b, 0xd7, 0xf8, 0x25, 0xb6, 0x1f, 0xc7, 0x6d, 0x35, 0xff, 0xe8, 0xcf, 0x62, 0x44, 0x92, 0xba,
-	0x0d, 0x44, 0xa2, 0x5a, 0x37, 0xce, 0xa1, 0xa7, 0x4a, 0xb4, 0x49, 0x1b, 0x45, 0x04, 0x1a, 0x16,
-	0x45, 0x08, 0x84, 0x64, 0x6d, 0x76, 0xa7, 0x9b, 0x55, 0xd6, 0xde, 0x65, 0x76, 0x1c, 0xc9, 0x5c,
-	0x90, 0x90, 0xb8, 0xf4, 0x80, 0xb8, 0x20, 0x71, 0xe3, 0xc8, 0x8d, 0x0b, 0x12, 0x5f, 0x01, 0x6e,
-	0xf0, 0x09, 0x10, 0x8a, 0xd4, 0x6f, 0x81, 0x10, 0x9a, 0x97, 0x5d, 0xcf, 0xae, 0x37, 0x76, 0xdd,
-	0x36, 0x20, 0x4e, 0x9e, 0xfd, 0xcd, 0xef, 0x79, 0xfb, 0xcd, 0xcc, 0x33, 0x23, 0x03, 0x3e, 0x26,
-	0x94, 0x8d, 0x6d, 0xc7, 0x09, 0x47, 0x43, 0x66, 0x46, 0x34, 0x64, 0x21, 0xbe, 0x26, 0x30, 0x33,
-	0x01, 0xcf, 0xb6, 0xda, 0x2b, 0x5e, 0xe8, 0x85, 0x62, 0xb2, 0xcb, 0x47, 0x92, 0xd7, 0xfe, 0x9f,
-	0xf8, 0x71, 0xc2, 0x80, 0x8d, 0x23, 0x12, 0x2b, 0xb0, 0x45, 0x28, 0x75, 0x42, 0x97, 0xc8, 0xcf,
-	0xce, 0x13, 0x04, 0xcd, 0x47, 0x11, 0x19, 0xde, 0x93, 0xce, 0xda, 0x14, 0x6a, 0x16, 0xf9, 0x74,
-	0x44, 0x62, 0x86, 0x31, 0x54, 0x6c, 0xea, 0xc5, 0x06, 0x5a, 0x2f, 0x6f, 0x36, 0x2c, 0x31, 0xc6,
-	0xb7, 0x00, 0x54, 0xd8, 0xbe, 0xef, 0x1a, 0xa5, 0x75, 0xb4, 0xd9, 0xb8, 0xdf, 0x3a, 0xff, 0x7d,
-	0xad, 0xa1, 0xec, 0xf7, 0x77, 0xad, 0x86, 0x22, 0xec, 0xbb, 0x78, 0x03, 0xae, 0x04, 0xa1, 0xe7,
-	0x11, 0xda, 0x7f, 0xec, 0x07, 0x8c, 0xd0, 0xd8, 0x28, 0x73, 0x0b, 0xab, 0x25, 0xd1, 0x87, 0x12,
-	0x6c, 0xd7, 0xa0, 0x6a, 0x91, 0x28, 0x18, 0x77, 0x7e, 0x45, 0xf0, 0x8a, 0x96, 0xcc, 0x87, 0x3e,
-	0x3b, 0x39, 0xa4, 0xa1, 0x47, 0x49, 0x1c, 0xff, 0x2b, 0x89, 0xbd, 0xad, 0x12, 0xc3, 0x77, 0xa0,
-	0x1e, 0xa9, 0x44, 0x0c, 0xb4, 0x8e, 0x36, 0x9b, 0xbd, 0xd7, 0x4c, 0xb9, 0x08, 0x89, 0xc4, 0xe6,
-	0xd9, 0x96, 0x99, 0xe4, 0x6a, 0xa5, 0xe4, 0x4e, 0x07, 0x96, 0x77, 0x82, 0x30, 0x26, 0x89, 0xbc,
-	0x8d, 0xb4, 0x8a, 0x49, 0xd5, 0x1e, 0x18, 0x3a, 0x27, 0x53, 0xb5, 0xc6, 0x7f, 0xf1, 0x64, 0xfe,
-	0x44, 0x70, 0x55, 0x05, 0x79, 0x97, 0x30, 0xdb, 0xb5, 0x99, 0x9d, 0xd3, 0x0d, 0xcd, 0xd1, 0x0d,
-	0x43, 0x65, 0x68, 0x0f, 0x88, 0xd4, 0xd7, 0x12, 0x63, 0xe1, 0xe1, 0xcc, 0x66, 0x36, 0xed, 0x3b,
-	0xbe, 0x2b, 0x75, 0x54, 0x1e, 0x04, 0xba, 0x23, 0x3c, 0xc8, 0xa1, 0xef, 0xe2, 0xd7, 0x01, 0xa2,
-	0xd1, 0x71, 0xe0, 0x3b, 0xfd, 0x53, 0x32, 0x36, 0x2a, 0xc2, 0x4f, 0x43, 0x22, 0xef, 0x90, 0x31,
-	0x5e, 0x83, 0x66, 0x60, 0xc7, 0xac, 0x1f, 0x46, 0x64, 0x48, 0x5c, 0xa3, 0xba, 0x8e, 0x36, 0xcb,
-	0x16, 0x70, 0xe8, 0x91, 0x40, 0xf0, 0x0d, 0x68, 0x39, 0x94, 0xd8, 0xcc, 0x0f, 0x87, 0x7d, 0xd7,
-	0x66, 0xc4, 0x58, 0x12, 0x94, 0xe5, 0x04, 0xdc, 0xb5, 0x19, 0xc1, 0x2b, 0x50, 0x25, 0x94, 0x86,
-	0xd4, 0xa8, 0x09, 0xff, 0xf2, 0xa3, 0x63, 0xc3, 0xf2, 0x81, 0x1f, 0x33, 0x55, 0x58, 0x46, 0xdb,
-	0x87, 0x89, 0xb6, 0x77, 0xa1, 0xae, 0xaa, 0x95, 0xdb, 0xab, 0xd9, 0xbb, 0x6e, 0xe6, 0x4f, 0x9b,
-	0x99, 0xd3, 0xd0, 0x4a, 0x4d, 0x3a, 0xef, 0x43, 0x6b, 0x97, 0x04, 0x84, 0xa5, 0xeb, 0x7d, 0x67,
-	0xb2, 0x6b, 0x17, 0x52, 0x7a, 0xb2, 0x3b, 0xbe, 0x2b, 0x41, 0x6b, 0x7f, 0x10, 0x85, 0x34, 0x49,
-	0xbc, 0xfd, 0x13, 0x7a, 0x4e, 0xa7, 0xf8, 0x3a, 0x2c, 0x27, 0x6c, 0x6d, 0x19, 0x9b, 0x0a, 0x7b,
-	0x8f, 0xaf, 0xe6, 0x1a, 0x34, 0x8f, 0x6d, 0xe7, 0x74, 0x14, 0xf5, 0x23, 0x9b, 0x9d, 0xa8, 0x63,
-	0x01, 0x12, 0x3a, 0xb4, 0xd9, 0x49, 0x7a, 0xf8, 0x2a, 0xda, 0xe1, 0x9b, 0x3e, 0x4e, 0xd5, 0xa2,
-	0xe3, 0x74, 0x94, 0xa8, 0x7c, 0x00, 0xd7, 0x92, 0x3c, 0x06, 0x4a, 0x44, 0xb5, 0x93, 0x9f, 0x41,
-	0xed, 0xab, 0x76, 0x16, 0xe8, 0x3c, 0x2d, 0xc1, 0xab, 0x19, 0x85, 0x32, 0x27, 0xe8, 0x3f, 0xab,
-	0xd6, 0x57, 0xe8, 0x45, 0x0f, 0x7c, 0xa1, 0xce, 0xa5, 0xe7, 0xd6, 0xf9, 0x2f, 0x04, 0xad, 0x1d,
-	0x7e, 0xcc, 0xd2, 0xdd, 0xfd, 0xcd, 0x65, 0x6a, 0x9b, 0x48, 0x57, 0x9e, 0x29, 0x5d, 0xe5, 0x1f,
-	0xdc, 0x68, 0x5f, 0x97, 0xa0, 0x75, 0x14, 0xb9, 0x9a, 0x00, 0xdf, 0x5f, 0xa6, 0x00, 0x2f, 0xb3,
-	0xb1, 0x5e, 0x96, 0x24, 0x3f, 0x20, 0x58, 0xd9, 0x23, 0x6c, 0xcf, 0x3a, 0xdc, 0xe1, 0xbd, 0x95,
-	0x0c, 0x09, 0xbd, 0xe7, 0xba, 0x34, 0xd3, 0x5c, 0x9f, 0xa0, 0x49, 0xec, 0x1a, 0x19, 0x32, 0xea,
-	0x93, 0xa4, 0xb9, 0xf6, 0xa6, 0x43, 0x16, 0x79, 0x33, 0x85, 0xb9, 0xf9, 0x60, 0xc8, 0xe8, 0xd8,
-	0x4a, 0x5c, 0xb4, 0xb7, 0xa1, 0x2a, 0x10, 0xde, 0xee, 0xc5, 0x41, 0x90, 0xa2, 0x5b, 0xf2, 0x83,
-	0xa3, 0x03, 0xdb, 0x75, 0xa9, 0x92, 0x56, 0x7e, 0x74, 0x7e, 0x2c, 0x41, 0xf3, 0x20, 0xf4, 0x1e,
-	0xfb, 0x01, 0xe1, 0x21, 0xf4, 0x3c, 0xbf, 0x2d, 0x25, 0x79, 0x3e, 0xc8, 0xe7, 0xf9, 0xd6, 0x74,
-	0x9e, 0x9a, 0x13, 0x95, 0x9e, 0x42, 0x26, 0x09, 0xfe, 0x8c, 0xa0, 0xa6, 0xc0, 0x97, 0x70, 0xcf,
-	0x62, 0xa8, 0x68, 0x4d, 0x46, 0x8c, 0x39, 0x16, 0xfb, 0x9f, 0x11, 0xb1, 0xdc, 0x65, 0x4b, 0x8c,
-	0x39, 0x76, 0xea, 0x0f, 0x5d, 0xd5, 0x54, 0xc4, 0x98, 0x63, 0xcc, 0x1f, 0x24, 0x97, 0xa5, 0x18,
-	0xe3, 0xff, 0xc3, 0x52, 0x60, 0x33, 0x12, 0x33, 0x71, 0x4b, 0xd6, 0x2d, 0xf5, 0xc5, 0xb9, 0x84,
-	0xd2, 0xd8, 0xa8, 0x4b, 0x7b, 0x3e, 0xee, 0xdc, 0x85, 0xe6, 0x1e, 0x61, 0x47, 0x31, 0xa1, 0x3c,
-	0x15, 0x5d, 0xb4, 0x1b, 0x89, 0x66, 0x6d, 0xa8, 0x8f, 0xd4, 0xbc, 0x5a, 0x87, 0xf4, 0xbb, 0xf7,
-	0x14, 0xe0, 0x8a, 0xaa, 0xf3, 0x03, 0x42, 0xcf, 0x7c, 0x87, 0xe0, 0x8f, 0x32, 0xcf, 0x4e, 0xbc,
-	0x31, 0x2d, 0xb0, 0x36, 0x6d, 0xa6, 0xd1, 0xe6, 0xd1, 0x78, 0x26, 0x9f, 0x5f, 0xf8, 0x88, 0xc4,
-	0x5b, 0x33, 0xed, 0x75, 0x6a, 0x1a, 0xb2, 0xbb, 0x88, 0x49, 0x14, 0x8c, 0x6f, 0x23, 0xfc, 0x49,
-	0xf6, 0xd1, 0x87, 0xdf, 0x98, 0x76, 0xa1, 0xcf, 0xa7, 0xa1, 0x6e, 0xce, 0xe5, 0xf1, 0xf2, 0xbe,
-	0x40, 0x17, 0xbf, 0x17, 0x71, 0x6f, 0xb6, 0x8b, 0xc2, 0x0a, 0x6f, 0x2f, 0x64, 0x93, 0x96, 0xa8,
-	0xbf, 0xa5, 0x8a, 0x4a, 0xd4, 0xe7, 0x67, 0x95, 0x98, 0xe3, 0xf1, 0x12, 0xfb, 0xb9, 0x67, 0x14,
-	0x7e, 0x73, 0xda, 0x2c, 0x43, 0x48, 0xfd, 0x6f, 0xcc, 0x27, 0xaa, 0x00, 0x99, 0x17, 0x43, 0x51,
-	0x80, 0x0c, 0x61, 0x56, 0x80, 0x3c, 0x91, 0x07, 0xf8, 0x12, 0xcd, 0x78, 0x93, 0xe0, 0xed, 0x39,
-	0x4e, 0x0a, 0x97, 0x69, 0x6b, 0x31, 0x23, 0xb9, 0x4e, 0xfd, 0xdc, 0x95, 0x5d, 0x54, 0x68, 0x86,
-	0x30, 0xab, 0xd0, 0x3c, 0x51, 0x29, 0x99, 0xb9, 0x12, 0x8b, 0x02, 0x64, 0x08, 0xb3, 0x02, 0xe4,
-	0x89, 0x3c, 0x00, 0x2b, 0xbe, 0x60, 0xb0, 0xf9, 0xcc, 0x57, 0x87, 0x0c, 0x77, 0x6b, 0x91, 0xab,
-	0x86, 0xb7, 0x27, 0xad, 0xc1, 0x17, 0xb5, 0xa7, 0x6c, 0xff, 0xbf, 0xb0, 0x3d, 0x4d, 0x5d, 0x13,
-	0xdc, 0xb5, 0xd6, 0x4b, 0x8b, 0x5c, 0x6b, 0xd3, 0xb3, 0x5c, 0x67, 0x69, 0x51, 0x30, 0xbe, 0xdf,
-	0xfb, 0xe5, 0x7c, 0x15, 0xfd, 0x76, 0xbe, 0x8a, 0xfe, 0x38, 0x5f, 0x45, 0x1f, 0xdf, 0x94, 0x16,
-	0x8c, 0x38, 0x27, 0x5d, 0x31, 0xec, 0x7a, 0x61, 0x37, 0x3a, 0xf5, 0xba, 0xfa, 0x5f, 0x0a, 0xc7,
-	0x4b, 0xe2, 0xb6, 0xdc, 0xfe, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x11, 0x7b, 0x5e, 0x1d, 0x69, 0x10,
-	0x00, 0x00,
+	// 1647 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x58, 0xcd, 0x6f, 0xdb, 0x46,
+	0x16, 0x5f, 0xea, 0xc3, 0x92, 0x9e, 0x3e, 0xac, 0xcc, 0x1a, 0xbb, 0x5a, 0x6d, 0xd6, 0x76, 0x94,
+	0x64, 0xd7, 0xd8, 0x64, 0x65, 0x47, 0x39, 0x04, 0x7b, 0x08, 0xb0, 0xb1, 0xe5, 0x8f, 0x20, 0x8e,
+	0x93, 0xa5, 0x65, 0xec, 0x07, 0x0a, 0x08, 0x94, 0xf8, 0x2c, 0xb3, 0xa6, 0x48, 0x76, 0x38, 0x72,
+	0xab, 0x5c, 0x0a, 0x14, 0xe8, 0xa5, 0x40, 0x8b, 0x1e, 0xfb, 0x0f, 0x14, 0x3d, 0xb5, 0x28, 0xd0,
+	0x53, 0xfb, 0x07, 0xb4, 0xbd, 0xb5, 0x40, 0x0f, 0x3d, 0xd5, 0x28, 0x7c, 0xe9, 0x3f, 0x51, 0x14,
+	0xc5, 0x0c, 0x87, 0x14, 0x29, 0x29, 0x92, 0xec, 0x24, 0x45, 0x81, 0x9e, 0x34, 0xf3, 0xe6, 0xf7,
+	0x7e, 0xef, 0x6b, 0xe6, 0xcd, 0x50, 0x40, 0x5a, 0x48, 0x59, 0x5f, 0x6b, 0xb7, 0xed, 0x9e, 0xc5,
+	0xaa, 0x0e, 0xb5, 0x99, 0x4d, 0x8a, 0x42, 0x56, 0xf5, 0x85, 0x27, 0xb7, 0xca, 0x0b, 0x1d, 0xbb,
+	0x63, 0x8b, 0xc5, 0x55, 0x3e, 0xf2, 0x70, 0xe5, 0xdf, 0x8b, 0x9f, 0xb6, 0x6d, 0xb2, 0xbe, 0x83,
+	0xae, 0x14, 0xe6, 0x91, 0xd2, 0xb6, 0xad, 0xa3, 0x37, 0xad, 0x7c, 0xa3, 0x40, 0xf6, 0x91, 0x83,
+	0xd6, 0x3d, 0x8f, 0xac, 0xfc, 0x99, 0x02, 0x29, 0x15, 0x5f, 0xe9, 0xa1, 0xcb, 0x08, 0x81, 0x84,
+	0x46, 0x3b, 0x6e, 0x49, 0x59, 0x8e, 0xaf, 0x64, 0x54, 0x31, 0x26, 0x37, 0x01, 0xa4, 0xdd, 0xa6,
+	0xa1, 0x97, 0x62, 0xcb, 0xca, 0x4a, 0x66, 0x3d, 0x7f, 0x76, 0xba, 0x94, 0x91, 0x04, 0xf7, 0xeb,
+	0x6a, 0x46, 0x02, 0xee, 0xeb, 0xe4, 0x3a, 0x14, 0x4c, 0xbb, 0xd3, 0x41, 0xda, 0x3c, 0x34, 0x4c,
+	0x86, 0xd4, 0x2d, 0xc5, 0xb9, 0x86, 0x9a, 0xf7, 0xa4, 0x5b, 0x9e, 0x90, 0x6c, 0x41, 0xc1, 0x42,
+	0xf6, 0xaa, 0x4d, 0x8f, 0x9b, 0x6d, 0xdb, 0x3a, 0x34, 0x3a, 0xa5, 0xc4, 0xb2, 0xb2, 0x92, 0xad,
+	0x2d, 0x55, 0x87, 0x23, 0xad, 0xee, 0x79, 0xb8, 0x0d, 0x01, 0x53, 0xf3, 0x56, 0x78, 0x5a, 0x4e,
+	0x41, 0x52, 0x45, 0xc7, 0xec, 0x57, 0xbe, 0x52, 0xe0, 0x8f, 0xa1, 0xa8, 0xfe, 0x63, 0xb0, 0xa3,
+	0xc7, 0xd4, 0xee, 0x50, 0x74, 0xdd, 0x32, 0xfd, 0xe5, 0x03, 0x2c, 0xff, 0x4b, 0x3a, 0x46, 0xee,
+	0x40, 0xda, 0x91, 0x8e, 0x94, 0x14, 0x11, 0xe3, 0x9f, 0x65, 0x8c, 0x7e, 0xad, 0x78, 0x90, 0xbe,
+	0xaf, 0x6a, 0x00, 0xae, 0x54, 0x20, 0xb7, 0x61, 0xda, 0x2e, 0xfa, 0x75, 0xca, 0x04, 0x51, 0x0c,
+	0xa2, 0xee, 0x40, 0x29, 0x8c, 0x89, 0x44, 0x1d, 0xc2, 0x3f, 0xbb, 0x33, 0x3f, 0x2a, 0x30, 0x2f,
+	0x8d, 0x3c, 0x44, 0xa6, 0xe9, 0x1a, 0xd3, 0x86, 0xf2, 0xa6, 0x4c, 0xc9, 0x1b, 0x81, 0x84, 0xa5,
+	0x75, 0xd1, 0xcb, 0xaf, 0x2a, 0xc6, 0x82, 0xe1, 0x44, 0x63, 0x1a, 0x6d, 0xb6, 0x0d, 0xdd, 0xcb,
+	0xa3, 0x64, 0x10, 0xd2, 0x0d, 0xc1, 0xe0, 0x0d, 0x0d, 0x9d, 0xfc, 0x05, 0xc0, 0xe9, 0xb5, 0x4c,
+	0xa3, 0xdd, 0x3c, 0xc6, 0xbe, 0xd8, 0x2f, 0x19, 0x35, 0xe3, 0x49, 0x1e, 0x60, 0x9f, 0x2c, 0x41,
+	0xd6, 0xd4, 0x5c, 0xd6, 0xb4, 0x1d, 0xb4, 0x50, 0x2f, 0x25, 0x97, 0x95, 0x95, 0xb8, 0x0a, 0x5c,
+	0xf4, 0x48, 0x48, 0xc8, 0x55, 0xc8, 0xb7, 0x29, 0x6a, 0xcc, 0xb0, 0xad, 0xa6, 0xae, 0x31, 0x2c,
+	0xcd, 0x09, 0x48, 0xce, 0x17, 0xd6, 0x35, 0x86, 0x64, 0x01, 0x92, 0x48, 0xa9, 0x4d, 0x4b, 0x29,
+	0xc1, 0xef, 0x4d, 0x2a, 0x1a, 0xe4, 0x76, 0x0d, 0x97, 0xc9, 0xc0, 0x22, 0xb9, 0xdd, 0xf2, 0x73,
+	0x7b, 0x17, 0xd2, 0x32, 0x5a, 0x6f, 0x7b, 0x65, 0x6b, 0x57, 0x46, 0x37, 0xf3, 0x50, 0x0e, 0xd5,
+	0x40, 0xa5, 0xf2, 0x6f, 0xc8, 0xd7, 0xd1, 0x44, 0x16, 0xd4, 0xfb, 0xce, 0x60, 0xd7, 0x9e, 0x2b,
+	0xd3, 0x83, 0xdd, 0xf1, 0x43, 0x0c, 0xf2, 0xf7, 0xbb, 0x8e, 0x4d, 0x7d, 0xc7, 0xcb, 0x3f, 0x29,
+	0x17, 0x24, 0x25, 0x57, 0x20, 0xe7, 0xa3, 0x43, 0x65, 0xcc, 0x4a, 0xd9, 0x1e, 0xaf, 0xe6, 0x12,
+	0x64, 0x5b, 0x5a, 0xfb, 0xb8, 0xe7, 0x34, 0x1d, 0x8d, 0x1d, 0xc9, 0x63, 0x01, 0x9e, 0xe8, 0xb1,
+	0xc6, 0x8e, 0x82, 0xc3, 0x97, 0x08, 0x1d, 0xbe, 0xd1, 0xe3, 0x94, 0x9c, 0xad, 0x5f, 0xcc, 0x5d,
+	0xa8, 0x5f, 0x1c, 0xf8, 0xd5, 0xda, 0x85, 0xa2, 0x1f, 0x4f, 0x57, 0x16, 0x43, 0x9e, 0x88, 0x19,
+	0xaa, 0x36, 0xaf, 0x45, 0x05, 0x95, 0x0f, 0xe3, 0xf0, 0xa7, 0x48, 0xa6, 0x23, 0x27, 0xf1, 0x37,
+	0x9f, 0xf5, 0x77, 0x94, 0x67, 0x6d, 0x40, 0x63, 0xeb, 0x15, 0xbb, 0x70, 0xbd, 0x3e, 0x8f, 0x41,
+	0x7e, 0x83, 0x1f, 0xfb, 0xe0, 0xb4, 0x7d, 0xf7, 0x22, 0x6b, 0xe4, 0x97, 0x20, 0x3e, 0xb1, 0x04,
+	0x89, 0xd9, 0x4a, 0x90, 0xfc, 0x35, 0x6d, 0xfc, 0x77, 0x63, 0x90, 0x3f, 0x70, 0xf4, 0x50, 0x22,
+	0x3f, 0x78, 0x91, 0x89, 0x7c, 0x9e, 0x17, 0xc6, 0x8b, 0x4a, 0xc9, 0x47, 0x0a, 0x2c, 0x6c, 0x23,
+	0xdb, 0x56, 0x1f, 0x6f, 0xf0, 0x3b, 0x03, 0x2d, 0xa4, 0xf7, 0x74, 0x9d, 0x46, 0x2e, 0x8d, 0xb7,
+	0x94, 0x81, 0xed, 0x14, 0x5a, 0x8c, 0x1a, 0xe8, 0x5f, 0x1a, 0xb5, 0x51, 0x93, 0xe3, 0xd8, 0xaa,
+	0x42, 0xbd, 0xba, 0x69, 0x31, 0xda, 0x57, 0x7d, 0x8a, 0xf2, 0x6d, 0x48, 0x0a, 0x09, 0xbf, 0xc6,
+	0xc4, 0x81, 0xf2, 0x92, 0xae, 0x7a, 0x13, 0x2e, 0xed, 0x6a, 0xba, 0x4e, 0x65, 0x6a, 0xbd, 0x49,
+	0xe5, 0x93, 0x18, 0x64, 0x77, 0xed, 0xce, 0xa1, 0x61, 0x22, 0x37, 0x11, 0xf6, 0xf3, 0xbd, 0x98,
+	0xef, 0xe7, 0xe6, 0xb0, 0x9f, 0x37, 0x46, 0xfd, 0x0c, 0x91, 0x48, 0xf7, 0xa4, 0x64, 0xe0, 0xe0,
+	0x17, 0x0a, 0xa4, 0xa4, 0xf0, 0x39, 0xbc, 0x1f, 0x08, 0x24, 0x42, 0x4d, 0x4f, 0x8c, 0xb9, 0xcc,
+	0x35, 0x9e, 0xa0, 0x28, 0x77, 0x5c, 0x15, 0x63, 0x2e, 0x3b, 0x36, 0x2c, 0x5d, 0x36, 0x39, 0x31,
+	0xe6, 0x32, 0x66, 0x74, 0xfd, 0x47, 0x80, 0x18, 0x93, 0x3f, 0xc0, 0x9c, 0xa9, 0x31, 0x74, 0x99,
+	0xb8, 0xfd, 0xd3, 0xaa, 0x9c, 0x71, 0x2c, 0x52, 0xea, 0x96, 0xd2, 0x9e, 0x3e, 0x1f, 0x57, 0xee,
+	0x42, 0x76, 0x1b, 0xd9, 0x81, 0x8b, 0x94, 0xbb, 0x12, 0x4e, 0xda, 0x55, 0x3f, 0x67, 0x65, 0x48,
+	0xf7, 0xe4, 0xba, 0xac, 0x43, 0x30, 0xaf, 0x7c, 0x3c, 0x07, 0xf9, 0xc8, 0x81, 0x25, 0x97, 0x21,
+	0xd3, 0xb2, 0x6d, 0xe6, 0x32, 0xaa, 0x39, 0xf2, 0x7d, 0x3a, 0x10, 0x90, 0x45, 0x00, 0x8a, 0x96,
+	0x8e, 0x4f, 0x4e, 0xec, 0x9e, 0x5b, 0x8a, 0x89, 0xe5, 0x90, 0x84, 0x1f, 0x1e, 0x97, 0x69, 0xcc,
+	0x68, 0x37, 0x29, 0x9a, 0x5a, 0x5f, 0xb6, 0x9a, 0xac, 0x27, 0x53, 0xb9, 0x88, 0xac, 0x43, 0x5c,
+	0x3f, 0x62, 0x22, 0x31, 0x85, 0xda, 0xdf, 0xa6, 0xf4, 0x8f, 0x6a, 0x7d, 0xa7, 0xb1, 0x65, 0x6a,
+	0x9d, 0xf5, 0xd4, 0xd9, 0xe9, 0x52, 0xbc, 0xbe, 0xd3, 0x50, 0xb9, 0x32, 0xf9, 0x2f, 0xe4, 0x5a,
+	0x66, 0x0f, 0x99, 0x6d, 0xb3, 0xa3, 0xa6, 0x89, 0x22, 0xa3, 0x85, 0xda, 0xb5, 0x69, 0x64, 0x82,
+	0x69, 0xfe, 0xec, 0x74, 0x29, 0xbb, 0xee, 0x6b, 0xef, 0x6e, 0xaa, 0xd9, 0x80, 0x6a, 0x17, 0xc9,
+	0x21, 0x5c, 0xd6, 0x1c, 0xc7, 0xc4, 0x66, 0xb7, 0x67, 0x32, 0xc3, 0x41, 0xa4, 0xbc, 0xe1, 0x59,
+	0xd8, 0x66, 0xc6, 0x89, 0xc1, 0xfa, 0xa2, 0x4e, 0x33, 0x5a, 0x52, 0xcb, 0x82, 0xe9, 0xa1, 0x4f,
+	0xb4, 0x11, 0xe2, 0x21, 0x0f, 0xa0, 0xa0, 0x59, 0x3a, 0xb5, 0x0d, 0xbd, 0x69, 0xa1, 0x46, 0x5b,
+	0x7d, 0x51, 0xeb, 0x59, 0x99, 0xf3, 0x52, 0x77, 0x4f, 0xa8, 0x92, 0x7f, 0x42, 0x9c, 0xd9, 0x54,
+	0xec, 0x8b, 0x19, 0x52, 0xda, 0xb0, 0xa9, 0x20, 0xe1, 0x3a, 0x64, 0x1d, 0x12, 0x5d, 0xdd, 0x72,
+	0x4b, 0x99, 0x73, 0x64, 0x30, 0x7d, 0x76, 0xba, 0x94, 0x78, 0x58, 0xdf, 0xdb, 0x57, 0x85, 0x6e,
+	0x65, 0x0d, 0x12, 0x5c, 0x4e, 0xf2, 0x90, 0x39, 0xb0, 0x74, 0x3c, 0x34, 0x2c, 0xd4, 0x8b, 0xbf,
+	0x23, 0x39, 0x48, 0xd7, 0x0d, 0x57, 0x6b, 0x99, 0xa8, 0x17, 0x15, 0x92, 0x85, 0xd4, 0xa6, 0xe5,
+	0x4d, 0x62, 0x95, 0x3d, 0x48, 0x49, 0x2f, 0x48, 0x11, 0x72, 0x0d, 0x9b, 0x86, 0xf5, 0xe6, 0x21,
+	0xdb, 0xb0, 0x69, 0x48, 0xd5, 0x13, 0x3c, 0x72, 0xf8, 0xeb, 0x58, 0x33, 0x8b, 0x31, 0x29, 0xe0,
+	0x1b, 0xdd, 0xa0, 0xa8, 0x17, 0xe3, 0x95, 0x97, 0x21, 0x25, 0x37, 0x0a, 0xe7, 0xab, 0xef, 0x34,
+	0x86, 0xf8, 0xea, 0x3b, 0x8d, 0x10, 0x5f, 0x1e, 0x32, 0xf5, 0x9d, 0xc6, 0x86, 0x69, 0xa0, 0xc5,
+	0x8a, 0x31, 0x39, 0xdd, 0x47, 0x7a, 0x82, 0xb4, 0x18, 0xe7, 0x8e, 0xd6, 0x77, 0x1a, 0xf7, 0x7a,
+	0xcc, 0x2e, 0x26, 0xc8, 0x25, 0xc8, 0xcb, 0x89, 0x5c, 0x4f, 0x56, 0xde, 0x56, 0xa0, 0x18, 0x49,
+	0xca, 0x3e, 0xb2, 0xb2, 0x73, 0xd1, 0xdb, 0xe6, 0x0e, 0xcc, 0xc9, 0x0b, 0x35, 0x36, 0xdb, 0x85,
+	0x2a, 0xe1, 0x83, 0xe7, 0xf5, 0xfb, 0xf1, 0x21, 0x7f, 0xb6, 0xf1, 0x19, 0x5e, 0xed, 0xdf, 0x06,
+	0xad, 0x76, 0x0b, 0x0a, 0x3a, 0x1e, 0x6a, 0x3d, 0x93, 0xf9, 0x57, 0xbe, 0x32, 0xe3, 0x95, 0x2f,
+	0xd5, 0x64, 0x43, 0xd9, 0x82, 0x42, 0xbb, 0x47, 0x29, 0x5a, 0x01, 0xcf, 0x8c, 0x91, 0xe6, 0xa5,
+	0x9a, 0xe4, 0x59, 0x83, 0x85, 0x76, 0xcf, 0x65, 0x76, 0x57, 0xd2, 0x34, 0xf1, 0x35, 0xc3, 0x65,
+	0xde, 0x77, 0x6f, 0x5a, 0x25, 0xde, 0x9a, 0x87, 0xdd, 0x14, 0x2b, 0xe4, 0x06, 0x5c, 0xf2, 0x23,
+	0x18, 0xb4, 0x34, 0xef, 0xfd, 0x59, 0x94, 0x0b, 0xeb, 0x41, 0x67, 0xfb, 0x07, 0x10, 0x1f, 0x1c,
+	0xea, 0x70, 0x49, 0x81, 0xf6, 0x69, 0xd4, 0x41, 0xa3, 0x5b, 0x83, 0x05, 0x1f, 0x1e, 0x69, 0x78,
+	0x73, 0x42, 0xc1, 0xa7, 0xda, 0x1f, 0xf4, 0xbd, 0xda, 0xa7, 0x39, 0x28, 0xc8, 0x94, 0xf3, 0xbd,
+	0x64, 0xb4, 0x91, 0xfc, 0x2f, 0xf2, 0x17, 0x08, 0xb9, 0x3e, 0x9a, 0x91, 0xd0, 0x72, 0x35, 0x68,
+	0xec, 0xd3, 0x60, 0xbc, 0x7a, 0xaf, 0x3f, 0xf5, 0x7f, 0x08, 0x72, 0x6b, 0xa2, 0x7e, 0x18, 0x1a,
+	0x98, 0x5c, 0x3d, 0x8f, 0x8a, 0x63, 0xf6, 0xd7, 0x14, 0xf2, 0x52, 0xf4, 0x7f, 0x03, 0xf2, 0xd7,
+	0x51, 0x8a, 0xf0, 0x7a, 0x60, 0xea, 0xda, 0x54, 0x1c, 0x0f, 0xef, 0x0d, 0xe5, 0xe9, 0x7f, 0x39,
+	0x90, 0xda, 0x64, 0x8a, 0xb1, 0x11, 0xae, 0x9d, 0x4b, 0x27, 0x08, 0x31, 0xfc, 0x39, 0x3e, 0x2e,
+	0xc4, 0xf0, 0xfa, 0xa4, 0x10, 0x87, 0x70, 0x3c, 0xc4, 0xe6, 0xd0, 0x97, 0x38, 0x19, 0xd3, 0xd8,
+	0x23, 0x80, 0x80, 0xff, 0xfa, 0x74, 0xa0, 0x34, 0x10, 0xf9, 0x58, 0x1c, 0x67, 0x20, 0x02, 0x98,
+	0x64, 0x60, 0x18, 0xc8, 0x0d, 0xbc, 0xa9, 0x4c, 0xf8, 0x1c, 0x25, 0xb7, 0xa7, 0x90, 0x8c, 0x2d,
+	0xd3, 0xad, 0xf3, 0x29, 0x79, 0x75, 0x6a, 0x0e, 0x7d, 0x65, 0x8d, 0x0b, 0x34, 0x02, 0x98, 0x14,
+	0xe8, 0x30, 0x50, 0x66, 0x32, 0xf2, 0xf5, 0x31, 0xce, 0x40, 0x04, 0x30, 0xc9, 0xc0, 0x30, 0x90,
+	0x1b, 0x60, 0xe3, 0xdf, 0xf2, 0xa4, 0x3a, 0xf3, 0x2b, 0xdd, 0x33, 0x77, 0xf3, 0x3c, 0xaf, 0x7a,
+	0xde, 0x9e, 0x42, 0x6f, 0xe9, 0x71, 0xed, 0x29, 0xfa, 0xd4, 0x7e, 0x6a, 0x7b, 0x1a, 0x79, 0x91,
+	0x73, 0xea, 0xd0, 0xb3, 0x75, 0x1c, 0x75, 0x68, 0x79, 0x12, 0x75, 0x14, 0xc6, 0xa9, 0x8f, 0x46,
+	0xaf, 0x67, 0xf2, 0xf7, 0x29, 0x77, 0xcd, 0x3e, 0x0e, 0xfc, 0x5f, 0x99, 0x09, 0x3b, 0xce, 0xd2,
+	0xf6, 0x0c, 0x96, 0xb6, 0xcf, 0x61, 0x69, 0xdb, 0xb7, 0xb4, 0x5e, 0xfb, 0xf2, 0x6c, 0x51, 0xf9,
+	0xfa, 0x6c, 0x51, 0xf9, 0xfe, 0x6c, 0x51, 0xf9, 0xff, 0x35, 0x4f, 0x8d, 0x61, 0xfb, 0x68, 0x55,
+	0x0c, 0x57, 0x3b, 0xf6, 0xaa, 0x73, 0xdc, 0x59, 0x0d, 0xff, 0x65, 0xdf, 0x9a, 0x13, 0x1f, 0x5b,
+	0xb7, 0x7f, 0x0e, 0x00, 0x00, 0xff, 0xff, 0x22, 0x3f, 0xe1, 0xa4, 0xc9, 0x17, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2464,6 +3089,10 @@ type AccountServiceClient interface {
 	LogfileList(ctx context.Context, in *LogfileList_Request, opts ...grpc.CallOption) (*LogfileList_Reply, error)
 	// GetUsername returns the name of the device/user using Android/iOS/universal API
 	GetUsername(ctx context.Context, in *GetUsername_Request, opts ...grpc.CallOption) (*GetUsername_Reply, error)
+	// NetworkConfigSet
+	NetworkConfigSet(ctx context.Context, in *NetworkConfigSet_Request, opts ...grpc.CallOption) (*NetworkConfigSet_Reply, error)
+	// NetworkConfigGet
+	NetworkConfigGet(ctx context.Context, in *NetworkConfigGet_Request, opts ...grpc.CallOption) (*NetworkConfigGet_Reply, error)
 }
 
 type accountServiceClient struct {
@@ -2660,6 +3289,24 @@ func (c *accountServiceClient) GetUsername(ctx context.Context, in *GetUsername_
 	return out, nil
 }
 
+func (c *accountServiceClient) NetworkConfigSet(ctx context.Context, in *NetworkConfigSet_Request, opts ...grpc.CallOption) (*NetworkConfigSet_Reply, error) {
+	out := new(NetworkConfigSet_Reply)
+	err := c.cc.Invoke(ctx, "/berty.account.v1.AccountService/NetworkConfigSet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountServiceClient) NetworkConfigGet(ctx context.Context, in *NetworkConfigGet_Request, opts ...grpc.CallOption) (*NetworkConfigGet_Reply, error) {
+	out := new(NetworkConfigGet_Reply)
+	err := c.cc.Invoke(ctx, "/berty.account.v1.AccountService/NetworkConfigGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 type AccountServiceServer interface {
 	// OpenAccount starts a Berty node.
@@ -2688,6 +3335,10 @@ type AccountServiceServer interface {
 	LogfileList(context.Context, *LogfileList_Request) (*LogfileList_Reply, error)
 	// GetUsername returns the name of the device/user using Android/iOS/universal API
 	GetUsername(context.Context, *GetUsername_Request) (*GetUsername_Reply, error)
+	// NetworkConfigSet
+	NetworkConfigSet(context.Context, *NetworkConfigSet_Request) (*NetworkConfigSet_Reply, error)
+	// NetworkConfigGet
+	NetworkConfigGet(context.Context, *NetworkConfigGet_Request) (*NetworkConfigGet_Reply, error)
 }
 
 // UnimplementedAccountServiceServer can be embedded to have forward compatible implementations.
@@ -2743,6 +3394,14 @@ func (*UnimplementedAccountServiceServer) LogfileList(ctx context.Context, req *
 
 func (*UnimplementedAccountServiceServer) GetUsername(ctx context.Context, req *GetUsername_Request) (*GetUsername_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsername not implemented")
+}
+
+func (*UnimplementedAccountServiceServer) NetworkConfigSet(ctx context.Context, req *NetworkConfigSet_Request) (*NetworkConfigSet_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NetworkConfigSet not implemented")
+}
+
+func (*UnimplementedAccountServiceServer) NetworkConfigGet(ctx context.Context, req *NetworkConfigGet_Request) (*NetworkConfigGet_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NetworkConfigGet not implemented")
 }
 
 func RegisterAccountServiceServer(s *grpc.Server, srv AccountServiceServer) {
@@ -2992,6 +3651,42 @@ func _AccountService_GetUsername_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_NetworkConfigSet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NetworkConfigSet_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).NetworkConfigSet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.account.v1.AccountService/NetworkConfigSet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).NetworkConfigSet(ctx, req.(*NetworkConfigSet_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AccountService_NetworkConfigGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NetworkConfigGet_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).NetworkConfigGet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.account.v1.AccountService/NetworkConfigGet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).NetworkConfigGet(ctx, req.(*NetworkConfigGet_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _AccountService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "berty.account.v1.AccountService",
 	HandlerType: (*AccountServiceServer)(nil),
@@ -3035,6 +3730,14 @@ var _AccountService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUsername",
 			Handler:    _AccountService_GetUsername_Handler,
+		},
+		{
+			MethodName: "NetworkConfigSet",
+			Handler:    _AccountService_NetworkConfigSet_Handler,
+		},
+		{
+			MethodName: "NetworkConfigGet",
+			Handler:    _AccountService_NetworkConfigGet_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
@@ -3107,6 +3810,18 @@ func (m *OpenAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.NetworkConfig != nil {
+		{
+			size, err := m.NetworkConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
 	}
 	if len(m.LoggerFilters) > 0 {
 		i -= len(m.LoggerFilters)
@@ -3757,6 +4472,18 @@ func (m *ImportAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
+	if m.NetworkConfig != nil {
+		{
+			size, err := m.NetworkConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x32
+	}
 	if len(m.LoggerFilters) > 0 {
 		i -= len(m.LoggerFilters)
 		copy(dAtA[i:], m.LoggerFilters)
@@ -3886,6 +4613,18 @@ func (m *ImportAccountWithProgress_Request) MarshalToSizedBuffer(dAtA []byte) (i
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.NetworkConfig != nil {
+		{
+			size, err := m.NetworkConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x32
 	}
 	if len(m.LoggerFilters) > 0 {
 		i -= len(m.LoggerFilters)
@@ -4028,6 +4767,18 @@ func (m *CreateAccount_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.NetworkConfig != nil {
+		{
+			size, err := m.NetworkConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
 	}
 	if len(m.LoggerFilters) > 0 {
 		i -= len(m.LoggerFilters)
@@ -4623,6 +5374,339 @@ func (m *GetUsername_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *NetworkConfig) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkConfig) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.MDNS != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.MDNS))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.Tor != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.Tor))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.AndroidNearby != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.AndroidNearby))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.AppleMultipeerConnectivity != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.AppleMultipeerConnectivity))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.BluetoothLE != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.BluetoothLE))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.DHT != 0 {
+		i = encodeVarintBertyaccount(dAtA, i, uint64(m.DHT))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.StaticRelay) > 0 {
+		for iNdEx := len(m.StaticRelay) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.StaticRelay[iNdEx])
+			copy(dAtA[i:], m.StaticRelay[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.StaticRelay[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Rendezvous) > 0 {
+		for iNdEx := len(m.Rendezvous) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Rendezvous[iNdEx])
+			copy(dAtA[i:], m.Rendezvous[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Rendezvous[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Bootstrap) > 0 {
+		for iNdEx := len(m.Bootstrap) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Bootstrap[iNdEx])
+			copy(dAtA[i:], m.Bootstrap[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.Bootstrap[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkConfigSet) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkConfigSet) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfigSet) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkConfigSet_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkConfigSet_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfigSet_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Config != nil {
+		{
+			size, err := m.Config.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkConfigSet_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkConfigSet_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfigSet_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkConfigGet) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkConfigGet) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfigGet) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkConfigGet_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkConfigGet_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfigGet_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.AccountID) > 0 {
+		i -= len(m.AccountID)
+		copy(dAtA[i:], m.AccountID)
+		i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.AccountID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkConfigGet_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkConfigGet_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfigGet_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.DefaultStaticRelay) > 0 {
+		for iNdEx := len(m.DefaultStaticRelay) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.DefaultStaticRelay[iNdEx])
+			copy(dAtA[i:], m.DefaultStaticRelay[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.DefaultStaticRelay[iNdEx])))
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.DefaultRendezvous) > 0 {
+		for iNdEx := len(m.DefaultRendezvous) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.DefaultRendezvous[iNdEx])
+			copy(dAtA[i:], m.DefaultRendezvous[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.DefaultRendezvous[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.DefaultBootstrap) > 0 {
+		for iNdEx := len(m.DefaultBootstrap) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.DefaultBootstrap[iNdEx])
+			copy(dAtA[i:], m.DefaultBootstrap[iNdEx])
+			i = encodeVarintBertyaccount(dAtA, i, uint64(len(m.DefaultBootstrap[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if m.CustomConfigExists {
+		i--
+		if m.CustomConfigExists {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.CurrentConfig != nil {
+		{
+			size, err := m.CurrentConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.DefaultConfig != nil {
+		{
+			size, err := m.DefaultConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyaccount(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintBertyaccount(dAtA []byte, offset int, v uint64) int {
 	offset -= sovBertyaccount(v)
 	base := offset
@@ -4665,6 +5749,10 @@ func (m *OpenAccount_Request) Size() (n int) {
 	}
 	l = len(m.LoggerFilters)
 	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.NetworkConfig != nil {
+		l = m.NetworkConfig.Size()
 		n += 1 + l + sovBertyaccount(uint64(l))
 	}
 	if m.XXX_unrecognized != nil {
@@ -4975,6 +6063,10 @@ func (m *ImportAccount_Request) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovBertyaccount(uint64(l))
 	}
+	if m.NetworkConfig != nil {
+		l = m.NetworkConfig.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -5037,6 +6129,10 @@ func (m *ImportAccountWithProgress_Request) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovBertyaccount(uint64(l))
 	}
+	if m.NetworkConfig != nil {
+		l = m.NetworkConfig.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -5097,6 +6193,10 @@ func (m *CreateAccount_Request) Size() (n int) {
 	}
 	l = len(m.LoggerFilters)
 	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.NetworkConfig != nil {
+		l = m.NetworkConfig.Size()
 		n += 1 + l + sovBertyaccount(uint64(l))
 	}
 	if m.XXX_unrecognized != nil {
@@ -5362,6 +6462,167 @@ func (m *GetUsername_Reply) Size() (n int) {
 	return n
 }
 
+func (m *NetworkConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Bootstrap) > 0 {
+		for _, s := range m.Bootstrap {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if len(m.Rendezvous) > 0 {
+		for _, s := range m.Rendezvous {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if len(m.StaticRelay) > 0 {
+		for _, s := range m.StaticRelay {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if m.DHT != 0 {
+		n += 1 + sovBertyaccount(uint64(m.DHT))
+	}
+	if m.BluetoothLE != 0 {
+		n += 1 + sovBertyaccount(uint64(m.BluetoothLE))
+	}
+	if m.AppleMultipeerConnectivity != 0 {
+		n += 1 + sovBertyaccount(uint64(m.AppleMultipeerConnectivity))
+	}
+	if m.AndroidNearby != 0 {
+		n += 1 + sovBertyaccount(uint64(m.AndroidNearby))
+	}
+	if m.Tor != 0 {
+		n += 1 + sovBertyaccount(uint64(m.Tor))
+	}
+	if m.MDNS != 0 {
+		n += 1 + sovBertyaccount(uint64(m.MDNS))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *NetworkConfigSet) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *NetworkConfigSet_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.Config != nil {
+		l = m.Config.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *NetworkConfigSet_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *NetworkConfigGet) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *NetworkConfigGet_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountID)
+	if l > 0 {
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *NetworkConfigGet_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.DefaultConfig != nil {
+		l = m.DefaultConfig.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.CurrentConfig != nil {
+		l = m.CurrentConfig.Size()
+		n += 1 + l + sovBertyaccount(uint64(l))
+	}
+	if m.CustomConfigExists {
+		n += 2
+	}
+	if len(m.DefaultBootstrap) > 0 {
+		for _, s := range m.DefaultBootstrap {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if len(m.DefaultRendezvous) > 0 {
+		for _, s := range m.DefaultRendezvous {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if len(m.DefaultStaticRelay) > 0 {
+		for _, s := range m.DefaultStaticRelay {
+			l = len(s)
+			n += 1 + l + sovBertyaccount(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
 func sovBertyaccount(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
@@ -5546,6 +6807,42 @@ func (m *OpenAccount_Request) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.NetworkConfig == nil {
+				m.NetworkConfig = &NetworkConfig{}
+			}
+			if err := m.NetworkConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7127,6 +8424,42 @@ func (m *ImportAccount_Request) Unmarshal(dAtA []byte) error {
 			}
 			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.NetworkConfig == nil {
+				m.NetworkConfig = &NetworkConfig{}
+			}
+			if err := m.NetworkConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipBertyaccount(dAtA[iNdEx:])
@@ -7478,6 +8811,42 @@ func (m *ImportAccountWithProgress_Request) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.NetworkConfig == nil {
+				m.NetworkConfig = &NetworkConfig{}
+			}
+			if err := m.NetworkConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7834,6 +9203,42 @@ func (m *CreateAccount_Request) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.LoggerFilters = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.NetworkConfig == nil {
+				m.NetworkConfig = &NetworkConfig{}
+			}
+			if err := m.NetworkConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -9196,6 +10601,868 @@ func (m *GetUsername_Reply) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *NetworkConfig) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NetworkConfig: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NetworkConfig: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bootstrap", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Bootstrap = append(m.Bootstrap, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rendezvous", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Rendezvous = append(m.Rendezvous, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StaticRelay", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StaticRelay = append(m.StaticRelay, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DHT", wireType)
+			}
+			m.DHT = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DHT |= NetworkConfig_DHTFlag(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BluetoothLE", wireType)
+			}
+			m.BluetoothLE = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BluetoothLE |= NetworkConfig_Flag(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AppleMultipeerConnectivity", wireType)
+			}
+			m.AppleMultipeerConnectivity = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AppleMultipeerConnectivity |= NetworkConfig_Flag(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AndroidNearby", wireType)
+			}
+			m.AndroidNearby = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AndroidNearby |= NetworkConfig_Flag(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tor", wireType)
+			}
+			m.Tor = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Tor |= NetworkConfig_TorFlag(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MDNS", wireType)
+			}
+			m.MDNS = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MDNS |= NetworkConfig_Flag(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *NetworkConfigSet) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NetworkConfigSet: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NetworkConfigSet: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *NetworkConfigSet_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Config", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Config == nil {
+				m.Config = &NetworkConfig{}
+			}
+			if err := m.Config.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *NetworkConfigSet_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *NetworkConfigGet) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NetworkConfigGet: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NetworkConfigGet: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *NetworkConfigGet_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyaccount(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
+func (m *NetworkConfigGet_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyaccount
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DefaultConfig == nil {
+				m.DefaultConfig = &NetworkConfig{}
+			}
+			if err := m.DefaultConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CurrentConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CurrentConfig == nil {
+				m.CurrentConfig = &NetworkConfig{}
+			}
+			if err := m.CurrentConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CustomConfigExists", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.CustomConfigExists = bool(v != 0)
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultBootstrap", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefaultBootstrap = append(m.DefaultBootstrap, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultRendezvous", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefaultRendezvous = append(m.DefaultRendezvous, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultStaticRelay", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyaccount
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyaccount
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefaultStaticRelay = append(m.DefaultStaticRelay, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

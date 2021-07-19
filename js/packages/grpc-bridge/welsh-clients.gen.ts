@@ -82,6 +82,8 @@ export interface WelshAccountServiceClient {
 	getGRPCListenerAddrs: UnaryType<beapi.account.AccountService['getGRPCListenerAddrs']>
 	logfileList: UnaryType<beapi.account.AccountService['logfileList']>
 	getUsername: UnaryType<beapi.account.AccountService['getUsername']>
+	networkConfigSet: UnaryType<beapi.account.AccountService['networkConfigSet']>
+	networkConfigGet: UnaryType<beapi.account.AccountService['networkConfigGet']>
 }
 
 export interface WelshMessengerServiceClient {

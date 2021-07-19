@@ -53,6 +53,12 @@ service AccountService {
 
   // GetUsername returns the name of the device/user using Android/iOS/universal API
   rpc GetUsername(GetUsername.Request) returns (GetUsername.Reply);
+
+  // NetworkConfigSet
+  rpc NetworkConfigSet (NetworkConfigSet.Request) returns (NetworkConfigSet.Reply);
+
+  // NetworkConfigGet
+  rpc NetworkConfigGet (NetworkConfigGet.Request) returns (NetworkConfigGet.Reply);
 }
 
 message OpenAccount {
@@ -60,6 +66,7 @@ message OpenAccount {
     repeated string args = 1;
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
+    NetworkConfig network_config = 4;
   }
   message Reply {
   }
@@ -121,6 +128,7 @@ message ImportAccount {
     string backup_path = 3;
     repeated string args = 4;
     string logger_filters = 5;
+    NetworkConfig network_config = 6;
   }
   message Reply {
     AccountMetadata account_metadata = 1;
@@ -134,6 +142,7 @@ message ImportAccountWithProgress {
     string backup_path = 3;
     repeated string args = 4;
     string logger_filters = 5;
+    NetworkConfig network_config = 6;
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -147,6 +156,7 @@ message CreateAccount {
     string account_name = 2;
     repeated string args = 3;
     string logger_filters = 4;
+    NetworkConfig network_config = 5;
   }
   message Reply {
     AccountMetadata account_metadata = 1;
@@ -198,5 +208,61 @@ message GetUsername {
   message Request {}
   message Reply {
     string username = 1;
+  }
+}
+
+message NetworkConfig {
+  enum Flag {
+    Undefined = 0;
+    Disabled = 1;
+    Enabled = 2;
+  }
+
+  enum TorFlag {
+    TorUndefined = 0;
+    TorDisabled = 1;
+    TorOptional = 2;
+    TorRequired = 3;
+  }
+
+  enum DHTFlag {
+    DHTUndefined = 0;
+    DHTDisabled = 1;
+    DHTClient = 2;
+    DHTServer = 3;
+    DHTAuto = 4;
+    DHTAutoServer = 5;
+  }
+
+  repeated string bootstrap = 1;
+  repeated string rendezvous = 2;
+  repeated string static_relay = 3;
+  DHTFlag dht = 4 [(gogoproto.customname) = "DHT"];
+  Flag bluetooth_le = 5 [(gogoproto.customname) = "BluetoothLE"];
+  Flag apple_multipeer_connectivity = 6;
+  Flag android_nearby = 7;
+  TorFlag tor = 8;
+  Flag mdns = 9 [(gogoproto.customname) = "MDNS"];
+}
+
+message NetworkConfigSet {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    NetworkConfig config = 2;
+  }
+  message Reply {}
+}
+
+message NetworkConfigGet {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  }
+  message Reply {
+    NetworkConfig default_config = 1;
+    NetworkConfig current_config = 2;
+    bool custom_config_exists = 3;
+    repeated string default_bootstrap = 4;
+    repeated string default_rendezvous = 5;
+    repeated string default_static_relay = 6;
   }
 }

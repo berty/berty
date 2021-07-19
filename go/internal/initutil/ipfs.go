@@ -54,28 +54,48 @@ func (m *Manager) SetNBDriver(d proximity.ProximityDriver) {
 	m.Node.Protocol.Nearby.Driver = d
 }
 
+const (
+	FlagNameP2PBootstrap             = "p2p.bootstrap"
+	FlagNameP2PDHT                   = "p2p.dht"
+	FlagNameP2PMDNS                  = "p2p.mdns"
+	FlagNameP2PStaticRelays          = "p2p.static-relays"
+	FlagNameP2PRDVP                  = "p2p.rdvp"
+	FlagNameP2PBLE                   = "p2p.ble"
+	FlagNameP2PNearby                = "p2p.nearby"
+	FlagNameP2PMultipeerConnectivity = "p2p.multipeer-connectivity"
+	FlagNameTorMode                  = "tor.mode"
+	FlagNameP2PTinderDHTDriver       = "p2p.tinder-dht-driver"
+	FlagNameP2PTinderRDVPDriver      = "p2p.tinder-rdvp-driver"
+
+	FlagValueP2PDHTDisabled   = "none"
+	FlagValueP2PDHTClient     = "client"
+	FlagValueP2PDHTServer     = "server"
+	FlagValueP2PDHTAuto       = "auto"
+	FlagValueP2PDHTAutoServer = "autoserver"
+)
+
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	m.SetupPresetFlags(fs)
 	fs.StringVar(&m.Node.Protocol.SwarmListeners, "p2p.swarm-listeners", KeywordDefault, "IPFS swarm listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "/ip4/127.0.0.1/tcp/5001", "IPFS API listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
-	fs.StringVar(&m.Node.Protocol.Bootstrap, "p2p.bootstrap", KeywordDefault, "ipfs bootstrap node, `:default:` will set ipfs default bootstrap node")
-	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `none`, `client`, `server`, `auto`, `autoserver`")
+	fs.StringVar(&m.Node.Protocol.Bootstrap, FlagNameP2PBootstrap, KeywordDefault, "ipfs bootstrap node, `:default:` will set ipfs default bootstrap node")
+	fs.StringVar(&m.Node.Protocol.DHT, FlagNameP2PDHT, FlagValueP2PDHTClient, "dht mode, can be: `none`, `client`, `server`, `auto`, `autoserver`")
 	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
-	fs.BoolVar(&m.Node.Protocol.MDNS, "p2p.mdns", true, "if true mdns will be enabled")
-	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, "p2p.tinder-dht-driver", true, "if true dht driver will be enable for tinder")
-	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, "p2p.tinder-rdvp-driver", true, "if true rdvp driver will be enable for tinder")
-	fs.StringVar(&m.Node.Protocol.StaticRelays, "p2p.static-relays", KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
+	fs.BoolVar(&m.Node.Protocol.MDNS, FlagNameP2PMDNS, true, "if true mdns will be enabled")
+	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
+	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
-	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", KeywordDefault, "list of rendezvous point maddr, `:dev:` will add the default devs servers, `:none:` will disable rdvp")
-	fs.BoolVar(&m.Node.Protocol.Ble.Enable, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
-	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, "p2p.nearby", nb.Supported, "if true Android Nearby will be enabled")
-	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
-	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
+	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, FlagNameP2PRDVP, KeywordDefault, "list of rendezvous point maddr, `:dev:` will add the default devs servers, `:none:` will disable rdvp")
+	fs.BoolVar(&m.Node.Protocol.Ble.Enable, FlagNameP2PBLE, ble.Supported, "if true Bluetooth Low Energy will be enabled")
+	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, FlagNameP2PNearby, nb.Supported, "if true Android Nearby will be enabled")
+	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, FlagNameP2PMultipeerConnectivity, mc.Supported, "if true Multipeer Connectivity will be enabled")
+	fs.StringVar(&m.Node.Protocol.Tor.Mode, FlagNameTorMode, defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	m.longHelp = append(m.longHelp, [2]string{
@@ -135,15 +155,15 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	var dhtmode p2p_dht.ModeOpt = 0
 	switch m.Node.Protocol.DHT {
-	case "client":
+	case FlagValueP2PDHTClient:
 		dhtmode = p2p_dht.ModeClient
-	case "server":
+	case FlagValueP2PDHTServer:
 		dhtmode = p2p_dht.ModeServer
-	case "auto":
+	case FlagValueP2PDHTAuto:
 		dhtmode = p2p_dht.ModeAuto
-	case "autoserver":
+	case FlagValueP2PDHTAutoServer:
 		dhtmode = p2p_dht.ModeAutoServer
-	case "none": // 0
+	case FlagValueP2PDHTDisabled: // 0
 	default:
 		err := fmt.Errorf("invalid dht mode")
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
@@ -565,15 +585,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 	m.applyDefaults()
 
-	var defaultMaddrs []string
-	{
-		i := len(config.Config.P2P.RDVP)
-		defaultMaddrs = make([]string, i)
-		for i > 0 {
-			i--
-			defaultMaddrs[i] = config.Config.P2P.RDVP[i].Maddr
-		}
-	}
+	defaultMaddrs := config.GetDefaultRDVPMaddr()
 
 	if m.Node.Protocol.RdvpMaddrs == "" {
 		return nil, nil
