@@ -5,7 +5,6 @@ import {
 	View,
 	TextInput,
 	NativeModules,
-	Platform,
 	ViewToken,
 	Animated,
 	Easing,
@@ -14,13 +13,12 @@ import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
 import { BlurView } from '@react-native-community/blur'
 import moment from 'moment'
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { useClient, useMsgrContext, useContact } from '@berty-tech/store/hooks'
-import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
+import { checkPermissions, getMediaTypeFromMedias } from '@berty-tech/components/utils'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
@@ -28,6 +26,7 @@ import { TabItems } from './file-uploads/types'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
 import { useReplyReaction } from './ReplyReactionContext'
+import { RESULTS } from 'react-native-permissions'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -536,28 +535,11 @@ export const ChatFooter: React.FC<{
 								]}
 								onPress={async () => {
 									setActivateTab(TabItems.Camera)
-									try {
-										const status = await check(
-											Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
-										)
-										if (status !== RESULTS.GRANTED) {
-											try {
-												const status = await request(
-													Platform.OS === 'ios'
-														? PERMISSIONS.IOS.CAMERA
-														: PERMISSIONS.ANDROID.CAMERA,
-												)
-												if (status !== RESULTS.GRANTED) {
-													setSecurityAccessVisibility(true)
-													return
-												}
-											} catch (err) {
-												console.log(err)
-											}
-										}
-									} catch (err) {
-										console.log(err)
+									const permissionStatus = await checkPermissions('camera')
+									if (permissionStatus !== RESULTS.GRANTED) {
+										return
 									}
+
 									try {
 										await ImagePicker.clean()
 									} catch (err) {}

@@ -9,15 +9,14 @@ import {
 import { Text, Icon } from '@ui-kitten/components'
 import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
-import { requestNotifications, RESULTS } from 'react-native-permissions'
-
 import { useStyles } from '@berty-tech/styles'
 import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import WelcomeBackground from '@berty-tech/assets/welcome_bg.png'
 import { useNavigation } from '@berty-tech/navigation'
-import { requestBluetoothAndHandleAlert } from '@berty-tech/components/main/bluetooth'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
+import { checkPermissions } from '../utils'
+import { RESULTS } from 'react-native-permissions'
 
 const useStylesWelcome = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -50,6 +49,27 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const _styles = useStylesWelcome()
 	const { navigate } = useNavigation()
 	const { persistentOptions, setPersistentOption } = useMsgrContext()
+
+	const handleSkip = async () => {
+		closeModal()
+
+		const notificationStatus = await checkPermissions('notification', {
+			isToNavigate: false,
+		})
+
+		if (notificationStatus === RESULTS.GRANTED) {
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Configurations,
+				payload: {
+					...persistentOptions.configurations,
+					notification: {
+						...persistentOptions.configurations.notification,
+						state: 'added',
+					},
+				},
+			})
+		}
+	}
 
 	return (
 		<View
@@ -141,7 +161,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 									backgroundColor: 'white',
 								},
 							]}
-							onPress={() => closeModal()}
+							onPress={handleSkip}
 						>
 							<Icon
 								name='close'
@@ -172,23 +192,10 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 							]}
 							onPress={async () => {
 								closeModal()
-								const { status } = await requestNotifications(['alert', 'badge'])
-								await setPersistentOption({
-									type: PersistentOptionsKeys.Configurations,
-									payload: {
-										...persistentOptions.configurations,
-										notification: {
-											...persistentOptions.configurations.notification,
-											state: status === RESULTS.GRANTED ? 'added' : 'skipped',
-										},
-									},
-								})
-								await requestBluetoothAndHandleAlert()
-
 								if (persistentOptions.preset.value === 'full-anonymity') {
-									navigate.main.networkOptions()
+									navigate.main.networkOptions({ checkNotificationPermission: true })
 								} else {
-									navigate.onboarding.servicesAuth()
+									navigate.onboarding.servicesAuth({ checkNotificationPermission: true })
 								}
 							}}
 						>
