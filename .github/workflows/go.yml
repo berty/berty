@@ -174,7 +174,7 @@ jobs:
           GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags fts5 -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1.5.2
+        uses: codecov/codecov-action@v2.0.1
         with:
           file: ./go/coverage.txt
           flags: go.unittests
@@ -225,7 +225,7 @@ jobs:
       #    TEST_SPEED: any
       #  run: go.exe test ./... -buildmode=exe -v -timeout=1200s -count=1 -tags fts5 -race -cover -coverprofile=coverage.txt -covermode=atomic
       #- name: Upload coverage to Codecov
-      #  uses: codecov/codecov-action@v1.5.2
+      #  uses: codecov/codecov-action@v2.0.1
       #  with:
       #    file: ./coverage.txt
       #    flags: unittests
