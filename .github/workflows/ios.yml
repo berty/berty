@@ -40,7 +40,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
       - name: Setup XCode
-        uses: maxim-lobanov/setup-xcode@v1.2.3
+        uses: maxim-lobanov/setup-xcode@v1.3.0
         with:
           xcode-version: ${{ matrix.xcode }}
 
@@ -107,7 +107,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
       - name: Setup XCode
-        uses: maxim-lobanov/setup-xcode@v1.2.3
+        uses: maxim-lobanov/setup-xcode@v1.3.0
         with:
           xcode-version: ${{ matrix.xcode }}
 
