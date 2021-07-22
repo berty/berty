@@ -23,73 +23,6 @@ on:
       - '.github/workflows/ios.yml'
 
 jobs:
-  sync-pods-lock:
-    name: Verify that Podfile.lock is up to date
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        golang: ['1.16.x']
-        xcode: ['12.4']
-        node: ['14.x']
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
-
-      - name: Setup XCode
-        uses: maxim-lobanov/setup-xcode@v1.3.0
-        with:
-          xcode-version: ${{ matrix.xcode }}
-
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-
-      - name: Cache Node modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ matrix.node }}-v2-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v2-
-
-      - name: Cache Ruby modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/vendor/bundle
-          key:          ${{ runner.OS }}-bundle-${{ matrix.xcode }}-v1-${{ hashFiles('js/Gemfile.lock') }}
-          restore-keys: ${{ runner.OS }}-bundle-${{ matrix.xcode }}-v1-
-
-      - name: Cache XCodeGen
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/vendor/xcodegen
-          key:          ios-xcodegen-${{ matrix.xcode }}-v1-${{ hashFiles('js/XcodeGen.version') }}
-          restore-keys: ios-xcodegen-${{ matrix.xcode }}-v1-
-
-      - name: Cache XCode project
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/ios/Berty.xcodeproj
-          key:          ios-xcodeproj-${{ matrix.xcode }}-v1-${{ hashFiles('js/ios/*.yaml') }}
-          restore-keys: ios-xcodeproj-${{ matrix.xcode }}-v1-
-
-      - name: Build deps
-        working-directory: js
-        run: make node_modules ios/vendor/bundle ios/Berty.xcodeproj
-
-      - name: Sync Podfile.lock
-        working-directory: js/ios
-        run: bundle exec pod install --repo-update
-
-      - name: Check diff
-        run: |
-          set -euo pipefail -o xtrace
-          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee /tmp/berty-podfile.diff) ]]; then cat /tmp/berty-podfile.diff && false; fi
-
   build:
     name: Build for iOS
     runs-on: macos-latest
@@ -185,6 +118,21 @@ jobs:
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env.prod >> js/.env
 
+      - name: Build pod deps
+        working-directory: js
+        run: make node_modules ios/vendor/bundle ios/Berty.xcodeproj
+
+      - name: Sync Podfile.lock
+        working-directory: js/ios
+        run: bundle exec pod install --repo-update
+
+      - name: Check diff
+        id: check-podfile-lock
+        continue-on-error: true
+        run: |
+          set -euo pipefail -o xtrace
+          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee /tmp/berty-podfile.diff) ]]; then cat /tmp/berty-podfile.diff && false; fi
+
       - name: Build the Archive
         working-directory: js
         run: |
@@ -212,3 +160,8 @@ jobs:
           path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
           name: berty-yolo-${{github.sha}}.dummy-signed-ipa
           if-no-files-found: error
+
+      # mark the build as failed if a 'continue-on-error' step failed previously
+      - name: Check failed steps
+        run: false
+        if: ${{ steps.check-podfile-lock.outcome == 'failure' }}
