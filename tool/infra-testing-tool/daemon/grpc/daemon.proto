@@ -16,7 +16,6 @@ message ConnectToPeer {
 message AddReplication {
   message Request {
     string groupName = 1;
-    // invite gob
     string tokenIp = 2;
   }
 
@@ -104,7 +103,7 @@ message TestConnectionToPeer {
 message IsTestRunning {
   message Request {
     string groupName = 1;
-    string testName = 2;
+    int64 testN = 2;
   }
 
   message Response {
@@ -116,7 +115,7 @@ message IsTestRunning {
 message NewTest {
   message Request {
     string groupName = 1;
-    string testName = 2;
+    int64 testN = 2;
     string type = 3;
     int64 size = 4;
     int64 interval = 5;
@@ -130,7 +129,7 @@ message NewTest {
 message StartTest {
   message Request {
     string groupName = 1;
-    string testName = 2;
+    int64 testN = 2;
   }
 
   message Response {}

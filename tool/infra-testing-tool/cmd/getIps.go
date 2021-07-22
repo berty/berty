@@ -8,8 +8,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"infratesting/aws"
-	iacec2 "infratesting/iac/components/ec2"
-	"log"
+	"infratesting/logging"
 	"strings"
 )
 
@@ -26,7 +25,7 @@ var (
 			}
 
 			if len(instances) == 0 {
-				log.Println("no running instances")
+				logging.Log("no running instances")
 				return nil
 			}
 
@@ -36,11 +35,11 @@ var (
 				var publicIpAddress = "No IP"
 
 				for _, tag := range instance.Tags {
-					if *tag.Key == iacec2.Ec2TagName {
+					if *tag.Key == aws.Ec2TagName {
 						name = *tag.Value
 					}
 
-					if *tag.Key == iacec2.Ec2TagType {
+					if *tag.Key == aws.Ec2TagType {
 						nodeType = *tag.Value
 					}
 				}

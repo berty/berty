@@ -3,6 +3,13 @@ package main
 // MVP
 
 //FIXME:
+// logging needs to be improved massively
+
+// today
+//TODO:
+// add automatic packer builds
+
+//FIXME:
 // clean up message testing
 
 //FIXME:
@@ -10,24 +17,6 @@ package main
 
 //TODO:
 // ease of configuration of certain settings
-
-//TODO:
-// add automatic packer builds
-
-//TODO:
-// duplicate bucket name?
-// what happens if another account tries to make a berty-logs bucket
-// create bucket if it doesn't exist with tag
-// list buckets, with tag: berty-logs
-// or something
-
-//TODO:
-// terraform json -> tf using sdk?
-// seems unfeasible
-
-//TODO:
-// improve logging
-// specifically the wrapError function should have one that doesn't return anything
 
 // OTHER FEATURES
 
@@ -38,3 +27,9 @@ package main
 
 //TODO:
 // set flags
+
+//TODO:
+// download all logs to /infraState
+
+//TODO:
+// automatic pem generation

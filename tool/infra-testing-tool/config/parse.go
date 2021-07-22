@@ -5,7 +5,7 @@ import (
 	"infratesting/iac"
 	"infratesting/iac/components/ec2"
 	"infratesting/iac/components/various"
-	"log"
+	"infratesting/logging"
 )
 
 // Parse parses the config bytes.
@@ -17,7 +17,7 @@ import (
 // then it iterates over every component in Components and generates HCL
 // for now it just gets printed out to console
 func Parse(b []byte) (components []iac.Component, err error) {
-	log.Println("loading config")
+	logging.Log("loading config")
 
 	// unmarshal into Config struct
 	err = yaml.Unmarshal(b, &config)
@@ -31,7 +31,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	}
 
 
-	log.Println("parsing config")
+	logging.Log("parsing config")
 
 	// gathering information about networking and daemon
 	// this needs to be done in a separate pass
@@ -42,7 +42,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	}
 
 
-	log.Println("generating components")
+	logging.Log("generating components")
 
 	// iterate over connections and compose appropriate HCL components
 	for _, connection := range config.Attributes.Connections {
@@ -109,7 +109,7 @@ func prependComponents(array []iac.Component, item iac.Component) []iac.Componen
 }
 
 func ToHCL(components []iac.Component) (_ []iac.Component, hcl string) {
-	log.Println("converting components to HCL")
+	logging.Log("converting components to HCL")
 
 	for i, component := range components {
 		// convert the components into HCL compatible strings

@@ -4,14 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"infratesting/aws"
+	"infratesting/logging"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/spf13/cobra"
 	"infratesting/config"
 	"infratesting/daemon/grpc/daemon"
-	"infratesting/iac/components/ec2"
 	"infratesting/testing"
 	"log"
 	"math/rand"
@@ -27,27 +29,27 @@ var (
 
 			c, err := loadConfig()
 			if err != nil {
-				return err
+				return logging.LogErr(err)
 			}
 
-			availablePeers,  err := testing.GetAllEligiblePeers(ec2.Ec2TagType, []string{config.NodeTypePeer})
+			availablePeers,  err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
 			if err != nil {
-				return err
+				return logging.LogErr(err)
 			}
 
-			availableRepl, err := testing.GetAllEligiblePeers(ec2.Ec2TagType, []string{config.NodeTypeReplication})
+			availableRepl, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypeReplication})
 			if err != nil {
-				return err
+				return logging.LogErr(err)
 			}
 
 			log.Printf("PEERS: %d desired, %d available\n", c.CountPeers(), len(availablePeers))
 			if len(availablePeers) != c.CountPeers() {
-				return errors.New("amount of available peers doesn't match desired peers")
+				return logging.LogErr(errors.New("amount of available peers doesn't match desired peers"))
 			}
 
 			log.Printf("REPLICATION: %d desired, %d available\n", c.CountRepl(), len(availableRepl))
 			if len(availableRepl) != c.CountRepl() {
-				return errors.New("amount of available replication peers doesn't match desired replication peers")
+				return logging.LogErr(errors.New("amount of available replication peers doesn't match desired replication peers"))
 			}
 
 			// temporary group object
@@ -91,7 +93,7 @@ var (
 					})
 
 					if err != nil {
-						log.Println(err)
+						return logging.LogErr(err)
 					}
 				}
 			}
@@ -99,11 +101,12 @@ var (
 			// create and join groups
 
 			for i := range availablePeers {
-				for g := range availablePeers[i].ConfigGroups{
+				for g := range availablePeers[i].ConfigGroups {
 					if len(groups[availablePeers[i].ConfigGroups[g].Name].Pk) == 0 {
+						// group doesn't exist yet
 						invite, err := availablePeers[i].P.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: availablePeers[i].ConfigGroups[g].Name})
 						if err != nil {
-							log.Println(err)
+							return logging.LogErr(err)
 						}
 
 						gr := groups[availablePeers[i].ConfigGroups[g].Name]
@@ -114,23 +117,24 @@ var (
 							GroupName: availablePeers[i].ConfigGroups[g].Name,
 						})
 						if err != nil {
-							log.Println(err)
+							return logging.LogErr(err)
 						}
 
 					} else {
+						// group already exists, join it
 						_, err := availablePeers[i].P.JoinGroup(ctx, &daemon.JoinGroup_Request{
 							GroupName: availablePeers[i].ConfigGroups[g].Name,
-							Invite: groups[availablePeers[i].ConfigGroups[g].Name].Pk,
+							Invite:    groups[availablePeers[i].ConfigGroups[g].Name].Pk,
 						})
 						if err != nil {
-							log.Println(err)
+							return logging.LogErr(err)
 						}
 
 						_, err = availablePeers[i].P.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{
 							GroupName: availablePeers[i].ConfigGroups[g].Name,
 						})
 						if err != nil {
-							log.Println(err)
+							return logging.LogErr(err)
 						}
 					}
 				}
@@ -142,7 +146,6 @@ var (
 				groupArray = append(groupArray, groups[key])
 			}
 
-
 			var startTestWG sync.WaitGroup
 			var finishTestWG sync.WaitGroup
 
@@ -153,19 +156,22 @@ var (
 				for j := range groupArray[g].Tests {
 					// iterate over peers in group
 					for k := range groupArray[g].Peers {
+						groupIndex := g
+						testIndex := j
 						peerIndex := k
 						go func(startTestWG, finishTestWG *sync.WaitGroup) {
 							startTestWG.Add(1)
 							finishTestWG.Add(1)
 							// create new test with correct variables
-							_, err = groupArray[g].Peers[peerIndex].P.NewTest(ctx, &daemon.NewTest_Request{
-								GroupName: groupArray[g].Name,
-								TestName:  strconv.Itoa(j),
-								Type:      groupArray[g].Tests[j].TypeInternal,
-								Size:      int64(groupArray[g].Tests[j].SizeInternal),
-								Interval:  int64(groupArray[g].Tests[j].IntervalInternal),
-								Amount:    int64(groupArray[g].Tests[j].AmountInternal),
+							_, err = groupArray[groupIndex].Peers[peerIndex].P.NewTest(ctx, &daemon.NewTest_Request{
+								GroupName: groupArray[groupIndex].Name,
+								TestN:  int64(j),
+								Type:      groupArray[groupIndex].Tests[testIndex].TypeInternal,
+								Size:      int64(groupArray[groupIndex].Tests[testIndex].SizeInternal),
+								Interval:  int64(groupArray[groupIndex].Tests[testIndex].IntervalInternal),
+								Amount:    int64(groupArray[groupIndex].Tests[testIndex].AmountInternal),
 							})
+							logging.Log(fmt.Sprintf("added test: %v", j))
 
 							if err != nil {
 								log.Println(err)
@@ -177,9 +183,9 @@ var (
 							startTestWG.Wait()
 
 							// start said test
-							_, err = groupArray[g].Peers[peerIndex].P.StartTest(ctx, &daemon.StartTest_Request{
-								GroupName: groupArray[g].Name,
-								TestName:  strconv.Itoa(j),
+							_, err = groupArray[groupIndex].Peers[peerIndex].P.StartTest(ctx, &daemon.StartTest_Request{
+								GroupName: groupArray[groupIndex].Name,
+								TestN:  int64(j),
 							})
 							if err != nil {
 								log.Println(err)
@@ -195,18 +201,21 @@ var (
 
 				var wg sync.WaitGroup
 
-				for j := range groupArray[g].Tests {
-					for k := range groupArray[g].Peers {
-						peerIndex := k
+				for j := range groupArray[g].Peers {
+					for k := range groupArray[g].Tests {
+
 						wg.Add(1)
+
+						testIndex := k
+						peerIndex := j
 						go func(wg *sync.WaitGroup) {
 							for {
 								isRunning, err := groupArray[g].Peers[peerIndex].P.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
 									GroupName: groupArray[g].Name,
-									TestName:  strconv.Itoa(j),
+									TestN: int64(testIndex),
 								})
 								if err != nil {
-									log.Println(err)
+									logging.Log(err)
 								} else {
 									if isRunning.TestIsRunning == false {
 										break
@@ -215,7 +224,7 @@ var (
 								}
 							}
 							wg.Done()
-						}(&wg)
+						}( &wg)
 					}
 				}
 
@@ -223,20 +232,31 @@ var (
 				wg.Wait()
 				fmt.Println("all tests are finished!")
 
-
-				for k := range groupArray[g].Peers {
-					resp, err := groupArray[g].Peers[k].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
-						Folder: strconv.FormatInt(t, 10),
-						Name:   groupArray[g].Peers[k].Name,
-					})
-					if err != nil {
-						log.Println(err)
-					}
-
-					fmt.Printf("uploaded : %v\n", resp.UploadCount)
-				}
  			}
-			return err
+
+
+
+ 			allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{
+ 				config.NodeTypePeer,
+ 				config.NodeTypeReplication,
+ 				config.NodeTypeRDVP,
+				config.NodeTypeRelay,
+				config.NodeTypeBootstrap,
+ 			})
+
+			for k := range allNodes{
+				resp, err := allNodes[k].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
+					Folder: strconv.FormatInt(t, 10),
+					Name:   strings.ReplaceAll(allNodes[k].Tags[aws.Ec2TagName], ".", "-"),
+				})
+				if err != nil {
+					return logging.LogErr(err)
+				}
+
+				logging.Log(fmt.Sprintf("uploaded : %v\n", resp.UploadCount))
+			}
+
+			return nil
 		},
 	}
 	)

@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"gopkg.in/yaml.v3"
-	"log"
+	"infratesting/logging"
 )
 
 func OutputYaml(b []byte) (s string, err error) {
@@ -64,7 +64,7 @@ func OutputNormal(b []byte) (hcl, y string, err error) {
 
 	c := GetConfig()
 
-	log.Println("converting config to Yaml")
+	logging.Log("converting config to Yaml")
 
 	b, err = yaml.Marshal(c)
 	if err != nil {

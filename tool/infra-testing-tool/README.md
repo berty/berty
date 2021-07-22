@@ -15,11 +15,14 @@ make build && sudo mv infra /usr/local/bin
 ```
 
 ### AMI (Amazon Machine Image)
-To speed up the tool considerably we build an AMI beforehand, so our cloud instances don't need to build the Berty CLI from source every time they get launched.
-If this is your first time using the tool, or you want to rebuild the AMI you need to follow the next steps:
+To speed up the tool considerably we build an AMI beforehand, so our cloud instances don't have to build the Berty CLI from source every time they get launched.
+This also allows us to use instances with much less memory.
+
+If this is your first time using the tool, or you want to rebuild the AMI you need to follow the next steps.
+Replace `eu-central-1` with your region of choice (eu-west-1, eu-west-3, etc), but make sure it is the same region as the region specified in your config file later on.
 ```bash
 cd packer
-packer build --force berty.pkr.hcl # this will delete any AMIs with the name "berty-ami" in that region!
+packer build --force -var "region=eu-central-1" . # this will delete any AMIs with the name "berty-ami" in that region!
 ```
 After you've executed these commands, it will start building the machine images. This could take roughly 15 minutes.
 When Packer has completed you can continue to the next step.

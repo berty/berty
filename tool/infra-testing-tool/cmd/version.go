@@ -1,15 +1,15 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
+	"infratesting/logging"
 )
 
 var (
 	versionCmd = &cobra.Command{
 		Use: "version",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("version x.y.z")
+			logging.Log("version x.y.z")
 		},
 	}
 )

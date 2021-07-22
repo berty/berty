@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"infratesting/aws"
 	"infratesting/iac"
 	"infratesting/iac/components/networking"
 )
@@ -125,19 +126,19 @@ func (c Instance) Validate() (iac.Component, error) {
 	// used to identify which tags were launched by the infra tool (in case the account has other instance running
 	// that we don't want to interfere with).
 	c.Tags = append(c.Tags, Tag{
-		Key:   Ec2TagBerty,
-		Value: Ec2TagBertyValue,
+		Key:   aws.Ec2TagBerty,
+		Value: aws.Ec2TagBertyValue,
 	})
 
 	// name tag
 	c.Tags = append(c.Tags, Tag{
-		Key:   Ec2TagName,
+		Key:   aws.Ec2TagName,
 		Value: c.Name,
 	})
 
 	// type tag
 	c.Tags = append(c.Tags, Tag{
-		Key:   Ec2TagType,
+		Key:   aws.Ec2TagType,
 		Value: c.NodeType,
 	})
 

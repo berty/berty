@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
+	"infratesting/logging"
 	"strconv"
 	"strings"
 )
@@ -137,7 +137,7 @@ func (c *NodeGroup) parseGroups() error {
 func (g Group) Hash () [16]byte {
 	bytes, err := json.Marshal(g)
 	if err != nil {
-		log.Println(err)
+		logging.Log(err)
 	}
 
 	return md5.Sum(bytes)

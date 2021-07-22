@@ -1,7 +1,9 @@
 package ec2
 
 import (
+	"infratesting/aws"
 	"infratesting/iac"
+	"infratesting/logging"
 )
 
 type IamRole struct {
@@ -12,11 +14,18 @@ type IamRole struct {
 }
 
 func NewIamRole() IamRole {
+
+	bucketName, err := aws.GetBucketName()
+	if err != nil {
+		_ = logging.LogErr(err)
+		panic(err)
+	}
+
 	return IamRole{
 		Name:        IamRoleDefaultName,
 		PolicyName:  IamRolePolicyDefaultName,
 		ProfileName: IamInstanceProfileDefaultName,
-		S3Bucket: Ec2LogBucket,
+		S3Bucket: bucketName,
 	}
 }
 

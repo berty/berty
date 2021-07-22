@@ -12,6 +12,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"infratesting/logging"
 	"math"
 	"math/rand"
 	"time"
@@ -26,6 +27,7 @@ const (
 	ErrAlreadyReceiving = "already receiving messages in group"
 
 	RandomChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	ImageSplitSize = 3000
 )
 
 var (
@@ -51,6 +53,7 @@ func ToMessage(a messengertypes.AppMessage) Message {
 
 // SendTextMessage sends a string to a specific group
 func (s *Server) SendTextMessage(groupName string, message string) error {
+	logging.Log(fmt.Sprintf("sending text message to %s", groupName))
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
 		Body: message,
 	})
@@ -73,12 +76,8 @@ func (s *Server) SendTextMessage(groupName string, message string) error {
 }
 
 func (s *Server) SendImageMessage(groupName string, content []byte) error {
+	logging.Log(fmt.Sprintf("sending image message to %s", groupName))
 	ctx := context.Background()
-
-	cl, err := s.Messenger.MediaPrepare(ctx)
-	if err != nil {
-		return wrapError(err)
-	}
 
 	header := messengertypes.Media{
 		MimeType:       "image/png",
@@ -86,31 +85,87 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 		DisplayName:    "random noise",
 	}
 
-	err = cl.Send(&messengertypes.MediaPrepare_Request{Info: &header})
+	cl, err := s.Messenger.MediaPrepare(ctx)
 	if err != nil {
-		return wrapError(err)
+		return logging.LogErr(err)
 	}
 
-	err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
+	err = cl.Send(&messengertypes.MediaPrepare_Request{Info: &header})
 	if err != nil {
-		return wrapError(err)
+		return logging.LogErr(err)
+	}
+
+
+	if len(content) <= 3500 {
+		err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
+		if err != nil {
+			return logging.LogErr(err)
+		}
+	} else {
+		var j int
+		for i := 3500; i <= len(content)-1; i += 3500 {
+			if i > len(content) {
+				i = len(content)-1
+			}
+
+			err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content[j:i]})
+			if err != nil {
+				return logging.LogErr(err)
+			}
+
+			j = i
+		}
+	}
+
+
+	if len(content) <= ImageSplitSize {
+		err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
+		if err != nil {
+			return logging.LogErr(err)
+		}
+	} else {
+		var i, j int
+		i = ImageSplitSize
+		for {
+			if j == len(content) {
+				break
+			}
+
+			if i > len(content) {
+				i = len(content)
+			}
+
+			err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content[j:i]})
+			if err != nil {
+				return logging.LogErr(err)
+			}
+
+			j = i
+			i += ImageSplitSize
+		}
 	}
 
 	reply, err := cl.CloseAndRecv()
 	if err != nil {
-		return wrapError(err)
+		return logging.LogErr(err)
 	}
 
 	b64CID := reply.GetCid()
 
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
-	_, err = s.Messenger.Interact(ctx, &messengertypes.Interact_Request{
+	interact := &messengertypes.Interact_Request{
 		MediaCids: []string{b64CID},
 		Payload: payload,
 		Type:	messengertypes.AppMessage_TypeUserMessage,
-	})
+		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(s.Groups[groupName].GetPublicKey()),
+	}
+
+	logging.Log(fmt.Sprintf("media message: %+v", interact))
+
+	_, err = s.Messenger.Interact(ctx, interact)
 	if err != nil {
-		return wrapError(err)
+		logging.Log("this shouldn't happen, if it doesn't we know somethings wrong here")
+		return logging.LogErr(err)
 	}
 
 
@@ -159,5 +214,5 @@ func ConstructImageMessage(size int) ([]byte, error){
 }
 
 func GetRandomColor() color.RGBA {
-	return color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 0xff}
+	return color.RGBA{R: uint8(rand.Intn(255)), G: uint8(rand.Intn(255)), B: uint8(rand.Intn(255)), A: 0xff}
 }

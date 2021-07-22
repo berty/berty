@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/spf13/cobra"
+	"infratesting/aws"
 	"infratesting/config"
-	"infratesting/iac/components/ec2"
+	"infratesting/logging"
 	infratesting "infratesting/testing"
-	"log"
 	"os"
 	"testing"
 )
@@ -35,24 +35,17 @@ var (
 
 			infratesting.SetDeploy()
 
-			log.Println("attempting to connect to peers' infra-daemons")
-			log.Println("this could take a while ...")
+			logging.Log("attempting to connect to peers' infra-daemons")
+			logging.Log("this could take a while ...")
 
-			_, err = infratesting.GetAllEligiblePeers(ec2.Ec2TagType, config.AllPeerTypes)
+			_, err = infratesting.GetAllEligiblePeers(aws.Ec2TagType, config.AllPeerTypes)
 			if err != nil {
 				return err
 			} else {
-				log.Println("successfully connected to all peers")
-				log.Println("deployment is now complete")
+				logging.Log("successfully connected to all peers")
+				logging.Log("deployment is now complete")
 			}
 
-
-
-
-			//
-			//for _, peer := range peers {
-			//	fmt.Println(peer.Name)
-			//}
 			return nil
 		},
 	}

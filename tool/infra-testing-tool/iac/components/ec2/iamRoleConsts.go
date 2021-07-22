@@ -23,23 +23,39 @@ resource "aws_iam_role" "{{.Name}}" {
 }
 
 resource "aws_iam_role_policy" "{{.PolicyName}}" {
-	name = "{{.PolicyName}}"
-	role = aws_iam_role.{{.Name}}.id
+  name = "{{.PolicyName}}"
+  role = aws_iam_role.{{.Name}}.id
 
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action   = [
-			"s3:PutObject",
-		  ]
-          Effect   = "Allow"
-          Resource = [
-			"arn:aws:s3:::{{.S3Bucket}}/*"
-          ]
-        },
-      ]
-    })
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+		Effect = "Allow"
+        Action = [
+          "s3:GetBucketTagging",
+		  "s3:PutBucketTagging",
+		  "s3:CreateBucket",
+          "s3:ListBucket",
+          "s3:ListAllMyBuckets",
+          "s3:GetBucketLocation"
+        ]
+        Resource = [
+          "arn:aws:s3:::*"
+        ]
+      },
+      {
+		Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+		  "s3:GetObject",
+        ]
+        Resource = [
+          "arn:aws:s3:::{{.S3Bucket }}/*"
+        ]
+      },
+
+    ]
+  })
 }
 
 resource "aws_iam_instance_profile" "{{.ProfileName}}" {

@@ -9,9 +9,8 @@ import (
 	"infratesting/aws"
 	"infratesting/config"
 	"infratesting/daemon/grpc/daemon"
-	iacec2 "infratesting/iac/components/ec2"
+	"infratesting/logging"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 )
@@ -34,6 +33,7 @@ type Peer struct {
 const (
 	daemonGRPCPort = 7091
 	internalDaemonGRPCPort = 9091
+
 )
 
 var deploy bool
@@ -51,34 +51,74 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 	p.Groups = make(map[string]*protocoltypes.Group)
 	p.Tags = make(map[string]string)
 
-	var isReplication bool
+	var isPeer bool
 
 	for _, tag := range tags {
-		p.Tags[strings.ToLower(*tag.Key)] = *tag.Value
+		p.Tags[*tag.Key] = *tag.Value
 
-		if *tag.Key == iacec2.Ec2TagType && *tag.Value == config.NodeTypeReplication {
-			isReplication = true
+		if *tag.Key == aws.Ec2TagType && *tag.Value == config.NodeTypePeer {
+			isPeer = true
 		}
 
 	}
 
-	if !isReplication {
-		if deploy {
+
+	if deploy {
+		if isPeer {
+			// connecting to peer
+			// but in deployment
+			// meaning there will be no further testing
+			// and there are looping connects if it fails
 			var count int
 			for {
+				logging.Log(count)
 				var cc *grpc.ClientConn
+				var err error
 				ctx := context.Background()
 				cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 
 				temp := daemon.NewProxyClient(cc)
-				_, err = temp.TestConnectionToPeer(ctx, &daemon.TestConnectionToPeer_Request{
-					Tries: 10,
-					Host:  "localhost",
-					Port:  "9091",
-				})
+
+				_, err = temp.TestConnection(ctx, &daemon.TestConnection_Request{})
 				if err != nil {
-					if count > 10 {
-						return p, err
+					count += 1
+					time.Sleep(time.Second * 5)
+					continue
+				} else {
+					_, err = temp.TestConnectionToPeer(ctx, &daemon.TestConnectionToPeer_Request{
+						Tries: 5,
+						Host:  "localhost",
+						Port:  strconv.Itoa(internalDaemonGRPCPort),
+					})
+					if err != nil {
+						count += 1
+						time.Sleep(time.Second * 5)
+					} else {
+						break
+					}
+				}
+
+				if count > 60 {
+					return p, logging.LogErr(err)
+				}
+
+			}
+		} else {
+			var count int
+			for {
+				// node is not a peer
+				// just connect to it, but don't connect to underlying peer
+				var cc *grpc.ClientConn
+				ctx := context.Background()
+
+				cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+				p.P = daemon.NewProxyClient(cc)
+
+				_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
+
+				if err != nil {
+					if count > 60 {
+						return p, logging.LogErr(err)
 					} else {
 						count += 1
 						time.Sleep(time.Second * 5)
@@ -88,7 +128,10 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 				}
 			}
 		}
-
+	} else {
+		// connecting to peer
+		// to perform tests
+		// notice the `p.P = daemon.newProxyClient(cc)`
 
 		var cc *grpc.ClientConn
 		ctx := context.Background()
@@ -96,16 +139,13 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 		cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 		p.P = daemon.NewProxyClient(cc)
 
-
-		_, err = p.P.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
-			Host: "localhost",
-			Port: strconv.Itoa(internalDaemonGRPCPort),
-		})
+		_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
 		if err != nil {
-			return p, err
+			return p, logging.LogErr(err)
 		}
-
 	}
+
+
 
 	return p, err
 }
@@ -122,7 +162,7 @@ func (p *Peer) MatchNodeToPeer(c config.Config) {
 	for _, cPeerNg := range c.Peer {
 		// config.NodeGroup.Nodes
 		for _, cIndividualPeer := range cPeerNg.Nodes {
-			if p.Tags[iacec2.Ec2TagName] == cIndividualPeer.Name {
+			if p.Tags[aws.Ec2TagName] == cIndividualPeer.Name {
 				p.ConfigGroups = cPeerNg.Groups
 			}
 		}
@@ -133,7 +173,7 @@ func (p *Peer) MatchNodeToPeer(c config.Config) {
 func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 	instances, err := aws.DescribeInstances()
 	if err != nil {
-		return peers, err
+		return peers, logging.LogErr(err)
 	}
 
 	for _, instance := range instances {
@@ -144,10 +184,17 @@ func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 		for _, tag := range instance.Tags {
 
 			// if instance is peer
-			if *tag.Key == tagKey && *tag.Value == tagValue {
-				p, err := NewPeer(*instance.PublicIpAddress, instance.Tags)
-				if err != nil {
-					return nil, err
+			if *tag.Key == tagKey {
+				for _, value := range tagValues {
+					if *tag.Value == value {
+						p, err := NewPeer(*instance.PublicIpAddress, instance.Tags)
+						if err != nil {
+							return nil, logging.LogErr(err)
+						}
+						p.Name = *instance.InstanceId
+
+						peers = append(peers, p)
+					}
 				}
 				p.Name = *instance.InstanceId
 

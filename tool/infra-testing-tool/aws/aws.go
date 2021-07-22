@@ -4,20 +4,21 @@ package aws
 
 import (
 	"errors"
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/sts"
-	iacec2 "infratesting/iac/components/ec2"
-	"log"
+	"github.com/google/uuid"
+	"infratesting/logging"
 	"os"
+	"strings"
 	"time"
 )
 
 var (
 	sess    *session.Session
-
 	callerIdentity *sts.GetCallerIdentityOutput
 )
 
@@ -28,17 +29,19 @@ func init() {
 	}))
 
 	// check if s3 bucket is present for logs
-	exists, err := BucketExists(iacec2.Ec2LogBucket)
+	exists, err := BucketExists()
 	if err != nil {
-		log.Println("WARNING! EC2 logging bucket DOES NOT exist or something went wrong! Error:")
-		log.Println(err)
+		logging.Log("WARNING! EC2 logging bucket DOES NOT exist or something went wrong! Error:")
+		logging.Log(err)
+		panic(err)
+		return
 	}
 
 	if !exists {
 		// bucket doesn't exist, create it!
-		err = CreateBucket(iacec2.Ec2LogBucket)
+		err = CreateBucket()
 		if err != nil {
-			log.Println(err)
+			logging.Log(err)
 		}
 	}
 
@@ -77,21 +80,21 @@ func DescribeInstances() (instances []*ec2.Instance, err error) {
 	})
 
 	if err != nil {
-		return instances, err
+		return instances, logging.LogErr(err)
 	}
 
 	// check if instance has "berty - infra" key-value tag
 	for _, reservation := range diResp.Reservations {
 		for _, instance := range reservation.Instances {
 			for _, tag := range instance.Tags {
-				if *tag.Key == iacec2.Ec2TagBerty && *tag.Value == iacec2.Ec2TagBertyValue {
+				if *tag.Key == Ec2TagBerty && *tag.Value == Ec2TagBertyValue {
 					instances = append(instances, instance)
 				}
 			}
 		}
 	}
 
-	return instances, err
+	return instances, logging.LogErr(err)
 }
 
 // DescribeAMIs gets all valid berty AMI id's from amazon.
@@ -101,7 +104,7 @@ func DescribeAMIs(name string) (r *ec2.DescribeImagesOutput, err error) {
 	if callerIdentity == nil {
 		callerIdentity, err = GetCallerIdentity()
 		if err != nil {
-			return nil, err
+			return nil, logging.LogErr(err)
 		}
 	}
 
@@ -118,7 +121,7 @@ func DescribeAMIs(name string) (r *ec2.DescribeImagesOutput, err error) {
 		Owners: []*string{callerIdentity.Account},
 	})
 
-	return resp, err
+	return resp, logging.LogErr(err)
 }
 
 func GetLatestAMI(name string) (AmiID string, err error) {
@@ -128,7 +131,7 @@ func GetLatestAMI(name string) (AmiID string, err error) {
 	}
 
 	if len(amis.Images) == 0 {
-		return AmiID, errors.New("no AMIs found, please us packer to create one")
+		return AmiID, logging.LogErr(errors.New("no AMIs found, please us packer to create one"))
 	}
 
 	var latestAMI string
@@ -137,7 +140,7 @@ func GetLatestAMI(name string) (AmiID string, err error) {
 	for _, ami := range amis.Images {
 		t, err := creationDateToUnix(*ami.CreationDate)
 		if err != nil {
-			return AmiID, err
+			return AmiID, logging.LogErr(err)
 		}
 
 		if latestTime == 0 || t < latestTime {
@@ -146,7 +149,7 @@ func GetLatestAMI(name string) (AmiID string, err error) {
 		}
 	}
 
-	return latestAMI, err
+	return latestAMI, logging.LogErr(err)
 }
 
 func creationDateToUnix(date string) (unix int64, err error) {
@@ -157,7 +160,7 @@ func creationDateToUnix(date string) (unix int64, err error) {
 
 	unix = t.Unix()
 
-	return unix, err
+	return unix, logging.LogErr(err)
 }
 
 
@@ -165,17 +168,17 @@ func creationDateToUnix(date string) (unix int64, err error) {
 // used to get AWS AMI's
 func GetCallerIdentity() (*sts.GetCallerIdentityOutput, error){
 	if callerIdentity == nil {
-		log.Println("getting CalledIdentity & AMI's (AWS)")
+		logging.Log("getting CalledIdentity & AMI's (AWS)")
 
 		stssess := GetStsSession()
 
 		r, err := stssess.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 		if err != nil {
-			return nil, err
+			return nil, logging.LogErr(err)
 		}
 		callerIdentity = r
 
-		return r, err
+		return r, logging.LogErr(err)
 	}
 
 	return callerIdentity, nil
@@ -186,11 +189,11 @@ func GetUserId() (id string, err error) {
 	if callerIdentity == nil {
 		callerIdentity, err = GetCallerIdentity()
 		if err != nil {
-			return "", err
+			return "", logging.LogErr(err)
 		}
 	}
 
-	return *callerIdentity.UserId, err
+	return *callerIdentity.UserId, logging.LogErr(err)
 }
 
 // UploadFile uploads file/log to AWS bucket
@@ -198,29 +201,40 @@ func GetUserId() (id string, err error) {
 func UploadFile(path, key string) error {
 	f, err := os.Open(path)
 	if err != nil {
-		return err
+		return logging.LogErr(err)
 	}
 
 	s3session := GetS3Session()
 
+	bucketName, err := GetBucketName()
+	if err != nil {
+		return logging.LogErr(err)
+	}
+
 	_, err = s3session.PutObject(&s3.PutObjectInput{
 		Body: f,
-		Bucket: aws.String(iacec2.Ec2LogBucket),
+		Bucket: &bucketName,
 		Key: &key,
 	})
-	return err
+	return logging.LogErr(err)
 }
 
 // CreateBucket creates an s3 bucket
-func CreateBucket(name string) error {
+func CreateBucket() error {
 	s3session := GetS3Session()
 
-	log.Println("creating s3 bucket for logging")
+	name := fmt.Sprintf("%s-%s", BucketNamePrefix, uuid.NewString()[:8])
+
+	logging.Log(fmt.Sprintf("creating s3 bucket for logging: %s", name))
 	_, err := s3session.CreateBucket(&s3.CreateBucketInput{
 		Bucket: aws.String(name),
-	})
 
-	log.Println("waiting for s3 bucket to be created")
+	})
+	if err != nil {
+		return logging.LogErr(err)
+	}
+
+	logging.Log("waiting for s3 bucket to be created")
 
 	var created bool
 	for i := 0; i <= 3; i += 1 {
@@ -234,34 +248,86 @@ func CreateBucket(name string) error {
 		}
 	}
 	if created == false {
-		log.Println("tried waiting for s3 bucket to be created 3 times. still failed. reason:")
-		panic(err)
+		logging.Log("tried waiting for s3 bucket to be created 3 times. still failed")
+		return logging.LogErr(err)
 	}
 
+	logging.Log("tagging newly created bucket")
 
-	return err
+	_, err = s3session.PutBucketTagging(&s3.PutBucketTaggingInput{
+		Bucket:            	 aws.String(name),
+		Tagging:             &s3.Tagging{
+			TagSet: []*s3.Tag {
+				{
+				Key:   aws.String(BucketTagKey),
+				Value: aws.String(BucketTagValue),
+				},
+			},
+		},
+	})
+	if err != nil {
+		return logging.LogErr(err)
+	}
+
+	logging.Log("bucket successfully created")
+
+	return nil
 }
 
-// BucketExists checks if the bucket with name `name` exists on the current account
+// BucketExists checks if the bucket with tag.Key 'Berty' exists on the current account
 // returns false if not found, true if found
-func BucketExists(name string) (bool, error) {
+func BucketExists() (bool, error) {
+	_, err := GetBucketName()
+	if err != nil {
+		if err.Error() == ErrBucketNotFound {
+			return false, nil
+		}
+
+		return false, err
+	}
+
+	return true, nil
+
+}
+
+// GetBucketName returns the name of the bucket with the tag.Key 'Berty'
+// returns error if it doesn't exist
+func GetBucketName() (string, error) {
 	s3session := GetS3Session()
 
 	resp, err := s3session.ListBuckets(&s3.ListBucketsInput{})
 	if err != nil {
-		return false, err
+		return "", logging.LogErr(err)
 	}
 
 	for _, bucket := range resp.Buckets {
-		if *bucket.Name == name {
-			return true, nil
+
+		locationResp, err := s3session.GetBucketLocation(&s3.GetBucketLocationInput{
+			Bucket: bucket.Name,
+		})
+		if err != nil {
+			return "", logging.LogErr(err)
+		}
+
+		if *locationResp.LocationConstraint == *sess.Config.Region {
+			tagResp, err := s3session.GetBucketTagging(&s3.GetBucketTaggingInput{
+				Bucket: bucket.Name,
+			})
+
+			if err != nil {
+				if !strings.Contains(err.Error(), "NoSuchTagSet") {
+					return "", logging.LogErr(err)
+				}
+
+			}
+
+			for _, tags := range tagResp.TagSet {
+				if *tags.Key == BucketTagKey {
+					return *bucket.Name, nil
+				}
+			}
 		}
 	}
 
-	return false, nil
+	return "", errors.New(ErrBucketNotFound)
 }
-
-// TODO:
-// what happens if the bucket name is already taken?
-
-

@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
+	"infratesting/logging"
 )
 
 var (
@@ -11,7 +11,7 @@ var (
 	rootCmd = &cobra.Command{
 		Use: "infra",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("nothing to see here \n	-> infra help")
+			logging.Log("nothing to see here \n	-> infra help")
 		},
 	}
 )

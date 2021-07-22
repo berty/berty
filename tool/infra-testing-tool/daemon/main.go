@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"infratesting/daemon/grpc/daemon"
-	"log"
+	"infratesting/logging"
 	"net"
 )
 
@@ -13,11 +13,11 @@ const (
 )
 
 func main() {
-	log.Println("Berty Infra Daemmon starting")
+	logging.Log("Berty Infra Daemmon starting")
 
 	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%v", usedGrpcPort))
 	if err != nil {
-		log.Fatalf("Failed to listen to port %v: %v", usedGrpcPort, err)
+		logging.Log(fmt.Sprintf("Failed to listen to port %v: %v", usedGrpcPort, err))
 	}
 
 	grpcServer := grpc.NewServer()

@@ -6,6 +6,8 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"infratesting/daemon/grpc/daemon"
+	"infratesting/logging"
+	"time"
 )
 
 func main() {
@@ -41,12 +43,10 @@ func main() {
 
 	groupName := uuid.NewString()
 
-	invite, err := p.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
+	_, err = p.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(invite.Invite)
 
 	//conn2, err := grpc.Dial("192.168.1.177:7091", grpc.WithInsecure())
 	//if err != nil {
@@ -112,31 +112,76 @@ func main() {
 	//
 	//tests := []string{"a", "b", "c"}
 	//
-	//for _, test := range tests {
-	//	_, err = t.NewTest(ctx, &daemon.NewTest_Request{
-	//		GroupName: groupName,
-	//		TestName:  test,
-	//		Type:      "text",
-	//		Size:      2000,
-	//		Interval:  1,
-	//	})
-	//	if err != nil {
-	//		log.Println(err)
-	//	}
-	//
-	//
-	//	fmt.Println("starting", test)
-	//	_, err = t.StartTest(ctx, &daemon.StartTest_Request{
-	//		GroupName: groupName,
-	//		TestName:  test,
-	//		Duration:  20,
-	//	})
-	//	if err != nil {
-	//		log.Println(err)
-	//	}
-	//}
-	//
-	//time.Sleep(time.Second * 3)
+
+	_, err = p.NewTest(ctx, &daemon.NewTest_Request{
+		GroupName: groupName,
+		TestN:  0,
+		Type:      "text",
+		Size:      2000,
+		Interval:  1,
+		Amount: 5,
+	})
+	if err != nil {
+		logging.LogErr(err)
+	}
+
+	_, err = p.NewTest(ctx, &daemon.NewTest_Request{
+		GroupName: groupName,
+		TestN:  1,
+		Type:      "media",
+		Size:      2000,
+		Interval:  1,
+		Amount: 5,
+	})
+	if err != nil {
+		logging.LogErr(err)
+	}
+
+
+
+	fmt.Println("starting")
+	_, err = p.StartTest(ctx, &daemon.StartTest_Request{
+		GroupName: groupName,
+		TestN:  0,
+	})
+	if err != nil {
+		logging.LogErr(err)
+	}
+
+	_, err = p.StartTest(ctx, &daemon.StartTest_Request{
+		GroupName: groupName,
+		TestN:  1,
+	})
+	if err != nil {
+		logging.LogErr(err)
+	}
+
+
+	time.Sleep(time.Second * 3)
+
+
+	r, err := p.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
+		GroupName: groupName,
+		TestN:  0,
+	})
+	if err != nil {
+		logging.LogErr(err)
+	} else {
+		logging.Log(r.TestIsRunning)
+	}
+
+	time.Sleep(time.Second * 10)
+
+
+	_, err = p.UploadLogs(ctx, &daemon.UploadLogs_Request{
+		Folder: "test",
+		Name:   "test-node-1",
+	})
+	if err != nil {
+		logging.LogErr(err)
+	}
+
+
 	//
 	//_, err = g.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{GroupName: groupName})
 	//if err != nil {

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"infratesting/iac"
 	"infratesting/iac/components/networking"
+	"infratesting/logging"
 
 	//relay "github.com/libp2p/go-libp2p-circuit"
 	"gopkg.in/yaml.v3"
-	"log"
 )
 
 type Config struct {
@@ -20,6 +20,7 @@ type Config struct {
 	Replication []NodeGroup `yaml:"replication"`
 
 	Attributes Attributes `yaml:"attributes"`
+
 }
 
 // Attributes are used at infra-compile time to aid with the generation of HCL
@@ -89,7 +90,7 @@ func NewConfig() Config {
 
 	s, err := yaml.Marshal(c)
 	if err != nil {
-		log.Println(err)
+		logging.Log(err)
 	}
 	fmt.Println(string(s))
 
