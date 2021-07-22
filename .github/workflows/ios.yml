@@ -161,6 +161,7 @@ jobs:
           name: berty-yolo-${{github.sha}}.dummy-signed-ipa
           if-no-files-found: error
 
+      # mark the build as failed if a 'continue-on-error' step failed previously
       - name: Check failed steps
         run: false
         if: ${{ steps.check-podfile-lock.outcome == 'failure' }}
