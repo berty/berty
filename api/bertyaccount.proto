@@ -36,7 +36,7 @@ service AccountService {
   // ImportAccount imports existing data.
   rpc ImportAccount (ImportAccount.Request) returns (ImportAccount.Reply);
 
-  // ImportAccount is similar to ImportAccount, but also streams the progress.
+  // ImportAccountWithProgress is similar to ImportAccount, but also streams the progress.
   rpc ImportAccountWithProgress (ImportAccountWithProgress.Request) returns (stream ImportAccountWithProgress.Reply);
 
   // CreateAccount creates a new account.

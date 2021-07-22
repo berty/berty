@@ -2452,7 +2452,7 @@ type AccountServiceClient interface {
 	DeleteAccount(ctx context.Context, in *DeleteAccount_Request, opts ...grpc.CallOption) (*DeleteAccount_Reply, error)
 	// ImportAccount imports existing data.
 	ImportAccount(ctx context.Context, in *ImportAccount_Request, opts ...grpc.CallOption) (*ImportAccount_Reply, error)
-	// ImportAccount imports existing data.
+	// ImportAccountWithProgress is similar to ImportAccount, but also streams the progress.
 	ImportAccountWithProgress(ctx context.Context, in *ImportAccountWithProgress_Request, opts ...grpc.CallOption) (AccountService_ImportAccountWithProgressClient, error)
 	// CreateAccount creates a new account.
 	CreateAccount(ctx context.Context, in *CreateAccount_Request, opts ...grpc.CallOption) (*CreateAccount_Reply, error)
@@ -2676,7 +2676,7 @@ type AccountServiceServer interface {
 	DeleteAccount(context.Context, *DeleteAccount_Request) (*DeleteAccount_Reply, error)
 	// ImportAccount imports existing data.
 	ImportAccount(context.Context, *ImportAccount_Request) (*ImportAccount_Reply, error)
-	// ImportAccount imports existing data.
+	// ImportAccountWithProgress is similar to ImportAccount, but also streams the progress.
 	ImportAccountWithProgress(*ImportAccountWithProgress_Request, AccountService_ImportAccountWithProgressServer) error
 	// CreateAccount creates a new account.
 	CreateAccount(context.Context, *CreateAccount_Request) (*CreateAccount_Reply, error)
