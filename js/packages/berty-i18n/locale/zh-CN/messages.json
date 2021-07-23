@@ -149,8 +149,8 @@
       "title": "设置",
       "desc": "所有功能皆可自定义",
       "notification-file-saved": {
-        "title": "",
-        "desc": ""
+        "title": "数据已保存！",
+        "desc": "在下载目录中可用"
       },
       "notifications-button": {
         "title": "消息通知",
@@ -234,7 +234,7 @@
       "desc": "蓝牙允许您通过直接连接您的设备与附近的对等设备来使用Berty交换消息，而无需访问互联网",
       "activate-button": "激活蓝牙",
       "permission-title": "Berty蓝牙权限",
-      "android-permission-description": "",
+      "android-permission-description": "要通过蓝牙离线交换消息，Android API 需要获得位置权限。\n我们不会以任何方式使用您的位置数据。",
       "ios-permission-description": "要通过蓝牙离线交换消息，iOS API 需要获得许可。",
       "tag-neutral": "稍后询问我",
       "tag-negative": "取消",
