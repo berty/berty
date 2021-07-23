@@ -2,7 +2,9 @@ package config
 
 import "C"
 import (
+	"errors"
 	"fmt"
+	"infratesting/aws"
 	"infratesting/iac"
 	"infratesting/iac/components/networking"
 	"infratesting/logging"
@@ -21,6 +23,7 @@ type Config struct {
 
 	Attributes Attributes `yaml:"attributes"`
 
+	Settings	Settings  `yaml:"settings"`
 }
 
 // Attributes are used at infra-compile time to aid with the generation of HCL
@@ -31,6 +34,11 @@ type Attributes struct {
 	vpc                  networking.Vpc
 	connectionComponents map[string][]iac.Component
 
+}
+
+type Settings struct {
+	Region string `yaml:"region"`
+	KeyName string `yaml:"keyPairName"`
 }
 
 var (
@@ -82,6 +90,31 @@ func (c *Config) Validate() error {
 	// TODO
 	// add more checks to validate if network topology is correct, etc
 
+	// VALIDATING SETTINGS
+
+	if c.Settings.Region == "" {
+		return logging.LogErr(errors.New(aws.ErrNoRegion))
+	}
+
+	if !aws.IsValidRegion(c.Settings.Region) {
+		return logging.LogErr(errors.New(aws.ErrInvalidRegion))
+	}
+
+	aws.SetRegion(c.Settings.Region)
+
+	if c.Settings.KeyName != "" {
+		valid, err := aws.IsValidKeyPair(c.Settings.KeyName)
+		if err != nil {
+			return logging.LogErr(err)
+		}
+
+		if !valid {
+			return logging.LogErr(errors.New(aws.ErrInvalidKeypair))
+		}
+	} else {
+		logging.Log(aws.InfoNoKeyPair)
+	}
+
 	return nil
 }
 
@@ -115,4 +148,22 @@ func (c Config) CountRepl () (i int) {
 	}
 
 	return i
+}
+
+func GetRegion () string {
+	return config.Settings.Region
+}
+
+func GetKeyPairName () string {
+	return config.Settings.KeyName
+}
+
+func GetAllTypes () []string {
+	return []string{
+		NodeTypePeer,
+		NodeTypeReplication,
+		NodeTypeRDVP,
+		NodeTypeRelay,
+		NodeTypeBootstrap,
+	}
 }

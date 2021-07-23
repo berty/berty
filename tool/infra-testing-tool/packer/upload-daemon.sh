@@ -13,3 +13,5 @@ aws s3api put-object --bucket $bucket --key infra.zip --body infra.zip
 echo "changing ACL"
 aws s3api put-object-acl --acl public-read --bucket $bucket --key infra.zip
 
+rm infra.zip
+

@@ -71,7 +71,6 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 			// and there are looping connects if it fails
 			var count int
 			for {
-				logging.Log(count)
 				var cc *grpc.ClientConn
 				var err error
 				ctx := context.Background()
@@ -129,19 +128,42 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 			}
 		}
 	} else {
-		// connecting to peer
-		// to perform tests
-		// notice the `p.P = daemon.newProxyClient(cc)`
+		if isPeer {
+			// connecting to peer
 
-		var cc *grpc.ClientConn
-		ctx := context.Background()
+			var cc *grpc.ClientConn
+			ctx := context.Background()
 
-		cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-		p.P = daemon.NewProxyClient(cc)
+			cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+			p.P = daemon.NewProxyClient(cc)
 
-		_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
-		if err != nil {
-			return p, logging.LogErr(err)
+			_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
+			if err != nil {
+				return p, logging.LogErr(err)
+			}
+
+			_, err = p.P.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+				Host: "localhost",
+				Port: "9091",
+			})
+			if err != nil {
+				return p, logging.LogErr(err)
+			}
+
+		} else {
+			// connecting to non peer
+
+			var cc *grpc.ClientConn
+			ctx := context.Background()
+
+			cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+			p.P = daemon.NewProxyClient(cc)
+
+			_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
+			if err != nil {
+				return p, logging.LogErr(err)
+			}
+
 		}
 	}
 
@@ -205,4 +227,3 @@ func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 
 	return peers, nil
 }
-

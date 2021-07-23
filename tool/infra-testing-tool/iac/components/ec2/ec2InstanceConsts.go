@@ -7,7 +7,10 @@ const (
 resource "aws_instance" "{{.Name }}" {
   ami = var.ami
   instance_type = "{{.InstanceType }}"
+
+{{if .KeyName }}
   key_name = "{{.KeyName}}"
+{{- end}}
 
   // availability zone
 {{if .AvailabilityZone }}
@@ -42,7 +45,6 @@ resource "aws_instance" "{{.Name }}" {
 `
 	// Default Ec2 Values
 	Ec2InstanceTypeDefault    = "t3.micro"
-	Ec2InstanceKeyNameDefault = "berty_key"
 
 	// Ec2NamePrefix is the prefix for the Ec2 type
 	Ec2NamePrefix = "ec2"

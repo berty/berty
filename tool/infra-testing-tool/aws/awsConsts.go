@@ -8,6 +8,15 @@ const (
 
 	ErrBucketNotFound = "bucket with right tag key not found"
 
+	ErrTagRespNil = "tagResp is nil"
+
+	ErrNoRegion = "no region specified in config"
+	ErrInvalidRegion = "region specified in config is invalid"
+
+	InfoNoKeyPair = "no keypair has been specified in config"
+	ErrInvalidKeypair = "keypair specified in config is invalid. note: keypairs are region dependant"
+
+
 	// Ec2TagName tag used to identify peers by name
 	Ec2TagName = "Name"
 	// value is a variable

@@ -19,7 +19,6 @@ func NewSubnet() Subnet {
 	return Subnet{
 		Name:             iac.GenerateName(SubnetNamePrefix),
 		CidrBlock:        SubnetCidrBlockDefault,
-		AvailabilityZone: SubnetAvailabilityZoneDefault,
 	}
 }
 

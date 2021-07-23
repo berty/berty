@@ -10,9 +10,7 @@ type Provider struct {
 }
 
 func NewProvider() Provider {
-	return Provider{
-		Region: ProviderRegionDefault,
-	}
+	return Provider{}
 }
 
 func NewProviderWithAttribute(region string) (c Provider) {

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"infratesting/aws"
 	"infratesting/logging"
@@ -15,7 +14,6 @@ import (
 	"infratesting/config"
 	"infratesting/daemon/grpc/daemon"
 	"infratesting/testing"
-	"log"
 	"math/rand"
 )
 
@@ -32,6 +30,8 @@ var (
 				return logging.LogErr(err)
 			}
 
+			aws.SetRegion(c.Settings.Region)
+
 			availablePeers,  err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
 			if err != nil {
 				return logging.LogErr(err)
@@ -40,16 +40,6 @@ var (
 			availableRepl, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypeReplication})
 			if err != nil {
 				return logging.LogErr(err)
-			}
-
-			log.Printf("PEERS: %d desired, %d available\n", c.CountPeers(), len(availablePeers))
-			if len(availablePeers) != c.CountPeers() {
-				return logging.LogErr(errors.New("amount of available peers doesn't match desired peers"))
-			}
-
-			log.Printf("REPLICATION: %d desired, %d available\n", c.CountRepl(), len(availableRepl))
-			if len(availableRepl) != c.CountRepl() {
-				return logging.LogErr(errors.New("amount of available replication peers doesn't match desired replication peers"))
 			}
 
 			// temporary group object
@@ -104,7 +94,9 @@ var (
 				for g := range availablePeers[i].ConfigGroups {
 					if len(groups[availablePeers[i].ConfigGroups[g].Name].Pk) == 0 {
 						// group doesn't exist yet
-						invite, err := availablePeers[i].P.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: availablePeers[i].ConfigGroups[g].Name})
+						invite, err := availablePeers[i].P.CreateInvite(ctx, &daemon.CreateInvite_Request{
+							GroupName: availablePeers[i].ConfigGroups[g].Name,
+						})
 						if err != nil {
 							return logging.LogErr(err)
 						}
@@ -127,7 +119,9 @@ var (
 							Invite:    groups[availablePeers[i].ConfigGroups[g].Name].Pk,
 						})
 						if err != nil {
-							return logging.LogErr(err)
+							if !strings.Contains(err.Error(), daemon.ErrAlreadyInGroup) {
+								return logging.LogErr(err)
+							}
 						}
 
 						_, err = availablePeers[i].P.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{
@@ -146,68 +140,70 @@ var (
 				groupArray = append(groupArray, groups[key])
 			}
 
+			var newTestWG sync.WaitGroup
 			var startTestWG sync.WaitGroup
-			var finishTestWG sync.WaitGroup
 
 
 			// iterate over groups
 			for g := range groupArray {
 				// iterate over tests in groups
 				for j := range groupArray[g].Tests {
+					newTestWG.Add(len(groupArray[g].Tests))
+					startTestWG.Add(len(groupArray[g].Tests))
 					// iterate over peers in group
 					for k := range groupArray[g].Peers {
 						groupIndex := g
 						testIndex := j
 						peerIndex := k
-						go func(startTestWG, finishTestWG *sync.WaitGroup) {
-							startTestWG.Add(1)
-							finishTestWG.Add(1)
+						go func(newTestWG, startTestWG *sync.WaitGroup) {
 							// create new test with correct variables
 							_, err = groupArray[groupIndex].Peers[peerIndex].P.NewTest(ctx, &daemon.NewTest_Request{
 								GroupName: groupArray[groupIndex].Name,
-								TestN:  int64(j),
+								TestN:     int64(testIndex),
 								Type:      groupArray[groupIndex].Tests[testIndex].TypeInternal,
 								Size:      int64(groupArray[groupIndex].Tests[testIndex].SizeInternal),
 								Interval:  int64(groupArray[groupIndex].Tests[testIndex].IntervalInternal),
 								Amount:    int64(groupArray[groupIndex].Tests[testIndex].AmountInternal),
 							})
-							logging.Log(fmt.Sprintf("added test: %v", j))
+							logging.Log(fmt.Sprintf("added test - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[groupIndex].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 
 							if err != nil {
-								log.Println(err)
+								logging.Log(err.Error())
 							}
 
-							startTestWG.Done()
+							newTestWG.Done()
+							// makes sure all tests are synced up
+							newTestWG.Wait()
 
-							fmt.Println("waiting")
-							startTestWG.Wait()
 
 							// start said test
 							_, err = groupArray[groupIndex].Peers[peerIndex].P.StartTest(ctx, &daemon.StartTest_Request{
 								GroupName: groupArray[groupIndex].Name,
-								TestN:  int64(j),
+								TestN:     int64(testIndex),
 							})
 							if err != nil {
-								log.Println(err)
+								logging.Log(err.Error())
 							}
+							time.Sleep(time.Second * 3)
 
-							finishTestWG.Done()
-						}(&startTestWG, &finishTestWG)
+							logging.Log(fmt.Sprintf("started test - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[g].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
+
+							startTestWG.Done()
+						}(&newTestWG, &startTestWG)
 					}
-					finishTestWG.Wait()
-					time.Sleep(time.Second * 4)
-					log.Printf("Started test %v in group %v on\n", j, groupArray[g].Name)
 				}
+
+				startTestWG.Wait()
 
 				var wg sync.WaitGroup
 
 				for j := range groupArray[g].Peers {
 					for k := range groupArray[g].Tests {
-
 						wg.Add(1)
 
-						testIndex := k
+
 						peerIndex := j
+						testIndex := k
 						go func(wg *sync.WaitGroup) {
 							for {
 								isRunning, err := groupArray[g].Peers[peerIndex].P.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
@@ -218,6 +214,7 @@ var (
 									logging.Log(err)
 								} else {
 									if isRunning.TestIsRunning == false {
+										logging.Log(fmt.Sprintf("test finished - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[g].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 										break
 									}
 									time.Sleep(time.Second * 3)
@@ -228,21 +225,15 @@ var (
 					}
 				}
 
-				fmt.Println("waiting for tests to finish ...")
+				logging.Log("waiting for all tests to finish ...")
 				wg.Wait()
-				fmt.Println("all tests are finished!")
+				logging.Log("all tests are finished")
 
  			}
 
 
 
- 			allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{
- 				config.NodeTypePeer,
- 				config.NodeTypeReplication,
- 				config.NodeTypeRDVP,
-				config.NodeTypeRelay,
-				config.NodeTypeBootstrap,
- 			})
+ 			allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, config.GetAllTypes())
 
 			for k := range allNodes{
 				resp, err := allNodes[k].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
@@ -253,7 +244,11 @@ var (
 					return logging.LogErr(err)
 				}
 
-				logging.Log(fmt.Sprintf("uploaded : %v\n", resp.UploadCount))
+				bucketName, err := aws.GetBucketName()
+				if err != nil {
+					return logging.LogErr(err)
+				}
+				logging.Log(fmt.Sprintf("%v uploaded: %v files to bucket: %s", allNodes[k].Tags[aws.Ec2TagName], resp.UploadCount, bucketName))
 			}
 
 			return nil

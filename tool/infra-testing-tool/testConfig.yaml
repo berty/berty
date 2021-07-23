@@ -1,14 +1,14 @@
-#rdvp:
-#    - name: test rdvp
-#      amount: 1
-#      connections:
-#          - name: connection
-#            to: internet
-#            protocol: tcp
-#          - name: thing
-#            to: lan
-#            protocol: udp
-#
+rdvp:
+    - name: test rdvp
+      amount: 1
+      connections:
+          - name: connection
+            to: internet
+            protocol: tcp
+          - name: thing
+            to: lan
+            protocol: udp
+
 peer:
     - name: test peers 1
       amount: 2
@@ -17,22 +17,22 @@ peer:
         tests:
         - type: text
           size: 3KB
-          interval: 2
-          amount: 25
+          interval: 1
+          amount: 10
         - type: media
           size: 15KB
-          interval: 3
-          amount: 25
+          interval: 1
+          amount: 10
       connections:
         - name: connection
           to: internet
           protocol: tcp
-#      routers:
-#        - type: rdvp
-#          address: test rdvp
+      routers:
+        - type: rdvp
+          address: test rdvp
 #        - type: relay
 #          address: test relay
-
+#
 #replication:
 #    - name: repl1
 #      amount: 2
@@ -53,7 +53,7 @@ peer:
 #          - name: connection
 #            to: internet
 #            protocol: tcp
-##
+#
 #bootstrap:
 #    - name: test bs
 #      amount: 2
@@ -66,3 +66,7 @@ peer:
 #            address: test rdvp
 #          - type: relay
 #            address: test relay
+
+settings:
+    region: eu-west-3
+    keyPairName: berty_key

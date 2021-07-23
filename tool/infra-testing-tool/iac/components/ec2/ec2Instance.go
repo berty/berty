@@ -46,8 +46,6 @@ func NewInstance() Instance {
 	return Instance{
 		Name:         fmt.Sprintf("%s-%s", Ec2NamePrefix, uuid.NewString()),
 		InstanceType: Ec2InstanceTypeDefault,
-		KeyName:      Ec2InstanceKeyNameDefault,
-
 		RootBlockDevice: NewRootBlockDevice(),
 
 		IamInstanceProfile: IamInstanceProfileDefaultName,

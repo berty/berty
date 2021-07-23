@@ -7,6 +7,7 @@ import (
 
 type Ami struct {
 	AmiID string
+	Region string
 }
 
 func NewAmi() Ami {

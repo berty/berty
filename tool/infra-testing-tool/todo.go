@@ -3,20 +3,10 @@ package main
 // MVP
 
 //FIXME:
-// logging needs to be improved massively
-
-// today
-//TODO:
-// add automatic packer builds
-
-//FIXME:
 // clean up message testing
 
 //FIXME:
 // protocol/transport selection
-
-//TODO:
-// ease of configuration of certain settings
 
 // OTHER FEATURES
 
@@ -33,3 +23,6 @@ package main
 
 //TODO:
 // automatic pem generation
+
+//TODO:
+// message hashing and comparing

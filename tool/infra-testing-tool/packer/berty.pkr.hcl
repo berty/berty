@@ -16,13 +16,16 @@ source "amazon-ebs" "amazon-linux" {
     ami_name = "berty-ami"
     instance_type = "t3.2xlarge"
     region = var.region
-    source_ami = "ami-0bad4a5e987bdebde"
-    ssh_username = "ec2-user"
-    assume_role {
-       policy_arns = [
-           "arn:aws:iam::043039367084:policy/packer_build_policy",
-       ]
+    source_ami_filter {
+        filters = {
+            virtualization-type = "hvm"
+            name = "amzn2-ami-hvm*"
+            root-device-type = "ebs"
+        }
+        owners = ["amazon"]
+        most_recent = true
     }
+    ssh_username = "ec2-user"
 }
 
 build {

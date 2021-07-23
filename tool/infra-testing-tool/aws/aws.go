@@ -18,44 +18,47 @@ import (
 )
 
 var (
+	region string
 	sess    *session.Session
 	callerIdentity *sts.GetCallerIdentityOutput
 )
 
-// init creates aws parent session from which we make other sessions
-func init() {
+func SetRegion(r string) {
+	region = r
+}
+
+func GetSess() *session.Session {
 	sess = session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
+		Config: aws.Config{
+			Region: aws.String(region),
+		},
+	SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	// check if s3 bucket is present for logs
-	exists, err := BucketExists()
-	if err != nil {
-		logging.Log("WARNING! EC2 logging bucket DOES NOT exist or something went wrong! Error:")
-		logging.Log(err)
-		panic(err)
-		return
-	}
-
-	if !exists {
-		// bucket doesn't exist, create it!
-		err = CreateBucket()
-		if err != nil {
-			logging.Log(err)
-		}
-	}
-
+	return sess
 }
 
 func GetEc2Session() ec2.EC2 {
+	if sess == nil {
+		sess = GetSess()
+	}
+
 	return *ec2.New(sess)
 }
 
 func GetStsSession() sts.STS {
+	if sess == nil {
+		sess = GetSess()
+	}
+
 	return *sts.New(sess)
 }
 
 func GetS3Session() s3.S3 {
+	if sess == nil {
+		sess = GetSess()
+	}
+
 	return *s3.New(sess)
 }
 
@@ -223,7 +226,7 @@ func UploadFile(path, key string) error {
 func CreateBucket() error {
 	s3session := GetS3Session()
 
-	name := fmt.Sprintf("%s-%s", BucketNamePrefix, uuid.NewString()[:8])
+	name := fmt.Sprintf("%s-%s-%s", BucketNamePrefix, uuid.NewString()[:8], region)
 
 	logging.Log(fmt.Sprintf("creating s3 bucket for logging: %s", name))
 	_, err := s3session.CreateBucket(&s3.CreateBucketInput{
@@ -318,7 +321,10 @@ func GetBucketName() (string, error) {
 				if !strings.Contains(err.Error(), "NoSuchTagSet") {
 					return "", logging.LogErr(err)
 				}
+			}
 
+			if tagResp == nil {
+				return "", logging.LogErr(errors.New(ErrTagRespNil))
 			}
 
 			for _, tags := range tagResp.TagSet {
@@ -329,5 +335,47 @@ func GetBucketName() (string, error) {
 		}
 	}
 
-	return "", errors.New(ErrBucketNotFound)
+	// bucket doesn't exist, create it!
+	err = CreateBucket()
+	if err != nil {
+		return "", logging.LogErr(err)
+	} else {
+		return GetBucketName()
+	}
+
 }
+
+func IsValidRegion(region string) bool {
+	for _, r := range Regions {
+		if region == r {
+			return true
+		}
+	}
+
+	return false
+}
+
+func IsValidKeyPair(keyName string) (bool, error) {
+	ec2sess := GetEc2Session()
+
+	result, err := ec2sess.DescribeKeyPairs(&ec2.DescribeKeyPairsInput{
+		KeyNames: []*string {
+			aws.String(keyName),
+		},
+	})
+	if err != nil {
+		if strings.Contains(err.Error(), "InvalidKeyPair.NotFound") {
+			return false, nil
+		}
+		return false, logging.LogErr(err)
+	}
+
+	for _, key := range result.KeyPairs {
+		if *key.KeyName == keyName {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+

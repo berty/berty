@@ -174,6 +174,7 @@ func (c *NodeGroup) composeComponents() {
 
 		// make interface with name, networkInterface & nodeType
 		instance := ec2.NewInstance()
+		instance.KeyName = GetKeyPairName()
 		instance.Name = node.Name
 		instance.NetworkInterfaces = networkInterfaces
 		instance.NodeType = c.NodeType

@@ -38,6 +38,13 @@ var (
 			logging.Log("attempting to connect to peers' infra-daemons")
 			logging.Log("this could take a while ...")
 
+			c, err := loadConfig()
+			if err != nil {
+				return logging.LogErr(err)
+			}
+
+			aws.SetRegion(c.Settings.Region)
+
 			_, err = infratesting.GetAllEligiblePeers(aws.Ec2TagType, config.AllPeerTypes)
 			if err != nil {
 				return err

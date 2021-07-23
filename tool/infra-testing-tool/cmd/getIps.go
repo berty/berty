@@ -19,6 +19,13 @@ var (
 
 			var states = make(map[string][]string)
 
+			c, err := loadConfig()
+			if err != nil {
+				return logging.LogErr(err)
+			}
+
+			aws.SetRegion(c.Settings.Region)
+
 			instances, err := aws.DescribeInstances()
 			if err != nil {
 				return err

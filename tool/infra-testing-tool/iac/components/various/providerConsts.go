@@ -8,9 +8,6 @@ const (
 }
 `
 
-	// ProviderRegionDefault is the default region
-	ProviderRegionDefault = "eu-central-1"
-
 	// ProviderType is the prefix for the Provider type
 	ProviderType = "provider"
 

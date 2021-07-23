@@ -13,7 +13,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	conn, err := grpc.Dial("192.168.1.177:7091", grpc.WithInsecure())
+	conn, err := grpc.Dial("13.36.214.193:7091", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
