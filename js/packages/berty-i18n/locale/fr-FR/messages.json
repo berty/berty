@@ -24,9 +24,9 @@
         "desc": "Pour les utilisateurs extrêmement prudents",
         "disable-push-notif": "Notifications push désactivées",
         "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS et Bluetooth",
         "disable-contact-request": "Demande d'ami désactivée",
-        "on-same-network": ""
+        "on-same-network": "Local sur le même réseau/Wi-Fi"
       }
     },
     "create-account": {
@@ -35,7 +35,7 @@
       "required": "Requis",
       "placeholder": "Nom",
       "button": "CRÉER MON COMPTE",
-      "import-account": ""
+      "import-account": "IMPORTER UN COMPTE"
     },
     "services-auth": {
       "header": "S'authentifier aux services",
@@ -149,7 +149,7 @@
       "title": "Paramètres",
       "desc": "Personnalisez l'app pour qu'elle corresponde à vos besoins",
       "notification-file-saved": {
-        "title": "",
+        "title": "Données sauvegardées !",
         "desc": ""
       },
       "notifications-button": {
@@ -232,7 +232,7 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
+      "activate-button": "Activer le Bluetooth",
       "permission-title": "",
       "android-permission-description": "",
       "ios-permission-description": "",
@@ -355,7 +355,8 @@
       "footer-left-button": "Infos sur l'appareil",
       "footer-middle-button": "Lister les événements",
       "footer-right-button": "Redémarrer le démon",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Infos système"
@@ -511,7 +512,7 @@
       "documents": "Documents"
     },
     "reply": {
-      "response-to": "",
+      "response-to": "Répondre à",
       "replying-to": "Vous répondez à",
       "replied-to": "Répondu à"
     }
@@ -524,7 +525,7 @@
     "restart-app": "Redémarrez l'application",
     "wtf-screen": {
       "title": "Quelle est l'erreur ?",
-      "desc": "",
+      "desc": "L'application vient de planter.",
       "desc-report": "Secouez votre téléphone pour signaler le bug et cliquez sur le bouton pour quitter et redémarrer l'application."
     },
     "sorry-screen": {
@@ -606,8 +607,8 @@
     }
   },
   "medias": {
-    "audio": "",
-    "picture": "",
+    "audio": "son",
+    "picture": "image",
     "file": "fichier"
   }
 }

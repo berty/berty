@@ -355,7 +355,8 @@
       "footer-left-button": "Infoer om enheten",
       "footer-middle-button": "List opp hendelser",
       "footer-right-button": "Restart daemon",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "System-info"

@@ -355,7 +355,8 @@
       "footer-left-button": "Enhetsinformation",
       "footer-middle-button": "Visa händelser",
       "footer-right-button": "Starta om bakgrundstjänst",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Systeminformation"

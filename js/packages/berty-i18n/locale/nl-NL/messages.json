@@ -355,7 +355,8 @@
       "footer-left-button": "Apparaat informatie",
       "footer-middle-button": "Toon gebeurtenissen",
       "footer-right-button": "Herstart daemon",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Systeem informatie"

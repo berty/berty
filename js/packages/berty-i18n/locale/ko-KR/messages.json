@@ -355,7 +355,8 @@
       "footer-left-button": "장치 정보",
       "footer-middle-button": "",
       "footer-right-button": "데몬 재시작",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "시스템 정보"

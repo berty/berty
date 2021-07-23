@@ -355,7 +355,8 @@
       "footer-left-button": "Информация об устройстве",
       "footer-middle-button": "Список событий",
       "footer-right-button": "Перезапустить демон",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Информация о системе"

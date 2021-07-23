@@ -355,7 +355,8 @@
       "footer-left-button": "Aygıt bilgileri",
       "footer-middle-button": "Olayları listele",
       "footer-right-button": "Arka plan programını yeniden başlat",
-      "trigger-crashlytics-button": ""
+      "trigger-crashlytics-button": "",
+      "tyber-attach": ""
     },
     "system-info": {
       "title": "Sistem bilgisi"
