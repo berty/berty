@@ -61,13 +61,13 @@
       "header": "",
       "optional": "Választható",
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "Ehhez a funkcióhoz engedélyeznie kell a Bluetooth használatát a telefonon",
       "button": "BLUETOOTH ENGEDÉLYEZÉSE",
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "setup-finished": {
       "title": "A beállítás befejeződött!",
-      "desc": "",
+      "desc": "Mostantól használhatja az alkalmazást, elkezdheti hozzáadni a névjegyeket, majd szabadon és privát módon beszélgethet velük",
       "button": "BERTY HASZNÁLATÁNAK KEZDÉSE"
     }
   },
