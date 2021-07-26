@@ -610,5 +610,29 @@
     "audio": "аудио",
     "picture": "картинка",
     "file": "файл"
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "Камера",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }
