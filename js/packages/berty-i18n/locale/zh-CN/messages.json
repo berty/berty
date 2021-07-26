@@ -610,5 +610,29 @@
     "audio": "音频",
     "picture": "图片",
     "file": "文件"
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "摄像头",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }
