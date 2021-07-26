@@ -57,7 +57,6 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 			/>
 		)
 	} else if (pdlReply?.link?.kind === beapi.messenger.BertyLink.Kind.EncryptedV1Kind) {
-		console.log('enc', pdlReply?.link?.encrypted)
 		if (pdlReply?.link?.encrypted?.kind === beapi.messenger.BertyLink.Kind.ContactInviteV1Kind) {
 			content = (
 				<AddThisContact

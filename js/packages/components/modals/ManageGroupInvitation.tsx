@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -59,9 +60,8 @@ export const ManageGroupInvitation: React.FC<{
 }> = ({ link, type, displayName, publicKey, isPassword }) => {
 	const navigation = useNavigation()
 	const { call: joinConversation, done, error } = messengerMethodsHooks.useConversationJoin()
-	const [
-		{ row, text, column, color, flex, absolute, padding, background, border, margin },
-	] = useStyles()
+	const [{ row, text, column, flex, absolute, padding, border, margin }] = useStyles()
+	const colors = useThemeColor()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
@@ -87,11 +87,10 @@ export const ManageGroupInvitation: React.FC<{
 		>
 			<View
 				style={[
-					background.white,
 					padding.horizontal.medium,
 					padding.bottom.medium,
 					border.radius.large,
-					{ width: '100%' },
+					{ width: '100%', backgroundColor: colors['main-background'] },
 				]}
 			>
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
@@ -145,10 +144,15 @@ export const ManageGroupInvitation: React.FC<{
 								margin.top.medium,
 							]}
 						>
-							<Icon name='info-outline' fill={color.blue} width={15} height={15} />
+							<Icon name='info-outline' fill={colors['background-header']} width={15} height={15} />
 							<TextNative
 								style={[
-									{ fontFamily: 'Open Sans', color: color.blue, paddingLeft: 5, fontSize: 13 },
+									{
+										fontFamily: 'Open Sans',
+										color: colors['background-header'],
+										paddingLeft: 5,
+										fontSize: 13,
+									},
 									text.align.center,
 									text.bold.small,
 								]}
@@ -163,7 +167,7 @@ export const ManageGroupInvitation: React.FC<{
 								margin.top.medium,
 								row.fill,
 								padding.vertical.scale(12),
-								{ backgroundColor: '#E8E9FC99' },
+								{ backgroundColor: colors['negative-asset'] },
 							]}
 						>
 							<TextInput
@@ -187,24 +191,25 @@ export const ManageGroupInvitation: React.FC<{
 						}}
 						style={[
 							flex.medium,
-							background.light.blue,
 							padding.vertical.scale(12),
 							border.radius.small,
+							{ backgroundColor: colors['positive-asset'] },
 						]}
 					>
-						<Text style={[text.color.blue, { textAlign: 'center' }]}>JOIN THIS GROUP</Text>
+						<Text style={{ textAlign: 'center', color: colors['background-header'] }}>
+							JOIN THIS GROUP
+						</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
 			<TouchableOpacity
 				style={[
-					background.white,
 					padding.vertical.medium,
 					border.shadow.medium,
 					row.item.justify,
 					column.justify,
 					_styles.closeRequest,
-					{ position: 'absolute', bottom: '2%' },
+					{ position: 'absolute', bottom: '2%', backgroundColor: colors['main-background'] },
 				]}
 				onPress={navigation.goBack}
 			>
@@ -213,7 +218,7 @@ export const ManageGroupInvitation: React.FC<{
 					name='close-outline'
 					width={25}
 					height={25}
-					fill={color.grey}
+					fill={colors['secondary-text']}
 				/>
 			</TouchableOpacity>
 		</View>

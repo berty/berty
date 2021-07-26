@@ -11,7 +11,7 @@ import {
 import mapValues from 'lodash/mapValues'
 
 import * as RawComponents from '@berty-tech/components'
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { MessengerAppState } from '@berty-tech/store/context'
 
 import { Routes } from './types'
@@ -133,6 +133,7 @@ Components = mapValues(RawComponents, (SubComponents) =>
 const CreateGroupStack = createStackNavigator()
 export const CreateGroupNavigation: React.FC = () => {
 	const [members, setMembers] = useState([] as any[])
+	const colors = useThemeColor()
 	const setMember = (contact: any) => {
 		if (members.find((member) => member.publicKey === contact.publicKey)) {
 			return
@@ -147,7 +148,14 @@ export const CreateGroupNavigation: React.FC = () => {
 	}
 
 	return (
-		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
+		<CreateGroupStack.Navigator
+			screenOptions={{
+				headerShown: false,
+				cardStyle: {
+					backgroundColor: colors['main-background'],
+				},
+			}}
+		>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				options={ModalScreenOptions}
@@ -176,6 +184,7 @@ export const CreateGroupNavigation: React.FC = () => {
 const NavigationStack = createStackNavigator()
 export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
+	const colors = useThemeColor()
 
 	useEffect(() => {
 		console.log('context app State', context.appState)
@@ -211,7 +220,10 @@ export const Navigation: React.FC = () => {
 					? Routes.Main.Home
 					: Routes.Onboarding.GetStarted
 			}
-			screenOptions={CustomTransitionOptions}
+			screenOptions={{
+				...CustomTransitionOptions,
+				cardStyle: { backgroundColor: colors['main-background'] },
+			}}
 		>
 			<NavigationStack.Screen
 				name={Routes.Main.ContactRequest}
@@ -337,6 +349,10 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Settings.NetworkMap}
 				component={Components.Settings.NetworkMap}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.ThemeEditor}
+				component={Components.Settings.ThemeEditor}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}

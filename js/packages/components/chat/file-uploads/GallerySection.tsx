@@ -12,6 +12,7 @@ import CameraRoll from '@react-native-community/cameraroll'
 import RNFS from 'react-native-fs'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
 import { ImageCounter } from '../ImageCounter'
@@ -22,7 +23,8 @@ export const GallerySection: React.FC<{
 	prepareMediaAndSend: (media: beapi.messenger.IMedia[]) => void
 	isLoading: boolean
 }> = ({ prepareMediaAndSend, isLoading }) => {
-	const [{ color, border, padding, margin }] = useStyles()
+	const [{ border, padding, margin }] = useStyles()
+	const colors = useThemeColor()
 
 	const [selectedImages, setSelectedImages] = useState<beapi.messenger.IMedia[]>([])
 	const [galleryImageEndCursor, setGalleryImageEndCursor] = useState<string | null | undefined>(
@@ -118,18 +120,13 @@ export const GallerySection: React.FC<{
 						}
 					}}
 					scrollEventThrottle={400}
-					style={[
-						{
-							height: 300,
-						},
-						padding.medium,
-					]}
+					style={[{ height: 300 }, padding.medium]}
 					contentContainerStyle={{
 						flexDirection: 'row',
 						flexWrap: 'wrap',
 						alignItems: 'center',
 						justifyContent: 'center',
-						backgroundColor: '#FEFEFF',
+						backgroundColor: colors['main-background'],
 					}}
 				>
 					{galleryContents.map((content) => (
@@ -137,10 +134,7 @@ export const GallerySection: React.FC<{
 							activeOpacity={0.8}
 							key={content.filename}
 							style={[
-								{
-									backgroundColor: color.white,
-									position: 'relative',
-								},
+								{ backgroundColor: colors['main-background'], position: 'relative' },
 								padding.tiny,
 								border.radius.tiny,
 								margin.bottom.tiny,
@@ -157,28 +151,15 @@ export const GallerySection: React.FC<{
 						>
 							<Image
 								source={{ uri: content.uri || '' }}
-								style={[
-									{
-										height: 110,
-										width: 100,
-									},
-									border.radius.tiny,
-								]}
+								style={[{ height: 110, width: 100 }, border.radius.tiny]}
 							/>
-
 							{selectedImages.find((image) => image.filename === content.filename) && (
-								<View
-									style={{
-										position: 'absolute',
-										top: 5,
-										right: 5,
-									}}
-								>
+								<View style={{ position: 'absolute', top: 5, right: 5 }}>
 									<Icon
 										height={40}
 										width={40}
 										name='checkmark-circle-2'
-										fill={color.white}
+										fill={colors['reverted-main-text']}
 										style={{}}
 									/>
 								</View>
@@ -192,7 +173,7 @@ export const GallerySection: React.FC<{
 					style={[
 						{
 							flexDirection: 'row',
-							backgroundColor: '#F7F8FF',
+							backgroundColor: colors['main-background'],
 							alignItems: 'center',
 							justifyContent: 'space-between',
 						},
@@ -201,26 +182,14 @@ export const GallerySection: React.FC<{
 						margin.large,
 					]}
 				>
-					<View
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-						}}
-					>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						{selectedImages.slice(0, 2).map((image) => (
 							<Image
 								key={image.filename}
 								source={{
 									uri: image.uri || '',
 								}}
-								style={[
-									{
-										height: 50,
-										width: 55,
-									},
-									border.radius.tiny,
-									margin.right.medium,
-								]}
+								style={[{ height: 50, width: 55 }, border.radius.tiny, margin.right.medium]}
 							/>
 						))}
 						{selectedImages.length > 2 && <ImageCounter count={selectedImages.length - 2} />}
@@ -230,7 +199,7 @@ export const GallerySection: React.FC<{
 						{isLoading ? (
 							<ActivityIndicator />
 						) : (
-							<Icon name='paper-plane-outline' width={26} height={26} fill={color.black} />
+							<Icon name='paper-plane-outline' width={26} height={26} fill={colors['main-text']} />
 						)}
 					</TouchableOpacity>
 				</View>

@@ -11,6 +11,7 @@ import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import { useNavigation } from '@berty-tech/navigation'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import beapi from '@berty-tech/api'
@@ -25,15 +26,16 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 	highlighted,
 }) => {
 	const { id, minLatency, isActive, features } = item
-	const [{ padding, border, color, text, row, height, width }] = useStyles()
+	const [{ padding, border, text, row, height, width }] = useStyles()
+	const colors = useThemeColor()
 	const [isDropdown, setIsDropdown] = useState(false)
 
 	return (
-		<View style={[border.scale(1), border.color.light.grey, border.radius.small]}>
+		<View style={[border.scale(1), border.radius.small, { borderColor: colors['secondary-text'] }]}>
 			<View
 				style={[
 					{ justifyContent: 'space-evenly', flexDirection: 'row', alignItems: 'center' },
-					highlighted && { backgroundColor: color.light.yellow },
+					highlighted && { backgroundColor: colors['positive-asset'] },
 					padding.small,
 				]}
 			>
@@ -43,12 +45,18 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 							width(12),
 							height(12),
 							border.radius.scale(6),
-							{ backgroundColor: isActive ? color.green : color.red },
+							{ backgroundColor: isActive ? colors['background-header'] : colors['warning-asset'] },
 						]}
 					/>
 				</View>
 				<View style={[row.center, { flex: 2 }]}>
-					<Icon name='earth' pack='custom' fill={color.dark.grey} width={25} height={25} />
+					<Icon
+						name='earth'
+						pack='custom'
+						fill={colors['alt-secondary-background-header']}
+						width={25}
+						height={25}
+					/>
 				</View>
 				<View style={[row.center, { flex: 2 }]}>
 					{features?.length
@@ -62,7 +70,7 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 									case beapi.protocol.PeerList.Feature.QuicFeature:
 										name = 'network'
 										pack = 'custom'
-										fill = color.dark.grey
+										fill = colors['alt-secondary-background-header']
 										break
 								}
 								return (
@@ -86,7 +94,12 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 					style={[row.center, { flex: 1 }]}
 					onPress={() => setIsDropdown(!isDropdown)}
 				>
-					<Icon name='arrow-ios-downward' fill={color.dark.grey} width={25} height={25} />
+					<Icon
+						name='arrow-ios-downward'
+						fill={colors['alt-secondary-background-header']}
+						width={25}
+						height={25}
+					/>
 				</TouchableOpacity>
 			</View>
 			{isDropdown && (
@@ -121,7 +134,6 @@ function getPeersTypes(peers: beapi.protocol.PeerList.IPeer[] | null) {
 					peersTypes.quic += 1
 					break
 			}
-			console.log('heere', feature)
 		})
 	})
 
@@ -129,7 +141,8 @@ function getPeersTypes(peers: beapi.protocol.PeerList.IPeer[] | null) {
 }
 
 const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }> = ({ peers }) => {
-	const [{ margin, text, color }] = useStyles()
+	const [{ margin, text }] = useStyles()
+	const colors = useThemeColor()
 	const [sortPeers, setSortPeers] = useState<beapi.protocol.PeerList.IPeer[] | null>(null)
 	const [typesPeers, setTypesPeers] = useState<PeersTypes | null>(null)
 
@@ -155,10 +168,9 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 							<View style={[margin.medium]}>
 								<TextNative
 									style={[
-										{ fontFamily: 'Open Sans' },
+										{ fontFamily: 'Open Sans', color: colors['alt-secondary-background-header'] },
 										text.bold.medium,
 										text.size.large,
-										text.color.dark.grey,
 									]}
 								>
 									{`${t('settings.network-map.online-peers')} ${sortPeers.length}`}
@@ -175,10 +187,12 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 										<Icon name='berty' pack='custom' width={25} height={25} />
 										<TextNative
 											style={[
-												{ fontFamily: 'Open Sans' },
+												{
+													fontFamily: 'Open Sans',
+													color: colors['alt-secondary-background-header'],
+												},
 												text.bold.medium,
 												text.size.large,
-												text.color.dark.grey,
 												margin.left.tiny,
 											]}
 										>
@@ -189,16 +203,18 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 										<Icon
 											name='network'
 											pack='custom'
-											fill={color.dark.grey}
+											fill={colors['alt-secondary-background-header']}
 											width={25}
 											height={25}
 										/>
 										<TextNative
 											style={[
-												{ fontFamily: 'Open Sans' },
+												{
+													fontFamily: 'Open Sans',
+													color: colors['alt-secondary-background-header'],
+												},
 												text.bold.medium,
 												text.size.large,
-												text.color.dark.grey,
 												margin.left.tiny,
 											]}
 										>
@@ -206,13 +222,20 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 										</TextNative>
 									</View>
 									<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-										<Icon name='bluetooth' fill={color.dark.grey} width={25} height={25} />
+										<Icon
+											name='bluetooth'
+											fill={colors['alt-secondary-background-header']}
+											width={25}
+											height={25}
+										/>
 										<TextNative
 											style={[
-												{ fontFamily: 'Open Sans' },
+												{
+													fontFamily: 'Open Sans',
+													color: colors['alt-secondary-background-header'],
+												},
 												text.bold.medium,
 												text.size.large,
-												text.color.dark.grey,
 												margin.left.tiny,
 											]}
 										>
@@ -247,7 +270,7 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 
 export const NetworkMap = () => {
 	const { goBack } = useNavigation()
-	const [{ background, flex, color, padding }] = useStyles()
+	const colors = useThemeColor()
 	const { reply: peers = {}, call, called } = protocolMethodsHooks.usePeerList()
 
 	useEffect(() => {
@@ -259,13 +282,16 @@ export const NetworkMap = () => {
 	return (
 		<Translation>
 			{(t) => (
-				<Layout style={[background.white, flex.tiny]}>
+				<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 					<SwipeNavRecognizer>
-						<StatusBar backgroundColor={color.dark.grey} barStyle='light-content' />
-						<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(30)}>
+						<StatusBar
+							backgroundColor={colors['alt-secondary-background-header']}
+							barStyle='light-content'
+						/>
+						<ScrollView bounces={false}>
 							<HeaderSettings
 								title={t('settings.network-map.title')}
-								bgColor={color.dark.grey}
+								bgColor={colors['alt-secondary-background-header']}
 								undo={goBack}
 								action={() => call()}
 								actionIcon='refresh-outline'

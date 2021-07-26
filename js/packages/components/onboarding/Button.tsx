@@ -2,6 +2,7 @@ import React from 'react'
 import { Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 const Button: React.FC<{
 	children: string
@@ -10,6 +11,8 @@ const Button: React.FC<{
 	textStyle?: TextStyle
 }> = ({ children, onPress, style = null, textStyle = null }) => {
 	const [{ margin, padding, text, border }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<TouchableOpacity
 			style={[
@@ -17,13 +20,19 @@ const Button: React.FC<{
 				margin.top.medium,
 				padding.medium,
 				border.radius.small,
-				{ backgroundColor: '#CED2FF' },
+				{ backgroundColor: colors['positive-asset'] },
 				style,
 			]}
 			onPress={onPress}
 		>
 			<Text
-				style={[text.size.medium, text.color.blue, text.align.center, text.bold.medium, textStyle]}
+				style={[
+					text.size.medium,
+					text.align.center,
+					text.bold.medium,
+					{ color: colors['background-header'] },
+					textStyle,
+				]}
 			>
 				{children}
 			</Text>

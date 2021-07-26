@@ -2,6 +2,7 @@ import React from 'react'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 
 import { Request } from '../shared-components/Request'
@@ -33,7 +34,7 @@ export const ContactRequest: React.FC<ScreenProps.Main.ContactRequest> = ({
 	route: { params },
 }) => {
 	const _styles = useStylesContactRequest()
-	const [{ color }] = useStyles()
+	const colors = useThemeColor()
 	const { goBack } = useNavigation()
 	const { call: accept } = (messengerMethodsHooks as any).useContactAccept()
 	return (
@@ -49,9 +50,9 @@ export const ContactRequest: React.FC<ScreenProps.Main.ContactRequest> = ({
 					},
 					style: _styles.firstRequestButton,
 					title: 'REFUSE',
-					titleColor: color.grey,
+					titleColor: colors['secondary-text'],
 					icon: 'close-outline',
-					iconColor: color.grey,
+					iconColor: colors['secondary-text'],
 					disabled: true,
 				},
 				{
@@ -61,9 +62,9 @@ export const ContactRequest: React.FC<ScreenProps.Main.ContactRequest> = ({
 					},
 					style: _styles.secondRequestButton,
 					title: 'ACCEPT',
-					titleColor: color.blue,
+					titleColor: colors['background-header'],
 					icon: 'checkmark-outline',
-					iconColor: color.blue,
+					iconColor: colors['background-header'],
 				},
 			]}
 		/>

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { useMsgrContext } from '@berty-tech/store/context'
-import { useLastConvInteraction } from '@berty-tech/store/hooks'
+import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
@@ -31,7 +31,7 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 	interaction,
 	isAccepted,
 }) => {
-	const [{ color }] = useStyles()
+	const colors = useThemeColor()
 	if (interaction?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage && isAccepted) {
 		return null
 	}
@@ -45,7 +45,7 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 			}
 			width={14}
 			height={14}
-			fill={color.blue}
+			fill={colors['background-header']}
 		/>
 	)
 }
@@ -75,7 +75,8 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
-	const [{ color, row, border, flex, padding, text, opacity, margin }, { scaleSize }] = useStyles()
+	const [{ row, border, flex, padding, text, opacity, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { dispatch } = useNavigation()
 
 	let description
@@ -112,7 +113,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 	return !isIncoming ? (
 		<TouchableHighlight
-			underlayColor={color.light.grey}
+			underlayColor={`${colors['secondary-text']}80`}
 			style={[
 				padding.horizontal.medium,
 				!isAccepted && type !== beapi.messenger.Conversation.Type.MultiMemberType && opacity(0.6),
@@ -180,7 +181,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								flexShrink: 1,
 							}}
 						>
-							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
+							<Text numberOfLines={1} style={[text.size.medium, { color: colors['main-text'] }]}>
 								{fake ? `FAKE - ${userDisplayName}` : userDisplayName}
 							</Text>
 						</View>
@@ -200,7 +201,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 										style={[
 											padding.left.small,
 											text.size.small,
-											unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+											unreadCount
+												? [text.bold.medium, { color: colors['main-text'] }]
+												: { color: colors['secondary-text'] },
 										]}
 									>
 										{timeFormat.fmtTimestamp1(displayDate)}
@@ -221,7 +224,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						{!!messageType && (
 							<Icon
 								name={messageType === 'audio' ? 'headphones' : 'image'}
-								fill={color.black}
+								fill={colors['main-text']}
 								height={20 * scaleSize}
 								width={20 * scaleSize}
 								style={[margin.right.tiny]}
@@ -232,7 +235,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							style={[
 								{ flexGrow: 2, flexShrink: 1 },
 								text.size.small,
-								unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+								unreadCount
+									? [text.bold.medium, { color: colors['main-text'] }]
+									: { color: colors['secondary-text'] },
 							]}
 						>
 							{description}
@@ -274,16 +279,14 @@ const SuggestionsItem: React.FC<{
 	icon: string
 	style?: StyleProp<any>
 }> = ({ displayName, desc, link, addBot, icon, style }) => {
-	const [{ color, row, border, flex, padding, text, margin }, { scaleSize }] = useStyles()
+	const [{ row, border, flex, padding, text, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<>
 			<TouchableHighlight
-				underlayColor={color.light.grey}
-				style={[
-					padding.horizontal.medium,
-					style,
-					// !isAccepted && type !== beapi.messenger.Conversation.Type.MultiMemberType && opacity(0.6),
-				]}
+				underlayColor={`${colors['secondary-text']}80`}
+				style={[padding.horizontal.medium, style]}
 				onPress={() => addBot({ displayName, link, isVisible: true })}
 			>
 				<View
@@ -327,7 +330,7 @@ const SuggestionsItem: React.FC<{
 									flexShrink: 1,
 								}}
 							>
-								<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
+								<Text numberOfLines={1} style={[text.size.medium, { color: colors['main-text'] }]}>
 									{displayName}
 								</Text>
 							</View>
@@ -343,7 +346,11 @@ const SuggestionsItem: React.FC<{
 						>
 							<Text
 								numberOfLines={1}
-								style={[{ flexGrow: 2, flexShrink: 1 }, text.size.small, text.color.grey]}
+								style={[
+									{ flexGrow: 2, flexShrink: 1 },
+									text.size.small,
+									{ color: colors['secondary-text'] },
+								]}
 							>
 								{desc}
 							</Text>
@@ -359,7 +366,12 @@ const SuggestionsItem: React.FC<{
 									},
 								]}
 							>
-								<Icon name='info-outline' width={15} height={15} fill={color.dark.blue} />
+								<Icon
+									name='info-outline'
+									width={15}
+									height={15}
+									fill={colors['background-header']}
+								/>
 							</View>
 						</View>
 					</View>
@@ -377,10 +389,10 @@ export const Conversations: React.FC<ConversationsProps> = ({
 	onLayout,
 	addBot,
 }) => {
-	const [{ background }] = useStyles()
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const { persistentOptions } = useMsgrContext()
+	const colors = useThemeColor()
 
 	return items.length || suggestions.length || configurations.length ? (
 		<SafeAreaConsumer>
@@ -389,8 +401,10 @@ export const Conversations: React.FC<ConversationsProps> = ({
 					onLayout={onLayout}
 					style={[
 						style,
-						background.white,
-						{ paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0) },
+						{
+							paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0),
+							backgroundColor: colors['main-background'],
+						},
 					]}
 				>
 					{configurations.map((config) => (
@@ -402,7 +416,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 							icon={config.icon}
 							addBot={async () => {
 								if (config.key === 'network') {
-									if (persistentOptions.preset.value === 'full-anonymity') {
+									if (persistentOptions.preset.value === 'fullAnonymity') {
 										navigate.main.networkOptions()
 									} else {
 										navigate.onboarding.servicesAuth()

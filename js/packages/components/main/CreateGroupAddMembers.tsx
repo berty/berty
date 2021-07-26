@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useContactList } from '@berty-tech/store/hooks'
+import { useContactList, useThemeColor } from '@berty-tech/store/hooks'
 import { ContactPicker } from '@berty-tech/components/shared-components'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
@@ -39,18 +39,20 @@ export const Header: React.FC<{
 	style = null,
 }) => {
 	const [
-		{ height, border, margin, row, padding, text, column, color, background, opacity },
+		{ height, border, margin, row, padding, text, column, opacity },
 		{ scaleHeight },
 	] = useStyles()
+	const colors = useThemeColor()
+
 	return (
-		<View style={[!first && background.white]}>
+		<View style={[!first && { backgroundColor: colors['main-background'] }]}>
 			<TouchableWithoutFeedback onPress={onPress}>
 				<View
 					style={[
-						background.white,
 						border.radius.top.scale(30),
 						!first && border.shadow.big,
 						disabled && opacity(0.5),
+						{ backgroundColor: colors['main-background'] },
 						style,
 					]}
 				>
@@ -59,11 +61,10 @@ export const Header: React.FC<{
 							style={[
 								margin.top.medium,
 								row.item.justify,
-								border.scale(2.5),
-								border.color.light.grey,
 								border.radius.scale(4),
 								{
-									backgroundColor: '#E8E9FC',
+									backgroundColor: `${colors['secondary-text']}70`,
+									height: 5 * scaleHeight,
 									width: 60 * scaleHeight,
 								},
 							]}
@@ -74,14 +75,20 @@ export const Header: React.FC<{
 									style={[
 										text.bold.medium,
 										text.size.scale(25),
-										text.color.black,
 										column.item.center,
+										{ color: colors['main-text'] },
 									]}
 								>
 									{title}
 								</TextNative>
 								{icon && (
-									<Icon name={icon} pack={iconPack} width={30} height={30} fill={color.black} />
+									<Icon
+										name={icon}
+										pack={iconPack}
+										width={30}
+										height={30}
+										fill={colors['main-text']}
+									/>
 								)}
 							</View>
 						</View>
@@ -98,10 +105,8 @@ const MemberItem: React.FC<{
 	onRemove: () => void
 	canRemove: boolean | undefined
 }> = ({ member, onRemove, canRemove }) => {
-	const [
-		{ padding, column, text, color, row, maxWidth, border, background },
-		{ scaleSize },
-	] = useStyles()
+	const [{ padding, column, text, row, maxWidth, border }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<View style={[padding.horizontal.medium, maxWidth(100)]}>
@@ -110,11 +115,11 @@ const MemberItem: React.FC<{
 				<TextNative
 					numberOfLines={1}
 					style={[
-						text.color.white,
 						column.item.center,
 						padding.top.tiny,
 						text.bold.medium,
 						text.align.center,
+						{ color: colors['reverted-main-text'] },
 					]}
 				>
 					{member.displayName}
@@ -126,7 +131,6 @@ const MemberItem: React.FC<{
 						style={[
 							border.shadow.medium,
 							border.radius.medium,
-							background.white,
 							column.justify,
 							{
 								height: 25 * scaleSize,
@@ -134,6 +138,7 @@ const MemberItem: React.FC<{
 								position: 'absolute',
 								top: 5 * scaleSize,
 								right: 9 * scaleSize,
+								backgroundColor: colors['main-background'],
 							},
 						]}
 						onPress={onRemove}
@@ -142,7 +147,7 @@ const MemberItem: React.FC<{
 							name='close-outline'
 							width={20 * scaleSize}
 							height={20 * scaleSize}
-							fill={color.red}
+							fill={colors['warning-asset']}
 							style={row.item.justify}
 						/>
 					</TouchableOpacity>
@@ -186,8 +191,10 @@ export const MemberList: React.FC<{
 
 export const CreateGroupHeader: React.FC<{}> = () => {
 	const navigation = useNavigation()
-	const [{ color, padding, margin, text }, { scaleSize }] = useStyles()
+	const [{ padding, margin, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
+
 	return (
 		<View
 			style={[
@@ -220,7 +227,7 @@ export const CreateGroupHeader: React.FC<{}> = () => {
 						name='arrow-back-outline'
 						width={_iconArrowBackSize * scaleSize}
 						height={_iconArrowBackSize * scaleSize}
-						fill={color.white}
+						fill={colors['reverted-main-text']}
 					/>
 				</TouchableOpacity>
 				<Text
@@ -230,7 +237,7 @@ export const CreateGroupHeader: React.FC<{}> = () => {
 							fontWeight: '700',
 							lineHeight: 1.25 * _titleSize,
 							marginLeft: 10,
-							color: color.white,
+							color: colors['reverted-main-text'],
 						},
 					]}
 				>
@@ -242,7 +249,7 @@ export const CreateGroupHeader: React.FC<{}> = () => {
 				pack='custom'
 				width={35 * scaleSize}
 				height={35 * scaleSize}
-				fill={color.white}
+				fill={colors['reverted-main-text']}
 			/>
 		</View>
 	)
@@ -256,20 +263,21 @@ export const CreateGroupAddMembers: React.FC<{
 	onRemoveMember: (id: string) => void
 	members: any[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
-	const [{ flex, background, margin, color }, { scaleHeight }] = useStyles()
+	const [{ flex, margin }, { scaleHeight }] = useStyles()
+	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const accountContacts = useContactList()
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
-				<SafeAreaView style={[background.blue]}>
+				<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
 					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />
 				</SafeAreaView>
-				<View style={[background.white, { flex: 1 }]}>
+				<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 					<View style={{ top: -30 * scaleHeight, flex: 1 }}>
 						<Header
 							title={t('main.home.create-group.add-members')}

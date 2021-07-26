@@ -5,10 +5,12 @@ import RNFS from 'react-native-fs'
 
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import beapi from '@berty-tech/api'
+
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
+import { defaultThemeColor } from '@berty-tech/store/context'
 
 import ExternalTransport from './externalTransport'
 import { refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
@@ -437,6 +439,10 @@ export const updateAccountsPreReady = async (
 			},
 		})
 	}
+	await setPersistentOption(dispatch, state?.selectedAccount, {
+		type: PersistentOptionsKeys.ThemeColor,
+		payload: defaultThemeColor(),
+	})
 }
 // handle states DeletingClosingDaemon, ClosingDaemon
 export const closingDaemon = (

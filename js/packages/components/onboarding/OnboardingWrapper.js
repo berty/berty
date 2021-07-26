@@ -3,11 +3,14 @@ import { KeyboardAvoidingView, View, Platform } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 const OnboardingWrapper = ({ children }) => {
-	const [{ absolute, background }] = useStyles()
+	const [{ absolute }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
-		<SafeAreaView style={[absolute.fill, background.blue]}>
+		<SafeAreaView style={[absolute.fill, { backgroundColor: colors['background-header'] }]}>
 			<View style={absolute.fill}>
 				<KeyboardAvoidingView
 					style={[absolute.fill]}

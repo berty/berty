@@ -7,7 +7,7 @@ import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
 
@@ -20,21 +20,21 @@ const useStylesMode = () => {
 	const [{ text, margin }] = useStyles()
 	return {
 		buttonListUnderStateText: [text.bold.small, text.size.tiny, margin.right.scale(60)],
-		buttonSettingText: [text.bold.small, text.size.small, { color: 'rgba(43,46,77,0.8)' }],
+		buttonSettingText: [text.bold.small, text.size.small],
 	}
 }
 
 const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
 	const _styles = useStylesMode()
-	const [{ flex, padding, margin, color, text }, { scaleSize }] = useStyles()
+	const [{ flex, padding, margin }, { scaleSize }] = useStyles()
+	const ctx = useMsgrContext()
+	const colors = useThemeColor()
 	const navigation = useReactNavigation()
 	const account: beapi.messenger.IAccount | null | undefined = useAccount()
 	const services = useAccountServices()
 	const replicationServices = services.filter(
 		(s: any) => s.serviceType === serviceTypes.Replication,
 	)
-
-	const ctx = useMsgrContext()
 
 	return (
 		<Translation>
@@ -44,13 +44,13 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 						name={t('settings.home.network-button')}
 						icon='earth'
 						iconPack='custom'
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						onPress={() => navigation.navigate('Settings.NetworkMap')}
 					/>
 					<ButtonSetting
 						name={t('settings.mode.receive-contact-requests-button')}
 						icon='person-done-outline'
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						iconSize={30}
 						toggled
 						disabled
@@ -58,7 +58,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 					<ButtonSetting
 						name={t('settings.mode.external-services-button')}
 						icon='cube-outline'
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						iconSize={30}
 						actionIcon='arrow-ios-forward'
 						onPress={() => navigation.navigate('Settings.ServicesAuth')}
@@ -66,7 +66,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 					<ButtonSetting
 						name={t('settings.mode.auto-replicate-button')}
 						icon='cloud-upload-outline'
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						toggled
 						varToggle={
 							(replicationServices.length !== 0 && account?.replicateNewGroupsAutomatically) ||
@@ -85,7 +85,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 					<ButtonSetting
 						name={t('settings.mode.multicast-dns-button.title')}
 						icon='upload'
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						iconSize={30}
 						toggled
 						disabled
@@ -93,8 +93,10 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 						<Text
 							style={[
 								_styles.buttonSettingText,
-								text.color.grey,
-								{ marginLeft: margin.left.big.marginLeft + 3 * scaleSize },
+								{
+									marginLeft: margin.left.big.marginLeft + 3 * scaleSize,
+									color: colors['secondary-text'],
+								},
 							]}
 						>
 							{t('settings.mode.multicast-dns-button.desc')}
@@ -104,11 +106,11 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 						name={t('settings.mode.blocked-contacts-button.title')}
 						icon='person-delete-outline'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						state={{
 							value: `3 ${t('settings.mode.blocked-contacts-button.tag')}`,
-							color: color.blue,
-							bgColor: color.light.blue,
+							color: colors['background-header'],
+							bgColor: colors['positive-asset'],
 						}}
 						actionIcon='arrow-ios-forward'
 						disabled
@@ -117,7 +119,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 						name={t('settings.mode.backup-account-button')}
 						icon='save-outline'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						actionIcon='arrow-ios-forward'
 						onPress={async () => {
 							await exportAccountToFile(ctx.selectedAccount)
@@ -134,7 +136,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 						name={t('settings.mode.delete-account-button')}
 						icon='trash-2-outline'
 						iconSize={30}
-						iconColor={'red'}
+						iconColor={colors['secondary-background-header']}
 						actionIcon='arrow-ios-forward'
 						onPress={() => {
 							Vibration.vibrate([1000, 250, 1000])
@@ -149,13 +151,14 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 
 export const Mode: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
-	const [{ flex, background, padding }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<Layout style={[flex.tiny, background.white]}>
+				<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 					<SwipeNavRecognizer>
-						<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(20)]}>
+						<ScrollView bounces={false}>
 							<HeaderSettings
 								title={t('settings.mode.title')}
 								desc={t('settings.mode.desc')}

@@ -6,21 +6,23 @@ import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/context'
-import AppInspector from '@berty-tech/components/debug/AppInspector'
+import { useThemeColor, useMsgrContext } from '@berty-tech/store/hooks'
+
+import AppInspector from './debug/AppInspector'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 	const [{ padding, border }] = useStyles()
+	const colors = useThemeColor()
 
 	let generatedColors = {
-		background: 'white',
-		text: 'black',
+		background: colors['main-background'],
+		text: colors['main-text'],
 	}
 	switch (type) {
 		case 'error':
 			generatedColors = {
-				background: '#FDE4E9',
-				text: '#F52062',
+				background: colors['input-background'],
+				text: colors['warning-asset'],
 			}
 			break
 	}
@@ -39,13 +41,23 @@ const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 }
 
 const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
-	const [{ border, background, padding }] = useStyles()
-	return <View style={[background.white, border.radius.large, padding.large]}>{children}</View>
+	const [{ border, padding }] = useStyles()
+	const colors = useThemeColor()
+
+	return (
+		<View
+			style={[border.radius.large, padding.large, { backgroundColor: colors['main-background'] }]}
+		>
+			{children}
+		</View>
+	)
 }
 
 const RestartButton: React.FC<{}> = ({}) => {
 	const [{ border, margin, padding }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
+
 	return (
 		<TouchableOpacity
 			onPress={() => RNRestart.Restart()}
@@ -56,7 +68,7 @@ const RestartButton: React.FC<{}> = ({}) => {
 				border.radius.small,
 				padding.medium,
 				{
-					backgroundColor: '#CED2FF',
+					backgroundColor: colors['positive-asset'],
 					alignItems: 'center',
 					width: '100%',
 				},
@@ -64,7 +76,7 @@ const RestartButton: React.FC<{}> = ({}) => {
 		>
 			<Text
 				style={{
-					color: '#3F49EA',
+					color: colors['background-header'],
 					fontWeight: '700',
 					textTransform: 'uppercase',
 				}}
@@ -80,12 +92,13 @@ const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.React
 	children,
 }) => {
 	const [{ padding }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<SafeAreaView
 			style={[
 				{
-					backgroundColor: '#525BEC',
+					backgroundColor: colors['background-header'],
 					flex: 1,
 					alignItems: 'center',
 					justifyContent: 'center',
@@ -93,30 +106,12 @@ const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.React
 			]}
 		>
 			<StatusBar barStyle='light-content' />
-			<View
-				style={[
-					padding.large,
-					{
-						width: '100%',
-					},
-				]}
-			>
+			<View style={[padding.large, { width: '100%' }]}>
 				<Body>
-					<View
-						style={{
-							alignSelf: 'flex-end',
-						}}
-					>
+					<View style={{ alignSelf: 'flex-end' }}>
 						<Label title={labelTitle} type='error' />
 					</View>
-					<View
-						style={[
-							padding.horizontal.large,
-							{
-								alignItems: 'center',
-							},
-						]}
-					>
+					<View style={[padding.horizontal.large, { alignItems: 'center' }]}>
 						{children}
 						<RestartButton />
 					</View>
@@ -128,6 +123,7 @@ const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.React
 
 const WTFScreen: React.FC<{}> = ({}) => {
 	const [{ margin }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	return (
 		<ErrorScreenContainer labelTitle={t('error.labels.bug')}>
@@ -144,19 +140,21 @@ const WTFScreen: React.FC<{}> = ({}) => {
 			>
 				<Icon
 					name='question-mark-circle'
-					fill='#3F49EA'
+					fill={colors['background-header']}
 					height={45}
 					width={45}
 					style={{
 						marginRight: 20,
 					}}
 				/>
-				<Text style={{ color: '#3F49EA', fontSize: 30, fontWeight: '700' }}>WTF?!</Text>
+				<Text style={{ color: colors['background-header'], fontSize: 30, fontWeight: '700' }}>
+					WTF?!
+				</Text>
 			</View>
 			<Text
 				style={[
 					{
-						color: '#8F9BB3',
+						color: colors['secondary-text'],
 						fontWeight: '700',
 						textAlign: 'center',
 					},
@@ -166,22 +164,10 @@ const WTFScreen: React.FC<{}> = ({}) => {
 			>
 				{t('error.wtf-screen.title')}
 			</Text>
-			<Text
-				style={{
-					color: '#8F9BB3',
-					textAlign: 'center',
-					lineHeight: 24,
-				}}
-			>
+			<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 				{t('error.wtf-screen.desc')}
 			</Text>
-			<Text
-				style={{
-					color: '#8F9BB3',
-					textAlign: 'center',
-					lineHeight: 24,
-				}}
-			>
+			<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 				{t('error.wtf-screen.desc-report')}
 			</Text>
 		</ErrorScreenContainer>
@@ -190,26 +176,24 @@ const WTFScreen: React.FC<{}> = ({}) => {
 
 const SorryScreen: React.FC<{}> = ({}) => {
 	const [{ margin }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
+
 	return (
 		<ErrorScreenContainer labelTitle={t('error.labels.crash')}>
 			<Icon
 				name='wrong-man'
-				fill='#3F49EA'
+				fill={colors['background-header']}
 				pack='custom'
 				height={100}
 				width={100}
 				style={[margin.top.large]}
 			/>
-			<View
-				style={{
-					marginHorizontal: -15,
-				}}
-			>
+			<View style={{ marginHorizontal: -15 }}>
 				<Text
 					style={[
 						{
-							color: '#8F9BB3',
+							color: colors['secondary-text'],
 							fontWeight: '700',
 							textAlign: 'center',
 						},
@@ -219,20 +203,14 @@ const SorryScreen: React.FC<{}> = ({}) => {
 				>
 					{t('error.sorry-screen.title')}
 				</Text>
-				<Text
-					style={{
-						color: '#8F9BB3',
-						textAlign: 'center',
-						lineHeight: 24,
-					}}
-				>
+				<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 					{t('error.sorry-screen.desc')}
 				</Text>
 				<Text
 					style={[
 						margin.top.large,
 						{
-							color: '#8F9BB3',
+							color: colors['secondary-text'],
 							textAlign: 'center',
 							lineHeight: 24,
 							fontStyle: 'italic',
@@ -243,7 +221,7 @@ const SorryScreen: React.FC<{}> = ({}) => {
 				</Text>
 				<Text
 					style={{
-						color: '#8F9BB3',
+						color: colors['secondary-text'],
 						textAlign: 'center',
 						lineHeight: 24,
 						fontWeight: '700',

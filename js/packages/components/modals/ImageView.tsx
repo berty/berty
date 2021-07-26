@@ -7,7 +7,7 @@ import Share from 'react-native-share'
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversationsCount } from '@berty-tech/store/hooks'
+import { useConversationsCount, useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 
@@ -25,7 +25,8 @@ export const ImageView: React.FC<{
 		params: { images, previewOnly = false },
 	},
 }) => {
-	const [{ color, border, padding }] = useStyles()
+	const [{ border, padding }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const hasConversation = useConversationsCount()
 	const { goBack } = useNavigation()
@@ -108,20 +109,13 @@ export const ImageView: React.FC<{
 					>
 						<Icon
 							name='arrow-back-outline'
-							fill='white'
-							style={{
-								opacity: 0.8,
-							}}
+							fill={colors['reverted-main-text']}
+							style={{ opacity: 0.8 }}
 							height={30}
 							width={30}
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => setModalVisibility(false)}
-						style={{
-							flex: 1,
-						}}
-					/>
+					<TouchableOpacity onPress={() => setModalVisibility(false)} style={{ flex: 1 }} />
 					{!previewOnly && (
 						<View
 							style={[
@@ -130,7 +124,7 @@ export const ImageView: React.FC<{
 									left: 0,
 									bottom: 0,
 									right: 0,
-									backgroundColor: color.white,
+									backgroundColor: colors['main-background'],
 								},
 								padding.medium,
 								border.radius.top.large,
@@ -138,13 +132,7 @@ export const ImageView: React.FC<{
 						>
 							{MENU_LIST.map((item) => (
 								<TouchableOpacity key={item.title} onPress={item.onPress} style={[padding.medium]}>
-									<Text
-										style={{
-											textAlign: 'center',
-										}}
-									>
-										{item.title}
-									</Text>
+									<Text style={{ textAlign: 'center' }}>{item.title}</Text>
 								</TouchableOpacity>
 							))}
 						</View>
@@ -169,20 +157,10 @@ export const ImageView: React.FC<{
 							border.radius.large,
 							padding.vertical.small,
 							padding.horizontal.large,
-							{
-								backgroundColor: 'white',
-							},
+							{ backgroundColor: colors['main-background'] },
 						]}
 					>
-						<Text
-							style={[
-								{
-									color: 'black',
-								},
-							]}
-						>
-							{message}
-						</Text>
+						<Text style={{ color: 'black' }}>{message}</Text>
 					</View>
 				</View>
 			)}

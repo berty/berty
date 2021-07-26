@@ -6,7 +6,7 @@ import { Icon, Text } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import tlds from 'tlds'
 
-import { Maybe, useClient } from '@berty-tech/store/hooks'
+import { Maybe, useClient, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
@@ -66,6 +66,7 @@ export const HyperlinkUserMessage: React.FC<{
 	} = inte
 
 	const client = useClient()
+	const colors = useThemeColor()
 	const navigation = useNativeNavigation()
 	const [{ margin, padding, column, border }, { scaleSize }] = useStyles()
 	const [isReadMore, setReadMore] = useState(false)
@@ -89,9 +90,9 @@ export const HyperlinkUserMessage: React.FC<{
 					backgroundColor: msgBackgroundColor,
 				},
 				isHighlight && {
-					borderColor: '#525BEC',
+					borderColor: colors['background-header'],
 					borderWidth: 1,
-					shadowColor: '#525BEC',
+					shadowColor: colors['background-header'],
 					shadowOffset: {
 						width: 0,
 						height: 8,
@@ -128,7 +129,10 @@ export const HyperlinkUserMessage: React.FC<{
 				{isReadMore && (
 					<TouchableOpacity onPress={() => setReadMore(false)}>
 						<Text
-							style={[{ color: '#9391A2', fontSize: 12, alignSelf: 'center' }, margin.top.tiny]}
+							style={[
+								{ color: colors['secondary-text'], fontSize: 12, alignSelf: 'center' },
+								margin.top.tiny,
+							]}
 						>
 							Read more
 						</Text>
@@ -146,7 +150,8 @@ export const TimestampStatusUserMessage: React.FC<{
 	cmd: any
 }> = ({ inte, lastInte, isFollowedMessage, cmd }) => {
 	const sentDate = pbDateToNum(inte.sentDate)
-	const [{ row, margin, padding, color, flex }, { scaleSize }] = useStyles()
+	const [{ row, margin, padding, flex }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const _styles = useStylesMessage()
 
 	return (
@@ -169,7 +174,7 @@ export const TimestampStatusUserMessage: React.FC<{
 							name={inte.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
 							width={12}
 							height={12}
-							fill={color.blue}
+							fill={colors['background-header']}
 							style={[padding.left.tiny, { marginTop: 1 * scaleSize }]}
 						/>
 					)}

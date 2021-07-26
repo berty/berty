@@ -5,7 +5,7 @@ import { Translation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
+import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 
@@ -14,14 +14,22 @@ import Button from './Button'
 
 export const GetStarted = () => {
 	useNotificationsInhibitor(() => true)
-	const [{ absolute, background, column, flex, padding, text, color }] = useStyles()
+	const [{ absolute, column, flex, padding, text }] = useStyles()
+	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 
 	return (
 		<Translation>
 			{(t) => (
-				<SafeAreaView style={[absolute.fill, background.white, column.justify, padding.medium]}>
-					<StatusBar backgroundColor={color.white} barStyle='dark-content' />
+				<SafeAreaView
+					style={[
+						absolute.fill,
+						column.justify,
+						padding.medium,
+						{ backgroundColor: colors['main-background'] },
+					]}
+				>
+					<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 					<View style={[flex.medium]} />
 					<View style={[flex.big, { flexDirection: 'row', justifyContent: 'center' }]}>
 						<Logo height='60%' width='65%' />
@@ -35,6 +43,7 @@ export const GetStarted = () => {
 								{
 									lineHeight: 24,
 									letterSpacing: 0.4,
+									color: colors['main-text'],
 								},
 							]}
 						>
@@ -43,8 +52,8 @@ export const GetStarted = () => {
 					</View>
 					<View style={[flex.medium]}>
 						<Button
-							style={{ ...column.item.center, backgroundColor: '#3744DE' }}
-							textStyle={{ textTransform: 'uppercase', color: 'white' }}
+							style={{ ...column.item.center, backgroundColor: colors['background-header'] }}
+							textStyle={{ textTransform: 'uppercase', color: colors['reverted-main-text'] }}
 							onPress={async () => {
 								await AsyncStorage.setItem('isNewAccount', 'isNew')
 								navigate.onboarding.choosePreset()

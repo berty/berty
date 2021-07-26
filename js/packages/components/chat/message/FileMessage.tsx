@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import RNFS from 'react-native-fs'
 
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import { getSource } from '../../utils'
@@ -13,6 +13,7 @@ export const FileMessage: React.FC<{
 	onLongPress: () => void
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
+	const colors = useThemeColor()
 	const { protocolClient } = useMsgrContext()
 	const [source, setSource] = useState('')
 	const [isLoading, setLoading] = useState(false)
@@ -37,7 +38,7 @@ export const FileMessage: React.FC<{
 					flexDirection: 'row',
 				},
 				isHighlight && {
-					shadowColor: '#525BEC',
+					shadowColor: colors['background-header'],
 					shadowOffset: {
 						width: 0,
 						height: 8,
@@ -58,7 +59,12 @@ export const FileMessage: React.FC<{
 					.catch((err) => console.log(err))
 			}}
 		>
-			<Icon name='file' height={20} width={20} fill={isHighlight ? '#525BEC' : '#939FB6'} />
+			<Icon
+				name='file'
+				height={20}
+				width={20}
+				fill={isHighlight ? colors['background-header'] : colors['secondary-text']}
+			/>
 			<Text
 				style={[
 					{
@@ -66,8 +72,8 @@ export const FileMessage: React.FC<{
 						textDecorationLine: 'underline',
 					},
 					isHighlight && {
-						textDecorationColor: '#525BEC',
-						color: '#525BEC',
+						textDecorationColor: colors['background-header'],
+						color: colors['background-header'],
 					},
 				]}
 			>

@@ -6,6 +6,7 @@ import { readFile } from 'react-native-fs'
 
 import { playSoundFile } from '@berty-tech/store/sounds'
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import {
 	limitIntensities,
@@ -31,7 +32,8 @@ export const PreviewComponent: React.FC<{
 	setRecordingState,
 	setHelpMessageValue,
 }) => {
-	const [{ border, padding, margin, color }, { scaleSize }] = useStyles()
+	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [player, setPlayer] = useState<any>(null)
 	const isPlaying = useMemo(() => player?.isPlaying === true, [player?.isPlaying])
@@ -49,7 +51,7 @@ export const PreviewComponent: React.FC<{
 						justifyContent: 'center',
 						width: 36 * scaleSize,
 						height: 36 * scaleSize,
-						backgroundColor: color.red,
+						backgroundColor: colors['secondary-background-header'],
 						borderRadius: 18,
 					},
 				]}
@@ -65,7 +67,7 @@ export const PreviewComponent: React.FC<{
 					name='trash-outline'
 					height={20 * scaleSize}
 					width={20 * scaleSize}
-					fill={color.white}
+					fill={colors['reverted-main-text']}
 				/>
 			</TouchableOpacity>
 			<View
@@ -76,7 +78,7 @@ export const PreviewComponent: React.FC<{
 					{
 						height: 50,
 						flex: 1,
-						backgroundColor: '#F7F8FF',
+						backgroundColor: colors['input-background'],
 						flexDirection: 'row',
 						justifyContent: 'center',
 						alignItems: 'center',
@@ -114,7 +116,7 @@ export const PreviewComponent: React.FC<{
 					>
 						<Icon
 							name={isPlaying ? 'pause' : 'play'}
-							fill='#4F58C0'
+							fill={colors['background-header']}
 							height={18 * scaleSize}
 							width={18 * scaleSize}
 							pack='custom'
@@ -140,7 +142,7 @@ export const PreviewComponent: React.FC<{
 						justifyContent: 'center',
 						width: 36 * scaleSize,
 						height: 36 * scaleSize,
-						backgroundColor: color.blue,
+						backgroundColor: colors['background-header'],
 						borderRadius: 18,
 					},
 				]}
@@ -152,7 +154,7 @@ export const PreviewComponent: React.FC<{
 					name='paper-plane-outline'
 					width={20 * scaleSize}
 					height={20 * scaleSize}
-					fill={color.white}
+					fill={colors['reverted-main-text']}
 				/>
 			</TouchableOpacity>
 		</View>

@@ -1,10 +1,11 @@
 import React from 'react'
-import { View, ScrollView, Linking } from 'react-native'
+import { View, ScrollView, Linking, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
-import { Translation } from 'react-i18next'
+import { Translation, useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -30,7 +31,8 @@ const useStylesAboutBerty = () => {
 
 const HeaderAboutBerty: React.FC<{}> = () => {
 	const _styles = useStylesAboutBerty()
-	const [{ text, color, padding }] = useStyles()
+	const [{ text, padding }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<Translation>
@@ -42,14 +44,14 @@ const HeaderAboutBerty: React.FC<{}> = () => {
 								{
 									name: t('settings.about.top-left-button'),
 									icon: 'lock-outline',
-									color: color.yellow,
+									color: colors['secondary-background-header'],
 									style: _styles.firstHeaderButtonRow,
 									disabled: true,
 								},
 								{
 									name: t('settings.about.top-right-button'),
 									icon: 'settings-2-outline',
-									color: color.blue,
+									color: colors['background-header'],
 									style: _styles.secondHeaderButtonRow,
 									disabled: true,
 								},
@@ -61,14 +63,14 @@ const HeaderAboutBerty: React.FC<{}> = () => {
 								{
 									name: t('settings.about.bottom-left-button'),
 									icon: 'question-mark-circle-outline',
-									color: color.red,
+									color: colors['secondary-background-header'],
 									style: _styles.firstHeaderButtonRow,
 									disabled: true,
 								},
 								{
 									name: t('settings.about.bottom-right-button'),
 									icon: 'settings-2-outline',
-									color: color.green,
+									color: colors['background-header'],
 									style: _styles.secondHeaderButtonRow,
 									disabled: true,
 								},
@@ -86,7 +88,8 @@ const HeaderAboutBerty: React.FC<{}> = () => {
 const BodyAboutBerty: React.FC<{}> = () => {
 	const _styles = useStylesAboutBerty()
 	const navigation = useNavigation()
-	const [{ flex, margin, padding, color }] = useStyles()
+	const [{ flex, margin, padding }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<Translation>
@@ -96,7 +99,7 @@ const BodyAboutBerty: React.FC<{}> = () => {
 						name={t('settings.about.terms-button')}
 						icon='info-outline'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						actionIcon='arrow-ios-forward'
 						onPress={() => navigation.navigate.settings.termsOfUse()}
 					/>
@@ -104,7 +107,7 @@ const BodyAboutBerty: React.FC<{}> = () => {
 						name={t('settings.about.privacy-button')}
 						icon='book-open-outline'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled
 					/>
@@ -112,7 +115,7 @@ const BodyAboutBerty: React.FC<{}> = () => {
 						name={t('settings.about.software-button')}
 						icon='award-outline'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled
 					/>
@@ -122,14 +125,14 @@ const BodyAboutBerty: React.FC<{}> = () => {
 								onPress: () => Linking.openURL('mailto:hello@berty.tech'),
 								name: t('settings.about.contact-button'),
 								icon: 'email-outline',
-								color: color.blue,
+								color: colors['background-header'],
 								style: _styles.firstButtonRow,
 							},
 							{
 								onPress: () => Linking.openURL('https://berty.tech'),
 								name: t('settings.about.website-button'),
 								icon: 'globe-outline',
-								color: color.blue,
+								color: colors['background-header'],
 								style: _styles.secondButtonRow,
 							},
 						]}
@@ -143,13 +146,15 @@ const BodyAboutBerty: React.FC<{}> = () => {
 
 export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
 	const { goBack } = useNavigation()
-	const [{ flex, background, padding }] = useStyles()
+	const colors = useThemeColor()
+	const { t } = useTranslation()
 
 	return (
-		<Layout style={[flex.tiny, background.white]}>
+		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+			<StatusBar backgroundColor={colors['background-header']} barStyle={'light-content'} />
 			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
-					<HeaderSettings title='About Berty' undo={goBack}>
+				<ScrollView bounces={false}>
+					<HeaderSettings title={t('settings.about.title')} undo={goBack}>
 						<HeaderAboutBerty />
 					</HeaderSettings>
 					<BodyAboutBerty />

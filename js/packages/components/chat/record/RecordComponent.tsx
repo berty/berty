@@ -14,7 +14,7 @@ import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clien
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { playSound } from '@berty-tech/store/sounds'
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import {
 	limitIntensities,
@@ -119,7 +119,8 @@ export const RecordComponent: React.FC<{
 	const [recorderFilePath, setRecorderFilePath] = useState('')
 	const { t } = useTranslation()
 
-	const [{ border, padding, margin, color }, { scaleSize }] = useStyles()
+	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
 	const [recordingStart, setRecordingStart] = useState(Date.now())
 	const [clearRecordingInterval, setClearRecordingInterval] = useState<ReturnType<
@@ -407,7 +408,7 @@ export const RecordComponent: React.FC<{
 	)
 
 	return (
-		<View style={[padding.top.medium, { flexDirection: 'row' }]}>
+		<View style={[{ flexDirection: 'row' }]}>
 			{helpMessage !== '' && (
 				<TouchableOpacity
 					style={{ position: 'absolute', top: -30, right: 0 }}
@@ -415,15 +416,13 @@ export const RecordComponent: React.FC<{
 				>
 					<View
 						style={[
-							{
-								backgroundColor: color.blue,
-							},
+							{ backgroundColor: colors['background-header'] },
 							padding.small,
 							border.radius.small,
 							margin.right.small,
 						]}
 					>
-						<Text style={{ color: color.white }}>{helpMessage}</Text>
+						<Text style={{ color: colors['reverted-main-text'] }}>{helpMessage}</Text>
 					</View>
 				</TouchableOpacity>
 			)}
@@ -473,7 +472,7 @@ export const RecordComponent: React.FC<{
 									justifyContent: 'center',
 									alignItems: 'center',
 									borderRadius: 100,
-									backgroundColor: color.blue,
+									backgroundColor: colors['background-header'],
 									width: 36 * scaleSize,
 									height: 36 * scaleSize,
 									position: 'absolute',
@@ -487,7 +486,7 @@ export const RecordComponent: React.FC<{
 									pack='feather'
 									height={20 * scaleSize}
 									width={20 * scaleSize}
-									fill={color.white}
+									fill={colors['reverted-main-text']}
 								/>
 							</View>
 						)}

@@ -1,9 +1,9 @@
 import React from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import LinearGradient from 'react-native-linear-gradient'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 type FooterCreateGroupProps = {
 	title: string
@@ -20,18 +20,12 @@ const useStylesCreateGroup = () => {
 }
 
 export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, action }) => {
-	const [{ absolute, background, row, padding, color, text }, { scaleSize }] = useStyles()
+	const [{ row, padding, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const _styles = useStylesCreateGroup()
 
 	return (
 		<>
-			<LinearGradient
-				style={[
-					absolute.bottom,
-					{ alignItems: 'center', justifyContent: 'center', height: '15%', width: '100%' },
-				]}
-				colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
-			/>
 			<View
 				style={[
 					{
@@ -45,12 +39,12 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 				<TouchableOpacity onPress={() => action()}>
 					<View
 						style={[
-							background.light.blue,
 							padding.horizontal.medium,
 							padding.vertical.small,
 							{
 								flexDirection: 'row',
 								justifyContent: 'center',
+								backgroundColor: colors['positive-asset'],
 							},
 							_styles.footerCreateGroupButton,
 						]}
@@ -59,9 +53,9 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 							<Text
 								style={[
 									text.bold.medium,
-									text.color.blue,
 									text.align.center,
 									_styles.footerCreateGroupText,
+									{ color: colors['background-header'] },
 								]}
 							>
 								{title}
@@ -73,7 +67,7 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 									name='arrow-forward-outline'
 									width={25 * scaleSize}
 									height={25 * scaleSize}
-									fill={color.blue}
+									fill={colors['background-header']}
 								/>
 							</View>
 						)}

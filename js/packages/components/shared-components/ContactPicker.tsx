@@ -6,13 +6,15 @@ import { useTranslation } from 'react-i18next'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { ContactAvatar } from '@berty-tech/components/avatars'
-import { useAccountContactSearchResults } from '@berty-tech/store/hooks'
+import { useAccountContactSearchResults, useThemeColor } from '@berty-tech/store/hooks'
 
 // Styles
 const useStylesCreateGroup = () => {
 	const [{ border }] = useStyles()
+	const colors = useThemeColor()
+
 	return {
-		separateBar: [border.scale(0.6), border.color.light.grey],
+		separateBar: [border.scale(0.6), { borderColor: `${colors['secondary-text']}90` }],
 	}
 }
 
@@ -83,7 +85,8 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({
 	members,
 	accountContacts,
 }) => {
-	const [{ padding, background, row, margin, border }, { scaleHeight, scaleSize }] = useStyles()
+	const [{ padding, row, margin, border }, { scaleHeight, scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useAccountContactSearchResults(searchText)
 	const { t }: { t: any } = useTranslation()
@@ -93,33 +96,39 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({
 	)
 
 	return (
-		<View style={[padding.horizontal.large, padding.top.small, background.white, { flex: 1 }]}>
+		<View
+			style={[
+				padding.horizontal.large,
+				padding.top.small,
+				{ flex: 1, backgroundColor: colors['main-background'] },
+			]}
+		>
 			<View
 				style={[
 					padding.small,
 					row.left,
 					border.radius.medium,
-					{ backgroundColor: '#F7F8FF', alignItems: 'center' },
+					{ backgroundColor: colors['input-background'], alignItems: 'center' },
 				]}
 			>
 				<Icon
 					name='search-outline'
 					width={30 * scaleHeight}
 					height={30 * scaleHeight}
-					fill='#AFB1C0'
+					fill={colors['secondary-text']}
 					style={row.item.justify}
 				/>
 				<TextInput
 					style={[
 						margin.left.small,
 						{
-							color: '#AFB1C0',
+							color: colors['secondary-text'],
 							paddingVertical: 8 * scaleHeight,
 							flex: 1,
 						},
 					]}
 					placeholder={t('main.home.create-group.search-placeholder')}
-					placeholderTextColor='#AFB1C090'
+					placeholderTextColor={colors['secondary-text']}
 					onChangeText={setSearchText}
 					autoCorrect={false}
 				/>

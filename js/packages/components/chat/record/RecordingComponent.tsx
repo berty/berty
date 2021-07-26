@@ -5,6 +5,7 @@ import moment from 'moment'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { RecordingState } from './common'
 
@@ -15,7 +16,8 @@ export const RecordingComponent: React.FC<{
 	setHelpMessageValue: ({ message, delay }: { message: string; delay?: number | undefined }) => void
 	timer: number
 }> = ({ recordingState, recordingColorVal, setRecordingState, setHelpMessageValue, timer }) => {
-	const [{ border, padding, margin, color }, { scaleSize }] = useStyles()
+	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { t } = useTranslation()
 
 	return (
@@ -37,7 +39,7 @@ export const RecordingComponent: React.FC<{
 				<View
 					style={[
 						{
-							backgroundColor: color.red,
+							backgroundColor: colors['secondary-background-header'],
 							position: 'absolute',
 							right: 0,
 							left: 0,
@@ -50,12 +52,14 @@ export const RecordingComponent: React.FC<{
 						margin.right.small,
 					]}
 				>
-					<Text style={{ color: color.white }}>{moment.utc(timer).format('mm:ss')}</Text>
+					<Text style={{ color: colors['reverted-main-text'] }}>
+						{moment.utc(timer).format('mm:ss')}
+					</Text>
 				</View>
 				<Animated.View
 					style={[
 						{
-							backgroundColor: color.white,
+							backgroundColor: colors['main-background'],
 							position: 'absolute',
 							right: 0,
 							left: 0,
@@ -93,7 +97,7 @@ export const RecordingComponent: React.FC<{
 					{recordingState !== RecordingState.RECORDING_LOCKED ? (
 						<Text
 							style={{
-								color: color.black,
+								color: colors['main-text'],
 								fontWeight: 'bold',
 								fontFamily: 'Open Sans',
 								padding: 5,
@@ -104,7 +108,7 @@ export const RecordingComponent: React.FC<{
 					) : (
 						<Text
 							style={{
-								color: color.black,
+								color: colors['main-text'],
 								fontWeight: 'bold',
 								fontFamily: 'Open Sans',
 								padding: 5,
@@ -131,7 +135,12 @@ export const RecordingComponent: React.FC<{
 							setRecordingState(RecordingState.PENDING_PREVIEW)
 						}}
 					>
-						<Icon name='square' height={20 * scaleSize} width={20 * scaleSize} fill={color.white} />
+						<Icon
+							name='square'
+							height={20 * scaleSize}
+							width={20 * scaleSize}
+							fill={colors['reverted-main-text']}
+						/>
 					</TouchableOpacity>
 				)}
 			</View>
@@ -154,7 +163,7 @@ export const RecordingComponent: React.FC<{
 								justifyContent: 'center',
 								width: 36 * scaleSize,
 								height: 36 * scaleSize,
-								backgroundColor: color.blue,
+								backgroundColor: colors['background-header'],
 								borderRadius: 18,
 							},
 						]}
@@ -166,7 +175,7 @@ export const RecordingComponent: React.FC<{
 							name='paper-plane-outline'
 							width={20 * scaleSize}
 							height={20 * scaleSize}
-							fill={color.white}
+							fill={colors['reverted-main-text']}
 						/>
 					</TouchableOpacity>
 				</View>

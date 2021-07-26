@@ -7,7 +7,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { Maybe, useConversation, useMsgrContext } from '@berty-tech/store/hooks'
+import { Maybe, useConversation, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import {
 	ButtonSetting,
@@ -36,7 +36,8 @@ const useStylesChatSettings = () => {
 const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 	const { navigate } = useNavigation()
 	const _styles = useStylesChatSettings()
-	const [{ padding, margin, color }] = useStyles()
+	const [{ padding, margin }] = useStyles()
+	const colors = useThemeColor()
 	const { t } = useTranslation()
 	return (
 		<View style={[padding.top.medium, margin.top.medium]}>
@@ -45,21 +46,21 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 					{
 						name: t('chat.multi-member-settings.header-left-button'),
 						icon: 'search-outline',
-						color: color.blue,
+						color: colors['background-header'],
 						style: _styles.firstHeaderButton,
 						disabled: true,
 					},
 					{
 						name: t('chat.multi-member-settings.header-middle-button'),
 						icon: 'phone-outline',
-						color: color.green,
+						color: colors['background-header'],
 						style: _styles.secondHeaderButton,
 						disabled: true,
 					},
 					{
 						name: t('chat.multi-member-settings.header-right-button'),
 						icon: 'upload',
-						color: color.blue,
+						color: colors['background-header'],
 						style: _styles.thirdHeaderButton,
 						disabled: !link || undefined,
 						onPress: link ? () => navigate.chat.multiMemberQR({ convId: publicKey }) : undefined,
@@ -75,6 +76,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 	const ctx = useMsgrContext()
 	const [picture, setPicture] = useState<ImageOrVideo | undefined>(undefined)
 	const [{ text, margin, row }] = useStyles()
+	const colors = useThemeColor()
 
 	const handleSave = React.useCallback(async () => {
 		try {
@@ -146,7 +148,12 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 			<Text
 				numberOfLines={1}
 				ellipsizeMode='tail'
-				style={[text.align.center, text.color.white, margin.top.small, text.bold.medium]}
+				style={[
+					text.align.center,
+					margin.top.small,
+					text.bold.medium,
+					{ color: colors['reverted-main-text'] },
+				]}
 			>
 				{conv?.displayName || ''}
 			</Text>
@@ -155,7 +162,8 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 }
 
 const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
-	const [{ padding, margin, color }, { scaleSize }] = useStyles()
+	const [{ padding, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const ctx = useMsgrContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
@@ -184,8 +192,8 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				iconPack='custom'
 				state={{
 					value: `${memberLength} ${memberText}`,
-					color: color.blue,
-					bgColor: color.light.blue,
+					color: colors['background-header'],
+					bgColor: colors['positive-asset'],
 				}}
 				style={[margin.top.medium]}
 			>
@@ -277,13 +285,13 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 			<ButtonSetting
 				name={t('chat.multi-member-settings.erase-button')}
 				icon='message-circle-outline'
-				iconColor={color.red}
+				iconColor={colors['secondary-background-header']}
 				disabled
 			/>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.leave-button')}
 				icon='log-out-outline'
-				iconColor={color.red}
+				iconColor={colors['secondary-background-header']}
 				disabled
 			/>
 		</View>
@@ -294,17 +302,17 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 	const { convId } = route.params
 	const conv = useConversation(convId)
 	const { goBack } = useNavigation()
-	const [{ flex, padding, color }] = useStyles()
+	const colors = useThemeColor()
 
 	if (!conv) {
 		goBack()
 		return null
 	}
 	return (
-		<Layout style={[flex.tiny]}>
-			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
+		<Layout style={{ flex: 1 }}>
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SwipeNavRecognizer>
-				<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
+				<ScrollView bounces={false}>
 					<HeaderSettings actionIcon='edit-outline' undo={goBack}>
 						<View>
 							<GroupChatSettingsHeader publicKey={conv.publicKey} />

@@ -5,7 +5,7 @@ import { Translation, useTranslation } from 'react-i18next'
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 
@@ -123,15 +123,12 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 	bluetoothPermissions,
 	setBluetoothPermissions,
 }) => {
-	const [{ flex, padding, margin, color }] = useStyles()
+	const [{ flex, padding, margin }] = useStyles()
+	const colors = useThemeColor()
 	const ctx = useMsgrContext()
 	const { t }: { t: any } = useTranslation()
 
 	const appState = useRef(AppState.currentState)
-
-	console.log(
-		'BodyBluetooth: ctx.persistentOptions?.ble.enable=' + ctx.persistentOptions?.ble.enable,
-	)
 
 	useEffect(() => {
 		const _handleAppStateChange = (nextAppState: any) => {
@@ -141,10 +138,9 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 						setBluetoothPermissions(result)
 						toActivate(result)
 						toActivate = () => {}
-						console.log('in _handleAppStateChange')
 					})
 					.catch((err) => {
-						console.log('The Bluetooth permission cannot be retrieved:', err)
+						console.log('Check bluetooth permission error:', err)
 					})
 			}
 
@@ -170,7 +166,6 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 				},
 			})
 		} else if (bluetoothPermissions !== 'blocked') {
-			console.log("case: not 'blocked'")
 			// permissions can be requested
 			permissionExplanation(t, () => {
 				requestBluetoothPermission().then(async (permission) => {
@@ -184,7 +179,6 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 				})
 			})
 		} else {
-			console.log("case: 'blocked'")
 			// permissions cannot be requested and must be set manually by the user
 			permissionExplanation(t, () => {
 				toActivate = async (permission) => {
@@ -206,7 +200,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 				name={t('settings.bluetooth.activate-button')}
 				icon='bluetooth-outline'
 				iconSize={30}
-				iconColor={color.blue}
+				iconColor={colors['background-header']}
 				toggled
 				varToggle={ctx.persistentOptions?.ble.enable}
 				actionToggle={() =>
@@ -218,7 +212,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 					name={t('settings.mc.activate-button')}
 					icon='wifi-outline'
 					iconSize={30}
-					iconColor={color.blue}
+					iconColor={colors['background-header']}
 					toggled
 					varToggle={ctx.persistentOptions?.mc.enable}
 					actionToggle={() => {
@@ -231,7 +225,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({
 					name={t('settings.nearby.activate-button')}
 					icon='wifi-outline'
 					iconSize={30}
-					iconColor={color.blue}
+					iconColor={colors['background-header']}
 					toggled
 					varToggle={ctx.persistentOptions?.nearby.enable}
 					actionToggle={() => {
@@ -248,7 +242,7 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 		'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined
 	>()
 	const { goBack } = useNavigation()
-	const [{ flex, background }] = useStyles()
+	const colors = useThemeColor()
 	const ctx = useMsgrContext()
 
 	// get Bluetooth permissions state
@@ -301,21 +295,14 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<Layout style={[flex.tiny, background.white]}>
+				<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 					<SwipeNavRecognizer>
 						<ScrollView bounces={false}>
 							<HeaderSettings
 								title={t('settings.bluetooth.title')}
 								desc={t('settings.bluetooth.desc')}
 								undo={goBack}
-							>
-								{/* {bluetoothPermissions !== undefined && (
-									<HeaderBluetooth
-										bluetoothPermissions={bluetoothPermissions}
-										setBluetoothPermissions={setBluetoothPermissions}
-									/>
-								)} */}
-							</HeaderSettings>
+							/>
 							{bluetoothPermissions !== undefined && (
 								<BodyBluetooth
 									bluetoothPermissions={bluetoothPermissions}

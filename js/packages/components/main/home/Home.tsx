@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
-import { BlurView } from '@react-native-community/blur'
 import { Translation } from 'react-i18next'
-import { ScrollView, Text as TextNative, View, StatusBar } from 'react-native'
+import { ScrollView, Text as TextNative, View, StatusBar, TouchableOpacity } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import pickBy from 'lodash/pickBy'
+import { Icon } from '@ui-kitten/components'
 
 import { ScreenProps } from '@berty-tech/navigation'
 import {
@@ -13,6 +13,7 @@ import {
 	useMsgrContext,
 	useNotificationsInhibitor,
 	useSortedConversationList,
+	useThemeColor,
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -23,8 +24,6 @@ import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { useLayout } from '../../hooks'
 import { SwipeNavRecognizer } from '../../shared-components/SwipeNavRecognizer'
 import EmptyChat from '../empty_chat.svg'
-import { HomeModal } from './HomeModal'
-import { Footer } from './Footer'
 import { IncomingRequests } from './Requests'
 import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'
@@ -32,6 +31,42 @@ import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
+
+const FooterButton: React.FC<{
+	name: string
+	fill: string
+	backgroundColor: string
+	onPress: () => void | undefined
+}> = ({ name, fill, backgroundColor, onPress }) => {
+	const [{}, { scaleSize }] = useStyles()
+
+	return (
+		<TouchableOpacity
+			style={[
+				{
+					marginBottom: 30 * scaleSize,
+					width: 60,
+					height: 60,
+					borderRadius: 60,
+					shadowColor: '#000',
+					shadowOffset: {
+						width: 0,
+						height: 5,
+					},
+					shadowOpacity: 0.2,
+					shadowRadius: 20,
+					elevation: 5,
+					backgroundColor,
+					alignItems: 'center',
+					justifyContent: 'center',
+				},
+			]}
+			onPress={onPress}
+		>
+			<Icon name={name} pack='custom' fill={fill} width={30 * scaleSize} height={30 * scaleSize} />
+		</TouchableOpacity>
+	)
+}
 
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	useNotificationsInhibitor((_ctx, notif) =>
@@ -51,7 +86,6 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [searchText, setSearchText] = useState<string>('')
 	const [refresh, setRefresh] = useState<boolean>(false)
-	const [isModalVisible, setModalVisibility] = useState<boolean>(false)
 	const [isAddBot, setIsAddBot] = useState({
 		link: '',
 		displayName: '',
@@ -67,8 +101,9 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		{ text, opacity, flex, margin, background },
 		{ windowHeight, scaleSize, scaleHeight },
 	] = useStyles()
-	const scrollRef = useRef<ScrollView>(null)
+	const colors = useThemeColor()
 
+	const scrollRef = useRef<ScrollView>(null)
 	const searching = !!searchText
 	const lowSearchText = searchText.toLowerCase()
 	const searchCheck = React.useCallback(
@@ -158,12 +193,15 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		}
 	}, [client, searchInteractions, searchText])
 
-	const hasResults = [searchConversations, searchContacts, searchInteractions].some(
+	const hasResults = [searchConversations, searchContacts, searchInteractions.current].some(
 		(c) => Object.keys(c).length > 0,
 	)
 	const styleBackground = useMemo(
-		() => (requests.length > 0 && !searchText?.length ? background.blue : background.white),
-		[background.blue, background.white, requests.length, searchText],
+		() =>
+			requests.length > 0 && !searchText?.length
+				? { backgroundColor: colors['background-header'] }
+				: { backgroundColor: colors['main-background'] },
+		[requests.length, searchText, colors],
 	)
 
 	return (
@@ -171,8 +209,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 			<Translation>
 				{(t: any): React.ReactNode => (
 					<View style={[flex.tiny, styleBackground]}>
-						<StatusBar backgroundColor='white' barStyle='dark-content' />
-						<SwipeNavRecognizer onSwipeLeft={() => !isModalVisible && navigate('Settings.Home')}>
+						<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+						<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
 							<SafeAreaConsumer>
 								{(insets: EdgeInsets | null) => (
 									<>
@@ -273,29 +311,28 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 												</>
 											)}
 										</ScrollView>
-										{isModalVisible && (
-											<>
-												<BlurView
-													blurType='light'
-													style={{
-														position: 'absolute',
-														left: 0,
-														right: 0,
-														top: 0,
-														bottom: 0,
-														height: windowHeight,
-													}}
+										<>
+											<View
+												style={{
+													position: 'absolute',
+													right: 20 * scaleSize,
+													bottom: 20 * scaleSize,
+												}}
+											>
+												<FooterButton
+													name='qr'
+													fill={colors['secondary-text']}
+													backgroundColor={colors['main-background']}
+													onPress={() => navigate('Main.Scan')}
 												/>
-												<HomeModal closeModal={() => setModalVisibility(false)} />
-											</>
-										)}
-
-										{!searchText?.length && (
-											<Footer
-												openModal={() => setModalVisibility(true)}
-												isModalVisible={isModalVisible}
-											/>
-										)}
+												<FooterButton
+													name='add-new-group'
+													fill={colors['reverted-main-text']}
+													backgroundColor={colors['background-header']}
+													onPress={() => navigate('Main.CreateGroupAddMembers')}
+												/>
+											</View>
+										</>
 										{isAddBot.isVisible && (
 											<AddBot
 												link={isAddBot.link}

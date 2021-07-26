@@ -3,9 +3,8 @@ import { StatusBar } from 'react-native'
 import { Translation } from 'react-i18next'
 import { useNavigation, RouteProp } from '@react-navigation/native'
 
-import { useStyles } from '@berty-tech/styles'
 import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/services'
-import { useMsgrContext, useNotificationsInhibitor } from '@berty-tech/store/hooks'
+import { useMsgrContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
@@ -70,7 +69,7 @@ export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }
 	useNotificationsInhibitor(() => true)
 	const { goBack } = useNavigation()
 	const { persistentOptions, setPersistentOption } = useMsgrContext()
-	const [{ color }] = useStyles()
+	const colors = useThemeColor()
 
 	const handleComplete = async () => {
 		goBack()
@@ -98,7 +97,7 @@ export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }
 
 	return (
 		<OnboardingWrapper>
-			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<ServicesAuthBody
 				next={async () => {
 					await setPersistentOption({

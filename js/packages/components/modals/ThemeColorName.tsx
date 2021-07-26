@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react'
-import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import React from 'react'
+import { View, TouchableOpacity, Text as TextNative, StyleSheet, TextInput } from 'react-native'
+import { Icon } from '@ui-kitten/components'
 import { BlurView } from '@react-native-community/blur'
-import { Buffer } from 'buffer'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import { CurrentGeneratedTheme, PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
-import { base64ToURLBase64 } from '../utils'
 
 const useStylesAddBetabot = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -42,30 +40,15 @@ const useStylesAddBetabot = () => {
 	}
 }
 
-export const AddBotBody = ({ displayName, link, closeModal }) => {
-	const [{ row, text, margin, padding, border, opacity }, { scaleHeight }] = useStyles()
+export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
+	const [themeName, setThemeName] = React.useState<string>('')
+	const [{ row, text, margin, padding, border, opacity }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesAddBetabot()
-	const { setPersistentOption, persistentOptions } = useMsgrContext()
-	const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
-	const {
-		reply: pdlReply,
-		error: pdlError,
-		call,
-		done: pdlDone,
-	} = messengerMethodsHooks.useParseDeepLink()
+	const ctx = useMsgrContext()
+	const { t } = useTranslation()
 
-	useEffect(() => {
-		call({ link })
-	}, [call, link])
-
-	useEffect(() => {
-		if (done && !error) {
-			closeModal()
-		}
-	}, [done, error, closeModal])
-
-	return pdlReply?.link?.bertyId?.accountPk ? (
+	return (
 		<View
 			style={[
 				{
@@ -108,13 +91,6 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 				]}
 			>
 				<View style={[margin.top.scale(70 * scaleHeight)]}>
-					<Icon
-						name='info-outline'
-						fill={colors['background-header']}
-						width={60 * scaleHeight}
-						height={60 * scaleHeight}
-						style={[row.item.justify, padding.top.large]}
-					/>
 					<TextNative
 						style={[
 							text.align.center,
@@ -124,57 +100,57 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 							{ fontFamily: 'Open Sans', color: colors['main-text'] },
 						]}
 					>
-						{`👋 ADD ${displayName}?`}
+						{`🎨 ${t('modals.save-theme.title')}`}
 					</TextNative>
-					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-						<TextNative
+					<View
+						style={[padding.top.scale(20), padding.horizontal.medium, { flexDirection: 'column' }]}
+					>
+						<View>
+							<TextNative
+								style={[
+									text.bold.small,
+									text.size.medium,
+									{ fontFamily: 'Open Sans', color: colors['main-text'] },
+								]}
+							>
+								{t('modals.save-theme.desc')}
+							</TextNative>
+						</View>
+						<View
 							style={[
-								text.bold.small,
-								text.size.medium,
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
+								border.radius.medium,
+								padding.left.small,
+								margin.top.medium,
+								{ backgroundColor: colors['input-background'] },
 							]}
 						>
-							You don't have any contacts yet would you like to add the
-						</TextNative>
-						<TextNative
-							style={[
-								text.bold.medium,
-								text.size.medium,
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
-							]}
-						>
-							{` ${displayName} `}
-						</TextNative>
-						<TextNative
-							style={[
-								text.bold.small,
-								text.size.medium,
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
-							]}
-						>
-							to discover and test conversations?
-						</TextNative>
-					</Text>
+							<TextInput
+								value={themeName}
+								multiline
+								onChange={({ nativeEvent }) => setThemeName(nativeEvent.text)}
+								style={[
+									text.bold.small,
+									{
+										fontFamily: 'Open Sans',
+										color: colors['background-header'],
+										paddingRight: 12 * scaleSize,
+									},
+								]}
+								placeholder={t('modals.save-theme.placeholder')}
+								placeholderTextColor={colors['secondary-text']}
+							/>
+						</View>
+					</View>
 				</View>
-				<View style={[row.center, padding.top.medium]}>
+				<View style={[row.center, margin.top.small]}>
 					<TouchableOpacity
 						style={[
 							margin.bottom.medium,
 							opacity(0.5),
 							_styles.skipButton,
-							{ flexDirection: 'row', justifyContent: 'center' },
+							{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
 						]}
 						onPress={async () => {
-							await setPersistentOption({
-								type: PersistentOptionsKeys.Suggestions,
-								payload: {
-									...persistentOptions.suggestions,
-									[displayName]: {
-										...persistentOptions.suggestions[displayName],
-										state: 'skipped',
-									},
-								},
-							})
 							closeModal()
 						}}
 					>
@@ -194,7 +170,7 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
 							]}
 						>
-							SKIP
+							{t('modals.save-theme.cancel')}
 						</TextNative>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -204,28 +180,25 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 							{
 								flexDirection: 'row',
 								justifyContent: 'center',
+								alignItems: 'center',
 								backgroundColor: colors['positive-asset'],
 							},
 						]}
 						onPress={async () => {
-							if (pdlDone && !pdlError) {
-								await setPersistentOption({
-									type: PersistentOptionsKeys.Suggestions,
-									payload: {
-										...persistentOptions.suggestions,
-										[displayName]: {
-											...persistentOptions.suggestions[displayName],
-											state: 'added',
-											pk: base64ToURLBase64(
-												new Buffer(pdlReply.link.bertyId.accountPk).toString('base64'),
-											),
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.ThemeColor,
+								payload: {
+									selected: themeName,
+									collection: {
+										...ctx.persistentOptions.themeColor.collection,
+										[themeName]: {
+											colors:
+												ctx.persistentOptions.themeColor.collection[CurrentGeneratedTheme].colors,
 										},
 									},
-								})
-								await requestContact({
-									link,
-								})
-							}
+								},
+							})
+							closeModal()
 						}}
 					>
 						<Icon
@@ -244,16 +217,16 @@ export const AddBotBody = ({ displayName, link, closeModal }) => {
 								{ color: colors['background-header'] },
 							]}
 						>
-							ADD !
+							{t('modals.save-theme.add')}
 						</TextNative>
 					</TouchableOpacity>
 				</View>
 			</View>
 		</View>
-	) : null
+	)
 }
 
-export const AddBot = ({ link, displayName, closeModal }) => {
+export const ThemeColorName: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [{}, { windowHeight }] = useStyles()
 
 	return (
@@ -275,9 +248,9 @@ export const AddBot = ({ link, displayName, closeModal }) => {
 			>
 				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
 			</TouchableOpacity>
-			<AddBotBody displayName={displayName} link={link} closeModal={closeModal} />
+			<ThemeColorBody closeModal={closeModal} />
 		</View>
 	)
 }
 
-export default AddBot
+export default ThemeColorName

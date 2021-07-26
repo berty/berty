@@ -3,6 +3,7 @@ import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
@@ -30,21 +31,24 @@ type BlockedContactsProps = {
 // Styles
 const useStylesBlockedContacts = () => {
 	const [{ minHeight, padding, text }] = useStyles()
+	const colors = useThemeColor()
+
 	return {
 		item: minHeight(60),
-		blockedText: [padding.left.scale(3), text.size.tiny, text.color.light.black],
+		blockedText: [padding.left.scale(3), text.size.tiny, { color: colors['secondary-text'] }],
 	}
 }
 
 const HeaderBlockedContacts: React.FC<{}> = () => {
-	const [{ color }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<View>
 			<ButtonSetting
 				name='Block a new user'
 				icon='plus-circle-outline'
 				iconSize={30}
-				iconColor={color.blue}
+				iconColor={colors['background-header']}
 				actionIcon='arrow-ios-forward'
 			/>
 		</View>
@@ -53,10 +57,18 @@ const HeaderBlockedContacts: React.FC<{}> = () => {
 
 const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ name }) => {
 	const _styles = useStylesBlockedContacts()
-	const [{ flex, background, padding, row, text, color }] = useStyles()
+	const [{ flex, padding, row, text }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
-		<TouchableOpacity style={[flex.tiny, background.white, padding.small, _styles.item]}>
+		<TouchableOpacity
+			style={[
+				flex.tiny,
+				padding.small,
+				_styles.item,
+				{ backgroundColor: colors['main-background'] },
+			]}
+		>
 			<View style={[flex.tiny, row.fill]}>
 				<View style={[row.center, row.item.justify]}>
 					{/*<CircleAvatar avatarUri={avatarUri} size={40} withCircle={false} />*/}
@@ -69,17 +81,17 @@ const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ name }) => {
 								name='slash-outline'
 								width={12}
 								height={12}
-								fill={color.red}
+								fill={colors['warning-asset']}
 								style={row.item.justify}
 							/>
-							<Text style={[row.item.justify, _styles.blockedText, { color: color.black }]}>
+							<Text style={[row.item.justify, _styles.blockedText, { color: colors['main-text'] }]}>
 								Blocked since 2019-04-11
 							</Text>
 						</View>
 					</View>
 				</View>
 				<View style={[row.fill, row.item.justify]}>
-					<Icon name='arrow-ios-forward' width={30} height={30} fill={color.black} />
+					<Icon name='arrow-ios-forward' width={30} height={30} fill={colors['main-text']} />
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -100,10 +112,10 @@ const BodyBlockedContacts: React.FC<BlockedContactsListProps> = ({ items }) => {
 }
 
 export const BlockedContacts: React.FC<BlockedContactsProps> = ({ blocked }) => {
-	const [{ flex, background }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
-		<Layout style={[flex.tiny, background.white]}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<ScrollView bounces={false}>
 				<HeaderSettings
 					title='Blocked contacts'

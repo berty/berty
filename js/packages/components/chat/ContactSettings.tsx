@@ -4,7 +4,7 @@ import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useContacts } from '@berty-tech/store/hooks'
+import { useContacts, useThemeColor } from '@berty-tech/store/hooks'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -32,7 +32,8 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 }
 
 const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
-	const [{ border, background, padding, row, absolute, text }] = useStyles()
+	const [{ border, padding, row, absolute, text }] = useStyles()
+	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 
@@ -41,16 +42,23 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 			<View
 				style={[
 					border.radius.scale(30),
-					background.white,
 					padding.horizontal.medium,
 					padding.bottom.medium,
+					{ backgroundColor: colors['main-background'] },
 				]}
 			>
 				<View style={[row.item.justify, absolute.scale({ top: -50 })]}>
 					<ContactAvatar size={100} publicKey={contact.publicKey} />
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
-					<Text style={[text.size.big, text.color.black, text.align.center, text.bold.small]}>
+					<Text
+						style={[
+							text.size.big,
+							text.align.center,
+							text.bold.small,
+							{ color: colors['main-text'] },
+						]}
+					>
 						{contact.displayName}
 					</Text>
 					<TabBar
@@ -88,17 +96,16 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 }
 
 const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
-	const [{ color }] = useStyles()
-	// const deleteContact = Messenger.useDeleteContact()
 	const deleteContact = ({ id }: { id: string }) => {
 		console.warn(`attempted to delete ${id}, operation not implemented`)
 	}
 	const { t } = useTranslation()
+	const colors = useThemeColor()
 	return (
 		<ButtonSetting
 			name={t('chat.contact-settings.delete-button')}
 			icon='trash-2-outline'
-			iconColor={color.red}
+			iconColor={colors['secondary-background-header']}
 			onPress={() => deleteContact({ id })}
 			disabled
 		/>
@@ -106,7 +113,8 @@ const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
 }
 
 const ContactSettingsBody: React.FC<{ id: string }> = ({ id }) => {
-	const [{ padding, color }] = useStyles()
+	const [{ padding }] = useStyles()
+	const colors = useThemeColor()
 	const { t } = useTranslation()
 	return (
 		<View style={padding.medium}>
@@ -120,7 +128,7 @@ const ContactSettingsBody: React.FC<{ id: string }> = ({ id }) => {
 			<ButtonSetting
 				name={t('chat.contact-settings.block-button')}
 				icon='slash-outline'
-				iconColor={color.red}
+				iconColor={colors['secondary-background-header']}
 				disabled
 			/>
 			<DeleteContactButton id={id} />
@@ -131,8 +139,8 @@ const ContactSettingsBody: React.FC<{ id: string }> = ({ id }) => {
 export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ route }) => {
 	const { contactId } = route.params
 	const { goBack } = useNavigation()
+	const colors = useThemeColor()
 	const contact: any = (useContacts() as any)[contactId] || null
-	const [{ background, flex, padding, color }] = useStyles()
 	if (!contact) {
 		goBack()
 		return (
@@ -145,13 +153,9 @@ export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ ro
 	}
 	return (
 		<>
-			<View style={[flex.tiny]}>
-				<StatusBar backgroundColor={color.blue} barStyle='light-content' />
-				<ScrollView
-					style={[flex.tiny, background.white]}
-					contentContainerStyle={[padding.bottom.huge]}
-					bounces={false}
-				>
+			<View style={{ flex: 1 }}>
+				<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+				<ScrollView style={{ backgroundColor: colors['main-background'], flex: 1 }} bounces={false}>
 					<SwipeNavRecognizer>
 						<HeaderSettings actionIcon='upload' undo={goBack}>
 							<ContactSettingsHeader contact={contact} />

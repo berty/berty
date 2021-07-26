@@ -10,6 +10,7 @@ import {
 	useGenerateFakeMultiMembers,
 	useDeleteFakeData,
 	useGenerateFakeMessages,
+	useThemeColor,
 } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
@@ -18,7 +19,9 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 const BodyFakeData = () => {
 	const { t } = useTranslation()
-	const [{ color, padding, flex, margin }] = useStyles()
+	const [{ padding, flex, margin }] = useStyles()
+	const colors = useThemeColor()
+
 	const generateFakeContacts = useGenerateFakeContacts()
 	const generateFakeMM = useGenerateFakeMultiMembers()
 	const deleteFake = useDeleteFakeData()
@@ -30,7 +33,7 @@ const BodyFakeData = () => {
 				name={t('settings.fake-data.contacts-button')}
 				icon='book-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={() => generateFakeContacts(5)}
 			/>
@@ -38,7 +41,7 @@ const BodyFakeData = () => {
 				name={t('settings.fake-data.multi-members-button')}
 				icon='book-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={() => generateFakeMM(5)}
 			/>
@@ -46,7 +49,7 @@ const BodyFakeData = () => {
 				name={t('settings.fake-data.messages-button')}
 				icon='book-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={() => convGenMsg(3)}
 			/>
@@ -54,7 +57,7 @@ const BodyFakeData = () => {
 				name={t('settings.fake-data.delete-button')}
 				icon='book-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={() => deleteFake()}
 			/>
@@ -63,17 +66,17 @@ const BodyFakeData = () => {
 }
 
 export const FakeData = () => {
-	const [{ color, padding, flex, background }] = useStyles()
+	const colors = useThemeColor()
 	const { goBack } = useNavigation()
 	const { t } = useTranslation()
 
 	return (
-		<Layout style={[background.white, flex.tiny]}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
+				<ScrollView bounces={false}>
 					<HeaderSettings
 						title={t('settings.fake-data.title')}
-						bgColor={color.dark.grey}
+						bgColor={colors['alt-secondary-background-header']}
 						undo={goBack}
 					/>
 					<BodyFakeData />

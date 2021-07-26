@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import beapi from '@berty-tech/api'
 import { pbDateToNum } from '@berty-tech/components/helpers'
 import { Routes } from '@berty-tech/navigation'
+import colors from '@berty-tech/styles/colors.json'
 
 import { MsgrContext, useMsgrContext, NotificationsInhibitor, MessengerActions } from './context'
 import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
@@ -154,6 +155,19 @@ export const useConvMemberList = (publicKey: Maybe<string>) => {
 export const usePersistentOptions = () => {
 	const ctx = useMsgrContext()
 	return ctx.persistentOptions || {}
+}
+
+export const useThemeColor = () => {
+	const ctx = useMsgrContext()
+	let collectionColors = {}
+	Object.entries(ctx.persistentOptions?.themeColor.collection).map((value) => {
+		if (value[0] === ctx.persistentOptions?.themeColor.selected) {
+			collectionColors = value[1]?.colors
+		}
+	})
+	return Object.entries(ctx.persistentOptions?.themeColor.collection).length
+		? collectionColors
+		: colors
 }
 
 //

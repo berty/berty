@@ -4,6 +4,7 @@ import { Text } from '@ui-kitten/components'
 import { SHA3 } from 'sha3'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 //
 // FingerprintContent => Generally on TabBar there is a TabItem Fingerpint that show this component
@@ -24,14 +25,14 @@ const useStylesFingerprintContent = () => {
 
 const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint }) => {
 	const [{ text }] = useStyles()
+	const colors = useThemeColor()
 	const _styles = useStylesFingerprintContent()
 	return (
 		<Text
 			style={[
-				text.color.blue,
 				text.bold.medium,
 				_styles.fingerprintContentText,
-				{ fontFamily: 'Courier' },
+				{ fontFamily: 'Courier', color: colors['background-header'] },
 			]}
 		>
 			{fingerprint.toUpperCase()}
@@ -56,6 +57,8 @@ export const FingerprintContent: React.FC<{ seed: string; isEncrypted: boolean }
 	isEncrypted,
 }) => {
 	const [{ column, border, padding }] = useStyles()
+	const colors = useThemeColor()
+
 	if (isEncrypted) {
 		return (
 			<Text style={{ textAlign: 'center' }}>
@@ -69,7 +72,11 @@ export const FingerprintContent: React.FC<{ seed: string; isEncrypted: boolean }
 	const digest = new SHA3(256).update(seed).digest('hex')
 	return (
 		<View
-			style={[border.radius.medium, padding.medium, { backgroundColor: '#E8E9FC', width: '100%' }]}
+			style={[
+				border.radius.medium,
+				padding.medium,
+				{ backgroundColor: colors['input-background'], width: '100%' },
+			]}
 		>
 			<View style={[column.top]}>
 				<FingerprintContentFaction digestPart={digest.substr(0, 16)} />

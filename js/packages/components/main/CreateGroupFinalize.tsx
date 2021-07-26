@@ -10,6 +10,7 @@ import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMsgrContext } from '@berty-tech/store/context'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
@@ -18,15 +19,14 @@ import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
 
 const useStylesCreateGroup = () => {
-	const [
-		{ padding, height, width, absolute, border, column, text, background },
-		{ scaleSize },
-	] = useStyles()
+	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
 	return {
 		newGroup: height(30),
 		newGroup2ItemName: padding.top.tiny,
 		addMembersItem: [padding.vertical.small, padding.horizontal.tiny],
-		separateBar: [border.scale(0.5), border.color.light.grey], // opacity
+		separateBar: [border.scale(0.5), { borderColor: `${colors['secondary-text']}70` }], // opacity
 		addMembers: border.radius.medium,
 		newGroup2ItemDelete: [
 			height(25),
@@ -47,9 +47,9 @@ const useStylesCreateGroup = () => {
 			absolute.scale({ top: 5, right: 10 }),
 			border.shadow.medium,
 			border.radius.medium,
-			background.white,
 			absolute.top,
 			column.justify,
+			{ backgroundColor: colors['main-background'] },
 		],
 	}
 }
@@ -64,28 +64,30 @@ type GroupInfoProps = { onGroupNameChange: (name: string) => void; layout: numbe
 
 const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 	const [
-		{ row, background, column, margin, flex, height, border, padding, color, text },
+		{ row, column, margin, flex, height, border, padding, text },
 		{ scaleSize, windowHeight },
 	] = useStyles()
+	const colors = useThemeColor()
+	const { t }: { t: any } = useTranslation()
 	const _styles = useStylesCreateGroup()
 	const insets = useSafeAreaInsets()
-	const restScreen = windowHeight - layout - 400 * scaleSize - insets.bottom // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
+	const restScreen = windowHeight - layout - 380 * scaleSize - insets.bottom // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
 	return (
 		<View style={[height(300 + restScreen), padding.horizontal.large]}>
 			<View style={[row.center]}>
 				<View
 					style={[
-						background.light.blue,
 						row.item.justify,
 						column.justify,
 						_styles.groupInfoProfilePhoto,
+						{ backgroundColor: colors['positive-asset'] },
 					]}
 				>
 					<Icon
 						name='camera-outline'
 						height={30 * scaleSize}
 						width={30 * scaleSize}
-						fill={color.blue}
+						fill={colors['background-header']}
 						style={row.item.justify}
 					/>
 				</View>
@@ -94,10 +96,9 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 						margin.left.medium,
 						flex.tiny,
 						row.item.justify,
-						background.light.grey,
 						padding.small,
 						border.radius.small,
-						{ backgroundColor: '#F7F8FF' },
+						{ backgroundColor: colors['input-background'] },
 					]}
 				>
 					<TextInput
@@ -105,10 +106,13 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 							margin.left.small,
 							text.bold.small,
 							text.size.medium,
-							{ fontFamily: 'Open Sans', color: '#AFB1C0' },
+							{
+								fontFamily: 'Open Sans',
+								color: colors['background-header'],
+							},
 						]}
-						placeholder='Group name'
-						placeholderTextColor='#AFB1C090'
+						placeholder={t('main.home.create-group-finalize.placeholder')}
+						placeholderTextColor={colors['secondary-text']}
 						onChangeText={onGroupNameChange}
 						autoCorrect={false}
 					/>
@@ -116,7 +120,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 			</View>
 			<TouchableOpacity
 				activeOpacity={0.9}
-				style={[border.radius.medium, border.shadow.medium, padding.medium, margin.top.tiny]}
+				style={[border.radius.medium, border.shadow.medium, padding.medium, margin.top.medium]}
 			>
 				<View style={[row.fill]}>
 					<View style={[row.center]}>
@@ -124,48 +128,48 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 							name='info-outline'
 							height={30 * scaleSize}
 							width={30 * scaleSize}
-							fill={color.blue}
+							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
 						<Text
 							style={[
-								text.color.black,
 								margin.left.medium,
 								row.item.justify,
 								_styles.groupInfoAboutGroupsText,
+								{ color: colors['main-text'] },
 							]}
 						>
-							About groups
+							{t('main.home.create-group-finalize.about')}
 						</Text>
 					</View>
 				</View>
 				<View style={[margin.top.medium, _stylesCreateGroup.groupInfoAboutGroupsItems]}>
 					<ButtonSettingItem
-						value='Anyone in the group can rename it or invite new members'
-						color='rgba(43,46,77,0.8)'
-						iconColor={color.blue}
+						value={t('main.home.create-group-finalize.first-bullet-point')}
+						color={colors['main-text']}
+						iconColor={colors['background-header']}
 					/>
 					<ButtonSettingItem
-						value='You can invite members by link'
-						color='rgba(43,46,77,0.8)'
-						iconColor={color.blue}
+						value={t('main.home.create-group-finalize.second-bullet-point')}
+						color={colors['main-text']}
+						iconColor={colors['background-header']}
 					/>
 					<ButtonSettingItem
-						value='You can leave this group'
-						color='rgba(43,46,77,0.8)'
-						iconColor={color.blue}
+						value={t('main.home.create-group-finalize.third-bullet-point')}
+						color={colors['main-text']}
+						iconColor={colors['background-header']}
 					/>
 					<ButtonSettingItem
-						value='You cannot delete this group'
-						color='rgba(43,46,77,0.8)'
+						value={t('main.home.create-group-finalize.fourth-bullet-point')}
+						color={colors['main-text']}
 						icon='close-circle'
-						iconColor={color.red}
+						iconColor={colors['warning-asset']}
 					/>
 					<ButtonSettingItem
-						value='You cannot remove a member from this group'
-						color='rgba(43,46,77,0.8)'
+						value={t('main.home.create-group-finalize.fifth-bullet-point')}
+						color={colors['main-text']}
 						icon='close-circle'
-						iconColor={color.red}
+						iconColor={colors['warning-asset']}
 					/>
 				</View>
 			</TouchableOpacity>
@@ -186,7 +190,8 @@ export const CreateGroupFinalize: React.FC<{
 		[groupName, members, call],
 	)
 	const [layout, setLayout] = useState<number>(0)
-	const [{ flex, background, padding }] = useStyles()
+	const [{ flex, padding }] = useStyles()
+	const colors = useThemeColor()
 	const ctx = useMsgrContext()
 	const insets = useSafeAreaInsets()
 	const { t }: { t: any } = useTranslation()
@@ -216,7 +221,7 @@ export const CreateGroupFinalize: React.FC<{
 	}, [done, error, reset, reply])
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[background.blue]}>
+			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
 				<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
 					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />

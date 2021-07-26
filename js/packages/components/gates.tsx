@@ -2,7 +2,7 @@ import React from 'react'
 import { ActivityIndicator, Button, Text, TextInput, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import {
 	isClosing,
 	isDeletingState,
@@ -26,27 +26,16 @@ const gutter = 50
 
 const StreamInProgressCmp: React.FC<{}> = () => {
 	const [{ text }] = useStyles()
+	const colors = useThemeColor()
 	const { streamInProgress: stream } = useMsgrContext()
-	// const [stream, setStream] = React.useState<any>(streamInProgress)
-	// React.useEffect(() => {
-	// 	console.log('SIP', streamInProgress, stream)
-	// })
-
-	// React.useEffect(() => {
-	// 	const timer = setTimeout(() => {
-	// 		setStream(streamInProgress)
-	// 	}, 2000)
-	// 	return () => clearTimeout(timer)
-	// }, [streamInProgress])
 
 	return (
 		<View>
 			<Text
 				style={[
-					text.color.black,
 					text.bold.small,
 					text.align.center,
-					{ marginTop: 60, fontFamily: 'Open Sans' },
+					{ marginTop: 60, fontFamily: 'Open Sans', color: colors['main-text'] },
 				]}
 			>
 				{stream?.stream}
@@ -54,20 +43,18 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 			<View style={[expandSelfAndCenterContent]}>
 				<Text
 					style={[
-						text.color.black,
 						text.bold.small,
 						text.align.center,
-						{ fontFamily: 'Open Sans' },
+						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
 					{stream?.msg?.progress?.doing}
 				</Text>
 				<Text
 					style={[
-						text.color.black,
 						text.bold.small,
 						text.align.center,
-						{ fontFamily: 'Open Sans' },
+						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
 					{stream?.msg?.progress?.completed} / {stream?.msg?.progress?.total}
@@ -89,6 +76,7 @@ export const StreamGate: React.FC = ({ children }) => {
 		restart,
 	} = useMsgrContext()
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
+	const colors = useThemeColor()
 	const changeAddress = React.useCallback(() => {
 		dispatch({ type: MessengerActions.SetDaemonAddress, payload: { value: newAddress } })
 	}, [dispatch, newAddress])
@@ -96,7 +84,7 @@ export const StreamGate: React.FC = ({ children }) => {
 	if (streamError && !streamInProgress) {
 		return (
 			<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
-				<Text style={{ color: 'red' }}>{streamError.toString()}</Text>
+				<Text style={{ color: colors['warning-asset'] }}>{streamError.toString()}</Text>
 				<Text style={{ marginTop: gutter }}>
 					Likely couldn't connect to the node, or the connection dropped
 				</Text>
@@ -105,7 +93,7 @@ export const StreamGate: React.FC = ({ children }) => {
 						<TextInput
 							onChangeText={setNewAddress}
 							value={newAddress}
-							style={{ backgroundColor: 'grey' }}
+							style={{ backgroundColor: colors['secondary-text'] }}
 						/>
 						<Button title='Change node address' onPress={changeAddress} />
 					</>

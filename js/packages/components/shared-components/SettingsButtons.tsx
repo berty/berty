@@ -3,6 +3,7 @@ import { View, TouchableOpacity, StyleProp, Animated, Easing } from 'react-nativ
 import { Text, Icon, Toggle } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 //
 // Button Setting
@@ -63,16 +64,16 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	icon = null,
 	iconSize = 30,
 	iconPack,
-	iconColor = 'blue',
+	iconColor,
 	iconDependToggle = false,
 	children = null,
 	state = {},
-	actionIconColor = 'black',
+	actionIconColor,
 	actionIconSize = 25,
 	actionToggle = null,
 	varToggle = null,
 	previewValue = null,
-	previewValueColor = 'black',
+	previewValueColor,
 	alone = true,
 	toggled = false,
 	style = null,
@@ -84,9 +85,20 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	const [isToggle, setIsToggle] = useState<boolean>()
 	const _styles = useStylesSettingButton()
 	const [
-		{ background, margin, row, flex, padding, opacity, text, border },
+		{ margin, row, flex, padding, opacity, text, border },
 		{ windowWidth, scaleSize },
 	] = useStyles()
+	const colors = useThemeColor()
+
+	if (!iconColor) {
+		iconColor = colors['background-header']
+	}
+	if (!actionIconColor) {
+		actionIconColor = colors['main-text']
+	}
+	if (!previewValueColor) {
+		previewValueColor = colors['main-text']
+	}
 
 	return (
 		<TouchableOpacity
@@ -101,9 +113,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 			}
 			style={[
 				_styles.settingButton,
-				background.white,
 				style,
-				{ minHeight: 60 * scaleSize },
+				{ minHeight: 60 * scaleSize, backgroundColor: colors['main-background'] },
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
 				alone ? margin.top.scale(20) : null,
@@ -145,9 +156,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							numberOfLines={2}
 							style={[
 								padding.left.small,
-								text.color.black,
 								text.size.scale(textSize || 15),
-								{ maxWidth: windowWidth - 150 },
+								{ maxWidth: windowWidth - 150, color: colors['main-text'] },
 								textStyle,
 							]}
 						>
@@ -262,25 +272,28 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	name = null,
 	icon = null,
 	iconSize = 30,
-	iconColor = 'blue',
+	iconColor,
 	iconPack,
 	state = {},
 	style = null,
 	disabled = false,
 }) => {
 	const _styles = useStylesSettingButton()
-	const [
-		{ background, border, padding, flex, height, row, opacity, margin, text },
-		{ scaleSize },
-	] = useStyles()
+	const [{ border, padding, flex, height, row, opacity, margin, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
+	if (!iconColor) {
+		iconColor = colors['background-header']
+	}
+
 	return (
 		<View
 			style={[
-				background.white,
 				border.shadow.medium,
 				border.radius.medium,
 				padding.horizontal.medium,
 				disabled ? opacity(0.5) : opacity(1),
+				{ backgroundColor: colors['main-background'] },
 				style,
 			]}
 		>
@@ -349,7 +362,14 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 							</View>
 						)}
 					</View>
-					<View style={[border.color.grey, border.medium, opacity(0.2), margin.horizontal.small]} />
+					<View
+						style={[
+							border.medium,
+							opacity(0.2),
+							margin.horizontal.small,
+							{ borderColor: colors['secondary-text'] },
+						]}
+					/>
 				</View>
 			)}
 			{children && Array.isArray(children) ? (
@@ -358,7 +378,12 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 						{child}
 						{key + 1 < children.length && (
 							<View
-								style={[border.color.grey, border.medium, opacity(0.2), margin.horizontal.small]}
+								style={[
+									border.medium,
+									opacity(0.2),
+									margin.horizontal.small,
+									{ borderColor: colors['secondary-text'] },
+								]}
 							/>
 						)}
 					</View>
@@ -403,7 +428,9 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	styleText = null,
 }) => {
 	const _styles = useStylesButtonSettingRow()
-	const [{ flex, row, margin, padding, border, background, text, opacity }] = useStyles()
+	const [{ flex, row, margin, padding, border, text, opacity }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
 			{state.map((obj, key) => (
@@ -415,10 +442,13 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 						padding.medium,
 						border.radius.medium,
 						border.shadow.medium,
-						background.white,
 						obj.style,
 						obj.disabled ? opacity(0.5) : null,
-						{ alignItems: 'center', justifyContent: 'center' },
+						{
+							alignItems: 'center',
+							justifyContent: 'center',
+							backgroundColor: colors['main-background'],
+						},
 					]}
 					onPress={obj.onPress}
 				>
@@ -426,10 +456,10 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 					<Text
 						style={[
 							text.align.center,
-							text.color.black,
 							text.size.medium,
 							styleText,
 							_styles.textPadding,
+							{ color: colors['main-text'] },
 						]}
 						numberOfLines={numberOfLines}
 					>
@@ -467,7 +497,7 @@ const useStylesButtonSettingItem = () => {
 
 export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	value,
-	color = 'white',
+	color,
 	icon = 'checkmark-circle-2',
 	iconSize = 12,
 	iconColor,
@@ -475,14 +505,19 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	styleText = {},
 }) => {
 	const _styles = useStylesButtonSettingItem()
-	const [{ row, padding, text, color: stylesColor }] = useStyles()
+	const [{ row, padding, text }] = useStyles()
+	const colors = useThemeColor()
+
+	if (!color) {
+		color = colors['reverted-main-text']
+	}
 	return (
 		<View style={[row.left, padding.left.small, { alignItems: 'center' }, styleContainer]}>
 			<Icon
 				name={icon}
 				width={iconSize}
 				height={iconSize}
-				fill={iconColor || stylesColor.light.blue}
+				fill={iconColor || colors['positive-asset']}
 			/>
 			<Text style={[text.bold.medium, _styles.updateFeatureText, { color }, styleText]}>
 				{value}
@@ -494,9 +529,10 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ title, body }) => {
 	const [isOpen, setOpen] = useState(false)
 	const [{ padding, margin, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
 	const [animateHeight] = useState(new Animated.Value(0))
 	const [rotateValue] = useState(new Animated.Value(0))
-
 	const rotateAnimation = rotateValue.interpolate({
 		inputRange: [0, 1],
 		outputRange: ['0deg', '180deg'],
@@ -540,19 +576,12 @@ export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ titl
 					setOpen((prev) => !prev)
 				}}
 			>
-				<Animated.View
-					style={[
-						padding.tiny,
-						{
-							transform: [{ rotate: rotateAnimation }],
-						},
-					]}
-				>
+				<Animated.View style={[padding.tiny, { transform: [{ rotate: rotateAnimation }] }]}>
 					<Icon
 						name='arrow-ios-upward'
 						width={25 * scaleSize}
 						height={25 * scaleSize}
-						fill='black'
+						fill={colors['main-text']}
 					/>
 				</Animated.View>
 			</TouchableOpacity>

@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
 import { pbDateToNum, timeFormat } from '../../helpers'
@@ -14,6 +15,7 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 	inte,
 }) => {
 	const [{ padding, text, margin }] = useStyles()
+	const colors = useThemeColor()
 	const sentDate = pbDateToNum(inte?.sentDate)
 
 	const me = inte.payload.event
@@ -73,11 +75,11 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 						margin.bottom.small,
 					]}
 				>
-					<Icon name='monitor-outline' fill='#4E58BF' width={25} height={25} />
+					<Icon name='monitor-outline' fill={colors['background-header']} width={25} height={25} />
 				</View>
 				<Text
 					style={[
-						{ textAlign: 'left', fontFamily: 'Open Sans', color: '#4E58BF' },
+						{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
 						text.bold.small,
 						text.italic,
 						text.size.scale(14),
@@ -91,7 +93,7 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 						<Text
 							key={index}
 							style={[
-								{ textAlign: 'left', fontFamily: 'Open Sans', color: '#4E58BF' },
+								{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
 								text.bold.small,
 								text.italic,
 								text.size.scale(14),
@@ -104,7 +106,7 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 			</View>
 			<Text
 				style={[
-					{ fontFamily: 'Open Sans', alignSelf: 'flex-end', color: '#4E58BF' },
+					{ fontFamily: 'Open Sans', alignSelf: 'flex-end', color: colors['background-header'] },
 					text.bold.small,
 					text.italic,
 					text.size.small,

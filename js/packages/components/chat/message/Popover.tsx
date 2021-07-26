@@ -3,6 +3,7 @@ import { View, Text } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { getEmojiByName } from '@berty-tech/components/utils'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 const emojis = [':+1:', ':heart:', ':ok_hand:', ':sunglasses:', ':joy:']
 
@@ -11,10 +12,11 @@ const Popover: React.FC<{
 	onEmojiKeyboard: () => void
 	onSelectEmoji: (emoji: string) => void
 }> = ({ onReply, onEmojiKeyboard, onSelectEmoji }) => {
+	const colors = useThemeColor()
 	return (
 		<View
 			style={{
-				backgroundColor: '#F7F8FF',
+				backgroundColor: colors['input-background'],
 				flexDirection: 'row',
 				paddingVertical: 5,
 				paddingHorizontal: 10,
@@ -22,12 +24,12 @@ const Popover: React.FC<{
 				justifyContent: 'center',
 				borderRadius: 100,
 				borderWidth: 2,
-				borderColor: '#EFF1FA',
+				borderColor: colors['input-background'],
 			}}
 		>
 			<Icon
 				name='undo'
-				fill='#D1D4DE'
+				fill={colors['negative-asset']}
 				style={{ marginHorizontal: 4 }}
 				height={30}
 				width={30}
@@ -44,7 +46,7 @@ const Popover: React.FC<{
 			))}
 			<Icon
 				name='more-horizontal'
-				fill='#D1D4DE'
+				fill={colors['negative-asset']}
 				style={{ marginHorizontal: 4 }}
 				height={40}
 				width={40}

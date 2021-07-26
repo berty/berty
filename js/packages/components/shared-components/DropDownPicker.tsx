@@ -4,22 +4,30 @@ import Flag from 'react-native-flags'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 type Item = {
 	label: string
 	value: string
 }
 
+const DropDownPickerFlagValue: React.FC<{ value: string | undefined }> = ({ value }) => {
+	return <Flag code={value?.split('-')[1]} size={24} />
+}
+
 export const DropDownPicker: React.FC<{
 	items: Item[]
-	defaultValue: string
+	defaultValue: string | null
 	onChangeItem: (item: Item) => void
-}> = ({ items, defaultValue, onChangeItem }) => {
-	const [{ padding, border, background, opacity, text, margin }, { scaleSize }] = useStyles()
+	mode?: 'languages' | 'themeCollection'
+}> = ({ items, defaultValue, onChangeItem, mode = 'languages' }) => {
+	const [{ padding, border, opacity, text, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 
 	const [isOpen, setOpen] = useState(false)
 	const [animateHeight] = useState(new Animated.Value(0))
 	const [rotateValue] = useState(new Animated.Value(0))
+	const isModeLanguages = mode === 'languages'
 
 	const rotateAnimation = rotateValue.interpolate({
 		inputRange: [0, 1],
@@ -42,14 +50,20 @@ export const DropDownPicker: React.FC<{
 		]).start()
 		setOpen((prev) => !prev)
 	}
-	const selectedItem = items.find((item) => item.value === defaultValue)
+	const selectedItem = items.find((item) =>
+		isModeLanguages ? item.value === defaultValue : item.label === defaultValue,
+	)
 	return (
 		<View
 			style={[
-				background.white,
 				border.shadow.medium,
 				border.radius.medium,
-				{ flex: 1, marginTop: 22 * scaleSize, minHeight: 60 * scaleSize },
+				{
+					flex: 1,
+					marginTop: 22 * scaleSize,
+					minHeight: 60 * scaleSize,
+					backgroundColor: colors['main-background'],
+				},
 			]}
 		>
 			<TouchableOpacity
@@ -65,29 +79,20 @@ export const DropDownPicker: React.FC<{
 				onPress={toggleView}
 			>
 				<View style={[margin.right.medium]}>
-					<Flag code={selectedItem?.value.split('-')[1]} size={24} />
+					{isModeLanguages ? <DropDownPickerFlagValue value={selectedItem?.value} /> : null}
 				</View>
-				<Text style={[text.size.medium]}>{selectedItem?.label}</Text>
+				<Text style={[text.size.medium, { color: colors['main-text'] }]}>
+					{selectedItem?.label}
+				</Text>
 				<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
-					<Animated.View
-						style={[
-							{
-								transform: [{ rotate: rotateAnimation }],
-							},
-						]}
-					>
-						<Icon name='arrow-ios-downward' height={25} width={25} fill='black' />
+					<Animated.View style={[{ transform: [{ rotate: rotateAnimation }] }]}>
+						<Icon name='arrow-ios-downward' height={25} width={25} fill={colors['main-text']} />
 					</Animated.View>
 				</View>
 			</TouchableOpacity>
 
 			<Animated.ScrollView
-				style={[
-					border.radius.bottom.medium,
-					{
-						maxHeight: animateHeight,
-					},
-				]}
+				style={[border.radius.bottom.medium, { maxHeight: animateHeight }]}
 				nestedScrollEnabled
 				showsVerticalScrollIndicator={false}
 			>
@@ -102,17 +107,17 @@ export const DropDownPicker: React.FC<{
 						key={key}
 					>
 						<View style={[margin.right.medium]}>
-							<Flag code={item.value.split('-')[1]} size={24} />
+							{isModeLanguages ? <Flag code={item.value.split('-')[1]} size={24} /> : null}
 						</View>
 						<Text style={[text.size.medium]} key={item.value}>
 							{item.label}
 						</Text>
 						<View
 							style={[
-								border.color.grey,
 								border.medium,
 								opacity(0.2),
 								{
+									borderColor: colors['secondary-text'],
 									position: 'absolute',
 									top: 0,
 									left: 0,

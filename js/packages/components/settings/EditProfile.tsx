@@ -15,7 +15,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import { AccountAvatar } from '../avatars'
 
@@ -81,6 +81,7 @@ const initialState: State = {
 
 const EditMyProfile: React.FC = () => {
 	const ctx = useMsgrContext()
+	const colors = useThemeColor()
 	const { goBack } = useNavigation()
 
 	const account = useAccount()
@@ -185,7 +186,7 @@ const EditMyProfile: React.FC = () => {
 			<>
 				<View
 					style={[
-						{ backgroundColor: color.white, padding: padding, borderRadius: 120 },
+						{ backgroundColor: colors['main-background'], padding: padding, borderRadius: 120 },
 						border.shadow.medium,
 					]}
 				>
@@ -218,24 +219,23 @@ const EditMyProfile: React.FC = () => {
 					pack='custom'
 					width={30}
 					height={30}
-					fill={color.blue}
+					fill={colors['background-header']}
 				/>
 			</>
 		)
 	} else {
 		image = (
 			<>
-				<View style={[{ backgroundColor: color.white, borderRadius: 120 }, border.shadow.medium]}>
-					<AccountAvatar size={90} isEditable />
+				<AccountAvatar size={90} isEditable />
+				<View style={{ top: -61, right: -30, elevation: 6 }}>
+					<Icon
+						name='camera-outline'
+						pack='custom'
+						width={30}
+						height={30}
+						fill={colors['background-header']}
+					/>
 				</View>
-				<Icon
-					style={{ top: -61, right: -30 }}
-					name='camera-outline'
-					pack='custom'
-					width={30}
-					height={30}
-					fill={color.blue}
-				/>
 			</>
 		)
 	}
@@ -252,19 +252,37 @@ const EditMyProfile: React.FC = () => {
 								placeholder={t('settings.edit-profile.name-input-placeholder')}
 								value={state.name}
 								onChangeText={(name) => dispatch({ type: 'SET_NAME', name })}
+								style={{ backgroundColor: colors['input-background'] }}
 							/>
 						</View>
 					</View>
 					<View style={[padding.horizontal.medium, { marginBottom: 35 }]}>
 						<View style={[padding.top.small, row.left]}>
-							<Icon name='checkmark-outline' width={20} height={20} fill={color.green} />
-							<Text style={[text.color.grey, margin.left.medium, text.size.scale(11)]}>
+							<Icon
+								name='checkmark-outline'
+								width={20}
+								height={20}
+								fill={colors['background-header']}
+							/>
+							<Text
+								style={[
+									margin.left.medium,
+									text.size.scale(11),
+									{ color: colors['secondary-text'] },
+								]}
+							>
 								{t('settings.edit-profile.qr-will-update') as any}
 							</Text>
 						</View>
 						<View style={[padding.top.small, row.left]}>
-							<Icon name='close-outline' width={20} height={20} fill={color.red} />
-							<Text style={[text.color.grey, margin.left.medium, text.size.scale(11)]}>
+							<Icon name='close-outline' width={20} height={20} fill={colors['warning-asset']} />
+							<Text
+								style={[
+									margin.left.medium,
+									text.size.scale(11),
+									{ color: colors['secondary-text'] },
+								]}
+							>
 								{t('settings.edit-profile.ocr-wont-update') as any}
 							</Text>
 						</View>
@@ -278,7 +296,7 @@ const EditMyProfile: React.FC = () => {
 								marginBottom: 18,
 							}}
 						>
-							<Text style={{ color: 'red' }}>🚧 {state.err.toString()} 🚧</Text>
+							<Text style={{ color: colors['warning-asset'] }}>🚧 {state.err.toString()} 🚧</Text>
 						</View>
 					) : undefined}
 					<TouchableOpacity disabled={state.saving} onPress={handleSave}>
@@ -287,21 +305,21 @@ const EditMyProfile: React.FC = () => {
 								row.item.justify,
 								column.justify,
 								border.radius.small,
-								background.light.blue,
 								_stylesEditProfile.profileButton,
+								{ backgroundColor: colors['positive-asset'] },
 							]}
 						>
 							{state.saving ? (
-								<ActivityIndicator color='grey' />
+								<ActivityIndicator color={colors['secondary-text']} />
 							) : (
 								<Text
 									style={[
 										text.align.center,
-										text.color.blue,
 										text.bold.medium,
 										text.size.scale(16),
 										{
 											textTransform: 'uppercase',
+											color: colors['background-header'],
 										},
 									]}
 								>
@@ -319,20 +337,36 @@ const EditMyProfile: React.FC = () => {
 }
 
 const Header: React.FC = () => {
+	const colors = useThemeColor()
+
 	return (
 		<Translation>
 			{(t) => (
 				<>
 					<View style={{ height: 30, alignItems: 'center', justifyContent: 'center' }}>
-						<View style={{ backgroundColor: 'lightgrey', width: 50, height: 4, borderRadius: 2 }} />
+						<View
+							style={{
+								backgroundColor: `${colors['secondary-text']}90`,
+								width: 50,
+								height: 4,
+								borderRadius: 2,
+							}}
+						/>
 					</View>
 					<View
 						style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
 					>
-						<Text style={{ fontWeight: '700', fontSize: 22, lineHeight: 40, color: '#383B62' }}>
+						<Text
+							style={{
+								fontWeight: '700',
+								fontSize: 22,
+								lineHeight: 40,
+								color: colors['main-text'],
+							}}
+						>
 							{t('settings.edit-profile.title') as any}
 						</Text>
-						<Icon name='edit-outline' width={28} height={28} fill={'#3F49EA'} />
+						<Icon name='edit-outline' width={28} height={28} fill={colors['background-header']} />
 					</View>
 				</>
 			)}
@@ -342,6 +376,7 @@ const Header: React.FC = () => {
 
 export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
 	const [{ padding }] = useStyles()
+	const colors = useThemeColor()
 	const { goBack } = useNavigation()
 	return (
 		<Pressable
@@ -361,7 +396,7 @@ export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
 					<View
 						style={[
 							{
-								backgroundColor: 'white',
+								backgroundColor: colors['main-background'],
 								borderTopLeftRadius: 30,
 								borderTopRightRadius: 30,
 							},

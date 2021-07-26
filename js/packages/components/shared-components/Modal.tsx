@@ -12,6 +12,7 @@ import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 //
 // Modal => Modals on screens requests
@@ -44,7 +45,9 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
 	const { goBack } = useNavigation()
 	const _styles = useStylesModal()
-	const [{ margin, border, column, background, row, color, padding }] = useStyles()
+	const [{ margin, border, column, row, padding }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<View style={[StyleSheet.absoluteFill]}>
 			{blurColor && (
@@ -62,7 +65,12 @@ export const Modal: React.FC<ModalProps> = ({
 						<View style={[StyleSheet.absoluteFill]} />
 					</TouchableWithoutFeedback>
 					<View
-						style={[background.white, border.shadow.medium, margin.medium, border.radius.scale(20)]}
+						style={[
+							border.shadow.medium,
+							margin.medium,
+							border.radius.scale(20),
+							{ backgroundColor: colors['main-background'] },
+						]}
 					>
 						{children}
 					</View>
@@ -70,13 +78,12 @@ export const Modal: React.FC<ModalProps> = ({
 				{icon && (
 					<TouchableOpacity
 						style={[
-							background.white,
 							padding.vertical.medium,
 							border.shadow.medium,
 							row.item.justify,
 							column.justify,
 							_styles.closeRequest,
-							{ position: 'absolute', bottom: '5%' },
+							{ position: 'absolute', bottom: '5%', backgroundColor: colors['main-background'] },
 						]}
 						onPress={goBack}
 					>
@@ -85,7 +92,7 @@ export const Modal: React.FC<ModalProps> = ({
 							name='close-outline'
 							width={25}
 							height={25}
-							fill={color.grey}
+							fill={colors['secondary-text']}
 						/>
 					</TouchableOpacity>
 				)}

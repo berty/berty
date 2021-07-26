@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
@@ -29,6 +29,7 @@ export const Message: React.FC<{
 }> = ({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
 	const ctx = useMsgrContext()
 	const [{ text, padding }] = useStyles()
+	const colors = useThemeColor()
 	if (!inte) {
 		return null
 	}
@@ -59,10 +60,9 @@ export const Message: React.FC<{
 					<Text
 						style={[
 							inte.isMine ? text.align.right : text.align.left,
-							text.color.grey,
 							text.size.scale(11),
 							text.bold.small,
-							text.color.grey,
+							{ color: colors['secondary-text'] },
 						]}
 					>
 						{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}

@@ -3,6 +3,7 @@ import { TouchableOpacity, View, TransformsStyle } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 // Types
 type TabItemProps = {
@@ -32,11 +33,17 @@ type TabBarProps = {
 // Styles
 const useStylesTab = () => {
 	const [{ text, opacity, border }] = useStyles()
+	const colors = useThemeColor()
+
 	return {
 		tabItemName: text.size.small,
 		tabItemDisable: opacity(0.2),
-		tabBarItemEnable: [border.big, border.color.blue, border.radius.scale(2)],
-		tabBarItemDisable: [border.big, border.color.black, border.radius.scale(2)],
+		tabBarItemEnable: [
+			border.big,
+			border.radius.scale(2),
+			{ borderColor: colors['background-header'] },
+		],
+		tabBarItemDisable: [border.big, border.radius.scale(2), { borderColor: colors['main-text'] }],
 	}
 }
 
@@ -56,7 +63,9 @@ const TabBarItem: React.FC<TabItemProps> = ({
 	buttonDisabled = false,
 }) => {
 	const _styles = useStylesTab()
-	const [{ flex, color, text, padding }] = useStyles()
+	const [{ flex, text, padding }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<TouchableOpacity
 			onPress={() => setEnable(name)}
@@ -74,7 +83,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 			>
 				<View style={{ height: 25 }}>
 					<Icon
-						fill={enable ? color.blue : color.black}
+						fill={enable ? colors['background-header'] : colors['main-text']}
 						name={icon}
 						pack={iconPack}
 						style={{ transform: iconTransform }}
@@ -87,7 +96,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 						text.bold.medium,
 						text.align.center,
 						_styles.tabItemName,
-						enable ? text.color.blue : text.color.black,
+						{ color: enable ? colors['background-header'] : colors['main-text'] },
 					]}
 				>
 					{name}

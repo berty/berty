@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Text } from 'react-native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useConversation } from '@berty-tech/store/hooks'
+import { useConversation, useThemeColor } from '@berty-tech/store/hooks'
 import { navigate, Routes } from '@berty-tech/navigation'
 
 import { useStylesNotification } from './common'
@@ -11,6 +11,7 @@ import { ConversationAvatar } from '../avatars'
 
 const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
+	const colors = useThemeColor()
 	const _styles = useStylesNotification()
 
 	const { payload } = props?.additionalProps?.payload || {}
@@ -45,10 +46,10 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 			<View style={_styles.innerTouchable}>
 				<ConversationAvatar publicKey={payload.conversation?.publicKey} size={40} />
 				<View style={_styles.titleAndTextWrapper}>
-					<Text numberOfLines={1} style={[text.color.black, text.bold.medium]}>
+					<Text numberOfLines={1} style={[text.bold.medium, { color: colors['main-text'] }]}>
 						{title}
 					</Text>
-					<Text numberOfLines={1} ellipsizeMode='tail' style={[text.color.black]}>
+					<Text numberOfLines={1} ellipsizeMode='tail' style={{ color: colors['main-text'] }}>
 						{message}
 					</Text>
 				</View>

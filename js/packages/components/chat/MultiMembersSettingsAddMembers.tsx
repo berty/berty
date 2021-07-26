@@ -16,6 +16,7 @@ import {
 	useConversation,
 	useConvMemberList,
 	useMsgrContext,
+	useThemeColor,
 } from '@berty-tech/store/hooks'
 
 const _iconArrowBackSize = 30
@@ -23,7 +24,8 @@ const _titleSize = 25
 
 export const AddMembersHeader: React.FC<{}> = () => {
 	const navigation = useNavigation()
-	const [{ color, padding, margin, text }, { scaleSize }] = useStyles()
+	const [{ padding, margin, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	return (
 		<View
@@ -57,7 +59,7 @@ export const AddMembersHeader: React.FC<{}> = () => {
 						name='arrow-back-outline'
 						width={_iconArrowBackSize * scaleSize}
 						height={_iconArrowBackSize * scaleSize}
-						fill={color.white}
+						fill={colors['reverted-main-text']}
 					/>
 				</TouchableOpacity>
 				<Text
@@ -67,7 +69,7 @@ export const AddMembersHeader: React.FC<{}> = () => {
 							fontWeight: '700',
 							lineHeight: 1.25 * _titleSize,
 							marginLeft: 10,
-							color: color.white,
+							color: colors['reverted-main-text'],
 						},
 					]}
 				>
@@ -79,7 +81,7 @@ export const AddMembersHeader: React.FC<{}> = () => {
 				pack='custom'
 				width={35 * scaleSize}
 				height={35 * scaleSize}
-				fill={color.white}
+				fill={colors['reverted-main-text']}
 			/>
 		</View>
 	)
@@ -88,7 +90,8 @@ export const AddMembersHeader: React.FC<{}> = () => {
 export const MultiMemberSettingsAddMembers: React.FC<{
 	route: { params: { convPK: string } }
 }> = ({ route }) => {
-	const [{ flex, background, margin, color }, { scaleHeight }] = useStyles()
+	const [{ flex, margin }, { scaleHeight }] = useStyles()
+	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const ctx = useMsgrContext()
 	const { t }: { t: any } = useTranslation()
@@ -129,9 +132,9 @@ export const MultiMemberSettingsAddMembers: React.FC<{
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
-				<SafeAreaView style={[background.blue]}>
+				<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
 					<AddMembersHeader />
 					<MemberList
 						initialMembers={initialMembers}
@@ -139,7 +142,7 @@ export const MultiMemberSettingsAddMembers: React.FC<{
 						onRemoveMember={onRemoveMember}
 					/>
 				</SafeAreaView>
-				<View style={[background.white, { flex: 1 }]}>
+				<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 					<View style={{ top: -30 * scaleHeight, flex: 1 }}>
 						<Header
 							title={t('chat.add-members.contacts')}

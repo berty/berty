@@ -11,13 +11,12 @@ import {
 } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
-import { BlurView } from '@react-native-community/blur'
 import moment from 'moment'
 import ImagePicker from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useClient, useMsgrContext, useContact } from '@berty-tech/store/hooks'
+import { useClient, useMsgrContext, useContact, useThemeColor } from '@berty-tech/store/hooks'
 import { checkPermissions, getMediaTypeFromMedias } from '@berty-tech/components/utils'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
@@ -80,6 +79,7 @@ const ReplyMessageBar: React.FC<{ activeReplyInte: any; maxWidth: number; contac
 	contact,
 }) => {
 	const [{ border }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	return (
 		<Animated.View
@@ -98,15 +98,15 @@ const ReplyMessageBar: React.FC<{ activeReplyInte: any; maxWidth: number; contac
 					position: 'absolute',
 					top: -20,
 					alignSelf: 'center',
-					backgroundColor: '#F7F8FF',
-					borderColor: '#E4E5EF',
+					backgroundColor: colors['input-background'],
+					borderColor: colors['positive-asset'],
 					paddingVertical: 2,
 					paddingHorizontal: 20,
 					borderWidth: 1,
 					borderRadius: 20,
 				}}
 			>
-				<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
+				<Text numberOfLines={1} style={{ color: colors['background-header'], fontSize: 10 }}>
 					{t('chat.reply.replying-to')} {contact?.displayName || ''}
 				</Text>
 			</View>
@@ -169,7 +169,8 @@ export const ChatFooter: React.FC<{
 	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = inputRef?.current?.isFocused() || false
-	const [{ padding, flex, border, color, text }, { scaleSize }] = useStyles()
+	const [{ padding, flex, border, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { activeReplyInte, setActiveReplyInte } = useReplyReaction()
 	const contact =
 		useContact(activeReplyInte?.conversation?.contactPublicKey) || activeReplyInte?.member
@@ -261,9 +262,9 @@ export const ChatFooter: React.FC<{
 	const _aOpacitySendButton = useRef(new Animated.Value(0)).current
 
 	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(94 * scaleSize)])
-	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 45 * scaleSize])
+	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 40 * scaleSize])
 	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -120 * scaleSize])
-	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -45 * scaleSize])
+	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -55 * scaleSize])
 	const aPaddingLeft = createAnimationInterpolation(_aPaddingLeft, [0, 45])
 	const aOpacity = createAnimationInterpolation(_aOpacity, [1, 0])
 	const aOpacitySendButton = createAnimationInterpolation(_aOpacity, [0, 1])
@@ -321,22 +322,15 @@ export const ChatFooter: React.FC<{
 			style={[
 				{
 					zIndex: 10,
-					minHeight: 80 * scaleSize,
+					minHeight:
+						inputHeight > 45 * scaleSize
+							? 80 * scaleSize + inputHeight * scaleSize
+							: 80 * scaleSize,
+					justifyContent: 'center',
+					backgroundColor: colors['main-background'],
 				},
 			]}
 		>
-			<BlurView
-				overlayColor=''
-				blurType='light'
-				blurAmount={32}
-				style={{
-					position: 'absolute',
-					right: 0,
-					left: 0,
-					bottom: 0,
-					top: 0,
-				}}
-			/>
 			{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
 			{isSecurityAccessVisible && (
 				<SecurityAccess activeTab={activateTab} close={() => setSecurityAccessVisibility(false)} />
@@ -350,7 +344,7 @@ export const ChatFooter: React.FC<{
 								justifyContent: 'center',
 								alignItems: 'center',
 								borderRadius: 100,
-								backgroundColor: color.blue,
+								backgroundColor: colors['background-header'],
 								width: 36 * scaleSize,
 								height: 36 * scaleSize,
 								opacity: aOpacity,
@@ -362,7 +356,7 @@ export const ChatFooter: React.FC<{
 							pack='custom'
 							height={18 * scaleSize}
 							width={18 * scaleSize}
-							fill={color.white}
+							fill={colors['reverted-main-text']}
 						/>
 					</Animated.View>
 				}
@@ -374,9 +368,9 @@ export const ChatFooter: React.FC<{
 						flex.tiny,
 						border.radius.medium,
 						padding.left.small,
-						!_isFocused && padding.right.small,
+						padding.right.small,
 						{
-							alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
+							alignItems: 'center',
 							flexDirection: 'row',
 						},
 					]}
@@ -384,7 +378,7 @@ export const ChatFooter: React.FC<{
 					<TouchableOpacity
 						style={[
 							{
-								backgroundColor: '#F7F8FF',
+								backgroundColor: colors['input-background'],
 								zIndex: 3,
 								elevation: 3,
 								width: 37 * scaleSize,
@@ -401,14 +395,19 @@ export const ChatFooter: React.FC<{
 						}}
 					>
 						{mediaCids.length > 0 && <Text>{mediaCids.length}</Text>}
-						<Icon name='plus' width={26 * scaleSize} height={26 * scaleSize} fill='#C7C8D8' />
+						<Icon
+							name='plus'
+							width={26 * scaleSize}
+							height={26 * scaleSize}
+							fill={colors['secondary-text']}
+						/>
 					</TouchableOpacity>
 					<View
 						style={{
 							flex: 1,
 							paddingLeft: 9 * scaleSize,
 							paddingRight: 4 * scaleSize,
-							alignItems: _isFocused && inputHeight > 35 ? 'flex-end' : 'center',
+							alignItems: 'center',
 							flexDirection: 'row',
 						}}
 					>
@@ -426,13 +425,16 @@ export const ChatFooter: React.FC<{
 							style={[
 								border.radius.medium,
 								{
-									backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
+									backgroundColor: _isFocused
+										? `${colors['positive-asset']}70`
+										: colors['input-background'],
 									marginRight: aMaxWidth,
 									right: aFixLeft,
 									marginLeft: 9 * scaleSize,
 									zIndex: 100,
 									elevation: 100,
 									flex: 1,
+									textAlign: 'center',
 								},
 							]}
 						>
@@ -445,7 +447,7 @@ export const ChatFooter: React.FC<{
 							)}
 							<View
 								style={[
-									(message.length > 0 || _isFocused) && { color: '#3443D9' },
+									(message.length > 0 || _isFocused) && { color: colors['background-header'] },
 									text.bold.small,
 									padding.left.small,
 									{
@@ -469,8 +471,9 @@ export const ChatFooter: React.FC<{
 									}
 									autoCorrect
 									style={[
-										_isFocused ? { color: '#3443D9' } : { maxHeight: 35 * scaleSize },
+										_isFocused && { color: colors['background-header'] },
 										text.bold.small,
+										// text.align.center,
 										{
 											height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
 											fontFamily: 'Open Sans',
@@ -478,7 +481,9 @@ export const ChatFooter: React.FC<{
 										},
 									]}
 									placeholder={placeholder}
-									placeholderTextColor={_isFocused ? '#3443D9' : '#AFB1C0'}
+									placeholderTextColor={
+										!_isFocused ? colors['secondary-text'] : colors['background-header']
+									}
 									returnKeyType={isTablet ? 'send' : 'default'}
 									onSubmitEditing={() => isTablet && handlePressSend()}
 								/>
@@ -499,7 +504,9 @@ export const ChatFooter: React.FC<{
 										justifyContent: 'center',
 										width: 36 * scaleSize,
 										height: 36 * scaleSize,
-										backgroundColor: sendEnabled ? color.blue : '#AFB1C0',
+										backgroundColor: sendEnabled
+											? colors['background-header']
+											: colors['secondary-text'],
 										borderRadius: 18,
 									},
 								]}
@@ -510,7 +517,7 @@ export const ChatFooter: React.FC<{
 									name='paper-plane-outline'
 									width={20 * scaleSize}
 									height={20 * scaleSize}
-									fill={color.white}
+									fill={colors['reverted-main-text']}
 								/>
 							</TouchableOpacity>
 						</Animated.View>
@@ -528,7 +535,7 @@ export const ChatFooter: React.FC<{
 										alignItems: 'center',
 										justifyContent: 'center',
 										borderRadius: 100,
-										backgroundColor: color.blue,
+										backgroundColor: colors['background-header'],
 										width: 36 * scaleSize,
 										height: 36 * scaleSize,
 									},
@@ -565,7 +572,7 @@ export const ChatFooter: React.FC<{
 									pack='custom'
 									height={16 * scaleSize}
 									width={16 * scaleSize}
-									fill={color.white}
+									fill={colors['reverted-main-text']}
 								/>
 							</TouchableOpacity>
 						</Animated.View>
@@ -597,8 +604,9 @@ const useStylesChatDate = () => {
 export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
 	const _styles = useStylesChatDate()
 	const [{ border, row }] = useStyles()
-	const backgroundColor = '#F7F8FF'
-	const textColor = '#AFB1C0'
+	const colors = useThemeColor()
+	const backgroundColor = colors['input-background']
+	const textColor = colors['secondary-text']
 	return (
 		<View style={[row.item.justify, border.radius.medium, _styles.date, { backgroundColor }]}>
 			<Text style={[_styles.dateText, { color: textColor }]}>{timeFormat.fmtTimestamp2(date)}</Text>

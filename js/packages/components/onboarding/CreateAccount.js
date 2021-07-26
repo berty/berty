@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
-import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
+import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -18,6 +18,7 @@ import { RESULTS } from 'react-native-permissions'
 const CreateAccountBody = ({ next }) => {
 	const ctx = useMsgrContext()
 	const [{ text, padding, margin, border }] = useStyles()
+	const colors = useThemeColor()
 	const [name, setName] = React.useState('')
 	const [isPressed, setIsPressed] = useState(false)
 
@@ -84,7 +85,6 @@ const CreateAccountBody = ({ next }) => {
 										isToNavigate: false,
 									})
 									if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
-										console.log('navigate next')
 										next()
 									}
 								}}
@@ -116,9 +116,12 @@ const CreateAccountBody = ({ next }) => {
 									padding.medium,
 									text.size.large,
 									border.radius.small,
-									text.color.black,
 									text.bold.small,
-									{ backgroundColor: '#F7F8FF', fontFamily: 'Open Sans' },
+									{
+										backgroundColor: colors['input-background'],
+										fontFamily: 'Open Sans',
+										color: colors['main-text'],
+									},
 								]}
 							/>
 						</SwiperCard>
@@ -132,11 +135,11 @@ const CreateAccountBody = ({ next }) => {
 export const CreateAccount = () => {
 	useNotificationsInhibitor(() => true)
 	const { navigate } = useNavigation()
-	const [{ color }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<OnboardingWrapper>
-			<StatusBar backgroundColor={color.blue} barStyle='light-content' />
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<CreateAccountBody next={() => navigate('Onboarding.SetupFinished')} />
 		</OnboardingWrapper>
 	)

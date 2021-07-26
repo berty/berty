@@ -5,12 +5,14 @@ import { Text } from '@ui-kitten/components'
 import beapi from '@berty-tech/api'
 import { useMsgrContext } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
 	option: beapi.messenger.IReplyOption
 }> = ({ convPk, option }) => {
 	const ctx: any = useMsgrContext()
+	const colors = useThemeColor()
 	const [{ padding, border, margin }] = useStyles()
 
 	return (
@@ -36,10 +38,10 @@ const QuickReplyOption: React.FC<{
 					border.radius.left.small,
 					border.radius.right.small,
 					margin.top.tiny,
-					border.color.grey,
 					border.scale(2),
 					padding.horizontal.scale(8),
 					padding.vertical.scale(4),
+					{ borderColor: colors['secondary-text'] },
 				]}
 			>
 				<Text>{option.display || ''}</Text>

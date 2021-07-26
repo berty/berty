@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 
@@ -14,6 +14,7 @@ export const PictureMessage: React.FC<{
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
 	const [{ border }] = useStyles()
+	const colors = useThemeColor()
 	const { protocolClient } = useMsgrContext()
 	const [images, setImages] = useState<any[]>([])
 	const navigation = useNavigation()
@@ -70,7 +71,7 @@ export const PictureMessage: React.FC<{
 							key={media.cid}
 							style={[
 								{
-									backgroundColor: '#E9EAF8',
+									backgroundColor: colors['input-background'],
 									alignItems: 'center',
 									justifyContent: 'center',
 									height: 165,
@@ -79,9 +80,9 @@ export const PictureMessage: React.FC<{
 								border.radius.small,
 								border.shadow.small,
 								isHighlight && {
-									borderColor: '#525BEC',
+									borderColor: colors['background-header'],
 									borderWidth: 1,
-									shadowColor: '#525BEC',
+									shadowColor: colors['background-header'],
 									shadowOffset: {
 										width: 0,
 										height: 8,
@@ -94,18 +95,12 @@ export const PictureMessage: React.FC<{
 						>
 							<Image
 								source={{ uri: images[index]?.uri }}
-								style={[
-									{
-										height: 150,
-										width: 150,
-									},
-									border.radius.tiny,
-								]}
+								style={[{ height: 150, width: 150 }, border.radius.tiny]}
 							/>
 
 							{!images[index] && (
 								<ActivityIndicator
-									color='white'
+									color={colors['main-background']}
 									size='large'
 									style={{
 										position: 'absolute',

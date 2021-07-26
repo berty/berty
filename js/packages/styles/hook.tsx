@@ -81,8 +81,8 @@ export const Provider: React.FC = ({ children }) => {
 				scaleHeight: _scaleHeight,
 			}),
 		)
-		// console.log('recalculating styles')
 	}, [windowHeight, windowWidth])
+
 	return (
 		<ctx.Provider
 			value={[

@@ -6,7 +6,7 @@ import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
-import { useClient } from '@berty-tech/store/hooks'
+import { useClient, useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
 import { MenuListItem } from './MenuListItem'
@@ -18,18 +18,22 @@ const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C)
 	Promise.all(arr.map(cb))
 
 export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = ({ onClose }) => {
-	const [{ color, border, padding }] = useStyles()
+	const [{ border, padding }] = useStyles()
 	const { t }: { t: any } = useTranslation()
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
 	const [isLoading, setLoading] = useState(false)
 	const client = useClient()
+	const colors = useThemeColor()
 
 	const LIST_CONFIG = [
 		{
 			iconProps: {
 				name: 'gallery',
-				fill: activeTab === TabItems.Gallery ? '#383B63' : '#C7C8D8',
+				fill:
+					activeTab === TabItems.Gallery
+						? colors['alt-secondary-background-header']
+						: colors['negative-asset'],
 				pack: 'custom',
 			},
 			title: t('chat.files.gallery'),
@@ -58,7 +62,10 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 		{
 			iconProps: {
 				name: 'camera',
-				fill: activeTab === TabItems.Camera ? '#383B63' : '#C7C8D8',
+				fill:
+					activeTab === TabItems.Camera
+						? colors['alt-secondary-background-header']
+						: colors['negative-asset'],
 				pack: 'custom',
 			},
 			title: t('chat.files.camera'),
@@ -107,7 +114,10 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 		{
 			iconProps: {
 				name: 'files',
-				fill: activeTab === TabItems.Files ? '#383B63' : '#C7C8D8',
+				fill:
+					activeTab === TabItems.Files
+						? colors['alt-secondary-background-header']
+						: colors['negative-asset'],
 				pack: 'custom',
 			},
 			title: t('chat.files.files'),
@@ -196,13 +206,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					right: 0,
 				}}
 			>
-				<View
-					style={[
-						{
-							width: '100%',
-						},
-					]}
-				>
+				<View style={{ width: '100%' }}>
 					{isSecurityAccessVisible && (
 						<SecurityAccess
 							activeTab={activeTab}
@@ -211,9 +215,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					)}
 					<View
 						style={[
-							{
-								backgroundColor: color.white,
-							},
+							{ backgroundColor: colors['main-background'] },
 							border.radius.top.large,
 							border.shadow.big,
 							padding.bottom.large,

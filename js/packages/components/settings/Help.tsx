@@ -1,10 +1,11 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet, StatusBar } from 'react-native'
+import { View, ScrollView, StatusBar } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -17,23 +18,26 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 // Styles
 const useStylesHelp = () => {
 	const [{ padding, margin }] = useStyles()
+	const colors = useThemeColor()
+
 	return {
 		rowButtons: padding.top.tiny,
 		firstRowButton: margin.right.small,
 		secondRowButton: margin.left.small,
+		headerButtonText: {
+			paddingLeft: 28,
+			color: colors['main-text'],
+			fontSize: 10,
+			marginLeft: 6,
+		},
 	}
 }
-const _helpStyles = StyleSheet.create({
-	headerButtonText: {
-		paddingLeft: 28,
-		color: 'rgba(43,46,77,0.8)',
-		fontSize: 10,
-		marginLeft: 6,
-	},
-})
 
 const HeaderHelp: React.FC<{}> = () => {
-	const [{ color, text }] = useStyles()
+	const [{ text }] = useStyles()
+	const colors = useThemeColor()
+	const _helpStyles = useStylesHelp()
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -42,7 +46,7 @@ const HeaderHelp: React.FC<{}> = () => {
 						name={t('settings.help.security-privacy-button.title')}
 						icon='shield-outline'
 						iconSize={30}
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled={true}
 					>
@@ -58,7 +62,8 @@ const HeaderHelp: React.FC<{}> = () => {
 
 const BodyHelp: React.FC<{}> = () => {
 	const _styles = useStylesHelp()
-	const [{ padding, color }] = useStyles()
+	const [{ padding }] = useStyles()
+	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 
 	return (
@@ -68,20 +73,20 @@ const BodyHelp: React.FC<{}> = () => {
 					<ButtonSetting
 						name={t('settings.help.updates-button')}
 						icon='arrow-upward-outline'
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						onPress={() => navigate.settings.appUpdates()}
 					/>
 					<ButtonSetting
 						name={t('settings.help.about-button')}
 						icon='info-outline'
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						onPress={() => navigate.settings.aboutBerty()}
 					/>
 					<ButtonSetting
 						name={t('settings.help.account-button')}
 						icon='person-outline'
 						iconSize={30}
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled={true}
 					/>
@@ -90,7 +95,7 @@ const BodyHelp: React.FC<{}> = () => {
 						icon='user-plus'
 						iconPack='custom'
 						iconSize={30}
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled={true}
 					/>
@@ -98,7 +103,7 @@ const BodyHelp: React.FC<{}> = () => {
 						name={t('settings.help.message-button')}
 						icon='paper-plane-outline'
 						iconSize={30}
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled={true}
 					/>
@@ -107,7 +112,7 @@ const BodyHelp: React.FC<{}> = () => {
 						icon='users'
 						iconPack='custom'
 						iconSize={30}
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled={true}
 					/>
@@ -115,7 +120,7 @@ const BodyHelp: React.FC<{}> = () => {
 						name={t('settings.help.settings-button')}
 						icon='settings-2-outline'
 						iconSize={30}
-						iconColor={color.red}
+						iconColor={colors['secondary-background-header']}
 						actionIcon='arrow-ios-forward'
 						disabled={true}
 					/>
@@ -125,14 +130,14 @@ const BodyHelp: React.FC<{}> = () => {
 								{
 									name: t('settings.help.ask-button'),
 									icon: 'question-mark-circle-outline',
-									color: color.red,
+									color: colors['secondary-background-header'],
 									style: _styles.firstRowButton,
 									disabled: true,
 								},
 								{
 									name: t('settings.help.report-button'),
 									icon: 'bulb-outline',
-									color: color.red,
+									color: colors['secondary-background-header'],
 									style: _styles.secondRowButton,
 									disabled: true,
 								},
@@ -147,15 +152,23 @@ const BodyHelp: React.FC<{}> = () => {
 
 export const Help: React.FC<ScreenProps.Settings.Help> = () => {
 	const { goBack } = useNavigation()
-	const [{ background, flex, color, padding }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<Layout style={[background.white, flex.tiny]}>
-					<StatusBar backgroundColor={color.red} barStyle='light-content' />
+				<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+					<StatusBar
+						backgroundColor={colors['secondary-background-header']}
+						barStyle='light-content'
+					/>
 					<SwipeNavRecognizer>
-						<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
-							<HeaderSettings title={t('settings.help.title')} bgColor={color.red} undo={goBack}>
+						<ScrollView bounces={false}>
+							<HeaderSettings
+								title={t('settings.help.title')}
+								bgColor={colors['secondary-background-header']}
+								undo={goBack}
+							>
 								<HeaderHelp />
 							</HeaderSettings>
 							<BodyHelp />

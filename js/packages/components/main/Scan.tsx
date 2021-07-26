@@ -13,6 +13,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 
+import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import ScanTarget from './scan_target.svg'
@@ -53,6 +54,7 @@ const ScanBody: React.FC<{}> = () => {
 		{ background, margin, flex, column, border },
 		{ windowHeight, windowWidth, isGteIpadSize },
 	] = useStyles()
+
 	const { titleSize } = useStylesScan()
 	const qrScanSize = isGteIpadSize
 		? Math.min(windowHeight, windowWidth) * 0.5
@@ -62,6 +64,7 @@ const ScanBody: React.FC<{}> = () => {
 	return (
 		<View
 			style={[
+				// not use colors
 				background.black,
 				margin.horizontal.small,
 				column.item.center,
@@ -95,25 +98,25 @@ const ScanBody: React.FC<{}> = () => {
 
 const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 	const _styles = useStylesScan()
-	const [{ row, padding, background, margin, text }] = useStyles()
+	const [{ row, padding, margin, text }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<View style={[row.left, padding.horizontal.medium, padding.bottom.medium]}>
 			<View
 				style={[
-					background.light.grey,
 					margin.right.medium,
 					row.item.justify,
 					_styles.styles.infosPoint,
+					{ backgroundColor: colors['reverted-main-text'] },
 				]}
 			/>
 			<TextNative
 				style={[
-					text.color.light.grey,
 					text.bold.small,
 					text.size.medium,
 					row.item.justify,
-					{ fontFamily: 'Open Sans' },
+					{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] },
 				]}
 			>
 				{textProps}
@@ -124,6 +127,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 
 const DevReferenceInput = () => {
 	const [ref, setRef] = useState('')
+	const colors = useThemeColor()
 	const navigation = useNavigation()
 	return (
 		<>
@@ -132,7 +136,7 @@ const DevReferenceInput = () => {
 				value={ref}
 				onChangeText={setRef}
 				//eslint-disable-next-line react-native/no-inline-styles
-				style={{ backgroundColor: 'white', padding: 8 }}
+				style={{ backgroundColor: colors['input-background'], padding: 8 }}
 			/>
 			<Button
 				title='Submit'
@@ -159,7 +163,8 @@ const ScanInfos: React.FC<{}> = () => {
 
 const ScanComponent: React.FC<any> = () => {
 	const { goBack } = useNavigation()
-	const [{ color, padding, flex, margin, background }, { scaleSize }] = useStyles()
+	const [{ padding, flex, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { titleSize } = useStylesScan()
 	const [, setIsTouchingHeader] = useState(false)
 
@@ -170,8 +175,12 @@ const ScanComponent: React.FC<any> = () => {
 					<View
 						style={[
 							padding.medium,
-							background.red,
-							{ paddingTop: scaleSize * ((insets?.top || 0) + 16), flexGrow: 2, flexBasis: '100%' },
+							{
+								paddingTop: scaleSize * ((insets?.top || 0) + 16),
+								flexGrow: 2,
+								flexBasis: '100%',
+								backgroundColor: colors['secondary-background-header'],
+							},
 						]}
 					>
 						<View
@@ -190,7 +199,12 @@ const ScanComponent: React.FC<any> = () => {
 							<View style={[flex.direction.row, flex.align.center]}>
 								<TouchableOpacity onPress={goBack} style={[flex.align.center, flex.justify.center]}>
 									{/* <Icon name='arrow-back-outline' width={30} height={30} fill={color.white} /> */}
-									<Icon name='arrow-down-outline' width={30} height={30} fill={color.white} />
+									<Icon
+										name='arrow-down-outline'
+										width={30}
+										height={30}
+										fill={colors['reverted-main-text']}
+									/>
 								</TouchableOpacity>
 								<Text
 									style={{
@@ -198,13 +212,19 @@ const ScanComponent: React.FC<any> = () => {
 										fontSize: titleSize,
 										lineHeight: 1.25 * titleSize,
 										marginLeft: 10,
-										color: color.white,
+										color: colors['reverted-main-text'],
 									}}
 								>
 									Scan QR code
 								</Text>
 							</View>
-							<Icon name='qr' pack='custom' width={40} height={40} fill={color.white} />
+							<Icon
+								name='qr'
+								pack='custom'
+								width={40}
+								height={40}
+								fill={colors['reverted-main-text']}
+							/>
 						</View>
 						<ScanBody />
 						<ScanInfos />
@@ -216,12 +236,13 @@ const ScanComponent: React.FC<any> = () => {
 }
 
 export const Scan: React.FC<{}> = () => {
-	const [{ flex, color }] = useStyles()
+	const [{ flex }] = useStyles()
+	const colors = useThemeColor()
 	const navigation = useNavigation()
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
-			<StatusBar backgroundColor={color.red} barStyle='light-content' />
+			<StatusBar backgroundColor={colors['secondary-background-header']} barStyle='light-content' />
 			<SwipeNavRecognizer
 				onSwipeRight={() => navigation.goBack()}
 				onSwipeLeft={() => navigation.goBack()}

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { Card } from '../shared-components/Card'
 import Button from './Button'
@@ -16,20 +17,16 @@ const SwiperCard: React.FC<{
 	secondButton?: { text: string; onPress: () => Promise<void> | void }
 	skip?: { text: string; onPress: () => void }
 }> = ({ children, header, label, title, description, button, skip, secondButton }) => {
-	const [{ absolute, text, padding, margin, background, border, column }] = useStyles()
-	let labelColor: keyof typeof background.light
+	const [{ absolute, text, padding, margin, border, column }] = useStyles()
+	const colors = useThemeColor()
+
+	let labelColor: string
 	switch (label) {
 		default:
-			labelColor = 'white'
+			labelColor = 'reverted-main-text'
 			break
 		case 'Required':
-			labelColor = 'red'
-			break
-		case 'optional':
-			labelColor = 'yellow'
-			break
-		case 'Recommended':
-			labelColor = 'green'
+			labelColor = 'warning-asset'
 			break
 	}
 	return (
@@ -40,19 +37,19 @@ const SwiperCard: React.FC<{
 					margin.big,
 					padding.vertical.big,
 					text.size.large,
-					text.color.white,
 					text.align.center,
+					{ color: colors['reverted-main-text'] },
 				]}
 			>
 				{header}
 			</Text>
 			<Card
 				style={[
-					background.white,
 					absolute.bottom,
 					absolute.left,
 					absolute.right,
 					border.shadow.large,
+					{ backgroundColor: colors['main-background'] },
 				]}
 			>
 				<View
@@ -62,11 +59,13 @@ const SwiperCard: React.FC<{
 						padding.horizontal.scale(12),
 						column.item.right,
 						border.radius.medium,
-						label === 'Required' ? { backgroundColor: '#FEE4E9' } : background.light[labelColor],
+						{ backgroundColor: `${colors[labelColor]}30` },
 					]}
 				>
 					{label ? (
-						<Text style={[text.size.small, text.color[labelColor], text.align.right]}>{label}</Text>
+						<Text style={[text.size.small, text.align.right, { color: colors[labelColor] }]}>
+							{label}
+						</Text>
 					) : null}
 				</View>
 				<View style={[padding.scale(16)]}>
@@ -76,14 +75,18 @@ const SwiperCard: React.FC<{
 							padding.top.medium,
 							text.align.center,
 							text.bold.medium,
-							text.color.blue,
-							{ lineHeight: 25 },
+							{ lineHeight: 25, color: colors['background-header'] },
 						]}
 					>
 						{title}
 					</Text>
 					<Text
-						style={[text.size.small, padding.vertical.medium, text.align.center, text.color.grey]}
+						style={[
+							text.size.small,
+							padding.vertical.medium,
+							text.align.center,
+							{ color: colors['secondary-text'] },
+						]}
 					>
 						{description}
 					</Text>
@@ -93,7 +96,6 @@ const SwiperCard: React.FC<{
 						<Button
 							onPress={secondButton.onPress}
 							style={{
-								backgroundColor: '#DAE4FF',
 								marginTop: 5,
 							}}
 						>
@@ -103,7 +105,11 @@ const SwiperCard: React.FC<{
 
 					{skip ? (
 						<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
-							<Text style={[text.size.small, text.color.grey, text.align.center]}>{skip.text}</Text>
+							<Text
+								style={[text.size.small, text.align.center, { color: colors['secondary-text'] }]}
+							>
+								{skip.text}
+							</Text>
 						</TouchableOpacity>
 					) : null}
 				</View>

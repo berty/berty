@@ -13,6 +13,7 @@ import {
 	useConversation,
 	Maybe,
 	useMsgrContext,
+	useThemeColor,
 } from '@berty-tech/store/hooks'
 import { navigate } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
@@ -41,7 +42,9 @@ export const GenericAvatar: React.FC<{
 	nameSeed: Maybe<string>
 	pressable?: boolean
 }> = ({ cid, size, colorSeed, style, isEditable = false, nameSeed, pressable }) => {
-	const [{ border, background, color }] = useStyles()
+	const [{ border, color }] = useStyles()
+	const colors = useThemeColor()
+
 	const padding = Math.round(size / 14)
 	let innerSize = Math.round(size - 2 * padding)
 	let content: JSX.Element
@@ -101,7 +104,6 @@ export const GenericAvatar: React.FC<{
 		<>
 			<View
 				style={[
-					background.white,
 					border.shadow.medium,
 					style,
 					{
@@ -110,6 +112,7 @@ export const GenericAvatar: React.FC<{
 						height: size,
 						alignItems: 'center',
 						justifyContent: 'center',
+						backgroundColor: colors['main-background'],
 					},
 				]}
 			>
@@ -137,6 +140,8 @@ export const HardcodedAvatar: React.FC<{
 	pressable?: boolean
 }> = ({ size, style, name, pressable }) => {
 	const [{ border }] = useStyles()
+	const colors = useThemeColor()
+
 	let avatar = hardcodedAvatars[name]
 	if (!avatar) {
 		avatar = Logo
@@ -149,7 +154,11 @@ export const HardcodedAvatar: React.FC<{
 			onPress={() => {
 				navigate('ImageView', { images: [avatar], previewOnly: true })
 			}}
-			style={[{ borderRadius: size / 2, backgroundColor: 'white' }, border.shadow.medium, style]}
+			style={[
+				{ borderRadius: size / 2, backgroundColor: colors['main-background'] },
+				border.shadow.medium,
+				style,
+			]}
 		>
 			<Image
 				source={avatar}
@@ -187,8 +196,11 @@ export const NameAvatar: React.FC<{
 	style?: AvatarStyle
 	nameSeed: Maybe<string>
 }> = ({ colorSeed, size, style, nameSeed }) => {
+	const colors = useThemeColor()
+
 	const h = new SHA3(256).update(Buffer.from(colorSeed || '', 'base64')).digest()
 	const color = '#' + pal[h[0]]
+
 	return (
 		<View
 			style={[
@@ -203,7 +215,13 @@ export const NameAvatar: React.FC<{
 				},
 			]}
 		>
-			<Text style={{ color: 'white', fontSize: size * 0.5, includeFontPadding: false }}>
+			<Text
+				style={{
+					color: colors['reverted-main-text'],
+					fontSize: size * 0.5,
+					includeFontPadding: false,
+				}}
+			>
 				{(nameSeed || '?')[0].toUpperCase()}
 			</Text>
 		</View>
@@ -251,6 +269,7 @@ export const MemberAvatar: React.FC<{
 	pressable?: boolean
 }> = ({ publicKey, conversationPublicKey, size, pressable }) => {
 	const member = useMember({ publicKey, conversationPublicKey })
+
 	return (
 		<GenericAvatar
 			cid={member?.avatarCid}

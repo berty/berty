@@ -2,6 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import Logo from '../main/1_berty_picto.svg'
 
@@ -15,6 +16,8 @@ export const useStylesNotification = () => {
 }
 
 export const NotificationTmpLogo: React.FC<{}> = () => {
+	const colors = useThemeColor()
+
 	return (
 		<View
 			style={{
@@ -28,7 +31,7 @@ export const NotificationTmpLogo: React.FC<{}> = () => {
 				justifyContent: 'center',
 
 				borderWidth: 2,
-				borderColor: 'rgba(215, 217, 239, 1)',
+				borderColor: colors['input-background'],
 			}}
 		>
 			{/*<Icon name='checkmark-outline' fill={color.green} width={15} height={15} />*/}

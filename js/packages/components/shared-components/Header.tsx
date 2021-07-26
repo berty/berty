@@ -3,7 +3,8 @@ import { View, TouchableOpacity, Insets } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { useStyles, defaultStylesDeclaration } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 const largeHitSlop: Insets = {
 	top: 20,
@@ -41,24 +42,39 @@ type HeaderSettingsProps = {
 export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	title = null,
 	children = null,
-	bgColor = defaultStylesDeclaration.colors.default.blue,
+	bgColor,
 	undo,
 	undoIcon = 'arrow-back-outline',
 	undoIconPack,
 	undoIconSize = 25,
-	undoIconColor = 'white',
+	undoIconColor,
 	undoIconHitSlop = largeHitSlop,
 	desc = null,
 	descFontSize = 10,
-	descColor = 'white',
+	descColor,
 	action = null,
 	actionValue = null,
 	actionIcon = 'swap',
 	actionIconSize = 30,
-	actionIconColor = 'white',
+	actionIconColor,
 	actionIconHitSlop = largeHitSlop,
 }) => {
 	const [{ border, flex, padding, row, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
+	if (!bgColor) {
+		bgColor = colors['background-header']
+	}
+	if (!undoIconColor) {
+		undoIconColor = colors['reverted-main-text']
+	}
+	if (!descColor) {
+		descColor = colors['reverted-main-text']
+	}
+	if (!actionIconColor) {
+		actionIconColor = colors['reverted-main-text']
+	}
+
 	return (
 		<SafeAreaView style={[flex.tiny, border.radius.bottom.scale(20), { backgroundColor: bgColor }]}>
 			<View style={[padding.horizontal.medium, padding.top.medium, padding.bottom.medium]}>
@@ -139,6 +155,8 @@ type HeaderInfoSettingsProps = {
 
 export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children }) => {
 	const [{ margin, border, padding }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<View
 			style={[
@@ -146,7 +164,7 @@ export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children
 				border.radius.medium,
 				padding.medium,
 				margin.top.medium,
-				{ backgroundColor: 'rgba(206,210,255,0.3)' },
+				{ backgroundColor: `${colors['background-header']}40` },
 			]}
 		>
 			<View style={{ justifyContent: 'center' }}>{children}</View>

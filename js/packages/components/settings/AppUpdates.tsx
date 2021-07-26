@@ -1,74 +1,23 @@
-import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
+import React from 'react'
+import { View, ScrollView, StatusBar } from 'react-native'
+import { Layout } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
-import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
-import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { HeaderSettings } from '../shared-components/Header'
+import { ButtonSetting } from '../shared-components/SettingsButtons'
 
 //
 // App Updates
 //
 
-// Types
-type HeaderAppUpdatesProps = {
-	update: boolean
-}
-
-// Styles
-const useStylesAppUpdate = () => {
-	const [{ text }] = useStyles()
-
-	return {
-		newAppVersionText: text.size.small,
-	}
-}
-
-const HeaderAppUpdates: React.FC<HeaderAppUpdatesProps> = ({ update }) => {
-	const _styles = useStylesAppUpdate()
-	const [{ color, text, row, margin, padding, background, border }] = useStyles()
-
-	return (
-		<View>
-			{update ? (
-				<HeaderInfoSettings bgColor={color.light.blue}>
-					<Text style={[text.color.white, row.center]} category='h5'>
-						A new version is available
-					</Text>
-					<Text
-						style={[text.color.white, row.center, margin.bottom.medium, _styles.newAppVersionText]}
-					>
-						New app version: 2.42.1.4
-					</Text>
-					<ButtonSettingItem value='Multiple bug fixes, improved reliability' />
-					<ButtonSettingItem value='Multiple bug fixes, improved reliability' />
-					<TouchableOpacity
-						style={[
-							padding.vertical.medium,
-							padding.horizontal.medium,
-							background.blue,
-							row.center,
-							margin.top.medium,
-							border.radius.medium,
-						]}
-					>
-						<Icon name='download-outline' width={30} height={30} fill={color.white} />
-						<Text style={[text.color.white, margin.left.medium, padding.right.small]} category='s'>
-							Download latest version on app
-						</Text>
-					</TouchableOpacity>
-				</HeaderInfoSettings>
-			) : null}
-		</View>
-	)
-}
-
 const BodyUpdates: React.FC<{}> = () => {
-	const [{ flex, padding, color }] = useStyles()
+	const [{ flex, padding }] = useStyles()
+	const colors = useThemeColor()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
 
 	React.useEffect(() => {
@@ -85,10 +34,10 @@ const BodyUpdates: React.FC<{}> = () => {
 							icon='pricetags-outline'
 							state={{
 								value: t('settings.updates.current-tag'),
-								color: color.white,
-								bgColor: color.blue,
+								color: colors['reverted-main-text'],
+								bgColor: colors['background-header'],
 								icon: 'pricetags-outline',
-								iconColor: color.red,
+								iconColor: colors['secondary-background-header'],
 								iconSize: 30,
 							}}
 							actionIcon={null}
@@ -101,18 +50,16 @@ const BodyUpdates: React.FC<{}> = () => {
 }
 
 export const AppUpdates: React.FC<ScreenProps.Settings.AppUpdates> = () => {
-	const [update] = useState(false)
 	const { goBack } = useNavigation()
-	const [{ flex, background, padding }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<Layout style={[flex.tiny, background.white]}>
-					<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-						<HeaderSettings title={t('settings.updates.title')} desc={null} undo={goBack}>
-							<HeaderAppUpdates update={update} />
-						</HeaderSettings>
+				<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+					<StatusBar backgroundColor={colors['background-header']} barStyle={'light-content'} />
+					<ScrollView bounces={false}>
+						<HeaderSettings title={t('settings.updates.title')} desc={null} undo={goBack} />
 						<BodyUpdates />
 					</ScrollView>
 				</Layout>
