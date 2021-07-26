@@ -57,7 +57,7 @@ jobs:
         env:
           CI: true
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.0.1
+        uses: codecov/codecov-action@v2.0.2
         with:
           file: ./js/coverage/coverage-final.json
           flags: js.unittests
