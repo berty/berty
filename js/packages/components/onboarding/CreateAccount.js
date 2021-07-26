@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/context'
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
+import { GlobalPersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -49,7 +49,7 @@ const CreateAccountBody = ({ next }) => {
 
 	const onPress = React.useCallback(async () => {
 		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
-		await AsyncStorage.setItem('displayName', displayName)
+		await AsyncStorage.setItem(GlobalPersistentOptionsKeys.DisplayName, displayName)
 		handlePersistentOptions()
 			.then(() => {})
 			.catch((err) => {

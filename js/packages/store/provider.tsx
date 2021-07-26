@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
-import MsgrContext, { initialState, PersistentOptionsKeys } from './context'
+import MsgrContext, { accountService, initialState, PersistentOptionsKeys } from './context'
 import {
 	initialLaunch,
 	openingDaemon,
@@ -25,11 +25,13 @@ import {
 import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './providerReducer'
 import { playSound, SoundKey } from './sounds'
+import beapi from '@berty-tech/api'
 
 export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
 	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
 	const [eventEmitter] = React.useState(new EventEmitter())
 	const [debugMode, setDebugMode] = React.useState(false)
+	const [networkConfig, setNetworkConfig] = useState<beapi.account.INetworkConfig>({})
 
 	useEffect(() => {
 		console.log('State change:', state.appState + '\n')
@@ -175,6 +177,27 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[state.client],
 	)
 
+	useEffect(() => {
+		if (state.selectedAccount === null) {
+			console.warn('no account id supplied')
+			setNetworkConfig({})
+			return
+		}
+
+		const f = async () => {
+			const netConf = await accountService.networkConfigGet({
+				accountId: state.selectedAccount,
+			})
+			if (!netConf.currentConfig) {
+				return
+			}
+
+			setNetworkConfig(netConf.currentConfig)
+		}
+
+		f().catch((e) => console.warn(e))
+	}, [state.selectedAccount])
+
 	return (
 		<MsgrContext.Provider
 			value={{
@@ -195,6 +218,8 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				setDebugMode: callbackSetDebugMode,
 				addReaction: callbackAddReaction,
 				removeReaction: callbackRemoveReaction,
+				networkConfig: networkConfig,
+				setNetworkConfig: setNetworkConfig,
 			}}
 		>
 			{children}

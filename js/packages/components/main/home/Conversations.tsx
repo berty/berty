@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useMsgrContext } from '@berty-tech/store/context'
+import { accountService, useMsgrContext } from '@berty-tech/store/context'
 import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 
@@ -391,7 +391,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 }) => {
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
-	const { persistentOptions } = useMsgrContext()
+	const { selectedAccount } = useMsgrContext()
 	const colors = useThemeColor()
 
 	return items.length || suggestions.length || configurations.length ? (
@@ -416,7 +416,14 @@ export const Conversations: React.FC<ConversationsProps> = ({
 							icon={config.icon}
 							addBot={async () => {
 								if (config.key === 'network') {
-									if (persistentOptions.preset.value === 'fullAnonymity') {
+									const netConf = await accountService.networkConfigGet({
+										accountId: selectedAccount,
+									})
+
+									if (
+										netConf.currentConfig?.showDefaultServices !==
+										beapi.account.NetworkConfig.Flag.Enabled
+									) {
 										navigate.main.networkOptions()
 									} else {
 										navigate.onboarding.servicesAuth()

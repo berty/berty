@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Receive contact requests",
       "external-services-button": "External services",
       "auto-replicate-button": "Auto replicate",
+      "auto-replicate-button-unavailable": "You must register at least one replication server first",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Local Peer discovery"

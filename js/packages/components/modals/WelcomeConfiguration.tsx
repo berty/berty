@@ -1,10 +1,10 @@
 import React from 'react'
 import {
-	View,
-	TouchableOpacity,
-	Text as TextNative,
-	StyleSheet,
 	ImageBackground,
+	StyleSheet,
+	Text as TextNative,
+	TouchableOpacity,
+	View,
 } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 
@@ -13,10 +13,11 @@ import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { accountService, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import WelcomeBackground from '@berty-tech/assets/welcome_bg.png'
 import { useNavigation } from '@berty-tech/navigation'
+import beapi from '@berty-tech/api'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { checkPermissions } from '../utils'
@@ -42,7 +43,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const { t } = useTranslation()
 	const _styles = useStylesWelcome()
 	const { navigate } = useNavigation()
-	const { persistentOptions, setPersistentOption } = useMsgrContext()
+	const { persistentOptions, setPersistentOption, selectedAccount } = useMsgrContext()
 
 	const handleSkip = async () => {
 		closeModal()
@@ -186,7 +187,14 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 							]}
 							onPress={async () => {
 								closeModal()
-								if (persistentOptions.preset.value === 'fullAnonymity') {
+								const netConf = await accountService.networkConfigGet({
+									accountId: selectedAccount,
+								})
+
+								if (
+									netConf.currentConfig?.showDefaultServices !==
+									beapi.account.NetworkConfig.Flag.Enabled
+								) {
 									navigate.main.networkOptions({ checkNotificationPermission: true })
 								} else {
 									navigate.onboarding.servicesAuth({ checkNotificationPermission: true })

@@ -1,7 +1,14 @@
 import beapi from '@berty-tech/api'
 
 import { updateShakeAttachments } from './utils'
-import { accountService, MessengerActions, reducerAction } from './context'
+import {
+	accountService,
+	GlobalPersistentOptionsKeys,
+	MessengerActions,
+	reducerAction,
+} from './context'
+import AsyncStorage from '@react-native-community/async-storage'
+import { checkBluetoothPermission } from '@berty-tech/components/settings/Bluetooth'
 
 export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
 	await accountService
@@ -64,10 +71,32 @@ export const refreshAccountList = async (
 	}
 }
 
+export const getNetworkConfigurationFromPreset = async (
+	preset: beapi.account.NetworkConfigPreset | null | undefined,
+): Promise<beapi.account.INetworkConfig> => {
+	const hasBluetoothPermission = (await checkBluetoothPermission()) === 'granted'
+
+	const configForPreset = await accountService.networkConfigGetPreset({
+		preset: preset || beapi.account.NetworkConfigPreset.Undefined,
+		hasBluetoothPermission: hasBluetoothPermission,
+	})
+
+	if (configForPreset.config) {
+		return configForPreset.config
+	}
+
+	return {}
+}
+
 export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerAction) => void) => {
 	let resp: beapi.account.CreateAccount.Reply
 	try {
-		resp = await accountService.createAccount({})
+		const preset = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.Preset)
+		const netConf: beapi.account.INetworkConfig = await getNetworkConfigurationFromPreset(
+			parseInt(preset || '0', 10),
+		)
+
+		resp = await accountService.createAccount({ networkConfig: netConf })
 		console.log('createNewAccount: createAccount')
 	} catch (e) {
 		console.warn('unable to create account', e)

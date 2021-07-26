@@ -29,7 +29,6 @@ import (
 	manet "github.com/multiformats/go-multiaddr/net"
 	"moul.io/srand"
 
-	nb "berty.tech/berty/v2/go/internal/androidnearby"
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -92,9 +91,9 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, FlagNameP2PRDVP, KeywordDefault, "list of rendezvous point maddr, `:dev:` will add the default devs servers, `:none:` will disable rdvp")
-	fs.BoolVar(&m.Node.Protocol.Ble.Enable, FlagNameP2PBLE, ble.Supported, "if true Bluetooth Low Energy will be enabled")
-	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, FlagNameP2PNearby, nb.Supported, "if true Android Nearby will be enabled")
-	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, FlagNameP2PMultipeerConnectivity, mc.Supported, "if true Multipeer Connectivity will be enabled")
+	fs.BoolVar(&m.Node.Protocol.Ble.Enable, FlagNameP2PBLE, false, "if true Bluetooth Low Energy will be enabled")
+	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, FlagNameP2PNearby, false, "if true Android Nearby will be enabled")
+	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, FlagNameP2PMultipeerConnectivity, false, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, FlagNameTorMode, defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")

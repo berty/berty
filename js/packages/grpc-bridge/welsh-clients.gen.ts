@@ -84,6 +84,7 @@ export interface WelshAccountServiceClient {
 	getUsername: UnaryType<beapi.account.AccountService['getUsername']>
 	networkConfigSet: UnaryType<beapi.account.AccountService['networkConfigSet']>
 	networkConfigGet: UnaryType<beapi.account.AccountService['networkConfigGet']>
+	networkConfigGetPreset: UnaryType<beapi.account.AccountService['networkConfigGetPreset']>
 }
 
 export interface WelshMessengerServiceClient {

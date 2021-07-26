@@ -17,11 +17,12 @@ import AsyncStorage from '@react-native-community/async-storage'
 import crashlytics from '@react-native-firebase/crashlytics'
 
 import {
+	accountService,
 	defaultPersistentOptions,
+	GlobalPersistentOptionsKeys,
 	MessengerActions,
 	PersistentOptionsKeys,
 } from '@berty-tech/store/context'
-import { tyberHostStorageKey } from '@berty-tech/store/providerEffects'
 import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -448,7 +449,7 @@ const BodyDevTools: React.FC<{}> = () => {
 		}
 	}, [addTyberHost, ctx.client])
 
-	const items =
+	const torOptions =
 		t('settings.devtools.tor-button', {
 			option: '',
 		})?.length &&
@@ -460,19 +461,19 @@ const BodyDevTools: React.FC<{}> = () => {
 						label: t('settings.devtools.tor-button', {
 							option: t('settings.devtools.tor-disabled-option'),
 						}),
-						value: t('settings.devtools.tor-disabled-option'),
+						value: String(beapi.account.NetworkConfig.TorFlag.TorDisabled),
 					},
 					{
 						label: t('settings.devtools.tor-button', {
 							option: t('settings.devtools.tor-optional-option'),
 						}),
-						value: t('settings.devtools.tor-optional-option'),
+						value: String(beapi.account.NetworkConfig.TorFlag.TorOptional),
 					},
 					{
 						label: t('settings.devtools.tor-button', {
 							option: t('settings.devtools.tor-required-option'),
 						}),
-						value: t('settings.devtools.tor-required-option'),
+						value: String(beapi.account.NetworkConfig.TorFlag.TorRequired),
 					},
 			  ]
 			: []
@@ -532,19 +533,33 @@ const BodyDevTools: React.FC<{}> = () => {
 				}}
 			/>
 			<DropDownPicker
-				items={items}
+				items={torOptions}
 				defaultValue={
-					items?.length
-						? ctx.persistentOptions?.tor.flag || t('settings.devtools.tor-disabled-option')
-						: null
+					torOptions?.length && ctx.networkConfig.tor
+						? String(ctx.networkConfig.tor)
+						: String(beapi.account.NetworkConfig.TorFlag.TorDisabled)
 				}
 				onChangeItem={async (item: any) => {
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.Tor,
-						payload: {
-							flag: item.value,
-						},
+					let newValue = beapi.account.NetworkConfig.TorFlag.TorDisabled
+
+					try {
+						newValue = parseInt(item.value, 10)
+					} catch (e) {
+						console.warn('unable to cast new value')
+						return
+					}
+
+					const newConfig = {
+						...ctx.networkConfig,
+						tor: newValue,
+					}
+
+					await accountService.networkConfigSet({
+						accountId: ctx.selectedAccount,
+						config: newConfig,
 					})
+
+					ctx.setNetworkConfig(newConfig)
 				}}
 			/>
 			<StringOptionInput
@@ -573,10 +588,10 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.tyber-host-button.name')}
 				bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
 				getOptionValue={async () =>
-					(await AsyncStorage.getItem(tyberHostStorageKey)) ||
+					(await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) ||
 					defaultPersistentOptions().tyberHost.address
 				}
-				setOptionValue={(val) => AsyncStorage.setItem(tyberHostStorageKey, val)}
+				setOptionValue={(val) => AsyncStorage.setItem(GlobalPersistentOptionsKeys.TyberHost, val)}
 			/>
 			{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
 				<ButtonSetting

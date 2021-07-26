@@ -7,15 +7,21 @@ import { useTranslation } from 'react-i18next'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty-tech/styles'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import {
+	accountService,
+	GlobalPersistentOptionsKeys,
+	useMsgrContext,
+} from '@berty-tech/store/context'
 
 import FullAnonBackground from '@berty-tech/assets/full_anon_bg.png'
 import PerformanceBackground from '@berty-tech/assets/performance_bg.png'
+import beapi from '@berty-tech/api'
+import { getNetworkConfigurationFromPreset } from '@berty-tech/store/effectableCallbacks'
 
 export const ChoosePreset = () => {
 	const { t }: { t: any } = useTranslation()
-	const { setPersistentOption } = useMsgrContext()
+	const { selectedAccount, setNetworkConfig } = useMsgrContext()
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 
@@ -61,16 +67,22 @@ export const ChoosePreset = () => {
 			<TouchableOpacity
 				activeOpacity={0.7}
 				onPress={async () => {
-					if (await AsyncStorage.getItem('isNewAccount')) {
-						await AsyncStorage.setItem('preset', 'performance')
+					if (await AsyncStorage.getItem(GlobalPersistentOptionsKeys.IsNewAccount)) {
+						await AsyncStorage.setItem(
+							GlobalPersistentOptionsKeys.Preset,
+							String(beapi.account.NetworkConfigPreset.Performance),
+						)
 						navigation.navigate('Onboarding.CreateAccount', {})
 					} else {
-						await setPersistentOption({
-							type: PersistentOptionsKeys.Preset,
-							payload: {
-								value: 'performance',
-							},
+						const netConf: beapi.account.INetworkConfig = await getNetworkConfigurationFromPreset(
+							beapi.account.NetworkConfigPreset.Performance,
+						)
+
+						await accountService.networkConfigSet({
+							accountId: selectedAccount,
+							config: netConf,
 						})
+						setNetworkConfig(netConf)
 						navigation.goBack()
 					}
 				}}
@@ -185,16 +197,22 @@ export const ChoosePreset = () => {
 				]}
 				activeOpacity={0.7}
 				onPress={async () => {
-					if (await AsyncStorage.getItem('isNewAccount')) {
-						await AsyncStorage.setItem('preset', 'fullAnonymity')
+					if (await AsyncStorage.getItem(GlobalPersistentOptionsKeys.IsNewAccount)) {
+						await AsyncStorage.setItem(
+							GlobalPersistentOptionsKeys.Preset,
+							String(beapi.account.NetworkConfigPreset.FullAnonymity),
+						)
 						navigation.navigate('Onboarding.CreateAccount', {})
 					} else {
-						await setPersistentOption({
-							type: PersistentOptionsKeys.Preset,
-							payload: {
-								value: 'fullAnonymity',
-							},
+						const netConf: beapi.account.INetworkConfig = await getNetworkConfigurationFromPreset(
+							beapi.account.NetworkConfigPreset.FullAnonymity,
+						)
+
+						await accountService.networkConfigSet({
+							accountId: selectedAccount,
+							config: netConf,
 						})
+						setNetworkConfig(netConf)
 						navigation.goBack()
 					}
 				}}

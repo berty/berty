@@ -4,6 +4,7 @@ package berty.account.v1;
 
 import "gogoproto/gogo.proto";
 import "protocoltypes.proto";
+import "messengertypes.proto";
 import "errcode.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertyaccount";
@@ -59,6 +60,9 @@ service AccountService {
 
   // NetworkConfigGet
   rpc NetworkConfigGet (NetworkConfigGet.Request) returns (NetworkConfigGet.Reply);
+
+  // NetworkConfigGetPreset
+  rpc NetworkConfigGetPreset (NetworkConfigGetPreset.Request) returns (NetworkConfigGetPreset.Reply);
 }
 
 message OpenAccount {
@@ -243,6 +247,13 @@ message NetworkConfig {
   Flag android_nearby = 7;
   TorFlag tor = 8;
   Flag mdns = 9 [(gogoproto.customname) = "MDNS"];
+  Flag show_default_services = 10;
+}
+
+enum NetworkConfigPreset {
+  Undefined = 0 [(gogoproto.enumvalue_customname) = "NetPresetUndefined"];
+  Performance = 1 [(gogoproto.enumvalue_customname) = "NetPresetPerformance"];
+  FullAnonymity = 2 [(gogoproto.enumvalue_customname) = "NetPresetFullAnonymity"];
 }
 
 message NetworkConfigSet {
@@ -264,5 +275,15 @@ message NetworkConfigGet {
     repeated string default_bootstrap = 4;
     repeated string default_rendezvous = 5;
     repeated string default_static_relay = 6;
+  }
+}
+
+message NetworkConfigGetPreset {
+  message Request {
+    NetworkConfigPreset preset = 1;
+    bool has_bluetooth_permission = 2;
+  }
+  message Reply {
+    NetworkConfig config = 1;
   }
 }

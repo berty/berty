@@ -24,6 +24,7 @@ import {
 	reducerAction,
 	accountService,
 	MsgrState,
+	GlobalPersistentOptionsKeys,
 } from './context'
 
 export const openAccountWithProgress = async (
@@ -102,11 +103,9 @@ const getPersistentOptions = async (
 	}
 }
 
-export const tyberHostStorageKey = 'global-storage_tyber-host'
-
 export const initBridge = async () => {
 	const tyberHost =
-		(await AsyncStorage.getItem(tyberHostStorageKey)) ||
+		(await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) ||
 		defaultPersistentOptions().tyberHost.address
 	await GoBridge.initBridge(tyberHost)
 		.then(() => console.log('bridge init done'))
@@ -182,7 +181,7 @@ export const openingDaemon = async (
 
 	let tyberHost = ''
 	try {
-		tyberHost = (await AsyncStorage.getItem(tyberHostStorageKey)) || ''
+		tyberHost = (await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) || ''
 		if (tyberHost !== '') {
 			console.warn(`connecting to ${tyberHost}`)
 		}
@@ -196,29 +195,6 @@ export const openingDaemon = async (
 		const store = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount.toString()))
 		const opts: PersistentOptions = JSON.parse(store as any)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
-
-		// set ble flag
-		bridgeOpts.cliArgs =
-			opts?.ble && !opts.ble.enable
-				? [...bridgeOpts.cliArgs!, '--p2p.ble=false']
-				: [...bridgeOpts.cliArgs!, '--p2p.ble=true']
-
-		// set mc flag
-		bridgeOpts.cliArgs =
-			opts?.mc && !opts.mc.enable
-				? [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=false']
-				: [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=true']
-
-		// set nearby flag
-		bridgeOpts.cliArgs =
-			opts?.nearby && !opts.nearby.enable
-				? [...bridgeOpts.cliArgs!, '--p2p.nearby=false']
-				: [...bridgeOpts.cliArgs!, '--p2p.nearby=true']
-
-		// set tor flag
-		bridgeOpts.cliArgs = opts?.tor?.flag.length
-			? [...bridgeOpts.cliArgs!, `--tor.mode=${opts?.tor?.flag}`]
-			: [...bridgeOpts.cliArgs!, '--tor.mode=disabled']
 
 		// set log flag
 		bridgeOpts.cliArgs = opts?.log?.format
@@ -414,11 +390,10 @@ export const updateAccountsPreReady = async (
 	if (state.appState !== MessengerAppState.PreReady) {
 		return
 	}
-	const displayName = await AsyncStorage.getItem('displayName')
-	const preset = await AsyncStorage.getItem('preset')
-	await AsyncStorage.removeItem('displayName')
-	await AsyncStorage.removeItem('preset')
-	await AsyncStorage.removeItem('isNewAccount')
+	const displayName = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.DisplayName)
+	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.DisplayName)
+	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.Preset)
+	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.IsNewAccount)
 	if (displayName) {
 		await state?.client
 			?.accountUpdate({ displayName })
@@ -429,14 +404,6 @@ export const updateAccountsPreReady = async (
 			accountName: displayName,
 			accountId: state?.selectedAccount,
 			publicKey: state?.account?.publicKey,
-		})
-	}
-	if (preset) {
-		await setPersistentOption(dispatch, state?.selectedAccount, {
-			type: PersistentOptionsKeys.Preset,
-			payload: {
-				value: preset,
-			},
 		})
 	}
 	await setPersistentOption(dispatch, state?.selectedAccount, {

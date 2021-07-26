@@ -41,7 +41,9 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	if req.NetworkConfig == nil {
 		req.NetworkConfig, _ = s.NetworkConfigForAccount(req.AccountID)
 	}
-	req.Args = req.NetworkConfig.AddArgs(req.Args)
+	args = req.NetworkConfig.AddArgs(args)
+
+	s.logger.Info("opening account with args", zap.Strings("args", args))
 
 	if req.AccountID == "" {
 		return nil, errcode.ErrBertyAccountNoIDSpecified
@@ -817,9 +819,9 @@ func NetworkConfigGetDefault() *NetworkConfig {
 	}
 
 	return &NetworkConfig{
-		Bootstrap:                  ipfs_cfg.DefaultBootstrapAddresses,
-		Rendezvous:                 defaultRDVPeerMaddrs,
-		StaticRelay:                config.Config.P2P.StaticRelays,
+		Bootstrap:                  []string{initutil.KeywordDefault},
+		Rendezvous:                 []string{initutil.KeywordDefault},
+		StaticRelay:                []string{initutil.KeywordDefault},
 		DHT:                        NetworkConfig_DHTClient,
 		BluetoothLE:                NetworkConfig_Disabled,
 		AndroidNearby:              NetworkConfig_Disabled,
@@ -831,9 +833,9 @@ func NetworkConfigGetDefault() *NetworkConfig {
 
 func NetworkConfigGetBlank() *NetworkConfig {
 	return &NetworkConfig{
-		Bootstrap:                  []string{":default:"},
-		Rendezvous:                 []string{":default:"},
-		StaticRelay:                []string{":default:"},
+		Bootstrap:                  []string{initutil.KeywordDefault},
+		Rendezvous:                 []string{initutil.KeywordDefault},
+		StaticRelay:                []string{initutil.KeywordDefault},
 		DHT:                        NetworkConfig_DHTUndefined,
 		BluetoothLE:                NetworkConfig_Undefined,
 		AndroidNearby:              NetworkConfig_Undefined,
@@ -881,6 +883,12 @@ func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *N
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
 	}
 
+	// TODO: allow Tor when available
+	if networkConfig.Tor != NetworkConfig_TorUndefined && networkConfig.Tor != NetworkConfig_TorDisabled {
+		s.logger.Warn("tor is set to required, downgrading to disabled as not yet supported")
+		networkConfig.Tor = NetworkConfig_TorDisabled
+	}
+
 	data, err := networkConfig.Marshal()
 	if err != nil {
 		return err
@@ -904,61 +912,31 @@ func (s *service) NetworkConfigSet(ctx context.Context, request *NetworkConfigSe
 
 func (m *NetworkConfig) AddArgs(args []string) []string {
 	defaultConfig := NetworkConfigGetDefault()
-	hasTorFlag := ArgsHasWithPrefix(args, initutil.FlagNameTorMode)
-	hasMDNSFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PMDNS)
-	staticRelaysFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PStaticRelays)
-	hasBootstrapFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PBootstrap)
 
-	args = m.addRadioArgs(args, defaultConfig)
-
-	if !hasTorFlag {
+	if !ArgsHasWithPrefix(args, initutil.FlagNameTorMode) {
 		torFlag := m.Tor
 		if torFlag == NetworkConfig_TorUndefined {
 			torFlag = defaultConfig.Tor
 		}
 
-		switch torFlag {
-		case NetworkConfig_TorUndefined, NetworkConfig_TorDisabled:
-			args = append(args, ArgSet(initutil.FlagNameTorMode, "disabled"))
-		case NetworkConfig_TorOptional:
-			args = append(args, ArgSet(initutil.FlagNameTorMode, "optional"))
-		case NetworkConfig_TorRequired:
-			args = append(args, ArgSet(initutil.FlagNameTorMode, "required"))
+		if torValue, ok := map[NetworkConfig_TorFlag]string{
+			NetworkConfig_TorUndefined: "disabled",
+			NetworkConfig_TorDisabled:  "disabled",
+			NetworkConfig_TorOptional:  "optional",
+			NetworkConfig_TorRequired:  "required",
+		}[torFlag]; ok {
+			args = append(args, ArgSet(initutil.FlagNameTorMode, torValue))
 		}
 	}
 
-	if !hasMDNSFlag {
-		mdnsFlag := m.MDNS
-		if mdnsFlag == NetworkConfig_Undefined {
-			mdnsFlag = defaultConfig.MDNS
-		}
+	args = addListValueArgs(args, initutil.FlagNameP2PBootstrap, []string{initutil.KeywordNone}, m.Bootstrap)
+	args = addListValueArgs(args, initutil.FlagNameP2PStaticRelays, []string{initutil.KeywordNone}, m.StaticRelay)
+	args = addListValueArgs(args, initutil.FlagNameP2PRDVP, []string{initutil.KeywordNone}, m.Rendezvous)
 
-		switch mdnsFlag {
-		case NetworkConfig_Undefined, NetworkConfig_Disabled:
-			args = append(args, ArgSet(initutil.FlagNameP2PMDNS, "true"))
-
-		case NetworkConfig_Enabled:
-			args = append(args, ArgSet(initutil.FlagNameP2PMDNS, "false"))
-		}
-	}
-
-	if !staticRelaysFlag {
-		staticRelays := m.StaticRelay
-		if len(staticRelays) == 0 {
-			staticRelays = []string{initutil.KeywordNone}
-		}
-
-		args = append(args, ArgSet(initutil.FlagNameP2PStaticRelays, strings.Join(staticRelays, ",")))
-	}
-
-	if !hasBootstrapFlag {
-		bootstrapNodes := m.Bootstrap
-		if len(bootstrapNodes) == 0 {
-			bootstrapNodes = []string{initutil.KeywordNone}
-		}
-
-		args = append(args, ArgSet(initutil.FlagNameP2PStaticRelays, strings.Join(bootstrapNodes, ",")))
-	}
+	args = addFlagValueArgs(args, initutil.FlagNameP2PBLE, ble.Supported, defaultConfig.BluetoothLE, m.BluetoothLE)
+	args = addFlagValueArgs(args, initutil.FlagNameP2PMultipeerConnectivity, mc.Supported, defaultConfig.AppleMultipeerConnectivity, m.AppleMultipeerConnectivity)
+	args = addFlagValueArgs(args, initutil.FlagNameP2PNearby, nb.Supported, defaultConfig.AndroidNearby, m.AndroidNearby)
+	args = addFlagValueArgs(args, initutil.FlagNameP2PMDNS, true, defaultConfig.MDNS, m.MDNS)
 
 	args = m.addDHTArgs(args, defaultConfig)
 	args = m.addRDVPArgs(args, defaultConfig)
@@ -966,36 +944,58 @@ func (m *NetworkConfig) AddArgs(args []string) []string {
 	return args
 }
 
-func (m *NetworkConfig) addRDVPArgs(args []string, defaultConfig *NetworkConfig) []string {
-	hasRDVPFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PRDVP)
-	hasTinderRDVPDriverFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderRDVPDriver)
+func addListValueArgs(args []string, flagName string, defaultValue, currentValue []string) []string {
+	if !ArgsHasWithPrefix(args, flagName) {
+		if len(currentValue) == 0 {
+			currentValue = defaultValue
+		}
 
-	rdvpDisabled := false
-	if !hasRDVPFlag {
+		args = append(args, ArgSet(flagName, strings.Join(currentValue, ",")))
+	}
+
+	return args
+}
+
+func addFlagValueArgs(args []string, flagName string, platformSupported bool, defaultValue, currentValue NetworkConfig_Flag) []string {
+	if hasFlag := ArgsHasWithPrefix(args, flagName); hasFlag {
+		return args
+	}
+
+	if currentValue == NetworkConfig_Undefined {
+		currentValue = defaultValue
+	}
+
+	flagVal := "false"
+	if platformSupported && currentValue == NetworkConfig_Enabled {
+		flagVal = "true"
+	}
+
+	return append(args, ArgSet(flagName, flagVal))
+}
+
+func (m *NetworkConfig) addRDVPArgs(args []string, defaultConfig *NetworkConfig) []string {
+	if !ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderRDVPDriver) && !ArgsHasWithPrefix(args, initutil.FlagNameP2PRDVP) {
+		rdvpDisabled := false
 		rdvpHosts := m.Rendezvous
 		if len(m.Rendezvous) == 0 {
 			rdvpHosts = defaultConfig.Rendezvous
 		}
 
 		if len(rdvpHosts) == 0 {
-			rdvpHosts = []string{initutil.KeywordNone}
-		}
-
-		for _, val := range rdvpHosts {
-			if val == initutil.KeywordNone {
-				rdvpDisabled = true
-				break
+			rdvpDisabled = true
+		} else {
+			for _, val := range rdvpHosts {
+				if val == initutil.KeywordNone {
+					rdvpDisabled = true
+					break
+				}
 			}
 		}
 
-		args = append(args, ArgSet(initutil.FlagNameP2PRDVP, strings.Join(rdvpHosts, ",")))
-	}
-
-	if !hasTinderRDVPDriverFlag {
 		if !rdvpDisabled {
 			args = append(args, ArgSet(initutil.FlagNameP2PTinderRDVPDriver, "true"))
 		} else {
-			args = append(args, ArgSet(initutil.FlagNameP2PDHT, "false"))
+			args = append(args, ArgSet(initutil.FlagNameP2PTinderRDVPDriver, "false"))
 		}
 	}
 
@@ -1013,22 +1013,19 @@ func (m *NetworkConfig) addDHTArgs(args []string, defaultConfig *NetworkConfig) 
 			dhtFlag = defaultConfig.DHT
 		}
 
-		switch dhtFlag {
-		case NetworkConfig_DHTClient:
-			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTClient))
+		if dhtValue, ok := map[NetworkConfig_DHTFlag]string{
+			NetworkConfig_DHTClient:     initutil.FlagValueP2PDHTClient,
+			NetworkConfig_DHTServer:     initutil.FlagValueP2PDHTServer,
+			NetworkConfig_DHTAuto:       initutil.FlagValueP2PDHTAuto,
+			NetworkConfig_DHTAutoServer: initutil.FlagValueP2PDHTAutoServer,
+			NetworkConfig_DHTDisabled:   initutil.FlagValueP2PDHTDisabled,
+			NetworkConfig_DHTUndefined:  initutil.FlagValueP2PDHTDisabled,
+		}[dhtFlag]; ok {
+			args = append(args, ArgSet(initutil.FlagNameP2PDHT, dhtValue))
 
-		case NetworkConfig_DHTServer:
-			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTServer))
-
-		case NetworkConfig_DHTAuto:
-			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTAuto))
-
-		case NetworkConfig_DHTAutoServer:
-			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTAutoServer))
-
-		case NetworkConfig_DHTDisabled, NetworkConfig_DHTUndefined:
-			args = append(args, ArgSet(initutil.FlagNameP2PDHT, initutil.FlagValueP2PDHTDisabled))
-			dhtDisabled = true
+			if dhtValue == initutil.FlagValueP2PDHTDisabled {
+				dhtDisabled = true
+			}
 		}
 	}
 
@@ -1036,54 +1033,7 @@ func (m *NetworkConfig) addDHTArgs(args []string, defaultConfig *NetworkConfig) 
 		if !dhtDisabled {
 			args = append(args, ArgSet(initutil.FlagNameP2PTinderDHTDriver, "true"))
 		} else {
-			args = append(args, ArgSet(initutil.FlagNameP2PDHT, "false"))
-		}
-	}
-
-	return args
-}
-
-func (m *NetworkConfig) addRadioArgs(args []string, defaultConfig *NetworkConfig) []string {
-	hasBleFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PBLE)
-	hasP2PMCFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PMultipeerConnectivity)
-	hasP2PNearbyFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PNearby)
-
-	if !hasBleFlag {
-		val := m.BluetoothLE
-		if val == NetworkConfig_Undefined {
-			val = defaultConfig.BluetoothLE
-		}
-
-		if ble.Supported && val == NetworkConfig_Enabled {
-			args = append(args, ArgSet(initutil.FlagNameP2PBLE, "true"))
-		} else {
-			args = append(args, ArgSet(initutil.FlagNameP2PBLE, "false"))
-		}
-	}
-
-	if !hasP2PMCFlag {
-		val := m.AppleMultipeerConnectivity
-		if val == NetworkConfig_Undefined {
-			val = defaultConfig.AppleMultipeerConnectivity
-		}
-
-		if mc.Supported && val == NetworkConfig_Enabled {
-			args = append(args, ArgSet(initutil.FlagNameP2PMultipeerConnectivity, "true"))
-		} else {
-			args = append(args, ArgSet(initutil.FlagNameP2PMultipeerConnectivity, "false"))
-		}
-	}
-
-	if !hasP2PNearbyFlag {
-		val := m.AndroidNearby
-		if val == NetworkConfig_Undefined {
-			val = defaultConfig.AndroidNearby
-		}
-
-		if nb.Supported && val == NetworkConfig_Enabled {
-			args = append(args, ArgSet(initutil.FlagNameP2PNearby, "true"))
-		} else {
-			args = append(args, ArgSet(initutil.FlagNameP2PNearby, "false"))
+			args = append(args, ArgSet(initutil.FlagNameP2PTinderDHTDriver, "false"))
 		}
 	}
 
