@@ -178,6 +178,7 @@ export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
 
 	useEffect(() => {
+		console.log('context app State', context.appState)
 		switch (context.appState) {
 			case MessengerAppState.Ready:
 				dispatch(
@@ -225,6 +226,11 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Main.NetworkOptions}
 				component={Components.Main.NetworkOptions}
+				options={ModalScreenOptions}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Main.Permissions}
+				component={Components.Main.Permissions}
 				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />

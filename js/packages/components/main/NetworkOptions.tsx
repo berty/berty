@@ -10,13 +10,16 @@ import { ButtonSetting } from '@berty-tech/components/shared-components/Settings
 import Button from '@berty-tech/components/onboarding/Button'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
+import { checkPermissions } from '../utils'
+import { RESULTS } from 'react-native-permissions'
 
 enum Modes {
 	FullAnon,
 	TORCompatible,
 }
 
-export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
+export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
+	const checkNotificationPermission = route?.params?.checkNotificationPermission
 	const { t }: { t: any } = useTranslation()
 	const { setPersistentOption, persistentOptions } = useMsgrContext()
 	const { goBack } = useNavigation()
@@ -46,6 +49,30 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
 		t('main.network-options.full-anon.no-mc'),
 		t('main.network-options.full-anon.tor-only'),
 	]
+
+	const handleComplete = async () => {
+		goBack()
+
+		if (checkNotificationPermission) {
+			const notificationStatus = await checkPermissions('notification', {
+				isToNavigate: false,
+			})
+			if (notificationStatus === RESULTS.GRANTED) {
+				await setPersistentOption({
+					type: PersistentOptionsKeys.Configurations,
+					payload: {
+						...persistentOptions.configurations,
+						notification: {
+							...persistentOptions.configurations.notification,
+							state: 'added',
+						},
+					},
+				})
+			} else {
+				checkPermissions('notification')
+			}
+		}
+	}
 	return (
 		<SafeAreaView
 			style={{
@@ -216,8 +243,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
 											},
 										})
 									}
-
-									goBack()
+									handleComplete()
 								}}
 							>
 								{t('main.network-options.save')}
@@ -236,8 +262,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = () => {
 											},
 										},
 									})
-
-									goBack()
+									handleComplete()
 								}}
 							>
 								<Text style={[text.size.small, text.color.grey, text.align.center]}>

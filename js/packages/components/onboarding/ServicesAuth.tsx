@@ -10,11 +10,15 @@ import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
+import { checkPermissions } from '../utils'
+import { RESULTS } from 'react-native-permissions'
 
-const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
+const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void }> = ({
+	next,
+	handleComplete,
+}) => {
 	const ctx = useMsgrContext()
 	const accountServices = useAccountServices() || []
-	const { goBack } = useNavigation()
 
 	React.useEffect(() => {
 		if (accountServices.length > 0) {
@@ -47,8 +51,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 												},
 											},
 										})
-
-										goBack()
+										handleComplete()
 									},
 							  }
 					}
@@ -62,11 +65,36 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	)
 }
 
-export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = () => {
+export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
+	const checkNotificationPermission = route?.params?.checkNotificationPermission
 	useNotificationsInhibitor(() => true)
 	const { goBack } = useNavigation()
 	const { persistentOptions, setPersistentOption } = useMsgrContext()
 	const [{ color }] = useStyles()
+
+	const handleComplete = async () => {
+		goBack()
+
+		if (checkNotificationPermission) {
+			const notificationStatus = await checkPermissions('notification', {
+				isToNavigate: false,
+			})
+			if (notificationStatus === RESULTS.GRANTED) {
+				await setPersistentOption({
+					type: PersistentOptionsKeys.Configurations,
+					payload: {
+						...persistentOptions.configurations,
+						notification: {
+							...persistentOptions.configurations.notification,
+							state: 'added',
+						},
+					},
+				})
+			} else {
+				checkPermissions('notification')
+			}
+		}
+	}
 
 	return (
 		<OnboardingWrapper>
@@ -83,9 +111,9 @@ export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = () => {
 							},
 						},
 					})
-
-					goBack()
+					handleComplete()
 				}}
+				handleComplete={handleComplete}
 			/>
 		</OnboardingWrapper>
 	)

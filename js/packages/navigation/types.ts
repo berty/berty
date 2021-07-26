@@ -78,6 +78,7 @@ export namespace Routes {
 		ContactRequest = 'Main.ContactRequest',
 		Scan = 'Main.Scan',
 		NetworkOptions = 'Main.NetworkOptions',
+		Permissions = 'Main.Permissions',
 	}
 	export enum CreateGroup {
 		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',

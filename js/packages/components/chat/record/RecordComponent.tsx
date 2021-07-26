@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Platform, Text, TouchableOpacity, Vibration, View } from 'react-native'
+import { Animated, Text, TouchableOpacity, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
 	LongPressGestureHandlerGestureEvent,
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 import { Recorder } from '@react-native-community/audio-toolkit'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
@@ -27,6 +26,8 @@ import {
 } from './common'
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
+import { checkPermissions } from '@berty-tech/components/utils'
+import { RESULTS } from 'react-native-permissions'
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -40,29 +41,9 @@ const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
 const acquireMicPerm = async (): Promise<MicPermStatus> => {
-	try {
-		const status = await check(
-			Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
-		)
-		if (status === RESULTS.GRANTED) {
-			return MicPermStatus.GRANTED
-		}
-
-		try {
-			const status = await request(
-				Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
-			)
-
-			if (status === RESULTS.GRANTED) {
-				return MicPermStatus.NEWLY_GRANTED
-			}
-
-			return MicPermStatus.DENIED
-		} catch (err) {
-			console.log(err)
-		}
-	} catch (err) {
-		console.log(err)
+	const permissionStatus = await checkPermissions('audio')
+	if (permissionStatus === RESULTS.GRANTED) {
+		return MicPermStatus.GRANTED
 	}
 
 	return MicPermStatus.UNDEFINED
