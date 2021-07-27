@@ -15,6 +15,7 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
+	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -60,7 +61,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
 	fs.StringVar(&m.Node.Protocol.Bootstrap, "p2p.bootstrap", KeywordDefault, "ipfs bootstrap node, `:default:` will set ipfs default bootstrap node")
-	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `client`, `server`, `auto`, `autoserver`") // @TODO(gfanton): add disabled mode
+	fs.StringVar(&m.Node.Protocol.DHT, "p2p.dht", "client", "dht mode, can be: `none`, `client`, `server`, `auto`, `autoserver`")
 	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.MDNS, "p2p.mdns", true, "if true mdns will be enabled")
@@ -132,7 +133,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
-	var dhtmode p2p_dht.ModeOpt
+	var dhtmode p2p_dht.ModeOpt = 0
 	switch m.Node.Protocol.DHT {
 	case "client":
 		dhtmode = p2p_dht.ModeClient
@@ -142,21 +143,28 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		dhtmode = p2p_dht.ModeAuto
 	case "autoserver":
 		dhtmode = p2p_dht.ModeAutoServer
+	case "none": // 0
 	default:
 		err := fmt.Errorf("invalid dht mode")
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
-	dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
-	if m.Node.Protocol.DHTRandomWalk {
-		dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
+	var routing ipfs_p2p.RoutingOption
+	if dhtmode > 0 {
+		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
+		if m.Node.Protocol.DHTRandomWalk {
+			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
+		}
+		routing = ipfsutil.CustomRoutingOption(dhtmode, dhtopts...)
+	} else {
+		routing = ipfs_p2p.NilRouterOption
 	}
 
 	mopts := ipfsutil.MobileOptions{
 		IpfsConfigPatch: m.setupIPFSConfig,
 		// HostConfigFunc:    m.setupIPFSHost,
 		RoutingConfigFunc: m.configIPFSRouting,
-		RoutingOption:     ipfsutil.CustomRoutingOption(dhtmode, dhtopts...),
+		RoutingOption:     routing,
 		ExtraOpts: map[string]bool{
 			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
 			"pubsub": false,
@@ -485,10 +493,9 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	}
 
 	// dht driver
-	if m.Node.Protocol.TinderDHTDriver {
+	if m.Node.Protocol.DHT != "none" && m.Node.Protocol.TinderDHTDriver {
 		// dht driver
-		drivers = append(drivers,
-			tinder.NewDriverFromRouting("dht", r, nil))
+		drivers = append(drivers, tinder.NewDriverFromRouting("dht", r, nil))
 	}
 
 	// localdisc driver
