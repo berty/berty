@@ -65,6 +65,7 @@ targets:
         UIBackgroundModes:
         - fetch
         - processing
+        - remote-notification
         UILaunchStoryboardName: BootSplash
         UIRequiredDeviceCapabilities: [armv7]
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]

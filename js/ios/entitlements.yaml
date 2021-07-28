@@ -1,7 +1,0 @@
-targets:
-  Berty:
-    entitlements:
-      path: Berty/Berty.entitlements
-      properties:
-        com.apple.developer.associated-domains:
-          - applinks:berty.tech

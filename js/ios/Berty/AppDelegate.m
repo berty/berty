@@ -32,7 +32,6 @@ static void InitializeFlipper(UIApplication *application) {
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #ifdef FB_SONARKIT_ENABLED
@@ -67,6 +66,21 @@ static void InitializeFlipper(UIApplication *application) {
   [self.window makeKeyAndVisible];
 
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // needed by react-native-bootsplash
+
+  UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+  center.delegate = self;
+
+  NSLog(@"LAUNCHED");
+  if (launchOptions != nil) {
+    NSLog(@"LAUNCHED WITH OPTIONS");
+    NSDictionary* dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (dictionary != nil) {
+      NSLog(@"LAUNCHED WITH DICT");
+      for (int i = 0; i < dictionary.allKeys.count; i++) {
+        NSLog(@"LAUNCHED WITH KEY: %@; VALUE: %@", dictionary.allKeys[i], dictionary.allValues[i]);
+      }
+    }
+  }
 
   return YES;
 }
@@ -118,6 +132,36 @@ static void InitializeFlipper(UIApplication *application) {
    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
   return [RCTLinkingManager application:application openURL:url options:options];
+}
+
+// Callbacks for APNS token request
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  [[PushNotificationDriver getSharedInstance] onRequestSucceeded:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+  [[PushNotificationDriver getSharedInstance] onRequestFailed:error];
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+{
+  NSString *data = notification.request.content.userInfo[@"data"];
+  
+  if (data != nil) {
+    // laVie(data)
+  }
+  NSLog(@"TOTODEBUG willPresentNotification");
+  completionHandler(UNNotificationPresentationOptionNone);
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
+{
+  // TODO: handle notification response
+  NSLog(@"TOTODEBUG RESPONSE");
+  for (int i = 0; i < response.notification.request.content.userInfo.allKeys.count; i++) {
+    NSLog(@"TOTODEBUG RESPONSE WITH KEY: %@; VALUE: %@ -\nLOL", response.notification.request.content.userInfo.allKeys[i], response.notification.request.content.userInfo.allValues[i]);
+  }
+  completionHandler();
 }
 
 @end
