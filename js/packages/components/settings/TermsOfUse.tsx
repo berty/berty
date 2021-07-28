@@ -4,6 +4,7 @@ import { Layout, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
@@ -85,12 +86,13 @@ const BodyTermsOfUse: React.FC<{}> = () => {
 }
 
 export const TermsOfUse: React.FC<{}> = () => {
-	const [{ flex, background, padding }] = useStyles()
+	const colors = useThemeColor()
 	const { goBack } = useNavigation()
+
 	return (
-		<Layout style={[flex.tiny, background.white]}>
+		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
 			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={padding.bottom.huge}>
+				<ScrollView bounces={false}>
 					<HeaderSettings
 						title='Terms of use'
 						desc='Last updated: August 29th 2019'

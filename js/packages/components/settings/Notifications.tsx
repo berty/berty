@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
+import React from 'react'
+import { View, ScrollView } from 'react-native'
+import { Layout, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
-import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
+import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
@@ -16,110 +16,29 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 // Notifications
 //
 
-// Types
-type NotificationsPorps = {
-	isAuthorize: boolean
-}
-
 // Styles
 const useStylesNotifications = () => {
 	const [{ padding, text }] = useStyles()
 	return {
-		headerInfosTitleText: padding.left.small,
-		headerInfosText: text.size.scale(11),
-		headerInfosButtonText: text.size.medium,
 		buttonSettingText: [text.size.scale(10), padding.left.scale(39), padding.right.scale(100)],
 	}
 }
-const _notificationsStyles = StyleSheet.create({
-	bodyNotAuthorize: {
-		opacity: 0.3,
-	},
-})
 
-const HeaderNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
-	const [{ row, color, flex, text, margin, border, padding, background }] = useStyles()
+const BodyNotifications: React.FC<{}> = () => {
 	const _styles = useStylesNotifications()
-	return (
-		<View>
-			{!isAuthorize && (
-				<View>
-					<HeaderInfoSettings>
-						<TouchableOpacity style={[row.right]}>
-							<Icon name='close-outline' width={20} height={20} fill={color.light.blue} />
-						</TouchableOpacity>
-						<View style={[row.center, flex.tiny, { justifyContent: 'center' }]}>
-							<Icon name='alert-circle' width={25} height={25} fill={color.red} />
-							<Text
-								category='h6'
-								style={[text.color.white, text.bold.medium, _styles.headerInfosTitleText]}
-							>
-								Authorize notifications
-							</Text>
-						</View>
-						<View style={[row.item.justify, margin.top.medium, margin.horizontal.medium]}>
-							<Text
-								style={[
-									text.bold.medium,
-									text.align.center,
-									text.color.white,
-									row.item.justify,
-									_styles.headerInfosText,
-								]}
-							>
-								You need to authorize notifications for the Berty app in order to receive
-								notifications for new messages and contact requests
-							</Text>
-						</View>
-						<TouchableOpacity
-							style={[
-								background.blue,
-								border.radius.medium,
-								margin.horizontal.medium,
-								margin.top.medium,
-							]}
-						>
-							<View style={[margin.vertical.medium, row.center, { justifyContent: 'center' }]}>
-								<Icon name='bell-outline' width={20} height={20} fill={color.white} />
-								<Text
-									style={[
-										text.bold.medium,
-										text.color.white,
-										padding.left.small,
-										_styles.headerInfosButtonText,
-									]}
-								>
-									Authorize notifications
-								</Text>
-							</View>
-						</TouchableOpacity>
-					</HeaderInfoSettings>
-				</View>
-			)}
-		</View>
-	)
-}
-
-const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
-	const _styles = useStylesNotifications()
-	const [{ flex, padding, margin, color }] = useStyles()
+	const [{ flex, padding, margin }] = useStyles()
+	const colors = useThemeColor()
 	const ctx = useMsgrContext()
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<View
-					style={[
-						flex.tiny,
-						padding.medium,
-						margin.bottom.medium,
-						!isAuthorize ? _notificationsStyles.bodyNotAuthorize : null,
-					]}
-				>
+				<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 					<ButtonSetting
 						name={t('settings.notifications.activate-button')}
 						icon='bell-outline'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						toggled
 						varToggle={ctx.persistentOptions?.notifications.enable}
 						actionToggle={async () => {
@@ -137,7 +56,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 						icon='user-plus'
 						iconPack='custom'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						disabled
 					>
 						<Text style={[_styles.buttonSettingText]}>
@@ -148,7 +67,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 						name={t('settings.notifications.messages-notifications-button.title')}
 						icon='paper-plane-outline'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						style={[margin.top.medium]}
 						disabled
 					>
@@ -188,7 +107,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 						icon='users'
 						iconPack='custom'
 						iconSize={30}
-						iconColor={color.blue}
+						iconColor={colors['background-header']}
 						style={[margin.top.medium]}
 						disabled
 					>
@@ -219,8 +138,8 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 									'settings.notifications.group-notifications-button.exceptions-button.tag',
 									{ count: 2 },
 								),
-								color: color.blue,
-								bgColor: color.light.blue,
+								color: colors['background-header'],
+								bgColor: colors['positive-asset'],
 							}}
 							alone={false}
 							disabled
@@ -233,17 +152,16 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 }
 
 export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () => {
-	const [isAuthorize] = useState(true)
 	const { goBack } = useNavigation()
-	const [{ padding, flex, background }] = useStyles()
 	const ctx = useMsgrContext()
+	const colors = useThemeColor()
 
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<Layout style={[flex.tiny, background.white]}>
+				<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
 					<SwipeNavRecognizer>
-						<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
+						<ScrollView bounces={false}>
 							<HeaderSettings
 								title={t('settings.notifications.title')}
 								desc={
@@ -252,10 +170,8 @@ export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () =>
 										: t('settings.notifications.disabled-desc')
 								}
 								undo={goBack}
-							>
-								<HeaderNotifications isAuthorize={isAuthorize} />
-							</HeaderSettings>
-							<BodyNotifications isAuthorize={isAuthorize} />
+							/>
+							<BodyNotifications />
 						</ScrollView>
 					</SwipeNavRecognizer>
 				</Layout>

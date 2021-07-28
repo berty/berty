@@ -158,7 +158,7 @@ export const replicateGroup = async (
 	}
 }
 
-const createAndSaveFile = async (outFile: string, fileName: string) => {
+export const createAndSaveFile = async (outFile: string, fileName: string, extension?: string) => {
 	try {
 		const granted = await PermissionsAndroid.request(
 			PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -172,7 +172,10 @@ const createAndSaveFile = async (outFile: string, fileName: string) => {
 		)
 		if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 			await RNFetchBlob.fs
-				.cp(`file://${outFile}`, `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.tar`)
+				.cp(
+					`file://${outFile}`,
+					`${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.${extension || 'tar'}`,
+				)
 				.then(() => {
 					console.log('file copied')
 				})

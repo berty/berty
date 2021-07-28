@@ -2,13 +2,14 @@ import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversation } from '@berty-tech/store/hooks'
+import { useConversation, useThemeColor } from '@berty-tech/store/hooks'
 import { navigate, Routes } from '@berty-tech/navigation'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 
 const ContactRequestSent: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
+	const colors = useThemeColor()
 	const _styles = useStylesNotification()
 
 	const { payload } = props?.additionalProps?.payload || {}
@@ -35,10 +36,10 @@ const ContactRequestSent: React.FC<any> = ({ onClose, title, message, ...props }
 			<View style={_styles.innerTouchable}>
 				<NotificationTmpLogo />
 				<View style={_styles.titleAndTextWrapper}>
-					<Text numberOfLines={1} style={[text.color.black, text.bold.medium]}>
+					<Text numberOfLines={1} style={[text.bold.medium, { color: colors['main-text'] }]}>
 						{title}
 					</Text>
-					<Text numberOfLines={1} ellipsizeMode='tail' style={[text.color.black]}>
+					<Text numberOfLines={1} ellipsizeMode='tail' style={{ color: colors['main-text'] }}>
 						{message}
 					</Text>
 				</View>

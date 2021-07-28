@@ -6,32 +6,25 @@ import {
 	StyleSheet,
 	ImageBackground,
 } from 'react-native'
+import { RESULTS } from 'react-native-permissions'
+
 import { Text, Icon } from '@ui-kitten/components'
 import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
+
 import { useStyles } from '@berty-tech/styles'
 import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import WelcomeBackground from '@berty-tech/assets/welcome_bg.png'
 import { useNavigation } from '@berty-tech/navigation'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { checkPermissions } from '../utils'
-import { RESULTS } from 'react-native-permissions'
 
 const useStylesWelcome = () => {
 	const [{ width, border, padding, margin }] = useStyles()
 	return {
-		skipButton: [
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-		],
-		addButton: [
-			border.color.light.blue,
+		welcomeButton: [
 			border.radius.small,
 			margin.top.scale(15),
 			padding.left.small,
@@ -44,7 +37,8 @@ const useStylesWelcome = () => {
 }
 
 export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
-	const [{ row, text, margin, color, padding, background, border }, { scaleHeight }] = useStyles()
+	const [{ row, text, margin, padding, border }, { scaleHeight }] = useStyles()
+	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const _styles = useStylesWelcome()
 	const { navigate } = useNavigation()
@@ -108,7 +102,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 					border.radius.large,
 					border.shadow.huge,
 					{
-						backgroundColor: '#4147D8',
+						backgroundColor: colors['background-header'],
 						overflow: 'hidden',
 					},
 				]}
@@ -120,7 +114,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 					<View style={[margin.top.scale(70 * scaleHeight)]}>
 						<Icon
 							name='info-outline'
-							fill={color.white}
+							fill={colors['reverted-main-text']}
 							width={60 * scaleHeight}
 							height={60 * scaleHeight}
 							style={[row.item.justify, padding.top.large]}
@@ -131,8 +125,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 								padding.top.small,
 								text.size.large,
 								text.bold.medium,
-								text.color.white,
-								{ fontFamily: 'Open Sans' },
+								{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] },
 							]}
 						>
 							{t('modals.welcome-configuration.title')}
@@ -142,8 +135,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 								style={[
 									text.bold.small,
 									text.size.medium,
-									text.color.white,
-									{ fontFamily: 'Open Sans' },
+									{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] },
 								]}
 							>
 								{t('modals.welcome-configuration.desc')}
@@ -154,11 +146,11 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 						<TouchableOpacity
 							style={[
 								margin.bottom.medium,
-								_styles.skipButton,
+								_styles.welcomeButton,
 								{
 									flexDirection: 'row',
 									justifyContent: 'center',
-									backgroundColor: 'white',
+									backgroundColor: colors['main-background'],
 								},
 							]}
 							onPress={handleSkip}
@@ -167,17 +159,16 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 								name='close'
 								width={30}
 								height={30}
-								fill={color.grey}
+								fill={colors['negative-asset']}
 								style={row.item.justify}
 							/>
 							<TextNative
 								style={[
-									text.color.grey,
 									padding.left.small,
 									row.item.justify,
 									text.size.scale(16),
 									text.bold.medium,
-									{ fontFamily: 'Open Sans' },
+									{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
 								]}
 							>
 								{t('modals.welcome-configuration.skip')}
@@ -186,13 +177,16 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 						<TouchableOpacity
 							style={[
 								margin.bottom.medium,
-								background.light.blue,
-								_styles.addButton,
-								{ flexDirection: 'row', justifyContent: 'center' },
+								_styles.welcomeButton,
+								{
+									flexDirection: 'row',
+									justifyContent: 'center',
+									backgroundColor: colors['positive-asset'],
+								},
 							]}
 							onPress={async () => {
 								closeModal()
-								if (persistentOptions.preset.value === 'full-anonymity') {
+								if (persistentOptions.preset.value === 'fullAnonymity') {
 									navigate.main.networkOptions({ checkNotificationPermission: true })
 								} else {
 									navigate.onboarding.servicesAuth({ checkNotificationPermission: true })
@@ -203,16 +197,16 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 								name='checkmark-outline'
 								width={30}
 								height={30}
-								fill={color.blue}
+								fill={colors['background-header']}
 								style={row.item.justify}
 							/>
 							<TextNative
 								style={[
-									text.color.blue,
 									padding.left.small,
 									row.item.justify,
 									text.size.scale(16),
 									text.bold.medium,
+									{ color: colors['background-header'] },
 								]}
 							>
 								{t('modals.welcome-configuration.next')}
@@ -227,7 +221,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 
 export const WelcomeConfiguration: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	return (
-		<View style={[StyleSheet.absoluteFill]}>
+		<View style={[StyleSheet.absoluteFill, { elevation: 6 }]}>
 			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
 			<Body closeModal={closeModal} />
 		</View>

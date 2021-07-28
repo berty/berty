@@ -7,6 +7,8 @@ import {
 	StyleSheet,
 } from 'react-native'
 
+import { useThemeColor } from '@berty-tech/store/hooks'
+
 const style = StyleSheet.create({
 	default: {
 		borderRadius: 20,
@@ -15,17 +17,21 @@ const style = StyleSheet.create({
 	},
 })
 
-export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = (props) => (
-	<TouchableHighlight
-		activeOpacity={0.9}
-		underlayColor={'#000000'}
-		{...props}
-		style={[style.default, props.style]}
-		onPress={props.onPress ? props.onPress : (): null => null}
-	>
-		<Fragment>{props.children}</Fragment>
-	</TouchableHighlight>
-)
+export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = (props) => {
+	const colors = useThemeColor()
+
+	return (
+		<TouchableHighlight
+			activeOpacity={0.9}
+			underlayColor={colors['main-text']}
+			{...props}
+			style={[style.default, props.style]}
+			onPress={props.onPress ? props.onPress : (): null => null}
+		>
+			<Fragment>{props.children}</Fragment>
+		</TouchableHighlight>
+	)
+}
 
 export const Card: React.FunctionComponent<ViewProps> = (props) => (
 	<View {...props} style={[style.default, props.style]}>

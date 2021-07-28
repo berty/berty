@@ -4,27 +4,30 @@ import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 const useStylesHint = () => {
 	const [{ text, opacity, margin }, { fontScale }] = useStyles()
+	const colors = useThemeColor()
+
 	return {
 		searchHintBodyText: [
 			text.align.center,
-			text.color.black,
 			text.size.medium,
 			text.bold.small,
 			opacity(0.8),
 			margin.top.large,
 			margin.bottom.small,
-			{ fontFamily: 'Open Sans', lineHeight: 20 * fontScale },
+			{ fontFamily: 'Open Sans', lineHeight: 20 * fontScale, color: colors['main-text'] },
 		],
 	}
 }
 
-const _landingIconSize = 45
+const _landingIconSize = 35
 
 export const HintBody = () => {
 	const [{ padding, opacity, row, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { searchHintBodyText } = useStylesHint()
 
 	const { reply: bannerQuote = {}, call, called } = messengerMethodsHooks.useBannerQuote()
@@ -35,7 +38,7 @@ export const HintBody = () => {
 	}, [called, call])
 
 	return !bannerQuote?.quote ? null : (
-		<View style={[padding.horizontal.medium]}>
+		<View style={[padding.horizontal.medium, { bottom: 0 }]}>
 			<TextNative
 				style={[
 					text.align.center,
@@ -45,7 +48,7 @@ export const HintBody = () => {
 					text.bold.medium,
 					{
 						fontFamily: 'Open Sans',
-						color: '#DADDE6',
+						color: `${colors['secondary-text']}90`,
 						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
 					},
 				]}
@@ -57,9 +60,10 @@ export const HintBody = () => {
 				pack='custom'
 				width={_landingIconSize * scaleSize}
 				height={_landingIconSize * scaleSize}
-				style={[row.item.justify, opacity(0.8), { position: 'absolute', bottom: 40, right: 20 }]}
+				fill={`${colors['secondary-text']}90`}
+				style={[row.item.justify, opacity(0.8), { position: 'absolute', bottom: 20, right: 30 }]}
 			/>
-			<TextNative style={[searchHintBodyText, { color: '#DBE1EC' }]}>
+			<TextNative style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
 				{bannerQuote?.quote || ''}
 			</TextNative>
 			{bannerQuote?.author && (
@@ -70,7 +74,7 @@ export const HintBody = () => {
 							text.size.medium,
 							text.bold.small,
 							opacity(0.8),
-							{ fontFamily: 'Open Sans', color: '#DBE1EC' },
+							{ fontFamily: 'Open Sans', color: `${colors['secondary-text']}90` },
 						]}
 					>
 						{'— ' + bannerQuote?.author}

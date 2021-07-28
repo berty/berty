@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useMsgrContext, Maybe } from '@berty-tech/store/hooks'
+import { useConversation, useMsgrContext, Maybe, useThemeColor } from '@berty-tech/store/hooks'
 import { ScreenProps } from '@berty-tech/navigation'
 import {
 	servicesAuthViaDefault,
@@ -103,7 +103,8 @@ const ReplicateGroupContent: React.FC<{
 	const conversation = ctx.conversations[conversationPublicKey as string]
 	const services = useAccountServices()
 	const navigation = useNavigation()
-	const [{ margin, color, flex, padding }] = useStyles()
+	const [{ margin, flex, padding }] = useStyles()
+	const colors = useThemeColor()
 	const { t } = useTranslation()
 
 	const replicationStatus = getAllReplicationStatusForConversation(conversation, services)
@@ -141,7 +142,7 @@ const ReplicateGroupContent: React.FC<{
 				icon='berty'
 				iconSize={28}
 				iconPack='custom'
-				iconColor={color.blue}
+				iconColor={colors['background-header']}
 				alone={true}
 				onPress={async () => {
 					await servicesAuthViaDefault(ctx)
@@ -151,7 +152,7 @@ const ReplicateGroupContent: React.FC<{
 				name={t('chat.replicate-group-settings.manage-add-button')}
 				icon='plus-circle-outline'
 				iconSize={30}
-				iconColor={color.blue}
+				iconColor={colors['background-header']}
 				alone={true}
 				onPress={() => navigation.navigate('Settings.ServicesAuth')}
 			/>
@@ -163,7 +164,7 @@ export const ReplicateGroupSettings: React.FC<ScreenProps.Chat.ReplicateGroupSet
 	route,
 }) => {
 	const { convId } = route.params
-	const [{ padding, flex }] = useStyles()
+	const [{ padding }] = useStyles()
 	const { goBack } = useNavigation()
 	const conv = useConversation(convId)
 	const { t } = useTranslation()
@@ -174,7 +175,7 @@ export const ReplicateGroupSettings: React.FC<ScreenProps.Chat.ReplicateGroupSet
 	}
 
 	return (
-		<Layout style={[flex.tiny]}>
+		<Layout style={{ flex: 1 }}>
 			<SwipeNavRecognizer>
 				<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
 					<HeaderSettings

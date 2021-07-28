@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { globals } from '@berty-tech/config'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -22,7 +23,7 @@ const uncap = (s: string) => s[0].toLowerCase() + s.slice(1)
 
 const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 	const { t } = useTranslation()
-	const [{ color }] = useStyles()
+	const colors = useThemeColor()
 	const navigation = useNavigation()
 
 	const kind = uncap(rawKind)
@@ -34,29 +35,29 @@ const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 		case 'bot':
 			state = {
 				value: text,
-				color: color.yellow,
-				bgColor: color.light.yellow,
+				color: colors['background-header'],
+				bgColor: colors['positive-asset'],
 			}
 			break
 		case 'contact':
 			state = {
 				value: text,
-				color: color.blue,
-				bgColor: color.light.blue,
+				color: colors['background-header'],
+				bgColor: colors['positive-asset'],
 			}
 			break
 		case 'conversation':
 			state = {
 				value: text,
-				color: color.green,
-				bgColor: color.light.green,
+				color: colors['background-header'],
+				bgColor: colors['positive-asset'],
 			}
 			break
 		default:
 			state = {
 				value: 'unknown',
-				color: color.grey,
-				bgColor: color.light.grey,
+				color: colors['secondary-text'],
+				bgColor: colors['main-background'],
 			}
 	}
 
@@ -65,7 +66,7 @@ const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 			name={t('settings.add-dev-conversations.add', { name: name })}
 			icon='book-outline'
 			iconSize={30}
-			iconColor={color.dark.grey}
+			iconColor={colors['alt-secondary-background-header']}
 			actionIcon={null}
 			state={state}
 			onPress={() => {
@@ -92,16 +93,16 @@ const BodyAddContactList = () => {
 
 export const AddDevConversations = () => {
 	const { t } = useTranslation()
-	const [{ color, padding, flex, background }] = useStyles()
+	const colors = useThemeColor()
 	const { goBack } = useNavigation()
 
 	return (
-		<Layout style={[background.white, flex.tiny]}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
+				<ScrollView bounces={false}>
 					<HeaderSettings
 						title={t('settings.add-dev-conversations.title')}
-						bgColor={color.dark.grey}
+						bgColor={colors['alt-secondary-background-header']}
 						undo={goBack}
 					/>
 					<BodyAddContactList />

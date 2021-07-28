@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useSortedConversationList, useMsgrContext } from '@berty-tech/store/hooks'
+import { useSortedConversationList, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { useClient } from '@berty-tech/store/hooks'
 
 import { ConversationAvatar } from '../avatars'
@@ -17,7 +17,8 @@ export const ForwardToBertyContactModal: React.FC<{
 }> = ({ image, onClose }) => {
 	const tempPath = `${RNFS.TemporaryDirectoryPath}/${image.filename}`
 
-	const [{ color, border, padding, margin }, { windowHeight }] = useStyles()
+	const [{ border, padding, margin }, { windowHeight }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const conversations: any[] = useSortedConversationList()
 	const ctx = useMsgrContext()
@@ -65,13 +66,8 @@ export const ForwardToBertyContactModal: React.FC<{
 		}
 	}
 	return (
-		<Modal transparent style={{}} animationType='slide' onRequestClose={handleClose}>
-			<TouchableOpacity
-				onPress={handleClose}
-				style={{
-					flex: 1,
-				}}
-			/>
+		<Modal transparent animationType='slide' onRequestClose={handleClose}>
+			<TouchableOpacity onPress={handleClose} style={{ flex: 1 }} />
 			<ScrollView
 				style={[
 					border.radius.top.small,
@@ -81,7 +77,7 @@ export const ForwardToBertyContactModal: React.FC<{
 						left: 0,
 						bottom: 0,
 						right: 0,
-						backgroundColor: color.white,
+						backgroundColor: colors['main-background'],
 					},
 				]}
 			>
@@ -109,29 +105,15 @@ export const ForwardToBertyContactModal: React.FC<{
 									},
 								]}
 							>
-								<View
-									style={{
-										flexDirection: 'row',
-										alignItems: 'center',
-									}}
-								>
+								<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 									<ConversationAvatar size={40} publicKey={conversation.publicKey} />
-									<Text
-										style={[
-											{
-												color: color.black,
-											},
-											margin.left.small,
-										]}
-									>
+									<Text style={[{ color: colors['main-text'] }, margin.left.small]}>
 										{userDisplayName}
 									</Text>
 								</View>
 								<TouchableOpacity
 									style={[
-										{
-											backgroundColor: '#3F49EA',
-										},
+										{ backgroundColor: colors['background-header'] },
 										padding.vertical.small,
 										padding.horizontal.medium,
 										border.radius.small,
@@ -139,11 +121,7 @@ export const ForwardToBertyContactModal: React.FC<{
 									onPress={() => prepareMediaAndSend(conversation.publicKey)}
 									activeOpacity={0.6}
 								>
-									<Text
-										style={{
-											color: color.white,
-										}}
-									>
+									<Text style={{ color: colors['reverted-main-text'] }}>
 										{t('chat.files.forward')}
 									</Text>
 								</TouchableOpacity>

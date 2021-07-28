@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { View, ActivityIndicator as Spinner, Vibration } from 'react-native'
+import { View, ActivityIndicator as Spinner, Vibration, StatusBar } from 'react-native'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 
-import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
+import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
 import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
@@ -159,8 +159,11 @@ const SetupFinishedBody = () => {
 
 export const SetupFinished = () => {
 	useNotificationsInhibitor(() => true)
+	const colors = useThemeColor()
+
 	return (
 		<OnboardingWrapper>
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SetupFinishedBody />
 		</OnboardingWrapper>
 	)

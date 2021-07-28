@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
 	Alert,
 	ScrollView,
+	StatusBar,
 	TextInput,
 	TouchableOpacity,
 	Vibration,
 	View,
-	StatusBar,
 } from 'react-native'
-import { Layout, Icon } from '@ui-kitten/components'
+import { Icon, Layout } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
 import { Player } from '@react-native-community/audio-toolkit'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
@@ -31,7 +31,7 @@ import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
 import {
@@ -59,7 +59,8 @@ const HeaderDevTools: React.FC<{}> = () => {
 	const { navigate } = useNavigation()
 	const { t } = useTranslation()
 	const _styles = useStylesDevTools()
-	const [{ color, text }] = useStyles()
+	const [{ text }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<View>
@@ -68,14 +69,14 @@ const HeaderDevTools: React.FC<{}> = () => {
 					{
 						name: t('settings.devtools.header-left-button'),
 						icon: 'smartphone-outline',
-						color: color.dark.grey,
+						color: colors['alt-secondary-background-header'],
 						style: _styles.buttonRow,
 						disabled: true,
 					},
 					{
 						name: t('settings.devtools.header-middle-button'),
 						icon: 'book-outline',
-						color: color.dark.grey,
+						color: colors['alt-secondary-background-header'],
 						style: _styles.buttonRow,
 						onPress: () => {
 							navigate.settings.fakeData()
@@ -84,7 +85,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 					{
 						name: t('settings.devtools.header-right-button'),
 						icon: 'repeat-outline',
-						color: color.blue,
+						color: colors['background-header'],
 						style: _styles.lastButtonRow,
 						disabled: true,
 					},
@@ -101,6 +102,7 @@ const NativeCallButton: React.FC = () => {
 	const messengerMiddlewares = middleware.chain(
 		__DEV__ ? middleware.logger.create('MESSENGER') : null, // eslint-disable-line
 	)
+	const colors = useThemeColor()
 
 	const messengerClient = Service(beapi.messenger.MessengerService, rpcBridge, messengerMiddlewares)
 	const { t } = useTranslation()
@@ -110,7 +112,7 @@ const NativeCallButton: React.FC = () => {
 			name={t('settings.devtools.native-bridge-button')}
 			icon='activity-outline'
 			iconSize={30}
-			iconColor='grey'
+			iconColor={colors['secondary-text']}
 			onPress={() => {
 				const n = i
 				++i
@@ -147,8 +149,8 @@ const DiscordShareButton: React.FC = () => {
 	const { navigate, goBack } = useNavigation()
 	const account: any = useAccount()
 	const { call, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
-	const [{ color }] = useStyles()
 	const { t } = useTranslation()
+	const colors = useThemeColor()
 
 	React.useEffect(() => {
 		if (done) {
@@ -190,7 +192,7 @@ const DiscordShareButton: React.FC = () => {
 			name={t('settings.devtools.share-button.title')}
 			icon='activity-outline'
 			iconSize={30}
-			iconColor={color.dark.grey}
+			iconColor={colors['alt-secondary-background-header']}
 			onPress={() => {
 				createDiscordShareAlert()
 			}}
@@ -200,13 +202,13 @@ const DiscordShareButton: React.FC = () => {
 
 const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) => {
 	const { navigate } = useNavigation()
-	const [{ color }] = useStyles()
+	const colors = useThemeColor()
 	return (
 		<ButtonSetting
 			name={name}
 			icon='activity-outline'
 			iconSize={30}
-			iconColor={color.dark.grey}
+			iconColor={colors['alt-secondary-background-header']}
 			onPress={() => navigate.settings.devText({ text })}
 		/>
 	)
@@ -241,11 +243,11 @@ const DumpInteractions: React.FC = () => {
 }
 
 const SendToAll: React.FC = () => {
-	const [{ color }] = useStyles()
 	const [disabled, setDisabled] = useState(false)
 	const { t } = useTranslation()
 	const [name, setName] = useState<any>(t('settings.devtools.send-to-all-button.title'))
 	const ctx = useMsgrContext()
+	const colors = useThemeColor()
 	const convs: any[] = Object.values(ctx.conversations).filter(
 		(conv: any) => conv.type === beapi.messenger.Conversation.Type.ContactType && !conv.fake,
 	)
@@ -276,7 +278,7 @@ const SendToAll: React.FC = () => {
 			name={name}
 			icon='paper-plane-outline'
 			iconSize={30}
-			iconColor={color.dark.grey}
+			iconColor={colors['alt-secondary-background-header']}
 			disabled={disabled}
 			onPress={() => {
 				handleSendToAll()
@@ -294,15 +296,16 @@ const DumpMembers: React.FC = () => {
 }
 
 const PlaySound: React.FC = () => {
-	const [{ color }] = useStyles()
 	const { playSound } = useMsgrContext()
+	const colors = useThemeColor()
+
 	return (
 		<>
 			<ButtonSetting
 				name={'Play sound'}
 				icon='speaker-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => {
 					new Player('Notif_Berty02.mp3', { mixWithOthers: true }).play()
 				}}
@@ -311,7 +314,7 @@ const PlaySound: React.FC = () => {
 				name={'Play preloaded sound'}
 				icon='speaker-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => playSound('contactRequestSent')}
 			/>
 		</>
@@ -324,19 +327,20 @@ const StringOptionInput: React.FC<{
 	setOptionValue: (value: string) => Promise<void> | void
 	bulletPointValue: string
 }> = ({ name, bulletPointValue, getOptionValue, setOptionValue }) => {
-	const [{ flex, row, color, text, margin, padding, border }] = useStyles()
+	const [{ flex, row, text, margin, padding, border }] = useStyles()
 	const [value, setValue] = useState('')
 	useEffect(() => {
 		;(async () => {
 			setValue(await getOptionValue())
 		})()
 	}, [getOptionValue])
+	const colors = useThemeColor()
 
 	return (
 		<ButtonSetting
 			name={name}
 			icon='message-circle-outline'
-			iconColor={color.dark.grey}
+			iconColor={colors['alt-secondary-background-header']}
 			actionIcon={null}
 		>
 			<View style={[padding.right.small, padding.top.small]}>
@@ -344,13 +348,13 @@ const StringOptionInput: React.FC<{
 					style={[
 						flex.tiny,
 						border.radius.medium,
-						border.color.black,
 						border.medium,
 						padding.small,
 						row.fill,
 						margin.bottom.small,
 						{
 							alignItems: 'center',
+							borderColor: colors['main-text'],
 						},
 					]}
 				>
@@ -366,17 +370,22 @@ const StringOptionInput: React.FC<{
 							await setOptionValue(value)
 						}}
 					>
-						<Icon name='checkmark-outline' fill={color.dark.grey} width={20} height={20} />
+						<Icon
+							name='checkmark-outline'
+							fill={colors['alt-secondary-background-header']}
+							width={20}
+							height={20}
+						/>
 					</TouchableOpacity>
 				</View>
 
 				<ButtonSettingItem
 					value={bulletPointValue}
 					icon='info-outline'
-					iconColor={color.yellow}
+					iconColor={colors['background-header']}
 					iconSize={15}
 					disabled
-					styleText={[text.color.grey]}
+					styleText={{ color: colors['secondary-text'] }}
 					styleContainer={[margin.bottom.tiny]}
 				/>
 			</View>
@@ -386,7 +395,7 @@ const StringOptionInput: React.FC<{
 
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
-	const [{ padding, flex, margin, color, text }] = useStyles()
+	const [{ padding, flex, margin, text }] = useStyles()
 	const { navigate } = useNavigation()
 	const navigation = useNativeNavigation()
 	const ctx = useMsgrContext()
@@ -394,6 +403,7 @@ const BodyDevTools: React.FC<{}> = () => {
 	const tyberHosts = useRef<{ [key: string]: string[] }>({})
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [rerender, setRerender] = useState(0)
+	const colors = useThemeColor()
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -470,17 +480,24 @@ const BodyDevTools: React.FC<{}> = () => {
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
+				name={t('settings.devtools.theme-editor')}
+				icon='color-palette-outline'
+				iconSize={30}
+				iconColor={colors['alt-secondary-background-header']}
+				onPress={() => navigate.settings.themeEditor()}
+			/>
+			<ButtonSetting
 				name={t('settings.devtools.system-info-button')}
 				icon='info-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => navigate.settings.systemInfo()}
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.simulate-button')}
 				icon='alert-triangle-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				onPress={() =>
 					ctx.dispatch({
 						type: MessengerActions.SetStreamError,
@@ -493,7 +510,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				icon='alert-octagon'
 				iconPack='feather'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => {
 					throw {}
 				}}
@@ -502,7 +519,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.debug-button')}
 				icon='monitor-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				toggled
 				varToggle={ctx?.persistentOptions.debug.enable}
 				actionToggle={async () => {
@@ -521,7 +538,6 @@ const BodyDevTools: React.FC<{}> = () => {
 						? ctx.persistentOptions?.tor.flag || t('settings.devtools.tor-disabled-option')
 						: null
 				}
-				containerStyle={[{ marginTop: 22, height: 60 }]}
 				onChangeItem={async (item: any) => {
 					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.Tor,
@@ -568,7 +584,7 @@ const BodyDevTools: React.FC<{}> = () => {
 					name={t('settings.devtools.tyber-attach', { host: hostname })}
 					icon='link-2-outline'
 					iconSize={30}
-					iconColor={color.dark.grey}
+					iconColor={colors['alt-secondary-background-header']}
 					onPress={async () => {
 						try {
 							await ctx.client?.tyberHostAttach({
@@ -583,7 +599,7 @@ const BodyDevTools: React.FC<{}> = () => {
 						value={ipAddresses.join('\n')}
 						iconSize={15}
 						disabled
-						styleText={[text.color.grey]}
+						styleText={{ color: colors['secondary-text'] }}
 						styleContainer={[margin.bottom.tiny]}
 					/>
 				</ButtonSetting>
@@ -592,7 +608,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.add-dev-conversations-button')}
 				icon='plus-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => navigation.navigate('Settings.AddDevConversations')}
 			/>
 			<DiscordShareButton />
@@ -606,7 +622,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.stop-node-button')}
 				icon='activity-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => GoBridge.closeBridge()}
 			/>
 			{!ctx.embedded && ctx.daemonAddress !== 'http://localhost:1338' && (
@@ -614,7 +630,7 @@ const BodyDevTools: React.FC<{}> = () => {
 					name='Switch to 1338 node'
 					icon='folder-outline'
 					iconSize={30}
-					iconColor={color.dark.grey}
+					iconColor={colors['alt-secondary-background-header']}
 					actionIcon='arrow-ios-forward'
 					onPress={() => {
 						ctx.dispatch({
@@ -625,18 +641,10 @@ const BodyDevTools: React.FC<{}> = () => {
 				/>
 			)}
 			<ButtonSetting
-				name={t('settings.devtools.bot-mode-button')}
-				icon='briefcase-outline'
-				iconSize={30}
-				iconColor={color.green}
-				toggled
-				disabled
-			/>
-			<ButtonSetting
 				name={t('settings.devtools.local-grpc-button')}
 				icon='hard-drive-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				toggled
 				disabled
 			/>
@@ -644,7 +652,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.console-logs-button')}
 				icon='folder-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon='arrow-ios-forward'
 				disabled
 			/>
@@ -652,17 +660,9 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.ipfs-webui-button')}
 				icon='smartphone-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon='arrow-ios-forward'
 				onPress={() => navigate.settings.ipfsWebUI()}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.notifications-button')}
-				icon='bell-outline'
-				iconSize={30}
-				iconColor={color.dark.grey}
-				actionIcon='arrow-ios-forward'
-				disabled
 			/>
 			<SendToAll />
 			<PlaySound />
@@ -670,7 +670,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('debug.inspector.show-button')}
 				icon='umbrella-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon='arrow-ios-forward'
 				onPress={() => ctx.setDebugMode(true)}
 			/>
@@ -678,7 +678,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				name={t('settings.devtools.trigger-crashlytics-button')}
 				icon='umbrella-outline'
 				iconSize={30}
-				iconColor={color.dark.grey}
+				iconColor={colors['alt-secondary-background-header']}
 				actionIcon='arrow-ios-forward'
 				onPress={() => crashlytics().crash()}
 			/>
@@ -687,21 +687,21 @@ const BodyDevTools: React.FC<{}> = () => {
 					{
 						name: t('settings.devtools.footer-left-button'),
 						icon: 'smartphone-outline',
-						color: color.dark.grey,
+						color: colors['alt-secondary-background-header'],
 						style: _styles.buttonRow,
 						disabled: true,
 					},
 					{
 						name: t('settings.devtools.footer-middle-button'),
 						icon: 'list-outline',
-						color: color.dark.grey,
+						color: colors['alt-secondary-background-header'],
 						style: _styles.buttonRow,
 						disabled: true,
 					},
 					{
 						name: t('settings.devtools.footer-right-button'),
 						icon: 'repeat-outline',
-						color: color.red,
+						color: colors['warning-asset'],
 						style: _styles.lastButtonRow,
 						disabled: true,
 					},
@@ -715,17 +715,21 @@ const BodyDevTools: React.FC<{}> = () => {
 
 export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 	const { goBack } = useNavigation()
-	const [{ background, flex, color, padding }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<Layout style={[background.white, flex.tiny]}>
-					<StatusBar backgroundColor={color.dark.grey} barStyle='light-content' />
+				<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+					<StatusBar
+						backgroundColor={colors['alt-secondary-background-header']}
+						barStyle='light-content'
+					/>
 					<SwipeNavRecognizer>
-						<ScrollView bounces={false} contentContainerStyle={padding.bottom.huge}>
+						<ScrollView bounces={false}>
 							<HeaderSettings
 								title={t('settings.devtools.title')}
-								bgColor={color.dark.grey}
+								bgColor={colors['alt-secondary-background-header']}
 								undo={goBack}
 							>
 								<HeaderDevTools />

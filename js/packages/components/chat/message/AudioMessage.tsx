@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import moment from 'moment'
 
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
 import beapi from '@berty-tech/api'
@@ -35,6 +35,7 @@ export const WaveForm: React.FC<{
 		intensities,
 	])
 	const [{ margin, text }] = useStyles()
+	const colors = useThemeColor()
 	return (
 		<View
 			style={{
@@ -54,8 +55,8 @@ export const WaveForm: React.FC<{
 									backgroundColor:
 										duration &&
 										index < Math.floor((currentTime! / duration) * normalizedIntensities.length)
-											? '#fff'
-											: '#4F58C0',
+											? colors['main-background']
+											: colors['background-header'],
 									minHeight: 5,
 									height: 70 * intensity + '%',
 									flex: 2,
@@ -67,15 +68,7 @@ export const WaveForm: React.FC<{
 					)
 				})}
 			</View>
-			<Text
-				style={[
-					{
-						color: '#4F58C0',
-					},
-					margin.left.tiny,
-					text.size.small,
-				]}
-			>
+			<Text style={[{ color: colors['background-header'] }, margin.left.tiny, text.size.small]}>
 				{moment.utc(duration).format('mm:ss')}
 			</Text>
 		</View>
@@ -86,6 +79,7 @@ const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia
 	currentTime?: number
 }> = ({ media, currentTime = 0 }) => {
+	const colors = useThemeColor()
 	const [normalizedIntensities, duration] = useMemo(() => {
 		const metadata = beapi.messenger.MediaMetadata.decode(media.metadataBytes!)
 		const previews = metadata?.items.filter(
@@ -103,7 +97,7 @@ const AudioPreview: React.FC<{
 	if (normalizedIntensities === null) {
 		return (
 			<View style={{ flex: 1 }}>
-				<Text style={{ color: '#4F58C0' }} numberOfLines={1}>
+				<Text style={{ color: colors['background-header'] }} numberOfLines={1}>
 					{media.filename!}
 				</Text>
 			</View>
@@ -120,6 +114,7 @@ export const AudioMessage: React.FC<{
 	onLongPress: () => void
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
+	const colors = useThemeColor()
 	const { protocolClient, client } = useMsgrContext()
 	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
 	const { player: globalPlayer, load: globalPlayerLoad, handlePlayPause } = useMusicPlayer()
@@ -176,7 +171,7 @@ export const AudioMessage: React.FC<{
 			<View
 				style={[
 					{
-						backgroundColor: '#E9EAF8',
+						backgroundColor: colors['input-background'],
 						alignItems: 'center',
 						justifyContent: 'center',
 						height: 50,
@@ -186,9 +181,9 @@ export const AudioMessage: React.FC<{
 					},
 					border.radius.small,
 					isHighlight && {
-						borderColor: '#525BEC',
+						borderColor: colors['background-header'],
 						borderWidth: 1,
-						shadowColor: '#525BEC',
+						shadowColor: colors['background-header'],
 						shadowOffset: {
 							width: 0,
 							height: 8,
@@ -228,7 +223,7 @@ export const AudioMessage: React.FC<{
 				>
 					<Icon
 						name={isPlaying ? 'pause' : 'play'}
-						fill='#4F58C0'
+						fill={colors['background-header']}
 						height={26 * scaleSize}
 						width={26 * scaleSize}
 						pack='custom'

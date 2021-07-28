@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { ActivityIndicator, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { BlurView } from '@react-native-community/blur'
 import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions, useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +18,7 @@ import {
 	useConversation,
 	useReadEffect,
 	useNotificationsInhibitor,
+	useThemeColor,
 } from '@berty-tech/store/hooks'
 
 import { ContactAvatar } from '../avatars'
@@ -50,7 +50,8 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 	const conv = useConversation(convPk)
 	const contact = useContact(conv?.contactPublicKey || null)
 
-	const [{ flex, padding, text, opacity, color, row }, { scaleSize }] = useStyles()
+	const [{ flex, padding, text, opacity, row }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
 
@@ -61,13 +62,16 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 	}
 	const title = (conv as any).fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
 	return (
-		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
-			<BlurView
-				overlayColor=''
-				blurType='light'
-				blurAmount={30}
-				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
-			/>
+		<View
+			style={{
+				position: 'absolute',
+				top: 0,
+				left: 0,
+				right: 0,
+				backgroundColor: colors['main-background'],
+			}}
+			onLayout={onLayoutHeader}
+		>
 			<View
 				style={[
 					{
@@ -84,7 +88,7 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 						name='arrow-back-outline'
 						width={25 * scaleSize}
 						height={25 * scaleSize}
-						fill={color.black}
+						fill={colors['main-text']}
 					/>
 				</TouchableOpacity>
 				<View style={[flex.large]}>
@@ -137,7 +141,8 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	})
 
 	const insets = useSafeAreaInsets()
-	const [{ flex, background }] = useStyles()
+	const [{ flex }] = useStyles()
+	const colors = useThemeColor()
 	useReadEffect(params?.convId, 1000)
 	const { dispatch } = useNavigation()
 	const { t } = useTranslation()
@@ -170,7 +175,12 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 					setActiveEmojiKeyboardCid(null)
 				}
 				return (
-					<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
+					<View
+						style={[
+							StyleSheet.absoluteFill,
+							{ flex: 1, backgroundColor: colors['main-background'] },
+						]}
+					>
 						<SwipeNavRecognizer
 							onSwipeLeft={() =>
 								isSwipe &&

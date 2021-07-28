@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { SectionList, Text as TextNative, TouchableHighlight, View } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 import { Translation } from 'react-i18next'
@@ -8,7 +8,12 @@ import { Translation } from 'react-i18next'
 import beapi from '@berty-tech/api'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useContact, useConvInteractions } from '@berty-tech/store/hooks'
+import {
+	useConversation,
+	useContact,
+	useConvInteractions,
+	useThemeColor,
+} from '@berty-tech/store/hooks'
 import { HintBody } from '@berty-tech/components/shared-components'
 import { parseInteraction } from '@berty-tech/store/utils'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
@@ -22,16 +27,20 @@ const _resultAvatarSize = 45
 
 const useStylesSearch = () => {
 	const [{ text, background }] = useStyles()
+	const colors = useThemeColor()
 
 	return {
 		searchResultHighlightText: [
 			text.size.small,
-			text.color.yellow,
 			background.light.yellow,
 			text.bold.medium,
+			{ color: colors['secondary-text'], backgroundColor: `${colors['secondary-text']}30` },
 		],
-		nameHighlightText: [text.color.yellow, background.light.yellow, text.bold.medium],
-		plainMessageText: [text.size.small, text.color.grey],
+		nameHighlightText: [
+			text.bold.medium,
+			{ color: colors['secondary-text'], backgroundColor: `${colors['secondary-text']}30` },
+		],
+		plainMessageText: [text.size.small, { color: colors['secondary-text'] }],
 	}
 }
 
@@ -334,10 +343,8 @@ export const SearchComponent: React.FC<{
 	value,
 	earliestInteractionCID: _earliestInteractionCID,
 }) => {
-	const [
-		{ height, width, background, padding, text, border, margin },
-		{ scaleHeight },
-	] = useStyles()
+	const [{ height, width, padding, text, border, margin }, { scaleHeight }] = useStyles()
+	const colors = useThemeColor()
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
 
 	const sortedConversations = useMemo(() => {
@@ -350,10 +357,6 @@ export const SearchComponent: React.FC<{
 		() => createSections(sortedConversations, Object.values(contacts), interactions, value),
 		[contacts, sortedConversations, interactions, value],
 	)
-
-	useEffect(() => {
-		console.log(value, hasResults)
-	})
 
 	return hasResults ? (
 		<SectionList
@@ -387,7 +390,7 @@ export const SearchComponent: React.FC<{
 					<View
 						style={[
 							!isFirst && border.radius.top.big,
-							background.white,
+							{ backgroundColor: colors['main-background'] },
 							!isFirst && {
 								shadowOpacity: 0.1,
 								shadowRadius: 8,
@@ -398,15 +401,19 @@ export const SearchComponent: React.FC<{
 						<View style={[padding.horizontal.medium]}>
 							<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 								<View
-									style={[width(42), height(4), margin.top.medium, { backgroundColor: '#F1F4F6' }]}
+									style={[
+										width(42),
+										height(4),
+										margin.top.medium,
+										{ backgroundColor: `${colors['negative-asset']}30` },
+									]}
 								/>
 							</View>
 							<TextNative
 								style={[
 									text.size.scale(25),
-									text.color.black,
 									text.bold.medium,
-									{ fontFamily: 'Open Sans' },
+									{ fontFamily: 'Open Sans', color: colors['main-text'] },
 								]}
 							>
 								{title}
@@ -429,7 +436,6 @@ export const SearchComponent: React.FC<{
 				{(t: any): React.ReactNode => (
 					<TextNative
 						style={[
-							text.color.black,
 							text.size.big,
 							text.bold.small,
 							text.align.center,
@@ -439,7 +445,7 @@ export const SearchComponent: React.FC<{
 								top: 230,
 								left: 0,
 								right: 0,
-								color: '#FFAE3A',
+								color: colors['main-text'],
 							},
 						]}
 					>
@@ -447,13 +453,6 @@ export const SearchComponent: React.FC<{
 					</TextNative>
 				)}
 			</Translation>
-			<Icon
-				name='search'
-				width={500}
-				height={500}
-				fill='#FFFBF6'
-				style={{ position: 'absolute', top: 0, right: -63 }}
-			/>
 			<View style={[margin.top.scale(370 * scaleHeight)]}>
 				<HintBody />
 			</View>

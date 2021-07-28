@@ -7,6 +7,7 @@ import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { AccountAvatar } from '@berty-tech/components/avatars'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 export const HomeHeader: React.FC<
 	ViewProps & {
@@ -33,9 +34,10 @@ export const HomeHeader: React.FC<
 	isMultiAccount,
 }) => {
 	const [
-		{ border, width, height, padding, text, background, margin, row },
+		{ border, width, height, padding, text, margin, row },
 		{ scaleHeight, scaleSize },
 	] = useStyles()
+	const colors = useThemeColor()
 	const { navigate } = useNativeNavigation()
 	const [focus, setFocus] = useState<any>(null)
 	const animate = useRef<any>(null)
@@ -69,17 +71,19 @@ export const HomeHeader: React.FC<
 					<View>
 						<View
 							style={[
-								background.white,
 								border.radius.top.big,
 								padding.horizontal.scale(27),
 								{
+									backgroundColor: colors['main-background'],
 									alignItems: 'center',
 									paddingTop: Platform.OS === 'ios' ? paddingTop * scaleHeight : 0,
 								},
 							]}
 						>
 							{hasRequests && !isOnTop && !value?.length && (
-								<View style={[width(42), height(4), { backgroundColor: '#F1F4F6' }]} />
+								<View
+									style={[width(42), height(4), { backgroundColor: colors['main-background'] }]}
+								/>
 							)}
 							<View
 								style={{
@@ -117,7 +121,7 @@ export const HomeHeader: React.FC<
 											flexDirection: 'row',
 											justifyContent: 'flex-start',
 											alignItems: 'center',
-											backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
+											backgroundColor: `${colors['secondary-text']}20`,
 										},
 										padding.vertical.scale(Platform.OS === 'android' ? 0 : 12),
 										padding.left.medium,
@@ -131,7 +135,7 @@ export const HomeHeader: React.FC<
 									<View style={[row.center]}>
 										<Icon
 											name='search-outline'
-											fill={value?.length ? '#FFAE3A' : '#8F9BB3'}
+											fill={colors['secondary-text']}
 											width={20 * scaleSize}
 											height={20 * scaleSize}
 										/>
@@ -150,13 +154,13 @@ export const HomeHeader: React.FC<
 										<TextInput
 											ref={(ref) => setFocus(ref)}
 											placeholder={t('main.home.input-placeholder')}
-											placeholderTextColor='#D3D9E1'
+											placeholderTextColor={`${colors['secondary-text']}90`}
 											autoCorrect={false}
 											autoCapitalize='none'
 											value={value}
 											onChangeText={(s: string) => onChange(s)}
 											style={[
-												{ fontFamily: 'Open Sans', color: '#FFAE3A' },
+												{ fontFamily: 'Open Sans', color: colors['secondary-text'] },
 												value?.length ? padding.right.scale(25) : padding.right.medium,
 												text.size.medium,
 											]}
@@ -173,7 +177,7 @@ export const HomeHeader: React.FC<
 										>
 											<Icon
 												name='close-circle-outline'
-												fill='#FFAE3A'
+												fill={colors['secondary-text']}
 												width={20 * scaleSize}
 												height={20 * scaleSize}
 											/>
@@ -194,7 +198,6 @@ export const HomeHeader: React.FC<
 											navigate('Settings.Home')
 										}
 									}}
-									delayLongPress={1000}
 									onLongPress={() => {
 										onLongPress(true)
 									}}

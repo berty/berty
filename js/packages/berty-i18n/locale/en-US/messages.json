@@ -95,6 +95,15 @@
         "search-placeholder": "Search",
         "continue": "CONTINUE",
         "create-group": "CREATE A GROUP"
+      },
+      "create-group-finalize": {
+        "placeholder": "Group name",
+        "about": "About groups",
+        "first-bullet-point": "Anyone in the group can rename it or invite new members",
+        "second-bullet-point": "You can invite members by link",
+        "third-bullet-point": "You can leave this group",
+        "fourth-bullet-point": "You cannot delete this group",
+        "fifth-bullet-point": "You cannot remove a member from this group"
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Dev tools",
+      "theme-editor": "Appearence & theme editor",
       "header-left-button": "Device infos",
       "simulate-button": "Simulate stream error",
       "simulate-js-error-button": "Simulate JavaScript error",
@@ -356,7 +366,11 @@
       "footer-middle-button": "List events",
       "footer-right-button": "Restart daemon",
       "trigger-crashlytics-button": "Trigger crashlytics crash",
-      "tyber-attach": "Tyber attach to {{host}}"
+      "tyber-attach": "Tyber attach to {{host}}",
+      "tyber-host-button": {
+        "name": "Tyber",
+        "bullet-point": "Restart app after changing this field"
+      }
     },
     "system-info": {
       "title": "System info"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "Theme editor",
+      "randomize": "Generate theme",
+      "save": "Save this theme",
+      "export": "Export selected theme as file",
+      "share": "Share selected theme as file",
+      "import": "Import a file theme"
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "Let's have a quick overview of Settings and finish your first configuration!",
       "skip": "SKIP",
       "next": "NEXT"
+    },
+    "save-theme": {
+      "title": "Saving theme",
+      "desc": "Please choose a name for your theme!",
+      "placeholder": "Theme name...",
+      "cancel": "CANCEL",
+      "add": "ADD!"
     }
   },
   "chat": {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Text, TouchableOpacity, Platform, View, AppState } from 'react-native'
+import { Text, TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import LottieView from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
 import {
@@ -12,6 +12,7 @@ import {
 
 import { useStyles } from '@berty-tech/styles'
 import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
 import cameraLottie from '@berty-tech/assets/camera-lottie.json'
@@ -28,7 +29,8 @@ const animations = {
 
 export const Permissions: React.FC<{}> = (props) => {
 	const appState = useRef(AppState.currentState)
-	const [{ text, border, background }] = useStyles()
+	const [{ text, border }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const { persistentOptions, setPersistentOption, createNewAccount } = useMsgrContext()
 	const {
@@ -134,14 +136,8 @@ export const Permissions: React.FC<{}> = (props) => {
 	}
 
 	return (
-		<View
-			style={[
-				background.blue,
-				{
-					flex: 1,
-				},
-			]}
-		>
+		<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>
+			<StatusBar backgroundColor={colors['background-header']} />
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 				<LottieView
 					source={animations[permissionType]}
@@ -153,21 +149,20 @@ export const Permissions: React.FC<{}> = (props) => {
 			</View>
 			<View
 				style={[
-					background.white,
 					border.radius.top.large,
 					{
 						paddingVertical: 24,
 						paddingHorizontal: 32,
+						backgroundColor: colors['main-background'],
 					},
 				]}
 			>
 				<Text
 					style={[
-						text.size.scale(28),
+						text.size.huge,
 						text.bold.medium,
-
 						{
-							color: '#433DE5',
+							color: colors['background-header'],
 							textAlign: 'center',
 						},
 					]}
@@ -176,11 +171,11 @@ export const Permissions: React.FC<{}> = (props) => {
 				</Text>
 				<Text
 					style={[
-						text.size.scale(17),
+						text.size.scale(16),
 						{
 							lineHeight: 25,
 							marginTop: 20,
-							color: '#3D3A3D',
+							color: colors['main-text'],
 						},
 					]}
 				>
@@ -193,11 +188,11 @@ export const Permissions: React.FC<{}> = (props) => {
 							{
 								lineHeight: 25,
 								marginTop: 10,
-								color: '#3D3A3D',
+								color: colors['main-text'],
 							},
 						]}
 					>
-						{t(`permission.settings-text`, { title: t(`permission.${permissionType}.title`) })}
+						{t('permission.settings-text', { title: t(`permission.${permissionType}.title`) })}
 					</Text>
 				)}
 				<View
@@ -209,7 +204,7 @@ export const Permissions: React.FC<{}> = (props) => {
 					<TouchableOpacity
 						onPress={requestPermission}
 						style={{
-							backgroundColor: '#5552E9',
+							backgroundColor: colors['background-header'],
 							paddingVertical: 16,
 							alignItems: 'center',
 							borderRadius: 12,
@@ -220,10 +215,10 @@ export const Permissions: React.FC<{}> = (props) => {
 					>
 						<Text
 							style={[
-								text.color.white,
 								text.size.scale(18),
 								{
 									fontWeight: '700',
+									color: colors['reverted-main-text'],
 								},
 							]}
 						>
@@ -238,7 +233,7 @@ export const Permissions: React.FC<{}> = (props) => {
 				<Text
 					style={{
 						marginTop: 16,
-						color: '#D7DBE2',
+						color: colors['secondary-text'],
 						textTransform: 'uppercase',
 						textAlign: 'center',
 					}}

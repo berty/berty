@@ -3,7 +3,12 @@ import { Text as TextNative, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
-import { useClient, useConversation, useOneToOneContact } from '@berty-tech/store/hooks'
+import {
+	useClient,
+	useConversation,
+	useOneToOneContact,
+	useThemeColor,
+} from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
 
@@ -80,7 +85,8 @@ const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> =
 const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation }> = ({
 	message,
 }) => {
-	const [{ row, flex, text, margin, color }] = useStyles()
+	const [{ row, flex, text, margin }] = useStyles()
+	const colors = useThemeColor()
 	const client = useClient()
 	const [error, setError] = useState(false)
 	const [{ convPk, displayName }, setPdlInfo] = useState({ convPk: '', displayName: '' })
@@ -132,10 +138,9 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
 				<TextNative
 					style={[
-						text.color.black,
 						text.size.scale(15),
 						text.bold.medium,
-						{ fontFamily: 'Open Sans' },
+						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
 					GROUP INVITATION
@@ -147,11 +152,10 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 				</View>
 				<TextNative
 					style={[
-						text.color.black,
 						text.size.scale(13),
 						text.bold.small,
 						margin.bottom.small,
-						{ fontFamily: 'Open Sans' },
+						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
 					{displayName}
@@ -162,9 +166,9 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 					onPress={undefined} // TODO: Command to refuse invitation
 					activeOpacity={!conv ? 0.2 : 1}
 					icon='close-outline'
-					color={color.grey}
+					color={colors['secondary-text']}
 					title='REFUSE'
-					backgroundColor={color.white}
+					backgroundColor={colors['main-background']}
 					styleOpacity={0.6}
 					disabled
 				/>
@@ -172,9 +176,21 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 					onPress={handleAccept}
 					activeOpacity={!conv ? 0.2 : 1}
 					icon='checkmark-outline'
-					color={error ? color.grey : !conv ? color.blue : color.green}
+					color={
+						error
+							? colors['secondary-text']
+							: !conv
+							? colors['background-header']
+							: colors['secondary-text']
+					}
 					title={!conv ? 'ACCEPT' : 'ACCEPTED'}
-					backgroundColor={error ? color.white : !conv ? color.light.blue : color.light.green}
+					backgroundColor={
+						error
+							? colors['main-background']
+							: !conv
+							? colors['positive-asset']
+							: `${colors['secondary-text']}20`
+					}
 					styleOpacity={acceptDisabled ? 0.6 : undefined}
 					disabled={acceptDisabled ? true : false}
 				/>
@@ -186,8 +202,8 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 						margin.horizontal.small,
 						text.size.small,
 						text.bold.small,
-						text.color.red,
 						text.align.center,
+						{ color: colors['warning-asset'] },
 					]}
 				>
 					Error adding you to the group ☹️ Our bad!

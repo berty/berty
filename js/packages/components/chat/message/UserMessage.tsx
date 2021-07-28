@@ -8,7 +8,12 @@ import { PanGestureHandler, State } from 'react-native-gesture-handler'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
-import { useLastConvInteraction, useContact, useMsgrContext } from '@berty-tech/store/hooks'
+import {
+	useLastConvInteraction,
+	useContact,
+	useMsgrContext,
+	useThemeColor,
+} from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { getEmojiByName, getMediaTypeFromMedias } from '@berty-tech/components/utils'
 import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
@@ -60,13 +65,12 @@ const getUserMessageState = (
 	convKind: any,
 	previousMessage: any,
 	nextMessage: any,
-	border: any,
-	color: any,
+	colors: any,
 ) => {
 	const sentDate = pbDateToNum(inte?.sentDate)
 
 	let name = ''
-	let baseColor = color.blue
+	let baseColor = colors['background-header']
 	let isFollowupMessage: boolean | undefined = false
 	let isFollowedMessage: boolean | undefined = false
 	let isWithinCollapseDuration: number | boolean | null | undefined = false
@@ -77,13 +81,21 @@ const getUserMessageState = (
 		// State of OneToOne conversation
 		msgTextColor = inte.isMine
 			? inte.acknowledged
-				? color.white
+				? colors['reverted-main-text']
 				: cmd
-				? color.grey
-				: color.blue
-			: color.blue
-		msgBackgroundColor = inte.isMine ? (inte.acknowledged ? color.blue : color.white) : '#E2E4FF'
-		msgBorderColor = inte.isMine && (cmd ? border.color.grey : border.color.blue)
+				? colors['secondary-text']
+				: colors['background-header']
+			: colors['background-header']
+		msgBackgroundColor = inte.isMine
+			? inte.acknowledged
+				? colors['background-header']
+				: colors['reverted-main-text']
+			: colors['input-background']
+		msgBorderColor =
+			inte.isMine &&
+			(cmd
+				? { borderColor: colors['secondary-text'] }
+				: { borderColor: colors['background-header'] })
 
 		isWithinCollapseDuration =
 			nextMessage &&
@@ -114,14 +126,19 @@ const getUserMessageState = (
 		}
 		msgTextColor = inte.isMine
 			? inte.acknowledged
-				? color.white
+				? colors['reverted-main-text']
 				: cmd
-				? color.grey
+				? colors['secondary-text']
 				: baseColor
-			: color.white
-		msgBackgroundColor = inte.isMine ? (inte.acknowledged ? baseColor : color.white) : baseColor
-		msgBorderColor = inte.isMine && (cmd ? border.color.grey : { borderColor: baseColor })
-		msgSenderColor = inte.isMine ? 'red' : baseColor
+			: colors['reverted-main-text']
+		msgBackgroundColor = inte.isMine
+			? inte.acknowledged
+				? baseColor
+				: colors['reverted-main-text']
+			: baseColor
+		msgBorderColor =
+			inte.isMine && (cmd ? { borderColor: colors['secondary-text'] } : { borderColor: baseColor })
+		msgSenderColor = inte.isMine ? colors['warning-asset'] : baseColor
 	}
 
 	return {
@@ -155,7 +172,8 @@ export const UserMessage: React.FC<{
 
 	const _styles = useStylesMessage()
 	const ctx = useMsgrContext()
-	const [{ row, margin, padding, column, text, border, color }, { scaleSize }] = useStyles()
+	const [{ row, margin, padding, column, text, border }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
 	const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
@@ -180,11 +198,10 @@ export const UserMessage: React.FC<{
 		msgBorderColor,
 		msgSenderColor,
 		cmd,
-	} = getUserMessageState(inte, members, convKind, previousMessage, nextMessage, border, color)
+	} = getUserMessageState(inte, members, convKind, previousMessage, nextMessage, colors)
 
 	let repliedToColors =
-		repliedTo &&
-		getUserMessageState(replyOf, members, convKind, undefined, undefined, border, color)
+		repliedTo && getUserMessageState(replyOf, members, convKind, undefined, undefined, colors)
 
 	const togglePopover = () => {
 		if (inte.isMine) {
@@ -232,20 +249,8 @@ export const UserMessage: React.FC<{
 				</View>
 			)}
 
-			<View
-				style={[
-					column.top,
-					_styles.messageItem,
-					{
-						flexDirection: 'row',
-					},
-				]}
-			>
-				<View
-					style={{
-						alignItems: inte?.isMine ? 'flex-end' : 'flex-start',
-					}}
-				>
+			<View style={[column.top, _styles.messageItem, { flexDirection: 'row' }]}>
+				<View style={{ alignItems: inte?.isMine ? 'flex-end' : 'flex-start' }}>
 					{!inte.isMine && isGroup && !isFollowupMessage && (
 						<View style={[isFollowedMessage && margin.left.scale(40)]}>
 							<Text
@@ -274,8 +279,8 @@ export const UserMessage: React.FC<{
 						>
 							<View
 								style={{
-									backgroundColor: '#F7F8FF',
-									borderColor: '#E4E5EF',
+									backgroundColor: colors['input-background'],
+									borderColor: colors['negative-asset'],
 									paddingVertical: 1.5,
 									paddingHorizontal: 20,
 									borderWidth: 1,
@@ -284,7 +289,10 @@ export const UserMessage: React.FC<{
 									zIndex: 2,
 								}}
 							>
-								<Text numberOfLines={1} style={{ color: '#6A81F2', fontSize: 10 }}>
+								<Text
+									numberOfLines={1}
+									style={{ color: colors['background-header'], fontSize: 10 }}
+								>
 									{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
 								</Text>
 							</View>
@@ -319,11 +327,7 @@ export const UserMessage: React.FC<{
 						</View>
 					)}
 
-					<View
-						style={{
-							position: 'relative',
-						}}
-					>
+					<View style={{ position: 'relative' }}>
 						<PanGestureHandler
 							enabled={!inte.isMine}
 							onGestureEvent={({ nativeEvent }) => {
@@ -397,7 +401,7 @@ export const UserMessage: React.FC<{
 										name='undo'
 										height={30}
 										width={30}
-										fill='#D1D4DF'
+										fill={colors['negative-asset']}
 										onPress={() => {
 											setActiveReplyInte({
 												...inte,
@@ -420,12 +424,8 @@ export const UserMessage: React.FC<{
 										borderWidth: 0,
 										shadowColor: 'transparent',
 									}}
-									backgroundStyle={{
-										backgroundColor: 'transparent',
-									}}
-									arrowStyle={{
-										backgroundColor: 'transparent',
-									}}
+									backgroundStyle={{ backgroundColor: 'transparent' }}
+									arrowStyle={{ backgroundColor: 'transparent' }}
 									onRequestClose={() => {
 										setActivePopoverCid(null)
 									}}
@@ -437,9 +437,7 @@ export const UserMessage: React.FC<{
 											disabled={inte.isMine}
 											activeOpacity={0.9}
 											onLongPress={togglePopover}
-											style={{
-												marginBottom: inte?.reactions?.length ? 10 : 0,
-											}}
+											style={{ marginBottom: inte?.reactions?.length ? 10 : 0 }}
 										>
 											<>
 												{!!inte.medias?.length && (
@@ -547,10 +545,10 @@ export const UserMessage: React.FC<{
 									border.radius.large,
 									{
 										flexDirection: 'row',
-										backgroundColor: '#F7F8FF',
+										backgroundColor: colors['input-background'],
 										borderRadius: 20,
 										borderWidth: 1,
-										borderColor: '#E3E4EE',
+										borderColor: colors['negative-asset'],
 										paddingVertical: 2,
 										paddingHorizontal: 4,
 										position: 'absolute',

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 import { Text, Icon, Toggle } from '@ui-kitten/components'
 
-import { useContact } from '@berty-tech/store/hooks'
+import { useContact, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 
 import { TabBar } from './TabBar'
@@ -39,12 +39,20 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 	title,
 	action = null,
 	iconSize = 25,
-	iconColor = 'blue',
-	titleColor = 'blue',
+	iconColor,
+	titleColor,
 	style = null,
 	disabled = false,
 }) => {
 	const [{ row, flex, text, opacity }] = useStyles()
+	const colors = useThemeColor()
+
+	if (!iconColor) {
+		iconColor = colors['background-header']
+	}
+	if (!titleColor) {
+		titleColor = colors['background-header']
+	}
 	return (
 		<TouchableOpacity
 			activeOpacity={disabled ? 0.5 : 0.2}
@@ -94,7 +102,9 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 	style = null,
 	isVerified = false,
 }) => {
-	const [{ row, flex, text, margin, color }] = useStyles()
+	const [{ row, flex, text, margin }] = useStyles()
+	const colors = useThemeColor()
+
 	return (
 		<View style={[row.left, flex.tiny, { justifyContent: 'center' }, style]}>
 			<View style={[flex.tiny, row.item.bottom, row.center]}>
@@ -107,7 +117,7 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 						name='checkmark-circle-2'
 						width={20}
 						height={20}
-						fill={color.blue}
+						fill={colors['background-header']}
 					/>
 				)}
 			</View>
@@ -133,7 +143,8 @@ export const MarkAsVerified: React.FC<{}> = () => {
 
 	const handleToggled = () => setIsToggled(!isToggled)
 	const _styles = useStylesMarkAsVerified()
-	const [{ margin, padding, border, color, row, column, text }] = useStyles()
+	const [{ margin, padding, border, row, column, text }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<View
@@ -142,7 +153,7 @@ export const MarkAsVerified: React.FC<{}> = () => {
 				padding.medium,
 				border.radius.medium,
 				_styles.markAsVerified,
-				{ borderColor: isToggled ? color.blue : '#E8E9FC' },
+				{ borderColor: isToggled ? colors['background-header'] : colors['input-background'] },
 			]}
 		>
 			<View style={[row.fill]}>
@@ -151,7 +162,7 @@ export const MarkAsVerified: React.FC<{}> = () => {
 						name='checkmark-circle-2'
 						width={30}
 						height={30}
-						fill={isToggled ? color.blue : '#E8E9FC'}
+						fill={isToggled ? colors['background-header'] : colors['input-background']}
 						style={[column.item.center]}
 					/>
 					<Text style={[padding.left.small, column.item.center]}>Mark as verified</Text>
@@ -161,7 +172,12 @@ export const MarkAsVerified: React.FC<{}> = () => {
 				</View>
 			</View>
 			<Text
-				style={[text.color.grey, margin.top.medium, text.bold.medium, _styles.markAsVerifiedText]}
+				style={[
+					margin.top.medium,
+					text.bold.medium,
+					_styles.markAsVerifiedText,
+					{ color: colors['secondary-text'] },
+				]}
 			>
 				Compare the fingerprint displayed above with the one on Caterpillar’s phone. If they are
 				identical, end-to-end encryption is guaranted on you can mark this contact as verified.

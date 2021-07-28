@@ -5,7 +5,7 @@ import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useClient, useMsgrContext } from '@berty-tech/store/hooks'
+import { useClient, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 
@@ -15,11 +15,11 @@ import FromNow from '../../shared-components/FromNow'
 import { UnreadCount } from './UnreadCount'
 
 const useStylesContactRequest: any = () => {
-	const [{ border, padding, margin, width, height, row, background, flex }] = useStyles()
+	const [{ border, padding, margin, width, height, row, flex }] = useStyles()
+	const colors = useThemeColor()
 
 	return {
 		contactReqContainer: [
-			background.white,
 			border.radius.medium,
 			border.shadow.medium,
 			flex.align.center,
@@ -32,10 +32,9 @@ const useStylesContactRequest: any = () => {
 			padding.top.scale(33),
 			padding.bottom.medium,
 			width(121),
+			{ backgroundColor: colors['main-background'] },
 		],
 		declineButton: [
-			background.white,
-			border.color.light.grey,
 			border.medium,
 			border.medium,
 			border.radius.tiny,
@@ -44,9 +43,9 @@ const useStylesContactRequest: any = () => {
 			height(25),
 			padding.tiny,
 			{ flexShrink: 2, flexGrow: 0 },
+			{ backgroundColor: colors['main-background'], borderColor: colors['negative-asset'] },
 		],
 		acceptButton: [
-			background.light.blue,
 			border.radius.tiny,
 			border.shadow.tiny,
 			flex.align.center,
@@ -55,11 +54,11 @@ const useStylesContactRequest: any = () => {
 			flex.justify.center,
 			{
 				flexWrap: 'wrap',
+				backgroundColor: colors['positive-asset'],
 			},
 		],
 		buttonsWrapper: [
 			flex.align.center,
-
 			flex.direction.row,
 			flex.justify.spaceAround,
 			margin.top.scale(3),
@@ -92,9 +91,9 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const ctx = useMsgrContext()
 
 	const id = publicKey
-	const [{ border, padding, row, absolute, text, color }, { scaleSize }] = useStyles()
+	const [{ border, padding, row, absolute, text }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
-	const textColor = '#AFB1C0'
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -126,7 +125,12 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						}}
 					>
 						<Text
-							style={[text.align.center, text.color.black, text.bold.small, text.size.scale(14)]}
+							style={[
+								text.align.center,
+								text.bold.small,
+								text.size.scale(14),
+								{ color: colors['main-text'] },
+							]}
 							numberOfLines={2}
 						>
 							{displayName || ''}
@@ -147,7 +151,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 								text.align.center,
 								{
 									lineHeight: (text.size.scale(11) as any).fontSize * 1.6,
-									color: textColor,
+									color: colors['secondary-text'],
 								},
 							]}
 						>
@@ -157,7 +161,10 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 							style={[
 								text.size.scale(10),
 								text.align.center,
-								{ lineHeight: (text.size.scale(11) as any).fontSize * 2, color: '#888' },
+								{
+									lineHeight: (text.size.scale(11) as any).fontSize * 2,
+									color: colors['secondary-text'],
+								},
 							]}
 						>
 							<FromNow date={createdDate} />
@@ -172,7 +179,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						>
 							<Icon
 								name='close-outline'
-								fill={textColor}
+								fill={colors['secondary-text']}
 								width={17 * scaleSize}
 								height={17 * scaleSize}
 								style={[padding.tiny, row.item.justify]}
@@ -191,11 +198,17 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						>
 							<Icon
 								name='checkmark-outline'
-								fill={color.blue}
+								fill={colors['background-header']}
 								width={17 * scaleSize}
 								height={17 * scaleSize}
 							/>
-							<Text style={[text.size.scale(10), text.color.blue, padding.horizontal.tiny]}>
+							<Text
+								style={[
+									text.size.scale(10),
+									padding.horizontal.tiny,
+									{ color: colors['background-header'] },
+								]}
+							>
 								{t('main.home.requests.accept')}
 							</Text>
 						</TouchableOpacity>
@@ -207,20 +220,24 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 }
 
 export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
-	const [{ padding, text, background, row }, { scaleSize }] = useStyles()
+	const [{ padding, text, row }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	return items?.length ? (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<View onLayout={onLayout} style={[background.blue, padding.top.scale(50)]}>
+				<View
+					onLayout={onLayout}
+					style={[padding.top.scale(50), { backgroundColor: colors['background-header'] }]}
+				>
 					<View>
 						<View style={[row.left]}>
 							<Text
 								style={[
-									text.color.white,
 									text.size.huge,
 									text.bold.medium,
 									padding.horizontal.medium,
 									padding.bottom.small,
+									{ color: colors['reverted-main-text'] },
 								]}
 							>
 								{t('main.home.requests.title')}

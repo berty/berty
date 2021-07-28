@@ -81,20 +81,9 @@ export const MessageList: React.FC<{
 			: ({}) => null
 
 	const initialScrollIndex = undefined
-	// TODO:
-	// const initialScrollIndex = React.useMemo(() => {
-	// 	if (scrollToMessage) {
-	// 		for (let i = 0; i < interactions.length; i++) {
-	// 			if (interactions[i] && interactions[i].cid === scrollToMessage) {
-	// 				return i
-	// 			}
-	// 		}
-	// 	}
-	// }, [interactions, scrollToMessage])
 	const flatListRef: any = React.useRef(null)
 
 	const onScrollToIndexFailed = () => {
-		// Not sure why this happens (something to do with item/screen dimensions I think)
 		flatListRef?.current?.scrollToIndex({ index: 0 })
 	}
 

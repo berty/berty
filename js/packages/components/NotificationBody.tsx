@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { usePersistentOptions, useMsgrContext } from '@berty-tech/store/hooks'
+import { usePersistentOptions, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { NotificationsInhibitor } from '@berty-tech/store/context'
 import { SoundKey } from '@berty-tech/store/sounds'
 
@@ -23,7 +23,8 @@ const NotificationContents: React.FC<{
 }
 
 const NotificationBody: React.FC<any> = (props) => {
-	const [{ border, flex, column, background }] = useStyles()
+	const [{ border, flex, column }] = useStyles()
+	const colors = useThemeColor()
 	const insets = useSafeAreaInsets()
 
 	return (
@@ -38,8 +39,8 @@ const NotificationBody: React.FC<any> = (props) => {
 				flex.tiny,
 				flex.justify.center,
 				column.item.center,
-				background.white,
 				{
+					backgroundColor: colors['main-background'],
 					position: 'absolute',
 					marginTop: insets?.top || 0,
 					width: '90%',

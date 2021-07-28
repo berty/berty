@@ -8,6 +8,7 @@ import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty-tech/styles'
 import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import FullAnonBackground from '@berty-tech/assets/full_anon_bg.png'
 import PerformanceBackground from '@berty-tech/assets/performance_bg.png'
@@ -18,14 +19,15 @@ export const ChoosePreset = () => {
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 
-	const [{ text, padding, border, margin, flex, color, background }, { scaleSize }] = useStyles()
+	const [{ text, padding, border, margin, flex }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
 	const performanceCheckList = [
 		{ title: t('onboarding.select-mode.performance.push-notif') },
 		{ title: t('onboarding.select-mode.performance.offline-message') },
 		{ title: t('onboarding.select-mode.performance.add-contact') },
 		{ title: t('onboarding.select-mode.performance.fast-message') },
 	]
-
 	const anonymityCheckList = [
 		{ title: t('onboarding.select-mode.high-level.disable-push-notif') },
 		{
@@ -36,9 +38,24 @@ export const ChoosePreset = () => {
 	]
 
 	return (
-		<View style={[flex.tiny, padding.big, margin.top.scale(insets.top), background.white]}>
-			<StatusBar backgroundColor={color.white} barStyle='dark-content' />
-			<Text style={[text.align.center, text.size.huge, text.bold.medium, margin.bottom.huge]}>
+		<View
+			style={[
+				flex.tiny,
+				padding.big,
+				margin.top.scale(insets.top),
+				{ backgroundColor: colors['main-background'] },
+			]}
+		>
+			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+			<Text
+				style={[
+					text.align.center,
+					text.size.huge,
+					text.bold.medium,
+					margin.bottom.huge,
+					{ color: colors['main-text'] },
+				]}
+			>
 				{t('onboarding.select-mode.title')}
 			</Text>
 			<TouchableOpacity
@@ -61,7 +78,7 @@ export const ChoosePreset = () => {
 					border.radius.medium,
 					flex.tiny,
 					{
-						backgroundColor: '#5A64EC',
+						backgroundColor: colors['background-header'],
 						position: 'relative',
 						overflow: 'hidden',
 					},
@@ -73,11 +90,18 @@ export const ChoosePreset = () => {
 				>
 					<View style={[flex.direction.row, flex.align.center, flex.justify.spaceBetween]}>
 						<View style={[padding.top.large]}>
-							<Text style={[text.color.white, text.size.huge, text.bold.medium]}>
+							<Text
+								style={[text.size.huge, text.bold.medium, { color: colors['reverted-main-text'] }]}
+							>
 								{t('onboarding.select-mode.performance.title')}
 							</Text>
 							<Text
-								style={[text.color.white, text.size.medium, margin.bottom.large, margin.top.tiny]}
+								style={[
+									text.size.medium,
+									margin.bottom.large,
+									margin.top.tiny,
+									{ color: colors['reverted-main-text'] },
+								]}
 							>
 								{t('onboarding.select-mode.performance.desc')}
 							</Text>
@@ -87,7 +111,7 @@ export const ChoosePreset = () => {
 							name='flash-outline'
 							height={45 * scaleSize}
 							width={45 * scaleSize}
-							fill='white'
+							fill={colors['reverted-main-text']}
 						/>
 					</View>
 
@@ -104,12 +128,14 @@ export const ChoosePreset = () => {
 							>
 								<Icon
 									name='checkmark-circle-2'
-									fill='white'
+									fill={colors['reverted-main-text']}
 									height={16 * scaleSize}
 									width={16 * scaleSize}
 									style={[margin.right.small]}
 								/>
-								<Text style={[text.color.white, text.size.medium]}>{item.title}</Text>
+								<Text style={[text.size.medium, { color: colors['reverted-main-text'] }]}>
+									{item.title}
+								</Text>
 							</View>
 						))}
 					</View>
@@ -126,18 +152,10 @@ export const ChoosePreset = () => {
 							},
 						]}
 					>
-						<View
-							style={[
-								border.radius.small,
-								flex.justify.center,
-								{
-									backgroundColor: '#4B54E9',
-								},
-							]}
-						>
+						<View style={[border.radius.small, flex.justify.center]}>
 							<Icon
 								name='chevron-right'
-								fill='white'
+								fill={colors['reverted-main-text']}
 								height={40 * scaleSize}
 								width={40 * scaleSize}
 							/>
@@ -150,7 +168,7 @@ export const ChoosePreset = () => {
 					text.align.center,
 					margin.vertical.medium,
 					text.size.medium,
-					{ fontStyle: 'italic', color: '#A5A7C5' },
+					{ fontStyle: 'italic', color: colors['secondary-text'] },
 				]}
 			>
 				{t('onboarding.select-mode.change-later')}
@@ -160,7 +178,7 @@ export const ChoosePreset = () => {
 					border.radius.medium,
 					{
 						flex: 1,
-						backgroundColor: '#202240',
+						backgroundColor: colors['alt-secondary-background-header'],
 						position: 'relative',
 						overflow: 'hidden',
 					},
@@ -184,11 +202,18 @@ export const ChoosePreset = () => {
 				<ImageBackground source={FullAnonBackground} style={[padding.horizontal.large, flex.tiny]}>
 					<View style={[flex.direction.row, flex.align.center, flex.justify.spaceBetween]}>
 						<View style={[padding.top.large]}>
-							<Text style={[text.color.white, text.size.huge, text.bold.medium]}>
+							<Text
+								style={[text.size.huge, text.bold.medium, { color: colors['reverted-main-text'] }]}
+							>
 								{t('onboarding.select-mode.high-level.title')}
 							</Text>
 							<Text
-								style={[text.color.white, text.size.medium, margin.bottom.large, margin.top.tiny]}
+								style={[
+									text.size.medium,
+									margin.bottom.large,
+									margin.top.tiny,
+									{ color: colors['reverted-main-text'] },
+								]}
 							>
 								{t('onboarding.select-mode.high-level.desc')}
 							</Text>
@@ -199,7 +224,7 @@ export const ChoosePreset = () => {
 							pack='custom'
 							height={60 * scaleSize}
 							width={60 * scaleSize}
-							fill='white'
+							fill={colors['reverted-main-text']}
 						/>
 					</View>
 
@@ -216,19 +241,26 @@ export const ChoosePreset = () => {
 											{
 												height: 16 * scaleSize,
 												width: 16 * scaleSize,
-												backgroundColor: color.white,
+												backgroundColor: colors['reverted-main-text'],
 											},
 										]}
 									>
-										<Icon name='close' fill='red' height={12 * scaleSize} width={12 * scaleSize} />
+										<Icon
+											name='close'
+											fill={colors['warning-asset']}
+											height={12 * scaleSize}
+											width={12 * scaleSize}
+										/>
 									</View>
-									<Text style={[text.color.white, text.size.medium]}>{item.title}</Text>
+									<Text style={[text.size.medium, { color: colors['reverted-main-text'] }]}>
+										{item.title}
+									</Text>
 								</View>
 								<Text
 									style={[
-										text.color.white,
 										text.size.small,
 										{
+											color: colors['reverted-main-text'],
 											marginLeft: 25 * scaleSize,
 										},
 									]}
@@ -251,18 +283,10 @@ export const ChoosePreset = () => {
 							},
 						]}
 					>
-						<View
-							style={[
-								border.radius.small,
-								flex.justify.center,
-								{
-									backgroundColor: '#34354A',
-								},
-							]}
-						>
+						<View style={[border.radius.small, flex.justify.center]}>
 							<Icon
 								name='chevron-right'
-								fill='white'
+								fill={colors['reverted-main-text']}
 								height={40 * scaleSize}
 								width={40 * scaleSize}
 							/>

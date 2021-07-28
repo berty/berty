@@ -6,6 +6,10 @@ import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { globals } from '@berty-tech/config'
 import { Service } from '@berty-tech/grpc-bridge'
 import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
+import defaultTheme from '@berty-tech/styles/colors.json'
+import pinkTheme from '@berty-tech/styles/pinktheme-default.json'
+import darkTheme from '@berty-tech/styles/darktheme-default.json'
+import { randomizeThemeColor } from '@berty-tech/components/helpers'
 
 import { ParsedInteraction } from './types.gen'
 import { SoundKey } from './sounds'
@@ -155,6 +159,7 @@ export enum PersistentOptionsKeys {
 	Preset = 'preset',
 	LogFilters = 'logFilters',
 	TyberHost = 'tyberHost',
+	ThemeColor = 'themeColor',
 }
 
 export type PersistentOptionsI18N = {
@@ -229,6 +234,11 @@ export type PersistentOptionsTyberHost = {
 	address: string
 }
 
+export type PersistentOptionsThemeColor = {
+	selected: string
+	collection: {}
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -286,6 +296,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.TyberHost
 			payload: PersistentOptionsTyberHost
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.ThemeColor
+			payload: PersistentOptionsThemeColor
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -302,6 +316,24 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.Preset]: PersistentOptionsPreset
 	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
+	[PersistentOptionsKeys.ThemeColor]: PersistentOptionsThemeColor
+}
+
+export const DefaultBertyTheme = 'default-berty-theme'
+export const CurrentGeneratedTheme = 'current-generated'
+export const DefaultPinkTheme = 'pink-theme'
+export const DefaultDarkTheme = 'dark-theme'
+
+export const defaultThemeColor = () => {
+	return {
+		selected: DefaultBertyTheme,
+		collection: {
+			[DefaultBertyTheme]: { colors: defaultTheme },
+			[CurrentGeneratedTheme]: { colors: randomizeThemeColor() },
+			[DefaultPinkTheme]: { colors: pinkTheme },
+			[DefaultDarkTheme]: { colors: darkTheme },
+		},
+	}
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => {
@@ -376,6 +408,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.TyberHost]: {
 			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
 		},
+		[PersistentOptionsKeys.ThemeColor]: defaultThemeColor(),
 	}
 }
 

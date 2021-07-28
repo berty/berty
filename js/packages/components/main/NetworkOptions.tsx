@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, Image, SafeAreaView } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { RESULTS } from 'react-native-permissions'
 import { Text } from '@ui-kitten/components'
 import { RouteProp, useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/context'
-import { ButtonSetting } from '@berty-tech/components/shared-components/SettingsButtons'
-import Button from '@berty-tech/components/onboarding/Button'
+import { useThemeColor, useMsgrContext } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
+
 import { checkPermissions } from '../utils'
-import { RESULTS } from 'react-native-permissions'
+import { ButtonSetting } from '../shared-components/SettingsButtons'
+import Button from '../onboarding/Button'
 
 enum Modes {
 	FullAnon,
@@ -32,16 +33,18 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 	})
 
 	const [{ text, padding, border, margin, flex }, { windowWidth, scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
 	const buttonCustomProps = {
 		iconSize: 35,
-		iconColor: '#6E6DFF',
+		iconColor: colors['background-header'],
 		toggled: true,
 		style: [
 			{
-				backgroundColor: '#393D64',
+				backgroundColor: colors['alt-secondary-background-header'],
 			},
 		],
-		textStyle: [text.color.white],
+		textStyle: [{ color: colors['reverted-main-text'] }],
 	}
 
 	const parameterList = [
@@ -76,7 +79,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 	return (
 		<SafeAreaView
 			style={{
-				backgroundColor: '#1B1D2C',
+				backgroundColor: colors['alt-secondary-background-header'],
 				flex: 1,
 			}}
 		>
@@ -99,7 +102,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 						text.size.large,
 						margin.bottom.medium,
 						{
-							color: '#C8C9D5',
+							color: colors['negative-asset'],
 						},
 					]}
 				>
@@ -163,7 +166,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 							border.radius.medium,
 							flex.align.center,
 							{
-								backgroundColor: 'white',
+								backgroundColor: colors['main-background'],
 								flex: 5,
 							},
 						]}
@@ -174,7 +177,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 								text.bold.medium,
 								margin.bottom.medium,
 								{
-									color: '#4852EB',
+									color: colors['background-header'],
 								},
 							]}
 						>
@@ -182,7 +185,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 								? t('main.network-options.full-anon.title')
 								: t('main.network-options.tor-compatible.title')}
 						</Text>
-						<Text style={[text.size.small, text.align.center, { color: '#909CB3' }]}>
+						<Text style={[text.size.small, text.align.center, { color: colors['secondary-text'] }]}>
 							{mode === Modes.FullAnon
 								? t('main.network-options.full-anon.desc')
 								: t('main.network-options.tor-compatible.desc')}
@@ -195,7 +198,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 										text.size.small,
 										text.bold.medium,
 										text.align.center,
-										{ color: '#909CB3' },
+										{ color: colors['secondary-text'] },
 									]}
 									key={item}
 								>
@@ -210,13 +213,8 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 							}}
 						>
 							<Button
-								style={{
-									backgroundColor: '#535BED',
-									width: '100%',
-								}}
-								textStyle={{
-									color: 'white',
-								}}
+								style={{ backgroundColor: colors['background-header'], width: '100%' }}
+								textStyle={{ color: colors['reverted-main-text'] }}
 								onPress={async () => {
 									await setPersistentOption({
 										type: PersistentOptionsKeys.Configurations,
@@ -265,7 +263,9 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 									handleComplete()
 								}}
 							>
-								<Text style={[text.size.small, text.color.grey, text.align.center]}>
+								<Text
+									style={[text.size.small, text.align.center, { color: colors['secondary-text'] }]}
+								>
 									{t('main.network-options.skip')}
 								</Text>
 							</TouchableOpacity>

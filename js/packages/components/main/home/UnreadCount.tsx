@@ -2,10 +2,13 @@ import React from 'react'
 import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 
+import { useThemeColor } from '@berty-tech/store/hooks'
+
 export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 	value,
 	isConvBadge = false,
 }) => {
+	const colors = useThemeColor()
 	const dimension = isConvBadge ? 15 : 21
 	const fontSize = isConvBadge ? 10 : 13
 	const lineHeight = isConvBadge ? 14 : 17
@@ -13,7 +16,7 @@ export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = (
 	return value ? (
 		<View
 			style={{
-				backgroundColor: 'red',
+				backgroundColor: colors['warning-asset'],
 				justifyContent: 'center',
 				borderRadius: 1000,
 				height: dimension,
@@ -23,7 +26,7 @@ export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = (
 		>
 			<Text
 				style={{
-					color: 'white',
+					color: colors['reverted-main-text'],
 					fontWeight: '700',
 					textAlign: 'center',
 					fontSize,

@@ -20,10 +20,16 @@ import Hyperlink from 'react-native-hyperlink'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
-import { isBertyDeepLink } from '@berty-tech/components/chat/message/UserMessageComponents'
-import { useMsgrContext, useConvInteractions, useClient } from '@berty-tech/store/hooks'
-import { getSource } from '@berty-tech/components/utils'
-import { timeFormat } from '@berty-tech/components/helpers'
+import {
+	useMsgrContext,
+	useConvInteractions,
+	useClient,
+	useThemeColor,
+} from '@berty-tech/store/hooks'
+
+import { getSource } from '../utils'
+import { timeFormat } from '../helpers'
+import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = linkifyFn().tlds(tlds, true)
@@ -33,7 +39,8 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 		params: { convPk },
 	},
 }) => {
-	const [{ flex, margin, row, text, padding, border, background, color }] = useStyles()
+	const [{ flex, margin, row, text, padding, border }] = useStyles()
+	const colors = useThemeColor()
 	const { goBack, navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const [activeIndex, setActiveIndex] = useState(0)
@@ -192,7 +199,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 									.catch((err) => console.log(err))
 							}}
 						>
-							<Icon name='file' height={20} width={20} fill='#939FB6' />
+							<Icon name='file' height={20} width={20} fill={colors['secondary-text']} />
 							<Text
 								style={{
 									fontStyle: 'italic',
@@ -241,7 +248,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 						>
 							<Text
 								style={{
-									color: color.blue,
+									color: colors['background-header'],
 								}}
 							>
 								{url}
@@ -268,17 +275,27 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 	})
 
 	return (
-		<View style={[flex.tiny, background.white]}>
-			<StatusBar barStyle='light-content' backgroundColor={color.blue} />
-			<SafeAreaView style={[{ backgroundColor: color.blue }]}>
+		<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
+			<StatusBar barStyle='light-content' backgroundColor={colors['background-header']} />
+			<SafeAreaView style={[{ backgroundColor: colors['background-header'] }]}>
 				<View style={[padding.horizontal.medium, padding.top.tiny, margin.bottom.big]}>
 					<View style={[row.fill, { justifyContent: 'center', alignItems: 'center' }]}>
 						<TouchableOpacity style={[flex.tiny]} onPress={() => goBack()}>
-							<Icon name='arrow-back-outline' width={25} height={25} fill='white' />
+							<Icon
+								name='arrow-back-outline'
+								width={25}
+								height={25}
+								fill={colors['reverted-main-text']}
+							/>
 						</TouchableOpacity>
 						<View style={[flex.big]}>
 							<Text
-								style={[text.align.center, text.color.white, text.bold.medium, text.size.scale(25)]}
+								style={[
+									text.align.center,
+									text.bold.medium,
+									text.size.scale(25),
+									{ color: colors['reverted-main-text'] },
+								]}
 							>
 								{t('chat.shared-medias.title')}
 							</Text>
@@ -302,21 +319,22 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 								{
 									flexDirection: 'row',
 									alignItems: 'center',
-									backgroundColor: activeIndex === index ? 'white' : '#D9D7FF',
+									backgroundColor:
+										activeIndex === index ? colors['main-background'] : colors['input-background'],
 								},
 							]}
 						>
 							<Icon
 								height={activeIndex === index ? 30 : 25}
 								width={activeIndex === index ? 30 : 25}
-								fill={color.blue}
+								fill={colors['background-header']}
 								{...tab.icon}
 							/>
 							<Text
 								style={[
-									text.color.blue,
 									margin.left.small,
 									text.size.scale(activeIndex === index ? 17 : 16),
+									{ color: colors['background-header'] },
 								]}
 							>
 								{tab.title}
@@ -336,7 +354,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 					<Icon
 						height={200}
 						width={200}
-						fill='#4C54E7'
+						fill={colors['background-header']}
 						name={tabs[activeIndex].icon.name}
 						pack='feather'
 					/>
@@ -349,7 +367,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 					flex.tiny,
 					{
 						marginTop: -20,
-						backgroundColor: 'white',
+						backgroundColor: colors['main-background'],
 					},
 				]}
 			>

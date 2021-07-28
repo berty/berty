@@ -114,6 +114,7 @@ const createNavigation = ({
 				aboutBerty: createNavigateFunc(navigate, Routes.Settings.AboutBerty),
 				termsOfUse: createNavigateFunc(navigate, Routes.Settings.TermsOfUse),
 				devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),
+				themeEditor: createNavigateFunc(navigate, Routes.Settings.ThemeEditor),
 				systemInfo: createNavigateFunc(navigate, Routes.Settings.SystemInfo),
 				network: createNavigateFunc<ScreenProps.Settings.Network>(
 					navigate,

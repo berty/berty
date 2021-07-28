@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useContact, useConversation } from '@berty-tech/store/hooks'
+import { useContact, useConversation, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import HeaderSettings from '../shared-components/Header'
@@ -31,13 +31,19 @@ const useStylesOneToOne = () => {
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const _styles = useStylesOneToOne()
 	const [{ text, padding }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<View style={[_styles.headerAvatar, { alignItems: 'center' }]}>
 			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} pressable />
 			<Text
 				numberOfLines={1}
-				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}
+				style={[
+					text.size.scale(18),
+					text.align.center,
+					padding.top.small,
+					{ color: colors['reverted-main-text'] },
+				]}
 			>
 				{contact.displayName}
 			</Text>
@@ -47,7 +53,8 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 
 const OneToOneHeaderButtons: React.FC<{}> = () => {
 	const _styles = useStylesOneToOne()
-	const [{ padding, color }] = useStyles()
+	const colors = useThemeColor()
+	const [{ padding }] = useStyles()
 	const { t } = useTranslation()
 	return (
 		<View style={[padding.horizontal.medium, padding.top.medium]}>
@@ -56,21 +63,21 @@ const OneToOneHeaderButtons: React.FC<{}> = () => {
 					{
 						name: t('chat.one-to-one-settings.header-left-button'),
 						icon: 'search-outline',
-						color: color.blue,
+						color: colors['background-header'],
 						style: _styles.firstHeaderButton,
 						disabled: true,
 					},
 					{
 						name: t('chat.one-to-one-settings.header-middle-button'),
 						icon: 'phone-outline',
-						color: color.green,
+						color: colors['background-header'],
 						style: _styles.secondHeaderButton,
 						disabled: true,
 					},
 					{
 						name: t('chat.one-to-one-settings.header-right-button'),
 						icon: 'upload',
-						color: color.blue,
+						color: colors['background-header'],
 						style: _styles.thirdHeaderButton,
 						disabled: true,
 					},
@@ -81,7 +88,8 @@ const OneToOneHeaderButtons: React.FC<{}> = () => {
 }
 
 const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
-	const [{ padding, color }] = useStyles()
+	const [{ padding }] = useStyles()
+	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { t } = useTranslation()
 
@@ -102,7 +110,11 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 				name={t('chat.one-to-one-settings.mutual-button')}
 				icon='users'
 				iconPack='custom'
-				state={{ value: '3 mutuals', color: color.blue, bgColor: color.light.blue }}
+				state={{
+					value: '3 mutuals',
+					color: colors['background-header'],
+					bgColor: colors['positive-asset'],
+				}}
 				disabled
 			/>
 			{!isIncoming && (
@@ -119,7 +131,7 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 			<ButtonSetting
 				name={t('chat.one-to-one-settings.erase-button')}
 				icon='message-circle-outline'
-				iconColor={color.red}
+				iconColor={colors['secondary-background-header']}
 				disabled
 			/>
 		</View>
@@ -129,8 +141,8 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	route: { params },
 }) => {
+	const colors = useThemeColor()
 	const { goBack, navigate } = useNavigation()
-	const [{ flex, background, padding, color }] = useStyles()
 	const { convId } = params
 	const conv = useConversation(convId)
 	const contact = useContact(conv?.contactPublicKey)
@@ -142,13 +154,9 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 
 	return (
 		<>
-			<View style={[flex.tiny]}>
-				<StatusBar backgroundColor={color.blue} barStyle='light-content' />
-				<ScrollView
-					style={[flex.tiny, background.white]}
-					contentContainerStyle={[padding.bottom.huge]}
-					bounces={false}
-				>
+			<View style={{ flex: 1 }}>
+				<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+				<ScrollView style={{ flex: 1, backgroundColor: colors['main-background'] }} bounces={false}>
 					<SwipeNavRecognizer>
 						<HeaderSettings
 							action={() =>

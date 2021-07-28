@@ -5,11 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMusicPlayer } from '@berty-tech/music-player'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 export const HEIGHT_OF_PLAYER = 60
 
 export const StickMusicPlayer = () => {
 	const [{ border, padding, margin }, { windowWidth, scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const [animatedWidth] = useState(new Animated.Value(0))
 	const { player, unload, handlePlayPause, refresh } = useMusicPlayer()
 	const { top } = useSafeAreaInsets()
@@ -55,7 +57,7 @@ export const StickMusicPlayer = () => {
 					marginBottom: -top,
 					marginTop: top,
 					zIndex: 9,
-					backgroundColor: '#4F58C0',
+					backgroundColor: colors['background-header'],
 					height: HEIGHT_OF_PLAYER,
 				},
 			]}
@@ -73,12 +75,8 @@ export const StickMusicPlayer = () => {
 						{
 							padding: 1,
 							borderWidth: 3,
-							borderColor: '#8F95D7',
-							transform: [
-								{
-									rotate: '45deg',
-								},
-							],
+							borderColor: colors['positive-asset'],
+							transform: [{ rotate: '45deg' }],
 						},
 					]}
 					onPress={() => unload()}
@@ -88,7 +86,7 @@ export const StickMusicPlayer = () => {
 						width={16 * scaleSize}
 						name='plus'
 						pack='custom'
-						fill='#8F95D7'
+						fill={colors['positive-asset']}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -110,7 +108,7 @@ export const StickMusicPlayer = () => {
 					style={[
 						border.radius.small,
 						{
-							backgroundColor: '#4F58C0',
+							backgroundColor: colors['background-header'],
 							alignItems: 'center',
 							justifyContent: 'center',
 						},
@@ -118,7 +116,7 @@ export const StickMusicPlayer = () => {
 				>
 					<Icon
 						name='prev'
-						fill='white'
+						fill={colors['reverted-main-text']}
 						height={25 * scaleSize}
 						width={25 * scaleSize}
 						pack='custom'
@@ -132,7 +130,7 @@ export const StickMusicPlayer = () => {
 						border.radius.small,
 						margin.horizontal.big,
 						{
-							backgroundColor: '#4F58C0',
+							backgroundColor: colors['background-header'],
 							alignItems: 'center',
 							justifyContent: 'center',
 						},
@@ -140,7 +138,7 @@ export const StickMusicPlayer = () => {
 				>
 					<Icon
 						name={player.player?.isPlaying ? 'pause' : 'play'}
-						fill='white'
+						fill={colors['reverted-main-text']}
 						height={25 * scaleSize}
 						width={25 * scaleSize}
 						pack='custom'
@@ -158,7 +156,7 @@ export const StickMusicPlayer = () => {
 					style={[
 						border.radius.small,
 						{
-							backgroundColor: '#4F58C0',
+							backgroundColor: colors['background-header'],
 							alignItems: 'center',
 							justifyContent: 'center',
 						},
@@ -166,7 +164,7 @@ export const StickMusicPlayer = () => {
 				>
 					<Icon
 						name='next'
-						fill='white'
+						fill={colors['reverted-main-text']}
 						height={25 * scaleSize}
 						width={25 * scaleSize}
 						pack='custom'
@@ -185,7 +183,7 @@ export const StickMusicPlayer = () => {
 				<TouchableOpacity onPress={() => {}} style={[padding.tiny, margin.left.small]}>
 					<Icon
 						name='volume'
-						fill='white'
+						fill={colors['reverted-main-text']}
 						height={20 * scaleSize}
 						width={20 * scaleSize}
 						pack='custom'
@@ -199,7 +197,7 @@ export const StickMusicPlayer = () => {
 					top: 0,
 					left: 15,
 					right: 15,
-					backgroundColor: '#8999FF',
+					backgroundColor: colors['positive-asset'],
 					height: 5,
 				}}
 			>
@@ -210,7 +208,7 @@ export const StickMusicPlayer = () => {
 							top: 0,
 							left: 0,
 							right: -15,
-							backgroundColor: '#3F49EA',
+							backgroundColor: colors['background-header'],
 							height: 5,
 							width: animatedWidth,
 						},

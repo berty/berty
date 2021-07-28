@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { TabItems } from './types'
 
@@ -12,8 +13,9 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 	activeTab,
 	close,
 }) => {
-	const [{ color, border, padding, margin }] = useStyles()
+	const [{ border, padding, margin }] = useStyles()
 	const { t }: { t: any } = useTranslation()
+	const colors = useThemeColor()
 
 	const handleAppStateChange = useCallback(
 		async (state: string) => {
@@ -98,15 +100,11 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 	}
 
 	return (
-		<View
-			style={{
-				backgroundColor: color.white,
-			}}
-		>
+		<View style={{ backgroundColor: colors['main-background'] }}>
 			<View
 				style={[
 					{
-						backgroundColor: '#6B80FF',
+						backgroundColor: colors['positive-asset'],
 						flexDirection: 'row',
 						alignItems: 'center',
 						justifyContent: 'center',
@@ -116,13 +114,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					border.radius.top.large,
 				]}
 			>
-				<Text
-					style={{
-						textAlign: 'center',
-					}}
-				>
-					{t('chat.files.security-access')}
-				</Text>
+				<Text style={{ textAlign: 'center' }}>{t('chat.files.security-access')}</Text>
 				<TouchableOpacity
 					onPress={close}
 					style={{
@@ -130,7 +122,12 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 						right: 20,
 					}}
 				>
-					<Icon name='close-circle-outline' fill='#A1AEFF' height={40} width={40} />
+					<Icon
+						name='close-circle-outline'
+						fill={colors['positive-asset']}
+						height={40}
+						width={40}
+					/>
 				</TouchableOpacity>
 			</View>
 			<TouchableOpacity
@@ -144,16 +141,14 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					padding.large,
 				]}
 			>
-				<Icon name={activeTabConfig.iconName} fill='#C7C8D8' height={70} width={70} pack='custom' />
-				<Text
-					style={[
-						margin.tiny,
-						padding.large,
-						{
-							textAlign: 'center',
-						},
-					]}
-				>
+				<Icon
+					name={activeTabConfig.iconName}
+					fill={colors['secondary-text']}
+					height={70}
+					width={70}
+					pack='custom'
+				/>
+				<Text style={[margin.tiny, padding.large, { textAlign: 'center' }]}>
 					{t('chat.files.security-access-desc')} {t(activeTabConfig.title)}
 				</Text>
 			</TouchableOpacity>

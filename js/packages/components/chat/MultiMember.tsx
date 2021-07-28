@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, View, Platform, TextInput, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import { BlurView } from '@react-native-community/blur'
 import { CommonActions, useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import EmojiBoard from 'react-native-emoji-board'
@@ -18,6 +17,7 @@ import {
 	useReadEffect,
 	useNotificationsInhibitor,
 	useMsgrContext,
+	useThemeColor,
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
@@ -42,7 +42,8 @@ const HeaderMultiMember: React.FC<{
 	const ctx = useMsgrContext()
 	const { navigate, goBack } = useNavigation()
 	const insets = useSafeAreaInsets()
-	const [{ row, padding, flex, text, color, border }, { scaleSize }] = useStyles()
+	const [{ row, padding, flex, text, border }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const conversation = useConversation(id)
 	const [editValue, setEditValue] = useState(conversation?.displayName || '')
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
@@ -57,13 +58,16 @@ const HeaderMultiMember: React.FC<{
 		setIsEdit(false)
 	}
 	return (
-		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
-			<BlurView
-				overlayColor=''
-				blurType='light'
-				blurAmount={30}
-				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
-			/>
+		<View
+			style={{
+				position: 'absolute',
+				top: 0,
+				left: 0,
+				right: 0,
+				backgroundColor: colors['main-background'],
+			}}
+			onLayout={onLayoutHeader}
+		>
 			<View
 				style={[
 					{
@@ -80,7 +84,7 @@ const HeaderMultiMember: React.FC<{
 						name='arrow-back-outline'
 						width={25 * scaleSize}
 						height={25 * scaleSize}
-						fill={color.black}
+						fill={colors['main-text']}
 					/>
 				</TouchableOpacity>
 				{isEdit ? (
@@ -91,7 +95,7 @@ const HeaderMultiMember: React.FC<{
 							{
 								flexDirection: 'row',
 								alignItems: 'center',
-								backgroundColor: color.light.grey,
+								backgroundColor: colors['negative-asset'],
 							},
 						]}
 					>
@@ -99,11 +103,11 @@ const HeaderMultiMember: React.FC<{
 						<TextInput
 							style={[
 								flex.large,
-								text.color.black,
 								text.align.center,
 								text.bold.medium,
 								text.size.scale(20),
 								padding.vertical.small,
+								{ color: colors['main-text'] },
 							]}
 							autoFocus
 							onSubmitEditing={editDisplayName}
@@ -118,7 +122,12 @@ const HeaderMultiMember: React.FC<{
 							style={[flex.medium, { alignItems: 'flex-end' }]}
 							onPress={editDisplayName}
 						>
-							<Icon name='checkmark-outline' height={25} width={25} fill={color.grey} />
+							<Icon
+								name='checkmark-outline'
+								height={25}
+								width={25}
+								fill={colors['secondary-text']}
+							/>
 						</TouchableOpacity>
 					</View>
 				) : (
@@ -169,7 +178,8 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 		}
 		return false
 	})
-	const [{ background, flex }] = useStyles()
+	const [{ flex }] = useStyles()
+	const colors = useThemeColor()
 	const { dispatch } = useNavigation()
 	useReadEffect(params.convId, 1000)
 	const conv = useConversation(params?.convId)
@@ -199,7 +209,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 					setActiveEmojiKeyboardCid(null)
 				}
 				return (
-					<View style={[flex.tiny, background.white]}>
+					<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 						<SwipeNavRecognizer
 							onSwipeLeft={() =>
 								isSwipe &&

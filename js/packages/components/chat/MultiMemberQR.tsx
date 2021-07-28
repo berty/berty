@@ -6,7 +6,7 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useAccount, useConversation } from '@berty-tech/store/hooks'
+import { useAccount, useConversation, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
@@ -40,19 +40,17 @@ const useStylesMultiMemberQr = () => {
 }
 
 export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
-	const [
-		{ padding, margin, border, background, column, text },
-		{ windowHeight, windowWidth },
-	] = useStyles()
+	const [{ padding, margin, border, column, text }, { windowHeight, windowWidth }] = useStyles()
+	const colors = useThemeColor()
 	const { styleBertyIdContent, requestAvatarSize } = useStylesMultiMemberQr()
 
 	return (
 		<View
 			style={[
-				background.white,
 				border.radius.scale(30),
 				margin.horizontal.medium,
 				padding.top.large,
+				{ backgroundColor: colors['main-background'] },
 				styleBertyIdContent,
 			]}
 		>
@@ -67,8 +65,7 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 				</View>
 				<Text
 					style={[
-						{ fontFamily: 'Open Sans' },
-						text.color.black,
+						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 						text.bold.small,
 						text.align.center,
 						text.size.large,
@@ -84,7 +81,7 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 						value={conv.link}
 						logo={logo}
 						mode='circle'
-						color='#3845E0'
+						color={colors['background-header']}
 					/>
 				</View>
 			</View>
@@ -93,7 +90,8 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 }
 
 const BertyIdShare: React.FC<{}> = () => {
-	const [{ row, border, background, flex, color }] = useStyles()
+	const [{ row, border, flex }] = useStyles()
+	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesMultiMemberQr()
 	const account = useAccount()
 	const url = account?.link
@@ -102,7 +100,12 @@ const BertyIdShare: React.FC<{}> = () => {
 	}
 	return (
 		<TouchableOpacity
-			style={[row.item.bottom, background.light.blue, border.shadow.medium, styleBertyIdButton]}
+			style={[
+				row.item.bottom,
+				border.shadow.medium,
+				{ backgroundColor: colors['positive-asset'] },
+				styleBertyIdButton,
+			]}
 			onPress={async () => {
 				try {
 					console.log('sharing', url)
@@ -119,7 +122,7 @@ const BertyIdShare: React.FC<{}> = () => {
 					pack='custom'
 					width={iconShareSize}
 					height={iconShareSize}
-					fill={color.blue}
+					fill={colors['background-header']}
 				/>
 			</View>
 		</TouchableOpacity>
@@ -128,7 +131,8 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
 	const { goBack } = useNavigation()
-	const [{ padding, color, margin, background, flex }, { windowHeight, scaleSize }] = useStyles()
+	const [{ padding, margin, flex }, { windowHeight, scaleSize }] = useStyles()
+	const colors = useThemeColor()
 	const { titleSize, iconIdSize } = useStylesMultiMemberQr()
 	const { t } = useTranslation()
 
@@ -140,11 +144,11 @@ const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
 						bounces={false}
 						style={[
 							padding.medium,
-							background.blue,
 							{
 								paddingTop: scaleSize * ((insets?.top || 0) + 16),
 								flexGrow: 2,
 								flexBasis: '100%',
+								backgroundColor: colors['background-header'],
 							},
 						]}
 					>
@@ -161,7 +165,12 @@ const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
 									onPress={goBack}
 									style={{ alignItems: 'center', justifyContent: 'center' }}
 								>
-									<Icon name='arrow-down-outline' width={30} height={30} fill={color.white} />
+									<Icon
+										name='arrow-down-outline'
+										width={30}
+										height={30}
+										fill={colors['reverted-main-text']}
+									/>
 								</TouchableOpacity>
 								<Text
 									style={[
@@ -170,7 +179,7 @@ const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
 											fontWeight: '700',
 											fontSize: titleSize,
 											lineHeight: 1.25 * titleSize,
-											color: color.white,
+											color: colors['reverted-main-text'],
 										},
 									]}
 								>
@@ -182,7 +191,7 @@ const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
 								pack='custom'
 								width={iconIdSize}
 								height={iconIdSize}
-								fill={color.white}
+								fill={colors['reverted-main-text']}
 							/>
 						</View>
 						<SelectedContent conv={conv} />
@@ -199,20 +208,15 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 		params: { convId },
 	},
 }) => {
+	const colors = useThemeColor()
 	const conv = useConversation(convId)
-	const { goBack } = useNavigation()
 	if (!conv) {
 		return null
 	}
 	return (
 		<Layout style={[{ backgroundColor: 'transparent', flex: 1 }]}>
-			<StatusBar backgroundColor='#585AF1' barStyle='light-content' />
-			<SwipeNavRecognizer
-				onSwipeUp={() => goBack()}
-				onSwipeDown={() => goBack()}
-				onSwipeLeft={() => goBack()}
-				onSwipeRight={() => goBack()}
-			>
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<SwipeNavRecognizer>
 				<MultiMemberComponent conv={conv} />
 			</SwipeNavRecognizer>
 		</Layout>

@@ -6,6 +6,7 @@ import { WebView } from 'react-native-webview'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
 
@@ -28,15 +29,15 @@ const BodyIpfsWebUI: React.FC<{}> = () => {
 
 export const IpfsWebUI: React.FC<ScreenProps.Settings.IpfsWebUI> = () => {
 	const { t } = useTranslation()
+	const colors = useThemeColor()
 	const { goBack } = useNavigation()
-	const [{ background, flex, color, padding }] = useStyles()
 
 	return (
-		<Layout style={[background.white, flex.tiny]}>
-			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+			<ScrollView bounces={false}>
 				<HeaderSettings
 					title={t('settings.ipfs-webui.title')}
-					bgColor={color.dark.grey}
+					bgColor={colors['alt-secondary-background-header']}
 					undo={goBack}
 				/>
 				<BodyIpfsWebUI />

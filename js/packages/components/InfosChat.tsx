@@ -6,7 +6,7 @@ import { Icon, Text } from '@ui-kitten/components'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
-import { useClient } from '@berty-tech/store/hooks'
+import { useClient, useThemeColor } from '@berty-tech/store/hooks'
 
 import { pbDateToNum, timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'
@@ -16,14 +16,18 @@ import { ChatDate } from './chat/common'
 
 const useStylesOneToOne = () => {
 	const [{ text }] = useStyles()
+	const colors = useThemeColor()
+
 	return {
-		dateMessage: [text.size.scale(11), text.bold.small, text.color.grey],
+		dateMessage: [text.size.scale(11), text.bold.small, { color: colors['secondary-text'] }],
 	}
 }
 
 const InfosContactState: React.FC<{ state: any }> = ({ state }) => {
 	const [{ text, border, padding, margin }] = useStyles()
-	const textColor = '#4E58BF'
+	const colors = useThemeColor()
+
+	const textColor = colors['background-header']
 	return (
 		<View
 			style={[
@@ -35,7 +39,7 @@ const InfosContactState: React.FC<{ state: any }> = ({ state }) => {
 					flexDirection: 'row',
 					justifyContent: 'space-evenly',
 					alignItems: 'center',
-					backgroundColor: '#EDEEF8',
+					backgroundColor: colors['main-background'],
 				},
 			]}
 		>
@@ -52,7 +56,9 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	isAccepted,
 }) => {
 	const { publicKey, displayName } = contact
-	const [{ row, flex, text, margin, color }] = useStyles()
+	const [{ row, flex, text, margin }] = useStyles()
+	const colors = useThemeColor()
+
 	const [acceptDisabled, setAcceptDisabled] = useState<boolean>(false)
 	const { playSound } = useMsgrContext()
 
@@ -72,10 +78,9 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 					<View style={[row.left, flex.align.center, flex.justify.center]}>
 						<TextNative
 							style={[
-								text.color.black,
 								text.size.scale(15),
 								text.bold.medium,
-								{ fontFamily: 'Open Sans' },
+								{ fontFamily: 'Open Sans', color: colors['main-text'] },
 							]}
 						>
 							{t('chat.one-to-one.contact-request-box.title')}
@@ -87,11 +92,10 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 						</View>
 						<TextNative
 							style={[
-								text.color.black,
 								text.size.scale(13),
 								text.bold.small,
 								margin.bottom.small,
-								{ fontFamily: 'Open Sans' },
+								{ fontFamily: 'Open Sans', color: colors['main-text'] },
 							]}
 						>
 							{displayName}
@@ -104,9 +108,9 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 							onPress={() => decline()}
 							activeOpacity={!acceptDisabled ? 0.2 : 1}
 							icon='close-outline'
-							color={color.grey}
+							color={colors['secondary-text']}
 							title={t('chat.one-to-one.contact-request-box.refuse-button')}
-							backgroundColor={color.white}
+							backgroundColor={colors['main-background']}
 							styleOpacity={0.6}
 							disabled
 						/>
@@ -122,13 +126,15 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 							}
 							activeOpacity={!acceptDisabled ? 0.2 : 1}
 							icon='checkmark-outline'
-							color={!acceptDisabled ? color.blue : color.green}
+							color={!acceptDisabled ? colors['background-header'] : colors['secondary-text']}
 							title={
 								!acceptDisabled
 									? t('chat.one-to-one.contact-request-box.accept-button')
 									: t('chat.one-to-one.contact-request-box.accepted-button')
 							}
-							backgroundColor={!acceptDisabled ? color.light.blue : color.light.green}
+							backgroundColor={
+								!acceptDisabled ? colors['positive-asset'] : colors['secondary-text']
+							}
 							styleOpacity={acceptDisabled ? 0.6 : undefined}
 							disabled={acceptDisabled}
 						/>
@@ -144,6 +150,8 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	publicKey,
 }) => {
 	const [{ flex, text, padding, margin }] = useStyles()
+	const colors = useThemeColor()
+
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	const ctx = useMsgrContext()
@@ -152,7 +160,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 
 	const isAccepted = contact?.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
-	const textColor = '#4E58BF'
+	const textColor = colors['background-header']
 
 	return (
 		<Translation>
