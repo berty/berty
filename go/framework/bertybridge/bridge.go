@@ -181,6 +181,8 @@ func NewBridge(config *Config) (*Bridge, error) {
 		}
 	}
 
+	config.pushnotifdriver.RequestToken(&requestTokenCallback{b.logger.Named("pushnotif")})
+
 	// start Bridge
 	b.logger.Debug("starting Bridge")
 	go func() {

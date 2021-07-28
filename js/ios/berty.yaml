@@ -117,22 +117,25 @@ targets:
           PRODUCT_NAME: Berty Debug
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).debug
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIconDebug
+          CODE_SIGN_ENTITLEMENTS: Entitlements/Dev.entitlements
         AppStore:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER)
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+          CODE_SIGN_ENTITLEMENTS: Entitlements/Prod.entitlements
         Staff:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Staff
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).staff
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIconStaff
+          CODE_SIGN_ENTITLEMENTS: Entitlements/Dev.entitlements
         Yolo:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIconYolo
-
+          CODE_SIGN_ENTITLEMENTS: Entitlements/Entreprise.entitlements
 
     sources:
     - Berty
@@ -146,6 +149,9 @@ targets:
       name: Sounds
       group: Resources
     dependencies:
+    - target: NotificationService
+      codeSign: false
+      embed: true
     - framework: JavascriptCore.framework
       embed: false
       link: false
@@ -191,6 +197,40 @@ targets:
     - name: Setup Crashlitics
       script: "${PODS_ROOT}/FirebaseCrashlytics/run"
 
+  NotificationService:
+    type: app-extension
+    platform: iOS
+    configFiles:
+      Debug: Configs/Debug.xcconfig
+      AppStore Release: Configs/AppStore.xcconfig
+      Staff Release: Configs/Staff.xcconfig
+      Yolo Release: Configs/Yolo.xcconfig
+    settings:
+      base:
+        PRODUCT_NAME: NotificationService
+        CODE_SIGN_STYLE: Automatic
+        INFOPLIST_FILE: NotificationService/Info.plist
+      configs:
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.debug.NotificationService
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          CODE_SIGN_ENTITLEMENTS: Entitlements/DevNS.entitlements
+        AppStore:
+          PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.NotificationService
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          CODE_SIGN_ENTITLEMENTS: Entitlements/ProdNS.entitlements
+        Staff:
+          PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.staff.NotificationService
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          CODE_SIGN_ENTITLEMENTS: Entitlements/DevNS.entitlements
+        Yolo:
+          PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.yolo.NotificationService
+          DEVELOPMENT_TEAM: GR5463T564
+          CODE_SIGN_ENTITLEMENTS: Entitlements/EntrepriseNS.entitlements
+    sources: NotificationService
+    dependencies:
+    - framework: "${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"
+      embed: false
+
 include:
 - info.yaml
-- entitlements.yaml
