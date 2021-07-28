@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/appleboy/go-fcm"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -14,13 +15,14 @@ import (
 type pushDispatcherFCM struct {
 	client *fcm.Client
 	appID  string
+	logger *zap.Logger
 }
 
 func (d *pushDispatcherFCM) TokenType() pushtypes.PushServiceTokenType {
 	return pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging
 }
 
-func PushDispatcherLoadFirebaseAPIKey(input *string) ([]PushDispatcher, error) {
+func PushDispatcherLoadFirebaseAPIKey(logger *zap.Logger, input *string) ([]PushDispatcher, error) {
 	if input == nil || *input == "" {
 		return nil, nil
 	}
@@ -29,7 +31,7 @@ func PushDispatcherLoadFirebaseAPIKey(input *string) ([]PushDispatcher, error) {
 	dispatchers := make([]PushDispatcher, len(apiKeys))
 	for i, apiKeyDetails := range apiKeys {
 		var err error
-		dispatchers[i], err = pushDispatcherLoadFCMAPIKey(apiKeyDetails)
+		dispatchers[i], err = pushDispatcherLoadFCMAPIKey(logger, apiKeyDetails)
 		if err != nil {
 			return nil, err
 		}
@@ -38,7 +40,7 @@ func PushDispatcherLoadFirebaseAPIKey(input *string) ([]PushDispatcher, error) {
 	return dispatchers, nil
 }
 
-func pushDispatcherLoadFCMAPIKey(apiKeyDetails string) (PushDispatcher, error) {
+func pushDispatcherLoadFCMAPIKey(logger *zap.Logger, apiKeyDetails string) (PushDispatcher, error) {
 	splitResult := strings.SplitN(apiKeyDetails, ":", 2)
 	if len(splitResult) != 2 {
 		return nil, errcode.ErrPushInvalidServerConfig
@@ -55,6 +57,7 @@ func pushDispatcherLoadFCMAPIKey(apiKeyDetails string) (PushDispatcher, error) {
 	dispatcher := &pushDispatcherFCM{
 		client: client,
 		appID:  appID,
+		logger: logger,
 	}
 
 	return dispatcher, nil
@@ -68,11 +71,16 @@ func (d *pushDispatcherFCM) Dispatch(payload []byte, receiver *protocoltypes.Pus
 		},
 	}
 
-	if _, err := d.client.Send(msg); err != nil {
+	res, err := d.client.Send(msg)
+	if err != nil {
 		return errcode.ErrPushProvider.Wrap(err)
 	}
 
-	return errcode.ErrNotImplemented
+	if res.Error != nil {
+		return errcode.ErrPushProvider.Wrap(res.Error)
+	}
+
+	return nil
 }
 
 func (d *pushDispatcherFCM) BundleID() string {

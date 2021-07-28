@@ -19,7 +19,6 @@ import (
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
-	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -56,7 +55,7 @@ type Options struct {
 	NotificationManager   notification.Manager
 	BleDriver             proximity.ProximityDriver
 	NBDriver              proximity.ProximityDriver
-	Keystore              sysutil.NativeKeystore
+	Keystore              accountutils.NativeKeystore
 	Logger                *zap.Logger
 }
 
@@ -77,7 +76,7 @@ type service struct {
 	devicePushKeyPath string
 	pushPlatformToken *protocoltypes.PushServiceReceiver
 	accountData       *accounttypes.AccountMetadata
-	nativeKeystore    sysutil.NativeKeystore
+	nativeKeystore    accountutils.NativeKeystore
 	storageKey        []byte
 	appStorage        datastore.Datastore
 }

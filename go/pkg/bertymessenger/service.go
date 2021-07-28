@@ -748,8 +748,17 @@ func (svc *service) sharePushTokenForConversation(conversation *mt.Conversation)
 }
 
 func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conversation, pushServer *protocoltypes.PushServer, pushToken *protocoltypes.PushServiceReceiver) error {
-	if len(pushToken.Token) == 0 || pushToken.TokenType == 0 || len(pushToken.RecipientPublicKey) == 0 || len(pushToken.BundleID) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing data in PushServiceReceiver"))
+	if len(pushToken.Token) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing token in PushServiceReceiver"))
+	}
+	if pushToken.TokenType == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("wrong token type in PushServiceReceiver"))
+	}
+	if len(pushToken.RecipientPublicKey) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing recipient public key in PushServiceReceiver"))
+	}
+	if len(pushToken.BundleID) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing bundleID in PushServiceReceiver"))
 	}
 
 	tokenIdentifier := makeSharedPushIdentifier(pushServer, pushToken)

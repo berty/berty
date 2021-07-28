@@ -22,7 +22,6 @@ import (
 	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
@@ -36,6 +35,7 @@ const (
 	MessengerDatabaseFilename   = "messenger.sqlite"
 	ReplicationDatabaseFilename = "replication.sqlite"
 	StorageKeyName              = "storage"
+	StorageKeySize              = 32
 )
 
 func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[cryptoutil.KeySize]byte, sk *[cryptoutil.KeySize]byte, err error) {
@@ -116,11 +116,9 @@ func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*acc
 	return accounts, nil
 }
 
-const StorageKeySize = 32
-
 var storageKeyMutex = sync.Mutex{}
 
-func GetOrCreateStorageKey(ks sysutil.NativeKeystore) ([]byte, error) {
+func GetOrCreateStorageKey(ks NativeKeystore) ([]byte, error) {
 	storageKeyMutex.Lock()
 	defer storageKeyMutex.Unlock()
 

@@ -172,92 +172,86 @@ func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *GroupContex
 }
 
 func activateGroupContext(ctx context.Context, gc *GroupContext, contact crypto.PubKey, selfAnnouncement bool) error {
-	wg := sync.WaitGroup{}
-	wg.Add(2)
+	// syncChMKH := make(chan bool, 1)
+	// syncChSecrets := make(chan bool, 1)
 
-	syncChMKH := make(chan bool, 1)
-	syncChSecrets := make(chan bool, 1)
-
-	// Fill keystore
-	go func() {
-		ch := FillMessageKeysHolderUsingNewData(ctx, gc)
-		wg.Done()
-
-		for pk := range ch {
-			if pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
-				select {
-				case syncChMKH <- true:
-				default:
+	{
+		// Fill keystore
+		chNewData := FillMessageKeysHolderUsingNewData(ctx, gc)
+		go func() {
+			for pk := range chNewData {
+				if !pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
+					gc.logger.Warn("gc member device public key device doesn't match")
 				}
 			}
-		}
+		}()
 
-		close(syncChMKH)
-	}()
-
-	go func() {
-		ch := WatchNewMembersAndSendSecrets(ctx, gc.logger, gc)
-		wg.Done()
-
-		for pk := range ch {
-			if pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
-				select {
-				case syncChSecrets <- true:
-				default:
+		chMember := WatchNewMembersAndSendSecrets(ctx, gc.logger, gc)
+		go func() {
+			for pk := range chMember {
+				if pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
+					gc.logger.Warn("gc member public key device doesn't match")
 				}
 			}
-		}
-
-		close(syncChSecrets)
-	}()
-
-	wg.Wait()
-
-	start := time.Now()
-	ch := FillMessageKeysHolderUsingPreviousData(ctx, gc)
-	for pk := range ch {
-		if pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
-			select {
-			case syncChMKH <- true:
-			default:
-			}
-		}
+		}()
 	}
 
-	gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
+	start := time.Now()
 
-	start = time.Now()
-	ch = SendSecretsToExistingMembers(ctx, gc, contact)
-	for pk := range ch {
-		if pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
-			select {
-			case syncChSecrets <- true:
-			default:
+	{
+		wg := sync.WaitGroup{}
+		wg.Add(2)
+
+		chPreviousData := FillMessageKeysHolderUsingPreviousData(ctx, gc)
+		go func() {
+			for pk := range chPreviousData {
+				if !pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
+					gc.logger.Warn("gc member device public key device doesn't match")
+				}
 			}
-		}
+
+			wg.Done()
+		}()
+
+		gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
+
+		start = time.Now()
+		chSecrets := SendSecretsToExistingMembers(ctx, gc, contact)
+		go func() {
+			for pk := range chSecrets {
+				if !pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
+					gc.logger.Warn("gc member public key device doesn't match")
+				}
+			}
+
+			wg.Done()
+		}()
+
+		wg.Wait()
 	}
 
 	gc.logger.Info(fmt.Sprintf("SendSecretsToExistingMembers took %s", time.Since(start)))
 
 	if selfAnnouncement {
 		start = time.Now()
-		op, err := gc.MetadataStore().AddDeviceToGroup(ctx)
+		_, err := gc.MetadataStore().AddDeviceToGroup(ctx)
 		if err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}
 
 		gc.logger.Info(fmt.Sprintf("AddDeviceToGroup took %s", time.Since(start)))
 
-		if op != nil {
-			// Waiting for async events to be handled
-			if ok := <-syncChMKH; !ok {
-				return errcode.ErrInternal.Wrap(fmt.Errorf("error while registering own secrets"))
-			}
+		// op.
+		// if op != nil {
+		// 	// Waiting for async events to be handled
+		// 	if ok := <-syncChMKH; !ok {
+		// 		return errcode.ErrInternal.Wrap(fmt.Errorf("error while registering own secrets"))
+		// 	}
 
-			if ok := <-syncChSecrets; !ok {
-				return errcode.ErrInternal.Wrap(fmt.Errorf("error while sending own secrets"))
-			}
-		}
+		// 	if ok := <-syncChSecrets; !ok {
+		// 		return errcode.ErrInternal.Wrap(fmt.Errorf("error while sending own secrets"))
+		// 	}
+		// }
 	}
 
 	return nil

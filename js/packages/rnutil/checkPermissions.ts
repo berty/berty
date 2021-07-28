@@ -4,7 +4,12 @@ import { check, checkNotifications, PERMISSIONS, RESULTS } from 'react-native-pe
 export const checkPermissions = async (
 	permissionType: 'p2p' | 'audio' | 'notification' | 'camera',
 	navigate: any,
-	options?: { createNewAccount?: boolean; isToNavigate?: boolean; navigateNext?: string },
+	options?: {
+		createNewAccount?: boolean
+		isToNavigate?: boolean
+		navigateNext?: string
+		onComplete?: () => Promise<void>
+	},
 ) => {
 	let status
 	if (permissionType === 'notification') {
@@ -37,6 +42,7 @@ export const checkPermissions = async (
 			permissionStatus: status,
 			navigateNext: options?.navigateNext,
 			createNewAccount: options?.createNewAccount,
+			onComplete: options?.onComplete,
 		})
 	} else if (options?.navigateNext) {
 		navigate(options?.navigateNext, {})
