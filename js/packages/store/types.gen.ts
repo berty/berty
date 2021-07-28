@@ -292,6 +292,20 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	usePushSetAutoShare: () => {
+		error: any
+		call: (req?: beapi.messenger.PushSetAutoShare.IRequest) => void
+		reply: beapi.messenger.PushSetAutoShare.IReply | null
+		done: boolean
+		called: boolean
+	}
+	usePushReceive: () => {
+		error: any
+		call: (req?: beapi.messenger.PushReceive.IRequest) => void
+		reply: beapi.messenger.PushReceive.IReply | null
+		done: boolean
+		called: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {
@@ -455,6 +469,13 @@ export type ProtocolMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useDebugAuthServiceSetToken: () => {
+		error: any
+		call: (req?: beapi.protocol.DebugAuthServiceSetToken.IRequest) => void
+		reply: beapi.protocol.DebugAuthServiceSetToken.IReply | null
+		done: boolean
+		called: boolean
+	}
 	useSystemInfo: () => {
 		error: any
 		call: (req?: beapi.protocol.SystemInfo.IRequest) => void
@@ -487,6 +508,41 @@ export type ProtocolMethodsHooks = {
 		error: any
 		call: (req?: beapi.protocol.PeerList.IRequest) => void
 		reply: beapi.protocol.PeerList.IReply | null
+		done: boolean
+		called: boolean
+	}
+	usePushReceive: () => {
+		error: any
+		call: (req?: beapi.protocol.PushReceive.IRequest) => void
+		reply: beapi.protocol.PushReceive.IReply | null
+		done: boolean
+		called: boolean
+	}
+	usePushSend: () => {
+		error: any
+		call: (req?: beapi.protocol.PushSend.IRequest) => void
+		reply: beapi.protocol.PushSend.IReply | null
+		done: boolean
+		called: boolean
+	}
+	usePushShareToken: () => {
+		error: any
+		call: (req?: beapi.protocol.PushShareToken.IRequest) => void
+		reply: beapi.protocol.PushShareToken.IReply | null
+		done: boolean
+		called: boolean
+	}
+	usePushSetDeviceToken: () => {
+		error: any
+		call: (req?: beapi.protocol.PushSetDeviceToken.IRequest) => void
+		reply: beapi.protocol.PushSetDeviceToken.IReply | null
+		done: boolean
+		called: boolean
+	}
+	usePushSetServer: () => {
+		error: any
+		call: (req?: beapi.protocol.PushSetServer.IRequest) => void
+		reply: beapi.protocol.PushSetServer.IReply | null
 		done: boolean
 		called: boolean
 	}

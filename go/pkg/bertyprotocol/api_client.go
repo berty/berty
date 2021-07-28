@@ -83,10 +83,12 @@ func (s *service) InstanceGetConfiguration(ctx context.Context, req *protocoltyp
 	}
 
 	return &protocoltypes.InstanceGetConfiguration_Reply{
-		AccountPK:      member,
-		DevicePK:       device,
-		AccountGroupPK: s.accountGroup.Group().PublicKey,
-		PeerID:         key.ID().Pretty(),
-		Listeners:      listeners,
+		AccountPK:        member,
+		DevicePK:         device,
+		AccountGroupPK:   s.accountGroup.Group().PublicKey,
+		PeerID:           key.ID().Pretty(),
+		Listeners:        listeners,
+		DevicePushToken:  s.accountGroup.metadataStore.getCurrentDevicePushToken(),
+		DevicePushServer: s.accountGroup.metadataStore.getCurrentDevicePushServer(),
 	}, nil
 }

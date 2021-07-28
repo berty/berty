@@ -392,6 +392,10 @@ func (m *metadataStore) ListMultiMemberGroups() []*protocoltypes.Group {
 	return groups
 }
 
+func (m *metadataStore) ListOtherMembersDevices() []crypto.PubKey {
+	return m.Index().(*metadataStoreIndex).listOtherMembersDevices()
+}
+
 func (m *metadataStore) GetRequestOwnMetadataForContact(pk []byte) ([]byte, error) {
 	idx, ok := m.Index().(*metadataStoreIndex)
 	if !ok {
@@ -977,7 +981,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 			replication = true
 		} else {
 			md, err = s.deviceKeystore.MemberDeviceForGroup(g)
-			if err == errcode.ErrInvalidInput {
+			if errcode.Is(err, errcode.ErrInvalidInput) {
 				replication = true
 			} else if err != nil {
 				return nil, errcode.TODO.Wrap(err)
@@ -1073,4 +1077,58 @@ func newSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 	encryptedSecret := box.Seal(nil, message, nonce, mongPub, mongPriv)
 
 	return encryptedSecret, nil
+}
+
+func (m *metadataStore) SendPushToken(ctx context.Context, t *protocoltypes.PushMemberTokenUpdate) (operation.Operation, error) {
+	return m.attributeSignAndAddEvent(ctx, &protocoltypes.PushMemberTokenUpdate{
+		Server: t.Server,
+		Token:  t.Token,
+	}, protocoltypes.EventTypePushMemberTokenUpdate, nil)
+}
+
+func (m *metadataStore) RegisterDevicePushToken(ctx context.Context, token *protocoltypes.PushServiceReceiver) (operation.Operation, error) {
+	return m.attributeSignAndAddEvent(ctx, &protocoltypes.PushDeviceTokenRegistered{
+		Token: token,
+	}, protocoltypes.EventTypePushDeviceTokenRegistered, nil)
+}
+
+func (m *metadataStore) RegisterDevicePushServer(ctx context.Context, server *protocoltypes.PushServer) (operation.Operation, error) {
+	return m.attributeSignAndAddEvent(ctx, &protocoltypes.PushDeviceServerRegistered{
+		Server: server,
+	}, protocoltypes.EventTypePushDeviceServerRegistered, nil)
+}
+
+func (m *metadataStore) getCurrentDevicePushToken() *protocoltypes.PushServiceReceiver {
+	receiver := m.Index().(*metadataStoreIndex).getCurrentDevicePushToken()
+	if receiver == nil {
+		return nil
+	}
+
+	return receiver.Token
+}
+
+func (m *metadataStore) getCurrentDevicePushServer() *protocoltypes.PushServer {
+	registration := m.Index().(*metadataStoreIndex).getCurrentDevicePushServer()
+	if registration == nil {
+		return nil
+	}
+
+	return registration.Server
+}
+
+func (m *metadataStore) getPushTokenForDevice(d crypto.PubKey) (*protocoltypes.PushMemberTokenUpdate, error) {
+	m.Index().(*metadataStoreIndex).lock.RLock()
+	defer m.Index().(*metadataStoreIndex).lock.RUnlock()
+
+	pk, err := d.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	token, ok := m.Index().(*metadataStoreIndex).membersPushTokens[string(pk)]
+	if !ok {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("token not found"))
+	}
+
+	return token, nil
 }

@@ -50,6 +50,7 @@ export interface WelshProtocolServiceClient {
 		beapi.protocol.ProtocolService['debugInspectGroupStore']
 	>
 	debugGroup: UnaryType<beapi.protocol.ProtocolService['debugGroup']>
+	debugAuthServiceSetToken: UnaryType<beapi.protocol.ProtocolService['debugAuthServiceSetToken']>
 	systemInfo: UnaryType<beapi.protocol.ProtocolService['systemInfo']>
 	authServiceInitFlow: UnaryType<beapi.protocol.ProtocolService['authServiceInitFlow']>
 	authServiceCompleteFlow: UnaryType<beapi.protocol.ProtocolService['authServiceCompleteFlow']>
@@ -60,6 +61,11 @@ export interface WelshProtocolServiceClient {
 	peerList: UnaryType<beapi.protocol.ProtocolService['peerList']>
 	attachmentPrepare: RequestStreamType<beapi.protocol.ProtocolService['attachmentPrepare']>
 	attachmentRetrieve: ResponseStreamType<beapi.protocol.ProtocolService['attachmentRetrieve']>
+	pushReceive: UnaryType<beapi.protocol.ProtocolService['pushReceive']>
+	pushSend: UnaryType<beapi.protocol.ProtocolService['pushSend']>
+	pushShareToken: UnaryType<beapi.protocol.ProtocolService['pushShareToken']>
+	pushSetDeviceToken: UnaryType<beapi.protocol.ProtocolService['pushSetDeviceToken']>
+	pushSetServer: UnaryType<beapi.protocol.ProtocolService['pushSetServer']>
 }
 
 export interface WelshAccountServiceClient {
@@ -85,6 +91,8 @@ export interface WelshAccountServiceClient {
 	networkConfigSet: UnaryType<beapi.account.AccountService['networkConfigSet']>
 	networkConfigGet: UnaryType<beapi.account.AccountService['networkConfigGet']>
 	networkConfigGetPreset: UnaryType<beapi.account.AccountService['networkConfigGetPreset']>
+	pushReceive: UnaryType<beapi.account.AccountService['pushReceive']>
+	pushPlatformTokenRegister: UnaryType<beapi.account.AccountService['pushPlatformTokenRegister']>
 }
 
 export interface WelshMessengerServiceClient {
@@ -124,4 +132,6 @@ export interface WelshMessengerServiceClient {
 	messageSearch: UnaryType<beapi.messenger.MessengerService['messageSearch']>
 	tyberHostSearch: ResponseStreamType<beapi.messenger.MessengerService['tyberHostSearch']>
 	tyberHostAttach: UnaryType<beapi.messenger.MessengerService['tyberHostAttach']>
+	pushSetAutoShare: UnaryType<beapi.messenger.MessengerService['pushSetAutoShare']>
+	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
 }

@@ -448,6 +448,31 @@ func clearLinkChecksum(link *messengertypes.BertyLink, dest []byte) error {
 	return nil
 }
 
+func InternalLinkToMessage(accountID, groupPK, cid string) (string, error) {
+	if accountID == "" {
+		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("account id should not be empty"))
+	}
+
+	if groupPK == "" {
+		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("group pk should not be empty"))
+	}
+
+	if cid == "" {
+		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("message cid should not be empty"))
+	}
+
+	internal, _, err := MarshalLink(&messengertypes.BertyLink{BertyMessageRef: &messengertypes.BertyLink_BertyMessageRef{
+		AccountID: accountID,
+		GroupPK:   groupPK,
+		MessageID: cid,
+	}})
+	if err != nil {
+		return "", errcode.ErrSerialization.Wrap(err)
+	}
+
+	return internal, nil
+}
+
 const (
 	LinkWebPrefix       = "https://berty.tech/id#"
 	LinkInternalPrefix  = "BERTY://"

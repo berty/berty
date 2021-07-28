@@ -97,11 +97,15 @@ func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage, error) {
 	var am AppMessage
 	err := proto.Unmarshal(payload, &am)
 	if err != nil {
-		return nil, AppMessage{}, err
+		return nil, AppMessage{}, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	msg, err := am.UnmarshalPayload()
-	return msg, am, err
+	if err != nil {
+		return nil, AppMessage{}, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	return msg, am, nil
 }
 
 func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {

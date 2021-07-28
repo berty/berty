@@ -15,6 +15,7 @@ type modelAccountV1 struct {
 	DisplayName                     string
 	Link                            string
 	ReplicateNewGroupsAutomatically sql.NullBool `gorm:"default:true"`
+	AutoSharePushTokenFlag          sql.NullBool `gorm:"default:true"`
 }
 
 type modelConversationV1 struct {
@@ -44,6 +45,7 @@ type modelAccountV4 struct {
 	Link                            string
 	OtherField                      string
 	ReplicateNewGroupsAutomatically bool `gorm:"default:true"`
+	AutoSharePushTokenFlag          bool `gorm:"default:true"`
 }
 type modelConversationV4 modelConversationV3
 

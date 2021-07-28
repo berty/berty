@@ -3,6 +3,7 @@ package bertyaccount
 import (
 	"context"
 	"fmt"
+	"path"
 	"sync"
 
 	"go.uber.org/zap"
@@ -15,6 +16,7 @@ import (
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
@@ -32,6 +34,9 @@ type Service interface {
 
 	// GetMessengerClient returns the Messenger Client of the actual Berty account if there is one selected.
 	GetMessengerClient() (messengertypes.MessengerServiceClient, error)
+
+	// GetProtocolClient returns the Protocol Client of the actual Berty account if there is one selected.
+	GetProtocolClient() (protocoltypes.ProtocolServiceClient, error)
 }
 
 type Options struct {
@@ -52,13 +57,15 @@ type service struct {
 	notifManager notification.Manager
 	logger       *zap.Logger
 
-	rootdir          string
-	muService        sync.RWMutex
-	initManager      *initutil.Manager
-	lifecycleManager *lifecycle.Manager
-	sclients         bertybridge.ServiceClientRegister
-	bleDriver        proximity.ProximityDriver
-	nbDriver         proximity.ProximityDriver
+	rootdir           string
+	muService         sync.RWMutex
+	initManager       *initutil.Manager
+	lifecycleManager  *lifecycle.Manager
+	sclients          bertybridge.ServiceClientRegister
+	bleDriver         proximity.ProximityDriver
+	nbDriver          proximity.ProximityDriver
+	devicePushKeyPath string
+	pushPlatformToken *protocoltypes.PushServiceReceiver
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *NetworkConfigGetPreset_Request) (*NetworkConfigGetPreset_Reply, error) {
@@ -136,15 +143,16 @@ func NewService(opts *Options) (_ Service, err error) {
 
 	opts.applyDefault()
 	s := &service{
-		rootdir:          opts.RootDirectory,
-		rootCtx:          rootCtx,
-		rootCancel:       rootCancelCtx,
-		logger:           opts.Logger,
-		lifecycleManager: opts.LifecycleManager,
-		notifManager:     opts.NotificationManager,
-		sclients:         opts.ServiceClientRegister,
-		bleDriver:        opts.BleDriver,
-		nbDriver:         opts.NBDriver,
+		rootdir:           opts.RootDirectory,
+		rootCtx:           rootCtx,
+		rootCancel:        rootCancelCtx,
+		logger:            opts.Logger,
+		lifecycleManager:  opts.LifecycleManager,
+		notifManager:      opts.NotificationManager,
+		sclients:          opts.ServiceClientRegister,
+		bleDriver:         opts.BleDriver,
+		nbDriver:          opts.NBDriver,
+		devicePushKeyPath: path.Join(opts.RootDirectory, initutil.DefaultPushKeyFilename),
 	}
 
 	go s.handleLifecycle(rootCtx)

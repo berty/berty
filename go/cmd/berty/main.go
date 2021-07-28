@@ -78,6 +78,7 @@ func runMain(args []string) error {
 				omnisearchCommand(),
 				remoteLogsCommand(),
 				serviceKeyCommand(),
+				pushServerCommand(),
 			},
 		}
 

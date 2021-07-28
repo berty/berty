@@ -132,7 +132,7 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 
 	if r.Method == "POST" || a.noClick {
 		// TODO: allow client scope from "scope" query parameter
-		servicesIDs := []string{ServiceReplicationID}
+		servicesIDs := []string{ServiceReplicationID, ServicePushID}
 
 		code, err := a.issuer.IssueCode(codeChallenge, servicesIDs)
 		if err != nil {
@@ -181,12 +181,16 @@ func (a *AuthTokenServer) authTokenServerHTTPOAuthToken(w http.ResponseWriter, r
 }
 
 func (a *AuthTokenServer) IssueRandomTokenForServices() (string, error) {
+	return IssueRandomToken(a.issuer, a.services)
+}
+
+func IssueRandomToken(issuer *AuthTokenIssuer, services map[string]string) (string, error) {
 	servicesKeys := []string(nil)
-	for key := range a.services {
+	for key := range services {
 		servicesKeys = append(servicesKeys, key)
 	}
 
-	token, err := a.issuer.IssueToken(servicesKeys)
+	token, err := issuer.IssueToken(servicesKeys)
 	if err != nil {
 		return "", err
 	}
@@ -195,7 +199,7 @@ func (a *AuthTokenServer) IssueRandomTokenForServices() (string, error) {
 		"access_token": token,
 		"token_type":   "bearer",
 		"scope":        strings.Join(servicesKeys, ","),
-		"services":     a.services,
+		"services":     services,
 	}
 
 	jsoned, err := json.Marshal(data)

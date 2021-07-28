@@ -14,6 +14,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
+	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
@@ -89,6 +90,7 @@ require (
 	github.com/pseudomuto/protoc-gen-doc v1.4.1
 	github.com/rivo/tview v0.0.0-20200712113419-c65badfc3d92
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
+	github.com/sideshow/apns2 v0.20.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.7.0
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502

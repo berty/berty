@@ -11,53 +11,6 @@ import (
 	"berty.tech/go-orbit-db/iface"
 )
 
-func (s *service) indexGroups() error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	groups := s.accountGroup.MetadataStore().ListMultiMemberGroups()
-	for _, g := range groups {
-		if _, ok := s.groups[string(g.PublicKey)]; ok {
-			continue
-		}
-
-		s.groups[string(g.PublicKey)] = g
-	}
-
-	contacts := s.accountGroup.MetadataStore().ListContactsByStatus(
-		protocoltypes.ContactStateToRequest,
-		protocoltypes.ContactStateReceived,
-		protocoltypes.ContactStateAdded,
-		protocoltypes.ContactStateRemoved,
-		protocoltypes.ContactStateDiscarded,
-		protocoltypes.ContactStateBlocked,
-	)
-	for _, contact := range contacts {
-		if _, ok := s.groups[string(contact.PK)]; ok {
-			continue
-		}
-
-		cPK, err := contact.GetPubKey()
-		if err != nil {
-			return errcode.TODO.Wrap(err)
-		}
-
-		sk, err := s.deviceKeystore.ContactGroupPrivKey(cPK)
-		if err != nil {
-			return errcode.ErrCryptoKeyGeneration.Wrap(err)
-		}
-
-		g, err := getGroupForContact(sk)
-		if err != nil {
-			return errcode.ErrOrbitDBOpen.Wrap(err)
-		}
-
-		s.groups[string(g.PublicKey)] = g
-	}
-
-	return nil
-}
-
 func (s *service) getContactGroup(key crypto.PubKey) (*protocoltypes.Group, error) {
 	sk, err := s.deviceKeystore.ContactGroupPrivKey(key)
 	if err != nil {
@@ -73,36 +26,25 @@ func (s *service) getContactGroup(key crypto.PubKey) (*protocoltypes.Group, erro
 }
 
 func (s *service) getGroupForPK(pk crypto.PubKey) (*protocoltypes.Group, error) {
-	pkr, err := pk.Raw()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	return s.getGroupForPKRaw(pkr)
-}
-
-func (s *service) getGroupForPKRaw(pkr []byte) (*protocoltypes.Group, error) {
-	s.lock.Lock()
-	g, ok := s.groups[string(pkr)]
-	s.lock.Unlock()
-
-	if ok {
+	g, err := s.groupDatastore.Get(pk)
+	if err == nil {
 		return g, nil
+	} else if !errcode.Is(err, errcode.ErrMissingMapKey) {
+		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if err := s.indexGroups(); err != nil {
+	if err = s.groupDatastore.reindex(s.accountGroup.metadataStore, s.deviceKeystore); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	s.lock.Lock()
-	g, ok = s.groups[string(pkr)]
-	s.lock.Unlock()
-
-	if ok {
+	g, err = s.groupDatastore.Get(pk)
+	if err == nil {
 		return g, nil
+	} else if errcode.Is(err, errcode.ErrMissingMapKey) {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unknown group specified"))
 	}
 
-	return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unknown group specified"))
+	return nil, errcode.ErrInternal.Wrap(err)
 }
 
 func (s *service) deactivateGroup(pk crypto.PubKey) error {
@@ -128,7 +70,7 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 		s.logger.Error("unable to close group context", zap.Error(err))
 	}
 
-	delete(s.groups, string(id))
+	delete(s.openedGroups, string(id))
 
 	return nil
 }
@@ -193,8 +135,8 @@ func (s *service) getContextGroupForID(id []byte) (*groupContext, error) {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("no group id provided"))
 	}
 
-	s.lock.Lock()
-	defer s.lock.Unlock()
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 
 	cg, ok := s.openedGroups[string(id)]
 

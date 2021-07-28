@@ -7,10 +7,13 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/ipfs/go-cid"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/nacl/secretbox"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -193,6 +196,10 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 		tyber.FormatStepLogFields(ctx, []tyber.Detail{})...,
 	)
 
+	return messageStoreAddMessage(ctx, m.g, md, m, payload, attachmentsCIDs, attachmentsSecrets)
+}
+
+func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *ownMemberDevice, m *messageStore, payload []byte, attachmentsCIDs [][]byte, attachmentsSecrets [][]byte) (operation.Operation, error) {
 	msg, err := (&protocoltypes.EncryptedMessage{
 		Plaintext:        payload,
 		ProtocolMetadata: &protocoltypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
@@ -201,7 +208,7 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := m.mks.SealEnvelope(m.g, md.device, msg, attachmentsCIDs)
+	env, err := m.mks.SealEnvelope(g, md.device, msg, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
@@ -247,7 +254,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 		if s.deviceKeystore == nil {
 			replication = true
 		} else {
-			if _, err := s.deviceKeystore.MemberDeviceForGroup(g); err == errcode.ErrInvalidInput {
+			if _, err := s.deviceKeystore.MemberDeviceForGroup(g); errcode.Is(err, errcode.ErrInvalidInput) {
 				replication = true
 			} else if err != nil {
 				return nil, errcode.TODO.Wrap(err)
@@ -316,4 +323,74 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 
 		return store, nil
 	}
+}
+
+func (m *messageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelope, *protocoltypes.MessageHeaders, error) {
+	m.cacheLock.Lock()
+	defer m.cacheLock.Unlock()
+
+	logEntry, ok := m.OpLog().Values().Get(c.String())
+	if !ok {
+		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find message entry"))
+	}
+
+	op, err := operation.ParseOperation(logEntry)
+	if err != nil {
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	env, headers, err := openEnvelopeHeaders(op.GetValue(), m.g)
+	if err != nil {
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	return env, headers, nil
+}
+
+func (m *messageStore) GetOutOfStoreMessageEnvelope(ctx context.Context, c cid.Cid) (*protocoltypes.OutOfStoreMessageEnvelope, error) {
+	env, headers, err := m.GetMessageByCID(c)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	sealedMessageEnvelope, err := sealOutOfStoreMessageEnvelope(c, env, headers, m.g)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return sealedMessageEnvelope, nil
+}
+
+func sealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelope, headers *protocoltypes.MessageHeaders, g *protocoltypes.Group) (*protocoltypes.OutOfStoreMessageEnvelope, error) {
+	oosMessage := &protocoltypes.OutOfStoreMessage{
+		CID:              id.Bytes(),
+		DevicePK:         headers.DevicePK,
+		Counter:          headers.Counter,
+		Sig:              headers.Sig,
+		EncryptedPayload: env.Message,
+		Nonce:            env.Nonce,
+	}
+
+	data, err := oosMessage.Marshal()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	nonce, err := cryptoutil.GenerateNonce()
+	if err != nil {
+		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
+	}
+
+	secret, err := cryptoutil.KeySliceToArray(g.Secret)
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	encryptedData := secretbox.Seal(nil, data, nonce, secret)
+
+	return &protocoltypes.OutOfStoreMessageEnvelope{
+		Nonce:          nonce[:],
+		Box:            encryptedData,
+		GroupPublicKey: g.PublicKey,
+	}, nil
 }

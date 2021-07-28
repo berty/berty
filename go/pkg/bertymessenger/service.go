@@ -65,6 +65,7 @@ type Opts struct {
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
 	StateBackup         *mt.LocalDatabaseState
+	PlatformPushToken   *protocoltypes.PushServiceReceiver
 	Ring                *zapring.Core
 }
 
@@ -324,6 +325,21 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 
 			if err := svc.subscribeToMetadata(tyberSubsCtx, gpkb); err != nil {
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to contact group metadata: %w", err))
+			}
+		}
+	}
+
+	if opts.PlatformPushToken != nil {
+		icr, err = client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		if err != nil {
+			return nil, err
+		}
+
+		if icr.DevicePushToken == nil || (icr.DevicePushToken.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(icr.DevicePushToken.Token, opts.PlatformPushToken.Token)) {
+			if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
+				Receiver: opts.PlatformPushToken,
+			}); err != nil {
+				return nil, errcode.ErrInternal.Wrap(err)
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-0b673688b35248abc7697e2abbd410ce17dc037d  ../api/messengertypes.proto
-77d6c5997742e372c694c2de888f77d3d2f0e64e  ../api/bertyaccount.proto
-d487a9684d84fb8fd517405967fcb2703120646b  ../api/protocoltypes.proto
+0f549f2f748820eeecb2ec81ef1cf10939b4dc77  ../api/messengertypes.proto
+7b3da12b6b0bec9044951bf8d535b96868fc1548  ../api/protocoltypes.proto
+e848f186f6ce6e8977525db267fd903f2f67692d  ../api/bertyaccount.proto
 f15cdf909065437e4fa3c4aacf3c92354be18b4a  Makefile

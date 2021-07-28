@@ -90,6 +90,9 @@ http:
  - selector: berty.protocol.v1.ProtocolService.DebugGroup
    post: /berty.protocol.v1/ProtocolService/DebugGroup
    body: "*"
+ - selector: berty.protocol.v1.ProtocolService.DebugAuthServiceSetToken
+   post: /berty.protocol.v1/ProtocolService/DebugAuthServiceSetToken
+   body: "*"
  - selector: berty.protocol.v1.ProtocolService.SystemInfo
    post: /berty.protocol.v1/ProtocolService/SystemInfo
    body: "*"
@@ -113,4 +116,19 @@ http:
    body: "*"
  - selector: berty.protocol.v1.ProtocolService.AttachmentRetrieve
    post: /berty.protocol.v1/ProtocolService/AttachmentRetrieve
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.PushReceive
+   post: /berty.protocol.v1/ProtocolService/PushReceive
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.PushSend
+   post: /berty.protocol.v1/ProtocolService/PushSend
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.PushShareToken
+   post: /berty.protocol.v1/ProtocolService/PushShareToken
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.PushSetDeviceToken
+   post: /berty.protocol.v1/ProtocolService/PushSetDeviceToken
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.PushSetServer
+   post: /berty.protocol.v1/ProtocolService/PushSetServer
    body: "*"

@@ -615,6 +615,38 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/DebugAuthServiceSetToken": {
+      "post": {
+        "operationId": "ProtocolService_DebugAuthServiceSetToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DebugAuthServiceSetTokenReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DebugAuthServiceSetTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/DebugGroup": {
       "post": {
         "operationId": "ProtocolService_DebugGroup",
@@ -1186,6 +1218,171 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1PeerListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/berty.protocol.v1/ProtocolService/PushReceive": {
+      "post": {
+        "summary": "PushReceive handles a push payload, decrypts it if possible",
+        "operationId": "ProtocolService_PushReceive",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PushReceiveReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PushReceiveRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/berty.protocol.v1/ProtocolService/PushSend": {
+      "post": {
+        "summary": "PushSend sends a push payload to a specified list of group members",
+        "operationId": "ProtocolService_PushSend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PushSendReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PushSendRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/berty.protocol.v1/ProtocolService/PushSetDeviceToken": {
+      "post": {
+        "summary": "PushSetDeviceToken registers a push token for the current device",
+        "operationId": "ProtocolService_PushSetDeviceToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PushSetDeviceTokenReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PushSetDeviceTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/berty.protocol.v1/ProtocolService/PushSetServer": {
+      "post": {
+        "summary": "PushSetServer registers a push server for the current device",
+        "operationId": "ProtocolService_PushSetServer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PushSetServerReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PushSetServerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/berty.protocol.v1/ProtocolService/PushShareToken": {
+      "post": {
+        "summary": "PushShareToken sends push tokens of own devices to a group",
+        "operationId": "ProtocolService_PushShareToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PushShareTokenReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PushShareTokenRequest"
             }
           }
         ],
@@ -1831,6 +2028,29 @@
         }
       }
     },
+    "v1AuthExchangeResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "error_description": {
+          "type": "string"
+        },
+        "services": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "v1AuthServiceCompleteFlowReply": {
       "type": "object",
       "properties": {
@@ -2010,6 +2230,20 @@
         }
       }
     },
+    "v1DebugAuthServiceSetTokenReply": {
+      "type": "object"
+    },
+    "v1DebugAuthServiceSetTokenRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "$ref": "#/definitions/v1AuthExchangeResponse"
+        },
+        "authentication_url": {
+          "type": "string"
+        }
+      }
+    },
     "v1DebugGroupReply": {
       "type": "object",
       "properties": {
@@ -2176,10 +2410,13 @@
         "EventTypeAccountServiceTokenAdded",
         "EventTypeAccountServiceTokenRemoved",
         "EventTypeGroupReplicating",
+        "EventTypePushMemberTokenUpdate",
+        "EventTypePushDeviceTokenRegistered",
+        "EventTypePushDeviceServerRegistered",
         "EventTypeGroupMetadataPayloadSent"
       ],
       "default": "EventTypeUndefined",
-      "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeAccountServiceTokenAdded: EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account\n - EventTypeAccountServiceTokenRemoved: EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore\n - EventTypeGroupReplicating: EventTypeGroupReplicating indicates that the group has been registered for replication on a server\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
+      "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeAccountServiceTokenAdded: EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account\n - EventTypeAccountServiceTokenRemoved: EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore\n - EventTypeGroupReplicating: EventTypeGroupReplicating indicates that the group has been registered for replication on a server\n - EventTypePushMemberTokenUpdate: EventTypePushMemberTokenUpdate\n - EventTypePushDeviceTokenRegistered: EventTypePushDeviceTokenRegistered\n - EventTypePushDeviceServerRegistered: EventTypePushDeviceServerRegistered\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
     },
     "v1Group": {
       "type": "object",
@@ -2430,11 +2667,33 @@
         },
         "relay_enabled": {
           "$ref": "#/definitions/InstanceGetConfigurationSettingState"
+        },
+        "device_push_token": {
+          "$ref": "#/definitions/v1PushServiceReceiver"
+        },
+        "device_push_server": {
+          "$ref": "#/definitions/v1PushServer"
         }
       }
     },
     "v1InstanceGetConfigurationRequest": {
       "type": "object"
+    },
+    "v1MemberWithDevices": {
+      "type": "object",
+      "properties": {
+        "member_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "devices_pks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      }
     },
     "v1MessageHeaders": {
       "type": "object",
@@ -2575,6 +2834,39 @@
         }
       }
     },
+    "v1OutOfStoreMessage": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "format": "byte"
+        },
+        "device_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "counter": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "sig": {
+          "type": "string",
+          "format": "byte"
+        },
+        "flags": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "encrypted_payload": {
+          "type": "string",
+          "format": "byte"
+        },
+        "nonce": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "v1PeerListReply": {
       "type": "object",
       "properties": {
@@ -2599,6 +2891,150 @@
             "format": "byte"
           },
           "title": "attachments_secrets is a list of secret keys used retrieve attachments"
+        }
+      }
+    },
+    "v1PushReceiveReply": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/v1OutOfStoreMessage"
+        },
+        "cleartext": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_public_key": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1PushReceiveRequest": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1PushSendReply": {
+      "type": "object",
+      "properties": {
+        "group_members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MemberWithDevices"
+          }
+        }
+      }
+    },
+    "v1PushSendRequest": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_public_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MemberWithDevices"
+          }
+        }
+      }
+    },
+    "v1PushServer": {
+      "type": "object",
+      "properties": {
+        "server_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "service_addr": {
+          "type": "string"
+        }
+      }
+    },
+    "v1PushServiceReceiver": {
+      "type": "object",
+      "properties": {
+        "token_type": {
+          "$ref": "#/definitions/v1PushServiceTokenType",
+          "title": "token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server"
+        },
+        "bundle_id": {
+          "type": "string",
+          "title": "bundle_id is the app identifier"
+        },
+        "token": {
+          "type": "string",
+          "format": "byte",
+          "title": "token is the device identifier used"
+        },
+        "recipient_public_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "recipient_public_key is the public key which will be used to encrypt the payload"
+        }
+      }
+    },
+    "v1PushServiceTokenType": {
+      "type": "string",
+      "enum": [
+        "PushTokenUndefined",
+        "PushTokenMQTT",
+        "PushTokenApplePushNotificationService",
+        "PushTokenFirebaseCloudMessaging",
+        "PushTokenWindowsPushNotificationService",
+        "PushTokenHuaweiPushKit",
+        "PushTokenAmazonDeviceMessaging"
+      ],
+      "default": "PushTokenUndefined",
+      "title": "- PushTokenMQTT: PushTokenMQTT: Platform independent\n - PushTokenApplePushNotificationService: PushTokenApplePushNotificationService: iOS, iPadOS, tvOS, macOS\n - PushTokenFirebaseCloudMessaging: PushTokenFirebaseCloudMessaging: Android with GMS, Chrome OS\n - PushTokenWindowsPushNotificationService: PushTokenWindowsPushNotificationService: Windows, XBox\n - PushTokenHuaweiPushKit: PushTokenHuaweiPushKit: Huawei Android devices with AppGallery\n - PushTokenAmazonDeviceMessaging: PushTokenAmazonDeviceMessaging: Fire OS devices"
+    },
+    "v1PushSetDeviceTokenReply": {
+      "type": "object"
+    },
+    "v1PushSetDeviceTokenRequest": {
+      "type": "object",
+      "properties": {
+        "receiver": {
+          "$ref": "#/definitions/v1PushServiceReceiver"
+        }
+      }
+    },
+    "v1PushSetServerReply": {
+      "type": "object"
+    },
+    "v1PushSetServerRequest": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "$ref": "#/definitions/v1PushServer"
+        }
+      }
+    },
+    "v1PushShareTokenReply": {
+      "type": "object"
+    },
+    "v1PushShareTokenRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "server": {
+          "$ref": "#/definitions/v1PushServer"
+        },
+        "receiver": {
+          "$ref": "#/definitions/v1PushServiceReceiver"
         }
       }
     },

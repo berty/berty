@@ -98,6 +98,8 @@ service ProtocolService {
 
   rpc DebugGroup (DebugGroup.Request) returns (DebugGroup.Reply);
 
+  rpc DebugAuthServiceSetToken(DebugAuthServiceSetToken.Request) returns (DebugAuthServiceSetToken.Reply);
+
   rpc SystemInfo (SystemInfo.Request) returns (SystemInfo.Reply);
 
   // AuthServiceInitFlow Initialize an authentication flow
@@ -120,6 +122,21 @@ service ProtocolService {
 
   // AttachmentRetrieve returns an attachment data
   rpc AttachmentRetrieve(AttachmentRetrieve.Request) returns (stream AttachmentRetrieve.Reply);
+
+  // PushReceive handles a push payload, decrypts it if possible
+  rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
+
+  // PushSend sends a push payload to a specified list of group members
+  rpc PushSend(PushSend.Request) returns (PushSend.Reply);
+
+  // PushShareToken sends push tokens of own devices to a group
+  rpc PushShareToken(PushShareToken.Request) returns (PushShareToken.Reply);
+
+  // PushSetDeviceToken registers a push token for the current device
+  rpc PushSetDeviceToken(PushSetDeviceToken.Request) returns (PushSetDeviceToken.Reply);
+
+  // PushSetServer registers a push server for the current device
+  rpc PushSetServer(PushSetServer.Request) returns (PushSetServer.Reply);
 }
 
 
@@ -218,6 +235,15 @@ enum EventType {
 
   // EventTypeGroupReplicating indicates that the group has been registered for replication on a server
   EventTypeGroupReplicating = 403;
+
+  // EventTypePushMemberTokenUpdate
+  EventTypePushMemberTokenUpdate = 404;
+
+  // EventTypePushDeviceTokenRegistered
+  EventTypePushDeviceTokenRegistered = 405;
+
+  // EventTypePushDeviceServerRegistered
+  EventTypePushDeviceServerRegistered = 406;
 
   // EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key
   EventTypeGroupMetadataPayloadSent = 1001;
@@ -645,6 +671,8 @@ message InstanceGetConfiguration {
     SettingState wifi_p2p_enabled = 7; // MultiPeerConnectivity for Darwin and Nearby for Android
     SettingState mdns_enabled = 8;
     SettingState relay_enabled = 9;
+    PushServiceReceiver device_push_token = 10;
+    PushServer device_push_server = 11;
   }
 }
 
@@ -1080,6 +1108,21 @@ message DebugGroup {
   }
 }
 
+message AuthExchangeResponse {
+  string access_token = 1;
+  string scope = 2;
+  string error = 3;
+  string error_description = 4;
+  map<string, string> services = 5;
+}
+
+message DebugAuthServiceSetToken {
+  message Request {
+    AuthExchangeResponse token = 1;
+    string authentication_url = 2 [(gogoproto.customname) = "AuthenticationURL"];
+  }
+  message Reply {}
+}
 
 enum DebugInspectGroupLogType {
   DebugInspectGroupLogTypeUndefined = 0;
@@ -1329,4 +1372,180 @@ message Progress {
   uint64 completed = 4;
   uint64 total = 5;
   uint64 delay = 6;
+}
+
+message MemberWithDevices {
+  bytes member_pk = 1 [(gogoproto.customname) = "MemberPK"];
+  repeated bytes devices_pks = 2 [(gogoproto.customname) = "DevicePKs"];
+}
+
+message OutOfStoreMessage {
+  bytes cid = 1 [(gogoproto.customname) = "CID"];
+  bytes device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+  fixed64 counter = 3;
+  bytes sig = 4;
+  fixed32 flags = 5;
+  bytes encrypted_payload = 6;
+  bytes nonce = 7;
+}
+
+message OutOfStoreMessageEnvelope {
+  bytes nonce = 1;
+  bytes box = 2;
+  bytes group_public_key = 3;
+}
+
+message PushExposedData {
+  bytes nonce = 1;
+  bytes box = 2;
+}
+
+enum PushServicePriority {
+  PushPriorityUndefined = 0;
+  PushPriorityLow = 1;
+  PushPriorityNormal = 2;
+}
+
+enum PushServiceTokenType {
+  PushTokenUndefined = 0;
+
+  // PushTokenMQTT: Platform independent
+  PushTokenMQTT = 1;
+
+  // PushTokenApplePushNotificationService: iOS, iPadOS, tvOS, macOS
+  PushTokenApplePushNotificationService = 2;
+
+  // PushTokenFirebaseCloudMessaging: Android with GMS, Chrome OS
+  PushTokenFirebaseCloudMessaging = 3;
+
+  // PushTokenWindowsPushNotificationService: Windows, XBox
+  PushTokenWindowsPushNotificationService = 4;
+
+  // PushTokenHuaweiPushKit: Huawei Android devices with AppGallery
+  PushTokenHuaweiPushKit = 5;
+
+  // PushTokenAmazonDeviceMessaging: Fire OS devices
+  PushTokenAmazonDeviceMessaging = 6;
+}
+
+message PushServiceSupportedTokenType {
+  string app_bundle_id = 1 [(gogoproto.customname) = "AppBundleID"];
+  PushServiceTokenType token_type = 2;
+}
+
+message PushServiceReceiver {
+  // token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server
+  PushServiceTokenType token_type = 1;
+
+  // bundle_id is the app identifier
+  string bundle_id = 2 [(gogoproto.customname) = "BundleID"];
+
+  // token is the device identifier used
+  bytes token = 3;
+
+  // recipient_public_key is the public key which will be used to encrypt the payload
+  bytes recipient_public_key = 4;
+}
+
+message PushServiceOpaqueReceiver {
+  bytes opaque_token = 1;
+  string service_addr = 2;
+}
+
+message PushServer {
+  bytes server_key = 1;
+  string service_addr = 2;
+}
+
+message PushDeviceTokenRegistered {
+  PushServiceReceiver token = 1;
+
+  // device_pk is the public key of the device sending the message
+  bytes device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+}
+
+message PushDeviceServerRegistered {
+  PushServer server = 1;
+
+  // device_pk is the public key of the device sending the message
+  bytes device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+}
+
+message PushMemberTokenUpdate {
+  PushServer server = 1;
+
+  bytes token = 2;
+
+  // device_pk is the public key of the device sending the message
+  bytes device_pk = 3 [(gogoproto.customname) = "DevicePK"];
+}
+
+message PushReceive {
+  message Request {
+    bytes payload = 1;
+  }
+  message Reply {
+    OutOfStoreMessage message = 1;
+    bytes cleartext = 2;
+    bytes group_public_key = 3;
+  }
+}
+
+message PushSend {
+  message Request {
+    bytes cid = 1 [(gogoproto.customname) = "CID"];
+    bytes group_public_key = 2;
+    repeated MemberWithDevices group_members = 3;
+  }
+  message Reply {
+    repeated MemberWithDevices group_members = 1;
+  }
+}
+
+message PushServiceServerInfo {
+  message Request {}
+
+  message Reply {
+    // public_key the public key used to encrypt data to the server (ie. a PushServiceReceiver),
+    // to be used with NaCl's Seal and Open
+    bytes public_key = 1;
+
+    // supported_token_types list of token types supported by the server
+    repeated PushServiceSupportedTokenType supported_token_types = 2;
+  }
+}
+
+message PushShareToken {
+  message Request {
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    PushServer server = 2;
+    PushServiceReceiver receiver = 3;
+  }
+  message Reply {}
+}
+
+message PushSetDeviceToken {
+  message Request {
+    PushServiceReceiver receiver = 1;
+  }
+  message Reply {}
+}
+
+message PushSetServer {
+  message Request {
+    PushServer server = 1;
+  }
+  message Reply {}
+}
+
+message PushServiceSend {
+  message Request {
+    OutOfStoreMessageEnvelope envelope = 1;
+
+    PushServicePriority priority = 2;
+
+    repeated PushServiceOpaqueReceiver receivers = 3;
+  }
+
+  message Reply {}
 }

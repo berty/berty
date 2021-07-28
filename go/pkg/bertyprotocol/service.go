@@ -18,7 +18,9 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/curve25519"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -43,19 +45,22 @@ type Service interface {
 
 type service struct {
 	// variables
-	ctx            context.Context
-	logger         *zap.Logger
-	ipfsCoreAPI    ipfsutil.ExtendedCoreAPI
-	odb            *BertyOrbitDB
-	accountGroup   *groupContext
-	deviceKeystore DeviceKeystore
-	openedGroups   map[string]*groupContext
-	groups         map[string]*protocoltypes.Group
-	lock           sync.RWMutex
-	authSession    atomic.Value
-	close          func() error
-	startedAt      time.Time
-	host           host.Host
+	ctx             context.Context
+	logger          *zap.Logger
+	ipfsCoreAPI     ipfsutil.ExtendedCoreAPI
+	odb             *BertyOrbitDB
+	accountGroup    *groupContext
+	deviceKeystore  DeviceKeystore
+	openedGroups    map[string]*groupContext
+	lock            sync.RWMutex
+	authSession     atomic.Value
+	close           func() error
+	startedAt       time.Time
+	host            host.Host
+	groupDatastore  *GroupDatastore
+	pushHandler     *pushHandler
+	accountCache    ds.Batching
+	messageKeystore *messageKeystore
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -65,6 +70,9 @@ type Opts struct {
 	DeviceKeystore         DeviceKeystore
 	DatastoreDir           string
 	RootDatastore          ds.Batching
+	GroupDatastore         *GroupDatastore
+	AccountCache           ds.Batching
+	MessageKeystore        *messageKeystore
 	OrbitDB                *BertyOrbitDB
 	TinderDriver           tinder.UnregisterDiscovery
 	RendezvousRotationBase time.Duration
@@ -72,6 +80,43 @@ type Opts struct {
 	PubSub                 *pubsub.PubSub
 	LocalOnly              bool
 	close                  func() error
+	PushKey                *[cryptoutil.KeySize]byte
+}
+
+func (opts *Opts) applyPushDefaults() error {
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
+	}
+
+	opts.applyDefaultsGetDatastore()
+
+	if opts.GroupDatastore == nil {
+		var err error
+		opts.GroupDatastore, err = NewGroupDatastore(opts.RootDatastore)
+		if err != nil {
+			return err
+		}
+	}
+
+	if opts.AccountCache == nil {
+		opts.AccountCache = ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceAccountCacheDatastore))
+	}
+
+	if opts.MessageKeystore == nil {
+		opts.MessageKeystore = newMessageKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceMessageKeystore)))
+	}
+
+	return nil
+}
+
+func (opts *Opts) applyDefaultsGetDatastore() {
+	if opts.RootDatastore == nil {
+		if opts.DatastoreDir == "" || opts.DatastoreDir == InMemoryDirectory {
+			opts.RootDatastore = ds_sync.MutexWrap(ds.NewMapDatastore())
+		} else {
+			opts.RootDatastore = nil
+		}
+	}
 }
 
 func (opts *Opts) applyDefaults(ctx context.Context) error {
@@ -79,12 +124,10 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		opts.Logger = zap.NewNop()
 	}
 
-	if opts.RootDatastore == nil {
-		if opts.DatastoreDir == "" || opts.DatastoreDir == InMemoryDirectory {
-			opts.RootDatastore = ds_sync.MutexWrap(ds.NewMapDatastore())
-		} else {
-			opts.RootDatastore = nil
-		}
+	opts.applyDefaultsGetDatastore()
+
+	if err := opts.applyPushDefaults(); err != nil {
+		return err
 	}
 
 	if opts.DeviceKeystore == nil {
@@ -198,6 +241,10 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 	}
 
+	if err := opts.GroupDatastore.Put(acc.Group()); err != nil {
+		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to add account group to group datastore, err: %w", err))
+	}
+
 	s := &service{
 		ctx:            ctx,
 		host:           opts.Host,
@@ -208,12 +255,13 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		close:          opts.close,
 		accountGroup:   acc,
 		startedAt:      time.Now(),
-		groups: map[string]*protocoltypes.Group{
-			string(acc.Group().PublicKey): acc.Group(),
-		},
+		groupDatastore: opts.GroupDatastore,
 		openedGroups: map[string]*groupContext{
 			string(acc.Group().PublicKey): acc,
 		},
+		accountCache:    opts.AccountCache,
+		messageKeystore: opts.MessageKeystore,
+		pushHandler:     newPushHandler(opts.PushKey, opts.GroupDatastore, opts.OrbitDB.messageKeystore, opts.AccountCache),
 	}
 
 	s.startTyberTinderMonitor()
@@ -321,4 +369,9 @@ func (s *service) Status() Status {
 	return Status{
 		Protocol: nil,
 	}
+}
+
+func (s *service) SetPushKey(key *[32]byte) {
+	s.pushHandler.pushSK = key
+	curve25519.ScalarBaseMult(s.pushHandler.pushPK, s.pushHandler.pushSK)
 }
