@@ -95,6 +95,15 @@
         "search-placeholder": "Поиск",
         "continue": "ПРОДОЛЖИТЬ",
         "create-group": "СОЗДАТЬ ГРУППУ"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Инструменты для разработчиков",
+      "theme-editor": "",
       "header-left-button": "Информация об устройстве",
       "simulate-button": "Симулировать ошибки в передаче данных",
       "simulate-js-error-button": "Имитация ошибки JavaScript",
@@ -356,7 +366,11 @@
       "footer-middle-button": "Список событий",
       "footer-right-button": "Перезапустить демон",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "Перезапустите приложение после изменения этого поля"
+      }
     },
     "system-info": {
       "title": "Информация о системе"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "Давайте быстро пробежимся по настройкам и сделаем вашу первую конфигурацию!",
       "skip": "ПРОПУСТИТЬ",
       "next": "ДАЛЕЕ"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "ОТМЕНА",
+      "add": ""
     }
   },
   "chat": {
