@@ -95,6 +95,15 @@
         "search-placeholder": "Sorgula",
         "continue": "DEVAM ET",
         "create-group": "YENİ BİR GRUP YARAT"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Geliştirici araçları",
+      "theme-editor": "",
       "header-left-button": "Aygıt bilgileri",
       "simulate-button": "Akış hatasını taklit et",
       "simulate-js-error-button": "Javascript hatasını taklit et",
@@ -356,7 +366,11 @@
       "footer-middle-button": "Olayları listele",
       "footer-right-button": "Arka plan programını yeniden başlat",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
+      }
     },
     "system-info": {
       "title": "Sistem bilgisi"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "Hadi ayarlara hızlı bir bakış atalım ve ilk yapılandırmanızı bitirelim!",
       "skip": "ATLA",
       "next": "SONRAKİ"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "İPTAL ET",
+      "add": ""
     }
   },
   "chat": {
