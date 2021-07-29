@@ -95,6 +95,15 @@
         "search-placeholder": "Suchen",
         "continue": "Fortfahren",
         "create-group": "Gruppe erstellen"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Entwicklerwerkzeuge",
+      "theme-editor": "",
       "header-left-button": "Geräteinformationen",
       "simulate-button": "Streamfehler simulieren",
       "simulate-js-error-button": "JavaScript-Fehler simulieren",
@@ -356,7 +366,11 @@
       "footer-middle-button": "Events auflisten",
       "footer-right-button": "Daemon neu starten",
       "trigger-crashlytics-button": "Crashlytics Absturz auslösen",
-      "tyber-attach": ""
+      "tyber-attach": "Tyber an {{host}} anhängen",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "App nach dem Ändern dieses Feldes neu starten"
+      }
     },
     "system-info": {
       "title": "System-Info"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS Webinterface"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "Lassen Sie uns einen schnellen Überblick über die Einstellungen haben und beenden Sie Ihre erste Konfiguration!",
       "skip": "Überspringen",
       "next": "Nächstes"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "Abbrechen",
+      "add": ""
     }
   },
   "chat": {
@@ -614,10 +643,10 @@
   "permission": {
     "notification": {
       "title": "",
-      "desc": ""
+      "desc": "Berty App benötigt deine Erlaubnis, um dir lokale oder Push-Benachrichtigungen zu senden. Dies erlaubt dir, benachrichtigt zu werden, wenn du eine Nachricht erhältst."
     },
     "p2p": {
-      "title": "",
+      "title": "Peer-to-Peer",
       "desc": ""
     },
     "camera": {
