@@ -1,4 +1,4 @@
-import { useContext, useMemo, useEffect, EffectCallback } from 'react'
+import { EffectCallback, useContext, useEffect, useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
@@ -6,8 +6,14 @@ import { pbDateToNum } from '@berty-tech/components/helpers'
 import { Routes } from '@berty-tech/navigation'
 import colors from '@berty-tech/styles/colors.json'
 
-import { MsgrContext, useMsgrContext, NotificationsInhibitor, MessengerActions } from './context'
-import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
+import {
+	MessengerActions,
+	MessengerAppState,
+	MsgrContext,
+	NotificationsInhibitor,
+	useMsgrContext,
+} from './context'
+import { fakeContacts, fakeMessages, fakeMultiMemberConversations } from './faker'
 import { ParsedInteraction } from './types.gen'
 
 export { useMsgrContext }
@@ -165,7 +171,9 @@ export const useThemeColor = () => {
 			collectionColors = value[1]?.colors
 		}
 	})
-	return Object.entries(ctx.persistentOptions?.themeColor.collection).length
+	return Object.entries(ctx.persistentOptions?.themeColor.collection).length &&
+		ctx.appState !== MessengerAppState.GetStarted &&
+		ctx.appState !== MessengerAppState.OnBoarding
 		? collectionColors
 		: colors
 }

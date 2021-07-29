@@ -4,13 +4,12 @@ import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
 import { closeAccountWithProgress } from '@berty-tech/store/effectableCallbacks'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { GenericAvatar } from '../../avatars'
 import { openDocumentPicker } from '../../helpers'
-import { setPersistentOption } from '@berty-tech/store/providerCallbacks'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -118,13 +117,6 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
 						await closeAccountWithProgress(dispatch)
-						await setPersistentOption(dispatch, ctx?.selectedAccount, {
-							type: PersistentOptionsKeys.ThemeColor,
-							payload: {
-								...ctx.persistentOptions?.themeColor,
-								selected: 'berty',
-							},
-						})
 						await dispatch({ type: MessengerActions.SetStateOnBoardingReady })
 					}}
 					avatar={

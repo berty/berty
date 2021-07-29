@@ -87,8 +87,10 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 							<Text
 								style={[
 									_styles.buttonSettingText,
-									text.color.grey,
-									{ marginLeft: margin.left.big.marginLeft + 3 * scaleSize },
+									{
+										marginLeft: margin.left.big.marginLeft + 3 * scaleSize,
+										color: colors['secondary-text'],
+									},
 								]}
 							>
 								{t('settings.mode.auto-replicate-button-unavailable')}
