@@ -95,6 +95,15 @@
         "search-placeholder": "検索",
         "continue": "続行",
         "create-group": "グループを作成"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -356,7 +366,11 @@
       "footer-middle-button": "",
       "footer-right-button": "",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": ""
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "",
@@ -410,6 +432,13 @@
       "desc": "",
       "skip": "",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "キャンセル",
+      "add": ""
     }
   },
   "chat": {
