@@ -203,7 +203,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	require.NoError(t, err, "unable to extend core api from node")
 
 	psapi := NewPubSubAPI(ctx, opts.Logger, disc, ps)
-	exapi = InjectPubSubCoreAPIExtendedAdaptater(exapi, psapi)
+	exapi = InjectPubSubCoreAPIExtendedAdapter(exapi, psapi)
 	EnableConnLogger(ctx, opts.Logger, mnode.PeerHost())
 
 	api := &coreAPIMock{

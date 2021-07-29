@@ -226,12 +226,6 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 											},
 										},
 									})
-									await setPersistentOption({
-										type: PersistentOptionsKeys.Tor,
-										payload: {
-											flag: toggleValues.fullAnonMode ? 'required' : 'optional',
-										},
-									})
 
 									if (toggleValues.allowExpertMode) {
 										await setPersistentOption({

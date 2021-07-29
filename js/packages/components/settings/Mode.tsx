@@ -14,6 +14,7 @@ import { useNavigation } from '@berty-tech/navigation'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { accountService } from '@berty-tech/store/context'
 
 // Styles
 const useStylesMode = () => {
@@ -81,14 +82,46 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 							})
 						}}
 						disabled={replicationServices.length === 0}
-					/>
+					>
+						{replicationServices.length === 0 && (
+							<Text
+								style={[
+									_styles.buttonSettingText,
+									{
+										marginLeft: margin.left.big.marginLeft + 3 * scaleSize,
+										color: colors['secondary-text'],
+									},
+								]}
+							>
+								{t('settings.mode.auto-replicate-button-unavailable')}
+							</Text>
+						)}
+					</ButtonSetting>
 					<ButtonSetting
 						name={t('settings.mode.multicast-dns-button.title')}
 						icon='upload'
 						iconColor={colors['background-header']}
 						iconSize={30}
+						varToggle={ctx.networkConfig.mdns === beapi.account.NetworkConfig.Flag.Enabled}
+						actionToggle={async () => {
+							let newValue = beapi.account.NetworkConfig.Flag.Enabled
+							if (ctx.networkConfig.mdns === beapi.account.NetworkConfig.Flag.Enabled) {
+								newValue = beapi.account.NetworkConfig.Flag.Disabled
+							}
+
+							const newNetConf = {
+								...ctx.networkConfig,
+								mdns: newValue,
+							}
+
+							await accountService.networkConfigSet({
+								accountId: ctx.selectedAccount,
+								config: newNetConf,
+							})
+
+							ctx.setNetworkConfig(newNetConf)
+						}}
 						toggled
-						disabled
 					>
 						<Text
 							style={[

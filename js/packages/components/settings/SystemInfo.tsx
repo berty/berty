@@ -9,6 +9,7 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { HeaderSettings } from '../shared-components/Header'
+import { useMsgrContext } from '@berty-tech/store/context'
 
 export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 	const { goBack } = useNavigation()
@@ -16,6 +17,7 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 	const colors = useThemeColor()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
 	const { t } = useTranslation()
+	const { networkConfig } = useMsgrContext()
 
 	React.useEffect(() => {
 		call()
@@ -39,6 +41,8 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 					) : (
 						<Text selectable={true} style={{ height: '95%' }}>
 							{JSON.stringify(systemInfo, null, 2)}
+							{'\n'}
+							{JSON.stringify(networkConfig, null, 2)}
 						</Text>
 					)
 				) : (

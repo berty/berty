@@ -80,7 +80,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 	// setup notification manager
 	{
 		if nativeNotification := config.notifdriver; nativeNotification != nil {
-			b.notificationManager = newNotificationManagerAdaptater(b.logger, config.notifdriver)
+			b.notificationManager = newNotificationManagerAdapter(b.logger, config.notifdriver)
 		} else {
 			b.logger.Warn("no native notification set")
 			b.notificationManager = notification.NewLoggerManager(b.logger)

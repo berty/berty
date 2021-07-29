@@ -11,7 +11,7 @@ import {
 } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { accountService, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
@@ -19,6 +19,7 @@ import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
 import p2pLottie from '@berty-tech/assets/p2p-lottie.json'
 import { checkPermissions } from '../utils'
+import beapi from '@berty-tech/api'
 
 const animations = {
 	audio: audioLottie,
@@ -32,7 +33,12 @@ export const Permissions: React.FC<{}> = (props) => {
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
-	const { persistentOptions, setPersistentOption, createNewAccount } = useMsgrContext()
+	const {
+		persistentOptions,
+		setPersistentOption,
+		createNewAccount,
+		selectedAccount,
+	} = useMsgrContext()
 	const {
 		permissionType,
 		permissionStatus,
@@ -101,25 +107,32 @@ export const Permissions: React.FC<{}> = (props) => {
 						: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
 				)
 
-				const state = status === RESULTS.GRANTED ? true : false
-				await setPersistentOption({
-					type: PersistentOptionsKeys.BLE,
-					payload: {
-						enable: state,
-					},
-				})
-				await setPersistentOption({
-					type: PersistentOptionsKeys.MC,
-					payload: {
-						enable: state,
-					},
-				})
-				await setPersistentOption({
-					type: PersistentOptionsKeys.Nearby,
-					payload: {
-						enable: state,
-					},
-				})
+				if (selectedAccount) {
+					const currentConfig = await accountService.networkConfigGet({
+						accountId: selectedAccount,
+					})
+
+					let newConfig = {
+						...currentConfig.currentConfig,
+						bluetoothLe:
+							status === RESULTS.GRANTED
+								? beapi.account.NetworkConfig.Flag.Enabled
+								: beapi.account.NetworkConfig.Flag.Disabled,
+						appleMultipeerConnectivity:
+							status === RESULTS.GRANTED
+								? beapi.account.NetworkConfig.Flag.Enabled
+								: beapi.account.NetworkConfig.Flag.Disabled,
+						androidNearby:
+							status === RESULTS.GRANTED
+								? beapi.account.NetworkConfig.Flag.Enabled
+								: beapi.account.NetworkConfig.Flag.Disabled,
+					}
+
+					await accountService.networkConfigSet({
+						accountId: selectedAccount,
+						config: newConfig,
+					})
+				}
 			} else if (permissionType === 'camera') {
 				await request(
 					Platform.OS === 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA,

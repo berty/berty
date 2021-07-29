@@ -16,6 +16,7 @@ import {
 import i18n from '@berty-tech/berty-i18n'
 import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
+import beapi from '@berty-tech/api'
 
 import {
 	ButtonSetting,
@@ -181,7 +182,8 @@ const HomeBodySettings: React.FC<{}> = () => {
 	const colors = useThemeColor()
 	const navigation = useNativeNavigation()
 	const ctx = useMsgrContext()
-	const isPrefMode = ctx.persistentOptions.preset.value === 'performance'
+	const isPrefMode =
+		ctx.networkConfig.showDefaultServices === beapi.account.NetworkConfig.Flag.Enabled
 	const enableNotif = ctx.persistentOptions.notifications.enable
 
 	const items: any = Object.entries(languages).map(([key, attrs]) => ({

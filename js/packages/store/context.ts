@@ -148,18 +148,20 @@ export enum PersistentOptionsKeys {
 	I18N = 'i18n',
 	Notifications = 'notifications',
 	Suggestions = 'suggestions',
-	BLE = 'ble',
-	MC = 'mc',
-	Nearby = 'nearby',
 	Debug = 'debug',
-	Tor = 'tor',
 	Log = 'log',
 	Configurations = 'configurations',
 	WelcomeModal = 'welcomeModal',
-	Preset = 'preset',
 	LogFilters = 'logFilters',
 	TyberHost = 'tyberHost',
 	ThemeColor = 'themeColor',
+}
+
+export enum GlobalPersistentOptionsKeys {
+	TyberHost = 'global-storage_tyber-host',
+	Preset = 'preset',
+	DisplayName = 'displayName',
+	IsNewAccount = 'isNewAccount',
 }
 
 export type PersistentOptionsI18N = {
@@ -197,10 +199,6 @@ export type PersistentOptionsNearby = {
 
 export type PersistentOptionsDebug = {
 	enable: boolean
-}
-
-export type PersistentOptionsTor = {
-	flag: string
 }
 
 export type PersistentOptionsLog = {
@@ -253,24 +251,8 @@ export type PersistentOptionsUpdate =
 			payload: Partial<PersistentOptionsSuggestions>
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.BLE
-			payload: Partial<PersistentOptionsBLE>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.MC
-			payload: Partial<PersistentOptionsMC>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.Nearby
-			payload: Partial<PersistentOptionsNearby>
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.Debug
 			payload: Partial<PersistentOptionsDebug>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.Tor
-			payload: Partial<PersistentOptionsTor>
 	  }
 	| {
 			type: typeof PersistentOptionsKeys.Log
@@ -283,10 +265,6 @@ export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.WelcomeModal
 			payload: PersistentOptionsWelcomeModal
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.Preset
-			payload: PersistentOptionsPreset
 	  }
 	| {
 			type: typeof PersistentOptionsKeys.LogFilters
@@ -305,15 +283,10 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
 	[PersistentOptionsKeys.Suggestions]: PersistentOptionsSuggestions
-	[PersistentOptionsKeys.BLE]: PersistentOptionsBLE
-	[PersistentOptionsKeys.MC]: PersistentOptionsMC
-	[PersistentOptionsKeys.Nearby]: PersistentOptionsNearby
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
-	[PersistentOptionsKeys.Tor]: PersistentOptionsTor
 	[PersistentOptionsKeys.Log]: PersistentOptionsLog
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
 	[PersistentOptionsKeys.WelcomeModal]: PersistentOptionsWelcomeModal
-	[PersistentOptionsKeys.Preset]: PersistentOptionsPreset
 	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 	[PersistentOptionsKeys.ThemeColor]: PersistentOptionsThemeColor
@@ -360,20 +333,8 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			enable: true,
 		},
 		[PersistentOptionsKeys.Suggestions]: suggestions,
-		[PersistentOptionsKeys.BLE]: {
-			enable: true,
-		},
-		[PersistentOptionsKeys.MC]: {
-			enable: true,
-		},
-		[PersistentOptionsKeys.Nearby]: {
-			enable: true,
-		},
 		[PersistentOptionsKeys.Debug]: {
 			enable: false,
-		},
-		[PersistentOptionsKeys.Tor]: {
-			flag: 'disabled',
 		},
 		[PersistentOptionsKeys.Log]: {
 			format: 'json',
@@ -398,9 +359,6 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		},
 		[PersistentOptionsKeys.WelcomeModal]: {
 			enable: true,
-		},
-		[PersistentOptionsKeys.Preset]: {
-			value: 'performance',
 		},
 		[PersistentOptionsKeys.LogFilters]: {
 			format: '*:bty*',
@@ -483,6 +441,8 @@ export type MsgrState = {
 
 	debugMode: boolean
 	setDebugMode: (value: boolean) => void
+	networkConfig: beapi.account.INetworkConfig
+	setNetworkConfig: (value: beapi.account.INetworkConfig) => void
 }
 
 export const initialState = {
@@ -527,6 +487,9 @@ export const initialState = {
 	accounts: [],
 	addReaction: () => undefined,
 	removeReaction: () => undefined,
+
+	networkConfig: {},
+	setNetworkConfig: () => {},
 }
 
 export const MsgrContext = createContext<MsgrState>(initialState)
