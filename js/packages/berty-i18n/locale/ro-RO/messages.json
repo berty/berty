@@ -95,6 +95,15 @@
         "search-placeholder": "Caută",
         "continue": "CONTINUĂ",
         "create-group": "CREEAZĂ UN GRUP"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "Informații dispozitiv",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -356,7 +366,11 @@
       "footer-middle-button": "",
       "footer-right-button": "Reporneşte daemonul",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "Informații sistem"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "Hai să avem o privire de ansamblu rapidă asupra setărilor și să terminăm prima configurație!",
       "skip": "Omite",
       "next": "Continuă"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "Anulează",
+      "add": ""
     }
   },
   "chat": {
