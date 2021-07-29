@@ -95,6 +95,15 @@
         "search-placeholder": "Sök",
         "continue": "",
         "create-group": ""
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Utvecklingsverktyg",
+      "theme-editor": "",
       "header-left-button": "Enhetsinformation",
       "simulate-button": "Simulera streaming fel",
       "simulate-js-error-button": "Simulera JavaScript-fel",
@@ -356,7 +366,11 @@
       "footer-middle-button": "Visa händelser",
       "footer-right-button": "Starta om bakgrundstjänst",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "Systeminformation"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS webbgränssnitt"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "",
       "skip": "HOPPA ÖVER",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "AVBRYT",
+      "add": ""
     }
   },
   "chat": {
