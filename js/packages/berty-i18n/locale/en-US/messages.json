@@ -95,6 +95,15 @@
         "search-placeholder": "Search",
         "continue": "CONTINUE",
         "create-group": "CREATE A GROUP"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Dev tools",
+      "theme-editor": "",
       "header-left-button": "Device infos",
       "simulate-button": "Simulate stream error",
       "simulate-js-error-button": "Simulate JavaScript error",
@@ -356,7 +366,11 @@
       "footer-middle-button": "List events",
       "footer-right-button": "Restart daemon",
       "trigger-crashlytics-button": "Trigger crashlytics crash",
-      "tyber-attach": "Tyber attach to {{host}}"
+      "tyber-attach": "Tyber attach to {{host}}",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "System info"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "Let's have a quick overview of Settings and finish your first configuration!",
       "skip": "SKIP",
       "next": "NEXT"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "",
+      "add": ""
     }
   },
   "chat": {
