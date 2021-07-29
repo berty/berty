@@ -95,6 +95,15 @@
         "search-placeholder": "Keresés",
         "continue": "FOLYTATÁS",
         "create-group": "CSOPORT LÉTREHOZÁSA"
+      },
+      "create-group-finalize": {
+        "placeholder": "Csoport neve",
+        "about": "Csoport névjegye",
+        "first-bullet-point": "",
+        "second-bullet-point": "Linken keresztül hívhat meg tagokat",
+        "third-bullet-point": "Elhagyhatja ezt a csoportot",
+        "fourth-bullet-point": "Nem törheti ezt a csoportot",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Fejlesztői eszközök",
+      "theme-editor": "Megjelentés & témaszerkesztő",
       "header-left-button": "Eszköz információk",
       "simulate-button": "Stream hiba szimulálása",
       "simulate-js-error-button": "JavaScript hiba szimulálása",
@@ -356,7 +366,11 @@
       "footer-middle-button": "Események listája",
       "footer-right-button": "Daemon újraindítása",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "Rendszer információ"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "Gyorsan áttekinthetjük a beállításokat és befejezhetjük az első konfigurációt!",
       "skip": "TOVÁBB",
       "next": "KÖVETKEZŐ"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "MÉGSE",
+      "add": ""
     }
   },
   "chat": {
