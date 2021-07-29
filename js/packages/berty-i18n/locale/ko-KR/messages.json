@@ -95,6 +95,15 @@
         "search-placeholder": "검색",
         "continue": "다음",
         "create-group": "만들기"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "개발 도구",
+      "theme-editor": "",
       "header-left-button": "장치 정보",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -356,7 +366,11 @@
       "footer-middle-button": "",
       "footer-right-button": "데몬 재시작",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "변경 후 재시작 필요"
+      }
     },
     "system-info": {
       "title": "시스템 정보"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "",
       "skip": "넘기기",
       "next": "다음"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "취소하기",
+      "add": ""
     }
   },
   "chat": {
