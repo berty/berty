@@ -95,6 +95,15 @@
         "search-placeholder": "Buscar",
         "continue": "CONTINUAR",
         "create-group": "CREAR UN GRUPO"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Herramientas de desarrollo",
+      "theme-editor": "",
       "header-left-button": "Información del dispositivo",
       "simulate-button": "Simular error de flujo",
       "simulate-js-error-button": "Simular error de JavaScript",
@@ -356,7 +366,11 @@
       "footer-middle-button": "Lista de eventos",
       "footer-right-button": "Reiniciar el servicio",
       "trigger-crashlytics-button": "Desencadenar fallo (crash) crashlytics",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
+      }
     },
     "system-info": {
       "title": "Información del sistema"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "¡Veamos un resumen de los ajustes y terminemos tu primera configuración!",
       "skip": "SALTAR",
       "next": "SIGUIENTE"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "CANCELAR",
+      "add": ""
     }
   },
   "chat": {
