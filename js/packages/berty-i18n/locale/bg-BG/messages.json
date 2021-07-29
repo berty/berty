@@ -95,6 +95,15 @@
         "search-placeholder": "Търсене",
         "continue": "",
         "create-group": ""
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -306,6 +315,7 @@
     },
     "devtools": {
       "title": "Инструменти за програмисти",
+      "theme-editor": "",
       "header-left-button": "Информация за устройства",
       "simulate-button": "Симулирай грешка в потока",
       "simulate-js-error-button": "",
@@ -356,7 +366,11 @@
       "footer-middle-button": "Списък от събития",
       "footer-right-button": "Рестартирай daemon-а",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "Система информация"
@@ -377,6 +391,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +432,13 @@
       "desc": "",
       "skip": "ПРОПУСНИ",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "ОТКАЗ",
+      "add": ""
     }
   },
   "chat": {
