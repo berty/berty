@@ -309,7 +309,7 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 		return null
 	}
 	return (
-		<Layout style={{ flex: 1 }}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SwipeNavRecognizer>
 				<ScrollView bounces={false}>

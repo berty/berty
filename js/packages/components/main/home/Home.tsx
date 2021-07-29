@@ -44,7 +44,7 @@ const FooterButton: React.FC<{
 		<TouchableOpacity
 			style={[
 				{
-					marginBottom: 30 * scaleSize,
+					marginBottom: 20 * scaleSize,
 					width: 60,
 					height: 60,
 					borderRadius: 60,

@@ -42,10 +42,10 @@ export const GenericAvatar: React.FC<{
 	nameSeed: Maybe<string>
 	pressable?: boolean
 }> = ({ cid, size, colorSeed, style, isEditable = false, nameSeed, pressable }) => {
-	const [{ border, color }] = useStyles()
+	const [{ border }] = useStyles()
 	const colors = useThemeColor()
 
-	const padding = Math.round(size / 14)
+	const padding = Math.round(size / 28)
 	let innerSize = Math.round(size - 2 * padding)
 	let content: JSX.Element
 	if (cid) {
@@ -66,7 +66,7 @@ export const GenericAvatar: React.FC<{
 								width: innerSize,
 								height: innerSize,
 								position: 'absolute',
-								backgroundColor: color.light.blue,
+								backgroundColor: colors['positive-asset'],
 								opacity: 0.6,
 							},
 							border.radius.scale(innerSize / 2),
@@ -90,7 +90,7 @@ export const GenericAvatar: React.FC<{
 								width: innerSize,
 								height: innerSize,
 								position: 'absolute',
-								backgroundColor: color.light.blue,
+								backgroundColor: colors['positive-asset'],
 								opacity: 0.6,
 							},
 							border.radius.scale(innerSize / 2),
@@ -178,12 +178,13 @@ export const AccountAvatar: React.FC<{
 	isEditable?: boolean
 }> = ({ size, style, isEditable }) => {
 	const account = useAccount()
+	const colors = useThemeColor()
 	return (
 		<GenericAvatar
 			nameSeed={account?.displayName}
 			cid={account?.avatarCid}
 			size={size}
-			colorSeed={account?.publicKey}
+			colorSeed={colors['main-text']}
 			style={style}
 			isEditable={isEditable}
 		/>

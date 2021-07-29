@@ -23,7 +23,7 @@ const useStylesHint = () => {
 	}
 }
 
-const _landingIconSize = 35
+const _landingIconSize = 30
 
 export const HintBody = () => {
 	const [{ padding, opacity, row, text }, { scaleSize }] = useStyles()
@@ -43,7 +43,7 @@ export const HintBody = () => {
 				style={[
 					text.align.center,
 					row.item.justify,
-					text.size.scale(30),
+					text.size.big,
 					opacity(0.8),
 					text.bold.medium,
 					{
@@ -61,7 +61,11 @@ export const HintBody = () => {
 				width={_landingIconSize * scaleSize}
 				height={_landingIconSize * scaleSize}
 				fill={`${colors['secondary-text']}90`}
-				style={[row.item.justify, opacity(0.8), { position: 'absolute', bottom: 20, right: 30 }]}
+				style={[
+					row.item.justify,
+					opacity(0.8),
+					{ position: 'absolute', bottom: 20 * scaleSize, right: 60 * scaleSize },
+				]}
 			/>
 			<TextNative style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
 				{bannerQuote?.quote || ''}
@@ -70,8 +74,7 @@ export const HintBody = () => {
 				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
 					<TextNative
 						style={[
-							text.color.black,
-							text.size.medium,
+							text.size.scale(15),
 							text.bold.small,
 							opacity(0.8),
 							{ fontFamily: 'Open Sans', color: `${colors['secondary-text']}90` },

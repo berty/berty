@@ -143,7 +143,7 @@ export const HomeHeader: React.FC<
 
 									<View
 										style={[
-											!value?.length && margin.left.medium,
+											margin.left.small,
 											{
 												flex: 6,
 												flexDirection: 'row',

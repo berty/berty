@@ -172,8 +172,8 @@ export const useThemeColor = () => {
 		}
 	})
 	return Object.entries(ctx.persistentOptions?.themeColor.collection).length &&
-		ctx.appState !== MessengerAppState.GetStarted &&
-		ctx.appState !== MessengerAppState.OnBoarding
+		ctx.appState !== MessengerAppState.OnBoarding &&
+		ctx.appState !== MessengerAppState.GetStarted
 		? collectionColors
 		: colors
 }

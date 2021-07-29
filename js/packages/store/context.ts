@@ -346,7 +346,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 				desc: 'main.configurations.network.desc',
 				icon: 'berty_dev_blue_bg',
 				state: 'unread',
-				color: '#EBECFD',
+				color: 'background-header',
 			},
 			notification: {
 				key: 'notification',
@@ -354,7 +354,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 				desc: 'main.configurations.notification.desc',
 				icon: 'berty_bot_orange_bg',
 				state: 'unread',
-				color: '#FDE9EF',
+				color: 'secondary-background-header',
 			},
 		},
 		[PersistentOptionsKeys.WelcomeModal]: {
