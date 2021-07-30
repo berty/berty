@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Kontaktanfragen empfangen",
       "external-services-button": "Externe Dienste",
       "auto-replicate-button": "Autom. Serverkopien",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Lokales Netz",
         "desc": "Berty-Benutzer im gleichen lokalen Netz finden"
