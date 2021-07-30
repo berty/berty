@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Ontvang contactverzoeken",
       "external-services-button": "Externe diensten",
       "auto-replicate-button": "Automatisch repliceren",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Lokale peer ontdekking"
