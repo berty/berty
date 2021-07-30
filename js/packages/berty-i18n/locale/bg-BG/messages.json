@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Получавайте заявки за контакт",
       "external-services-button": "Външни услуги",
       "auto-replicate-button": "Автоматична репликация",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Локално откриване на Peers"
