@@ -3,7 +3,7 @@ import { SectionList, Text as TextNative, TouchableHighlight, View } from 'react
 import { Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { EdgeInsets } from 'react-native-safe-area-context'
-import { Translation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { Routes, useNavigation } from '@berty-tech/navigation'
@@ -343,8 +343,9 @@ export const SearchComponent: React.FC<{
 	value,
 	earliestInteractionCID: _earliestInteractionCID,
 }) => {
-	const [{ height, width, padding, text, border, margin }, { scaleHeight }] = useStyles()
+	const [{ height, width, padding, text, border, margin }] = useStyles()
 	const colors = useThemeColor()
+	const { t } = useTranslation()
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
 
 	const sortedConversations = useMemo(() => {
@@ -432,30 +433,23 @@ export const SearchComponent: React.FC<{
 		/>
 	) : (
 		<View style={{ position: 'relative' }}>
-			<Translation>
-				{(t: any): React.ReactNode => (
-					<TextNative
-						style={[
-							text.size.big,
-							text.bold.small,
-							text.align.center,
-							{
-								fontFamily: 'Open Sans',
-								position: 'absolute',
-								top: 230,
-								left: 0,
-								right: 0,
-								color: colors['main-text'],
-							},
-						]}
-					>
-						{t('main.home.search.no-results')}
-					</TextNative>
-				)}
-			</Translation>
-			<View style={[margin.top.scale(370 * scaleHeight)]}>
+			<View style={[margin.top.scale(60)]}>
 				<HintBody />
 			</View>
+			<TextNative
+				style={[
+					margin.top.scale(60),
+					text.size.big,
+					text.bold.small,
+					text.align.center,
+					{
+						fontFamily: 'Open Sans',
+						color: colors['main-text'],
+					},
+				]}
+			>
+				{t('main.home.search.no-results')}
+			</TextNative>
 		</View>
 	)
 }

@@ -27,7 +27,7 @@ const MessageSystemLogo = () => {
 					height(logoDiameter + diffSize * scaleSize),
 					border.radius.scale((logoDiameter + diffSize) / 2),
 					{
-						borderWidth: 2,
+						borderWidth: 1,
 						borderColor: colors['input-background'],
 						backgroundColor: colors['main-background'],
 					},

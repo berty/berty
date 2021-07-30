@@ -432,7 +432,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 									await checkPermissions('notification')
 								}
 							}}
-							style={{ backgroundColor: config.color }}
+							style={{ backgroundColor: `${colors[`${config.color}`]}20` }}
 						/>
 					))}
 

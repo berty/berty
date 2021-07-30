@@ -112,7 +112,9 @@ const HomeHeaderAvatar: React.FC = () => {
 					<View style={{ position: 'absolute', top: -73 }}>
 						<AccountAvatar size={60 * scaleSize} />
 					</View>
-					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
+					<Text style={[_styles.headerNameText, { color: colors['main-text'] }]}>
+						{account?.displayName || ''}
+					</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
 						{(account?.link && (
 							<QRCode

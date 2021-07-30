@@ -44,7 +44,7 @@ const QuickReplyOption: React.FC<{
 					{ borderColor: colors['secondary-text'] },
 				]}
 			>
-				<Text>{option.display || ''}</Text>
+				<Text style={{ color: colors['secondary-text'] }}>{option.display || ''}</Text>
 			</View>
 		</TouchableOpacity>
 	)

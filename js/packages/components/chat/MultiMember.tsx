@@ -134,7 +134,12 @@ const HeaderMultiMember: React.FC<{
 					<TouchableOpacity style={[flex.large]} onLongPress={() => setIsEdit(true)}>
 						<Text
 							numberOfLines={1}
-							style={[text.align.center, text.bold.medium, text.size.scale(20)]}
+							style={[
+								text.align.center,
+								text.bold.medium,
+								text.size.scale(20),
+								{ color: colors['main-text'] },
+							]}
 						>
 							{conversation?.displayName || ''}
 						</Text>

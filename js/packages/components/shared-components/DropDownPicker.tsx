@@ -109,7 +109,7 @@ export const DropDownPicker: React.FC<{
 						<View style={[margin.right.medium]}>
 							{isModeLanguages ? <Flag code={item.value.split('-')[1]} size={24} /> : null}
 						</View>
-						<Text style={[text.size.medium]} key={item.value}>
+						<Text style={[text.size.medium, { color: colors['main-text'] }]} key={item.value}>
 							{item.label}
 						</Text>
 						<View

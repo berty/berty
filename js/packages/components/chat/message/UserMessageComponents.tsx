@@ -22,9 +22,14 @@ const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
 
 const useStylesMessage = () => {
 	const [{ text, padding }] = useStyles()
+	const colors = useThemeColor()
 	return {
-		dateMessage: [text.size.scale(11), text.bold.small, text.color.grey],
-		stateMessageValueMe: [padding.left.scale(1.5), text.size.scale(11), text.color.blue],
+		dateMessage: [text.size.scale(11), text.bold.small, { color: colors['secondary-text'] }],
+		stateMessageValueMe: [
+			padding.left.scale(1.5),
+			text.size.scale(11),
+			{ color: colors['background-header'] },
+		],
 	}
 }
 
