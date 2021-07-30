@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Primește cereri de contact",
       "external-services-button": "Servicii externe",
       "auto-replicate-button": "Replicare automată",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "DNS Multicast",
         "desc": ""
