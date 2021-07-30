@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "외부 서비스",
       "auto-replicate-button": "자동 복제",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": ""
