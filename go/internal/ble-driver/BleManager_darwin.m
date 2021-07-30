@@ -66,6 +66,7 @@ static NSString* const __nonnull PEER_ID_UUID = @"00004241-0000-1000-8000-00805F
 
 - (void)initService {
     os_log_debug(OS_LOG_BLE, "🟢 peripheralManager: initService");
+    _scanning = FALSE;
     _serviceUUID = [[CBUUID UUIDWithString:SERVICE_UUID] retain];
     _peerUUID = [[CBUUID UUIDWithString:PEER_ID_UUID] retain];
     _writerUUID = [[CBUUID UUIDWithString:WRITER_UUID] retain];
@@ -131,16 +132,17 @@ static NSString* const __nonnull PEER_ID_UUID = @"00004241-0000-1000-8000-00805F
 
 - (void)startScanning {
     @synchronized (self.cManager) {
-        if (self.cmEnable && ![self.cManager isScanning]) {
+        if (self.cmEnable && !self.scanning) {
             if (self.localPID != nil) {
                 os_log_debug(OS_LOG_BLE, "🟢 startScanning()");
                 NSDictionary *options = [NSDictionary
                                         dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
                                         CBCentralManagerScanOptionAllowDuplicatesKey, nil];
                 [self.cManager scanForPeripheralsWithServices:@[self.serviceUUID] options:options];
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 12 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-                    self.scannerTimer = [[NSTimer scheduledTimerWithTimeInterval:12.0 target:self selector:@selector(toggleScanner:) userInfo:nil repeats:YES] retain];
+                self.scanning = TRUE;
+
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    self.scannerTimer = [NSTimer scheduledTimerWithTimeInterval:12.0 target:self selector:@selector(toggleScanner:) userInfo:nil repeats:YES];
                 });
             }  else {
                 os_log_error(OS_LOG_BLE, "startScanning error: localPID is null");
@@ -165,14 +167,22 @@ static NSString* const __nonnull PEER_ID_UUID = @"00004241-0000-1000-8000-00805F
 
 - (void)stopScanning {
     @synchronized (self.cManager) {
-        if (self.cmEnable && [self.cManager isScanning]) {
-            os_log_debug(OS_LOG_BLE, "🟢 stopScanning()");
-            if (self.scannerTimer != nil) {
-                // invalidate release our retain
-                [self.scannerTimer invalidate];
-                self.scannerTimer = nil;
-            }
-            [self.cManager stopScan];
+        if (self.cmEnable && self.scanning) {
+            NSLog(@"🟢 stopScanning called");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.scannerTimer != nil) {
+                    if ([self.scannerTimer isValid]) {
+                        [self.scannerTimer invalidate];
+                    }
+                    self.scannerTimer = nil;
+                }
+
+                if ([self.cManager isScanning]) {
+                    [self.cManager stopScan];
+                }
+
+                self.scanning = FALSE;
+            });
         }
     }
 }
