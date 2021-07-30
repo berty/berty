@@ -16,7 +16,6 @@ extern int BLEHandleFoundPeer(char *);
 extern void BLEHandleLostPeer(char *);
 extern void BLEReceiveFromPeer(char *, void *, unsigned long);
 
-static BleManager *manager = nil;
 os_log_t OS_LOG_BLE = nil;
 
 void handleException(NSException* exception) {
@@ -24,11 +23,15 @@ void handleException(NSException* exception) {
 }
 
 BleManager* getManager(void) {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        os_log(OS_LOG_BLE, "🟢 getManager() initialize");
-        manager = [[[BleManager alloc] initScannerAndAdvertiser] autorelease];
-    });
+    static BleManager *manager = nil;
+
+    @synchronized([BleManager class])
+    {
+        if(!manager) {
+            os_log(OS_LOG_BLE, "BleManager: initialization");
+            manager = [[BleManager alloc] initScannerAndAdvertiser];
+        }
+    }
     return manager;
 }
 

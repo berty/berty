@@ -260,6 +260,7 @@ public class BleDriver {
         stopBleDriver();
         if (mBroadcastReceiverRegistered) {
             mAppContext.unregisterReceiver(mBroadcastReceiver);
+			mBroadcastReceiverRegistered = false;
         }
     }
 

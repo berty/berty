@@ -39,6 +39,7 @@
 @property (nonatomic, readwrite, strong) CountDownLatch* __nonnull bleOn;
 @property (nonatomic, readwrite, strong) CountDownLatch* __nonnull serviceAdded;
 @property (nonatomic, strong, nullable) NSTimer *scannerTimer;
+@property (nonatomic, readwrite, getter=isScanning) BOOL scanning;
 
 - (instancetype __nonnull) initScannerAndAdvertiser;
 - (void)addService;
