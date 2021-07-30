@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Bağlantı istekleri alın",
       "external-services-button": "Dış hizmetler",
       "auto-replicate-button": "Otomatik çoklama",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Çok yönlü yayın DNS",
         "desc": "Yerel Kişi Keşfi"
