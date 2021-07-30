@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Fogadott kapcsolati kérések",
       "external-services-button": "Külső szolgáltatások",
       "auto-replicate-button": "Automatikus megismétlés",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Helyi Peer felfedezés"
