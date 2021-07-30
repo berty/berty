@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "接收联系人请求",
       "external-services-button": "外部服务",
       "auto-replicate-button": "自动复制",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "多播DNS",
         "desc": "本地节点发现"
