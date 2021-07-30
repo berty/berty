@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Ricevi richieste di contatto",
       "external-services-button": "Servizi esterni",
       "auto-replicate-button": "Auto replica",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "DNS Multicast",
         "desc": "Ricerca Peer locali"
