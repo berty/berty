@@ -97,13 +97,13 @@
         "create-group": "CREATE A GROUP"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "Group name",
+        "about": "About groups",
+        "first-bullet-point": "Anyone in the group can rename it or invite new members",
+        "second-bullet-point": "You can invite members by link",
+        "third-bullet-point": "You can leave this group",
+        "fourth-bullet-point": "You cannot delete this group",
+        "fifth-bullet-point": "You cannot remove a member from this group"
       }
     },
     "home-modal": {
@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Receive contact requests",
       "external-services-button": "External services",
       "auto-replicate-button": "Auto replicate",
+      "auto-replicate-button-unavailable": "You must register at least one replication server first",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Local Peer discovery"
@@ -315,7 +316,7 @@
     },
     "devtools": {
       "title": "Dev tools",
-      "theme-editor": "",
+      "theme-editor": "Appearence & theme editor",
       "header-left-button": "Device infos",
       "simulate-button": "Simulate stream error",
       "simulate-js-error-button": "Simulate JavaScript error",
@@ -368,8 +369,8 @@
       "trigger-crashlytics-button": "Trigger crashlytics crash",
       "tyber-attach": "Tyber attach to {{host}}",
       "tyber-host-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Tyber",
+        "bullet-point": "Restart app after changing this field"
       }
     },
     "system-info": {
@@ -393,12 +394,12 @@
       "title": "IPFS WebUI"
     },
     "theme-editor": {
-      "title": "",
-      "randomize": "",
-      "save": "",
-      "export": "",
-      "share": "",
-      "import": ""
+      "title": "Theme editor",
+      "randomize": "Generate theme",
+      "save": "Save this theme",
+      "export": "Export selected theme as file",
+      "share": "Share selected theme as file",
+      "import": "Import a file theme"
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -434,11 +435,11 @@
       "next": "NEXT"
     },
     "save-theme": {
-      "title": "",
-      "desc": "",
-      "placeholder": "",
-      "cancel": "",
-      "add": ""
+      "title": "Saving theme",
+      "desc": "Please choose a name for your theme!",
+      "placeholder": "Theme name...",
+      "cancel": "CANCEL",
+      "add": "ADD!"
     }
   },
   "chat": {
@@ -642,26 +643,26 @@
   },
   "permission": {
     "notification": {
-      "title": "",
-      "desc": ""
+      "title": "Push notifications",
+      "desc": "Berty app need your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
     },
     "p2p": {
-      "title": "",
-      "desc": ""
+      "title": "Peer to Peer",
+      "desc": "Berty do not use or record in any way the user's location, the only purpose of the permission request is to exchange messages in BLE, which require location permission on Android."
     },
     "camera": {
-      "title": "",
-      "desc": ""
+      "title": "Camera",
+      "desc": "To scan QR code and add contacts with your camera, Berty app need your permission. Camera cannot be use for anything else."
     },
     "audio": {
-      "title": "",
-      "desc": ""
+      "title": "Audio messages",
+      "desc": "To send audio message to your contacts, you need to allow microphone permission to Berty app."
     },
     "button-labels": {
-      "allow": "",
-      "settings": ""
+      "allow": "Allow",
+      "settings": "Go to Settings"
     },
-    "what-happening": "",
-    "settings-text": ""
+    "what-happening": "What's happening here?",
+    "settings-text": "You can enable {{title}} permission from Settings."
   }
 }
