@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Ta emot kontaktförfrågningar",
       "external-services-button": "Externa tjänster",
       "auto-replicate-button": "Automatisk replikering",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Lokal utforskning av klienter"
