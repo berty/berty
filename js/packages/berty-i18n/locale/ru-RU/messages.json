@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Получать запросы в контакты",
       "external-services-button": "Внешние сервисы",
       "auto-replicate-button": "Автоматическое сохранение",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Обнаружение узлов рядом"
