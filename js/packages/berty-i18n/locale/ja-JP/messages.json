@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "マルチキャストDNS",
         "desc": ""
