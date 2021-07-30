@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Otrzymuj prośby o kontakt",
       "external-services-button": "Zewnętrzne usługi",
       "auto-replicate-button": "Automatyczna replikacja",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multiemisja DNS",
         "desc": "Odkrywanie lokalnych peerów"
