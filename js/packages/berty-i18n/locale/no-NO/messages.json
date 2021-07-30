@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Motta kontaktforespørsler",
       "external-services-button": "Eksterne tjenester",
       "auto-replicate-button": "Automatisk gjenskaping",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Lokal personoppdagelse"
