@@ -184,6 +184,7 @@
       "receive-contact-requests-button": "Přijímat žádosti o kontakt",
       "external-services-button": "Externí služby",
       "auto-replicate-button": "Automaticky kopírovat",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Vyhledat lokální uživatele"
