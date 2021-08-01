@@ -156,7 +156,7 @@ export const Permissions: React.FC<{}> = (props) => {
 					source={animations[permissionType]}
 					autoPlay
 					style={{
-						width: '70%',
+						marginVertical: 10,
 					}}
 				/>
 			</View>
