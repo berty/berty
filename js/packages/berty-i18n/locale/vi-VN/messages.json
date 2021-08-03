@@ -51,11 +51,11 @@
     },
     "notifications": {
       "header": "",
-      "recommended": "",
+      "recommended": "Đã đề xuất",
       "title": "Các thông báo",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "BỎ QUA VÀ THỰC HIỆN ĐIỀU NÀY SAU"
     },
     "bluetooth": {
       "header": "",
@@ -63,7 +63,7 @@
       "title": "",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "BỎ QUA VÀ THỰC HIỆN ĐIỀU NÀY SAU"
     },
     "setup-finished": {
       "title": "Cài đặt đã hoàn tất!",
@@ -162,7 +162,7 @@
         "desc": ""
       },
       "notifications-button": {
-        "title": "",
+        "title": "Các thông báo",
         "tag-enabled": "",
         "tag-disabled": ""
       },
@@ -175,8 +175,8 @@
         "title": "",
         "performance-tag": "",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "Dễ dàng sử dụng - Tất cả chức năng",
+        "first-bullet-point": "Nhận các thông báo đẩy",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -203,10 +203,10 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "Tên"
     },
     "notifications": {
-      "title": "",
+      "title": "Các thông báo",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -258,7 +258,7 @@
     },
     "services-auth": {
       "title": "",
-      "operated-services-button": "",
+      "operated-services-button": "Dùng dịch vụ điều hành của Berty",
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
@@ -356,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Các thông báo",
       "send-to-all-button": {
         "title": "",
         "sending": "",
