@@ -167,8 +167,8 @@
         "tag-disabled": ""
       },
       "bluetooth-button": {
-        "title": "",
-        "tag-enabled": "",
+        "title": "Bluetooth",
+        "tag-enabled": "Vključeno",
         "tag-disabled": ""
       },
       "app-mode-button": {
@@ -216,7 +216,7 @@
       },
       "messages-notifications-button": {
         "title": "",
-        "display-button": "",
+        "display-button": "Prikaži obvestila",
         "preview-button": "",
         "sound-button": "Zvok",
         "exceptions-button": {
@@ -289,12 +289,12 @@
       "contact-button": "",
       "message-button": "",
       "group-button": "",
-      "settings-button": "",
+      "settings-button": "Nastavitve",
       "ask-button": "",
       "report-button": ""
     },
     "about": {
-      "title": "",
+      "title": "O Berty",
       "top-left-button": "",
       "top-right-button": "",
       "bottom-left-button": "",
@@ -356,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Obvestila",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -419,9 +419,9 @@
       "dismiss-button": ""
     },
     "add-this-contact": {
-      "fingerprint": "",
+      "fingerprint": "Prstni odtis",
       "info": "",
-      "devices": ""
+      "devices": "Naprave"
     },
     "group-invitation": {
       "fingerprint": "Prstni odtis",
@@ -502,9 +502,9 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
+      "header-left-button": "Iskanje",
+      "header-middle-button": "Klic",
+      "header-right-button": "Deli",
       "media-button": "",
       "notifications-button": "",
       "mutual-button": "",
@@ -530,7 +530,7 @@
       "security-access": "",
       "security-access-desc": "",
       "save-to-gallery": "",
-      "share": "",
+      "share": "Deli",
       "forward-berty": "",
       "forward": "",
       "image-saved": ""
