@@ -258,7 +258,7 @@
     },
     "services-auth": {
       "title": "",
-      "operated-services-button": "",
+      "operated-services-button": "使用 Berty 运营的服务",
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
