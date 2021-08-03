@@ -131,14 +131,14 @@
         "desc": ""
       },
       "full-anon": {
-        "title": "",
+        "title": "Täieliku Anonüümsuse režiim",
         "desc": "",
         "no-ip": "",
         "no-mc": "",
         "tor-only": ""
       },
       "save": "",
-      "skip": ""
+      "skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
     }
   },
   "settings": {
@@ -162,12 +162,12 @@
         "desc": ""
       },
       "notifications-button": {
-        "title": "",
+        "title": "Teavitused",
         "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-disabled": "Välja lülitatud"
       },
       "bluetooth-button": {
-        "title": "",
+        "title": "Bluetooth",
         "tag-enabled": "",
         "tag-disabled": "Välja lülitatud"
       },
@@ -203,10 +203,10 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "Nimi"
     },
     "notifications": {
-      "title": "",
+      "title": "Teavitused",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -240,7 +240,7 @@
       }
     },
     "bluetooth": {
-      "title": "",
+      "title": "Bluetooth",
       "desc": "",
       "activate-button": "",
       "permission-title": "",
@@ -258,7 +258,7 @@
     },
     "services-auth": {
       "title": "",
-      "operated-services-button": "",
+      "operated-services-button": "Kasuta Berty poolt hallatud teenuseid",
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
@@ -356,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Teavitused",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -455,7 +455,7 @@
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
+      "header-left-button": "Otsing",
       "header-middle-button": "",
       "header-right-button": "",
       "media-button": "",
@@ -502,7 +502,7 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
+      "header-left-button": "Otsing",
       "header-middle-button": "",
       "header-right-button": "",
       "media-button": "",
