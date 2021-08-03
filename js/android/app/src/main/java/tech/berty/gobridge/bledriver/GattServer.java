@@ -1,6 +1,7 @@
 package tech.berty.gobridge.bledriver;
 
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
@@ -8,16 +9,20 @@ import android.bluetooth.BluetoothServerSocket;
 import android.content.Context;
 import android.os.Build;
 import android.os.ParcelUuid;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
+import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
@@ -25,14 +30,19 @@ import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 public class GattServer {
     // BLE protocol reserves 3 bytes out of MTU_SIZE for metadata
     public static final int ATT_HEADER_SIZE = 3;
+    private static final long OP_TIMEOUT = 10000;
     // GATT service UUID
     static final UUID SERVICE_UUID = UUID.fromString("00004240-0000-1000-8000-00805F9B34FB");
     // GATT characteristic used for peer ID exchange
     static final UUID PID_UUID = UUID.fromString("00004241-0000-1000-8000-00805F9B34FB");
     // GATT characteristic used for data exchange
     static final UUID WRITER_UUID = UUID.fromString("00004242-0000-1000-8000-00805F9B34FB");
+    // Client Characteristic Configuration (CCC) descriptor of the characteristic
+    private final UUID CCC_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
     static final ParcelUuid P_SERVICE_UUID = new ParcelUuid(SERVICE_UUID);
     private final String TAG = "bty.ble.GattServer";
+
+
     // GATT service objects
     private BluetoothGattService mService;
 
@@ -46,6 +56,10 @@ public class GattServer {
     private volatile boolean mInit = false;
     private volatile boolean mStarted = false;
     private final Lock mLock = new ReentrantLock();
+    private BluetoothGattCharacteristic mWriterCharacteristic;
+    private CountDownLatch countDownLatch;
+    private CountDownLatch mWriteLatch;
+
     public GattServer(Context context, BluetoothManager bluetoothManager) {
         mContext = context;
         mBluetoothManager = bluetoothManager;
@@ -60,7 +74,10 @@ public class GattServer {
 
         mService = new BluetoothGattService(SERVICE_UUID, SERVICE_TYPE_PRIMARY);
         BluetoothGattCharacteristic mPIDCharacteristic = new BluetoothGattCharacteristic(PID_UUID, PROPERTY_READ | PROPERTY_WRITE, PERMISSION_READ | PERMISSION_WRITE);
-        BluetoothGattCharacteristic mWriterCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
+        mWriterCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE | PROPERTY_NOTIFY, PERMISSION_WRITE);
+        BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(CCC_DESCRIPTOR_UUID, PERMISSION_READ | PERMISSION_WRITE);
+        descriptor.setValue(new byte[] { 0, 0 });
+        mWriterCharacteristic.addDescriptor(descriptor);
 
         if (!mPIDCharacteristic.setValue("") || !mWriterCharacteristic.setValue("")) {
             Log.e(TAG, "setupService failed: setValue error");
@@ -190,65 +207,74 @@ public class GattServer {
         mInit = false;
     }
 
-    /*public boolean writeAndNotify(PeerDevice device, byte[] payload) {
+    public void countDownWriteLatch() {
+        if (mWriteLatch != null) {
+            mWriteLatch.countDown();
+        } else {
+            Log.e(TAG, "countDownWriteLatch error: object is null");
+        }
+    }
+
+    private boolean _writeAndNotify(PeerDevice device, byte[] payload) {
+        Log.v(TAG, String.format("writeAndNotify: writing chunk of data: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+
+        if (!mWriterCharacteristic.setValue(payload)) {
+            Log.e(TAG, "writeAndNotify: set characteristic failed");
+            return false;
+        }
+
+        mWriteLatch = new CountDownLatch(1);
+
+        if (!mBluetoothGattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mWriterCharacteristic, true)) {
+            Log.e(TAG, String.format("writeAndNotify: notifyCharacteristicChanged failed for device=%s", device.getMACAddress()));
+            return false;
+        }
+
+        try {
+            mWriteLatch.await(OP_TIMEOUT, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Log.e(TAG, String.format("writeAndNotify: device=%s: await failed", device.getMACAddress()));
+            return false;
+        } finally {
+            mWriteLatch = null;
+        }
+
+        return true;
+    }
+
+    public boolean writeAndNotify(PeerDevice device, byte[] payload) {
+        Log.v(TAG, String.format("writeAndNotify: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+
         if (mBluetoothGattServer == null) {
             Log.e(TAG, "writeAndNotify: GATT server is not running");
             return false;
         }
 
-        if (mReaderCharacteristic == null) {
-            Log.e(TAG, "writeAndNotify: reader characteristic is null");
+        if (device.isServerDisconnected()) {
+            Log.e(TAG, "writeAndNotify: server is disconnected");
             return false;
         }
 
-        Log.v(TAG, String.format("writeAndNotify: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.getEncoder().encodeToString(payload), BleDriver.bytesToHex(payload), payload.length));
+        if (mWriterCharacteristic == null) {
+            Log.e(TAG, "writeAndNotify: writer characteristic is null");
+            return false;
+        }
 
-        return BleQueue.add(new Runnable() {
-            @Override
-            public void run() {
-                Log.v(TAG, String.format("BleQueue: writeAndNotify for device %s", device.getMACAddress()));
-                if (mBluetoothGattServer == null) {
-                    Log.e(TAG, "writeAndNotify: GATT server is not running");
-                    BleQueue.completedCommand();
-                } else if (mReaderCharacteristic == null) {
-                    Log.e(TAG, "writeAndNotify: reader characteristic is null");
-                    BleQueue.completedCommand();
-                } else {
-                    byte[] toWrite;
-                    int minOffset = 0;
-                    int maxOffset;
+        byte[] toWrite;
+        int minOffset = 0;
+        int maxOffset;
 
-                    // Send data to fit with MTU value
-                    while (minOffset < payload.length) {
-                        maxOffset = minOffset + device.getMtu() - ATT_HEADER_SIZE > payload.length ? payload.length : minOffset + device.getMtu() - ATT_HEADER_SIZE;
-                        toWrite = Arrays.copyOfRange(payload, minOffset, maxOffset);
-                        minOffset = maxOffset;
+        // Send data to fit with MTU value
+        while (minOffset < payload.length) {
+            maxOffset = minOffset + device.getMtu() - ATT_HEADER_SIZE > payload.length ? payload.length : minOffset + device.getMtu() - ATT_HEADER_SIZE;
+            toWrite = Arrays.copyOfRange(payload, minOffset, maxOffset);
+            minOffset = maxOffset;
 
-                        Log.v(TAG, String.format("writeAndNotify: in BleQueue, writing chunk of data: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.getEncoder().encodeToString(toWrite), BleDriver.bytesToHex(toWrite), payload.toString()));
-                        if (!mReaderCharacteristic.setValue(toWrite)) {
-                            Log.e(TAG, "writeAndNotify: set characteristic failed");
-                            // TODO: close connection?
-                            return ;
-                        }
-                        if (!mBluetoothGattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mReaderCharacteristic, true)) {
-                            Log.e(TAG, String.format("BleQueue: writeAndNotify: notifyCharacteristicChanged failed for device %s", device.getMACAddress()));
-                            // TODO: close connection?
-                            return ;
-                        }
-                    }
-
-                    // Sent an empty value to terminate transfer
-                    if (!mReaderCharacteristic.setValue("")) {
-                        Log.e(TAG, "writeAndNotify: set characteristic failed");
-                        // TODO: close connection?
-                        return ;
-                    }
-                    if (!mBluetoothGattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mReaderCharacteristic, true)) {
-                        Log.e(TAG, String.format("BleQueue: writeAndNotify: notifyCharacteristicChanged failed for device %s", device.getMACAddress()));
-                        // TODO: close connection?
-                    }
-                }
+            if (!_writeAndNotify(device, toWrite)) {
+                return false;
             }
-        });
-    }*/
+        }
+
+        return true;
+    }
 }
