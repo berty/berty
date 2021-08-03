@@ -131,7 +131,7 @@
         "desc": ""
       },
       "full-anon": {
-        "title": "",
+        "title": "وضع الإخفاء الكامل",
         "desc": "",
         "no-ip": "",
         "no-mc": "",
@@ -182,7 +182,7 @@
       },
       "dark-mode-button": "",
       "receive-contact-requests-button": "",
-      "external-services-button": "",
+      "external-services-button": "الخدمات الخارجية",
       "auto-replicate-button": "",
       "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
@@ -203,10 +203,10 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "الاسم"
     },
     "notifications": {
-      "title": "",
+      "title": "الإشعارات",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -325,9 +325,9 @@
       "tor-optional-option": "",
       "tor-required-option": "",
       "tor-disabled-option": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "system-info-button": "",
+      "header-middle-button": "توليد بيانات مزيفة",
+      "header-right-button": "إعادة تشغيل الرديمون",
+      "system-info-button": "معلومات النظام",
       "debug-button": "",
       "log-button": {
         "name": "",
@@ -337,7 +337,7 @@
         "name": "",
         "bullet-point": ""
       },
-      "add-dev-conversations-button": "",
+      "add-dev-conversations-button": "إضافة محادثات Dev",
       "share-button": {
         "title": "",
         "alert-title": "",
@@ -355,8 +355,8 @@
       "bot-mode-button": "",
       "local-grpc-button": "",
       "console-logs-button": "",
-      "ipfs-webui-button": "",
-      "notifications-button": "",
+      "ipfs-webui-button": "IPFS WebUI",
+      "notifications-button": "الإشعارات",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -426,7 +426,7 @@
     "group-invitation": {
       "fingerprint": "بصمة",
       "info": "",
-      "devices": ""
+      "devices": "الأجهزة"
     },
     "welcome-configuration": {
       "title": "",
@@ -447,18 +447,18 @@
       "mark-button": "",
       "block-button": "",
       "delete-button": "",
-      "fingerprint": "",
+      "fingerprint": "بصمة",
       "info": "",
-      "devices": ""
+      "devices": "الأجهزة"
     },
     "multi-member": {
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
+      "header-left-button": "البحث",
+      "header-middle-button": "اتصل",
+      "header-right-button": "مشاركة",
+      "media-button": "الوسائط والروابط والمستندات",
       "notifications-button": "",
       "members-button": {
         "title": "",
