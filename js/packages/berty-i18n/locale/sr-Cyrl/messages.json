@@ -51,7 +51,7 @@
     },
     "notifications": {
       "header": "",
-      "recommended": "",
+      "recommended": "Препоручено",
       "title": "",
       "desc": "",
       "button": "",
@@ -173,10 +173,10 @@
       },
       "app-mode-button": {
         "title": "",
-        "performance-tag": "",
+        "performance-tag": "Перформансе",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "Лако за коришћење - Све функције",
+        "first-bullet-point": "Прими push нотификације",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -203,7 +203,7 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "Име"
     },
     "notifications": {
       "title": "",
