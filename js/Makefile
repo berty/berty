@@ -368,6 +368,8 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 			-target ios \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
+	touch $@
+	cd .. && $(GO) mod tidy
 
 ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json node_modules
 	$(call check-program, bundle)
@@ -416,6 +418,8 @@ android/libs/gobridge.aar: $(bridge_src)
 		-target android \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
+	touch $@
+	cd .. && $(GO) mod tidy
 
 #### React
 
