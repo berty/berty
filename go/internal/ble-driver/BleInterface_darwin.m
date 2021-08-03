@@ -10,6 +10,7 @@
 #import <os/log.h>
 #import "BleInterface_darwin.h"
 #import "BertyDevice_darwin.h"
+#import "ConnectedPeer.h"
 
 // This functions are Go functions so they aren't defined here
 extern int BLEHandleFoundPeer(char *);
@@ -36,10 +37,12 @@ BleManager* getManager(void) {
 }
 
 void BLEStart(char *localPID) {
-    OS_LOG_BLE = os_log_create("tech.berty.bty.BLE", "protocol");
+    OS_LOG_BLE = os_log_create(LOCAL_DOMAIN, "protocol");
     os_log_debug(OS_LOG_BLE, "🟢 BLEStart()");
     @autoreleasepool {
-        [getManager() setLocalPID:[NSString stringWithUTF8String:localPID]];
+        NSString *localPIDString = [NSString stringWithUTF8String:localPID];
+        [getManager() setLocalPID:localPIDString];
+        [getManager() setID:[localPIDString substringWithRange:NSMakeRange([localPIDString length] - 4, 4)]];
         [getManager() startScanning];
         [getManager() startAdvertising];
         NSSetUncaughtExceptionHandler(handleException);
@@ -54,17 +57,27 @@ void BLEStop(void) {
     [getManager() cancelAllPeripheralConnections];
 }
 
-// TODO: Check if write succeeded?
 int BLESendToPeer(char *remotePID, void *payload, int length) {
     int status = 0;
     
     NSString *cPID = [[NSString alloc] initWithUTF8String:remotePID];
     NSData *cPayload = [[NSData alloc] initWithBytes:payload length:length];
+    
     BertyDevice *bDevice = [getManager() findPeripheralFromPID:cPID];
-    if (bDevice != nil) {
-        status = [bDevice writeToCharacteristic:[NSMutableData dataWithData:cPayload] forCharacteristic:bDevice.writer withEOD:FALSE tryL2cap:TRUE];
-    } else {
-        os_log_error(OS_LOG_BLE, "🔴 BLESendToPeer() no device found can't write");
+    if (bDevice == nil) {
+        os_log_error(OS_LOG_BLE, "BLESendToPeer error: no device found");
+        return 0;
+    }
+    
+    if (bDevice.peer == nil) {
+        os_log_error(OS_LOG_BLE, "BLESendToPeer error: peer object not found");
+        return 0;
+    }
+    
+    if ([bDevice.peer isClientReady]) {
+        status = [bDevice writeToCharacteristic:cPayload forCharacteristic:bDevice.writerCharacteristic withEOD:FALSE tryL2cap:TRUE];
+    } else if ([bDevice.peer isServerReady]) {
+        status = [getManager() writeAndNotify:bDevice data:cPayload];
     }
     [cPID release];
     [cPayload release];

@@ -10,7 +10,15 @@
 
 @implementation ConnectedPeer
 
-- (BOOL) isReady {
+- (BOOL)isClientReady {
+    return self.client != nil;
+}
+
+- (BOOL)isServerReady {
+    return self.server != nil;
+}
+
+- (BOOL)isReady {
         return [self isClientReady] && [self isServerReady];
 }
 

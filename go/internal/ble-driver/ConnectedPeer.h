@@ -13,14 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ConnectedPeer : NSObject
 
-- (BOOL) isReady;
-
 @property (nonatomic, assign, nullable) BertyDevice *client;
 @property (nonatomic, assign, nullable) BertyDevice *server;
-@property (readwrite, getter=isServerReady) BOOL serverReady;
-@property (readwrite, getter=isClientReady) BOOL clientReady;
 @property (readwrite, getter=isConnected) BOOL connected;
 @property (strong, nullable) CBL2CAPChannel *channel;
+
+- (BOOL)isClientReady;
+- (BOOL)isServerReady;
+- (BOOL)isReady;
 
 @end
 

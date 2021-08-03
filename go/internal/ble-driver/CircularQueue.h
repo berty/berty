@@ -8,18 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+# define DEFAULT_CAPACITY 8
 
-@interface CircularQueue : NSObject <NSFastEnumeration>
+@interface CircularQueue : NSObject
 
-@property (nonatomic, assign, readonly) NSUInteger capacity;
-@property (nonatomic, assign, readonly) NSUInteger count;
+@property (nonatomic, strong, nonnull) NSMutableArray *data;
+@property (nonatomic, assign, readwrite) NSInteger capacity;
+@property (nonatomic, assign, readwrite) NSInteger writeSequence;
+@property (nonatomic, assign, readwrite) NSInteger readSequence;
 
-- (id)initWithCapacity:(NSUInteger)capacity;
-
-- (void)enqObject:(id)obj; // Enqueue
-- (id)deqObject;           // Dequeue
-
-- (id)objectAtIndex:(NSUInteger)index;
-- (void)removeAllObjects;
+- (instancetype __nonnull)initWithCapacity:(NSUInteger)capacity;
+- (void)offer:(id __nonnull)obj; // Enqueue
+- (id __nonnull)poll; // Get object and unqueue
+- (id __nonnull)element; // Get object
+- (void)clean;
 
 @end

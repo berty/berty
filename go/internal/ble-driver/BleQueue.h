@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype __nullable) init:(dispatch_queue_t)queue;
 - (void) add:(void (^__nonnull)(void))block withCallback:(void (^__nullable)(NSError *))callback withDelay:(long)delay;
-- (void) completedTask:(NSError *)error;
+- (void) completedTask:(NSError *__nullable)error;
 - (void) nextTask;
 - (void) retryTask;
 - (void) clear;

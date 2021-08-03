@@ -11,7 +11,7 @@
 
 @implementation CountDownLatch
 
-- (instancetype)init:(int)count {
+- (instancetype)initCount:(NSInteger)count {
     if (count < 0) {
         return nil;
     }
@@ -29,9 +29,16 @@
 
 - (void)dealloc {
     _semaphore = nil;
+    dispatch_release(_dispatch_queue);
     _dispatch_queue = nil;
 
     [super dealloc];
+}
+
+- (void)incrementCount {
+    dispatch_async(self.dispatch_queue, ^{
+        self.count++;
+    });
 }
 
 - (void)countDown {

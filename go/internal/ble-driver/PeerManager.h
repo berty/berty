@@ -12,11 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PeerManager : NSObject
 
-+ (NSMutableDictionary *__nonnull) connectedPeers;
-+ (void) addPeer:(ConnectedPeer *__nonnull) peer forPeerID:(NSString *__nonnull) peerID;
-+ (void) removePeer:(NSString *__nonnull) peerID;
-+ (void) removeAllPeers;
-+ (ConnectedPeer *__nullable) getPeer:(NSString *__nonnull) peerID;
++ (NSMutableDictionary *__nonnull)connectedPeers;
++ (ConnectedPeer *__nonnull)getPeer:(NSString *__nonnull) peerID;
++ (ConnectedPeer *__nullable)registerDevice:(BertyDevice *__nonnull)device withPeerID:(NSString *__nonnull)peerID isClient:(BOOL)isClient;
++ (void)unregisterDevice:(BertyDevice *)device;
++ (void)removePeer:(NSString *__nonnull) peerID;
++ (void)removeAllPeers;
 
 @end
 

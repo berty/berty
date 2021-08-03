@@ -15,6 +15,7 @@
 #define BleInterface_h
 @class BleManager;
 
+#define LOCAL_DOMAIN "tech.berty.bty.BLE"
 extern os_log_t OS_LOG_BLE;
 
 void BLEStart(char *localPID);
