@@ -97,10 +97,10 @@
         "create-group": "Gruppe erstellen"
       },
       "create-group-finalize": {
-        "placeholder": "",
+        "placeholder": "Gruppenname",
         "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
+        "first-bullet-point": "Alle in der Gruppe können diese umbenennen oder neue Mitglieder einladen",
+        "second-bullet-point": "Sie können Mitglieder per Link einladen",
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
@@ -369,7 +369,7 @@
       "trigger-crashlytics-button": "Crashlytics Absturz auslösen",
       "tyber-attach": "Tyber an {{host}} anhängen",
       "tyber-host-button": {
-        "name": "",
+        "name": "Tyber",
         "bullet-point": "App nach dem Ändern dieses Feldes neu starten"
       }
     },
@@ -394,11 +394,11 @@
       "title": "IPFS Webinterface"
     },
     "theme-editor": {
-      "title": "",
-      "randomize": "",
-      "save": "",
-      "export": "",
-      "share": "",
+      "title": "Theme-Editor",
+      "randomize": "Theme erstellen",
+      "save": "Dieses Theme speichern",
+      "export": "Ausgewähltes Theme als Datei exportieren",
+      "share": "Ausgewähltes Theme als Datei teilen",
       "import": ""
     },
     "my-berty-ID": {
@@ -435,9 +435,9 @@
       "next": "Nächstes"
     },
     "save-theme": {
-      "title": "",
-      "desc": "",
-      "placeholder": "",
+      "title": "Theme speichern",
+      "desc": "Bitte wählen Sie einen Namen für Ihr Theme!",
+      "placeholder": "Theme-Name...",
       "cancel": "Abbrechen",
       "add": ""
     }
@@ -643,7 +643,7 @@
   },
   "permission": {
     "notification": {
-      "title": "",
+      "title": "Push-Benachrichtigungen",
       "desc": "Berty App benötigt deine Erlaubnis, um dir lokale oder Push-Benachrichtigungen zu senden. Dies erlaubt dir, benachrichtigt zu werden, wenn du eine Nachricht erhältst."
     },
     "p2p": {
