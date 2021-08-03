@@ -143,9 +143,9 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "지원",
       "header-center-button": "",
-      "header-right-button": "",
+      "header-right-button": "설정",
       "network-button": "",
       "switch-accounts": "",
       "edit-profile": "프로필 수정"
@@ -175,8 +175,8 @@
         "title": "",
         "performance-tag": "성능",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "쉬운 사용법 - 모든 기능",
+        "first-bullet-point": "푸시 알림 수신하기",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -216,7 +216,7 @@
       },
       "messages-notifications-button": {
         "title": "",
-        "display-button": "",
+        "display-button": "알림 표시",
         "preview-button": "메세지 미리보기",
         "sound-button": "소리",
         "exceptions-button": {
@@ -257,7 +257,7 @@
       "activate-button": ""
     },
     "services-auth": {
-      "title": "",
+      "title": "외부 서비스",
       "operated-services-button": "",
       "register-service-button": {
         "title": "",
@@ -391,7 +391,7 @@
       "tag-conversation": ""
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS 웹 UI"
     },
     "theme-editor": {
       "title": "",
@@ -502,14 +502,14 @@
       "input-placeholder": "여기에 입력..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
+      "header-left-button": "검색",
+      "header-middle-button": "호출",
+      "header-right-button": "공유",
+      "media-button": "미디어, 링크 및 문서",
+      "notifications-button": "알림 수신하기",
       "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "save-button": "서버에 대화내역 저장하기",
+      "erase-button": "대화내역 지우기"
     },
     "replicate-group-settings": {
       "title": "",
@@ -530,7 +530,7 @@
       "security-access": "",
       "security-access-desc": "",
       "save-to-gallery": "",
-      "share": "",
+      "share": "공유",
       "forward-berty": "",
       "forward": "",
       "image-saved": ""
@@ -621,7 +621,7 @@
       "refresh": "",
       "confirm-alert": {
         "button-confirm": "",
-        "button-cancel": ""
+        "button-cancel": "취소"
       }
     }
   },
@@ -633,7 +633,7 @@
         "permission-denied": ""
       },
       "slide-to-cancel": "",
-      "cancel-button": ""
+      "cancel-button": "취소"
     }
   },
   "medias": {
