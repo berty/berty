@@ -123,7 +123,7 @@
     },
     "network-options": {
       "welcome-title": "",
-      "full-anon-mode": "",
+      "full-anon-mode": "Mod Anononim Deplin",
       "simple-tor-compatible": "",
       "allow-expert-mode": "",
       "tor-compatible": {
@@ -138,14 +138,14 @@
         "tor-only": ""
       },
       "save": "SALVEAZĂ",
-      "skip": ""
+      "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "Ajutor",
       "header-center-button": "",
-      "header-right-button": "",
+      "header-right-button": "Setări",
       "network-button": "",
       "switch-accounts": "",
       "edit-profile": ""
@@ -447,9 +447,9 @@
       "mark-button": "Marchează ca verificat",
       "block-button": "Blochează contact",
       "delete-button": "Şterge contact",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Amprentă",
+      "info": "Informaţii",
+      "devices": "Dispozitive"
     },
     "multi-member": {
       "input-placeholder": ""
@@ -488,7 +488,7 @@
       "betabot-box": {
         "title": "",
         "desc": "",
-        "skip-button": "",
+        "skip-button": "Omite",
         "add-button": ""
       },
       "infos-chat": {
@@ -502,8 +502,8 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
+      "header-left-button": "Caută",
+      "header-middle-button": "Apelează",
       "header-right-button": "",
       "media-button": "",
       "notifications-button": "",
@@ -588,7 +588,7 @@
           "error-close": "",
           "error-delete": "",
           "success-feedback": "",
-          "action-cancel": ""
+          "action-cancel": "Anulează"
         },
         "status": {
           "metadata-found": "",
@@ -621,7 +621,7 @@
       "refresh": "",
       "confirm-alert": {
         "button-confirm": "",
-        "button-cancel": ""
+        "button-cancel": "Anulează"
       }
     }
   },
@@ -633,7 +633,7 @@
         "permission-denied": ""
       },
       "slide-to-cancel": "",
-      "cancel-button": ""
+      "cancel-button": "Anulează"
     }
   },
   "medias": {
