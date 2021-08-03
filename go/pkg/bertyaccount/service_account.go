@@ -12,6 +12,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
+	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"moul.io/progress"
@@ -878,6 +879,25 @@ func (s *service) NetworkConfigGet(ctx context.Context, request *NetworkConfigGe
 	}, nil
 }
 
+func SanitizeCheckMultiAddr(addrs []string) error {
+	for _, addr := range addrs {
+		switch addr {
+		case initutil.KeywordNone:
+			if len(addrs) != 1 {
+				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("only a single value is expected while using %s", initutil.KeywordNone))
+			}
+		case initutil.KeywordDefault:
+			// ignoring
+		default:
+			if _, err := ma.NewMultiaddr(addr); err != nil {
+				return errcode.ErrInvalidInput.Wrap(err)
+			}
+		}
+	}
+
+	return nil
+}
+
 func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *NetworkConfig) error {
 	if networkConfig == nil {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
@@ -887,6 +907,19 @@ func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *N
 	if networkConfig.Tor != NetworkConfig_TorUndefined && networkConfig.Tor != NetworkConfig_TorDisabled {
 		s.logger.Warn("tor is set to required, downgrading to disabled as not yet supported")
 		networkConfig.Tor = NetworkConfig_TorDisabled
+	}
+
+	// Sanitize check network config multi addrs
+	{
+		for key, addrs := range map[string][]string{
+			"Bootstrap":   networkConfig.Bootstrap,
+			"Rendezvous":  networkConfig.Rendezvous,
+			"StaticRelay": networkConfig.StaticRelay,
+		} {
+			if err := SanitizeCheckMultiAddr(addrs); err != nil {
+				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid format for %s maddrs: %w", key, err))
+			}
+		}
 	}
 
 	data, err := networkConfig.Marshal()
