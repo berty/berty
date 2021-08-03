@@ -162,21 +162,21 @@
         "desc": ""
       },
       "notifications-button": {
-        "title": "",
+        "title": "Ειδοποιήσεις",
         "tag-enabled": "",
         "tag-disabled": ""
       },
       "bluetooth-button": {
-        "title": "",
+        "title": "Bluetooth",
         "tag-enabled": "",
         "tag-disabled": ""
       },
       "app-mode-button": {
         "title": "",
-        "performance-tag": "",
+        "performance-tag": "Απόδοση",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "Εύκολο στη χρήση - Όλες οι δυνατότητες",
+        "first-bullet-point": "Λήψη ειδοποιήσεων",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -203,10 +203,10 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "Όνομα"
     },
     "notifications": {
-      "title": "",
+      "title": "Ειδοποιήσεις",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -258,11 +258,11 @@
     },
     "services-auth": {
       "title": "",
-      "operated-services-button": "",
+      "operated-services-button": "Χρήση υπηρεσιών που λειτουργούν με Berty",
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
-        "action": ""
+        "action": "Προσθήκη"
       },
       "registered-services-button": {
         "title": "",
@@ -356,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Ειδοποιήσεις",
       "send-to-all-button": {
         "title": "",
         "sending": "",
