@@ -664,5 +664,11 @@
     },
     "what-happening": "What's happening here?",
     "settings-text": "You can enable {{title}} permission from Settings."
+  },
+  "notification": {
+    "need-restart": {
+      "title": "Need restart app",
+      "desc": "For this kind of notifications you have to restart your app to save this fields!"
+    }
   }
 }

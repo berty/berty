@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, StyleProp, Animated, Easing } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, TouchableOpacity, StyleProp, Animated, Easing, TextInput } from 'react-native'
 import { Text, Icon, Toggle } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
@@ -586,5 +586,88 @@ export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ titl
 				</Animated.View>
 			</TouchableOpacity>
 		</View>
+	)
+}
+
+export const StringOptionInput: React.FC<{
+	name: string
+	getOptionValue: () => Promise<string> | string
+	setOptionValue: (value: string) => Promise<void> | void
+	bulletPointValue: string
+	iconColor?: string | undefined
+}> = ({ name, bulletPointValue, getOptionValue, setOptionValue, iconColor }) => {
+	const [{ flex, row, text, margin, padding, border }] = useStyles()
+	const [value, setValue] = useState('')
+	useEffect(() => {
+		;(async () => {
+			setValue(await getOptionValue())
+		})()
+	}, [getOptionValue])
+	const colors = useThemeColor()
+
+	if (!iconColor) {
+		iconColor = colors['alt-secondary-background-header']
+	}
+
+	return (
+		<ButtonSetting
+			name={name}
+			icon='message-circle-outline'
+			iconColor={iconColor}
+			actionIcon={null}
+		>
+			<View style={[padding.right.small, padding.top.small]}>
+				<View
+					style={[
+						flex.tiny,
+						border.radius.medium,
+						border.medium,
+						padding.small,
+						row.fill,
+						margin.bottom.small,
+						{
+							alignItems: 'center',
+							borderColor: colors['main-text'],
+						},
+					]}
+				>
+					<TextInput
+						autoCorrect={false}
+						autoCapitalize='none'
+						onChangeText={(t) => setValue(t)}
+						value={value}
+						style={[
+							text.bold.small,
+							text.size.medium,
+							flex.scale(8),
+							{ fontFamily: 'Open Sans', color: colors['main-text'] },
+						]}
+						multiline
+					/>
+					<TouchableOpacity
+						onPress={async () => {
+							await setOptionValue(value)
+						}}
+					>
+						<Icon
+							name='checkmark-outline'
+							fill={colors['alt-secondary-background-header']}
+							width={20}
+							height={20}
+						/>
+					</TouchableOpacity>
+				</View>
+
+				<ButtonSettingItem
+					value={bulletPointValue}
+					icon='info-outline'
+					iconColor={colors['background-header']}
+					iconSize={15}
+					disabled
+					styleText={{ color: colors['secondary-text'] }}
+					styleContainer={[margin.bottom.tiny]}
+				/>
+			</View>
+		</ButtonSetting>
 	)
 }

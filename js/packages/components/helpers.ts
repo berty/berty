@@ -130,3 +130,14 @@ export const randomizeThemeColor = () => {
 		'input-background': getRandomColor(),
 	}
 }
+
+export const showNeedRestartNotification = (showNotification: any, ctx: MsgrState, t: any) => {
+	showNotification({
+		title: t('notification.need-restart.title'),
+		message: t('notification.need-restart.desc'),
+		onPress: async () => {
+			await ctx.restart()
+		},
+		additionalProps: { type: 'message' },
+	})
+}

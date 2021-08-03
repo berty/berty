@@ -3,6 +3,7 @@ import { Alert, AppState, View, ScrollView, Linking, Platform } from 'react-nati
 import { Layout } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
+import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
@@ -13,6 +14,7 @@ import beapi from '@berty-tech/api'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { showNeedRestartNotification } from '../helpers'
 
 //
 // Bluetooth
@@ -126,173 +128,174 @@ export const permissionExplanation: (t: any, callback: () => void) => void = asy
 		)
 	})
 
-const BodyBluetooth: React.FC<BluetoothProps> = ({
-	bluetoothPermissions,
-	setBluetoothPermissions,
-}) => {
-	const [{ flex, padding, margin }] = useStyles()
-	const colors = useThemeColor()
-	const ctx = useMsgrContext()
-	const { t }: { t: any } = useTranslation()
+const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
+	({ showNotification, bluetoothPermissions, setBluetoothPermissions }: any) => {
+		const [{ flex, padding, margin }] = useStyles()
+		const colors = useThemeColor()
+		const ctx = useMsgrContext()
+		const { t }: { t: any } = useTranslation()
 
-	const appState = useRef(AppState.currentState)
+		const appState = useRef(AppState.currentState)
 
-	useEffect(() => {
-		const _handleAppStateChange = (nextAppState: any) => {
-			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-				checkBluetoothPermission()
-					.then((result) => {
-						setBluetoothPermissions(result)
-						toActivate(result)
-						toActivate = () => {}
-					})
-					.catch((err) => {
-						console.log('Check bluetooth permission error:', err)
-					})
-			}
-
-			appState.current = nextAppState
-		}
-
-		AppState.addEventListener('change', _handleAppStateChange)
-
-		return () => {
-			AppState.removeEventListener('change', _handleAppStateChange)
-		}
-	}, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-	const actionToggle: (
-		changedKey: EnumChangedKey,
-		currentValue: beapi.account.NetworkConfig.Flag,
-	) => void = async (
-		changedKey: EnumChangedKey,
-		currentValue: beapi.account.NetworkConfig.Flag,
-	) => {
-		const updateValue = async (bluetoothPermissions: BluetoothProps['bluetoothPermissions']) => {
-			let newValue = beapi.account.NetworkConfig.Flag.Disabled
-
-			if (
-				bluetoothPermissions === 'granted' &&
-				currentValue === beapi.account.NetworkConfig.Flag.Disabled
-			) {
-				newValue = beapi.account.NetworkConfig.Flag.Enabled
-			}
-
-			let newConfig = ctx.networkConfig
-
-			switch (changedKey) {
-				case EnumChangedKey.BluetoothLE:
-					newConfig = { ...ctx.networkConfig, bluetoothLe: newValue }
-					break
-
-				case EnumChangedKey.AndroidNearby:
-					newConfig = { ...ctx.networkConfig, androidNearby: newValue }
-					break
-
-				case EnumChangedKey.AppleMultipeerConnectivity:
-					newConfig = { ...ctx.networkConfig, appleMultipeerConnectivity: newValue }
-					break
-
-				default:
-					console.warn("couldn't map new value's key")
-					return
-			}
-
-			await accountService.networkConfigSet({
-				accountId: ctx.selectedAccount,
-				config: newConfig,
-			})
-			ctx.setNetworkConfig(newConfig)
-		}
-
-		switch (bluetoothPermissions) {
-			case 'granted':
-				await updateValue(bluetoothPermissions)
-				break
-
-			case 'denied':
-			case 'limited':
-			case 'unavailable':
-				console.log("case: not 'blocked'")
-				// permissions can be requested
-				permissionExplanation(t, () => {
-					requestBluetoothPermission().then(async (permission) => {
-						setBluetoothPermissions(permission)
-						await updateValue(permission)
-					})
-				})
-				break
-
-			case 'blocked':
-				permissionExplanation(t, () => {
-					toActivate = async (permission) => {
-						if (!permission) {
-							return
-						}
-
-						await updateValue(permission)
-					}
-					Linking.openSettings()
-				})
-				break
-		}
-	}
-
-	return (
-		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
-			<ButtonSetting
-				name={t('settings.bluetooth.activate-button')}
-				icon='bluetooth-outline'
-				iconSize={30}
-				iconColor={colors['background-header']}
-				toggled
-				varToggle={ctx.networkConfig.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
-				actionToggle={() =>
-					actionToggle(
-						EnumChangedKey.BluetoothLE,
-						ctx.networkConfig.bluetoothLe || beapi.account.NetworkConfig.Flag.Disabled,
-					)
+		useEffect(() => {
+			const _handleAppStateChange = (nextAppState: any) => {
+				if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+					checkBluetoothPermission()
+						.then((result) => {
+							setBluetoothPermissions(result)
+							toActivate(result)
+							toActivate = () => {}
+						})
+						.catch((err) => {
+							console.log('Check bluetooth permission error:', err)
+						})
 				}
-			/>
-			{Platform.OS === 'ios' && (
+
+				appState.current = nextAppState
+			}
+
+			AppState.addEventListener('change', _handleAppStateChange)
+
+			return () => {
+				AppState.removeEventListener('change', _handleAppStateChange)
+			}
+		}, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+		const actionToggle: (
+			changedKey: EnumChangedKey,
+			currentValue: beapi.account.NetworkConfig.Flag,
+		) => void = async (
+			changedKey: EnumChangedKey,
+			currentValue: beapi.account.NetworkConfig.Flag,
+		) => {
+			const updateValue = async (bluetoothPermissions: BluetoothProps['bluetoothPermissions']) => {
+				let newValue = beapi.account.NetworkConfig.Flag.Disabled
+
+				if (
+					bluetoothPermissions === 'granted' &&
+					currentValue === beapi.account.NetworkConfig.Flag.Disabled
+				) {
+					newValue = beapi.account.NetworkConfig.Flag.Enabled
+				}
+
+				let newConfig = ctx.networkConfig
+
+				switch (changedKey) {
+					case EnumChangedKey.BluetoothLE:
+						newConfig = { ...ctx.networkConfig, bluetoothLe: newValue }
+						break
+
+					case EnumChangedKey.AndroidNearby:
+						newConfig = { ...ctx.networkConfig, androidNearby: newValue }
+						break
+
+					case EnumChangedKey.AppleMultipeerConnectivity:
+						newConfig = { ...ctx.networkConfig, appleMultipeerConnectivity: newValue }
+						break
+
+					default:
+						console.warn("couldn't map new value's key")
+						return
+				}
+
+				await accountService.networkConfigSet({
+					accountId: ctx.selectedAccount,
+					config: newConfig,
+				})
+				ctx.setNetworkConfig(newConfig)
+			}
+
+			switch (bluetoothPermissions) {
+				case 'granted':
+					await updateValue(bluetoothPermissions)
+					break
+
+				case 'denied':
+				case 'limited':
+				case 'unavailable':
+					console.log("case: not 'blocked'")
+					// permissions can be requested
+					permissionExplanation(t, () => {
+						requestBluetoothPermission().then(async (permission) => {
+							setBluetoothPermissions(permission)
+							await updateValue(permission)
+						})
+					})
+					break
+
+				case 'blocked':
+					permissionExplanation(t, () => {
+						toActivate = async (permission) => {
+							if (!permission) {
+								return
+							}
+
+							await updateValue(permission)
+						}
+						Linking.openSettings()
+					})
+					break
+			}
+
+			showNeedRestartNotification(showNotification, ctx, t)
+		}
+
+		return (
+			<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 				<ButtonSetting
-					name={t('settings.mc.activate-button')}
-					icon='wifi-outline'
+					name={t('settings.bluetooth.activate-button')}
+					icon='bluetooth-outline'
 					iconSize={30}
 					iconColor={colors['background-header']}
 					toggled
-					varToggle={
-						ctx.networkConfig.appleMultipeerConnectivity ===
-						beapi.account.NetworkConfig.Flag.Enabled
+					varToggle={ctx.networkConfig.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
+					actionToggle={() =>
+						actionToggle(
+							EnumChangedKey.BluetoothLE,
+							ctx.networkConfig.bluetoothLe || beapi.account.NetworkConfig.Flag.Disabled,
+						)
 					}
-					actionToggle={() => {
-						actionToggle(
-							EnumChangedKey.AppleMultipeerConnectivity,
-							ctx.networkConfig.appleMultipeerConnectivity ||
-								beapi.account.NetworkConfig.Flag.Disabled,
-						)
-					}}
 				/>
-			)}
-			{Platform.OS === 'android' && (
-				<ButtonSetting
-					name={t('settings.nearby.activate-button')}
-					icon='wifi-outline'
-					iconSize={30}
-					iconColor={colors['background-header']}
-					toggled
-					varToggle={ctx.networkConfig.androidNearby === beapi.account.NetworkConfig.Flag.Enabled}
-					actionToggle={() => {
-						actionToggle(
-							EnumChangedKey.AndroidNearby,
-							ctx.networkConfig.androidNearby || beapi.account.NetworkConfig.Flag.Disabled,
-						)
-					}}
-				/>
-			)}
-		</View>
-	)
-}
+				{Platform.OS === 'ios' && (
+					<ButtonSetting
+						name={t('settings.mc.activate-button')}
+						icon='wifi-outline'
+						iconSize={30}
+						iconColor={colors['background-header']}
+						toggled
+						varToggle={
+							ctx.networkConfig.appleMultipeerConnectivity ===
+							beapi.account.NetworkConfig.Flag.Enabled
+						}
+						actionToggle={() => {
+							actionToggle(
+								EnumChangedKey.AppleMultipeerConnectivity,
+								ctx.networkConfig.appleMultipeerConnectivity ||
+									beapi.account.NetworkConfig.Flag.Disabled,
+							)
+						}}
+					/>
+				)}
+				{Platform.OS === 'android' && (
+					<ButtonSetting
+						name={t('settings.nearby.activate-button')}
+						icon='wifi-outline'
+						iconSize={30}
+						iconColor={colors['background-header']}
+						toggled
+						varToggle={ctx.networkConfig.androidNearby === beapi.account.NetworkConfig.Flag.Enabled}
+						actionToggle={() => {
+							actionToggle(
+								EnumChangedKey.AndroidNearby,
+								ctx.networkConfig.androidNearby || beapi.account.NetworkConfig.Flag.Disabled,
+							)
+						}}
+					/>
+				)}
+			</View>
+		)
+	},
+)
 
 export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const [bluetoothPermissions, setBluetoothPermissions] = useState<

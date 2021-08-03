@@ -1,12 +1,13 @@
 package bertyaccount
 
 import (
-	"berty.tech/berty/v2/go/internal/initutil"
 	"encoding/hex"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/initutil"
 )
 
 func TestFailingProto(t *testing.T) {

@@ -13,6 +13,7 @@ const NotificationBridge: React.FC = withInAppNotification(({ showNotification }
 			showNotification({
 				title: evt.payload.title,
 				message: evt.payload.body,
+				onPress: evt.payload.onPress,
 				additionalProps: evt,
 			})
 		}
