@@ -52,7 +52,7 @@
     "notifications": {
       "header": "",
       "recommended": "",
-      "title": "",
+      "title": "Notifikasi",
       "desc": "",
       "button": "",
       "skip": ""
@@ -206,7 +206,7 @@
       "name-input-label": ""
     },
     "notifications": {
-      "title": "",
+      "title": "Notifikasi",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -278,7 +278,7 @@
       "delete-button": ""
     },
     "help": {
-      "title": "",
+      "title": "Bantuan",
       "security-privacy-button": {
         "title": "",
         "desc": ""
@@ -289,7 +289,7 @@
       "contact-button": "",
       "message-button": "",
       "group-button": "",
-      "settings-button": "",
+      "settings-button": "Pengaturan",
       "ask-button": "",
       "report-button": ""
     },
@@ -356,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Notifikasi",
       "send-to-all-button": {
         "title": "",
         "sending": "",
