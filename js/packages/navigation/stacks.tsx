@@ -355,6 +355,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.ThemeEditor}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Settings.ColorPickerCategories}
+				component={Components.Settings.ColorPickerCategories}
+			/>
+			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}
 				component={Components.Onboarding.GetStarted}
 			/>

@@ -326,7 +326,7 @@ const StringOptionInput: React.FC<{
 	name: string
 	getOptionValue: () => Promise<string> | string
 	setOptionValue: (value: string) => Promise<void> | void
-	bulletPointValue: string
+	bulletPointValue?: string
 }> = ({ name, bulletPointValue, getOptionValue, setOptionValue }) => {
 	const [{ flex, row, text, margin, padding, border }] = useStyles()
 	const [value, setValue] = useState('')
@@ -380,15 +380,17 @@ const StringOptionInput: React.FC<{
 					</TouchableOpacity>
 				</View>
 
-				<ButtonSettingItem
-					value={bulletPointValue}
-					icon='info-outline'
-					iconColor={colors['background-header']}
-					iconSize={15}
-					disabled
-					styleText={{ color: colors['secondary-text'] }}
-					styleContainer={[margin.bottom.tiny]}
-				/>
+				{bulletPointValue && (
+					<ButtonSettingItem
+						value={bulletPointValue}
+						icon='info-outline'
+						iconColor={colors['background-header']}
+						iconSize={15}
+						disabled
+						styleText={{ color: colors['secondary-text'] }}
+						styleContainer={[margin.bottom.tiny]}
+					/>
+				)}
 			</View>
 		</ButtonSetting>
 	)

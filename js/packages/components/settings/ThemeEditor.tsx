@@ -8,6 +8,7 @@ import Share from 'react-native-share'
 import getPath from '@flyerhq/react-native-android-uri-path'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import DocumentPicker from 'react-native-document-picker'
+import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
@@ -146,6 +147,7 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 	const { t } = useTranslation()
+	const { navigate } = useNativeNavigation()
 
 	const items: any = Object.entries(ctx.persistentOptions.themeColor.collection).map((value, _) => {
 		return {
@@ -155,6 +157,13 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 	})
 	return (
 		<View style={[padding.medium, { flex: 1 }]}>
+			<ButtonSetting
+				name='Color picker categories'
+				icon='color-palette-outline'
+				iconSize={30}
+				iconColor={colors['alt-secondary-background-header']}
+				onPress={() => navigate('Settings.ColorPickerCategories')}
+			/>
 			<ButtonSetting
 				name={t('settings.theme-editor.randomize')}
 				icon='color-palette-outline'

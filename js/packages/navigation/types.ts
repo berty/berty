@@ -53,6 +53,7 @@ export namespace ScreenProps {
 		export type DevText = RouteProps<{ text: string }>
 		export type NetworkMap = RouteProps<void>
 		export type ThemeEditor = RouteProps<void>
+		export type ColorPickerCategories = RouteProps<void>
 	}
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
@@ -117,6 +118,7 @@ export namespace Routes {
 		AddDevConversations = 'Settings.AddDevConversations',
 		NetworkMap = 'Settings.NetworkMap',
 		ThemeEditor = 'Settings.ThemeEditor',
+		ColorPickerCategories = 'Settings.ColorPickerCategories',
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',

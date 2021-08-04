@@ -52,6 +52,7 @@
 		"react-native-audiowaveform": "^2.0.5",
 		"react-native-bootsplash": "^3.1.2",
 		"react-native-camera": "^3.42.0",
+		"react-native-color-picker": "^0.6.0",
 		"react-native-document-picker": "^5.2.0",
 		"react-native-elements": "^3.3.2",
 		"react-native-emoji-board": "^1.2.1",
