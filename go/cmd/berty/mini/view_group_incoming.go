@@ -313,9 +313,9 @@ func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *protocoltypes
 	case protocoltypes.TypeEventMonitorPeerLeave:
 		peerleave := e.GetPeerLeave()
 		if peerleave.IsSelf {
-			payload = "you just leaved this group"
+			payload = "you just left this group"
 		} else {
-			payload = fmt.Sprintf("peer leaved <%.15s>", peerleave.GetPeerID())
+			payload = fmt.Sprintf("peer left <%.15s>", peerleave.GetPeerID())
 		}
 	case protocoltypes.TypeEventMonitorAdvertiseGroup:
 		advertisegroup := e.GetAdvertiseGroup()
