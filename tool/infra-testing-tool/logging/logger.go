@@ -15,10 +15,24 @@ const (
 )
 
 func init() {
-	logFile, err := os.OpenFile("/home/ec2-user/logs/infra-daemon.log", os.O_CREATE | os.O_APPEND | os.O_RDWR, 0666)
+	dirname, err := os.UserHomeDir()
 	if err != nil {
 		panic(err)
 	}
+
+	_, err = os.Stat(fmt.Sprintf("%s/logs", dirname))
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(fmt.Sprintf("%s/logs", dirname), 0755)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	logFile, err := os.OpenFile(fmt.Sprintf("%s/logs/infra-daemon.log", dirname), os.O_CREATE | os.O_APPEND | os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+
 	mw := io.MultiWriter(os.Stdout, logFile)
 	log.SetOutput(mw)
 }

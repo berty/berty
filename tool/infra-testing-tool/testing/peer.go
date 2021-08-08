@@ -9,6 +9,7 @@ import (
 	"infratesting/aws"
 	"infratesting/config"
 	"infratesting/daemon/grpc/daemon"
+	"infratesting/iac/components/networking"
 	"infratesting/logging"
 	"strconv"
 	"sync"
@@ -29,12 +30,6 @@ type Peer struct {
 	Groups        map[string]*protocoltypes.Group
 	ConfigGroups  []config.Group
 }
-
-const (
-	daemonGRPCPort = 7091
-	internalDaemonGRPCPort = 9091
-
-)
 
 var deploy bool
 
@@ -81,23 +76,24 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 				_, err = temp.TestConnection(ctx, &daemon.TestConnection_Request{})
 				if err != nil {
 					count += 1
-					time.Sleep(time.Second * 5)
-					continue
+					time.Sleep(time.Second * 10)
 				} else {
 					_, err = temp.TestConnectionToPeer(ctx, &daemon.TestConnectionToPeer_Request{
-						Tries: 5,
+						Tries: 1,
 						Host:  "localhost",
-						Port:  strconv.Itoa(internalDaemonGRPCPort),
+						Port:  strconv.Itoa(networking.BertyGRPCPort),
 					})
 					if err != nil {
 						count += 1
-						time.Sleep(time.Second * 5)
+						time.Sleep(time.Second * 10)
 					} else {
 						break
 					}
 				}
 
+				logging.Log("waiting ...")
 				if count > 60 {
+					logging.Log("timeout")
 					return p, logging.LogErr(err)
 				}
 
@@ -173,7 +169,7 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 }
 
 func (p *Peer) GetHost() string {
-	return fmt.Sprintf("%s:%d", p.Ip, daemonGRPCPort)
+	return fmt.Sprintf("%s:%d", p.Ip, networking.DaemonGRPCPort)
 }
 
 // MatchNodeToPeer matches nodes to peers (to get the group info)
@@ -209,7 +205,22 @@ func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 			if *tag.Key == tagKey {
 				for _, value := range tagValues {
 					if *tag.Value == value {
-						p, err := NewPeer(*instance.PublicIpAddress, instance.Tags)
+
+						var ip string
+						for _, ni := range instance.NetworkInterfaces {
+							if ni.Association != nil {
+								if *ni.Association.PublicIp != "" {
+									ip = *ni.Association.PublicIp
+									break
+								}
+							}
+						}
+
+						if ip == "" {
+							panic("peer not publicly accessible")
+						}
+
+						p, err := NewPeer(ip, instance.Tags)
 						if err != nil {
 							return nil, logging.LogErr(err)
 						}

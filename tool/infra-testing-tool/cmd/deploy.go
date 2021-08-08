@@ -33,8 +33,6 @@ var (
 				panic("something went wrong while applying")
 			}
 
-			infratesting.SetDeploy()
-
 			logging.Log("attempting to connect to peers' infra-daemons")
 			logging.Log("this could take a while ...")
 
@@ -44,6 +42,7 @@ var (
 			}
 
 			aws.SetRegion(c.Settings.Region)
+			infratesting.SetDeploy()
 
 			_, err = infratesting.GetAllEligiblePeers(aws.Ec2TagType, config.AllPeerTypes)
 			if err != nil {

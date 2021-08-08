@@ -136,7 +136,6 @@ func ToHCL(components []iac.Component) (_ []iac.Component, hcl string) {
 }
 
 func (c *Config) parseGroupsAndConnections () (err error){
-
 	// RDVP
 	for i := range c.RDVP {
 		err = c.RDVP[i].parseConnections()

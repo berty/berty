@@ -11,9 +11,6 @@ type SecurityGroup struct {
 
 	Vpc   *Vpc
 	VpcId string
-
-	// TODO: add components to modify ingress and egress rules, ports, protocols, etc
-	// for now it doesn't really matter
 }
 
 func NewSecurityGroup() SecurityGroup {

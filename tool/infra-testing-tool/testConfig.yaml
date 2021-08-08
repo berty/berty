@@ -1,69 +1,47 @@
-rdvp:
-    - name: test rdvp
-      amount: 1
-      connections:
-          - name: connection
-            to: internet
-            protocol: tcp
-          - name: thing
-            to: lan
-            protocol: udp
-
 peer:
     - name: test peers 1
       amount: 2
-      daemon:
+      groups:
       - name: message group
         tests:
         - type: text
-          size: 3KB
-          interval: 1
-          amount: 10
-        - type: media
-          size: 15KB
-          interval: 1
+          size: 300B
+          interval: 2
           amount: 10
       connections:
-        - name: connection
-          to: internet
-          protocol: tcp
-      routers:
-        - type: rdvp
-          address: test rdvp
-#        - type: relay
-#          address: test relay
-#
-#replication:
-#    - name: repl1
-#      amount: 2
-#      groups:
-#      - name: message group
-#      connections:
-#          - name: connection
-#            to: internet
-#            protocol: tcp
-#          - name: thing
-#            to: lan
-#            protocol: udp
-#
-#relay:
-#    - name: test relay
-#      amount: 2
-#      connections:
-#          - name: connection
-#            to: internet
-#            protocol: tcp
-#
-#bootstrap:
-#    - name: test bs
-#      amount: 2
-#      connections:
-#          - name: connection
-#            to: internet
-#            protocol: tcp
+          - to: internet
+            protocol: tcp
+          - to: internet
+            protocol: quic
 #      routers:
 #          - type: rdvp
 #            address: test rdvp
+#          - type: relay
+#            address: test relay
+#          - type: bootstrap
+#            address: test bs
+
+#rdvp:
+#    - name: test rdvp
+#      amount: 1
+#      connections:
+#          - to: internet
+#            protocol: tcp
+#
+#relay:
+#    - name: test relay
+#      amount: 1
+#      connections:
+#          - to: internet
+#            protocol: tcp
+
+#bootstrap:
+#    - name: test bs
+#      amount: 1
+#      connections:
+#          - to: internet
+#            protocol: tcp
+#      routers:
 #          - type: relay
 #            address: test relay
 

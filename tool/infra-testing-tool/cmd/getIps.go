@@ -39,7 +39,7 @@ var (
 			for _, instance := range instances {
 				var name, nodeType string
 				var instanceId = "No ID"
-				var publicIpAddress = "No IP"
+				var ip = "No IP"
 
 				for _, tag := range instance.Tags {
 					if *tag.Key == aws.Ec2TagName {
@@ -55,11 +55,19 @@ var (
 					instanceId = *instance.InstanceId
 				}
 
+
 				if *instance.State.Name == "running" || *instance.State.Name == "pending" {
-					publicIpAddress = *instance.PublicIpAddress
+					for _, ni := range instance.NetworkInterfaces {
+						if ni.Association != nil {
+							if *ni.Association.PublicIp != "" {
+								ip = *ni.Association.PublicIp
+								break
+							}
+						}
+					}
 				}
 
-				s := fmt.Sprintf("%s, %s, %s, %s", name, nodeType, instanceId, publicIpAddress)
+				s := fmt.Sprintf("%s, %s, %s, %s", name, nodeType, instanceId, ip)
 
 				states[*instance.State.Name] = append(states[*instance.State.Name], s)
 			}

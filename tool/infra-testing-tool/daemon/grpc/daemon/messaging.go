@@ -42,6 +42,10 @@ type Message struct {
 	PayloadHash string
 }
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 func ToMessage(a messengertypes.AppMessage) Message {
 	return Message{
 		MessageType: a.GetType(),
@@ -53,13 +57,15 @@ func ToMessage(a messengertypes.AppMessage) Message {
 
 // SendTextMessage sends a string to a specific group
 func (s *Server) SendTextMessage(groupName string, message string) error {
-	logging.Log(fmt.Sprintf("sending text message to %s", groupName))
+	logging.Log(fmt.Sprintf("sending text message to '%s'", groupName))
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
 		Body: message,
 	})
 	if err != nil {
 		return err
 	}
+
+	logging.Log(fmt.Sprintf("sending message payload: %v", asSha256(payload)))
 
 	_, err = s.Messenger.Interact(context.Background(), &messengertypes.Interact_Request{
 		Type:                  messengertypes.AppMessage_TypeUserMessage,

@@ -11,6 +11,10 @@ resource "aws_default_route_table" "{{.Name }}" {
     cidr_block = "0.0.0.0/0"
     gateway_id = {{.InternetGatewayId}}
   }
+
+  tags = {
+  	Name = "{{.Name }}"
+  }
 }
 `
 

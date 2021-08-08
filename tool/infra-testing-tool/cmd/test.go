@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"bytes"
 	"context"
+	"encoding/gob"
 	"fmt"
 	"infratesting/aws"
 	"infratesting/logging"
@@ -30,6 +33,16 @@ var (
 				return logging.LogErr(err)
 			}
 
+			var amountOfGroups int
+			for _, group := range c.Attributes.Groups {
+				amountOfGroups += len(group.Tests)
+			}
+
+			if amountOfGroups == 0 {
+				logging.Log("there are no tests configured in the config")
+				return nil
+			}
+
 			aws.SetRegion(c.Settings.Region)
 
 			availablePeers,  err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
@@ -52,6 +65,7 @@ var (
 
 			var groups map[string]group
 			groups = make(map[string]group, c.GetAmountOfGroups())
+
 
 			// assign peers and tests to group
 			for i := range availablePeers {
@@ -105,6 +119,16 @@ var (
 						gr.Pk = invite.Invite
 						groups[availablePeers[i].ConfigGroups[g].Name] = gr
 
+						n := bytes.NewBuffer(invite.Invite)
+						dec := gob.NewDecoder(n)
+						var inv messengertypes.ShareableBertyGroup_Reply
+						err = dec.Decode(&inv)
+						if err != nil {
+							_ = logging.LogErr(err)
+						}
+
+						logging.Log(inv.WebURL)
+
 						_, err = availablePeers[i].P.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{
 							GroupName: availablePeers[i].ConfigGroups[g].Name,
 						})
@@ -134,8 +158,10 @@ var (
 				}
 			}
 
-			var groupArray []group
+			fmt.Printf("Waiting 5 minutes")
+			time.Sleep(time.Minute * 5)
 
+			var groupArray []group
 			for key := range groups {
 				groupArray = append(groupArray, groups[key])
 			}
@@ -143,13 +169,12 @@ var (
 			var newTestWG sync.WaitGroup
 			var startTestWG sync.WaitGroup
 
-
 			// iterate over groups
 			for g := range groupArray {
 				// iterate over tests in groups
 				for j := range groupArray[g].Tests {
-					newTestWG.Add(len(groupArray[g].Tests))
-					startTestWG.Add(len(groupArray[g].Tests))
+					newTestWG.Add(len(groupArray[g].Peers))
+					startTestWG.Add(len(groupArray[g].Peers))
 					// iterate over peers in group
 					for k := range groupArray[g].Peers {
 						groupIndex := g
@@ -235,7 +260,7 @@ var (
 
  			allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, config.GetAllTypes())
 
-			for k := range allNodes{
+			for k := range allNodes {
 				resp, err := allNodes[k].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
 					Folder: strconv.FormatInt(t, 10),
 					Name:   strings.ReplaceAll(allNodes[k].Tags[aws.Ec2TagName], ".", "-"),

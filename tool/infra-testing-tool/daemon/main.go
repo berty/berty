@@ -4,20 +4,17 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"infratesting/daemon/grpc/daemon"
+	"infratesting/iac/components/networking"
 	"infratesting/logging"
 	"net"
-)
-
-const (
-	usedGrpcPort = 7091
 )
 
 func main() {
 	logging.Log("Berty Infra Daemmon starting")
 
-	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%v", usedGrpcPort))
+	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%v", networking.DaemonGRPCPort))
 	if err != nil {
-		logging.Log(fmt.Sprintf("Failed to listen to port %v: %v", usedGrpcPort, err))
+		logging.Log(fmt.Sprintf("Failed to listen to port %v: %v", networking.DaemonGRPCPort, err))
 	}
 
 	grpcServer := grpc.NewServer()

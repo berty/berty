@@ -1,9 +1,11 @@
 package main
 
 import (
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"bytes"
 	"context"
+	"encoding/gob"
 	"fmt"
-	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"infratesting/daemon/grpc/daemon"
 	"infratesting/logging"
@@ -13,13 +15,21 @@ import (
 func main() {
 	ctx := context.Background()
 
-	conn, err := grpc.Dial("13.36.214.193:7091", grpc.WithInsecure())
+	//conn, err := grpc.Dial("15.236.100.80:9090", grpc.WithInsecure())
+	conn, err := grpc.Dial("192.168.1.177:9090", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
 	defer conn.Close()
 
 	p := daemon.NewProxyClient(conn)
+	////conn, err := grpc.Dial("15.236.100.80:9090", grpc.WithInsecure())
+	//conn, err = grpc.Dial("192.168.1.177:9090", grpc.WithInsecure())
+	//if err != nil {
+	//	panic(err)
+	//}
+	//defer conn.Close()
+	//
 
 	_, err = p.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
 		Host: "127.0.0.1",
@@ -41,12 +51,30 @@ func main() {
 	//log.Println(resp.UploadCount)
 
 
-	groupName := uuid.NewString()
+	groupName := "peepoo"
 
-	_, err = p.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
+	request, err := p.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
 	if err != nil {
 		panic(err)
 	}
+
+	n := bytes.NewBuffer(request.Invite)
+	dec := gob.NewDecoder(n)
+	var invite messengertypes.ShareableBertyGroup_Reply
+	err = dec.Decode(&invite)
+	if err != nil {
+		_ = logging.LogErr(err)
+	}
+
+	logging.Log(invite.Link)
+	logging.Log(invite.WebURL)
+
+	_, err = p.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{GroupName: groupName})
+	if err != nil {
+		_ = logging.LogErr(err)
+	}
+
+	time.Sleep(time.Second * 30)
 
 	//conn2, err := grpc.Dial("192.168.1.177:7091", grpc.WithInsecure())
 	//if err != nil {
@@ -117,25 +145,25 @@ func main() {
 		GroupName: groupName,
 		TestN:  0,
 		Type:      "text",
-		Size:      2000,
+		Size:      200,
 		Interval:  1,
-		Amount: 5,
+		Amount: 10,
 	})
 	if err != nil {
 		logging.LogErr(err)
 	}
 
-	_, err = p.NewTest(ctx, &daemon.NewTest_Request{
-		GroupName: groupName,
-		TestN:  1,
-		Type:      "media",
-		Size:      2000,
-		Interval:  1,
-		Amount: 5,
-	})
-	if err != nil {
-		logging.LogErr(err)
-	}
+	//_, err = p.NewTest(ctx, &daemon.NewTest_Request{
+	//	GroupName: groupName,
+	//	TestN:  1,
+	//	Type:      "media",
+	//	Size:      2000,
+	//	Interval:  1,
+	//	Amount: 10,
+	//})
+	//if err != nil {
+	//	logging.LogErr(err)
+	//}
 
 
 
@@ -147,14 +175,14 @@ func main() {
 	if err != nil {
 		logging.LogErr(err)
 	}
-
-	_, err = p.StartTest(ctx, &daemon.StartTest_Request{
-		GroupName: groupName,
-		TestN:  1,
-	})
-	if err != nil {
-		logging.LogErr(err)
-	}
+	//
+	//_, err = p.StartTest(ctx, &daemon.StartTest_Request{
+	//	GroupName: groupName,
+	//	TestN:  1,
+	//})
+	//if err != nil {
+	//	logging.LogErr(err)
+	//}
 
 
 	time.Sleep(time.Second * 3)

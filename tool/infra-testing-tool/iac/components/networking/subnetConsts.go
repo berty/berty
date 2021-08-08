@@ -9,6 +9,10 @@ resource "aws_subnet" {{.Name }} {
   cidr_block = "{{.CidrBlock }}"
   availability_zone = "{{.AvailabilityZone }}"
   map_public_ip_on_launch = true
+
+  tags = {
+  	Name = "{{.Name }}"
+  }
 }
 `
 	// SubnetCidrBlockDefault is the default value for CidrBlock

@@ -74,9 +74,10 @@ peer:
                   interval: 10
                   amount: 15
       connections:
-          - name: connection
-            to: internet
+          - to: internet
             protocol: tcp
+          - to: lan_1
+            protocol: quic
       routers:
           - type: rdvp
             address: test rdvp
@@ -87,24 +88,25 @@ rdvp:
     - name: test rdvp
       amount: 1
       connections:
-          - name: connection
-            to: internet
+          - to: internet
             protocol: tcp
 
 relay:
     - name: test relay
       amount: 1
       connections:
-          - name: connection
-            to: internet
+          - to: internet
             protocol: tcp
+          - to: lan_1
+            protocol: ws
 
 bootstrap:
     - name: test bs
       amount: 1
       connections:
-          - name: connection
-            to: internet
+          - to: internet
+            protocol: tcp
+          - to: lan_1
             protocol: tcp
       routers:
           - type: relay
@@ -150,14 +152,8 @@ This is the interval between each sent message per node in seconds. Example: 15 
 This is the amount of messages that will be sent during the test.
 
 ## Connections
-As of right now this is pretty limited with only support for connections to `internet` over `tcp`.
-Like this:
-```yaml
-connections:
-  - name: connection
-    to: internet
-    protocol: tcp
-```
+The only reserved "destination" is `internet`. Any peer/type with the destination `internet` will be exposed to the internet.
+Other than that you are free to name your destination groups however you like. Any peers/types with the same destination will be located in the same subnet/will be able to talk to eachother.
 
 ## Routers
 This can only be used on **peer**s, **replication server**s and **bootstrap**s.

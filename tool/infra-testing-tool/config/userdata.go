@@ -2,7 +2,8 @@ package config
 
 import (
 	"bytes"
-	"strconv"
+	"encoding/base64"
+	"infratesting/iac/components/networking"
 	"text/template"
 )
 
@@ -20,42 +21,40 @@ func (c *Node) GenerateUserData() (s string, err error) {
 	case NodeTypePeer:
 		templ = peerUserData
 
-		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
-		values["defaultGrpcPort"] = defaultGrpcPort
+		values["listener"] = c.NodeAttributes.Listener
+		values["announce"] = c.NodeAttributes.Announce
+		values["defaultGrpcPort"] = networking.BertyGRPCPort
 		values["rdvp"] = c.NodeAttributes.RDVPMaddr
 		values["relay"] = c.NodeAttributes.RelayMaddr
 		values["bootstrap"] = c.NodeAttributes.BootstrapMaddr
-		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeBootstrap:
 		templ = bootstrapUserData
 
-		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["listener"] = c.NodeAttributes.Listener
 		values["rdvp"] = c.NodeAttributes.RDVPMaddr
 		values["relay"] = c.NodeAttributes.RelayMaddr
 		values["bootstrap"] = c.NodeAttributes.BootstrapMaddr
-		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeRDVP:
 		templ = rdvpUserData
 
-		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["listener"] = c.NodeAttributes.Listener
 		values["peerId"] = c.NodeAttributes.PeerId
 		values["pk"] = c.NodeAttributes.Pk
-		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeRelay:
 		templ = relayUserData
 
-		values["port"] = strconv.Itoa(c.NodeAttributes.Port)
+		values["announce"] = c.NodeAttributes.Announce
+		values["listener"] = c.NodeAttributes.Listener
 		values["peerId"] = c.NodeAttributes.PeerId
 		values["pk"] = c.NodeAttributes.Pk
-		values["protocol"] = c.NodeAttributes.Protocol
 
 	case NodeTypeReplication:
 		templ = replicationUserData
 
-		values["defaultGrpcPort"] = defaultGrpcPort
+		values["defaultGrpcPort"] = networking.BertyGRPCPort
 		values["sk"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Sk)
 		values["secret"] = base64.RawStdEncoding.EncodeToString(c.NodeAttributes.Secret)
 

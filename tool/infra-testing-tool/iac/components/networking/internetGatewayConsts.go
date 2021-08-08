@@ -6,6 +6,10 @@ const (
 	InternetGatewayHCLTemplate = `
 resource "aws_internet_gateway" "{{.Name}}" {
   vpc_id = {{.VpcId }}
+
+  tags = {
+  	Name = "{{.Name }}"
+  }
 }
 `
 

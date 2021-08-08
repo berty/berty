@@ -14,6 +14,7 @@ const (
 	// this is the base, any other data gets appended to it.
 	baseUserData = `
 #!/bin/bash
+source /home/ec2-user/.bashrc
 `
 
 	peerUserData = `berty daemon \
@@ -23,7 +24,8 @@ const (
 	-p2p.bootstrap='{{.bootstrap }}' \
 	-p2p.dht-randomwalk=false \
 	-p2p.tinder-dht-driver=false \
-	-p2p.swarm-listeners=/ip4/0.0.0.0/{{.protocol }}/{{.port }}/ \
+	-p2p.swarm-listeners="{{.listener }}" \
+    -p2p.swarm-announce="{{.announce }}" \
 	-p2p.rdvp='{{.rdvp }}' \
 	-p2p.tinder-rdvp-driver=true \
 	-log.format=json \
@@ -37,20 +39,20 @@ const (
 	-p2p.static-relays={{.relay }} \
 	-p2p.tinder-dht-driver=false \
 	-p2p.tinder-rdvp-driver=false \
-	-p2p.swarm-listeners="/ip4/0.0.0.0/tcp/{{.port }}" \
+	-p2p.swarm-listeners="{{.listener }}" \
 	-log.format=json \
 	-log.file=/home/ec2-user/logs/
 `
 
 	rdvpUserData = `rdvp serve -pk {{.pk | printf "%s" }} \
-    -l "/ip4/0.0.0.0/{{.protocol }}/{{.port }}" \
+    -l "{{.listener }}" \
 	-log.format=json \
 	-log.file=/home/ec2-user/logs/log.json
 `
 
 	relayUserData = `rdvp serve \
-	-announce "/ip4/0.0.0.0/{{.protocol }}/{{.port }}" \
-	-l "/ip4/0.0.0.0/{{.protocol }}/{{.port }}" \
+	-announce "{{.announce }}" \
+	-l "{{.listener }}" \
 	-log.format=json \
 	-log.file=/home/ec2-user/logs/log.json
 `
@@ -64,19 +66,9 @@ const (
 berty token-server \
 	-no-click \
 	-svc "rpl@127.0.0.1:9091" \
-	-http.listener "0.0.0.0:8091" \
+	-http.listener "0.0.0.0:9092" \
 	-auth.secret {{.tokenSecret }} \
 	-auth.sk {{.tokenSk }} \
-	-log.format=json \
-	-log.file=/home/ec2-user/
-`
-
-	tokenServerUserData = `berty token-server \
-	-no-click \
-	-svc "rpl@{{.replIp}}:{{.replPort}}" \
-	-http.listener "127.0.0.1:{{.port }}" \
-	-auth.secret {{.secret }} \
-	-auth.sk {{.sk }} \
 	-log.format=json \
 	-log.file=/home/ec2-user/
 `

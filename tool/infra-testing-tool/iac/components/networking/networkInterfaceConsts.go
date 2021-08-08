@@ -11,7 +11,14 @@ resource "aws_network_interface" "{{.Name }}" {
     {{$id }},
 	{{- end }}
   ]
-}`
+
+  source_dest_check = false
+
+  tags = {
+  	Name = "{{.Name }}"
+  }
+}
+`
 
 	// NetworkInterfaceNamePrefix is the prefix for the NetworkInterface type
 	NetworkInterfaceNamePrefix = "ni"

@@ -10,11 +10,11 @@ import (
 )
 
 type Connection struct {
-	Name     string `yaml:"name"`
 	To       string `yaml:"to"`
 	Protocol string `yaml:"protocol"`
 
 	connType string
+	infraToolOnly bool
 }
 
 const (
@@ -23,13 +23,51 @@ const (
 )
 
 // parseConnections takes the connection, adds it to the global connections
-func (c NodeGroup) parseConnections() error {
-	if len(c.Connections) == 0 {
-		return errors.New(fmt.Sprintf("%s needs at least 1 connection", c.NodeType))
+func (c *NodeGroup) parseConnections() error {
+	//if len(c.Connections) == 0 {
+	//	return errors.New(fmt.Sprintf("%s needs at least 1 connection", c.NodeType))
+	//}
+
+	// replace spaces in name
+	// would cause error in terraform otherwise
+	c.Name = strings.ReplaceAll(c.Name, " ", "_")
+
+	var hasInternet bool
+	for i, _ := range c.Connections {
+		if strings.Contains(c.Connections[i].To, ConnTypeInternet) {
+			c.Connections[i].connType = ConnTypeInternet
+			hasInternet = true
+		} else {
+			c.Connections[i].connType = ConnTypeLan
+		}
+
+		// check protocol
+		switch c.Connections[i].Protocol {
+		case quic:
+			// ok
+		case websocket:
+			// ok
+		case tcp:
+			// ok
+		case udp:
+			// ok
+		default:
+			return errors.New(fmt.Sprintf("invalid protocol: %v", c.Connections[i].Protocol))
+		}
+
+		config.Attributes.Connections[c.Connections[i].To] = &c.Connections[i]
 	}
 
-	for _, con := range c.Connections {
-		config.Attributes.Connections[con.To] = con
+	if !hasInternet {
+		var con = Connection{
+			To:            ConnTypeInternet,
+			Protocol:      tcp,
+			connType:      ConnTypeInternet,
+			infraToolOnly: true,
+		}
+
+		c.Connections = append(c.Connections, con)
+		config.Attributes.Connections[ConnTypeInternet] = &con
 	}
 
 	return nil
@@ -89,6 +127,23 @@ func (c Connection) composeComponents() {
 	// add security group
 	sg := networking.NewSecurityGroupWithAttributes(&vpc)
 	components = append(components, sg)
+
+	if c.connType == ConnTypeInternet {
+		if c.infraToolOnly {
+			// port 22, tcp, from anywhere for ssh
+			components = append(components, makeInternetSGRules(22, tcp, sg)...)
+
+			// port 9090, tcp, from anywhere for infra daemon
+			components = append(components, makeInternetSGRules(9090, tcp, sg)...)
+
+			// port 443, tcp, from anywhere for s3 upload
+			components = append(components, makeInternetSGRules(443, tcp, sg)...)
+
+		} else {
+			// all ports, any protocol, from anywhere
+			components = append(components, makeInternetSGRules(0, "-1", sg)...)
+		}
+	}
 
 	for i, comp := range components {
 		comp, err := comp.Validate()

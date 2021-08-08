@@ -23,17 +23,21 @@ import (
 )
 
 const (
-	amountOfTypes = 6
 	NodeTypePeer        = "peer"
 	NodeTypeReplication = "repl"
 	NodeTypeRDVP        = "rdvp"
 	NodeTypeRelay       = "relay"
 	NodeTypeBootstrap   = "bootstrap"
 
-	lowerLimitPort = 2000
-	upperLimitPort = 8000
+	udp       = "udp"
+	tcp       = "tcp"
+	quic      = "quic"
+	websocket = "ws"
 
-	defaultGrpcPort = "9091"
+	lowerLimitPort = 9095
+	upperLimitPort = 30000
+
+	none = ":none:"
 )
 
 //var AllNodeTypes = []string{NodeTypePeer, NodeTypeReplication, NodeTypeRDVP, NodeTypeRelay, NodeTypeBootstrap}
@@ -41,7 +45,7 @@ var AllPeerTypes = []string{NodeTypePeer, NodeTypeReplication}
 
 // NodeGroup contains the information about a "group" of nodes declared together (by the 'NodeGroup.Amount' field)
 // Some attributes have slices as types ie: NodeGroup.Groups, NodeGroup.Connections, etc this is because it is possible that
-// multiples of that type exist (like multiple connections/daemon, etc.)
+// multiples of that type exist (like multiple connections/groups, etc.)
 // The individual node parameters that are not shared between nodes reside in NodeGroup.Nodes and further Node.NodeAttributes
 // Each node is named as following: Node.Name = NodeGroup.Name + uuid.NewString()[:8]
 type NodeGroup struct {
@@ -53,7 +57,7 @@ type NodeGroup struct {
 
 	// Amount is the amount of nodes with this config you want to generate
 	Amount      int          `yaml:"amount"`
-	Groups      []Group      `yaml:"daemon"`
+	Groups      []Group      `yaml:"groups"`
 	Connections []Connection `yaml:"connections"`
 	Routers     []Router
 
@@ -61,28 +65,30 @@ type NodeGroup struct {
 
 	// attached components
 	components []iac.Component
-
 }
 
 type Node struct {
 	Name           string         `yaml:"name"`
 	NodeType       string         `yaml:"nodeType"`
 	NodeAttributes NodeAttributes `yaml:"nodeAttributes"`
-	instance 	   ec2.Instance
+	instance       ec2.Instance
 }
 
 // NodeAttributes contains the node specific attributes
-// like port, protocol
+// like ports, protocols
 // for nodes of type NodeTypeRDVP or NodeTypeRelay an additional 2 attributes are generated:
 // NodeAttributes.Pk and NodeAttributes.PeerId
 type NodeAttributes struct {
-	Port     int
-	Protocol string
-	Pk       string
-	PeerId   string
+	Ports     []int
+	Protocols []string
+	Listener  string
+	Announce  string
+
+	Pk     string
+	PeerId string
 
 	Secret []byte
-	Sk []byte
+	Sk     []byte
 
 	RDVPMaddr      string
 	RelayMaddr     string
@@ -90,7 +96,8 @@ type NodeAttributes struct {
 
 	// token server specific things
 	TokenSecret []byte
-	TokenSk []byte}
+	TokenSk     []byte
+}
 
 type Router struct {
 	RouterType string `yaml:"type"`
@@ -110,35 +117,45 @@ func (c *NodeGroup) composeComponents() {
 	var comps []iac.Component
 
 	// loop over nodes in NodeGroup
-	for i, node := range c.Nodes {
+	for i := range c.Nodes {
+		if len(c.Connections) == 0 {
+			panic(fmt.Sprintf("nodegroup %s has no connections", c.Name))
+		}
+
 		// placeholder for network interfaces
 		var networkInterfaces []*networking.NetworkInterface
 
-		var hasInternet bool
-
 		// check for double internet connection
 		// which isn't allowed
+		var hasInternet bool
 		for _, con := range c.Connections {
-			if con.connType == ConnTypeInternet	{
-				if hasInternet == true {
-					panic(fmt.Sprintf("nodegroup %s, cannot have more than one connection to the internet", c.Name))
+			if con.connType == ConnTypeInternet {
+				if hasInternet {
+					//panic(fmt.Sprintf("nodegroup %s, cannot have more than one connection to the internet", c.Name))
 				}
 
 				hasInternet = true
 			}
 		}
 
-		// GENERATING NETWORK INTERFACES
-		if len(c.Connections) == 0 {
-			panic(fmt.Sprintf("nodegroup %s has no connections", c.Name))
+		// if it doesn't have an explicit internet connection
+		// we need to add one to make sure we can talk to the node over ssh and gRPC
+		if !hasInternet {
+			_, ok := config.Attributes.Connections[ConnTypeInternet]
+			if !ok {
+			}
 		}
 
-		// loop over all connections (internet, lan_1, etc)
+		// generate a port for multiaddr
 		for _, connection := range c.Connections {
-			err := connection.validate()
-			if err != nil {
-				panic(err)
-			}
+			c.Nodes[i].NodeAttributes.Protocols = append(c.Nodes[i].NodeAttributes.Protocols, connection.Protocol)
+			c.Nodes[i].NodeAttributes.Ports = append(c.Nodes[i].NodeAttributes.Ports, c.generatePort(i))
+		}
+
+		// GENERATING NETWORK INTERFACES
+
+		// loop over all connections (internet, lan_1, etc)
+		for connectionN, connection := range c.Connections {
 			networkStack := config.Attributes.connectionComponents[connection.To]
 
 			var assignedSecurityGroup networking.SecurityGroup
@@ -159,91 +176,127 @@ func (c *NodeGroup) composeComponents() {
 
 			// make a network interface with subnet & security group
 			ni := networking.NewNetworkInterfaceWithAttributes(&assignedSubnet, &assignedSecurityGroup)
-			ni.Connection = connection.Name
+			ni.Connection = connection.To
 
-			// add networkInterface to node's network interface array
-			networkInterfaces = append(networkInterfaces, &ni)
 			comps = append(comps, ni)
+
+			// prepend the internet connection
+			// so the internet is always first
+			if connection.connType == ConnTypeInternet{
+				networkInterfaces = append([]*networking.NetworkInterface{&ni}, networkInterfaces...)
+			} else {
+				networkInterfaces = append(networkInterfaces, &ni)
+			}
 
 			if connection.connType == ConnTypeInternet {
 				eip := networking.NewElasticIpWithAttributes(&ni)
 				comps = append(comps, eip)
+			} else {
+				// make additional port rules for specific Security Group
+				var proto string
+				switch c.Nodes[i].NodeAttributes.Protocols[connectionN] {
+				case websocket:
+					proto = tcp
+				case quic:
+					proto = udp
+				default:
+					proto = c.Nodes[i].NodeAttributes.Protocols[connectionN]
+				}
+
+				sgre := networking.NewSecurityGroupRuleEgress()
+				sgre.SecurityGroupId = assignedSecurityGroup.GetId()
+				sgre.SetPorts(0)
+				//sgre.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
+				sgre.Protocol = proto
+				sgre.Self = true
+
+				comps = append(comps, sgre)
+
+				sgri := networking.NewSecurityGroupRuleIngress()
+				sgri.SecurityGroupId = assignedSecurityGroup.GetId()
+				sgre.SetPorts(0)
+				//sgri.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
+				sgri.Protocol = proto
+				sgri.Self = true
 			}
 		}
-
 
 		// make interface with name, networkInterface & nodeType
 		instance := ec2.NewInstance()
 		instance.KeyName = GetKeyPairName()
-		instance.Name = node.Name
+		instance.Name = c.Nodes[i].Name
 		instance.NetworkInterfaces = networkInterfaces
 		instance.NodeType = c.NodeType
 
 		// GENERATE USERDATA (startup script)
-		var na NodeAttributes
+		var listenerMaddrs []string
+		var announceMaddrs []string
+		for p := range c.Nodes[i].NodeAttributes.Protocols {
+			listenerMaddrs = append(listenerMaddrs, c.getSwarmListenerMultiAddr("0.0.0.0", i, p, p))
+			announceMaddrs = append(announceMaddrs, c.getSwarmAnnounceMultiAddr(i, p, p))
+		}
 
-		// generate a port for multiaddr
-		na.Port = generatePort()
+		for x, _ := range listenerMaddrs {
+			c.Nodes[i].NodeAttributes.Listener += listenerMaddrs[x]
+			c.Nodes[i].NodeAttributes.Announce += announceMaddrs[x]
 
-		na.Protocol = c.Connections[0].Protocol
-		//for _, c := range c.Connections {
-		//	na.Protocol = c.Protocol
-		//	continue
-		//}
+			// check if this is the last iteration
+			if x+1 != len(listenerMaddrs) {
+				c.Nodes[i].NodeAttributes.Listener += ","
+				c.Nodes[i].NodeAttributes.Announce += ","
+			}
+		}
 
-		// assign protocol
-
-		// generate a peerid and pk
+		// generate a peerId and pk
 		// only do this for RDVP and Relay
-		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
+		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay || c.NodeType == NodeTypeBootstrap {
 			peerId, pk, err := genKey()
 			if err != nil {
 				logging.Log(err)
 			}
 
-			na.Pk = pk
-			na.PeerId = peerId
+			c.Nodes[i].NodeAttributes.Pk = pk
+			c.Nodes[i].NodeAttributes.PeerId = peerId
 		}
 
 		if c.NodeType == NodeTypeReplication {
 			var err error
-			na.Sk, err = genServiceKey()
+			c.Nodes[i].NodeAttributes.Sk, err = genServiceKey()
 			if err != nil {
 				panic(err)
 			}
 
-			na.Secret, err = genSecretKey(na.Sk)
+			c.Nodes[i].NodeAttributes.Secret, err = genSecretKey(c.Nodes[i].NodeAttributes.Sk)
 			if err != nil {
 				panic(err)
 			}
 
 			// this needs some work
-			na.TokenSk, err = genServiceKey()
+			c.Nodes[i].NodeAttributes.TokenSk, err = genServiceKey()
 			if err != nil {
 				panic(err)
 			}
 
-			na.TokenSecret, err = genSecretKey(na.TokenSk)
+			c.Nodes[i].NodeAttributes.TokenSecret, err = genSecretKey(c.Nodes[i].NodeAttributes.TokenSk)
 			if err != nil {
 				panic(err)
 			}
 		}
 
-		na.RDVPMaddr, na.RelayMaddr, na.BootstrapMaddr = c.parseRouters()
-		node.NodeAttributes = na
+		c.Nodes[i].NodeAttributes.RDVPMaddr, c.Nodes[i].NodeAttributes.RelayMaddr, c.Nodes[i].NodeAttributes.BootstrapMaddr = c.parseRouters()
 
 		// generate the actual userdata
-		s, err := node.GenerateUserData()
+		s, err := c.Nodes[i].GenerateUserData()
 		if err != nil {
 			panic(err)
 		}
 
 		instance.UserData = s
+		//c.Nodes[i] = node
+		c.Nodes[i].instance = instance
 
 		comps = append(comps, instance)
 
-		c.Nodes[i] = node
-		c.Nodes[i].instance = instance
 	}
 
 	// validate each object
@@ -260,9 +313,250 @@ func (c *NodeGroup) composeComponents() {
 	c.components = comps
 }
 
-// generatePort generates a random port number between lowerLimitPort and upperLimitPort
-func generatePort() int {
-	return lowerLimitPort + mrand.Intn(upperLimitPort-lowerLimitPort+1)
+// parseRouters parses the router part of the config
+func (c *NodeGroup) parseRouters() (RDVP, Relay, Bootstrap string) {
+	var RDVPMaddrs, RelayMaddrs, BootstrapMaddrs []string
+	// generate router data
+	for _, router := range c.Routers {
+		router.Address = strings.ReplaceAll(router.Address, " ", "_")
+
+		switch strings.ToLower(router.RouterType) {
+		case NodeTypeRDVP:
+			maddr, err := ma.NewMultiaddr(router.Address)
+			if err == nil {
+				RDVPMaddrs = append(RDVPMaddrs, maddr.String())
+				continue
+			}
+
+			for _, configrdvp := range config.RDVP {
+				var conIndex = -1
+				for i, con1 := range configrdvp.Connections {
+					for _, con2 := range c.Connections {
+						if con1.To == con2.To {
+							conIndex = i
+						}
+					}
+
+					if configrdvp.Name == router.Address {
+						if conIndex == -1 {
+							panic(fmt.Sprintf("router names match up, but protocols do not: %s-%s", router.RouterType, router.Address))
+						}
+
+						for j := range configrdvp.Nodes {
+							RDVPMaddrs = append(RDVPMaddrs, configrdvp.getFullMultiAddrWithPeerId(j, conIndex, conIndex))
+						}
+					}
+				}
+
+				for j, RDVPMaddr := range RDVPMaddrs {
+					RDVP += RDVPMaddr
+
+					// check if this is the last iteration
+					if j+1 != len(RDVPMaddrs) {
+						RDVP += ","
+					}
+				}
+			}
+
+		case NodeTypeRelay:
+			maddr, err := ma.NewMultiaddr(router.Address)
+			if err == nil {
+				RelayMaddrs = append(RelayMaddrs, maddr.String())
+				continue
+			}
+
+			for _, configrelay := range config.Relay {
+				var conIndex = -1
+				for i, con1 := range configrelay.Connections {
+					for _, con2 := range c.Connections {
+						if con1.To == con2.To && con1.Protocol == con2.Protocol {
+							conIndex = i
+						}
+					}
+				}
+
+				if configrelay.Name == router.Address {
+					if conIndex == -1 {
+						panic(fmt.Sprintf("router names match up, but protocols do not: %s-%s", router.RouterType, router.Address))
+					}
+
+					for j := range configrelay.Nodes {
+						RelayMaddrs = append(RelayMaddrs, configrelay.getFullMultiAddrWithPeerId(j, conIndex, conIndex))
+					}
+				}
+			}
+
+			for j, RelayMaddr := range RelayMaddrs {
+				Relay += RelayMaddr
+
+				// check if this is the last iteration
+				if j+1 != len(RelayMaddrs) {
+					Relay += ","
+				}
+			}
+
+		case NodeTypeBootstrap:
+			maddr, err := ma.NewMultiaddr(router.Address)
+			if err == nil {
+				BootstrapMaddrs = append(BootstrapMaddrs, maddr.String())
+				continue
+			}
+
+			for _, configBs := range config.Bootstrap {
+				var conIndex = -1
+				for i, con1 := range configBs.Connections {
+					for _, con2 := range c.Connections {
+						if con1.To == con2.To && con1.Protocol == con2.Protocol {
+							conIndex = i
+						}
+					}
+				}
+
+				if configBs.Name == router.Address {
+					if conIndex == -1 {
+						panic(fmt.Sprintf("router names match up, but protocols do not: %s-%s", router.RouterType, router.Address))
+					}
+
+					for j := range configBs.Nodes {
+						BootstrapMaddrs = append(BootstrapMaddrs, configBs.getFullMultiAddrWithPeerId(j, conIndex, conIndex))
+					}
+				}
+			}
+
+			for j, BootstrapMaddr := range BootstrapMaddrs {
+				Bootstrap += BootstrapMaddr
+
+				// check if this is the last iteration
+				if j+1 != len(BootstrapMaddrs) {
+					Bootstrap += ","
+				}
+			}
+		}
+	}
+
+	// if no RDVP is assigned, set RDVP to none
+	if len(RDVPMaddrs) == 0 {
+		RDVP = none
+	}
+
+	// if no Relay is assigned, set RDVP to none
+	if len(RelayMaddrs) == 0 {
+		Relay = none
+	}
+
+	// if no Bootstrap is assigned, set RDVP to none
+	if len(BootstrapMaddrs) == 0 {
+		Bootstrap = none
+	}
+
+	return RDVP, Relay, Bootstrap
+}
+
+// toHCLStringFormat wraps a string so it can be compiled by the HCL compiler
+func toHCLStringFormat(s string) string {
+	return fmt.Sprintf("${%s}", s)
+}
+
+// getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
+func (c NodeGroup) getFullMultiAddrWithPeerId(nodeIndex, protocolIndex, portIndex int) string {
+	// this can only be done for RDVP and Relay
+	// as other node types don't have a peerId pre-configured
+	if len(c.Nodes) >= nodeIndex-1 {
+		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay || c.NodeType == NodeTypeBootstrap {
+			return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s",
+				c.getPublicIP(nodeIndex),
+				c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex],
+				c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+				c.Nodes[nodeIndex].NodeAttributes.PeerId,
+			)
+		}
+		panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
+	}
+
+	panic(errors.New("trying to access multiAddr of node that doesn't exist"))
+}
+
+// getSwarmListenerMultiAddr generates swarm listener multi addr
+func (c NodeGroup) getSwarmListenerMultiAddr(ip string, nodeIndex, protocolIndex, portIndex int) string {
+	switch c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex] {
+	case quic:
+		return fmt.Sprintf("/ip4/%s/udp/%d/quic",
+			ip,
+			c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+		)
+	case websocket:
+		return fmt.Sprintf("/ip4/%s/tcp/%d/ws",
+			ip,
+			c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+		)
+	default:
+		return fmt.Sprintf("/ip4/%s/%s/%d",
+			ip,
+			c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex],
+			c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+		)
+	}
+}
+
+// getSwarmListenerMultiAddr generates swarm listener multi addr
+func (c NodeGroup) getSwarmAnnounceMultiAddr(nodeIndex, protocolIndex, portIndex int) string {
+	var ip string
+
+	if c.Connections[protocolIndex].To == ConnTypeInternet {
+		ip = "$publicIp"
+	} else {
+		ip = fmt.Sprintf("$localIp%v", protocolIndex)
+	}
+
+	switch c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex] {
+	case quic:
+		return fmt.Sprintf("/ip4/%s/udp/%d/quic",
+			ip,
+			c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+		)
+	case websocket:
+		return fmt.Sprintf("/ip4/%s/tcp/%d/ws",
+			ip,
+			c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+		)
+	default:
+		return fmt.Sprintf("/ip4/%s/%s/%d",
+			ip,
+			c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex],
+			c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+		)
+	}
+}
+
+// getPublicIP returns the terraform formatting of this Nodes ip
+func (c NodeGroup) getPublicIP(i int) string {
+	for _, ni := range c.Nodes[i].instance.NetworkInterfaces {
+		for _, conn := range c.Connections {
+			if conn.To == ni.Connection {
+				return toHCLStringFormat(fmt.Sprintf("aws_network_interface.%s.private_ip", ni.Name))
+			}
+		}
+	}
+
+	panic(errors.New("no possible connection possible"))
+}
+
+// generatePorts generates random port numbers between lowerLimitPort and upperLimitPort
+func (c NodeGroup) generatePort(node int) int {
+	port := lowerLimitPort + mrand.Intn(upperLimitPort-lowerLimitPort+1)
+
+	var dupe bool
+	for _, p := range c.Nodes[node].NodeAttributes.Ports {
+		if p == port {
+			dupe = true
+		}
+	}
+
+	if !dupe {
+		return port
+	}
+
+	return c.generatePort(node)
 }
 
 // generateName generates an HCL compatible name
@@ -325,7 +619,6 @@ func genServiceKey() ([]byte, error) {
 	return seed, err
 }
 
-
 func genSecretKey(servicekey []byte) ([]byte, error) {
 	stdPrivKey := ed25519.NewKeyFromSeed(servicekey)
 	_, pubKey, err := libp2p_ci.KeyPairFromStdKey(&stdPrivKey)
@@ -342,136 +635,21 @@ func genSecretKey(servicekey []byte) ([]byte, error) {
 
 }
 
-// parseRouters parses the router part of the config
-func (c NodeGroup) parseRouters() (RDVP, Relay, Bootstrap string) {
-	var RDVPMaddrs, RelayMaddrs, BootstrapMaddrs []string
-	// generate router data
-	for _, router := range c.Routers {
-		switch strings.ToLower(router.RouterType) {
-		case NodeTypeRDVP:
-			maddr, err := ma.NewMultiaddr(router.Address)
-			if err == nil {
-				RDVPMaddrs = append(RDVPMaddrs, maddr.String())
-				continue
-			}
+func makeInternetSGRules(port int, protocol string, securityGroup networking.SecurityGroup) (comps []iac.Component) {
+	sgre := networking.NewSecurityGroupRuleEgress()
+	sgre.SetPorts(port)
+	sgre.Protocol = protocol
+	sgre.SecurityGroupId = securityGroup.GetId()
 
-			for _, configrdvp := range config.RDVP {
-				if configrdvp.Name == router.Address {
-					for j := range configrdvp.Nodes {
-						RDVPMaddrs = append(RDVPMaddrs, configrdvp.getFullMultiAddr(j))
-					}
-				}
-			}
+	comps = append(comps, sgre)
 
-			for j, RDVPMaddr := range RDVPMaddrs {
-				RDVP += RDVPMaddr
+	sgri := networking.NewSecurityGroupRuleIngress()
+	sgri.SetPorts(port)
+	sgri.Protocol = protocol
+	sgri.SecurityGroupId = securityGroup.GetId()
 
-				// check if this is the last iteration
-				if j+1 != len(RDVPMaddrs) {
-					RDVP += ","
-				}
-			}
+	comps = append(comps, sgri)
 
-		case NodeTypeRelay:
-			maddr, err := ma.NewMultiaddr(router.Address)
-			if err == nil {
-				RelayMaddrs = append(RelayMaddrs, maddr.String())
-				continue
-			}
-
-			for _, configrelay := range config.Relay {
-				if configrelay.Name == router.Address {
-					for j := range configrelay.Nodes {
-						RelayMaddrs = append(RelayMaddrs, configrelay.getFullMultiAddr(j))
-					}
-				}
-			}
-
-			for j, RelayMaddr := range RelayMaddrs {
-				Relay += RelayMaddr
-
-				// check if this is the last iteration
-				if j+1 != len(RelayMaddrs) {
-					Relay += ","
-				}
-			}
-
-		case NodeTypeBootstrap:
-			maddr, err := ma.NewMultiaddr(router.Address)
-			if err == nil {
-				BootstrapMaddrs = append(BootstrapMaddrs, maddr.String())
-				continue
-			}
-
-			for _, configbs := range config.Bootstrap {
-				if configbs.Name == router.Address {
-					for j := range configbs.Nodes {
-						BootstrapMaddrs = append(BootstrapMaddrs, configbs.getFullMultiAddr(j))
-					}
-				}
-			}
-
-			for j, BootstrapMaddr := range BootstrapMaddrs {
-				Bootstrap += BootstrapMaddr
-
-				// check if this is the last iteration
-				if j+1 != len(BootstrapMaddrs) {
-					Bootstrap += ","
-				}
-			}
-		}
-	}
-
-	// if no RDVP is assigned, set RDVP to none
-	if len(RDVPMaddrs) == 0 {
-		RDVP = ":none:"
-	}
-
-	// if no Relay is assigned, set RDVP to none
-	if len(RelayMaddrs) == 0 {
-		Relay = ":none:"
-	}
-
-	// if no Bootstrap is assigned, set RDVP to none
-	if len(BootstrapMaddrs) == 0 {
-		Bootstrap = ":none:"
-	}
-
-	return RDVP, Relay, Bootstrap
+	return comps
 }
 
-// toHCLStringFormat wraps a string so it can be compiled by the HCL compiler
-func toHCLStringFormat(s string) string {
-	return fmt.Sprintf("${%s}", s)
-}
-
-// getFullMultiAddr returns the full multiaddr with its ip (HCL formatted, will compile to an ipv4 ip address when executed trough terraform), protocol, port and peerId
-func (c NodeGroup) getFullMultiAddr(i int) string {
-	// this can only be done for RDVP and Relay
-	// as other node types don't have a peerId pre-configured
-	if len(c.Nodes) >= i-1 {
-		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay {
-			return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s", c.getPublicIP(i), c.Nodes[i].NodeAttributes.Protocol, c.Nodes[i].NodeAttributes.Port, c.Nodes[i].NodeAttributes.PeerId)
-		}
-		panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
-	}
-
-	panic(errors.New("that node doesn't exist"))
-}
-
-// getPublicIP returns the terraform formatting of this Nodes ip
-func (c NodeGroup) getPublicIP(i int) string {
-	for _, ni := range c.Nodes[i].instance.NetworkInterfaces {
-		for _, conn := range c.Connections {
-			if conn.Name == ni.Connection {
-				return toHCLStringFormat(fmt.Sprintf("aws_network_interface.%s.private_ip", ni.Name))
-			}
-		}
-	}
-
-	panic(errors.New("no possible connection possible"))
-
-
-	//
-	//return toHCLStringFormat(fmt.Sprintf("aws_instance.%s.public_ip", c.Name))
-}

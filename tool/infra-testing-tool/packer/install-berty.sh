@@ -2,7 +2,7 @@
 
 # update system
 sudo yum update -y
-sudo yum install install gcc gcc-c++ kernel-devel make htop wget git gcc -y
+sudo yum install gcc gcc-c++ make htop wget git gcc -y
 
 # install golang
 echo "installing golang"
@@ -41,8 +41,7 @@ sudo touch /home/ec2-user/.aws/config
 sudo echo "[default]" | sudo tee /home/ec2-user/.aws/config > /dev/null
 sudo echo "region = $(ec2-metadata --availability-zone | sed 's/placement: \(.*\).$/\1/')" | sudo tee -a /home/ec2-user/.aws/config > /dev/null
 
-# delete go archive
-sudo rm -rf ~/*
+cd /home/ec2-user/infra-testing-tool/packer || exit
+cat set-ip-vars.sh | sudo tee -a /home/ec2-user/.bashrc > /dev/null
 
 mkdir ~/logs
-

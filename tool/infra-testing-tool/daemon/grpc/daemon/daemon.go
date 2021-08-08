@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc"
 	"infratesting/aws"
 	"infratesting/config"
+	"infratesting/iac/components/networking"
 	"infratesting/logging"
 	"io"
 	"os"
@@ -438,7 +439,7 @@ func (s *Server) AddReplication(ctx context.Context, request *AddReplication_Req
 	response = new(AddReplication_Response)
 
 	initFlowResp, err := s.Protocol.AuthServiceInitFlow(ctx, &protocoltypes.AuthServiceInitFlow_Request{
-		AuthURL: fmt.Sprintf("http://%s:8091", request.TokenIp),
+		AuthURL: fmt.Sprintf("http://%s:%v", request.TokenIp, networking.ReplPort),
 	})
 	if err != nil {
 		return response, logging.LogErr(err)

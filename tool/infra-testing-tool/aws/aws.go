@@ -309,7 +309,7 @@ func GetBucketName() (string, error) {
 			Bucket: bucket.Name,
 		})
 		if err != nil {
-			return "", logging.LogErr(err)
+			continue
 		}
 
 		if *locationResp.LocationConstraint == *sess.Config.Region {
