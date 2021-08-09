@@ -184,7 +184,6 @@ export const CreateGroupNavigation: React.FC = () => {
 const NavigationStack = createStackNavigator()
 export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
-	const colors = useThemeColor()
 
 	useEffect(() => {
 		console.log('context app State', context.appState)
@@ -220,10 +219,7 @@ export const Navigation: React.FC = () => {
 					? Routes.Main.Home
 					: Routes.Onboarding.GetStarted
 			}
-			screenOptions={{
-				...CustomTransitionOptions,
-				cardStyle: { backgroundColor: colors['main-background'] },
-			}}
+			screenOptions={{ ...CustomTransitionOptions }}
 		>
 			<NavigationStack.Screen
 				name={Routes.Main.ContactRequest}
@@ -284,11 +280,6 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.EditProfile}
-				component={Components.Settings.EditProfile}
 				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />

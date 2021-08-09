@@ -98,7 +98,7 @@ function websocketRequest(options: grpc.TransportOptions): grpc.Transport {
 			const c = new Int8Array(byteArray.byteLength + 1)
 			c.set(new Uint8Array([0]))
 
-			c.set((byteArray as any) as ArrayLike<number>, 1)
+			c.set(byteArray as any as ArrayLike<number>, 1)
 
 			ws.send(c)
 		}

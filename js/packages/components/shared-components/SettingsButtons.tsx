@@ -84,10 +84,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 }) => {
 	const [isToggle, setIsToggle] = useState<boolean>()
 	const _styles = useStylesSettingButton()
-	const [
-		{ margin, row, flex, padding, opacity, text, border },
-		{ windowWidth, scaleSize },
-	] = useStyles()
+	const [{ margin, row, flex, padding, opacity, text, border }, { windowWidth, scaleSize }] =
+		useStyles()
 	const colors = useThemeColor()
 
 	if (!iconColor) {

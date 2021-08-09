@@ -33,10 +33,8 @@ export const HomeHeader: React.FC<
 	onLongPress,
 	isMultiAccount,
 }) => {
-	const [
-		{ border, width, height, padding, text, margin, row },
-		{ scaleHeight, scaleSize },
-	] = useStyles()
+	const [{ border, width, height, padding, text, margin, row }, { scaleHeight, scaleSize }] =
+		useStyles()
 	const colors = useThemeColor()
 	const { navigate } = useNativeNavigation()
 	const [focus, setFocus] = useState<any>(null)

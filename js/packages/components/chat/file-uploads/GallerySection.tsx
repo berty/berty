@@ -40,11 +40,18 @@ export const GallerySection: React.FC<{
 			})
 
 			setGalleryContents(
-				photos.edges.map(({ node: { image: { filename, uri }, type: mime } }) => ({
-					filename: filename || '',
-					uri,
-					mimeType: mime,
-				})),
+				photos.edges.map(
+					({
+						node: {
+							image: { filename, uri },
+							type: mime,
+						},
+					}) => ({
+						filename: filename || '',
+						uri,
+						mimeType: mime,
+					}),
+				),
 			)
 
 			setGalleryImageEndCursor(photos.page_info.has_next_page ? photos.page_info.end_cursor : null)
@@ -104,11 +111,18 @@ export const GallerySection: React.FC<{
 
 								setGalleryContents((prev) => [
 									...prev,
-									...photos.edges.map(({ node: { image: { filename, uri }, type: mime } }) => ({
-										filename: filename || '',
-										uri,
-										mime,
-									})),
+									...photos.edges.map(
+										({
+											node: {
+												image: { filename, uri },
+												type: mime,
+											},
+										}) => ({
+											filename: filename || '',
+											uri,
+											mime,
+										}),
+									),
 								])
 
 								setGalleryImageEndCursor(

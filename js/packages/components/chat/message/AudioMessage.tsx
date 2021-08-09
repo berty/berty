@@ -31,9 +31,10 @@ export const WaveForm: React.FC<{
 	duration: number | null
 	currentTime?: number
 }> = ({ intensities, duration, currentTime = 0 }) => {
-	const normalizedIntensities = useMemo(() => normalizeVolumeIntensities(intensities), [
-		intensities,
-	])
+	const normalizedIntensities = useMemo(
+		() => normalizeVolumeIntensities(intensities),
+		[intensities],
+	)
 	const [{ margin, text }] = useStyles()
 	const colors = useThemeColor()
 	return (

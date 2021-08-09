@@ -82,12 +82,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const client = useClient()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
 	const { dispatch } = useNavigation()
-	const {
-		contactReqContainer,
-		declineButton,
-		acceptButton,
-		buttonsWrapper,
-	} = useStylesContactRequest()
+	const { contactReqContainer, declineButton, acceptButton, buttonsWrapper } =
+		useStylesContactRequest()
 	const ctx = useMsgrContext()
 
 	const id = publicKey

@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { View, TextInput, Vibration, StatusBar } from 'react-native'
+import { View, TextInput, Vibration, StatusBar, Platform } from 'react-native'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { RESULTS } from 'react-native-permissions'
+import DocumentPicker from 'react-native-document-picker'
+import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
@@ -12,8 +14,25 @@ import { GlobalPersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/c
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
-import { openDocumentPicker } from '../helpers'
 import { checkPermissions } from '../utils'
+
+const openDocumentPicker = async (ctx) => {
+	try {
+		const res = await DocumentPicker.pick({
+			// @ts-ignore
+			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
+		})
+		const replaced =
+			Platform.OS === 'android' ? getPath(res.uri) : res.uri.replace(/^file:\/\//, '')
+		await ctx.importAccount(replaced)
+	} catch (err) {
+		if (DocumentPicker.isCancel(err)) {
+			// ignore
+		} else {
+			console.error(err)
+		}
+	}
+}
 
 const CreateAccountBody = ({ next }) => {
 	const ctx = useMsgrContext()

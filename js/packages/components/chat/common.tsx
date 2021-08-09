@@ -602,13 +602,13 @@ export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
 
 export const updateStickyDate: (
 	setStickyDate: (date: number) => void,
-) => (info: { viewableItems: ViewToken[] }) => void = (setStickyDate: (date: number) => void) => ({
-	viewableItems,
-}) => {
-	if (viewableItems && viewableItems.length) {
-		const minDate = viewableItems[viewableItems.length - 1]?.section?.title
-		if (minDate) {
-			setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
+) => (info: { viewableItems: ViewToken[] }) => void =
+	(setStickyDate: (date: number) => void) =>
+	({ viewableItems }) => {
+		if (viewableItems && viewableItems.length) {
+			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
+			if (minDate) {
+				setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
+			}
 		}
 	}
-}

@@ -4,21 +4,17 @@ import {
 	NavigationProp,
 	CommonActions,
 } from '@react-navigation/native'
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 
 import { Routes, RouteProps, ScreenProps } from './types'
 
 export type NavigateParams<R> = R extends RouteProps<infer T> ? T : never
 
-const createNavigateFunc = <Route>(navigate: NavigationProp<any>['navigate'], route: string) => (
-	params?: NavigateParams<Route>,
-) => navigate(route, params)
+const createNavigateFunc =
+	<Route>(navigate: NavigationProp<any>['navigate'], route: string) =>
+	(params?: NavigateParams<Route>) =>
+		navigate(route, params)
 
-const createNavigation = ({
-	navigate,
-	goBack,
-	dispatch,
-}: NavigationProp<any> | BottomTabNavigationProp<any>) => {
+const createNavigation = ({ navigate, goBack, dispatch }: NavigationProp<any>) => {
 	return {
 		dispatch: (action: any) => dispatch(action),
 		goBack: () => goBack(),
@@ -80,10 +76,11 @@ const createNavigation = ({
 					navigate,
 					Routes.Chat.MultiMemberSettings,
 				),
-				multiMemberSettingsAddMembers: createNavigateFunc<ScreenProps.Chat.MultiMemberSettingsAddMembers>(
-					navigate,
-					Routes.Chat.MultiMemberSettingsAddMembers,
-				),
+				multiMemberSettingsAddMembers:
+					createNavigateFunc<ScreenProps.Chat.MultiMemberSettingsAddMembers>(
+						navigate,
+						Routes.Chat.MultiMemberSettingsAddMembers,
+					),
 				multiMemberQR: createNavigateFunc<ScreenProps.Chat.MultiMemberQR>(
 					navigate,
 					Routes.Chat.MultiMemberQR,
@@ -103,7 +100,6 @@ const createNavigation = ({
 					navigate,
 					Routes.Settings.MyBertyId,
 				),
-				editProfile: createNavigateFunc(navigate, Routes.Settings.EditProfile),
 				appUpdates: createNavigateFunc(navigate, Routes.Settings.AppUpdates),
 				help: createNavigateFunc(navigate, Routes.Settings.Help),
 				mode: createNavigateFunc(navigate, Routes.Settings.Mode),
@@ -116,10 +112,6 @@ const createNavigation = ({
 				devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),
 				themeEditor: createNavigateFunc(navigate, Routes.Settings.ThemeEditor),
 				systemInfo: createNavigateFunc(navigate, Routes.Settings.SystemInfo),
-				network: createNavigateFunc<ScreenProps.Settings.Network>(
-					navigate,
-					Routes.Settings.Network,
-				),
 				ipfsWebUI: createNavigateFunc(navigate, Routes.Settings.IpfsWebUI),
 				devText: createNavigateFunc<ScreenProps.Settings.DevText>(
 					navigate,
@@ -133,7 +125,6 @@ const createNavigation = ({
 					navigate,
 					Routes.Modals.ManageDeepLink,
 				),
-				addBetabot: createNavigateFunc(navigate, Routes.Modals.AddBetabot),
 				imageView: createNavigateFunc<ScreenProps.Modals.ImageView>(
 					navigate,
 					Routes.Modals.ImageView,

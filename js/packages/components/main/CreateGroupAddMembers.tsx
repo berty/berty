@@ -38,10 +38,8 @@ export const Header: React.FC<{
 	onPress = null,
 	style = null,
 }) => {
-	const [
-		{ height, border, margin, row, padding, text, column, opacity },
-		{ scaleHeight },
-	] = useStyles()
+	const [{ height, border, margin, row, padding, text, column, opacity }, { scaleHeight }] =
+		useStyles()
 	const colors = useThemeColor()
 
 	return (

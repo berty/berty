@@ -33,12 +33,8 @@ export const Permissions: React.FC<{}> = (props) => {
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
-	const {
-		persistentOptions,
-		setPersistentOption,
-		createNewAccount,
-		selectedAccount,
-	} = useMsgrContext()
+	const { persistentOptions, setPersistentOption, createNewAccount, selectedAccount } =
+		useMsgrContext()
 	const {
 		permissionType,
 		permissionStatus,

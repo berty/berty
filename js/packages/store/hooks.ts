@@ -144,7 +144,7 @@ export const useConvMembers = (publicKey: Maybe<string>) => {
 }
 
 export const useMember = <
-	T extends { publicKey: Maybe<string>; conversationPublicKey: Maybe<string> }
+	T extends { publicKey: Maybe<string>; conversationPublicKey: Maybe<string> },
 >(
 	props: T,
 ) => {
@@ -221,7 +221,6 @@ export const useGenerateFakeMessages = () => {
 	const fakeMembersListList = fakeConversationList.map((conv) =>
 		Object.values(ctx.members[conv.publicKey || ''] || {}).filter((member: any) => member.fake),
 	)
-	console.log('fakeConvCount', fakeConversationList.length)
 	const prevFakeCount: number = fakeConversationList.reduce(
 		(r, fakeConv) =>
 			Object.values(ctx.interactions[fakeConv.publicKey || ''] || {}).reduce(
@@ -230,7 +229,6 @@ export const useGenerateFakeMessages = () => {
 			),
 		0,
 	)
-	console.log('prevFakeCount', prevFakeCount)
 	return (length = 10) => {
 		ctx.dispatch({
 			type: MessengerActions.AddFakeData,
@@ -342,7 +340,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 			}
 
 			// Not marking a conversation as closed if still in the navigation stack
-			const { routes } = navigation.dangerouslyGetState()
+			const { routes } = navigation.getState()
 			for (let route of routes) {
 				if (
 					(route.name === Routes.Chat.OneToOne || route.name === Routes.Chat.Group) &&

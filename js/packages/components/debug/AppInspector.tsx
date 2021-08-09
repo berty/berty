@@ -257,16 +257,14 @@ const AccountsInspector: React.FC<{
 	}>({})
 	const { t }: { t: any } = useTranslation()
 
-	useEffect(() => fetchFSAccountList(updateAccountFSFiles, t), [
-		updateAccountFSFiles,
-		lastRefresh,
-		t,
-	])
-	useEffect(() => fetchProtoAccountList(updateAccountProtoEntries, t), [
-		updateAccountProtoEntries,
-		lastRefresh,
-		t,
-	])
+	useEffect(
+		() => fetchFSAccountList(updateAccountFSFiles, t),
+		[updateAccountFSFiles, lastRefresh, t],
+	)
+	useEffect(
+		() => fetchProtoAccountList(updateAccountProtoEntries, t),
+		[updateAccountProtoEntries, lastRefresh, t],
+	)
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ActivityIndicator, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
@@ -27,6 +27,7 @@ import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
+import { EditProfile } from '@berty-tech/components/settings/EditProfile'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -88,10 +89,8 @@ const HomeHeaderGroupButton: React.FC = () => {
 
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
-	const [
-		{ row, margin, border, padding },
-		{ windowWidth, windowHeight, scaleHeight, scaleSize },
-	] = useStyles()
+	const [{ row, margin, border, padding }, { windowWidth, windowHeight, scaleHeight, scaleSize }] =
+		useStyles()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const navigation = useNavigation()
@@ -133,7 +132,7 @@ const HomeHeaderAvatar: React.FC = () => {
 	)
 }
 
-const HomeHeader: React.FC = () => {
+const HomeHeader: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 	const navigation = useNativeNavigation()
 	const [{ margin, flex, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
@@ -152,7 +151,7 @@ const HomeHeader: React.FC = () => {
 				</TouchableOpacity>
 				<View style={[flex.big]} />
 				<TouchableOpacity
-					onPress={() => navigation.navigate('Settings.EditProfile')}
+					onPress={() => openModal()}
 					style={{
 						flexDirection: 'row',
 						alignContent: 'center',
@@ -327,6 +326,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 }
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
+	const [openModal, setOpenModal] = useState(false)
 	const account = useAccount()
 	const [{ row, margin }] = useStyles()
 	const colors = useThemeColor()
@@ -344,7 +344,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 							<View style={[margin.bottom.scale(20)]}>
 								<HeaderSettings>
 									<View>
-										<HomeHeader />
+										<HomeHeader openModal={() => setOpenModal(true)} />
 										<HomeHeaderGroupButton />
 									</View>
 								</HeaderSettings>
@@ -354,6 +354,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 					)}
 				</SwipeNavRecognizer>
 			</View>
+			{openModal && <EditProfile closeModal={() => setOpenModal(false)} />}
 		</>
 	)
 }

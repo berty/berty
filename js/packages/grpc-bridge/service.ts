@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as pbjs from 'protobufjs'
 import { ServiceClientType } from './welsh-clients.gen'
 

@@ -45,23 +45,20 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		openingDaemon(dispatch, state.appState, state.selectedAccount)
 	}, [embedded, state.appState, state.selectedAccount])
 
-	useEffect(() => openingClients(dispatch, state.appState, eventEmitter, daemonAddress, embedded), [
-		daemonAddress,
-		embedded,
-		eventEmitter,
-		state.appState,
-		state.selectedAccount,
-	])
+	useEffect(
+		() => openingClients(dispatch, state.appState, eventEmitter, daemonAddress, embedded),
+		[daemonAddress, embedded, eventEmitter, state.appState, state.selectedAccount],
+	)
 
-	useEffect(() => openingListingEvents(state.appState, state.initialListComplete, dispatch), [
-		state.appState,
-		state.initialListComplete,
-	])
+	useEffect(
+		() => openingListingEvents(state.appState, state.initialListComplete, dispatch),
+		[state.appState, state.initialListComplete],
+	)
 
-	useEffect(() => openingLocalSettings(dispatch, state.appState, state.selectedAccount), [
-		state.appState,
-		state.selectedAccount,
-	])
+	useEffect(
+		() => openingLocalSettings(dispatch, state.appState, state.selectedAccount),
+		[state.appState, state.selectedAccount],
+	)
 
 	useEffect(() => {
 		openingCloseConvos(
@@ -84,26 +81,25 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		updateAccountsPreReady(state, embedded, dispatch)
 	}, [state, embedded, dispatch])
 
-	useEffect(() => closingDaemon(state.appState, state.clearClients, dispatch), [
-		state.clearClients,
-		state.appState,
-	])
+	useEffect(
+		() => closingDaemon(state.appState, state.clearClients, dispatch),
+		[state.clearClients, state.appState],
+	)
 
-	useEffect(() => deletingStorage(state.appState, dispatch, embedded, state.selectedAccount), [
-		state.appState,
-		state.selectedAccount,
-		embedded,
-	])
+	useEffect(
+		() => deletingStorage(state.appState, dispatch, embedded, state.selectedAccount),
+		[state.appState, state.selectedAccount, embedded],
+	)
 
 	const callbackImportAccount = useCallback(
 		(path: string) => importAccount(embedded, dispatch, path),
 		[embedded],
 	)
 
-	const callbackRestart = useCallback(() => restart(embedded, dispatch, state.selectedAccount), [
-		state.selectedAccount,
-		embedded,
-	])
+	const callbackRestart = useCallback(
+		() => restart(embedded, dispatch, state.selectedAccount),
+		[state.selectedAccount, embedded],
+	)
 
 	const callbackDeleteAccount = useCallback(
 		() => deleteAccount(embedded, dispatch, state.selectedAccount),
@@ -115,9 +111,10 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[embedded],
 	)
 
-	const callbackCreateNewAccount = useCallback(() => createNewAccount(embedded, dispatch), [
-		embedded,
-	])
+	const callbackCreateNewAccount = useCallback(
+		() => createNewAccount(embedded, dispatch),
+		[embedded],
+	)
 
 	const callbackUpdateAccount = useCallback(
 		(payload: any) => updateAccount(embedded, dispatch, payload),
