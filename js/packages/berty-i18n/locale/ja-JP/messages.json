@@ -95,6 +95,15 @@
         "search-placeholder": "検索",
         "continue": "続行",
         "create-group": "グループを作成"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -166,7 +175,7 @@
         "title": "",
         "performance-tag": "パフォーマンス",
         "privacy-tag": "プライバシー",
-        "description-tag": "",
+        "description-tag": "使いやすい - すべての機能",
         "first-bullet-point": "プッシュ通知を受信",
         "second-bullet-point": "",
         "third-bullet-point": ""
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "マルチキャストDNS",
         "desc": ""
@@ -218,7 +228,7 @@
       },
       "group-notifications-button": {
         "title": "",
-        "display-button": "",
+        "display-button": "通知を表示",
         "preview-button": "メッセージのプレビュー",
         "sound-button": "サウンド",
         "exceptions-button": {
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "",
       "footer-right-button": "",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": ""
@@ -378,10 +393,18 @@
     "ipfs-webui": {
       "title": ""
     },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
+    },
     "my-berty-ID": {
       "qr": "",
       "fingerprint": "",
-      "devices": ""
+      "devices": "デバイス"
     }
   },
   "modals": {
@@ -398,7 +421,7 @@
     "add-this-contact": {
       "fingerprint": "",
       "info": "",
-      "devices": ""
+      "devices": "デバイス"
     },
     "group-invitation": {
       "fingerprint": "",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "キャンセル",
+      "add": ""
     }
   },
   "chat": {
@@ -419,7 +449,7 @@
       "delete-button": "連絡先を削除",
       "fingerprint": "",
       "info": "",
-      "devices": ""
+      "devices": "デバイス"
     },
     "multi-member": {
       "input-placeholder": "ここに入力..."
@@ -427,7 +457,7 @@
     "multi-member-settings": {
       "header-left-button": "検索",
       "header-middle-button": "",
-      "header-right-button": "",
+      "header-right-button": "共有",
       "media-button": "メディア、リンク & ドキュメント",
       "notifications-button": "",
       "members-button": {
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "カメラ",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

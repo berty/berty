@@ -61,13 +61,13 @@
       "header": "",
       "optional": "Választható",
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "Ehhez a funkcióhoz engedélyeznie kell a Bluetooth használatát a telefonon",
       "button": "BLUETOOTH ENGEDÉLYEZÉSE",
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "setup-finished": {
       "title": "A beállítás befejeződött!",
-      "desc": "",
+      "desc": "Mostantól használhatja az alkalmazást, elkezdheti hozzáadni a névjegyeket, majd szabadon és privát módon beszélgethet velük",
       "button": "BERTY HASZNÁLATÁNAK KEZDÉSE"
     }
   },
@@ -95,6 +95,15 @@
         "search-placeholder": "Keresés",
         "continue": "FOLYTATÁS",
         "create-group": "CSOPORT LÉTREHOZÁSA"
+      },
+      "create-group-finalize": {
+        "placeholder": "Csoport neve",
+        "about": "Csoport névjegye",
+        "first-bullet-point": "",
+        "second-bullet-point": "Linken keresztül hívhat meg tagokat",
+        "third-bullet-point": "Elhagyhatja ezt a csoportot",
+        "fourth-bullet-point": "Nem törheti ezt a csoportot",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "Fogadott kapcsolati kérések",
       "external-services-button": "Külső szolgáltatások",
       "auto-replicate-button": "Automatikus megismétlés",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Helyi Peer felfedezés"
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "Fejlesztői eszközök",
+      "theme-editor": "Megjelentés & témaszerkesztő",
       "header-left-button": "Eszköz információk",
       "simulate-button": "Stream hiba szimulálása",
       "simulate-js-error-button": "JavaScript hiba szimulálása",
@@ -356,7 +367,11 @@
       "footer-middle-button": "Események listája",
       "footer-right-button": "Daemon újraindítása",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "Rendszer információ"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +433,13 @@
       "desc": "Gyorsan áttekinthetjük a beállításokat és befejezhetjük az első konfigurációt!",
       "skip": "TOVÁBB",
       "next": "KÖVETKEZŐ"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "MÉGSE",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "hang",
     "picture": "kép",
     "file": "fájl"
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

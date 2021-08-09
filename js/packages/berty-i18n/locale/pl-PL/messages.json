@@ -95,6 +95,15 @@
         "search-placeholder": "Szukaj",
         "continue": "KONTYNUUJ",
         "create-group": "UTWÓRZ GRUPĘ"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "Otrzymuj prośby o kontakt",
       "external-services-button": "Zewnętrzne usługi",
       "auto-replicate-button": "Automatyczna replikacja",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multiemisja DNS",
         "desc": "Odkrywanie lokalnych peerów"
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "Narzędzia deweloperskie",
+      "theme-editor": "",
       "header-left-button": "Informacje o urządzeniu",
       "simulate-button": "Symuluj błąd strumienia",
       "simulate-js-error-button": "Symuluj błąd JavaScript",
@@ -356,7 +367,11 @@
       "footer-middle-button": "Lista wydarzeń",
       "footer-right-button": "Zrestartuj daemon",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
+      }
     },
     "system-info": {
       "title": "Informacje systemowe"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +433,13 @@
       "desc": "Zróbmy szybki przegląd ustawień i dokończ pierwszą konfigurację!",
       "skip": "POMIŃ",
       "next": "DALEJ"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "ANULUJ",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "Aparat",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

@@ -95,6 +95,15 @@
         "search-placeholder": "Iskanje",
         "continue": "",
         "create-group": ""
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -158,8 +167,8 @@
         "tag-disabled": ""
       },
       "bluetooth-button": {
-        "title": "",
-        "tag-enabled": "",
+        "title": "Bluetooth",
+        "tag-enabled": "Vključeno",
         "tag-disabled": ""
       },
       "app-mode-button": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "",
         "desc": ""
@@ -206,7 +216,7 @@
       },
       "messages-notifications-button": {
         "title": "",
-        "display-button": "",
+        "display-button": "Prikaži obvestila",
         "preview-button": "",
         "sound-button": "Zvok",
         "exceptions-button": {
@@ -279,12 +289,12 @@
       "contact-button": "",
       "message-button": "",
       "group-button": "",
-      "settings-button": "",
+      "settings-button": "Nastavitve",
       "ask-button": "",
       "report-button": ""
     },
     "about": {
-      "title": "",
+      "title": "O Berty",
       "top-left-button": "",
       "top-right-button": "",
       "bottom-left-button": "",
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -345,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Obvestila",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "",
       "footer-right-button": "",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": ""
@@ -378,6 +393,14 @@
     "ipfs-webui": {
       "title": ""
     },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
+    },
     "my-berty-ID": {
       "qr": "",
       "fingerprint": "Prstni odtis",
@@ -396,9 +419,9 @@
       "dismiss-button": ""
     },
     "add-this-contact": {
-      "fingerprint": "",
+      "fingerprint": "Prstni odtis",
       "info": "",
-      "devices": ""
+      "devices": "Naprave"
     },
     "group-invitation": {
       "fingerprint": "Prstni odtis",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "",
+      "add": ""
     }
   },
   "chat": {
@@ -472,9 +502,9 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
+      "header-left-button": "Iskanje",
+      "header-middle-button": "Klic",
+      "header-right-button": "Deli",
       "media-button": "",
       "notifications-button": "",
       "mutual-button": "",
@@ -500,7 +530,7 @@
       "security-access": "",
       "security-access-desc": "",
       "save-to-gallery": "",
-      "share": "",
+      "share": "Deli",
       "forward-berty": "",
       "forward": "",
       "image-saved": ""
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

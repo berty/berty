@@ -95,6 +95,15 @@
         "search-placeholder": "ძებნა",
         "continue": "გაგრძელება",
         "create-group": "ჯგუფის შექმნა"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -129,7 +138,7 @@
         "tor-only": ""
       },
       "save": "",
-      "skip": ""
+      "skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
     }
   },
   "settings": {
@@ -153,7 +162,7 @@
         "desc": ""
       },
       "notifications-button": {
-        "title": "",
+        "title": "შეტყობინებები",
         "tag-enabled": "",
         "tag-disabled": ""
       },
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "",
         "desc": ""
@@ -193,10 +203,10 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "სახელი"
     },
     "notifications": {
-      "title": "",
+      "title": "შეტყობინებები",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -345,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "შეტყობინებები",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "",
       "footer-right-button": "",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": ""
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "",
+      "add": ""
     }
   },
   "chat": {
@@ -425,7 +455,7 @@
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
+      "header-left-button": "ძებნა",
       "header-middle-button": "",
       "header-right-button": "",
       "media-button": "",
@@ -472,7 +502,7 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
+      "header-left-button": "ძებნა",
       "header-middle-button": "",
       "header-right-button": "",
       "media-button": "",
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

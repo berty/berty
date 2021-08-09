@@ -95,6 +95,15 @@
         "search-placeholder": "",
         "continue": "",
         "create-group": ""
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -153,21 +162,21 @@
         "desc": ""
       },
       "notifications-button": {
-        "title": "",
+        "title": "Ειδοποιήσεις",
         "tag-enabled": "",
         "tag-disabled": ""
       },
       "bluetooth-button": {
-        "title": "",
+        "title": "Bluetooth",
         "tag-enabled": "",
         "tag-disabled": ""
       },
       "app-mode-button": {
         "title": "",
-        "performance-tag": "",
+        "performance-tag": "Απόδοση",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "Εύκολο στη χρήση - Όλες οι δυνατότητες",
+        "first-bullet-point": "Λήψη ειδοποιήσεων",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "",
         "desc": ""
@@ -193,10 +203,10 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "Όνομα"
     },
     "notifications": {
-      "title": "",
+      "title": "Ειδοποιήσεις",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -248,11 +258,11 @@
     },
     "services-auth": {
       "title": "",
-      "operated-services-button": "",
+      "operated-services-button": "Χρήση υπηρεσιών που λειτουργούν με Berty",
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
-        "action": ""
+        "action": "Προσθήκη"
       },
       "registered-services-button": {
         "title": "",
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -345,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Ειδοποιήσεις",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "",
       "footer-right-button": "",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": ""
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

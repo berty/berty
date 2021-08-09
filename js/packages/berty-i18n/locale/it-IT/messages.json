@@ -95,6 +95,15 @@
         "search-placeholder": "Cerca",
         "continue": "CONTINUA",
         "create-group": "CREA UN GRUPPO"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "Ricevi richieste di contatto",
       "external-services-button": "Servizi esterni",
       "auto-replicate-button": "Auto replica",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "DNS Multicast",
         "desc": "Ricerca Peer locali"
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "Strumenti di sviluppo",
+      "theme-editor": "",
       "header-left-button": "Informazioni sul dispositivo",
       "simulate-button": "Simula errore stream",
       "simulate-js-error-button": "Simula errore JavaScript",
@@ -356,7 +367,11 @@
       "footer-middle-button": "Elenca eventi",
       "footer-right-button": "Riavvia il daemon",
       "trigger-crashlytics-button": "Attiva crash di crashlytics",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "Riavvia l'app dopo aver cambiato questo campo"
+      }
     },
     "system-info": {
       "title": "Informazioni di sistema"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": "Interfaccia web di IPFS"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +433,13 @@
       "desc": "Diamo un rapido sguardo delle Impostazioni e terminiamo la tua prima configurazione!",
       "skip": "SALTA",
       "next": "PROSSIMO"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "ANNULLA",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "audio",
     "picture": "immagine",
     "file": "file"
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "Fotocamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

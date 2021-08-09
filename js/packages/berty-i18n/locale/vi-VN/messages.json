@@ -51,11 +51,11 @@
     },
     "notifications": {
       "header": "",
-      "recommended": "",
+      "recommended": "Đã đề xuất",
       "title": "Các thông báo",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "BỎ QUA VÀ THỰC HIỆN ĐIỀU NÀY SAU"
     },
     "bluetooth": {
       "header": "",
@@ -63,7 +63,7 @@
       "title": "",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "BỎ QUA VÀ THỰC HIỆN ĐIỀU NÀY SAU"
     },
     "setup-finished": {
       "title": "Cài đặt đã hoàn tất!",
@@ -95,6 +95,15 @@
         "search-placeholder": "",
         "continue": "",
         "create-group": ""
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -153,7 +162,7 @@
         "desc": ""
       },
       "notifications-button": {
-        "title": "",
+        "title": "Các thông báo",
         "tag-enabled": "",
         "tag-disabled": ""
       },
@@ -166,8 +175,8 @@
         "title": "",
         "performance-tag": "",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "Dễ dàng sử dụng - Tất cả chức năng",
+        "first-bullet-point": "Nhận các thông báo đẩy",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "",
         "desc": ""
@@ -193,10 +203,10 @@
       "save": "",
       "cancel": "",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "Tên"
     },
     "notifications": {
-      "title": "",
+      "title": "Các thông báo",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -248,7 +258,7 @@
     },
     "services-auth": {
       "title": "",
-      "operated-services-button": "",
+      "operated-services-button": "Dùng dịch vụ điều hành của Berty",
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -345,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Các thông báo",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "",
       "footer-right-button": "",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": ""
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

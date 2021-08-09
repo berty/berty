@@ -95,6 +95,15 @@
         "search-placeholder": "Rechercher",
         "continue": "CONTINUER",
         "create-group": "CRÉER UN GROUPE"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "Recevoir les demandes de contact",
       "external-services-button": "Services externes",
       "auto-replicate-button": "Réplication automatique",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Découverte locale des pairs"
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "Outils Dev",
+      "theme-editor": "",
       "header-left-button": "Infos sur l'appareil",
       "simulate-button": "Simuler une erreur de stream",
       "simulate-js-error-button": "Simuler une erreur JavaScript",
@@ -356,7 +367,11 @@
       "footer-middle-button": "Lister les événements",
       "footer-right-button": "Redémarrer le démon",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "Redémarrer l'application après avoir modifié ce champ"
+      }
     },
     "system-info": {
       "title": "Infos système"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": "Interface web IPFS"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "PASSER",
       "next": "SUIVANT"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "ANNULER",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "son",
     "picture": "image",
     "file": "fichier"
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "Caméra",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

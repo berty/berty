@@ -95,6 +95,15 @@
         "search-placeholder": "搜索",
         "continue": "继续",
         "create-group": "创建群组"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "接收联系人请求",
       "external-services-button": "外部服务",
       "auto-replicate-button": "自动复制",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "多播DNS",
         "desc": "本地节点发现"
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "开发工具",
+      "theme-editor": "",
       "header-left-button": "设备信息",
       "simulate-button": "模拟流错误",
       "simulate-js-error-button": "模拟 JavaScript 错误",
@@ -356,7 +367,11 @@
       "footer-middle-button": "显示事件",
       "footer-right-button": "重启守护进程",
       "trigger-crashlytics-button": "触发崩溃问题",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": "更改之后重新启动应用"
+      }
     },
     "system-info": {
       "title": "系统信息"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "二维码",
@@ -410,6 +433,13 @@
       "desc": "让我们快速了解设置并完成您的第一个配置！",
       "skip": "跳过",
       "next": "下一步"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "取消",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "音频",
     "picture": "图片",
     "file": "文件"
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "摄像头",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

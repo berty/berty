@@ -95,6 +95,15 @@
         "search-placeholder": "Søk",
         "continue": "",
         "create-group": ""
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "Motta kontaktforespørsler",
       "external-services-button": "Eksterne tjenester",
       "auto-replicate-button": "Automatisk gjenskaping",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Lokal personoppdagelse"
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "Verktøy for utviklere",
+      "theme-editor": "",
       "header-left-button": "Infoer om enheten",
       "simulate-button": "Simuler stream-feil",
       "simulate-js-error-button": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "List opp hendelser",
       "footer-right-button": "Restart daemon",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "System-info"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "HOPP OVER",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "AVBRYT",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

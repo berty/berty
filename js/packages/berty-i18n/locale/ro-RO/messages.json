@@ -95,6 +95,15 @@
         "search-placeholder": "Caută",
         "continue": "CONTINUĂ",
         "create-group": "CREEAZĂ UN GRUP"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -114,7 +123,7 @@
     },
     "network-options": {
       "welcome-title": "",
-      "full-anon-mode": "",
+      "full-anon-mode": "Mod Anononim Deplin",
       "simple-tor-compatible": "",
       "allow-expert-mode": "",
       "tor-compatible": {
@@ -129,14 +138,14 @@
         "tor-only": ""
       },
       "save": "SALVEAZĂ",
-      "skip": ""
+      "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "Ajutor",
       "header-center-button": "",
-      "header-right-button": "",
+      "header-right-button": "Setări",
       "network-button": "",
       "switch-accounts": "",
       "edit-profile": ""
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "Primește cereri de contact",
       "external-services-button": "Servicii externe",
       "auto-replicate-button": "Replicare automată",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "DNS Multicast",
         "desc": ""
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "Informații dispozitiv",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "",
       "footer-right-button": "Reporneşte daemonul",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "Informații sistem"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +433,13 @@
       "desc": "Hai să avem o privire de ansamblu rapidă asupra setărilor și să terminăm prima configurație!",
       "skip": "Omite",
       "next": "Continuă"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "Anulează",
+      "add": ""
     }
   },
   "chat": {
@@ -417,9 +447,9 @@
       "mark-button": "Marchează ca verificat",
       "block-button": "Blochează contact",
       "delete-button": "Şterge contact",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Amprentă",
+      "info": "Informaţii",
+      "devices": "Dispozitive"
     },
     "multi-member": {
       "input-placeholder": ""
@@ -458,7 +488,7 @@
       "betabot-box": {
         "title": "",
         "desc": "",
-        "skip-button": "",
+        "skip-button": "Omite",
         "add-button": ""
       },
       "infos-chat": {
@@ -472,8 +502,8 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
+      "header-left-button": "Caută",
+      "header-middle-button": "Apelează",
       "header-right-button": "",
       "media-button": "",
       "notifications-button": "",
@@ -558,7 +588,7 @@
           "error-close": "",
           "error-delete": "",
           "success-feedback": "",
-          "action-cancel": ""
+          "action-cancel": "Anulează"
         },
         "status": {
           "metadata-found": "",
@@ -591,7 +621,7 @@
       "refresh": "",
       "confirm-alert": {
         "button-confirm": "",
-        "button-cancel": ""
+        "button-cancel": "Anulează"
       }
     }
   },
@@ -603,12 +633,36 @@
         "permission-denied": ""
       },
       "slide-to-cancel": "",
-      "cancel-button": ""
+      "cancel-button": "Anulează"
     }
   },
   "medias": {
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

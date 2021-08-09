@@ -95,6 +95,15 @@
         "search-placeholder": "Pesquisar",
         "continue": "CONTINUAR",
         "create-group": "CRIAR UM GRUPO"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -129,7 +138,7 @@
         "tor-only": ""
       },
       "save": "GUARDAR",
-      "skip": ""
+      "skip": "SALTAR E FAZER MAIS TARDE"
     }
   },
   "settings": {
@@ -137,7 +146,7 @@
       "header-left-button": "Ajuda",
       "header-center-button": "Ferramentas de Programador",
       "header-right-button": "Definições",
-      "network-button": "",
+      "network-button": "Lista de redes",
       "switch-accounts": "",
       "edit-profile": "Editar perfil"
     },
@@ -166,8 +175,8 @@
         "title": "Modo da aplicação",
         "performance-tag": "Desempenho",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "Fácil de usar - Todas as funcionalidades",
+        "first-bullet-point": "Receber notificações push",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "",
         "desc": ""
@@ -191,9 +201,9 @@
       "qr-will-update": "",
       "ocr-wont-update": "",
       "save": "",
-      "cancel": "",
+      "cancel": "Cancelar",
       "name-input-placeholder": "",
-      "name-input-label": ""
+      "name-input-label": "Nome"
     },
     "notifications": {
       "title": "Notificações",
@@ -248,7 +258,7 @@
     },
     "services-auth": {
       "title": "",
-      "operated-services-button": "",
+      "operated-services-button": "Usar os serviços operados pelo Berty",
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
@@ -268,7 +278,7 @@
       "delete-button": ""
     },
     "help": {
-      "title": "",
+      "title": "Ajuda",
       "security-privacy-button": {
         "title": "",
         "desc": ""
@@ -279,7 +289,7 @@
       "contact-button": "",
       "message-button": "",
       "group-button": "",
-      "settings-button": "",
+      "settings-button": "Definições",
       "ask-button": "",
       "report-button": ""
     },
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "",
+      "theme-editor": "",
       "header-left-button": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
@@ -345,7 +356,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Notificações",
       "send-to-all-button": {
         "title": "",
         "sending": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "",
       "footer-right-button": "",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": ""
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "",
       "next": ""
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "",
+      "add": ""
     }
   },
   "chat": {
@@ -425,7 +455,7 @@
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
+      "header-left-button": "Pesquisar",
       "header-middle-button": "",
       "header-right-button": "",
       "media-button": "",
@@ -472,7 +502,7 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
+      "header-left-button": "Pesquisar",
       "header-middle-button": "",
       "header-right-button": "",
       "media-button": "",
@@ -558,7 +588,7 @@
           "error-close": "",
           "error-delete": "",
           "success-feedback": "",
-          "action-cancel": ""
+          "action-cancel": "Cancelar"
         },
         "status": {
           "metadata-found": "",
@@ -591,7 +621,7 @@
       "refresh": "",
       "confirm-alert": {
         "button-confirm": "",
-        "button-cancel": ""
+        "button-cancel": "Cancelar"
       }
     }
   },
@@ -603,12 +633,36 @@
         "permission-denied": ""
       },
       "slide-to-cancel": "",
-      "cancel-button": ""
+      "cancel-button": "Cancelar"
     }
   },
   "medias": {
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }

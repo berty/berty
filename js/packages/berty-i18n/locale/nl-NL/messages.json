@@ -95,6 +95,15 @@
         "search-placeholder": "Zoeken",
         "continue": "DOORGAAN",
         "create-group": "MAAK EEN GROEP"
+      },
+      "create-group-finalize": {
+        "placeholder": "",
+        "about": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": "",
+        "fourth-bullet-point": "",
+        "fifth-bullet-point": ""
       }
     },
     "home-modal": {
@@ -175,6 +184,7 @@
       "receive-contact-requests-button": "Ontvang contactverzoeken",
       "external-services-button": "Externe diensten",
       "auto-replicate-button": "Automatisch repliceren",
+      "auto-replicate-button-unavailable": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Lokale peer ontdekking"
@@ -306,6 +316,7 @@
     },
     "devtools": {
       "title": "Ontwikkeling tools",
+      "theme-editor": "",
       "header-left-button": "Apparaat informatie",
       "simulate-button": "Simuleer stream fout",
       "simulate-js-error-button": "",
@@ -356,7 +367,11 @@
       "footer-middle-button": "Toon gebeurtenissen",
       "footer-right-button": "Herstart daemon",
       "trigger-crashlytics-button": "",
-      "tyber-attach": ""
+      "tyber-attach": "",
+      "tyber-host-button": {
+        "name": "",
+        "bullet-point": ""
+      }
     },
     "system-info": {
       "title": "Systeem informatie"
@@ -377,6 +392,14 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
+    },
+    "theme-editor": {
+      "title": "",
+      "randomize": "",
+      "save": "",
+      "export": "",
+      "share": "",
+      "import": ""
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -410,6 +433,13 @@
       "desc": "",
       "skip": "OVERSLAAN",
       "next": "Volgende"
+    },
+    "save-theme": {
+      "title": "",
+      "desc": "",
+      "placeholder": "",
+      "cancel": "ANNULEREN",
+      "add": ""
     }
   },
   "chat": {
@@ -610,5 +640,29 @@
     "audio": "",
     "picture": "",
     "file": ""
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "desc": ""
+    },
+    "camera": {
+      "title": "Camera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
   }
 }
