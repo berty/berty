@@ -1,22 +1,13 @@
-#import "React/RCTBridge.h"
+//
+//  GoBridge.m
+//  Berty
+//
+//  Created by Antoine Eddi on 09/08/2021.
+//
 
-// TEMPORARY FIX UNTIL https://github.com/facebook/react-native/pull/24155 is merged in react-native
+#import <React/RCTBridgeModule.h>
 
-#define RCT_EXPORT_MODULE_NO_LOAD(js_name, objc_name)                   \
- RCT_EXTERN void RCTRegisterModule(Class);                              \
-+ (NSString *)moduleName { return @#js_name; }                          \
- __attribute__((constructor))                                           \
- static void RCT_CONCAT(initialize_, objc_name)() { RCTRegisterModule([objc_name class]); }
-
-#define RCT_EXTERN_REMAP_MODULE_2(js_name, objc_name, objc_supername) \
- objc_name : objc_supername                                           \
- @end                                                                 \
- @interface objc_name (RCTExternModule) <RCTBridgeModule>             \
- @end                                                                 \
- @implementation objc_name (RCTExternModule)                          \
- RCT_EXPORT_MODULE_NO_LOAD(js_name, objc_name)
-
-@interface RCT_EXTERN_REMAP_MODULE_2(GoBridge, GoBridge, NSObject)
+@interface RCT_EXTERN_MODULE(GoBridge, NSObject)
 
 RCT_EXTERN_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
