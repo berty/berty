@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, Image, SafeAreaView } from 'react-native'
+import { View, TouchableOpacity, Image, SafeAreaView, StatusBar } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { RESULTS } from 'react-native-permissions'
 import { Text } from '@ui-kitten/components'
@@ -44,7 +44,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 				backgroundColor: colors['alt-secondary-background-header'],
 			},
 		],
-		textStyle: [{ color: colors['reverted-main-text'] }],
+		textStyle: [{ color: colors['main-text'] }],
 	}
 
 	const parameterList = [
@@ -83,6 +83,10 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 				flex: 1,
 			}}
 		>
+			<StatusBar
+				backgroundColor={colors['alt-secondary-background-header']}
+				barStyle='light-content'
+			/>
 			<Image
 				source={NetworkOptionsBg}
 				resizeMode='cover'

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, Animated, Easing } from 'react-native'
-import Flag from 'react-native-flags'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
@@ -11,17 +10,13 @@ type Item = {
 	value: string
 }
 
-const DropDownPickerFlagValue: React.FC<{ value: string | undefined }> = ({ value }) => {
-	return <Flag code={value?.split('-')[1]} size={24} />
-}
-
 export const DropDownPicker: React.FC<{
 	items: Item[]
 	defaultValue: string | null
 	onChangeItem: (item: Item) => void
 	mode?: 'languages' | 'themeCollection'
 }> = ({ items, defaultValue, onChangeItem, mode = 'languages' }) => {
-	const [{ padding, border, opacity, text, margin }, { scaleSize }] = useStyles()
+	const [{ padding, border, opacity, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	const [isOpen, setOpen] = useState(false)
@@ -78,9 +73,6 @@ export const DropDownPicker: React.FC<{
 				]}
 				onPress={toggleView}
 			>
-				<View style={[margin.right.medium]}>
-					{isModeLanguages ? <DropDownPickerFlagValue value={selectedItem?.value} /> : null}
-				</View>
 				<Text style={[text.size.medium, { color: colors['main-text'] }]}>
 					{selectedItem?.label}
 				</Text>
@@ -106,9 +98,6 @@ export const DropDownPicker: React.FC<{
 						style={[padding.medium, { flexDirection: 'row', alignItems: 'center' }]}
 						key={key}
 					>
-						<View style={[margin.right.medium]}>
-							{isModeLanguages ? <Flag code={item.value.split('-')[1]} size={24} /> : null}
-						</View>
 						<Text style={[text.size.medium, { color: colors['main-text'] }]} key={item.value}>
 							{item.label}
 						</Text>
