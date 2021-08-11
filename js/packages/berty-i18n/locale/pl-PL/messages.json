@@ -664,5 +664,11 @@
     },
     "what-happening": "",
     "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
   }
 }
