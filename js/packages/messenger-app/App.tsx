@@ -22,8 +22,11 @@ import { ErrorScreen } from '@berty-tech/components/error'
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
 
+import { NativeEventEmitter, NativeModules } from 'react-native';
+
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {
+		console.log(NativeModules)
 		RNBootSplash.hide({ fade: true })
 	})
 	return null
@@ -31,9 +34,20 @@ const BootSplashInhibitor = () => {
 
 export const App: React.FC = () => {
 	React.useEffect(() => {
+		// @SYNC(gfanton): test rootdir log
+		NativeModules.RootDirModule.getRootDir()
+								 .then(res => console.log('rootdir', res))
+								 .catch(err => console.warn(err))
 		Shake.start()
 
+		// @SYNC(gfanton): test push notif event emitter
+		const eventEmitter = new NativeEventEmitter(NativeModules.NotificationModule)
+		eventEmitter.addListener(NativeModules.NotificationModule.NOTIFICATION_EVENT_ID, (event) => {
+			console.log('event', event)
+		})
+
 		return () => {
+			eventEmitter.remove()
 			isReadyRef.current = false
 		}
 	}, [])

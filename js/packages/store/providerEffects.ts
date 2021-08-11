@@ -137,7 +137,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 					console.log('File deleted')
 				})
 				.catch(() => {
-					console.log('File berty backup does not exist')
+					console.log('File berty backup does not exist') // here
 				})
 			dispatch({ type: MessengerActions.SetNextAccount, payload: accountSelected.accountId })
 			return

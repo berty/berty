@@ -2,6 +2,7 @@ package bertybridge
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"sync"
 	"time"
@@ -306,4 +307,47 @@ func (b *Bridge) InvokeBridgeMethod(method string, b64message string) (string, e
 	}
 
 	return out.Base64(), nil
+}
+
+type DecryptedPush_PushType int32
+
+const (
+	DecryptedPush_Unknown                 DecryptedPush_PushType = 0
+	DecryptedPush_Message                 DecryptedPush_PushType = 1
+	DecryptedPush_Reaction                DecryptedPush_PushType = 2
+	DecryptedPush_Media                   DecryptedPush_PushType = 3
+	DecryptedPush_Photo                   DecryptedPush_PushType = 4
+	DecryptedPush_Gif                     DecryptedPush_PushType = 5
+	DecryptedPush_VoiceMessage            DecryptedPush_PushType = 6
+	DecryptedPush_GroupInvitation         DecryptedPush_PushType = 7
+	DecryptedPush_ConversationNameChanged DecryptedPush_PushType = 8
+	DecryptedPush_MemberNameChanged       DecryptedPush_PushType = 9
+	DecryptedPush_MemberPictureChanged    DecryptedPush_PushType = 10
+	DecryptedPush_MemberDetailsChanged    DecryptedPush_PushType = 11
+	DecryptedPush_ReplyOptions            DecryptedPush_PushType = 12
+)
+
+type DecryptedPush struct {
+	Type    int32
+	Title   string
+	Message string
+}
+
+func HandleNotification(rootDir string, base64encoded string) (*DecryptedPush, error) {
+	fmt.Println("rootDir:", rootDir)
+
+	msg, err := base64.StdEncoding.DecodeString(base64encoded)
+	if err != nil {
+		return nil, err
+	}
+
+	time.Sleep(time.Second * 5)
+
+	// @FIXME: decrypt data
+	fmt.Printf("decrypted msg (%s)\n", string(msg))
+	return &DecryptedPush{
+		Type:    int32(DecryptedPush_Message),
+		Message: string(msg),
+		Title:   "New Notification",
+	}, nil
 }

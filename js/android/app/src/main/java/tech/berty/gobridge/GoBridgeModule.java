@@ -19,6 +19,8 @@ import bertybridge.Config;
 import tech.berty.gobridge.bledriver.BleInterface;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
+  public final static String bertyFolder = "berty";
+
   private final static String TAG = "GoBridge";
   private final ReactApplicationContext reactContext;
   private final static LoggerDriver rnlogger = new LoggerDriver("tech.berty", "react");
@@ -31,9 +33,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   public GoBridgeModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
-    rootDir = new File(reactContext.getFilesDir().getAbsolutePath() + "/berty");
+    rootDir = new File(reactContext.getFilesDir().getAbsolutePath() + "/" + bertyFolder);
     System.out.println("root dir: " + rootDir.getAbsolutePath());
-    tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/berty");
+    tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/" + bertyFolder);
     System.out.println("temp dir: " + tempDir.getAbsolutePath());
   }
 
