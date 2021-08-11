@@ -2,6 +2,7 @@ package bertybridge
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	"go.uber.org/zap"
 )
@@ -22,7 +23,12 @@ type requestTokenCallback struct {
 }
 
 func (rtc *requestTokenCallback) OnSuccess(token []byte) {
-	rtc.logger.Info("Token Request Succeeded", zap.String("token", hex.EncodeToString(token)))
+	tokenSlice := fmt.Sprintf("%v", token)
+	rtc.logger.Info(
+		"Token Request Succeeded",
+		zap.String("token", hex.EncodeToString(token)),
+		zap.String("tokenSlice", tokenSlice),
+	)
 }
 
 func (rtc *requestTokenCallback) OnFailure(err error) {

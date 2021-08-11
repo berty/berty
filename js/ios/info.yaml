@@ -75,3 +75,22 @@ targets:
         - UIInterfaceOrientationLandscapeLeft
         - UIInterfaceOrientationPortraitUpsideDown
         UIViewControllerBasedStatusBarAppearance: false
+        appGroupID: "$(APP_GROUP_ID)"
+
+  NotificationService:
+    info:
+      path: NotificationService/Info.plist
+      properties:
+        CFBundleDevelopmentRegion: "$(DEVELOPMENT_LANGUAGE)"
+        CFBundleDisplayName: "NotificationService"
+        CFBundleExecutable: "$(EXECUTABLE_NAME)"
+        CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)"
+        CFBundleInfoDictionaryVersion: "6.0"
+        CFBundleName: "$(PRODUCT_NAME)"
+        CFBundlePackageType: "$(PRODUCT_BUNDLE_PACKAGE_TYPE)"
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        NSExtension:
+          NSExtensionPointIdentifier: "com.apple.usernotifications.service"
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService"
+        appGroupID: "$(APP_GROUP_ID)"

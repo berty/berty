@@ -7,7 +7,8 @@
 
 import Foundation
 
-@objc public class EventEmitter: RCTEventEmitter {
+@objc(EventEmitter)
+public class EventEmitter: RCTEventEmitter {
   @objc public static var shared: EventEmitter?
   var hasListeners: Bool = false
 
@@ -22,6 +23,10 @@ import Foundation
 
   override public func stopObserving() {
     hasListeners = false
+  }
+  
+  @objc static public override func requiresMainQueueSetup() -> Bool {
+      return false
   }
 
   override public func supportedEvents() -> [String]! {

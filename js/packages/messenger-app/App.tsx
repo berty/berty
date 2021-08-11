@@ -26,7 +26,7 @@ import { CustomIconsPack } from './custom-icons'
 import { NativeModules, NativeEventEmitter } from 'react-native'
 
 const pushNotif = new NativeEventEmitter(NativeModules.EventEmitter)
-pushNotif.addListener('onPushReceived', (data) => console.log(data))
+pushNotif.addListener('onPushReceived', data => console.log('FRONT PUSH NOTIF:', data))
 
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {
@@ -40,6 +40,7 @@ export const App: React.FC = () => {
 		Shake.start()
 
 		return () => {
+			pushNotif.remove() // Unsubscribe from native event emitter
 			isReadyRef.current = false
 		}
 	}, [])

@@ -118,24 +118,28 @@ targets:
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).debug
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIconDebug
           CODE_SIGN_ENTITLEMENTS: Entitlements/Dev.entitlements
+          APP_GROUP_ID: group.tech.berty.dev
         AppStore:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER)
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
           CODE_SIGN_ENTITLEMENTS: Entitlements/Prod.entitlements
+          APP_GROUP_ID: group.tech.berty
         Staff:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Staff
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).staff
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIconStaff
           CODE_SIGN_ENTITLEMENTS: Entitlements/Dev.entitlements
+          APP_GROUP_ID: group.tech.berty.dev
         Yolo:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIconYolo
           CODE_SIGN_ENTITLEMENTS: Entitlements/Entreprise.entitlements
+          APP_GROUP_ID: group.tech.berty.entreprise
 
     sources:
     - Berty
@@ -215,22 +219,36 @@ targets:
           PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.debug.NotificationService
           DEVELOPMENT_TEAM: WMBQ84HN4T
           CODE_SIGN_ENTITLEMENTS: Entitlements/DevNS.entitlements
+          APP_GROUP_ID: group.tech.berty.dev
         AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.NotificationService
           DEVELOPMENT_TEAM: WMBQ84HN4T
           CODE_SIGN_ENTITLEMENTS: Entitlements/ProdNS.entitlements
+          APP_GROUP_ID: group.tech.berty
         Staff:
           PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.staff.NotificationService
           DEVELOPMENT_TEAM: WMBQ84HN4T
           CODE_SIGN_ENTITLEMENTS: Entitlements/DevNS.entitlements
+          APP_GROUP_ID: group.tech.berty.dev
         Yolo:
           PRODUCT_BUNDLE_IDENTIFIER: tech.berty.ios.yolo.NotificationService
           DEVELOPMENT_TEAM: GR5463T564
           CODE_SIGN_ENTITLEMENTS: Entitlements/EntrepriseNS.entitlements
-    sources: NotificationService
+          APP_GROUP_ID: group.tech.berty.entreprise
+    sources:
+        - NotificationService
+        - Berty/Sources/RootDir/RootDir.swift
     dependencies:
     - framework: "${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"
       embed: false
+    - framework: ./Frameworks/Bertybridge.xcframework
+      embed: false
+    - sdk: Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MultipeerConnectivity.framework
+      root: DEVELOPER_DIR
+      link: true
+    - sdk: Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreBluetooth.framework
+      root: DEVELOPER_DIR
+      link: true
 
 include:
 - info.yaml

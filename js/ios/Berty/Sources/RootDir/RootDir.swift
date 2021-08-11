@@ -16,7 +16,7 @@ extension RootDirError: LocalizedError {
         switch self {
         case .groupID:
             return NSLocalizedString(
-                "unable to retrieve APP_GROUP_ID key from Info.plist",
+                "unable to retrieve appGroupID key from Info.plist",
                 comment: ""
             )
         case .path:
@@ -29,14 +29,15 @@ extension RootDirError: LocalizedError {
 }
 
 func RootDirGet() throws -> String {
-  guard let appGroupID = Bundle.main.object(forInfoDictionaryKey: "APP_GROUP_ID") as? String else {
+  guard let appGroupID = Bundle.main.object(forInfoDictionaryKey: "appGroupID") as? String else {
     throw RootDirError.groupID
   }
-  guard let path = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
+  guard let appGroupPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
     throw RootDirError.path
   }
+  let rootDirPath = appGroupPath.appendingPathComponent("berty", isDirectory: true)
 
-  return path.path
+  return rootDirPath.path
 }
 
 @objc(RootDir)
@@ -47,5 +48,9 @@ class RootDir: NSObject {
     } catch {
       reject("root_dir_failure", error.localizedDescription, error)
     }
+  }
+  
+  @objc static func requiresMainQueueSetup() -> Bool {
+      return false
   }
 }

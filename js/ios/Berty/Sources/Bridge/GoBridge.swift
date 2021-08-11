@@ -73,9 +73,9 @@ class GoBridge: NSObject {
         }
     }
 
-    //////////////
+    // //////// //
     // Protocol //
-    //////////////
+    // //////// //
 
     @objc func initBridge(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
@@ -150,9 +150,9 @@ class GoBridge: NSObject {
 
     @objc func getProtocolAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            guard let bridgeMessenger = self.bridgeMessenger else {
-                throw NSError(domain: "tech.berty.gobridge", code: 4, userInfo: [NSLocalizedDescriptionKey : "bridgeMessenger isn't started"])
-            }
+          if self.bridgeMessenger == nil {
+              throw NSError(domain: "tech.berty.gobridge", code: 4, userInfo: [NSLocalizedDescriptionKey : "bridgeMessenger isn't started"])
+          }
 
           let addr: [String] = []
           resolve(addr)
