@@ -6,11 +6,11 @@ import (
 )
 
 type SecurityGroupRule struct {
-	Name string
-	RuleType string
-	FromPort int
-	ToPort int
-	Protocol string
+	Name            string
+	RuleType        string
+	FromPort        int
+	ToPort          int
+	Protocol        string
 	SecurityGroupId string
 
 	Self bool

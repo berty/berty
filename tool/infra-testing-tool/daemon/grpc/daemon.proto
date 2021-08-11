@@ -135,9 +135,21 @@ message StartTest {
   message Response {}
 }
 
+
+// IsProcessRunning
+message IsProcessRunning{
+  message Request {
+  }
+
+  message Response {
+    bool running = 1;
+  }
+}
+
 service Proxy {
   rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
   rpc TestConnectionToPeer(TestConnectionToPeer.Request) returns (TestConnectionToPeer.Response) {}
+  rpc IsProcessRunning(IsProcessRunning.Request) returns (IsProcessRunning.Response) {}
 
   rpc ConnectToPeer(ConnectToPeer.Request) returns (ConnectToPeer.Response) {}
   rpc UploadLogs(UploadLogs.Request) returns (UploadLogs.Response) {}

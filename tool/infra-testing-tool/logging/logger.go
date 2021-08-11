@@ -28,7 +28,7 @@ func init() {
 		}
 	}
 
-	logFile, err := os.OpenFile(fmt.Sprintf("%s/logs/infra-daemon.log", dirname), os.O_CREATE | os.O_APPEND | os.O_RDWR, 0755)
+	logFile, err := os.OpenFile(fmt.Sprintf("%s/logs/infra-daemon.log", dirname), os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +58,7 @@ func Log(i interface{}) {
 	actualLog(fmt.Sprint(i))
 }
 
-func LogErr(err error) error{
+func LogErr(err error) error {
 	if err != nil {
 		actualLog(err.Error())
 		return err
@@ -73,8 +73,8 @@ func actualLog(s string) {
 }
 
 func pad(s string) string {
-	remainder := int(math.Sqrt(math.Pow(float64(20 - len(s)), float64(2))))
-	for i:=0; i<remainder; i+=1 {
+	remainder := int(math.Sqrt(math.Pow(float64(20-len(s)), float64(2))))
+	for i := 0; i < remainder; i += 1 {
 		s += " "
 	}
 

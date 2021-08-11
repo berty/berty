@@ -45,7 +45,7 @@ var (
 
 			aws.SetRegion(c.Settings.Region)
 
-			availablePeers,  err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
+			availablePeers, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
 			if err != nil {
 				return logging.LogErr(err)
 			}
@@ -57,15 +57,14 @@ var (
 
 			// temporary group object
 			type group struct {
-				Name string
-				Pk []byte
+				Name  string
+				Pk    []byte
 				Peers []*testing.Peer
 				Tests []config.Test
 			}
 
 			var groups map[string]group
 			groups = make(map[string]group, c.GetAmountOfGroups())
-
 
 			// assign peers and tests to group
 			for i := range availablePeers {
@@ -93,7 +92,7 @@ var (
 					p := groups[availableRepl[i].ConfigGroups[g].Name].Peers[rand.Intn(len(groups[availableRepl[i].ConfigGroups[g].Name].Peers))]
 					_, err = p.P.AddReplication(ctx, &daemon.AddReplication_Request{
 						GroupName: availableRepl[g].ConfigGroups[g].Name,
-						TokenIp: availableRepl[i].Ip,
+						TokenIp:   availableRepl[i].Ip,
 					})
 
 					if err != nil {
@@ -103,7 +102,6 @@ var (
 			}
 
 			// create and join groups
-
 			for i := range availablePeers {
 				for g := range availablePeers[i].ConfigGroups {
 					if len(groups[availablePeers[i].ConfigGroups[g].Name].Pk) == 0 {
@@ -127,7 +125,8 @@ var (
 							_ = logging.LogErr(err)
 						}
 
-						logging.Log(inv.WebURL)
+						//invite url
+						//logging.Log(inv.WebURL)
 
 						_, err = availablePeers[i].P.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{
 							GroupName: availablePeers[i].ConfigGroups[g].Name,
@@ -158,9 +157,7 @@ var (
 				}
 			}
 
-			fmt.Printf("Waiting 5 minutes")
-			time.Sleep(time.Minute * 5)
-
+			// convert map to slice for ease of use
 			var groupArray []group
 			for key := range groups {
 				groupArray = append(groupArray, groups[key])
@@ -200,7 +197,6 @@ var (
 							// makes sure all tests are synced up
 							newTestWG.Wait()
 
-
 							// start said test
 							_, err = groupArray[groupIndex].Peers[peerIndex].P.StartTest(ctx, &daemon.StartTest_Request{
 								GroupName: groupArray[groupIndex].Name,
@@ -226,14 +222,14 @@ var (
 					for k := range groupArray[g].Tests {
 						wg.Add(1)
 
-
 						peerIndex := j
 						testIndex := k
 						go func(wg *sync.WaitGroup) {
+							// loops until `TestIsRunning` returns false
 							for {
 								isRunning, err := groupArray[g].Peers[peerIndex].P.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
 									GroupName: groupArray[g].Name,
-									TestN: int64(testIndex),
+									TestN:     int64(testIndex),
 								})
 								if err != nil {
 									logging.Log(err)
@@ -246,19 +242,20 @@ var (
 								}
 							}
 							wg.Done()
-						}( &wg)
+						}(&wg)
 					}
 				}
 
 				logging.Log("waiting for all tests to finish ...")
+
+				// wait for wait group to finish
 				wg.Wait()
+
 				logging.Log("all tests are finished")
 
- 			}
+			}
 
-
-
- 			allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, config.GetAllTypes())
+			allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, config.GetAllTypes())
 
 			for k := range allNodes {
 				resp, err := allNodes[k].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
@@ -279,4 +276,4 @@ var (
 			return nil
 		},
 	}
-	)
+)

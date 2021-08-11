@@ -73,5 +73,3 @@ berty token-server \
 	-log.file=/home/ec2-user/
 `
 )
-
-

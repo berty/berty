@@ -64,10 +64,9 @@ resource "aws_iam_instance_profile" "{{.ProfileName}}" {
 }
 `
 
-	IamRoleDefaultName = "berty-s3-logs"
-	IamRolePolicyDefaultName = "berty-s3-logs"
+	IamRoleDefaultName            = "berty-s3-logs"
+	IamRolePolicyDefaultName      = "berty-s3-logs"
 	IamInstanceProfileDefaultName = "berty-s3-logs"
 
 	IamRoleType = "ami"
-
 )

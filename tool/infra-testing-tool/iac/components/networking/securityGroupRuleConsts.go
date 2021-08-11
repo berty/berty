@@ -25,11 +25,10 @@ resource "aws_security_group_rule" "{{.Name }}" {
 	SecurityGroupRuleType = "securityGroupRule"
 
 	RuleTypeIngress = "ingress"
-	RuleTypeEgress = "egress"
+	RuleTypeEgress  = "egress"
 
 	// SecurityGroupRuleErrNoVpcId means there is no VpcId attached to the security group
 	SecurityGroupRuleErrNoVpcId = "securityGroup has no attribute 'VpcId'"
 	// SecurityGroupRuleErrNoVpc means there is no Vpc attached to the security group
 	SecurityGroupRuleErrNoVpc = "securityGroup has no attribute 'Vpc'"
 )
-

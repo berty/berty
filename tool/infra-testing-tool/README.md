@@ -24,6 +24,8 @@ Replace `eu-central-1` with your region of choice (eu-west-1, eu-west-3, etc), b
 cd packer
 packer build --force -var "region=eu-central-1" . # this will delete any AMIs with the name "berty-ami" in that region!
 ```
+**(eu-west-3 is Paris)**, [See more](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html#Concepts.RegionsAndAvailabilityZones.Regions).
+
 After you've executed these commands, it will start building the machine images. This could take roughly 15 minutes.
 When Packer has completed you can continue to the next step.
 

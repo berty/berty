@@ -44,7 +44,7 @@ resource "aws_instance" "{{.Name }}" {
 }
 `
 	// Default Ec2 Values
-	Ec2InstanceTypeDefault    = "t3.micro"
+	Ec2InstanceTypeDefault = "t3.micro"
 
 	// Ec2NamePrefix is the prefix for the Ec2 type
 	Ec2NamePrefix = "ec2"

@@ -20,13 +20,13 @@ import (
 
 const (
 	ErrAlreadyInGroup = "peer already in group"
-	ErrNotInGroup = "peer not in group"
-	ErrTestNotExist = "test does not exist"
+	ErrNotInGroup     = "peer not in group"
+	ErrTestNotExist   = "test does not exist"
 	ErrTestInProgress = "test already in progress"
 
 	ErrAlreadyReceiving = "already receiving messages in group"
 
-	RandomChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	RandomChars    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	ImageSplitSize = 3000
 )
 
@@ -77,7 +77,6 @@ func (s *Server) SendTextMessage(groupName string, message string) error {
 		return err
 	}
 
-
 	return err
 }
 
@@ -86,9 +85,9 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 	ctx := context.Background()
 
 	header := messengertypes.Media{
-		MimeType:       "image/png",
-		Filename:       fmt.Sprintf("%s.png", uuid.NewString()),
-		DisplayName:    "random noise",
+		MimeType:    "image/png",
+		Filename:    fmt.Sprintf("%s.png", uuid.NewString()),
+		DisplayName: "random noise",
 	}
 
 	cl, err := s.Messenger.MediaPrepare(ctx)
@@ -101,7 +100,6 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 		return logging.LogErr(err)
 	}
 
-
 	if len(content) <= 3500 {
 		err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
 		if err != nil {
@@ -111,7 +109,7 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 		var j int
 		for i := 3500; i <= len(content)-1; i += 3500 {
 			if i > len(content) {
-				i = len(content)-1
+				i = len(content) - 1
 			}
 
 			err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content[j:i]})
@@ -122,7 +120,6 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 			j = i
 		}
 	}
-
 
 	if len(content) <= ImageSplitSize {
 		err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
@@ -160,9 +157,9 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
 	interact := &messengertypes.Interact_Request{
-		MediaCids: []string{b64CID},
-		Payload: payload,
-		Type:	messengertypes.AppMessage_TypeUserMessage,
+		MediaCids:             []string{b64CID},
+		Payload:               payload,
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
 		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(s.Groups[groupName].GetPublicKey()),
 	}
 
@@ -174,12 +171,11 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 		return logging.LogErr(err)
 	}
 
-
 	return nil
 }
 
 // ConstructTextMessage constructs a string of a certain size
-func ConstructTextMessage(size int) string{
+func ConstructTextMessage(size int) string {
 	b := make([]rune, size)
 	for i := range b {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
@@ -195,7 +191,7 @@ func asSha256(o interface{}) string {
 }
 
 // ConstructImageMessage constructs an image of a certain size
-func ConstructImageMessage(size int) ([]byte, error){
+func ConstructImageMessage(size int) ([]byte, error) {
 	// formula to most accurately approximate size or rectangle PNG consisting of random noise
 	height := int(math.Sqrt(float64(size))*1.15) / 2
 	width := height

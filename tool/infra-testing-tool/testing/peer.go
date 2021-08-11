@@ -23,12 +23,12 @@ type Peer struct {
 
 	Lock sync.Mutex
 
-	Cc        *grpc.ClientConn
-	P	daemon.ProxyClient
+	Cc *grpc.ClientConn
+	P  daemon.ProxyClient
 
-	Ip            string
-	Groups        map[string]*protocoltypes.Group
-	ConfigGroups  []config.Group
+	Ip           string
+	Groups       map[string]*protocoltypes.Group
+	ConfigGroups []config.Group
 }
 
 var deploy bool
@@ -37,7 +37,6 @@ var deploy bool
 func SetDeploy() {
 	deploy = true
 }
-
 
 // NewPeer returns a peer with default variables already instantiated
 func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
@@ -57,7 +56,6 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 
 	}
 
-
 	if deploy {
 		if isPeer {
 			// connecting to peer
@@ -73,10 +71,16 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 
 				temp := daemon.NewProxyClient(cc)
 
+				resp, err := temp.IsProcessRunning(ctx, &daemon.IsProcessRunning_Request{})
+				if err != nil || resp.Running == false {
+					count += 1
+					time.Sleep(time.Second * 5)
+				}
+
 				_, err = temp.TestConnection(ctx, &daemon.TestConnection_Request{})
 				if err != nil {
 					count += 1
-					time.Sleep(time.Second * 10)
+					time.Sleep(time.Second * 5)
 				} else {
 					_, err = temp.TestConnectionToPeer(ctx, &daemon.TestConnectionToPeer_Request{
 						Tries: 1,
@@ -85,7 +89,7 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 					})
 					if err != nil {
 						count += 1
-						time.Sleep(time.Second * 10)
+						time.Sleep(time.Second * 5)
 					} else {
 						break
 					}
@@ -162,8 +166,6 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 
 		}
 	}
-
-
 
 	return p, err
 }

@@ -31,7 +31,6 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		return components, err
 	}
 
-
 	logging.Log("parsing config")
 
 	// gathering information about networking and daemon
@@ -41,7 +40,6 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	if err != nil {
 		return components, err
 	}
-
 
 	logging.Log("generating components")
 
@@ -135,7 +133,7 @@ func ToHCL(components []iac.Component) (_ []iac.Component, hcl string) {
 	return components, hcl
 }
 
-func (c *Config) parseGroupsAndConnections () (err error){
+func (c *Config) parseGroupsAndConnections() (err error) {
 	// RDVP
 	for i := range c.RDVP {
 		err = c.RDVP[i].parseConnections()

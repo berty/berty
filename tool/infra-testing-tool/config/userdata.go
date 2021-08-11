@@ -78,4 +78,3 @@ func (c *Node) GenerateUserData() (s string, err error) {
 
 	return s, nil
 }
-

@@ -28,16 +28,16 @@ type Test struct {
 	// Internal -> compiled value from Input
 
 	// inputs
-	TypeInput     string `yaml:"type"` // media / text
-	SizeInput     string `yaml:"size"` // in bytes
+	TypeInput     string `yaml:"type"`     // media / text
+	SizeInput     string `yaml:"size"`     // in bytes
 	IntervalInput int    `yaml:"interval"` // in Seconds
-	AmountInput   int 	 `yaml:"amount"` // in Messages
+	AmountInput   int    `yaml:"amount"`   // in Messages
 
 	// parsed values
-	TypeInternal     string `yaml:"typeInternal"`	  // media / text
+	TypeInternal     string `yaml:"typeInternal"`     // media / text
 	SizeInternal     int    `yaml:"sizeInternal"`     // in bytes
 	IntervalInternal int    `yaml:"intervalInternal"` // in Seconds
-	AmountInternal 	 int    `yaml:"amountInternal"` // in Messages
+	AmountInternal   int    `yaml:"amountInternal"`   // in Messages
 
 }
 
@@ -134,7 +134,7 @@ func (c *NodeGroup) parseGroups() error {
 	return nil
 }
 
-func (g Group) Hash () [16]byte {
+func (g Group) Hash() [16]byte {
 	bytes, err := json.Marshal(g)
 	if err != nil {
 		logging.Log(err)

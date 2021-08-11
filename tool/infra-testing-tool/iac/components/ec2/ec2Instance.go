@@ -31,7 +31,7 @@ type Instance struct {
 }
 
 type NetworkInterfaceAttachment struct {
-	Name			   string
+	Name               string
 	DeviceIndex        int
 	NetworkInterfaceId string
 }
@@ -44,8 +44,8 @@ type Tag struct {
 func NewInstance() Instance {
 	// with defaults in place
 	return Instance{
-		Name:         fmt.Sprintf("%s-%s", Ec2NamePrefix, uuid.NewString()),
-		InstanceType: Ec2InstanceTypeDefault,
+		Name:            fmt.Sprintf("%s-%s", Ec2NamePrefix, uuid.NewString()),
+		InstanceType:    Ec2InstanceTypeDefault,
 		RootBlockDevice: NewRootBlockDevice(),
 
 		IamInstanceProfile: IamInstanceProfileDefaultName,
@@ -91,7 +91,7 @@ func (c Instance) Validate() (iac.Component, error) {
 		// generates NetworkInterfaceAttachment form c.NetworkInterfaces
 		for i, ni := range c.NetworkInterfaces {
 			var nia = NetworkInterfaceAttachment{
-				Name: ni.Name,
+				Name:               ni.Name,
 				DeviceIndex:        i,
 				NetworkInterfaceId: ni.GetId(),
 			}

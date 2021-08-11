@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ProxyClient interface {
 	TestConnection(ctx context.Context, in *TestConnection_Request, opts ...grpc.CallOption) (*TestConnection_Response, error)
 	TestConnectionToPeer(ctx context.Context, in *TestConnectionToPeer_Request, opts ...grpc.CallOption) (*TestConnectionToPeer_Response, error)
+	IsProcessRunning(ctx context.Context, in *IsProcessRunning_Request, opts ...grpc.CallOption) (*IsProcessRunning_Response, error)
 	ConnectToPeer(ctx context.Context, in *ConnectToPeer_Request, opts ...grpc.CallOption) (*ConnectToPeer_Response, error)
 	UploadLogs(ctx context.Context, in *UploadLogs_Request, opts ...grpc.CallOption) (*UploadLogs_Response, error)
 	CreateInvite(ctx context.Context, in *CreateInvite_Request, opts ...grpc.CallOption) (*CreateInvite_Response, error)
@@ -52,6 +53,15 @@ func (c *proxyClient) TestConnection(ctx context.Context, in *TestConnection_Req
 func (c *proxyClient) TestConnectionToPeer(ctx context.Context, in *TestConnectionToPeer_Request, opts ...grpc.CallOption) (*TestConnectionToPeer_Response, error) {
 	out := new(TestConnectionToPeer_Response)
 	err := c.cc.Invoke(ctx, "/daemon.Proxy/TestConnectionToPeer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *proxyClient) IsProcessRunning(ctx context.Context, in *IsProcessRunning_Request, opts ...grpc.CallOption) (*IsProcessRunning_Response, error) {
+	out := new(IsProcessRunning_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/IsProcessRunning", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -154,6 +164,7 @@ func (c *proxyClient) IsTestRunning(ctx context.Context, in *IsTestRunning_Reque
 type ProxyServer interface {
 	TestConnection(context.Context, *TestConnection_Request) (*TestConnection_Response, error)
 	TestConnectionToPeer(context.Context, *TestConnectionToPeer_Request) (*TestConnectionToPeer_Response, error)
+	IsProcessRunning(context.Context, *IsProcessRunning_Request) (*IsProcessRunning_Response, error)
 	ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error)
 	UploadLogs(context.Context, *UploadLogs_Request) (*UploadLogs_Response, error)
 	CreateInvite(context.Context, *CreateInvite_Request) (*CreateInvite_Response, error)
@@ -176,6 +187,9 @@ func (UnimplementedProxyServer) TestConnection(context.Context, *TestConnection_
 }
 func (UnimplementedProxyServer) TestConnectionToPeer(context.Context, *TestConnectionToPeer_Request) (*TestConnectionToPeer_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestConnectionToPeer not implemented")
+}
+func (UnimplementedProxyServer) IsProcessRunning(context.Context, *IsProcessRunning_Request) (*IsProcessRunning_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsProcessRunning not implemented")
 }
 func (UnimplementedProxyServer) ConnectToPeer(context.Context, *ConnectToPeer_Request) (*ConnectToPeer_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConnectToPeer not implemented")
@@ -252,6 +266,24 @@ func _Proxy_TestConnectionToPeer_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProxyServer).TestConnectionToPeer(ctx, req.(*TestConnectionToPeer_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Proxy_IsProcessRunning_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsProcessRunning_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).IsProcessRunning(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/IsProcessRunning",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).IsProcessRunning(ctx, req.(*IsProcessRunning_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -450,6 +482,10 @@ var Proxy_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TestConnectionToPeer",
 			Handler:    _Proxy_TestConnectionToPeer_Handler,
+		},
+		{
+			MethodName: "IsProcessRunning",
+			Handler:    _Proxy_IsProcessRunning_Handler,
 		},
 		{
 			MethodName: "ConnectToPeer",

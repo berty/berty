@@ -9,9 +9,8 @@ import (
 type ElasticIp struct {
 	Name string
 
-	NetworkInterface  *NetworkInterface
+	NetworkInterface   *NetworkInterface
 	NetworkInterfaceId string
-
 }
 
 func NewElasticIp() ElasticIp {
@@ -53,7 +52,6 @@ func (c ElasticIp) Validate() (iac.Component, error) {
 	} else {
 		c.NetworkInterfaceId = c.NetworkInterface.GetId()
 	}
-
 
 	return c, nil
 }

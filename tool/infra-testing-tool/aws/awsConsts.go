@@ -1,7 +1,7 @@
 package aws
 
 const (
-	BucketTagKey = "Berty"
+	BucketTagKey   = "Berty"
 	BucketTagValue = "infra"
 
 	BucketNamePrefix = "bertylogs"
@@ -10,12 +10,11 @@ const (
 
 	ErrTagRespNil = "tagResp is nil"
 
-	ErrNoRegion = "no region specified in config"
+	ErrNoRegion      = "no region specified in config"
 	ErrInvalidRegion = "region specified in config is invalid"
 
-	InfoNoKeyPair = "no keypair has been specified in config"
+	InfoNoKeyPair     = "no keypair has been specified in config"
 	ErrInvalidKeypair = "keypair specified in config is invalid. note: keypairs are region dependant"
-
 
 	// Ec2TagName tag used to identify peers by name
 	Ec2TagName = "Name"
@@ -32,7 +31,7 @@ const (
 	Ec2TagBertyValue = "infra"
 )
 
-var Regions = []string {
+var Regions = []string{
 	"af-south-1",
 	"ap-east-1",
 	"ap-northeast-1",

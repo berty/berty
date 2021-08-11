@@ -17,8 +17,8 @@ type Subnet struct {
 
 func NewSubnet() Subnet {
 	return Subnet{
-		Name:             iac.GenerateName(SubnetNamePrefix),
-		CidrBlock:        SubnetCidrBlockDefault,
+		Name:      iac.GenerateName(SubnetNamePrefix),
+		CidrBlock: SubnetCidrBlockDefault,
 	}
 }
 

@@ -30,9 +30,14 @@ In addition to this, chaos engineering was not possible because once the node lo
 Now we have the infra-daemon sending messages to the berty daemon on the instance itself. this means the access to WAN can disappear, but it will still keep trying.
 
 
+infra-daemon.service is used in the packer image to tell systemd to start up the daemon on startup.
+
 ```protobuf
 service Proxy {
     rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
+    rpc TestConnectionToPeer(TestConnectionToPeer.Request) returns (TestConnectionToPeer.Response) {}
+    rpc IsProcessRunning(StartTest.Request) returns (StartTest.Response) {}
+
     rpc ConnectToPeer(ConnectToPeer.Request) returns (ConnectToPeer.Response) {}
     rpc UploadLogs(UploadLogs.Request) returns (UploadLogs.Response) {}
 
@@ -49,6 +54,7 @@ service Proxy {
 ```
 
 ## running protoc
+assuming you have `protoc` and `protoc-gen-go` installed
 ```
 cd daemon/grpc
 
@@ -57,5 +63,3 @@ protoc \
     --go-grpc_out=./daemon --go-grpc_opt=paths=source_relative \
     daemon.proto
 ```
-
-infra-daemon.service is used in the packer image to tell systemd to start up the daemon on startup.

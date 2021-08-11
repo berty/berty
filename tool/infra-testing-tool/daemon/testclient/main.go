@@ -50,7 +50,6 @@ func main() {
 
 	//log.Println(resp.UploadCount)
 
-
 	groupName := "peepoo"
 
 	request, err := p.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
@@ -143,11 +142,11 @@ func main() {
 
 	_, err = p.NewTest(ctx, &daemon.NewTest_Request{
 		GroupName: groupName,
-		TestN:  0,
+		TestN:     0,
 		Type:      "text",
 		Size:      200,
 		Interval:  1,
-		Amount: 10,
+		Amount:    10,
 	})
 	if err != nil {
 		logging.LogErr(err)
@@ -165,12 +164,10 @@ func main() {
 	//	logging.LogErr(err)
 	//}
 
-
-
 	fmt.Println("starting")
 	_, err = p.StartTest(ctx, &daemon.StartTest_Request{
 		GroupName: groupName,
-		TestN:  0,
+		TestN:     0,
 	})
 	if err != nil {
 		logging.LogErr(err)
@@ -184,13 +181,11 @@ func main() {
 	//	logging.LogErr(err)
 	//}
 
-
 	time.Sleep(time.Second * 3)
-
 
 	r, err := p.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
 		GroupName: groupName,
-		TestN:  0,
+		TestN:     0,
 	})
 	if err != nil {
 		logging.LogErr(err)
@@ -200,7 +195,6 @@ func main() {
 
 	time.Sleep(time.Second * 10)
 
-
 	_, err = p.UploadLogs(ctx, &daemon.UploadLogs_Request{
 		Folder: "test",
 		Name:   "test-node-1",
@@ -208,7 +202,6 @@ func main() {
 	if err != nil {
 		logging.LogErr(err)
 	}
-
 
 	//
 	//_, err = g.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{GroupName: groupName})

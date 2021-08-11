@@ -5,10 +5,10 @@ import (
 )
 
 type IamRole struct {
-	Name string
-	PolicyName string
+	Name        string
+	PolicyName  string
 	ProfileName string
-	S3Bucket string
+	S3Bucket    string
 }
 
 func NewIamRole() IamRole {
@@ -33,7 +33,6 @@ func (c IamRole) GetType() string {
 }
 
 func (c IamRole) Validate() (iac.Component, error) {
-
 
 	return c, nil
 }

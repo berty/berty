@@ -13,7 +13,7 @@ type Connection struct {
 	To       string `yaml:"to"`
 	Protocol string `yaml:"protocol"`
 
-	connType string
+	connType      string
 	infraToolOnly bool
 }
 
@@ -33,7 +33,7 @@ func (c *NodeGroup) parseConnections() error {
 	c.Name = strings.ReplaceAll(c.Name, " ", "_")
 
 	var hasInternet bool
-	for i, _ := range c.Connections {
+	for i := range c.Connections {
 		if strings.Contains(c.Connections[i].To, ConnTypeInternet) {
 			c.Connections[i].connType = ConnTypeInternet
 			hasInternet = true

@@ -17,7 +17,7 @@ func main() {
 		return
 	}
 
-	replicationProtocol :=  protocoltypes.NewProtocolServiceClient(replication)
+	replicationProtocol := protocoltypes.NewProtocolServiceClient(replication)
 
 	resp, err := replicationProtocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {

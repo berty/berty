@@ -23,7 +23,7 @@ type Config struct {
 
 	Attributes Attributes `yaml:"attributes"`
 
-	Settings	Settings  `yaml:"settings"`
+	Settings Settings `yaml:"settings"`
 }
 
 // Attributes are used at infra-compile time to aid with the generation of HCL
@@ -33,11 +33,10 @@ type Attributes struct {
 
 	vpc                  networking.Vpc
 	connectionComponents map[string][]iac.Component
-
 }
 
 type Settings struct {
-	Region string `yaml:"region"`
+	Region  string `yaml:"region"`
 	KeyName string `yaml:"keyPairName"`
 }
 
@@ -134,7 +133,7 @@ func GetConfig() Config {
 	return config
 }
 
-func (c Config) CountPeers () (i int) {
+func (c Config) CountPeers() (i int) {
 	for p := range c.Peer {
 		i += c.Peer[p].Amount
 	}
@@ -142,7 +141,7 @@ func (c Config) CountPeers () (i int) {
 	return i
 }
 
-func (c Config) CountRepl () (i int) {
+func (c Config) CountRepl() (i int) {
 	for p := range c.Replication {
 		i += c.Replication[p].Amount
 	}
@@ -150,15 +149,15 @@ func (c Config) CountRepl () (i int) {
 	return i
 }
 
-func GetRegion () string {
+func GetRegion() string {
 	return config.Settings.Region
 }
 
-func GetKeyPairName () string {
+func GetKeyPairName() string {
 	return config.Settings.KeyName
 }
 
-func GetAllTypes () []string {
+func GetAllTypes() []string {
 	return []string{
 		NodeTypePeer,
 		NodeTypeReplication,

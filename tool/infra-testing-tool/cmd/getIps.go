@@ -55,7 +55,6 @@ var (
 					instanceId = *instance.InstanceId
 				}
 
-
 				if *instance.State.Name == "running" || *instance.State.Name == "pending" {
 					for _, ni := range instance.NetworkInterfaces {
 						if ni.Association != nil {

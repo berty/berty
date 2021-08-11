@@ -6,7 +6,7 @@ import (
 )
 
 type Ami struct {
-	AmiID string
+	AmiID  string
 	Region string
 }
 

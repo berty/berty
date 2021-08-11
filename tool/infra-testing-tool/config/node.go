@@ -182,7 +182,7 @@ func (c *NodeGroup) composeComponents() {
 
 			// prepend the internet connection
 			// so the internet is always first
-			if connection.connType == ConnTypeInternet{
+			if connection.connType == ConnTypeInternet {
 				networkInterfaces = append([]*networking.NetworkInterface{&ni}, networkInterfaces...)
 			} else {
 				networkInterfaces = append(networkInterfaces, &ni)
@@ -236,7 +236,7 @@ func (c *NodeGroup) composeComponents() {
 			announceMaddrs = append(announceMaddrs, c.getSwarmAnnounceMultiAddr(i, p, p))
 		}
 
-		for x, _ := range listenerMaddrs {
+		for x := range listenerMaddrs {
 			c.Nodes[i].NodeAttributes.Listener += listenerMaddrs[x]
 			c.Nodes[i].NodeAttributes.Announce += announceMaddrs[x]
 
@@ -463,12 +463,27 @@ func (c NodeGroup) getFullMultiAddrWithPeerId(nodeIndex, protocolIndex, portInde
 	// as other node types don't have a peerId pre-configured
 	if len(c.Nodes) >= nodeIndex-1 {
 		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay || c.NodeType == NodeTypeBootstrap {
-			return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s",
-				c.getPublicIP(nodeIndex),
-				c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex],
-				c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
-				c.Nodes[nodeIndex].NodeAttributes.PeerId,
-			)
+			switch c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex] {
+			case quic:
+				return fmt.Sprintf("/ip4/%s/udp/%d/quic/p2p/%s",
+					c.getPublicIP(nodeIndex),
+					c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+					c.Nodes[nodeIndex].NodeAttributes.PeerId,
+				)
+			case websocket:
+				return fmt.Sprintf("/ip4/%s/tcp/%d/ws/p2p/%s",
+					c.getPublicIP(nodeIndex),
+					c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+					c.Nodes[nodeIndex].NodeAttributes.PeerId,
+				)
+			default:
+				return fmt.Sprintf("/ip4/%s/%s/%d/p2p/%s",
+					c.getPublicIP(nodeIndex),
+					c.Nodes[nodeIndex].NodeAttributes.Protocols[protocolIndex],
+					c.Nodes[nodeIndex].NodeAttributes.Ports[portIndex],
+					c.Nodes[nodeIndex].NodeAttributes.PeerId,
+				)
+			}
 		}
 		panic(errors.New("cannot use function getFullMultiAddr on a node that is not of type RDVP or Relay"))
 	}
@@ -652,4 +667,3 @@ func makeInternetSGRules(port int, protocol string, securityGroup networking.Sec
 
 	return comps
 }
-

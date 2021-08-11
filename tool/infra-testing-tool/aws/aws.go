@@ -18,8 +18,8 @@ import (
 )
 
 var (
-	region string
-	sess    *session.Session
+	region         string
+	sess           *session.Session
 	callerIdentity *sts.GetCallerIdentityOutput
 )
 
@@ -32,7 +32,7 @@ func GetSess() *session.Session {
 		Config: aws.Config{
 			Region: aws.String(region),
 		},
-	SharedConfigState: session.SharedConfigEnable,
+		SharedConfigState: session.SharedConfigEnable,
 	}))
 
 	return sess
@@ -166,10 +166,9 @@ func creationDateToUnix(date string) (unix int64, err error) {
 	return unix, logging.LogErr(err)
 }
 
-
 // GetCallerIdentity gets the caller identity from AWS
 // used to get AWS AMI's
-func GetCallerIdentity() (*sts.GetCallerIdentityOutput, error){
+func GetCallerIdentity() (*sts.GetCallerIdentityOutput, error) {
 	if callerIdentity == nil {
 		logging.Log("getting CalledIdentity & AMI's (AWS)")
 
@@ -215,9 +214,9 @@ func UploadFile(path, key string) error {
 	}
 
 	_, err = s3session.PutObject(&s3.PutObjectInput{
-		Body: f,
+		Body:   f,
 		Bucket: &bucketName,
-		Key: &key,
+		Key:    &key,
 	})
 	return logging.LogErr(err)
 }
@@ -231,7 +230,6 @@ func CreateBucket() error {
 	logging.Log(fmt.Sprintf("creating s3 bucket for logging: %s", name))
 	_, err := s3session.CreateBucket(&s3.CreateBucketInput{
 		Bucket: aws.String(name),
-
 	})
 	if err != nil {
 		return logging.LogErr(err)
@@ -242,7 +240,7 @@ func CreateBucket() error {
 	var created bool
 	for i := 0; i <= 3; i += 1 {
 		err = s3session.WaitUntilBucketExists(&s3.HeadBucketInput{
-			Bucket:              aws.String(name),
+			Bucket: aws.String(name),
 		})
 
 		if err == nil {
@@ -258,12 +256,12 @@ func CreateBucket() error {
 	logging.Log("tagging newly created bucket")
 
 	_, err = s3session.PutBucketTagging(&s3.PutBucketTaggingInput{
-		Bucket:            	 aws.String(name),
-		Tagging:             &s3.Tagging{
-			TagSet: []*s3.Tag {
+		Bucket: aws.String(name),
+		Tagging: &s3.Tagging{
+			TagSet: []*s3.Tag{
 				{
-				Key:   aws.String(BucketTagKey),
-				Value: aws.String(BucketTagValue),
+					Key:   aws.String(BucketTagKey),
+					Value: aws.String(BucketTagValue),
 				},
 			},
 		},
@@ -359,7 +357,7 @@ func IsValidKeyPair(keyName string) (bool, error) {
 	ec2sess := GetEc2Session()
 
 	result, err := ec2sess.DescribeKeyPairs(&ec2.DescribeKeyPairsInput{
-		KeyNames: []*string {
+		KeyNames: []*string{
 			aws.String(keyName),
 		},
 	})
@@ -378,4 +376,3 @@ func IsValidKeyPair(keyName string) (bool, error) {
 
 	return false, nil
 }
-

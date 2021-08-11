@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	logging.Log("Berty Infra Daemmon starting")
+	logging.Log("Berty Infra Daemon starting")
 
 	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%v", networking.DaemonGRPCPort))
 	if err != nil {
@@ -25,6 +25,5 @@ func main() {
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}
-
 
 }

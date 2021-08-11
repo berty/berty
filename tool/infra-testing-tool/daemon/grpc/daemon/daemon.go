@@ -22,8 +22,7 @@ import (
 )
 
 type Server struct {
-
-	Cc *grpc.ClientConn
+	Cc        *grpc.ClientConn
 	Messenger messengertypes.MessengerServiceClient
 	Protocol  protocoltypes.ProtocolServiceClient
 
@@ -32,13 +31,13 @@ type Server struct {
 	Groups map[string]*protocoltypes.Group
 
 	// group --> test --> bool
-	Tests 	map[string]map[int64]config.Test
+	Tests        map[string]map[int64]config.Test
 	RunningTests map[string]map[int64]bool
 
 	ReceivingMessages map[string]bool
 
-	DevicePK []byte
-	Messages map[string][]Message
+	DevicePK      []byte
+	Messages      map[string][]Message
 	LastMessageId map[string][]byte
 }
 
@@ -89,10 +88,10 @@ func (s *Server) NewTest(ctx context.Context, request *NewTest_Request) (respons
 	}
 
 	test := config.Test{
-		TypeInternal: request.Type,
-		SizeInternal: int(request.Size),
+		TypeInternal:     request.Type,
+		SizeInternal:     int(request.Size),
 		IntervalInternal: int(request.Interval),
-		AmountInternal: int(request.Amount),
+		AmountInternal:   int(request.Amount),
 	}
 
 	s.Lock.Lock()
@@ -146,7 +145,6 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 			s.RunningTests[request.GroupName][request.TestN] = false
 		}()
 
-
 		var x int
 		for x = 0; x < test.AmountInternal; x += 1 {
 			switch test.TypeInternal {
@@ -173,14 +171,12 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 			time.Sleep(time.Second * time.Duration(test.IntervalInternal))
 		}
 
-		logging.Log(fmt.Sprintf("sent %d messages to %s\n",x , request.GroupName))
-
+		logging.Log(fmt.Sprintf("sent %d messages to %s\n", x, request.GroupName))
 
 	}()
 
 	return response, logging.LogErr(err)
 }
-
 
 // ConnectToPeer connects to a peer based on the request
 func (s *Server) ConnectToPeer(ctx context.Context, request *ConnectToPeer_Request) (response *ConnectToPeer_Response, err error) {
@@ -246,7 +242,7 @@ func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request
 	}
 
 	invite, err := s.Messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-		GroupPK: resCreate.GroupPK,
+		GroupPK:   resCreate.GroupPK,
 		GroupName: request.GroupName,
 	})
 
@@ -317,7 +313,7 @@ func (s *Server) JoinGroup(ctx context.Context, request *JoinGroup_Request) (res
 }
 
 // StartReceiveMessage starts a goroutine on the server that reads messages in a specific group
-func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveMessage_Request) (response *StartReceiveMessage_Response,err  error) {
+func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveMessage_Request) (response *StartReceiveMessage_Response, err error) {
 	logging.Log(fmt.Sprintf("StartReveiveMessage - incoming request: %+v", request))
 	response = new(StartReceiveMessage_Response)
 
@@ -369,7 +365,6 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 					logging.Log(err.Error())
 					continue
 				}
-
 
 				switch am.GetType() {
 				case messengertypes.AppMessage_TypeUserMessage:
@@ -434,7 +429,7 @@ func (s *Server) StopReceiveMessage(ctx context.Context, request *StopReceiveMes
 }
 
 // AddReplication ready's a replication server by contacting the token server.
-func (s *Server) AddReplication(ctx context.Context, request *AddReplication_Request) (response *AddReplication_Response,err error) {
+func (s *Server) AddReplication(ctx context.Context, request *AddReplication_Request) (response *AddReplication_Response, err error) {
 	logging.Log(fmt.Sprintf("AddReplication - incoming request: %+v", request))
 	response = new(AddReplication_Response)
 
@@ -502,6 +497,3 @@ func (s *Server) TestConnectionToPeer(ctx context.Context, request *TestConnecti
 
 	return &TestConnectionToPeer_Response{Success: true}, err
 }
-
-
-
