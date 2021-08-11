@@ -18,7 +18,7 @@ export type GoLoggerOpts = {
 
 export interface GoBridgeInterface {
 	log(opts: GoLoggerOpts): void
-	initBridge(tyberHost: string): Promise<void>
+	initBridge(): Promise<void>
 	clearStorage(): Promise<void>
 	closeBridge(): Promise<void>
 	getProtocolAddr(): Promise<string>

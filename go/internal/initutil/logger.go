@@ -25,7 +25,6 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Logging.FilePath, "log.file", m.Logging.FilePath, "log file path (pattern)")
 	fs.UintVar(&m.Logging.RingSize, "log.ring-size", m.Logging.RingSize, `ring buffer size in MB`)
 	fs.StringVar(&m.Logging.RingFilters, "log.ring-filters", m.Logging.RingFilters, "ring zapfilter configuration")
-	fs.StringVar(&m.Logging.TyberHost, "log.tyber-host", m.Logging.TyberHost, `Tyber server HOST[:PORT] to stream logs to`)
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-log.filters=':default: CUSTOM'",
@@ -72,9 +71,6 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 	if m.Logging.RingSize > 0 {
 		m.Logging.ring = zapring.New(m.Logging.RingSize * 1024 * 1024)
 		streams = append(streams, logutil.NewRingStream(m.Logging.RingFilters, "json", m.Logging.ring))
-	}
-	if m.Logging.TyberHost != "" {
-		streams = append(streams, logutil.NewTyberStream(m.Logging.TyberHost))
 	}
 	if m.Logging.FilePath != "" && m.Logging.FileFilters != "" {
 		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<store-dir>", m.Datastore.Dir)

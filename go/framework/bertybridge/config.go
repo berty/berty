@@ -9,7 +9,6 @@ type Config struct {
 	nbDriver    ProximityDriver
 	CLIArgs     []string `json:"cliArgs"`
 	RootDirPath string   `json:"rootDir"`
-	TyberHost   string   `json:"tyberHost"`
 }
 
 func NewConfig() *Config {
@@ -23,4 +22,3 @@ func (c *Config) SetNBDriver(driver ProximityDriver)              { c.nbDriver =
 func (c *Config) SetLifeCycleDriver(lc LifeCycleDriver)           { c.lc = lc }
 func (c *Config) SetRootDir(rootdir string)                       { c.RootDirPath = rootdir }
 func (c *Config) AppendCLIArg(arg string)                         { c.CLIArgs = append(c.CLIArgs, arg) }
-func (c *Config) SetTyberAddress(address string)                  { c.TyberHost = address }

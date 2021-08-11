@@ -1,16 +1,23 @@
 package bertymessenger
 
 import (
+	"bufio"
 	"context"
+	"fmt"
+	"io"
+	"net"
+	"os"
 	"runtime"
 	"testing"
 	"time"
 
+	"github.com/phayes/freeport"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
+	"moul.io/u"
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
@@ -311,4 +318,138 @@ func TestServiceBannerQuote(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEmpty(t, ret.Quote)
 	assert.NotEmpty(t, ret.Author)
+}
+
+func TestServiceTyberHostAttach(t *testing.T) {
+	// FIXME: add accept timeout or just the whole test timeout
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	// mock that we have an ongoing log file
+	tmpLogFilePath, err := u.TempFileName("", "berty")
+	require.NoError(t, err)
+	defer os.Remove(tmpLogFilePath)
+	tmpLogFile, err := os.Create(tmpLogFilePath)
+	require.NoError(t, err)
+	defer tmpLogFile.Close()
+	_, err = tmpLogFile.Write([]byte("hello world!\n"))
+	require.NoError(t, err)
+	_, err = tmpLogFile.Write([]byte("a second line\n"))
+	require.NoError(t, err)
+
+	// init service
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{
+		Logger:      logger,
+		LogFilePath: tmpLogFilePath,
+	})
+	defer cleanup()
+
+	// attach to a first server.
+	var firstReader *bufio.Reader
+	{
+		go func() {
+			time.Sleep(200 * time.Millisecond)
+			tmpLogFile.Write([]byte("ciao 1\n"))
+		}()
+
+		// call svc.TyberHostAttach before starting the tyber server.
+		firstPort, err := freeport.GetFreePort()
+		require.NoError(t, err)
+		ret, err := svc.TyberHostAttach(ctx, &messengertypes.TyberHostAttach_Request{
+			Addresses: []string{fmt.Sprintf("127.0.0.1:%d", firstPort)},
+		})
+		require.Empty(t, ret)
+		require.NoError(t, err)
+		time.Sleep(time.Second) // test backoff retry
+
+		firstLines := []string{}
+		// mock a Tyber server
+		{
+			l, err := net.Listen("tcp", fmt.Sprintf(":%d", firstPort))
+			require.NoError(t, err)
+			defer l.Close()
+
+			conn, err := l.Accept()
+			if err != nil {
+				return
+			}
+			defer conn.Close()
+
+			firstReader = bufio.NewReader(conn)
+			for {
+				buf, _, err := firstReader.ReadLine()
+				if err == io.EOF {
+					break
+				}
+				firstLines = append(firstLines, string(buf))
+				if len(firstLines) == 3 {
+					break
+				}
+			}
+			require.Equal(t, firstLines, []string{
+				"hello world!",
+				"a second line",
+				"ciao 1",
+			})
+		}
+	}
+
+	// attach to another host (should drop the first connection).
+	{
+		go func() {
+			time.Sleep(200 * time.Millisecond)
+			tmpLogFile.Write([]byte("ciao 2\n"))
+		}()
+
+		// call svc.TyberHostAttach before starting the tyber server
+		secondPort, err := freeport.GetFreePort()
+		require.NoError(t, err)
+		ret, err := svc.TyberHostAttach(ctx, &messengertypes.TyberHostAttach_Request{
+			Addresses: []string{fmt.Sprintf("127.0.0.1:%d", secondPort)},
+		})
+		require.Empty(t, ret)
+		require.NoError(t, err)
+		time.Sleep(time.Second) // test backoff retry
+
+		secondLines := []string{}
+		// mock a Tyber server
+		{
+			l, err := net.Listen("tcp", fmt.Sprintf(":%d", secondPort))
+			require.NoError(t, err)
+			defer l.Close()
+
+			conn, err := l.Accept()
+			if err != nil {
+				return
+			}
+			defer conn.Close()
+
+			reader := bufio.NewReader(conn)
+			for {
+				buf, _, err := reader.ReadLine()
+				if err == io.EOF {
+					break
+				}
+				secondLines = append(secondLines, string(buf))
+				if len(secondLines) == 4 {
+					break
+				}
+			}
+			require.Equal(t, secondLines, []string{
+				"hello world!",
+				"a second line",
+				"ciao 1",
+				"ciao 2",
+			})
+		}
+	}
+
+	t.Skip("FIXME: ensure that context.Done() cleans up everything instantly in a reliable way")
+	// first server should not receive ciao2, but should receive eof
+	_, _, err = firstReader.ReadLine()
+	require.Equal(t, err, io.EOF)
 }

@@ -62,6 +62,8 @@ type service struct {
 	eventHandler          *messengerpayloads.EventHandler
 	ring                  *zapring.Core
 	pushReceiver          bertypush.MessengerPushReceiver
+	tyberCleanup          func()
+	logFilePath           string
 }
 
 type Opts struct {
@@ -73,6 +75,11 @@ type Opts struct {
 	StateBackup         *mt.LocalDatabaseState
 	PlatformPushToken   *protocoltypes.PushServiceReceiver
 	Ring                *zapring.Core
+
+	// LogFilePath defines the location of the current session's log file.
+	//
+	// This variable is used by svc.TyberHostAttach.
+	LogFilePath string
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -212,6 +219,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		ctx:                   ctx,
 		handlerMutex:          sync.Mutex{},
 		ring:                  opts.Ring,
+		logFilePath:           opts.LogFilePath,
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)

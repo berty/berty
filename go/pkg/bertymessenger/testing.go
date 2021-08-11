@@ -31,10 +31,11 @@ import (
 )
 
 type TestingServiceOpts struct {
-	Logger *zap.Logger
-	Client bertyprotocol.Client
-	Index  int
-	Ring   *zapring.Core
+	Logger      *zap.Logger
+	Client      bertyprotocol.Client
+	Index       int
+	Ring        *zapring.Core
+	LogFilePath string
 }
 
 func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (messengertypes.MessengerServiceServer, func()) {
@@ -72,7 +73,12 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 		cleanup,
 	)
 
-	server, err := New(opts.Client, &Opts{Logger: opts.Logger, DB: db, Ring: opts.Ring})
+	server, err := New(opts.Client, &Opts{
+		Logger:      opts.Logger,
+		DB:          db,
+		Ring:        opts.Ring,
+		LogFilePath: opts.LogFilePath,
+	})
 	if err != nil {
 		cleanup()
 		require.NoError(t, err)

@@ -85,7 +85,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   //////////////
 
   @ReactMethod
-  public void initBridge(String tyberHost, Promise promise) {
+  public void initBridge(Promise promise) {
     try {
       if (bridgeMessenger != null) {
         promise.resolve(false);
@@ -96,8 +96,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       if (config == null) {
         throw new Exception("");
       }
-
-      config.setTyberHost(tyberHost);
 
       // init logger
       LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
@@ -115,11 +113,11 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       }
       config.setAndroidCacheDir(tempDir.getAbsolutePath());
 
-	  // set ble driver
-	  BleInterface bleDriver = new BleInterface(reactContext);
-	  config.setBleDriver(bleDriver);
+      // set ble driver
+      BleInterface bleDriver = new BleInterface(reactContext);
+      config.setBleDriver(bleDriver);
 
-	  // set NearBy driver
+      // set NearBy driver
       BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
       config.setNBDriver(NBDriver);
 

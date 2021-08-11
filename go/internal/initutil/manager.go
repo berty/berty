@@ -67,7 +67,6 @@ type Manager struct {
 		FileFilters          string `json:"FileFilters,omitempty"`
 		RingFilters          string `json:"RingFilters,omitempty"`
 		RingSize             uint   `json:"RingSize,omitempty"`
-		TyberHost            string `json:"TyberHost,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
@@ -215,7 +214,6 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	m.Logging.FileFilters = "*"
 	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer
-	m.Logging.TyberHost = ""
 
 	// generate SessionID using uuidv4 to identify each run
 	m.Session.ID = tyber.NewSessionID()

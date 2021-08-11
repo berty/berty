@@ -7,14 +7,17 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/url"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/cenkalti/backoff"
 	"github.com/gogo/protobuf/proto"
 	"github.com/grandcat/zeroconf"
 	ipfscid "github.com/ipfs/go-cid"
+	ctxio "github.com/jbenet/go-context/io"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
@@ -1512,11 +1515,98 @@ func (svc *service) TyberHostSearch(request *messengertypes.TyberHostSearch_Requ
 	return nil
 }
 
+// TyberHostAttach tries to attach itself (connect) to a remote Tyber server and then replays a session's logs.
+//
+// When TyberHostAttach is called, it cancels the previous connection if there is one.
+// The function returns quickly after initializing a sidekick goroutine that stays quiet in case of connection issue.
+// If multiple addresses are provided, the function will try them sequentially.
+// If the dial attempt fails for every addresses in the list, the routine will sleep (with backoff) and try again.
+// If at least one connection was successful (successfully sending at least one line), then, the function won't try other addresses and won't try to reconnect.
 func (svc *service) TyberHostAttach(ctx context.Context, request *messengertypes.TyberHostAttach_Request) (*messengertypes.TyberHostAttach_Reply, error) {
-	// TODO: attach and replay logs
-	return nil, errcode.ErrNotImplemented.Wrap(fmt.Errorf("implement me"))
+	// close previous session if existing
+	if svc.tyberCleanup != nil {
+		svc.tyberCleanup()
+	}
 
-	// return &messengertypes.TyberHostAttach_Reply{}, nil
+	// silently quit if no address provided.
+	if len(request.Addresses) == 0 {
+		return &messengertypes.TyberHostAttach_Reply{}, nil
+	}
+
+	// raise an error if attach requested but no log file provided.
+	if svc.logFilePath == "" {
+		return nil, errcode.TODO.Wrap(fmt.Errorf("cannot attach to tyber without specified log path"))
+	}
+
+	backoff := backoff.NewExponentialBackOff()
+	backoff.MaxInterval = time.Minute
+	var succeed bool
+
+	// can be stopped either by calling TyberHostAttach again, or when the svc.Close is called.
+	// we use svc.ctx instead of the request's one, because a TyberHostAttach session belongs to a Messenger session.
+	ctx, cancel := context.WithCancel(svc.ctx)
+	svc.tyberCleanup = cancel
+
+	// open the logfile.
+	logFile, err := os.Open(svc.logFilePath)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	// sidekick goroutine that keeps trying to connect and send logs to a Tyber server.
+	go func() {
+		defer logFile.Close()
+
+		// retry loop (with backoff)
+		for iter := 0; ; iter++ {
+			// check if context is finished
+			if ctx.Err() != nil {
+				return
+			}
+
+			var errs error
+			for _, address := range request.Addresses {
+				var d net.Dialer
+				conn, err := d.DialContext(ctx, "tcp", address)
+				if err != nil {
+					errs = multierr.Append(errs, err)
+					continue
+				}
+
+				// connection succeed -> don't try other addresses and don't try to reconnect, just quit, timeout or context cancellation.
+				succeed = true
+
+				_, err = io.Copy(conn, ctxio.NewReader(ctx, logFile))
+				if err != nil {
+					svc.logger.Debug("io.Copy failed with Tyber host", zap.Error(err))
+				}
+				return
+			}
+
+			sleepDuration := backoff.NextBackOff()
+
+			svc.logger.Debug(
+				"tyber host attach",
+				zap.Bool("succeed", succeed),
+				zap.Duration("backoff", sleepDuration),
+				zap.Int("iteration", iter),
+				zap.Error(errs),
+			)
+
+			if succeed {
+				// no more attempts
+				return
+			}
+
+			select {
+			case <-time.After(sleepDuration):
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	return &messengertypes.TyberHostAttach_Reply{}, nil
 }
 
 func (svc *service) PushSetAutoShare(ctx context.Context, request *messengertypes.PushSetAutoShare_Request) (*messengertypes.PushSetAutoShare_Reply, error) {

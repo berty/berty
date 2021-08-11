@@ -99,10 +99,7 @@ const getPersistentOptions = async (
 }
 
 export const initBridge = async () => {
-	const tyberHost =
-		(await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) ||
-		defaultPersistentOptions().tyberHost.address
-	await GoBridge.initBridge(tyberHost)
+	await GoBridge.initBridge()
 		.then(() => console.log('bridge init done'))
 		.catch(err => {
 			console.warn('unable to init bridge ', Object.keys(err), err.domain)
@@ -198,15 +195,6 @@ export const openingDaemon = async (
 		bridgeOpts.cliArgs = opts?.log?.format
 			? [...bridgeOpts.cliArgs!, `--log.format=${opts?.log?.format}`]
 			: [...bridgeOpts.cliArgs!, '--log.format=console']
-
-		// set tyber host flag
-		if (tyberHost) {
-			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter(arg => !arg.startsWith('--log.tyber-host='))
-			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${tyberHost}`]
-		} else if (opts?.tyberHost?.address) {
-			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter(arg => !arg.startsWith('--log.tyber-host='))
-			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${opts?.tyberHost?.address}`]
-		}
 
 		// set log filter opt
 		bridgeOpts.logFilters = opts?.logFilters?.format

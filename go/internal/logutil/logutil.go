@@ -112,18 +112,6 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 		case typeRing:
 			ring := opts.ring.SetEncoder(enc)
 			core = ring
-		case typeTyber:
-			tyberLogger, err := NewTyberLogger(opts.tyberHost)
-			if err != nil {
-				// TODO: handle error properly
-				_ = err
-				continue
-			}
-			cleanup = u.CombineFuncs(cleanup, func() {
-				tyberLogger.Close()
-			})
-			w := zapcore.AddSync(tyberLogger)
-			core = zapcore.NewCore(enc, w, config.Level)
 		case typeFile:
 			writer, err := newFileWriteCloser(opts.path, opts.sessionKind)
 			if err != nil {
