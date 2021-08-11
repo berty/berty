@@ -1,20 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import {
-	Alert,
-	ScrollView,
-	StatusBar,
-	TextInput,
-	TouchableOpacity,
-	Vibration,
-	View,
-} from 'react-native'
-import { Icon, Layout } from '@ui-kitten/components'
+import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
+import { Layout } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
 import { Player } from '@react-native-community/audio-toolkit'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import Long from 'long'
 import AsyncStorage from '@react-native-community/async-storage'
 import crashlytics from '@react-native-firebase/crashlytics'
+import { withInAppNotification } from 'react-native-in-app-notification'
 
 import {
 	accountService,
@@ -23,7 +16,6 @@ import {
 	MessengerActions,
 	PersistentOptionsKeys,
 } from '@berty-tech/store/context'
-import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
@@ -39,8 +31,11 @@ import {
 	ButtonSetting,
 	ButtonSettingItem,
 	ButtonSettingRow,
+	StringOptionInput,
 } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { showNeedRestartNotification } from '../helpers'
+import { DropDownPicker } from '../shared-components/DropDownPicker'
 
 //
 // DevTools
@@ -322,79 +317,7 @@ const PlaySound: React.FC = () => {
 	)
 }
 
-const StringOptionInput: React.FC<{
-	name: string
-	getOptionValue: () => Promise<string> | string
-	setOptionValue: (value: string) => Promise<void> | void
-	bulletPointValue: string
-}> = ({ name, bulletPointValue, getOptionValue, setOptionValue }) => {
-	const [{ flex, row, text, margin, padding, border }] = useStyles()
-	const [value, setValue] = useState('')
-	useEffect(() => {
-		;(async () => {
-			setValue(await getOptionValue())
-		})()
-	}, [getOptionValue])
-	const colors = useThemeColor()
-
-	return (
-		<ButtonSetting
-			name={name}
-			icon='message-circle-outline'
-			iconColor={colors['alt-secondary-background-header']}
-			actionIcon={null}
-		>
-			<View style={[padding.right.small, padding.top.small]}>
-				<View
-					style={[
-						flex.tiny,
-						border.radius.medium,
-						border.medium,
-						padding.small,
-						row.fill,
-						margin.bottom.small,
-						{
-							alignItems: 'center',
-							borderColor: colors['main-text'],
-						},
-					]}
-				>
-					<TextInput
-						autoCorrect={false}
-						autoCapitalize='none'
-						onChangeText={(t) => setValue(t)}
-						value={value}
-						style={[text.bold.small, text.size.medium, flex.scale(8), { fontFamily: 'Open Sans' }]}
-					/>
-					<TouchableOpacity
-						onPress={async () => {
-							await setOptionValue(value)
-						}}
-					>
-						<Icon
-							name='checkmark-outline'
-							fill={colors['alt-secondary-background-header']}
-							width={20}
-							height={20}
-						/>
-					</TouchableOpacity>
-				</View>
-
-				<ButtonSettingItem
-					value={bulletPointValue}
-					icon='info-outline'
-					iconColor={colors['background-header']}
-					iconSize={15}
-					disabled
-					styleText={{ color: colors['secondary-text'] }}
-					styleContainer={[margin.bottom.tiny]}
-				/>
-			</View>
-		</ButtonSetting>
-	)
-}
-
-const BodyDevTools: React.FC<{}> = () => {
+const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, text }] = useStyles()
 	const { navigate } = useNavigation()
@@ -560,29 +483,32 @@ const BodyDevTools: React.FC<{}> = () => {
 					})
 
 					ctx.setNetworkConfig(newConfig)
+					showNeedRestartNotification(showNotification, ctx, t)
 				}}
 			/>
 			<StringOptionInput
 				name={t('settings.devtools.log-button.name')}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
 				getOptionValue={() => ctx.persistentOptions.log.format}
-				setOptionValue={(val) =>
+				setOptionValue={(val) => {
 					ctx.setPersistentOption({
 						type: PersistentOptionsKeys.Log,
 						payload: { format: val },
 					})
-				}
+					showNeedRestartNotification(showNotification, ctx, t)
+				}}
 			/>
 			<StringOptionInput
 				name={t('settings.devtools.log-filters-button.name')}
 				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
 				getOptionValue={() => ctx.persistentOptions.logFilters.format}
-				setOptionValue={(val) =>
+				setOptionValue={(val) => {
 					ctx.setPersistentOption({
 						type: PersistentOptionsKeys.LogFilters,
 						payload: { format: val },
 					})
-				}
+					showNeedRestartNotification(showNotification, ctx, t)
+				}}
 			/>
 			<StringOptionInput
 				name={t('settings.devtools.tyber-host-button.name')}
@@ -591,7 +517,10 @@ const BodyDevTools: React.FC<{}> = () => {
 					(await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) ||
 					defaultPersistentOptions().tyberHost.address
 				}
-				setOptionValue={(val) => AsyncStorage.setItem(GlobalPersistentOptionsKeys.TyberHost, val)}
+				setOptionValue={(val) => {
+					AsyncStorage.setItem(GlobalPersistentOptionsKeys.TyberHost, val)
+					showNeedRestartNotification(showNotification, ctx, t)
+				}}
 			/>
 			{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
 				<ButtonSetting
@@ -726,7 +655,7 @@ const BodyDevTools: React.FC<{}> = () => {
 			/>
 		</View>
 	)
-}
+})
 
 export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 	const { goBack } = useNavigation()

@@ -4,6 +4,7 @@ import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
+import { RESULTS } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
@@ -13,7 +14,6 @@ import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import { openDocumentPicker } from '../helpers'
 import { checkPermissions } from '../utils'
-import { RESULTS } from 'react-native-permissions'
 
 const CreateAccountBody = ({ next }) => {
 	const ctx = useMsgrContext()
@@ -30,18 +30,23 @@ const CreateAccountBody = ({ next }) => {
 	}, [ctx])
 
 	const handlePersistentOptions = React.useCallback(async () => {
-		const status = await checkPermissions('p2p', {
-			isToNavigate: false,
-		})
-		if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
-			await ctx.createNewAccount()
-		} else {
-			console.log('anvigate to permission view')
-			await checkPermissions('p2p', {
-				navigateNext: 'Onboarding.SetupFinished',
-				createNewAccount: true,
-				isToNavigate: true,
+		const preset = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.Preset)
+
+		if (preset === 'performance') {
+			const status = await checkPermissions('p2p', {
+				isToNavigate: false,
 			})
+			if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
+				await ctx.createNewAccount()
+			} else {
+				await checkPermissions('p2p', {
+					navigateNext: 'Onboarding.SetupFinished',
+					createNewAccount: true,
+					isToNavigate: true,
+				})
+			}
+		} else {
+			await ctx.createNewAccount()
 		}
 
 		setIsPressed(true)
@@ -50,6 +55,7 @@ const CreateAccountBody = ({ next }) => {
 	const onPress = React.useCallback(async () => {
 		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
 		await AsyncStorage.setItem(GlobalPersistentOptionsKeys.DisplayName, displayName)
+
 		handlePersistentOptions()
 			.then(() => {})
 			.catch((err) => {

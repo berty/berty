@@ -6,7 +6,7 @@ import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 
-const Basic: React.FC<any> = ({ onClose, title, message }) => {
+const Basic: React.FC<any> = ({ onPress, onClose, title, message }) => {
 	const [{ text }] = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesNotification()
@@ -15,11 +15,9 @@ const Basic: React.FC<any> = ({ onClose, title, message }) => {
 		<TouchableOpacity
 			style={_styles.touchable}
 			activeOpacity={0.3}
-			//underlayColor='transparent'
 			onPress={() => {
-				if (typeof onClose === 'function') {
-					onClose()
-				}
+				onClose()
+				onPress()
 			}}
 		>
 			<View style={_styles.innerTouchable}>

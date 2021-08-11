@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Input } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -14,8 +15,9 @@ import {
 } from '@berty-tech/store/services'
 
 import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../shared-components'
+import { showNeedRestartNotification } from '../helpers'
 
-const BodyServicesAuth = () => {
+const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
@@ -59,7 +61,12 @@ const BodyServicesAuth = () => {
 					iconColor={colors['background-header']}
 					alone={false}
 					onPress={async () => {
-						await servicesAuthViaURL(ctx, url)
+						try {
+							await servicesAuthViaURL(ctx, url)
+							showNeedRestartNotification(showNotification, ctx, t)
+						} catch (e) {
+							// ignoring
+						}
 					}}
 				/>
 			</FactionButtonSetting>
@@ -94,7 +101,7 @@ const BodyServicesAuth = () => {
 			</FactionButtonSetting>
 		</View>
 	)
-}
+})
 
 export const ServicesAuth: React.FC<ScreenProps.Settings.ServicesAuth> = () => {
 	const { goBack } = useNavigation()

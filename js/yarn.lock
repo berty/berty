@@ -8402,10 +8402,9 @@ react-native-image-zoom-viewer@^3.0.1:
   dependencies:
     react-native-image-pan-zoom "^2.1.12"
 
-react-native-in-app-notification@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-in-app-notification/-/react-native-in-app-notification-3.1.0.tgz#2396c1acd677b1bd73d32911acec47d4a842d90f"
-  integrity sha512-ughONPDR4FpjvZPClyHX5DLbPtmKnVaHfMz2nEPw0H/TqIjV63F07O+zOhg/MWop2YFOOuCuuHbqJnF1hywnBQ==
+"react-native-in-app-notification@git+https://github.com/robcalcroft/react-native-in-app-notification.git#8bdf081dfdd58c111f60c3efb01856730f4dc82b":
+  version "3.0.1"
+  resolved "git+https://github.com/robcalcroft/react-native-in-app-notification.git#8bdf081dfdd58c111f60c3efb01856730f4dc82b"
   dependencies:
     hoist-non-react-statics "^3.0.1"
     react-native-iphone-x-helper "^1.2.0"
