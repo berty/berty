@@ -664,5 +664,11 @@
     },
     "what-happening": "Что здесь происходит?",
     "settings-text": "Вы можете включить разрешение {{title}} в настройках."
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
   }
 }
