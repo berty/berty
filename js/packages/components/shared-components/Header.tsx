@@ -99,7 +99,12 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 					{title ? (
 						<View style={[flex.big, row.item.justify]}>
 							<Text
-								style={[text.align.center, text.color.white, text.bold.medium, text.size.scale(25)]}
+								style={[
+									text.align.center,
+									text.bold.medium,
+									text.size.scale(25),
+									{ color: colors['reverted-main-text'] },
+								]}
 							>
 								{title}
 							</Text>

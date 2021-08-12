@@ -257,15 +257,13 @@ export const ChatFooter: React.FC<{
 	const _aFixLeft = useRef(new Animated.Value(0)).current
 	const _aFixMicro = useRef(new Animated.Value(0)).current
 	const _aFixSend = useRef(new Animated.Value(0)).current
-	const _aPaddingLeft = useRef(new Animated.Value(0)).current
 	const _aOpacity = useRef(new Animated.Value(0)).current
 	const _aOpacitySendButton = useRef(new Animated.Value(0)).current
 
-	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(94 * scaleSize)])
-	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 40 * scaleSize])
+	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(60 * scaleSize)])
+	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 5 * scaleSize])
 	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -120 * scaleSize])
 	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -55 * scaleSize])
-	const aPaddingLeft = createAnimationInterpolation(_aPaddingLeft, [0, 45])
 	const aOpacity = createAnimationInterpolation(_aOpacity, [1, 0])
 	const aOpacitySendButton = createAnimationInterpolation(_aOpacity, [0, 1])
 
@@ -277,12 +275,11 @@ export const ChatFooter: React.FC<{
 				createAnimationTiming(_aFixLeft, 1, duration),
 				createAnimationTiming(_aFixMicro, 1, duration),
 				createAnimationTiming(_aFixSend, 1, duration),
-				createAnimationTiming(_aPaddingLeft, 1, duration),
 				createAnimationTiming(_aOpacity, 1, duration),
 				createAnimationTiming(_aOpacitySendButton, 1, duration),
 			]).start()
 		},
-		[_aMaxWidth, _aFixLeft, _aPaddingLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
+		[_aMaxWidth, _aFixLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
 	)
 	const keyboardWillHide = useCallback(
 		(event?: any) => {
@@ -292,12 +289,11 @@ export const ChatFooter: React.FC<{
 				createAnimationTiming(_aFixLeft, 0, duration),
 				createAnimationTiming(_aFixMicro, 0, duration),
 				createAnimationTiming(_aFixSend, 0, duration),
-				createAnimationTiming(_aPaddingLeft, 0, duration),
 				createAnimationTiming(_aOpacity, 0, duration),
 				createAnimationTiming(_aOpacitySendButton, 0, duration),
 			]).start()
 		},
-		[_aMaxWidth, _aFixLeft, _aPaddingLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
+		[_aMaxWidth, _aFixLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
 	)
 	useEffect(() => {
 		if (message.length > 0) {
@@ -411,16 +407,6 @@ export const ChatFooter: React.FC<{
 							flexDirection: 'row',
 						}}
 					>
-						<Animated.View style={[{ right: aPaddingLeft, opacity: aOpacity }]}>
-							<View style={[{ alignItems: 'center' }]}>
-								<Icon
-									pack='custom'
-									name='bertyzzz'
-									height={37 * scaleSize}
-									width={37 * scaleSize}
-								/>
-							</View>
-						</Animated.View>
 						<Animated.View
 							style={[
 								border.radius.medium,
