@@ -107,6 +107,23 @@ public class Peer {
         return null;
     }
 
+    public synchronized PeerDevice getPeerServerDevice() {
+        if (mServerDevices.size() > 0) {
+            return mServerDevices.get(0);
+        }
+        return null;
+    }
+
+    public synchronized PeerDevice getDevice() {
+        if (mClientDevices.size() > 0) {
+            return mClientDevices.get(0);
+        } else if (mServerDevices.size() > 0) {
+            return mServerDevices.get(0);
+        }
+
+        return null;
+    }
+
     public synchronized boolean isClientReady() {
         return mClientDevices.size() > 0;
     }
@@ -116,25 +133,6 @@ public class Peer {
     }
 
     public synchronized boolean isHandshakeSuccessful() {
-        return isClientReady() && isServerReady();
-    }
-
-    public synchronized void enableTimeout() {
-        disableTimeout();
-
-        mTimeoutRunnable = () -> {
-            Log.d(TAG, String.format("enableTimeout: peerId=%s id=%s device=%s", getPeerID(), getPeerClientDevice().getId(), getPeerClientDevice().getMACAddress()));
-
-            getPeerClientDevice().disconnect();
-        };
-
-        BleDriver.mainHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
-    }
-
-    public synchronized void disableTimeout() {
-        if (mTimeoutRunnable != null) {
-            BleDriver.mainHandler.removeCallbacks(mTimeoutRunnable);
-            mTimeoutRunnable = null;
-        }
+        return isClientReady() || isServerReady();
     }
 }

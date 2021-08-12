@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
@@ -18,9 +19,11 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
 
 public class PeerDevice {
     // Mark used to tell all data is transferred
@@ -34,6 +37,9 @@ public class PeerDevice {
     private static final int CONNECTION_TIMEOUT = 15000;
     // Minimal and default MTU
     private static final int DEFAULT_MTU = 23;
+    // Client Characteristic Configuration (CCC) descriptor of the characteristic
+    private final UUID CCC_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+
     public final Object mLockServer = new Object();
     private final Object mLockRemotePID = new Object();
     private final Object mLockClient = new Object();
@@ -56,6 +62,7 @@ public class PeerDevice {
     private final String mLocalPID;
     private byte[] mClientBuffer;
     private byte[] mServerBuffer;
+    private CircularBuffer<byte[]> mDataCache = new CircularBuffer<>(10);
     //private int mMtu = 0;
     // default MTU is 23
     private int mMtu = 23;
@@ -73,9 +80,9 @@ public class PeerDevice {
                     if (newState == BluetoothProfile.STATE_CONNECTED) {
                         Log.i(TAG, String.format("onConnectionStateChange(): connected: device=%s", device.getAddress()));
 
-//                            mConnectionLatch.countDown();
                         if (getClientState() != CONNECTION_STATE.CONNECTING) {
                             Log.w(TAG, String.format("onConnectionStateChange: device status error: device=%s status=%s newState=CONNECTED", getMACAddress(), getClientState()));
+                            mConnectionLatch.countDown();
                             // duplicate callback, just ignore it.
                             return;
                         }
@@ -141,17 +148,27 @@ public class PeerDevice {
                     byte[] value = characteristic.getValue();
                     if (value.length == 0) {
                         Log.d(TAG, "onCharacteristicRead(): received data length is null");
-                        mBleQueue.completedCommand(status);
+                        mBleQueue.completedCommand(1);
                         return;
                     } else {
                         Log.v(TAG, String.format("onCharacteristicRead: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
-                        handleClientPIDReceived(value);
+                        boolean success = BleDriver.mCallbacksHandler.post(() -> {
+                            Log.v(TAG, String.format("onCharacteristicRead in thread: device=%s", getMACAddress()));
+                            handleClientPIDReceived(value);
+                            mBleQueue.completedCommand(0);
+                        });
+
+                        if (!success) {
+                            Log.e(TAG, "onCharacteristicRead error: handler.post() failed");
+                            disconnect();
+                            mBleQueue.completedCommand(1);
+                        }
                     }
                 } else {
                     Log.e(TAG, "onCharacteristicRead(): wrong read characteristic");
                     disconnect();
+                    mBleQueue.completedCommand(1);
                 }
-                mBleQueue.completedCommand(status);
             }
 
             @Override
@@ -172,7 +189,7 @@ public class PeerDevice {
             @Override
             public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
                 super.onMtuChanged(gatt, mtu, status);
-                Log.v(TAG, String.format("onMtuChanged(): mtu %s for device %s", mtu, getMACAddress()));
+                Log.d(TAG, String.format("onMtuChanged(): mtu %s for device %s", mtu, getMACAddress()));
 
                 if (status != GATT_SUCCESS) {
                     Log.e(TAG, "onMtuChanged() error: transmission error");
@@ -183,27 +200,35 @@ public class PeerDevice {
                 mBleQueue.completedCommand(status);
 
                 // continue connection handshake even with a little MTU
-                new Thread(() -> handshake()).start();
+                BleDriver.mHandshakeHandler.post(() -> handshake());
             }
 
-                /*@Override
-                public void onCharacteristicChanged (BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-                    super.onCharacteristicChanged(gatt, characteristic);
+            @Override
+            public void onCharacteristicChanged (BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                super.onCharacteristicChanged(gatt, characteristic);
 
-                    byte[] copy;
-                    byte[] value = characteristic.getValue();
+                byte[] value = characteristic.getValue();
+                Log.v(TAG, String.format("onCharacteristicChanged: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
 
-                    Log.v(TAG, String.format("onCharacteristicChanged: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.getEncoder().encodeToString(value), BleDriver.bytesToHex(value), value.length));
+                BleDriver.mCallbacksHandler.post(() -> {
+                    handleDataReceived(value);
+                });
+            }
 
-                    if (value.length == 0) { // end of transmission
-                        copy = new byte[mClientBuffer.length];
-                        System.arraycopy(mClientBuffer, 0, copy, 0, mClientBuffer.length);
-                        mClientBuffer = null;
-                        handleClientDataReceived(copy);
-                    } else { // transmission in progress
-                        addToBuffer(value, true);
-                    }
-                }*/
+            @Override
+            public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+                super.onDescriptorRead(gatt, descriptor, status);
+
+                Log.v(TAG, String.format("onDescriptorRead: device=%s", getMACAddress()));
+            }
+
+            @Override
+            public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+                super.onDescriptorWrite(gatt, descriptor, status);
+
+                Log.v(TAG, String.format("onDescriptorWrite: device=%s status=%d", getMACAddress(), status));
+                mBleQueue.completedCommand(status);
+            }
         };
 
     public PeerDevice(@NonNull Context context, @NonNull BluetoothDevice bluetoothDevice, String localPID) {
@@ -299,6 +324,14 @@ public class PeerDevice {
         return getClientState() == CONNECTION_STATE.DISCONNECTED;
     }
 
+    public boolean isServerDisconnected() {
+        return getServerState() == CONNECTION_STATE.DISCONNECTED;
+    }
+
+    public boolean isServerConnected() {
+        return getServerState() == CONNECTION_STATE.CONNECTED;
+    }
+
     public void disconnect() {
         Log.v(TAG, String.format("disconnect called: device=%s", getMACAddress()));
 
@@ -308,11 +341,12 @@ public class PeerDevice {
                 if (!BleDriver.mainHandler.post(() -> {
                     synchronized (mLockClient) {
                         if (mClientState == CONNECTION_STATE.DISCONNECTING && getBluetoothGatt() != null) {
-                            Log.i(TAG, String.format("device=%s client disconnecting", getMACAddress()));
+                            Log.i(TAG, String.format("disconnect: device=%s can be disconnected", getMACAddress()));
 
                             Peer peer;
                             if ((peer = getPeer()) != null && peer.getBluetoothSocket() != null) {
                                 synchronized (peer.SocketLock) {
+                                    Log.v(TAG, String.format("disconnect: device=%s: closing l2cap channel", getMACAddress()));
                                     try {
                                         if (peer.getInputStream() != null) {
                                             peer.getInputStream().close();
@@ -331,6 +365,8 @@ public class PeerDevice {
                             }
 
                             mBleQueue.clear();
+
+                            Log.v(TAG, String.format("disconnect: device=%s: closing GATT connection", getMACAddress()));
                             getBluetoothGatt().disconnect();
                         }
                     }
@@ -342,7 +378,7 @@ public class PeerDevice {
     }
 
     public void closeClient() {
-        Log.v(TAG, String.format("closeClient called: device=%s", getMACAddress()));
+        Log.d(TAG, String.format("closeClient called: device=%s", getMACAddress()));
 
         if (getBluetoothGatt() != null) {
             getBluetoothGatt().close();
@@ -352,21 +388,17 @@ public class PeerDevice {
         mBleQueue.clear();
 
         PeerManager.unregisterDevices(mRemotePID);
+        setPeer(null);
 
         mClientBuffer = null;
         mServerBuffer = null;
-
-        if (getServerState() == CONNECTION_STATE.DISCONNECTED) {
-            setPeer(null);
-        }
     }
 
     public void closeServer() {
         Log.v(TAG, String.format("closeServer called: device=%s", getMACAddress()));
 
-        PeerManager.unregisterDevices(getRemotePID());
-
-        if (getClientState() == CONNECTION_STATE.DISCONNECTED) {
+        if (mPeer != null) {
+            PeerManager.unregisterDevices(getRemotePID());
             setPeer(null);
         }
     }
@@ -468,13 +500,13 @@ public class PeerDevice {
         }
     }
 
-    private Peer getPeer() {
+    public Peer getPeer() {
         synchronized (mLockPeer) {
             return mPeer;
         }
     }
 
-    private void setPeer(Peer peer) {
+    public void setPeer(Peer peer) {
         synchronized (mLockPeer) {
             mPeer = peer;
         }
@@ -495,93 +527,80 @@ public class PeerDevice {
             }
             byte[] payload = Arrays.copyOfRange(buffer, 0, size);
             Log.v(TAG, String.format("l2capRead: read from l2cap: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
-            handleServerDataReceived(payload);
+            handleDataReceived(payload);
         }
     }
 
     public synchronized void handleServerDataSent() {
         Log.v(TAG, String.format("handleServerDataSent for device %s", getMACAddress()));
 
-        if (getRemotePID() == null) {
-            Log.e(TAG, String.format("handleServerDataSent error: remotePID not received: device=%s", getMACAddress()));
-            return;
-        }
-
-        Peer peer = PeerManager.registerDevice(getRemotePID(), this, false);
-        setPeer(peer);
-
         // TODO: put latch before registerDevice
-        Thread l2capThread = new Thread(() -> {
-            if (mGattServer.getBluetoothServerSocket() != null) {
-                Log.d(TAG, String.format("handleServerDataSent: l2cap trying to accepted incoming socket for device=%s", getMACAddress()));
-                if (peer.getBluetoothSocket() == null) {
-                    synchronized (peer.SocketLock) {
-                        if (peer.getBluetoothSocket() == null) {
-                            Log.d(TAG, String.format("handleServerDataSent: setup l2cap incoming socket for device=%s", getMACAddress()));
-
-                            try {
-                                peer.setBluetoothSocket(mGattServer.getBluetoothServerSocket().accept(5000));
-                                Log.d(TAG, String.format("handleServerDataSent: l2cap accepted for device=%s", getMACAddress()));
-
-                                try {
-                                    peer.setInputStream(peer.getBluetoothSocket().getInputStream());
-                                    peer.setOutputStream(peer.getBluetoothSocket().getOutputStream());
-                                } catch (IOException e) {
-                                    Log.e(TAG, String.format("handleServerDataSent error: l2cap cannot get stream: device=%s", getMACAddress()), e);
-                                    try {
-                                        peer.getBluetoothSocket().close();
-                                    } catch (IOException ioException) {
-                                        // ignore
-                                    } finally {
-                                        peer.setBluetoothSocket(null);
-                                        peer.setInputStream(null);
-                                        peer.setOutputStream(null);
-                                    }
-                                }
-                            } catch (IOException e) {
-                                Log.e(TAG, String.format("handleServerDataSent error: l2cap cannot accept: device=%s", getMACAddress()), e);
-                            }
-                        }
-                    }
-
-                    if (peer.getBluetoothSocket() != null) {
-                        l2capRead(peer);
-                    }
-                }
-            }
-        });
-        l2capThread.start();
+//        Thread l2capThread = new Thread(() -> {
+//            if (mGattServer.getBluetoothServerSocket() != null) {
+//                Log.d(TAG, String.format("handleServerDataSent: l2cap trying to accepted incoming socket for device=%s", getMACAddress()));
+//                if (peer.getBluetoothSocket() == null) {
+//                    synchronized (peer.SocketLock) {
+//                        if (peer.getBluetoothSocket() == null) {
+//                            Log.d(TAG, String.format("handleServerDataSent: setup l2cap incoming socket for device=%s", getMACAddress()));
+//
+//                            try {
+//                                peer.setBluetoothSocket(mGattServer.getBluetoothServerSocket().accept(5000));
+//                                Log.d(TAG, String.format("handleServerDataSent: l2cap accepted for device=%s", getMACAddress()));
+//
+//                                try {
+//                                    peer.setInputStream(peer.getBluetoothSocket().getInputStream());
+//                                    peer.setOutputStream(peer.getBluetoothSocket().getOutputStream());
+//                                } catch (IOException e) {
+//                                    Log.e(TAG, String.format("handleServerDataSent error: l2cap cannot get stream: device=%s", getMACAddress()), e);
+//                                    try {
+//                                        peer.getBluetoothSocket().close();
+//                                    } catch (IOException ioException) {
+//                                        // ignore
+//                                    } finally {
+//                                        peer.setBluetoothSocket(null);
+//                                        peer.setInputStream(null);
+//                                        peer.setOutputStream(null);
+//                                    }
+//                                }
+//                            } catch (IOException e) {
+//                                Log.e(TAG, String.format("handleServerDataSent error: l2cap cannot accept: device=%s", getMACAddress()), e);
+//                            }
+//                        }
+//                    }
+//
+//                    if (peer.getBluetoothSocket() != null) {
+//                        l2capRead(peer);
+//                    }
+//                }
+//            }
+//        });
+//        l2capThread.start();
     }
 
-    public synchronized boolean handleServerDataReceived(byte[] payload) {
-        Log.v(TAG, String.format("handleServerDataReceived for device %s", getMACAddress()));
+    public boolean handleDataReceived(byte[] payload) {
+        Log.v(TAG, String.format("handleDataReceived: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
 
-        boolean status;
-
-        if (getPeer() == null) {
-            Log.e(TAG, String.format("handleServerDataReceived error: Peer not found: peer=%s device=%s", getRemotePID(), getMACAddress()));
+        Peer peer;
+        if ((peer = getPeer()) == null) {
+            Log.e(TAG, String.format("handleDataReceived error: Peer not found: peer=%s device=%s", getRemotePID(), getMACAddress()));
             return false;
         }
 
-        if (getPeer().isServerReady()) {
-            status = BleDriver.mHandler.postDelayed(() -> {
-                Log.v(TAG, String.format("BleDriver Queue: handleServerDataReceived: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
-                BleInterface.BLEReceiveFromPeer(getRemotePID(), payload);
-            }, 0);
-            if (!status) {
-                Log.e(TAG, String.format("handleServerDataReceived error: failed to add runnable to the ble handler: device=%s", getMACAddress()));
-            }
-            return status;
+        if (peer.isHandshakeSuccessful()) {
+            BleInterface.BLEReceiveFromPeer(getRemotePID(), payload);
+            return true;
+        } else {
+            Log.d(TAG, String.format("handleDataReceived: device=%s not ready, putting in cache", getMACAddress()));
+            return mDataCache.offer(payload);
+
         }
-        Log.e(TAG, String.format("handleServerDataReceived error: server handshake not completed: device=%s", getMACAddress()));
-        return false;
     }
 
     public synchronized boolean handleServerPIDReceived(byte[] payload) {
         Log.v(TAG, String.format("handleServerPIDReceived called: device=%s", getMACAddress()));
 
         if (new String(payload).equals(EOD)) {
-            Log.v(TAG, String.format("handleServerPIDReceived: device=%s EOD received", getMACAddress()));
+            Log.d(TAG, String.format("handleServerPIDReceived: device=%s EOD received", getMACAddress()));
 
             if (mServerBuffer == null) {
                 return false;
@@ -592,11 +611,72 @@ public class PeerDevice {
 
             setRemotePID(remotePID);
         } else {
-            Log.v(TAG, String.format("handleServerPIDReceived: device=%s add data to buffer", getMACAddress()));
+            Log.d(TAG, String.format("handleServerPIDReceived: device=%s add data to buffer", getMACAddress()));
             addToBuffer(payload, false);
         }
         return true;
     }
+
+    private boolean setNotify(BluetoothGattCharacteristic characteristic, final boolean enable) {
+        Log.d(TAG, String.format("setNotify called: device=%s", getMACAddress()));
+
+        // Get the CCC Descriptor for the characteristic
+        final BluetoothGattDescriptor descriptor = characteristic.getDescriptor(CCC_DESCRIPTOR_UUID);
+        if(descriptor == null) {
+            Log.e(TAG, String.format("setNotify error: device=%s: cannot get CCC descriptor for characteristic=%s", getMACAddress(), characteristic.getUuid()));
+            return false;
+        }
+
+        // Check if characteristic has NOTIFY or INDICATE properties and set the correct byte value to be written
+        byte[] value;
+        int properties = characteristic.getProperties();
+        if ((properties & PROPERTY_NOTIFY) > 0) {
+            value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
+        } else {
+            Log.e(TAG, String.format("setNotify error: device=%s: characteristic=%s does not have notify property", getMACAddress() , characteristic.getUuid()));
+            return false;
+        }
+        final byte[] finalValue = enable ? value : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE;
+
+        final boolean[] success = {false};
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        BleQueue.Callback callback = new BleQueue.Callback();
+        callback.setTask(() -> {
+            Log.d(TAG, "setNotify: callback called");
+            success[0] = callback.getStatus() == GATT_SUCCESS;
+            countDownLatch.countDown();
+        });
+
+        // turn on/off the notification in queue
+        success[0] = mBleQueue.add(() -> {
+            // set notification for Gatt object
+            if(!mBluetoothGatt.setCharacteristicNotification(characteristic, enable)) {
+                Log.e(TAG, String.format("setNotify error: device=%s: setCharacteristicNotification failed for characteristic=%s", getMACAddress(), characteristic.getUuid()));
+                mBleQueue.completedCommand(1);
+                return ;
+            }
+
+            // write to descriptor to complete process
+            descriptor.setValue(finalValue);
+            if(!mBluetoothGatt.writeDescriptor(descriptor)) {
+                Log.e(TAG, String.format("setNotify error: device=%s: writeDescriptor failed for descriptor=%s", descriptor.getUuid()));
+                mBleQueue.completedCommand(1);
+            }
+        }, callback, 0, this::disconnect);
+
+        if (success[0] == false) {
+            Log.e(TAG, String.format("setNotify error: device=%s: unable to put code in queue", getMACAddress()));
+            return false;
+        }
+
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "BleQueue: internalWrite: interrupted exception:", e);
+        }
+
+        return success[0];
+}
 
     public synchronized void handleClientPIDReceived(byte[] payload) {
         Log.v(TAG, String.format("handleClientPIDReceived for device=%s base64=%s payload=%s", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload)));
@@ -622,7 +702,7 @@ public class PeerDevice {
         remotePID = new String(Arrays.copyOfRange(payload, 4, payload.length));
         Log.d(TAG, String.format("handleClientPIDReceived: got PSM=%d remotePID=%s for device=%s", psm, remotePID, getMACAddress()));
         setRemotePID(remotePID);
-        peer = PeerManager.addPeer(remotePID);
+        peer = PeerManager.getPeer(remotePID);
         setPeer(peer);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -686,9 +766,6 @@ public class PeerDevice {
                 Log.e(TAG, String.format("handleClientPIDReceived error: device=%s wait for localLatch error ", getMACAddress()), e);
             }
         }
-
-        mConnectionLatch.countDown();
-        PeerManager.registerDevice(remotePID, this, true);
     }
 
     // takeBertyService get the Berty service in the list of services
@@ -807,6 +884,11 @@ public class PeerDevice {
                 }
             }
         }, callback,0, this::disconnect);
+
+        if (success[0] == false) {
+            Log.e(TAG, String.format("internalWrite error: device=%s: unable to put code in queue", getMACAddress()));
+            return false;
+        }
 
         try {
             countDownLatch.await();
@@ -942,6 +1024,16 @@ public class PeerDevice {
         mMtu = mtu;
     }
 
+    public void flushServerDataCache() {
+        Log.v(TAG, String.format("flushServerDataCache called: device=%s", getMACAddress()));
+
+        byte[] payload;
+        while ((payload = mDataCache.poll()) != null) {
+            Log.d(TAG, String.format("flushServerDataCache: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+            BleInterface.BLEReceiveFromPeer(getRemotePID(), payload);
+        }
+    }
+
     // handshake identifies the berty service and their characteristic, and exchange the peerID each other.
     private void handshake() {
         Log.d(TAG, "handshake: called");
@@ -951,16 +1043,27 @@ public class PeerDevice {
 
                 // send local PID
                 if (!write(getPIDCharacteristic(), mLocalPID.getBytes(), true, false)) {
-                    Log.e(TAG, String.format("handshake error: failed to send local PID: device=%s", getMACAddress()));
+                    Log.e(TAG, String.format("handshake error: device=%s: failed to send local PID", getMACAddress()));
                     disconnect();
                 }
 
                 // get remote PID
                 if (!read(getPIDCharacteristic())) {
-                    Log.e(TAG, String.format("handshake error: failed to read remote PID: device=%s", getMACAddress()));
+                    Log.e(TAG, String.format("handshake error: device=%s: failed to read remote PID", getMACAddress()));
                     disconnect();
                 }
 
+                if (!setNotify(mWriterCharacteristic, true)) {
+                    Log.e(TAG, String.format("handshake error: device=%s: failed to enable notifications", getMACAddress()));
+                    disconnect();
+                }
+
+                if (PeerManager.registerDevice(getRemotePID(), this, true) == null) {
+                    Log.e(TAG, String.format("handshake error: device=%s: registerDevice failed", getMACAddress()));
+                    closeClient();
+                }
+
+                mConnectionLatch.countDown();
                 return;
             }
         }

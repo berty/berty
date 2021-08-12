@@ -1,92 +1,92 @@
 // +build darwin
-//
-//  CircularQueue.m
-//
-//  Created on 9/21/13.
-//
-//  https://gist.github.com/werediver/5345f91c897b8173e40e
-//
 
 #import "CircularQueue.h"
 
-
-@interface CircularQueue () {
-	NSMutableArray *_array;
-	NSUInteger _start;
-	unsigned long _mutationCounter;
-}
-
-@end
-
-
 @implementation CircularQueue
 
-- (id)initWithCapacity:(NSUInteger)capacity {
+- (instancetype __nonnull)initWithCapacity:(NSUInteger)capacity {
 	self = [super init];
+    
 	if (self) {
-		_capacity = capacity;
-		_array = [[NSMutableArray alloc] initWithCapacity:_capacity];
+        _capacity = capacity < 1 ? DEFAULT_CAPACITY : capacity;
+        _data = [[NSMutableArray alloc] initWithCapacity:_capacity];
+        _writeSequence = -1;
+        _readSequence = 0;
+
 		for (NSUInteger i = 0; i < _capacity; ++i) {
-			[_array addObject:[NSNull null]];
+			[_data addObject:[NSNull null]];
 		}
 	}
+    
 	return self;
 }
 
-- (void)enqObject:(id)obj {
-	const NSUInteger next = (_start + _count) % _capacity;
-	[_array replaceObjectAtIndex:next withObject:obj];
-	if (_count == _capacity) {
-		// The queue was already full and the head is overwritten.
-		_start = (_start + 1) % _capacity;
-	} else {
-		_count += 1;
-	}
-	_mutationCounter += 1;
+- (void)dealloc {
+    [_data release];
+    
+    [super dealloc];
 }
 
-- (id)deqObject {
-	if (_count < 1)
-		@throw [[NSException alloc] initWithName:NSRangeException reason:nil userInfo:nil];
-
-	const id obj = [_array objectAtIndex:_start];
-	[_array replaceObjectAtIndex:_start withObject:[NSNull null]];
-	_start = (_start + 1) % _capacity;
-	_count -= 1;
-	_mutationCounter += 1;
-	return obj;
+- (void)offer:(id)obj {
+    if ([self isNotFull]) {
+        NSInteger nextWrite = (self.writeSequence + 1) % self.capacity;
+        [self.data replaceObjectAtIndex:nextWrite withObject:obj];
+        
+        self.writeSequence++;
+    } else {
+        @throw [[[NSException alloc] initWithName:NSRangeException reason:nil userInfo:nil] autorelease];
+    }
 }
 
-- (id)objectAtIndex:(NSUInteger)index {
-	if (index >= _capacity)
-		@throw [[NSException alloc] initWithName:NSRangeException reason:nil userInfo:nil];
-	return [_array objectAtIndex:(_start + index) % _capacity];
+- (id)poll {
+    if ([self isNotEmpty]) {
+        NSInteger index = self.readSequence % self.capacity;
+        id value = [[self.data objectAtIndex:index] retain];
+        
+        [self.data replaceObjectAtIndex:index withObject:[NSNull null]];
+        self.readSequence++;
+        
+        return [value autorelease];
+    }
+    
+    return [NSNull null];
 }
 
-- (void)removeAllObjects {
+- (id)element {
+    if ([self isNotEmpty]) {
+        NSInteger index = self.readSequence % self.capacity;
+        return [self.data objectAtIndex:index];
+    }
+    
+    return [NSNull null];
+}
+
+- (void)clean {
 	for (NSUInteger i = 0; i < _capacity; ++i) {
-		[_array replaceObjectAtIndex:i withObject:[NSNull null]];
+		[self.data replaceObjectAtIndex:i withObject:[NSNull null]];
 	}
-	_start = _count = 0;
-	_mutationCounter += 1;
+	self.readSequence = 0;
+    self.writeSequence = -1;
 }
 
-#pragma mark - <NSFastEnumeration>
+- (NSInteger)size {
+    return (self.writeSequence - self.readSequence) + 1;
+}
 
-- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained [])buffer count:(NSUInteger)len {
-	if (state->state == 0) {
-		state->mutationsPtr = &_mutationCounter;
-	}
-	NSUInteger subcount = 0;
-	if (state->state < _count) {
-		state->itemsPtr = buffer;
-		while (state->state < _count && subcount < len) {
-			buffer[subcount] = [self objectAtIndex:state->state];
-			state->state += 1;
-			subcount     += 1;
-		}
-	}
-	return subcount;
+- (BOOL)isEmpty {
+    return self.writeSequence < self.readSequence;
+}
+
+- (BOOL)isFull {
+    return [self size] >= self.capacity;
+}
+
+- (BOOL)isNotEmpty {
+    return ![self isEmpty];
+}
+
+- (BOOL)isNotFull {
+    return ![self isFull];
 }
 
 @end

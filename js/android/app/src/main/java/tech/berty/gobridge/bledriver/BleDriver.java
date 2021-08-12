@@ -22,13 +22,15 @@ public class BleDriver {
     private static final String TAG = "bty.ble.BleDriver";
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
     public static Handler mainHandler = new Handler(Looper.getMainLooper());
-    public static Handler mHandler;
+    public static Handler mHandshakeHandler;
+    public static Handler mCallbacksHandler;
+    private Looper mHandshakeLooper;
+    private Looper mCallbacksLooper;
     private static volatile BleDriver mBleDriver;
     private final Context mAppContext;
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private GattServer mGattServer;
-    private Looper mLooper;
 
     private Advertiser mAdvertiser;
     private Scanner mScanner;
@@ -193,11 +195,19 @@ public class BleDriver {
         // Start the BLE thread
         Thread mThread = new Thread(() -> {
             Looper.prepare();
-            mLooper = Looper.myLooper();
-            mHandler = new Handler(mLooper);
+            mHandshakeLooper = Looper.myLooper();
+            mHandshakeHandler = new Handler(mHandshakeLooper);
             Looper.loop();
         });
         mThread.start();
+
+        Thread mThread2 = new Thread(() -> {
+            Looper.prepare();
+            mCallbacksLooper = Looper.myLooper();
+            mCallbacksHandler = new Handler(mCallbacksLooper);
+            Looper.loop();
+        });
+        mThread2.start();
         Log.d(TAG, "startBleDriver: mThread started");
 
         if (!mGattServer.start(mLocalPid)) {
@@ -253,7 +263,7 @@ public class BleDriver {
         DeviceManager.closeAllDeviceConnections();
         mGattServer.stop();
         setStarted(false);
-        mLooper.quit();
+        mHandshakeLooper.quit();
     }
 
     public synchronized void StopBleDriver() {
@@ -266,24 +276,32 @@ public class BleDriver {
 
     public boolean SendToPeer(String remotePID, byte[] payload) {
         Log.d(TAG, "SendToPeer(): remotePID=" + remotePID + " payload=" + Base64.encodeToString(payload, Base64.DEFAULT));
+        Peer peer;
         PeerDevice peerDevice;
         BluetoothGattCharacteristic writer;
 
-        if ((peerDevice = PeerManager.get(remotePID).getPeerClientDevice()) == null) {
-            Log.e(TAG, "SendToPeer error: remote device not found");
+        if ((peer = PeerManager.get(remotePID)) == null) {
+            Log.e(TAG, "SendToPeer error: remote peer not found");
             return false;
         }
 
-        if (peerDevice.isClientDisconnected()) {
+        if ((peerDevice = peer.getDevice()) == null) {
+            Log.e(TAG, "SendToPeer error: peerDevice not found");
+            return false;
+        }
+
+        if (peerDevice.isClientConnected()) {
+            if ((writer = peerDevice.getWriterCharacteristic()) == null) {
+                Log.e(TAG, "SendToPeer error: WriterCharacteristic is null");
+                return false;
+            }
+
+            return peerDevice.write(writer, payload, false, true);
+        } else if (peerDevice.isServerConnected()) {
+            return mGattServer.writeAndNotify(peerDevice, payload);
+        } else {
             Log.e(TAG, "SendToPeer error: remote device is disconnected");
             return false;
         }
-
-        if ((writer = peerDevice.getWriterCharacteristic()) == null) {
-            Log.e(TAG, "SendToPeer error: WriterCharacteristic is null");
-            return false;
-        }
-
-        return peerDevice.write(writer, payload, false, true);
     }
 }

@@ -34,14 +34,17 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 @property (nonatomic, assign, nullable) BleManager *manager;
 @property (nonatomic, strong, nonnull) BleQueue *queue;
 @property (nonatomic, strong, nonnull) BleQueue *writeQ;
-@property (nonatomic, strong, nullable) CBCharacteristic *peerID;
-@property (nonatomic, strong, nullable) CBCharacteristic *writer;
+@property (nonatomic, strong, nullable) CBCharacteristic *peerIDCharacteristic;
+@property (nonatomic, strong, nullable) CBCharacteristic *writerCharacteristic;
 @property (nonatomic, strong, nonnull) NSDictionary* characteristicHandlers;
-@property (nonatomic, strong, nonnull) NSDictionary* characteristicDatas;
+@property (nonatomic, strong, nonnull) NSDictionary* characteristicData;
 @property (nonatomic, strong, nullable) NSData *remainingData;
 @property (nonatomic, strong, nullable) NSString *remotePeerID;
 @property (nonatomic, strong, nullable) CountDownLatch *l2capLatch;
 @property (readwrite) int psm;
+@property (nonatomic, strong, nullable) ConnectedPeer *peer;
+@property (nonatomic, strong, nonnull) CBCentral *cbCentral;
+@property (nonatomic, strong, nonnull) CircularQueue *dataCache;
 
 - (instancetype __nullable)initWithIdentifier:(NSString *__nonnull)identifier asClient:(BOOL)client;
 - (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral central:(BleManager *__nonnull)manager withName:(NSString *__nonnull)name;
@@ -50,8 +53,9 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 - (void)handshake;
 - (void)handleConnect:(NSError * __nullable)error;
 - (void)connectWithOptions:(NSDictionary * __nullable)options;
-- (BOOL)checkAndHandleFoundPeer;
 - (void)l2capRead:(ConnectedPeer *__nonnull)peer;
+- (NSString *__nonnull)getIdentifier;
+- (void)flushCache;
 
 @end
 

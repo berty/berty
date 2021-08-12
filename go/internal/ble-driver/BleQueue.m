@@ -42,7 +42,7 @@
     }
 }
 
-- (void) completedTask:(NSError *)error {
+- (void) completedTask:(NSError *__nullable)error {
     @synchronized (self.tasks) {
         TaskDelay *currentTask;
         

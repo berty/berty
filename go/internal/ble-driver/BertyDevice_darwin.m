@@ -14,6 +14,7 @@
 #import "CircularQueue.h"
 #import "PeerManager.h"
 #import "ConnectedPeer.h"
+#import "CountDownLatch_darwin.h"
 
 extern unsigned short handlePeerFound(char *, char *);
 extern void receiveFromDevice(char *, void *, int);
@@ -23,7 +24,7 @@ static const int L2CAP_BUFFER = 1024;
 
 CBService *getService(NSArray *services, NSString *uuid) {
     CBService *result = nil;
-
+    
     for (CBService *service in services) {
         if ([service.UUID.UUIDString containsString:uuid] != NSNotFound) {
             result = service;
@@ -37,18 +38,18 @@ CBService *getService(NSArray *services, NSString *uuid) {
 - (instancetype)initWithPeripheral:(CBPeripheral *)peripheral
                            central:(BleManager *)manager withName:(NSString *__nonnull)name {
     self = [self initWithIdentifier:[peripheral.identifier UUIDString] asClient:TRUE];
-
+    
     if (self) {
         [self setPeripheral:peripheral central:manager];
         _name = name;
     }
-
+    
     return self;
 }
 
 - (instancetype)initWithIdentifier:(NSString *)identifier asClient:(BOOL)client{
     self = [super init];
-
+    
     if (self) {
         if (client) {
             _clientSideIdentifier = [identifier retain];
@@ -60,30 +61,32 @@ CBService *getService(NSArray *services, NSString *uuid) {
         _manager = nil;
         _remotePeerID = nil;
         _psm = 0;
-
+        
         _queue = [[BleQueue alloc] init: dispatch_get_main_queue()];
         _writeQ = [[BleQueue alloc] init: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
         
         BOOL (^peerIDHandler)(NSData *data) = ^BOOL(NSData *data) {
             return [self handlePeerID:data];
         };
-
+        
         BOOL (^writeHandler)(NSData *data) = ^BOOL(NSData *data) {
-            BLEBridgeReceiveFromPeer(self.remotePeerID, data);
-            return TRUE;
+            return [self handleIncomingData:data];
         };
-
-        self.characteristicHandlers = [@{
-                                        [BleManager.writerUUID UUIDString]: [[writeHandler copy] autorelease],
-                                        [BleManager.peerUUID UUIDString]: [[peerIDHandler copy] autorelease],
-                                        } retain];
-
-        self.characteristicDatas = [@{
-                                     [BleManager.writerUUID UUIDString]: [NSMutableData data],
-                                     [BleManager.peerUUID UUIDString]: [NSMutableData data],
-                                     } retain];
+        
+        _characteristicHandlers = [@{
+            [BleManager.writerUUID UUIDString]: [[writeHandler copy] autorelease],
+            [BleManager.peerUUID UUIDString]: [[peerIDHandler copy] autorelease],
+        } retain];
+        
+        _characteristicData = [@{
+            [BleManager.writerUUID UUIDString]: [NSMutableData data],
+            [BleManager.peerUUID UUIDString]: [NSMutableData data],
+        } retain];
+        
+        // put inside incoming message arrived before handsake is completed
+        _dataCache = [[CircularQueue alloc] initWithCapacity:10];
     }
-
+    
     return self;
 }
 
@@ -96,7 +99,8 @@ CBService *getService(NSArray *services, NSString *uuid) {
     [_queue release];
     [_writeQ release];
     [_characteristicHandlers release];
-    [_characteristicDatas release];
+    [_characteristicData release];
+    [_dataCache release];
     
     [super dealloc];
 }
@@ -114,8 +118,13 @@ CBService *getService(NSArray *services, NSString *uuid) {
     return self.serverSideIdentifier;
 }
 
-- (BOOL)handlePeerID:(NSData *)peerIDData {
-    NSMutableData *tmpData = [self.characteristicDatas objectForKey:[BleManager.peerUUID UUIDString]];
+- (BOOL)handlePeerID:(NSData *__nonnull)peerIDData {
+    if (self.peer != nil && [self.peer isConnected]) {
+        os_log_error(OS_LOG_BLE, "handlePeerID: device=%{public}@: peer already connected", [self getIdentifier]);
+        return FALSE;
+    }
+    
+    NSMutableData *tmpData = [self.characteristicData objectForKey:[BleManager.peerUUID UUIDString]];
     
     if ([peerIDData isEqual:[EOD dataUsingEncoding:NSUTF8StringEncoding]]) {
         // adding 0 byte
@@ -127,40 +136,55 @@ CBService *getService(NSArray *services, NSString *uuid) {
         NSString *remotePeerID = [NSString stringWithUTF8String:[tmpData bytes]];
         // reset tmpData
         [tmpData setLength:0];
-        os_log(OS_LOG_BLE, "🟢 handlePeerID() device %{public}@ with current peerID %{public}@, new peerID %{public}@", [self getIdentifier], self.remotePeerID, remotePeerID);
+        os_log_debug(OS_LOG_BLE, "handlePeerID: device=%{public}@: current peerID=%{public}@, new peerID=%{public}@", [self getIdentifier], self.remotePeerID, remotePeerID);
         self.remotePeerID = remotePeerID;
     } else {
         @synchronized (tmpData) {
+            os_log_debug(OS_LOG_BLE, "handlePeerID: device=%{public}@: add to buffer data=%{public}@", [self getIdentifier], peerIDData);
             [tmpData appendData:peerIDData];
         }
     }
     return TRUE;
 }
 
-- (BOOL)checkAndHandleFoundPeer {
-    ConnectedPeer *peer = [PeerManager getPeer:self.remotePeerID];
-    os_log_debug(OS_LOG_BLE, "🟢 checkAndHandleFoundPeer() called: peer=%{public}@", peer);
-    if ([peer isReady] && ![peer isConnected]) {
-        os_log_debug(OS_LOG_BLE, "🟢 checkAndHandleFoundPeer() device %{public}@ handling found peer %{public}@", [self getIdentifier], self.remotePeerID);
-        
-        [peer setConnected:TRUE];
-        if (!BLEBridgeHandleFoundPeer(self.remotePeerID)) {
-            os_log_error(OS_LOG_BLE, "🔴 checkAndHandleFoundPeer() failed: golang can't handle new peer %{public}@", [self getIdentifier]);
+- (BOOL)handleIncomingData:(NSData *__nonnull)data {
+    if (!self.peer) {
+        os_log_error(OS_LOG_BLE, "handleIncomingData: device=%{public}@: peer not existing", [self getIdentifier]);
+        return FALSE;
+    }
+    
+    if (![self.peer isConnected]) {
+        os_log(OS_LOG_BLE, "handleIncomingData: device=%{public}@: peer not connected, put data in cache", [self getIdentifier]);
+        @try {
+            [self.dataCache offer:data];
+        }
+        @catch (NSException *e) {
+            os_log_error(OS_LOG_BLE, "handleIncomingData: device=%{public}@: cannot add data in cache", [self getIdentifier]);
             return FALSE;
         }
-        os_log(OS_LOG_BLE, "🟢 checkAndHandleFoundPeer() successful");
-    } else {
-        os_log_debug(OS_LOG_BLE, "🔴 checkAndHandleFoundPeer(): first call, not ready yet");
+        return TRUE;
     }
+    
+    os_log_debug(OS_LOG_BLE, "handleIncomingData: device=%{public}@ base64=%{public}@ data=%{public}@", [self getIdentifier], [data base64EncodedStringWithOptions:0], [BleManager NSDataToHex:data]);
+    
+    BLEBridgeReceiveFromPeer(self.remotePeerID, data);
     return TRUE;
 }
 
 // Need to copy blocks into the heap because writing is async and the handshake function's stack should not be available
 - (void)handshake {
-    [self writeToCharacteristic:[self.manager.localPID dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:self.peerID withEOD:TRUE tryL2cap:FALSE];
+    [self writeToCharacteristic:[self.manager.localPID dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:self.peerIDCharacteristic withEOD:TRUE tryL2cap:FALSE];
     
+    os_log_debug(OS_LOG_BLE, "handshake: going to read remote peerID");
     [self.writeQ add:^{
-        [self.peripheral readValueForCharacteristic:self.peerID];
+        os_log_debug(OS_LOG_BLE, "handshake: read remote peerID");
+        [self.peripheral readValueForCharacteristic:self.peerIDCharacteristic];
+    } withCallback:nil withDelay:0];
+    
+    os_log_debug(OS_LOG_BLE, "handshake: going to subscribe to writer notifications");
+    [self.writeQ add:^{
+        os_log_debug(OS_LOG_BLE, "handshake: subscribe to writer notifications");
+        [self.peripheral setNotifyValue:TRUE forCharacteristic:self.writerCharacteristic];
     } withCallback:nil withDelay:0];
 }
 
@@ -170,7 +194,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
         return;
     }
     os_log_debug(OS_LOG_BLE, "🟢 didModifyServices() with invalidated %{public}@", invalidatedServices);
-
+    
     [self.manager cancelPeripheralConnection:peripheral];
 }
 
@@ -197,33 +221,44 @@ CBService *getService(NSArray *services, NSString *uuid) {
 
 #pragma mark - write functions
 
+- (void)flushCache {
+    os_log_debug(OS_LOG_BLE, "flushCache called: identifier=%{public}@", [self getIdentifier]);
+    
+    while ([self.dataCache element] != [NSNull null]) {
+        NSData *data = [[self.dataCache poll] retain];
+        os_log_debug(OS_LOG_BLE, "flushCache: identifier=%{public}@ base64=%{public}@ data=%{public}@", [self getIdentifier], [data base64EncodedStringWithOptions:0], [BleManager NSDataToHex:data]);
+        BLEBridgeReceiveFromPeer(self.remotePeerID, data);
+        [data release];
+    }
+}
+
 - (NSData *)getDataToSend {
     NSData *result = nil;
-
+    
     if (self.remainingData == nil || self.remainingData.length <= 0) {
         return result;
     }
-
+    
     NSUInteger chunckSize = self.remainingData.length > [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse] ? [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse] : self.remainingData.length;
-
+    
     result = [NSData dataWithBytes:[self.remainingData bytes] length:chunckSize];
-
+    
     if (self.remainingData.length <= chunckSize) {
         self.remainingData = nil;
     } else {
-        self.remainingData = [[[NSData alloc]
-                               initWithBytes:[self.remainingData bytes] + chunckSize
-                               length:[self.remainingData length] - chunckSize] autorelease];
+        self.remainingData = [[NSData alloc]
+                              initWithBytes:[self.remainingData bytes] + chunckSize
+                              length:[self.remainingData length] - chunckSize];
     }
-
+    
     return result;
 }
 
 //TODO: return write status to caller
 - (BOOL)writeToCharacteristic:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic withEOD:(BOOL)eod tryL2cap:(BOOL)tryL2cap {
-    __block BOOL status = false;
+    __block BOOL success = FALSE;
     if (self.peripheral != nil) {
-        os_log_debug(OS_LOG_BLE, "🟢 writeToCharacteristic() identifier=%{public}@ data=%{public}@", [self getIdentifier], data);
+        os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ base64=%{public}@ data=%{public}@", [self getIdentifier], [data base64EncodedStringWithOptions:0], [BleManager NSDataToHex:data]);
         
         // try L2cap
         if (tryL2cap) {
@@ -251,35 +286,46 @@ CBService *getService(NSArray *services, NSString *uuid) {
         
         NSData *toSend = nil;
         self.remainingData = data;
+        CountDownLatch *countDownLatch = [[CountDownLatch alloc] initCount:0];
         
         while (self.remainingData.length > 0) {
-            toSend = [self getDataToSend];
-            dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+            toSend = [[self getDataToSend] retain];
+            [countDownLatch incrementCount];
+            
+            os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ going to write payload=%{public}@", [self getIdentifier], toSend);
             [self.writeQ add:^{
-                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ writing payload=%{public}@", [self getIdentifier], toSend);
+                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ writing base64=%{public}@ data=%{public}@", [self getIdentifier], [toSend base64EncodedStringWithOptions:0], [BleManager NSDataToHex:toSend]);
                 [self.peripheral writeValue:toSend forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
             } withCallback:^(NSError *error){
-                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ callback for payload=%{public}@", [self getIdentifier], toSend);
-                status = error == nil ? 1 : 0;
-                dispatch_semaphore_signal(sema);
+                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ callback for payload=%{public}@ status=%{public}@", [self getIdentifier], toSend, error);
+                success = error == nil ? TRUE : FALSE;
+                [countDownLatch countDown];
             } withDelay:0];
-            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            dispatch_release(sema);
-            if (!status) {
-                return status;
-            }
+            
+            [toSend release];
         }
-
+        
+        [countDownLatch await];
+        
+        // don't write EOD is error occured
+        if (!success) {
+            os_log_error(OS_LOG_BLE, "writeToCharacteristic error: identifier=%{public}@: cancel", [self getIdentifier]);
+            return FALSE;
+        }
+        
         if (eod) {
             dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+            
+            os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ going to write payload=EOD", [self getIdentifier]);
             [self.writeQ add:^{
                 os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ writing payload=EOD", [self getIdentifier]);
                 [self.peripheral writeValue:[@"EOD" dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
             } withCallback:^(NSError *error){
                 os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ callback for payload=EOD", [self getIdentifier]);
-                status = error == nil ? 1 : 0;
+                success = error == nil ? 1 : 0;
                 dispatch_semaphore_signal(sema);
             } withDelay:0];
+            
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
             dispatch_release(sema);
         }
@@ -287,8 +333,8 @@ CBService *getService(NSArray *services, NSString *uuid) {
         os_log_debug(OS_LOG_BLE, "🟢 writeToCharacteristic() NULLABLE identifier=%{public}@ data: %{public}@", [self getIdentifier], data);
         [self.manager cancelPeripheralConnection:self.peripheral];
     }
-
-    return status;
+    
+    return success;
 }
 
 - (void)l2capRead:(ConnectedPeer *__nonnull)peer {
@@ -333,65 +379,91 @@ CBService *getService(NSArray *services, NSString *uuid) {
     });
 }
 
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    [self.writeQ completedTask:error];
+    
+    if (error) {
+        os_log_error(OS_LOG_BLE, "didUpdateNotificationStateForCharacteristic error: device=%{public}@ characteristic=%{public}@ status=%{public}@", [self getIdentifier], [characteristic.UUID UUIDString], error);
+        [self.manager cancelPeripheralConnection:self.peripheral];
+        return;
+    }
+    
+    self.peer = [PeerManager registerDevice:self withPeerID:self.remotePeerID isClient:TRUE];
+    if (self.peer == nil) {
+        os_log_error(OS_LOG_BLE, "didReceiveReadRequests: identifier=%{public}@ registerDevice failed", [self getIdentifier]);
+        [self.manager cancelPeripheralConnection:self.peripheral];
+    } else {
+        os_log_debug(OS_LOG_BLE, "didReceiveReadRequests: identifier=%{public}@ registerDevice successed", [self getIdentifier]);
+    }
+}
+
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
     if (error) {
-        os_log_error(OS_LOG_BLE, "🔴 didUpdateValueForCharacteristic() device %{public}@ read failed characteristic=%{public}@ status=%{public}@", [self getIdentifier], [characteristic.UUID UUIDString], error);
+        os_log_error(OS_LOG_BLE, "didUpdateValueForCharacteristic() device %{public}@ read failed characteristic=%{public}@ status=%{public}@", [self getIdentifier], [characteristic.UUID UUIDString], error);
         [self.manager cancelPeripheralConnection:self.peripheral];
         [self.writeQ completedTask:error];
         return;
     }
     
-    if (characteristic.value != nil) {
-        int psm;
-        [[characteristic.value subdataWithRange:NSMakeRange(0, 4)] getBytes:&psm length:sizeof(psm)];
-        self.psm = NSSwapBigIntToHost(psm);
-        NSString* remotePeerID = [NSString stringWithUTF8String: [[characteristic.value subdataWithRange:NSMakeRange(4, characteristic.value.length - 4)] bytes]];
-        
-        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ PSM=%d remotePID=%{public}@", [[peripheral identifier] UUIDString], self.psm, remotePeerID);
-                
-        self.remotePeerID = remotePeerID;
-        
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            ConnectedPeer *peer = [PeerManager getPeer:remotePeerID];
-            if (peer) {
-                os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: peerID known in connectedPeers");
-                if ([peer channel] == nil && self.manager.psm != 0) {
-                    @synchronized ([peer channel]) {
-                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ opening l2cap channel", [[peripheral identifier] UUIDString]);
-                        self.l2capLatch = [[CountDownLatch alloc] init:1];
-                        [peripheral openL2CAPChannel:self.psm];
-                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ before wait", [[peripheral identifier] UUIDString]);
-                        [self.l2capLatch await];
-                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ after wait", [[peripheral identifier] UUIDString]);
-                        [self.l2capLatch release];
-                        self.l2capLatch = nil;
-
-                        [peer setClient:self];
-                        [peer setClientReady:TRUE];
-                        if (![self checkAndHandleFoundPeer]) {
-                            [self.manager cancelPeripheralConnection:self.peripheral];
-                        }
-                    }
-                } else {
-                    [peer setClient:self];
-                    [peer setClientReady:TRUE];
-                    if (![self checkAndHandleFoundPeer]) {
-                        [self.manager cancelPeripheralConnection:self.peripheral];
-                    }
-                }
-            } else {
-                os_log_debug(OS_LOG_BLE, "🟡 didUpdateValueForCharacteristic: peerID unknown in connectedPeers");
-                ConnectedPeer *peer = [[ConnectedPeer alloc] init];
-                [peer setClient:self];
-                [peer setClientReady:TRUE];
-                [PeerManager addPeer:peer forPeerID:remotePeerID];
-            }
-        });
+    if ([characteristic.UUID isEqual:self.manager.peerUUID]) {
+        if (characteristic.value != nil) {
+            int psm;
+            [[characteristic.value subdataWithRange:NSMakeRange(0, 4)] getBytes:&psm length:sizeof(psm)];
+            self.psm = NSSwapBigIntToHost(psm);
+            NSString* remotePeerID = [NSString stringWithUTF8String: [[characteristic.value subdataWithRange:NSMakeRange(4, characteristic.value.length - 4)] bytes]];
+            
+            os_log_debug(OS_LOG_BLE, "didUpdateValueForCharacteristic: identifier=%{public}@ PSM=%d remotePID=%{public}@", [[peripheral identifier] UUIDString], self.psm, remotePeerID);
+            
+            self.remotePeerID = remotePeerID;
+            
+            ////        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
+            //        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            //            ConnectedPeer *peer = [PeerManager getPeer:remotePeerID];
+            //            if (peer) {
+            //                os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: peerID known in connectedPeers");
+            //                if ([peer channel] == nil && self.manager.psm != 0) {
+            //                    @synchronized ([peer channel]) {
+            //                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ opening l2cap channel", [[peripheral identifier] UUIDString]);
+            //                        self.l2capLatch = [[CountDownLatch alloc] init:1];
+            //                        [peripheral openL2CAPChannel:self.psm];
+            //                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ before wait", [[peripheral identifier] UUIDString]);
+            //                        [self.l2capLatch await];
+            //                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ after wait", [[peripheral identifier] UUIDString]);
+            //                        [self.l2capLatch release];
+            //                        self.l2capLatch = nil;
+            //
+            //                        [peer setClient:self];
+            //                        [peer setClientReady:TRUE];
+            //                        if (![self checkAndHandleFoundPeer]) {
+            //                            [self.manager cancelPeripheralConnection:self.peripheral];
+            //                        }
+            //                    }
+            //                } else {
+            //                    [peer setClient:self];
+            //                    [peer setClientReady:TRUE];
+            //                    if (![self checkAndHandleFoundPeer]) {
+            //                        [self.manager cancelPeripheralConnection:self.peripheral];
+            //                    }
+            //                }
+            //            } else {
+            //                os_log_debug(OS_LOG_BLE, "🟡 didUpdateValueForCharacteristic: peerID unknown in connectedPeers");
+            //                ConnectedPeer *peer = [[ConnectedPeer alloc] init];
+            //                [peer setClient:self];
+            //                [peer setClientReady:TRUE];
+            //                [PeerManager addPeer:peer forPeerID:remotePeerID];
+            //            }
+            //        });
+            
+            [self.writeQ completedTask:nil];
+        } else {
+            os_log_debug(OS_LOG_BLE, "didUpdateValueForCharacteristic: peerID characteristic error: %@", error);
+            [self.writeQ completedTask:[NSError errorWithDomain:@LOCAL_DOMAIN code:200 userInfo:@{@"Error reason": @"Empty value"}]];
+        }
+    } else if ([characteristic.UUID isEqual:self.manager.writerUUID]) {
+        [self handleIncomingData:characteristic.value];
     } else {
-        os_log_debug(OS_LOG_BLE, "🔴 didUpdateValueForCharacteristic: peerID characteristic error: %@", error);
+        os_log_debug(OS_LOG_BLE, "didUpdateValueForCharacteristic: bad characteristic");
     }
-    
-    [self.writeQ completedTask:error];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
@@ -401,7 +473,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
         [self.manager cancelPeripheralConnection:self.peripheral];
     }
     
-    [self.writeQ completedTask:error];
+    [self.writeQ completedTask:nil];
 }
 
 #pragma mark - Characteristic Discovery
@@ -425,15 +497,15 @@ CBService *getService(NSArray *services, NSString *uuid) {
     
     for (CBCharacteristic *chr in service.characteristics) {
         if ([chr.UUID isEqual:self.manager.peerUUID]) {
-            self.peerID = chr;
+            self.peerIDCharacteristic = chr;
             os_log_debug(OS_LOG_BLE, "🟢 didDiscoverCharacteristicsForService() peerID characteristic found");
         } else if ([chr.UUID isEqual:self.manager.writerUUID]) {
-            self.writer = chr;
+            self.writerCharacteristic = chr;
             os_log_debug(OS_LOG_BLE, "🟢 didDiscoverCharacteristicsForService() writer characteristic found");
         }
     }
     
-    if (self.peerID == nil || self.writer == nil) {
+    if (self.peerIDCharacteristic == nil || self.writerCharacteristic == nil) {
         os_log_debug(OS_LOG_BLE, "🔴 didDiscoverCharacteristicsForService() characteristic not found");
         [self.manager cancelPeripheralConnection:self.peripheral];
         return ;

@@ -33,6 +33,7 @@ public class Scanner extends ScanCallback {
     private final Context mContext;
     private final BluetoothAdapter mBluetoothAdapter;
     private String mLocalPID;
+    private String mId;
     private ScanFilter mScanFilter;
     private ScanSettings mScanSettings;
     private BluetoothLeScanner mBluetoothLeScanner;
@@ -124,6 +125,7 @@ public class Scanner extends ScanCallback {
 
         Log.i(TAG, "start scanning");
         mLocalPID = localPID;
+        mId = localPID.substring(localPID.length() - 4);
         mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, this);
 
         setScannerState(SCANNER_STATE_ENABLED);
@@ -273,6 +275,13 @@ public class Scanner extends ScanCallback {
             return;
         }
 
+        // only lower id can be client
+        if (mId.compareTo(id) >= 0) {
+            Log.v(TAG, String.format("parseResult: device=%s id=%s: greater ID, cancel client connection", device.getAddress(), id));
+            countDown.countDown();
+            return;
+        }
+
         PeerDevice peerDevice = DeviceManager.get(device.getAddress());
         if (peerDevice != null) {
             if (!peerDevice.isClientDisconnected()) {
@@ -293,7 +302,7 @@ public class Scanner extends ScanCallback {
                 Log.v(TAG, String.format("parseResult: client is already connected with another device object, result device=%s, other device=%s, id=%s", result.getDevice().getAddress(), peerDevice.getMACAddress(), id));
                 countDown.countDown();
                 return;
-            } else if (peerDevice == null) {
+            } else {
                 Log.i(TAG, String.format("parseResult: scanned a new device=%s id=%s", device.getAddress(), id));
                 peerDevice = new PeerDevice(mContext, device, mLocalPID);
                 DeviceManager.put(peerDevice.getMACAddress(), peerDevice);
