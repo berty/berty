@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { Icon, Input, Text } from '@ui-kitten/components'
-import { Translation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
@@ -81,6 +81,7 @@ const initialState: State = {
 const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const ctx = useMsgrContext()
 	const colors = useThemeColor()
+	const { t }: any = useTranslation()
 
 	const account = useAccount()
 
@@ -239,136 +240,119 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 	}
 
 	return (
-		<Translation>
-			{t => (
-				<View style={[margin.vertical.big]}>
-					<View style={[row.left]}>
-						<TouchableOpacity onPress={handlePicturePressed}>{image}</TouchableOpacity>
-						<View style={[flex.tiny, margin.left.big]}>
-							<Input
-								label={t('settings.edit-profile.name-input-label') as any}
-								placeholder={t('settings.edit-profile.name-input-placeholder')}
-								value={state.name}
-								onChangeText={name => dispatch({ type: 'SET_NAME', name })}
-								style={{ backgroundColor: colors['input-background'] }}
-							/>
-						</View>
-					</View>
-					<View style={[padding.horizontal.medium, { marginBottom: 35 }]}>
-						<View style={[padding.top.small, row.left]}>
-							<Icon
-								name='checkmark-outline'
-								width={20}
-								height={20}
-								fill={colors['background-header']}
-							/>
-							<Text
-								style={[
-									margin.left.medium,
-									text.size.scale(11),
-									{ color: colors['secondary-text'] },
-								]}
-							>
-								{t('settings.edit-profile.qr-will-update') as any}
-							</Text>
-						</View>
-						<View style={[padding.top.small, row.left]}>
-							<Icon name='close-outline' width={20} height={20} fill={colors['warning-asset']} />
-							<Text
-								style={[
-									margin.left.medium,
-									text.size.scale(11),
-									{ color: colors['secondary-text'] },
-								]}
-							>
-								{t('settings.edit-profile.ocr-wont-update') as any}
-							</Text>
-						</View>
-					</View>
-					{state.err ? (
-						<View
-							style={{
-								alignItems: 'center',
-								justifyContent: 'center',
-								marginTop: -25,
-								marginBottom: 18,
-							}}
-						>
-							<Text style={{ color: colors['warning-asset'] }}>🚧 {state.err.toString()} 🚧</Text>
-						</View>
-					) : undefined}
-					<TouchableOpacity disabled={state.saving} onPress={handleSave}>
-						<View
+		<View style={[margin.vertical.big]}>
+			<View style={[row.left]}>
+				<TouchableOpacity onPress={handlePicturePressed}>{image}</TouchableOpacity>
+				<View style={[flex.tiny, margin.left.big]}>
+					<Input
+						label={t('settings.edit-profile.name-input-label') as any}
+						placeholder={t('settings.edit-profile.name-input-placeholder')}
+						value={state.name}
+						onChangeText={name => dispatch({ type: 'SET_NAME', name })}
+						style={{ backgroundColor: colors['input-background'] }}
+					/>
+				</View>
+			</View>
+			<View style={[padding.horizontal.medium, { marginBottom: 35 }]}>
+				<View style={[padding.top.small, row.left]}>
+					<Icon
+						name='checkmark-outline'
+						width={20}
+						height={20}
+						fill={colors['background-header']}
+					/>
+					<Text
+						style={[margin.left.medium, text.size.scale(11), { color: colors['secondary-text'] }]}
+					>
+						{t('settings.edit-profile.qr-will-update') as any}
+					</Text>
+				</View>
+				<View style={[padding.top.small, row.left]}>
+					<Icon name='close-outline' width={20} height={20} fill={colors['warning-asset']} />
+					<Text
+						style={[margin.left.medium, text.size.scale(11), { color: colors['secondary-text'] }]}
+					>
+						{t('settings.edit-profile.ocr-wont-update') as any}
+					</Text>
+				</View>
+			</View>
+			{state.err ? (
+				<View
+					style={{
+						alignItems: 'center',
+						justifyContent: 'center',
+						marginTop: -25,
+						marginBottom: 18,
+					}}
+				>
+					<Text style={{ color: colors['warning-asset'] }}>🚧 {state.err.toString()} 🚧</Text>
+				</View>
+			) : undefined}
+			<TouchableOpacity disabled={state.saving} onPress={handleSave}>
+				<View
+					style={[
+						row.item.justify,
+						column.justify,
+						border.radius.small,
+						_stylesEditProfile.profileButton,
+						{ backgroundColor: colors['positive-asset'] },
+					]}
+				>
+					{state.saving ? (
+						<ActivityIndicator color={colors['secondary-text']} />
+					) : (
+						<Text
 							style={[
-								row.item.justify,
-								column.justify,
-								border.radius.small,
-								_stylesEditProfile.profileButton,
-								{ backgroundColor: colors['positive-asset'] },
+								text.align.center,
+								text.bold.medium,
+								text.size.scale(16),
+								{
+									textTransform: 'uppercase',
+									color: colors['background-header'],
+								},
 							]}
 						>
-							{state.saving ? (
-								<ActivityIndicator color={colors['secondary-text']} />
-							) : (
-								<Text
-									style={[
-										text.align.center,
-										text.bold.medium,
-										text.size.scale(16),
-										{
-											textTransform: 'uppercase',
-											color: colors['background-header'],
-										},
-									]}
-								>
-									{(state.name && state.name !== account?.displayName) || state.pic
-										? t('settings.edit-profile.save')
-										: (t('settings.edit-profile.cancel') as any)}
-								</Text>
-							)}
-						</View>
-					</TouchableOpacity>
+							{(state.name && state.name !== account?.displayName) || state.pic
+								? t('settings.edit-profile.save')
+								: (t('settings.edit-profile.cancel') as any)}
+						</Text>
+					)}
 				</View>
-			)}
-		</Translation>
+			</TouchableOpacity>
+		</View>
 	)
 }
 
 const Header: React.FC = () => {
 	const colors = useThemeColor()
+	const { t }: any = useTranslation()
 
 	return (
-		<Translation>
-			{t => (
-				<>
-					<View style={{ height: 30, alignItems: 'center', justifyContent: 'center' }}>
-						<View
-							style={{
-								backgroundColor: `${colors['secondary-text']}90`,
-								width: 50,
-								height: 4,
-								borderRadius: 2,
-							}}
-						/>
-					</View>
-					<View
-						style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-					>
-						<Text
-							style={{
-								fontWeight: '700',
-								fontSize: 22,
-								lineHeight: 40,
-								color: colors['main-text'],
-							}}
-						>
-							{t('settings.edit-profile.title') as any}
-						</Text>
-						<Icon name='edit-outline' width={28} height={28} fill={colors['background-header']} />
-					</View>
-				</>
-			)}
-		</Translation>
+		<>
+			<View style={{ height: 30, alignItems: 'center', justifyContent: 'center' }}>
+				<View
+					style={{
+						backgroundColor: `${colors['secondary-text']}90`,
+						width: 50,
+						height: 4,
+						borderRadius: 2,
+					}}
+				/>
+			</View>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+				<Text
+					style={{
+						fontWeight: '700',
+						fontSize: 22,
+						lineHeight: 40,
+						color: colors['main-text'],
+					}}
+				>
+					{t('settings.edit-profile.title') as any}
+				</Text>
+				<Icon name='edit-outline' width={28} height={28} fill={colors['background-header']} />
+			</View>
+		</>
 	)
 }
 
@@ -380,7 +364,7 @@ export const EditProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }
 			onPress={() => closeModal()}
 			style={[StyleSheet.absoluteFill, { justifyContent: 'flex-end' }]}
 		>
-			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
+			<BlurView style={[StyleSheet.absoluteFill]} blurType='dark' />
 			<KeyboardAvoidingView behavior='padding'>
 				<View
 					style={[

@@ -2,75 +2,90 @@ import React, { useEffect, useState } from 'react'
 import { Linking } from 'react-native'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import {
-	createStackNavigator,
-	HeaderStyleInterpolators,
-	StackCardInterpolationProps,
-	StackNavigationOptions,
-	TransitionSpecs,
-} from '@react-navigation/stack'
+	createNativeStackNavigator,
+	NativeStackNavigationOptions,
+} from '@react-navigation/native-stack'
 import mapValues from 'lodash/mapValues'
+import { Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 
 import * as RawComponents from '@berty-tech/components'
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { MessengerAppState } from '@berty-tech/store/context'
+import { useStyles } from '@berty-tech/styles'
 
 import { Routes } from './types'
 import { dispatch } from './rootRef'
 
-const CustomTransitionOptions: StackNavigationOptions = {
-	headerShown: false,
-	gestureEnabled: true,
-	gestureDirection: 'horizontal',
-	transitionSpec: {
-		open: TransitionSpecs.TransitionIOSSpec,
-		close: TransitionSpecs.TransitionIOSSpec,
-	},
-	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
-	cardStyleInterpolator: ({ current, next, layouts }: StackCardInterpolationProps) => {
-		return {
-			cardStyle: {
-				transform: [
-					{
-						translateX: current.progress.interpolate({
-							inputRange: [0, 1],
-							outputRange: [layouts.screen.width, 0],
-						}),
-					},
-					{
-						scale: next
-							? next.progress.interpolate({
-									inputRange: [0, 1],
-									outputRange: [1, 0.9],
-							  })
-							: 1,
-					},
-				],
-			},
-			overlayStyle: {
-				opacity: current.progress.interpolate({
-					inputRange: [0, 1],
-					outputRange: [0, 0.5],
-				}),
-			},
-		}
-	},
+export const CustomTitleStyle: () => any = () => {
+	const [{}, { scaleSize }] = useStyles()
+	return {
+		headerTitleStyle: {
+			fontFamily: 'Open Sans',
+			fontWeight: '700',
+			fontSize: 25 * scaleSize,
+		},
+	}
 }
 
-const ModalScreenOptions: StackNavigationOptions = {
-	headerShown: false,
-	cardStyle: { backgroundColor: 'transparent' },
-	transitionSpec: {
-		open: TransitionSpecs.TransitionIOSSpec,
-		close: TransitionSpecs.TransitionIOSSpec,
-	},
-	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
-	cardStyleInterpolator: ({ current }: StackCardInterpolationProps) => {
-		return {
-			cardStyle: {
-				opacity: current.progress,
-			},
-		}
-	},
+const ChatScreenOptions: (
+	additionalProps?: NativeStackNavigationOptions,
+) => NativeStackNavigationOptions = additionalProps => {
+	const colors = useThemeColor()
+	return {
+		headerStyle: {
+			backgroundColor: colors['main-background'],
+		},
+		headerTintColor: colors['main-text'],
+		headerBackTitleVisible: false,
+		headerShadowVisible: false,
+		...additionalProps,
+	}
+}
+
+const BackgroundHeaderScreenOptions: (
+	additionalProps?: NativeStackNavigationOptions,
+) => NativeStackNavigationOptions = additionalProps => {
+	const colors = useThemeColor()
+	return {
+		headerStyle: {
+			backgroundColor: colors['background-header'],
+		},
+		headerTintColor: colors['reverted-main-text'],
+		headerBackTitleVisible: false,
+		headerShadowVisible: false,
+		...additionalProps,
+	}
+}
+
+const SecondaryBackgroundHeaderScreenOptions: (
+	additionalProps?: NativeStackNavigationOptions,
+) => NativeStackNavigationOptions = additionalProps => {
+	const colors = useThemeColor()
+	return {
+		headerStyle: {
+			backgroundColor: colors['secondary-background-header'],
+		},
+		headerTintColor: colors['reverted-main-text'],
+		headerBackTitleVisible: false,
+		headerShadowVisible: false,
+		...additionalProps,
+	}
+}
+
+const AltBackgroundHeaderScreenOptions: (
+	additionalProps?: NativeStackNavigationOptions,
+) => NativeStackNavigationOptions = additionalProps => {
+	const colors = useThemeColor()
+	return {
+		headerStyle: {
+			backgroundColor: colors['alt-secondary-background-header'],
+		},
+		headerTintColor: colors['reverted-main-text'],
+		headerBackTitleVisible: false,
+		headerShadowVisible: false,
+		...additionalProps,
+	}
 }
 
 function useLinking() {
@@ -130,10 +145,14 @@ Components = mapValues(RawComponents, SubComponents =>
 	)),
 )
 
-const CreateGroupStack = createStackNavigator()
-export const CreateGroupNavigation: React.FC = () => {
-	const [members, setMembers] = useState([] as any[])
+const NavigationStack = createNativeStackNavigator()
+export const Navigation: React.FC = () => {
+	const context = useMsgrContext()
 	const colors = useThemeColor()
+	const [{}, { scaleSize }] = useStyles()
+	const { t }: any = useTranslation()
+
+	const [members, setMembers] = useState([] as any[])
 	const setMember = (contact: any) => {
 		if (members.find(member => member.publicKey === contact.publicKey)) {
 			return
@@ -147,44 +166,6 @@ export const CreateGroupNavigation: React.FC = () => {
 		}
 	}
 
-	return (
-		<CreateGroupStack.Navigator
-			screenOptions={{
-				headerShown: false,
-				cardStyle: {
-					backgroundColor: colors['main-background'],
-				},
-			}}
-		>
-			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroupAddMembers}
-				options={ModalScreenOptions}
-			>
-				{() => (
-					// should use setParams ? maybe, tis weird
-					<Components.Main.CreateGroupAddMembers
-						members={members}
-						onRemoveMember={removeMember}
-						onSetMember={setMember}
-					/>
-				)}
-			</CreateGroupStack.Screen>
-			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroupFinalize}
-				options={ModalScreenOptions}
-			>
-				{() => (
-					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
-				)}
-			</CreateGroupStack.Screen>
-		</CreateGroupStack.Navigator>
-	)
-}
-
-const NavigationStack = createStackNavigator()
-export const Navigation: React.FC = () => {
-	const context = useMsgrContext()
-
 	useEffect(() => {
 		console.log('context app State', context.appState)
 		switch (context.appState) {
@@ -196,11 +177,7 @@ export const Navigation: React.FC = () => {
 				)
 				return
 			case MessengerAppState.PreReady:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: Routes.Onboarding.SetupFinished }],
-					}),
-				)
+				dispatch(CommonActions.navigate('Onboarding.SetupFinished'))
 				return
 			case MessengerAppState.GetStarted:
 				dispatch(
@@ -219,166 +196,383 @@ export const Navigation: React.FC = () => {
 					? Routes.Main.Home
 					: Routes.Onboarding.GetStarted
 			}
-			screenOptions={{ ...CustomTransitionOptions }}
 		>
-			<NavigationStack.Screen
-				name={Routes.Main.ContactRequest}
-				component={Components.Main.ContactRequest}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Main.Scan}
-				component={Components.Main.Scan}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Main.NetworkOptions}
-				component={Components.Main.NetworkOptions}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Main.Permissions}
-				component={Components.Main.Permissions}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
-			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
-			<NavigationStack.Screen
-				name={Routes.Chat.OneToOneSettings}
-				component={Components.Chat.OneToOneSettings}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Chat.ContactSettings}
-				component={Components.Chat.ContactSettings}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Chat.MultiMemberSettings}
-				component={Components.Chat.MultiMemberSettings}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Chat.MultiMemberSettingsAddMembers}
-				component={Components.Chat.MultiMemberSettingsAddMembers}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Chat.MultiMemberQR}
-				component={Components.Chat.MultiMemberQR}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Chat.ReplicateGroupSettings}
-				component={Components.Chat.ReplicateGroupSettings}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Chat.SharedMedias}
-				component={Components.Chat.SharedMedias}
-			/>
-			<NavigationStack.Screen
-				name={Routes.CreateGroup.CreateGroupAddMembers}
-				component={CreateGroupNavigation}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-			<NavigationStack.Screen
-				name={Routes.Settings.MyBertyId}
-				component={Components.Settings.MyBertyId}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
-			<NavigationStack.Screen
-				name={Routes.Settings.AppUpdates}
-				component={Components.Settings.AppUpdates}
-			/>
-			<NavigationStack.Screen name={Routes.Settings.Help} component={Components.Settings.Help} />
-			<NavigationStack.Screen
-				name={Routes.Settings.FakeData}
-				component={Components.Settings.FakeData}
-			/>
-			<NavigationStack.Screen name={Routes.Settings.Mode} component={Components.Settings.Mode} />
-			<NavigationStack.Screen
-				name={Routes.Settings.BlockedContacts}
-				component={Components.Settings.BlockedContacts}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.Notifications}
-				component={Components.Settings.Notifications}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.Bluetooth}
-				component={Components.Settings.Bluetooth}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.ServicesAuth}
-				component={Components.Settings.ServicesAuth}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.AboutBerty}
-				component={Components.Settings.AboutBerty}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.TermsOfUse}
-				component={Components.Settings.TermsOfUse}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.DevTools}
-				component={Components.Settings.DevTools}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.AddDevConversations}
-				component={Components.Settings.AddDevConversations}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.SystemInfo}
-				component={Components.Settings.SystemInfo}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.IpfsWebUI}
-				component={Components.Settings.IpfsWebUI}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.DevText}
-				component={Components.Settings.DevText}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.NetworkMap}
-				component={Components.Settings.NetworkMap}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.ThemeEditor}
-				component={Components.Settings.ThemeEditor}
-			/>
+			{/* OnBoarding */}
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}
 				component={Components.Onboarding.GetStarted}
+				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.ChoosePreset}
 				component={Components.Onboarding.ChoosePreset}
+				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.CreateAccount}
 				component={Components.Onboarding.CreateAccount}
+				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.ServicesAuth}
 				component={Components.Onboarding.ServicesAuth}
+				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.SetupFinished}
 				component={Components.Onboarding.SetupFinished}
+				options={{ headerShown: false }}
+			/>
+			{/* Main */}
+			<NavigationStack.Screen
+				name={Routes.Main.Home}
+				component={Components.Main.Home}
+				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Modals.DeleteAccount}
-				component={Components.Modals.DeleteAccount}
-				options={ModalScreenOptions}
+				name={Routes.Main.ContactRequest}
+				component={Components.Main.ContactRequest}
 			/>
+			<NavigationStack.Screen
+				name={Routes.Main.Scan}
+				component={Components.Main.Scan}
+				options={SecondaryBackgroundHeaderScreenOptions({
+					title: 'Scan QR Code',
+					headerRight: () => (
+						<Icon
+							name='qr'
+							pack='custom'
+							width={35 * scaleSize}
+							height={35 * scaleSize}
+							fill={colors['reverted-main-text']}
+						/>
+					),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Main.NetworkOptions}
+				component={Components.Main.NetworkOptions}
+				options={{ headerShown: false, presentation: 'formSheet' }}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Main.Permissions}
+				component={Components.Main.Permissions}
+				options={{ headerShown: false }}
+			/>
+			{/* CreateGroup */}
+			<NavigationStack.Screen
+				name={Routes.CreateGroup.CreateGroupAddMembers}
+				options={BackgroundHeaderScreenOptions({
+					title: t('main.home.create-group.title'),
+					headerRight: () => (
+						<Icon
+							name='users'
+							pack='custom'
+							width={35 * scaleSize}
+							height={35 * scaleSize}
+							fill={colors['reverted-main-text']}
+						/>
+					),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			>
+				{() => (
+					<Components.Main.CreateGroupAddMembers
+						members={members}
+						onRemoveMember={removeMember}
+						onSetMember={setMember}
+					/>
+				)}
+			</NavigationStack.Screen>
+			<NavigationStack.Screen
+				name={Routes.CreateGroup.CreateGroupFinalize}
+				options={BackgroundHeaderScreenOptions({
+					title: t('main.home.create-group.title'),
+					headerRight: () => (
+						<Icon
+							name='users'
+							pack='custom'
+							width={35 * scaleSize}
+							height={35 * scaleSize}
+							fill={colors['reverted-main-text']}
+						/>
+					),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			>
+				{() => (
+					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
+				)}
+			</NavigationStack.Screen>
+			{/* Chat */}
+			<NavigationStack.Screen
+				name={Routes.Chat.OneToOne}
+				component={Components.Chat.OneToOne}
+				options={ChatScreenOptions()}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.Group}
+				component={Components.Chat.MultiMember}
+				options={ChatScreenOptions()}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.OneToOneSettings}
+				component={Components.Chat.OneToOneSettings}
+				options={BackgroundHeaderScreenOptions({
+					title: '',
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.ContactSettings}
+				component={Components.Chat.ContactSettings}
+				options={BackgroundHeaderScreenOptions({
+					title: '',
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.MultiMemberSettings}
+				component={Components.Chat.MultiMemberSettings}
+				options={BackgroundHeaderScreenOptions({
+					title: '',
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.MultiMemberQR}
+				component={Components.Chat.MultiMemberQR}
+				options={BackgroundHeaderScreenOptions({
+					title: 'QR Group',
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.MultiMemberSettingsAddMembers}
+				component={Components.Chat.MultiMemberSettingsAddMembers}
+				options={BackgroundHeaderScreenOptions({
+					title: t('chat.add-members.members'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.ReplicateGroupSettings}
+				component={Components.Chat.ReplicateGroupSettings}
+				options={BackgroundHeaderScreenOptions({
+					title: t('chat.replicate-group-settings.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.SharedMedias}
+				component={Components.Chat.SharedMedias}
+				options={BackgroundHeaderScreenOptions({
+					title: t('chat.shared-medias.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			{/* Settings */}
+			<NavigationStack.Screen
+				name={Routes.Settings.Home}
+				component={Components.Settings.Home}
+				options={BackgroundHeaderScreenOptions({
+					title: '',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.MyBertyId}
+				component={Components.Settings.MyBertyId}
+				options={BackgroundHeaderScreenOptions({
+					title: 'My Berty ID',
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.AppUpdates}
+				component={Components.Settings.AppUpdates}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.updates.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Help}
+				component={Components.Settings.Help}
+				options={SecondaryBackgroundHeaderScreenOptions({
+					title: t('settings.help.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.AboutBerty}
+				component={Components.Settings.AboutBerty}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.about.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.TermsOfUse}
+				component={Components.Settings.TermsOfUse}
+				options={BackgroundHeaderScreenOptions({
+					title: 'Terms of use',
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Mode}
+				component={Components.Settings.Mode}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.mode.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.NetworkMap}
+				component={Components.Settings.NetworkMap}
+				options={AltBackgroundHeaderScreenOptions({
+					title: t('settings.network-map.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.ServicesAuth}
+				component={Components.Settings.ServicesAuth}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.services-auth.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.DeleteAccount}
+				component={Components.Settings.DeleteAccount}
+				options={{
+					headerShown: false,
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.ChoosePreset}
+				component={Components.Onboarding.ChoosePreset}
+				options={SecondaryBackgroundHeaderScreenOptions({
+					headerShown: false,
+					presentation: 'formSheet',
+					statusBarStyle: 'light',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Notifications}
+				component={Components.Settings.Notifications}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.notifications.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Bluetooth}
+				component={Components.Settings.Bluetooth}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.bluetooth.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.DevTools}
+				component={Components.Settings.DevTools}
+				options={AltBackgroundHeaderScreenOptions({
+					title: t('settings.devtools.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.FakeData}
+				component={Components.Settings.FakeData}
+				options={AltBackgroundHeaderScreenOptions({
+					title: t('settings.fake-data.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.ThemeEditor}
+				component={Components.Settings.ThemeEditor}
+				options={AltBackgroundHeaderScreenOptions({
+					title: t('settings.theme-editor.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.SystemInfo}
+				component={Components.Settings.SystemInfo}
+				options={AltBackgroundHeaderScreenOptions({
+					title: t('settings.system-info.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.AddDevConversations}
+				component={Components.Settings.AddDevConversations}
+				options={AltBackgroundHeaderScreenOptions({
+					title: t('settings.add-dev-conversations.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.IpfsWebUI}
+				component={Components.Settings.IpfsWebUI}
+				options={AltBackgroundHeaderScreenOptions({
+					title: t('settings.ipfs-webui.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.DevText}
+				component={Components.Settings.DevText}
+				options={AltBackgroundHeaderScreenOptions({
+					title: '',
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+
+			{/* Modals */}
 			<NavigationStack.Screen
 				name={Routes.Modals.ManageDeepLink}
 				component={Components.Modals.ManageDeepLink}
-				options={ModalScreenOptions}
+				options={{
+					presentation: 'containedTransparentModal',
+					animation: 'fade',
+					headerShown: false,
+				}}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Modals.ImageView}
 				component={Components.Modals.ImageView}
-				options={{ ...ModalScreenOptions, gestureEnabled: false }}
+				options={{
+					presentation: 'containedTransparentModal',
+					headerShown: false,
+				}}
 			/>
 		</NavigationStack.Navigator>
 	)

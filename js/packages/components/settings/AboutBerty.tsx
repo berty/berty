@@ -1,15 +1,13 @@
 import React from 'react'
 import { View, ScrollView, Linking, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
-import { Translation, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // About Berty
@@ -33,55 +31,52 @@ const HeaderAboutBerty: React.FC<{}> = () => {
 	const _styles = useStylesAboutBerty()
 	const [{ text, padding }] = useStyles()
 	const colors = useThemeColor()
+	const { t }: any = useTranslation()
 
 	return (
-		<Translation>
-			{(t: any): React.ReactNode => (
-				<View>
-					<View style={padding.top.medium}>
-						<ButtonSettingRow
-							state={[
-								{
-									name: t('settings.about.top-left-button'),
-									icon: 'lock-outline',
-									color: colors['secondary-background-header'],
-									style: _styles.firstHeaderButtonRow,
-									disabled: true,
-								},
-								{
-									name: t('settings.about.top-right-button'),
-									icon: 'settings-2-outline',
-									color: colors['background-header'],
-									style: _styles.secondHeaderButtonRow,
-									disabled: true,
-								},
-							]}
-							styleText={text.bold.medium}
-						/>
-						<ButtonSettingRow
-							state={[
-								{
-									name: t('settings.about.bottom-left-button'),
-									icon: 'question-mark-circle-outline',
-									color: colors['secondary-background-header'],
-									style: _styles.firstHeaderButtonRow,
-									disabled: true,
-								},
-								{
-									name: t('settings.about.bottom-right-button'),
-									icon: 'settings-2-outline',
-									color: colors['background-header'],
-									style: _styles.secondHeaderButtonRow,
-									disabled: true,
-								},
-							]}
-							style={_styles.buttonRowMarginTop}
-							styleText={text.bold.medium}
-						/>
-					</View>
-				</View>
-			)}
-		</Translation>
+		<View>
+			<View style={padding.top.medium}>
+				<ButtonSettingRow
+					state={[
+						{
+							name: t('settings.about.top-left-button'),
+							icon: 'lock-outline',
+							color: colors['secondary-background-header'],
+							style: _styles.firstHeaderButtonRow,
+							disabled: true,
+						},
+						{
+							name: t('settings.about.top-right-button'),
+							icon: 'settings-2-outline',
+							color: colors['background-header'],
+							style: _styles.secondHeaderButtonRow,
+							disabled: true,
+						},
+					]}
+					styleText={text.bold.medium}
+				/>
+				<ButtonSettingRow
+					state={[
+						{
+							name: t('settings.about.bottom-left-button'),
+							icon: 'question-mark-circle-outline',
+							color: colors['secondary-background-header'],
+							style: _styles.firstHeaderButtonRow,
+							disabled: true,
+						},
+						{
+							name: t('settings.about.bottom-right-button'),
+							icon: 'settings-2-outline',
+							color: colors['background-header'],
+							style: _styles.secondHeaderButtonRow,
+							disabled: true,
+						},
+					]}
+					style={_styles.buttonRowMarginTop}
+					styleText={text.bold.medium}
+				/>
+			</View>
+		</View>
 	)
 }
 
@@ -90,76 +85,70 @@ const BodyAboutBerty: React.FC<{}> = () => {
 	const navigation = useNavigation()
 	const [{ flex, margin, padding }] = useStyles()
 	const colors = useThemeColor()
+	const { t }: any = useTranslation()
 
 	return (
-		<Translation>
-			{(t: any): React.ReactNode => (
-				<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
-					<ButtonSetting
-						name={t('settings.about.terms-button')}
-						icon='info-outline'
-						iconSize={30}
-						iconColor={colors['background-header']}
-						actionIcon='arrow-ios-forward'
-						onPress={() => navigation.navigate.settings.termsOfUse()}
-					/>
-					<ButtonSetting
-						name={t('settings.about.privacy-button')}
-						icon='book-open-outline'
-						iconSize={30}
-						iconColor={colors['background-header']}
-						actionIcon='arrow-ios-forward'
-						disabled
-					/>
-					<ButtonSetting
-						name={t('settings.about.software-button')}
-						icon='award-outline'
-						iconSize={30}
-						iconColor={colors['background-header']}
-						actionIcon='arrow-ios-forward'
-						disabled
-					/>
-					<ButtonSettingRow
-						state={[
-							{
-								onPress: () => Linking.openURL('mailto:hello@berty.tech'),
-								name: t('settings.about.contact-button'),
-								icon: 'email-outline',
-								color: colors['background-header'],
-								style: _styles.firstButtonRow,
-							},
-							{
-								onPress: () => Linking.openURL('https://berty.tech'),
-								name: t('settings.about.website-button'),
-								icon: 'globe-outline',
-								color: colors['background-header'],
-								style: _styles.secondButtonRow,
-							},
-						]}
-						style={_styles.buttonRowMarginTop}
-					/>
-				</View>
-			)}
-		</Translation>
+		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
+			<ButtonSetting
+				name={t('settings.about.terms-button')}
+				icon='info-outline'
+				iconSize={30}
+				iconColor={colors['background-header']}
+				actionIcon='arrow-ios-forward'
+				onPress={() => navigation.navigate.settings.termsOfUse()}
+			/>
+			<ButtonSetting
+				name={t('settings.about.privacy-button')}
+				icon='book-open-outline'
+				iconSize={30}
+				iconColor={colors['background-header']}
+				actionIcon='arrow-ios-forward'
+				disabled
+			/>
+			<ButtonSetting
+				name={t('settings.about.software-button')}
+				icon='award-outline'
+				iconSize={30}
+				iconColor={colors['background-header']}
+				actionIcon='arrow-ios-forward'
+				disabled
+			/>
+			<ButtonSettingRow
+				state={[
+					{
+						onPress: () => Linking.openURL('mailto:hello@berty.tech'),
+						name: t('settings.about.contact-button'),
+						icon: 'email-outline',
+						color: colors['background-header'],
+						style: _styles.firstButtonRow,
+					},
+					{
+						onPress: () => Linking.openURL('https://berty.tech'),
+						name: t('settings.about.website-button'),
+						icon: 'globe-outline',
+						color: colors['background-header'],
+						style: _styles.secondButtonRow,
+					},
+				]}
+				style={_styles.buttonRowMarginTop}
+			/>
+		</View>
 	)
 }
 
 export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
-	const { goBack } = useNavigation()
 	const colors = useThemeColor()
-	const { t } = useTranslation()
+	const [{ padding }] = useStyles()
 
 	return (
 		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle={'light-content'} />
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false}>
-					<HeaderSettings title={t('settings.about.title')} undo={goBack}>
-						<HeaderAboutBerty />
-					</HeaderSettings>
-					<BodyAboutBerty />
-				</ScrollView>
-			</SwipeNavRecognizer>
+			<ScrollView bounces={false}>
+				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
+					<HeaderAboutBerty />
+				</View>
+				<BodyAboutBerty />
+			</ScrollView>
 		</Layout>
 	)
 }

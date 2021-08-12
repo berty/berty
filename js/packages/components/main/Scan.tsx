@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import {
-	View,
-	TextInput,
-	Button,
-	TouchableOpacity,
-	Vibration,
-	Text as TextNative,
-	StatusBar,
-} from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
+import { View, TextInput, Button, Vibration, Text as TextNative, StatusBar } from 'react-native'
+import { Layout } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import ScanTarget from './scan_target.svg'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { checkPermissions } from '../utils'
 
 //
@@ -88,8 +78,6 @@ const ScanBody: React.FC<{}> = () => {
 				cameraProps={{ captureAudio: false }}
 				containerStyle={[borderRadius, { width: '100%', height: '100%', overflow: 'hidden' }]}
 				cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
-				reactivate
-				// flashMode={RNCamera.Constants.FlashMode.torch}
 			/>
 			<ScanTarget height='75%' width='75%' style={{ position: 'absolute' }} />
 		</View>
@@ -135,7 +123,6 @@ const DevReferenceInput = () => {
 			<TextInput
 				value={ref}
 				onChangeText={setRef}
-				//eslint-disable-next-line react-native/no-inline-styles
 				style={{ backgroundColor: colors['input-background'], padding: 8 }}
 			/>
 			<Button
@@ -149,108 +136,31 @@ const DevReferenceInput = () => {
 	)
 }
 
-const ScanInfos: React.FC<{}> = () => {
-	const [{ margin, padding }] = useStyles()
-
-	return (
-		<View style={[margin.top.medium, padding.medium]}>
-			<ScanInfosText textProps='Scanning a QR code sends a contact request' />
-			<ScanInfosText textProps='You need to wait for the request to be accepted in order to chat with the contact' />
-			{__DEV__ && <DevReferenceInput />}
-		</View>
-	)
-}
-
-const ScanComponent: React.FC<any> = () => {
-	const { goBack } = useNavigation()
-	const [{ padding, flex, margin }, { scaleSize }] = useStyles()
+export const Scan: React.FC = () => {
+	const [{ flex, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { titleSize } = useStylesScan()
-	const [, setIsTouchingHeader] = useState(false)
-
-	return (
-		<SafeAreaConsumer>
-			{insets => {
-				return (
-					<View
-						style={[
-							padding.medium,
-							{
-								paddingTop: scaleSize * ((insets?.top || 0) + 16),
-								flexGrow: 2,
-								flexBasis: '100%',
-								backgroundColor: colors['secondary-background-header'],
-							},
-						]}
-					>
-						<View
-							style={[
-								flex.direction.row,
-								flex.justify.spaceBetween,
-								flex.align.center,
-								margin.bottom.scale(40),
-							]}
-							onTouchStart={() => {
-								setIsTouchingHeader(true)
-							}}
-							onTouchCancel={() => setIsTouchingHeader(false)}
-							onTouchEnd={() => setIsTouchingHeader(false)}
-						>
-							<View style={[flex.direction.row, flex.align.center]}>
-								<TouchableOpacity onPress={goBack} style={[flex.align.center, flex.justify.center]}>
-									{/* <Icon name='arrow-back-outline' width={30} height={30} fill={color.white} /> */}
-									<Icon
-										name='arrow-down-outline'
-										width={30}
-										height={30}
-										fill={colors['reverted-main-text']}
-									/>
-								</TouchableOpacity>
-								<Text
-									style={{
-										fontWeight: '700',
-										fontSize: titleSize,
-										lineHeight: 1.25 * titleSize,
-										marginLeft: 10,
-										color: colors['reverted-main-text'],
-									}}
-								>
-									Scan QR code
-								</Text>
-							</View>
-							<Icon
-								name='qr'
-								pack='custom'
-								width={40}
-								height={40}
-								fill={colors['reverted-main-text']}
-							/>
-						</View>
-						<ScanBody />
-						<ScanInfos />
-					</View>
-				)
-			}}
-		</SafeAreaConsumer>
-	)
-}
-
-export const Scan: React.FC<{}> = () => {
-	const [{ flex }] = useStyles()
-	const colors = useThemeColor()
-	const navigation = useNavigation()
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
 			<StatusBar backgroundColor={colors['secondary-background-header']} barStyle='light-content' />
-			<SwipeNavRecognizer
-				onSwipeRight={() => navigation.goBack()}
-				onSwipeLeft={() => navigation.goBack()}
-				onSwipeUp={() => navigation.goBack()}
-				onSwipeDown={() => navigation.goBack()}
+			<View
+				style={[
+					padding.medium,
+					{
+						paddingTop: 16 * scaleSize,
+						flexGrow: 2,
+						flexBasis: '100%',
+						backgroundColor: colors['secondary-background-header'],
+					},
+				]}
 			>
-				<ScanComponent />
-			</SwipeNavRecognizer>
+				<ScanBody />
+				<View style={[margin.top.medium, padding.medium]}>
+					<ScanInfosText textProps='Scanning a QR code sends a contact request' />
+					<ScanInfosText textProps='You need to wait for the request to be accepted in order to chat with the contact' />
+					{__DEV__ && <DevReferenceInput />}
+				</View>
+			</View>
 		</Layout>
 	)
 }

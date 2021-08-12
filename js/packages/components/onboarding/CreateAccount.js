@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TextInput, Vibration, StatusBar, Platform } from 'react-native'
-import { Translation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -38,6 +38,7 @@ const CreateAccountBody = ({ next }) => {
 	const ctx = useMsgrContext()
 	const [{ text, padding, margin, border }] = useStyles()
 	const colors = useThemeColor()
+	const { t } = useTranslation()
 	const [name, setName] = React.useState('')
 	const [isPressed, setIsPressed] = useState(false)
 
@@ -67,7 +68,6 @@ const CreateAccountBody = ({ next }) => {
 		} else {
 			await ctx.createNewAccount()
 		}
-
 		setIsPressed(true)
 	}, [ctx])
 
@@ -83,77 +83,73 @@ const CreateAccountBody = ({ next }) => {
 	}, [ctx, name, handlePersistentOptions])
 
 	return (
-		<Translation>
-			{t => (
-				<>
-					<View style={{ flex: 1 }}>
-						<LottieView
-							source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
-							autoPlay
-							loop
-							style={{ width: '100%' }}
-						/>
-						{!isPressed ? (
-							<LottieView
-								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
-								autoPlay
-								loop={false}
-							/>
-						) : (
-							<LottieView
-								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield dissapear.json')}
-								autoPlay
-								loop={false}
-								onAnimationFinish={async () => {
-									Vibration.vibrate(500)
-									const status = await checkPermissions('p2p', {
-										isToNavigate: false,
-									})
-									if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
-										next()
-									}
-								}}
-							/>
-						)}
-					</View>
-					<View style={{ flex: 1 }}>
-						<SwiperCard
-							label={t('onboarding.create-account.required')}
-							title={t('onboarding.create-account.title')}
-							description={t('onboarding.create-account.desc')}
-							button={{
-								text: t('onboarding.create-account.button'),
-								onPress,
-							}}
-							secondButton={{
-								text: t('onboarding.create-account.import-account'),
-								onPress: () => openDocumentPicker(ctx),
-							}}
-						>
-							<TextInput
-								autoCapitalize='none'
-								autoCorrect={false}
-								value={name}
-								onChangeText={setName}
-								placeholder={t('onboarding.create-account.placeholder')}
-								style={[
-									margin.top.medium,
-									padding.medium,
-									text.size.large,
-									border.radius.small,
-									text.bold.small,
-									{
-										backgroundColor: colors['input-background'],
-										fontFamily: 'Open Sans',
-										color: colors['main-text'],
-									},
-								]}
-							/>
-						</SwiperCard>
-					</View>
-				</>
-			)}
-		</Translation>
+		<>
+			<View style={{ flex: 1 }}>
+				<LottieView
+					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+					autoPlay
+					loop
+					style={{ width: '100%' }}
+				/>
+				{!isPressed ? (
+					<LottieView
+						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
+						autoPlay
+						loop={false}
+					/>
+				) : (
+					<LottieView
+						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield dissapear.json')}
+						autoPlay
+						loop={false}
+						onAnimationFinish={async () => {
+							Vibration.vibrate(500)
+							const status = await checkPermissions('p2p', {
+								isToNavigate: false,
+							})
+							if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
+								next()
+							}
+						}}
+					/>
+				)}
+			</View>
+			<View style={{ flex: 1 }}>
+				<SwiperCard
+					label={t('onboarding.create-account.required')}
+					title={t('onboarding.create-account.title')}
+					description={t('onboarding.create-account.desc')}
+					button={{
+						text: t('onboarding.create-account.button'),
+						onPress,
+					}}
+					secondButton={{
+						text: t('onboarding.create-account.import-account'),
+						onPress: () => openDocumentPicker(ctx),
+					}}
+				>
+					<TextInput
+						autoCapitalize='none'
+						autoCorrect={false}
+						value={name}
+						onChangeText={setName}
+						placeholder={t('onboarding.create-account.placeholder')}
+						style={[
+							margin.top.medium,
+							padding.medium,
+							text.size.large,
+							border.radius.small,
+							text.bold.small,
+							{
+								backgroundColor: colors['input-background'],
+								fontFamily: 'Open Sans',
+								color: colors['main-text'],
+							},
+						]}
+					/>
+				</SwiperCard>
+			</View>
+		</>
 	)
 }
 

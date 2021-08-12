@@ -159,8 +159,7 @@ export const ChatFooter: React.FC<{
 	convPk: string
 	disabled?: boolean
 	placeholder: string
-	setSwipe: (val: boolean) => void
-}> = ({ convPk, disabled = false, placeholder, setSwipe }) => {
+}> = ({ convPk, disabled = false, placeholder }) => {
 	const ctx = useMsgrContext()
 	const client = useClient()
 
@@ -226,7 +225,6 @@ export const ChatFooter: React.FC<{
 			sendMessage([...mediaCids, ...newMedias])
 		}
 		setShowAddFileMenu(false)
-		setSwipe(true)
 	}
 
 	const prepareMediaAndSend = async (res: beapi.messenger.IMedia[]) => {
@@ -386,7 +384,6 @@ export const ChatFooter: React.FC<{
 							border.radius.small,
 						]}
 						onPress={() => {
-							setSwipe(false)
 							setShowAddFileMenu(true)
 						}}
 					>

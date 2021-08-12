@@ -15,8 +15,6 @@ import {
 	ButtonSettingRow,
 	ButtonDropDown,
 } from '../shared-components/SettingsButtons'
-import HeaderSettings from '../shared-components/Header'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 
 //
@@ -303,6 +301,7 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 	const conv = useConversation(convId)
 	const { goBack } = useNavigation()
 	const colors = useThemeColor()
+	const [{ padding }] = useStyles()
 
 	if (!conv) {
 		goBack()
@@ -311,17 +310,13 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false}>
-					<HeaderSettings actionIcon='edit-outline' undo={goBack}>
-						<View>
-							<GroupChatSettingsHeader publicKey={conv.publicKey} />
-							<GroupChatSettingsHeaderButtons {...conv} />
-						</View>
-					</HeaderSettings>
-					<MultiMemberSettingsBody {...conv} />
-				</ScrollView>
-			</SwipeNavRecognizer>
+			<ScrollView bounces={false}>
+				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
+					<GroupChatSettingsHeader publicKey={conv.publicKey} />
+					<GroupChatSettingsHeaderButtons {...conv} />
+				</View>
+				<MultiMemberSettingsBody {...conv} />
+			</ScrollView>
 		</Layout>
 	)
 }

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import {
 	servicesAuthViaURL,
@@ -14,13 +14,13 @@ import {
 	serviceNames,
 } from '@berty-tech/store/services'
 
-import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../shared-components'
+import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'
 
 const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()
 	const colors = useThemeColor()
-	const { t } = useTranslation()
+	const { t }: any = useTranslation()
 
 	const [url, setURL] = useState('')
 	const ctx = useMsgrContext()
@@ -104,14 +104,11 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 })
 
 export const ServicesAuth: React.FC<ScreenProps.Settings.ServicesAuth> = () => {
-	const { goBack } = useNavigation()
-	const { t } = useTranslation()
 	const colors = useThemeColor()
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<ScrollView bounces={false}>
-				<HeaderSettings title={t('settings.services-auth.title')} undo={goBack} />
 				<BodyServicesAuth />
 			</ScrollView>
 		</Layout>

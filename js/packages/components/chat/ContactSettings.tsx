@@ -10,8 +10,6 @@ import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
-import HeaderSettings from '../shared-components/Header'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
@@ -141,6 +139,7 @@ export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ ro
 	const { goBack } = useNavigation()
 	const colors = useThemeColor()
 	const contact: any = (useContacts() as any)[contactId] || null
+	const [{ padding }] = useStyles()
 	if (!contact) {
 		goBack()
 		return (
@@ -155,13 +154,15 @@ export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ ro
 		<>
 			<View style={{ flex: 1 }}>
 				<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-				<ScrollView style={{ backgroundColor: colors['main-background'], flex: 1 }} bounces={false}>
-					<SwipeNavRecognizer>
-						<HeaderSettings actionIcon='upload' undo={goBack}>
-							<ContactSettingsHeader contact={contact} />
-						</HeaderSettings>
-						<ContactSettingsBody id={contact.publicKey} />
-					</SwipeNavRecognizer>
+				<ScrollView
+					style={{ backgroundColor: colors['main-background'], flex: 1 }}
+					bounces={false}
+					contentContainerStyle={[padding.bottom.medium]}
+				>
+					<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
+						<ContactSettingsHeader contact={contact} />
+					</View>
+					<ContactSettingsBody id={contact.publicKey} />
 				</ScrollView>
 			</View>
 		</>

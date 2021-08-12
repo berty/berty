@@ -3,7 +3,6 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import {
 	useGenerateFakeContacts,
@@ -13,9 +12,7 @@ import {
 	useThemeColor,
 } from '@berty-tech/store/hooks'
 
-import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 const BodyFakeData = () => {
 	const { t } = useTranslation()
@@ -67,21 +64,12 @@ const BodyFakeData = () => {
 
 export const FakeData = () => {
 	const colors = useThemeColor()
-	const { goBack } = useNavigation()
-	const { t } = useTranslation()
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false}>
-					<HeaderSettings
-						title={t('settings.fake-data.title')}
-						bgColor={colors['alt-secondary-background-header']}
-						undo={goBack}
-					/>
-					<BodyFakeData />
-				</ScrollView>
-			</SwipeNavRecognizer>
+			<ScrollView bounces={false}>
+				<BodyFakeData />
+			</ScrollView>
 		</Layout>
 	)
 }

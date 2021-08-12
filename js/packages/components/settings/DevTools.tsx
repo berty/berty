@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
 import { Layout } from '@ui-kitten/components'
-import { Translation, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Player } from '@react-native-community/audio-toolkit'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import Long from 'long'
@@ -26,14 +26,12 @@ import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
-import { HeaderSettings } from '../shared-components/Header'
 import {
 	ButtonSetting,
 	ButtonSettingItem,
 	ButtonSettingRow,
 	StringOptionInput,
 } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
 
@@ -658,31 +656,23 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 })
 
 export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
-	const { goBack } = useNavigation()
 	const colors = useThemeColor()
+	const [{ padding }] = useStyles()
 
 	return (
-		<Translation>
-			{(t: any): React.ReactNode => (
-				<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
-					<StatusBar
-						backgroundColor={colors['alt-secondary-background-header']}
-						barStyle='light-content'
-					/>
-					<SwipeNavRecognizer>
-						<ScrollView bounces={false}>
-							<HeaderSettings
-								title={t('settings.devtools.title')}
-								bgColor={colors['alt-secondary-background-header']}
-								undo={goBack}
-							>
-								<HeaderDevTools />
-							</HeaderSettings>
-							<BodyDevTools />
-						</ScrollView>
-					</SwipeNavRecognizer>
-				</Layout>
-			)}
-		</Translation>
+		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+			<StatusBar
+				backgroundColor={colors['alt-secondary-background-header']}
+				barStyle='light-content'
+			/>
+			<ScrollView bounces={false}>
+				<View
+					style={[padding.medium, { backgroundColor: colors['alt-secondary-background-header'] }]}
+				>
+					<HeaderDevTools />
+				</View>
+				<BodyDevTools />
+			</ScrollView>
+		</Layout>
 	)
 }

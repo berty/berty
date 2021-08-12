@@ -8,9 +8,7 @@ import { useStyles } from '@berty-tech/styles'
 import { globals } from '@berty-tech/config'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 type ValueOf<T> = T[keyof T]
 
@@ -92,22 +90,13 @@ const BodyAddContactList = () => {
 }
 
 export const AddDevConversations = () => {
-	const { t } = useTranslation()
 	const colors = useThemeColor()
-	const { goBack } = useNavigation()
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false}>
-					<HeaderSettings
-						title={t('settings.add-dev-conversations.title')}
-						bgColor={colors['alt-secondary-background-header']}
-						undo={goBack}
-					/>
-					<BodyAddContactList />
-				</ScrollView>
-			</SwipeNavRecognizer>
+			<ScrollView bounces={false}>
+				<BodyAddContactList />
+			</ScrollView>
 		</Layout>
 	)
 }

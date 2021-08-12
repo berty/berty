@@ -1,16 +1,15 @@
 import React from 'react'
-import { ScrollView, View, StatusBar } from 'react-native'
-import { Text } from '@ui-kitten/components'
+import { ScrollView, View, StatusBar, TouchableOpacity } from 'react-native'
+import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import { useContact, useConversation, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
-import HeaderSettings from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
 
 //
@@ -98,7 +97,7 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 			<ButtonSetting
 				name={t('chat.one-to-one-settings.media-button')}
 				icon='image-outline'
-				onPress={() => navigation.navigate.chat.sharedMedias({ convPk: publicKey })}
+				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
 			<ButtonSetting
 				name={t('chat.one-to-one-settings.notifications-button')}
@@ -124,7 +123,7 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 					iconSize={30}
 					actionIcon='arrow-ios-forward'
 					onPress={() => {
-						navigation.navigate.chat.replicateGroupSettings({ convId: publicKey })
+						navigation.navigate('Chat.ReplicateGroupSettings', { convId: publicKey })
 					}}
 				/>
 			)}
@@ -141,13 +140,34 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	route: { params },
 }) => {
+	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { goBack, navigate } = useNavigation()
+	const navigation = useNavigation()
 	const { convId } = params
 	const conv = useConversation(convId)
 	const contact = useContact(conv?.contactPublicKey)
+
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<TouchableOpacity
+					onPress={() =>
+						navigation.navigate('Chat.ContactSettings', { contactId: conv?.contactPublicKey || '' })
+					}
+				>
+					<Icon
+						name='more-horizontal-outline'
+						width={35 * scaleSize}
+						height={35 * scaleSize}
+						fill={colors['reverted-main-text']}
+					/>
+				</TouchableOpacity>
+			),
+		})
+	})
+
 	if (!(conv && conv.type === beapi.messenger.Conversation.Type.ContactType && contact)) {
-		goBack()
+		navigation.goBack()
 		return null
 	}
 	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
@@ -156,22 +176,16 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 		<>
 			<View style={{ flex: 1 }}>
 				<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-				<ScrollView style={{ flex: 1, backgroundColor: colors['main-background'] }} bounces={false}>
-					<SwipeNavRecognizer>
-						<HeaderSettings
-							action={() =>
-								navigate.chat.contactSettings({ contactId: conv.contactPublicKey || '' })
-							}
-							actionIcon='more-horizontal-outline'
-							undo={goBack}
-						>
-							<View>
-								<OneToOneHeader contact={contact} />
-								<OneToOneHeaderButtons />
-							</View>
-						</HeaderSettings>
-						<OneToOneBody {...conv} isIncoming={isIncoming} />
-					</SwipeNavRecognizer>
+				<ScrollView
+					style={{ backgroundColor: colors['main-background'] }}
+					bounces={false}
+					contentContainerStyle={[padding.bottom.medium]}
+				>
+					<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
+						<OneToOneHeader contact={contact} />
+						<OneToOneHeaderButtons />
+					</View>
+					<OneToOneBody {...conv} isIncoming={isIncoming} />
 				</ScrollView>
 			</View>
 		</>

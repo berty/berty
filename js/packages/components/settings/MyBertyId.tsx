@@ -1,19 +1,16 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, ScrollView, Share, StatusBar } from 'react-native'
+import { View, TouchableOpacity, Share, StatusBar } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCode from 'react-native-qrcode-svg'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
 import { useAccount, useThemeColor } from '@berty-tech/store/hooks'
 
 import { TabBar } from '../shared-components/TabBar'
-import { RequestAvatar } from '../shared-components/Request'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import logo from '../main/1_berty_picto.png'
+import { AccountAvatar } from '../avatars'
 
 //
 // Settings My Berty ID Vue
@@ -124,7 +121,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 }
 
 const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
-	const [{ border, margin, padding, opacity }] = useStyles()
+	const [{ border, margin, padding, opacity }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId()
@@ -142,7 +139,11 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 				styleBertyIdContent,
 			]}
 		>
-			<RequestAvatar {...user} seed={account?.publicKey} size={requestAvatarSize} />
+			<View
+				style={{ flex: 1, alignItems: 'center', justifyContent: 'center', bottom: 40 * scaleSize }}
+			>
+				<AccountAvatar {...user} seed={account?.publicKey} size={requestAvatarSize} />
+			</View>
 			<View style={[padding.horizontal.big]}>
 				<TabBar
 					tabs={[
@@ -214,75 +215,19 @@ const BertyIdShare: React.FC<{}> = () => {
 }
 
 const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
-	const { goBack } = useNavigation()
-	const [{ padding, margin, flex }, { windowHeight, scaleSize }] = useStyles()
+	const [{ padding }, { windowHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { titleSize, iconIdSize } = useStylesBertyId()
 
 	return (
-		<SafeAreaConsumer>
-			{insets => {
-				return (
-					<ScrollView
-						bounces={false}
-						style={[
-							padding.medium,
-							{
-								backgroundColor: colors['background-header'],
-								paddingTop: scaleSize * ((insets?.top || 0) + 16),
-								flexGrow: 2,
-								flexBasis: '100%',
-							},
-						]}
-					>
-						<View
-							style={[
-								flex.direction.row,
-								flex.align.center,
-								flex.justify.spaceBetween,
-								{ marginBottom: windowHeight * 0.1 },
-							]}
-						>
-							<View style={[flex.direction.row, flex.align.center]}>
-								<TouchableOpacity
-									onPress={goBack}
-									style={{ alignItems: 'center', justifyContent: 'center' }}
-								>
-									<Icon
-										name='arrow-down-outline'
-										width={30}
-										height={30}
-										fill={colors['reverted-main-text']}
-									/>
-								</TouchableOpacity>
-								<Text
-									style={[
-										margin.left.scale(10),
-										{
-											fontWeight: '700',
-											fontSize: titleSize,
-											lineHeight: 1.25 * titleSize,
-											color: colors['reverted-main-text'],
-										},
-									]}
-								>
-									My Berty ID
-								</Text>
-							</View>
-							<Icon
-								name='id'
-								pack='custom'
-								width={iconIdSize}
-								height={iconIdSize}
-								fill={colors['reverted-main-text']}
-							/>
-						</View>
-						<BertIdBody user={user} />
-						<BertyIdShare />
-					</ScrollView>
-				)
-			}}
-		</SafeAreaConsumer>
+		<View
+			style={[
+				padding.medium,
+				{ backgroundColor: colors['background-header'], top: (windowHeight / 8) * scaleSize },
+			]}
+		>
+			<BertIdBody user={user} />
+			<BertyIdShare />
+		</View>
 	)
 }
 
@@ -290,11 +235,9 @@ export const MyBertyId: React.FC<{ user: any }> = ({ user }) => {
 	const colors = useThemeColor()
 
 	return (
-		<Layout style={{ backgroundColor: 'transparent', flex: 1 }}>
+		<Layout style={{ backgroundColor: colors['background-header'], flex: 1 }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<SwipeNavRecognizer>
-				<MyBertyIdComponent user={user} />
-			</SwipeNavRecognizer>
+			<MyBertyIdComponent user={user} />
 		</Layout>
 	)
 }

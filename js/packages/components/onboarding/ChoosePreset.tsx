@@ -1,10 +1,9 @@
 import React from 'react'
-import { ImageBackground, StatusBar, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, TouchableOpacity, View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Icon, Text } from '@ui-kitten/components'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import { useNavigation as useNativeNavigation } from '@react-navigation/core'
+import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
@@ -22,7 +21,6 @@ import { getNetworkConfigurationFromPreset } from '@berty-tech/store/effectableC
 export const ChoosePreset = () => {
 	const { t }: { t: any } = useTranslation()
 	const { selectedAccount, setNetworkConfig } = useMsgrContext()
-	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 
 	const [{ text, padding, border, margin, flex }, { scaleSize }] = useStyles()
@@ -44,15 +42,7 @@ export const ChoosePreset = () => {
 	]
 
 	return (
-		<View
-			style={[
-				flex.tiny,
-				padding.big,
-				margin.top.scale(insets.top),
-				{ backgroundColor: colors['main-background'] },
-			]}
-		>
-			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+		<View style={[flex.tiny, padding.big, { backgroundColor: colors['main-background'] }]}>
 			<Text
 				style={[
 					text.align.center,

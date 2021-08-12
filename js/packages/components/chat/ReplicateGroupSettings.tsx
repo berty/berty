@@ -15,9 +15,7 @@ import {
 } from '@berty-tech/store/services'
 import beapi from '@berty-tech/api'
 
-import HeaderSettings from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 enum replicationServerStatus {
 	KnownServerEnabled,
@@ -167,7 +165,6 @@ export const ReplicateGroupSettings: React.FC<ScreenProps.Chat.ReplicateGroupSet
 	const [{ padding }] = useStyles()
 	const { goBack } = useNavigation()
 	const conv = useConversation(convId)
-	const { t } = useTranslation()
 
 	if (!conv) {
 		goBack()
@@ -176,16 +173,9 @@ export const ReplicateGroupSettings: React.FC<ScreenProps.Chat.ReplicateGroupSet
 
 	return (
 		<Layout style={{ flex: 1 }}>
-			<SwipeNavRecognizer>
-				<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
-					<HeaderSettings
-						actionIcon='edit-outline'
-						undo={goBack}
-						title={t('chat.replicate-group-settings.title')}
-					/>
-					<ReplicateGroupContent conversationPublicKey={conv.publicKey} />
-				</ScrollView>
-			</SwipeNavRecognizer>
+			<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
+				<ReplicateGroupContent conversationPublicKey={conv.publicKey} />
+			</ScrollView>
 		</Layout>
 	)
 }
