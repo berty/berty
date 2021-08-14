@@ -97,11 +97,11 @@
         "create-group": "CRÉER UN GROUPE"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
+        "placeholder": "Nom du groupe",
+        "about": "À propos des groupes",
+        "first-bullet-point": "N'importe qui dans le groupe peut le renommer ou inviter de nouveaux membres",
         "second-bullet-point": "",
-        "third-bullet-point": "",
+        "third-bullet-point": "Vous pouvez quitter ce groupe",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
       }
