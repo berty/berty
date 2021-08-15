@@ -100,10 +100,10 @@
         "placeholder": "Nom du groupe",
         "about": "À propos des groupes",
         "first-bullet-point": "N'importe qui dans le groupe peut le renommer ou inviter de nouveaux membres",
-        "second-bullet-point": "",
+        "second-bullet-point": "Vous pouvez inviter des membres par lien",
         "third-bullet-point": "Vous pouvez quitter ce groupe",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "fourth-bullet-point": "Vous ne pouvez pas supprimer ce groupe",
+        "fifth-bullet-point": "Vous ne pouvez pas retirer un membre de ce groupe"
       }
     },
     "home-modal": {
@@ -124,15 +124,15 @@
     "network-options": {
       "welcome-title": "Bienvenue dans les Options Réseaux",
       "full-anon-mode": "Mode Anonymat complet",
-      "simple-tor-compatible": "",
+      "simple-tor-compatible": "Simplement compatible avec TOR",
       "allow-expert-mode": "Autoriser le mode Expert",
       "tor-compatible": {
         "title": "Compatible avec TOR",
-        "desc": ""
+        "desc": "Cette configuration vous permettra de vous connecter au réseau Tor et de discuter avec les utilisateurs de Full Anon sans être vous-même dans un mode anonyme extrême."
       },
       "full-anon": {
         "title": "Mode Anonymat complet",
-        "desc": "",
+        "desc": "Cette configuration est basée sur des préréglages radicaux fournissant des paramètres de réseaux extrêmement prudents :",
         "no-ip": "Sans adresse IP",
         "no-mc": "",
         "tor-only": "Tor uniquement"
@@ -159,7 +159,7 @@
       "desc": "Personnalisez l'app pour qu'elle corresponde à vos besoins",
       "notification-file-saved": {
         "title": "Données sauvegardées !",
-        "desc": ""
+        "desc": "Disponible dans le répertoire des téléchargements"
       },
       "notifications-button": {
         "title": "Notifications",
@@ -184,7 +184,7 @@
       "receive-contact-requests-button": "Recevoir les demandes de contact",
       "external-services-button": "Services externes",
       "auto-replicate-button": "Réplication automatique",
-      "auto-replicate-button-unavailable": "",
+      "auto-replicate-button-unavailable": "Vous devez d'abord inscrire au moins un serveur de réplication",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Découverte locale des pairs"
@@ -241,11 +241,11 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "Bluetooth vous permet d'échanger des messages en utilisant Berty sans accès à internet en connectant votre appareil directement avec les pairs à proximité",
       "activate-button": "Activer le Bluetooth",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
+      "permission-title": "Autorisation Bluetooth pour Berty",
+      "android-permission-description": "Pour échanger des messages hors ligne via Bluetooth, même lorsque l'application est fonctionne en arrière-plan, l'API d’Android nécessite l'autorisation de localisation.\nNous n'utilisons pas vos données de localisation de quelque manière que ce soit.",
+      "ios-permission-description": "Pour échanger des messages hors ligne via Bluetooth, l'API d’iOS nécessite une autorisation.",
       "tag-neutral": "Me demander plus tard",
       "tag-negative": "Annuler",
       "tag-positive": "OK"
@@ -254,7 +254,7 @@
       "activate-button": "Activer la connectivité multi-pair"
     },
     "nearby": {
-      "activate-button": ""
+      "activate-button": "Activer Android Nearby"
     },
     "services-auth": {
       "title": "Services externes",
@@ -316,7 +316,7 @@
     },
     "devtools": {
       "title": "Outils Dev",
-      "theme-editor": "",
+      "theme-editor": "Apparence et éditeur de thème",
       "header-left-button": "Infos sur l'appareil",
       "simulate-button": "Simuler une erreur de stream",
       "simulate-js-error-button": "Simuler une erreur JavaScript",
@@ -340,7 +340,7 @@
       "add-dev-conversations-button": "Ajouter conversations de dev",
       "share-button": {
         "title": "Partager l'ID sur Discord",
-        "alert-title": "",
+        "alert-title": "Voulez-vous partager votre code QR sur \"#dev-logs\" sur le Discord de l'équipe Berty ?",
         "alert-message": "Cela permettra à l'équipe de Berty de scanner votre code QR ou de copier votre lien de contact.",
         "alert-accept-button": "Oui 👍",
         "alert-cancel-button": "Non"
@@ -369,7 +369,7 @@
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
-        "name": "",
+        "name": "Tyber",
         "bullet-point": "Redémarrer l'application après avoir modifié ce champ"
       }
     },
@@ -394,12 +394,12 @@
       "title": "Interface web IPFS"
     },
     "theme-editor": {
-      "title": "",
-      "randomize": "",
-      "save": "",
-      "export": "",
-      "share": "",
-      "import": ""
+      "title": "Éditeur de thème",
+      "randomize": "Générer un thème",
+      "save": "Enregistrez ce thème",
+      "export": "Exporter le thème sélectionné sous forme de fichier",
+      "share": "Partager le thème sélectionné sous forme de fichier",
+      "import": "Importer un fichier de thème"
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -430,16 +430,16 @@
     },
     "welcome-configuration": {
       "title": "Bienvenue à bord !",
-      "desc": "",
+      "desc": "Ayons un aperçu rapide des paramètres et terminons votre première configuration !",
       "skip": "PASSER",
       "next": "SUIVANT"
     },
     "save-theme": {
-      "title": "",
-      "desc": "",
-      "placeholder": "",
+      "title": "Sauvegarde du thème",
+      "desc": "Veuillez choisir un nom pour votre thème !",
+      "placeholder": "Nom du thème...",
       "cancel": "ANNULER",
-      "add": ""
+      "add": "AJOUTER!"
     }
   },
   "chat": {
@@ -472,8 +472,8 @@
     },
     "add-members": {
       "members": "Membres",
-      "contacts": "",
-      "add": ""
+      "contacts": "Contacts",
+      "add": "Ajouter!"
     },
     "multi-member-qr": {
       "title": "Groupe QR"
@@ -487,7 +487,7 @@
       },
       "betabot-box": {
         "title": "AJOUTER BETA BOT ?",
-        "desc": "",
+        "desc": "Vous n'avez pas encore de contacts, voulez-vous ajouter le Beta Bot pour découvrir et tester les conversations ?",
         "skip-button": "PASSER",
         "add-button": "AJOUTER !"
       },
@@ -550,7 +550,7 @@
   "error": {
     "labels": {
       "bug": "Bug détecté",
-      "crash": ""
+      "crash": "Crash détecté"
     },
     "restart-app": "Redémarrez l'application",
     "wtf-screen": {
@@ -573,15 +573,15 @@
       "title": "Inspecteur",
       "accounts": {
         "title": "Comptes",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
+        "unsupported-remote-mode": "L'inspecteur des comptes clients n'est pas pris en charge en mode distant",
+        "data-not-found": "Le compte n’est pas dans la liste",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
+          "file-exists": "Le compte {{accountId}} n'existe pas, mais un fichier porte ce nom.",
+          "account-exists": "Le compte {{accountId}} existe déjà.",
+          "directory-exists-load-error": "Le compte {{accountId}} n'existe pas, mais un répertoire porte ce nom.",
+          "fs-read-error": "Erreur lors de l'obtention des informations FS sur le compte",
           "actions-title": "Que devrions-nous faire?",
-          "action-account-manager": "",
+          "action-account-manager": "Supprimer via le gestionnaire de compte",
           "action-account-manager-confirm": "Confirmer la suppression du compte",
           "action-force-delete": "Forcer la suppression",
           "action-force-delete-confirm": "Confirmer la suppression forcée du compte",
@@ -595,14 +595,14 @@
           "metadata-not-found": "Fichier de métadonnées introuvable",
           "ipfs-repo-config-found": "Fichier de configuration IPFS trouvé",
           "ipfs-repo-config-not-found": "Fichier de configuration IPFS introuvable",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
+          "messenger-db-found": "Messenger DB trouvé",
+          "messenger-db-not-found": "Messenger DB introuvable"
         },
         "infos": {
           "aligned": {
             "name": "Nom : {{name}}",
-            "created": "",
-            "opened": "",
+            "created": "Créé : {{created}}",
+            "opened": "Ouvert :  {{opened}}",
             "error": "Erreur : {{error}}"
           }
         }
@@ -611,9 +611,9 @@
         "title": "Erreurs",
         "header-reported": "Erreur signalée :",
         "header-all-clear": "Aucune erreur signalée",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
+        "listing-files-failed": "Erreur lors du référencèrent des contenus du répertoire",
+        "listing-accounts-failed": "Erreur lors du référencement des comptes",
+        "listing-accounts-failed-grpc": "GPRC Erreur lors du référencement des comptes"
       },
       "dump": {
         "button": ""
@@ -630,7 +630,7 @@
       "tooltip": {
         "usage": "Maintenir pour enregistrer, relâcher pour envoyer",
         "not-sent": "Le message audio n’a pas été envoyé",
-        "permission-denied": ""
+        "permission-denied": "L'application n'est pas autorisée à enregistrer du son"
       },
       "slide-to-cancel": "<< Glisser pour annuler",
       "cancel-button": "Annuler"
@@ -643,32 +643,32 @@
   },
   "permission": {
     "notification": {
-      "title": "",
-      "desc": ""
+      "title": "Notifications push",
+      "desc": "L'application Berty a besoin de votre autorisation pour vous envoyer des notifications locales ou push. Cela vous permettra d'être informé lorsque vous recevrez un message."
     },
     "p2p": {
-      "title": "",
-      "desc": ""
+      "title": "Pair à pair",
+      "desc": "Berty n'utilise ni n'enregistre de quelque manière que ce soit l'emplacement de l'utilisateur, le seul but de la demande de permission est d'échanger des messages dans BLE, qui nécessitent une autorisation de localisation sur Android."
     },
     "camera": {
       "title": "Caméra",
-      "desc": ""
+      "desc": "Pour scanner le code QR et ajouter des contacts avec votre caméra, l'application Berty a besoin de votre autorisation. La caméra ne peut pas être utilisée pour autre chose."
     },
     "audio": {
-      "title": "",
-      "desc": ""
+      "title": "Messages audio",
+      "desc": "Pour envoyer des messages audio à vos contacts, vous devez autoriser l'application Berty à accéder au microphone."
     },
     "button-labels": {
-      "allow": "",
-      "settings": ""
+      "allow": "Autoriser",
+      "settings": "Accéder aux paramètres"
     },
-    "what-happening": "",
-    "settings-text": ""
+    "what-happening": "Que se passe-t-il ici?",
+    "settings-text": "Vous pouvez activer la permission {{title}} à partir des paramètres."
   },
   "notification": {
     "need-restart": {
-      "title": "",
-      "desc": ""
+      "title": "Nécessite le redémarrage de l'application",
+      "desc": "Pour ce type de notifications et enregistrer ce paramètre, vous devez redémarrer votre application!"
     }
   }
 }
