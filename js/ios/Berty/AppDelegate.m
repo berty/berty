@@ -153,6 +153,7 @@ static void InitializeFlipper(UIApplication *application) {
   
   if (data != nil) {
     // laVie(data)
+    EventEmitter *eventEmiter = getEvent;
   }
   NSLog(@"TOTODEBUG willPresentNotification");
   completionHandler(UNNotificationPresentationOptionNone);
