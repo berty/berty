@@ -25,6 +25,9 @@ import { useMsgrContext, useConvInteractions, useClient } from '@berty-tech/stor
 import { getSource } from '@berty-tech/components/utils'
 import { timeFormat } from '@berty-tech/components/helpers'
 
+import { NativeModules } from 'react-native'
+const { RootDir } = NativeModules
+
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = linkifyFn().tlds(tlds, true)
 
@@ -187,7 +190,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 							}}
 							onPress={async () => {
 								const source = await getSource(protocolClient, doc.cid)
-								RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${doc.filename}`, source, 'base64')
+								RNFS.writeFile(`${await RootDir.get()}/${doc.filename}`, source, 'base64')
 									.then(() => {})
 									.catch((err) => console.log(err))
 							}}

@@ -19,6 +19,9 @@ import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { useMsgrContext } from '@berty-tech/store/context'
 
+import { NativeModules } from 'react-native'
+const { RootDir } = NativeModules
+
 export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
 
 const styles = StyleSheet.create({
@@ -65,11 +68,11 @@ const styles = StyleSheet.create({
 	textError: { color: '#ff0000', fontWeight: 'bold' },
 })
 
-const getRootDir = () => {
+const getRootDir = async () => {
 	switch (Platform.OS) {
 		case 'ios': // Check GoBridge.swift
 		case 'android': // Check GoBridgeModule.java
-			return RNFS.DocumentDirectoryPath + '/berty'
+			return RootDir.get()
 
 		default:
 			throw new Error('unsupported platform')
@@ -100,24 +103,25 @@ class FSItem {
 
 const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, t: any) => {
 	const f = async () => {
-		const files = await RNFS.readDir(getRootDir())
+		const rootDir = await getRootDir()
+		const files = await RNFS.readDir(rootDir)
 		const items: Array<FSItem> = []
 
 		for (const file of files) {
 			const fsi = new FSItem()
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/account_meta')
+				await RNFS.stat(rootDir + '/' + file.name + '/account_meta')
 				fsi.metadataFileFound = true
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/account0/messenger.sqlite')
+				await RNFS.stat(rootDir + '/' + file.name + '/account0/messenger.sqlite')
 				fsi.messengerDBFound = true
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/ipfs/config')
+				await RNFS.stat(rootDir + '/' + file.name + '/ipfs/config')
 				fsi.ipfsConfigFound = true
 			} catch (e) {}
 
@@ -172,7 +176,7 @@ const accountAction = async (
 	let title = t('debug.inspector.accounts.action-delete.file-exists', { accountId: accountId })
 
 	try {
-		const stat = await RNFS.stat(getRootDir() + '/' + accountId)
+		const stat = await RNFS.stat((await getRootDir()) + '/' + accountId)
 		if (stat.isFile()) {
 			title = t('debug.inspector.accounts.action-delete.file-exists', { accountId: accountId })
 		} else {
@@ -214,8 +218,8 @@ const accountAction = async (
 			text: t('debug.inspector.accounts.action-delete.action-force-delete'),
 			onPress: confirmActionWrapper(
 				t('debug.inspector.accounts.action-delete.action-force-delete-confirm'),
-				() => {
-					RNFS.unlink(getRootDir() + '/' + accountId)
+				async () => {
+					RNFS.unlink((await getRootDir()) + '/' + accountId)
 						.then(() => Alert.alert(t('debug.inspector.accounts.action-delete.success-feedback')))
 						.catch((err: Error) => {
 							console.warn(err)

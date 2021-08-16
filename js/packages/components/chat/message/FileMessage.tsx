@@ -8,6 +8,9 @@ import { useStyles } from '@berty-tech/styles'
 
 import { getSource } from '../../utils'
 
+import { NativeModules } from 'react-native'
+const { RootDir } = NativeModules
+
 export const FileMessage: React.FC<{
 	medias: any
 	onLongPress: () => void
@@ -50,7 +53,7 @@ export const FileMessage: React.FC<{
 			onLongPress={onLongPress}
 			onPress={() => {
 				setLoading(true)
-				RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${medias[0].filename}`, source, 'base64')
+				RNFS.writeFile(`${await RootDir.get()}/${medias[0].filename}`, source, 'base64')
 					.then(() => {
 						setDownloaded(true)
 						setLoading(false)
