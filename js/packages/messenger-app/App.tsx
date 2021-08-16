@@ -22,6 +22,12 @@ import { ErrorScreen } from '@berty-tech/components/error'
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
 
+// TODO: Implement push notif handling on JS
+import { NativeModules, NativeEventEmitter } from 'react-native'
+
+const pushNotif = new NativeEventEmitter(NativeModules.EventEmitter)
+pushNotif.addListener('onPushReceived', (data) => console.log(data))
+
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {
 		RNBootSplash.hide({ fade: true })
