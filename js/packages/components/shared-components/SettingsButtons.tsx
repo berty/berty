@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { View, TouchableOpacity, StyleProp, Animated, Easing, TextInput } from 'react-native'
-import { Text, Icon, Toggle } from '@ui-kitten/components'
+import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { Toggle } from '@berty-tech/components/shared-components/Toggle'
 
 //
 // Button Setting
