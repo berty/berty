@@ -97,13 +97,13 @@
         "create-group": "创建群组"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "群组名称",
+        "about": "关于群组",
+        "first-bullet-point": "任何群组中的人都可以重命名或邀请新成员",
+        "second-bullet-point": "您可以通过链接邀请成员",
+        "third-bullet-point": "您可以离开此群组",
+        "fourth-bullet-point": "您不能删除此组",
+        "fifth-bullet-point": "您不能从此群组中删除成员"
       }
     },
     "home-modal": {
@@ -316,7 +316,7 @@
     },
     "devtools": {
       "title": "开发工具",
-      "theme-editor": "",
+      "theme-editor": "外观与主题编辑器",
       "header-left-button": "设备信息",
       "simulate-button": "模拟流错误",
       "simulate-js-error-button": "模拟 JavaScript 错误",
@@ -394,10 +394,10 @@
       "title": "IPFS WebUI"
     },
     "theme-editor": {
-      "title": "",
-      "randomize": "",
-      "save": "",
-      "export": "",
+      "title": "主题编辑器",
+      "randomize": "生成主题",
+      "save": "保存主题",
+      "export": "将选定主题导出为文件",
       "share": "",
       "import": ""
     },
