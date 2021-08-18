@@ -184,7 +184,7 @@
       "receive-contact-requests-button": "接收联系人请求",
       "external-services-button": "外部服务",
       "auto-replicate-button": "自动复制",
-      "auto-replicate-button-unavailable": "",
+      "auto-replicate-button-unavailable": "您必须先注册至少一个复制服务器",
       "multicast-dns-button": {
         "title": "多播DNS",
         "desc": "本地节点发现"
@@ -367,9 +367,9 @@
       "footer-middle-button": "显示事件",
       "footer-right-button": "重启守护进程",
       "trigger-crashlytics-button": "触发崩溃问题",
-      "tyber-attach": "",
+      "tyber-attach": "Tyber 附加到 {{host}}",
       "tyber-host-button": {
-        "name": "",
+        "name": "Tyber",
         "bullet-point": "更改之后重新启动应用"
       }
     },
@@ -398,8 +398,8 @@
       "randomize": "生成主题",
       "save": "保存主题",
       "export": "将选定主题导出为文件",
-      "share": "",
-      "import": ""
+      "share": "将选定主题作为文件分享",
+      "import": "导入主题文件"
     },
     "my-berty-ID": {
       "qr": "二维码",
@@ -435,11 +435,11 @@
       "next": "下一步"
     },
     "save-theme": {
-      "title": "",
-      "desc": "",
-      "placeholder": "",
+      "title": "正在保存主题",
+      "desc": "请为您的主题选择一个名称！",
+      "placeholder": "主题名称...",
       "cancel": "取消",
-      "add": ""
+      "add": "添加！"
     }
   },
   "chat": {
@@ -643,32 +643,32 @@
   },
   "permission": {
     "notification": {
-      "title": "",
-      "desc": ""
+      "title": "推送通知",
+      "desc": "Berty app 需要您的许可才能向您发送本地或推送通知。这将允许您在收到消息时收到通知。"
     },
     "p2p": {
-      "title": "",
-      "desc": ""
+      "title": "点对点",
+      "desc": "Berty 不以任何方式使用或记录用户的位置，权限请求的唯一目的是在 BLE 中交换消息，这需要在 Android 上的位置权限。"
     },
     "camera": {
       "title": "摄像头",
-      "desc": ""
+      "desc": "Berty 应用程序需要您的许可以使用摄像头扫描二维码添加联系人。摄像头不用于其他任何目的。"
     },
     "audio": {
-      "title": "",
-      "desc": ""
+      "title": "音频消息",
+      "desc": "若要向您的联系人发送音频信息，您需要允许Berty 应用程序获得麦克风权限。"
     },
     "button-labels": {
-      "allow": "",
-      "settings": ""
+      "allow": "允许",
+      "settings": "转到设置"
     },
-    "what-happening": "",
-    "settings-text": ""
+    "what-happening": "这里发生了什么？",
+    "settings-text": "您可以在设置中启用 {{title}} 权限。"
   },
   "notification": {
     "need-restart": {
-      "title": "",
-      "desc": ""
+      "title": "需要重新启动应用程序",
+      "desc": "对于这类通知，您必须重新启动应用才能保存此字段！"
     }
   }
 }
