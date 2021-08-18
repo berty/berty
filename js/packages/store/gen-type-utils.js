@@ -68,7 +68,7 @@ Object.entries(pb.lookup('berty.messenger.v1.AppMessage.Type').values).forEach((
 const methodsHooks = (name, svcType, prefix) => {
 	const svc = pb.lookup(svcType)
 	console.log(`export type ${name} = {`)
-	Object.values(svc.methods).forEach((method) => {
+	Object.values(svc.methods).forEach(method => {
 		if (method.requestStream || method.responseStream) return
 		console.log(`use${method.name}: () => {
 			error: any

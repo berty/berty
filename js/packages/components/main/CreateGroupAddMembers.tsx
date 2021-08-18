@@ -168,7 +168,7 @@ export const MemberList: React.FC<{
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={[padding.left.medium]}
 			>
-				{members.map((member) => (
+				{members.map(member => (
 					<MemberItem
 						key={member.publicKey}
 						member={member}
@@ -176,7 +176,7 @@ export const MemberList: React.FC<{
 						canRemove={
 							initialMembers
 								? !initialMembers.find(
-										(initialMember) => initialMember.publicKey === member.publicKey,
+										initialMember => initialMember.publicKey === member.publicKey,
 								  )
 								: undefined
 						}

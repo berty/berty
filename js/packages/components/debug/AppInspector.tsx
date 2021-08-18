@@ -268,7 +268,7 @@ const AccountsInspector: React.FC<{
 
 	return (
 		<>
-			{accountFSFiles.map((acc) => {
+			{accountFSFiles.map(acc => {
 				const isMetaLoaded = accountProtoEntries.hasOwnProperty(acc.fileName)
 
 				return (

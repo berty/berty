@@ -8,7 +8,7 @@ export const useScroll = (): [any, any] => {
 		contentSize: { height: 0, width: 0 },
 		layoutMeasurement: { height: 0, width: 0, zoomScale: 0 },
 	})
-	const onScroll = useCallback((e) => setScroll(e.nativeEvent), [])
+	const onScroll = useCallback(e => setScroll(e.nativeEvent), [])
 	return [scroll, onScroll]
 }
 

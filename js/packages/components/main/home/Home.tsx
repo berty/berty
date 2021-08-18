@@ -168,7 +168,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		}
 
 		;(async () => {
-			await new Promise((resolve) => {
+			await new Promise(resolve => {
 				setTimeout(() => resolve(true), 200)
 			})
 			if (canceled) {
@@ -210,7 +210,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	}, [client, searchInteractions, searchText])
 
 	const hasResults = [searchConversations, searchContacts, searchInteractions.current].some(
-		(c) => Object.keys(c).length > 0,
+		c => Object.keys(c).length > 0,
 	)
 	const styleBackground = useMemo(
 		() =>
@@ -235,12 +235,12 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 						showsVerticalScrollIndicator={false}
 						scrollEventThrottle={16}
 						keyboardShouldPersistTaps={'handled'}
-						onScrollEndDrag={(e) => {
+						onScrollEndDrag={e => {
 							if (e.nativeEvent.contentOffset.y < 0) {
 								setRefresh(true)
 							}
 						}}
-						onScroll={(e) => {
+						onScroll={e => {
 							if (e.nativeEvent.contentOffset) {
 								if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
 									setIsOnTop(true)

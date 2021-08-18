@@ -66,7 +66,7 @@ export const MessageList: React.FC<{
 	const members = ctx.members[id]
 	const rawMessages = useConvInteractions(id)
 	const messages = useMemo(
-		() => rawMessages.filter((message) => !message.payload?.options?.length),
+		() => rawMessages.filter(message => !message.payload?.options?.length),
 		[rawMessages],
 	)
 	const oldestMessage = useMemo(() => messages[messages.length - 1], [messages])
@@ -99,10 +99,10 @@ export const MessageList: React.FC<{
 						members={members || {}}
 						previousMessage={index < messages.length - 1 ? messages[index + 1] : undefined}
 						nextMessage={index > 0 ? messages[index - 1] : undefined}
-						replyOf={messages.find((message) => message.cid === item.targetCid)}
-						scrollToCid={(cid) => {
+						replyOf={messages.find(message => message.cid === item.targetCid)}
+						scrollToCid={cid => {
 							flatListRef?.current?.scrollToIndex({
-								index: messages.findIndex((message) => message.cid === cid),
+								index: messages.findIndex(message => message.cid === cid),
 							})
 						}}
 					/>
@@ -153,7 +153,7 @@ export const MessageList: React.FC<{
 		try {
 			options = beapi.messenger.AppMessage.ReplyOptions.decode(
 				conversation?.replyOptions?.payload!,
-			).options.filter((o) => o.payload && o.display)
+			).options.filter(o => o.payload && o.display)
 		} catch (e) {
 			console.log('decode reply options error', e)
 		}
@@ -162,13 +162,13 @@ export const MessageList: React.FC<{
 			let optionsFromMessages = rawMessages
 				.slice()
 				.reverse()
-				.find((item) => item?.payload?.options?.length)?.payload?.options
+				.find(item => item?.payload?.options?.length)?.payload?.options
 			if (optionsFromMessages?.length) {
 				options = optionsFromMessages
 			}
 		}
 
-		return options.filter((o) => o.payload && o.display)
+		return options.filter(o => o.payload && o.display)
 	}, [conversation?.replyOptions?.payload, rawMessages])
 
 	return (

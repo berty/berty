@@ -126,19 +126,19 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 	}, [])
 
 	const callbackSetPersistentOption = useCallback(
-		(action) => setPersistentOption(dispatch, state.selectedAccount, action),
+		action => setPersistentOption(dispatch, state.selectedAccount, action),
 		[state.selectedAccount],
 	)
 
 	const callbackAddNotificationListener = useCallback(
-		(cb) => {
+		cb => {
 			eventEmitter.addListener('notification', cb)
 		},
 		[eventEmitter],
 	)
 
 	const callbackRemoveNotificationListener = useCallback(
-		(cb) => {
+		cb => {
 			eventEmitter.removeListener('notification', cb)
 		},
 		[eventEmitter],
@@ -192,7 +192,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 			setNetworkConfig(netConf.currentConfig)
 		}
 
-		f().catch((e) => console.warn(e))
+		f().catch(e => console.warn(e))
 	}, [state.selectedAccount])
 
 	return (

@@ -205,7 +205,7 @@ export const ChatFooter: React.FC<{
 					ctx.playSound('messageSent')
 					setActiveReplyInte()
 				})
-				.catch((e) => {
+				.catch(e => {
 					console.warn('e sending message:', e)
 				})
 		},
@@ -236,7 +236,7 @@ export const ChatFooter: React.FC<{
 		setLoading(true)
 		try {
 			const mediaCids = (
-				await amap(res, async (doc) => {
+				await amap(res, async doc => {
 					const stream = await client?.mediaPrepare({})
 					await stream?.emit({
 						info: { filename: doc.filename, mimeType: doc.mimeType, displayName: doc.filename },
@@ -245,7 +245,7 @@ export const ChatFooter: React.FC<{
 					const reply = await stream?.stopAndRecv()
 					return reply?.cid
 				})
-			).filter((cid) => !!cid)
+			).filter(cid => !!cid)
 
 			handleCloseFileMenu(mediaCids)
 		} catch (err) {}

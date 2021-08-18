@@ -14,7 +14,7 @@ export const mapBorderRadiusSides = (
 	return {
 		top: mapSizes(
 			decl.sides,
-			(radius) => ({
+			radius => ({
 				borderTopLeftRadius: radius,
 				borderTopRightRadius: radius,
 			}),
@@ -22,7 +22,7 @@ export const mapBorderRadiusSides = (
 		),
 		left: mapSizes(
 			decl.sides,
-			(radius) => ({
+			radius => ({
 				borderTopLeftRadius: radius,
 				borderBottomLeftRadius: radius,
 			}),
@@ -30,7 +30,7 @@ export const mapBorderRadiusSides = (
 		),
 		right: mapSizes(
 			decl.sides,
-			(radius) => ({
+			radius => ({
 				borderTopRightRadius: radius,
 				borderBottomRightRadius: radius,
 			}),
@@ -38,16 +38,16 @@ export const mapBorderRadiusSides = (
 		),
 		bottom: mapSizes(
 			decl.sides,
-			(radius) => ({
+			radius => ({
 				borderBottomLeftRadius: radius,
 				borderBottomRightRadius: radius,
 			}),
 			{ scaleSize },
 		),
-		vertical: mapSizes(decl.sides, (radius) => ({ borderRadius: radius }), {
+		vertical: mapSizes(decl.sides, radius => ({ borderRadius: radius }), {
 			scaleSize,
 		}),
-		horizontal: mapSizes(decl.sides, (radius) => ({ borderRadius: radius }), {
+		horizontal: mapSizes(decl.sides, radius => ({ borderRadius: radius }), {
 			scaleSize,
 		}),
 	}
@@ -112,7 +112,7 @@ export const mapBorder = (
 	radius: {
 		...mapSizes(
 			decl.sides,
-			(radius) => {
+			radius => {
 				return {
 					borderRadius: radius,
 				}
@@ -123,5 +123,5 @@ export const mapBorder = (
 	},
 	shadow: Platform.select({ ios: mapBorderShadowIOS(decl), android: mapBorderShadowAndroid() }),
 	size: StyleSheet.create({}),
-	color: mapColorsDeclaration(decl.colors, (v) => ({ borderColor: v })),
+	color: mapColorsDeclaration(decl.colors, v => ({ borderColor: v })),
 })

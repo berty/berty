@@ -78,7 +78,7 @@ const stream =
 		}
 
 		const client = grpc.client(methodDesc, options)
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			const stream = {
 				onMessage: (callback: (message: Uint8Array | null, error: Error | null) => void) => {
 					client.onMessage((message: grpc.ProtobufMessage): void => {

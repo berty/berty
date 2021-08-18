@@ -98,18 +98,18 @@ export const MultiMemberSettingsAddMembers: React.FC<{
 
 	const conv = useConversation(route.params.convPK)
 	const convMembers = useConvMemberList(route.params.convPK)
-	const initialMembers = convMembers.filter((member) => !member.isMe)
+	const initialMembers = convMembers.filter(member => !member.isMe)
 	const [members, setMembers] = useState(initialMembers)
 	const accountContacts = useContactList()
 
 	const onRemoveMember = (id: string) => {
-		const filtered = members.filter((member) => member.publicKey !== id)
+		const filtered = members.filter(member => member.publicKey !== id)
 		if (filtered.length !== members.length) {
 			setMembers(filtered)
 		}
 	}
 	const onSetMember = (contact: any) => {
-		if (members.find((member) => member.publicKey === contact.publicKey)) {
+		if (members.find(member => member.publicKey === contact.publicKey)) {
 			return
 		}
 		setMembers([...members, contact])
@@ -118,7 +118,7 @@ export const MultiMemberSettingsAddMembers: React.FC<{
 	const invitationsToGroup = React.useCallback(async () => {
 		try {
 			const buf = beapi.messenger.AppMessage.GroupInvitation.encode({ link: conv?.link }).finish()
-			await members.forEach((member) => {
+			await members.forEach(member => {
 				ctx.client?.interact({
 					conversationPublicKey: member.conversationPublicKey,
 					type: beapi.messenger.AppMessage.Type.TypeGroupInvitation,

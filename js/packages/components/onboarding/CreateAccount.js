@@ -16,7 +16,7 @@ import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import { checkPermissions } from '../utils'
 
-const openDocumentPicker = async (ctx) => {
+const openDocumentPicker = async ctx => {
 	try {
 		const res = await DocumentPicker.pick({
 			// @ts-ignore
@@ -45,7 +45,7 @@ const CreateAccountBody = ({ next }) => {
 		ctx
 			.getUsername()
 			.then(({ username }) => setName(username))
-			.catch((err2) => console.warn('Failed to fetch username:', err2))
+			.catch(err2 => console.warn('Failed to fetch username:', err2))
 	}, [ctx])
 
 	const handlePersistentOptions = React.useCallback(async () => {
@@ -77,14 +77,14 @@ const CreateAccountBody = ({ next }) => {
 
 		handlePersistentOptions()
 			.then(() => {})
-			.catch((err) => {
+			.catch(err => {
 				console.log(err)
 			})
 	}, [ctx, name, handlePersistentOptions])
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<>
 					<View style={{ flex: 1 }}>
 						<LottieView

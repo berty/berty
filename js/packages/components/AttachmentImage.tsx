@@ -7,7 +7,7 @@ import { useNavigation } from '@berty-tech/navigation'
 import { getSource } from './utils'
 
 const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<ImageProps, 'source'>> =
-	(props) => {
+	props => {
 		const { navigate } = useNavigation()
 		const { protocolClient, medias } = useMsgrContext()
 		const [source, setSource] = useState('')
@@ -20,12 +20,12 @@ const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<Imag
 			}
 			let cancel = false
 			getSource(protocolClient, cid)
-				.then((src) => {
+				.then(src => {
 					if (!cancel) {
 						setSource(`data:${mimeType};base64,${src}`)
 					}
 				})
-				.catch((e) => console.error('failed to get attachment image:', e))
+				.catch(e => console.error('failed to get attachment image:', e))
 			return () => {
 				cancel = true
 			}

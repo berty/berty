@@ -60,7 +60,7 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 				</View>
 				<View style={[row.center, { flex: 2 }]}>
 					{features?.length
-						? features.map((value) => {
+						? features.map(value => {
 								let name, pack, fill
 								switch (value) {
 									case beapi.protocol.PeerList.Feature.BertyFeature:
@@ -124,8 +124,8 @@ function getPeersTypes(peers: beapi.protocol.PeerList.IPeer[] | null) {
 		ble: 0,
 	}
 
-	peers?.forEach((value) => {
-		value?.features?.forEach((feature) => {
+	peers?.forEach(value => {
+		value?.features?.forEach(feature => {
 			switch (feature) {
 				case beapi.protocol.PeerList.Feature.BertyFeature:
 					peersTypes.berty += 1
@@ -161,7 +161,7 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<View style={[{ flexDirection: 'column' }]}>
 					{sortPeers?.length ? (
 						<View>
@@ -245,8 +245,8 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 								</View>
 							</View>
 							<>
-								{sortPeers.map((value) => {
-									const elem = prevPeers?.find((v) => value.id?.toString() === v.id?.toString())
+								{sortPeers.map(value => {
+									const elem = prevPeers?.find(v => value.id?.toString() === v.id?.toString())
 									return (
 										<PeerItem
 											key={value.id}
@@ -281,7 +281,7 @@ export const NetworkMap = () => {
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 					<SwipeNavRecognizer>
 						<StatusBar

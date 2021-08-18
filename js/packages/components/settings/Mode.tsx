@@ -154,7 +154,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 				name={'Bootstrap'}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
 				getOptionValue={() => ctx.networkConfig.bootstrap.toString()}
-				setOptionValue={async (val) => {
+				setOptionValue={async val => {
 					let newConfig = { ...ctx.networkConfig, bootstrap: val.split('\n') }
 					await sanitizeCheckNetworkConfig(newConfig)
 				}}
@@ -164,7 +164,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 				name={'RendezVous'}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
 				getOptionValue={() => ctx.networkConfig.rendezvous.toString()}
-				setOptionValue={async (val) => {
+				setOptionValue={async val => {
 					let newConfig = { ...ctx.networkConfig, rendezvous: val.split('\n') }
 					await sanitizeCheckNetworkConfig(newConfig)
 				}}
@@ -174,7 +174,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 				name={'StaticRelay'}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
 				getOptionValue={() => ctx.networkConfig.staticRelay.toString()}
-				setOptionValue={async (val) => {
+				setOptionValue={async val => {
 					let newConfig = { ...ctx.networkConfig, staticRelay: val.split('\n') }
 					await sanitizeCheckNetworkConfig(newConfig)
 				}}

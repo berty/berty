@@ -128,7 +128,7 @@ export const ChoosePreset = () => {
 					</View>
 
 					<View style={{ justifyContent: 'center', flex: 1 }}>
-						{performanceCheckList.map((item) => (
+						{performanceCheckList.map(item => (
 							<View
 								key={item.title}
 								style={[
@@ -247,7 +247,7 @@ export const ChoosePreset = () => {
 					</View>
 
 					<View style={{ justifyContent: 'center', flex: 1 }}>
-						{anonymityCheckList.map((item) => (
+						{anonymityCheckList.map(item => (
 							<View key={item.title} style={[margin.bottom.small]}>
 								<View style={[flex.direction.row, flex.align.center]}>
 									<View

@@ -105,7 +105,7 @@ const BodyBlockedContacts: React.FC<BlockedContactsListProps> = ({ items }) => {
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<FactionButtonSetting style={[padding.vertical.small]}>
 				{items &&
-					items.map((data) => <BlockedContactItem avatarUri={data.avatarUri} name={data.name} />)}
+					items.map(data => <BlockedContactItem avatarUri={data.avatarUri} name={data.name} />)}
 			</FactionButtonSetting>
 		</View>
 	)

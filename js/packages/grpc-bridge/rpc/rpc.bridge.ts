@@ -21,7 +21,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 		started: false,
 
 		_publish(...args: unknown[]) {
-			this.events.forEach((listener) => listener.apply(this, args))
+			this.events.forEach(listener => listener.apply(this, args))
 		},
 		onMessage(listener: (...a: unknown[]) => void) {
 			this.events.push(listener)

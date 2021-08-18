@@ -38,7 +38,7 @@ const mergeInteractions = (existing: Array<ParsedInteraction>, toAdd: Array<Pars
 
 const applyAcksToInteractions = (interactions: ParsedInteraction[], acks: ParsedInteraction[]) => {
 	for (let ack of acks) {
-		const found = interactions.find((value) => value.cid === ack.targetCid)
+		const found = interactions.find(value => value.cid === ack.targetCid)
 		if (found === undefined) {
 			continue
 		}
@@ -56,7 +56,7 @@ const parseInteractions = (rawInteractions: beapi.messenger.Interaction[]) =>
 	rawInteractions.map(parseInteraction).filter((i: ParsedInteraction) => i.payload !== undefined)
 
 const newestMeaningfulInteraction = (interactions: ParsedInteraction[]) =>
-	interactions.find((i) => i.type === beapi.messenger.AppMessage.Type.TypeUserMessage)
+	interactions.find(i => i.type === beapi.messenger.AppMessage.Type.TypeUserMessage)
 
 export const reducerActions: {
 	[key: string]: (oldState: MsgrState, action: reducerAction) => MsgrState
@@ -149,11 +149,11 @@ export const reducerActions: {
 		const interactions = sortInteractions(parseInteractions(rawInteractions))
 		const mergedInteractions = mergeInteractions(
 			oldState.interactions[gpk] || [],
-			interactions.filter((i) => i.type !== beapi.messenger.AppMessage.Type.TypeAcknowledge),
+			interactions.filter(i => i.type !== beapi.messenger.AppMessage.Type.TypeAcknowledge),
 		)
 
 		const ackInteractions = interactions.filter(
-			(i) => i.type === beapi.messenger.AppMessage.Type.TypeAcknowledge,
+			i => i.type === beapi.messenger.AppMessage.Type.TypeAcknowledge,
 		)
 
 		return {
@@ -211,14 +211,14 @@ export const reducerActions: {
 
 	[MessengerActions.DeleteFakeData]: (oldState, _) => ({
 		...oldState,
-		conversations: pickBy(oldState.conversations, (conv) => !(conv as any).fake),
-		contacts: pickBy(oldState.contacts, (contact) => !(contact as any).fake),
+		conversations: pickBy(oldState.conversations, conv => !(conv as any).fake),
+		contacts: pickBy(oldState.contacts, contact => !(contact as any).fake),
 		// TODO:
 		// interactions: mapValues(oldState.interactions, (intes) =>
 		// 	pickBy(intes, (inte) => !(inte as any).fake),
 		// ),
-		members: mapValues(oldState.members, (members) =>
-			pickBy(members, (member) => !(member as any).fake),
+		members: mapValues(oldState.members, members =>
+			pickBy(members, member => !(member as any).fake),
 		),
 	}),
 
@@ -351,7 +351,7 @@ export const reducerActions: {
 		return {
 			...oldState,
 			notificationsInhibitors: oldState.notificationsInhibitors.filter(
-				(inh) => inh != action.payload.inhibitor,
+				inh => inh != action.payload.inhibitor,
 			),
 		}
 	},

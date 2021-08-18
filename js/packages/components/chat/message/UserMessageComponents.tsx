@@ -37,7 +37,7 @@ export async function isBertyDeepLink(
 	client: WelshMessengerServiceClient,
 	url: string,
 ): Promise<boolean> {
-	return new Promise((resolve) => {
+	return new Promise(resolve => {
 		client
 			.parseDeepLink({
 				link: url,
@@ -109,12 +109,12 @@ export const HyperlinkUserMessage: React.FC<{
 			]}
 		>
 			<Hyperlink
-				onPress={async (url) => {
+				onPress={async url => {
 					if (client && (await isBertyDeepLink(client, url))) {
 						navigation.navigate('ManageDeepLink', { type: 'link', value: url })
 						return
 					}
-					Linking.canOpenURL(url).then((supported) => supported && Linking.openURL(url))
+					Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))
 				}}
 				linkStyle={{ textDecorationLine: 'underline' }}
 				linkify={linkify_conf}

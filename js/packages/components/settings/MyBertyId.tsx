@@ -221,7 +221,7 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 
 	return (
 		<SafeAreaConsumer>
-			{(insets) => {
+			{insets => {
 				return (
 					<ScrollView
 						bounces={false}

@@ -57,7 +57,7 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 
 		if (!resp.secureUrl) {
 			let allowNonSecure = false
-			await new Promise((resolve) => {
+			await new Promise(resolve => {
 				Alert.alert(
 					'Security warning',
 					'The provided URL is using a non secure connection, do you want to continue?',
@@ -116,7 +116,7 @@ export const replicateGroup = async (
 	tokenID: string,
 ): Promise<void> => {
 	if (
-		!(await new Promise((resolve) => {
+		!(await new Promise(resolve => {
 			Alert.alert(
 				'Privacy warning',
 				"The data for this conversation will be replicated on the selected server, while the messages and their metadata won't be readable by anyone outside the conversation this will lead to a decreased privacy protection for all the members' activity, do you want to proceed?",
@@ -179,7 +179,7 @@ export const createAndSaveFile = async (outFile: string, fileName: string, exten
 				.then(() => {
 					console.log('file copied')
 				})
-				.catch((err) => {
+				.catch(err => {
 					console.log('file copied failed', err)
 				})
 		} else {
@@ -203,8 +203,8 @@ export const exportAccountToFile = async (accountId: string | null) => {
 	const outputStream = await RNFetchBlob.fs.writeStream(outFile, 'base64')
 	await messengerClient
 		.instanceExportData({})
-		.then((stream) => {
-			stream.onMessage(async (res) => {
+		.then(stream => {
+			stream.onMessage(async res => {
 				if (!res || !res.exportedData) {
 					return
 				}
@@ -221,7 +221,7 @@ export const exportAccountToFile = async (accountId: string | null) => {
 				  })
 			await outputStream.close()
 		})
-		.catch(async (err) => {
+		.catch(async err => {
 			if (err?.EOF) {
 			} else {
 				console.warn(err)

@@ -121,7 +121,7 @@ const DeepLinkBridge: React.FC = () => {
 let Components: typeof RawComponents
 
 // @ts-ignore
-Components = mapValues(RawComponents, (SubComponents) =>
+Components = mapValues(RawComponents, SubComponents =>
 	mapValues(SubComponents, (Component: React.FC) => (props: any) => (
 		<>
 			<DeepLinkBridge />
@@ -135,13 +135,13 @@ export const CreateGroupNavigation: React.FC = () => {
 	const [members, setMembers] = useState([] as any[])
 	const colors = useThemeColor()
 	const setMember = (contact: any) => {
-		if (members.find((member) => member.publicKey === contact.publicKey)) {
+		if (members.find(member => member.publicKey === contact.publicKey)) {
 			return
 		}
 		setMembers([...members, contact])
 	}
 	const removeMember = (id: string) => {
-		const filtered = members.filter((member) => member.publicKey !== id)
+		const filtered = members.filter(member => member.publicKey !== id)
 		if (filtered.length !== members.length) {
 			setMembers(filtered)
 		}

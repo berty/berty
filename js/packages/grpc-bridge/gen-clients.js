@@ -1,6 +1,6 @@
 import pb from '@berty-tech/api/root.pb'
 
-const uncap = (str) => str.slice(0, 1).toLowerCase() + str.slice(1)
+const uncap = str => str.slice(0, 1).toLowerCase() + str.slice(1)
 
 console.log("import beapi from '@berty-tech/api'")
 

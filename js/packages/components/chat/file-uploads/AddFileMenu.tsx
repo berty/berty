@@ -161,7 +161,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 		setLoading(true)
 		try {
 			const mediaCids = (
-				await amap(res, async (doc) => {
+				await amap(res, async doc => {
 					const stream = await client?.mediaPrepare({})
 					await stream?.emit({
 						info: { filename: doc.filename, mimeType: doc.mimeType, displayName: doc.filename },
@@ -170,7 +170,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					const reply = await stream?.stopAndRecv()
 					return reply?.cid
 				})
-			).filter((cid) => !!cid)
+			).filter(cid => !!cid)
 
 			onClose(mediaCids)
 		} catch (err) {}
@@ -229,7 +229,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 								justifyContent: 'center',
 							}}
 						>
-							{LIST_CONFIG.map((listItem) => (
+							{LIST_CONFIG.map(listItem => (
 								<MenuListItem {...listItem} key={listItem.title} />
 							))}
 						</View>

@@ -3,7 +3,7 @@ import { keyBy, flatten } from 'lodash'
 
 import beapi from '@berty-tech/api'
 
-const fakeArray = (length) => new Array(length).fill({})
+const fakeArray = length => new Array(length).fill({})
 
 const contactStates = [
 	beapi.messenger.Contact.State.Accepted,
@@ -133,7 +133,7 @@ export const fakeMessages = (length, conversationList = [], membersListList, sta
 					}
 				})
 			})
-			.filter((c) => !!c),
+			.filter(c => !!c),
 	)
 	console.log('generated x fake messages:', messageList.length)
 	return messageList

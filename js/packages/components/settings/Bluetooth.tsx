@@ -36,7 +36,7 @@ type BluetoothProps = {
 
 let toActivate: (
 	permission: 'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined,
-) => void = (_permission) => {}
+) => void = _permission => {}
 
 export const requestBluetoothPermission = async (): Promise<
 	'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited'
@@ -103,7 +103,7 @@ export const checkBluetoothPermission = async (): Promise<
 }
 
 export const permissionExplanation: (t: any, callback: () => void) => void = async (t, callback) =>
-	new Promise((resolve) => {
+	new Promise(resolve => {
 		Alert.alert(
 			t('settings.bluetooth.permission-title'),
 			Platform.OS === 'ios'
@@ -141,12 +141,12 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 			const _handleAppStateChange = (nextAppState: any) => {
 				if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
 					checkBluetoothPermission()
-						.then((result) => {
+						.then(result => {
 							setBluetoothPermissions(result)
 							toActivate(result)
 							toActivate = () => {}
 						})
-						.catch((err) => {
+						.catch(err => {
 							console.log('Check bluetooth permission error:', err)
 						})
 				}
@@ -216,7 +216,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 					console.log("case: not 'blocked'")
 					// permissions can be requested
 					permissionExplanation(t, () => {
-						requestBluetoothPermission().then(async (permission) => {
+						requestBluetoothPermission().then(async permission => {
 							setBluetoothPermissions(permission)
 							await updateValue(permission)
 						})
@@ -225,7 +225,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 
 				case 'blocked':
 					permissionExplanation(t, () => {
-						toActivate = async (permission) => {
+						toActivate = async permission => {
 							if (!permission) {
 								return
 							}
@@ -310,13 +310,13 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 		console.log('useEffect called')
 
 		checkBluetoothPermission()
-			.then((result) => {
+			.then(result => {
 				if (bluetoothPermissions !== result) {
 					console.log('useEffect: permissions changed')
 					setBluetoothPermissions(result)
 				}
 			})
-			.catch((err) => {
+			.catch(err => {
 				console.log('The Bluetooth permission cannot be retrieved:', err)
 			})
 	}, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -345,7 +345,7 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 			}
 		}
 
-		disableDrivers().catch((e) => console.warn('error while disabling drivers', e))
+		disableDrivers().catch(e => console.warn('error while disabling drivers', e))
 	}, [bluetoothPermissions, setNetworkConfig, selectedAccount])
 
 	return (

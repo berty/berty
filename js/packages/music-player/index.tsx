@@ -59,7 +59,7 @@ export const MusicPlayerProvider: React.FC = ({ children }) => {
 			clearInterval(intervalId)
 		}
 
-		setIntervalId(setInterval(() => setRefresh((prev) => prev + 1), 100))
+		setIntervalId(setInterval(() => setRefresh(prev => prev + 1), 100))
 	}, [intervalId])
 
 	useEffect(() => {
@@ -114,7 +114,7 @@ export const MusicPlayerProvider: React.FC = ({ children }) => {
 
 	const handlePlayPause = () => {
 		if (player.player?.isPlaying) {
-			player.player.pause((err) => {
+			player.player.pause(err => {
 				if (!err) {
 					setTimeout(() => {
 						intervalId && clearInterval(intervalId)
@@ -122,13 +122,13 @@ export const MusicPlayerProvider: React.FC = ({ children }) => {
 				}
 			})
 		} else if (player.player?.isPaused) {
-			player.player?.playPause((err) => {
+			player.player?.playPause(err => {
 				if (!err) {
 					startRefresh()
 				}
 			})
 		} else {
-			player.player?.play((err) => {
+			player.player?.play(err => {
 				if (!err) {
 					startRefresh()
 				}
@@ -145,7 +145,7 @@ export const MusicPlayerProvider: React.FC = ({ children }) => {
 
 	useEffect(() => {
 		if (startPlay && !player.player?.isPlaying && !player.next) {
-			player.player?.play((err) => {
+			player.player?.play(err => {
 				if (!err) {
 					setStartPlay(false)
 					startRefresh()

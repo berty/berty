@@ -150,7 +150,7 @@ export const HomeHeader: React.FC<
 										]}
 									>
 										<TextInput
-											ref={(ref) => setFocus(ref)}
+											ref={ref => setFocus(ref)}
 											placeholder={t('main.home.input-placeholder')}
 											placeholderTextColor={`${colors['secondary-text']}90`}
 											autoCorrect={false}

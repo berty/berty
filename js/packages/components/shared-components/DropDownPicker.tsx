@@ -43,9 +43,9 @@ export const DropDownPicker: React.FC<{
 				useNativeDriver: true,
 			}),
 		]).start()
-		setOpen((prev) => !prev)
+		setOpen(prev => !prev)
 	}
-	const selectedItem = items.find((item) =>
+	const selectedItem = items.find(item =>
 		isModeLanguages ? item.value === defaultValue : item.label === defaultValue,
 	)
 	return (

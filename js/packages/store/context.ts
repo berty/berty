@@ -311,7 +311,7 @@ export const defaultThemeColor = () => {
 
 export const defaultPersistentOptions = (): PersistentOptions => {
 	let suggestions: PersistentOptionsSuggestions = {}
-	Object.values(globals.berty.contacts).forEach(async (value) => {
+	Object.values(globals.berty.contacts).forEach(async value => {
 		if (value.suggestion) {
 			suggestions = {
 				...suggestions,

@@ -27,7 +27,7 @@ const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void 
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<SwiperCard
 					header={t('onboarding.services-auth.header')}
 					label={t('onboarding.services-auth.recommended')}

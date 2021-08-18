@@ -14,7 +14,7 @@ import notifications, { DefaultNotification } from './notifications'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }
-}> = (props) => {
+}> = props => {
 	const NotificationComponent = notifications[props?.additionalProps?.type]
 	if (NotificationComponent) {
 		return <NotificationComponent {...props} />
@@ -22,14 +22,14 @@ const NotificationContents: React.FC<{
 	return <DefaultNotification {...props} />
 }
 
-const NotificationBody: React.FC<any> = (props) => {
+const NotificationBody: React.FC<any> = props => {
 	const [{ border, flex, column }] = useStyles()
 	const colors = useThemeColor()
 	const insets = useSafeAreaInsets()
 
 	return (
 		<GestureRecognizer
-			onSwipe={(gestureName) => {
+			onSwipe={gestureName => {
 				if (gestureName === 'SWIPE_UP' && typeof props.onClose === 'function') {
 					props.onClose()
 				}
@@ -61,7 +61,7 @@ const notifsSounds: { [key: number]: SoundKey } = {
 	[T.TypeContactRequestSent]: 'contactRequestSent',
 }
 
-const GatedNotificationBody: React.FC<any> = (props) => {
+const GatedNotificationBody: React.FC<any> = props => {
 	const prevProps = usePrevious(props)
 	const justOpened = props.isOpen && !prevProps?.isOpen
 

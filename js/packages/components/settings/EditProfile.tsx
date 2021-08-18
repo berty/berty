@@ -240,7 +240,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<View style={[margin.vertical.big]}>
 					<View style={[row.left]}>
 						<TouchableOpacity onPress={handlePicturePressed}>{image}</TouchableOpacity>
@@ -249,7 +249,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 								label={t('settings.edit-profile.name-input-label') as any}
 								placeholder={t('settings.edit-profile.name-input-placeholder')}
 								value={state.name}
-								onChangeText={(name) => dispatch({ type: 'SET_NAME', name })}
+								onChangeText={name => dispatch({ type: 'SET_NAME', name })}
 								style={{ backgroundColor: colors['input-background'] }}
 							/>
 						</View>
@@ -339,7 +339,7 @@ const Header: React.FC = () => {
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<>
 					<View style={{ height: 30, alignItems: 'center', justifyContent: 'center' }}>
 						<View

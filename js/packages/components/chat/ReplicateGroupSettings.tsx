@@ -53,7 +53,7 @@ const getAllReplicationStatusForConversation = (
 			}
 		}, {}) || {}
 
-	for (const s of services.filter((t) => t.serviceType === serviceTypes.Replication)) {
+	for (const s of services.filter(t => t.serviceType === serviceTypes.Replication)) {
 		if (typeof s.authenticationUrl !== 'string') {
 			continue
 		}
@@ -113,7 +113,7 @@ const ReplicateGroupContent: React.FC<{
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			{replicationStatus.length > 0 ? (
 				<FactionButtonSetting style={[margin.top.medium]}>
-					{replicationStatus.map((t) => (
+					{replicationStatus.map(t => (
 						<ButtonSetting
 							key={`${t.service.authenticationUrl}`}
 							name={`${t.service.authenticationUrl}`}

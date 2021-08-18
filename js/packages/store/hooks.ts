@@ -26,7 +26,7 @@ export const useGetMessage = (id: Maybe<string>, convId: Maybe<string>) => {
 	if (!intes) {
 		return undefined
 	}
-	return intes.find((i) => i.cid === id)
+	return intes.find(i => i.cid === id)
 }
 
 export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
@@ -76,7 +76,7 @@ const ContactState = beapi.messenger.Contact.State
 
 export const useIncomingContactRequests = () => {
 	const contacts = useContactList()
-	return useMemo(() => contacts.filter((c) => c.state === ContactState.IncomingRequest), [contacts])
+	return useMemo(() => contacts.filter(c => c.state === ContactState.IncomingRequest), [contacts])
 }
 
 export const useOutgoingContactRequests = () => {
@@ -84,7 +84,7 @@ export const useOutgoingContactRequests = () => {
 	return useMemo(
 		() =>
 			contacts.filter(
-				(c) =>
+				c =>
 					c.state &&
 					[ContactState.OutgoingRequestEnqueued, ContactState.OutgoingRequestSent].includes(
 						c.state,
@@ -99,7 +99,7 @@ export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
 	if (!searchText) {
 		return []
 	}
-	return contacts.filter((contact) =>
+	return contacts.filter(contact =>
 		contact.displayName?.toLowerCase().includes(searchText.toLowerCase()),
 	)
 }
@@ -166,7 +166,7 @@ export const usePersistentOptions = () => {
 export const useThemeColor = () => {
 	const ctx = useMsgrContext()
 	let collectionColors = {}
-	Object.entries(ctx.persistentOptions?.themeColor.collection).map((value) => {
+	Object.entries(ctx.persistentOptions?.themeColor.collection).map(value => {
 		if (value[0] === ctx.persistentOptions?.themeColor.selected) {
 			collectionColors = value[1]?.colors
 		}
@@ -217,8 +217,8 @@ export const useGenerateFakeMultiMembers = () => {
 // Generate n fake messages for all fake conversations
 export const useGenerateFakeMessages = () => {
 	const ctx = useMsgrContext()
-	const fakeConversationList = useConversationList().filter((c) => (c as any).fake === true)
-	const fakeMembersListList = fakeConversationList.map((conv) =>
+	const fakeConversationList = useConversationList().filter(c => (c as any).fake === true)
+	const fakeMembersListList = fakeConversationList.map(conv =>
 		Object.values(ctx.members[conv.publicKey || ''] || {}).filter((member: any) => member.fake),
 	)
 	const prevFakeCount: number = fakeConversationList.reduce(

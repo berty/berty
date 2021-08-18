@@ -17,7 +17,7 @@ const style = StyleSheet.create({
 	},
 })
 
-export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = (props) => {
+export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = props => {
 	const colors = useThemeColor()
 
 	return (
@@ -33,7 +33,7 @@ export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = (
 	)
 }
 
-export const Card: React.FunctionComponent<ViewProps> = (props) => (
+export const Card: React.FunctionComponent<ViewProps> = props => (
 	<View {...props} style={[style.default, props.style]}>
 		<Fragment>{props.children}</Fragment>
 	</View>

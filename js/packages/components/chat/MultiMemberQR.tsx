@@ -138,7 +138,7 @@ const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
 
 	return (
 		<SafeAreaConsumer>
-			{(insets) => {
+			{insets => {
 				return (
 					<ScrollView
 						bounces={false}

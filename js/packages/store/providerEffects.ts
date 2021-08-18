@@ -37,7 +37,7 @@ export const openAccountWithProgress = async (
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
 		})
-		.then(async (stream) => {
+		.then(async stream => {
 			stream.onMessage((msg, _) => {
 				if (msg?.progress?.doing !== 'done') {
 					dispatch({
@@ -58,7 +58,7 @@ export const openAccountWithProgress = async (
 			console.log('node is opened')
 			dispatch({ type: MessengerActions.SetStateOpeningClients })
 		})
-		.catch((err) => {
+		.catch(err => {
 			dispatch({
 				type: MessengerActions.SetStreamError,
 				payload: { error: new Error(`Failed to start node: ${err}`) },
@@ -109,7 +109,7 @@ export const initBridge = async () => {
 		defaultPersistentOptions().tyberHost.address
 	await GoBridge.initBridge(tyberHost)
 		.then(() => console.log('bridge init done'))
-		.catch((err) => {
+		.catch(err => {
 			console.warn('unable to init bridge ', Object.keys(err), err.domain)
 		})
 }
@@ -121,7 +121,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 
 		if (Object.keys(accounts).length > 0) {
 			let accountSelected: any = null
-			Object.values(accounts).forEach((account) => {
+			Object.values(accounts).forEach(account => {
 				if (!accountSelected) {
 					accountSelected = account
 				} else if (accountSelected && accountSelected.lastOpened < (account.lastOpened || 0)) {
@@ -146,7 +146,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 		}
 	}
 
-	f().catch((e) => console.warn(e))
+	f().catch(e => console.warn(e))
 }
 
 // handle state MessengerAppState.OpeningGettingLocalSettings
@@ -161,7 +161,7 @@ export const openingLocalSettings = (
 
 	getPersistentOptions(dispatch, selectedAccount)
 		.then(() => dispatch({ type: MessengerActions.SetStateOpeningMarkConversationsClosed }))
-		.catch((e) => console.warn('unable to get persistent options', e))
+		.catch(e => console.warn('unable to get persistent options', e))
 }
 
 // handle state OpeningWaitingForDaemon
@@ -203,10 +203,10 @@ export const openingDaemon = async (
 
 		// set tyber host flag
 		if (tyberHost) {
-			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter((arg) => !arg.startsWith('--log.tyber-host='))
+			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter(arg => !arg.startsWith('--log.tyber-host='))
 			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${tyberHost}`]
 		} else if (opts?.tyberHost?.address) {
-			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter((arg) => !arg.startsWith('--log.tyber-host='))
+			bridgeOpts.cliArgs = bridgeOpts.cliArgs.filter(arg => !arg.startsWith('--log.tyber-host='))
 			bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, `--log.tyber-host=${opts?.tyberHost?.address}`]
 		}
 
@@ -267,7 +267,7 @@ export const openingClients = (
 	}
 	messengerClient
 		.eventStream({ shallowAmount: 1 })
-		.then(async (stream) => {
+		.then(async stream => {
 			if (precancel) {
 				await stream.stop()
 				return
@@ -306,8 +306,7 @@ export const openingClients = (
 				const eventPayload = pbobj.decode(evt.payload)
 				if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
 					const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
-						(name) =>
-							(beapi.messenger.StreamEvent.Notified.Type as any)[name] === eventPayload.type,
+						name => (beapi.messenger.StreamEvent.Notified.Type as any)[name] === eventPayload.type,
 					)
 					if (!enumName) {
 						console.warn('failed to get event type name')
@@ -336,7 +335,7 @@ export const openingClients = (
 			})
 			await stream.start()
 		})
-		.catch((err) => {
+		.catch(err => {
 			if (err?.EOF) {
 				console.info('end of the events stream')
 				dispatch({ type: MessengerActions.SetStateClosed })
@@ -370,7 +369,7 @@ export const openingCloseConvos = async (
 		return
 	}
 
-	for (const conv of Object.values(conversations).filter((conv) => conv.isOpen) as any) {
+	for (const conv of Object.values(conversations).filter(conv => conv.isOpen) as any) {
 		client.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
 			console.warn(`failed to close conversation "${conv.displayName}",`, e)
 		})
@@ -398,7 +397,7 @@ export const updateAccountsPreReady = async (
 		await state?.client
 			?.accountUpdate({ displayName })
 			.then(async () => {})
-			.catch((err) => console.error(err))
+			.catch(err => console.error(err))
 		// update account in bertyaccount
 		await updateAccount(embedded, dispatch, {
 			accountName: displayName,
@@ -436,7 +435,7 @@ export const closingDaemon = (
 			dispatch({ type: MessengerActions.BridgeClosed })
 		}
 
-		f().catch((e) => {
+		f().catch(e => {
 			console.warn(e)
 		})
 	}
@@ -465,7 +464,7 @@ export const deletingStorage = (
 		dispatch({ type: MessengerActions.SetStateClosed })
 	}
 
-	f().catch((e) => console.error(e))
+	f().catch(e => console.error(e))
 }
 
 export const openingListingEvents = (

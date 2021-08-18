@@ -571,7 +571,7 @@ export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ titl
 						}),
 					]).start()
 
-					setOpen((prev) => !prev)
+					setOpen(prev => !prev)
 				}}
 			>
 				<Animated.View style={[padding.tiny, { transform: [{ rotate: rotateAnimation }] }]}>
@@ -632,7 +632,7 @@ export const StringOptionInput: React.FC<{
 					<TextInput
 						autoCorrect={false}
 						autoCapitalize='none'
-						onChangeText={(t) => setValue(t)}
+						onChangeText={t => setValue(t)}
 						value={value}
 						style={[
 							text.bold.small,

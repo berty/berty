@@ -175,7 +175,7 @@ const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) =>
 	return (
 		<View style={[padding.medium, { justifyContent: 'center', height: '100%' }]}>
 			<View
-				onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
+				onLayout={e => !layout && setLayout(e.nativeEvent.layout.height)}
 				style={[
 					padding.medium,
 					border.radius.medium,

@@ -48,7 +48,7 @@ const makeMethodHook =
 		)
 
 		const call = useCallback(
-			(payload) => {
+			payload => {
 				if (client === null) {
 					console.warn('client is null')
 					return
@@ -72,7 +72,7 @@ const makeMethodHook =
 		)
 
 		const refresh = useCallback(
-			(payload) => {
+			payload => {
 				console.warn('Using deprecated "refresh" in method hook, please use "call" instead')
 				call(payload)
 			},
@@ -98,12 +98,12 @@ const makeServiceHooks = <S>(service: S, getClient: (ctx: MsgrState) => any) =>
 
 export const messengerMethodsHooks: MessengerMethodsHooks = makeServiceHooks(
 	beapi.messenger.MessengerService,
-	(ctx) => ctx.client,
+	ctx => ctx.client,
 ) as any
 
 export const protocolMethodsHooks: ProtocolMethodsHooks = makeServiceHooks(
 	beapi.protocol.ProtocolService,
-	(ctx) => ctx.protocolClient,
+	ctx => ctx.protocolClient,
 ) as any
 
 export default { ...protocolMethodsHooks, ...messengerMethodsHooks }
