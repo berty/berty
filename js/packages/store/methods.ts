@@ -36,49 +36,51 @@ const callAction = () => ({ type: 'CALL' })
 
 // TODO: UnknownMethod class
 
-const makeMethodHook = <R>(getClient: (ctx: any) => any, key: string) => () => {
-	const ctx = useMsgrContext()
-	const client = getClient(ctx)
+const makeMethodHook =
+	<R>(getClient: (ctx: any) => any, key: string) =>
+	() => {
+		const ctx = useMsgrContext()
+		const client = getClient(ctx)
 
-	const [state, dispatch] = useReducer<(state: MethodState<R>, action: any) => MethodState<R>>(
-		methodReducer,
-		initialState,
-	)
+		const [state, dispatch] = useReducer<(state: MethodState<R>, action: any) => MethodState<R>>(
+			methodReducer,
+			initialState,
+		)
 
-	const call = useCallback(
-		(payload) => {
-			if (client === null) {
-				console.warn('client is null')
-				return
-			}
+		const call = useCallback(
+			payload => {
+				if (client === null) {
+					console.warn('client is null')
+					return
+				}
 
-			const clientKey = uncap(key)
-			if (!Object.keys(client).includes(clientKey)) {
-				dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))
-				return
-			}
-			dispatch(callAction())
-			client[clientKey](payload)
-				.then((reply: R) => {
-					dispatch(doneAction(reply))
-				})
-				.catch((err: any) => {
-					dispatch(errorAction(err))
-				})
-		},
-		[client],
-	)
+				const clientKey = uncap(key)
+				if (!Object.keys(client).includes(clientKey)) {
+					dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))
+					return
+				}
+				dispatch(callAction())
+				client[clientKey](payload)
+					.then((reply: R) => {
+						dispatch(doneAction(reply))
+					})
+					.catch((err: any) => {
+						dispatch(errorAction(err))
+					})
+			},
+			[client],
+		)
 
-	const refresh = useCallback(
-		(payload) => {
-			console.warn('Using deprecated "refresh" in method hook, please use "call" instead')
-			call(payload)
-		},
-		[call],
-	)
+		const refresh = useCallback(
+			payload => {
+				console.warn('Using deprecated "refresh" in method hook, please use "call" instead')
+				call(payload)
+			},
+			[call],
+		)
 
-	return { call, refresh, ...state }
-}
+		return { call, refresh, ...state }
+	}
 
 const getServiceMethods = (service: any) => {
 	try {
@@ -96,12 +98,12 @@ const makeServiceHooks = <S>(service: S, getClient: (ctx: MsgrState) => any) =>
 
 export const messengerMethodsHooks: MessengerMethodsHooks = makeServiceHooks(
 	beapi.messenger.MessengerService,
-	(ctx) => ctx.client,
+	ctx => ctx.client,
 ) as any
 
 export const protocolMethodsHooks: ProtocolMethodsHooks = makeServiceHooks(
 	beapi.protocol.ProtocolService,
-	(ctx) => ctx.protocolClient,
+	ctx => ctx.protocolClient,
 ) as any
 
 export default { ...protocolMethodsHooks, ...messengerMethodsHooks }

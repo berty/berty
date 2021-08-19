@@ -21,7 +21,7 @@ export const playSoundFile = (encodedFile: string) => {
 	return p
 }
 
-const preloadedSounds = mapValues(soundsMap, (fileName) => {
+const preloadedSounds = mapValues(soundsMap, fileName => {
 	const p = new Player(fileName, {
 		autoDestroy: false,
 		mixWithOthers: true,
@@ -50,7 +50,7 @@ export const playSound = (name: SoundKey) => {
 }
 
 export const playSoundAsync = (name: SoundKey) => {
-	return new Promise((resolve) => {
+	return new Promise(resolve => {
 		const p = preloadedSounds[name]
 		if (!p) {
 			console.warn(`Tried to play unknown sound "${name}"`)

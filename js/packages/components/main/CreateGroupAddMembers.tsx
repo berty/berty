@@ -38,10 +38,8 @@ export const Header: React.FC<{
 	onPress = null,
 	style = null,
 }) => {
-	const [
-		{ height, border, margin, row, padding, text, column, opacity },
-		{ scaleHeight },
-	] = useStyles()
+	const [{ height, border, margin, row, padding, text, column, opacity }, { scaleHeight }] =
+		useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -170,7 +168,7 @@ export const MemberList: React.FC<{
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={[padding.left.medium]}
 			>
-				{members.map((member) => (
+				{members.map(member => (
 					<MemberItem
 						key={member.publicKey}
 						member={member}
@@ -178,7 +176,7 @@ export const MemberList: React.FC<{
 						canRemove={
 							initialMembers
 								? !initialMembers.find(
-										(initialMember) => initialMember.publicKey === member.publicKey,
+										initialMember => initialMember.publicKey === member.publicKey,
 								  )
 								: undefined
 						}

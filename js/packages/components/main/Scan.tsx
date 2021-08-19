@@ -170,7 +170,7 @@ const ScanComponent: React.FC<any> = () => {
 
 	return (
 		<SafeAreaConsumer>
-			{(insets) => {
+			{insets => {
 				return (
 					<View
 						style={[

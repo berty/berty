@@ -55,14 +55,14 @@ export const mapBorderSidesSizes = (
 	{ scaleSize = initialScaleSize }: { scaleSize: ScaleSizes['scaleSize'] },
 	decl: SizesDeclaration<number>,
 ): any => ({
-	...mapSizes(decl, (borderWidth) => ({ borderWidth }), { scaleSize }),
-	top: mapSizes(decl, (borderTopWidth) => ({ borderTopWidth }), { scaleSize }),
-	left: mapSizes(decl, (borderLeftWidth) => ({ borderLeftWidth }), { scaleSize }),
-	right: mapSizes(decl, (borderRightWidth) => ({ borderRightWidth }), { scaleSize }),
-	bottom: mapSizes(decl, (borderBottomWidth) => ({ borderBottomWidth }), { scaleSize }),
+	...mapSizes(decl, borderWidth => ({ borderWidth }), { scaleSize }),
+	top: mapSizes(decl, borderTopWidth => ({ borderTopWidth }), { scaleSize }),
+	left: mapSizes(decl, borderLeftWidth => ({ borderLeftWidth }), { scaleSize }),
+	right: mapSizes(decl, borderRightWidth => ({ borderRightWidth }), { scaleSize }),
+	bottom: mapSizes(decl, borderBottomWidth => ({ borderBottomWidth }), { scaleSize }),
 	horizontal: mapSizes(
 		decl,
-		(borderWidth) => ({
+		borderWidth => ({
 			borderLeftWidth: borderWidth,
 			borderRightWidth: borderWidth,
 		}),
@@ -70,7 +70,7 @@ export const mapBorderSidesSizes = (
 	),
 	vertical: mapSizes(
 		decl,
-		(borderWidth) => ({
+		borderWidth => ({
 			borderTopWidth: borderWidth,
 			borderBottomWidth: borderWidth,
 		}),

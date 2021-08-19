@@ -28,17 +28,13 @@ const animations = {
 	p2p: p2pLottie,
 }
 
-export const Permissions: React.FC<{}> = (props) => {
+export const Permissions: React.FC<{}> = props => {
 	const appState = useRef(AppState.currentState)
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
-	const {
-		persistentOptions,
-		setPersistentOption,
-		createNewAccount,
-		selectedAccount,
-	} = useMsgrContext()
+	const { persistentOptions, setPersistentOption, createNewAccount, selectedAccount } =
+		useMsgrContext()
 	const {
 		permissionType,
 		permissionStatus,

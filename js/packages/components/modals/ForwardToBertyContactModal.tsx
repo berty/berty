@@ -26,8 +26,8 @@ export const ForwardToBertyContactModal: React.FC<{
 
 	useEffect(() => {
 		RNFS.writeFile(tempPath, image.uri.split('base64,')[1], 'base64')
-			.then((res) => console.log(res))
-			.catch((err) => console.log(err))
+			.then(res => console.log(res))
+			.catch(err => console.log(err))
 	}, [image, tempPath])
 
 	const handleClose = async () => {
@@ -60,7 +60,7 @@ export const ForwardToBertyContactModal: React.FC<{
 				.then(() => {
 					ctx.playSound('messageSent')
 				})
-				.catch((e) => {
+				.catch(e => {
 					console.warn('e sending message:', e)
 				})
 		}
@@ -82,8 +82,8 @@ export const ForwardToBertyContactModal: React.FC<{
 				]}
 			>
 				{conversations
-					.filter((conv) => !conv.displayName)
-					.map((conversation) => {
+					.filter(conv => !conv.displayName)
+					.map(conversation => {
 						const contact =
 							Object.values(ctx.contacts).find(
 								(c: any) => c.conversationPublicKey === conversation.publicKey,

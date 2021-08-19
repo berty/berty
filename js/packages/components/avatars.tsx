@@ -238,9 +238,7 @@ export const ContactAvatar: React.FC<{
 }> = ({ publicKey, size, style, fallbackNameSeed, pressable }) => {
 	const contact = useContact(publicKey)
 	const ctx = useMsgrContext()
-	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
-		(v) => v.pk === publicKey,
-	)
+	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	if (suggestion) {
 		return (
 			<HardcodedAvatar
@@ -291,9 +289,7 @@ export const MultiMemberAvatar: React.FC<{
 }> = ({ size, style, publicKey, fallbackNameSeed, pressable }) => {
 	const ctx = useMsgrContext()
 	const conv = useConversation(publicKey)
-	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
-		(v) => v.pk === publicKey,
-	)
+	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	let content: React.ReactElement
 	if (suggestion) {
 		content = (
@@ -341,9 +337,7 @@ export const ConversationAvatar: React.FC<{
 		}
 	}
 
-	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
-		(v) => v.pk === publicKey,
-	)
+	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	if (suggestion) {
 		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
 	}

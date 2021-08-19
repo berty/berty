@@ -118,8 +118,8 @@ const NativeCallButton: React.FC = () => {
 						echo: `hello number #${n}`,
 						delay: Long.fromNumber(1000),
 					})
-					.then((stream) => {
-						stream.onMessage((res) => {
+					.then(stream => {
+						stream.onMessage(res => {
 							if (res) {
 								Vibration.vibrate(500)
 							}
@@ -128,7 +128,7 @@ const NativeCallButton: React.FC = () => {
 						setTimeout(stream.stop, 10000)
 						return stream.start()
 					})
-					.catch((err) => {
+					.catch(err => {
 						if (err?.EOF) {
 							console.info(`end of the EchoTest stream #${n}`)
 						} else if (err) {
@@ -344,7 +344,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	useEffect(() => {
 		let subStream: any = null
 
-		ctx.client?.tyberHostSearch({}).then(async (stream) => {
+		ctx.client?.tyberHostSearch({}).then(async stream => {
 			stream.onMessage((msg, err) => {
 				if (err) {
 					return
@@ -490,7 +490,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				name={t('settings.devtools.log-button.name')}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
 				getOptionValue={() => ctx.persistentOptions.log.format}
-				setOptionValue={(val) => {
+				setOptionValue={val => {
 					ctx.setPersistentOption({
 						type: PersistentOptionsKeys.Log,
 						payload: { format: val },
@@ -502,7 +502,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				name={t('settings.devtools.log-filters-button.name')}
 				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
 				getOptionValue={() => ctx.persistentOptions.logFilters.format}
-				setOptionValue={(val) => {
+				setOptionValue={val => {
 					ctx.setPersistentOption({
 						type: PersistentOptionsKeys.LogFilters,
 						payload: { format: val },
@@ -517,7 +517,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					(await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) ||
 					defaultPersistentOptions().tyberHost.address
 				}
-				setOptionValue={(val) => {
+				setOptionValue={val => {
 					AsyncStorage.setItem(GlobalPersistentOptionsKeys.TyberHost, val)
 					showNeedRestartNotification(showNotification, ctx, t)
 				}}

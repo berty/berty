@@ -58,7 +58,7 @@ export const QuickReplyOptions: React.FC<{
 
 	return (
 		<View style={[flex.align.start]}>
-			{(options || []).map((opt) => (
+			{(options || []).map(opt => (
 				<QuickReplyOption key={opt.display} convPk={convPk} option={opt} />
 			))}
 		</View>

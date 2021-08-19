@@ -186,7 +186,7 @@ export const CreateGroupFinalize: React.FC<{
 	const { call, error, done, reply } = (messengerMethodsHooks as any).useConversationCreate()
 
 	const createGroup = React.useCallback(
-		() => call({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
+		() => call({ displayName: groupName, contactsToInvite: members.map(m => m.publicKey) }),
 		[groupName, members, call],
 	)
 	const [layout, setLayout] = useState<number>(0)
@@ -222,7 +222,7 @@ export const CreateGroupFinalize: React.FC<{
 	return (
 		<Layout style={[flex.tiny]}>
 			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
-				<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
+				<View onLayout={e => setLayout(e.nativeEvent.layout.height)}>
 					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />
 					<Header

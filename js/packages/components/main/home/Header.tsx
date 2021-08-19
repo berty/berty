@@ -33,10 +33,8 @@ export const HomeHeader: React.FC<
 	onLongPress,
 	isMultiAccount,
 }) => {
-	const [
-		{ border, width, height, padding, text, margin, row },
-		{ scaleHeight, scaleSize },
-	] = useStyles()
+	const [{ border, width, height, padding, text, margin, row }, { scaleHeight, scaleSize }] =
+		useStyles()
 	const colors = useThemeColor()
 	const { navigate } = useNativeNavigation()
 	const [focus, setFocus] = useState<any>(null)
@@ -152,7 +150,7 @@ export const HomeHeader: React.FC<
 										]}
 									>
 										<TextInput
-											ref={(ref) => setFocus(ref)}
+											ref={ref => setFocus(ref)}
 											placeholder={t('main.home.input-placeholder')}
 											placeholderTextColor={`${colors['secondary-text']}90`}
 											autoCorrect={false}

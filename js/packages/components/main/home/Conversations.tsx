@@ -53,7 +53,7 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 const interactionsFilter = (inte: any) =>
 	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage
 
-const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
+const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 	const {
 		publicKey = '',
 		displayName = '',
@@ -396,7 +396,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 
 	return items.length || suggestions.length || configurations.length ? (
 		<SafeAreaConsumer>
-			{(insets) => (
+			{insets => (
 				<View
 					onLayout={onLayout}
 					style={[
@@ -407,7 +407,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 						},
 					]}
 				>
-					{configurations.map((config) => (
+					{configurations.map(config => (
 						<SuggestionsItem
 							key={config.key}
 							displayName={t(config.displayName)}
@@ -436,7 +436,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 						/>
 					))}
 
-					{items.map((i) => (
+					{items.map(i => (
 						<ConversationsItem key={i.publicKey} {...i} />
 					))}
 					{suggestions.map((i: any, key: any) => (

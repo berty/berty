@@ -13,7 +13,7 @@ import { checkBluetoothPermission } from '@berty-tech/components/settings/Blueto
 export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
 	await accountService
 		.closeAccountWithProgress({})
-		.then(async (stream) => {
+		.then(async stream => {
 			stream.onMessage((msg, _) => {
 				if (msg?.progress?.state !== 'done') {
 					dispatch({
@@ -33,7 +33,7 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 			await stream.start()
 			console.log('node is closed')
 		})
-		.catch((err) => {
+		.catch(err => {
 			dispatch({
 				type: MessengerActions.SetStreamError,
 				payload: { error: new Error(`Failed to close node: ${err}`) },
@@ -48,7 +48,7 @@ export const importAccountWithProgress = async (
 	let resp: beapi.account.ImportAccountWithProgress.Reply | null = null
 	await accountService
 		.importAccountWithProgress({ backupPath: path })
-		.then(async (stream) => {
+		.then(async stream => {
 			stream.onMessage(async (msg, _) => {
 				if (msg?.progress?.state !== 'done') {
 					dispatch({
@@ -70,7 +70,7 @@ export const importAccountWithProgress = async (
 			})
 			await stream.start()
 		})
-		.catch((err) => {
+		.catch(err => {
 			dispatch({
 				type: MessengerActions.SetStreamError,
 				payload: { error: new Error(`Failed to close node: ${err}`) },

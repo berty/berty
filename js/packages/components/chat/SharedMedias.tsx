@@ -49,7 +49,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 	const client = useClient()
 
 	const messages = useConvInteractions(convPk).filter(
-		(msg) =>
+		msg =>
 			msg.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
 			msg.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation ||
 			msg.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata,
@@ -58,27 +58,27 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 	const pictures = React.useMemo(() => {
 		return messages
 			.reverse()
-			.filter((inte) => inte?.medias?.[0]?.mimeType?.startsWith('image'))
+			.filter(inte => inte?.medias?.[0]?.mimeType?.startsWith('image'))
 			.reduce((arr, current) => [...arr, ...current.medias], [])
 	}, [messages])
 
 	const documents = React.useMemo(() => {
 		return messages
 			.reverse()
-			.filter((inte) => inte?.medias?.[0] && !inte.medias?.[0].mimeType?.startsWith('image'))
+			.filter(inte => inte?.medias?.[0] && !inte.medias?.[0].mimeType?.startsWith('image'))
 			.reduce((arr, current) => [...arr, { ...current.medias[0], sentDate: current.sentDate }], [])
 	}, [messages])
 
 	const links: { url: string; sentDate: number }[] = React.useMemo(() => {
 		return messages
 			.reverse()
-			.filter((inte) => inte?.payload?.body && linkify.test(inte.payload.body))
+			.filter(inte => inte?.payload?.body && linkify.test(inte.payload.body))
 			.reduce(
 				(arr, current) => [
 					...arr,
 					...linkify
 						.match(current.payload.body)
-						.map((item) => ({ url: item.url, sentDate: current.sentDate })),
+						.map(item => ({ url: item.url, sentDate: current.sentDate })),
 				],
 				[],
 			)
@@ -92,10 +92,10 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 		Promise.all(
 			pictures.map((media: any) => {
 				return getSource(protocolClient, media.cid)
-					.then((src) => {
+					.then(src => {
 						return { ...media, uri: `data:${media.mimeType};base64,${src}` }
 					})
-					.catch((e) => console.error('failed to get picture message image:', e))
+					.catch(e => console.error('failed to get picture message image:', e))
 			}),
 		).then((images: any) => setImages(images.filter(Boolean)))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,7 +141,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 					justifyContent: 'center',
 				}}
 			>
-				{images.map((image) => (
+				{images.map(image => (
 					<TouchableOpacity
 						key={image.cid}
 						onPress={() => {
@@ -178,7 +178,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 			)}
 
 			<View style={{}}>
-				{documents.map((doc) => (
+				{documents.map(doc => (
 					<View
 						key={doc.cid}
 						style={{
@@ -196,7 +196,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 								const source = await getSource(protocolClient, doc.cid)
 								RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${doc.filename}`, source, 'base64')
 									.then(() => {})
-									.catch((err) => console.log(err))
+									.catch(err => console.log(err))
 							}}
 						>
 							<Icon name='file' height={20} width={20} fill={colors['secondary-text']} />
@@ -235,13 +235,13 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 						}}
 					>
 						<Hyperlink
-							onPress={async (url) => {
+							onPress={async url => {
 								if (client && (await isBertyDeepLink(client, url))) {
 									navigate.modals.manageDeepLink({ type: 'link', value: url })
 
 									return
 								}
-								Linking.canOpenURL(url).then((supported) => supported && Linking.openURL(url))
+								Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))
 							}}
 							linkStyle={{ textDecorationLine: 'underline' }}
 							linkify={linkify}

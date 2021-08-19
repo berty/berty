@@ -25,10 +25,10 @@ export const FileMessage: React.FC<{
 			return
 		}
 		getSource(protocolClient, medias[0].cid)
-			.then((src) => {
+			.then(src => {
 				setSource(src)
 			})
-			.catch((e) => console.error('failed to get picture message image:', e))
+			.catch(e => console.error('failed to get picture message image:', e))
 	}, [protocolClient, medias])
 
 	return (
@@ -56,7 +56,7 @@ export const FileMessage: React.FC<{
 						setDownloaded(true)
 						setLoading(false)
 					})
-					.catch((err) => console.log(err))
+					.catch(err => console.log(err))
 			}}
 		>
 			<Icon

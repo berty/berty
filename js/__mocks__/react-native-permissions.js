@@ -14,10 +14,10 @@ export const PERMISSIONS = Object.freeze({
 
 export const openLimitedPhotoLibraryPicker = jest.fn(async () => {})
 export const openSettings = jest.fn(async () => {})
-export const check = jest.fn(async (permission) => RESULTS.GRANTED)
-export const request = jest.fn(async (permission) => RESULTS.GRANTED)
+export const check = jest.fn(async permission => RESULTS.GRANTED)
+export const request = jest.fn(async permission => RESULTS.GRANTED)
 export const checkLocationAccuracy = jest.fn(async () => 'full')
-export const requestLocationAccuracy = jest.fn(async (options) => 'full')
+export const requestLocationAccuracy = jest.fn(async options => 'full')
 
 const notificationOptions = ['alert', 'badge', 'sound', 'carPlay', 'criticalAlert', 'provisional']
 
@@ -37,24 +37,24 @@ export const checkNotifications = jest.fn(async () => ({
 	settings: notificationSettings,
 }))
 
-export const requestNotifications = jest.fn(async (options) => ({
+export const requestNotifications = jest.fn(async options => ({
 	status: RESULTS.GRANTED,
 	settings: options
-		.filter((option) => notificationOptions.includes(option))
+		.filter(option => notificationOptions.includes(option))
 		.reduce((acc, option) => ({ ...acc, [option]: true }), {
 			lockScreen: true,
 			notificationCenter: true,
 		}),
 }))
 
-export const checkMultiple = jest.fn(async (permissions) =>
+export const checkMultiple = jest.fn(async permissions =>
 	permissions.reduce((acc, permission) => ({
 		...acc,
 		[permission]: RESULTS.GRANTED,
 	})),
 )
 
-export const requestMultiple = jest.fn(async (permissions) =>
+export const requestMultiple = jest.fn(async permissions =>
 	permissions.reduce((acc, permission) => ({
 		...acc,
 		[permission]: RESULTS.GRANTED,

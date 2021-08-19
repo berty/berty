@@ -371,7 +371,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 
 ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json node_modules
 	$(call check-program, bundle)
-	cd ios && bundle exec pod install $(if $(filter-out $(CI), true),--repo-update)
+	cd ios && bundle exec pod install --repo-update
 	touch $@
 
 ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call rwildcard,assets,*)

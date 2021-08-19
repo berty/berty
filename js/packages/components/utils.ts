@@ -45,14 +45,14 @@ export const getSource = async (
 	protocolClient: WelshProtocolServiceClient,
 	cid: string,
 ): Promise<string> => {
-	if (!cache.find((item) => item.cid === cid)) {
+	if (!cache.find(item => item.cid === cid)) {
 		if (cache.length >= 20) {
 			// evict
 			cache = cache.slice(1)
 		}
 		cache.push({ cid, prom: fetchSource(protocolClient, cid) })
 	}
-	const cached = cache.find((item) => item.cid === cid)
+	const cached = cache.find(item => item.cid === cid)
 	if (!cached) {
 		throw new Error('unexpected cache miss')
 	}

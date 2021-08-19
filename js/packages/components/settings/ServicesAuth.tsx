@@ -84,7 +84,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 						alone={false}
 					/>
 				) : (
-					accountServices.map((t) => {
+					accountServices.map(t => {
 						return (
 							<ButtonSetting
 								key={`${t.tokenId}-${t.serviceType}`}

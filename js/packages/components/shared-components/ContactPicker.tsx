@@ -144,7 +144,7 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({
 						key={contact.publicKey}
 						onSetMember={onSetMember}
 						onRemoveMember={onRemoveMember}
-						added={!!members.find((member) => member.publicKey === contact.publicKey)}
+						added={!!members.find(member => member.publicKey === contact.publicKey)}
 						contact={contact}
 						separateBar={index < contacts.length - 1}
 					/>

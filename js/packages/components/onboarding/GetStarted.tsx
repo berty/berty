@@ -20,7 +20,7 @@ export const GetStarted = () => {
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<SafeAreaView
 					style={[
 						absolute.fill,

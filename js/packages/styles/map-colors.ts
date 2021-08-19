@@ -10,7 +10,7 @@ export const mapColorsDeclarationBasic = <T extends {}>(
 	decl: Colors<string>,
 	map: (v: string) => T,
 	opacity?: string,
-): Colors<T> => StyleSheet.create(_.mapValues(decl, (v) => mapColor(v, map, opacity)))
+): Colors<T> => StyleSheet.create(_.mapValues(decl, v => mapColor(v, map, opacity)))
 
 export const mapColorsDeclarationStylesBasic = <T extends {}>(
 	decl: ColorsDeclaration,

@@ -1,0 +1,76 @@
+diff --git a/node_modules/react-native-scrollable-tab-view/1150.patch b/node_modules/react-native-scrollable-tab-view/1150.patch
+new file mode 100644
+index 0000000..35ee2f4
+--- /dev/null
++++ b/node_modules/react-native-scrollable-tab-view/1150.patch
+@@ -0,0 +1,47 @@
++From 2d7f5a328ab95add4b36341a89224e27339a45fe Mon Sep 17 00:00:00 2001
++From: Frank <frankfancode@gmail.com>
++Date: Sat, 10 Jul 2021 16:02:14 +0800
++Subject: [PATCH] change @react-native-community/viewpager to
++ react-native-pager-view
++
++---
++ index.js     | 5 ++---
++ package.json | 2 +-
++ 2 files changed, 3 insertions(+), 4 deletions(-)
++
++diff --git a/index.js b/index.js
++index 5996ff71..b5001804 100644
++--- a/index.js
+++++ b/index.js
++@@ -13,16 +13,15 @@ const {
++   InteractionManager,
++ } = ReactNative;
++ 
++-const ViewPagerAndroid = require('@react-native-community/viewpager');
++ const TimerMixin = require('react-timer-mixin');
++-const ViewPager = require('@react-native-community/viewpager');
+++import PagerView from 'react-native-pager-view';
++ 
++ const SceneComponent = require('./SceneComponent');
++ const DefaultTabBar = require('./DefaultTabBar');
++ const ScrollableTabBar = require('./ScrollableTabBar');
++ 
++ const AnimatedViewPagerAndroid = Platform.OS === 'android' ?
++-  Animated.createAnimatedComponent(ViewPager) :
+++  Animated.createAnimatedComponent(PagerView) :
++   undefined;
++ 
++ const ScrollableTabView = createReactClass({
++diff --git a/package.json b/package.json
++index a6f1a2c2..73946d00 100644
++--- a/package.json
+++++ b/package.json
++@@ -29,7 +29,7 @@
++   },
++   "homepage": "https://github.com/brentvatne/react-native-scrollable-tab-view#readme",
++   "dependencies": {
++-    "@react-native-community/viewpager": "3.3.0",
+++    "react-native-pager-view": "^4.2.4",
++     "create-react-class": "^15.6.2",
++     "prop-types": "^15.6.0",
++     "react-timer-mixin": "^0.13.3"
+diff --git a/node_modules/react-native-scrollable-tab-view/index.js b/node_modules/react-native-scrollable-tab-view/index.js
+index 82e53c5..808886e 100644
+--- a/node_modules/react-native-scrollable-tab-view/index.js
++++ b/node_modules/react-native-scrollable-tab-view/index.js
+@@ -13,16 +13,15 @@ const {
+   InteractionManager,
+ } = ReactNative;
+ 
+-const ViewPagerAndroid = require('@react-native-community/viewpager');
+ const TimerMixin = require('react-timer-mixin');
+-const ViewPager = require('@react-native-community/viewpager');
++import PagerView from 'react-native-pager-view';
+ 
+ const SceneComponent = require('./SceneComponent');
+ const DefaultTabBar = require('./DefaultTabBar');
+ const ScrollableTabBar = require('./ScrollableTabBar');
+ 
+ const AnimatedViewPagerAndroid = Platform.OS === 'android' ?
+-  Animated.createAnimatedComponent(ViewPager) :
++  Animated.createAnimatedComponent(PagerView) :
+   undefined;
+ 
+ const ScrollableTabView = createReactClass({

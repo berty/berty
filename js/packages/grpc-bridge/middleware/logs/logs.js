@@ -29,7 +29,7 @@ const rpcLogger = (name, title, req, res, err) => {
 	}
 }
 
-const create = (name) => (method, call) => async (payload, metadata) => {
+const create = name => (method, call) => async (payload, metadata) => {
 	const request = method.resolvedRequestType.create(payload)
 
 	const start = new Date().getTime()

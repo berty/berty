@@ -14,7 +14,6 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import { AccountAvatar } from '../avatars'
@@ -79,10 +78,9 @@ const initialState: State = {
 	saving: false,
 }
 
-const EditMyProfile: React.FC = () => {
+const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const ctx = useMsgrContext()
 	const colors = useThemeColor()
-	const { goBack } = useNavigation()
 
 	const account = useAccount()
 
@@ -165,7 +163,7 @@ const EditMyProfile: React.FC = () => {
 			}
 
 			// all good, go back
-			goBack()
+			closeModal()
 		} catch (err) {
 			console.warn(err)
 			dispatch({ type: 'SET_ERROR', err })
@@ -242,7 +240,7 @@ const EditMyProfile: React.FC = () => {
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<View style={[margin.vertical.big]}>
 					<View style={[row.left]}>
 						<TouchableOpacity onPress={handlePicturePressed}>{image}</TouchableOpacity>
@@ -251,7 +249,7 @@ const EditMyProfile: React.FC = () => {
 								label={t('settings.edit-profile.name-input-label') as any}
 								placeholder={t('settings.edit-profile.name-input-placeholder')}
 								value={state.name}
-								onChangeText={(name) => dispatch({ type: 'SET_NAME', name })}
+								onChangeText={name => dispatch({ type: 'SET_NAME', name })}
 								style={{ backgroundColor: colors['input-background'] }}
 							/>
 						</View>
@@ -341,7 +339,7 @@ const Header: React.FC = () => {
 
 	return (
 		<Translation>
-			{(t) => (
+			{t => (
 				<>
 					<View style={{ height: 30, alignItems: 'center', justifyContent: 'center' }}>
 						<View
@@ -374,39 +372,29 @@ const Header: React.FC = () => {
 	)
 }
 
-export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
+export const EditProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
-	const { goBack } = useNavigation()
 	return (
 		<Pressable
-			onPress={goBack}
-			style={{
-				position: 'absolute',
-				bottom: 0,
-				right: 0,
-				left: 0,
-				top: 0,
-				justifyContent: 'flex-end',
-			}}
+			onPress={() => closeModal()}
+			style={[StyleSheet.absoluteFill, { justifyContent: 'flex-end' }]}
 		>
-			<BlurView style={{ position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
 			<KeyboardAvoidingView behavior='padding'>
-				<Pressable>
-					<View
-						style={[
-							{
-								backgroundColor: colors['main-background'],
-								borderTopLeftRadius: 30,
-								borderTopRightRadius: 30,
-							},
-							padding.horizontal.big,
-						]}
-					>
-						<Header />
-						<EditMyProfile />
-					</View>
-				</Pressable>
+				<View
+					style={[
+						{
+							backgroundColor: colors['main-background'],
+							borderTopLeftRadius: 30,
+							borderTopRightRadius: 30,
+						},
+						padding.horizontal.big,
+					]}
+				>
+					<Header />
+					<EditMyProfile closeModal={closeModal} />
+				</View>
 			</KeyboardAvoidingView>
 		</Pressable>
 	)

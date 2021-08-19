@@ -19,7 +19,7 @@ const normalizeVolumeIntensities = (intensities: Array<number>) => {
 	const max = Math.max(...intensities)
 
 	intensities = limitIntensities(
-		intensities.map((i) => (i - min) / (max - min)),
+		intensities.map(i => (i - min) / (max - min)),
 		volumeValueShown,
 	)
 
@@ -31,9 +31,10 @@ export const WaveForm: React.FC<{
 	duration: number | null
 	currentTime?: number
 }> = ({ intensities, duration, currentTime = 0 }) => {
-	const normalizedIntensities = useMemo(() => normalizeVolumeIntensities(intensities), [
-		intensities,
-	])
+	const normalizedIntensities = useMemo(
+		() => normalizeVolumeIntensities(intensities),
+		[intensities],
+	)
 	const [{ margin, text }] = useStyles()
 	const colors = useThemeColor()
 	return (
@@ -83,7 +84,7 @@ const AudioPreview: React.FC<{
 	const [normalizedIntensities, duration] = useMemo(() => {
 		const metadata = beapi.messenger.MediaMetadata.decode(media.metadataBytes!)
 		const previews = metadata?.items.filter(
-			(m) => m.metadataType === beapi.messenger.MediaMetadataType.MetadataAudioPreview,
+			m => m.metadataType === beapi.messenger.MediaMetadataType.MetadataAudioPreview,
 		)
 
 		if (previews === undefined || previews.length === 0) {
@@ -200,7 +201,7 @@ export const AudioMessage: React.FC<{
 							handlePlayPause()
 						} else if (protocolClient) {
 							globalPlayerLoad(
-								getSource(protocolClient, cid).then((src) => [
+								getSource(protocolClient, cid).then(src => [
 									`data:${medias[0].mimeType};base64,${src}`,
 									{
 										id: cid,

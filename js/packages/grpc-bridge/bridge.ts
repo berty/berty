@@ -31,68 +31,66 @@ export type GRPCBridge = (
 	metadata?: { [key: string]: string | Array<string> },
 ) => pb.RPCImpl
 
-const grpcBridge: GRPCBridge = (options, metadata): pb.RPCImpl => (
-	method,
-	requestData,
-	callback,
-): void => {
-	// console.log('bridge', requestData)
-	// map pbjs method descriptor to grpc method descriptor
-	if (!(method instanceof pb.Method)) {
-		console.error("bridge doesn't support protobuf.rpc.ServiceMethod")
-		return
-	}
+const grpcBridge: GRPCBridge =
+	(options, metadata): pb.RPCImpl =>
+	(method, requestData, callback): void => {
+		// console.log('bridge', requestData)
+		// map pbjs method descriptor to grpc method descriptor
+		if (!(method instanceof pb.Method)) {
+			console.error("bridge doesn't support protobuf.rpc.ServiceMethod")
+			return
+		}
 
-	const [requestType, responseType] = [
-		createMessage(method.resolvedRequestType as pb.Type),
-		createMessage(method.resolvedResponseType as pb.Type),
-	]
+		const [requestType, responseType] = [
+			createMessage(method.resolvedRequestType as pb.Type),
+			createMessage(method.resolvedResponseType as pb.Type),
+		]
 
-	const _method: grpc.MethodDefinition<grpc.ProtobufMessage, grpc.ProtobufMessage> = {
-		methodName: method.name,
-		service: {
-			serviceName: (method.parent && method.parent.fullName.substr(1)) || '',
-		},
-		requestStream: method.requestStream || false,
-		responseStream: method.responseStream || false,
-		requestType,
-		responseType,
-	}
+		const _method: grpc.MethodDefinition<grpc.ProtobufMessage, grpc.ProtobufMessage> = {
+			methodName: method.name,
+			service: {
+				serviceName: (method.parent && method.parent.fullName.substr(1)) || '',
+			},
+			requestStream: method.requestStream || false,
+			responseStream: method.responseStream || false,
+			requestType,
+			responseType,
+		}
 
-	// initialize client
-	const client = grpc.client(_method, options)
-	client.start(new grpc.Metadata(metadata))
-	/*client.onHeaders((headers: grpc.Metadata) => {
+		// initialize client
+		const client = grpc.client(_method, options)
+		client.start(new grpc.Metadata(metadata))
+		/*client.onHeaders((headers: grpc.Metadata) => {
 		// console.log('onHeaders: ', headers)
 	})*/
-	client.onMessage((message: grpc.ProtobufMessage): void => {
-		// console.log('onMessage: ', message.toObject())
-		callback(null, message.serializeBinary())
-	})
-	client.onEnd((code: grpc.Code, message: string, trailers: grpc.Metadata): void => {
-		if (code !== grpc.Code.OK) {
-			const error = new Error(
-				`GRPC ${_method.methodName} ${
-					grpc.Code[code]
-				} (${code}): ${message}\nTrailers: ${JSON.stringify(trailers)}`,
-			)
+		client.onMessage((message: grpc.ProtobufMessage): void => {
+			// console.log('onMessage: ', message.toObject())
+			callback(null, message.serializeBinary())
+		})
+		client.onEnd((code: grpc.Code, message: string, trailers: grpc.Metadata): void => {
+			if (code !== grpc.Code.OK) {
+				const error = new Error(
+					`GRPC ${_method.methodName} ${
+						grpc.Code[code]
+					} (${code}): ${message}\nTrailers: ${JSON.stringify(trailers)}`,
+				)
 
-			if (
-				code === grpc.Code.Unknown &&
-				message === 'Response closed without grpc-status (Headers only)'
-			) {
-				// hack because sometimes we enter this case although everything else seems fine so we only log it
-				// TODO: investigate
-				console.warn(error.message)
-			} else {
-				console.error(error.message)
-				// response "null" will shutdown the service
-				callback(error, null)
+				if (
+					code === grpc.Code.Unknown &&
+					message === 'Response closed without grpc-status (Headers only)'
+				) {
+					// hack because sometimes we enter this case although everything else seems fine so we only log it
+					// TODO: investigate
+					console.warn(error.message)
+				} else {
+					console.error(error.message)
+					// response "null" will shutdown the service
+					callback(error, null)
+				}
 			}
-		}
-	})
-	client.send(requestType.deserializeBinary(requestData))
-	client.finishSend()
-}
+		})
+		client.send(requestType.deserializeBinary(requestData))
+		client.finishSend()
+	}
 
 export default grpcBridge

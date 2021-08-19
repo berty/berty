@@ -81,10 +81,10 @@ const BodyAddContactList = () => {
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
-			{Object.values(globals.berty.contacts).map((value) => {
+			{Object.values(globals.berty.contacts).map(value => {
 				return <Button key={value.link} {...value} />
 			})}
-			{Object.values(globals.berty.conversations).map((value) => {
+			{Object.values(globals.berty.conversations).map(value => {
 				return <Button key={value.link} {...value} kind='Conversation' />
 			})}
 		</View>

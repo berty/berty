@@ -104,11 +104,11 @@ export const PreviewComponent: React.FC<{
 								player?.playPause()
 							} else {
 								readFile(recordFilePath, 'base64')
-									.then((response) => {
+									.then(response => {
 										console.log('SUCCESS')
 										setPlayer(playSoundFile(response))
 									})
-									.catch((err) => {
+									.catch(err => {
 										console.error(err)
 									})
 							}
@@ -124,7 +124,7 @@ export const PreviewComponent: React.FC<{
 					</TouchableOpacity>
 					<WaveForm
 						intensities={limitIntensities(
-							meteredValuesRef.current.map((v) =>
+							meteredValuesRef.current.map(v =>
 								Math.round((v - volumeValueLowest) * volumeValuePrecision),
 							),
 							volumeValuesAttached,

@@ -227,7 +227,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 								/>
 								<EmojiBoard
 									showBoard={true}
-									onClick={(emoji) => {
+									onClick={emoji => {
 										ctx.client
 											?.interact({
 												conversationPublicKey: conv?.publicKey,
@@ -243,7 +243,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 												setActivePopoverCid(null)
 												setActiveEmojiKeyboardCid(null)
 											})
-											.catch((e) => {
+											.catch(e => {
 												console.warn('e sending message:', e)
 											})
 									}}

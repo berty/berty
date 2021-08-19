@@ -129,7 +129,7 @@ class XHR implements grpc.Transport {
 		xhr.addEventListener('readystatechange', this.onStateChange.bind(this))
 		xhr.addEventListener('progress', this.onProgressEvent.bind(this))
 		xhr.addEventListener('loadend', this.onLoadEvent.bind(this))
-		xhr.addEventListener('error', (err) => {
+		xhr.addEventListener('error', err => {
 			detach(() => {
 				this.options.onEnd(new Error(`XHR Error: ${err}`))
 			})

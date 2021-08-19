@@ -145,7 +145,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	const contact = useContact(contactPk)
 
 	const interactions = useConvInteractions(conv?.publicKey).filter(
-		(inte) => inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage,
+		inte => inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage,
 	)
 	const lastInteraction =
 		interactions && interactions.length > 0 ? interactions[interactions.length - 1] : null

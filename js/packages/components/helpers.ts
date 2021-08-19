@@ -1,14 +1,9 @@
 import moment from 'moment'
 import { Long } from 'protobufjs/light'
-import DocumentPicker from 'react-native-document-picker'
-import { Platform } from 'react-native'
-import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { MsgrState } from '@berty-tech/store/context'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
-// export const promiseRejected = (): Promise<void> =>
-//   new Promise((res, rej): Timeout => setTimeout(rej, 1000))
 
 export const randomItem = <T extends unknown>(arr: Array<T>): T =>
 	arr[Math.floor(Math.random() * 1000) % arr.length]
@@ -42,7 +37,6 @@ const fmtTimestamp1 = (date: number | Date): string => {
 	} else if (now.subtract(1, 'day').isSame(mDate, 'day')) {
 		return 'Yesterday'
 	} else if (now.isSame(mDate, 'week')) {
-		// return mDate.format('DD/MM')
 		return mDate.format('dddd')
 	} else {
 		return mDate.format('DD/MM/YY')
@@ -84,25 +78,6 @@ export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number
 	} catch (e) {
 		console.warn(`Error parsing date ${pbTimestamp}; returning zero`)
 		return 0
-	}
-}
-
-export const openDocumentPicker = async (ctx: MsgrState) => {
-	try {
-		const res = await DocumentPicker.pick({
-			// @ts-ignore
-			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
-		})
-
-		const replaced =
-			Platform.OS === 'android' ? getPath(res.uri) : res.uri.replace(/^file:\/\//, '')
-		await ctx.importAccount(replaced)
-	} catch (err) {
-		if (DocumentPicker.isCancel(err)) {
-			// ignore
-		} else {
-			console.error(err)
-		}
 	}
 }
 

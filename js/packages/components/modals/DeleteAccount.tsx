@@ -237,7 +237,7 @@ export const DeleteAccount: React.FC<{}> = () => {
 						barStyle='light-content'
 					/>
 					<View
-						onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
+						onLayout={e => !layout && setLayout(e.nativeEvent.layout.height)}
 						style={[
 							padding.medium,
 							border.radius.medium,

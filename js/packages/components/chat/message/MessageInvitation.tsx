@@ -103,7 +103,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 				.parseDeepLink({
 					link,
 				})
-				.then((reply) => {
+				.then(reply => {
 					setPdlInfo({
 						displayName: reply.link?.bertyGroup?.displayName || '',
 						convPk: base64ToURLBase64(
@@ -111,7 +111,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 						),
 					})
 				})
-				.catch((err) => {
+				.catch(err => {
 					console.warn(err)
 					setError(true)
 				})
@@ -123,7 +123,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 			setAccepting(true)
 			client
 				.conversationJoin({ link })
-				.catch((err) => {
+				.catch(err => {
 					console.warn(err)
 					setError(true)
 				})

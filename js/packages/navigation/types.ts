@@ -35,7 +35,6 @@ export namespace ScreenProps {
 	export namespace Settings {
 		export type Home = RouteProps<void>
 		export type MyBertyId = RouteProps<void>
-		export type EditProfile = RouteProps<void>
 		export type AppUpdates = RouteProps<void>
 		export type Help = RouteProps<void>
 		export type Mode = RouteProps<void>
@@ -99,7 +98,6 @@ export namespace Routes {
 	export enum Settings {
 		Home = 'Settings.Home',
 		MyBertyId = 'Settings.MyBertyId',
-		EditProfile = 'Settings.EditProfile',
 		AppUpdates = 'Settings.AppUpdates',
 		Help = 'Settings.Help',
 		Mode = 'Settings.Mode',

@@ -70,7 +70,7 @@ export const mapDeclarationWithDims = (
 			...decl.colors.default,
 			...decl.colors,
 		} as ColorsStyles<string>,
-		background: mapColorsDeclaration(decl.colors, (v) => ({ backgroundColor: v })),
+		background: mapColorsDeclaration(decl.colors, v => ({ backgroundColor: v })),
 		padding: {
 			tiny: { padding: decl.sides.tiny },
 			small: { padding: decl.sides.small },
@@ -78,7 +78,7 @@ export const mapDeclarationWithDims = (
 			large: { padding: decl.sides.large },
 			big: { padding: decl.sides.big },
 			huge: { padding: decl.sides.huge },
-			scale: mem((size) => StyleSheet.create({ scale: { padding: size * scaleSize } }).scale),
+			scale: mem(size => StyleSheet.create({ scale: { padding: size * scaleSize } }).scale),
 			...mapSides(decl.sides, 'padding'),
 		},
 		margin: {
@@ -88,12 +88,12 @@ export const mapDeclarationWithDims = (
 			large: { margin: decl.sides.large },
 			big: { margin: decl.sides.big },
 			huge: { margin: decl.sides.huge },
-			scale: mem((size) => StyleSheet.create({ scale: { margin: size * scaleSize } }).scale),
+			scale: mem(size => StyleSheet.create({ scale: { margin: size * scaleSize } }).scale),
 			...mapSides(decl.sides, 'margin'),
 		},
 		border: mapBorder(decl, { scaleSize }),
 		text: {
-			color: mapColorsDeclaration(decl.colors, (v) => ({ color: v })),
+			color: mapColorsDeclaration(decl.colors, v => ({ color: v })),
 			bold: {
 				...StyleSheet.create({
 					// default is '600'
@@ -203,11 +203,11 @@ export const mapDeclarationWithDims = (
 				},
 			}),
 			scale: mem(
-				(values) =>
+				values =>
 					StyleSheet.create({
 						scale: {
 							position: 'absolute',
-							..._.mapValues(values, (v) => (v || 0) * scaleSize),
+							..._.mapValues(values, v => (v || 0) * scaleSize),
 						},
 					}).scale,
 				{ cacheKey: JSON.stringify },

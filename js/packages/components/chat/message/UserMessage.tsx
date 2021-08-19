@@ -345,7 +345,7 @@ export const UserMessage: React.FC<{
 									}).start()
 								}
 							}}
-							onHandlerStateChange={(event) => {
+							onHandlerStateChange={event => {
 								if (event.nativeEvent.oldState === State.ACTIVE) {
 									if (event.nativeEvent.translationX > 120) {
 										setActiveReplyInte({
@@ -431,7 +431,7 @@ export const UserMessage: React.FC<{
 									}}
 									from={
 										<TouchableOpacity
-											onLayout={(event) => {
+											onLayout={event => {
 												setMessageLayoutWidth(event.nativeEvent.layout.width)
 											}}
 											disabled={inte.isMine}
@@ -510,7 +510,7 @@ export const UserMessage: React.FC<{
 											setActivePopoverCid(null)
 											setActiveEmojiKeyboardCid(inte.cid)
 										}}
-										onSelectEmoji={(emoji) => {
+										onSelectEmoji={emoji => {
 											ctx.client
 												?.interact({
 													conversationPublicKey: convPK,
@@ -526,7 +526,7 @@ export const UserMessage: React.FC<{
 													setActivePopoverCid(null)
 													setActiveEmojiKeyboardCid(null)
 												})
-												.catch((e) => {
+												.catch(e => {
 													console.warn('e sending message:', e)
 												})
 										}}
@@ -538,7 +538,7 @@ export const UserMessage: React.FC<{
 						{activePopoverCid === inte.cid && <Popover />}
 						{!!inte?.reactions?.length && !!messageLayoutWidth && (
 							<View
-								onLayout={(event) => {
+								onLayout={event => {
 									setReactionLayoutWidth(event.nativeEvent.layout.width)
 								}}
 								style={[

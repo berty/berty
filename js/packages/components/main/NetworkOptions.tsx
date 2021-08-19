@@ -121,7 +121,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 							varToggle={toggleValues.fullAnonMode}
 							actionToggle={() => {
 								setMode(toggleValues.fullAnonMode ? Modes.TORCompatible : Modes.FullAnon)
-								setToggleValues((prev) => ({
+								setToggleValues(prev => ({
 									...prev,
 									fullAnonMode: !prev.fullAnonMode,
 									simpleTor: prev.fullAnonMode,
@@ -137,7 +137,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 							varToggle={toggleValues.simpleTor}
 							actionToggle={() => {
 								setMode(toggleValues.fullAnonMode ? Modes.TORCompatible : Modes.FullAnon)
-								setToggleValues((prev) => ({
+								setToggleValues(prev => ({
 									...prev,
 									simpleTor: !prev.simpleTor,
 									fullAnonMode: prev.simpleTor,
@@ -153,7 +153,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 							iconPack='custom'
 							varToggle={toggleValues.allowExpertMode}
 							actionToggle={() => {
-								setToggleValues((prev) => ({
+								setToggleValues(prev => ({
 									...prev,
 									allowExpertMode: !prev.allowExpertMode,
 								}))
@@ -195,7 +195,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 								: t('main.network-options.tor-compatible.desc')}
 						</Text>
 						{mode === Modes.FullAnon &&
-							parameterList.map((item) => (
+							parameterList.map(item => (
 								<Text
 									style={[
 										margin.top.small,

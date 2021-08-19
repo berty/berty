@@ -67,7 +67,7 @@ const sendMessage = async (
 		.then(() => {
 			playSound('messageSent')
 		})
-		.catch((e) => {
+		.catch(e => {
 			console.warn('e sending message:', e)
 		})
 }
@@ -79,7 +79,7 @@ interface Attachment extends beapi.messenger.IMedia {
 const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment[]) =>
 	(
 		await Promise.all(
-			res.map(async (doc) => {
+			res.map(async doc => {
 				const stream = await client?.mediaPrepare({})
 				await stream?.emit({
 					info: {
@@ -94,7 +94,7 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 				return reply?.cid
 			}),
 		)
-	).filter((cid) => !!cid)
+	).filter(cid => !!cid)
 
 export const RecordComponent: React.FC<{
 	convPk: string
@@ -218,7 +218,7 @@ export const RecordComponent: React.FC<{
 									format: voiceMemoFormat,
 									samplingRate: voiceMemoSampleRate,
 									volumeIntensities: limitIntensities(
-										meteredValuesRef.current.map((v) =>
+										meteredValuesRef.current.map(v =>
 											Math.round((v - volumeValueLowest) * volumeValuePrecision),
 										),
 										volumeValuesAttached,
@@ -230,10 +230,10 @@ export const RecordComponent: React.FC<{
 					}).finish(),
 				},
 			])
-				.then((cids) => {
+				.then(cids => {
 					return sendMessage(ctx.client!, convPk, { medias: cids })
 				})
-				.catch((e) => console.warn(e))
+				.catch(e => console.warn(e))
 		},
 		[convPk, ctx.client, recorderFilePath],
 	)
@@ -262,7 +262,7 @@ export const RecordComponent: React.FC<{
 				break
 
 			case RecordingState.COMPLETE:
-				recorder.current?.stop((err) => {
+				recorder.current?.stop(err => {
 					const duration = recordDuration || Date.now() - recordingStart
 
 					if (err !== null) {
@@ -366,7 +366,7 @@ export const RecordComponent: React.FC<{
 						}
 						setRecorderFilePath(filePath)
 					})
-					recorder.current.record((err) => {
+					recorder.current.record(err => {
 						if (err) {
 							console.log('recorder record error', err?.message)
 						} else {

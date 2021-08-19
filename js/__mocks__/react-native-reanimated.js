@@ -14,7 +14,7 @@ const { View, Text, Image, Animated, Platform, processColor } = require('react-n
 function NOOP() {}
 
 function simulateCallbackFactory(...params) {
-	return (callback) => {
+	return callback => {
 		callback &&
 			setTimeout(() => {
 				callback(...params)
@@ -28,7 +28,7 @@ class Code extends React.Component {
 	}
 }
 
-const getValue = (node) => {
+const getValue = node => {
 	if (typeof node === 'number') {
 		return node
 	}
@@ -116,25 +116,24 @@ const Reanimated = {
 
 	processColor,
 
-	add: (...vals) => new AnimatedValue(vals.map((v) => getValue(v)).reduce((acc, v) => acc + v)),
-	sub: (...vals) => new AnimatedValue(vals.map((v) => getValue(v)).reduce((acc, v) => acc - v)),
-	divide: (...vals) => new AnimatedValue(vals.map((v) => getValue(v)).reduce((acc, v) => acc / v)),
-	multiply: (...vals) =>
-		new AnimatedValue(vals.map((v) => getValue(v)).reduce((acc, v) => acc * v)),
-	pow: (...vals) => new AnimatedValue(vals.map((v) => getValue(v)).reduce((acc, v) => acc ** v)),
+	add: (...vals) => new AnimatedValue(vals.map(v => getValue(v)).reduce((acc, v) => acc + v)),
+	sub: (...vals) => new AnimatedValue(vals.map(v => getValue(v)).reduce((acc, v) => acc - v)),
+	divide: (...vals) => new AnimatedValue(vals.map(v => getValue(v)).reduce((acc, v) => acc / v)),
+	multiply: (...vals) => new AnimatedValue(vals.map(v => getValue(v)).reduce((acc, v) => acc * v)),
+	pow: (...vals) => new AnimatedValue(vals.map(v => getValue(v)).reduce((acc, v) => acc ** v)),
 	modulo: (a, b) => new AnimatedValue(getValue(a) % getValue(b)),
-	sqrt: (a) => new AnimatedValue(Math.sqrt(getValue(a))),
-	log: (a) => new AnimatedValue(Math.log(getValue(a))),
-	sin: (a) => new AnimatedValue(Math.sin(getValue(a))),
-	cos: (a) => new AnimatedValue(Math.cos(getValue(a))),
-	tan: (a) => new AnimatedValue(Math.tan(getValue(a))),
-	acos: (a) => new AnimatedValue(Math.acos(getValue(a))),
-	asin: (a) => new AnimatedValue(Math.asin(getValue(a))),
-	atan: (a) => new AnimatedValue(Math.atan(getValue(a))),
-	exp: (a) => new AnimatedValue(Math.exp(getValue(a))),
-	round: (a) => new AnimatedValue(Math.round(getValue(a))),
-	floor: (a) => new AnimatedValue(Math.floor(getValue(a))),
-	ceil: (a) => new AnimatedValue(Math.ceil(getValue(a))),
+	sqrt: a => new AnimatedValue(Math.sqrt(getValue(a))),
+	log: a => new AnimatedValue(Math.log(getValue(a))),
+	sin: a => new AnimatedValue(Math.sin(getValue(a))),
+	cos: a => new AnimatedValue(Math.cos(getValue(a))),
+	tan: a => new AnimatedValue(Math.tan(getValue(a))),
+	acos: a => new AnimatedValue(Math.acos(getValue(a))),
+	asin: a => new AnimatedValue(Math.asin(getValue(a))),
+	atan: a => new AnimatedValue(Math.atan(getValue(a))),
+	exp: a => new AnimatedValue(Math.exp(getValue(a))),
+	round: a => new AnimatedValue(Math.round(getValue(a))),
+	floor: a => new AnimatedValue(Math.floor(getValue(a))),
+	ceil: a => new AnimatedValue(Math.ceil(getValue(a))),
 	lessThan: (a, b) => new AnimatedValue(getValue(a) < getValue(b)),
 	eq: (a, b) => new AnimatedValue(getValue(a) === getValue(b)),
 	greaterThan: (a, b) => new AnimatedValue(getValue(a) > getValue(b)),
@@ -143,8 +142,8 @@ const Reanimated = {
 	neq: (a, b) => new AnimatedValue(getValue(a) !== getValue(b)),
 	and: (a, b) => new AnimatedValue(getValue(a) && getValue(b)),
 	or: (a, b) => new AnimatedValue(getValue(a) || getValue(b)),
-	defined: (a) => new AnimatedValue(getValue(a) !== null && getValue(a) !== undefined),
-	not: (a) => new AnimatedValue(!getValue(a)),
+	defined: a => new AnimatedValue(getValue(a) !== null && getValue(a) !== undefined),
+	not: a => new AnimatedValue(!getValue(a)),
 	set: (a, b) => {
 		a.setValue(getValue(b))
 		return a
@@ -157,7 +156,7 @@ const Reanimated = {
 			return c
 		}
 	},
-	block: (a) => a[a.length - 1],
+	block: a => a[a.length - 1],
 	call: () => {}, // fix for @react-navigation/stack
 	debug: NOOP,
 	onChange: NOOP,
@@ -165,7 +164,7 @@ const Reanimated = {
 	stopClock: NOOP,
 	clockRunning: NOOP,
 	event: NOOP,
-	abs: (a) => Math.abs(getValue(a)),
+	abs: a => Math.abs(getValue(a)),
 	acc: NOOP,
 	color: (r, g, b, a = 1) => {
 		const color =
@@ -201,10 +200,10 @@ const Reanimated = {
 		stop: simulateCallbackFactory({ finished: true }),
 	}),
 
-	proc: (cb) => cb,
+	proc: cb => cb,
 
 	useCode: NOOP,
-	createAnimatedComponent: (Component) => Component,
+	createAnimatedComponent: Component => Component,
 }
 
 module.exports = {

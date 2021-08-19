@@ -171,7 +171,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const memberLength = Object.values(members).length
 	const memberText = memberLength < 2 ? 'member' : 'members'
 	const { t } = useTranslation()
-	const accountMember = Object.values(members).find((m) => m?.isMe)
+	const accountMember = Object.values(members).find(m => m?.isMe)
 
 	return (
 		<View style={[padding.medium]}>

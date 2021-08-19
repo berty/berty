@@ -35,7 +35,7 @@ const Popover: React.FC<{
 				width={30}
 				onPress={onReply}
 			/>
-			{emojis.map((item) => (
+			{emojis.map(item => (
 				<Text
 					key={item}
 					style={{ marginHorizontal: 4, fontSize: 26 }}

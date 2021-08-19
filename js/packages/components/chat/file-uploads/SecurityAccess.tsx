@@ -93,7 +93,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 		},
 	]
 
-	const activeTabConfig = CONFIG.find((config) => activeTab === config.tab)
+	const activeTabConfig = CONFIG.find(config => activeTab === config.tab)
 
 	if (!activeTabConfig) {
 		return null

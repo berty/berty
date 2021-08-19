@@ -252,7 +252,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 								/>
 								<EmojiBoard
 									showBoard={true}
-									onClick={(emoji) => {
+									onClick={emoji => {
 										ctx.client
 											?.interact({
 												conversationPublicKey: conv?.publicKey,
@@ -268,7 +268,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 												setActivePopoverCid(null)
 												setActiveEmojiKeyboardCid(null)
 											})
-											.catch((e) => {
+											.catch(e => {
 												console.warn('e sending message:', e)
 											})
 									}}

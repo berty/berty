@@ -8,7 +8,7 @@ const stringifyReplacer = (key: string, value: any): any => {
 
 	if (value instanceof Error) {
 		var error: { [key: string]: any } = {}
-		Object.getOwnPropertyNames(value).forEach((key) => {
+		Object.getOwnPropertyNames(value).forEach(key => {
 			error[key] = value[key]
 		})
 		return error
@@ -19,7 +19,7 @@ const stringifyReplacer = (key: string, value: any): any => {
 
 const formatMessage = (...args: any[]): string =>
 	args
-		.map((e) => JSON.stringify(e, stringifyReplacer))
+		.map(e => JSON.stringify(e, stringifyReplacer))
 		.join(' ')
 		.replace(/\\"/g, '"')
 

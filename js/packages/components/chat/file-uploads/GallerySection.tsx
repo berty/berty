@@ -40,11 +40,18 @@ export const GallerySection: React.FC<{
 			})
 
 			setGalleryContents(
-				photos.edges.map(({ node: { image: { filename, uri }, type: mime } }) => ({
-					filename: filename || '',
-					uri,
-					mimeType: mime,
-				})),
+				photos.edges.map(
+					({
+						node: {
+							image: { filename, uri },
+							type: mime,
+						},
+					}) => ({
+						filename: filename || '',
+						uri,
+						mimeType: mime,
+					}),
+				),
 			)
 
 			setGalleryImageEndCursor(photos.page_info.has_next_page ? photos.page_info.end_cursor : null)
@@ -75,7 +82,7 @@ export const GallerySection: React.FC<{
 	const handleSend = async () => {
 		try {
 			let selectedImageWithUplodableURI = await Promise.all(
-				selectedImages.map(async (item) => ({
+				selectedImages.map(async item => ({
 					...item,
 					uri: (await getUploadableURI(item)) || '',
 				})),
@@ -102,13 +109,20 @@ export const GallerySection: React.FC<{
 									after: galleryImageEndCursor,
 								})
 
-								setGalleryContents((prev) => [
+								setGalleryContents(prev => [
 									...prev,
-									...photos.edges.map(({ node: { image: { filename, uri }, type: mime } }) => ({
-										filename: filename || '',
-										uri,
-										mime,
-									})),
+									...photos.edges.map(
+										({
+											node: {
+												image: { filename, uri },
+												type: mime,
+											},
+										}) => ({
+											filename: filename || '',
+											uri,
+											mime,
+										}),
+									),
 								])
 
 								setGalleryImageEndCursor(
@@ -129,7 +143,7 @@ export const GallerySection: React.FC<{
 						backgroundColor: colors['main-background'],
 					}}
 				>
-					{galleryContents.map((content) => (
+					{galleryContents.map(content => (
 						<TouchableOpacity
 							activeOpacity={0.8}
 							key={content.filename}
@@ -140,9 +154,9 @@ export const GallerySection: React.FC<{
 								margin.bottom.tiny,
 							]}
 							onPress={() => {
-								setSelectedImages((prevImages) => {
-									if (prevImages.find((prevImage) => prevImage.filename === content.filename)) {
-										return prevImages.filter((image) => image.filename !== content.filename)
+								setSelectedImages(prevImages => {
+									if (prevImages.find(prevImage => prevImage.filename === content.filename)) {
+										return prevImages.filter(image => image.filename !== content.filename)
 									} else {
 										return [...prevImages, content]
 									}
@@ -153,7 +167,7 @@ export const GallerySection: React.FC<{
 								source={{ uri: content.uri || '' }}
 								style={[{ height: 110, width: 100 }, border.radius.tiny]}
 							/>
-							{selectedImages.find((image) => image.filename === content.filename) && (
+							{selectedImages.find(image => image.filename === content.filename) && (
 								<View style={{ position: 'absolute', top: 5, right: 5 }}>
 									<Icon
 										height={40}
@@ -183,7 +197,7 @@ export const GallerySection: React.FC<{
 					]}
 				>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-						{selectedImages.slice(0, 2).map((image) => (
+						{selectedImages.slice(0, 2).map(image => (
 							<Image
 								key={image.filename}
 								source={{

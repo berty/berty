@@ -51,7 +51,7 @@ export const ImageView: React.FC<{
 							setModalVisibility(false)
 							handleMessage(t('chat.files.image-saved'))
 						})
-						.catch((err) => console.log(err))
+						.catch(err => console.log(err))
 			},
 		},
 		{
@@ -62,7 +62,7 @@ export const ImageView: React.FC<{
 						url: images[currentIndex].uri,
 					})
 						.then(() => {})
-						.catch((err) => {
+						.catch(err => {
 							err && console.log(err)
 						})
 			},
@@ -83,14 +83,14 @@ export const ImageView: React.FC<{
 	return (
 		<Modal transparent>
 			<ImageViewer
-				imageUrls={images.map((image) => ({
+				imageUrls={images.map(image => ({
 					url: image.uri || Image.resolveAssetSource(image).uri,
 				}))}
 				index={0}
 				onClick={() => {
-					setModalVisibility((prev) => !prev)
+					setModalVisibility(prev => !prev)
 				}}
-				onChange={(index) => {
+				onChange={index => {
 					index && setCurrentIndex(index)
 				}}
 				renderFooter={() => <></>}
@@ -130,7 +130,7 @@ export const ImageView: React.FC<{
 								border.radius.top.large,
 							]}
 						>
-							{MENU_LIST.map((item) => (
+							{MENU_LIST.map(item => (
 								<TouchableOpacity key={item.title} onPress={item.onPress} style={[padding.medium]}>
 									<Text style={{ textAlign: 'center' }}>{item.title}</Text>
 								</TouchableOpacity>

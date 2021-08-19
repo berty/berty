@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
-import { Translation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { ScrollView, Text as TextNative, View, StatusBar, TouchableOpacity } from 'react-native'
-import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
 
@@ -22,7 +21,6 @@ import { WelcomeConfiguration } from '@berty-tech/components/modals'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import { useLayout } from '../../hooks'
-import { SwipeNavRecognizer } from '../../shared-components/SwipeNavRecognizer'
 import EmptyChat from '../empty_chat.svg'
 import { IncomingRequests } from './Requests'
 import { Conversations } from './Conversations'
@@ -68,6 +66,25 @@ const FooterButton: React.FC<{
 	)
 }
 
+const useTimeout = (callback: () => void, delay: number | null) => {
+	const savedCallback = useRef(callback)
+
+	// Remember the latest callback if it changes.
+	useEffect(() => {
+		savedCallback.current = callback
+	}, [callback])
+
+	// Set up the timeout.
+	useEffect(() => {
+		// Don't schedule if no delay is specified.
+		if (delay === null) {
+			return
+		}
+		const id = setTimeout(() => savedCallback.current(), delay)
+		return () => clearTimeout(id)
+	}, [delay])
+}
+
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	useNotificationsInhibitor((_ctx, notif) =>
 		[T.TypeMessageReceived, T.TypeContactRequestReceived, T.TypeContactRequestSent].includes(
@@ -97,11 +114,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const { navigate } = useNativeNavigation()
 	const { client } = useMsgrContext()
 
-	const [
-		{ text, opacity, flex, margin, background },
-		{ windowHeight, scaleSize, scaleHeight },
-	] = useStyles()
+	const [{ text, opacity, flex, margin, background }, { windowHeight, scaleSize, scaleHeight }] =
+		useStyles()
 	const colors = useThemeColor()
+	const { t }: any = useTranslation()
 
 	const scrollRef = useRef<ScrollView>(null)
 	const searching = !!searchText
@@ -152,7 +168,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		}
 
 		;(async () => {
-			await new Promise((resolve) => {
+			await new Promise(resolve => {
 				setTimeout(() => resolve(true), 200)
 			})
 			if (canceled) {
@@ -194,7 +210,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	}, [client, searchInteractions, searchText])
 
 	const hasResults = [searchConversations, searchContacts, searchInteractions.current].some(
-		(c) => Object.keys(c).length > 0,
+		c => Object.keys(c).length > 0,
 	)
 	const styleBackground = useMemo(
 		() =>
@@ -204,167 +220,155 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		[requests.length, searchText, colors],
 	)
 
+	const [visible, setVisible] = useState(false)
+	const show = () => setVisible(true)
+	useTimeout(show, 1000)
+
 	return (
 		<>
-			<Translation>
-				{(t: any): React.ReactNode => (
-					<View style={[flex.tiny, styleBackground]}>
-						<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-						<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
-							<SafeAreaConsumer>
-								{(insets: EdgeInsets | null) => (
-									<>
-										<ScrollView
-											ref={scrollRef}
-											stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
-											showsVerticalScrollIndicator={false}
-											scrollEventThrottle={16}
-											keyboardShouldPersistTaps={'handled'}
-											onScrollEndDrag={(e) => {
-												if (e.nativeEvent.contentOffset.y < 0) {
-													setRefresh(true)
-												}
-											}}
-											onScroll={(e) => {
-												if (e.nativeEvent.contentOffset) {
-													if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-														setIsOnTop(true)
-													} else {
-														setIsOnTop(false)
-													}
-												}
-											}}
-										>
-											{!searchText?.length && (
-												<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-											)}
-											<HomeHeader
-												isOnTop={isOnTop}
-												hasRequests={requests.length > 0}
-												scrollRef={scrollRef}
-												onLayout={onLayoutHeader}
-												value={searchText}
-												onChange={setSearchText}
-												refresh={refresh}
-												setRefresh={setRefresh}
-												onLongPress={setIsLongPress}
-												isMultiAccount={isLongPress}
-											/>
-											{searchText?.length ? (
-												<SearchComponent
-													insets={insets}
-													conversations={searchConversations}
-													contacts={searchContacts}
-													interactions={searchInteractions.current}
-													value={searchText}
-													hasResults={hasResults}
-													earliestInteractionCID={earliestResult}
-												/>
-											) : (
-												<>
-													<Conversations
-														items={conversations}
-														suggestions={suggestions}
-														configurations={configurations}
-														onLayout={onLayoutConvs}
-														addBot={setIsAddBot}
-													/>
-													{!isConversation && !hasSuggestion && !hasConfigurations && (
-														<View style={[background.white]}>
-															<View
-																style={[
-																	flex.justify.center,
-																	flex.align.center,
-																	margin.top.scale(60),
-																]}
-															>
-																<View>
-																	<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-																	<TextNative
-																		style={[
-																			text.align.center,
-																			text.color.grey,
-																			text.bold.small,
-																			opacity(0.3),
-																			margin.top.big,
-																		]}
-																	>
-																		{t('main.home.no-contacts')}
-																	</TextNative>
-																</View>
-															</View>
-														</View>
-													)}
-													{requests.length > 0 && (
-														<View
-															style={[
-																{
-																	backgroundColor: 'white',
-																	position: 'absolute',
-																	bottom: windowHeight * -1,
-																	height: windowHeight,
-																	width: '100%',
-																},
-															]}
-														/>
-													)}
-												</>
-											)}
-										</ScrollView>
-										<>
-											<View
-												style={{
-													position: 'absolute',
-													right: 20 * scaleSize,
-													bottom: 20 * scaleSize,
-												}}
-											>
-												<FooterButton
-													name='qr'
-													fill={colors['secondary-text']}
-													backgroundColor={colors['main-background']}
-													onPress={() => navigate('Main.Scan')}
-												/>
-												<FooterButton
-													name='add-new-group'
-													fill={colors['reverted-main-text']}
-													backgroundColor={colors['background-header']}
-													onPress={() => navigate('Main.CreateGroupAddMembers')}
-												/>
+			<View style={[flex.tiny, styleBackground]}>
+				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+				<>
+					<ScrollView
+						ref={scrollRef}
+						stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
+						showsVerticalScrollIndicator={false}
+						scrollEventThrottle={16}
+						keyboardShouldPersistTaps={'handled'}
+						onScrollEndDrag={e => {
+							if (e.nativeEvent.contentOffset.y < 0) {
+								setRefresh(true)
+							}
+						}}
+						onScroll={e => {
+							if (e.nativeEvent.contentOffset) {
+								if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+									setIsOnTop(true)
+								} else {
+									setIsOnTop(false)
+								}
+							}
+						}}
+					>
+						{!searchText?.length && (
+							<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+						)}
+						<HomeHeader
+							isOnTop={isOnTop}
+							hasRequests={requests.length > 0}
+							scrollRef={scrollRef}
+							onLayout={onLayoutHeader}
+							value={searchText}
+							onChange={setSearchText}
+							refresh={refresh}
+							setRefresh={setRefresh}
+							onLongPress={setIsLongPress}
+							isMultiAccount={isLongPress}
+						/>
+						{searchText?.length ? (
+							<SearchComponent
+								insets={null}
+								conversations={searchConversations}
+								contacts={searchContacts}
+								interactions={searchInteractions.current}
+								value={searchText}
+								hasResults={hasResults}
+								earliestInteractionCID={earliestResult}
+							/>
+						) : (
+							<>
+								<Conversations
+									items={conversations}
+									suggestions={suggestions}
+									configurations={configurations}
+									onLayout={onLayoutConvs}
+									addBot={setIsAddBot}
+								/>
+								{!isConversation && !hasSuggestion && !hasConfigurations && (
+									<View style={[background.white]}>
+										<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
+											<View>
+												<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+												<TextNative
+													style={[
+														text.align.center,
+														text.color.grey,
+														text.bold.small,
+														opacity(0.3),
+														margin.top.big,
+													]}
+												>
+													{t('main.home.no-contacts')}
+												</TextNative>
 											</View>
-										</>
-										{isAddBot.isVisible && (
-											<AddBot
-												link={isAddBot.link}
-												displayName={isAddBot.displayName}
-												closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
-											/>
-										)}
-
-										{ctx.persistentOptions.welcomeModal.enable && (
-											<WelcomeConfiguration
-												closeModal={async () => {
-													await ctx.setPersistentOption({
-														type: PersistentOptionsKeys.WelcomeModal,
-														payload: { enable: false },
-													})
-												}}
-											/>
-										)}
-										{isLongPress && (
-											<MultiAccount
-												onPress={() => {
-													setIsLongPress(false)
-												}}
-											/>
-										)}
-									</>
+										</View>
+									</View>
 								)}
-							</SafeAreaConsumer>
-						</SwipeNavRecognizer>
-					</View>
-				)}
-			</Translation>
+								{requests.length > 0 && (
+									<View
+										style={[
+											{
+												backgroundColor: 'white',
+												position: 'absolute',
+												bottom: windowHeight * -1,
+												height: windowHeight,
+												width: '100%',
+											},
+										]}
+									/>
+								)}
+							</>
+						)}
+					</ScrollView>
+					<>
+						<View
+							style={{
+								position: 'absolute',
+								right: 20 * scaleSize,
+								bottom: 20 * scaleSize,
+							}}
+						>
+							<FooterButton
+								name='qr'
+								fill={colors['secondary-text']}
+								backgroundColor={colors['main-background']}
+								onPress={() => navigate('Main.Scan')}
+							/>
+							<FooterButton
+								name='add-new-group'
+								fill={colors['reverted-main-text']}
+								backgroundColor={colors['background-header']}
+								onPress={() => navigate('Main.CreateGroupAddMembers')}
+							/>
+						</View>
+					</>
+					{isLongPress ? (
+						<MultiAccount
+							onPress={() => {
+								setIsLongPress(false)
+							}}
+						/>
+					) : null}
+					{isAddBot.isVisible ? (
+						<AddBot
+							link={isAddBot.link}
+							displayName={isAddBot.displayName}
+							closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
+						/>
+					) : null}
+					{visible && ctx.persistentOptions.welcomeModal.enable ? (
+						<WelcomeConfiguration
+							closeModal={async () => {
+								await ctx.setPersistentOption({
+									type: PersistentOptionsKeys.WelcomeModal,
+									payload: { enable: false },
+								})
+								setVisible(false)
+							}}
+						/>
+					) : null}
+				</>
+			</View>
 		</>
 	)
 }

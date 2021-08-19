@@ -19,7 +19,7 @@ const SetupFinishedBody = () => {
 
 	return (
 		<Translation>
-			{(t) =>
+			{t =>
 				isAccount ? (
 					<>
 						{isFinished && (

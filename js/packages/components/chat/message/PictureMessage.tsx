@@ -26,10 +26,10 @@ export const PictureMessage: React.FC<{
 		Promise.all(
 			medias.map((media: any) => {
 				return getSource(protocolClient, media.cid)
-					.then((src) => {
+					.then(src => {
 						return { ...media, uri: `data:${media.mimeType};base64,${src}` }
 					})
-					.catch((e) => console.error('failed to get picture message image:', e))
+					.catch(e => console.error('failed to get picture message image:', e))
 			}),
 		).then((images: any) => setImages(images.filter(Boolean)))
 	}, [protocolClient, medias])

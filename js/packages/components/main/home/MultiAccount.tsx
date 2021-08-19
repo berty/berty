@@ -1,15 +1,41 @@
 import React from 'react'
-import { GestureResponderEvent, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import {
+	GestureResponderEvent,
+	Platform,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import DocumentPicker from 'react-native-document-picker'
+import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
-import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
+import { MessengerActions, MsgrState, useMsgrContext } from '@berty-tech/store/context'
 import { closeAccountWithProgress } from '@berty-tech/store/effectableCallbacks'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { GenericAvatar } from '../../avatars'
-import { openDocumentPicker } from '../../helpers'
+
+const openDocumentPicker = async (ctx: MsgrState) => {
+	try {
+		const res = await DocumentPicker.pick({
+			// @ts-ignore
+			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
+		})
+		const replaced =
+			Platform.OS === 'android' ? getPath(res.uri) : res.uri.replace(/^file:\/\//, '')
+		await ctx.importAccount(replaced)
+	} catch (err) {
+		if (DocumentPicker.isCancel(err)) {
+			// ignore
+		} else {
+			console.error(err)
+		}
+	}
+}
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
