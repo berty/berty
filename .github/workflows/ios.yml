@@ -102,8 +102,8 @@ jobs:
           path: |
             js/ios/Berty.xcworkspace
             js/ios/Pods
-          key:          ios-xcodeworkspace-${{ matrix.xcode }}-v1-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
-          restore-keys: ios-xcodeworkspace-${{ matrix.xcode }}-v1-
+          key:          ios-xcodeworkspace-${{ matrix.xcode }}-v2-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
+          restore-keys: ios-xcodeworkspace-${{ matrix.xcode }}-v2-
 
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
@@ -117,21 +117,6 @@ jobs:
 
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env.prod >> js/.env
-
-      - name: Build pod deps
-        working-directory: js
-        run: make node_modules ios/vendor/bundle ios/Berty.xcodeproj
-
-      - name: Sync Podfile.lock
-        working-directory: js/ios
-        run: bundle exec pod install --repo-update
-
-      - name: Check diff
-        id: check-podfile-lock
-        continue-on-error: true
-        run: |
-          set -euo pipefail -o xtrace
-          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee /tmp/berty-podfile.diff) ]]; then cat /tmp/berty-podfile.diff && false; fi
 
       - name: Build the Archive
         working-directory: js
@@ -161,7 +146,7 @@ jobs:
           name: berty-yolo-${{github.sha}}.dummy-signed-ipa
           if-no-files-found: error
 
-      # mark the build as failed if a 'continue-on-error' step failed previously
-      - name: Check failed steps
-        run: false
-        if: ${{ steps.check-podfile-lock.outcome == 'failure' }}
+#      - name: Check Podfile.lock diff
+#        run: |
+#          set -euo pipefail -o xtrace
+#          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee /tmp/berty-podfile.diff) ]]; then cat /tmp/berty-podfile.diff && false; fi
