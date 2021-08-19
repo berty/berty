@@ -18,7 +18,6 @@ require (
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/daixiang0/gci v0.2.9
-	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgraph-io/badger v1.6.2
@@ -33,7 +32,6 @@ require (
 	github.com/gofrs/uuid v3.4.0+incompatible
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
-	github.com/google/gopacket v1.1.19 // indirect
 	github.com/grandcat/zeroconf v1.0.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
@@ -43,7 +41,7 @@ require (
 	github.com/ipfs-shipyard/gomobile-ipfs/go v0.0.0-20210203140645-9df95f2abec2
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipfs/go-datastore v0.4.5
-	github.com/ipfs/go-ds-badger v0.2.6
+	github.com/ipfs/go-ds-badger v0.2.7
 	github.com/ipfs/go-ipfs v0.8.0
 	github.com/ipfs/go-ipfs-config v0.12.0
 	github.com/ipfs/go-ipfs-files v0.0.8
@@ -55,18 +53,16 @@ require (
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/koron/go-ssdp v0.0.2 // indirect
 	github.com/kr/pretty v0.2.1
-	github.com/libp2p/go-libp2p v0.13.0
+	github.com/libp2p/go-libp2p v0.14.4
 	github.com/libp2p/go-libp2p-circuit v0.4.0
-	github.com/libp2p/go-libp2p-core v0.8.5
+	github.com/libp2p/go-libp2p-core v0.8.6
 	github.com/libp2p/go-libp2p-discovery v0.5.0
-	github.com/libp2p/go-libp2p-kad-dht v0.11.1
-	github.com/libp2p/go-libp2p-noise v0.1.2 // indirect
+	github.com/libp2p/go-libp2p-kad-dht v0.13.1
 	github.com/libp2p/go-libp2p-pubsub v0.4.1
 	github.com/libp2p/go-libp2p-quic-transport v0.10.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
-	github.com/libp2p/go-libp2p-transport-upgrader v0.4.0
-	github.com/libp2p/go-netroute v0.1.4 // indirect
+	github.com/libp2p/go-libp2p-transport-upgrader v0.4.2
 	github.com/markbates/pkger v0.17.1
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/mdomke/git-semver/v5 v5.0.0
@@ -76,11 +72,11 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/mr-tron/base58 v1.2.0
-	github.com/multiformats/go-multiaddr v0.3.1
+	github.com/multiformats/go-multiaddr v0.3.3
 	github.com/multiformats/go-multiaddr-dns v0.3.1
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.0.15
-	github.com/multiformats/go-multistream v0.2.1
+	github.com/multiformats/go-multistream v0.2.2
 	github.com/oklog/run v1.1.0
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/peterbourgon/ff/v3 v3.0.0
@@ -94,13 +90,12 @@ require (
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
 	github.com/tj/assert v0.0.3
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
-	go.opencensus.io v0.22.5 // indirect
 	go.uber.org/goleak v1.1.10
 	go.uber.org/multierr v1.7.0
-	go.uber.org/zap v1.16.0
-	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
+	go.uber.org/zap v1.18.1
+	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08
-	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1
+	golang.org/x/net v0.0.0-20210423184538-5f58ad60dda6
 	golang.org/x/tools v0.1.2
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
