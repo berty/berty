@@ -8,6 +8,7 @@ import {
 	ViewToken,
 	Animated,
 	Easing,
+	Dimensions,
 } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
@@ -24,6 +25,7 @@ import { timeFormat } from '../helpers'
 import { TabItems } from './file-uploads/types'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
+
 import { useReplyReaction } from './ReplyReactionContext'
 import { RESULTS } from 'react-native-permissions'
 
@@ -33,6 +35,7 @@ const {
 
 const isTablet = deviceType === 'pad'
 
+const { width } = Dimensions.get('window')
 //
 // ChatFooter => Textinput for type message
 //
@@ -165,6 +168,7 @@ export const ChatFooter: React.FC<{
 	const client = useClient()
 
 	const [message, setMessage] = useState('')
+	const [isRecording, setRecording] = useState(false)
 	const [inputHeight, setInputHeight] = useState<number>(35)
 	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 	const inputRef = useRef<TextInput>(null)
@@ -257,15 +261,61 @@ export const ChatFooter: React.FC<{
 	const _aFixLeft = useRef(new Animated.Value(0)).current
 	const _aFixMicro = useRef(new Animated.Value(0)).current
 	const _aFixSend = useRef(new Animated.Value(0)).current
-	const _aOpacity = useRef(new Animated.Value(0)).current
+	const _aPaddingLeft = useRef(new Animated.Value(0)).current
 	const _aOpacitySendButton = useRef(new Animated.Value(0)).current
 
-	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(60 * scaleSize)])
-	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 5 * scaleSize])
+	//new changes
+	const _addMediaOpacity = useRef(new Animated.Value(1)).current
+	const _bertyzOpacity = useRef(new Animated.Value(1)).current
+	const _cameraOpacity = useRef(new Animated.Value(1)).current
+	const _microOpacity = useRef(new Animated.Value(1)).current
+	const _trashOpacity = useRef(new Animated.Value(1)).current
+	const _microScale = useRef(new Animated.Value(0)).current
+	const _trashScale = useRef(new Animated.Value(0)).current
+
+	const _addTranslate = useRef(new Animated.Value(0.5)).current
+	const _bertyzTranslate = useRef(new Animated.Value(0.5)).current
+	const _cameraTranslate = useRef(new Animated.Value(0.5)).current
+	const _microTranslate = useRef(new Animated.Value(0.5)).current
+	const _trashTranslate = useRef(new Animated.Value(0)).current
+	const _trashAnimationProgress = useRef(new Animated.Value(0)).current
+	const _microBorderScale = useRef(new Animated.Value(0)).current
+
+	const aMaxWidth = createAnimationInterpolation(_aMaxWidth, [0, -(94 * scaleSize)])
+	const aFixLeft = createAnimationInterpolation(_aFixLeft, [0, 40 * scaleSize])
 	const aFixMicro = createAnimationInterpolation(_aFixMicro, [0 * scaleSize, -120 * scaleSize])
 	const aFixSend = createAnimationInterpolation(_aFixMicro, [50, -55 * scaleSize])
-	const aOpacity = createAnimationInterpolation(_aOpacity, [1, 0])
-	const aOpacitySendButton = createAnimationInterpolation(_aOpacity, [0, 1])
+	const aPaddingLeft = createAnimationInterpolation(_aPaddingLeft, [0, 45])
+	const aOpacitySendButton = createAnimationInterpolation(_aOpacitySendButton, [0, 1])
+
+	//new changes
+	const addMediaOpacity = createAnimationInterpolation(_addMediaOpacity, [0, 1])
+	const bertyzOpacity = createAnimationInterpolation(_bertyzOpacity, [0, 1])
+	const cameraOpacity = createAnimationInterpolation(_cameraOpacity, [0, 1])
+	const microOpacity = createAnimationInterpolation(_microOpacity, [0, 1])
+	const trashOpacity = createAnimationInterpolation(_trashOpacity, [0, 1])
+	const microScale = createAnimationInterpolation(_microScale, [1, 2])
+	const trashScale = createAnimationInterpolation(_trashScale, [1, 2])
+	const microBorderScale = createAnimationInterpolation(_microBorderScale, [1, 3])
+
+	const addTranslate = createAnimationInterpolation(_addTranslate, [
+		-120 * scaleSize,
+		120 * scaleSize,
+	])
+
+	const bertyzTranslate = createAnimationInterpolation(_bertyzTranslate, [
+		-120 * scaleSize,
+		120 * scaleSize,
+	])
+	const cameraTranslate = createAnimationInterpolation(_cameraTranslate, [
+		-120 * scaleSize,
+		120 * scaleSize,
+	])
+	const microTranslate = createAnimationInterpolation(_microTranslate, [-width, width])
+	const trashTranslate = createAnimationInterpolation(_trashTranslate, [
+		-240 * scaleSize,
+		240 * scaleSize,
+	])
 
 	const keyboardWillShow = useCallback(
 		(event?: any) => {
@@ -275,11 +325,26 @@ export const ChatFooter: React.FC<{
 				createAnimationTiming(_aFixLeft, 1, duration),
 				createAnimationTiming(_aFixMicro, 1, duration),
 				createAnimationTiming(_aFixSend, 1, duration),
-				createAnimationTiming(_aOpacity, 1, duration),
+				createAnimationTiming(_aPaddingLeft, 1, duration),
+				createAnimationTiming(_bertyzOpacity, 0, duration),
+				createAnimationTiming(_cameraOpacity, 0, duration),
+				createAnimationTiming(_microOpacity, 0, duration),
+				createAnimationTiming(_addMediaOpacity, 0, duration),
 				createAnimationTiming(_aOpacitySendButton, 1, duration),
 			]).start()
 		},
-		[_aMaxWidth, _aFixLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
+		[
+			_aMaxWidth,
+			_aFixLeft,
+			_aPaddingLeft,
+			_bertyzOpacity,
+			_cameraOpacity,
+			_microOpacity,
+			_aFixMicro,
+			_aOpacitySendButton,
+			_aFixSend,
+			_addMediaOpacity,
+		],
 	)
 	const keyboardWillHide = useCallback(
 		(event?: any) => {
@@ -289,11 +354,26 @@ export const ChatFooter: React.FC<{
 				createAnimationTiming(_aFixLeft, 0, duration),
 				createAnimationTiming(_aFixMicro, 0, duration),
 				createAnimationTiming(_aFixSend, 0, duration),
-				createAnimationTiming(_aOpacity, 0, duration),
+				createAnimationTiming(_aPaddingLeft, 0, duration),
+				createAnimationTiming(_bertyzOpacity, 1, duration),
+				createAnimationTiming(_cameraOpacity, 1, duration),
+				createAnimationTiming(_microOpacity, 1, duration),
+				createAnimationTiming(_addMediaOpacity, 1, duration),
 				createAnimationTiming(_aOpacitySendButton, 0, duration),
 			]).start()
 		},
-		[_aMaxWidth, _aFixLeft, _aOpacity, _aFixMicro, _aOpacitySendButton, _aFixSend],
+		[
+			_aMaxWidth,
+			_aFixLeft,
+			_aPaddingLeft,
+			_bertyzOpacity,
+			_cameraOpacity,
+			_microOpacity,
+			_aFixMicro,
+			_aOpacitySendButton,
+			_aFixSend,
+			_addMediaOpacity,
+		],
 	)
 	useEffect(() => {
 		if (message.length > 0) {
@@ -332,32 +412,83 @@ export const ChatFooter: React.FC<{
 				<SecurityAccess activeTab={activateTab} close={() => setSecurityAccessVisibility(false)} />
 			)}
 			<RecordComponent
+				onStartRecording={() => {
+					setRecording(true)
+					const duration = aDuration
+					Animated.parallel([
+						createAnimationTiming(_cameraOpacity, 0, duration),
+						createAnimationTiming(_bertyzOpacity, 0, duration),
+						createAnimationTiming(_addMediaOpacity, 0, duration),
+						createAnimationTiming(_addTranslate, 0, duration),
+						createAnimationTiming(_bertyzTranslate, 0, duration),
+						createAnimationTiming(_cameraTranslate, 0, duration),
+						createAnimationTiming(_microScale, 1, duration),
+						createAnimationTiming(_microTranslate, 0.49, duration),
+						createAnimationTiming(_trashOpacity, 1, duration),
+						createAnimationTiming(_trashTranslate, 0.5, duration),
+					]).start(() => {
+						Animated.parallel([
+							createAnimationTiming(_addTranslate, 1, duration),
+							createAnimationTiming(_bertyzTranslate, 1, duration),
+						]).start()
+					})
+				}}
+				onStopRecording={() => {
+					setRecording(false)
+					const duration = aDuration
+					Animated.parallel([
+						createAnimationTiming(_cameraOpacity, 1, duration),
+						createAnimationTiming(_bertyzOpacity, 1, duration),
+						createAnimationTiming(_addMediaOpacity, 1, duration),
+						createAnimationTiming(_addTranslate, 0.5, duration),
+						createAnimationTiming(_bertyzTranslate, 0.5, duration),
+						createAnimationTiming(_cameraTranslate, 0.5, duration),
+						createAnimationTiming(_microScale, 0, duration),
+						createAnimationTiming(_microTranslate, 0.5, duration),
+						createAnimationTiming(_trashOpacity, 0, duration),
+						createAnimationTiming(_trashTranslate, 1, duration),
+					]).start(() => {
+						Animated.parallel([createAnimationTiming(_trashTranslate, 0, 1)]).start()
+					})
+				}}
+				onDeleteRecording={(callback) => {
+					const duration = aDuration
+					Animated.parallel([
+						createAnimationTiming(_microScale, 0, duration),
+						createAnimationTiming(_microTranslate, 0.15, duration),
+						createAnimationTiming(_trashTranslate, 0.55, duration),
+						createAnimationTiming(_trashScale, 0.7, duration),
+						Animated.timing(_trashAnimationProgress, {
+							toValue: 1,
+							duration: duration * 2,
+							useNativeDriver: true,
+							easing: Easing.linear,
+						}),
+					]).start(() => {
+						Animated.parallel([
+							createAnimationTiming(_microTranslate, 0.3, duration),
+							createAnimationTiming(_trashTranslate, 0.5, duration),
+							createAnimationTiming(_trashScale, 0, duration),
+							Animated.timing(_trashAnimationProgress, {
+								toValue: 0,
+								duration: 1,
+								useNativeDriver: true,
+								easing: Easing.linear,
+							}),
+						]).start(() => callback?.())
+					})
+				}}
 				aFixMicro={aFixMicro}
-				component={
-					<Animated.View
-						style={[
-							{
-								justifyContent: 'center',
-								alignItems: 'center',
-								borderRadius: 100,
-								backgroundColor: colors['background-header'],
-								width: 36 * scaleSize,
-								height: 36 * scaleSize,
-								opacity: aOpacity,
-							},
-						]}
-					>
-						<Icon
-							name='microphone-footer'
-							pack='custom'
-							height={18 * scaleSize}
-							width={18 * scaleSize}
-							fill={colors['reverted-main-text']}
-						/>
-					</Animated.View>
-				}
+				microOpacity={microOpacity}
+				microScale={microScale}
+				microTranslate={microTranslate}
 				convPk={convPk}
 				disableLockMode={false}
+				trashOpacity={trashOpacity}
+				trashTranslate={trashTranslate}
+				trashScale={trashScale}
+				trashAnimationProgress={_trashAnimationProgress}
+				microBorderScale={microBorderScale}
 			>
 				<View
 					style={[
@@ -371,33 +502,39 @@ export const ChatFooter: React.FC<{
 						},
 					]}
 				>
-					<TouchableOpacity
-						style={[
-							{
-								backgroundColor: colors['input-background'],
-								zIndex: 3,
-								elevation: 3,
-								width: 37 * scaleSize,
-								height: 37 * scaleSize,
-								justifyContent: 'center',
-								alignItems: 'center',
-							},
-							padding.small,
-							border.radius.small,
-						]}
-						onPress={() => {
-							setSwipe(false)
-							setShowAddFileMenu(true)
+					<Animated.View
+						style={{
+							opacity: addMediaOpacity,
+							transform: [
+								{
+									translateX: addTranslate,
+								},
+							],
 						}}
 					>
-						{mediaCids.length > 0 && <Text>{mediaCids.length}</Text>}
-						<Icon
-							name='plus'
-							width={26 * scaleSize}
-							height={26 * scaleSize}
-							fill={colors['secondary-text']}
-						/>
-					</TouchableOpacity>
+						<TouchableOpacity
+							style={[
+								{
+									backgroundColor: colors['input-background'],
+									zIndex: 3,
+									elevation: 3,
+									width: 37 * scaleSize,
+									height: 37 * scaleSize,
+									justifyContent: 'center',
+									alignItems: 'center',
+								},
+								padding.small,
+								border.radius.big,
+							]}
+							onPress={() => {
+								setSwipe(false)
+								setShowAddFileMenu(true)
+							}}
+						>
+							{mediaCids.length > 0 && <Text>{mediaCids.length}</Text>}
+							<Icon name='plus' width={26 * scaleSize} height={26 * scaleSize} fill='#525BEC' />
+						</TouchableOpacity>
+					</Animated.View>
 					<View
 						style={{
 							flex: 1,
@@ -407,6 +544,29 @@ export const ChatFooter: React.FC<{
 							flexDirection: 'row',
 						}}
 					>
+						<Animated.View
+							style={[
+								{
+									right: aPaddingLeft,
+									opacity: bertyzOpacity,
+									transform: [
+										{
+											translateX: bertyzTranslate,
+										},
+									],
+								},
+							]}
+						>
+							<View style={[{ alignItems: 'center' }]}>
+								<Icon
+									pack='custom'
+									name='bertyzzz'
+									height={37 * scaleSize}
+									width={37 * scaleSize}
+								/>
+							</View>
+						</Animated.View>
+
 						<Animated.View
 							style={[
 								border.radius.medium,
@@ -436,6 +596,7 @@ export const ChatFooter: React.FC<{
 									(message.length > 0 || _isFocused) && { color: colors['background-header'] },
 									text.bold.small,
 									padding.left.small,
+
 									{
 										paddingVertical: 5 * scaleSize,
 									},
@@ -445,7 +606,7 @@ export const ChatFooter: React.FC<{
 									value={message}
 									ref={inputRef}
 									multiline
-									editable={disabled ? false : true}
+									editable={disabled || isRecording ? false : true}
 									onBlur={() => {
 										activeReplyInte && setActiveReplyInte()
 									}}
@@ -466,7 +627,7 @@ export const ChatFooter: React.FC<{
 											paddingRight: 12 * scaleSize,
 										},
 									]}
-									placeholder={placeholder}
+									placeholder={isRecording ? '' : placeholder}
 									placeholderTextColor={
 										!_isFocused ? colors['secondary-text'] : colors['background-header']
 									}
@@ -509,10 +670,15 @@ export const ChatFooter: React.FC<{
 						</Animated.View>
 						<Animated.View
 							style={{
-								opacity: aOpacity,
+								opacity: cameraOpacity,
 								flexDirection: 'row',
 								paddingLeft: 15 * scaleSize,
 								right: aFixMicro,
+								transform: [
+									{
+										translateX: cameraTranslate,
+									},
+								],
 							}}
 						>
 							<TouchableOpacity

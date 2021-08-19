@@ -24,10 +24,12 @@ import {
 	volumeValuePrecision,
 	voiceMemoFilename,
 } from './common'
-import { RecordingComponent } from './RecordingComponent'
-import { PreviewComponent } from './PreviewComponent'
+
 import { checkPermissions } from '@berty-tech/components/utils'
 import { RESULTS } from 'react-native-permissions'
+import LottieView from 'lottie-react-native'
+import { Visualizer } from './Visualizer'
+import trashLottie from '@berty-tech/assets/trash-lottie.json'
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -98,21 +100,42 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 
 export const RecordComponent: React.FC<{
 	convPk: string
-	component: React.ReactNode
 	aFixMicro: Animated.AnimatedInterpolation
+	microOpacity: Animated.AnimatedInterpolation
+	microScale: Animated.AnimatedInterpolation
+	microTranslate: Animated.AnimatedInterpolation
+	trashOpacity: Animated.AnimatedInterpolation
+	trashTranslate: Animated.AnimatedInterpolation
+	trashScale: Animated.AnimatedInterpolation
+	trashAnimationProgress: Animated.AnimatedInterpolation
+	microBorderScale: Animated.AnimatedInterpolation
 	distanceCancel?: number
 	distanceLock?: number
 	minAudioDuration?: number
 	disableLockMode?: boolean
+	onStartRecording: () => void
+	onStopRecording: () => void
+	onDeleteRecording: (callback: any) => void
 }> = ({
 	children,
-	component,
+
 	aFixMicro,
 	distanceCancel = 200,
-	distanceLock = 80,
+	distanceLock = 70,
 	disableLockMode = false,
 	minAudioDuration = 1000,
 	convPk,
+	microOpacity,
+	microScale,
+	microTranslate,
+	trashOpacity,
+	trashTranslate,
+	trashScale,
+	trashAnimationProgress,
+
+	onStopRecording,
+	onStartRecording,
+	onDeleteRecording,
 }) => {
 	const ctx = useMsgrContext()
 	const recorder = React.useRef<Recorder | undefined>(undefined)
@@ -135,7 +158,7 @@ export const RecordComponent: React.FC<{
 	const recordingColorVal = React.useRef(new Animated.Value(0)).current
 	const meteredValuesRef = useRef<number[]>([])
 	const [recordDuration, setRecordDuration] = useState<number | null>(null)
-
+	const lottieRef = useRef(null)
 	const isRecording =
 		recordingState === RecordingState.RECORDING ||
 		recordingState === RecordingState.RECORDING_LOCKED
@@ -194,16 +217,18 @@ export const RecordComponent: React.FC<{
 		if (clearRecordingInterval === null) {
 			return
 		}
-
+		meteredValuesRef.current = []
 		clearInterval(clearRecordingInterval)
 		setRecordingState(RecordingState.NOT_RECORDING)
+		onStopRecording()
 		setRecordDuration(null)
 		;(recorder.current as any)?.removeListener('meter', addMeteredValue)
-	}, [addMeteredValue, clearRecordingInterval])
+	}, [addMeteredValue, clearRecordingInterval, onStopRecording])
 
 	const sendComplete = useCallback(
 		({ duration }: { duration: number }) => {
 			Vibration.vibrate(400)
+
 			attachMedias(ctx.client!, [
 				{
 					filename: voiceMemoFilename,
@@ -317,7 +342,9 @@ export const RecordComponent: React.FC<{
 				setHelpMessageValue({
 					message: t('audio.record.tooltip.not-sent'),
 				})
-				setRecordingState(RecordingState.PENDING_CANCEL)
+
+				onDeleteRecording(() => setRecordingState(RecordingState.PENDING_CANCEL))
+
 				return
 			}
 
@@ -326,7 +353,16 @@ export const RecordComponent: React.FC<{
 				return
 			}
 		},
-		[disableLockMode, distanceCancel, distanceLock, recordingState, setHelpMessageValue, t, xy.x],
+		[
+			disableLockMode,
+			distanceCancel,
+			distanceLock,
+			recordingState,
+			setHelpMessageValue,
+			t,
+			xy.x,
+			onDeleteRecording,
+		],
 	)
 
 	const recordingPressStatus = useCallback(
@@ -376,8 +412,13 @@ export const RecordComponent: React.FC<{
 								console.warn(['err' + e])
 							}
 							setRecordingState(RecordingState.RECORDING)
+							onStartRecording()
 						}
 					})
+				}
+
+				if (recordingState === RecordingState.RECORDING_LOCKED) {
+					setRecordingState(RecordingState.COMPLETE)
 				}
 
 				return
@@ -393,7 +434,7 @@ export const RecordComponent: React.FC<{
 			}
 
 			if (e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED) {
-				setRecordingState(RecordingState.PENDING_CANCEL)
+				onDeleteRecording(() => setRecordingState(RecordingState.PENDING_CANCEL))
 				return
 			}
 		},
@@ -404,8 +445,25 @@ export const RecordComponent: React.FC<{
 			t,
 			updateCurrentTime,
 			addMeteredValue,
+			onStartRecording,
+			onDeleteRecording,
 		],
 	)
+
+	const getBorderScale = () => {
+		if (!meteredValuesRef.current.length) {
+			return 1.05
+		}
+		let meterScaleValue =
+			(5 - Math.log(-meteredValuesRef.current[meteredValuesRef.current.length - 1])) / 1.5
+
+		if (meterScaleValue < 1.05) {
+			return 1.05
+		} else if (meterScaleValue > 2) {
+			return 2
+		}
+		return meterScaleValue
+	}
 
 	return (
 		<View style={[{ flexDirection: 'row' }]}>
@@ -426,36 +484,84 @@ export const RecordComponent: React.FC<{
 					</View>
 				</TouchableOpacity>
 			)}
-			{isRecording && (
-				<RecordingComponent
-					recordingState={recordingState}
-					recordingColorVal={recordingColorVal}
-					setRecordingState={setRecordingState}
-					setHelpMessageValue={setHelpMessageValue}
-					timer={currentTime - recordingStart}
-				/>
-			)}
-			{recordingState === RecordingState.PREVIEW && (
-				<PreviewComponent
-					meteredValuesRef={meteredValuesRef}
-					recordDuration={recordDuration}
-					recordFilePath={recorderFilePath}
-					clearRecordingInterval={clearRecordingInterval}
-					setRecordingState={setRecordingState}
-					setHelpMessageValue={setHelpMessageValue}
-				/>
-			)}
-			{recordingState === RecordingState.NOT_RECORDING && (
-				<View style={[padding.left.scale(10), { flex: 1 }]}>{children}</View>
-			)}
-			{(recordingState === RecordingState.NOT_RECORDING ||
-				recordingState === RecordingState.RECORDING) && (
-				<LongPressGestureHandler
-					minDurationMs={0}
-					maxDist={100 * scaleSize}
-					onGestureEvent={updateRecordingPressEvent}
-					onHandlerStateChange={recordingPressStatus}
+
+			<Animated.View
+				style={[
+					{
+						opacity: trashOpacity,
+						zIndex: 102,
+						alignItems: 'center',
+						left: (37 + 20) * scaleSize,
+						position: 'absolute',
+						transform: [
+							{
+								translateX: trashTranslate,
+							},
+							{
+								scale: trashScale,
+							},
+						],
+					},
+				]}
+			>
+				<TouchableOpacity
+					style={{
+						height: 37 * scaleSize,
+						width: 37 * scaleSize,
+						backgroundColor: colors['background-header'],
+						borderRadius: 30 * scaleSize,
+						zIndex: 9999,
+					}}
+					onPress={() => {
+						onDeleteRecording(() => setRecordingState(RecordingState.PENDING_CANCEL))
+					}}
 				>
+					<LottieView
+						source={trashLottie}
+						autoPlay={false}
+						ref={lottieRef}
+						progress={trashAnimationProgress}
+					/>
+				</TouchableOpacity>
+			</Animated.View>
+
+			<View style={[padding.left.scale(10), { flex: 1 }]}>
+				{children}
+				{isRecording && <Visualizer data={meteredValuesRef.current} recordDuration={currentTime} />}
+			</View>
+
+			<LongPressGestureHandler
+				minDurationMs={0}
+				maxDist={100 * scaleSize}
+				onGestureEvent={updateRecordingPressEvent}
+				onHandlerStateChange={recordingPressStatus}
+			>
+				<View>
+					{isRecording && recordingState !== RecordingState.RECORDING_LOCKED && (
+						<View
+							style={{
+								justifyContent: 'center',
+								alignItems: 'center',
+								borderRadius: 100,
+								backgroundColor: colors['background-header'],
+								width: 36 * scaleSize,
+								height: 36 * scaleSize,
+								position: 'absolute',
+								top: -distanceLock - 30,
+								right: 34,
+								paddingVertical: 5,
+							}}
+						>
+							<Icon
+								name='lock'
+								pack='feather'
+								height={20 * scaleSize}
+								width={20 * scaleSize}
+								fill={colors['reverted-main-text']}
+							/>
+						</View>
+					)}
+
 					<Animated.View
 						style={[
 							{
@@ -463,37 +569,70 @@ export const RecordComponent: React.FC<{
 								justifyContent: 'center',
 								alignItems: 'flex-end',
 								paddingRight: 15 * scaleSize,
+								zIndex: 101,
+								opacity: microOpacity,
+								transform: [
+									{
+										scale: microScale,
+									},
+									{
+										translateX: microTranslate,
+									},
+								],
 							},
 						]}
 					>
-						{recordingState === RecordingState.RECORDING && (
-							<View
-								style={{
+						<Animated.View
+							style={{
+								height: 36 * scaleSize,
+								width: 36 * scaleSize,
+								position: 'absolute',
+								backgroundColor: `${colors['background-header']}70`,
+								borderRadius: 100,
+								left: 0,
+								right: 0,
+								transform: [
+									{
+										scale: getBorderScale(),
+									},
+								],
+							}}
+						/>
+
+						<Animated.View
+							style={[
+								{
 									justifyContent: 'center',
 									alignItems: 'center',
 									borderRadius: 100,
 									backgroundColor: colors['background-header'],
-									width: 36 * scaleSize,
 									height: 36 * scaleSize,
-									position: 'absolute',
-									top: -distanceLock - 30,
-									right: 16,
-									paddingVertical: 5,
-								}}
-							>
+									width: 36 * scaleSize,
+
+									zIndex: 101,
+								},
+							]}
+						>
+							{recordingState === RecordingState.RECORDING_LOCKED ? (
 								<Icon
-									name='lock'
-									pack='feather'
-									height={20 * scaleSize}
-									width={20 * scaleSize}
+									name='paper-plane-outline'
+									height={12 * scaleSize}
+									width={12 * scaleSize}
 									fill={colors['reverted-main-text']}
 								/>
-							</View>
-						)}
-						<View>{component}</View>
+							) : (
+								<Icon
+									name='microphone-footer'
+									pack='custom'
+									width={20 * scaleSize}
+									height={20 * scaleSize}
+									fill={colors['reverted-main-text']}
+								/>
+							)}
+						</Animated.View>
 					</Animated.View>
-				</LongPressGestureHandler>
-			)}
+				</View>
+			</LongPressGestureHandler>
 		</View>
 	)
 }
