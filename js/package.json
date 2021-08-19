@@ -76,7 +76,7 @@
     "react-native-restart": "^0.0.20",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.5.0",
-    "react-native-share": "^4.1.2",
+    "react-native-share": "^7.0.0",
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^3.1.1",
     "react-native-v8": "^0.64.0-patch.0",
