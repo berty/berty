@@ -258,7 +258,7 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Main.Permissions}
 				component={Components.Main.Permissions}
-				options={{ headerShown: false }}
+				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			{/* CreateGroup */}
 			<NavigationStack.Screen

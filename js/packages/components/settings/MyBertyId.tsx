@@ -79,6 +79,7 @@ const ContactRequestQR = () => {
 				value={account.link}
 				color={colors['background-header']}
 				mode='circle'
+				backgroundColor={colors['main-background']}
 			/>
 		</View>
 	)

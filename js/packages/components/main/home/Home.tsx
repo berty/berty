@@ -27,6 +27,7 @@ import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
+import { checkPermissions } from '@berty-tech/components/utils'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -34,7 +35,7 @@ const FooterButton: React.FC<{
 	name: string
 	fill: string
 	backgroundColor: string
-	onPress: () => void | undefined
+	onPress: () => Promise<void> | void
 }> = ({ name, fill, backgroundColor, onPress }) => {
 	const [{}, { scaleSize }] = useStyles()
 
@@ -332,7 +333,13 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 								name='qr'
 								fill={colors['secondary-text']}
 								backgroundColor={colors['main-background']}
-								onPress={() => navigate('Main.Scan')}
+								onPress={async () => {
+									await checkPermissions('camera', {
+										navigateNext: 'Main.Scan',
+										isToNavigate: true,
+										createNewAccount: false,
+									})
+								}}
 							/>
 							<FooterButton
 								name='add-new-group'

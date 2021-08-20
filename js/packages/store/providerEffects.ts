@@ -7,7 +7,6 @@ import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/
 import beapi from '@berty-tech/api'
 
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import i18n from '@berty-tech/berty-i18n'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { defaultThemeColor } from '@berty-tech/store/context'
@@ -87,10 +86,6 @@ const getPersistentOptions = async (
 			for (let key of Object.values(PersistentOptionsKeys)) {
 				opts[key] = { ...opts[key], ...(parsed[key] || {}) }
 			}
-		}
-
-		if (i18n.language !== opts.i18n.language) {
-			await i18n.changeLanguage(opts.i18n.language)
 		}
 
 		dispatch({

@@ -47,6 +47,7 @@ export const Permissions: React.FC<{}> = props => {
 			await createNewAccount()
 		}
 		if (navigateNext) {
+			props.navigation.goBack()
 			props.navigation.navigate(navigateNext, {})
 		} else {
 			props.navigation.goBack()

@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { ContactAvatar } from '@berty-tech/components/avatars'
 import { useAccountContactSearchResults, useThemeColor } from '@berty-tech/store/hooks'
+
+import { ContactAvatar } from '../avatars'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -43,6 +44,7 @@ const ContactItem: React.FC<ContactItemProps> = ({
 }) => {
 	const [{ row, margin, padding }, { scaleSize }] = useStyles()
 	const _styles = useStylesCreateGroup()
+	const colors = useThemeColor()
 	return (
 		<View>
 			<TouchableOpacity
@@ -57,7 +59,14 @@ const ContactItem: React.FC<ContactItemProps> = ({
 			>
 				<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
 					<ContactAvatar size={50 * scaleSize} publicKey={contact.publicKey} />
-					<Text numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
+					<Text
+						numberOfLines={1}
+						style={[
+							margin.left.small,
+							row.item.justify,
+							{ flexShrink: 1, color: colors['main-text'] },
+						]}
+					>
 						{contact.displayName}
 					</Text>
 				</View>
