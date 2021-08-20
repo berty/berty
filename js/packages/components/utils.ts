@@ -6,8 +6,7 @@ import 'string.fromcodepoint'
 
 import { WelshProtocolServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { checkNotifications, check, PERMISSIONS, RESULTS } from 'react-native-permissions'
-
-import { navigate } from '@berty-tech/navigation'
+import { useEffect, useRef } from 'react'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
 
@@ -83,13 +82,29 @@ export const getEmojiByName = (name: string) => {
 	return toEmoji(requiredSource?.unified)
 }
 
+export const useTimeout = (callback: () => void, delay: number | null) => {
+	const savedCallback = useRef(callback)
+
+	// Remember the latest callback if it changes.
+	useEffect(() => {
+		savedCallback.current = callback
+	}, [callback])
+
+	// Set up the timeout.
+	useEffect(() => {
+		// Don't schedule if no delay is specified.
+		if (delay === null) {
+			return
+		}
+		const id = setTimeout(() => savedCallback.current(), delay)
+		return () => clearTimeout(id)
+	}, [delay])
+}
+
 export const checkPermissions = async (
 	permissionType: 'p2p' | 'audio' | 'notification' | 'camera',
-	options = {
-		isToNavigate: true,
-		navigateNext: '',
-		createNewAccount: false,
-	},
+	navigate: any,
+	options?: { createNewAccount?: boolean; isToNavigate?: boolean; navigateNext?: string },
 ) => {
 	let status
 	if (permissionType === 'notification') {
@@ -116,15 +131,16 @@ export const checkPermissions = async (
 		)
 	}
 
-	if ((status === RESULTS.DENIED || status === RESULTS.BLOCKED) && options.isToNavigate) {
+	console.log('RESULTS', status)
+	if ((status === RESULTS.DENIED || status === RESULTS.BLOCKED) && options?.isToNavigate) {
 		navigate('Main.Permissions', {
 			permissionType,
 			permissionStatus: status,
-			navigateNext: options.navigateNext,
-			createNewAccount: options.createNewAccount,
+			navigateNext: options?.navigateNext,
+			createNewAccount: options?.createNewAccount,
 		})
-	} else if (options.navigateNext) {
-		navigate(options.navigateNext, {})
+	} else if (options?.navigateNext) {
+		navigate(options?.navigateNext, {})
 	}
 
 	return status

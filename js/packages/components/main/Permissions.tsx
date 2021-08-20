@@ -9,17 +9,19 @@ import {
 	RESULTS,
 	openSettings,
 } from 'react-native-permissions'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { accountService, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useThemeColor } from '@berty-tech/store/hooks'
-
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
 import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
 import p2pLottie from '@berty-tech/assets/p2p-lottie.json'
-import { checkPermissions } from '../utils'
 import beapi from '@berty-tech/api'
+import { ScreenProps } from '@berty-tech/navigation'
+
+import { checkPermissions } from '../utils'
 
 const animations = {
 	audio: audioLottie,
@@ -28,40 +30,40 @@ const animations = {
 	p2p: p2pLottie,
 }
 
-export const Permissions: React.FC<{}> = props => {
+export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { params } }) => {
 	const appState = useRef(AppState.currentState)
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const { persistentOptions, setPersistentOption, createNewAccount, selectedAccount } =
 		useMsgrContext()
+	const navigation = useNavigation()
 	const {
 		permissionType,
 		permissionStatus,
 		navigateNext,
 		createNewAccount: isToCreateNewAccount,
-	} = props?.route?.params
+	} = params
 
 	const handleOnComplete = async () => {
 		if (isToCreateNewAccount) {
 			await createNewAccount()
 		}
 		if (navigateNext) {
-			props.navigation.goBack()
-			props.navigation.navigate(navigateNext, {})
+			navigation.navigate(navigateNext, {})
 		} else {
-			props.navigation.goBack()
+			navigation.goBack()
 		}
 	}
 
 	const handleAppStateChange = async (nextAppState: string) => {
 		if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-			const status = await checkPermissions(permissionType, {
+			const status = await checkPermissions(permissionType, navigation.navigate, {
 				isToNavigate: false,
 			})
 
 			if (status === RESULTS.GRANTED) {
-				handleOnComplete()
+				await handleOnComplete()
 			}
 		}
 	}
@@ -142,7 +144,7 @@ export const Permissions: React.FC<{}> = props => {
 		} catch (err) {
 			console.log('request permission err:', err)
 		}
-		handleOnComplete()
+		await handleOnComplete()
 	}
 
 	return (

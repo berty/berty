@@ -6,7 +6,6 @@ import RNFS from 'react-native-fs'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import beapi from '@berty-tech/api'
 
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { defaultThemeColor } from '@berty-tech/store/context'
@@ -348,31 +347,28 @@ export const openingClients = (
 
 // handle state OpeningMarkConversationsAsClosed
 export const openingCloseConvos = async (
-	appState: MessengerAppState,
+	state: MsgrState,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
-	client: ServiceClientType<beapi.messenger.MessengerService> | null,
-	conversations: { [key: string]: any },
-	welcomeModal: boolean,
 ) => {
-	if (appState !== MessengerAppState.OpeningMarkConversationsAsClosed) {
+	if (state.appState !== MessengerAppState.OpeningMarkConversationsAsClosed) {
 		return
 	}
 
-	if (client === null) {
+	if (state.client === null) {
 		console.warn('client is null')
 		return
 	}
 
-	for (const conv of Object.values(conversations).filter(conv => conv.isOpen) as any) {
-		client.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
+	for (const conv of Object.values(state.conversations).filter(conv => conv?.isOpen) as any) {
+		state.client.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
 			console.warn(`failed to close conversation "${conv.displayName}",`, e)
 		})
 	}
 
-	welcomeModal
-		? dispatch({ type: MessengerActions.SetStatePreReady })
-		: dispatch({ type: MessengerActions.SetStateReady })
+	state.persistentOptions.onBoardingFinished.isFinished
+		? dispatch({ type: MessengerActions.SetStateReady })
+		: dispatch({ type: MessengerActions.SetStatePreReady })
 }
 
 // handle state PreReady

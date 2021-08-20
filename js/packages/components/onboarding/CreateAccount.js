@@ -41,6 +41,7 @@ const CreateAccountBody = ({ next }) => {
 	const { t } = useTranslation()
 	const [name, setName] = React.useState('')
 	const [isPressed, setIsPressed] = useState(false)
+	const { navigate } = useNavigation()
 
 	React.useEffect(() => {
 		ctx
@@ -53,13 +54,13 @@ const CreateAccountBody = ({ next }) => {
 		const preset = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.Preset)
 
 		if (preset === 'performance') {
-			const status = await checkPermissions('p2p', {
+			const status = await checkPermissions('p2p', navigate, {
 				isToNavigate: false,
 			})
 			if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
 				await ctx.createNewAccount()
 			} else {
-				await checkPermissions('p2p', {
+				await checkPermissions('p2p', navigate, {
 					navigateNext: 'Onboarding.SetupFinished',
 					createNewAccount: true,
 					isToNavigate: true,
@@ -69,7 +70,7 @@ const CreateAccountBody = ({ next }) => {
 			await ctx.createNewAccount()
 		}
 		setIsPressed(true)
-	}, [ctx])
+	}, [ctx, navigate])
 
 	const onPress = React.useCallback(async () => {
 		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
@@ -104,7 +105,7 @@ const CreateAccountBody = ({ next }) => {
 						loop={false}
 						onAnimationFinish={async () => {
 							Vibration.vibrate(500)
-							const status = await checkPermissions('p2p', {
+							const status = await checkPermissions('p2p', navigate, {
 								isToNavigate: false,
 							})
 							if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {

@@ -48,7 +48,7 @@ export const Body: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const handleSkip = async () => {
 		closeModal()
 
-		const notificationStatus = await checkPermissions('notification', {
+		const notificationStatus = await checkPermissions('notification', navigate, {
 			isToNavigate: false,
 		})
 

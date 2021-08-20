@@ -67,7 +67,7 @@ const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void 
 export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
 	const checkNotificationPermission = route?.params?.checkNotificationPermission
 	useNotificationsInhibitor(() => true)
-	const { goBack } = useNavigation()
+	const { goBack, navigate } = useNavigation()
 	const { persistentOptions, setPersistentOption } = useMsgrContext()
 	const colors = useThemeColor()
 
@@ -75,7 +75,7 @@ export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }
 		goBack()
 
 		if (checkNotificationPermission) {
-			const notificationStatus = await checkPermissions('notification', {
+			const notificationStatus = await checkPermissions('notification', navigate, {
 				isToNavigate: false,
 			})
 			if (notificationStatus === RESULTS.GRANTED) {
@@ -90,7 +90,7 @@ export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }
 					},
 				})
 			} else {
-				checkPermissions('notification')
+				await checkPermissions('notification', navigate)
 			}
 		}
 	}

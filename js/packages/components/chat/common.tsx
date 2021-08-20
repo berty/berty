@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
 import moment from 'moment'
 import ImagePicker from 'react-native-image-crop-picker'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
@@ -162,6 +163,7 @@ export const ChatFooter: React.FC<{
 }> = ({ convPk, disabled = false, placeholder }) => {
 	const ctx = useMsgrContext()
 	const client = useClient()
+	const { navigate } = useNavigation()
 
 	const [message, setMessage] = useState('')
 	const [inputHeight, setInputHeight] = useState<number>(35)
@@ -525,7 +527,7 @@ export const ChatFooter: React.FC<{
 								]}
 								onPress={async () => {
 									setActivateTab(TabItems.Camera)
-									const permissionStatus = await checkPermissions('camera')
+									const permissionStatus = await checkPermissions('camera', navigate)
 									if (permissionStatus !== RESULTS.GRANTED) {
 										return
 									}
@@ -538,7 +540,7 @@ export const ChatFooter: React.FC<{
 											cropping: false,
 										})
 
-										prepareMediaAndSend([
+										await prepareMediaAndSend([
 											{
 												filename: '',
 												uri: image.path || image.sourceURL || '',

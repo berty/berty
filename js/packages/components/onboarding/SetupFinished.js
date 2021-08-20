@@ -4,7 +4,7 @@ import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
-import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
+import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -15,7 +15,7 @@ const SetupFinishedBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
-	const { dispatch } = useMsgrContext()
+	const { dispatch, setPersistentOption } = useMsgrContext()
 
 	return (
 		<Translation>
@@ -80,6 +80,12 @@ const SetupFinishedBody = () => {
 								button={{
 									text: t('onboarding.setup-finished.button'),
 									onPress: async () => {
+										await setPersistentOption({
+											type: PersistentOptionsKeys.OnBoardingFinished,
+											payload: {
+												isFinished: true,
+											},
+										})
 										setIsFinished(true)
 										Vibration.vibrate([500])
 										setTimeout(() => dispatch({ type: MessengerActions.SetStateReady }), 2000)

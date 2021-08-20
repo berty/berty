@@ -1,15 +1,15 @@
 import React from 'react'
 import { StyleProp, TouchableHighlight, View, ViewProps } from 'react-native'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { accountService, useMsgrContext } from '@berty-tech/store/context'
+import { useMsgrContext } from '@berty-tech/store/context'
 import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
-import { Routes, useNavigation } from '@berty-tech/navigation'
+import { Routes } from '@berty-tech/navigation'
 
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
 import { pbDateToNum, timeFormat } from '../../helpers'
@@ -391,64 +391,53 @@ export const Conversations: React.FC<ConversationsProps> = ({
 }) => {
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
-	const { selectedAccount } = useMsgrContext()
 	const colors = useThemeColor()
 
 	return items.length || suggestions.length || configurations.length ? (
-		<SafeAreaConsumer>
-			{insets => (
-				<View
-					onLayout={onLayout}
-					style={[
-						style,
-						{
-							paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0),
-							backgroundColor: colors['main-background'],
-						},
-					]}
-				>
-					{configurations.map(config => (
-						<SuggestionsItem
-							key={config.key}
-							displayName={t(config.displayName)}
-							desc={t(config.desc)}
-							link=''
-							icon={config.icon}
-							addBot={async () => {
-								if (config.key === 'network') {
-									const netConf = await accountService.networkConfigGet({
-										accountId: selectedAccount,
-									})
+		<View
+			onLayout={onLayout}
+			style={[
+				style,
+				{
+					paddingBottom: 100,
+					backgroundColor: colors['main-background'],
+				},
+			]}
+		>
+			{configurations.map(config => (
+				<SuggestionsItem
+					key={config.key}
+					displayName={t(config.displayName)}
+					desc={t(config.desc)}
+					link=''
+					icon={config.icon}
+					addBot={async () => {
+						switch (config.key) {
+							case 'network':
+								navigate('Main.NetworkOptions')
+							case 'notification':
+								await checkPermissions('notification', navigate)
+							case 'replicate':
+								navigate('Onboarding.ServicesAuth')
+							default:
+								return
+						}
+					}}
+					style={{ backgroundColor: `${colors[`${config.color}`]}20` }}
+				/>
+			))}
 
-									if (
-										netConf.currentConfig?.showDefaultServices !==
-										beapi.account.NetworkConfig.Flag.Enabled
-									) {
-										navigate.main.networkOptions()
-									} else {
-										navigate.onboarding.servicesAuth()
-									}
-								} else {
-									await checkPermissions('notification')
-								}
-							}}
-							style={{ backgroundColor: `${colors[`${config.color}`]}20` }}
-						/>
-					))}
-
-					{items.map(i => (
-						<ConversationsItem key={i.publicKey} {...i} />
-					))}
-					{suggestions.map((i: any, key: any) => (
-						<SuggestionsItem
-							key={key}
-							{...i}
-							desc={`${t('main.suggestion-display-name-initial')} ${i.displayName}`}
-							addBot={addBot}
-						/>
-					))}
-				</View>
-			)}
-		</SafeAreaConsumer>
+			{items.map(i => (
+				<ConversationsItem key={i.publicKey} {...i} />
+			))}
+			{suggestions.map((i: any, key: any) => (
+				<SuggestionsItem
+					key={key}
+					{...i}
+					desc={`${t('main.suggestion-display-name-initial')} ${i.displayName}`}
+					addBot={addBot}
+				/>
+			))}
+		</View>
 	) : null
 }
