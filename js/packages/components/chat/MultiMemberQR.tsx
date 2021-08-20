@@ -1,25 +1,23 @@
 import React from 'react'
 import QRCode from 'react-native-qrcode-svg'
-import { ScrollView, Share, TouchableOpacity, View, Text, StatusBar } from 'react-native'
+import { Share, TouchableOpacity, View, Text, StatusBar } from 'react-native'
 import { Icon, Layout } from '@ui-kitten/components'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
-import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import { useAccount, useConversation, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
 
 const _contentScaleFactor = 0.66
 
 const useStylesMultiMemberQr = () => {
-	const _iconIdSize = 40
+	const _iconIdSize = 30
 	const _iconShareSize = 26
-	const _titleSize = 26
-	const requestAvatarSize = 100
+	const _titleSize = 25
+	const requestAvatarSize = 80
 
 	const [, { fontScale, scaleSize }] = useStyles()
 	const _bertyIdButtonSize = 60 * scaleSize
@@ -50,7 +48,7 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 				border.radius.scale(30),
 				margin.horizontal.medium,
 				padding.top.large,
-				{ backgroundColor: colors['main-background'] },
+				{ backgroundColor: colors['main-background'], top: windowHeight / 10 },
 				styleBertyIdContent,
 			]}
 		>
@@ -103,7 +101,7 @@ const BertyIdShare: React.FC<{}> = () => {
 			style={[
 				row.item.bottom,
 				border.shadow.medium,
-				{ backgroundColor: colors['positive-asset'] },
+				{ backgroundColor: colors['positive-asset'], top: 45 },
 				styleBertyIdButton,
 			]}
 			onPress={async () => {
@@ -130,76 +128,24 @@ const BertyIdShare: React.FC<{}> = () => {
 }
 
 const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
-	const { goBack } = useNavigation()
-	const [{ padding, margin, flex }, { windowHeight, scaleSize }] = useStyles()
+	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { titleSize, iconIdSize } = useStylesMultiMemberQr()
-	const { t } = useTranslation()
 
 	return (
-		<SafeAreaConsumer>
-			{insets => {
-				return (
-					<ScrollView
-						bounces={false}
-						style={[
-							padding.medium,
-							{
-								paddingTop: scaleSize * ((insets?.top || 0) + 16),
-								flexGrow: 2,
-								flexBasis: '100%',
-								backgroundColor: colors['background-header'],
-							},
-						]}
-					>
-						<View
-							style={[
-								flex.direction.row,
-								flex.align.center,
-								flex.justify.spaceBetween,
-								{ marginBottom: windowHeight * 0.1 },
-							]}
-						>
-							<View style={[flex.direction.row, flex.align.center]}>
-								<TouchableOpacity
-									onPress={goBack}
-									style={{ alignItems: 'center', justifyContent: 'center' }}
-								>
-									<Icon
-										name='arrow-down-outline'
-										width={30}
-										height={30}
-										fill={colors['reverted-main-text']}
-									/>
-								</TouchableOpacity>
-								<Text
-									style={[
-										margin.left.scale(10),
-										{
-											fontWeight: '700',
-											fontSize: titleSize,
-											lineHeight: 1.25 * titleSize,
-											color: colors['reverted-main-text'],
-										},
-									]}
-								>
-									{t('chat.multi-member-qr.title')}
-								</Text>
-							</View>
-							<Icon
-								name='users'
-								pack='custom'
-								width={iconIdSize}
-								height={iconIdSize}
-								fill={colors['reverted-main-text']}
-							/>
-						</View>
-						<SelectedContent conv={conv} />
-						<BertyIdShare />
-					</ScrollView>
-				)
-			}}
-		</SafeAreaConsumer>
+		<View
+			style={[
+				padding.medium,
+				{
+					paddingTop: 16 * scaleSize,
+					flexGrow: 2,
+					flexBasis: '100%',
+					backgroundColor: colors['background-header'],
+				},
+			]}
+		>
+			<SelectedContent conv={conv} />
+			<BertyIdShare />
+		</View>
 	)
 }
 
@@ -210,15 +156,29 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 }) => {
 	const colors = useThemeColor()
 	const conv = useConversation(convId)
+	const { iconIdSize } = useStylesMultiMemberQr()
+	const navigation = useNavigation()
+
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<Icon
+					name='users'
+					pack='custom'
+					width={iconIdSize}
+					height={iconIdSize}
+					fill={colors['reverted-main-text']}
+				/>
+			),
+		})
+	})
 	if (!conv) {
 		return null
 	}
 	return (
 		<Layout style={[{ backgroundColor: 'transparent', flex: 1 }]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<SwipeNavRecognizer>
-				<MultiMemberComponent conv={conv} />
-			</SwipeNavRecognizer>
+			<MultiMemberComponent conv={conv} />
 		</Layout>
 	)
 }

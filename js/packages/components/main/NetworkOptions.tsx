@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, Image, SafeAreaView, StatusBar } from 'react-native'
+import { View, TouchableOpacity, Image, StatusBar } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { RESULTS } from 'react-native-permissions'
 import { Text } from '@ui-kitten/components'
@@ -77,12 +77,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 		}
 	}
 	return (
-		<SafeAreaView
-			style={{
-				backgroundColor: colors['alt-secondary-background-header'],
-				flex: 1,
-			}}
-		>
+		<View style={{ backgroundColor: colors['alt-secondary-background-header'], flex: 1 }}>
 			<StatusBar
 				backgroundColor={colors['alt-secondary-background-header']}
 				barStyle='light-content'
@@ -271,6 +266,6 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 					</View>
 				</View>
 			</View>
-		</SafeAreaView>
+		</View>
 	)
 }

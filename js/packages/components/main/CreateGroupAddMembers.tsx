@@ -7,8 +7,7 @@ import {
 	TouchableWithoutFeedback,
 	StatusBar,
 } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useNavigation } from '@berty-tech/navigation'
@@ -17,7 +16,6 @@ import { useContactList, useThemeColor } from '@berty-tech/store/hooks'
 import { ContactPicker } from '@berty-tech/components/shared-components'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ContactAvatar } from '../avatars'
 
 export const Header: React.FC<{
@@ -187,75 +185,6 @@ export const MemberList: React.FC<{
 	)
 }
 
-export const CreateGroupHeader: React.FC<{}> = () => {
-	const navigation = useNavigation()
-	const [{ padding, margin, text }, { scaleSize }] = useStyles()
-	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
-
-	return (
-		<View
-			style={[
-				padding.medium,
-				margin.bottom.small,
-				{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-				},
-			]}
-		>
-			<View
-				style={[
-					{
-						flexDirection: 'row',
-						alignItems: 'center',
-					},
-				]}
-			>
-				<TouchableOpacity
-					onPress={navigation.goBack}
-					style={{
-						padding: 7,
-						alignItems: 'center',
-						justifyContent: 'center',
-					}}
-				>
-					<Icon
-						name='arrow-back-outline'
-						width={_iconArrowBackSize * scaleSize}
-						height={_iconArrowBackSize * scaleSize}
-						fill={colors['reverted-main-text']}
-					/>
-				</TouchableOpacity>
-				<Text
-					style={[
-						text.size.huge,
-						{
-							fontWeight: '700',
-							lineHeight: 1.25 * _titleSize,
-							marginLeft: 10,
-							color: colors['reverted-main-text'],
-						},
-					]}
-				>
-					{t('main.home.create-group.title')}
-				</Text>
-			</View>
-			<Icon
-				name='users'
-				pack='custom'
-				width={35 * scaleSize}
-				height={35 * scaleSize}
-				fill={colors['reverted-main-text']}
-			/>
-		</View>
-	)
-}
-
-const _iconArrowBackSize = 30
-const _titleSize = 25
-
 export const CreateGroupAddMembers: React.FC<{
 	onSetMember: (contact: any) => void
 	onRemoveMember: (id: string) => void
@@ -270,27 +199,24 @@ export const CreateGroupAddMembers: React.FC<{
 	return (
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
-				<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
-					<CreateGroupHeader />
-					<MemberList members={members} onRemoveMember={onRemoveMember} />
-				</SafeAreaView>
-				<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-					<View style={{ top: -30 * scaleHeight, flex: 1 }}>
-						<Header
-							title={t('main.home.create-group.add-members')}
-							first
-							style={[margin.bottom.scale(-1)]}
-						/>
-						<ContactPicker
-							members={members}
-							onSetMember={onSetMember}
-							onRemoveMember={onRemoveMember}
-							accountContacts={accountContacts}
-						/>
-					</View>
+			<View style={{ backgroundColor: colors['background-header'] }}>
+				<MemberList members={members} onRemoveMember={onRemoveMember} />
+			</View>
+			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
+					<Header
+						title={t('main.home.create-group.add-members')}
+						first
+						style={[margin.bottom.scale(-1)]}
+					/>
+					<ContactPicker
+						members={members}
+						onSetMember={onSetMember}
+						onRemoveMember={onRemoveMember}
+						accountContacts={accountContacts}
+					/>
 				</View>
-			</SwipeNavRecognizer>
+			</View>
 			<FooterCreateGroup
 				title={t('main.home.create-group.continue')}
 				icon='arrow-forward-outline'

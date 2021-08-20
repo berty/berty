@@ -39,9 +39,9 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 		params: { convPk },
 	},
 }) => {
-	const [{ flex, margin, row, text, padding, border }] = useStyles()
+	const [{ flex, margin, text, padding, border }] = useStyles()
 	const colors = useThemeColor()
-	const { goBack, navigate } = useNavigation()
+	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const [activeIndex, setActiveIndex] = useState(0)
 	const { protocolClient } = useMsgrContext()
@@ -278,33 +278,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 		<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 			<StatusBar barStyle='light-content' backgroundColor={colors['background-header']} />
 			<SafeAreaView style={[{ backgroundColor: colors['background-header'] }]}>
-				<View style={[padding.horizontal.medium, padding.top.tiny, margin.bottom.big]}>
-					<View style={[row.fill, { justifyContent: 'center', alignItems: 'center' }]}>
-						<TouchableOpacity style={[flex.tiny]} onPress={() => goBack()}>
-							<Icon
-								name='arrow-back-outline'
-								width={25}
-								height={25}
-								fill={colors['reverted-main-text']}
-							/>
-						</TouchableOpacity>
-						<View style={[flex.big]}>
-							<Text
-								style={[
-									text.align.center,
-									text.bold.medium,
-									text.size.scale(25),
-									{ color: colors['reverted-main-text'] },
-								]}
-							>
-								{t('chat.shared-medias.title')}
-							</Text>
-						</View>
-						<View style={[flex.tiny, row.item.justify]} />
-					</View>
-				</View>
-
-				<View style={[{ flexDirection: 'row', alignItems: 'flex-end' }]}>
+				<View style={[{ flexDirection: 'row', alignItems: 'flex-end' }, padding.top.large]}>
 					{tabs.map((tab, index) => (
 						<TouchableOpacity
 							activeOpacity={0.9}
@@ -315,7 +289,6 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 								padding.bottom.big,
 								border.radius.top.small,
 								margin.right.small,
-
 								{
 									flexDirection: 'row',
 									alignItems: 'center',

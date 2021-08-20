@@ -1,38 +1,44 @@
 import React from 'react'
-import { View, ScrollView, ActivityIndicator } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
+import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { Layout, Text, Icon } from '@ui-kitten/components'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-import { HeaderSettings } from '../shared-components/Header'
 import { useMsgrContext } from '@berty-tech/store/context'
 
 export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
-	const { goBack } = useNavigation()
-	const [{ padding }] = useStyles()
+	const navigation = useNavigation()
+	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
-	const { t } = useTranslation()
 	const { networkConfig } = useMsgrContext()
 
 	React.useEffect(() => {
 		call()
 	}, [call])
 
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<TouchableOpacity onPress={() => call()}>
+					<Icon
+						name='refresh-outline'
+						width={30 * scaleSize}
+						height={30 * scaleSize}
+						fill={colors['reverted-main-text']}
+					/>
+				</TouchableOpacity>
+			),
+		})
+	})
+
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-				<HeaderSettings
-					title={t('settings.system-info.title')}
-					bgColor={colors['alt-secondary-background-header']}
-					undo={goBack}
-					actionIcon='refresh-outline'
-					action={call}
-				/>
 				{done ? (
 					error ? (
 						<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>

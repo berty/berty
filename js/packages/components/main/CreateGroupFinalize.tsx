@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -13,7 +12,6 @@ import { useMsgrContext } from '@berty-tech/store/context'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
-import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
@@ -221,9 +219,8 @@ export const CreateGroupFinalize: React.FC<{
 	}, [done, error, reset, reply])
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
+			<View style={{ backgroundColor: colors['background-header'] }}>
 				<View onLayout={e => setLayout(e.nativeEvent.layout.height)}>
-					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />
 					<Header
 						title={t('main.home.create-group.add-members')}
@@ -237,7 +234,7 @@ export const CreateGroupFinalize: React.FC<{
 						<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
 					</Header>
 				</View>
-			</SafeAreaView>
+			</View>
 			<FooterCreateGroup
 				title={t('main.home.create-group.create-group')}
 				action={() => {

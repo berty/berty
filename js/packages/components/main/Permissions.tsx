@@ -146,7 +146,7 @@ export const Permissions: React.FC<{}> = props => {
 
 	return (
 		<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>
-			<StatusBar backgroundColor={colors['background-header']} />
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 				<LottieView
 					source={animations[permissionType]}

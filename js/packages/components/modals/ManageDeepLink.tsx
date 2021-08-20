@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, ActivityIndicator } from 'react-native'
+import { ActivityIndicator, Platform, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Buffer } from 'buffer'
 import { BlurView } from '@react-native-community/blur'
@@ -87,7 +87,8 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	}
 	return (
 		<>
-			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
+			{/*TODO on Android when we can render a BlurView on the first render, re-enable it*/}
+			{Platform.OS === 'ios' && <BlurView style={[StyleSheet.absoluteFill]} blurType='light' />}
 			<SafeAreaView style={[border.shadow.huge]}>{content}</SafeAreaView>
 		</>
 	)

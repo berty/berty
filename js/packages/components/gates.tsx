@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, Button, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Button, Text, TextInput, View, Image } from 'react-native'
 import * as Progress from 'react-native-progress'
 
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
@@ -11,8 +11,7 @@ import {
 	MessengerAppState,
 } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
-
-import LoaderDots from './shared-components/LoaderDots'
+import source from '@berty-tech/assets/loader_dots.gif'
 
 const expandSelfAndCenterContent: any = {
 	alignItems: 'center',
@@ -22,7 +21,23 @@ const expandSelfAndCenterContent: any = {
 	width: '100%',
 }
 
-const gutter = 50
+const LoaderDots: React.FC = () => {
+	const colors = useThemeColor()
+
+	return (
+		<View
+			style={{
+				alignItems: 'center',
+				justifyContent: 'center',
+				height: '100%',
+				width: '100%',
+				backgroundColor: colors['main-background'],
+			}}
+		>
+			<Image source={source} style={{ width: 170, height: 80 }} />
+		</View>
+	)
+}
 
 const StreamInProgressCmp: React.FC<{}> = () => {
 	const [{ text }] = useStyles()
@@ -30,7 +45,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 	const { streamInProgress: stream } = useMsgrContext()
 
 	return (
-		<View>
+		<View style={{ backgroundColor: colors['main-background'] }}>
 			<Text
 				style={[
 					text.bold.small,
@@ -64,6 +79,8 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 		</View>
 	)
 }
+
+const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
 	const {

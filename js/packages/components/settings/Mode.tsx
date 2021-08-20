@@ -9,12 +9,9 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
-import { useNavigation } from '@berty-tech/navigation'
 import { accountService } from '@berty-tech/store/context'
 
-import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, StringOptionInput } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { showNeedRestartNotification } from '@berty-tech/components/helpers'
 
 // Styles
@@ -218,7 +215,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 				actionIcon='arrow-ios-forward'
 				onPress={() => {
 					Vibration.vibrate([1000, 250, 1000])
-					navigation.navigate('DeleteAccount')
+					navigation.navigate('Settings.DeleteAccount')
 				}}
 			/>
 		</View>
@@ -226,22 +223,26 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 })
 
 export const Mode: React.FC<{}> = () => {
-	const { goBack } = useNavigation()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+	const [{ padding, text }, { scaleSize }] = useStyles()
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false}>
-					<HeaderSettings
-						title={t('settings.mode.title')}
-						desc={t('settings.mode.desc')}
-						undo={goBack}
-					/>
-					<BodyMode />
-				</ScrollView>
-			</SwipeNavRecognizer>
+			<ScrollView bounces={false}>
+				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
+					<Text
+						style={[
+							text.align.center,
+							padding.horizontal.big,
+							{ fontSize: 10 * scaleSize, color: colors['reverted-main-text'] },
+						]}
+					>
+						{t('settings.mode.desc')}
+					</Text>
+				</View>
+				<BodyMode />
+			</ScrollView>
 		</Layout>
 	)
 }

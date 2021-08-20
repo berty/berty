@@ -3,14 +3,10 @@ import { StatusBar, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Layout, Text } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
-import { SwipeNavRecognizer } from '@berty-tech/components/shared-components/SwipeNavRecognizer'
-import { FooterCreateGroup } from '@berty-tech/components/main/CreateGroupFooter'
-import { Header, MemberList } from '@berty-tech/components/main/CreateGroupAddMembers'
-import { ContactPicker } from '@berty-tech/components/shared-components'
 import {
 	useContactList,
 	useConversation,
@@ -18,6 +14,10 @@ import {
 	useMsgrContext,
 	useThemeColor,
 } from '@berty-tech/store/hooks'
+
+import { FooterCreateGroup } from '../main/CreateGroupFooter'
+import { Header, MemberList } from '../main/CreateGroupAddMembers'
+import { ContactPicker } from '../shared-components'
 
 const _iconArrowBackSize = 30
 const _titleSize = 25
@@ -90,7 +90,7 @@ export const AddMembersHeader: React.FC<{}> = () => {
 export const MultiMemberSettingsAddMembers: React.FC<{
 	route: { params: { convPK: string } }
 }> = ({ route }) => {
-	const [{ flex, margin }, { scaleHeight }] = useStyles()
+	const [{ flex, margin }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const ctx = useMsgrContext()
@@ -130,34 +130,41 @@ export const MultiMemberSettingsAddMembers: React.FC<{
 		}
 	}, [ctx.client, conv, members])
 
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<Icon
+					name='users'
+					pack='custom'
+					width={35 * scaleSize}
+					height={35 * scaleSize}
+					fill={colors['reverted-main-text']}
+				/>
+			),
+		})
+	})
+
 	return (
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<SwipeNavRecognizer onSwipeRight={() => navigation.goBack()}>
-				<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
-					<AddMembersHeader />
-					<MemberList
-						initialMembers={initialMembers}
+			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
+				<MemberList
+					initialMembers={initialMembers}
+					members={members}
+					onRemoveMember={onRemoveMember}
+				/>
+			</SafeAreaView>
+			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
+					<Header title={t('chat.add-members.contacts')} first style={[margin.bottom.scale(-1)]} />
+					<ContactPicker
 						members={members}
+						onSetMember={onSetMember}
 						onRemoveMember={onRemoveMember}
+						accountContacts={accountContacts}
 					/>
-				</SafeAreaView>
-				<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-					<View style={{ top: -30 * scaleHeight, flex: 1 }}>
-						<Header
-							title={t('chat.add-members.contacts')}
-							first
-							style={[margin.bottom.scale(-1)]}
-						/>
-						<ContactPicker
-							members={members}
-							onSetMember={onSetMember}
-							onRemoveMember={onRemoveMember}
-							accountContacts={accountContacts}
-						/>
-					</View>
 				</View>
-			</SwipeNavRecognizer>
+			</View>
 			<FooterCreateGroup
 				title={t('chat.add-members.add')}
 				icon='arrow-forward-outline'

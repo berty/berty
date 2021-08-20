@@ -9,7 +9,6 @@ import getPath from '@flyerhq/react-native-android-uri-path'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import DocumentPicker from 'react-native-document-picker'
 
-import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import {
 	defaultThemeColor,
@@ -21,9 +20,7 @@ import { createAndSaveFile } from '@berty-tech/store/services'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { randomizeThemeColor } from '../helpers'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ButtonSetting } from '../shared-components'
-import { HeaderSettings } from '../shared-components/Header'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
 import ThemeColorName from '../modals/ThemeColorName'
 
@@ -209,10 +206,7 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 
 export const ThemeEditor: React.FC<{}> = () => {
 	const [isModal, setIsModal] = React.useState<boolean>(false)
-
-	const { goBack } = useNavigation()
 	const colors = useThemeColor()
-	const { t } = useTranslation()
 
 	return (
 		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
@@ -220,17 +214,10 @@ export const ThemeEditor: React.FC<{}> = () => {
 				backgroundColor={colors['alt-secondary-background-header']}
 				barStyle='light-content'
 			/>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false}>
-					<HeaderSettings
-						title={t('settings.theme-editor.title')}
-						bgColor={colors['alt-secondary-background-header']}
-						undo={goBack}
-					/>
-					<BodyThemeEditor openModal={() => setIsModal(true)} />
-				</ScrollView>
-				{isModal && <ThemeColorName closeModal={() => setIsModal(false)} />}
-			</SwipeNavRecognizer>
+			<ScrollView bounces={false}>
+				<BodyThemeEditor openModal={() => setIsModal(true)} />
+			</ScrollView>
+			{isModal && <ThemeColorName closeModal={() => setIsModal(false)} />}
 		</Layout>
 	)
 }

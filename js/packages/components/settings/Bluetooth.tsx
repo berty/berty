@@ -1,19 +1,17 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Alert, AppState, View, ScrollView, Linking, Platform } from 'react-native'
-import { Layout } from '@ui-kitten/components'
-import { Translation, useTranslation } from 'react-i18next'
+import { Layout, Text } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { accountService } from '@berty-tech/store/context'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 
-import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { showNeedRestartNotification } from '../helpers'
 
 //
@@ -301,9 +299,10 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const [bluetoothPermissions, setBluetoothPermissions] = useState<
 		'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined
 	>()
-	const { goBack } = useNavigation()
 	const { selectedAccount, setNetworkConfig } = useMsgrContext()
+	const [{ padding, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
+	const { t }: any = useTranslation()
 
 	// get Bluetooth permissions state
 	React.useEffect(() => {
@@ -349,26 +348,27 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	}, [bluetoothPermissions, setNetworkConfig, selectedAccount])
 
 	return (
-		<Translation>
-			{(t: any): React.ReactNode => (
-				<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-					<SwipeNavRecognizer>
-						<ScrollView bounces={false}>
-							<HeaderSettings
-								title={t('settings.bluetooth.title')}
-								desc={t('settings.bluetooth.desc')}
-								undo={goBack}
-							/>
-							{bluetoothPermissions !== undefined && (
-								<BodyBluetooth
-									bluetoothPermissions={bluetoothPermissions}
-									setBluetoothPermissions={setBluetoothPermissions}
-								/>
-							)}
-						</ScrollView>
-					</SwipeNavRecognizer>
-				</Layout>
-			)}
-		</Translation>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+			<ScrollView bounces={false}>
+				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
+					<Text
+						style={[
+							text.align.center,
+							padding.horizontal.big,
+							padding.top.small,
+							{ fontSize: 10 * scaleSize, color: colors['reverted-main-text'] },
+						]}
+					>
+						{t('settings.bluetooth.desc')}
+					</Text>
+				</View>
+				{bluetoothPermissions !== undefined && (
+					<BodyBluetooth
+						bluetoothPermissions={bluetoothPermissions}
+						setBluetoothPermissions={setBluetoothPermissions}
+					/>
+				)}
+			</ScrollView>
+		</Layout>
 	)
 }

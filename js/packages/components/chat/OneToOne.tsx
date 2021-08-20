@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import { ActivityIndicator, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
-import { CommonActions, useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import EmojiBoard from 'react-native-emoji-board'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { MessageList } from '@berty-tech/components/chat/MessageList'
 import { useStyles } from '@berty-tech/styles'
-import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import {
 	useContact,
@@ -20,11 +21,11 @@ import {
 	useNotificationsInhibitor,
 	useThemeColor,
 } from '@berty-tech/store/hooks'
+import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 
 import { ContactAvatar } from '../avatars'
 import { useLayout } from '../hooks'
 import { ChatDate, ChatFooter } from './common'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ReplyReactionProvider } from './ReplyReactionContext'
 
 //
@@ -146,14 +147,15 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	})
 
 	const insets = useSafeAreaInsets()
-	const [{ flex }] = useStyles()
+	const [{ flex, opacity }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	useReadEffect(params?.convId, 1000)
-	const { dispatch } = useNavigation()
 	const { t } = useTranslation()
 	const conv = useConversation(params?.convId)
 	const contact = useContact(conv?.contactPublicKey)
 	const ctx = useMsgrContext()
+	const navigation = useNativeNavigation()
+	const { navigate } = useNavigation()
 
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const isFooterDisable = isIncoming
@@ -163,7 +165,6 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 
 	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
-	const [isSwipe, setSwipe] = useState(true)
 
 	useFocusEffect(
 		React.useCallback(() => {
@@ -171,6 +172,22 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 			return () => AndroidKeyboardAdjust?.setAdjustPan()
 		}, []),
 	)
+
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			title: (conv as any).fake ? `FAKE - ${contact?.displayName}` : contact?.displayName || '',
+			...CustomTitleStyle,
+			headerRight: () => (
+				<TouchableOpacity
+					activeOpacity={contact ? 0.2 : 0.5}
+					style={[!contact ? opacity(0.5) : null]}
+					onPress={() => navigate.chat.oneToOneSettings({ convId: params.convId })}
+				>
+					<ContactAvatar size={40 * scaleSize} publicKey={conv?.contactPublicKey} />
+				</TouchableOpacity>
+			),
+		})
+	})
 
 	return (
 		<ReplyReactionProvider>
@@ -186,38 +203,34 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 							{ flex: 1, backgroundColor: colors['main-background'] },
 						]}
 					>
-						<SwipeNavRecognizer
-							onSwipeLeft={() =>
-								isSwipe &&
-								dispatch(
-									CommonActions.navigate({
-										name: Routes.Chat.OneToOneSettings,
-										params: { convId: params?.convId },
-									}),
-								)
-							}
+						<KeyboardAvoidingView
+							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+							style={[flex.tiny, { justifyContent: 'flex-start' }]}
+							bottomFixedViewPadding={20}
 						>
-							<KeyboardAvoidingView
-								behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-								style={[flex.tiny, { justifyContent: 'flex-start' }]}
-								bottomFixedViewPadding={20}
-							>
-								<MessageList
-									id={params?.convId}
-									scrollToMessage={params?.scrollToMessage || '0'}
-									{...{ setStickyDate, setShowStickyDate }}
-								/>
-
-								<ChatFooter
-									convPk={params?.convId}
-									disabled={isFooterDisable}
-									placeholder={placeholder}
-									setSwipe={setSwipe}
-								/>
-
-								<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
-							</KeyboardAvoidingView>
-						</SwipeNavRecognizer>
+							<MessageList
+								id={params?.convId}
+								scrollToMessage={params?.scrollToMessage || '0'}
+								{...{ setStickyDate, setShowStickyDate }}
+							/>
+							<ChatFooter
+								convPk={params?.convId}
+								disabled={isFooterDisable}
+								placeholder={placeholder}
+							/>
+							{stickyDate && showStickyDate && (
+								<View
+									style={{
+										position: 'absolute',
+										top: 110, // TODO Redifine
+										left: 0,
+										right: 0,
+									}}
+								>
+									<ChatDate date={stickyDate} />
+								</View>
+							)}
+						</KeyboardAvoidingView>
 						{!!activeEmojiKeyboardCid && (
 							<View style={StyleSheet.absoluteFill}>
 								<TouchableOpacity
