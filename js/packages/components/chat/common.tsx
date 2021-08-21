@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
-	TouchableOpacity,
-	SafeAreaView,
-	View,
-	TextInput,
-	NativeModules,
-	ViewToken,
 	Animated,
 	Easing,
+	NativeModules,
+	TextInput,
+	TouchableOpacity,
+	View,
+	ViewToken,
 } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
@@ -17,7 +16,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useClient, useMsgrContext, useContact, useThemeColor } from '@berty-tech/store/hooks'
+import { useClient, useContact, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { checkPermissions, getMediaTypeFromMedias } from '@berty-tech/components/utils'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
@@ -27,6 +26,7 @@ import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
 import { useReplyReaction } from './ReplyReactionContext'
 import { RESULTS } from 'react-native-permissions'
+import { MessengerActions } from '@berty-tech/store/context'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -165,11 +165,11 @@ export const ChatFooter: React.FC<{
 	const client = useClient()
 	const { navigate } = useNavigation()
 
-	const [message, setMessage] = useState('')
+	const [message, setMessage] = useState(ctx.convsTextInputValue[convPk] || '')
 	const [inputHeight, setInputHeight] = useState<number>(35)
 	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 	const inputRef = useRef<TextInput>(null)
-	const _isFocused = inputRef?.current?.isFocused() || false
+	const _isFocused = inputRef?.current?.isFocused() || true
 	const [{ padding, flex, border, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { activeReplyInte, setActiveReplyInte } = useReplyReaction()
@@ -314,14 +314,11 @@ export const ChatFooter: React.FC<{
 	}
 
 	return (
-		<SafeAreaView
+		<View
 			style={[
 				{
 					zIndex: 10,
-					minHeight:
-						inputHeight > 45 * scaleSize
-							? 80 * scaleSize + inputHeight * scaleSize
-							: 80 * scaleSize,
+					minHeight: 80 * scaleSize,
 					justifyContent: 'center',
 					backgroundColor: colors['main-background'],
 				},
@@ -448,7 +445,16 @@ export const ChatFooter: React.FC<{
 									onBlur={() => {
 										activeReplyInte && setActiveReplyInte()
 									}}
-									onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
+									onChange={async ({ nativeEvent }) => {
+										setMessage(nativeEvent.text)
+										ctx.dispatch({
+											type: MessengerActions.SetConvsTextInputValue,
+											payload: {
+												key: convPk,
+												value: nativeEvent.text,
+											},
+										})
+									}}
 									onContentSizeChange={({ nativeEvent }) =>
 										setInputHeight(
 											nativeEvent?.contentSize.height > 80 ? 80 : nativeEvent?.contentSize.height,
@@ -456,10 +462,9 @@ export const ChatFooter: React.FC<{
 									}
 									autoCorrect
 									style={[
-										_isFocused && { color: colors['background-header'] },
 										text.bold.small,
-										// text.align.center,
 										{
+											color: colors['background-header'],
 											height: inputHeight < 35 ? 35 * scaleSize : inputHeight * scaleSize,
 											fontFamily: 'Open Sans',
 											paddingRight: 12 * scaleSize,
@@ -564,7 +569,7 @@ export const ChatFooter: React.FC<{
 					</View>
 				</View>
 			</RecordComponent>
-		</SafeAreaView>
+		</View>
 	)
 }
 

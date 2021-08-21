@@ -104,6 +104,10 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "Demande envoyée. En attente...",
+        "draft": "Brouillon: {{message}}"
       }
     },
     "home-modal": {

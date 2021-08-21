@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, Platform, TextInput, StyleSheet } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { TouchableOpacity, View, Platform, TextInput, StyleSheet, Text } from 'react-native'
+import { Icon } from '@ui-kitten/components'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import EmojiBoard from 'react-native-emoji-board'
@@ -19,9 +19,9 @@ import {
 	useNotificationsInhibitor,
 	useMsgrContext,
 	useThemeColor,
+	useConvInteractions,
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
-import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 
 import { ChatFooter, ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
@@ -54,6 +54,8 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 
+	const rawMessages = useConvInteractions(params.convId)
+	const isMessages = rawMessages.length > 0
 	const [editValue, setEditValue] = useState(conv?.displayName || '')
 	const [isEdit, setIsEdit] = useState(false)
 	const editDisplayName = async () => {
@@ -127,9 +129,12 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 							numberOfLines={1}
 							style={[
 								text.align.center,
-								text.bold.medium,
-								text.size.scale(20),
-								{ color: colors['main-text'] },
+								{
+									color: colors['main-text'],
+									fontFamily: 'Open Sans',
+									fontWeight: '700',
+									fontSize: 20,
+								},
 							]}
 						>
 							{conv?.displayName || ''}
@@ -138,7 +143,6 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 				)
 			},
 			title: (conv as any).fake ? `FAKE - ${conv?.displayName}` : conv?.displayName || '',
-			...CustomTitleStyle,
 			headerRight: () => (
 				<TouchableOpacity
 					activeOpacity={conv ? 0.2 : 0.5}
@@ -165,7 +169,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 						<KeyboardAvoidingView
 							style={[flex.tiny]}
 							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-							bottomFixedViewPadding={20}
+							bottomFixedViewPadding={Platform.OS === 'ios' ? 0 : isMessages ? 20 : 85}
 						>
 							<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
 							<ChatFooter

@@ -22,6 +22,7 @@
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/app": "^12.0.0",
     "@react-native-firebase/crashlytics": "^12.0.0",
+    "@react-navigation/elements": "^1.1.0",
     "@react-navigation/material-top-tabs": "^5.3.13",
     "@react-navigation/native": "^6.0.1",
     "@react-navigation/native-stack": "^6.0.1",

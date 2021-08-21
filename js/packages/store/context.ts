@@ -56,6 +56,8 @@ export enum MessengerActions {
 	BridgeClosed = 'BRIDGE_CLOSED',
 	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
 	RemoveNotificationInhibitor = 'REMOVE_NOTIFICATION_INHIBITOR',
+	//
+	SetConvsTextInputValue = 'SET_CONVS_TEXT_INPUT_VALUE',
 }
 
 export const isDeletingState = (state: MessengerAppState): boolean =>
@@ -417,6 +419,7 @@ export type MsgrState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 
 	persistentOptions: PersistentOptions
+	convsTextInputValue: { [key: string]: string }
 	accounts: beapi.account.IAccountMetadata[]
 	initialListComplete: boolean
 	clearClients: (() => Promise<void>) | null
@@ -472,6 +475,7 @@ export const initialState = {
 	notificationsInhibitors: [],
 
 	persistentOptions: defaultPersistentOptions(),
+	convsTextInputValue: {},
 	daemonAddress: '',
 	initialListComplete: false,
 	clearClients: null,

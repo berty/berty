@@ -41,7 +41,7 @@ const voiceMemoBitrate = 32000
 const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
-const acquireMicPerm = async (navigate): Promise<MicPermStatus> => {
+const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
 	const permissionStatus = await checkPermissions('audio', navigate)
 	if (permissionStatus === RESULTS.GRANTED) {
 		return MicPermStatus.GRANTED

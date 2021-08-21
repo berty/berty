@@ -65,9 +65,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 	} = props
 
 	const ctx = useMsgrContext()
+	const { t }: any = useTranslation()
 
 	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)
-
 	const displayDate = lastUpdate || createdDate ? pbDateToNum(lastUpdate || createdDate) : null
 
 	const contact =
@@ -109,6 +109,12 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 				lastInte.isMine ? userDisplayName : 'you'
 			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} audio files` : 'an audio file'}`
 		}
+	}
+
+	if (ctx.convsTextInputValue[publicKey]) {
+		description = t('main.home.conversations.draft', {
+			message: ctx.convsTextInputValue[publicKey],
+		})
 	}
 
 	return !isIncoming ? (
@@ -233,7 +239,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 						<Text
 							numberOfLines={1}
 							style={[
-								{ flexGrow: 2, flexShrink: 1 },
+								{
+									flexGrow: 2,
+									flexShrink: 1,
+									fontStyle: ctx.convsTextInputValue[publicKey] ? 'italic' : 'normal',
+								},
 								text.size.small,
 								unreadCount
 									? [text.bold.medium, { color: colors['main-text'] }]

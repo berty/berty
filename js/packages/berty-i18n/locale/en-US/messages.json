@@ -104,6 +104,10 @@
         "third-bullet-point": "You can leave this group",
         "fourth-bullet-point": "You cannot delete this group",
         "fifth-bullet-point": "You cannot remove a member from this group"
+      },
+      "conversations": {
+        "request-sent": "Request is sent. Pending...",
+        "draft": "Draft: {{message}}"
       }
     },
     "home-modal": {
