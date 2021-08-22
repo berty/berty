@@ -10,6 +10,7 @@ import {
 	MessengerActions,
 	MessengerAppState,
 	MsgrState,
+	PersistentOptionsKeys,
 	reducerAction,
 } from './context'
 import { parseInteraction } from './utils'
@@ -382,10 +383,15 @@ export const reducerActions: {
 		appState: MessengerAppState.StreamDone,
 		streamInProgress: null,
 	}),
-
 	[MessengerActions.SetStateOnBoardingReady]: (oldState, _) => ({
 		...oldState,
 		appState: MessengerAppState.GetStarted,
+		persistentOptions: {
+			...oldState.persistentOptions,
+			[PersistentOptionsKeys.OnBoardingFinished]: {
+				isFinished: false,
+			},
+		},
 	}),
 	[MessengerActions.SetConvsTextInputValue]: (oldState, action) => ({
 		...oldState,

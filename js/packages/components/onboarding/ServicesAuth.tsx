@@ -1,6 +1,6 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
-import { Translation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useNavigation, RouteProp } from '@react-navigation/native'
 
 import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/services'
@@ -18,6 +18,7 @@ const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void 
 }) => {
 	const ctx = useMsgrContext()
 	const accountServices = useAccountServices() || []
+	const { t }: any = useTranslation()
 
 	React.useEffect(() => {
 		if (accountServices.length > 0) {
@@ -26,41 +27,37 @@ const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void 
 	}, [next, accountServices.length])
 
 	return (
-		<Translation>
-			{t => (
-				<SwiperCard
-					header={t('onboarding.services-auth.header')}
-					label={t('onboarding.services-auth.recommended')}
-					title={t('onboarding.services-auth.title')}
-					description={t('onboarding.services-auth.desc')}
-					button={
-						accountServices.length > 0
-							? undefined
-							: {
-									text: t('onboarding.services-auth.button'),
-									onPress: async () => {
-										await servicesAuthViaDefault(ctx)
-										await ctx.setPersistentOption({
-											type: PersistentOptionsKeys.Configurations,
-											payload: {
-												...ctx.persistentOptions.configurations,
-												network: {
-													...ctx.persistentOptions.configurations.network,
-													state: 'added',
-												},
-											},
-										})
-										handleComplete()
+		<SwiperCard
+			header={t('onboarding.services-auth.header')}
+			label={t('onboarding.services-auth.recommended')}
+			title={t('onboarding.services-auth.title')}
+			description={t('onboarding.services-auth.desc')}
+			button={
+				accountServices.length > 0
+					? undefined
+					: {
+							text: t('onboarding.services-auth.button'),
+							onPress: async () => {
+								await servicesAuthViaDefault(ctx)
+								await ctx.setPersistentOption({
+									type: PersistentOptionsKeys.Configurations,
+									payload: {
+										...ctx.persistentOptions.configurations,
+										network: {
+											...ctx.persistentOptions.configurations.network,
+											state: 'added',
+										},
 									},
-							  }
-					}
-					skip={{
-						text: t('onboarding.notifications.skip'),
-						onPress: next,
-					}}
-				/>
-			)}
-		</Translation>
+								})
+								handleComplete()
+							},
+					  }
+			}
+			skip={{
+				text: t('onboarding.notifications.skip'),
+				onPress: next,
+			}}
+		/>
 	)
 }
 

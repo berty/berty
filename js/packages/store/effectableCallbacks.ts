@@ -135,7 +135,6 @@ export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerA
 		)
 
 		resp = await accountService.createAccount({ networkConfig: netConf })
-		console.log('createNewAccount: createAccount')
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

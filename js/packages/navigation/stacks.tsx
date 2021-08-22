@@ -192,9 +192,9 @@ export const Navigation: React.FC = () => {
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				context.appState === MessengerAppState.Ready
-					? Routes.Main.Home
-					: Routes.Onboarding.GetStarted
+				context.appState === MessengerAppState.GetStarted
+					? Routes.Onboarding.GetStarted
+					: Routes.Main.Home
 			}
 		>
 			{/* OnBoarding */}

@@ -12,7 +12,6 @@ const RNLanguageDetector: LanguageDetectorModule = {
 			Platform.OS === 'ios'
 				? NativeModules?.SettingsManager?.settings?.AppleLanguages[0] // iOS 13
 				: NativeModules?.I18nManager?.localeIdentifier
-		console.log('i18n language detector', locale)
 		return locale?.replace('_', '-')
 	},
 	cacheUserLanguage: () => {},
@@ -24,7 +23,6 @@ i18next
 	.init({
 		fallbackLng: 'en-US',
 		resources: languages,
-		debug: true,
 		returnEmptyString: false,
 	})
 	.then()

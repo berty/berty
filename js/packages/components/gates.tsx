@@ -132,10 +132,14 @@ export const StreamGate: React.FC = ({ children }) => {
 export const ListGate: React.FC = ({ children }) => {
 	const ctx = useMsgrContext()
 
-	if (ctx && !isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
+	if (!isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
+		return <>{children}</>
+	} else if (
+		isReadyingBasics(ctx.appState) &&
+		ctx.persistentOptions.onBoardingFinished.isFinished === false
+	) {
 		return <>{children}</>
 	}
-
 	return <LoaderDots />
 }
 

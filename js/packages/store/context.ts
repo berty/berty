@@ -56,7 +56,6 @@ export enum MessengerActions {
 	BridgeClosed = 'BRIDGE_CLOSED',
 	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
 	RemoveNotificationInhibitor = 'REMOVE_NOTIFICATION_INHIBITOR',
-	//
 	SetConvsTextInputValue = 'SET_CONVS_TEXT_INPUT_VALUE',
 }
 
@@ -236,7 +235,7 @@ export type PersistentOptionsThemeColor = {
 }
 
 export type PersistentOptionsOnBoardingFinished = {
-	isFinished: boolean
+	isFinished: boolean | undefined
 }
 
 export type PersistentOptionsUpdate =
@@ -375,7 +374,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		},
 		[PersistentOptionsKeys.ThemeColor]: defaultThemeColor(),
 		[PersistentOptionsKeys.OnBoardingFinished]: {
-			isFinished: false,
+			isFinished: undefined,
 		},
 	}
 }
