@@ -242,7 +242,7 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
+      "activate-button": "Ativar Bluetooth",
       "permission-title": "",
       "android-permission-description": "",
       "ios-permission-description": "",
