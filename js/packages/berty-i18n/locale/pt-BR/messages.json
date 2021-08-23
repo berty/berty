@@ -97,12 +97,12 @@
         "create-group": "CRIAR UM GRUPO"
       },
       "create-group-finalize": {
-        "placeholder": "",
+        "placeholder": "Nome do grupo",
         "about": "",
         "first-bullet-point": "",
         "second-bullet-point": "",
         "third-bullet-point": "",
-        "fourth-bullet-point": "",
+        "fourth-bullet-point": "Você não pode excluir este grupo",
         "fifth-bullet-point": ""
       }
     },
@@ -437,7 +437,7 @@
     "save-theme": {
       "title": "",
       "desc": "",
-      "placeholder": "",
+      "placeholder": "Nome do tema...",
       "cancel": "CANCELAR",
       "add": ""
     }
