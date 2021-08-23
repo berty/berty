@@ -84,7 +84,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		description = (lastInte.payload as any)?.body
 	} else {
 		if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
-			description = 'Request is sent. Pending...'
+			description = t('main.home.conversations.request-sent')
 		} else {
 			description = ''
 		}

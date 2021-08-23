@@ -14,6 +14,7 @@ import OnboardingWrapper from './OnboardingWrapper'
 
 const SetupFinishedBody = () => {
 	const { t }: any = useTranslation()
+	const colors = useThemeColor()
 	const [isGeneration, setIsGeneration] = useState(1)
 	const [isGenerated, setIsGenerated] = useState(false)
 	const [isFinished, setIsFinished] = useState(false)
@@ -162,7 +163,7 @@ const SetupFinishedBody = () => {
 					title={t('onboarding.generate-key.title')}
 					description={t('onboarding.generate-key.desc')}
 				>
-					<Spinner size='large' />
+					<Spinner size='large' color={colors['secondary-text']} />
 				</SwiperCard>
 			</View>
 		</>

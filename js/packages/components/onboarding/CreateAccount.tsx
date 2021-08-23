@@ -10,13 +10,14 @@ import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
-import { GlobalPersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { GlobalPersistentOptionsKeys, MsgrState, useMsgrContext } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import { checkPermissions } from '../utils'
+import beapi from '@berty-tech/api'
 
-const openDocumentPicker = async ctx => {
+const openDocumentPicker = async (ctx: MsgrState) => {
 	try {
 		const res = await DocumentPicker.pick({
 			// @ts-ignore
@@ -49,13 +50,12 @@ const CreateAccountBody = () => {
 			.getUsername()
 			.then(({ username }) => setName(username))
 			.catch(err2 => console.warn('Failed to fetch username:', err2))
-		// eslint-disable-next-line
-	}, [])
+	}, []) // eslint-disable-line
 
 	const handlePersistentOptions = React.useCallback(async () => {
 		const preset = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.Preset)
 
-		if (preset === 'performance') {
+		if (preset === String(beapi.account.NetworkConfigPreset.Performance)) {
 			const status = await checkPermissions('p2p', navigate, {
 				isToNavigate: false,
 			})
@@ -64,7 +64,6 @@ const CreateAccountBody = () => {
 				await ctx.createNewAccount()
 			} else {
 				await checkPermissions('p2p', navigate, {
-					navigateNext: 'Onboarding.SetupFinished',
 					createNewAccount: true,
 					isToNavigate: true,
 				})
@@ -77,7 +76,7 @@ const CreateAccountBody = () => {
 	}, [ctx, navigate])
 
 	const onPress = React.useCallback(async () => {
-		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
+		const displayName = name || `anon#${ctx?.account?.publicKey?.substr(0, 4)}`
 		await AsyncStorage.setItem(GlobalPersistentOptionsKeys.DisplayName, displayName)
 
 		handlePersistentOptions()
@@ -157,7 +156,11 @@ const CreateAccountBody = () => {
 						title='Creating...'
 						description='Your account is creating...'
 					>
-						<ActivityIndicator size='large' style={[margin.top.medium]} />
+						<ActivityIndicator
+							size='large'
+							style={[margin.top.medium]}
+							color={colors['secondary-text']}
+						/>
 					</SwiperCard>
 				)}
 			</View>

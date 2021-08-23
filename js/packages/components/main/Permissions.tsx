@@ -95,7 +95,6 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 						},
 					})
 					console.log(status)
-					//
 				} catch (err) {
 					console.log('request notification permisison err:', err)
 				}
@@ -191,7 +190,11 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 						},
 					]}
 				>
-					{t(`permission.${permissionType}.desc`)}
+					{permissionType === 'p2p'
+						? Platform.OS === 'ios'
+							? t(`permission.${permissionType}.ios-desc`)
+							: t(`permission.${permissionType}.android-desc`)
+						: t(`permission.${permissionType}.desc`)}
 				</Text>
 				{permissionStatus === RESULTS.BLOCKED && (
 					<Text

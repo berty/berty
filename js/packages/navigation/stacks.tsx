@@ -237,7 +237,7 @@ export const Navigation: React.FC = () => {
 				name={Routes.Main.Scan}
 				component={Components.Main.Scan}
 				options={SecondaryBackgroundHeaderScreenOptions({
-					title: 'Scan QR Code',
+					title: t('main.scan.title'),
 					headerRight: () => (
 						<Icon
 							name='qr'
@@ -346,7 +346,7 @@ export const Navigation: React.FC = () => {
 				name={Routes.Chat.MultiMemberQR}
 				component={Components.Chat.MultiMemberQR}
 				options={BackgroundHeaderScreenOptions({
-					title: 'QR Group',
+					title: t('chat.multi-member-qr.title'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}

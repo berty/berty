@@ -54,7 +54,7 @@ const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void 
 					  }
 			}
 			skip={{
-				text: t('onboarding.notifications.skip'),
+				text: t('onboarding.services-auth.skip'),
 				onPress: next,
 			}}
 		/>

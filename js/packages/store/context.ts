@@ -235,7 +235,7 @@ export type PersistentOptionsThemeColor = {
 }
 
 export type PersistentOptionsOnBoardingFinished = {
-	isFinished: boolean | undefined
+	isFinished: boolean
 }
 
 export type PersistentOptionsUpdate =
@@ -359,8 +359,8 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			},
 			replicate: {
 				key: 'replicate',
-				displayName: 'Replicate services Configuration',
-				desc: 'Click here to configure replicate services',
+				displayName: 'main.configurations.replicate.display-name',
+				desc: 'main.configurations.replicate.desc',
 				icon: 'berty_dev_blue_bg',
 				state: 'unread',
 				color: 'background-header',
@@ -374,7 +374,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		},
 		[PersistentOptionsKeys.ThemeColor]: defaultThemeColor(),
 		[PersistentOptionsKeys.OnBoardingFinished]: {
-			isFinished: undefined,
+			isFinished: false,
 		},
 	}
 }

@@ -134,11 +134,6 @@ export const ListGate: React.FC = ({ children }) => {
 
 	if (!isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
 		return <>{children}</>
-	} else if (
-		isReadyingBasics(ctx.appState) &&
-		ctx.persistentOptions.onBoardingFinished.isFinished === false
-	) {
-		return <>{children}</>
 	}
 	return <LoaderDots />
 }
