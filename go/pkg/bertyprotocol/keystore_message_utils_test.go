@@ -51,10 +51,15 @@ func mustDeviceSecret(t testing.TB) func(ds *protocoltypes.DeviceSecret, err err
 	}
 }
 
-func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *protocoltypes.MessageHeaders {
+func mustMessageHeaders(t testing.TB, sk crypto.PrivKey, counter uint64, payload []byte) *protocoltypes.MessageHeaders {
 	t.Helper()
 
-	pkB, err := pk.Raw()
+	pkB, err := sk.GetPublic().Raw()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sig, err := sk.Sign(payload)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,7 +67,7 @@ func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *protoco
 	return &protocoltypes.MessageHeaders{
 		Counter:  counter,
 		DevicePK: pkB,
-		Sig:      nil,
+		Sig:      sig,
 	}
 }
 
@@ -130,17 +135,17 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	// uint64 overflows to 0, which is the expected behaviour
 
 	// Test with a wrong counter value
-	payloadClr1, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc1, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
+	payloadClr1, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc1, mustMessageHeaders(t, omd1.device, initialCounter+2, payloadRef1))
 	assert.Error(t, err)
 	assert.Nil(t, decryptInfo)
 	assert.Equal(t, "", string(payloadClr1))
 
 	// Test with a valid counter value, but no CID (so no cache)
-	payloadClr1, decryptInfo, err = mkh2.openPayload(cid.Undef, gPK, payloadEnc1, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
+	payloadClr1, decryptInfo, err = mkh2.openPayload(cid.Undef, gPK, payloadEnc1, mustMessageHeaders(t, omd1.device, initialCounter+1, payloadRef1))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef1), string(payloadClr1))
 
-	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
+	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device, initialCounter+1, payloadRef1))
 	assert.NoError(t, err)
 
 	ds, err := mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())
@@ -159,16 +164,16 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.NotEqual(t, hex.EncodeToString(payloadRef1), hex.EncodeToString(payloadEnc2))
 	assert.NotEqual(t, hex.EncodeToString(payloadEnc1), hex.EncodeToString(payloadEnc2))
 
-	payloadClr2, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc2, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
+	payloadClr2, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc2, mustMessageHeaders(t, omd1.device, initialCounter+2, payloadRef1))
 	assert.NoError(t, err)
 
-	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
+	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device, initialCounter+2, payloadRef1))
 	assert.NoError(t, err)
 
 	assert.Equal(t, string(payloadRef1), string(payloadClr2))
 
 	// Make sure that a message without a CID can't be decrypted twice
-	payloadClr2, decryptInfo, err = mkh2.openPayload(cid.Undef, gPK, payloadEnc2, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
+	payloadClr2, decryptInfo, err = mkh2.openPayload(cid.Undef, gPK, payloadEnc2, mustMessageHeaders(t, omd1.device, initialCounter+1, payloadRef1))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr2))
 
@@ -189,31 +194,31 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Not decrypted message yet, wrong counter value
-	payloadClr3, decryptInfo, err := mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
+	payloadClr3, decryptInfo, err := mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device, initialCounter+2, payloadRef2))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device, initialCounter+3, payloadRef2))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef2), string(payloadClr3))
 
-	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device, initialCounter+3, payloadRef2))
 	assert.NoError(t, err)
 
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device, initialCounter+3, payloadRef2))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef2), string(payloadClr3))
 
-	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device, initialCounter+3, payloadRef2))
 	assert.NoError(t, err)
 
 	// Wrong CID
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID2, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID2, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device, initialCounter+3, payloadRef2))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
 	// Reused CID, wrong counter value
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+4))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device, initialCounter+4, payloadRef2))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
@@ -235,12 +240,12 @@ func Test_EncryptMessagePayload(t *testing.T) {
 
 		counter := ds.Counter
 
-		payloadClr, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc, mustMessageHeaders(t, omd1.device.GetPublic(), counter))
+		payloadClr, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc, mustMessageHeaders(t, omd1.device, counter, payloadRef3))
 		if !assert.NoError(t, err) {
 			t.Fatalf("failed at i = %d", i)
 		}
 
-		err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), counter))
+		err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device, counter, payloadRef3))
 		assert.NoError(t, err)
 
 		assert.Equal(t, string(payloadRef3), string(payloadClr))

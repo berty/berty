@@ -26,6 +26,7 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
@@ -44,10 +45,13 @@ const (
 	TorDisabled = "disabled"
 	TorOptional = "optional"
 	TorRequired = "required"
+
+	MessengerDatabaseFilename = "messenger.sqlite"
 )
 
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
+	fs.StringVar(&m.Node.Protocol.PushPlatformToken, "node.default-push-token", "", "base 64 encoded default platform push token")
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
 	// p2p.remote-ipfs
@@ -175,6 +179,16 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			deviceKS = bertyprotocol.NewDeviceKeystore(deviceDS)
 		)
 
+		pushKey := &[cryptoutil.KeySize]byte{}
+		if m.Node.Protocol.DevicePushKeyPath != "" {
+			_, pushSK, err := GetDevicePushKeyForPath(m.Node.Protocol.DevicePushKeyPath, true)
+			if err != nil {
+				return nil, errcode.ErrInternal.Wrap(err)
+			}
+
+			pushKey = pushSK
+		}
+
 		// initialize new protocol client
 		opts := bertyprotocol.Opts{
 			Host:           m.Node.Protocol.ipfsNode.PeerHost,
@@ -185,6 +199,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			RootDatastore:  rootDS,
 			DeviceKeystore: deviceKS,
 			OrbitDB:        odb,
+			PushKey:        pushKey,
 		}
 
 		m.Node.Protocol.server, err = bertyprotocol.New(m.getContext(), opts)
@@ -481,11 +496,20 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = getMessengerDBForPath(dir, logger)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return m.Node.Messenger.db, nil
+}
+
+func getMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
 	if dir == InMemoryDir {
 		sqliteConn = ":memory:"
 	} else {
-		sqliteConn = path.Join(dir, "messenger.sqlite")
+		sqliteConn = path.Join(dir, MessengerDatabaseFilename)
 	}
 
 	cfg := &gorm.Config{
@@ -494,17 +518,15 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 	}
 	db, err := gorm.Open(sqlite.Open(sqliteConn), cfg)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.Messenger.db = db
-	m.Node.Messenger.dbCleanup = func() {
+	return db, func() {
 		sqlDB, _ := db.DB()
 		if sqlDB != nil {
 			sqlDB.Close()
 		}
-	}
-	return m.Node.Messenger.db, nil
+	}, nil
 }
 
 func (m *Manager) restoreMessengerDataFromExport() error {
@@ -599,6 +621,20 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 	lcmanager := m.getLifecycleManager()
 
+	pushPlatformToken := (*protocoltypes.PushServiceReceiver)(nil)
+	if m.Node.Protocol.PushPlatformToken != "" {
+		pushPlatformToken = &protocoltypes.PushServiceReceiver{}
+
+		data, err := base64.RawURLEncoding.DecodeString(m.Node.Protocol.PushPlatformToken)
+		if err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+
+		if err := pushPlatformToken.Unmarshal(data); err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+	}
+
 	// messenger server
 	opts := bertymessenger.Opts{
 		EnableGroupMonitor:  !m.Node.Messenger.DisableGroupMonitor,
@@ -608,6 +644,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		LifeCycleManager:    lcmanager,
 		StateBackup:         m.Node.Messenger.localDBState,
 		Ring:                m.Logging.ring,
+		PlatformPushToken:   pushPlatformToken,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {

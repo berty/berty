@@ -8,6 +8,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 // Get GRPC listener addresses
@@ -51,4 +52,19 @@ func (s *service) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 	}
 
 	return messenger, err
+}
+
+// GetProtocolClient returns the Protocol Client of the actual Berty account if there is one selected.
+func (s *service) GetProtocolClient() (protocoltypes.ProtocolServiceClient, error) {
+	m, err := s.getInitManager()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	protocol, err := m.GetProtocolClient()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return protocol, err
 }

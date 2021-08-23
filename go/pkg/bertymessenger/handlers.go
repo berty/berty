@@ -67,6 +67,8 @@ func (h *eventHandler) bindHandlers() {
 		protocoltypes.EventTypeAccountServiceTokenAdded:               h.accountServiceTokenAdded,
 		protocoltypes.EventTypeGroupReplicating:                       h.groupReplicating,
 		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
+		protocoltypes.EventTypePushDeviceTokenRegistered:              h.pushDeviceTokenRegistered,
+		protocoltypes.EventTypePushDeviceServerRegistered:             h.pushDeviceServerRegistered,
 	}
 	h.appMessageHandlers = map[mt.AppMessage_Type]struct {
 		handler        func(tx *dbWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error)
@@ -482,6 +484,22 @@ func (h *eventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 			{Name: "ContactPublicKey", Description: contactPK},
 		})...)
 
+		if err := h.svc.subscribeToMessages(context.Background(), groupPK); err != nil {
+			return err
+		}
+
+		h.logger.Debug("Subscribed to contact messages", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+			{Name: "GroupPublicKey", Description: b64EncodeBytes(groupPK)},
+			{Name: "ContactPublicKey", Description: contactPK},
+		})...)
+
+		conversation, err := h.db.getConversationByPK(contact.ConversationPublicKey)
+		if err != nil {
+			h.logger.Error("unable to retrieve conversation", zap.Error(err), zap.String("contact-pk", contactPK))
+		} else if err := h.sharePushTokenForConversation(conversation); err != nil {
+			h.logger.Error("unable to send push token to contact", zap.Error(err), zap.String("contact-pk", contactPK))
+		}
+
 		return nil
 	}
 
@@ -601,6 +619,13 @@ func (h *eventHandler) accountContactRequestIncomingAccepted(gme *protocoltypes.
 			{Name: "GroupPublicKey", Description: b64EncodeBytes(groupPK)},
 			{Name: "ContactPublicKey", Description: contactPK},
 		})...)
+
+		conversation, err := h.db.getConversationByPK(contact.ConversationPublicKey)
+		if err != nil {
+			h.logger.Error("unable to retrieve conversation", zap.Error(err), zap.String("contact-pk", contactPK))
+		} else if err := h.sharePushTokenForConversation(conversation); err != nil {
+			h.logger.Error("unable to send push token to contact", zap.Error(err), zap.String("contact-pk", contactPK))
+		}
 
 		return nil
 	}
@@ -1342,4 +1367,272 @@ func (h *eventHandler) handleAppMessageSetGroupInfo(tx *dbWrapper, i *mt.Interac
 	}
 
 	return nil, false, errcode.ErrInternal
+}
+
+func interactionFromOutOfStoreAppMessage(h *eventHandler, gPKBytes []byte, outOfStoreMessage *protocoltypes.OutOfStoreMessage, am *mt.AppMessage) (*mt.Interaction, error) {
+	amt := am.GetType()
+	_, c, err := ipfscid.CidFromBytes(outOfStoreMessage.CID)
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	gPK := b64EncodeBytes(gPKBytes)
+
+	isMe, err := h.db.isFromSelf(b64EncodeBytes(gPKBytes), b64EncodeBytes(outOfStoreMessage.DevicePK))
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	dpk := b64EncodeBytes(outOfStoreMessage.DevicePK)
+
+	h.logger.Debug("received app message", zap.String("type", amt.String()), zap.Int("numMedias", len(am.GetMedias())))
+
+	mpk, err := h.db.getMemberPKFromDevicePK(dpk)
+	if err != nil {
+		h.logger.Error("unable to retrieve member pk", zap.Error(err))
+		mpk = ""
+	}
+
+	i := mt.Interaction{
+		CID:                   c.String(),
+		Type:                  amt,
+		Payload:               am.GetPayload(),
+		IsMine:                isMe,
+		ConversationPublicKey: gPK,
+		SentDate:              am.GetSentDate(),
+		DevicePublicKey:       dpk,
+		MemberPublicKey:       mpk,
+		Medias:                am.GetMedias(),
+		OutOfStoreMessage:     true,
+	}
+
+	for _, media := range i.Medias {
+		media.InteractionCID = i.CID
+		media.State = mt.Media_StateNeverDownloaded
+	}
+
+	return &i, nil
+}
+
+func (h *eventHandler) isEventFromCurrentDevice(devicePK []byte) (bool, error) {
+	// FIXME: this is currently only used on the account group, we might require it in other contexts
+	conf, err := h.svc.protocolClient.InstanceGetConfiguration(h.ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return false, errcode.ErrInternal.Wrap(err)
+	}
+
+	return bytes.Equal(devicePK, conf.DevicePK), nil
+}
+
+func (h *eventHandler) pushDeviceTokenRegistered(gme *protocoltypes.GroupMetadataEvent) error {
+	var ev protocoltypes.PushDeviceTokenRegistered
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	if ok, err := h.isEventFromCurrentDevice(ev.DevicePK); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	} else if !ok {
+		h.logger.Info("event is from another device, ignoring")
+		return nil
+	}
+
+	if newlyHandled, err := h.db.markMetadataEventHandled(gme.EventContext); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	} else if !newlyHandled {
+		h.logger.Info("event has already been handled, ignoring")
+		return nil
+	}
+
+	account, err := h.db.updateDevicePushToken(ev.Token)
+	if err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return h.pushDeviceTokenBroadcast(account)
+}
+
+func (h *eventHandler) pushDeviceServerRegistered(gme *protocoltypes.GroupMetadataEvent) error {
+	var ev protocoltypes.PushDeviceServerRegistered
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	if ok, err := h.isEventFromCurrentDevice(ev.DevicePK); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	} else if !ok {
+		return nil
+	}
+
+	if newlyHandled, err := h.db.markMetadataEventHandled(gme.EventContext); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	} else if !newlyHandled {
+		return nil
+	}
+
+	account, err := h.db.updateDevicePushServer(ev.Server)
+	if err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return h.pushDeviceTokenBroadcast(account)
+}
+
+func (h *eventHandler) pushDeviceTokenBroadcast(account *mt.Account) error {
+	conversations, err := h.db.getAllConversations()
+	if err != nil {
+		return errcode.ErrDBRead.Wrap(err)
+	}
+
+	server := &protocoltypes.PushServer{}
+	if err := server.Unmarshal(account.DevicePushServer); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	token := &protocoltypes.PushServiceReceiver{}
+	if err := token.Unmarshal(account.DevicePushToken); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	for _, c := range conversations {
+		if err := h.sharePushTokenForConversationInternal(account, c, server, token); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (h *eventHandler) sharePushTokenForConversationInternal(account *mt.Account, conversation *mt.Conversation, pushServer *protocoltypes.PushServer, pushToken *protocoltypes.PushServiceReceiver) error {
+	if len(pushToken.Token) == 0 || pushToken.TokenType == 0 || len(pushToken.RecipientPublicKey) == 0 || len(pushToken.BundleID) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing data in PushServiceReceiver"))
+	}
+
+	tokenIdentifier := makeSharedPushIdentifier(pushServer, pushToken) // TODO
+
+	pubKey, err := b64DecodeBytes(conversation.PublicKey)
+	if err != nil {
+		return errcode.ErrSerialization.Wrap(err)
+	}
+
+	if (conversation.SharedPushTokenIdentifier == "" && account.AutoSharePushTokenFlag) || conversation.SharedPushTokenIdentifier != tokenIdentifier {
+		if _, err := h.svc.protocolClient.PushShareToken(h.ctx, &protocoltypes.PushShareToken_Request{
+			GroupPK:  pubKey,
+			Server:   pushServer,
+			Receiver: pushToken,
+		}); err != nil {
+			return err
+		}
+
+		if _, err := h.db.updateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
+		}
+	}
+
+	return nil
+}
+
+func (h *eventHandler) sharePushTokenForConversation(conversation *mt.Conversation) error {
+	var (
+		account    *mt.Account
+		pushServer *protocoltypes.PushServer
+		pushToken  *protocoltypes.PushServiceReceiver
+	)
+
+	if conversation == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation supplied"))
+	}
+
+	if account == nil {
+		var err error
+		account, err = h.db.getAccount()
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+	}
+
+	if account.DevicePushServer == nil && account.DevicePushToken == nil {
+		return nil
+	}
+
+	if pushServer == nil {
+		if account.DevicePushServer == nil {
+			h.logger.Warn("no push server known, won't share push token")
+			return nil
+		}
+
+		pushServer = &protocoltypes.PushServer{}
+		if err := pushServer.Unmarshal(account.DevicePushServer); err != nil {
+			return errcode.ErrDeserialization.Wrap(err)
+		}
+	}
+
+	if pushToken == nil {
+		if account.DevicePushToken == nil {
+			h.logger.Warn("no push token known for this device, won't share push token")
+			return nil
+		}
+
+		pushToken = &protocoltypes.PushServiceReceiver{}
+		if err := pushToken.Unmarshal(account.DevicePushToken); err != nil {
+			return errcode.ErrDeserialization.Wrap(err)
+		}
+	}
+
+	if err := h.sharePushTokenForConversationInternal(account, conversation, pushServer, pushToken); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	return nil
+}
+
+func makeSharedPushIdentifier(server *protocoltypes.PushServer, token *protocoltypes.PushServiceReceiver) string {
+	return fmt.Sprintf("%s-%s", server.ServerKey, token.Token)
+}
+
+func (h *eventHandler) handleOutOfStoreAppMessage(groupPK []byte, message *protocoltypes.OutOfStoreMessage, payload []byte) (*mt.Interaction, error) {
+	if message == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no message specified"))
+	}
+
+	_, c, err := ipfscid.CidFromBytes(message.CID)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	if i, err := h.db.getInteractionByCID(c.String()); err != nil && err != gorm.ErrRecordNotFound {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	} else if err == nil {
+		h.logger.Info("push payload received but was previously handled")
+		return i, nil
+	}
+
+	env := protocoltypes.EncryptedMessage{}
+	if err := env.Unmarshal(payload); err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	_, am, err := mt.UnmarshalAppMessage(env.Plaintext)
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	// build interaction
+	i, err := interactionFromOutOfStoreAppMessage(h, groupPK, message, &am)
+	if err != nil {
+		return nil, err
+	}
+
+	i, isNew, err := h.db.addInteraction(*i)
+	if err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	if isNew && h.svc != nil {
+		if err := h.svc.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionUpdated, &mt.StreamEvent_InteractionUpdated{Interaction: i}, true); err != nil {
+			return nil, err
+		}
+	}
+
+	return i, nil
 }

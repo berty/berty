@@ -1049,6 +1049,8 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 		tyber.LogTraceEnd(ctx, svc.logger, "Interacted successfully", tyber.WithDetail("CID", cid.String()))
 	}
 
+	go svc.interactionDelayedActions(cid, gpkb)
+
 	return &messengertypes.Interact_Reply{CID: cid.String()}, nil
 }
 
@@ -1554,4 +1556,101 @@ func (svc *service) TyberHostAttach(ctx context.Context, request *messengertypes
 	return nil, errcode.ErrNotImplemented.Wrap(fmt.Errorf("implement me"))
 
 	// return &messengertypes.TyberHostAttach_Reply{}, nil
+}
+
+func (svc *service) PushSetAutoShare(ctx context.Context, request *messengertypes.PushSetAutoShare_Request) (*messengertypes.PushSetAutoShare_Reply, error) {
+	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := svc.db.pushSetReplicationAutoShare(b64EncodeBytes(config.AccountPK), request.Enabled); err != nil {
+		return nil, err
+	}
+
+	if request.Enabled {
+		acc, err := svc.db.getAccount()
+		if err != nil {
+			return nil, errcode.ErrDBRead.Wrap(err)
+		}
+
+		if err := svc.eventHandler.pushDeviceTokenBroadcast(acc); err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+	}
+
+	acc, err := svc.db.getAccount()
+	if err != nil {
+		return nil, err
+	}
+
+	// dispatch event
+	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeAccountUpdated, &messengertypes.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &messengertypes.PushSetAutoShare_Reply{}, nil
+}
+
+func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
+	// TODO: decouple action from this method
+
+	if !id.Defined() {
+		svc.logger.Error("empty cid supplied")
+		return
+	}
+
+	// TODO: lower delay?
+	time.Sleep(time.Second * 2)
+
+	i, err := svc.db.getInteractionByCID(id.String())
+	if err != nil {
+		svc.logger.Error("unable to retrieve interaction", zap.Error(err), zap.String("cid", id.String()))
+		return
+	}
+
+	if i.Type != messengertypes.AppMessage_TypeUserMessage {
+		// Nothing to do, move along
+		svc.logger.Debug("push: nothing to send, invalid interaction type", zap.String("cid", id.String()), zap.String("type", i.Type.String()))
+		return
+	}
+
+	// TODO: avoid pushing acknowledged events
+	// TODO: watch for currently active devices?
+	// svc.handlerMutex.Lock()
+	// defer svc.handlerMutex.Unlock()
+
+	svc.logger.Info("attempting to push interaction", zap.String("cid", id.String()))
+	_, err = svc.protocolClient.PushSend(svc.ctx, &protocoltypes.PushSend_Request{
+		CID:            id.Bytes(),
+		GroupPublicKey: groupPK,
+	})
+	if err != nil {
+		svc.logger.Error("unable to push interaction", zap.Error(err), zap.String("cid", id.String()))
+		return
+	}
+
+	svc.logger.Info("pushed interaction", zap.String("cid", id.String()))
+}
+
+func (svc *service) PushReceive(ctx context.Context, request *messengertypes.PushReceive_Request) (*messengertypes.PushReceive_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	clear, err := svc.protocolClient.PushReceive(ctx, &protocoltypes.PushReceive_Request{
+		Payload: request.Payload,
+	})
+	if err != nil {
+		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+	}
+
+	i, err := svc.eventHandler.handleOutOfStoreAppMessage(clear.GroupPublicKey, clear.Message, clear.Cleartext)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &messengertypes.PushReceive_Reply{
+		ProtocolData: clear,
+		Interaction:  i,
+	}, nil
 }

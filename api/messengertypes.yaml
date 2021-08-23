@@ -105,3 +105,9 @@ http:
  - selector: berty.messenger.v1.MessengerService.TyberHostAttach
    post: /berty.messenger.v1/MessengerService/TyberHostAttach
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.PushSetAutoShare
+   post: /berty.messenger.v1/MessengerService/PushSetAutoShare
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.PushReceive
+   post: /berty.messenger.v1/MessengerService/PushReceive
+   body: "*"

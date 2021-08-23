@@ -63,6 +63,12 @@ service AccountService {
 
   // NetworkConfigGetPreset
   rpc NetworkConfigGetPreset (NetworkConfigGetPreset.Request) returns (NetworkConfigGetPreset.Reply);
+
+  // PushReceive
+  rpc PushReceive (PushReceive.Request) returns (PushReceive.Reply);
+
+  // PushPlatformTokenRegister
+  rpc PushPlatformTokenRegister (PushPlatformTokenRegister.Request) returns (PushPlatformTokenRegister.Reply);
 }
 
 message OpenAccount {
@@ -286,4 +292,48 @@ message NetworkConfigGetPreset {
   message Reply {
     NetworkConfig config = 1;
   }
+}
+
+message PushReceive {
+  message Request {
+    string payload = 1;
+    protocol.v1.PushServiceTokenType token_type = 2;
+  }
+  message Reply {}
+}
+
+message PushPlatformTokenRegister {
+  message Request {
+    protocol.v1.PushServiceReceiver receiver = 1;
+  }
+
+  message Reply {}
+}
+
+message DecryptedPush {
+  enum PushType {
+    Unknown = 0;
+    Message = 1;
+    Reaction = 2;
+    Media = 3;
+    Photo = 4;
+    Gif = 5;
+    VoiceMessage = 6;
+    GroupInvitation = 7;
+    ConversationNameChanged = 8;
+    MemberNameChanged = 9;
+    MemberPictureChanged = 10;
+    MemberDetailsChanged = 11;
+    ReplyOptions = 12;
+  }
+
+  string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  string account_name = 2;
+  string conversation_public_key = 3;
+  string conversation_display_name = 4;
+  string member_public_key = 5;
+  string member_display_name = 6;
+  PushType push_type = 7;
+  string payload_attrs_json = 8 [(gogoproto.customname) = "PayloadAttrsJSON"];
+  string deep_link = 9;
 }

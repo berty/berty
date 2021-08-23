@@ -1,6 +1,7 @@
 package bertyprotocol
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"sync"
@@ -27,6 +28,9 @@ type metadataStoreIndex struct {
 	contactsFromGroupPK      map[string]*accountContact
 	groups                   map[string]*accountGroup
 	serviceTokens            map[string]*protocoltypes.ServiceToken
+	devicePushToken          *protocoltypes.PushDeviceTokenRegistered
+	devicePushServer         *protocoltypes.PushDeviceServerRegistered
+	membersPushTokens        map[string]*protocoltypes.PushMemberTokenUpdate
 	contactRequestMetadata   map[string][]byte
 	contactRequestSeed       []byte
 	contactRequestEnabled    *bool
@@ -70,6 +74,9 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	m.contactRequestMetadata = map[string][]byte{}
 	m.contactRequestEnabled = nil
 	m.contactRequestSeed = []byte(nil)
+	m.devicePushToken = nil
+	m.devicePushServer = nil
+	m.membersPushTokens = map[string]*protocoltypes.PushMemberTokenUpdate{}
 
 	for i := len(entries) - 1; i >= 0; i-- {
 		e := entries[i]
@@ -688,6 +695,69 @@ func (m *metadataStoreIndex) handleMultiMemberGrantAdminRole(event proto.Message
 	return nil
 }
 
+func (m *metadataStoreIndex) handlePushMemberTokenUpdate(event proto.Message) error {
+	e, ok := event.(*protocoltypes.PushMemberTokenUpdate)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.membersPushTokens[string(e.DevicePK)]; ok {
+		return nil
+	}
+
+	m.membersPushTokens[string(e.DevicePK)] = e
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handlePushDeviceTokenRegistered(event proto.Message) error {
+	e, ok := event.(*protocoltypes.PushDeviceTokenRegistered)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	devicePK, err := m.ownMemberDevice.device.Raw()
+	if err != nil {
+		return errcode.ErrSerialization.Wrap(err)
+	}
+
+	if !bytes.Equal(devicePK, e.DevicePK) {
+		return nil
+	}
+
+	if m.devicePushToken != nil {
+		return nil
+	}
+
+	m.devicePushToken = e
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handlePushServerTokenRegistered(event proto.Message) error {
+	e, ok := event.(*protocoltypes.PushDeviceServerRegistered)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	devicePK, err := m.ownMemberDevice.device.Raw()
+	if err != nil {
+		return errcode.ErrSerialization.Wrap(err)
+	}
+
+	if !bytes.Equal(devicePK, e.DevicePK) {
+		return nil
+	}
+
+	if m.devicePushServer != nil {
+		return nil
+	}
+
+	m.devicePushServer = e
+
+	return nil
+}
+
 func (m *metadataStoreIndex) listAdmins() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -701,6 +771,34 @@ func (m *metadataStoreIndex) listAdmins() []crypto.PubKey {
 	}
 
 	return admins
+}
+
+func (m *metadataStoreIndex) listOtherMembersDevices() []crypto.PubKey {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	if m.ownMemberDevice == nil || m.ownMemberDevice.member == nil {
+		return nil
+	}
+
+	ownMemberPK, err := m.ownMemberDevice.member.Raw()
+	if err != nil {
+		m.logger.Warn("unable to serialize member pubkey", zap.Error(err))
+		return nil
+	}
+
+	devices := []crypto.PubKey(nil)
+	for pk, devicesForMember := range m.members {
+		if string(ownMemberPK) == pk {
+			continue
+		}
+
+		for _, md := range devicesForMember {
+			devices = append(devices, md.device)
+		}
+	}
+
+	return devices
 }
 
 func (m *metadataStoreIndex) contactRequestsEnabled() bool {
@@ -732,6 +830,20 @@ func (m *metadataStoreIndex) getContact(pk crypto.PubKey) (*accountContact, erro
 	}
 
 	return contact, nil
+}
+
+func (m *metadataStoreIndex) getCurrentDevicePushToken() *protocoltypes.PushDeviceTokenRegistered {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return m.devicePushToken
+}
+
+func (m *metadataStoreIndex) getCurrentDevicePushServer() *protocoltypes.PushDeviceServerRegistered {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return m.devicePushServer
 }
 
 func (m *metadataStoreIndex) postHandlerSentAliases() error {
@@ -777,6 +889,7 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			groups:                 map[string]*accountGroup{},
 			serviceTokens:          map[string]*protocoltypes.ServiceToken{},
 			contactRequestMetadata: map[string][]byte{},
+			membersPushTokens:      map[string]*protocoltypes.PushMemberTokenUpdate{},
 			g:                      g,
 			eventEmitter:           eventEmitter,
 			ownMemberDevice:        md,
@@ -805,6 +918,9 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {m.handleMultiMemberInitialMember},
 			protocoltypes.EventTypeAccountServiceTokenAdded:               {m.handleAccountServiceTokenAdded},
 			protocoltypes.EventTypeAccountServiceTokenRemoved:             {m.handleAccountServiceTokenRemoved},
+			protocoltypes.EventTypePushMemberTokenUpdate:                  {m.handlePushMemberTokenUpdate},
+			protocoltypes.EventTypePushDeviceTokenRegistered:              {m.handlePushDeviceTokenRegistered},
+			protocoltypes.EventTypePushDeviceServerRegistered:             {m.handlePushServerTokenRegistered},
 		}
 
 		m.postIndexActions = []func() error{

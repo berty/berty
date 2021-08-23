@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package berty.protocol.v1;
+
+import "protocoltypes.proto";
+
+option go_package = "berty.tech/berty/go/pkg/bertyprotocol";
+
+// PushService
+service PushService {
+  // ServerInfo retrieves metadata about the current push service
+  rpc ServerInfo (protocol.v1.PushServiceServerInfo.Request) returns (protocol.v1.PushServiceServerInfo.Reply);
+
+  // Send dispatch a push payload to one or multiple recipients
+  rpc Send(protocol.v1.PushServiceSend.Request) returns (protocol.v1.PushServiceSend.Reply);
+}

@@ -19,7 +19,7 @@ import (
 // This server is a showcase of a PKCE OAuth 2 token issuer. Its behavior is to
 // generate a random identifier and sign it, thus allowing a no storage service
 // operation. The actual token contains a random identifier and the list of
-// services granted by the user, this value is encrypted an not accessible to
+// services granted by the user, this encrypted value is not accessible to
 // end users. The value returned to the app also contains a map of the services
 // endpoints indexed by their identifiers.
 //
@@ -41,8 +41,8 @@ import (
 // Where a_token will follow this construction:
 //    sig(sk, crypt(secret, (uuid, "replication,contacts,backup"])))
 //
-// -no-click flag allows automation, ie. the following line will take a
-//      AuthServiceInitFlow issued URL and outputs an URL which can be provided
+// -no-click flag allows automation, i.e. the following line will take a
+//      AuthServiceInitFlow issued URL and outputs a URL which can be provided
 //      to AuthServiceCompleteFlow
 //
 //      curl "http://localhost:8080/authorize?..." -s | grep href= | cut -d'"' -f2 | sed 's/&amp;/\&/'

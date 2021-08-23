@@ -2,6 +2,7 @@ package bertyaccount
 
 import (
 	"context"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -83,6 +84,15 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	prog.Get("init").Start()
 
 	args = append(args, "--store.dir", accountStorePath)
+
+	if s.pushPlatformToken != nil {
+		data, err := s.pushPlatformToken.Marshal()
+		if err != nil {
+			return nil, errcode.ErrSerialization.Wrap(err)
+		}
+
+		args = append(args, "--node.default-push-token", base64.RawURLEncoding.EncodeToString(data))
+	}
 
 	meta, err := s.updateAccountMetadataLastOpened(req.AccountID)
 	if err != nil {
@@ -369,6 +379,7 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 
 	// set custom drivers
 	manager.SetNotificationManager(s.notifManager)
+	manager.SetDevicePushKeyPath(s.devicePushKeyPath)
 	manager.SetBleDriver(s.bleDriver)
 	manager.SetNBDriver(s.nbDriver)
 
@@ -379,15 +390,28 @@ func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*Lis
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	if _, err := os.Stat(s.rootdir); os.IsNotExist(err) {
-		return &ListAccounts_Reply{
-			Accounts: []*AccountMetadata{},
-		}, nil
+	accounts, err := listAccounts(s.rootdir, s.logger)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ListAccounts_Reply{
+		Accounts: accounts,
+	}, nil
+}
+
+func listAccounts(rootDir string, logger *zap.Logger) ([]*AccountMetadata, error) {
+	if logger == nil {
+		logger = zap.NewNop()
+	}
+
+	if _, err := os.Stat(rootDir); os.IsNotExist(err) {
+		return []*AccountMetadata{}, nil
 	} else if err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	subitems, err := ioutil.ReadDir(s.rootdir)
+	subitems, err := ioutil.ReadDir(rootDir)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -399,7 +423,7 @@ func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*Lis
 			continue
 		}
 
-		account, err := s.getAccountMetaForName(subitem.Name())
+		account, err := getAccountMetaForName(rootDir, subitem.Name(), logger)
 		if err != nil {
 			accounts = append(accounts, &AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
 		} else {
@@ -407,19 +431,25 @@ func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*Lis
 		}
 	}
 
-	return &ListAccounts_Reply{
-		Accounts: accounts,
-	}, nil
+	return accounts, nil
 }
 
 func (s *service) getAccountMetaForName(accountID string) (*AccountMetadata, error) {
-	metafileName := filepath.Join(s.rootdir, accountID, accountMetafileName)
+	return getAccountMetaForName(s.rootdir, accountID, s.logger)
+}
+
+func getAccountMetaForName(rootDir string, accountID string, logger *zap.Logger) (*AccountMetadata, error) {
+	if logger == nil {
+		logger = zap.NewNop()
+	}
+
+	metafileName := filepath.Join(rootDir, accountID, accountMetafileName)
 
 	metaBytes, err := ioutil.ReadFile(metafileName)
 	if os.IsNotExist(err) {
 		return nil, errcode.ErrBertyAccountDataNotFound
 	} else if err != nil {
-		s.logger.Warn("unable to read account metadata", zap.Error(err), zap.String("account-id", accountID))
+		logger.Warn("unable to read account metadata", zap.Error(err), zap.String("account-id", accountID))
 		return nil, errcode.ErrBertyAccountFSError.Wrap(fmt.Errorf("unable to read account metadata: %w", err))
 	}
 
@@ -1085,4 +1115,57 @@ func ArgsHasWithPrefix(args []string, prefix string) bool {
 	}
 
 	return false
+}
+
+func (s *service) PushReceive(ctx context.Context, req *PushReceive_Request) (*PushReceive_Reply, error) {
+	payload, err := base64.StdEncoding.DecodeString(req.Payload)
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	s.muService.Lock()
+	defer s.muService.Unlock()
+
+	// TODO: attempt opening push using currently opened account
+
+	_, _, err = PushDecrypt(ctx, s.rootdir, payload, s.logger)
+	if err != nil {
+		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+	}
+
+	return &PushReceive_Reply{}, nil
+}
+
+func (s *service) PushPlatformTokenRegister(ctx context.Context, request *PushPlatformTokenRegister_Request) (*PushPlatformTokenRegister_Reply, error) {
+	s.muService.Lock()
+	defer s.muService.Unlock()
+
+	pushPK, _, err := initutil.GetDevicePushKeyForPath(s.devicePushKeyPath, true)
+	if err != nil {
+		return nil, err
+	}
+
+	request.Receiver.RecipientPublicKey = pushPK[:]
+
+	s.pushPlatformToken = &protocoltypes.PushServiceReceiver{
+		TokenType:          request.Receiver.TokenType,
+		BundleID:           request.Receiver.BundleID,
+		Token:              request.Receiver.Token,
+		RecipientPublicKey: request.Receiver.RecipientPublicKey,
+	}
+
+	if s.initManager == nil {
+		return &PushPlatformTokenRegister_Reply{}, nil
+	}
+
+	client, err := s.initManager.GetProtocolClient()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{Receiver: request.Receiver}); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &PushPlatformTokenRegister_Reply{}, nil
 }

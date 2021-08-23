@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	ipfscid "github.com/ipfs/go-cid"
 	sqlite3 "github.com/mattn/go-sqlite3"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -113,6 +114,7 @@ func getDBModels() []interface{} {
 		&messengertypes.ConversationReplicationInfo{},
 		&messengertypes.Media{},
 		&messengertypes.Reaction{},
+		&messengertypes.MetadataEvent{},
 	}
 }
 
@@ -292,6 +294,9 @@ func (d *dbWrapper) updateConversation(c messengertypes.Conversation) (bool, err
 	}
 	if c.AccountMemberPublicKey != "" {
 		columns = append(columns, "account_member_public_key")
+	}
+	if c.SharedPushTokenIdentifier != "" {
+		columns = append(columns, "shared_push_token_identifier")
 	}
 	if c.AvatarCID != "" {
 		columns = append(columns, "avatar_cid")
@@ -835,6 +840,12 @@ func (d *dbWrapper) getDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	infos.Reactions, err = d.dbModelRowsCount(messengertypes.Reaction{})
 	errs = multierr.Append(errs, err)
 
+	infos.MetadataEvents, err = d.dbModelRowsCount(messengertypes.MetadataEvent{})
+	errs = multierr.Append(errs, err)
+
+	infos.Medias, err = d.dbModelRowsCount(messengertypes.Media{})
+	errs = multierr.Append(errs, err)
+
 	return infos, errs
 }
 
@@ -909,10 +920,11 @@ func (d *dbWrapper) updateContact(pk string, contact messengertypes.Contact) err
 
 func (d *dbWrapper) addInteraction(rawInte messengertypes.Interaction) (*messengertypes.Interaction, bool, error) {
 	if rawInte.CID == "" {
+		d.log.Error("an interaction cid is required")
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
-	_, err := d.getInteractionByCID(rawInte.CID)
+	existing, err := d.getInteractionByCID(rawInte.CID)
 	isNew := false
 	if err == gorm.ErrRecordNotFound {
 		if err := d.db.Create(&rawInte).Error; err != nil {
@@ -920,7 +932,30 @@ func (d *dbWrapper) addInteraction(rawInte messengertypes.Interaction) (*messeng
 		}
 		isNew = true
 	} else if err != nil {
+		d.log.Error("error while creating interaction: ", zap.Error(err), zap.String("cid", rawInte.CID))
 		return nil, false, err
+	}
+
+	d.log.Debug("adding cid: ", zap.String("cid", rawInte.CID))
+
+	// FIXME: CID should not trusted when out of store,
+	//  we persist the first entry seen with a given CID
+
+	if !isNew && existing != nil {
+		if !existing.OutOfStoreMessage && rawInte.OutOfStoreMessage {
+			// push received after protocol sync, ignore interaction, return the existing one
+			return existing, false, nil
+		} else if existing.OutOfStoreMessage && !rawInte.OutOfStoreMessage {
+			// replace out-of-store interaction with synced one
+			if err := d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{CID: rawInte.CID}).Error; err != nil {
+				return nil, false, errcode.ErrDBWrite.Wrap(err)
+			}
+
+			if err := d.db.Create(&rawInte).Error; err != nil {
+				return nil, true, errcode.ErrDBWrite.Wrap(err)
+			}
+			isNew = true
+		}
 	}
 
 	i, err := d.getInteractionByCID(rawInte.CID)
@@ -1214,9 +1249,9 @@ func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *protocoltype
 	return nil
 }
 
-func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) error {
+func (d *dbWrapper) accountUpdateFlag(pk string, flagName string, enabled bool) error {
 	updates := map[string]interface{}{
-		"replicate_new_groups_automatically": enabled,
+		flagName: enabled,
 	}
 
 	// db update
@@ -1236,6 +1271,14 @@ func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) err
 	}
 	d.logStep(prefix+" auto-replication in db", tyber.WithJSONDetail("Updates", updates))
 	return nil
+}
+
+func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) error {
+	return d.accountUpdateFlag(pk, "replicate_new_groups_automatically", enabled)
+}
+
+func (d *dbWrapper) pushSetReplicationAutoShare(pk string, enabled bool) error {
+	return d.accountUpdateFlag(pk, "auto_share_push_token_flag", enabled)
 }
 
 func (d *dbWrapper) saveConversationReplicationInfo(c messengertypes.ConversationReplicationInfo) error {
@@ -1342,7 +1385,7 @@ func (d *dbWrapper) getMemberPKFromDevicePK(dpk string) (string, error) {
 		}
 		return dev.PublicKey, nil
 	case gorm.ErrRecordNotFound:
-		return "", errcode.ErrNotFound
+		return "", errcode.ErrNotFound.Wrap(err)
 	default:
 		return "", errcode.ErrDBRead.Wrap(err)
 	}
@@ -1546,4 +1589,86 @@ func (d *dbWrapper) getAugmentedInteraction(cid string) (*messengertypes.Interac
 	}
 
 	return inte, nil
+}
+
+func (d *dbWrapper) wasMetadataEventHandled(id ipfscid.Cid) (bool, error) {
+	c := int64(0)
+
+	return c == 1, d.db.
+		Model(&messengertypes.MetadataEvent{}).
+		Where(&messengertypes.MetadataEvent{CID: id.String()}).
+		Count(&c).
+		Error
+}
+
+func (d *dbWrapper) markMetadataEventHandled(eventContext *protocoltypes.EventContext) (bool, error) {
+	_, id, err := ipfscid.CidFromBytes(eventContext.ID)
+	if err != nil {
+		return false, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if newlyHandled, err := d.wasMetadataEventHandled(id); err != nil {
+		return false, errcode.ErrDBRead.Wrap(err)
+	} else if newlyHandled {
+		return false, nil
+	}
+
+	return true, d.db.Create(&messengertypes.MetadataEvent{CID: id.String()}).Error
+}
+
+func (d *dbWrapper) updateDevicePushToken(token *protocoltypes.PushServiceReceiver) (*messengertypes.Account, error) {
+	data, err := token.Marshal()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	acc, err := d.getAccount()
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	acc.DevicePushToken = data
+
+	if err := d.db.Save(acc).Error; err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return d.getAccount()
+}
+
+func (d *dbWrapper) updateDevicePushServer(server *protocoltypes.PushServer) (*messengertypes.Account, error) {
+	data, err := server.Marshal()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	acc, err := d.getAccount()
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	acc.DevicePushServer = data
+
+	if err := d.db.Save(acc).Error; err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return d.getAccount()
+}
+
+func (d *dbWrapper) isFromSelf(groupPK string, devicePK string) (bool, error) {
+	devPK, err := d.getMemberPKFromDevicePK(devicePK)
+
+	if errcode.Is(err, errcode.ErrNotFound) || err == gorm.ErrRecordNotFound {
+		return false, nil
+	} else if err != nil {
+		return false, errcode.ErrDBRead.Wrap(err)
+	}
+
+	member, err := d.getMemberByPK(devPK, groupPK)
+	if errcode.Is(err, errcode.ErrNotFound) || err == gorm.ErrRecordNotFound {
+		return false, nil
+	} else if err != nil {
+		return false, errcode.ErrDBRead.Wrap(err)
+	}
+
+	return member.IsMe, nil
 }

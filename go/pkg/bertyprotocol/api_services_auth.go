@@ -26,14 +26,6 @@ const (
 	AuthCodeChallengeMethod = "S256"
 )
 
-type authExchangeResponse struct {
-	AccessToken      string            `json:"access_token"`
-	Scope            string            `json:"scope"`
-	Error            string            `json:"error"`
-	ErrorDescription string            `json:"error_description"`
-	Services         map[string]string `json:"services"`
-}
-
 type authSession struct {
 	state        string
 	codeVerifier string // codeVerifier base64 encoded random value
@@ -178,7 +170,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		return nil, errcode.ErrStreamRead.Wrap(err)
 	}
 
-	resMsg := &authExchangeResponse{}
+	resMsg := &protocoltypes.AuthExchangeResponse{}
 	if err := json.Unmarshal(body, &resMsg); err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -248,4 +240,29 @@ func (s *service) ServicesTokenList(request *protocoltypes.ServicesTokenList_Req
 	}
 
 	return nil
+}
+
+func (s *service) DebugAuthServiceSetToken(ctx context.Context, request *protocoltypes.DebugAuthServiceSetToken_Request) (*protocoltypes.DebugAuthServiceSetToken_Reply, error) {
+	services := make([]*protocoltypes.ServiceTokenSupportedService, len(request.Token.Services))
+	i := 0
+	for k, v := range request.Token.Services {
+		services[i] = &protocoltypes.ServiceTokenSupportedService{
+			ServiceType:     k,
+			ServiceEndpoint: v,
+		}
+		i++
+	}
+
+	svcToken := &protocoltypes.ServiceToken{
+		Token:             request.Token.AccessToken,
+		AuthenticationURL: request.AuthenticationURL,
+		SupportedServices: services,
+		Expiration:        -1,
+	}
+
+	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, svcToken); err != nil {
+		return nil, err
+	}
+
+	return &protocoltypes.DebugAuthServiceSetToken_Reply{}, nil
 }

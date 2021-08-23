@@ -78,8 +78,8 @@ func NonceSliceToArray(nonceSlice []byte) (*[NonceSize]byte, error) {
 func KeySliceToArray(keySlice []byte) (*[KeySize]byte, error) {
 	var keyArray [KeySize]byte
 
-	if len(keySlice) != KeySize {
-		return nil, errcode.ErrInvalidInput
+	if l := len(keySlice); l != KeySize {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to convert slice to array, unexpected slice size: %d (expected %d)", l, KeySize))
 	}
 	copy(keyArray[:], keySlice)
 

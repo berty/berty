@@ -26,9 +26,9 @@ func (s *service) MultiMemberGroupCreate(ctx context.Context, req *protocoltypes
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	s.lock.Lock()
-	s.groups[string(g.PublicKey)] = g
-	s.lock.Unlock()
+	if err := s.groupDatastore.Put(g); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
 
 	err = s.activateGroup(sk.GetPublic(), false)
 	if err != nil {
