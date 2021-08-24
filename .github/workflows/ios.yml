@@ -75,12 +75,13 @@ jobs:
           key:          ${{ runner.OS }}-bundle-v1-${{ hashFiles('js/Gemfile.lock') }}
           restore-keys: ${{ runner.OS }}-bundle-v1-
 
-      - name: Cache Gomobile .framework
-        uses: actions/cache@v2.1.6
+      - name: Cache Gomobile framework
+        uses: n0izn0iz/mkache@v3.0.20
+        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
-          path: js/ios/Frameworks/Bertybridge.framework
-          key:          ios-gomobile-${{ matrix.golang }}-v1-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h', 'go.sum') }}
-          restore-keys: ios-gomobile-${{ matrix.golang }}-v1-
+          rule: ios/Frameworks/Bertybridge.xcframework
+          makefile: js/Makefile
+          key: ios-gomobile-${{ matrix.golang }}
 
       - name: Cache XCodeGen
         uses: actions/cache@v2.1.6
