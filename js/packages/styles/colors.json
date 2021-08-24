@@ -9,5 +9,6 @@
   "positive-asset": "#CED2FF",
   "negative-asset": "#A5A7C5",
   "warning-asset": "#F64278",
-  "input-background": "#F7F8FF"
+  "input-background": "#F7F8FF",
+  "shadow": "#000000"
 }

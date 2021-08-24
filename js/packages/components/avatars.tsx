@@ -113,6 +113,7 @@ export const GenericAvatar: React.FC<{
 						alignItems: 'center',
 						justifyContent: 'center',
 						backgroundColor: colors['main-background'],
+						shadowColor: colors.shadow,
 					},
 				]}
 			>
@@ -155,9 +156,13 @@ export const HardcodedAvatar: React.FC<{
 				navigate('ImageView', { images: [avatar], previewOnly: true })
 			}}
 			style={[
-				{ borderRadius: size / 2, backgroundColor: colors['main-background'] },
 				border.shadow.medium,
 				style,
+				{
+					borderRadius: size / 2,
+					backgroundColor: colors['main-background'],
+					shadowColor: colors.shadow,
+				},
 			]}
 		>
 			<Image

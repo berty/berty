@@ -50,6 +50,7 @@ const AccountButton: React.FC<{
 	return (
 		<TouchableOpacity
 			style={[
+				{ shadowColor: colors.shadow },
 				border.radius.medium,
 				padding.horizontal.medium,
 				border.shadow.medium,

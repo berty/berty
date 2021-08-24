@@ -103,6 +103,7 @@ export const randomizeThemeColor = () => {
 		'negative-asset': getRandomColor(),
 		'warning-asset': getRandomColor(),
 		'input-background': getRandomColor(),
+		shadow: getRandomColor(),
 	}
 }
 

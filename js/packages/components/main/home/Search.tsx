@@ -395,6 +395,7 @@ export const SearchComponent: React.FC<{
 							!isFirst && {
 								shadowOpacity: 0.1,
 								shadowRadius: 8,
+								shadowColor: colors.shadow,
 								shadowOffset: { width: 0, height: -12 },
 							},
 						]}

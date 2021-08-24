@@ -45,6 +45,7 @@ const NotificationBody: React.FC<any> = props => {
 					marginTop: insets?.top || 0,
 					width: '90%',
 					borderRadius: 15,
+					shadowColor: colors.shadow,
 				},
 			]}
 		>

@@ -189,7 +189,7 @@ const BertyIdShare: React.FC<{}> = () => {
 			style={[
 				row.item.bottom,
 				border.shadow.medium,
-				{ backgroundColor: colors['positive-asset'] },
+				{ backgroundColor: colors['positive-asset'], shadowColor: colors.shadow },
 				styleBertyIdButton,
 			]}
 			onPress={async () => {

@@ -47,6 +47,7 @@ export const Header: React.FC<{
 					style={[
 						border.radius.top.scale(30),
 						!first && border.shadow.big,
+						!first && { shadowColor: colors.shadow },
 						disabled && opacity(0.5),
 						{ backgroundColor: colors['main-background'] },
 						style,
@@ -135,6 +136,7 @@ const MemberItem: React.FC<{
 								top: 5 * scaleSize,
 								right: 9 * scaleSize,
 								backgroundColor: colors['main-background'],
+								shadowColor: colors.shadow,
 							},
 						]}
 						onPress={onRemove}

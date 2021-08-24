@@ -36,6 +36,7 @@ const FooterButton: React.FC<{
 	onPress: () => Promise<void> | void
 }> = ({ name, fill, backgroundColor, onPress }) => {
 	const [{}, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
 		<TouchableOpacity
@@ -45,13 +46,13 @@ const FooterButton: React.FC<{
 					width: 60,
 					height: 60,
 					borderRadius: 60,
-					shadowColor: '#000',
+					shadowColor: colors.shadow,
 					shadowOffset: {
 						width: 0,
 						height: 5,
 					},
 					shadowOpacity: 0.2,
-					shadowRadius: 20,
+					shadowRadius: 10,
 					elevation: 5,
 					backgroundColor,
 					alignItems: 'center',

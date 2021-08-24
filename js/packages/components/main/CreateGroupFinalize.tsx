@@ -47,7 +47,7 @@ const useStylesCreateGroup = () => {
 			border.radius.medium,
 			absolute.top,
 			column.justify,
-			{ backgroundColor: colors['main-background'] },
+			{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 		],
 	}
 }
@@ -118,7 +118,13 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 			</View>
 			<TouchableOpacity
 				activeOpacity={0.9}
-				style={[border.radius.medium, border.shadow.medium, padding.medium, margin.top.medium]}
+				style={[
+					border.radius.medium,
+					border.shadow.medium,
+					padding.medium,
+					margin.top.medium,
+					{ shadowColor: colors.shadow },
+				]}
 			>
 				<View style={[row.fill]}>
 					<View style={[row.center]}>

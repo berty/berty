@@ -32,7 +32,7 @@ const useStylesContactRequest: any = () => {
 			padding.top.scale(33),
 			padding.bottom.medium,
 			width(121),
-			{ backgroundColor: colors['main-background'] },
+			{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 		],
 		declineButton: [
 			border.medium,
@@ -42,8 +42,13 @@ const useStylesContactRequest: any = () => {
 			flex.align.center,
 			height(25),
 			padding.tiny,
-			{ flexShrink: 2, flexGrow: 0 },
-			{ backgroundColor: colors['main-background'], borderColor: colors['negative-asset'] },
+			{
+				flexShrink: 2,
+				flexGrow: 0,
+				backgroundColor: colors['main-background'],
+				borderColor: colors['negative-asset'],
+				shadowColor: colors.shadow,
+			},
 		],
 		acceptButton: [
 			border.radius.tiny,
@@ -55,6 +60,7 @@ const useStylesContactRequest: any = () => {
 			{
 				flexWrap: 'wrap',
 				backgroundColor: colors['positive-asset'],
+				shadowColor: colors.shadow,
 			},
 		],
 		buttonsWrapper: [

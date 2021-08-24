@@ -57,7 +57,7 @@ const InvalidScanHeader: React.FC<{ title: string }> = ({ title }) => {
 					row.item.justify,
 					column.justify,
 					_styles.header,
-					{ backgroundColor: colors['main-background'] },
+					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 				]}
 			>
 				<Icon

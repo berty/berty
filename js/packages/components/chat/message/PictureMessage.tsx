@@ -72,6 +72,7 @@ export const PictureMessage: React.FC<{
 							style={[
 								{
 									backgroundColor: colors['input-background'],
+									shadowColor: colors.shadow,
 									alignItems: 'center',
 									justifyContent: 'center',
 									height: 165,
@@ -82,7 +83,7 @@ export const PictureMessage: React.FC<{
 								isHighlight && {
 									borderColor: colors['background-header'],
 									borderWidth: 1,
-									shadowColor: colors['background-header'],
+									shadowColor: colors.shadow,
 									shadowOffset: {
 										width: 0,
 										height: 8,

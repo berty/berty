@@ -7,6 +7,7 @@ import { BlurView } from '@react-native-community/blur'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
 import { ManageGroupInvitation } from './ManageGroupInvitation'
@@ -18,6 +19,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	route: { params },
 }) => {
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
+	const colors = useThemeColor()
 	React.useEffect(() => {
 		if (!called) {
 			call({ link: params.value })
@@ -89,7 +91,9 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 		<>
 			{/*TODO on Android when we can render a BlurView on the first render, re-enable it*/}
 			{Platform.OS === 'ios' && <BlurView style={[StyleSheet.absoluteFill]} blurType='light' />}
-			<SafeAreaView style={[border.shadow.huge]}>{content}</SafeAreaView>
+			<SafeAreaView style={[border.shadow.huge, { shadowColor: colors.shadow }]}>
+				{content}
+			</SafeAreaView>
 		</>
 	)
 }

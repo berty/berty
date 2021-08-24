@@ -215,10 +215,10 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					)}
 					<View
 						style={[
-							{ backgroundColor: colors['main-background'] },
 							border.radius.top.large,
 							border.shadow.big,
 							padding.bottom.large,
+							{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 						]}
 					>
 						<View
