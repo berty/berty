@@ -6,7 +6,6 @@ import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clien
 import { storageKeyForAccount } from './providerEffects'
 import { Maybe } from './hooks'
 import {
-	createAccount,
 	refreshAccountList,
 	closeAccountWithProgress,
 	importAccountWithProgress,
@@ -123,9 +122,10 @@ export const deleteAccount = async (
 	} else {
 		console.warn('state.selectedAccount is null and this should not occur')
 	}
+
 	if (!Object.values(accounts).length) {
-		// create new account if no more account exist
-		await createAccount(embedded, dispatch)
+		// reset to OnBoarding
+		dispatch({ type: MessengerActions.SetStateOnBoardingReady })
 	} else {
 		// open the last opened if an other account exist
 		let accountSelected: beapi.account.IAccountMetadata | null = null

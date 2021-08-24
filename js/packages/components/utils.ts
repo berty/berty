@@ -111,7 +111,6 @@ export const checkPermissions = async (
 		try {
 			const res = await checkNotifications()
 			status = res.status
-			//
 		} catch (err) {
 			console.log('request notification permission err:', err)
 		}
@@ -131,7 +130,7 @@ export const checkPermissions = async (
 		)
 	}
 
-	console.log('RESULTS', status)
+	console.log('RESULTS', status, options)
 	if ((status === RESULTS.DENIED || status === RESULTS.BLOCKED) && options?.isToNavigate) {
 		navigate('Main.Permissions', {
 			permissionType,

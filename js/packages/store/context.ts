@@ -23,7 +23,6 @@ export enum MessengerAppState {
 	OpeningGettingLocalSettings,
 	OpeningMarkConversationsAsClosed,
 	GetStarted,
-	OnBoarding,
 	Ready,
 	ClosingDaemon,
 	DeletingClosingDaemon,
@@ -40,7 +39,6 @@ export enum MessengerActions {
 	SetPersistentOption = 'SET_PERSISTENT_OPTION',
 	SetNextAccount = 'SET_NEXT_ACCOUNT',
 	SetStateClosed = 'SET_STATE_CLOSED',
-	SetStateOnBoarding = 'SET_STATE_ON_BOARDING',
 	SetCreatedAccount = 'SET_STATE_CREATED_ACCOUNT',
 	SetStateOpening = 'SET_STATE_OPENING',
 	SetStateOpeningClients = 'SET_STATE_OPENING_CLIENTS',
@@ -101,20 +99,11 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.PreReady,
 		MessengerAppState.Ready,
 	],
-	[MessengerAppState.GetStarted]: [
-		MessengerAppState.OpeningWaitingForDaemon,
-		MessengerAppState.OnBoarding,
-	],
-	[MessengerAppState.OnBoarding]: [
-		MessengerAppState.PreReady,
-		MessengerAppState.Ready,
-		MessengerAppState.DeletingClosingDaemon,
-	],
+	[MessengerAppState.GetStarted]: [MessengerAppState.OpeningWaitingForDaemon],
 	[MessengerAppState.Ready]: [
 		MessengerAppState.DeletingClosingDaemon,
 		MessengerAppState.ClosingDaemon,
 		MessengerAppState.OpeningWaitingForClients,
-		MessengerAppState.OnBoarding,
 		MessengerAppState.StreamDone,
 	],
 	[MessengerAppState.ClosingDaemon]: [

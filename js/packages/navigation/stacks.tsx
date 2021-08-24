@@ -177,7 +177,11 @@ export const Navigation: React.FC = () => {
 				)
 				return
 			case MessengerAppState.PreReady:
-				dispatch(CommonActions.navigate('Onboarding.SetupFinished'))
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Onboarding.SetupFinished }],
+					}),
+				)
 				return
 			case MessengerAppState.GetStarted:
 				dispatch(
@@ -436,7 +440,6 @@ export const Navigation: React.FC = () => {
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.mode.title'),
 					...CustomTitleStyle(),
-					presentation: 'formSheet',
 				})}
 			/>
 			<NavigationStack.Screen
@@ -555,7 +558,6 @@ export const Navigation: React.FC = () => {
 					presentation: 'formSheet',
 				})}
 			/>
-
 			{/* Modals */}
 			<NavigationStack.Screen
 				name={Routes.Modals.ManageDeepLink}

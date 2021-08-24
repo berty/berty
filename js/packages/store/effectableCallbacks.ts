@@ -88,7 +88,7 @@ export const refreshAccountList = async (
 		if (embedded) {
 			const resp = await accountService.listAccounts({})
 
-			updateShakeAttachments()
+			await updateShakeAttachments()
 
 			if (!resp.accounts) {
 				return []

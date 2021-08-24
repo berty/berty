@@ -149,6 +149,7 @@ export const MessageList: React.FC<{
 
 	return (
 		<FlatList
+			overScrollMode='never'
 			initialScrollIndex={initialScrollIndex}
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}

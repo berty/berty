@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useMsgrContext } from '@berty-tech/store/context'
+import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
 import { Routes } from '@berty-tech/navigation'
 
@@ -15,6 +15,7 @@ import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 import { checkPermissions } from '@berty-tech/components/utils'
+import { RESULTS } from 'react-native-permissions'
 
 type ConversationsProps = ViewProps & {
 	items: Array<any>
@@ -402,6 +403,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const colors = useThemeColor()
+	const ctx = useMsgrContext()
 
 	return items.length || suggestions.length || configurations.length ? (
 		<View
@@ -425,11 +427,22 @@ export const Conversations: React.FC<ConversationsProps> = ({
 						switch (config.key) {
 							case 'network':
 								navigate('Main.NetworkOptions')
+								return
 							case 'notification':
-								await checkPermissions('notification', navigate)
+								const status = await checkPermissions('notification', navigate)
+								await ctx.setPersistentOption({
+									type: PersistentOptionsKeys.Configurations,
+									payload: {
+										...ctx.persistentOptions.configurations,
+										notification: {
+											...ctx.persistentOptions.configurations.notification,
+											state: status === RESULTS.GRANTED ? 'added' : 'skipped',
+										},
+									},
+								})
+								return
 							case 'replicate':
 								navigate('Onboarding.ServicesAuth')
-							default:
 								return
 						}
 					}}
