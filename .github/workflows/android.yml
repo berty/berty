@@ -64,11 +64,12 @@ jobs:
           restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v2-
 
       - name: Cache Gomobile .aar
-        uses: actions/cache@v2.1.6
+        uses: n0izn0iz/mkache@v3.0.20
+        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
-          path: js/android/libs/gobridge.aar
-          key:          android-gomobile-${{ matrix.golang }}-v1-${{ hashFiles('go/**/*.go', 'go.sum') }}
-          restore-keys: android-gomobile-${{ matrix.golang }}-v1-
+          rule: android/libs/gobridge.aar
+          makefile: js/Makefile
+          key: android-gomobile-${{ matrix.golang }}
 
       - name: Setup Java
         uses: actions/setup-java@v1
