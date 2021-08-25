@@ -35,6 +35,7 @@ type groupView struct {
 	muAggregates sync.Mutex
 	logger       *zap.Logger
 	hasNew       int32
+	lastSentCID  string
 }
 
 func (v *groupView) View() tview.Primitive {
