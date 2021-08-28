@@ -97,13 +97,13 @@
         "create-group": "CREA UN GRUPPO"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "Nome gruppo",
+        "about": "Informazioni gruppi",
+        "first-bullet-point": "Chiunque nel gruppo può rinominarlo o invitare nuovi membri",
+        "second-bullet-point": "Puoi invitare membri tramite link",
+        "third-bullet-point": "Puoi lasciare questo gruppo",
+        "fourth-bullet-point": "Non puoi eliminare questo gruppo",
+        "fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
       }
     },
     "home-modal": {
@@ -158,8 +158,8 @@
       "title": "Impostazioni",
       "desc": "Personalizza tutto per ottenere l'app che si adatta alle tue esigenze",
       "notification-file-saved": {
-        "title": "",
-        "desc": ""
+        "title": "Dati salvati!",
+        "desc": "Disponibile nella directory dei download"
       },
       "notifications-button": {
         "title": "Notifiche",
@@ -184,7 +184,7 @@
       "receive-contact-requests-button": "Ricevi richieste di contatto",
       "external-services-button": "Servizi esterni",
       "auto-replicate-button": "Auto replica",
-      "auto-replicate-button-unavailable": "",
+      "auto-replicate-button-unavailable": "È necessario prima registrare almeno un server di replica",
       "multicast-dns-button": {
         "title": "DNS Multicast",
         "desc": "Ricerca Peer locali"
@@ -244,7 +244,7 @@
       "desc": "Il Bluetooth consente di scambiare messaggi utilizzando Berty senza accesso a Internet connettendo il dispositivo direttamente con i peer vicini",
       "activate-button": "Attiva bluetooth",
       "permission-title": "Autorizzazione Bluetooth Berty",
-      "android-permission-description": "",
+      "android-permission-description": "Per scambiare messaggi offline tramite Bluetooth, le API di Android richiedono l'autorizzazione ai permessi sulla posizione.\nNon utilizziamo in alcun modo i dati relativi alla tua posizione.",
       "ios-permission-description": "Per scambiare messaggi offline tramite Bluetooth, l'API iOS richiede la concessione dell'autorizzazione.",
       "tag-neutral": "Chiedimelo più tardi",
       "tag-negative": "Annulla",
@@ -316,7 +316,7 @@
     },
     "devtools": {
       "title": "Strumenti di sviluppo",
-      "theme-editor": "",
+      "theme-editor": "Editor di aspetto e tema",
       "header-left-button": "Informazioni sul dispositivo",
       "simulate-button": "Simula errore stream",
       "simulate-js-error-button": "Simula errore JavaScript",
@@ -367,9 +367,9 @@
       "footer-middle-button": "Elenca eventi",
       "footer-right-button": "Riavvia il daemon",
       "trigger-crashlytics-button": "Attiva crash di crashlytics",
-      "tyber-attach": "",
+      "tyber-attach": "Tyber collegato a {{host}}",
       "tyber-host-button": {
-        "name": "",
+        "name": "Tyber",
         "bullet-point": "Riavvia l'app dopo aver cambiato questo campo"
       }
     },
@@ -394,12 +394,12 @@
       "title": "Interfaccia web di IPFS"
     },
     "theme-editor": {
-      "title": "",
-      "randomize": "",
-      "save": "",
-      "export": "",
-      "share": "",
-      "import": ""
+      "title": "Editor tema",
+      "randomize": "Genera tema",
+      "save": "Salva questo tema",
+      "export": "Esporta il tema selezionato come file",
+      "share": "Condividi il tema selezionato come file",
+      "import": "Importa un file tema"
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -435,11 +435,11 @@
       "next": "PROSSIMO"
     },
     "save-theme": {
-      "title": "",
-      "desc": "",
-      "placeholder": "",
+      "title": "Salvataggio tema",
+      "desc": "Scegli un nome per il tuo tema!",
+      "placeholder": "Nome tema...",
       "cancel": "ANNULLA",
-      "add": ""
+      "add": "AGGIUNGI!"
     }
   },
   "chat": {
@@ -643,32 +643,32 @@
   },
   "permission": {
     "notification": {
-      "title": "",
-      "desc": ""
+      "title": "Notifiche gruppi",
+      "desc": "Berty ha bisogno del tuo permesso per inviarti notifiche locali o push. Questo ti permetterà di essere informato quando ricevi un messaggio."
     },
     "p2p": {
-      "title": "",
-      "desc": ""
+      "title": "Peer to Peer",
+      "desc": "Berty non utilizza né registra in alcun modo la posizione dell'utente, l'unico scopo della richiesta di autorizzazione è quello di scambiare messaggi in BLE, che richiedono l'autorizzazione di localizzazione su Android."
     },
     "camera": {
       "title": "Fotocamera",
-      "desc": ""
+      "desc": "Per scansionare il codice QR e aggiungere contatti con la tua fotocamera, l'app Berty ha bisogno del tuo permesso. La fotocamera non può essere utilizzata per nient'altro."
     },
     "audio": {
-      "title": "",
-      "desc": ""
+      "title": "Messaggi audio",
+      "desc": "Per inviare un messaggio audio ai tuoi contatti, devi consentire l'autorizzazione del microfono all'app Berty."
     },
     "button-labels": {
-      "allow": "",
-      "settings": ""
+      "allow": "Consenti",
+      "settings": "Vai alle impostazioni"
     },
-    "what-happening": "",
-    "settings-text": ""
+    "what-happening": "Cosa sta succedendo qui?",
+    "settings-text": "Puoi abilitare il permesso {{title}} dalle Impostazioni."
   },
   "notification": {
     "need-restart": {
-      "title": "",
-      "desc": ""
+      "title": "Necessario riavvio app",
+      "desc": "Per questo tipo di notifiche devi riavviare l'app per salvare questo campo!"
     }
   }
 }
