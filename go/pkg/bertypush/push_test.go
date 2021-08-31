@@ -237,7 +237,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	svc1StorageKey, err := svc1Keystore.Get(accountutils.StorageKeyName)
 	require.NoError(t, err)
 
-	decrypted, err := bertypush.PushDecryptStandalone(svc1RootDir, pushContents, svc1StorageKey)
+	decrypted, err := bertypush.PushDecryptStandalone(logger, svc1RootDir, pushContents, svc1StorageKey)
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())

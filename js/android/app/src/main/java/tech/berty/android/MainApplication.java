@@ -24,7 +24,6 @@ import tech.berty.notification.NotificationPackage;
 import tech.berty.notification.NotificationService;
 import tech.berty.rootdir.RootDirPackage;
 
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.wix.interactable.Interactable; // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
 
 import com.shakebugs.shake.Shake;
@@ -98,13 +97,6 @@ public class MainApplication extends Application implements ReactApplication, Li
 
         // register for lifecycle events
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-
-        // @FIXME(@gfanton): for debug purpose
-        NotificationService.getToken().addOnSuccessListener(token -> {
-            Log.i(TAG, "TOKEN: " + token);
-        }).addOnFailureListener(e -> {
-            Log.i(TAG, "TOKEN ERROR: " + e.toString());
-        });
 
         // init shake
         if (BuildConfig.DEBUG) {

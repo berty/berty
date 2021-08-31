@@ -66,7 +66,8 @@ func (m *MetadataStore) setLogger(l *zap.Logger) {
 		return
 	}
 
-	m.logger = l.With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
+	// m.logger = l.Named("store").With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
+	m.logger = l.Named("metastore")
 
 	if index, ok := m.Index().(loggable); ok {
 		index.setLogger(m.logger)
@@ -963,7 +964,7 @@ type EventMetadataReceived struct {
 	Event     proto.Message
 }
 
-func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
+func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
@@ -992,7 +993,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 			g:      g,
 			mks:    s.messageKeystore,
 			devKS:  s.deviceKeystore,
-			logger: s.Logger(),
+			logger: logger,
 		}
 
 		if replication {
@@ -1056,7 +1057,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 		}
 
 		// Enable logs in the metadata index
-		store.setLogger(s.Logger())
+		store.setLogger(logger)
 
 		return store, nil
 	}
@@ -1080,6 +1081,7 @@ func newSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 }
 
 func (m *MetadataStore) SendPushToken(ctx context.Context, t *protocoltypes.PushMemberTokenUpdate) (operation.Operation, error) {
+	m.logger.Debug("sending push token to device", zap.String("server", t.Server.ServiceAddr))
 	return m.attributeSignAndAddEvent(ctx, &protocoltypes.PushMemberTokenUpdate{
 		Server: t.Server,
 		Token:  t.Token,
@@ -1087,6 +1089,7 @@ func (m *MetadataStore) SendPushToken(ctx context.Context, t *protocoltypes.Push
 }
 
 func (m *MetadataStore) RegisterDevicePushToken(ctx context.Context, token *protocoltypes.PushServiceReceiver) (operation.Operation, error) {
+	m.logger.Debug("register push token")
 	return m.attributeSignAndAddEvent(ctx, &protocoltypes.PushDeviceTokenRegistered{
 		Token: token,
 	}, protocoltypes.EventTypePushDeviceTokenRegistered, nil)

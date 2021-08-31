@@ -1089,7 +1089,7 @@ func ArgsHasWithPrefix(args []string, prefix string) bool {
 }
 
 func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive_Request) (*accounttypes.PushReceive_Reply, error) {
-	payload, err := base64.StdEncoding.DecodeString(req.Payload)
+	payload, err := base64.RawURLEncoding.DecodeString(req.Payload)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}

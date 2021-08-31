@@ -197,8 +197,12 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 							}}
 							onPress={async () => {
 								const source = await getSource(protocolClient, doc.cid)
-								RNFS.writeFile(`${await RootDir.get()}/${doc.filename}`, source, 'base64')
-									.then(() => {})
+								RootDir.get()
+									.then(rootDir => {
+										RNFS.writeFile(`${rootDir}/${doc.filename}`, source, 'base64')
+											.then(() => {})
+											.catch(err => console.log(err))
+									})
 									.catch(err => console.log(err))
 							}}
 						>

@@ -54,10 +54,14 @@ export const FileMessage: React.FC<{
 			onLongPress={onLongPress}
 			onPress={async () => {
 				setLoading(true)
-				RNFS.writeFile(`${await RootDir.get()}/${medias[0].filename}`, source, 'base64')
-					.then(() => {
-						setDownloaded(true)
-						setLoading(false)
+				RootDir.get()
+					.then(rootDir => {
+						RNFS.writeFile(`${rootDir}/${medias[0].filename}`, source, 'base64')
+							.then(() => {
+								setDownloaded(true)
+								setLoading(false)
+							})
+							.catch(err => console.log(err))
 					})
 					.catch(err => console.log(err))
 			}}

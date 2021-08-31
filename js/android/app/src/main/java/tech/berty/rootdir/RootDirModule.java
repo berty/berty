@@ -13,15 +13,13 @@ import java.io.File;
 
 public class RootDirModule extends ReactContextBaseJavaModule {
     private final static String bertyFolder = "berty";
-    private final ReactApplicationContext reactContext;
 
     public RootDirModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.reactContext = reactContext;
     }
 
     public String getRootDir() {
-        String rootDir = this.reactContext.getNoBackupFilesDir().getAbsolutePath();
+        String rootDir = getReactApplicationContext().getNoBackupFilesDir().getAbsolutePath();
         return new File(rootDir + "/" + bertyFolder).getAbsolutePath();
     }
 

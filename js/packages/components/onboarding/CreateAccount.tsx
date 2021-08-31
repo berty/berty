@@ -108,7 +108,19 @@ const CreateAccountBody = () => {
 						description={t('onboarding.create-account.desc')}
 						button={{
 							text: t('onboarding.create-account.button'),
-							onPress,
+							onPress: async () => {
+								const status = await checkPermissions('notification', navigate, {
+									isToNavigate: false,
+								})
+								if (status === 'unavailable' || status === 'denied') {
+									await checkPermissions('notification', navigate, {
+										isToNavigate: true,
+										onComplete: async () => onPress(),
+									})
+								} else {
+									await onPress()
+								}
+							},
 						}}
 						secondButton={{
 							text: t('onboarding.create-account.import-account'),

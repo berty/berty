@@ -2,7 +2,7 @@ import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-
+import { requestNotifications, RESULTS } from 'react-native-permissions'
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { ScreenProps } from '@berty-tech/navigation'
@@ -39,6 +39,17 @@ const BodyNotifications: React.FC<{}> = () => {
 				toggled
 				varToggle={ctx.persistentOptions?.notifications.enable}
 				actionToggle={async () => {
+					if (!ctx.persistentOptions?.notifications.enable) {
+						requestNotifications(['alert', 'sound']).then(res =>
+							ctx.setPersistentOption({
+								type: PersistentOptionsKeys.Notifications,
+								payload: {
+									enable: res.status === RESULTS.GRANTED,
+								},
+							}),
+						)
+					}
+
 					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.Notifications,
 						payload: {

@@ -128,17 +128,17 @@ static void InitializeFlipper(UIApplication *application) {
 
 // Callbacks for APNS token request
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-  [[PushNotificationDriver getSharedInstance] onRequestSucceeded:deviceToken];
+  [PushTokenRequester.shared onRequestSucceeded:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-  [[PushNotificationDriver getSharedInstance] onRequestFailed:error];
+  [PushTokenRequester.shared onRequestFailed:error];
 }
 
 // Called when push notification was received in foreground
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
 {
-  NSString *payload = notification.request.content.userInfo[@"data"];
+  NSString *payload = notification.request.content.userInfo[BertybridgeServicePushPayloadKey];
 
   if (payload != nil) {
     EventEmitter *eventEmitter = EventEmitter.shared;

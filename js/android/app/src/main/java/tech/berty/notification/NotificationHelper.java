@@ -11,7 +11,6 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 public class NotificationHelper extends ContextWrapper {
-
     public static final String CHANNEL_ID_MESSAGE = "tech.berty.notification.message";
     public static final String CHANNEL_NAME_MESSAGE = "Berty Message";
 

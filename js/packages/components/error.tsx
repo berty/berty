@@ -248,12 +248,17 @@ export const ErrorScreen: React.FC<{ children: React.ReactElement }> = ({ childr
 		setJSExceptionHandler(errorHandler)
 	}, [])
 
+	React.useEffect(() => {
+		console.log('Error crash js', error)
+	}, [error])
+
 	if (debugMode) {
 		return <AppInspector embedded={embedded} error={error} />
 	}
 
 	if (error !== null) {
-		return components[Math.floor(Math.random() * components.length)]
+		const component = components[Math.floor(Math.random() * components.length)]
+		return component
 	}
 	return children
 }

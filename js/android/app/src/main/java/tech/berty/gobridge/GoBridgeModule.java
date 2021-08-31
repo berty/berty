@@ -37,8 +37,12 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     this.keystoreDriver = new KeystoreDriver(reactContext);
     rootDir = new File(new RootDirModule(reactContext).getRootDir());
     System.out.println("root dir: " + rootDir.getAbsolutePath());
-    tempDir = new File(reactContext.getCacheDir().getAbsolutePath());
+    tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/berty");
     System.out.println("temp dir: " + tempDir.getAbsolutePath());
+  }
+
+  public static Bridge getBridgeMessenger() {
+    return bridgeMessenger;
   }
 
   @Override
@@ -186,7 +190,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     return fileOrDirectory.delete();
   }
 
-
   @ReactMethod
   public void getProtocolAddr(Promise promise) {
     try {
@@ -197,5 +200,16 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     } catch (Exception err) {
       promise.reject(err);
     }
+  }
+
+  @Override
+  public void finalize() {
+    try {
+        GoBridgeModule.bridgeMessenger.close();
+    } catch (Exception e) {
+        Log.i(TAG, "bridge close error", e);
+    }
+
+    GoBridgeModule.bridgeMessenger = null;
   }
 }

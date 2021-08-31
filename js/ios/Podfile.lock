@@ -721,7 +721,7 @@ SPEC CHECKSUMS:
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
   Flipper-RSocket: 127954abe8b162fcaf68d2134d34dc2bd7076154
   FlipperKit: 651f50a42eb95c01b3e89a60996dd6aded529eeb
-  glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  glog: 4cee95d9ca24e6440b85a45f4fab27ad6c3603da
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
   GoogleUtilities: 8de2a97a17e15b6b98e38e8770e2d129a57c0040
   Interactable: 411887c89fa16ac41f8e7898aca06dcad55e5f22

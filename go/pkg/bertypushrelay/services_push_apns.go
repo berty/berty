@@ -2,12 +2,14 @@ package bertypushrelay
 
 import (
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
 	"github.com/sideshow/apns2/payload"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -20,6 +22,7 @@ const (
 )
 
 type pushDispatcherAPNS struct {
+	logger   *zap.Logger
 	client   *apns2.Client
 	bundleID string
 }
@@ -28,7 +31,7 @@ func (d *pushDispatcherAPNS) TokenType() pushtypes.PushServiceTokenType {
 	return pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService
 }
 
-func PushDispatcherLoadAPNSCertificates(input *string) ([]PushDispatcher, error) {
+func PushDispatcherLoadAPNSCertificates(logger *zap.Logger, input *string) ([]PushDispatcher, error) {
 	if input == nil || *input == "" {
 		return nil, nil
 	}
@@ -37,7 +40,7 @@ func PushDispatcherLoadAPNSCertificates(input *string) ([]PushDispatcher, error)
 	dispatchers := make([]PushDispatcher, len(paths))
 	for i, path := range paths {
 		var err error
-		dispatchers[i], err = pushDispatcherLoadAPNSCertificate(path)
+		dispatchers[i], err = pushDispatcherLoadAPNSCertificate(logger, path)
 		if err != nil {
 			return nil, err
 		}
@@ -46,7 +49,7 @@ func PushDispatcherLoadAPNSCertificates(input *string) ([]PushDispatcher, error)
 	return dispatchers, nil
 }
 
-func pushDispatcherLoadAPNSCertificate(path string) (PushDispatcher, error) {
+func pushDispatcherLoadAPNSCertificate(logger *zap.Logger, path string) (PushDispatcher, error) {
 	cert, err := certificate.FromP12File(path, "")
 	if err != nil {
 		return nil, errcode.ErrPushInvalidServerConfig
@@ -75,19 +78,31 @@ func pushDispatcherLoadAPNSCertificate(path string) (PushDispatcher, error) {
 	}
 
 	return &pushDispatcherAPNS{
+		logger:   logger.Named("apns"),
 		bundleID: bundleID,
 		client:   client,
 	}, nil
 }
 
 func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *protocoltypes.PushServiceReceiver) error {
+	token := hex.EncodeToString(receiver.Token)
+	secretToken := fmt.Sprintf("%.10s...", token)
+
 	pushPayload := payload.NewPayload()
 	pushPayload.Custom(pushtypes.ServicePushPayloadKey, base64.RawURLEncoding.EncodeToString(data))
-	pushPayload.ContentAvailable()
+	pushPayload.MutableContent()
+	pushPayload.AlertTitle("New Message")
+	// @TODO(gfanton): maybe add a body message ?
+
 	notification := &apns2.Notification{}
-	notification.DeviceToken = string(receiver.Token)
+	notification.DeviceToken = token
 	notification.Topic = d.bundleID
 	notification.Payload = pushPayload
+	notification.PushType = apns2.PushTypeAlert
+
+	d.logger.Debug("apns notification",
+		zap.String("token device", secretToken),
+		zap.String("bundleid", d.bundleID))
 
 	response, err := d.client.Push(notification)
 

@@ -67,7 +67,7 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
         case Level.debug:
             type = .default
         case Level.info:
-            type = .info
+            type = .default
         case Level.warn:
             type = .error
         case Level.error, Level.dPanic, Level.panic, Level.fatal:

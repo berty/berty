@@ -22,13 +22,11 @@ import (
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func PushDecryptStandalone(rootDir string, inputB64 string, storageKey []byte) (*pushtypes.DecryptedPush, error) {
-	input, err := base64.StdEncoding.DecodeString(inputB64)
+func PushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, storageKey []byte) (*pushtypes.DecryptedPush, error) {
+	input, err := base64.RawURLEncoding.DecodeString(inputB64)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
-
-	logger := zap.NewNop()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()

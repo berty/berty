@@ -29,6 +29,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -443,12 +444,13 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 		}
 
 		serviceID := m.Node.Protocol.ServiceID
-		if serviceID == "" {
-			serviceID = "unknown"
+		switch serviceID {
+		case authtypes.ServiceReplicationID:
+			authFunc = man.GRPCAuthInterceptor(serviceID)
+		case "":
 			logger.Warn("GRPCAuth: Internal field ServiceID should not be empty", zap.String("serviceID", serviceID))
+		default:
 		}
-
-		authFunc = man.GRPCAuthInterceptor(serviceID)
 	}
 
 	grpcOpts := []grpc.ServerOption{

@@ -7,28 +7,27 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import bertybridge.Bertybridge;
+import bertybridge.Bridge;
 import bertybridge.DecryptedPush;
 import tech.berty.android.MainActivity;
 import tech.berty.android.MainApplication;
 import tech.berty.gobridge.GoBridgeModule;
+import tech.berty.rootdir.RootDirModule;
 
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.io.File;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class NotificationService extends FirebaseMessagingService {
     private static final String TAG = "NotificationService";
-
-    // @FIXME: set this to protected
-    public static Task<String> getMessagingToken() {
-        return FirebaseMessaging.getInstance().getToken();
-    }
 
     public static Task<String> getToken() {
         return FirebaseMessaging.getInstance().getToken();
@@ -43,10 +42,18 @@ public class NotificationService extends FirebaseMessagingService {
     private void createPushNotification(DecryptedPush dpush) {
         NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
 
+        String message = "you have a new message";
+        try {
+            JSONObject payloadAtts = new JSONObject(dpush.getPayloadAttrsJSON());
+            message = payloadAtts.getString("message");
+        } catch (JSONException e) {
+            Log.w(TAG, "Unable to unmarshall json payload:", e);
+        }
+
         // Create Notification according to builder pattern
         Notification notification = new NotificationCompat.Builder(this, NotificationHelper.CHANNEL_ID_MESSAGE)
-            .setContentTitle(dpush.getTitle())
-            .setContentText(dpush.getMessage())
+            .setContentTitle(dpush.getMemberDisplayName())
+            .setContentText(message)
             .setSmallIcon(android.R.drawable.stat_notify_chat)
             .build();
 
@@ -54,7 +61,7 @@ public class NotificationService extends FirebaseMessagingService {
         notificationHelper.getManager().notify(1001, notification);
     }
 
-    private void createReactNativeEvent(DecryptedPush dpush) {
+    private void createReactNativeEvent(String push) {
         MainApplication application = (MainApplication) this.getApplication();
 
         // get react context
@@ -67,8 +74,7 @@ public class NotificationService extends FirebaseMessagingService {
         Map<String, String> params = new HashMap<>();
 
         // @SYNC(gfanton): sync params event with ios
-        params.put("title", dpush.getTitle());
-        params.put("message", dpush.getMessage());
+        params.put("body", push);
 
         NotificationModule.sendEvent(reactContext, params);
     }
@@ -76,29 +82,33 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        File rootDir = new File(getFilesDir().getAbsolutePath() + "/" + GoBridgeModule.bertyFolder);
-
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            String data = remoteMessage.getData().get("data");
+            String data = remoteMessage.getData().get(Bertybridge.ServicePushPayloadKey);
             if (data != null) {
                 try {
-                    DecryptedPush decryptedPush = Bertybridge.handleNotification(rootDir.toString(), data);
                     Log.d(TAG, "NotifAppState"+MainActivity.getAppState().toString());
                     if (MainActivity.getAppState() == MainActivity.AppState.Foreground) {
                         // send an event to the front when app is in foreground
-                        this.createReactNativeEvent(decryptedPush);
+                        this.createReactNativeEvent(data);
                     } else {
-                        // create a native push notification when app is in background
+                        DecryptedPush decryptedPush;
+                        Bridge bridge = GoBridgeModule.getBridgeMessenger();
+                        if (bridge == null) {
+                            // create a native push notification when app is in background
+                            String rootDir = new RootDirModule(new ReactApplicationContext(getApplicationContext())).getRootDir();
+                            decryptedPush = Bertybridge.pushDecryptStandaloneWithLogger(NotificationLogger.getInstance(), rootDir, data);
+                        } else {
+                            decryptedPush = bridge.pushDecrypt(data);
+                        }
                         this.createPushNotification(decryptedPush);
                     }
                 } catch (Exception e) {
                     Log.d(TAG, "Decrypt push error: " + e.toString());
-                    return;
                 }
             }
         }

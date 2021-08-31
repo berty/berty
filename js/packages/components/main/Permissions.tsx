@@ -43,12 +43,14 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 		permissionStatus,
 		navigateNext,
 		createNewAccount: isToCreateNewAccount,
+		onComplete,
 	} = params
 
 	const handleOnComplete = useCallback(async () => {
 		if (isToCreateNewAccount) {
 			await createNewAccount()
 		}
+		await onComplete()
 		if (navigateNext) {
 			navigation.navigate(navigateNext, {})
 		} else {

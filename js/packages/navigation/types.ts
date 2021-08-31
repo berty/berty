@@ -21,6 +21,7 @@ export namespace ScreenProps {
 			permissionStatus: 'blocked' | 'denied'
 			navigateNext: string
 			createNewAccount: boolean
+			onComplete: () => Promise<void>
 		}>
 		export namespace CreateGroup {
 			export type CreateGroupAddMembers = RouteProps<void>

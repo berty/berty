@@ -9,7 +9,7 @@ import Foundation
 
 @objc(EventEmitter)
 public class EventEmitter: RCTEventEmitter {
-  @objc public static var shared: EventEmitter?
+  @objc static var shared: EventEmitter?
   var hasListeners: Bool = false
 
   override init() {
