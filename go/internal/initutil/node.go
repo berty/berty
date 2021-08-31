@@ -411,7 +411,13 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 			return nil, nil, errcode.TODO.Wrap(err)
 		}
 
-		authFunc = man.GRPCAuthInterceptor(bertyprotocol.ServiceReplicationID)
+		serviceID := m.Node.Protocol.ServiceID
+		if serviceID == "" {
+			serviceID = "unknown"
+			logger.Warn("GRPCAuth: Internal field ServiceID should not be empty", zap.String("serviceID", serviceID))
+		}
+
+		authFunc = man.GRPCAuthInterceptor(serviceID)
 	}
 
 	grpcOpts := []grpc.ServerOption{

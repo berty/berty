@@ -127,6 +127,7 @@ type Manager struct {
 			DevicePushKeyPath string `json:"DevicePushKeyPath,omitempty"`
 
 			// internal
+			ServiceID         string
 			needAuth          bool
 			ipfsNode          *core.IpfsNode
 			ipfsAPI           ipfsutil.ExtendedCoreAPI
