@@ -42,7 +42,7 @@ func (m *Manager) getDatastoreDir() (string, error) {
 		return InMemoryDir, nil
 	}
 
-	if dir, err := getDatastoreDir(m.Datastore.Dir); err != nil {
+	if dir, err := GetDatastoreDir(m.Datastore.Dir); err != nil {
 	} else {
 		m.Datastore.dir = dir
 	}
@@ -56,7 +56,7 @@ func (m *Manager) getDatastoreDir() (string, error) {
 	return m.Datastore.dir, nil
 }
 
-func getDatastoreDir(dir string) (string, error) {
+func GetDatastoreDir(dir string) (string, error) {
 	switch {
 	case dir == "":
 		return "", errcode.TODO.Wrap(fmt.Errorf("--store.dir is empty"))
@@ -97,7 +97,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if m.Datastore.rootDS, err = getRootDatastoreForPath(dir, m.Datastore.LowMemoryProfile, m.initLogger); err != nil {
+	if m.Datastore.rootDS, err = GetRootDatastoreForPath(dir, m.Datastore.LowMemoryProfile, m.initLogger); err != nil {
 		return nil, err
 	}
 
@@ -106,7 +106,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 	return m.Datastore.rootDS, nil
 }
 
-func getRootDatastoreForPath(dir string, lowMemoryProfile bool, logger *zap.Logger) (datastore.Batching, error) {
+func GetRootDatastoreForPath(dir string, lowMemoryProfile bool, logger *zap.Logger) (datastore.Batching, error) {
 	var err error
 	inMemory := dir == InMemoryDir
 

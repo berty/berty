@@ -86,7 +86,7 @@ func Test_ensureSeamlessDBUpdate(t *testing.T) {
 	log, loggerCleanup := testutil.Logger(t)
 	defer loggerCleanup()
 
-	replayer := func(db *dbWrapper) error {
+	replayer := func(db *DBWrapper) error {
 		require.NoError(t, db.db.Create(&modelAccountV1{
 			PublicKey: "pk_account_1",
 		}).Error)
@@ -102,7 +102,7 @@ func Test_ensureSeamlessDBUpdate(t *testing.T) {
 		return nil
 	}
 
-	initialPlay := func(db *dbWrapper) error {
+	initialPlay := func(db *DBWrapper) error {
 		require.NoError(t, db.db.Create(&modelAccountV1{
 			PublicKey:                       "pk_account_1",
 			DisplayName:                     "user_display_name_1",

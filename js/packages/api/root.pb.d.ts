@@ -1199,10 +1199,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    pushData?: (berty.account.v1.IDecryptedPush|null);
                 }
 
                 class Reply implements IReply {
 
+                    public pushData?: (berty.account.v1.IDecryptedPush|null);
                     public static create(properties?: berty.account.v1.PushReceive.IReply): berty.account.v1.PushReceive.Reply;
                     public static encode(message: berty.account.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -9071,6 +9073,26 @@ export namespace berty {
                 }
             }
 
+            interface IPushReceivedData {
+                protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
+                interaction?: (berty.messenger.v1.IInteraction|null);
+            }
+
+            class PushReceivedData implements IPushReceivedData {
+
+                public protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
+                public interaction?: (berty.messenger.v1.IInteraction|null);
+                public static create(properties?: berty.messenger.v1.IPushReceivedData): berty.messenger.v1.PushReceivedData;
+                public static encode(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushReceivedData;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushReceivedData;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushReceivedData;
+                public static toObject(message: berty.messenger.v1.PushReceivedData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
             interface IPushReceive {
             }
 
@@ -9108,14 +9130,12 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
-                    interaction?: (berty.messenger.v1.IInteraction|null);
+                    data?: (berty.messenger.v1.IPushReceivedData|null);
                 }
 
                 class Reply implements IReply {
 
-                    public protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
-                    public interaction?: (berty.messenger.v1.IInteraction|null);
+                    public data?: (berty.messenger.v1.IPushReceivedData|null);
                     public static create(properties?: berty.messenger.v1.PushReceive.IReply): berty.messenger.v1.PushReceive.Reply;
                     public static encode(message: berty.messenger.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;

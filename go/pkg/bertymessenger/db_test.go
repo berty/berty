@@ -31,7 +31,7 @@ const (
 
 var _ = getInMemoryTestDBOptsUndefined
 
-func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper, func()) {
+func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*DBWrapper, func()) {
 	t.Helper()
 
 	init := true
@@ -57,7 +57,7 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 		t.Fatal(err)
 	}
 
-	wrappedDB := newDBWrapper(db, log)
+	wrappedDB := NewDBWrapper(db, log)
 	if noFTS {
 		wrappedDB = wrappedDB.DisableFTS()
 	}
@@ -633,7 +633,7 @@ func Test_dbWrapper_dbModelRowsCount(t *testing.T) {
 	require.Equal(t, int64(0), count)
 
 	// Invalid model
-	count, err = db.dbModelRowsCount(&dbWrapper{})
+	count, err = db.dbModelRowsCount(&DBWrapper{})
 	require.Error(t, err)
 	require.Equal(t, int64(0), count)
 }
@@ -1224,7 +1224,7 @@ func Test_dbWrapper_tx(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	err := db.tx(ctx, func(tx *dbWrapper) error {
+	err := db.tx(ctx, func(tx *DBWrapper) error {
 		return fmt.Errorf("some error")
 	})
 	require.Error(t, err)
@@ -1233,7 +1233,7 @@ func Test_dbWrapper_tx(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, int64(0), count)
 
-	err = db.tx(ctx, func(tx *dbWrapper) error {
+	err = db.tx(ctx, func(tx *DBWrapper) error {
 		err := tx.firstOrCreateAccount("some pk", "some url")
 		require.NoError(t, err)
 		return nil
@@ -1244,7 +1244,7 @@ func Test_dbWrapper_tx(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, int64(1), count)
 
-	err = db.tx(ctx, func(tx *dbWrapper) error {
+	err = db.tx(ctx, func(tx *DBWrapper) error {
 		err := tx.firstOrCreateAccount("some pk 2", "some url 2")
 		require.NoError(t, err)
 		return fmt.Errorf("some error")

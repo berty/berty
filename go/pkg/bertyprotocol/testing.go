@@ -47,6 +47,7 @@ type TestingOpts struct {
 	CoreAPIMock    ipfsutil.CoreAPIMock
 	OrbitDB        *BertyOrbitDB
 	ConnectFunc    ConnectTestingProtocolFunc
+	PushSK         *[32]byte
 }
 
 func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
@@ -101,6 +102,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		IpfsCoreAPI:    node.API(),
 		OrbitDB:        odb,
 		TinderDriver:   node.Tinder(),
+		PushKey:        opts.PushSK,
 	}
 
 	service, cleanupService := TestingService(ctx, t, serviceOpts)

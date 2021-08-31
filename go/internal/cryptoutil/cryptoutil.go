@@ -67,8 +67,8 @@ func GenerateNonceSize(size int) ([]byte, error) {
 func NonceSliceToArray(nonceSlice []byte) (*[NonceSize]byte, error) {
 	var nonceArray [NonceSize]byte
 
-	if len(nonceSlice) != NonceSize {
-		return nil, errcode.ErrInvalidInput
+	if l := len(nonceSlice); l != NonceSize {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid nonce size, expected %d bytes, got %d", NonceSize, l))
 	}
 	copy(nonceArray[:], nonceSlice)
 

@@ -46,7 +46,7 @@ type service struct {
 	isGroupMonitorEnabled bool
 	protocolClient        protocoltypes.ProtocolServiceClient
 	startedAt             time.Time
-	db                    *dbWrapper
+	db                    *DBWrapper
 	dispatcher            *Dispatcher
 	cancelFn              func()
 	optsCleanup           func()
@@ -54,8 +54,9 @@ type service struct {
 	handlerMutex          sync.Mutex
 	notifmanager          notification.Manager
 	lcmanager             *lifecycle.Manager
-	eventHandler          *eventHandler
+	eventHandler          *EventHandler
 	ring                  *zapring.Core
+	pushReceiver          MessengerPushReceiver
 }
 
 type Opts struct {
@@ -153,7 +154,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	l = opts.Logger
 
 	ctx, cancel := context.WithCancel(context.Background())
-	db := newDBWrapper(opts.DB, opts.Logger)
+	db := NewDBWrapper(opts.DB, opts.Logger)
 
 	if opts.StateBackup != nil {
 		tyber.LogStep(tyberCtx, l, "Restoring db state")
@@ -216,7 +217,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		ring:                  opts.Ring,
 	}
 
-	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)
+	svc.eventHandler = NewEventHandler(ctx, db, client, opts.Logger, &svc, false)
+	svc.pushReceiver = NewPushReceiver(bertyprotocol.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, opts.Logger)
 
 	// get or create account in DB
 	{
@@ -637,7 +639,7 @@ func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (er
 	return nil
 }
 
-func (svc *service) streamInteraction(tx *dbWrapper, cid string, isNew bool) error {
+func (svc *service) streamInteraction(tx *DBWrapper, cid string, isNew bool) error {
 	if svc != nil && svc.dispatcher != nil {
 		interaction, err := tx.getAugmentedInteraction(cid)
 		if err != nil {
@@ -655,7 +657,7 @@ func (svc *service) streamInteraction(tx *dbWrapper, cid string, isNew bool) err
 	return nil
 }
 
-func buildReactionsView(tx *dbWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
+func buildReactionsView(tx *DBWrapper, cid string) ([]*mt.Interaction_ReactionView, error) {
 	views := ([]*mt.Interaction_ReactionView)(nil)
 	if err := tx.db.Raw(
 		"SELECT count(*) AS count, emoji, MAX(is_mine) > 0 AS own_state FROM reactions WHERE target_cid = ? AND state = true GROUP BY emoji ORDER BY MIN(state_date) ASC",

@@ -830,7 +830,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *messengertypes.Accou
 		}
 	}
 
-	if err := svc.db.tx(ctx, func(tx *dbWrapper) error {
+	if err := svc.db.tx(ctx, func(tx *DBWrapper) error {
 		acc, err := tx.getAccount()
 		if err != nil {
 			svc.logger.Error("AccountUpdate: failed to get account", zap.Error(err))
@@ -1353,7 +1353,7 @@ func (svc *service) MediaPrepare(srv messengertypes.MessengerService_MediaPrepar
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	return svc.db.tx(ctx, func(tx *dbWrapper) error {
+	return svc.db.tx(ctx, func(tx *DBWrapper) error {
 		// add to db
 		media := *header.Info
 		media.CID = cid
@@ -1637,20 +1637,5 @@ func (svc *service) PushReceive(ctx context.Context, request *messengertypes.Pus
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	clear, err := svc.protocolClient.PushReceive(ctx, &protocoltypes.PushReceive_Request{
-		Payload: request.Payload,
-	})
-	if err != nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
-	}
-
-	i, err := svc.eventHandler.handleOutOfStoreAppMessage(clear.GroupPublicKey, clear.Message, clear.Cleartext)
-	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
-	}
-
-	return &messengertypes.PushReceive_Reply{
-		ProtocolData: clear,
-		Interaction:  i,
-	}, nil
+	return svc.pushReceiver.PushReceive(ctx, request.Payload)
 }

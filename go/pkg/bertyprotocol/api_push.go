@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/ipfs/go-cid"
-	"github.com/ipfs/go-datastore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -19,13 +18,15 @@ import (
 
 func (s *service) getPushClient(host string) (PushServiceClient, error) {
 	s.muPushClients.RLock()
-	defer s.muPushClients.RUnlock()
 
 	if cc, ok := s.pushClients[host]; ok {
+		s.muPushClients.RUnlock()
 		return NewPushServiceClient(cc), nil
 	}
 
-	return nil, fmt.Errorf("no grpc client registered for `%s`", host)
+	s.muPushClients.RUnlock()
+
+	return s.createAndGetPushClientWithoutToken(s.ctx, host)
 }
 
 func (s *service) createAndGetPushClient(ctx context.Context, host string, token string) (PushServiceClient, error) {
@@ -50,6 +51,10 @@ func (s *service) createAndGetPushClient(ctx context.Context, host string, token
 
 	s.pushClients[host] = cc
 	return NewPushServiceClient(cc), err
+}
+
+func (s *service) createAndGetPushClientWithoutToken(ctx context.Context, host string) (PushServiceClient, error) {
+	return s.createAndGetPushClient(ctx, host, "")
 }
 
 func (s *service) PushReceive(ctx context.Context, request *protocoltypes.PushReceive_Request) (*protocoltypes.PushReceive_Reply, error) {
@@ -207,7 +212,7 @@ func (s *service) PushSetDeviceToken(ctx context.Context, request *protocoltypes
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push token provided"))
 	}
 
-	request.Receiver.RecipientPublicKey = s.pushHandler.pushPK[:]
+	request.Receiver.RecipientPublicKey = s.pushHandler.PushPK()[:]
 
 	if currentReceiver := s.accountGroup.metadataStore.getCurrentDevicePushToken(); currentReceiver != nil && bytes.Equal(currentReceiver.Token, request.Receiver.Token) {
 		return &protocoltypes.PushSetDeviceToken_Reply{}, nil
@@ -238,12 +243,7 @@ func (s *service) PushSetServer(ctx context.Context, request *protocoltypes.Push
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	cachePayload, err := request.Server.Marshal()
-	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
-	}
-
-	if err := s.accountCache.Put(datastore.NewKey(AccountCacheDatastorePushServerPK), cachePayload); err != nil {
+	if err := s.pushHandler.UpdatePushServer(request.Server); err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 

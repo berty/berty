@@ -142,6 +142,20 @@ func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
 	return m.getLocalProtocolServer()
 }
 
+func (m *Manager) getPushSecretKey() (*[cryptoutil.KeySize]byte, error) {
+	pushKey := &[cryptoutil.KeySize]byte{}
+	if m.Node.Protocol.DevicePushKeyPath != "" {
+		var err error
+
+		_, pushKey, err = GetDevicePushKeyForPath(m.Node.Protocol.DevicePushKeyPath, true)
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+	}
+
+	return pushKey, nil
+}
+
 func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	if m.Node.Protocol.server != nil {
 		return m.Node.Protocol.server, nil
@@ -179,14 +193,9 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			deviceKS = bertyprotocol.NewDeviceKeystore(deviceDS)
 		)
 
-		pushKey := &[cryptoutil.KeySize]byte{}
-		if m.Node.Protocol.DevicePushKeyPath != "" {
-			_, pushSK, err := GetDevicePushKeyForPath(m.Node.Protocol.DevicePushKeyPath, true)
-			if err != nil {
-				return nil, errcode.ErrInternal.Wrap(err)
-			}
-
-			pushKey = pushSK
+		pushKey, err := m.getPushSecretKey()
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
 		}
 
 		// initialize new protocol client
@@ -502,7 +511,7 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = getMessengerDBForPath(dir, logger)
+	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = GetMessengerDBForPath(dir, logger)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -510,7 +519,7 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 	return m.Node.Messenger.db, nil
 }
 
-func getMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+func GetMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
 	if dir == InMemoryDir {
 		sqliteConn = ":memory:"

@@ -1617,11 +1617,8 @@
     "bertymessengerv1PushReceiveReply": {
       "type": "object",
       "properties": {
-        "protocol_data": {
-          "$ref": "#/definitions/bertyprotocolv1PushReceiveReply"
-        },
-        "interaction": {
-          "$ref": "#/definitions/v1Interaction"
+        "data": {
+          "$ref": "#/definitions/v1PushReceivedData"
         }
       }
     },
@@ -2714,6 +2711,17 @@
           "type": "string",
           "format": "byte",
           "title": "optional passphase to decrypt the link"
+        }
+      }
+    },
+    "v1PushReceivedData": {
+      "type": "object",
+      "properties": {
+        "protocol_data": {
+          "$ref": "#/definitions/bertyprotocolv1PushReceiveReply"
+        },
+        "interaction": {
+          "$ref": "#/definitions/v1Interaction"
         }
       }
     },

@@ -24,9 +24,9 @@ import (
 )
 
 func TestPushDecryptStandalone(t *testing.T) {
-	t.Skip("Push token is frequently not received by the second member")
+	t.Skip("Push token is frequently not received by the second member, while running the whole test suite error while accepting the request")
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
 	logger, cleanup := testutil.Logger(t)
@@ -144,7 +144,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Millisecond * 2000)
 
 	_, err = messenger2.ContactAccept(ctx, &messengertypes.ContactAccept_Request{
 		PublicKey: mess1Acc.Account.PublicKey,
@@ -171,7 +171,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	_, err = protocol2.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: grpInf2.Group.PublicKey})
 	require.NoError(t, err)
 
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 5)
 
 	_, err = svc1.CloseAccount(ctx, &bertyaccount.CloseAccount_Request{})
 	require.NoError(t, err)
@@ -189,10 +189,12 @@ func TestPushDecryptStandalone(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 5)
 	require.Equal(t, 1, dispatcher.Len([]byte(svc1Token)))
 
-	decrypted, err := bertyaccount.PushDecryptStandalone(svc1RootDir, base64.StdEncoding.EncodeToString(dispatcher.Shift([]byte(svc1Token))))
+	pushContents := base64.StdEncoding.EncodeToString(dispatcher.Shift([]byte(svc1Token)))
+
+	decrypted, err := bertyaccount.PushDecryptStandalone(svc1RootDir, pushContents)
 	require.NoError(t, err)
 
 	require.Equal(t, bertyaccount.DecryptedPush_Message.String(), decrypted.PushType.String())
@@ -201,4 +203,32 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decrypted.PayloadAttrsJSON)
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
+
+	// Account service with no account opened
+	decryptedUsingAccountSvc, err := svc1.PushReceive(ctx, &bertyaccount.PushReceive_Request{Payload: pushContents})
+	require.NoError(t, err)
+
+	require.Equal(t, bertyaccount.DecryptedPush_Message.String(), decryptedUsingAccountSvc.PushData.PushType.String())
+	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountID)
+	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decryptedUsingAccountSvc.PushData.ConversationPublicKey)
+	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJSON)
+	// TODO:
+	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
+
+	_, err = svc1.OpenAccount(ctx, &bertyaccount.OpenAccount_Request{AccountID: svc1Account1})
+	require.NoError(t, err)
+
+	// Account service with current account
+	decryptedUsingAccountSvc, err = svc1.PushReceive(ctx, &bertyaccount.PushReceive_Request{Payload: pushContents})
+	require.NoError(t, err)
+
+	require.Equal(t, bertyaccount.DecryptedPush_Message.String(), decryptedUsingAccountSvc.PushData.PushType.String())
+	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountID)
+	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decryptedUsingAccountSvc.PushData.ConversationPublicKey)
+	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJSON)
+	// TODO:
+	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
+
+	_, err = svc1.CloseAccount(ctx, &bertyaccount.CloseAccount_Request{})
+	require.NoError(t, err)
 }

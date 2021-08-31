@@ -14,6 +14,8 @@ import (
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
@@ -29,9 +31,17 @@ func PushDecryptStandalone(rootDir string, inputB64 string) (*DecryptedPush, err
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, logger)
+	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+	}
+
+	return pushEnrich(rawPushData, accountData, logger)
+}
+
+func pushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *AccountMetadata, logger *zap.Logger) (*DecryptedPush, error) {
+	if accountData == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no account metadata specified"))
 	}
 
 	link, err := bertylinks.InternalLinkToMessage(accountData.AccountID, rawPushData.Interaction.ConversationPublicKey, rawPushData.Interaction.CID)
@@ -157,9 +167,18 @@ func PushDecryptStandalone(rootDir string, inputB64 string) (*DecryptedPush, err
 	return d, nil
 }
 
-func PushDecrypt(ctx context.Context, rootDir string, input []byte, logger *zap.Logger) (*messengertypes.PushReceive_Reply, *AccountMetadata, error) {
-	if logger == nil {
-		logger = zap.NewNop()
+type PushDecryptOpts struct {
+	Logger           *zap.Logger
+	ExcludedAccounts []string
+}
+
+func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDecryptOpts) (*messengertypes.PushReceivedData, *AccountMetadata, error) {
+	if opts == nil {
+		opts = &PushDecryptOpts{}
+	}
+
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
 	}
 
 	_, pushSK, err := initutil.GetDevicePushKeyForPath(path.Join(rootDir, initutil.DefaultPushKeyFilename), false)
@@ -167,7 +186,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, logger *zap.
 		return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("device has no known push key"))
 	}
 
-	accounts, err := listAccounts(rootDir, logger)
+	accounts, err := listAccounts(rootDir, opts.Logger)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -181,28 +200,66 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, logger *zap.
 	for _, account := range accounts {
 		var reply *messengertypes.PushReceive_Reply
 
-		accountDir := path.Join(rootDir, account.AccountID)
-		pushReceiver, tearDown, err := initutil.GetMessengerPushReceiver(ctx, accountDir, pushSK, logger)
+		ignoreAccount := false
+		for _, excluded := range opts.ExcludedAccounts {
+			if account.AccountID == excluded {
+				ignoreAccount = true
+				break
+			}
+		}
+
+		if ignoreAccount {
+			continue
+		}
+
+		accountDir, err := initutil.GetDatastoreDir(path.Join(rootDir, account.AccountID))
 		if err != nil {
-			logger.Warn("unable to init push receiver", zap.String("account-id", account.AccountID), zap.Error(err))
 			errs = append(errs, err)
 			continue
 		}
+
+		rootDS, err := initutil.GetRootDatastoreForPath(accountDir, true, opts.Logger)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+
+		db, dbCleanup, err := initutil.GetMessengerDBForPath(accountDir, opts.Logger)
+		if err != nil {
+			errs = append(errs, err)
+			rootDS.Close()
+			continue
+		}
+
+		pushHandler, err := bertyprotocol.NewPushHandler(&bertyprotocol.Opts{
+			Logger:        opts.Logger,
+			RootDatastore: rootDS,
+			PushKey:       pushSK,
+		})
+		if err != nil {
+			return nil, nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to initialize push handler: %w", err))
+		}
+
+		evtHandler := bertymessenger.NewEventHandler(ctx, bertymessenger.NewDBWrapper(db, opts.Logger), nil, opts.Logger, nil, false)
+
+		pushReceiver := bertymessenger.NewPushReceiver(pushHandler, evtHandler, opts.Logger)
 
 		reply, err = pushReceiver.PushReceive(ctx, input)
 		if err != nil {
-			tearDown()
-			logger.Warn("unable to decrypt push", zap.String("account-id", account.AccountID), zap.Error(err))
+			dbCleanup()
+			rootDS.Close()
+			opts.Logger.Warn("unable to decrypt push", zap.String("account-id", account.AccountID), zap.Error(err))
 			errs = append(errs, err)
 			continue
 		}
 
-		tearDown()
-		return reply, account, nil
+		dbCleanup()
+		rootDS.Close()
+		return reply.Data, account, nil
 	}
 
 	if len(errs) == 0 {
-		return nil, nil, errcode.ErrInternal.Wrap(fmt.Errorf("this should not occur"))
+		return nil, nil, errcode.ErrInternal.Wrap(fmt.Errorf("no account can decrypt the received push message"))
 	}
 
 	// only returning the first error

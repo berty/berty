@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -14,20 +13,17 @@ import (
 type messengerPushReceiver struct {
 	logger       *zap.Logger
 	pushHandler  bertyprotocol.PushHandler
-	eventHandler *eventHandler
+	eventHandler *EventHandler
 }
 
 type MessengerPushReceiver interface {
 	PushReceive(ctx context.Context, input []byte) (*messengertypes.PushReceive_Reply, error)
 }
 
-func NewPushReceiver(ctx context.Context, db *gorm.DB, pushHandler bertyprotocol.PushHandler, logger *zap.Logger) MessengerPushReceiver {
+func NewPushReceiver(pushHandler bertyprotocol.PushHandler, evtHandler *EventHandler, logger *zap.Logger) MessengerPushReceiver {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
-
-	wrappedDB := newDBWrapper(db, logger)
-	evtHandler := newEventHandler(ctx, wrappedDB, nil, logger, nil, false)
 
 	return &messengerPushReceiver{
 		logger:       logger,
@@ -48,7 +44,9 @@ func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (
 	}
 
 	return &messengertypes.PushReceive_Reply{
-		ProtocolData: clear,
-		Interaction:  i,
+		Data: &messengertypes.PushReceivedData{
+			ProtocolData: clear,
+			Interaction:  i,
+		},
 	}, nil
 }

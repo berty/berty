@@ -83,6 +83,10 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	prog.AddStep("finishing")
 	prog.Get("init").Start()
 
+	errCleanup := func() {
+		s.accountData = nil
+	}
+
 	args = append(args, "--store.dir", accountStorePath)
 
 	if s.pushPlatformToken != nil {
@@ -96,10 +100,9 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 
 	meta, err := s.updateAccountMetadataLastOpened(req.AccountID)
 	if err != nil {
+		errCleanup()
 		return nil, errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
 	}
-
-	errCleanup := func() {}
 
 	// setup manager logger
 	prog.Get("setup-logger").SetAsCurrent()
@@ -120,6 +123,7 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	{
 		var err error
 		if initManager, err = s.openManager(streams, args...); err != nil {
+			errCleanup()
 			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
 	}
@@ -289,6 +293,7 @@ func (s *service) CloseAccount(ctx context.Context, req *CloseAccount_Request) (
 		return nil, errcode.ErrBertyAccountManagerClose.Wrap(err)
 	}
 	s.initManager = nil
+	s.accountData = nil
 
 	return &CloseAccount_Reply{}, nil
 }
@@ -340,6 +345,7 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 		return errcode.ErrBertyAccountManagerClose.Wrap(err)
 	}
 	s.initManager = nil
+	s.accountData = nil
 
 	// wait
 	<-done
@@ -512,6 +518,7 @@ func (s *service) updateAccountMetadataLastOpened(accountID string) (*AccountMet
 	}
 
 	meta.AccountID = accountID
+	s.accountData = meta
 
 	return meta, nil
 }
@@ -796,6 +803,7 @@ func (s *service) updateAccount(req *UpdateAccount_Request) (*AccountMetadata, e
 	}
 
 	meta.AccountID = req.AccountID
+	s.accountData = meta
 
 	return meta, nil
 }
@@ -1123,17 +1131,56 @@ func (s *service) PushReceive(ctx context.Context, req *PushReceive_Request) (*P
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
+	initManager, err := s.getInitManager()
+	if err != nil {
+		s.logger.Warn("unable to retrieve init manager", zap.Error(err))
+		initManager = nil
+	}
+
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	// TODO: attempt opening push using currently opened account
+	excludedAccounts := []string(nil)
 
-	_, _, err = PushDecrypt(ctx, s.rootdir, payload, s.logger)
+	accData := s.accountData
+	if initManager != nil && accData != nil {
+		excludedAccounts = append(excludedAccounts, accData.AccountID)
+
+		client, err := initManager.GetMessengerClient()
+		if err == nil && client != nil {
+			rep, err := client.PushReceive(ctx, &messengertypes.PushReceive_Request{Payload: payload})
+			if err == nil {
+				pushData, err := pushEnrich(rep.Data, accData, s.logger)
+				if err == nil {
+					return &PushReceive_Reply{
+						PushData: pushData,
+					}, nil
+				}
+
+				s.logger.Warn("unable to enrich push data", zap.Error(err))
+				// TODO: should we return early?
+			}
+
+			s.logger.Warn("unable to open push using currently opened account", zap.Error(err))
+		} else if err != nil {
+			s.logger.Warn("unable to get currently opened account", zap.Error(err))
+		}
+	}
+
+	rawPushData, accountData, err := PushDecrypt(ctx, s.rootdir, payload, &PushDecryptOpts{Logger: s.logger, ExcludedAccounts: excludedAccounts})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
 
-	return &PushReceive_Reply{}, nil
+	pushData, err := pushEnrich(rawPushData, accountData, s.logger)
+	if err != nil {
+		s.logger.Warn("unable to enrich push data", zap.Error(err))
+		// TODO: should we return early?
+	}
+
+	return &PushReceive_Reply{
+		PushData: pushData,
+	}, nil
 }
 
 func (s *service) PushPlatformTokenRegister(ctx context.Context, request *PushPlatformTokenRegister_Request) (*PushPlatformTokenRegister_Reply, error) {

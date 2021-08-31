@@ -898,12 +898,16 @@ message PushSetAutoShare {
   }
 }
 
+message PushReceivedData {
+  protocol.v1.PushReceive.Reply protocol_data = 1;
+  Interaction interaction = 2;
+}
+
 message PushReceive {
   message Request {
     bytes payload = 1;
   }
   message Reply {
-    protocol.v1.PushReceive.Reply protocol_data = 1;
-    Interaction interaction = 2;
+    PushReceivedData data = 1;
   }
 }

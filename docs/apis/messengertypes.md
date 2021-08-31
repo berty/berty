@@ -111,6 +111,7 @@
     - [PushReceive](#berty.messenger.v1.PushReceive)
     - [PushReceive.Reply](#berty.messenger.v1.PushReceive.Reply)
     - [PushReceive.Request](#berty.messenger.v1.PushReceive.Request)
+    - [PushReceivedData](#berty.messenger.v1.PushReceivedData)
     - [PushSetAutoShare](#berty.messenger.v1.PushSetAutoShare)
     - [PushSetAutoShare.Reply](#berty.messenger.v1.PushSetAutoShare.Reply)
     - [PushSetAutoShare.Request](#berty.messenger.v1.PushSetAutoShare.Request)
@@ -1036,8 +1037,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| protocol_data | [berty.protocol.v1.PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) |  |  |
-| interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
+| data | [PushReceivedData](#berty.messenger.v1.PushReceivedData) |  |  |
 
 <a name="berty.messenger.v1.PushReceive.Request"></a>
 
@@ -1046,6 +1046,15 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | payload | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.v1.PushReceivedData"></a>
+
+### PushReceivedData
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| protocol_data | [berty.protocol.v1.PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) |  |  |
+| interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
 
 <a name="berty.messenger.v1.PushSetAutoShare"></a>
 

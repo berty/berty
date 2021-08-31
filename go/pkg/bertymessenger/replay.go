@@ -15,13 +15,13 @@ import (
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
-func getEventsReplayerForDB(ctx context.Context, client protocoltypes.ProtocolServiceClient) func(db *dbWrapper) error {
-	return func(db *dbWrapper) error {
+func getEventsReplayerForDB(ctx context.Context, client protocoltypes.ProtocolServiceClient) func(db *DBWrapper) error {
+	return func(db *DBWrapper) error {
 		return replayLogsToDB(ctx, client, db)
 	}
 }
 
-func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceClient, wrappedDB *dbWrapper) (err error) {
+func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceClient, wrappedDB *DBWrapper) (err error) {
 	ctx, _, endSection := tyber.Section(ctx, wrappedDB.log, "Replaying logs to database")
 	defer func() { endSection(err, "") }()
 
@@ -36,7 +36,7 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 		return errcode.ErrDBWrite.Wrap(err)
 	}
 
-	handler := newEventHandler(ctx, wrappedDB, client, zap.NewNop(), nil, true)
+	handler := NewEventHandler(ctx, wrappedDB, client, zap.NewNop(), nil, true)
 
 	// Replay all account group metadata events
 	// TODO: We should have a toggle to "lock" orbitDB while we replaying events
@@ -93,7 +93,7 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 	return nil
 }
 
-func processMetadataList(groupPK []byte, handler *eventHandler) error {
+func processMetadataList(groupPK []byte, handler *EventHandler) error {
 	metaList, err := handler.protocolClient.GroupMetadataList(
 		handler.ctx,
 		&protocoltypes.GroupMetadataList_Request{
@@ -123,7 +123,7 @@ func processMetadataList(groupPK []byte, handler *eventHandler) error {
 	}
 }
 
-func processMessageList(groupPK []byte, handler *eventHandler) error {
+func processMessageList(groupPK []byte, handler *EventHandler) error {
 	groupPKStr := b64EncodeBytes(groupPK)
 
 	msgList, err := handler.protocolClient.GroupMessageList(

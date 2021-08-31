@@ -299,7 +299,9 @@ message PushReceive {
     string payload = 1;
     protocol.v1.PushServiceTokenType token_type = 2;
   }
-  message Reply {}
+  message Reply {
+    DecryptedPush push_data = 1;
+  }
 }
 
 message PushPlatformTokenRegister {

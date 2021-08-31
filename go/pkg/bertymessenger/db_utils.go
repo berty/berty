@@ -103,7 +103,7 @@ func compareDBSchema(dbA map[string][]*ColumnInfo, dbB map[string][]*ColumnInfo)
 	return errs
 }
 
-func restoreDatabaseLocalState(db *dbWrapper, state *messengertypes.LocalDatabaseState) error {
+func restoreDatabaseLocalState(db *DBWrapper, state *messengertypes.LocalDatabaseState) error {
 	if state == nil {
 		return nil
 	}

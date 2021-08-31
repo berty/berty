@@ -18,7 +18,6 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"golang.org/x/crypto/curve25519"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
@@ -59,7 +58,7 @@ type service struct {
 	startedAt       time.Time
 	host            host.Host
 	groupDatastore  *GroupDatastore
-	pushHandler     *pushHandler
+	pushHandler     PushHandler
 	accountCache    ds.Batching
 	messageKeystore *messageKeystore
 	pushClients     map[string]*grpc.ClientConn
@@ -248,6 +247,18 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to add account group to group datastore, err: %w", err))
 	}
 
+	pushHandler := (PushHandler)(nil)
+	if opts.PushKey != nil {
+		pushHandler, err = NewPushHandler(&Opts{
+			RootDatastore: opts.RootDatastore,
+			PushKey:       opts.PushKey,
+			Logger:        opts.Logger,
+		})
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to init push handler: %w", err))
+		}
+	}
+
 	s := &service{
 		ctx:            ctx,
 		host:           opts.Host,
@@ -264,7 +275,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		},
 		accountCache:    opts.AccountCache,
 		messageKeystore: opts.MessageKeystore,
-		pushHandler:     newPushHandler(opts.PushKey, opts.GroupDatastore, opts.OrbitDB.messageKeystore, opts.AccountCache),
+		pushHandler:     pushHandler,
 		pushClients:     make(map[string]*grpc.ClientConn),
 	}
 
@@ -373,9 +384,4 @@ func (s *service) Status() Status {
 	return Status{
 		Protocol: nil,
 	}
-}
-
-func (s *service) SetPushKey(key *[32]byte) {
-	s.pushHandler.pushSK = key
-	curve25519.ScalarBaseMult(s.pushHandler.pushPK, s.pushHandler.pushSK)
 }

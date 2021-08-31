@@ -1,7 +1,9 @@
 package bertyprotocol
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/ipfs/go-datastore"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -20,32 +22,39 @@ type pushHandler struct {
 	pushPK          *[cryptoutil.KeySize]byte
 	groupDatastore  GroupDatastoreReadOnly
 	messageKeystore *messageKeystore
-	accountCache    datastore.Read
+	accountCache    datastore.Datastore
+}
+
+func (s *pushHandler) UpdatePushServer(server *protocoltypes.PushServer) error {
+	cachePayload, err := server.Marshal()
+	if err != nil {
+		return errcode.ErrSerialization.Wrap(fmt.Errorf("unable to marshal PushServer: %w", err))
+	}
+
+	err = s.accountCache.Put(datastore.NewKey(AccountCacheDatastorePushServerPK), cachePayload)
+	if err != nil {
+		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to cache push server info: %s", err))
+	}
+
+	return nil
+}
+
+func (s *pushHandler) PushPK() *[cryptoutil.KeySize]byte {
+	return s.pushPK
+}
+
+func (s *pushHandler) SetPushSK(key *[cryptoutil.KeySize]byte) {
+	s.pushSK = key
+	curve25519.ScalarBaseMult(s.pushPK, s.pushSK)
 }
 
 type PushHandler interface {
 	PushReceive(payload []byte) (*protocoltypes.PushReceive_Reply, error)
+	PushPK() *[cryptoutil.KeySize]byte
+	UpdatePushServer(server *protocoltypes.PushServer) error
 }
 
 var _ PushHandler = (*pushHandler)(nil)
-
-func newPushHandler(pushKey *[cryptoutil.KeySize]byte, groupDatastore GroupDatastoreReadOnly, messageKeystore *messageKeystore, accountCache datastore.Read) *pushHandler {
-	h := &pushHandler{
-		pushSK:          pushKey,
-		pushPK:          &[cryptoutil.KeySize]byte{},
-		groupDatastore:  groupDatastore,
-		messageKeystore: messageKeystore,
-		accountCache:    accountCache,
-	}
-
-	if pushKey != nil {
-		curve25519.ScalarBaseMult(h.pushPK, h.pushSK)
-	} else {
-		h.pushPK = nil
-	}
-
-	return h
-}
 
 func NewPushHandler(opts *Opts) (PushHandler, error) {
 	if opts.PushKey == nil {
@@ -71,7 +80,12 @@ func NewPushHandler(opts *Opts) (PushHandler, error) {
 }
 
 func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Reply, error) {
-	oosBytes, err := decryptPushDataFromServer(payload, s.getServerPushPubKey(), s.pushSK)
+	pushServerPK, err := s.getServerPushPubKey()
+	if err != nil {
+		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+	}
+
+	oosBytes, err := decryptPushDataFromServer(payload, pushServerPK, s.pushSK)
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
@@ -129,19 +143,23 @@ func decryptOutOfStoreMessageEnv(gd GroupDatastoreReadOnly, env *protocoltypes.O
 	return outOfStoreMessage, nil
 }
 
-func (s *pushHandler) getServerPushPubKey() *[cryptoutil.KeySize]byte {
+func (s *pushHandler) getServerPushPubKey() (*[cryptoutil.KeySize]byte, error) {
 	serverBytes, err := s.accountCache.Get(datastore.NewKey(AccountCacheDatastorePushServerPK))
-	if err != nil || len(serverBytes) == 0 {
-		return nil
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("missing push server data: %w", err))
+	}
+
+	if len(serverBytes) == 0 {
+		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("got an empty push server data"))
 	}
 
 	server := &protocoltypes.PushServer{}
 	if err := server.Unmarshal(serverBytes); err != nil {
-		return nil
+		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to deserialize push server data: %w", err))
 	}
 
-	if len(server.ServerKey) != cryptoutil.KeySize {
-		return nil
+	if l := len(server.ServerKey); l != cryptoutil.KeySize {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push pk size, expected %d bytes, got %d", cryptoutil.KeySize, l))
 	}
 
 	out := [cryptoutil.KeySize]byte{}
@@ -149,5 +167,42 @@ func (s *pushHandler) getServerPushPubKey() *[cryptoutil.KeySize]byte {
 		out[i] = c
 	}
 
-	return &out
+	return &out, nil
+}
+
+type pushHandlerClient struct {
+	serviceClient protocoltypes.ProtocolServiceClient
+	ctx           context.Context
+}
+
+func (p *pushHandlerClient) PushReceive(payload []byte) (*protocoltypes.PushReceive_Reply, error) {
+	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
+	defer cancel()
+
+	return p.serviceClient.PushReceive(ctx, &protocoltypes.PushReceive_Request{Payload: payload})
+}
+
+func (p *pushHandlerClient) PushPK() *[32]byte {
+	// TODO: not supported in client mode
+	return nil
+}
+
+func (p *pushHandlerClient) SetPushSK(i *[32]byte) {
+	// TODO: not supported in client mode
+}
+
+func (p *pushHandlerClient) UpdatePushServer(server *protocoltypes.PushServer) error {
+	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
+	defer cancel()
+
+	_, err := p.serviceClient.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{Server: server})
+
+	return err
+}
+
+func NewPushHandlerViaProtocol(ctx context.Context, serviceClient protocoltypes.ProtocolServiceClient) PushHandler {
+	return &pushHandlerClient{
+		serviceClient: serviceClient,
+		ctx:           ctx,
+	}
 }

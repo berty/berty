@@ -740,7 +740,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      pushData: {
+                        type: "DecryptedPush",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -6032,6 +6037,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              PushReceivedData: {
+                fields: {
+                  protocolData: {
+                    type: "protocol.v1.PushReceive.Reply",
+                    id: 1
+                  },
+                  interaction: {
+                    type: "Interaction",
+                    id: 2
+                  }
+                }
+              },
               PushReceive: {
                 fields: {},
                 nested: {
@@ -6045,13 +6062,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
-                      protocolData: {
-                        type: "protocol.v1.PushReceive.Reply",
+                      data: {
+                        type: "PushReceivedData",
                         id: 1
-                      },
-                      interaction: {
-                        type: "Interaction",
-                        id: 2
                       }
                     }
                   }

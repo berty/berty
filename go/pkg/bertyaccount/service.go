@@ -66,6 +66,7 @@ type service struct {
 	nbDriver          proximity.ProximityDriver
 	devicePushKeyPath string
 	pushPlatformToken *protocoltypes.PushServiceReceiver
+	accountData       *AccountMetadata
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *NetworkConfigGetPreset_Request) (*NetworkConfigGetPreset_Reply, error) {

@@ -16,7 +16,7 @@ const (
 	getEventHandlerForTestsWithService getEventHandlerForTestsOptions = iota
 )
 
-func getEventHandlerForTests(t *testing.T, opts ...getEventHandlerForTestsOptions) (*eventHandler, func()) {
+func getEventHandlerForTests(t *testing.T, opts ...getEventHandlerForTestsOptions) (*EventHandler, func()) {
 	withService := false
 	for _, o := range opts {
 		if o == getEventHandlerForTestsWithService {
@@ -46,7 +46,7 @@ func getEventHandlerForTests(t *testing.T, opts ...getEventHandlerForTestsOption
 		require.True(t, ok)
 	}
 
-	handler := newEventHandler(ctx, db, protocolClient.Client, nil, castedService, false)
+	handler := NewEventHandler(ctx, db, protocolClient.Client, nil, castedService, false)
 
 	return handler, func() {
 		serviceDispose()

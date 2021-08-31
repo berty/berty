@@ -121,7 +121,7 @@ func Test_keepDatabaseState_restoreDatabaseState(t *testing.T) {
 	require.NoError(t, db.db.Exec(`INSERT INTO conversations (public_key, is_open, unread_count) VALUES ("pk_2", false, 0)`).Error)
 	require.NoError(t, db.db.Exec(`INSERT INTO conversations (public_key, is_open, unread_count) VALUES ("pk_3", false, 0)`).Error)
 
-	require.NoError(t, restoreDatabaseLocalState(newDBWrapper(db.db, zap.NewNop()), state))
+	require.NoError(t, restoreDatabaseLocalState(NewDBWrapper(db.db, zap.NewNop()), state))
 
 	require.True(t, hasRecord(db.db.Table("accounts").Where("public_key = ? AND display_name = ? AND replicate_new_groups_automatically = ? AND auto_share_push_token_flag = ?", "pk_1", "display_name_1", false, false), log))
 	require.True(t, hasRecord(db.db.Table("conversations").Where("public_key = ? AND unread_count = ? AND is_open = ?", "pk_1", 1000, true), log))

@@ -51,10 +51,10 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	devicePushPK, devicePushSK, err := box.GenerateKey(crand.Reader)
+	_, devicePushSK, err := box.GenerateKey(crand.Reader)
 	require.NoError(t, err)
 
-	tp, cancel := NewTestingProtocol(ctx, t, nil, nil)
+	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
 	g, _, err := NewGroupMultiMember()
@@ -62,9 +62,6 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 
 	s, ok := tp.Service.(*service)
 	require.True(t, ok)
-
-	s.pushHandler.pushSK = devicePushSK
-	s.pushHandler.pushPK = devicePushPK
 
 	gPK, err := g.GetPubKey()
 	require.NoError(t, err)
@@ -116,7 +113,7 @@ func TestService_PushReceive(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, pushServer)
 
-	tp, cancel := NewTestingProtocol(ctx, t, nil, nil)
+	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
 	g, gSK, err := NewGroupMultiMember()
@@ -124,9 +121,6 @@ func TestService_PushReceive(t *testing.T) {
 
 	s, ok := tp.Service.(*service)
 	require.True(t, ok)
-
-	s.pushHandler.pushSK = devicePushSK
-	s.pushHandler.pushPK = devicePushPK
 
 	_, err = s.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{Server: &protocoltypes.PushServer{
 		ServerKey:   serverPushPK[:],
@@ -209,14 +203,11 @@ func TestService_PushShareToken(t *testing.T) {
 	const nameTestPackage = "test.app"
 	const serverAddr1 = "server1.test"
 
-	tp, cancel := NewTestingProtocol(ctx, t, nil, nil)
+	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
 	s, ok := tp.Service.(*service)
 	require.True(t, ok)
-
-	s.pushHandler.pushSK = devicePushSK
-	s.pushHandler.pushPK = devicePushPK
 
 	_, err = s.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{Server: &protocoltypes.PushServer{
 		ServerKey:   serverPushPK[:],
@@ -283,14 +274,11 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	tokenTestData2 := []byte("token_test_data_2")
 	const nameTestPackage = "test.app"
 
-	tp, cancel := NewTestingProtocol(ctx, t, nil, nil)
+	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
 	s, ok := tp.Service.(*service)
 	require.True(t, ok)
-
-	s.pushHandler.pushSK = devicePushSK
-	s.pushHandler.pushPK = devicePushPK
 
 	currentPush := s.accountGroup.metadataStore.getCurrentDevicePushToken()
 	require.Nil(t, currentPush)
@@ -335,7 +323,7 @@ func TestService_PushSetServer(t *testing.T) {
 	const serverAddr1 = "server1.test"
 	const serverAddr2 = "server2.test"
 
-	devicePushPK, devicePushSK, err := box.GenerateKey(crand.Reader)
+	_, devicePushSK, err := box.GenerateKey(crand.Reader)
 	require.NoError(t, err)
 
 	serverPushPK1, _, err := box.GenerateKey(crand.Reader)
@@ -344,14 +332,11 @@ func TestService_PushSetServer(t *testing.T) {
 	serverPushPK2, _, err := box.GenerateKey(crand.Reader)
 	require.NoError(t, err)
 
-	tp, cancel := NewTestingProtocol(ctx, t, nil, nil)
+	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
 	s, ok := tp.Service.(*service)
 	require.True(t, ok)
-
-	s.pushHandler.pushSK = devicePushSK
-	s.pushHandler.pushPK = devicePushPK
 
 	currentPush := s.accountGroup.metadataStore.getCurrentDevicePushServer()
 	require.Nil(t, currentPush)
