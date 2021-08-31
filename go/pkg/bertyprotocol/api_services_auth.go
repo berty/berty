@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strings"
 
+	"go.uber.org/zap"
 	"golang.org/x/net/context/ctxhttp"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
@@ -206,6 +207,36 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 
 	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, svcToken); err != nil {
 		return nil, err
+	}
+
+	// @FIXME(gfanton):  should be handle on the client (js) side
+	for _, service := range services {
+		if service.ServiceType != ServicePushID {
+			continue
+		}
+
+		client, err := s.createAndGetPushClient(ctx, service.ServiceEndpoint, svcToken.Token)
+		if err != nil {
+			s.logger.Warn("unable to connect to push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
+			continue
+		}
+
+		repl, err := client.ServerInfo(ctx, &protocoltypes.PushServiceServerInfo_Request{})
+		if err != nil {
+			s.logger.Warn("unable to get server info from push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
+			continue
+		}
+
+		_, err = s.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{
+			Server: &protocoltypes.PushServer{
+				ServerKey:   repl.PublicKey,
+				ServiceAddr: service.ServiceEndpoint,
+			},
+		})
+
+		if err != nil {
+			s.logger.Warn("unable to set push server", zap.Error(err))
+		}
 	}
 
 	return &protocoltypes.AuthServiceCompleteFlow_Reply{
