@@ -8319,10 +8319,10 @@ react-native-scrollable-tab-view@^1.0.0:
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.3"
 
-react-native-share@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-4.1.2.tgz#674bffd7b0cb5f812381569961c341ce3d188dd7"
-  integrity sha512-wfOMrlzxe2lMNTrHnd7sDrRmiOmG1XUmEwqfmUFFypp5y7OOe9prJCjsp3usG83DRkl3bInX1/VOM8DJYIEtfw==
+react-native-share@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-7.0.2.tgz#2d8dd25008a28ed1a74d65b94e86e6ca7ead91dd"
+  integrity sha512-eIcp27XgQq5saO3/LUgFtX5gWWYgYi/xXTZ3pP4boIM+3Rl374LsOn6U2YOzVQDW6m1MsOSI/Bnw7P6aUvZhYA==
 
 react-native-size-matters@^0.3.1:
   version "0.3.1"
