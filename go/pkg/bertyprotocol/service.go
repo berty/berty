@@ -19,6 +19,7 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/curve25519"
+	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -61,6 +62,8 @@ type service struct {
 	pushHandler     *pushHandler
 	accountCache    ds.Batching
 	messageKeystore *messageKeystore
+	pushClients     map[string]*grpc.ClientConn
+	muPushClients   sync.RWMutex
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -262,6 +265,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		accountCache:    opts.AccountCache,
 		messageKeystore: opts.MessageKeystore,
 		pushHandler:     newPushHandler(opts.PushKey, opts.GroupDatastore, opts.OrbitDB.messageKeystore, opts.AccountCache),
+		pushClients:     make(map[string]*grpc.ClientConn),
 	}
 
 	s.startTyberTinderMonitor()

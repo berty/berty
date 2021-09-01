@@ -12,9 +12,45 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
+
+func (s *service) getPushClient(host string) (PushServiceClient, error) {
+	s.muPushClients.RLock()
+	defer s.muPushClients.RUnlock()
+
+	if cc, ok := s.pushClients[host]; ok {
+		return NewPushServiceClient(cc), nil
+	}
+
+	return nil, fmt.Errorf("no grpc client registered for `%s`", host)
+}
+
+func (s *service) createAndGetPushClient(ctx context.Context, host string, token string) (PushServiceClient, error) {
+	s.muPushClients.Lock()
+	defer s.muPushClients.Unlock()
+
+	if cc, ok := s.pushClients[host]; ok {
+		cc.Close()
+		s.pushClients[host] = nil
+	}
+
+	cc, err := grpc.DialContext(ctx, host,
+		grpc.WithPerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token)),
+		grpc.WithInsecure(), // @FIXME(gfanton): this is very insecure
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// monitor push client state
+	go monitorPushServer(s.ctx, cc, s.logger)
+
+	s.pushClients[host] = cc
+	return NewPushServiceClient(cc), err
+}
 
 func (s *service) PushReceive(ctx context.Context, request *protocoltypes.PushReceive_Request) (*protocoltypes.PushReceive_Reply, error) {
 	return s.pushHandler.PushReceive(request.Payload)
@@ -59,15 +95,12 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 				return
 			}
 
-			cc, err := grpc.Dial(serverAddr, []grpc.DialOption{
-				grpc.WithInsecure(), // TODO: remove this, enforce security
-			}...)
+			client, err := s.getPushClient(serverAddr)
 			if err != nil {
 				s.logger.Error("error while dialing push server", zap.String("push-server", serverAddr), zap.Error(err))
 				return
 			}
 
-			client := NewPushServiceClient(cc)
 			if _, err := client.Send(ctx, &protocoltypes.PushServiceSend_Request{
 				Envelope:  sealedMessageEnvelope,
 				Priority:  protocoltypes.PushPriorityNormal,
@@ -215,4 +248,14 @@ func (s *service) PushSetServer(ctx context.Context, request *protocoltypes.Push
 	}
 
 	return &protocoltypes.PushSetServer_Reply{}, nil
+}
+
+func monitorPushServer(ctx context.Context, cc *grpc.ClientConn, logger *zap.Logger) {
+	currentState := cc.GetState()
+	for cc.WaitForStateChange(ctx, currentState) {
+		currentState = cc.GetState()
+		logger.Debug("push grpc client state updated",
+			zap.String("target", cc.Target()),
+			zap.String("state", currentState.String()))
+	}
 }

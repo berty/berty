@@ -19,6 +19,9 @@ func replicationServerCommand() *ffcli.Command {
 		manager.SetupProtocolAuth(fs)
 		manager.SetupLocalProtocolServerFlags(fs)
 		manager.SetupDefaultGRPCListenersFlags(fs)
+
+		// set serviceid for needed by push server
+		manager.Node.Protocol.ServiceID = bertyprotocol.ServiceReplicationID
 		return fs, nil
 	}
 

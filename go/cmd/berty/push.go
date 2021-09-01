@@ -27,6 +27,9 @@ func pushServerCommand() *ffcli.Command {
 		manager.SetupLoggingFlags(fs) // also available at root level
 		manager.SetupProtocolAuth(fs)
 		manager.SetupDefaultGRPCListenersFlags(fs)
+
+		// set serviceid for needed by push server
+		manager.Node.Protocol.ServiceID = bertyprotocol.ServicePushID
 		return fs, nil
 	}
 
