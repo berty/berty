@@ -24,6 +24,7 @@ import {
 	GlobalPersistentOptionsKeys,
 } from './context'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import i18n from '@berty-tech/berty-i18n'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -351,6 +352,7 @@ export const openingClients = (
 // handle state OpeningMarkConversationsAsClosed
 export const openingCloseConvos = async (
 	appState: MessengerAppState,
+	language: string,
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined },
 	persistentOptions: PersistentOptions,
@@ -374,6 +376,10 @@ export const openingCloseConvos = async (
 	persistentOptions.onBoardingFinished.isFinished
 		? dispatch({ type: MessengerActions.SetStateReady })
 		: dispatch({ type: MessengerActions.SetStatePreReady })
+
+	if (language) {
+		await i18n.changeLanguage(language)
+	}
 }
 
 // handle state PreReady

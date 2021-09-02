@@ -245,7 +245,7 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "Le bluetooth vous permet d'envoyer des messages sur Berty sans accès à internet en se connectant directement aux personnes proches de vous",
       "activate-button": "Activer le Bluetooth",
       "permission-title": "",
       "android-permission-description": "",
