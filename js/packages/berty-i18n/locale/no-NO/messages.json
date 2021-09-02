@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "Den sikre meldings-appen for likemenn, som fungerer både med og uten internett, mobilnett eller tillitt til nettverket",
-      "open-registered-account": "Åpne en registrert konto",
-      "import-button": "Importer data fra en eksisterende konto",
-      "account-selector-create-button": "Lag en ny konto",
-      "more-options": "Flere valg",
       "button": "BEGYNN"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Starter Berty-noden…",
       "desc": "Dette kan ta noen få sekunder"
     },
-    "notifications": {
-      "header": "Ikke gå glipp av noen nye meldinger eller kontaktforespørsler",
-      "recommended": "Anbefalt",
-      "title": "Varsler",
-      "desc": "Du må godkjenne push-varsler fra Berty på telefonen din",
-      "button": "AUTORISER VARSLER",
-      "skip": "HOPP OVER OG GJØR DETTE SENERE"
-    },
-    "bluetooth": {
-      "header": "Kommuniser uten Internett-tilkobling (wifi eller mobildata), ved å koble telefonen din direkte med personer i nærheten",
-      "optional": "Valgfritt",
-      "title": "Bluetooth",
-      "desc": "For å bruke denne funksjonen må du godkjenne bruk av Bluetooth på din telefon",
-      "button": "AUTORISER BLUETOOTH",
-      "skip": "HOPP OVER OG GJØR DETTE SENERE"
-    },
     "setup-finished": {
       "title": "Oppsett fullført!",
       "desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Forespørsler",
-        "received-at": "Mottatt",
         "accept": "Godta",
         "card-title": "Kontaktforespørsel!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Opprett en ny gruppe",
-      "bottom-button": "Skann kontakt eller gruppe"
     },
     "suggestion-display-name-initial": "",
     "configurations": {
@@ -117,6 +96,10 @@
         "desc": ""
       },
       "notification": {
+        "display-name": "",
+        "desc": ""
+      },
+      "replicate": {
         "display-name": "",
         "desc": ""
       }
@@ -139,6 +122,9 @@
       },
       "save": "",
       "skip": "HOPP OVER OG GJØR DETTE SENERE"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Verktøy for utviklere",
       "header-right-button": "Innstillinger",
       "network-button": "Liste over nettverk",
-      "switch-accounts": "Bruk en annen konto",
       "edit-profile": "Rediger profil"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Deaktivert"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Aktivert",
-        "tag-disabled": "Deaktivert"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "App-modus",
@@ -221,9 +204,7 @@
         "sound-button": "Lyd",
         "exceptions-button": {
           "title": "Unntak",
-          "preview-value": "Legg til",
-          "tag": "{{count}} unntak",
-          "tag_plural": "{{count}} unntak"
+          "preview-value": "Legg til"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Lyd",
         "exceptions-button": {
           "title": "Unntak",
-          "preview-value": "Legg til",
-          "tag": "{{count}} unntak",
-          "tag_plural": "{{count}} unntak"
+          "tag": "{{count}} unntak"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "",
-      "tag-negative": "Avbryt",
-      "tag-positive": ""
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "Aktiver tilkobling for flere personer"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "App-oppdateringer",
-      "up-to-date-desc": "Appen din er oppdatert",
-      "version": "Versjon",
-      "current-tag": "Gjeldende",
-      "installed-tag": "Installert",
-      "initial-tag": "Første installasjon",
-      "not-installed-tag": "Ikke installert"
+      "current-tag": "Gjeldende"
     },
     "devtools": {
       "title": "Verktøy for utviklere",
-      "theme-editor": "",
       "header-left-button": "Infoer om enheten",
+      "header-middle-button": "Generer falsk data",
+      "header-right-button": "Restart daemon",
+      "theme-editor": "",
       "simulate-button": "Simuler stream-feil",
       "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "valgfritt",
       "tor-required-option": "obligatorisk",
       "tor-disabled-option": "deaktivert",
-      "header-middle-button": "Generer falsk data",
-      "header-right-button": "Restart daemon",
       "system-info-button": "System-info",
       "debug-button": "Feilsøk",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Dump interaksjoner",
       "dump-members-button": "Dump medlemmer",
       "stop-node-button": "Stopp node",
-      "bot-mode-button": "Bot-modus",
       "local-grpc-button": "lokal gRPC",
       "console-logs-button": "Konsoll-logger",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "Varsler",
       "send-to-all-button": {
         "title": "Send meldinger til alle kontakter",
         "sending": "Sender...",
         "test": "Test, ",
         "tried": "✔ Prøvde å sende til {{length}} kontakter"
       },
-      "footer-left-button": "Infoer om enheten",
-      "footer-middle-button": "List opp hendelser",
-      "footer-right-button": "Restart daemon",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "Infoer om enheten",
+      "footer-middle-button": "List opp hendelser",
+      "footer-right-button": "Restart daemon"
     },
     "system-info": {
       "title": "System-info"
@@ -428,12 +393,6 @@
       "info": "Infoer",
       "devices": "Enheter"
     },
-    "welcome-configuration": {
-      "title": "",
-      "desc": "",
-      "skip": "HOPP OVER",
-      "next": ""
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "GODTA",
         "accepted-button": "GODTATT"
       },
-      "betabot-box": {
-        "title": "LEGG TIL BETA-BOT?",
-        "desc": "",
-        "skip-button": "HOPP OVER",
-        "add-button": "LEGG TIL !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty-tilkobling bekreftet! 🎉",
         "request-sent": "Forespørsel sendt ✈",
         "incoming": "Godta denne forespørselen for å svare!",
         "outgoing": "Venter på ditt kontaktsvar for å tilkoble!"
       },
-      "betabot-input-placeholder": "Legg til betabot for å skrive her...",
       "incoming-input-placeholder": "Godta forespørselen for å skrive her...",
       "input-placeholder": ""
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Administrer eller legg til tjenester"
     },
     "files": {
-      "record-sound": "Ta opp en lydmelding",
-      "recording": "Tar opp...",
       "gallery": "Galleri",
       "camera": "Kamera",
-      "record": "Ta opp",
       "files": "Filer",
       "microphone": "Mikrofon",
-      "gif": "GIF",
       "search-gif": "Søk etter en gif",
       "security-access": "Sikkerhetstilgang",
       "security-access-desc": "Trykk her for å åpne innstillingen for å gi tilgang til din",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Avbryt"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -623,52 +612,6 @@
         "button-confirm": "",
         "button-cancel": "Avbryt"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": "Avbryt"
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Kamera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
