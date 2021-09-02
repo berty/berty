@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "De beveiligde peer-to-peer messaging app die met of zonder internet werkt, mobiele gegevens of vertrouwen in het netwerk",
-      "open-registered-account": "Open een geregistreerd account",
-      "import-button": "Gegevens importeren uit een bestaand account",
-      "account-selector-create-button": "Maak een nieuw account",
-      "more-options": "Meer opties",
       "button": "BEGIN HIER"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "De Berty node wordt gestart…",
       "desc": "Dit kan enkele seconden duren"
     },
-    "notifications": {
-      "header": "Mis geen nieuw bericht of contact verzoek",
-      "recommended": "Aangeraden",
-      "title": "Notificaties",
-      "desc": "Je moet push notificaties van Berty op je telefoon toestaan",
-      "button": "NOTIFICATIES TOESTAAN",
-      "skip": "OVERSLAAN EN LATER UITVOEREN"
-    },
-    "bluetooth": {
-      "header": "Communiceer zonder internetverbinding (wifi of data) door je telefoon direct te verbinden met andere Berty gebruikers in de buurt",
-      "optional": "Optioneel",
-      "title": "Bluetooth",
-      "desc": "Om deze functie te gebruiken, moet je het gebruik van Bluetooth op je telefoon toestaan",
-      "button": "BLUETOOTH TOESTAAN",
-      "skip": "OVERSLAAN EN LATER UITVOEREN"
-    },
     "setup-finished": {
       "title": "Setup voltooid!",
       "desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Aanvragen",
-        "received-at": "Ontvangen",
         "accept": "Accepteren",
         "card-title": "Contact verzoek!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Nieuwe groep aanmaken",
-      "bottom-button": "Scan contact of groep"
     },
     "suggestion-display-name-initial": "Klik hier om toe te voegen",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Notificatie configuratie",
         "desc": "Klik hier voor push-notificatie configuratie"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "BEWAAR",
       "skip": "OVERSLAAN EN LATER UITVOEREN"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Ontwikkelaars tools",
       "header-right-button": "Instellingen",
       "network-button": "Netwerk Lijst",
-      "switch-accounts": "Gebruik een ander account",
       "edit-profile": "Mijn profiel bewerken"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Uitgeschakeld"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Ingeschakeld",
-        "tag-disabled": "Uitgeschakeld"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "App modus",
@@ -221,9 +204,7 @@
         "sound-button": "Geluid",
         "exceptions-button": {
           "title": "Uitzonderingen",
-          "preview-value": "Toevoegen",
-          "tag": "{{count}} uitzonderingen",
-          "tag_plural": "{{count}} uitzonderingen"
+          "preview-value": "Toevoegen"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Geluid",
         "exceptions-button": {
           "title": "Uitzonderingen",
-          "preview-value": "Toevoegen",
-          "tag": "{{count}} uitzonderingen",
-          "tag_plural": "{{count}} uitzonderingen"
+          "tag": "{{count}} uitzonderingen"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "Vraag mij later",
-      "tag-negative": "Annuleren",
-      "tag-positive": "Oke"
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "Multipeer verbindingen activeren"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "App updates",
-      "up-to-date-desc": "App is up to date",
-      "version": "Versie",
-      "current-tag": "Huidige",
-      "installed-tag": "Geinstalleerd",
-      "initial-tag": "Eerste installatie",
-      "not-installed-tag": "Niet geïnstalleerd"
+      "current-tag": "Huidige"
     },
     "devtools": {
       "title": "Ontwikkeling tools",
-      "theme-editor": "",
       "header-left-button": "Apparaat informatie",
+      "header-middle-button": "Nep gegevens genereren",
+      "header-right-button": "Daemon herstarten",
+      "theme-editor": "",
       "simulate-button": "Simuleer stream fout",
       "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "optioneel",
       "tor-required-option": "vereist",
       "tor-disabled-option": "uitgeschakeld",
-      "header-middle-button": "Nep gegevens genereren",
-      "header-right-button": "Daemon herstarten",
       "system-info-button": "Systeem informatie",
       "debug-button": "Debug",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Gesprekken dumpen",
       "dump-members-button": "Dump leden",
       "stop-node-button": "Stop node",
-      "bot-mode-button": "Bot modus",
       "local-grpc-button": "lokale gRPC",
       "console-logs-button": "Console logs",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "Notificaties",
       "send-to-all-button": {
         "title": "Verstuur berichten naar alle contacten",
         "sending": "Verzenden...",
         "test": "Test, ",
         "tried": "✔ Geprobeerd om te verzenden naar {{length}} contacten"
       },
-      "footer-left-button": "Apparaat informatie",
-      "footer-middle-button": "Toon gebeurtenissen",
-      "footer-right-button": "Herstart daemon",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "Apparaat informatie",
+      "footer-middle-button": "Toon gebeurtenissen",
+      "footer-right-button": "Herstart daemon"
     },
     "system-info": {
       "title": "Systeem informatie"
@@ -428,12 +393,6 @@
       "info": "Informatie",
       "devices": "Apparaten"
     },
-    "welcome-configuration": {
-      "title": "Welkom aan boord!",
-      "desc": "",
-      "skip": "OVERSLAAN",
-      "next": "Volgende"
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "ACCEPTEREN",
         "accepted-button": "GEACCEPTEERD"
       },
-      "betabot-box": {
-        "title": "BETA BOT TOEVOEGEN?",
-        "desc": "",
-        "skip-button": "OVERSLAAN",
-        "add-button": "TOEVOEGEN !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty verbinding bevestigd! 🎉",
         "request-sent": "Verzoek verzonden ✈",
         "incoming": "Accepteer dit verzoek om te reageren!",
         "outgoing": "Wachten op antwoord van je contact om te verbinden!"
       },
-      "betabot-input-placeholder": "Voeg betabot toe om hier te schrijven...",
       "incoming-input-placeholder": "Accepteer het verzoek om hier te schrijven...",
       "input-placeholder": ""
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Beheer of voeg diensten toe"
     },
     "files": {
-      "record-sound": "Neem een bericht op",
-      "recording": "Opnemen...",
       "gallery": "Galerij",
       "camera": "Camera",
-      "record": "Opnemen",
       "files": "Bestanden",
       "microphone": "Microfoon",
-      "gif": "GIF",
       "search-gif": "Zoek een gif",
       "security-access": "Toegang tot beveiliging",
       "security-access-desc": "Tik hier om instellingen te openen om toegang tot uw",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Annuleren"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Camera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "Bug gedetecteerd",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "Sorry voor deze bug!",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -623,52 +612,6 @@
         "button-confirm": "Bevestigen",
         "button-cancel": "Annuleren"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": "Annuleren"
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Camera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
