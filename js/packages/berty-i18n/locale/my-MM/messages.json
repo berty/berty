@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
       "button": ""
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "",
       "desc": ""
     },
-    "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
-    },
-    "bluetooth": {
-      "header": "",
-      "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
-    },
     "setup-finished": {
       "title": "",
       "desc": "",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "",
-        "received-at": "",
         "accept": "",
         "card-title": ""
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
     },
     "suggestion-display-name-initial": "",
     "configurations": {
@@ -117,6 +96,10 @@
         "desc": ""
       },
       "notification": {
+        "display-name": "",
+        "desc": ""
+      },
+      "replicate": {
         "display-name": "",
         "desc": ""
       }
@@ -139,6 +122,9 @@
       },
       "save": "",
       "skip": ""
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
-      "switch-accounts": "",
       "edit-profile": ""
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": ""
       },
       "bluetooth-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": ""
       },
       "app-mode-button": {
         "title": "",
@@ -221,9 +204,7 @@
         "sound-button": "",
         "exceptions-button": {
           "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "preview-value": ""
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "",
         "exceptions-button": {
           "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "tag": ""
         }
       }
     },
     "bluetooth": {
       "title": "",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "",
-      "tag-negative": "",
-      "tag-positive": ""
+      "activate-button": ""
     },
     "mc": {
       "activate-button": ""
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "",
-      "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "current-tag": ""
     },
     "devtools": {
       "title": "",
-      "theme-editor": "",
       "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "theme-editor": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "",
       "tor-required-option": "",
       "tor-disabled-option": "",
-      "header-middle-button": "",
-      "header-right-button": "",
       "system-info-button": "",
       "debug-button": "",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "",
       "dump-members-button": "",
       "stop-node-button": "",
-      "bot-mode-button": "",
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
       "send-to-all-button": {
         "title": "",
         "sending": "",
         "test": "",
         "tried": ""
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": "",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "",
+      "footer-middle-button": "",
+      "footer-right-button": ""
     },
     "system-info": {
       "title": ""
@@ -428,12 +393,6 @@
       "info": "",
       "devices": ""
     },
-    "welcome-configuration": {
-      "title": "",
-      "desc": "",
-      "skip": "",
-      "next": ""
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "",
         "accepted-button": ""
       },
-      "betabot-box": {
-        "title": "",
-        "desc": "",
-        "skip-button": "",
-        "add-button": ""
-      },
       "infos-chat": {
         "connection-confirmed": "",
         "request-sent": "",
         "incoming": "",
         "outgoing": ""
       },
-      "betabot-input-placeholder": "",
       "incoming-input-placeholder": "",
       "input-placeholder": ""
     },
@@ -518,14 +470,10 @@
       "manage-add-button": ""
     },
     "files": {
-      "record-sound": "",
-      "recording": "",
       "gallery": "",
       "camera": "",
-      "record": "",
       "files": "",
       "microphone": "",
-      "gif": "",
       "search-gif": "",
       "security-access": "",
       "security-access-desc": "",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": ""
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -623,52 +612,6 @@
         "button-confirm": "",
         "button-cancel": ""
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": ""
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
