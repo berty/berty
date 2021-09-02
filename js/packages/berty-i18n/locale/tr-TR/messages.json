@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "Güvenli ağ hücresel veri ya da internet erişimi olmadan, çalışan eşler arası mesajlaşma uygulaması",
-      "open-registered-account": "Kaydedilmiş bir hesap açın",
-      "import-button": "Mevcut bir hesaptan verileri içeri aktarın",
-      "account-selector-create-button": "Yeni bir hesap oluştur",
-      "more-options": "Daha fazla seçenek",
       "button": "BAŞLA"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Berty düğümü(node) başlatılıyor…",
       "desc": "Bu birkaç saniye sürebilir"
     },
-    "notifications": {
-      "header": "Yeni mesajı veya iletişim talebini kaçırmayın",
-      "recommended": "Önerilen",
-      "title": "Bildirimler",
-      "desc": "Telefonunuzda Berty'den gelen bildirimleri yetkilendirmeniz gerekiyor",
-      "button": "BİLDİRİMLERİ YETKİLENDİR",
-      "skip": "ATLA VE DAHA SONRA YAP"
-    },
-    "bluetooth": {
-      "header": "Telefonunu yakındaki eşlerle bağlayarak internet bağlantısı (wifi veya data) olmadan iletişim kur",
-      "optional": "İsteğe bağlı",
-      "title": "Bluetooth",
-      "desc": "Bu özelliği kullanmak için telefonunuzda Bluetooth kullanımını yetkilendirmelisiniz",
-      "button": "BLUETOOTH'A YETKİ VER",
-      "skip": "ATLA VE DAHA SONRA YAP"
-    },
     "setup-finished": {
       "title": "Kurulum bitti!",
       "desc": "Artık uygulamayı kullanabilir, kişi eklemeye başlayabilir ve onlarla özgürce ve özel olarak konuşabilirsiniz",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "İstekler",
-        "received-at": "Alındı",
         "accept": "Onayla",
         "card-title": "Kişi isteği!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Yeni grup oluştur",
-      "bottom-button": "Kişi veya grup tara"
     },
     "suggestion-display-name-initial": "Eklemek için buraya tıkla",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Bildirim Yapılandırması",
         "desc": "Anlık bildirimleri yapılandırmak için buraya tıklayın"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "KAYDET",
       "skip": "ATLA VE DAHA SONRA YAP"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Geliştirme araçları",
       "header-right-button": "Ayarlar",
       "network-button": "Ağ Listesi",
-      "switch-accounts": "Diğer hesabı kullan",
       "edit-profile": "Profili Düzenle"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Pasif"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Aktif",
-        "tag-disabled": "Pasif"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "Uygulama modu",
@@ -221,9 +204,7 @@
         "sound-button": "Ses",
         "exceptions-button": {
           "title": "İstisnalar",
-          "preview-value": "Ekle",
-          "tag": "{{count}} istisna",
-          "tag_plural": "{{count}} istisnalar"
+          "preview-value": "Ekle"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Ses",
         "exceptions-button": {
           "title": "İstisnalar",
-          "preview-value": "Ekle",
-          "tag": "{{count}} istisna",
-          "tag_plural": "{{count}} istisna"
+          "tag": "{{count}} istisna"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "Berty Bluetooth izni",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "Daha sonra sor",
-      "tag-negative": "İptal",
-      "tag-positive": "TAMAM"
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "Çok eşli bağlantıyı etkinleştir"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Uygulama güncelleştirmeleri",
-      "up-to-date-desc": "Uygulamanız güncel",
-      "version": "Versiyon",
-      "current-tag": "Şuanki",
-      "installed-tag": "Yüklü",
-      "initial-tag": "İlk yükleme",
-      "not-installed-tag": "Yüklenmedi"
+      "current-tag": "Şuanki"
     },
     "devtools": {
       "title": "Geliştirici araçları",
-      "theme-editor": "",
       "header-left-button": "Aygıt bilgileri",
+      "header-middle-button": "Sahte bilgi oluştur",
+      "header-right-button": "Arka plan programını yeniden başlat",
+      "theme-editor": "",
       "simulate-button": "Akış hatasını taklit et",
       "simulate-js-error-button": "Javascript hatasını taklit et",
-      "simulate-native-error-button": "Yerli hatayı taklit et",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "isteğe bağlı",
       "tor-required-option": "gerekli",
       "tor-disabled-option": "devre dışı",
-      "header-middle-button": "Sahte bilgi oluştur",
-      "header-right-button": "Arka plan programını yeniden başlat",
       "system-info-button": "Sistem bilgisi",
       "debug-button": "Hata ayıklama",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Etkileşimleri dök",
       "dump-members-button": "Üyeleri dök",
       "stop-node-button": "Boğumu durdur",
-      "bot-mode-button": "Bot modu",
       "local-grpc-button": "yerel gRPC",
       "console-logs-button": "Konsol günlükleri",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "Bildirimler",
       "send-to-all-button": {
         "title": "Bütün kişilere mesaj gönder",
         "sending": "Gönderiliyor...",
         "test": "Test, ",
         "tried": "✔{{length}} kişiye gönderme denendi"
       },
-      "footer-left-button": "Aygıt bilgileri",
-      "footer-middle-button": "Olayları listele",
-      "footer-right-button": "Arka plan programını yeniden başlat",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
-      }
+      },
+      "footer-left-button": "Aygıt bilgileri",
+      "footer-middle-button": "Olayları listele",
+      "footer-right-button": "Arka plan programını yeniden başlat"
     },
     "system-info": {
       "title": "Sistem bilgisi"
@@ -428,12 +393,6 @@
       "info": "Bilgiler",
       "devices": "Aygıtlar"
     },
-    "welcome-configuration": {
-      "title": "Gemiye hoş geldiniz!",
-      "desc": "Hadi ayarlara hızlı bir bakış atalım ve ilk yapılandırmanızı bitirelim!",
-      "skip": "ATLA",
-      "next": "SONRAKİ"
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "KABUL ET",
         "accepted-button": "KABUL EDİLDİ"
       },
-      "betabot-box": {
-        "title": "BETA BOT EKLE?",
-        "desc": "",
-        "skip-button": "ATLA",
-        "add-button": "EKLE !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty bağlantısı onaylandı! 🎉",
         "request-sent": "İstek Gönderildi ✈",
         "incoming": "Cevap vermek için bu isteği kabul edin!",
         "outgoing": "Bağlanmak için kişinizin yanıtı bekleniyor!"
       },
-      "betabot-input-placeholder": "Buraya yazmak için Beta Bot'u ekle",
       "incoming-input-placeholder": "Buraya yazmak için isteği kabul et...",
       "input-placeholder": "Buraya yaz..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Servisleri ekle veya yönet"
     },
     "files": {
-      "record-sound": "Sesli mesaj kaydet",
-      "recording": "Kaydediliyor...",
       "gallery": "Galeri",
       "camera": "Kamera",
-      "record": "Kaydet",
       "files": "Dosyalar",
       "microphone": "Mikrofon",
-      "gif": "GIF",
       "search-gif": "Gif ara",
       "security-access": "Güvenlik Erişimi",
       "security-access-desc": "Hesabınıza erişime izin vermek üzere ayarı açmak için dokunun",
@@ -547,6 +495,48 @@
       "replied-to": "Yanıtlandı"
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Kaydetmek için basılı tut, göndermek için bırak",
+        "not-sent": "Sesli mesaj gönderilemedi",
+        "permission-denied": "Uygulamanın ses kaydetme yetkisi yok"
+      },
+      "slide-to-cancel": "<< İptal için kaydırın",
+      "cancel-button": "İptal"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "Hata algılandı",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "Bu hata için üzgünüm!",
       "desc": "Bu Francis'in hatası, Berty'de geliştirici stajyer bir hata yapmış olması gereken. Bu Francis ne kadar aptal!",
-      "desc-buy": "Onu gördüğün zaman sana bir bira alacak!",
       "desc-em": "Pekala, tamam, Berty takımında Francis yok.",
       "desc-report": "Telefonunuzu sallayın ve işte yine başlıyoruz!"
     }
@@ -623,52 +612,6 @@
         "button-confirm": "Onayla",
         "button-cancel": "İptal"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "Kaydetmek için basılı tut, göndermek için bırak",
-        "not-sent": "Sesli mesaj gönderilemedi",
-        "permission-denied": "Uygulamanın ses kaydetme yetkisi yok"
-      },
-      "slide-to-cancel": "<< İptal için kaydırın",
-      "cancel-button": "İptal"
-    }
-  },
-  "medias": {
-    "audio": "ses",
-    "picture": "resim",
-    "file": "dosya"
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Kamera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
