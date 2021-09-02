@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "Zabezpečená aplikace pro peer-to-peer výměnu zpráv. Bezpečně funguje i bez přístupu k internetu a mobilním datům a v nedůvěryhodných sítích",
-      "open-registered-account": "Zaregistrovat se",
-      "import-button": "Import dat z existujícího účtu",
-      "account-selector-create-button": "Vytvořit nový účet",
-      "more-options": "Další možnosti",
       "button": "ZAČÍNÁME"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Spouštění Berty uzlu…",
       "desc": "Může to chvíli trvat"
     },
-    "notifications": {
-      "header": "Nenechte si ujít nové zprávy či žádosti o kontakt",
-      "recommended": "Doporučené",
-      "title": "Oznámení",
-      "desc": "Musíte v telefonu povolit push oznámení od Berty",
-      "button": "POVOLIT OZNÁMENÍ",
-      "skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
-    },
-    "bluetooth": {
-      "header": "Komunikujte i bez připojení k internetu (wifi nebo data). Připojte svůj telefon přímo k uživatelům v okolí",
-      "optional": "Volitelné",
-      "title": "Bluetooth",
-      "desc": "Abyste mohli používat tuto funkci, musíte v telefonu povolit Bluetooth",
-      "button": "POVOLIT BLUETOOTH",
-      "skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
-    },
     "setup-finished": {
       "title": "Nastavení dokončeno!",
       "desc": "Teď už můžete aplikaci používat. Můžete začít přidávat kontakty a svobodně a soukromě s nimi komunikovat",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "",
-        "received-at": "Příchozí",
         "accept": "Přijmout",
         "card-title": "Žádost o kontakt!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Vytvořit novou skupinu",
-      "bottom-button": "Prohledat kontakt nebo skupinu"
     },
     "suggestion-display-name-initial": "",
     "configurations": {
@@ -117,6 +96,10 @@
         "desc": ""
       },
       "notification": {
+        "display-name": "",
+        "desc": ""
+      },
+      "replicate": {
         "display-name": "",
         "desc": ""
       }
@@ -139,6 +122,9 @@
       },
       "save": "",
       "skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Nástroje pro vývojáře",
       "header-right-button": "Nastavení",
       "network-button": "Seznam sítí",
-      "switch-accounts": "Použít jiný účet",
       "edit-profile": "Upravit profil"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Zakázat"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Povoleno",
-        "tag-disabled": "Zakázáno"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "Režim aplikace",
@@ -221,9 +204,7 @@
         "sound-button": "Zvuk",
         "exceptions-button": {
           "title": "Výjimky",
-          "preview-value": "Přidat",
-          "tag": "{{count}} výjimka",
-          "tag_plural": "Výjimky: {{count}}"
+          "preview-value": "Přidat"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Zvuk",
         "exceptions-button": {
           "title": "Výjimky",
-          "preview-value": "Přidat",
-          "tag": "{{count}} výjimka",
-          "tag_plural": "Výjimky: {{count}}"
+          "tag": "{{count}} výjimka"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "",
-      "tag-negative": "Zrušit",
-      "tag-positive": ""
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "Aktivovat propojení více uživatelů"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Aktualizace aplikace",
-      "up-to-date-desc": "Používáte aktuální verzi aplikace",
-      "version": "Verze",
-      "current-tag": "Současná",
-      "installed-tag": "Instalováno",
-      "initial-tag": "Výchozí instalace",
-      "not-installed-tag": "Neinstalováno"
+      "current-tag": "Současná"
     },
     "devtools": {
       "title": "Nástroje pro vývojáře",
-      "theme-editor": "",
       "header-left-button": "Informace o zařízení",
+      "header-middle-button": "Vytvořit falešná data",
+      "header-right-button": "Restartovat démona",
+      "theme-editor": "",
       "simulate-button": "Simulovat chybu streamu",
       "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "nepovinné",
       "tor-required-option": "povinné",
       "tor-disabled-option": "zakázaný",
-      "header-middle-button": "Vytvořit falešná data",
-      "header-right-button": "Restartovat démona",
       "system-info-button": "Systémové informace",
       "debug-button": "Debugging",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Výpis interakcí",
       "dump-members-button": "Výpis členů",
       "stop-node-button": "Zastavit uzel",
-      "bot-mode-button": "Režim Bot",
       "local-grpc-button": "lokální gRPC",
       "console-logs-button": "Záznamy konzole",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "Oznámení",
       "send-to-all-button": {
         "title": "Odeslat zprávy všem kontaktům",
         "sending": "Odesílání...",
         "test": "Test, ",
         "tried": "✔ Proběhl pokus o odeslání {{length}} kontaktů"
       },
-      "footer-left-button": "Informace o zařízení",
-      "footer-middle-button": "Zobrazit události",
-      "footer-right-button": "Restartovat démona",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "Informace o zařízení",
+      "footer-middle-button": "Zobrazit události",
+      "footer-right-button": "Restartovat démona"
     },
     "system-info": {
       "title": "Systémové informace"
@@ -428,12 +393,6 @@
       "info": "Informace",
       "devices": "Zařízení"
     },
-    "welcome-configuration": {
-      "title": "",
-      "desc": "",
-      "skip": "PŘESKOČIT",
-      "next": ""
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "PŘIJMOUT",
         "accepted-button": "PŘIJATO"
       },
-      "betabot-box": {
-        "title": "PŘIDAT BETA BOTA?",
-        "desc": "",
-        "skip-button": "PŘESKOČIT",
-        "add-button": "PŘIDAT !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty spojení potvrzeno! 🎉",
         "request-sent": "Žádost odeslána :plane:",
         "incoming": "",
         "outgoing": ""
       },
-      "betabot-input-placeholder": "",
       "incoming-input-placeholder": "",
       "input-placeholder": ""
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Spravovat nebo přidat služby"
     },
     "files": {
-      "record-sound": "Nahrát zvukovou zprávu",
-      "recording": "Nahrávání...",
       "gallery": "Galerie",
       "camera": "Kamera",
-      "record": "Nahrát",
       "files": "Soubory",
       "microphone": "Mikrofon",
-      "gif": "GIF",
       "search-gif": "Vyhledat gif",
       "security-access": "Zabezpečený přístup",
       "security-access-desc": "Klepnutím sem otevřete nastavení pro povolení přístupu k",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Zrušit"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -623,52 +612,6 @@
         "button-confirm": "",
         "button-cancel": "Zrušit"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": "Zrušit"
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Kamera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
