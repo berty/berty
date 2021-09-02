@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "Aplicația securizată de mesagerie peer-to-peer, care funcționează cu sau fără acces la internet, date mobile sau încredere în rețea",
-      "open-registered-account": "Deschide un cont înregistrat",
-      "import-button": "Importă datele dintr-un cont existent",
-      "account-selector-create-button": "Creează un cont nou",
-      "more-options": "Mai multe opțiuni",
       "button": ""
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Se pornește nodul Berty…",
       "desc": "Asta ar putea dura câteva secunde"
     },
-    "notifications": {
-      "header": "Nu rata niciun mesaj nou sau cerere de contact",
-      "recommended": "Recomandate",
-      "title": "Notificări",
-      "desc": "Trebuie să autorizezi notificări push de la Berty pe telefonul tău",
-      "button": "",
-      "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
-    },
-    "bluetooth": {
-      "header": "Comunicați fără o conexiune la internet (wifi sau date) conectând telefonul direct cu parteneri din apropiere",
-      "optional": "Opţional",
-      "title": "Bluetooth",
-      "desc": "Pentru a utiliza această funcție, trebuie să permiți utilizarea Bluetooth de pe telefonul tău",
-      "button": "AUTORIZARE BLUETOOTH",
-      "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
-    },
     "setup-finished": {
       "title": "Configurare finalizată!",
       "desc": "",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Cereri",
-        "received-at": "Primite",
         "accept": "Acceptă",
         "card-title": "Cerere de contact!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Creează un grup nou",
-      "bottom-button": "Scanează contactul sau grupul"
     },
     "suggestion-display-name-initial": "Apasă aici pentru a adăuga",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Configurație notificări",
         "desc": "Faceți clic aici pentru configurarea notificărilor push"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "SALVEAZĂ",
       "skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "",
       "header-right-button": "Setări",
       "network-button": "",
-      "switch-accounts": "",
       "edit-profile": ""
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Dezactivate"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Activat",
-        "tag-disabled": "Dezactivat"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "Modul aplicației",
@@ -221,9 +204,7 @@
         "sound-button": "Sunet",
         "exceptions-button": {
           "title": "Excepţii",
-          "preview-value": "Adaugă",
-          "tag": "",
-          "tag_plural": ""
+          "preview-value": "Adaugă"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Sunet",
         "exceptions-button": {
           "title": "Excepţii",
-          "preview-value": "Adaugă",
-          "tag": "",
-          "tag_plural": ""
+          "tag": ""
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "Întreabă-mă mai târziu",
-      "tag-negative": "Anulează",
-      "tag-positive": "Ok"
+      "activate-button": ""
     },
     "mc": {
       "activate-button": ""
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Actualizări aplicație",
-      "up-to-date-desc": "Aplicația este actualizată",
-      "version": "Versiune",
-      "current-tag": "",
-      "installed-tag": "Instalată",
-      "initial-tag": "Instalare iniţială",
-      "not-installed-tag": ""
+      "current-tag": ""
     },
     "devtools": {
       "title": "",
-      "theme-editor": "",
       "header-left-button": "Informații dispozitiv",
+      "header-middle-button": "Generează date false",
+      "header-right-button": "Reporneşte daemonul",
+      "theme-editor": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "",
       "tor-required-option": "",
       "tor-disabled-option": "",
-      "header-middle-button": "Generează date false",
-      "header-right-button": "Reporneşte daemonul",
       "system-info-button": "Informații sistem",
       "debug-button": "",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "",
       "dump-members-button": "",
       "stop-node-button": "",
-      "bot-mode-button": "",
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "Notificări",
       "send-to-all-button": {
         "title": "",
         "sending": "Se trimite...",
         "test": "",
         "tried": ""
       },
-      "footer-left-button": "Informații dispozitiv",
-      "footer-middle-button": "",
-      "footer-right-button": "Reporneşte daemonul",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "Informații dispozitiv",
+      "footer-middle-button": "",
+      "footer-right-button": "Reporneşte daemonul"
     },
     "system-info": {
       "title": "Informații sistem"
@@ -428,12 +393,6 @@
       "info": "Informaţii",
       "devices": "Dispozitive"
     },
-    "welcome-configuration": {
-      "title": "Bun venit la bord!",
-      "desc": "Hai să avem o privire de ansamblu rapidă asupra setărilor și să terminăm prima configurație!",
-      "skip": "Omite",
-      "next": "Continuă"
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "",
         "accepted-button": ""
       },
-      "betabot-box": {
-        "title": "",
-        "desc": "",
-        "skip-button": "Omite",
-        "add-button": ""
-      },
       "infos-chat": {
         "connection-confirmed": "",
         "request-sent": "",
         "incoming": "",
         "outgoing": ""
       },
-      "betabot-input-placeholder": "",
       "incoming-input-placeholder": "",
       "input-placeholder": ""
     },
@@ -518,14 +470,10 @@
       "manage-add-button": ""
     },
     "files": {
-      "record-sound": "",
-      "recording": "",
       "gallery": "",
       "camera": "",
-      "record": "",
       "files": "",
       "microphone": "",
-      "gif": "",
       "search-gif": "",
       "security-access": "",
       "security-access-desc": "",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Anulează"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -623,52 +612,6 @@
         "button-confirm": "",
         "button-cancel": "Anulează"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": "Anulează"
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
