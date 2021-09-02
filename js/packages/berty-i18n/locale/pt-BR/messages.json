@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "O aplicativo seguro de mensagens ponto a ponto que funciona com ou sem acesso à internet, dados móveis ou confiança na rede",
-      "open-registered-account": "Abrir uma conta registrada",
-      "import-button": "Importar dados de uma conta existente",
-      "account-selector-create-button": "Criar uma nova conta",
-      "more-options": "Mais opções",
       "button": "PRIMEIROS PASSOS"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Iniciando o nó do Berty…",
       "desc": "Isto pode levar alguns segundos"
     },
-    "notifications": {
-      "header": "Não perca nenhuma nova mensagem ou solicitação de contato",
-      "recommended": "Recomendado",
-      "title": "Notificações",
-      "desc": "Você precisa autorizar as notificações por push do \"Berty\" no seu telefone",
-      "button": "AUTORIZAR NOTIFICAÇÕES",
-      "skip": "PULAR E FAZER MAIS TARDE"
-    },
-    "bluetooth": {
-      "header": "Comunique-se sem uma conexão com a internet (wifi ou dados) conectando o seu telefone diretamente com pares próximos",
-      "optional": "Opcional",
-      "title": "Bluetooth",
-      "desc": "Para usar este recurso, você precisa autorizar o uso de Bluetooth no seu telefone",
-      "button": "AUTORIZAR BLUETOOTH",
-      "skip": "PULAR E FAZER MAIS TARDE"
-    },
     "setup-finished": {
       "title": "Configuração finalizada!",
       "desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Solicitações",
-        "received-at": "Recebido",
         "accept": "Aceitar",
         "card-title": "Solicitação de contato!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "Você não pode excluir este grupo",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Criar novo grupo",
-      "bottom-button": "Escanear contato ou grupo"
     },
     "suggestion-display-name-initial": "Clique aqui para adicionar",
     "configurations": {
@@ -118,6 +97,10 @@
       },
       "notification": {
         "display-name": "Configuração de Notificações",
+        "desc": ""
+      },
+      "replicate": {
+        "display-name": "",
         "desc": ""
       }
     },
@@ -139,6 +122,9 @@
       },
       "save": "SALVAR",
       "skip": "PULAR E FAZER MAIS TARDE"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Ferramentas do desenvolvedor",
       "header-right-button": "Configurações",
       "network-button": "Lista de Redes",
-      "switch-accounts": "Usar outra conta",
       "edit-profile": "Editar perfil"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Desativado"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Ativado",
-        "tag-disabled": "Desativado"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "Modo do Aplicativo",
@@ -221,9 +204,7 @@
         "sound-button": "Som",
         "exceptions-button": {
           "title": "Exceções",
-          "preview-value": "Adicionar",
-          "tag": "{{count}} exceção",
-          "tag_plural": "{{count}} exceções"
+          "preview-value": "Adicionar"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Som",
         "exceptions-button": {
           "title": "Exceções",
-          "preview-value": "Adicionar",
-          "tag": "{{count}} exceção",
-          "tag_plural": "{{count}} exceções"
+          "tag": "{{count}} exceção"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "Ativar Bluetooth",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "Pergunte-me mais tarde",
-      "tag-negative": "Cancelar",
-      "tag-positive": "OK"
+      "activate-button": "Ativar Bluetooth"
     },
     "mc": {
       "activate-button": "Ativar Conexão Multiponto"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Atualizações do aplicativo",
-      "up-to-date-desc": "Seu aplicativo está atualizado",
-      "version": "Versão",
-      "current-tag": "Atual",
-      "installed-tag": "Instalado",
-      "initial-tag": "Instalação inicial",
-      "not-installed-tag": "Não instalado"
+      "current-tag": "Atual"
     },
     "devtools": {
       "title": "Ferramentas de desenvolvedor",
-      "theme-editor": "",
       "header-left-button": "Informações do dispositivo",
+      "header-middle-button": "Gerar dados falsos",
+      "header-right-button": "Reiniciar daemon",
+      "theme-editor": "",
       "simulate-button": "Simular erro de transmissão",
       "simulate-js-error-button": "Simular erro de JavaScript",
-      "simulate-native-error-button": "",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "opcional",
       "tor-required-option": "obrigatório",
       "tor-disabled-option": "desativado",
-      "header-middle-button": "Gerar dados falsos",
-      "header-right-button": "Reiniciar daemon",
       "system-info-button": "Informações do sistema",
       "debug-button": "Debug",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Despejar interações",
       "dump-members-button": "Despejar membros",
       "stop-node-button": "Parar nó",
-      "bot-mode-button": "Modo bot",
       "local-grpc-button": "gRPC local",
       "console-logs-button": "Registros da console",
       "ipfs-webui-button": "WebUI do IPFS",
-      "notifications-button": "Notificações",
       "send-to-all-button": {
         "title": "Enviar mensagens para todos os contatos",
         "sending": "Enviando...",
         "test": "Teste, ",
         "tried": "✔ Tentou enviar para {{length}} contatos"
       },
-      "footer-left-button": "Informações do dispositivo",
-      "footer-middle-button": "Listar eventos",
-      "footer-right-button": "Reiniciar daemon",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "Informações do dispositivo",
+      "footer-middle-button": "Listar eventos",
+      "footer-right-button": "Reiniciar daemon"
     },
     "system-info": {
       "title": "Informações do sistema"
@@ -428,12 +393,6 @@
       "info": "Informações",
       "devices": "Dispositivos"
     },
-    "welcome-configuration": {
-      "title": "Bem-vindo(a) a bordo!",
-      "desc": "",
-      "skip": "PULAR",
-      "next": "PRÓXIMO"
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "ACEITAR",
         "accepted-button": "ACEITO"
       },
-      "betabot-box": {
-        "title": "ADICIONAR BOT BETA?",
-        "desc": "",
-        "skip-button": "PULAR",
-        "add-button": "ADICIONAR !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Conexão Berty confirmada! 🎉",
         "request-sent": "Solicitação Enviada ✈",
         "incoming": "Aceite esta solicitação para responder!",
         "outgoing": "Aguardando pela resposta do seu contacto para conectar!"
       },
-      "betabot-input-placeholder": "Adicionar betabot para escrever aqui...",
       "incoming-input-placeholder": "Aceite o pedido para escrever aqui...",
       "input-placeholder": "Digite aqui..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Gerenciar ou adicionar serviços"
     },
     "files": {
-      "record-sound": "Gravar uma mensagem de som",
-      "recording": "Gravando...",
       "gallery": "Galeria",
       "camera": "Câmera",
-      "record": "Gravar",
       "files": "Ficheiros",
       "microphone": "Microfone",
-      "gif": "GIF",
       "search-gif": "Procurar por um gif",
       "security-access": "Acesso de Segurança",
       "security-access-desc": "Toque aqui para abrir a definição para permitir acesso ao seu",
@@ -547,6 +495,48 @@
       "replied-to": "Respondeu para"
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Segure para gravar, solte para enviar",
+        "not-sent": "A mensagem de áudio não foi enviada",
+        "permission-denied": "O app não tem permissão para gravar som"
+      },
+      "slide-to-cancel": "<< Deslize para cancelar",
+      "cancel-button": "Cancelar"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Câmera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -623,52 +612,6 @@
         "button-confirm": "Confirmar",
         "button-cancel": "Cancelar"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "Segure para gravar, solte para enviar",
-        "not-sent": "A mensagem de áudio não foi enviada",
-        "permission-denied": "O app não tem permissão para gravar som"
-      },
-      "slide-to-cancel": "<< Deslize para cancelar",
-      "cancel-button": "Cancelar"
-    }
-  },
-  "medias": {
-    "audio": "áudio",
-    "picture": "imagem",
-    "file": "arquivo"
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Câmera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
