@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "L'app di messaggistica peer-to-peer sicura che funziona con o senza accesso a Internet, connessione dati o fiducia nel web",
-      "open-registered-account": "Apri un account registrato",
-      "import-button": "Importa i dati da un account esistente",
-      "account-selector-create-button": "Crea un nuovo account",
-      "more-options": "Altre opzioni",
       "button": "INIZIA"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Avvio del nodo Berty…",
       "desc": "Questo potrebbe richiedere qualche secondo"
     },
-    "notifications": {
-      "header": "Non perderti alcun nuovo messaggio o richiesta di contatto",
-      "recommended": "Consigliato",
-      "title": "Notifiche",
-      "desc": "Devi autorizzare le notifiche push da Berty sul tuo telefono",
-      "button": "AUTORIZZA LE NOTIFICHE",
-      "skip": "SALTA E FALLO DOPO"
-    },
-    "bluetooth": {
-      "header": "Comunica senza connessione internet (wifi o dati) collegando il telefono direttamente con gli utenti nelle vicinanze",
-      "optional": "Facoltativo",
-      "title": "Bluetooth",
-      "desc": "Per utilizzare questa funzione è necessario autorizzare l'uso del Bluetooth sul telefono",
-      "button": "AUTORIZZA BLUETOOTH",
-      "skip": "SALTA E FALLO DOPO"
-    },
     "setup-finished": {
       "title": "Installazione terminata!",
       "desc": "Ora è possibile utilizzare l'app, iniziare ad aggiungere contatti e parlare liberamente e privatamente con essi",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Richieste",
-        "received-at": "Ricevuto",
         "accept": "Accetta",
         "card-title": "Richiesta di contatto!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "Puoi lasciare questo gruppo",
         "fourth-bullet-point": "Non puoi eliminare questo gruppo",
         "fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Crea un nuovo gruppo",
-      "bottom-button": "Scansiona il contatto o gruppo"
     },
     "suggestion-display-name-initial": "Clicca qui per aggiungere",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Configurazione delle Notifiche",
         "desc": "Clicca qui per configurare le notifiche push"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "SALVA",
       "skip": "SALTA E FALLO DOPO"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Devtools",
       "header-right-button": "Impostazioni",
       "network-button": "Lista Network",
-      "switch-accounts": "Usa un altro account",
       "edit-profile": "Modifica il profilo"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Disabilitato"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Abilitato",
-        "tag-disabled": "Disabilitato"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "Modalità app",
@@ -221,9 +204,7 @@
         "sound-button": "Suono",
         "exceptions-button": {
           "title": "Eccezioni",
-          "preview-value": "Aggiungi",
-          "tag": "{{count}} eccezione",
-          "tag_plural": "{{count}} eccezioni"
+          "preview-value": "Aggiungi"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Suono",
         "exceptions-button": {
           "title": "Eccezioni",
-          "preview-value": "Aggiungi",
-          "tag": "{{count}} eccezione",
-          "tag_plural": "{{count}} eccezioni"
+          "tag": "{{count}} eccezione"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Il Bluetooth consente di scambiare messaggi utilizzando Berty senza accesso a Internet connettendo il dispositivo direttamente con i peer vicini",
-      "activate-button": "Attiva bluetooth",
-      "permission-title": "Autorizzazione Bluetooth Berty",
-      "android-permission-description": "Per scambiare messaggi offline tramite Bluetooth, le API di Android richiedono l'autorizzazione ai permessi sulla posizione.\nNon utilizziamo in alcun modo i dati relativi alla tua posizione.",
-      "ios-permission-description": "Per scambiare messaggi offline tramite Bluetooth, l'API iOS richiede la concessione dell'autorizzazione.",
-      "tag-neutral": "Chiedimelo più tardi",
-      "tag-negative": "Annulla",
-      "tag-positive": "OK"
+      "activate-button": "Attiva bluetooth"
     },
     "mc": {
       "activate-button": "Attiva Multipeer Connectivity"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Aggiornamenti dell'app",
-      "up-to-date-desc": "La tua app è aggiornata",
-      "version": "Versione",
-      "current-tag": "Attuale",
-      "installed-tag": "Installato",
-      "initial-tag": "Installazione iniziale",
-      "not-installed-tag": "Non installata"
+      "current-tag": "Attuale"
     },
     "devtools": {
       "title": "Strumenti di sviluppo",
-      "theme-editor": "Editor di aspetto e tema",
       "header-left-button": "Informazioni sul dispositivo",
+      "header-middle-button": "Genera dati falsi",
+      "header-right-button": "Riavvia il daemon",
+      "theme-editor": "Editor di aspetto e tema",
       "simulate-button": "Simula errore stream",
       "simulate-js-error-button": "Simula errore JavaScript",
-      "simulate-native-error-button": "Simula errore nativo",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "facoltativo",
       "tor-required-option": "necessario",
       "tor-disabled-option": "disabilitato",
-      "header-middle-button": "Genera dati falsi",
-      "header-right-button": "Riavvia il daemon",
       "system-info-button": "Informazioni di sistema",
       "debug-button": "Debug",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Scarica interazioni",
       "dump-members-button": "Scarica membri",
       "stop-node-button": "Arresta nodo",
-      "bot-mode-button": "Modalità Bot",
       "local-grpc-button": "gRPC locale",
       "console-logs-button": "Logs della console",
       "ipfs-webui-button": "Interfaccia Web di IPFS",
-      "notifications-button": "Notifiche",
       "send-to-all-button": {
         "title": "Invia messaggi a tutti i contatti",
         "sending": "Invio...",
         "test": "Test, ",
         "tried": "✔ Provato l'invio a {{length}} contatti"
       },
-      "footer-left-button": "Informazioni sul dispositivo",
-      "footer-middle-button": "Elenca eventi",
-      "footer-right-button": "Riavvia il daemon",
       "trigger-crashlytics-button": "Attiva crash di crashlytics",
       "tyber-attach": "Tyber collegato a {{host}}",
       "tyber-host-button": {
         "name": "Tyber",
         "bullet-point": "Riavvia l'app dopo aver cambiato questo campo"
-      }
+      },
+      "footer-left-button": "Informazioni sul dispositivo",
+      "footer-middle-button": "Elenca eventi",
+      "footer-right-button": "Riavvia il daemon"
     },
     "system-info": {
       "title": "Informazioni di sistema"
@@ -428,12 +393,6 @@
       "info": "Informazioni",
       "devices": "Dispositivi"
     },
-    "welcome-configuration": {
-      "title": "Benvenuto a bordo!",
-      "desc": "Diamo un rapido sguardo delle Impostazioni e terminiamo la tua prima configurazione!",
-      "skip": "SALTA",
-      "next": "PROSSIMO"
-    },
     "save-theme": {
       "title": "Salvataggio tema",
       "desc": "Scegli un nome per il tuo tema!",
@@ -485,19 +444,12 @@
         "accept-button": "ACCETTA",
         "accepted-button": "ACCETTATO"
       },
-      "betabot-box": {
-        "title": "AGGIUNGI BOT BETA?",
-        "desc": "Non hai ancora contatti. Vorresti aggiungere il Bot Beta per scoprire e testare le conversazioni?",
-        "skip-button": "SALTA",
-        "add-button": "AGGIUNGI !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Connessione Berty confermata! 🎉",
         "request-sent": "Richiesta Inviata ✈",
         "incoming": "Accetta questa richiesta per rispondere!",
         "outgoing": "In attesa della risposta del contatto per la connessione!"
       },
-      "betabot-input-placeholder": "Aggiungi betabot per scrivere qui...",
       "incoming-input-placeholder": "Accetta la richiesta per scrivere qui...",
       "input-placeholder": "Scrivi qui..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Gestisci o aggiungi servizi"
     },
     "files": {
-      "record-sound": "Registra un messaggio audio",
-      "recording": "Sto registrando...",
       "gallery": "Galleria",
       "camera": "Fotocamera",
-      "record": "Registra",
       "files": "File",
       "microphone": "Microfono",
-      "gif": "GIF",
       "search-gif": "Cerca una gif",
       "security-access": "Accesso di sicurezza",
       "security-access-desc": "Tocca qui per aprire le impostazioni per consentire l'accesso al tuo",
@@ -547,6 +495,48 @@
       "replied-to": "Risposto a"
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Tieni premuto per registrare, rilascia per inviare",
+        "not-sent": "Messaggio audio non è stato inviato",
+        "permission-denied": "L'app non è autorizzata a registrare l'audio"
+      },
+      "slide-to-cancel": "<< Scorri per annullare",
+      "cancel-button": "Annulla"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "Notifiche gruppi",
+      "desc": "Berty ha bisogno del tuo permesso per inviarti notifiche locali o push. Questo ti permetterà di essere informato quando ricevi un messaggio."
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": "Per scambiare messaggi offline tramite Bluetooth, l'API iOS richiede la concessione dell'autorizzazione."
+    },
+    "camera": {
+      "title": "Fotocamera",
+      "desc": "Per scansionare il codice QR e aggiungere contatti con la tua fotocamera, l'app Berty ha bisogno del tuo permesso. La fotocamera non può essere utilizzata per nient'altro."
+    },
+    "audio": {
+      "title": "Messaggi audio",
+      "desc": "Per inviare un messaggio audio ai tuoi contatti, devi consentire l'autorizzazione del microfono all'app Berty."
+    },
+    "button-labels": {
+      "allow": "Consenti",
+      "settings": "Vai alle impostazioni"
+    },
+    "what-happening": "Cosa sta succedendo qui?",
+    "settings-text": "Puoi abilitare il permesso {{title}} dalle Impostazioni."
+  },
+  "notification": {
+    "need-restart": {
+      "title": "Necessario riavvio app",
+      "desc": "Per questo tipo di notifiche devi riavviare l'app per salvare questo campo!"
+    }
+  },
   "error": {
     "labels": {
       "bug": "Rilevato bug",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "Ci dispiace per questo bug!",
       "desc": "È colpa di Francis, sviluppatore stagista a Berty, che deve aver commesso un errore. Che idiota questo Francis!",
-      "desc-buy": "Ti comprerà una birra quando lo vedrai!",
       "desc-em": "*Beh, ok, non c'è alcun Francis nel team di Berty.",
       "desc-report": "Scuoti il tuo telefono e via di nuovo!"
     }
@@ -623,52 +612,6 @@
         "button-confirm": "Conferma",
         "button-cancel": "Annulla"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "Tieni premuto per registrare, rilascia per inviare",
-        "not-sent": "Messaggio audio non è stato inviato",
-        "permission-denied": "L'app non è autorizzata a registrare l'audio"
-      },
-      "slide-to-cancel": "<< Scorri per annullare",
-      "cancel-button": "Annulla"
-    }
-  },
-  "medias": {
-    "audio": "audio",
-    "picture": "immagine",
-    "file": "file"
-  },
-  "permission": {
-    "notification": {
-      "title": "Notifiche gruppi",
-      "desc": "Berty ha bisogno del tuo permesso per inviarti notifiche locali o push. Questo ti permetterà di essere informato quando ricevi un messaggio."
-    },
-    "p2p": {
-      "title": "Peer to Peer",
-      "desc": "Berty non utilizza né registra in alcun modo la posizione dell'utente, l'unico scopo della richiesta di autorizzazione è quello di scambiare messaggi in BLE, che richiedono l'autorizzazione di localizzazione su Android."
-    },
-    "camera": {
-      "title": "Fotocamera",
-      "desc": "Per scansionare il codice QR e aggiungere contatti con la tua fotocamera, l'app Berty ha bisogno del tuo permesso. La fotocamera non può essere utilizzata per nient'altro."
-    },
-    "audio": {
-      "title": "Messaggi audio",
-      "desc": "Per inviare un messaggio audio ai tuoi contatti, devi consentire l'autorizzazione del microfono all'app Berty."
-    },
-    "button-labels": {
-      "allow": "Consenti",
-      "settings": "Vai alle impostazioni"
-    },
-    "what-happening": "Cosa sta succedendo qui?",
-    "settings-text": "Puoi abilitare il permesso {{title}} dalle Impostazioni."
-  },
-  "notification": {
-    "need-restart": {
-      "title": "Necessario riavvio app",
-      "desc": "Per questo tipo di notifiche devi riavviare l'app per salvare questo campo!"
     }
   }
 }
