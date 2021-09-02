@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "La aplicación de mensajería segura de punto a punto que funciona con o sin acceso a Internet, datos móviles o sin tener que confiar en la red",
-      "open-registered-account": "Abrir una cuenta registrada",
-      "import-button": "Importar datos de una cuenta existente",
-      "account-selector-create-button": "Crear una nueva cuenta",
-      "more-options": "Más opciones",
       "button": "EMPEZAR"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Iniciando el nodo Berty…",
       "desc": "Esto podría tomar unos segundos"
     },
-    "notifications": {
-      "header": "No te pierdas ningún mensaje nuevo o solicitud de contacto",
-      "recommended": "Recomendado",
-      "title": "Notificaciones",
-      "desc": "Necesitas autorizar las notificaciones de Berty en tu teléfono",
-      "button": "AUTORIZAR LAS NOTIFICACIONES",
-      "skip": "SALTAR Y HACER MÁS TARDE"
-    },
-    "bluetooth": {
-      "header": "Comunícate sin conexión a Internet (wifi o datos) conectando tu teléfono directamente con tus compañeros cercanos",
-      "optional": "Opcional",
-      "title": "Bluetooth",
-      "desc": "Para usar esta función necesitas autorizar el uso de Bluetooth en tu teléfono",
-      "button": "AUTORIZAR EL BLUETOOTH",
-      "skip": "SALTAR Y HACER MÁS TARDE"
-    },
     "setup-finished": {
       "title": "¡Configuración finalizada!",
       "desc": "Ahora puedes usar la aplicación, empieza a añadir contactos y habla libre y en privado con ellos",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Solicitudes",
-        "received-at": "Recibido",
         "accept": "Aceptar",
         "card-title": "¡Solicitud de contacto!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Crear un nuevo grupo",
-      "bottom-button": "Escanear contacto o grupo"
     },
     "suggestion-display-name-initial": "Haz clic aquí para añadir",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Configuración de notificaciones",
         "desc": "Clickee aquí para configurar notificaciones push"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "GUARDAR",
       "skip": "SALTAR Y HACER MÁS TARDE"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Herramientas de desarrollo",
       "header-right-button": "Ajustes",
       "network-button": "Lista de redes",
-      "switch-accounts": "Usar otra cuenta",
       "edit-profile": "Editar perfil"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Desactivado"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Activado",
-        "tag-disabled": "Desactivado"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "Modo de aplicación",
@@ -221,9 +204,7 @@
         "sound-button": "Sonido",
         "exceptions-button": {
           "title": "Excepciones",
-          "preview-value": "Agregar",
-          "tag": "{{count}} excepción",
-          "tag_plural": "{{count}} excepciones"
+          "preview-value": "Agregar"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Sonido",
         "exceptions-button": {
           "title": "Excepciones",
-          "preview-value": "Agregar",
-          "tag": "{{count}} excepción",
-          "tag_plural": "{{count}} excepciones"
+          "tag": "{{count}} excepción"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "Permiso de bluetooth de Berty",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "Pregúntame más tarde",
-      "tag-negative": "Cancelar",
-      "tag-positive": "OK"
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "Activar conectividad con múltiples compañeros"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Actualizaciones de la aplicación",
-      "up-to-date-desc": "Tu aplicación está actualizada",
-      "version": "Versión",
-      "current-tag": "Actual",
-      "installed-tag": "Instalado",
-      "initial-tag": "Instalación inicial",
-      "not-installed-tag": "No instalado"
+      "current-tag": "Actual"
     },
     "devtools": {
       "title": "Herramientas de desarrollo",
-      "theme-editor": "",
       "header-left-button": "Información del dispositivo",
+      "header-middle-button": "Generar datos falsos",
+      "header-right-button": "Reiniciar el servicio",
+      "theme-editor": "",
       "simulate-button": "Simular error de flujo",
       "simulate-js-error-button": "Simular error de JavaScript",
-      "simulate-native-error-button": "Simular error nativo",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "opcional",
       "tor-required-option": "requerido",
       "tor-disabled-option": "deshabilitado",
-      "header-middle-button": "Generar datos falsos",
-      "header-right-button": "Reiniciar el servicio",
       "system-info-button": "Información del sistema",
       "debug-button": "Depurar",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Remover intreacciones",
       "dump-members-button": "Remover miembros",
       "stop-node-button": "Detener nodo",
-      "bot-mode-button": "Modo bot",
       "local-grpc-button": "gRPC local",
       "console-logs-button": "Registros de consola",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "Notificaciones",
       "send-to-all-button": {
         "title": "Enviar mensajes a todos los contactos",
         "sending": "Enviando...",
         "test": "Prueba, ",
         "tried": "✔ Se intentó enviar a los {{length}} contactos"
       },
-      "footer-left-button": "Información del dispositivo",
-      "footer-middle-button": "Lista de eventos",
-      "footer-right-button": "Reiniciar el servicio",
       "trigger-crashlytics-button": "Desencadenar fallo (crash) crashlytics",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": "Reinicia la aplicación luego de cambiar este campo"
-      }
+      },
+      "footer-left-button": "Información del dispositivo",
+      "footer-middle-button": "Lista de eventos",
+      "footer-right-button": "Reiniciar el servicio"
     },
     "system-info": {
       "title": "Información del sistema"
@@ -428,12 +393,6 @@
       "info": "Información",
       "devices": "Dispositivos"
     },
-    "welcome-configuration": {
-      "title": "¡Bienvenido a bordo!",
-      "desc": "¡Veamos un resumen de los ajustes y terminemos tu primera configuración!",
-      "skip": "SALTAR",
-      "next": "SIGUIENTE"
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "ACEPTAR",
         "accepted-button": "ACEPTADO"
       },
-      "betabot-box": {
-        "title": "¿AGREGAR BETA BOT?",
-        "desc": "",
-        "skip-button": "SALTAR",
-        "add-button": "¡AÑADIR!"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 ¡Conexión Berty confirmada! 🎉",
         "request-sent": "Solicitud enviada ✈",
         "incoming": "¡Acepta esta solicitud para responder!",
         "outgoing": "¡Esperando la respuesta de tu contacto para conectarse!"
       },
-      "betabot-input-placeholder": "Añadir betabot para escribir aquí...",
       "incoming-input-placeholder": "Acepta la solicitud para escribir aquí...",
       "input-placeholder": "Escribe aquí..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Administrar o añadir servicios"
     },
     "files": {
-      "record-sound": "Graba un mensaje de sonido",
-      "recording": "Grabando...",
       "gallery": "Galería",
       "camera": "Cámara",
-      "record": "Grabación",
       "files": "Archivos",
       "microphone": "Micrófono",
-      "gif": "GIF",
       "search-gif": "Buscar un gif",
       "security-access": "Acceso de seguridad",
       "security-access-desc": "Toque aquí para abrir la configuración para permitir el acceso a su",
@@ -547,6 +495,48 @@
       "replied-to": "Respondido a"
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Mantén presionado para grabar, suelta para enviar",
+        "not-sent": "El mensaje de audio no ha sido enviado",
+        "permission-denied": "La aplicación no tiene permitido grabar sonido"
+      },
+      "slide-to-cancel": "<< Desliza para cancelar",
+      "cancel-button": "Cancelar"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Cámara",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "Error detectado",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "¡Perdón por este error!",
       "desc": "Es culpa de Francisco, desarrollador interno de Berty, quien debió haber cometido un error. ¡Qué tonto este Francisco!",
-      "desc-buy": "¡Te comprará una cerveza cuando lo veas!",
       "desc-em": "*Bueno, está bien, no hay un Francisco en el equipo de Berty.",
       "desc-report": "Agíta tu teléfono y aquí vamos de nuevo!"
     }
@@ -623,52 +612,6 @@
         "button-confirm": "Confirmar",
         "button-cancel": "Cancelar"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "Mantén presionado para grabar, suelta para enviar",
-        "not-sent": "El mensaje de audio no ha sido enviado",
-        "permission-denied": "La aplicación no tiene permitido grabar sonido"
-      },
-      "slide-to-cancel": "<< Desliza para cancelar",
-      "cancel-button": "Cancelar"
-    }
-  },
-  "medias": {
-    "audio": "audio",
-    "picture": "imagen",
-    "file": "archivos"
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Cámara",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
