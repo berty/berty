@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "安全的点对点消息应用程序，无论是否有互联网接入、蜂窝数据或网络信任",
-      "open-registered-account": "开始注册一个账号",
-      "import-button": "从现有帐户导入数据",
-      "account-selector-create-button": "创建新账户",
-      "more-options": "更多选项",
       "button": "开始"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "正在启动 Berty 节点…",
       "desc": "这可能需要几秒钟"
     },
-    "notifications": {
-      "header": "不错过任何新消息或联系请求",
-      "recommended": "推荐的",
-      "title": "消息通知",
-      "desc": "您需要在您的手机上授权Berty 消息通知",
-      "button": "授权通知",
-      "skip": "跳过并稍后再做"
-    },
-    "bluetooth": {
-      "header": "无需互联网连接 (wifi或数据) 即可直接将手机与附近的对等设备连接起来进行通信",
-      "optional": "可选",
-      "title": "蓝牙",
-      "desc": "要使用此功能，您需要在手机上自行启动蓝牙",
-      "button": "授权蓝牙",
-      "skip": "跳过并稍后再做"
-    },
     "setup-finished": {
       "title": "设置完成！",
       "desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "请求",
-        "received-at": "接收",
         "accept": "同意",
         "card-title": "联系请求！"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "您可以离开此群组",
         "fourth-bullet-point": "您不能删除此组",
         "fifth-bullet-point": "您不能从此群组中删除成员"
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "创建新群组",
-      "bottom-button": "扫描联系人或群组"
     },
     "suggestion-display-name-initial": "单击这里添加",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "通知设置",
         "desc": "点击此处查看通知设置"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "保存",
       "skip": "跳过并稍后再做"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "开发工具",
       "header-right-button": "设置",
       "network-button": "网络列表",
-      "switch-accounts": "使用其他账户",
       "edit-profile": "编辑个人信息"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "已禁用"
       },
       "bluetooth-button": {
-        "title": "蓝牙",
-        "tag-enabled": "已启用",
-        "tag-disabled": "已禁用"
+        "title": "蓝牙"
       },
       "app-mode-button": {
         "title": "App模式",
@@ -221,9 +204,7 @@
         "sound-button": "提示音",
         "exceptions-button": {
           "title": "例外",
-          "preview-value": "添加",
-          "tag": "{{count}} 例外",
-          "tag_plural": "{{count}} 个例外"
+          "preview-value": "添加"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "提示音",
         "exceptions-button": {
           "title": "例外",
-          "preview-value": "添加",
-          "tag": "{{count}} 个例外",
-          "tag_plural": "{{count}} 个例外"
+          "tag": "{{count}} 个例外"
         }
       }
     },
     "bluetooth": {
       "title": "蓝牙",
       "desc": "蓝牙允许您通过直接连接您的设备与附近的对等设备来使用Berty交换消息，而无需访问互联网",
-      "activate-button": "激活蓝牙",
-      "permission-title": "Berty蓝牙权限",
-      "android-permission-description": "要通过蓝牙离线交换消息，Android API 需要获得位置权限。\n我们不会以任何方式使用您的位置数据。",
-      "ios-permission-description": "要通过蓝牙离线交换消息，iOS API 需要获得许可。",
-      "tag-neutral": "稍后询问我",
-      "tag-negative": "取消",
-      "tag-positive": "确定"
+      "activate-button": "激活蓝牙"
     },
     "mc": {
       "activate-button": "激活多节点连接"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "应用更新",
-      "up-to-date-desc": "您的应用已是最新的",
-      "version": "版本",
-      "current-tag": "当前的",
-      "installed-tag": "已安装",
-      "initial-tag": "初始化安装",
-      "not-installed-tag": "未安装"
+      "current-tag": "当前的"
     },
     "devtools": {
       "title": "开发工具",
-      "theme-editor": "外观与主题编辑器",
       "header-left-button": "设备信息",
+      "header-middle-button": "生成伪数据",
+      "header-right-button": "重启守护进程",
+      "theme-editor": "外观与主题编辑器",
       "simulate-button": "模拟流错误",
       "simulate-js-error-button": "模拟 JavaScript 错误",
-      "simulate-native-error-button": "模拟本机错误",
       "tor-button": "Tor{{option}}",
       "tor-optional-option": "可选",
       "tor-required-option": "必需的",
       "tor-disabled-option": "已禁用",
-      "header-middle-button": "生成伪数据",
-      "header-right-button": "重启守护进程",
       "system-info-button": "系统信息",
       "debug-button": "Debug",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "转储互动",
       "dump-members-button": "转储成员",
       "stop-node-button": "停止节点",
-      "bot-mode-button": "机器人模式",
       "local-grpc-button": "本地 gRPC",
       "console-logs-button": "控制台日志",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "消息通知",
       "send-to-all-button": {
         "title": "向所有联系人发送消息",
         "sending": "正在发送...",
         "test": "测试， ",
         "tried": ": very_check_mark: 正在尝试向 {{length}} 联系人发送"
       },
-      "footer-left-button": "设备信息",
-      "footer-middle-button": "显示事件",
-      "footer-right-button": "重启守护进程",
       "trigger-crashlytics-button": "触发崩溃问题",
       "tyber-attach": "Tyber 附加到 {{host}}",
       "tyber-host-button": {
         "name": "Tyber",
         "bullet-point": "更改之后重新启动应用"
-      }
+      },
+      "footer-left-button": "设备信息",
+      "footer-middle-button": "显示事件",
+      "footer-right-button": "重启守护进程"
     },
     "system-info": {
       "title": "系统信息"
@@ -428,12 +393,6 @@
       "info": "信息",
       "devices": "设备"
     },
-    "welcome-configuration": {
-      "title": "欢迎登陆！",
-      "desc": "让我们快速了解设置并完成您的第一个配置！",
-      "skip": "跳过",
-      "next": "下一步"
-    },
     "save-theme": {
       "title": "正在保存主题",
       "desc": "请为您的主题选择一个名称！",
@@ -485,19 +444,12 @@
         "accept-button": "接受",
         "accepted-button": "已接受"
       },
-      "betabot-box": {
-        "title": "添加BETA BOT？",
-        "desc": "您还没有任何联系人，要添加Beta Bot来发现和测试会话吗？",
-        "skip-button": "跳过",
-        "add-button": "添加！"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty 连接已确认! 🎉",
         "request-sent": "请求已发送: airplan:",
         "incoming": "接受此请求以回复 ！",
         "outgoing": "正在等待您的联系人回复连接！"
       },
-      "betabot-input-placeholder": "添加测试版机器人以在此写入...",
       "incoming-input-placeholder": "接受此请求以在这里写入...",
       "input-placeholder": "在此输入..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "管理或添加服务"
     },
     "files": {
-      "record-sound": "录制一条声音消息",
-      "recording": "录制中...",
       "gallery": "相册",
       "camera": "摄像头",
-      "record": "录音",
       "files": "文件",
       "microphone": "麦克风",
-      "gif": "GIF图",
       "search-gif": "搜索 gif图",
       "security-access": "安全访问",
       "security-access-desc": "点击此处以设置您的访问权限",
@@ -547,6 +495,48 @@
       "replied-to": "回复至"
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "按住来记录，释放以发送",
+        "not-sent": "音频消息未发送",
+        "permission-denied": "不允许应用程序录制声音"
+      },
+      "slide-to-cancel": "<< 滑动取消",
+      "cancel-button": "取消"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "推送通知",
+      "desc": "Berty app 需要您的许可才能向您发送本地或推送通知。这将允许您在收到消息时收到通知。"
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": "要通过蓝牙离线交换消息，iOS API 需要获得许可。"
+    },
+    "camera": {
+      "title": "摄像头",
+      "desc": "Berty 应用程序需要您的许可以使用摄像头扫描二维码添加联系人。摄像头不用于其他任何目的。"
+    },
+    "audio": {
+      "title": "音频消息",
+      "desc": "若要向您的联系人发送音频信息，您需要允许Berty 应用程序获得麦克风权限。"
+    },
+    "button-labels": {
+      "allow": "允许",
+      "settings": "转到设置"
+    },
+    "what-happening": "这里发生了什么？",
+    "settings-text": "您可以在设置中启用 {{title}} 权限。"
+  },
+  "notification": {
+    "need-restart": {
+      "title": "需要重新启动应用程序",
+      "desc": "对于这类通知，您必须重新启动应用才能保存此字段！"
+    }
+  },
   "error": {
     "labels": {
       "bug": "检测BUG",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "对不起，这是个BUG",
       "desc": "这是Berty的实习生Francis的错，他一定犯了个错误。Francis真是个混蛋！",
-      "desc-buy": "你见到他时，他会给你买啤酒的！",
       "desc-em": "*好吧，伯蒂的团队里没有 Francis",
       "desc-report": "摇一摇你的手机，我们又来了！"
     }
@@ -623,52 +612,6 @@
         "button-confirm": "确认",
         "button-cancel": "取消"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "按住来记录，释放以发送",
-        "not-sent": "音频消息未发送",
-        "permission-denied": "不允许应用程序录制声音"
-      },
-      "slide-to-cancel": "<< 滑动取消",
-      "cancel-button": "取消"
-    }
-  },
-  "medias": {
-    "audio": "音频",
-    "picture": "图片",
-    "file": "文件"
-  },
-  "permission": {
-    "notification": {
-      "title": "推送通知",
-      "desc": "Berty app 需要您的许可才能向您发送本地或推送通知。这将允许您在收到消息时收到通知。"
-    },
-    "p2p": {
-      "title": "点对点",
-      "desc": "Berty 不以任何方式使用或记录用户的位置，权限请求的唯一目的是在 BLE 中交换消息，这需要在 Android 上的位置权限。"
-    },
-    "camera": {
-      "title": "摄像头",
-      "desc": "Berty 应用程序需要您的许可以使用摄像头扫描二维码添加联系人。摄像头不用于其他任何目的。"
-    },
-    "audio": {
-      "title": "音频消息",
-      "desc": "若要向您的联系人发送音频信息，您需要允许Berty 应用程序获得麦克风权限。"
-    },
-    "button-labels": {
-      "allow": "允许",
-      "settings": "转到设置"
-    },
-    "what-happening": "这里发生了什么？",
-    "settings-text": "您可以在设置中启用 {{title}} 权限。"
-  },
-  "notification": {
-    "need-restart": {
-      "title": "需要重新启动应用程序",
-      "desc": "对于这类通知，您必须重新启动应用才能保存此字段！"
     }
   }
 }
