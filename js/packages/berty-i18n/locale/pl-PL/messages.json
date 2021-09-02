@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "Bezpieczna aplikacja komunikacyjna peer-to-peer działająca z dostępem lub bez do internetu, danych komórkowych lub zaufania do sieci",
-      "open-registered-account": "Otwórz zarejestrowane konto",
-      "import-button": "Importuj dane z istniejącego konta",
-      "account-selector-create-button": "Utwórz nowe konto",
-      "more-options": "Więcej opcji",
       "button": "ROZPOCZNIJ"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Uruchamianie węzła Berty…",
       "desc": "To może potrwać kilka sekund"
     },
-    "notifications": {
-      "header": "Nie przegap żadnej nowej wiadomości lub prośby o kontakt",
-      "recommended": "Zalecane",
-      "title": "Powiadomienia",
-      "desc": "Musisz zautoryzować powiadomienia push z Berty na swoim telefonie",
-      "button": "ZAUTORYZUJ POWIADOMIENIA",
-      "skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
-    },
-    "bluetooth": {
-      "header": "Komunikacja bez połączenia z internetem (wifi lub danych) poprzez połączenie telefonu bezpośrednio z peerami w pobliżu",
-      "optional": "Opcjonalnie",
-      "title": "Bluetooth",
-      "desc": "Aby użyć tej funkcji, musisz zautoryzować użycie Bluetooth na telefonie",
-      "button": "ZAUTORYZUJ BLUETOOTH",
-      "skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
-    },
     "setup-finished": {
       "title": "Konfiguracja zakończona!",
       "desc": "Teraz możesz korzystać z aplikacji, dodawać kontakty i rozmawiać z nimi swobodnie i prywatnie",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Prośby",
-        "received-at": "Otrzymane",
         "accept": "Akceptuj",
         "card-title": "Prośba o kontakt!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Utwórz nową grupę",
-      "bottom-button": "Zeskanuj kontakt lub grupę"
     },
     "suggestion-display-name-initial": "Kliknij tutaj, aby dodać",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Konfiguracja powiadomień",
         "desc": "Kliknij tutaj, dla konfiguracji powiadomień push"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "ZAPISZ",
       "skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Narzędzia Deweloperskie",
       "header-right-button": "Ustawienia",
       "network-button": "Lista sieci",
-      "switch-accounts": "Użyj innego konta",
       "edit-profile": "Edytuj profil"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Wyłączone"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Włączone",
-        "tag-disabled": "Wyłączone"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "Tryb aplikacji",
@@ -221,9 +204,7 @@
         "sound-button": "Dźwięk",
         "exceptions-button": {
           "title": "Wyjątki",
-          "preview-value": "Dodaj",
-          "tag": "{{count}} wyjątek",
-          "tag_plural": "{{count}} wyjątków"
+          "preview-value": "Dodaj"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Dźwięk",
         "exceptions-button": {
           "title": "Wyjątki",
-          "preview-value": "Dodaj",
-          "tag": "{{count}} wyjątek",
-          "tag_plural": "{{count}} wyjątków"
+          "tag": "{{count}} wyjątek"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "Uprawnienia Berty Bluetooth",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "Zapytaj mnie później",
-      "tag-negative": "Anuluj",
-      "tag-positive": "OK"
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "Aktywuj połączenia z wieloma peerami"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Aktualizacje aplikacji",
-      "up-to-date-desc": "Twoja aplikacja jest aktualna",
-      "version": "Wersja",
-      "current-tag": "Bieżąca",
-      "installed-tag": "Zainstalowana",
-      "initial-tag": "Instalacja początkowa",
-      "not-installed-tag": "Nie zainstalowano"
+      "current-tag": "Bieżąca"
     },
     "devtools": {
       "title": "Narzędzia deweloperskie",
-      "theme-editor": "",
       "header-left-button": "Informacje o urządzeniu",
+      "header-middle-button": "Generuj fałszywe dane",
+      "header-right-button": "Zrestartuj daemon",
+      "theme-editor": "",
       "simulate-button": "Symuluj błąd strumienia",
       "simulate-js-error-button": "Symuluj błąd JavaScript",
-      "simulate-native-error-button": "Symuluj błąd natywny",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "opcjonalnie",
       "tor-required-option": "wymagane",
       "tor-disabled-option": "wyłączone",
-      "header-middle-button": "Generuj fałszywe dane",
-      "header-right-button": "Zrestartuj daemon",
       "system-info-button": "Informacje systemowe",
       "debug-button": "Debuguj",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Zrzuć interakcje",
       "dump-members-button": "Zrzuć członków",
       "stop-node-button": "Zatrzymaj węzeł",
-      "bot-mode-button": "Tryb bota",
       "local-grpc-button": "lokalny gRPC",
       "console-logs-button": "Logi konsoli",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "Powiadomienia",
       "send-to-all-button": {
         "title": "Wyślij wiadomości do wszystkich kontaktów",
         "sending": "Wysyłanie...",
         "test": "Test, ",
         "tried": "✔ Próbowano wysłać do {{length}} kontaktów"
       },
-      "footer-left-button": "Informacje o urządzeniu",
-      "footer-middle-button": "Lista wydarzeń",
-      "footer-right-button": "Zrestartuj daemon",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
-      }
+      },
+      "footer-left-button": "Informacje o urządzeniu",
+      "footer-middle-button": "Lista wydarzeń",
+      "footer-right-button": "Zrestartuj daemon"
     },
     "system-info": {
       "title": "Informacje systemowe"
@@ -428,12 +393,6 @@
       "info": "Informacje",
       "devices": "Urządzenia"
     },
-    "welcome-configuration": {
-      "title": "Witaj na pokładzie!",
-      "desc": "Zróbmy szybki przegląd ustawień i dokończ pierwszą konfigurację!",
-      "skip": "POMIŃ",
-      "next": "DALEJ"
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "AKCEPTUJ",
         "accepted-button": "ZAAKCEPOWANE"
       },
-      "betabot-box": {
-        "title": "DODAĆ BOTA BETA?",
-        "desc": "",
-        "skip-button": "POMIŃ",
-        "add-button": "DODAJ!"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Połączenie Berty potwierdzone! 🎉",
         "request-sent": "Prośba wysłana ✈",
         "incoming": "Zaakceptuj tę prośbę aby odpowiedzieć!",
         "outgoing": "Oczekiwanie na odpowiedź na Twojego kontaktu aby się połączyć!"
       },
-      "betabot-input-placeholder": "Dodaj betabota, aby napisać tutaj...",
       "incoming-input-placeholder": "Zaakceptuj prośbę aby pisać tutaj...",
       "input-placeholder": "Wpisz tutaj..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Zarządzaj lub dodaj usługi"
     },
     "files": {
-      "record-sound": "Nagraj wiadomość dźwiękową",
-      "recording": "Nagrywanie...",
       "gallery": "Galeria",
       "camera": "Aparat",
-      "record": "Nagranie",
       "files": "Pliki",
       "microphone": "Mikrofon",
-      "gif": "GIF",
       "search-gif": "Wyszukaj gif",
       "security-access": "Dostęp do zabezpieczeń",
       "security-access-desc": "Dotknij tutaj, żeby otworzyć ustawienie, aby zezwolić na dostęp do Twojego",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Przytrzymaj aby nagrywać, puść, aby wysłać",
+        "not-sent": "Wiadomość audio nie została wysłana",
+        "permission-denied": "Aplikacja nie może nagrywać dźwięku"
+      },
+      "slide-to-cancel": "<< Przesuń aby anulować",
+      "cancel-button": "Anuluj"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Aparat",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "Wykryto błąd",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "Przepraszamy za ten błąd!",
       "desc": "Jest to wina Francisa, twórcy wewnętrznego Berty, który musiał popełnić błąd. Co za szaleństwo tego Francisa!",
-      "desc-buy": "Kupi ci piwo, gdy go spotkasz!",
       "desc-em": "*No dobra, w zespole Berty nie ma Francisa.",
       "desc-report": "Potrząśnij swoim telefonem i wracamy tu znowu!"
     }
@@ -623,52 +612,6 @@
         "button-confirm": "Potwierdź",
         "button-cancel": "Anuluj"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "Przytrzymaj aby nagrywać, puść, aby wysłać",
-        "not-sent": "Wiadomość audio nie została wysłana",
-        "permission-denied": "Aplikacja nie może nagrywać dźwięku"
-      },
-      "slide-to-cancel": "<< Przesuń aby anulować",
-      "cancel-button": "Anuluj"
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Aparat",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
