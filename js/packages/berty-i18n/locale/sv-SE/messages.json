@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "Den säkra peer-to-peer chattappen som fungerar utan internet eller mobildata, eller förtroende för nätverket",
-      "open-registered-account": "Öppna ett registrerat konto",
-      "import-button": "Impoertera data från ett annat konto",
-      "account-selector-create-button": "Skapa ett nytt konto",
-      "more-options": "Fler inställningar",
       "button": "BÖRJA"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Startar Berty-noden…",
       "desc": "Det här kan ta några sekunder"
     },
-    "notifications": {
-      "header": "Missa inga nya meddelanden eller kontaktförfrågningar",
-      "recommended": "Rekommenderat",
-      "title": "Aviseringar",
-      "desc": "Du måste godkänna push-meddelanden från Berty på din telefon",
-      "button": "TILLÅT AVISERINGAR",
-      "skip": "HOPPA ÖVER OCH GÖR SENARE"
-    },
-    "bluetooth": {
-      "header": "Kommunicera utan internetanslutning (wifi eller data) genom att ansluta din telefon telefon direkt till andra användare i närheten",
-      "optional": "Frivilligt",
-      "title": "Bluetooth",
-      "desc": "För att använda den här funktionen måste du tillåta användning av Bluetooth på din telefon",
-      "button": "TILLÅT BLUETOOTH",
-      "skip": "HOPPA ÖVER OCH GÖR SENARE"
-    },
     "setup-finished": {
       "title": "Genomgång slutförd!",
       "desc": "Du kan nu använda appen, börja lägga till kontakter och prata fritt med dem utan övervakning",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Förfrågningar",
-        "received-at": "Mottagen",
         "accept": "Acceptera",
         "card-title": "Kontaktförfrågan!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Skapa ny grupp",
-      "bottom-button": "Skanna kontakt eller grupp"
     },
     "suggestion-display-name-initial": "",
     "configurations": {
@@ -117,6 +96,10 @@
         "desc": ""
       },
       "notification": {
+        "display-name": "",
+        "desc": ""
+      },
+      "replicate": {
         "display-name": "",
         "desc": ""
       }
@@ -139,6 +122,9 @@
       },
       "save": "",
       "skip": "HOPPA ÖVER OCH GÖR SENARE"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Utvecklingsverktyg",
       "header-right-button": "Inställningar",
       "network-button": "Lista över nätverk",
-      "switch-accounts": "Använd ett annat konto",
       "edit-profile": "Redigera profil"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Inaktiv"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Aktiv",
-        "tag-disabled": "Inaktiv"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "App-läge",
@@ -221,9 +204,7 @@
         "sound-button": "Ljud",
         "exceptions-button": {
           "title": "Undantagsregler",
-          "preview-value": "Lägg till",
-          "tag": "{{count}} regel",
-          "tag_plural": "{{count}} regler"
+          "preview-value": "Lägg till"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Ljud",
         "exceptions-button": {
           "title": "Undantagsregler",
-          "preview-value": "Lägg till",
-          "tag": "{{count}} regel",
-          "tag_plural": "{{count}} regler"
+          "tag": "{{count}} regel"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "",
-      "tag-negative": "Avbryt",
-      "tag-positive": ""
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "Aktivera multi-klient anslutning"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Appuppdateringar",
-      "up-to-date-desc": "Appen är senaste versionen",
-      "version": "Version",
-      "current-tag": "Aktuell",
-      "installed-tag": "Installerad",
-      "initial-tag": "Första installationen",
-      "not-installed-tag": "Ej installerad"
+      "current-tag": "Aktuell"
     },
     "devtools": {
       "title": "Utvecklingsverktyg",
-      "theme-editor": "",
       "header-left-button": "Enhetsinformation",
+      "header-middle-button": "Generera låtsatsdata",
+      "header-right-button": "Starta om bakgrundstjänst",
+      "theme-editor": "",
       "simulate-button": "Simulera streaming fel",
       "simulate-js-error-button": "Simulera JavaScript-fel",
-      "simulate-native-error-button": "Simulera native fel",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "valfritt",
       "tor-required-option": "obligatorisk",
       "tor-disabled-option": "inaktiv",
-      "header-middle-button": "Generera låtsatsdata",
-      "header-right-button": "Starta om bakgrundstjänst",
       "system-info-button": "Systeminformation",
       "debug-button": "Debug",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Dumpa interaktioner",
       "dump-members-button": "Dumpa medlemmar",
       "stop-node-button": "Stoppa nod",
-      "bot-mode-button": "Bot-läge",
       "local-grpc-button": "lokal gRPC",
       "console-logs-button": "Konsolloggar",
       "ipfs-webui-button": "IPFS webbgränssnitt",
-      "notifications-button": "Aviseringar",
       "send-to-all-button": {
         "title": "Skicka meddelanden till alla kontakter",
         "sending": "Skickar...",
         "test": "Test, ",
         "tried": "✔ Försökte skicka till {{length}} kontakter"
       },
-      "footer-left-button": "Enhetsinformation",
-      "footer-middle-button": "Visa händelser",
-      "footer-right-button": "Starta om bakgrundstjänst",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "Enhetsinformation",
+      "footer-middle-button": "Visa händelser",
+      "footer-right-button": "Starta om bakgrundstjänst"
     },
     "system-info": {
       "title": "Systeminformation"
@@ -428,12 +393,6 @@
       "info": "Detaljer",
       "devices": "Enheter"
     },
-    "welcome-configuration": {
-      "title": "",
-      "desc": "",
-      "skip": "HOPPA ÖVER",
-      "next": ""
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "GODTA",
         "accepted-button": "GOTTAGEN"
       },
-      "betabot-box": {
-        "title": "LÄGG TILL BETA-BOT?",
-        "desc": "",
-        "skip-button": "HOPPA ÖVER",
-        "add-button": "LÄGG TILL !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty anslutning bekräftad! 🎉",
         "request-sent": "Förfrågan skickad ✈",
         "incoming": "Besvara denna förfrågan för att svara!",
         "outgoing": "Väntar på att ditt kontaktsvar ska ansluta!"
       },
-      "betabot-input-placeholder": "Lägg till Beta-boten för att skriva här...",
       "incoming-input-placeholder": "Godkänn förfrågan för att skriva här...",
       "input-placeholder": ""
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Hantera eller lägga till tjänster"
     },
     "files": {
-      "record-sound": "Spela in ljudmeddelande",
-      "recording": "Spelar in...",
       "gallery": "Galleri",
       "camera": "Kamera",
-      "record": "Spela in",
       "files": "Filer",
       "microphone": "Mikrofon",
-      "gif": "GIF",
       "search-gif": "Sök efter en gif",
       "security-access": "Säkerhetsåtkomst",
       "security-access-desc": "Tryck här för att öppna inställningen för att tillåta åtkomst till din",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": "Avbryt"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "Bugg upptäckt",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "Ledsen för detta fel!",
       "desc": "Det är Francis fel, intern utvecklare hos Berty, som måste ha gjort ett misstag. Inte klok, denna Francis!",
-      "desc-buy": "Han köper dig en öl när du ser honom!",
       "desc-em": "*Nja, okej, det finns ingen Francis på Bertys avdelning.",
       "desc-report": "Skaka din telefon så testar vi på nytt!"
     }
@@ -623,52 +612,6 @@
         "button-confirm": "Bekräfta",
         "button-cancel": "Avbryt"
       }
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": "Avbryt"
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Kamera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
     }
   }
 }
