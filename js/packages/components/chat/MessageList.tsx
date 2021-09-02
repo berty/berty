@@ -156,7 +156,7 @@ export const MessageList: React.FC<{
 			contentContainerStyle={{ paddingBottom: 35 * scaleHeight }}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			data={messages}
+			data={messages || []}
 			inverted
 			onEndReached={fetchMoreCB}
 			onEndReachedThreshold={0.8}
