@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TextInput, Vibration, StatusBar, Platform } from 'react-native'
+import { View, TextInput, Vibration, StatusBar, Platform, ActivityIndicator } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -10,20 +10,21 @@ import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
-import { GlobalPersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { GlobalPersistentOptionsKeys, MsgrState, useMsgrContext } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import { checkPermissions } from '../utils'
+import beapi from '@berty-tech/api'
 
-const openDocumentPicker = async ctx => {
+const openDocumentPicker = async (ctx: MsgrState) => {
 	try {
 		const res = await DocumentPicker.pick({
 			// @ts-ignore
 			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
 		})
 		const replaced =
-			Platform.OS === 'android' ? getPath(res.uri) : res.uri.replace(/^file:\/\//, '')
+			Platform.OS === 'android' ? getPath(res[0].uri) : res[0].uri.replace(/^file:\/\//, '')
 		await ctx.importAccount(replaced)
 	} catch (err) {
 		if (DocumentPicker.isCancel(err)) {
@@ -34,45 +35,48 @@ const openDocumentPicker = async ctx => {
 	}
 }
 
-const CreateAccountBody = ({ next }) => {
+const CreateAccountBody = () => {
 	const ctx = useMsgrContext()
 	const [{ text, padding, margin, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [name, setName] = React.useState('')
 	const [isPressed, setIsPressed] = useState(false)
+	const [isFinished, setIsFinished] = useState(false)
+	const { navigate } = useNavigation()
 
 	React.useEffect(() => {
 		ctx
 			.getUsername()
 			.then(({ username }) => setName(username))
 			.catch(err2 => console.warn('Failed to fetch username:', err2))
-	}, [ctx])
+	}, []) // eslint-disable-line
 
 	const handlePersistentOptions = React.useCallback(async () => {
 		const preset = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.Preset)
 
-		if (preset === 'performance') {
-			const status = await checkPermissions('p2p', {
+		if (preset === String(beapi.account.NetworkConfigPreset.Performance)) {
+			const status = await checkPermissions('p2p', navigate, {
 				isToNavigate: false,
 			})
 			if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
+				setIsPressed(true)
 				await ctx.createNewAccount()
 			} else {
-				await checkPermissions('p2p', {
-					navigateNext: 'Onboarding.SetupFinished',
+				await checkPermissions('p2p', navigate, {
 					createNewAccount: true,
 					isToNavigate: true,
 				})
 			}
 		} else {
+			setIsPressed(true)
 			await ctx.createNewAccount()
 		}
-		setIsPressed(true)
-	}, [ctx])
+		setIsFinished(true)
+	}, [ctx, navigate])
 
 	const onPress = React.useCallback(async () => {
-		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
+		const displayName = name || `anon#${ctx?.account?.publicKey?.substr(0, 4)}`
 		await AsyncStorage.setItem(GlobalPersistentOptionsKeys.DisplayName, displayName)
 
 		handlePersistentOptions()
@@ -91,7 +95,7 @@ const CreateAccountBody = ({ next }) => {
 					loop
 					style={{ width: '100%' }}
 				/>
-				{!isPressed ? (
+				{!isFinished ? (
 					<LottieView
 						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
 						autoPlay
@@ -104,50 +108,61 @@ const CreateAccountBody = ({ next }) => {
 						loop={false}
 						onAnimationFinish={async () => {
 							Vibration.vibrate(500)
-							const status = await checkPermissions('p2p', {
+							await checkPermissions('p2p', navigate, {
 								isToNavigate: false,
 							})
-							if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
-								next()
-							}
 						}}
 					/>
 				)}
 			</View>
 			<View style={{ flex: 1 }}>
-				<SwiperCard
-					label={t('onboarding.create-account.required')}
-					title={t('onboarding.create-account.title')}
-					description={t('onboarding.create-account.desc')}
-					button={{
-						text: t('onboarding.create-account.button'),
-						onPress,
-					}}
-					secondButton={{
-						text: t('onboarding.create-account.import-account'),
-						onPress: () => openDocumentPicker(ctx),
-					}}
-				>
-					<TextInput
-						autoCapitalize='none'
-						autoCorrect={false}
-						value={name}
-						onChangeText={setName}
-						placeholder={t('onboarding.create-account.placeholder')}
-						style={[
-							margin.top.medium,
-							padding.medium,
-							text.size.large,
-							border.radius.small,
-							text.bold.small,
-							{
-								backgroundColor: colors['input-background'],
-								fontFamily: 'Open Sans',
-								color: colors['main-text'],
-							},
-						]}
-					/>
-				</SwiperCard>
+				{!isPressed ? (
+					<SwiperCard
+						label={t('onboarding.create-account.required')}
+						title={t('onboarding.create-account.title')}
+						description={t('onboarding.create-account.desc')}
+						button={{
+							text: t('onboarding.create-account.button'),
+							onPress,
+						}}
+						secondButton={{
+							text: t('onboarding.create-account.import-account'),
+							onPress: () => openDocumentPicker(ctx),
+						}}
+					>
+						<TextInput
+							autoCapitalize='none'
+							autoCorrect={false}
+							value={name}
+							onChangeText={setName}
+							placeholder={t('onboarding.create-account.placeholder')}
+							style={[
+								margin.top.medium,
+								padding.medium,
+								text.size.large,
+								border.radius.small,
+								text.bold.small,
+								{
+									backgroundColor: colors['input-background'],
+									fontFamily: 'Open Sans',
+									color: colors['main-text'],
+								},
+							]}
+						/>
+					</SwiperCard>
+				) : (
+					<SwiperCard
+						label={t('onboarding.create-account.required')}
+						title='Creating...'
+						description='Your account is creating...'
+					>
+						<ActivityIndicator
+							size='large'
+							style={[margin.top.medium]}
+							color={colors['secondary-text']}
+						/>
+					</SwiperCard>
+				)}
 			</View>
 		</>
 	)
@@ -155,13 +170,12 @@ const CreateAccountBody = ({ next }) => {
 
 export const CreateAccount = () => {
 	useNotificationsInhibitor(() => true)
-	const { navigate } = useNavigation()
 	const colors = useThemeColor()
 
 	return (
 		<OnboardingWrapper>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<CreateAccountBody next={() => navigate('Onboarding.SetupFinished')} />
+			<CreateAccountBody />
 		</OnboardingWrapper>
 	)
 }

@@ -257,14 +257,6 @@ export const reducerActions: {
 		return ret
 	},
 
-	[MessengerActions.SetStateOnBoarding]: (oldState, _) => {
-		console.log(oldState.account)
-		return {
-			...oldState,
-			appState: oldState.account ? MessengerAppState.OnBoarding : oldState.appState,
-		}
-	},
-
 	[MessengerActions.SetNextAccount]: (oldState, action) => {
 		if (action.payload === null || action.payload === undefined || !oldState.embedded) {
 			return oldState
@@ -382,10 +374,16 @@ export const reducerActions: {
 		appState: MessengerAppState.StreamDone,
 		streamInProgress: null,
 	}),
-
 	[MessengerActions.SetStateOnBoardingReady]: (oldState, _) => ({
 		...oldState,
 		appState: MessengerAppState.GetStarted,
+	}),
+	[MessengerActions.SetConvsTextInputValue]: (oldState, action) => ({
+		...oldState,
+		convsTextInputValue: {
+			...oldState.convsTextInputValue,
+			[action.payload.key]: action.payload.value,
+		},
 	}),
 }
 

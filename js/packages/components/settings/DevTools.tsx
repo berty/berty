@@ -402,13 +402,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
-				name={t('settings.devtools.theme-editor')}
-				icon='color-palette-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigate.settings.themeEditor()}
-			/>
-			<ButtonSetting
 				name={t('settings.devtools.system-info-button')}
 				icon='info-outline'
 				iconSize={30}

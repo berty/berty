@@ -1,7 +1,7 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
-import { Translation } from 'react-i18next'
-import { useNavigation, RouteProp } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/services'
 import { useMsgrContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
@@ -9,15 +9,11 @@ import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
-import { checkPermissions } from '../utils'
-import { RESULTS } from 'react-native-permissions'
 
-const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void }> = ({
-	next,
-	handleComplete,
-}) => {
+const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const ctx = useMsgrContext()
 	const accountServices = useAccountServices() || []
+	const { t }: any = useTranslation()
 
 	React.useEffect(() => {
 		if (accountServices.length > 0) {
@@ -26,74 +22,50 @@ const ServicesAuthBody: React.FC<{ next: () => void; handleComplete: () => void 
 	}, [next, accountServices.length])
 
 	return (
-		<Translation>
-			{t => (
-				<SwiperCard
-					header={t('onboarding.services-auth.header')}
-					label={t('onboarding.services-auth.recommended')}
-					title={t('onboarding.services-auth.title')}
-					description={t('onboarding.services-auth.desc')}
-					button={
-						accountServices.length > 0
-							? undefined
-							: {
-									text: t('onboarding.services-auth.button'),
-									onPress: async () => {
-										await servicesAuthViaDefault(ctx)
-										await ctx.setPersistentOption({
-											type: PersistentOptionsKeys.Configurations,
-											payload: {
-												...ctx.persistentOptions.configurations,
-												network: {
-													...ctx.persistentOptions.configurations.network,
-													state: 'added',
-												},
+		<SwiperCard
+			header={t('onboarding.services-auth.header')}
+			label={t('onboarding.services-auth.recommended')}
+			title={t('onboarding.services-auth.title')}
+			description={t('onboarding.services-auth.desc')}
+			button={
+				accountServices.length > 0
+					? undefined
+					: {
+							text: t('onboarding.services-auth.button'),
+							onPress: async () => {
+								try {
+									await servicesAuthViaDefault(ctx)
+									await ctx.setPersistentOption({
+										type: PersistentOptionsKeys.Configurations,
+										payload: {
+											...ctx.persistentOptions.configurations,
+											replicate: {
+												...ctx.persistentOptions.configurations.replicate,
+												state: 'added',
 											},
-										})
-										handleComplete()
-									},
-							  }
-					}
-					skip={{
-						text: t('onboarding.notifications.skip'),
-						onPress: next,
-					}}
-				/>
-			)}
-		</Translation>
+										},
+									})
+								} catch (e) {
+									console.log(e)
+								}
+							},
+					  }
+			}
+			skip={{
+				text: t('onboarding.services-auth.skip'),
+				onPress: async () => {
+					await next()
+				},
+			}}
+		/>
 	)
 }
 
-export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
-	const checkNotificationPermission = route?.params?.checkNotificationPermission
+export const ServicesAuth: React.FC<{}> = () => {
 	useNotificationsInhibitor(() => true)
-	const { goBack } = useNavigation()
 	const { persistentOptions, setPersistentOption } = useMsgrContext()
 	const colors = useThemeColor()
-
-	const handleComplete = async () => {
-		goBack()
-
-		if (checkNotificationPermission) {
-			const notificationStatus = await checkPermissions('notification', {
-				isToNavigate: false,
-			})
-			if (notificationStatus === RESULTS.GRANTED) {
-				await setPersistentOption({
-					type: PersistentOptionsKeys.Configurations,
-					payload: {
-						...persistentOptions.configurations,
-						notification: {
-							...persistentOptions.configurations.notification,
-							state: 'added',
-						},
-					},
-				})
-			} else {
-				checkPermissions('notification')
-			}
-		}
-	}
+	const { goBack } = useNavigation()
 
 	return (
 		<OnboardingWrapper>
@@ -104,15 +76,14 @@ export const ServicesAuth: React.FC<{ route: RouteProp<any, any> }> = ({ route }
 						type: PersistentOptionsKeys.Configurations,
 						payload: {
 							...persistentOptions.configurations,
-							network: {
-								...persistentOptions.configurations.network,
+							replicate: {
+								...persistentOptions.configurations.replicate,
 								state: 'skipped',
 							},
 						},
 					})
-					handleComplete()
+					goBack()
 				}}
-				handleComplete={handleComplete}
 			/>
 		</OnboardingWrapper>
 	)

@@ -177,7 +177,11 @@ export const Navigation: React.FC = () => {
 				)
 				return
 			case MessengerAppState.PreReady:
-				dispatch(CommonActions.navigate('Onboarding.SetupFinished'))
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Onboarding.SetupFinished }],
+					}),
+				)
 				return
 			case MessengerAppState.GetStarted:
 				dispatch(
@@ -192,9 +196,9 @@ export const Navigation: React.FC = () => {
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				context.appState === MessengerAppState.Ready
-					? Routes.Main.Home
-					: Routes.Onboarding.GetStarted
+				context.appState === MessengerAppState.GetStarted
+					? Routes.Onboarding.GetStarted
+					: Routes.Main.Home
 			}
 		>
 			{/* OnBoarding */}
@@ -237,7 +241,7 @@ export const Navigation: React.FC = () => {
 				name={Routes.Main.Scan}
 				component={Components.Main.Scan}
 				options={SecondaryBackgroundHeaderScreenOptions({
-					title: 'Scan QR Code',
+					title: t('main.scan.title'),
 					headerRight: () => (
 						<Icon
 							name='qr'
@@ -258,7 +262,7 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Main.Permissions}
 				component={Components.Main.Permissions}
-				options={{ headerShown: false }}
+				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			{/* CreateGroup */}
 			<NavigationStack.Screen
@@ -346,7 +350,7 @@ export const Navigation: React.FC = () => {
 				name={Routes.Chat.MultiMemberQR}
 				component={Components.Chat.MultiMemberQR}
 				options={BackgroundHeaderScreenOptions({
-					title: 'QR Group',
+					title: t('chat.multi-member-qr.title'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
@@ -436,7 +440,6 @@ export const Navigation: React.FC = () => {
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.mode.title'),
 					...CustomTitleStyle(),
-					presentation: 'formSheet',
 				})}
 			/>
 			<NavigationStack.Screen
@@ -555,7 +558,6 @@ export const Navigation: React.FC = () => {
 					presentation: 'formSheet',
 				})}
 			/>
-
 			{/* Modals */}
 			<NavigationStack.Screen
 				name={Routes.Modals.ManageDeepLink}

@@ -7,8 +7,8 @@ import renderer from 'react-test-renderer'
 
 jest.useFakeTimers()
 
-jest.mock('react-native-document-picker', () => ({ default: jest.fn() }))
-
-it('Renderer test', () => {
-	renderer.create(<App />)
+describe('Berty MessengerApp', () => {
+	it('Renderer test', () => {
+		renderer.create(<App />)
+	})
 })

@@ -1,7 +1,7 @@
 import React from 'react'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { Alert, Platform, ScrollView, Vibration, View } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
+import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
@@ -228,7 +228,7 @@ export const Mode: React.FC<{}> = () => {
 	const [{ padding, text }, { scaleSize }] = useStyles()
 
 	return (
-		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+		<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<ScrollView bounces={false}>
 				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
 					<Text
@@ -243,6 +243,6 @@ export const Mode: React.FC<{}> = () => {
 				</View>
 				<BodyMode />
 			</ScrollView>
-		</Layout>
+		</View>
 	)
 }

@@ -5,10 +5,12 @@ import {
 	Platform,
 	StatusBar,
 } from 'react-native'
+import { useHeaderHeight } from '@react-navigation/elements'
 
 import { useMusicPlayer } from '@berty-tech/music-player'
 
 import { HEIGHT_OF_PLAYER } from './StickyMusicPlayer'
+import { useStyles } from '@berty-tech/styles'
 
 interface CustomKeyboardAvoidingViewProps extends KeyboardAvoidingViewProps {
 	bottomFixedViewPadding?: number
@@ -21,11 +23,13 @@ export const KeyboardAvoidingView: React.FC<CustomKeyboardAvoidingViewProps> = (
 	const {
 		player: { player },
 	} = useMusicPlayer()
+	const [{}, { scaleHeight }] = useStyles()
+	const headerHeight = useHeaderHeight()
 
 	const [initialMode] = useState(!!player)
 
 	const defaultAndroidStatusBarHeight = 24
-	let offset = Platform.OS === 'android' ? bottomFixedViewPadding : 0
+	let offset = (headerHeight + bottomFixedViewPadding) * scaleHeight
 
 	if (
 		Platform.OS === 'android' &&

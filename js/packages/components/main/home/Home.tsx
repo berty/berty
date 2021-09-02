@@ -17,8 +17,6 @@ import {
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
-import { WelcomeConfiguration } from '@berty-tech/components/modals'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'
@@ -27,6 +25,7 @@ import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
+import { checkPermissions } from '@berty-tech/components/utils'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -34,7 +33,7 @@ const FooterButton: React.FC<{
 	name: string
 	fill: string
 	backgroundColor: string
-	onPress: () => void | undefined
+	onPress: () => Promise<void> | void
 }> = ({ name, fill, backgroundColor, onPress }) => {
 	const [{}, { scaleSize }] = useStyles()
 
@@ -64,25 +63,6 @@ const FooterButton: React.FC<{
 			<Icon name={name} pack='custom' fill={fill} width={30 * scaleSize} height={30 * scaleSize} />
 		</TouchableOpacity>
 	)
-}
-
-const useTimeout = (callback: () => void, delay: number | null) => {
-	const savedCallback = useRef(callback)
-
-	// Remember the latest callback if it changes.
-	useEffect(() => {
-		savedCallback.current = callback
-	}, [callback])
-
-	// Set up the timeout.
-	useEffect(() => {
-		// Don't schedule if no delay is specified.
-		if (delay === null) {
-			return
-		}
-		const id = setTimeout(() => savedCallback.current(), delay)
-		return () => clearTimeout(id)
-	}, [delay])
 }
 
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
@@ -220,10 +200,6 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		[requests.length, searchText, colors],
 	)
 
-	const [visible, setVisible] = useState(false)
-	const show = () => setVisible(true)
-	useTimeout(show, 1000)
-
 	return (
 		<>
 			<View style={[flex.tiny, styleBackground]}>
@@ -332,7 +308,13 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 								name='qr'
 								fill={colors['secondary-text']}
 								backgroundColor={colors['main-background']}
-								onPress={() => navigate('Main.Scan')}
+								onPress={async () => {
+									await checkPermissions('camera', navigate, {
+										navigateNext: 'Main.Scan',
+										isToNavigate: true,
+										createNewAccount: false,
+									})
+								}}
 							/>
 							<FooterButton
 								name='add-new-group'
@@ -354,17 +336,6 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 							link={isAddBot.link}
 							displayName={isAddBot.displayName}
 							closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
-						/>
-					) : null}
-					{visible && ctx.persistentOptions.welcomeModal.enable ? (
-						<WelcomeConfiguration
-							closeModal={async () => {
-								await ctx.setPersistentOption({
-									type: PersistentOptionsKeys.WelcomeModal,
-									payload: { enable: false },
-								})
-								setVisible(false)
-							}}
 						/>
 					) : null}
 				</>

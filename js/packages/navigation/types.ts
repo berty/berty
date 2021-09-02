@@ -16,6 +16,12 @@ export namespace ScreenProps {
 		export type Home = RouteProps<void>
 		export type ContactRequest = RouteProps<{ contactId: string }>
 		export type Scan = RouteProps<void>
+		export type Permissions = RouteProps<{
+			permissionType: 'p2p' | 'audio' | 'notification' | 'camera'
+			permissionStatus: 'blocked' | 'denied'
+			navigateNext: string
+			createNewAccount: boolean
+		}>
 		export namespace CreateGroup {
 			export type CreateGroupAddMembers = RouteProps<void>
 			export type CreateGroupFinalize = RouteProps<void>

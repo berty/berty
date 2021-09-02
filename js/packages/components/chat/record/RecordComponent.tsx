@@ -9,6 +9,7 @@ import {
 import { Recorder } from '@react-native-community/audio-toolkit'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
+import { useNavigation } from '@react-navigation/native'
 
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useStyles } from '@berty-tech/styles'
@@ -40,8 +41,8 @@ const voiceMemoBitrate = 32000
 const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
-const acquireMicPerm = async (): Promise<MicPermStatus> => {
-	const permissionStatus = await checkPermissions('audio')
+const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
+	const permissionStatus = await checkPermissions('audio', navigate)
 	if (permissionStatus === RESULTS.GRANTED) {
 		return MicPermStatus.GRANTED
 	}
@@ -118,6 +119,7 @@ export const RecordComponent: React.FC<{
 	const recorder = React.useRef<Recorder | undefined>(undefined)
 	const [recorderFilePath, setRecorderFilePath] = useState('')
 	const { t } = useTranslation()
+	const { navigate } = useNavigation()
 
 	const [{ border, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
@@ -334,7 +336,7 @@ export const RecordComponent: React.FC<{
 			// Pressed
 			if (e.nativeEvent.state === State.BEGAN || e.nativeEvent.state === State.ACTIVE) {
 				if (recordingState === RecordingState.NOT_RECORDING) {
-					const permState = await acquireMicPerm()
+					const permState = await acquireMicPerm(navigate)
 					if (permState === MicPermStatus.NEWLY_GRANTED) {
 						setHelpMessageValue({
 							message: t('audio.record.tooltip.usage'),
@@ -399,6 +401,7 @@ export const RecordComponent: React.FC<{
 		},
 		[
 			recordingState,
+			navigate,
 			clearHelpMessageValue,
 			setHelpMessageValue,
 			t,

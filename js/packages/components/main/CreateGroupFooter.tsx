@@ -45,11 +45,12 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 								flexDirection: 'row',
 								justifyContent: 'center',
 								backgroundColor: colors['positive-asset'],
+								flex: 1,
 							},
 							_styles.footerCreateGroupButton,
 						]}
 					>
-						<View style={[row.item.justify]}>
+						<View style={[row.item.justify, { flex: 1 }]}>
 							<Text
 								style={[
 									text.bold.medium,
@@ -62,7 +63,7 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 							</Text>
 						</View>
 						{icon && (
-							<View style={[row.item.justify, padding.left.medium]}>
+							<View style={[row.item.justify, { position: 'absolute', right: 70 * scaleSize }]}>
 								<Icon
 									name='arrow-forward-outline'
 									width={25 * scaleSize}

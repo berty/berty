@@ -38,11 +38,11 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 	}, [state.appState])
 
 	useEffect(() => {
-		initialLaunch(dispatch, embedded)
+		initialLaunch(dispatch, embedded).then()
 	}, [embedded])
 
 	useEffect(() => {
-		openingDaemon(dispatch, state.appState, state.selectedAccount)
+		openingDaemon(dispatch, state.appState, state.selectedAccount).then()
 	}, [embedded, state.appState, state.selectedAccount])
 
 	useEffect(
@@ -55,31 +55,31 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[state.appState, state.initialListComplete],
 	)
 
-	useEffect(
-		() => openingLocalSettings(dispatch, state.appState, state.selectedAccount),
-		[state.appState, state.selectedAccount],
-	)
+	useEffect(() => {
+		openingLocalSettings(dispatch, state.appState, state.selectedAccount).then()
+	}, [state.appState, state.selectedAccount])
 
 	useEffect(() => {
 		openingCloseConvos(
 			state.appState,
-			embedded,
-			dispatch,
 			state.client,
 			state.conversations,
-			state.persistentOptions.welcomeModal.enable,
-		)
-	}, [
-		state.appState,
-		state.client,
-		state.conversations,
-		embedded,
-		state.persistentOptions.welcomeModal.enable,
-	])
+			state.persistentOptions,
+			embedded,
+			dispatch,
+		).then()
+	}, [state.appState, state.client, state.conversations, state.persistentOptions, embedded])
 
 	useEffect(() => {
-		updateAccountsPreReady(state, embedded, dispatch)
-	}, [state, embedded, dispatch])
+		updateAccountsPreReady(
+			state.appState,
+			state.client,
+			state.selectedAccount,
+			state.account,
+			embedded,
+			dispatch,
+		).then()
+	}, [state.appState, state.client, state.selectedAccount, state.account, embedded, dispatch])
 
 	useEffect(
 		() => closingDaemon(state.appState, state.clearClients, dispatch),

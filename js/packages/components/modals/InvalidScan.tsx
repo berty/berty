@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
-import { Translation, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
@@ -109,43 +109,40 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 	const [{ row, margin, padding }] = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
+	const { t }: any = useTranslation()
 
 	return (
-		<Translation>
-			{(t: any): React.ReactNode => (
-				<View style={row.center}>
-					<TouchableOpacity
-						style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
-						onPress={() => {
-							try {
-								navigation.goBack()
-							} catch (e) {
-								console.warn("couldn't go back:", e)
-								navigation.navigate('Tabs')
-							}
-						}}
-					>
-						<Icon
-							name='close'
-							width={30}
-							height={30}
-							fill={colors['secondary-text']}
-							style={row.item.justify}
-						/>
-						<Text
-							style={[
-								padding.left.small,
-								row.item.justify,
-								_styles.dismissText,
-								{ color: colors['secondary-text'] },
-							]}
-						>
-							{t('modals.invalid-scan.dismiss-button')}
-						</Text>
-					</TouchableOpacity>
-				</View>
-			)}
-		</Translation>
+		<View style={row.center}>
+			<TouchableOpacity
+				style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
+				onPress={() => {
+					try {
+						navigation.goBack()
+					} catch (e) {
+						console.warn("couldn't go back:", e)
+						navigation.navigate('Tabs')
+					}
+				}}
+			>
+				<Icon
+					name='close'
+					width={30}
+					height={30}
+					fill={colors['secondary-text']}
+					style={row.item.justify}
+				/>
+				<Text
+					style={[
+						padding.left.small,
+						row.item.justify,
+						_styles.dismissText,
+						{ color: colors['secondary-text'] },
+					]}
+				>
+					{t('modals.invalid-scan.dismiss-button')}
+				</Text>
+			</TouchableOpacity>
+		</View>
 	)
 }
 
@@ -153,7 +150,7 @@ const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) =>
 	const [layout, setLayout] = useState<number>()
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
-	const { t } = useTranslation()
+	const { t }: any = useTranslation()
 
 	const isContactAlreadyAdded = error?.error?.errorDetails?.codes?.includes(
 		beapi.errcode.ErrCode.ErrContactRequestContactAlreadyAdded,

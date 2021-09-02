@@ -23,7 +23,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 	const checkNotificationPermission = route?.params?.checkNotificationPermission
 	const { t }: { t: any } = useTranslation()
 	const { setPersistentOption, persistentOptions } = useMsgrContext()
-	const { goBack } = useNavigation()
+	const { goBack, navigate } = useNavigation()
 
 	const [mode, setMode] = useState(Modes.FullAnon)
 	const [toggleValues, setToggleValues] = useState({
@@ -57,7 +57,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 		goBack()
 
 		if (checkNotificationPermission) {
-			const notificationStatus = await checkPermissions('notification', {
+			const notificationStatus = await checkPermissions('notification', navigate, {
 				isToNavigate: false,
 			})
 			if (notificationStatus === RESULTS.GRANTED) {
@@ -72,7 +72,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 					},
 				})
 			} else {
-				checkPermissions('notification')
+				await checkPermissions('notification', navigate)
 			}
 		}
 	}
@@ -234,7 +234,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 											},
 										})
 									}
-									handleComplete()
+									await handleComplete()
 								}}
 							>
 								{t('main.network-options.save')}
@@ -253,7 +253,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 											},
 										},
 									})
-									handleComplete()
+									await handleComplete()
 								}}
 							>
 								<Text

@@ -23,7 +23,6 @@ export enum MessengerAppState {
 	OpeningGettingLocalSettings,
 	OpeningMarkConversationsAsClosed,
 	GetStarted,
-	OnBoarding,
 	Ready,
 	ClosingDaemon,
 	DeletingClosingDaemon,
@@ -40,7 +39,6 @@ export enum MessengerActions {
 	SetPersistentOption = 'SET_PERSISTENT_OPTION',
 	SetNextAccount = 'SET_NEXT_ACCOUNT',
 	SetStateClosed = 'SET_STATE_CLOSED',
-	SetStateOnBoarding = 'SET_STATE_ON_BOARDING',
 	SetCreatedAccount = 'SET_STATE_CREATED_ACCOUNT',
 	SetStateOpening = 'SET_STATE_OPENING',
 	SetStateOpeningClients = 'SET_STATE_OPENING_CLIENTS',
@@ -56,6 +54,7 @@ export enum MessengerActions {
 	BridgeClosed = 'BRIDGE_CLOSED',
 	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
 	RemoveNotificationInhibitor = 'REMOVE_NOTIFICATION_INHIBITOR',
+	SetConvsTextInputValue = 'SET_CONVS_TEXT_INPUT_VALUE',
 }
 
 export const isDeletingState = (state: MessengerAppState): boolean =>
@@ -100,20 +99,11 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.PreReady,
 		MessengerAppState.Ready,
 	],
-	[MessengerAppState.GetStarted]: [
-		MessengerAppState.OpeningWaitingForDaemon,
-		MessengerAppState.OnBoarding,
-	],
-	[MessengerAppState.OnBoarding]: [
-		MessengerAppState.PreReady,
-		MessengerAppState.Ready,
-		MessengerAppState.DeletingClosingDaemon,
-	],
+	[MessengerAppState.GetStarted]: [MessengerAppState.OpeningWaitingForDaemon],
 	[MessengerAppState.Ready]: [
 		MessengerAppState.DeletingClosingDaemon,
 		MessengerAppState.ClosingDaemon,
 		MessengerAppState.OpeningWaitingForClients,
-		MessengerAppState.OnBoarding,
 		MessengerAppState.StreamDone,
 	],
 	[MessengerAppState.ClosingDaemon]: [
@@ -151,10 +141,10 @@ export enum PersistentOptionsKeys {
 	Debug = 'debug',
 	Log = 'log',
 	Configurations = 'configurations',
-	WelcomeModal = 'welcomeModal',
 	LogFilters = 'logFilters',
 	TyberHost = 'tyberHost',
 	ThemeColor = 'themeColor',
+	OnBoardingFinished = 'onBoardingFinished',
 }
 
 export enum GlobalPersistentOptionsKeys {
@@ -206,16 +196,12 @@ export type PersistentOptionsLog = {
 }
 
 export type Configuration = {
-	key: 'network' | 'notification'
+	key: 'network' | 'notification' | 'replicate'
 	displayName: string
 	desc: string
 	icon: string
 	state: 'added' | 'skipped' | 'unread'
 	color: string
-}
-
-export type PersistentOptionsWelcomeModal = {
-	enable: boolean
 }
 
 export type PersistentOptionsConfigurations = { [key: string]: Configuration }
@@ -235,6 +221,10 @@ export type PersistentOptionsTyberHost = {
 export type PersistentOptionsThemeColor = {
 	selected: string
 	collection: {}
+}
+
+export type PersistentOptionsOnBoardingFinished = {
+	isFinished: boolean
 }
 
 export type PersistentOptionsUpdate =
@@ -263,10 +253,6 @@ export type PersistentOptionsUpdate =
 			payload: Partial<PersistentOptionsConfigurations>
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.WelcomeModal
-			payload: PersistentOptionsWelcomeModal
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.LogFilters
 			payload: PersistentOptionsLogFilters
 	  }
@@ -278,6 +264,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.ThemeColor
 			payload: PersistentOptionsThemeColor
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.OnBoardingFinished
+			payload: PersistentOptionsOnBoardingFinished
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -286,10 +276,10 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 	[PersistentOptionsKeys.Log]: PersistentOptionsLog
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
-	[PersistentOptionsKeys.WelcomeModal]: PersistentOptionsWelcomeModal
 	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 	[PersistentOptionsKeys.ThemeColor]: PersistentOptionsThemeColor
+	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
 }
 
 export const DefaultBertyTheme = 'default-berty-theme'
@@ -356,9 +346,14 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 				state: 'unread',
 				color: 'secondary-background-header',
 			},
-		},
-		[PersistentOptionsKeys.WelcomeModal]: {
-			enable: true,
+			replicate: {
+				key: 'replicate',
+				displayName: 'main.configurations.replicate.display-name',
+				desc: 'main.configurations.replicate.desc',
+				icon: 'berty_dev_blue_bg',
+				state: 'unread',
+				color: 'background-header',
+			},
 		},
 		[PersistentOptionsKeys.LogFilters]: {
 			format: '*:bty*',
@@ -367,6 +362,9 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
 		},
 		[PersistentOptionsKeys.ThemeColor]: defaultThemeColor(),
+		[PersistentOptionsKeys.OnBoardingFinished]: {
+			isFinished: false,
+		},
 	}
 }
 
@@ -409,6 +407,7 @@ export type MsgrState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 
 	persistentOptions: PersistentOptions
+	convsTextInputValue: { [key: string]: string }
 	accounts: beapi.account.IAccountMetadata[]
 	initialListComplete: boolean
 	clearClients: (() => Promise<void>) | null
@@ -464,6 +463,7 @@ export const initialState = {
 	notificationsInhibitors: [],
 
 	persistentOptions: defaultPersistentOptions(),
+	convsTextInputValue: {},
 	daemonAddress: '',
 	initialListComplete: false,
 	clearClients: null,

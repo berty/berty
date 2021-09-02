@@ -8,8 +8,6 @@ import EmojiBoard from 'react-native-emoji-board'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
-import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
-import { MessageList } from '@berty-tech/components/chat/MessageList'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
@@ -20,6 +18,7 @@ import {
 	useReadEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
+	useConvInteractions,
 } from '@berty-tech/store/hooks'
 import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 
@@ -27,6 +26,8 @@ import { ContactAvatar } from '../avatars'
 import { useLayout } from '../hooks'
 import { ChatDate, ChatFooter } from './common'
 import { ReplyReactionProvider } from './ReplyReactionContext'
+import { KeyboardAvoidingView } from '../shared-components/KeyboardAvoidingView'
+import { MessageList } from '../chat/MessageList'
 
 //
 // Chat
@@ -156,6 +157,8 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const ctx = useMsgrContext()
 	const navigation = useNativeNavigation()
 	const { navigate } = useNavigation()
+	const rawMessages = useConvInteractions(params.convId)
+	const isMessages = rawMessages.length > 0
 
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const isFooterDisable = isIncoming
@@ -197,16 +200,11 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 					setActiveEmojiKeyboardCid(null)
 				}
 				return (
-					<View
-						style={[
-							StyleSheet.absoluteFill,
-							{ flex: 1, backgroundColor: colors['main-background'] },
-						]}
-					>
+					<View style={[{ flex: 1, backgroundColor: colors['main-background'] }]}>
 						<KeyboardAvoidingView
 							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 							style={[flex.tiny, { justifyContent: 'flex-start' }]}
-							bottomFixedViewPadding={20}
+							bottomFixedViewPadding={Platform.OS === 'ios' ? 0 : isMessages ? 20 : 85}
 						>
 							<MessageList
 								id={params?.convId}

@@ -80,6 +80,7 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 						logo={logo}
 						mode='circle'
 						color={colors['background-header']}
+						backgroundColor={colors['main-background']}
 					/>
 				</View>
 			</View>

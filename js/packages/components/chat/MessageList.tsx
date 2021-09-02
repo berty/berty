@@ -16,7 +16,6 @@ import { ChatDate, updateStickyDate } from '@berty-tech/components/chat/common'
 import { InfosChat } from '@berty-tech/components/InfosChat'
 import { InfosMultiMember } from '@berty-tech/components/chat/InfosMultiMember'
 import { pbDateToNum } from '@berty-tech/components/helpers'
-import { QuickReplyOptions } from '@berty-tech/components/chat/message/QuickReplyOptions'
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
 	const { ...propsToPass } = props
@@ -60,7 +59,7 @@ export const MessageList: React.FC<{
 	setStickyDate: any
 	setShowStickyDate: any
 }> = ({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
-	const [{ overflow, row, flex, padding }, { scaleHeight }] = useStyles()
+	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
 	const members = ctx.members[id]
@@ -148,31 +147,9 @@ export const MessageList: React.FC<{
 		}
 	}, [fetchingFrom, oldestMessage?.cid])
 
-	const replyOptions = useMemo(() => {
-		let options = []
-		try {
-			options = beapi.messenger.AppMessage.ReplyOptions.decode(
-				conversation?.replyOptions?.payload!,
-			).options.filter(o => o.payload && o.display)
-		} catch (e) {
-			console.log('decode reply options error', e)
-		}
-
-		if (!options.length) {
-			let optionsFromMessages = rawMessages
-				.slice()
-				.reverse()
-				.find(item => item?.payload?.options?.length)?.payload?.options
-			if (optionsFromMessages?.length) {
-				options = optionsFromMessages
-			}
-		}
-
-		return options.filter(o => o.payload && o.display)
-	}, [conversation?.replyOptions?.payload, rawMessages])
-
 	return (
 		<FlatList
+			overScrollMode='never'
 			initialScrollIndex={initialScrollIndex}
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
@@ -201,15 +178,6 @@ export const MessageList: React.FC<{
 			onScrollEndDrag={() => {
 				setTimeout(() => setShowStickyDate(false), 2000)
 			}}
-			ListHeaderComponent={
-				replyOptions.length > 0 ? (
-					<>
-						<View style={[padding.horizontal.medium, padding.bottom.small]}>
-							<QuickReplyOptions convPk={id} options={replyOptions} />
-						</View>
-					</>
-				) : undefined
-			}
 		/>
 	)
 }

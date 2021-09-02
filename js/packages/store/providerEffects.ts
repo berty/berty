@@ -6,8 +6,6 @@ import RNFS from 'react-native-fs'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import beapi from '@berty-tech/api'
 
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import i18n from '@berty-tech/berty-i18n'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { defaultThemeColor } from '@berty-tech/store/context'
@@ -23,9 +21,9 @@ import {
 	PersistentOptionsKeys,
 	reducerAction,
 	accountService,
-	MsgrState,
 	GlobalPersistentOptionsKeys,
 } from './context'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -89,11 +87,7 @@ const getPersistentOptions = async (
 			}
 		}
 
-		if (i18n.language !== opts.i18n.language) {
-			await i18n.changeLanguage(opts.i18n.language)
-		}
-
-		dispatch({
+		await dispatch({
 			type: MessengerActions.SetPersistentOption,
 			payload: opts,
 		})
@@ -150,7 +144,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 }
 
 // handle state MessengerAppState.OpeningGettingLocalSettings
-export const openingLocalSettings = (
+export const openingLocalSettings = async (
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
 	selectedAccount: string | null,
@@ -159,9 +153,12 @@ export const openingLocalSettings = (
 		return
 	}
 
-	getPersistentOptions(dispatch, selectedAccount)
-		.then(() => dispatch({ type: MessengerActions.SetStateOpeningMarkConversationsClosed }))
-		.catch(e => console.warn('unable to get persistent options', e))
+	try {
+		await getPersistentOptions(dispatch, selectedAccount)
+		dispatch({ type: MessengerActions.SetStateOpeningMarkConversationsClosed })
+	} catch (e) {
+		console.warn('unable to get persistent options', e)
+	}
 }
 
 // handle state OpeningWaitingForDaemon
@@ -354,11 +351,11 @@ export const openingClients = (
 // handle state OpeningMarkConversationsAsClosed
 export const openingCloseConvos = async (
 	appState: MessengerAppState,
+	client: ServiceClientType<beapi.messenger.MessengerService> | null,
+	conversations: { [key: string]: beapi.messenger.IConversation | undefined },
+	persistentOptions: PersistentOptions,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
-	client: ServiceClientType<beapi.messenger.MessengerService> | null,
-	conversations: { [key: string]: any },
-	welcomeModal: boolean,
 ) => {
 	if (appState !== MessengerAppState.OpeningMarkConversationsAsClosed) {
 		return
@@ -369,24 +366,26 @@ export const openingCloseConvos = async (
 		return
 	}
 
-	for (const conv of Object.values(conversations).filter(conv => conv.isOpen) as any) {
+	for (const conv of Object.values(conversations).filter(conv => conv?.isOpen) as any) {
 		client.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
 			console.warn(`failed to close conversation "${conv.displayName}",`, e)
 		})
 	}
-
-	welcomeModal
-		? dispatch({ type: MessengerActions.SetStatePreReady })
-		: dispatch({ type: MessengerActions.SetStateReady })
+	persistentOptions.onBoardingFinished.isFinished
+		? dispatch({ type: MessengerActions.SetStateReady })
+		: dispatch({ type: MessengerActions.SetStatePreReady })
 }
 
 // handle state PreReady
 export const updateAccountsPreReady = async (
-	state: MsgrState,
+	appState: MessengerAppState,
+	client: ServiceClientType<beapi.messenger.MessengerService> | null,
+	selectedAccount: string | null,
+	account: beapi.messenger.IAccount | null | undefined,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
-	if (state.appState !== MessengerAppState.PreReady) {
+	if (appState !== MessengerAppState.PreReady) {
 		return
 	}
 	const displayName = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.DisplayName)
@@ -394,22 +393,23 @@ export const updateAccountsPreReady = async (
 	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.Preset)
 	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.IsNewAccount)
 	if (displayName) {
-		await state?.client
+		await client
 			?.accountUpdate({ displayName })
 			.then(async () => {})
 			.catch(err => console.error(err))
 		// update account in bertyaccount
 		await updateAccount(embedded, dispatch, {
 			accountName: displayName,
-			accountId: state?.selectedAccount,
-			publicKey: state?.account?.publicKey,
+			accountId: selectedAccount,
+			publicKey: account?.publicKey,
 		})
 	}
-	await setPersistentOption(dispatch, state?.selectedAccount, {
+	await setPersistentOption(dispatch, selectedAccount, {
 		type: PersistentOptionsKeys.ThemeColor,
 		payload: defaultThemeColor(),
 	})
 }
+
 // handle states DeletingClosingDaemon, ClosingDaemon
 export const closingDaemon = (
 	appState: MessengerAppState,

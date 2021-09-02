@@ -1,20 +1,21 @@
 import React from 'react'
 import { StyleProp, TouchableHighlight, View, ViewProps } from 'react-native'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { accountService, useMsgrContext } from '@berty-tech/store/context'
+import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
-import { Routes, useNavigation } from '@berty-tech/navigation'
+import { Routes } from '@berty-tech/navigation'
 
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 import { checkPermissions } from '@berty-tech/components/utils'
+import { RESULTS } from 'react-native-permissions'
 
 type ConversationsProps = ViewProps & {
 	items: Array<any>
@@ -65,9 +66,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 	} = props
 
 	const ctx = useMsgrContext()
+	const { t }: any = useTranslation()
 
 	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)
-
 	const displayDate = lastUpdate || createdDate ? pbDateToNum(lastUpdate || createdDate) : null
 
 	const contact =
@@ -84,7 +85,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		description = (lastInte.payload as any)?.body
 	} else {
 		if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
-			description = 'Request is sent. Pending...'
+			description = t('main.home.conversations.request-sent')
 		} else {
 			description = ''
 		}
@@ -109,6 +110,12 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 				lastInte.isMine ? userDisplayName : 'you'
 			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} audio files` : 'an audio file'}`
 		}
+	}
+
+	if (ctx.convsTextInputValue[publicKey]) {
+		description = t('main.home.conversations.draft', {
+			message: ctx.convsTextInputValue[publicKey],
+		})
 	}
 
 	return !isIncoming ? (
@@ -233,7 +240,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 						<Text
 							numberOfLines={1}
 							style={[
-								{ flexGrow: 2, flexShrink: 1 },
+								{
+									flexGrow: 2,
+									flexShrink: 1,
+									fontStyle: ctx.convsTextInputValue[publicKey] ? 'italic' : 'normal',
+								},
 								text.size.small,
 								unreadCount
 									? [text.bold.medium, { color: colors['main-text'] }]
@@ -391,64 +402,65 @@ export const Conversations: React.FC<ConversationsProps> = ({
 }) => {
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
-	const { selectedAccount } = useMsgrContext()
 	const colors = useThemeColor()
+	const ctx = useMsgrContext()
 
 	return items.length || suggestions.length || configurations.length ? (
-		<SafeAreaConsumer>
-			{insets => (
-				<View
-					onLayout={onLayout}
-					style={[
-						style,
-						{
-							paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0),
-							backgroundColor: colors['main-background'],
-						},
-					]}
-				>
-					{configurations.map(config => (
-						<SuggestionsItem
-							key={config.key}
-							displayName={t(config.displayName)}
-							desc={t(config.desc)}
-							link=''
-							icon={config.icon}
-							addBot={async () => {
-								if (config.key === 'network') {
-									const netConf = await accountService.networkConfigGet({
-										accountId: selectedAccount,
-									})
+		<View
+			onLayout={onLayout}
+			style={[
+				style,
+				{
+					paddingBottom: 100,
+					backgroundColor: colors['main-background'],
+				},
+			]}
+		>
+			{configurations.map(config => (
+				<SuggestionsItem
+					key={config.key}
+					displayName={t(config.displayName)}
+					desc={t(config.desc)}
+					link=''
+					icon={config.icon}
+					addBot={async () => {
+						switch (config.key) {
+							case 'network':
+								navigate('Main.NetworkOptions')
+								return
+							case 'notification':
+								const status = await checkPermissions('notification', navigate)
+								await ctx.setPersistentOption({
+									type: PersistentOptionsKeys.Configurations,
+									payload: {
+										...ctx.persistentOptions.configurations,
+										notification: {
+											...ctx.persistentOptions.configurations.notification,
+											state: status === RESULTS.GRANTED ? 'added' : 'skipped',
+										},
+									},
+								})
+								return
+							case 'replicate':
+								navigate('Onboarding.ServicesAuth')
+								return
+						}
+					}}
+					style={{ backgroundColor: `${colors[`${config.color}`]}20` }}
+				/>
+			))}
 
-									if (
-										netConf.currentConfig?.showDefaultServices !==
-										beapi.account.NetworkConfig.Flag.Enabled
-									) {
-										navigate.main.networkOptions()
-									} else {
-										navigate.onboarding.servicesAuth()
-									}
-								} else {
-									await checkPermissions('notification')
-								}
-							}}
-							style={{ backgroundColor: `${colors[`${config.color}`]}20` }}
-						/>
-					))}
-
-					{items.map(i => (
-						<ConversationsItem key={i.publicKey} {...i} />
-					))}
-					{suggestions.map((i: any, key: any) => (
-						<SuggestionsItem
-							key={key}
-							{...i}
-							desc={`${t('main.suggestion-display-name-initial')} ${i.displayName}`}
-							addBot={addBot}
-						/>
-					))}
-				</View>
-			)}
-		</SafeAreaConsumer>
+			{items.map(i => (
+				<ConversationsItem key={i.publicKey} {...i} />
+			))}
+			{suggestions.map((i: any, key: any) => (
+				<SuggestionsItem
+					key={key}
+					{...i}
+					desc={`${t('main.suggestion-display-name-initial')} ${i.displayName}`}
+					addBot={addBot}
+				/>
+			))}
+		</View>
 	) : null
 }

@@ -113,6 +113,7 @@ const HomeHeaderAvatar: React.FC = () => {
 								logo={logo}
 								color={colors['background-header']}
 								mode='circle'
+								backgroundColor={colors['main-background']}
 							/>
 						)) ||
 							null}
@@ -254,6 +255,13 @@ const HomeBodySettings: React.FC = () => {
 						},
 					})
 				}}
+			/>
+			<ButtonSetting
+				name={t('settings.devtools.theme-editor')}
+				icon='color-palette-outline'
+				iconSize={30}
+				iconColor={colors['background-header']}
+				onPress={() => navigation.navigate('Settings.ThemeEditor')}
 			/>
 			<ButtonSetting
 				name={t('settings.home.header-center-button')}

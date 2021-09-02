@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, Button, Text, TextInput, View, Image } from 'react-native'
+import { ActivityIndicator, Button, Text, TextInput, View, Image, StatusBar } from 'react-native'
 import * as Progress from 'react-native-progress'
 
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
@@ -34,6 +34,7 @@ const LoaderDots: React.FC = () => {
 				backgroundColor: colors['main-background'],
 			}}
 		>
+			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 			<Image source={source} style={{ width: 170, height: 80 }} />
 		</View>
 	)
@@ -46,6 +47,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 
 	return (
 		<View style={{ backgroundColor: colors['main-background'] }}>
+			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 			<Text
 				style={[
 					text.bold.small,
@@ -101,6 +103,7 @@ export const StreamGate: React.FC = ({ children }) => {
 	if (streamError && !streamInProgress) {
 		return (
 			<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
+				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 				<Text style={{ color: colors['warning-asset'] }}>{streamError.toString()}</Text>
 				<Text style={{ marginTop: gutter }}>
 					Likely couldn't connect to the node, or the connection dropped
@@ -126,16 +129,26 @@ export const StreamGate: React.FC = ({ children }) => {
 	} else if (streamInProgress?.msg) {
 		return <StreamInProgressCmp />
 	}
-	return <>{children}</>
+	return (
+		<>
+			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+			{children}
+		</>
+	)
 }
 
 export const ListGate: React.FC = ({ children }) => {
 	const ctx = useMsgrContext()
+	const colors = useThemeColor()
 
-	if (ctx && !isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
-		return <>{children}</>
+	if (!isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
+		return (
+			<>
+				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+				{children}
+			</>
+		)
 	}
-
 	return <LoaderDots />
 }
 

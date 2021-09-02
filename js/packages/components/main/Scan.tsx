@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View, TextInput, Button, Vibration, Text as TextNative, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
@@ -8,7 +8,6 @@ import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import ScanTarget from './scan_target.svg'
-import { checkPermissions } from '../utils'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -36,9 +35,6 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
-	useEffect(() => {
-		checkPermissions('camera')
-	}, [])
 	const navigation = useNavigation()
 	const [
 		{ background, margin, flex, column, border },

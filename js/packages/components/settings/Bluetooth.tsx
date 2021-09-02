@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Alert, AppState, View, ScrollView, Linking, Platform } from 'react-native'
+import { AppState, View, ScrollView, Linking, Platform } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
@@ -13,6 +12,8 @@ import beapi from '@berty-tech/api'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { showNeedRestartNotification } from '../helpers'
+import { checkPermissions } from '@berty-tech/components/utils'
+import { useNavigation } from '@react-navigation/native'
 
 //
 // Bluetooth
@@ -36,124 +37,32 @@ let toActivate: (
 	permission: 'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined,
 ) => void = _permission => {}
 
-export const requestBluetoothPermission = async (): Promise<
-	'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited'
-> => {
-	let permission =
-		Platform.OS === 'ios'
-			? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-			: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-	try {
-		let result = await request(permission)
-		switch (result) {
-			case RESULTS.UNAVAILABLE:
-				console.log('Bluetooth is not available (on this device / in this context)')
-				return 'unavailable'
-			case RESULTS.DENIED:
-				console.log('The Bluetooth permission has not been requested / is denied but requestable')
-				return 'denied'
-			case RESULTS.LIMITED:
-				console.log('The Bluetooth permission is limited: some actions are possible')
-				return 'limited'
-			case RESULTS.GRANTED:
-				console.log('The Bluetooth permission is granted')
-				return 'granted'
-			case RESULTS.BLOCKED:
-				console.log('The Bluetooth permission is denied and not requestable anymore')
-				return 'blocked'
-		}
-	} catch (error) {
-		console.log('The Bluetooth permission request failed: ', error)
-	}
-	return 'unavailable'
-}
-
-export const checkBluetoothPermission = async (): Promise<
-	'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited'
-> => {
-	let permission =
-		Platform.OS === 'ios'
-			? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-			: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-	try {
-		let result = await check(permission)
-		switch (result) {
-			case RESULTS.UNAVAILABLE:
-				console.log('Bluetooth is not available (on this device / in this context)')
-				return 'unavailable'
-			case RESULTS.DENIED:
-				console.log('The Bluetooth permission has not been requested / is denied but requestable')
-				return 'denied'
-			case RESULTS.LIMITED:
-				console.log('The Bluetooth permission is limited: some actions are possible')
-				return 'limited'
-			case RESULTS.GRANTED:
-				console.log('The Bluetooth permission is granted')
-				return 'granted'
-			case RESULTS.BLOCKED:
-				console.log('The Bluetooth permission is denied and not requestable anymore')
-				return 'blocked'
-		}
-	} catch (error) {
-		console.log('The Bluetooth permission check failed: ', error)
-	}
-	return 'unavailable'
-}
-
-export const permissionExplanation: (t: any, callback: () => void) => void = async (t, callback) =>
-	new Promise(resolve => {
-		Alert.alert(
-			t('settings.bluetooth.permission-title'),
-			Platform.OS === 'ios'
-				? t('settings.bluetooth.ios-permission-description')
-				: t('settings.bluetooth.android-permission-description'),
-			[
-				{
-					text: t('settings.bluetooth.tag-negative'),
-					style: 'cancel',
-					onPress: () => {
-						resolve()
-					},
-				},
-				{
-					text: t('settings.bluetooth.tag-positive'),
-					onPress: async () => {
-						await callback()
-						resolve()
-					},
-				},
-			],
-		)
-	})
-
 const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 	({ showNotification, bluetoothPermissions, setBluetoothPermissions }: any) => {
 		const [{ flex, padding, margin }] = useStyles()
 		const colors = useThemeColor()
 		const ctx = useMsgrContext()
 		const { t }: { t: any } = useTranslation()
+		const { navigate } = useNavigation()
 
 		const appState = useRef(AppState.currentState)
 
 		useEffect(() => {
 			const _handleAppStateChange = (nextAppState: any) => {
 				if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-					checkBluetoothPermission()
+					checkPermissions('p2p', navigate, { isToNavigate: false })
 						.then(result => {
 							setBluetoothPermissions(result)
 							toActivate(result)
 							toActivate = () => {}
 						})
 						.catch(err => {
-							console.log('Check bluetooth permission error:', err)
+							console.log('The Bluetooth permission cannot be retrieved:', err)
 						})
 				}
-
 				appState.current = nextAppState
 			}
-
 			AppState.addEventListener('change', _handleAppStateChange)
-
 			return () => {
 				AppState.removeEventListener('change', _handleAppStateChange)
 			}
@@ -168,7 +77,6 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 		) => {
 			const updateValue = async (bluetoothPermissions: BluetoothProps['bluetoothPermissions']) => {
 				let newValue = beapi.account.NetworkConfig.Flag.Disabled
-
 				if (
 					bluetoothPermissions === 'granted' &&
 					currentValue === beapi.account.NetworkConfig.Flag.Disabled
@@ -177,65 +85,50 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 				}
 
 				let newConfig = ctx.networkConfig
-
 				switch (changedKey) {
 					case EnumChangedKey.BluetoothLE:
 						newConfig = { ...ctx.networkConfig, bluetoothLe: newValue }
 						break
-
 					case EnumChangedKey.AndroidNearby:
 						newConfig = { ...ctx.networkConfig, androidNearby: newValue }
 						break
-
 					case EnumChangedKey.AppleMultipeerConnectivity:
 						newConfig = { ...ctx.networkConfig, appleMultipeerConnectivity: newValue }
 						break
-
 					default:
 						console.warn("couldn't map new value's key")
 						return
 				}
-
 				await accountService.networkConfigSet({
 					accountId: ctx.selectedAccount,
 					config: newConfig,
 				})
-				ctx.setNetworkConfig(newConfig)
+				await ctx.setNetworkConfig(newConfig)
 			}
 
 			switch (bluetoothPermissions) {
 				case 'granted':
 					await updateValue(bluetoothPermissions)
+					showNeedRestartNotification(showNotification, ctx, t)
 					break
-
 				case 'denied':
 				case 'limited':
 				case 'unavailable':
 					console.log("case: not 'blocked'")
 					// permissions can be requested
-					permissionExplanation(t, () => {
-						requestBluetoothPermission().then(async permission => {
-							setBluetoothPermissions(permission)
-							await updateValue(permission)
-						})
+					await checkPermissions('p2p', navigate, {
+						isToNavigate: true,
 					})
+					showNeedRestartNotification(showNotification, ctx, t)
 					break
-
 				case 'blocked':
-					permissionExplanation(t, () => {
-						toActivate = async permission => {
-							if (!permission) {
-								return
-							}
-
-							await updateValue(permission)
-						}
-						Linking.openSettings()
+					await checkPermissions('p2p', navigate, {
+						isToNavigate: true,
 					})
+					await Linking.openSettings()
+					showNeedRestartNotification(showNotification, ctx, t)
 					break
 			}
-
-			showNeedRestartNotification(showNotification, ctx, t)
 		}
 
 		return (
@@ -303,14 +196,15 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const [{ padding, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+	const { navigate } = useNavigation()
 
 	// get Bluetooth permissions state
 	React.useEffect(() => {
 		console.log('useEffect called')
 
-		checkBluetoothPermission()
+		checkPermissions('p2p', navigate, { isToNavigate: false })
 			.then(result => {
-				if (bluetoothPermissions !== result) {
+				if (result && bluetoothPermissions !== result) {
 					console.log('useEffect: permissions changed')
 					setBluetoothPermissions(result)
 				}
