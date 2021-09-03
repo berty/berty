@@ -85,8 +85,8 @@
         "fifth-bullet-point": "您不能从此群组中删除成员"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "请求已发送，正在等待...",
+        "draft": "草稿: {{message}}"
       }
     },
     "suggestion-display-name-initial": "单击这里添加",
@@ -100,8 +100,8 @@
         "desc": "点击此处查看通知设置"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "复制服务配置",
+        "desc": "点击此处配置复制服务"
       }
     },
     "network-options": {
@@ -124,7 +124,7 @@
       "skip": "跳过并稍后再做"
     },
     "scan": {
-      "title": ""
+      "title": "扫描二维码"
     }
   },
   "settings": {
@@ -512,8 +512,8 @@
       "desc": "Berty app 需要您的许可才能向您发送本地或推送通知。这将允许您在收到消息时收到通知。"
     },
     "p2p": {
-      "title": "",
-      "android-desc": "",
+      "title": "蓝牙消息",
+      "android-desc": "即使应用程序在后台，要通过蓝牙离线交换消息，Android API 需要授予位置权限。 我们不会以任何方式使用您的位置数据。",
       "ios-desc": "要通过蓝牙离线交换消息，iOS API 需要获得许可。"
     },
     "camera": {
