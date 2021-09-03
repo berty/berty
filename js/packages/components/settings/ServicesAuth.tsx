@@ -84,14 +84,14 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 						alone={false}
 					/>
 				) : (
-					accountServices.map(t => {
+					accountServices.map(a => {
 						return (
 							<ButtonSetting
-								key={`${t.tokenId}-${t.serviceType}`}
+								key={`${a.tokenId}-${a.serviceType}`}
 								name={`${
-									(typeof t.serviceType === 'string' && serviceNames[t.serviceType]) ||
+									(typeof a.serviceType === 'string' && serviceNames[a.serviceType]) ||
 									t('settings.services-auth.registered-services-button.sample-unknown-service')
-								}\n${t.authenticationUrl}`}
+								}\n${a.authenticationUrl}`}
 								disabled
 								alone={false}
 							/>

@@ -200,6 +200,13 @@ export const ChatFooter: React.FC<{
 					targetCid: activeReplyInte?.cid,
 				})
 				.then(() => {
+					ctx.dispatch({
+						type: MessengerActions.SetConvsTextInputValue,
+						payload: {
+							key: convPk,
+							value: '',
+						},
+					})
 					setMessage('')
 					setInputHeight(35)
 					setMediaCids([])

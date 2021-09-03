@@ -18,7 +18,6 @@ import {
 	useReadEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
-	useConvInteractions,
 } from '@berty-tech/store/hooks'
 import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 
@@ -157,8 +156,6 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const ctx = useMsgrContext()
 	const navigation = useNativeNavigation()
 	const { navigate } = useNavigation()
-	const rawMessages = useConvInteractions(params.convId)
-	const isMessages = rawMessages.length > 0
 
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const isFooterDisable = isIncoming
@@ -201,34 +198,61 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 				}
 				return (
 					<View style={[{ flex: 1, backgroundColor: colors['main-background'] }]}>
-						<KeyboardAvoidingView
-							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-							style={[flex.tiny, { justifyContent: 'flex-start' }]}
-							bottomFixedViewPadding={Platform.OS === 'ios' ? 0 : isMessages ? 20 : 85}
-						>
-							<MessageList
-								id={params?.convId}
-								scrollToMessage={params?.scrollToMessage || '0'}
-								{...{ setStickyDate, setShowStickyDate }}
-							/>
-							<ChatFooter
-								convPk={params?.convId}
-								disabled={isFooterDisable}
-								placeholder={placeholder}
-							/>
-							{stickyDate && showStickyDate && (
-								<View
-									style={{
-										position: 'absolute',
-										top: 110, // TODO Redifine
-										left: 0,
-										right: 0,
-									}}
-								>
-									<ChatDate date={stickyDate} />
-								</View>
-							)}
-						</KeyboardAvoidingView>
+						{Platform.OS === 'ios' ? (
+							<KeyboardAvoidingView
+								behavior={'padding'}
+								style={[flex.tiny, { justifyContent: 'flex-start' }]}
+							>
+								<MessageList
+									id={params?.convId}
+									scrollToMessage={params?.scrollToMessage || '0'}
+									{...{ setStickyDate, setShowStickyDate }}
+								/>
+								<ChatFooter
+									convPk={params?.convId}
+									disabled={isFooterDisable}
+									placeholder={placeholder}
+								/>
+								{stickyDate && showStickyDate && (
+									<View
+										style={{
+											position: 'absolute',
+											top: 110, // TODO Redifine
+											left: 0,
+											right: 0,
+										}}
+									>
+										<ChatDate date={stickyDate} />
+									</View>
+								)}
+							</KeyboardAvoidingView>
+						) : (
+							<>
+								<MessageList
+									id={params?.convId}
+									scrollToMessage={params?.scrollToMessage || '0'}
+									{...{ setStickyDate, setShowStickyDate }}
+								/>
+								<ChatFooter
+									convPk={params?.convId}
+									disabled={isFooterDisable}
+									placeholder={placeholder}
+								/>
+								{stickyDate && showStickyDate && (
+									<View
+										style={{
+											position: 'absolute',
+											top: 110, // TODO Redifine
+											left: 0,
+											right: 0,
+										}}
+									>
+										<ChatDate date={stickyDate} />
+									</View>
+								)}
+							</>
+						)}
+
 						{!!activeEmojiKeyboardCid && (
 							<View style={StyleSheet.absoluteFill}>
 								<TouchableOpacity

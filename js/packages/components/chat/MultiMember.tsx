@@ -19,7 +19,6 @@ import {
 	useNotificationsInhibitor,
 	useMsgrContext,
 	useThemeColor,
-	useConvInteractions,
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
@@ -54,8 +53,6 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 
-	const rawMessages = useConvInteractions(params.convId)
-	const isMessages = rawMessages.length > 0
 	const [editValue, setEditValue] = useState(conv?.displayName || '')
 	const [isEdit, setIsEdit] = useState(false)
 	const editDisplayName = async () => {
@@ -166,29 +163,48 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 				}
 				return (
 					<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
-						<KeyboardAvoidingView
-							style={[flex.tiny]}
-							behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-							bottomFixedViewPadding={Platform.OS === 'ios' ? 0 : isMessages ? 20 : 85}
-						>
-							<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
-							<ChatFooter
-								convPk={params?.convId}
-								placeholder={t('chat.multi-member.input-placeholder')}
-							/>
-							{!!stickyDate && !!showStickyDate && (
-								<View
-									style={{
-										position: 'absolute',
-										top: 110,
-										left: 0,
-										right: 0,
-									}}
-								>
-									<ChatDate date={stickyDate} />
-								</View>
-							)}
-						</KeyboardAvoidingView>
+						{Platform.OS === 'ios' ? (
+							<KeyboardAvoidingView style={[flex.tiny]} behavior={'padding'}>
+								<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+								<ChatFooter
+									convPk={params?.convId}
+									placeholder={t('chat.multi-member.input-placeholder')}
+								/>
+								{!!stickyDate && !!showStickyDate && (
+									<View
+										style={{
+											position: 'absolute',
+											top: 110,
+											left: 0,
+											right: 0,
+										}}
+									>
+										<ChatDate date={stickyDate} />
+									</View>
+								)}
+							</KeyboardAvoidingView>
+						) : (
+							<>
+								<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+								<ChatFooter
+									convPk={params?.convId}
+									placeholder={t('chat.multi-member.input-placeholder')}
+								/>
+								{!!stickyDate && !!showStickyDate && (
+									<View
+										style={{
+											position: 'absolute',
+											top: 110,
+											left: 0,
+											right: 0,
+										}}
+									>
+										<ChatDate date={stickyDate} />
+									</View>
+								)}
+							</>
+						)}
+
 						{!!activeEmojiKeyboardCid && (
 							<View style={StyleSheet.absoluteFill}>
 								<TouchableOpacity
