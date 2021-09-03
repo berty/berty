@@ -185,8 +185,13 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 			<>
 				<View
 					style={[
-						{ backgroundColor: colors['main-background'], padding: padding, borderRadius: 120 },
 						border.shadow.medium,
+						{
+							backgroundColor: colors['main-background'],
+							padding: padding,
+							borderRadius: 120,
+							shadowColor: colors.shadow,
+						},
 					]}
 				>
 					<View>
@@ -195,7 +200,12 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 							style={[
 								background.light.blue,
 								border.shadow.medium,
-								{ width: innerSize, height: innerSize, borderRadius: innerSize / 2 },
+								{
+									width: innerSize,
+									height: innerSize,
+									borderRadius: innerSize / 2,
+									shadowColor: colors.shadow,
+								},
 							]}
 						/>
 						<View

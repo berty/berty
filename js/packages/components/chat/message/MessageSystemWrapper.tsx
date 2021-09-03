@@ -59,7 +59,12 @@ export const MessageSystemWrapper: React.FC<{
 				logo && margin.top.scale(logoDiameter * 0.75), // make room for logo
 				width(350),
 				border.radius.scale(10),
-				{ shadowOpacity: 0.1, shadowRadius: 4, shadowOffset: { width: 0, height: 2.5 } },
+				{
+					shadowOpacity: 0.1,
+					shadowRadius: 4,
+					shadowColor: colors.shadow,
+					shadowOffset: { width: 0, height: 2.5 },
+				},
 				styleContainer,
 			]}
 		>

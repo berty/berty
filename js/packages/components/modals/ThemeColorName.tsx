@@ -9,42 +9,13 @@ import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { CurrentGeneratedTheme, PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
-
-const useStylesAddBetabot = () => {
-	const [{ width, border, padding, margin }] = useStyles()
-	const colors = useThemeColor()
-
-	return {
-		skipButton: [
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-			{ borderColor: colors['negative-asset'] },
-		],
-		addButton: [
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-			{ borderColor: colors['positive-asset'] },
-		],
-	}
-}
+import { useStylesDefaultModal } from './AddBot'
 
 export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
 	const [{ row, text, margin, padding, border, opacity }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const _styles = useStylesAddBetabot()
+	const _styles = useStylesDefaultModal()
 	const ctx = useMsgrContext()
 	const { t } = useTranslation()
 
@@ -74,6 +45,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 						elevation: 7,
 						shadowOpacity: 0.1,
 						shadowRadius: 5,
+						shadowColor: colors.shadow,
 						shadowOffset: { width: 0, height: 3 },
 					},
 					border.radius.scale(60),
@@ -87,7 +59,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 					padding.bottom.medium,
 					border.radius.large,
 					border.shadow.huge,
-					{ backgroundColor: colors['main-background'] },
+					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 				]}
 			>
 				<View style={[margin.top.scale(70 * scaleHeight)]}>

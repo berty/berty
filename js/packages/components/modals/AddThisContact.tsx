@@ -102,7 +102,7 @@ const AddThisContact: React.FC<{
 					<ContactAvatar
 						publicKey={publicKey}
 						fallbackNameSeed={displayName}
-						style={[border.shadow.big, row.center] as any}
+						style={[border.shadow.big, row.center, { shadowColor: colors.shadow }] as any}
 						size={100}
 					/>
 				</View>
@@ -214,7 +214,12 @@ const AddThisContact: React.FC<{
 					row.item.justify,
 					column.justify,
 					_styles.closeRequest,
-					{ position: 'absolute', bottom: '2%', backgroundColor: colors['main-background'] },
+					{
+						position: 'absolute',
+						bottom: '2%',
+						backgroundColor: colors['main-background'],
+						shadowColor: colors.shadow,
+					},
 				]}
 				onPress={navigation.goBack}
 			>

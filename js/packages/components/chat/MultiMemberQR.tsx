@@ -55,8 +55,13 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 			<View style={[{ top: -70 }]}>
 				<View
 					style={[
-						{ justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
 						border.shadow.big,
+						{
+							justifyContent: 'center',
+							alignItems: 'center',
+							marginBottom: 20,
+							shadowColor: colors.shadow,
+						},
 					]}
 				>
 					<MultiMemberAvatar publicKey={conv?.publicKey} size={requestAvatarSize} />
@@ -102,7 +107,7 @@ const BertyIdShare: React.FC<{}> = () => {
 			style={[
 				row.item.bottom,
 				border.shadow.medium,
-				{ backgroundColor: colors['positive-asset'], top: 45 },
+				{ backgroundColor: colors['positive-asset'], top: 45, shadowColor: colors.shadow },
 				styleBertyIdButton,
 			]}
 			onPress={async () => {

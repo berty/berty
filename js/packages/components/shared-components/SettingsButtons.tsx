@@ -116,6 +116,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 				{ minHeight: 60 * scaleSize, backgroundColor: colors['main-background'] },
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
+				alone ? { shadowColor: colors.shadow } : null,
 				alone ? margin.top.scale(20) : null,
 				disabled ? opacity(0.5) : opacity(1),
 			]}
@@ -292,7 +293,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 				border.radius.medium,
 				padding.horizontal.medium,
 				disabled ? opacity(0.5) : opacity(1),
-				{ backgroundColor: colors['main-background'] },
+				{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 				style,
 			]}
 		>
@@ -447,6 +448,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 							alignItems: 'center',
 							justifyContent: 'center',
 							backgroundColor: colors['main-background'],
+							shadowColor: colors.shadow,
 						},
 					]}
 					onPress={obj.onPress}

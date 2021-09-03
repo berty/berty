@@ -18,8 +18,8 @@ const RNLanguageDetector: LanguageDetectorModule = {
 }
 
 i18next
-	.use(initReactI18next)
 	.use(RNLanguageDetector)
+	.use(initReactI18next)
 	.init({
 		fallbackLng: 'en-US',
 		resources: languages,

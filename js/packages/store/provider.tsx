@@ -62,13 +62,21 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 	useEffect(() => {
 		openingCloseConvos(
 			state.appState,
+			state.persistentOptions.i18n.language,
 			state.client,
 			state.conversations,
 			state.persistentOptions,
 			embedded,
 			dispatch,
 		).then()
-	}, [state.appState, state.client, state.conversations, state.persistentOptions, embedded])
+	}, [
+		state.appState,
+		state.persistentOptions.i18n.language,
+		state.client,
+		state.conversations,
+		state.persistentOptions,
+		embedded,
+	])
 
 	useEffect(() => {
 		updateAccountsPreReady(

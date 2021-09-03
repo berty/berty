@@ -97,7 +97,7 @@ export const HyperlinkUserMessage: React.FC<{
 				isHighlight && {
 					borderColor: colors['background-header'],
 					borderWidth: 1,
-					shadowColor: colors['background-header'],
+					shadowColor: colors.shadow,
 					shadowOffset: {
 						width: 0,
 						height: 8,

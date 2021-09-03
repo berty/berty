@@ -69,7 +69,7 @@ export const Modal: React.FC<ModalProps> = ({
 							border.shadow.medium,
 							margin.medium,
 							border.radius.scale(20),
-							{ backgroundColor: colors['main-background'] },
+							{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 						]}
 					>
 						{children}
@@ -83,7 +83,12 @@ export const Modal: React.FC<ModalProps> = ({
 							row.item.justify,
 							column.justify,
 							_styles.closeRequest,
-							{ position: 'absolute', bottom: '5%', backgroundColor: colors['main-background'] },
+							{
+								position: 'absolute',
+								bottom: '5%',
+								backgroundColor: colors['main-background'],
+								shadowColor: colors.shadow,
+							},
 						]}
 						onPress={goBack}
 					>

@@ -49,7 +49,7 @@ const SwiperCard: React.FC<{
 					absolute.left,
 					absolute.right,
 					border.shadow.large,
-					{ backgroundColor: colors['main-background'] },
+					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 				]}
 			>
 				<View

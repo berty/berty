@@ -246,9 +246,17 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 	const [{ padding, absolute, row, text, border }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const contact = useContact(contactPublicKey)
+	const colors = useThemeColor()
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-			<View style={[absolute.scale({ top: -70 }), row.item.justify, border.shadow.medium]}>
+			<View
+				style={[
+					absolute.scale({ top: -70 }),
+					row.item.justify,
+					border.shadow.medium,
+					{ shadowColor: colors.shadow },
+				]}
+			>
 				<ContactAvatar publicKey={contactPublicKey} size={140} />
 			</View>
 			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>

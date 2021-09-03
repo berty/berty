@@ -38,7 +38,7 @@ export const FileMessage: React.FC<{
 					flexDirection: 'row',
 				},
 				isHighlight && {
-					shadowColor: colors['background-header'],
+					shadowColor: colors.shadow,
 					shadowOffset: {
 						width: 0,
 						height: 8,
