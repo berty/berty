@@ -63,6 +63,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		unreadCount,
 		createdDate,
 		lastUpdate,
+		isLast,
 	} = props
 
 	const ctx = useMsgrContext()
@@ -150,7 +151,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 			<View
 				style={[
 					row.center,
-					border.bottom.medium,
+					!isLast && border.bottom.medium,
 					border.color.light.grey,
 					padding.vertical.scale(7),
 				]}
@@ -288,8 +289,9 @@ const SuggestionsItem: React.FC<{
 	link: string
 	addBot: any
 	icon: string
+	isLast?: boolean
 	style?: StyleProp<any>
-}> = ({ displayName, desc, link, addBot, icon, style }) => {
+}> = ({ displayName, desc, link, addBot, icon, style, isLast = false }) => {
 	const [{ row, border, flex, padding, text, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
@@ -303,7 +305,7 @@ const SuggestionsItem: React.FC<{
 				<View
 					style={[
 						row.center,
-						border.bottom.medium,
+						!isLast && border.bottom.medium,
 						border.color.light.grey,
 						padding.vertical.scale(7),
 					]}
@@ -396,11 +398,11 @@ export const Conversations: React.FC<ConversationsProps> = ({
 	items,
 	suggestions,
 	configurations,
-	style,
-	onLayout,
 	addBot,
+	onLayout,
 }) => {
-	const { t } = useTranslation()
+	const [{ padding }] = useStyles()
+	const { t }: any = useTranslation()
 	const { navigate } = useNavigation()
 	const colors = useThemeColor()
 	const ctx = useMsgrContext()
@@ -409,9 +411,9 @@ export const Conversations: React.FC<ConversationsProps> = ({
 		<View
 			onLayout={onLayout}
 			style={[
-				style,
+				padding.bottom.medium,
 				{
-					paddingBottom: 100,
+					flex: 1,
 					backgroundColor: colors['main-background'],
 				},
 			]}
@@ -450,12 +452,17 @@ export const Conversations: React.FC<ConversationsProps> = ({
 				/>
 			))}
 
-			{items.map(i => (
-				<ConversationsItem key={i.publicKey} {...i} />
+			{items.map((i, key) => (
+				<ConversationsItem
+					key={i.publicKey}
+					{...i}
+					isLast={!suggestions.length && key === items.length - 1}
+				/>
 			))}
 			{suggestions.map((i: any, key: any) => (
 				<SuggestionsItem
 					key={key}
+					isLast={key === suggestions.length - 1}
 					{...i}
 					desc={`${t('main.suggestion-display-name-initial')} ${i.displayName}`}
 					addBot={addBot}

@@ -33,28 +33,12 @@ export const HomeHeader: React.FC<
 	onLongPress,
 	isMultiAccount,
 }) => {
-	const [{ border, width, height, padding, text, margin, row }, { scaleHeight, scaleSize }] =
-		useStyles()
+	const [{ border, width, height, padding, text, margin, row }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { navigate } = useNativeNavigation()
 	const { t }: any = useTranslation()
 	const [focus, setFocus] = useState<any>(null)
 	const animate = useRef<any>(null)
-
-	let paddingTop: any
-	if (!value?.length) {
-		if (!hasRequests) {
-			paddingTop = 30
-		} else {
-			if (isOnTop) {
-				paddingTop = 40
-			} else {
-				paddingTop = 20
-			}
-		}
-	} else {
-		paddingTop = 40
-	}
 
 	useEffect(() => {
 		if (refresh) {
@@ -68,12 +52,11 @@ export const HomeHeader: React.FC<
 			<View>
 				<View
 					style={[
-						border.radius.top.big,
+						!isOnTop && border.radius.top.big,
 						padding.horizontal.scale(27),
 						{
 							backgroundColor: colors['main-background'],
 							alignItems: 'center',
-							paddingTop: Platform.OS === 'ios' ? paddingTop * scaleHeight : 0,
 						},
 					]}
 				>

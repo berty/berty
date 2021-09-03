@@ -85,12 +85,12 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	conversationPublicKey,
 	createdDate: createdDateStr,
 }) => {
+	const ctx = useMsgrContext()
 	const client = useClient()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
 	const { dispatch } = useNavigation()
 	const { contactReqContainer, declineButton, acceptButton, buttonsWrapper } =
 		useStylesContactRequest()
-	const ctx = useMsgrContext()
 	const { t }: any = useTranslation()
 
 	const id = publicKey
@@ -225,7 +225,7 @@ export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	return items?.length ? (
 		<View
 			onLayout={onLayout}
-			style={[padding.top.scale(50), { backgroundColor: colors['background-header'] }]}
+			style={[padding.top.medium, { backgroundColor: colors['background-header'] }]}
 		>
 			<View>
 				<View style={[row.left]}>
@@ -240,7 +240,7 @@ export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 					>
 						{t('main.home.requests.title')}
 					</Text>
-					<View style={{ position: 'relative', top: -2, left: -(23 * scaleSize) }}>
+					<View style={{ position: 'relative', top: -2 * scaleSize, left: -(23 * scaleSize) }}>
 						<UnreadCount value={items.length} />
 					</View>
 				</View>
