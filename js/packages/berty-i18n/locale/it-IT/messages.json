@@ -85,8 +85,8 @@
         "fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "Richiesta inviata. In attesa di...",
+        "draft": "Bozza: {{message}}"
       }
     },
     "suggestion-display-name-initial": "Clicca qui per aggiungere",
@@ -100,8 +100,8 @@
         "desc": "Clicca qui per configurare le notifiche push"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Configurazione dei servizi di replica",
+        "desc": "Clicca qui per configurare i servizi di replica"
       }
     },
     "network-options": {
@@ -124,7 +124,7 @@
       "skip": "SALTA E FALLO DOPO"
     },
     "scan": {
-      "title": ""
+      "title": "Scansiona codice QR"
     }
   },
   "settings": {
@@ -512,8 +512,8 @@
       "desc": "Berty ha bisogno del tuo permesso per inviarti notifiche locali o push. Questo ti permetterà di essere informato quando ricevi un messaggio."
     },
     "p2p": {
-      "title": "",
-      "android-desc": "",
+      "title": "Messaggistica Bluetooth",
+      "android-desc": "Per scambiare messaggi offline tramite Bluetooth, anche quando l'app è in background, le API di Android richiedono l'autorizzazione ai permessi sulla posizione. Non utilizziamo la in alcun modo i dati relativi alla tua posizione.",
       "ios-desc": "Per scambiare messaggi offline tramite Bluetooth, l'API iOS richiede la concessione dell'autorizzazione."
     },
     "camera": {
