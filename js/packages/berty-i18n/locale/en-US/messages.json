@@ -85,8 +85,8 @@
         "fifth-bullet-point": "You cannot remove a member from this group"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "The request is sent. Pending...",
+        "draft": "Draft: {{message}}"
       }
     },
     "suggestion-display-name-initial": "Click here to add",
@@ -100,8 +100,8 @@
         "desc": "Click here for push-notification config"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "P2P Replication",
+        "desc": "Set up replication services"
       }
     },
     "network-options": {
@@ -124,7 +124,7 @@
       "skip": "SKIP AND DO THIS LATER"
     },
     "scan": {
-      "title": ""
+      "title": "Scan QR Code"
     }
   },
   "settings": {
@@ -512,9 +512,9 @@
       "desc": "Berty app need your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
     },
     "p2p": {
-      "title": "",
-      "android-desc": "",
-      "ios-desc": ""
+      "title": "Bluetooth messaging",
+      "android-desc": "To exchange messages offline via Bluetooth even when the app is in the background, the Android API requires the location permission to be granted. We do not use your location data in any way.",
+      "ios-desc": "To exchange messages offline via Bluetooth, the iOS API requires permission to be granted."
     },
     "camera": {
       "title": "Camera",
@@ -534,7 +534,7 @@
   "notification": {
     "need-restart": {
       "title": "Need restart app",
-      "desc": "For this kind of notifications you have to restart your app to save this fields!"
+      "desc": "For this kind of notification, you have to restart your app to save these fields!"
     }
   },
   "error": {
