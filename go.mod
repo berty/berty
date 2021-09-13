@@ -3,7 +3,6 @@ module berty.tech/berty/v2
 go 1.16
 
 require (
-	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
 	berty.tech/go-ipfs-log v1.5.0
 	berty.tech/go-libp2p-tor-transport v0.8.4
 	berty.tech/go-orbit-db v1.13.0
@@ -16,13 +15,13 @@ require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
+	github.com/berty/go-ipfs-repo-afero v1.2.2
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/daixiang0/gci v0.2.9
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/dgraph-io/badger v1.6.2
-	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/eknkc/basex v1.0.1
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
 	github.com/fatih/color v1.13.0
@@ -89,6 +88,7 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/sideshow/apns2 v0.20.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
+	github.com/spf13/afero v1.1.2
 	github.com/stretchr/testify v1.7.0
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
 	github.com/tj/assert v0.0.3

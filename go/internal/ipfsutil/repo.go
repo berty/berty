@@ -7,14 +7,15 @@ import (
 	"time"
 
 	// nolint:staticcheck
+	afrepo "github.com/berty/go-ipfs-repo-afero/pkg/repo"
 	ipfs_ds "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
 	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
+	"github.com/spf13/afero"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -46,13 +47,52 @@ func CreateMockedRepo(dstore ipfs_ds.Batching) (ipfs_repo.Repo, error) {
 	}, nil
 }
 
+// FIXME: move to go-ipfs-repo-afero
+func MemRepo() (ipfs_repo.Repo, error) {
+	buf := make([]byte, 32)
+	_, err := crand.Read(buf)
+	if err != nil {
+		return nil, errors.Wrap(err, "generate nonce")
+	}
+	suffix := base64.RawURLEncoding.EncodeToString(buf)
+
+	fs := afero.NewMemMapFs()
+
+	afrepo.DsFs = fs
+
+	cfg, err := createBaseConfig()
+	if err != nil {
+		return nil, errors.Wrap(err, "create base config")
+	}
+
+	ucfg, err := upgradeToPersistanceConfig(cfg)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to upgrade repo")
+	}
+
+	if err := afrepo.Init(fs, "/ipfs"+suffix, ucfg); err != nil {
+		return nil, errors.Wrap(err, "init repo")
+	}
+
+	repo, err := afrepo.Open(fs, "/ipfs"+suffix)
+	if err != nil {
+		return nil, errors.Wrap(err, "open repo")
+	}
+
+	return repo, nil
+}
+
 func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
 	if _, err := loadPlugins(path); err != nil {
 		return nil, errors.Wrap(err, "failed to load plugins")
 	}
 
+	fs := afero.NewOsFs()
+
+	afrepo.DsFs = fs
+
 	// init repo if needed
-	if !ipfs_fsrepo.IsInitialized(path) {
+	if !afrepo.IsInitialized(fs, path) {
 		cfg, err := createBaseConfig()
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to create base config")
@@ -63,12 +103,12 @@ func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
 			return nil, errors.Wrap(err, "failed to upgrade repo")
 		}
 
-		if err := ipfs_fsrepo.Init(path, ucfg); err != nil {
+		if err := afrepo.Init(fs, path, ucfg); err != nil {
 			return nil, errors.Wrap(err, "failed to init repo")
 		}
 	}
 
-	return ipfs_fsrepo.Open(path)
+	return afrepo.Open(fs, path)
 }
 
 var DefaultSwarmListeners = []string{
@@ -161,10 +201,8 @@ func upgradeToPersistanceConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) 
 					"type":       "measure",
 					"prefix":     "flatfs.datastore",
 					"child": map[string]interface{}{
-						"type":      "flatfs",
-						"path":      "blocks",
-						"sync":      true,
-						"shardFunc": "/repo/flatfs/shard/v1/next-to-last/2",
+						"type": "afero",
+						"path": "blocks",
 					},
 				},
 				map[string]interface{}{
@@ -172,9 +210,8 @@ func upgradeToPersistanceConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) 
 					"type":       "measure",
 					"prefix":     "leveldb.datastore",
 					"child": map[string]interface{}{
-						"type":        "levelds",
-						"path":        "datastore",
-						"compression": "none",
+						"type": "afero",
+						"path": "datastore",
 					},
 				},
 			},

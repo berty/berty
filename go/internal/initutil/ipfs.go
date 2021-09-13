@@ -12,11 +12,9 @@ import (
 	"time"
 
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
-	datastore "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -31,12 +29,10 @@ import (
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/tempdir"
 	tor "berty.tech/go-libp2p-tor-transport"
@@ -277,28 +273,17 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 }
 
 func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
-	var err error
-	var repo ipfs_repo.Repo
-
 	if m.Datastore.InMemory {
-		rootDS, err := m.getRootDatastore()
+		repo, err := ipfsutil.MemRepo()
 		if err != nil {
 			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 		}
-
-		ipfsDS := datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
-
-		repo, err = ipfsutil.CreateMockedRepo(ipfsDS)
-		if err != nil {
-			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
-		}
-
 		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
 	}
 
 	repopath := filepath.Join(m.Datastore.Dir, "ipfs")
 
-	repo, err = ipfsutil.LoadRepoFromPath(repopath)
+	repo, err := ipfsutil.LoadRepoFromPath(repopath)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}

@@ -2,8 +2,6 @@ package ipfsutil
 
 import (
 	"context"
-	crand "crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"math/rand"
 	"testing"
@@ -12,11 +10,9 @@ import (
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_mock "github.com/ipfs/go-ipfs/core/mock"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	host "github.com/libp2p/go-libp2p-core/host"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
@@ -45,68 +41,11 @@ type CoreAPIMock interface {
 	Close()
 }
 
-func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) p2p_ci.PrivKey {
-	const datastoreKeyForPrivateKey = "p2p_private_key"
-
-	privkeyb, err := datastore.Get(ds.NewKey("private_key"))
-	if err == ds.ErrNotFound {
-		priv, _, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.RSA, 2048, crand.Reader)
-		if err != nil {
-			t.Fatalf("failed to generate pair key: %v", err)
-		}
-
-		privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
-		if err != nil {
-			t.Fatalf("failed to get raw priv key: %v", err)
-		}
-
-		if err := datastore.Put(ds.NewKey(datastoreKeyForPrivateKey), privkeyb); err != nil {
-			t.Fatalf("failed to save priv key: %v", err)
-		}
-
-		return priv
-	} else if err != nil {
-		t.Fatalf("failed to get value from datastore: %v", err)
-	}
-
-	priv, err := p2p_ci.UnmarshalPrivateKey(privkeyb)
-	if err != nil {
-		t.Fatalf("failed to unmarshal priv key: %v", err)
-	}
-
-	return priv
-}
-
 func TestingRepo(t testing.TB, datastore ds.Datastore) ipfs_repo.Repo {
 	t.Helper()
-
-	c := ipfs_cfg.Config{}
-	priv := getOrCreatePrivateKeyFromDatastore(t, datastore)
-
-	pid, err := p2p_peer.IDFromPublicKey(priv.GetPublic())
-	if err != nil {
-		t.Fatalf("failed to get pid from pub key: %v", err)
-	}
-
-	privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
-	if err != nil {
-		t.Fatalf("failed to get raw priv key: %v", err)
-	}
-
-	c.Bootstrap = []string{}
-	c.Addresses.Swarm = []string{"/ip6/::/tcp/0"}
-	c.Identity.PeerID = pid.Pretty()
-	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
-
-	if datastore == nil {
-		datastore = ds.NewMapDatastore()
-	}
-	dstore := dsync.MutexWrap(datastore)
-
-	return &ipfs_repo.Mock{
-		D: dstore,
-		C: c,
-	}
+	repo, err := MemRepo()
+	require.NoError(t, err)
+	return repo
 }
 
 type TestingAPIOpts struct {
