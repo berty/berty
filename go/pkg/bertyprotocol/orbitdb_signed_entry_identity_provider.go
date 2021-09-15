@@ -81,7 +81,7 @@ func (b *bertySignedIdentityProvider) createIdentity(options *identityprovider.C
 		return nil, err
 	}
 
-	publicKeyBytes, err := publicKey.Bytes()
+	publicKeyBytes, err := crypto.MarshalPublicKey(publicKey)
 	if err != nil {
 		return nil, err
 	}

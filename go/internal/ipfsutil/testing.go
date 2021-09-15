@@ -16,6 +16,7 @@ import (
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_mock "github.com/ipfs/go-ipfs/core/mock"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	host "github.com/libp2p/go-libp2p-core/host"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
@@ -55,7 +56,7 @@ func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) p2
 			t.Fatalf("failed to generate pair key: %v", err)
 		}
 
-		privkeyb, err := priv.Bytes()
+		privkeyb, err := crypto.MarshalPrivateKey(priv)
 		if err != nil {
 			t.Fatalf("failed to get raw priv key: %v", err)
 		}
@@ -88,7 +89,7 @@ func TestingRepo(t testing.TB, datastore ds.Datastore) ipfs_repo.Repo {
 		t.Fatalf("failed to get pid from pub key: %v", err)
 	}
 
-	privkeyb, err := priv.Bytes()
+	privkeyb, err := crypto.MarshalPrivateKey(priv)
 	if err != nil {
 		t.Fatalf("failed to get raw priv key: %v", err)
 	}

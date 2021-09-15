@@ -12,7 +12,7 @@ import (
 
 	"github.com/aead/ecdh"
 	ipfscid "github.com/ipfs/go-cid"
-	"github.com/ipfs/go-ipfs/keystore"
+	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
