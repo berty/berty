@@ -3,8 +3,6 @@ import Share from 'react-native-share'
 import { Buffer } from 'buffer'
 import InAppBrowser from 'react-native-inappbrowser-reborn'
 import RNFS from 'react-native-fs'
-import RNFetchBlob from 'rn-fetch-blob'
-
 import beapi from '@berty-tech/api'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
@@ -158,7 +156,11 @@ export const replicateGroup = async (
 	}
 }
 
-export const createAndSaveFile = async (outFile: string, fileName: string, extension?: string) => {
+export const createAndSaveFile = async (
+	outFile: string,
+	fileName: string,
+	extension?: string,
+): Promise<void> => {
 	try {
 		const granted = await PermissionsAndroid.request(
 			PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -171,11 +173,8 @@ export const createAndSaveFile = async (outFile: string, fileName: string, exten
 			},
 		)
 		if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-			await RNFetchBlob.fs
-				.cp(
-					`file://${outFile}`,
-					`${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.${extension || 'tar'}`,
-				)
+			const dest = `${RNFS.DownloadDirectoryPath}/${fileName}.${extension || 'tar'}`
+			await RNFS.copyFile(outFile, dest)
 				.then(() => {
 					console.log('file copied')
 				})
@@ -200,7 +199,9 @@ export const exportAccountToFile = async (accountId: string | null) => {
 	const fileName = `berty-backup-${accountId}`
 	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.tar'
 
-	const outputStream = await RNFetchBlob.fs.writeStream(outFile, 'base64')
+	// delete file if already exist
+	await RNFS.unlink(outFile).catch(() => {})
+
 	await messengerClient
 		.instanceExportData({})
 		.then(stream => {
@@ -208,7 +209,8 @@ export const exportAccountToFile = async (accountId: string | null) => {
 				if (!res || !res.exportedData) {
 					return
 				}
-				await outputStream.write(Buffer.from(res.exportedData).toString('base64'))
+				const buff = Buffer.from(res.exportedData).toString('base64')
+				await RNFS.write(outFile, buff, -1, 'base64')
 			})
 			return stream.start()
 		})
@@ -219,7 +221,6 @@ export const exportAccountToFile = async (accountId: string | null) => {
 						url: `file://${outFile}`,
 						type: 'application/x-tar',
 				  })
-			await outputStream.close()
 		})
 		.catch(async err => {
 			if (err?.EOF) {
