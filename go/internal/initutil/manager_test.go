@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"runtime"
 	"sync"
 	"testing"
 	"time"
@@ -17,6 +18,11 @@ import (
 )
 
 func verifySetupLeakDetection(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		// leak is not consistent on windows, skipping
+		return
+	}
+
 	goleak.VerifyNone(t,
 		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"), // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap
 		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),              // called by init() in berty/go/internal/grpcutil/server.go
@@ -25,6 +31,11 @@ func verifySetupLeakDetection(t *testing.T) {
 }
 
 func verifyRunningLeakDetection(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		// leak is not consistent on windows, skipping
+		return
+	}
+
 	// waiting for some go routines finished
 	// sometimes if timeout is quite short - not enough for below functions to finished
 	time.Sleep(5 * time.Second)
@@ -75,6 +86,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*session).run"),                                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go/internal/handshake.(*cryptoSetup).ReadHandshakeMessage"), // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go/internal/handshake.(*cryptoSetup).RunHandshake"),         // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-quic-transport.(*reuse).gc"),                                   // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/whyrusleeping/mdns.(*client).query"),                                            // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),        // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).mainloop"),                                         // the closing routine has big timeout, should be managed by ipfs
