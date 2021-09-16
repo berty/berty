@@ -69,17 +69,20 @@ func pushServerCommand() *ffcli.Command {
 				return err
 			}
 
+			dispatchers := []bertyprotocol.PushDispatcher{}
 			apnsDispatchers, err := bertyprotocol.PushDispatcherLoadAPNSCertificates(apns)
 			if err != nil {
 				return err
 			}
+
+			dispatchers = append(dispatchers, apnsDispatchers...)
 
 			fcmDispatchers, err := bertyprotocol.PushDispatcherLoadFirebaseAPIKey(fcm)
 			if err != nil {
 				return err
 			}
 
-			dispatchers := append(apnsDispatchers, fcmDispatchers...)
+			dispatchers = append(dispatchers, fcmDispatchers...)
 
 			server, mux, err := manager.GetGRPCServer()
 			if err != nil {

@@ -28,19 +28,18 @@ export type StreamEventPayloadType<T> = T extends beapi.messenger.StreamEvent.Ty
 	? beapi.messenger.StreamEvent.IConversationPartialLoad
 	: never
 
-export type StreamEventNotifiedPayloadType<
-	T
-> = T extends beapi.messenger.StreamEvent.Notified.Type.Unknown
-	? undefined
-	: T extends beapi.messenger.StreamEvent.Notified.Type.TypeBasic
-	? beapi.messenger.StreamEvent.Notified.IBasic
-	: T extends beapi.messenger.StreamEvent.Notified.Type.TypeMessageReceived
-	? beapi.messenger.StreamEvent.Notified.IMessageReceived
-	: T extends beapi.messenger.StreamEvent.Notified.Type.TypeContactRequestSent
-	? beapi.messenger.StreamEvent.Notified.IContactRequestSent
-	: T extends beapi.messenger.StreamEvent.Notified.Type.TypeContactRequestReceived
-	? beapi.messenger.StreamEvent.Notified.IContactRequestReceived
-	: never
+export type StreamEventNotifiedPayloadType<T> =
+	T extends beapi.messenger.StreamEvent.Notified.Type.Unknown
+		? undefined
+		: T extends beapi.messenger.StreamEvent.Notified.Type.TypeBasic
+		? beapi.messenger.StreamEvent.Notified.IBasic
+		: T extends beapi.messenger.StreamEvent.Notified.Type.TypeMessageReceived
+		? beapi.messenger.StreamEvent.Notified.IMessageReceived
+		: T extends beapi.messenger.StreamEvent.Notified.Type.TypeContactRequestSent
+		? beapi.messenger.StreamEvent.Notified.IContactRequestSent
+		: T extends beapi.messenger.StreamEvent.Notified.Type.TypeContactRequestReceived
+		? beapi.messenger.StreamEvent.Notified.IContactRequestReceived
+		: never
 
 export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type.Undefined
 	? undefined
@@ -62,19 +61,18 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? beapi.messenger.AppMessage.IMonitorMetadata
 	: never
 
-export type MonitorGroupPayloadType<
-	T
-> = T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorUndefined
-	? undefined
-	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorAdvertiseGroup
-	? beapi.protocol.MonitorGroup.IEventMonitorAdvertiseGroup
-	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerFound
-	? beapi.protocol.MonitorGroup.IEventMonitorPeerFound
-	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerJoin
-	? beapi.protocol.MonitorGroup.IEventMonitorPeerJoin
-	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerLeave
-	? beapi.protocol.MonitorGroup.IEventMonitorPeerLeave
-	: never
+export type MonitorGroupPayloadType<T> =
+	T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorUndefined
+		? undefined
+		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorAdvertiseGroup
+		? beapi.protocol.MonitorGroup.IEventMonitorAdvertiseGroup
+		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerFound
+		? beapi.protocol.MonitorGroup.IEventMonitorPeerFound
+		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerJoin
+		? beapi.protocol.MonitorGroup.IEventMonitorPeerJoin
+		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerLeave
+		? beapi.protocol.MonitorGroup.IEventMonitorPeerLeave
+		: never
 
 export type InteractionUndefined = {
 	type: beapi.messenger.AppMessage.Type.Undefined

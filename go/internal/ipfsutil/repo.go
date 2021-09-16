@@ -12,7 +12,6 @@ import (
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
-	"github.com/libp2p/go-libp2p-core/crypto"
 	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
@@ -91,7 +90,7 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	privkeyb, err := crypto.MarshalPrivateKey(priv)
+	privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

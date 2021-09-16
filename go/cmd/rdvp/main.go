@@ -29,6 +29,7 @@ import (
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -199,8 +200,8 @@ func main() {
 				}
 
 				registry := prometheus.NewRegistry()
-				registry.MustRegister(prometheus.NewBuildInfoCollector())
-				registry.MustRegister(prometheus.NewGoCollector())
+				registry.MustRegister(collectors.NewBuildInfoCollector())
+				registry.MustRegister(collectors.NewGoCollector())
 				registry.MustRegister(ipfsutil.NewHostCollector(host))
 				registry.MustRegister(ipfsutil.NewBandwidthCollector(reporter))
 				// @TODO(gfanton): add rdvp specific collector...
