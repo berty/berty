@@ -2,7 +2,7 @@ package ipfsutil
 
 import (
 	datastore "github.com/ipfs/go-datastore"
-	"github.com/ipfs/go-ipfs/keystore"
+	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -17,7 +17,7 @@ func (k *datastoreKeystore) Has(name string) (bool, error) {
 }
 
 func (k *datastoreKeystore) Put(name string, key crypto.PrivKey) error {
-	bytes, err := key.Bytes()
+	bytes, err := crypto.MarshalPrivateKey(key)
 	if err != nil {
 		return err
 	}

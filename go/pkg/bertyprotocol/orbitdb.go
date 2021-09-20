@@ -289,7 +289,7 @@ func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, op
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	mpkb, err := memberDevice.Public().member.Bytes()
+	mpkb, err := crypto.MarshalPublicKey(memberDevice.Public().member)
 	if err != nil {
 		mpkb = []byte{}
 	}

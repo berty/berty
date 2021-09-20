@@ -55,7 +55,7 @@ func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) p2
 			t.Fatalf("failed to generate pair key: %v", err)
 		}
 
-		privkeyb, err := priv.Bytes()
+		privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
 		if err != nil {
 			t.Fatalf("failed to get raw priv key: %v", err)
 		}
@@ -88,7 +88,7 @@ func TestingRepo(t testing.TB, datastore ds.Datastore) ipfs_repo.Repo {
 		t.Fatalf("failed to get pid from pub key: %v", err)
 	}
 
-	privkeyb, err := priv.Bytes()
+	privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
 	if err != nil {
 		t.Fatalf("failed to get raw priv key: %v", err)
 	}

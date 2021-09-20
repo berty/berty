@@ -126,8 +126,8 @@ jobs:
     strategy:
       matrix:
         golang:
-          - 1.15.x
           - 1.16.x
+          - 1.17.x
           #- tip
     env:
       OS: ubuntu-latest

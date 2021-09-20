@@ -2,7 +2,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
 import { Platform, ScrollView, StatusBar, View } from 'react-native'
-import RNFetchBlob from 'rn-fetch-blob'
 import RNFS from 'react-native-fs'
 import Share from 'react-native-share'
 import getPath from '@flyerhq/react-native-android-uri-path'
@@ -34,7 +33,7 @@ const openThemeColorFile = async () => {
 
 const importColorThemeFileToStorage = async (uri: string) => {
 	const file = Platform.OS === 'android' ? getPath(uri) : uri.replace(/^file:\/\//, '')
-	const theme = await RNFetchBlob.fs.readFile(file, 'utf8')
+	const theme = await RNFS.readFile(file, 'utf8')
 	return theme
 }
 
@@ -46,9 +45,9 @@ const shareColorTheme = async (fileName: string) => {
 	})
 }
 
-const exportColorThemeToFile = async (themeColor: any, fileName: string) => {
+const exportColorThemeToFile = async (themeColor: any, fileName: string): Promise<void> => {
 	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.json'
-	await RNFetchBlob.fs.writeFile(outFile, themeColor, 'utf8')
+	await RNFS.writeFile(outFile, 'utf8')
 	Platform.OS === 'android'
 		? await createAndSaveFile(outFile, fileName, 'json')
 		: await shareColorTheme(fileName)

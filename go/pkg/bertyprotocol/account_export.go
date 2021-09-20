@@ -183,7 +183,7 @@ func (s *service) exportOrbitDBGroupHeads(gc *groupContext, headsMetadata []cid.
 }
 
 func exportPrivateKey(tw *tar.Writer, sk crypto.PrivKey, filename string) error {
-	skBytes, err := sk.Bytes()
+	skBytes, err := crypto.MarshalPrivateKey(sk)
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}

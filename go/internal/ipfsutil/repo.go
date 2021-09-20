@@ -90,7 +90,7 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	privkeyb, err := priv.Bytes()
+	privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

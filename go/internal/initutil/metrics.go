@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
@@ -41,8 +42,8 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 		m.Metrics.registry = prometheus.NewRegistry()
 	}
 
-	m.Metrics.registry.MustRegister(prometheus.NewBuildInfoCollector())
-	m.Metrics.registry.MustRegister(prometheus.NewGoCollector())
+	m.Metrics.registry.MustRegister(collectors.NewBuildInfoCollector())
+	m.Metrics.registry.MustRegister(collectors.NewGoCollector())
 
 	mux := http.NewServeMux()
 	var l net.Listener

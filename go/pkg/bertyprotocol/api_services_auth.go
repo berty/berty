@@ -100,9 +100,7 @@ func (s *service) authInitURL(baseURL string) (string, error) {
 		return "", errcode.ErrServicesAuthInvalidURL
 	}
 
-	if strings.HasSuffix(baseURL, "/") {
-		baseURL = baseURL[:len(baseURL)-1]
-	}
+	baseURL = strings.TrimSuffix(baseURL, "/")
 
 	auth, codeChallenge, err := newAuthSession(baseURL)
 	if err != nil {
