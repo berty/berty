@@ -236,7 +236,9 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 					}
 				}}
 			>
-				{!searchText?.length && <IncomingRequests items={requests} onLayout={onLayoutRequests} />}
+				{!searchText?.length ? (
+					<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+				) : null}
 				<HomeHeader
 					isOnTop={isOnTop}
 					hasRequests={requests.length > 0}
@@ -269,17 +271,17 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 							onLayout={onLayoutConvs}
 						/>
 						{layoutRequests.height + layoutHeader.height + layoutConvs.height < windowHeight &&
-							!!requests.length && (
-								<View
-									style={{
-										height:
-											windowHeight -
-											(layoutRequests.height + layoutHeader.height + layoutConvs.height),
-										backgroundColor: colors['main-background'],
-									}}
-								/>
-							)}
-						{!isConversation && !hasSuggestion && !hasConfigurations && (
+						requests.length ? (
+							<View
+								style={{
+									height:
+										windowHeight -
+										(layoutRequests.height + layoutHeader.height + layoutConvs.height),
+									backgroundColor: colors['main-background'],
+								}}
+							/>
+						) : null}
+						{!isConversation && !hasSuggestion && !hasConfigurations ? (
 							<View style={{ backgroundColor: colors['main-background'] }}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>
@@ -298,7 +300,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 									</View>
 								</View>
 							</View>
-						)}
+						) : null}
 					</>
 				)}
 			</ScrollView>
