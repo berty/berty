@@ -1,7 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, Text as TextNative, View, StatusBar, TouchableOpacity } from 'react-native'
+import {
+	ScrollView,
+	Text as TextNative,
+	View,
+	StatusBar,
+	TouchableOpacity,
+	SafeAreaView,
+} from 'react-native'
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
 
@@ -79,8 +86,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const conversations: any[] = useSortedConversationList()
 	const isConversation: number = useConversationsCount()
 	const [layoutRequests, onLayoutRequests] = useLayout()
-	const [, onLayoutHeader] = useLayout()
-	const [, onLayoutConvs] = useLayout()
+	const [layoutHeader, onLayoutHeader] = useLayout()
+	const [layoutConvs, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [searchText, setSearchText] = useState<string>('')
 	const [refresh, setRefresh] = useState<boolean>(false)
@@ -95,8 +102,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const { navigate } = useNativeNavigation()
 	const { client } = useMsgrContext()
 
-	const [{ text, opacity, flex, margin, background }, { windowHeight, scaleSize, scaleHeight }] =
-		useStyles()
+	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight, windowHeight }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 
@@ -202,146 +208,141 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	)
 
 	return (
-		<>
-			<View style={[flex.tiny, styleBackground]}>
-				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-				<>
-					<ScrollView
-						ref={scrollRef}
-						stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
-						showsVerticalScrollIndicator={false}
-						scrollEventThrottle={16}
-						keyboardShouldPersistTaps={'handled'}
-						onScrollEndDrag={e => {
-							if (e.nativeEvent.contentOffset.y < 0) {
-								setRefresh(true)
-							}
-						}}
-						onScroll={e => {
-							if (e.nativeEvent.contentOffset) {
-								if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-									setIsOnTop(true)
-								} else {
-									setIsOnTop(false)
-								}
-							}
-						}}
-					>
-						{!searchText?.length && (
-							<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-						)}
-						<HomeHeader
-							isOnTop={isOnTop}
-							hasRequests={requests.length > 0}
-							scrollRef={scrollRef}
-							onLayout={onLayoutHeader}
-							value={searchText}
-							onChange={setSearchText}
-							refresh={refresh}
-							setRefresh={setRefresh}
-							onLongPress={setIsLongPress}
-							isMultiAccount={isLongPress}
-						/>
-						{searchText?.length ? (
-							<SearchComponent
-								insets={null}
-								conversations={searchConversations}
-								contacts={searchContacts}
-								interactions={searchInteractions.current}
-								value={searchText}
-								hasResults={hasResults}
-								earliestInteractionCID={earliestResult}
-							/>
-						) : (
-							<>
-								<Conversations
-									items={conversations}
-									suggestions={suggestions}
-									configurations={configurations}
-									onLayout={onLayoutConvs}
-									addBot={setIsAddBot}
-								/>
-								{!isConversation && !hasSuggestion && !hasConfigurations && (
-									<View style={[background.white]}>
-										<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
-											<View>
-												<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-												<TextNative
-													style={[
-														text.align.center,
-														text.color.grey,
-														text.bold.small,
-														opacity(0.3),
-														margin.top.big,
-													]}
-												>
-													{t('main.home.no-contacts')}
-												</TextNative>
-											</View>
-										</View>
-									</View>
-								)}
-								{requests.length > 0 && (
-									<View
-										style={[
-											{
-												backgroundColor: 'white',
-												position: 'absolute',
-												bottom: windowHeight * -1,
-												height: windowHeight,
-												width: '100%',
-											},
-										]}
-									/>
-								)}
-							</>
-						)}
-					</ScrollView>
+		<SafeAreaView style={[styleBackground, { flex: 1 }]}>
+			<StatusBar
+				backgroundColor={
+					requests.length && !isOnTop ? colors['background-header'] : colors['main-background']
+				}
+				barStyle={requests.length && !isOnTop ? 'light-content' : 'dark-content'}
+			/>
+			<ScrollView
+				ref={scrollRef}
+				stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
+				showsVerticalScrollIndicator={false}
+				scrollEventThrottle={16}
+				keyboardShouldPersistTaps={'handled'}
+				onScrollEndDrag={e => {
+					if (e.nativeEvent.contentOffset.y < 0) {
+						setRefresh(true)
+					}
+				}}
+				onScroll={e => {
+					if (e.nativeEvent.contentOffset) {
+						if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+							setIsOnTop(true)
+						} else {
+							setIsOnTop(false)
+						}
+					}
+				}}
+			>
+				{!searchText?.length && <IncomingRequests items={requests} onLayout={onLayoutRequests} />}
+				<HomeHeader
+					isOnTop={isOnTop}
+					hasRequests={requests.length > 0}
+					scrollRef={scrollRef}
+					value={searchText}
+					onChange={setSearchText}
+					refresh={refresh}
+					setRefresh={setRefresh}
+					onLongPress={setIsLongPress}
+					isMultiAccount={isLongPress}
+					onLayout={onLayoutHeader}
+				/>
+				{searchText?.length ? (
+					<SearchComponent
+						insets={null}
+						conversations={searchConversations}
+						contacts={searchContacts}
+						interactions={searchInteractions.current}
+						value={searchText}
+						hasResults={hasResults}
+						earliestInteractionCID={earliestResult}
+					/>
+				) : (
 					<>
-						<View
-							style={{
-								position: 'absolute',
-								right: 20 * scaleSize,
-								bottom: 20 * scaleSize,
-							}}
-						>
-							<FooterButton
-								name='qr'
-								fill={colors['secondary-text']}
-								backgroundColor={colors['main-background']}
-								onPress={async () => {
-									await checkPermissions('camera', navigate, {
-										navigateNext: 'Main.Scan',
-										isToNavigate: true,
-										createNewAccount: false,
-									})
-								}}
-							/>
-							<FooterButton
-								name='add-new-group'
-								fill={colors['reverted-main-text']}
-								backgroundColor={colors['background-header']}
-								onPress={() => navigate('Main.CreateGroupAddMembers')}
-							/>
-						</View>
+						<Conversations
+							items={conversations}
+							suggestions={suggestions}
+							configurations={configurations}
+							addBot={setIsAddBot}
+							onLayout={onLayoutConvs}
+						/>
+						{layoutRequests.height + layoutHeader.height + layoutConvs.height < windowHeight &&
+							requests.length && (
+								<View
+									style={{
+										height:
+											windowHeight -
+											(layoutRequests.height + layoutHeader.height + layoutConvs.height),
+										backgroundColor: colors['main-background'],
+									}}
+								/>
+							)}
+						{!isConversation && !hasSuggestion && !hasConfigurations && (
+							<View style={{ backgroundColor: colors['main-background'] }}>
+								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
+									<View>
+										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+										<TextNative
+											style={[
+												text.align.center,
+												text.color.grey,
+												text.bold.small,
+												opacity(0.3),
+												margin.top.big,
+											]}
+										>
+											{t('main.home.no-contacts')}
+										</TextNative>
+									</View>
+								</View>
+							</View>
+						)}
 					</>
-					{isLongPress ? (
-						<MultiAccount
-							onPress={() => {
-								setIsLongPress(false)
-							}}
-						/>
-					) : null}
-					{isAddBot.isVisible ? (
-						<AddBot
-							link={isAddBot.link}
-							displayName={isAddBot.displayName}
-							closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
-						/>
-					) : null}
-				</>
+				)}
+			</ScrollView>
+			<View
+				style={{
+					position: 'absolute',
+					right: 20 * scaleSize,
+					bottom: 20 * scaleSize,
+				}}
+			>
+				<FooterButton
+					name='qr'
+					fill={colors['secondary-text']}
+					backgroundColor={colors['main-background']}
+					onPress={async () => {
+						await checkPermissions('camera', navigate, {
+							navigateNext: 'Main.Scan',
+							isToNavigate: true,
+							createNewAccount: false,
+						})
+					}}
+				/>
+				<FooterButton
+					name='add-new-group'
+					fill={colors['reverted-main-text']}
+					backgroundColor={colors['background-header']}
+					onPress={() => navigate('Main.CreateGroupAddMembers')}
+				/>
 			</View>
-		</>
+			{isLongPress ? (
+				<MultiAccount
+					onPress={() => {
+						setIsLongPress(false)
+					}}
+				/>
+			) : null}
+			{isAddBot.isVisible ? (
+				<AddBot
+					link={isAddBot.link}
+					displayName={isAddBot.displayName}
+					closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
+				/>
+			) : null}
+		</SafeAreaView>
 	)
 }
 
