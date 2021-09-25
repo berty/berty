@@ -269,7 +269,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 							onLayout={onLayoutConvs}
 						/>
 						{layoutRequests.height + layoutHeader.height + layoutConvs.height < windowHeight &&
-							requests.length && (
+							!!requests.length && (
 								<View
 									style={{
 										height:
