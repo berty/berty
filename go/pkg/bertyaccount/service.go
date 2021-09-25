@@ -6,6 +6,7 @@ import (
 	"path"
 	"sync"
 
+	"github.com/spf13/afero"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
@@ -69,6 +70,7 @@ type service struct {
 	devicePushKeyPath string
 	pushPlatformToken *protocoltypes.PushServiceReceiver
 	accountData       *accounttypes.AccountMetadata
+	fs                afero.Fs
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
@@ -156,6 +158,7 @@ func NewService(opts *Options) (_ Service, err error) {
 		bleDriver:         opts.BleDriver,
 		nbDriver:          opts.NBDriver,
 		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
+		fs:                afero.NewOsFs(),
 	}
 
 	go s.handleLifecycle(rootCtx)

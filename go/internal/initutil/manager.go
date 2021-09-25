@@ -17,6 +17,7 @@ import (
 	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/shibukawa/configdir"
+	"github.com/spf13/afero"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
@@ -82,6 +83,7 @@ type Manager struct {
 		Dir              string `json:"Dir,omitempty"`
 		InMemory         bool   `json:"InMemory,omitempty"`
 		LowMemoryProfile bool   `json:"LowMemoryProfile,omitempty"`
+		Fs               afero.Fs
 
 		defaultDir string
 		dir        string
@@ -217,6 +219,9 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 
 	// generate SessionID using uuidv4 to identify each run
 	m.Session.ID = tyber.NewSessionID()
+
+	// init fs
+	m.Datastore.Fs = afero.NewOsFs()
 
 	// storage path
 	if !opts.DoNotSetDefaultDir {

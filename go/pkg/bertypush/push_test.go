@@ -13,6 +13,7 @@ import (
 	"time"
 
 	proto "github.com/gogo/protobuf/proto"
+	"github.com/spf13/afero"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
