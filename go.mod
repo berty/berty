@@ -16,6 +16,7 @@ require (
 	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
 	github.com/berty/go-ipfs-repo-afero v1.2.2
+	github.com/berty/gormfs v1.7.2
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
@@ -88,7 +89,7 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/sideshow/apns2 v0.20.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/spf13/afero v1.1.2
+	github.com/spf13/afero v1.6.0
 	github.com/stretchr/testify v1.7.0
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
 	github.com/tj/assert v0.0.3

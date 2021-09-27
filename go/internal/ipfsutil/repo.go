@@ -8,6 +8,7 @@ import (
 
 	// nolint:staticcheck
 	afrepo "github.com/berty/go-ipfs-repo-afero/pkg/repo"
+	"github.com/berty/gormfs"
 	ipfs_ds "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
@@ -16,6 +17,8 @@ import (
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -87,7 +90,15 @@ func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
 		return nil, errors.Wrap(err, "failed to load plugins")
 	}
 
-	fs := afero.NewOsFs()
+	db, err := gorm.Open(sqlite.Open(filepath.Join(path, "berty.db")), &gorm.Config{})
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	fs, err := gormfs.NewGormFs(db)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
 
 	afrepo.DsFs = fs
 
