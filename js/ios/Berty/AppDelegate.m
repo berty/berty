@@ -7,9 +7,13 @@
 // Custom imports
 #import <React/RCTLinkingManager.h> // needed for deep linking
 #import "Berty-Swift.h" // needed for swift
-#import <Firebase.h> // needed for crashlytics, TODO: remove this after closed beta / replace it by a more privacy compliant solution
+
 #import "RNBootSplash.h" // needed by react-native-bootsplash
 // Done custom imports
+
+#ifndef RELEASE_MODE
+#import <Firebase.h> // needed for crashlytics, TODO: remove this after closed beta / replace it by a more privacy compliant solution
+#endif
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -44,10 +48,11 @@ static void InitializeFlipper(UIApplication *application) {
                                                    moduleName:@"Berty"
                                             initialProperties:nil];
 
-  // TODO: remove crashlytics after closed beta / replace it by a more privacy compliant solution
+#ifndef RELEASE_MODE
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
+#endif
 
   // Background Fetch
   if (@available(iOS 13.0, *)) {

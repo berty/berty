@@ -1,0 +1,67 @@
+
+targets:
+  Berty:
+    templates:
+      - BaseTarget # take all sources, deps, ... from BaseTemplate
+    configFiles:
+      AppStore Release: Configs/AppStore.xcconfig
+    settings:
+      configs:
+        AppStore:
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          PRODUCT_NAME: Berty
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER)
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+          TARGET_GCC_PREPROCESSOR_DEFINITIONS:
+          - RELEASE_MODE=1
+
+
+  # BertyPreview target include debug sdk such as Crashlitics, Shakebugs, etc... for the appstore
+  BertyPreview:
+    templates:
+      - BaseTarget # take all sources, deps, ... from BaseTemplate
+    info:
+      properties:
+        Shake:
+          APIClientID: "$(SHAKE_API_ID)"
+          APIClientSecret: "$(SHAKE_API_SECRET)"
+    configFiles:
+      Debug: Configs/Debug.xcconfig
+      Staff Release: Configs/Staff.xcconfig
+      Yolo Release: Configs/Yolo.xcconfig
+    settings:
+      configs:
+        Debug:
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          PRODUCT_NAME: Berty Debug
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).debug
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIconDebug
+        Staff:
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          PRODUCT_NAME: Berty Staff
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).staff
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIconStaff
+        Yolo:
+          DEVELOPMENT_TEAM: GR5463T564
+          PRODUCT_NAME: Berty Yolo
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIconYolo
+
+    sources:
+    # add google service to base config
+    - path: ./Configs/GoogleService
+      group: Configs
+      buildPhase: none # will be added by a script
+
+    preBuildScripts:
+    - name: Copy GoogleService
+      script: |
+        PATH_TO_CONFIG=${SRCROOT}/Configs/GoogleService/GoogleService-Info-${PRODUCT_BUNDLE_IDENTIFIER}.plist
+        FILENAME_IN_BUNDLE=GoogleService-Info.plist
+        BUILD_APP_DIR=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app
+        echo cp ${PATH_TO_CONFIG} "$BUILD_APP_DIR/${FILENAME_IN_BUNDLE}"
+        cp ${PATH_TO_CONFIG} "${BUILD_APP_DIR}/${FILENAME_IN_BUNDLE}"
+
+    postBuildScripts:
+    - name: Setup Crashlitics
+      script: "${PODS_ROOT}/FirebaseCrashlytics/run"

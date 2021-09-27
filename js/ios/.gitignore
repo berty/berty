@@ -1,7 +1,7 @@
 Berty.xcodeproj
 Berty.xcworkspace
 Pods
-Info.plist
+Info*.plist
 Frameworks
 main.jsbundle
 tor-deps

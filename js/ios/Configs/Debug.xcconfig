@@ -9,5 +9,5 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 #include? "tmp.xcconfig"
-#include? "./Pods/Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"
+#include? "./Pods/Target Support Files/Pods-BertyPreview/Pods-BertyPreview.debug.xcconfig"
 #include? "../.env"
