@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertyprotocol_test
 
 import (
 	crand "crypto/rand"
@@ -11,7 +11,10 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 var (
@@ -22,63 +25,65 @@ var (
 )
 
 func Test_pushDispatcherKey(t *testing.T) {
-	assert.Equal(t, "2-tech.berty.debug", pushDispatcherKey(protocoltypes.PushTokenApplePushNotificationService, "tech.berty.debug"))
+	assert.Equal(t, "2-tech.berty.debug", bertyprotocol.PushDispatcherKey(pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService, "tech.berty.debug"))
 }
 
 func Test_NewPushService(t *testing.T) {
-	s, err := newPushService(pushDefaultServerSK, nil, nil)
+	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, nil, nil)
 	require.Nil(t, s)
 	require.Error(t, err)
 
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
 
-	s, err = newPushService(nil, []PushDispatcher{dispatcher}, nil)
+	s, err = bertyprotocol.NewPushService(nil, []bertyprotocol.PushDispatcher{dispatcher}, nil)
 	require.Nil(t, s)
 	require.Error(t, err)
 
-	s, err = newPushService(pushDefaultServerSK, []PushDispatcher{dispatcher}, nil)
+	s, err = bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 }
 
 func Test_pushService_ServerInfo(t *testing.T) {
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
-	s, err := newPushService(pushDefaultServerSK, []PushDispatcher{dispatcher}, nil)
+	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 
-	res, err := s.ServerInfo(context.Background(), &protocoltypes.PushServiceServerInfo_Request{})
+	res, err := s.ServerInfo(context.Background(), &pushtypes.PushServiceServerInfo_Request{})
 	require.NotNil(t, res)
 	require.NoError(t, err)
 
 	require.Equal(t, pushDefaultServerPK[:], res.PublicKey)
 	require.Len(t, res.SupportedTokenTypes, 1)
-	require.Equal(t, protocoltypes.PushTokenMQTT, res.SupportedTokenTypes[0].TokenType)
+	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenMQTT, res.SupportedTokenTypes[0].TokenType)
 	require.Equal(t, testutil.PushMockBundleID, res.SupportedTokenTypes[0].AppBundleID)
 }
 
 func Test_decodeOpaqueReceiver(t *testing.T) {
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
+	dispatchers, _, err := bertyprotocol.PushServiceGenerateDispatchers([]bertyprotocol.PushDispatcher{dispatcher})
+	require.NoError(t, err)
 
-	s, err := newPushService(pushDefaultServerSK, []PushDispatcher{dispatcher}, nil)
+	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 
 	receiver := &protocoltypes.PushServiceReceiver{
-		TokenType:          protocoltypes.PushTokenMQTT,
+		TokenType:          pushtypes.PushServiceTokenType_PushTokenMQTT,
 		BundleID:           testutil.PushMockBundleID,
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err := pushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err := bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushDefaultServerPK[:],
 	})
 
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err := s.decodeOpaqueReceiver(&protocoltypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err := bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.NoError(t, err)
 	require.NotNil(t, decryptedReceiver)
 
@@ -88,56 +93,56 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 	require.Equal(t, receiver.RecipientPublicKey, decryptedReceiver.RecipientPublicKey)
 
 	receiver = &protocoltypes.PushServiceReceiver{
-		TokenType:          protocoltypes.PushTokenUndefined, // Unsupported by server
+		TokenType:          pushtypes.PushServiceTokenType_PushTokenUndefined, // Unsupported by server
 		BundleID:           testutil.PushMockBundleID,
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err = pushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err = bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushDefaultServerPK[:],
 	})
 
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err = s.decodeOpaqueReceiver(&protocoltypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err = bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.Error(t, err)
 	require.Nil(t, decryptedReceiver)
 
 	receiver = &protocoltypes.PushServiceReceiver{
-		TokenType:          protocoltypes.PushTokenMQTT,
+		TokenType:          pushtypes.PushServiceTokenType_PushTokenMQTT,
 		BundleID:           "mismatch", // Unsupported by server
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err = pushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err = bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushDefaultServerPK[:],
 	})
 
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err = s.decodeOpaqueReceiver(&protocoltypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err = bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.Error(t, err)
 	require.Nil(t, decryptedReceiver)
 
 	receiver = &protocoltypes.PushServiceReceiver{
-		TokenType:          protocoltypes.PushTokenMQTT,
+		TokenType:          pushtypes.PushServiceTokenType_PushTokenMQTT,
 		BundleID:           testutil.PushMockBundleID,
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err = pushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err = bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushTestRecipient1PK[:], // encrypted for another server
 	})
 
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err = s.decodeOpaqueReceiver(&protocoltypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err = bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.Error(t, err)
 	require.Nil(t, decryptedReceiver)
 }
@@ -145,42 +150,42 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 func Test_encryptPushPayloadForReceiver_decryptPushDataFromServer(t *testing.T) {
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
 
-	s, err := newPushService(pushDefaultServerSK, []PushDispatcher{dispatcher}, nil)
+	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 
 	ref := []byte("reference1")
 
-	encrypted1, err := s.encryptPushPayloadForReceiver(ref, pushTestRecipient1PK[:])
+	encrypted1, err := bertyprotocol.InternalEncryptPushPayloadForReceiver(pushDefaultServerSK, ref, pushTestRecipient1PK[:])
 	require.NotEmpty(t, encrypted1)
 	require.NoError(t, err)
 
-	encrypted2, err := s.encryptPushPayloadForReceiver(ref, pushTestRecipient1PK[:])
+	encrypted2, err := bertyprotocol.InternalEncryptPushPayloadForReceiver(pushDefaultServerSK, ref, pushTestRecipient1PK[:])
 	require.NotEmpty(t, encrypted2)
 	require.NoError(t, err)
 
 	require.NotEqual(t, encrypted1, encrypted2)
 
-	decrypted1, err := decryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushTestRecipient1SK)
+	decrypted1, err := bertypush.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushTestRecipient1SK)
 	require.NoError(t, err)
 	require.Equal(t, ref, decrypted1)
 
-	decrypted1, err = decryptPushDataFromServer(encrypted1, pushTestRecipient1PK, pushTestRecipient1SK) // invalid server pk
+	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, pushTestRecipient1PK, pushTestRecipient1SK) // invalid server pk
 	require.Error(t, err)
 
-	decrypted1, err = decryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushDefaultServerSK) // invalid dest sk
+	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushDefaultServerSK) // invalid dest sk
 	require.Error(t, err)
 
-	decrypted1, err = decryptPushDataFromServer(nil, pushDefaultServerPK, pushTestRecipient1SK)
+	decrypted1, err = bertypush.DecryptPushDataFromServer(nil, pushDefaultServerPK, pushTestRecipient1SK)
 	require.Error(t, err)
 
-	decrypted1, err = decryptPushDataFromServer(encrypted1, nil, pushTestRecipient1SK)
+	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, nil, pushTestRecipient1SK)
 	require.Error(t, err)
 
-	decrypted1, err = decryptPushDataFromServer(encrypted1, pushDefaultServerPK, nil)
+	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, nil)
 	require.Error(t, err)
 
-	decrypted1, err = decryptPushDataFromServer([]byte("invalid data"), pushDefaultServerPK, nil)
+	decrypted1, err = bertypush.DecryptPushDataFromServer([]byte("invalid data"), pushDefaultServerPK, nil)
 	require.Error(t, err)
 }
 

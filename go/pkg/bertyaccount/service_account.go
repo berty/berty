@@ -19,12 +19,15 @@ import (
 	"moul.io/progress"
 	"moul.io/u"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	nb "berty.tech/berty/v2/go/internal/androidnearby"
 	"berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
+	"berty.tech/berty/v2/go/pkg/accounttypes"
+	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -32,18 +35,14 @@ import (
 	"berty.tech/berty/v2/go/pkg/username"
 )
 
-const (
-	accountMetafileName    = "account_meta"
-	accountNetConfFileName = "account_net_conf"
-)
-
-func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress) (*AccountMetadata, error) {
+func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
 	args := req.GetArgs()
 
 	if req.NetworkConfig == nil {
 		req.NetworkConfig, _ = s.NetworkConfigForAccount(req.AccountID)
 	}
-	args = req.NetworkConfig.AddArgs(args)
+
+	args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
 
 	s.logger.Info("opening account with args", zap.Strings("args", args))
 
@@ -204,7 +203,7 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 }
 
 // OpenAccount starts a Berty node.
-func (s *service) OpenAccount(ctx context.Context, req *OpenAccount_Request) (_ *OpenAccount_Reply, err error) {
+func (s *service) OpenAccount(ctx context.Context, req *accounttypes.OpenAccount_Request) (_ *accounttypes.OpenAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -215,11 +214,11 @@ func (s *service) OpenAccount(ctx context.Context, req *OpenAccount_Request) (_ 
 		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
-	return &OpenAccount_Reply{}, nil
+	return &accounttypes.OpenAccount_Reply{}, nil
 }
 
 // OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
-func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, server AccountService_OpenAccountWithProgressServer) (err error) {
+func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgress_Request, server accounttypes.AccountService_OpenAccountWithProgressServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -239,7 +238,7 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&OpenAccountWithProgress_Reply{
+			err := server.Send(&accounttypes.OpenAccountWithProgress_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
@@ -258,7 +257,7 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 	}()
 
 	// FIXME: replace with a helper that json unmarshal + directly remashal, to avoid being unsynced?
-	typed := OpenAccount_Request{
+	typed := accounttypes.OpenAccount_Request{
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
@@ -273,7 +272,7 @@ func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, 
 	return nil
 }
 
-func (s *service) CloseAccount(ctx context.Context, req *CloseAccount_Request) (_ *CloseAccount_Reply, err error) {
+func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccount_Request) (_ *accounttypes.CloseAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -281,7 +280,7 @@ func (s *service) CloseAccount(ctx context.Context, req *CloseAccount_Request) (
 	defer func() { endSection(err) }()
 
 	if s.initManager == nil {
-		return &CloseAccount_Reply{}, nil
+		return &accounttypes.CloseAccount_Reply{}, nil
 	}
 
 	if l, err := s.initManager.GetLogger(); err == nil {
@@ -295,10 +294,10 @@ func (s *service) CloseAccount(ctx context.Context, req *CloseAccount_Request) (
 	s.initManager = nil
 	s.accountData = nil
 
-	return &CloseAccount_Reply{}, nil
+	return &accounttypes.CloseAccount_Reply{}, nil
 }
 
-func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request, server AccountService_CloseAccountWithProgressServer) (err error) {
+func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithProgress_Request, server accounttypes.AccountService_CloseAccountWithProgressServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -318,7 +317,7 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&CloseAccountWithProgress_Reply{
+			err := server.Send(&accounttypes.CloseAccountWithProgress_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
@@ -392,84 +391,25 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 	return manager, nil
 }
 
-func (s *service) ListAccounts(_ context.Context, _ *ListAccounts_Request) (*ListAccounts_Reply, error) {
+func (s *service) ListAccounts(_ context.Context, _ *accounttypes.ListAccounts_Request) (*accounttypes.ListAccounts_Reply, error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	accounts, err := listAccounts(s.rootdir, s.logger)
+	accounts, err := accountutils.ListAccounts(s.rootdir, s.logger)
 	if err != nil {
 		return nil, err
 	}
 
-	return &ListAccounts_Reply{
+	return &accounttypes.ListAccounts_Reply{
 		Accounts: accounts,
 	}, nil
 }
 
-func listAccounts(rootDir string, logger *zap.Logger) ([]*AccountMetadata, error) {
-	if logger == nil {
-		logger = zap.NewNop()
-	}
-
-	if _, err := os.Stat(rootDir); os.IsNotExist(err) {
-		return []*AccountMetadata{}, nil
-	} else if err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
-	}
-
-	subitems, err := ioutil.ReadDir(rootDir)
-	if err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
-	}
-
-	var accounts []*AccountMetadata
-
-	for _, subitem := range subitems {
-		if !subitem.IsDir() {
-			continue
-		}
-
-		account, err := getAccountMetaForName(rootDir, subitem.Name(), logger)
-		if err != nil {
-			accounts = append(accounts, &AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
-		} else {
-			accounts = append(accounts, account)
-		}
-	}
-
-	return accounts, nil
+func (s *service) getAccountMetaForName(accountID string) (*accounttypes.AccountMetadata, error) {
+	return accountutils.GetAccountMetaForName(s.rootdir, accountID, s.logger)
 }
 
-func (s *service) getAccountMetaForName(accountID string) (*AccountMetadata, error) {
-	return getAccountMetaForName(s.rootdir, accountID, s.logger)
-}
-
-func getAccountMetaForName(rootDir string, accountID string, logger *zap.Logger) (*AccountMetadata, error) {
-	if logger == nil {
-		logger = zap.NewNop()
-	}
-
-	metafileName := filepath.Join(rootDir, accountID, accountMetafileName)
-
-	metaBytes, err := ioutil.ReadFile(metafileName)
-	if os.IsNotExist(err) {
-		return nil, errcode.ErrBertyAccountDataNotFound
-	} else if err != nil {
-		logger.Warn("unable to read account metadata", zap.Error(err), zap.String("account-id", accountID))
-		return nil, errcode.ErrBertyAccountFSError.Wrap(fmt.Errorf("unable to read account metadata: %w", err))
-	}
-
-	meta := &AccountMetadata{}
-	if err := proto.Unmarshal(metaBytes, meta); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshall account metadata: %w", err))
-	}
-
-	meta.AccountID = accountID
-
-	return meta, nil
-}
-
-func (s *service) DeleteAccount(ctx context.Context, request *DeleteAccount_Request) (_ *DeleteAccount_Reply, err error) {
+func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.DeleteAccount_Request) (_ *accounttypes.DeleteAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -496,10 +436,10 @@ func (s *service) DeleteAccount(ctx context.Context, request *DeleteAccount_Requ
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	return &DeleteAccount_Reply{}, nil
+	return &accounttypes.DeleteAccount_Reply{}, nil
 }
 
-func (s *service) updateAccountMetadataLastOpened(accountID string) (*AccountMetadata, error) {
+func (s *service) updateAccountMetadataLastOpened(accountID string) (*accounttypes.AccountMetadata, error) {
 	meta, err := s.getAccountMetaForName(accountID)
 	if err != nil {
 		return nil, err
@@ -512,7 +452,7 @@ func (s *service) updateAccountMetadataLastOpened(accountID string) (*AccountMet
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := filepath.Join(s.rootdir, accountID, accountMetafileName)
+	metafileName := filepath.Join(s.rootdir, accountID, accountutils.AccountMetafileName)
 	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -523,7 +463,7 @@ func (s *service) updateAccountMetadataLastOpened(accountID string) (*AccountMet
 	return meta, nil
 }
 
-func (s *service) createAccountMetadata(accountID string, name string) (*AccountMetadata, error) {
+func (s *service) createAccountMetadata(accountID string, name string) (*accounttypes.AccountMetadata, error) {
 	if _, err := s.getAccountMetaForName(accountID); err == nil {
 		return nil, errcode.ErrBertyAccountAlreadyExists
 	} else if !errcode.Is(err, errcode.ErrBertyAccountDataNotFound) {
@@ -535,7 +475,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 		return nil, err
 	}
 
-	meta := &AccountMetadata{
+	meta := &accounttypes.AccountMetadata{
 		Name: name,
 	}
 
@@ -551,7 +491,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := filepath.Join(s.rootdir, accountID, accountMetafileName)
+	metafileName := filepath.Join(s.rootdir, accountID, accountutils.AccountMetafileName)
 	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -561,7 +501,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*Account
 	return meta, nil
 }
 
-func (s *service) ImportAccountWithProgress(req *ImportAccountWithProgress_Request, server AccountService_ImportAccountWithProgressServer) (err error) {
+func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithProgress_Request, server accounttypes.AccountService_ImportAccountWithProgressServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -584,7 +524,7 @@ func (s *service) ImportAccountWithProgress(req *ImportAccountWithProgress_Reque
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&ImportAccountWithProgress_Reply{
+			err := server.Send(&accounttypes.ImportAccountWithProgress_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
@@ -602,7 +542,7 @@ func (s *service) ImportAccountWithProgress(req *ImportAccountWithProgress_Reque
 		done <- true
 	}()
 
-	typed := ImportAccount_Request{
+	typed := accounttypes.ImportAccount_Request{
 		AccountName:   req.GetAccountName(),
 		BackupPath:    req.GetBackupPath(),
 		Args:          req.GetArgs(),
@@ -620,7 +560,7 @@ func (s *service) ImportAccountWithProgress(req *ImportAccountWithProgress_Reque
 
 	// send reply
 	{
-		err = server.Send(&ImportAccountWithProgress_Reply{
+		err = server.Send(&accounttypes.ImportAccountWithProgress_Reply{
 			AccountMetadata: ret.AccountMetadata,
 		})
 		if err != nil {
@@ -631,7 +571,7 @@ func (s *service) ImportAccountWithProgress(req *ImportAccountWithProgress_Reque
 	return nil
 }
 
-func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request) (_ *ImportAccount_Reply, err error) {
+func (s *service) ImportAccount(ctx context.Context, req *accounttypes.ImportAccount_Request) (_ *accounttypes.ImportAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -652,7 +592,7 @@ func (s *service) ImportAccount(ctx context.Context, req *ImportAccount_Request)
 	return ret, nil
 }
 
-func (s *service) importAccount(ctx context.Context, req *ImportAccount_Request, prog *progress.Progress) (_ *ImportAccount_Reply, err error) {
+func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAccount_Request, prog *progress.Progress) (_ *accounttypes.ImportAccount_Reply, err error) {
 	if prog == nil {
 		prog = progress.New()
 		defer prog.Close()
@@ -671,7 +611,7 @@ func (s *service) importAccount(ctx context.Context, req *ImportAccount_Request,
 
 	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
 
-	meta, err := s.createAccount(&CreateAccount_Request{
+	meta, err := s.createAccount(&accounttypes.CreateAccount_Request{
 		AccountID:     req.AccountID,
 		AccountName:   req.AccountName,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
@@ -692,7 +632,7 @@ func (s *service) importAccount(ctx context.Context, req *ImportAccount_Request,
 		return nil, err
 	}
 
-	meta, err = s.updateAccount(&UpdateAccount_Request{
+	meta, err = s.updateAccount(&accounttypes.UpdateAccount_Request{
 		AccountID:   meta.AccountID,
 		AccountName: a.Account.DisplayName,
 		PublicKey:   a.Account.PublicKey,
@@ -702,12 +642,12 @@ func (s *service) importAccount(ctx context.Context, req *ImportAccount_Request,
 		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
 	}
 
-	return &ImportAccount_Reply{
+	return &accounttypes.ImportAccount_Reply{
 		AccountMetadata: meta,
 	}, nil
 }
 
-func (s *service) createAccount(req *CreateAccount_Request, prog *progress.Progress) (*AccountMetadata, error) {
+func (s *service) createAccount(req *accounttypes.CreateAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
 	if prog == nil {
 		prog = progress.New()
 		defer prog.Close()
@@ -740,7 +680,7 @@ func (s *service) createAccount(req *CreateAccount_Request, prog *progress.Progr
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	meta, err := s.openAccount(&OpenAccount_Request{
+	meta, err := s.openAccount(&accounttypes.OpenAccount_Request{
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
@@ -753,7 +693,7 @@ func (s *service) createAccount(req *CreateAccount_Request, prog *progress.Progr
 	return meta, nil
 }
 
-func (s *service) CreateAccount(ctx context.Context, req *CreateAccount_Request) (_ *CreateAccount_Reply, err error) {
+func (s *service) CreateAccount(ctx context.Context, req *accounttypes.CreateAccount_Request) (_ *accounttypes.CreateAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -770,12 +710,12 @@ func (s *service) CreateAccount(ctx context.Context, req *CreateAccount_Request)
 		return nil, errcode.ErrBertyAccountCreationFailed.Wrap(err)
 	}
 
-	return &CreateAccount_Reply{
+	return &accounttypes.CreateAccount_Reply{
 		AccountMetadata: meta,
 	}, nil
 }
 
-func (s *service) updateAccount(req *UpdateAccount_Request) (*AccountMetadata, error) {
+func (s *service) updateAccount(req *accounttypes.UpdateAccount_Request) (*accounttypes.AccountMetadata, error) {
 	meta, err := s.getAccountMetaForName(req.AccountID)
 	if err != nil {
 		return nil, err
@@ -797,7 +737,7 @@ func (s *service) updateAccount(req *UpdateAccount_Request) (*AccountMetadata, e
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := filepath.Join(s.rootdir, req.AccountID, accountMetafileName)
+	metafileName := filepath.Join(s.rootdir, req.AccountID, accountutils.AccountMetafileName)
 	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -808,7 +748,7 @@ func (s *service) updateAccount(req *UpdateAccount_Request) (*AccountMetadata, e
 	return meta, nil
 }
 
-func (s *service) UpdateAccount(ctx context.Context, req *UpdateAccount_Request) (_ *UpdateAccount_Reply, err error) {
+func (s *service) UpdateAccount(ctx context.Context, req *accounttypes.UpdateAccount_Request) (_ *accounttypes.UpdateAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -824,13 +764,13 @@ func (s *service) UpdateAccount(ctx context.Context, req *UpdateAccount_Request)
 		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
 	}
 
-	return &UpdateAccount_Reply{
+	return &accounttypes.UpdateAccount_Reply{
 		AccountMetadata: meta,
 	}, nil
 }
 
-func (s *service) GetUsername(_ context.Context, _ *GetUsername_Request) (_ *GetUsername_Reply, err error) {
-	return &GetUsername_Reply{
+func (s *service) GetUsername(_ context.Context, _ *accounttypes.GetUsername_Request) (_ *accounttypes.GetUsername_Reply, err error) {
+	return &accounttypes.GetUsername_Reply{
 		Username: username.GetUsername(),
 	}, nil
 }
@@ -851,41 +791,41 @@ func (s *service) generateNewAccountID() (string, error) {
 	}
 }
 
-func NetworkConfigGetDefault() *NetworkConfig {
+func NetworkConfigGetDefault() *accounttypes.NetworkConfig {
 	defaultRDVPeerMaddrs := make([]string, len(config.Config.P2P.RDVP))
 	for i := range config.Config.P2P.RDVP {
 		defaultRDVPeerMaddrs[i] = config.Config.P2P.RDVP[i].Maddr
 	}
 
-	return &NetworkConfig{
+	return &accounttypes.NetworkConfig{
 		Bootstrap:                  []string{initutil.KeywordDefault},
 		Rendezvous:                 []string{initutil.KeywordDefault},
 		StaticRelay:                []string{initutil.KeywordDefault},
-		DHT:                        NetworkConfig_DHTClient,
-		BluetoothLE:                NetworkConfig_Disabled,
-		AndroidNearby:              NetworkConfig_Disabled,
-		AppleMultipeerConnectivity: NetworkConfig_Disabled,
-		MDNS:                       NetworkConfig_Enabled,
-		Tor:                        NetworkConfig_TorDisabled,
+		DHT:                        accounttypes.NetworkConfig_DHTClient,
+		BluetoothLE:                accounttypes.NetworkConfig_Disabled,
+		AndroidNearby:              accounttypes.NetworkConfig_Disabled,
+		AppleMultipeerConnectivity: accounttypes.NetworkConfig_Disabled,
+		MDNS:                       accounttypes.NetworkConfig_Enabled,
+		Tor:                        accounttypes.NetworkConfig_TorDisabled,
 	}
 }
 
-func NetworkConfigGetBlank() *NetworkConfig {
-	return &NetworkConfig{
+func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
+	return &accounttypes.NetworkConfig{
 		Bootstrap:                  []string{initutil.KeywordDefault},
 		Rendezvous:                 []string{initutil.KeywordDefault},
 		StaticRelay:                []string{initutil.KeywordDefault},
-		DHT:                        NetworkConfig_DHTUndefined,
-		BluetoothLE:                NetworkConfig_Undefined,
-		AndroidNearby:              NetworkConfig_Undefined,
-		AppleMultipeerConnectivity: NetworkConfig_Undefined,
-		MDNS:                       NetworkConfig_Undefined,
-		Tor:                        NetworkConfig_TorUndefined,
+		DHT:                        accounttypes.NetworkConfig_DHTUndefined,
+		BluetoothLE:                accounttypes.NetworkConfig_Undefined,
+		AndroidNearby:              accounttypes.NetworkConfig_Undefined,
+		AppleMultipeerConnectivity: accounttypes.NetworkConfig_Undefined,
+		MDNS:                       accounttypes.NetworkConfig_Undefined,
+		Tor:                        accounttypes.NetworkConfig_TorUndefined,
 	}
 }
 
-func (s *service) NetworkConfigForAccount(accountID string) (*NetworkConfig, bool) {
-	netConfName := filepath.Join(s.rootdir, accountID, accountNetConfFileName)
+func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.NetworkConfig, bool) {
+	netConfName := filepath.Join(s.rootdir, accountID, accountutils.AccountNetConfFileName)
 	netConfBytes, err := ioutil.ReadFile(netConfName)
 	if os.IsNotExist(err) {
 		return NetworkConfigGetDefault(), false
@@ -894,7 +834,7 @@ func (s *service) NetworkConfigForAccount(accountID string) (*NetworkConfig, boo
 		return NetworkConfigGetDefault(), false
 	}
 
-	ret := &NetworkConfig{}
+	ret := &accounttypes.NetworkConfig{}
 	if err := ret.Unmarshal(netConfBytes); err != nil {
 		s.logger.Warn("unable to parse network configuration for account", zap.Error(err), zap.String("account-id", accountID))
 		return NetworkConfigGetDefault(), false
@@ -903,11 +843,11 @@ func (s *service) NetworkConfigForAccount(accountID string) (*NetworkConfig, boo
 	return ret, true
 }
 
-func (s *service) NetworkConfigGet(ctx context.Context, request *NetworkConfigGet_Request) (*NetworkConfigGet_Reply, error) {
+func (s *service) NetworkConfigGet(ctx context.Context, request *accounttypes.NetworkConfigGet_Request) (*accounttypes.NetworkConfigGet_Reply, error) {
 	defaultConfig := NetworkConfigGetDefault()
 	currentConfig, isCustomConfig := s.NetworkConfigForAccount(request.AccountID)
 
-	return &NetworkConfigGet_Reply{
+	return &accounttypes.NetworkConfigGet_Reply{
 		DefaultConfig:      defaultConfig,
 		CurrentConfig:      currentConfig,
 		CustomConfigExists: isCustomConfig,
@@ -936,15 +876,15 @@ func SanitizeCheckMultiAddr(addrs []string) error {
 	return nil
 }
 
-func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *NetworkConfig) error {
+func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *accounttypes.NetworkConfig) error {
 	if networkConfig == nil {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
 	}
 
 	// TODO: allow Tor when available
-	if networkConfig.Tor != NetworkConfig_TorUndefined && networkConfig.Tor != NetworkConfig_TorDisabled {
+	if networkConfig.Tor != accounttypes.NetworkConfig_TorUndefined && networkConfig.Tor != accounttypes.NetworkConfig_TorDisabled {
 		s.logger.Warn("tor is set to required, downgrading to disabled as not yet supported")
-		networkConfig.Tor = NetworkConfig_TorDisabled
+		networkConfig.Tor = accounttypes.NetworkConfig_TorDisabled
 	}
 
 	// Sanitize check network config multi addrs
@@ -965,7 +905,7 @@ func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *N
 		return err
 	}
 
-	netConfName := filepath.Join(s.rootdir, accountID, accountNetConfFileName)
+	netConfName := filepath.Join(s.rootdir, accountID, accountutils.AccountNetConfFileName)
 	if err := ioutil.WriteFile(netConfName, data, 0o600); err != nil {
 		return err
 	}
@@ -973,28 +913,28 @@ func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *N
 	return nil
 }
 
-func (s *service) NetworkConfigSet(ctx context.Context, request *NetworkConfigSet_Request) (*NetworkConfigSet_Reply, error) {
+func (s *service) NetworkConfigSet(ctx context.Context, request *accounttypes.NetworkConfigSet_Request) (*accounttypes.NetworkConfigSet_Reply, error) {
 	if err := s.saveNetworkConfigForAccount(request.AccountID, request.Config); err != nil {
 		return nil, err
 	}
 
-	return &NetworkConfigSet_Reply{}, nil
+	return &accounttypes.NetworkConfigSet_Reply{}, nil
 }
 
-func (m *NetworkConfig) AddArgs(args []string) []string {
+func AddArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string) []string {
 	defaultConfig := NetworkConfigGetDefault()
 
 	if !ArgsHasWithPrefix(args, initutil.FlagNameTorMode) {
 		torFlag := m.Tor
-		if torFlag == NetworkConfig_TorUndefined {
+		if torFlag == accounttypes.NetworkConfig_TorUndefined {
 			torFlag = defaultConfig.Tor
 		}
 
-		if torValue, ok := map[NetworkConfig_TorFlag]string{
-			NetworkConfig_TorUndefined: "disabled",
-			NetworkConfig_TorDisabled:  "disabled",
-			NetworkConfig_TorOptional:  "optional",
-			NetworkConfig_TorRequired:  "required",
+		if torValue, ok := map[accounttypes.NetworkConfig_TorFlag]string{
+			accounttypes.NetworkConfig_TorUndefined: "disabled",
+			accounttypes.NetworkConfig_TorDisabled:  "disabled",
+			accounttypes.NetworkConfig_TorOptional:  "optional",
+			accounttypes.NetworkConfig_TorRequired:  "required",
 		}[torFlag]; ok {
 			args = append(args, ArgSet(initutil.FlagNameTorMode, torValue))
 		}
@@ -1009,8 +949,8 @@ func (m *NetworkConfig) AddArgs(args []string) []string {
 	args = addFlagValueArgs(args, initutil.FlagNameP2PNearby, nb.Supported, defaultConfig.AndroidNearby, m.AndroidNearby)
 	args = addFlagValueArgs(args, initutil.FlagNameP2PMDNS, true, defaultConfig.MDNS, m.MDNS)
 
-	args = m.addDHTArgs(args, defaultConfig)
-	args = m.addRDVPArgs(args, defaultConfig)
+	args = AddDHTArgsUsingNetworkConfig(m, args, defaultConfig)
+	args = AddRDVPArgsUsingNetworkConfig(m, args, defaultConfig)
 
 	return args
 }
@@ -1027,24 +967,24 @@ func addListValueArgs(args []string, flagName string, defaultValue, currentValue
 	return args
 }
 
-func addFlagValueArgs(args []string, flagName string, platformSupported bool, defaultValue, currentValue NetworkConfig_Flag) []string {
+func addFlagValueArgs(args []string, flagName string, platformSupported bool, defaultValue, currentValue accounttypes.NetworkConfig_Flag) []string {
 	if hasFlag := ArgsHasWithPrefix(args, flagName); hasFlag {
 		return args
 	}
 
-	if currentValue == NetworkConfig_Undefined {
+	if currentValue == accounttypes.NetworkConfig_Undefined {
 		currentValue = defaultValue
 	}
 
 	flagVal := "false"
-	if platformSupported && currentValue == NetworkConfig_Enabled {
+	if platformSupported && currentValue == accounttypes.NetworkConfig_Enabled {
 		flagVal = "true"
 	}
 
 	return append(args, ArgSet(flagName, flagVal))
 }
 
-func (m *NetworkConfig) addRDVPArgs(args []string, defaultConfig *NetworkConfig) []string {
+func AddRDVPArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string, defaultConfig *accounttypes.NetworkConfig) []string {
 	if !ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderRDVPDriver) && !ArgsHasWithPrefix(args, initutil.FlagNameP2PRDVP) {
 		rdvpDisabled := false
 		rdvpHosts := m.Rendezvous
@@ -1073,24 +1013,24 @@ func (m *NetworkConfig) addRDVPArgs(args []string, defaultConfig *NetworkConfig)
 	return args
 }
 
-func (m *NetworkConfig) addDHTArgs(args []string, defaultConfig *NetworkConfig) []string {
+func AddDHTArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string, defaultConfig *accounttypes.NetworkConfig) []string {
 	hasTinderDHTDriverFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderDHTDriver)
 	hasDHTFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PDHT)
 
 	dhtDisabled := false
 	if !hasDHTFlag {
 		dhtFlag := m.DHT
-		if dhtFlag == NetworkConfig_DHTUndefined {
+		if dhtFlag == accounttypes.NetworkConfig_DHTUndefined {
 			dhtFlag = defaultConfig.DHT
 		}
 
-		if dhtValue, ok := map[NetworkConfig_DHTFlag]string{
-			NetworkConfig_DHTClient:     initutil.FlagValueP2PDHTClient,
-			NetworkConfig_DHTServer:     initutil.FlagValueP2PDHTServer,
-			NetworkConfig_DHTAuto:       initutil.FlagValueP2PDHTAuto,
-			NetworkConfig_DHTAutoServer: initutil.FlagValueP2PDHTAutoServer,
-			NetworkConfig_DHTDisabled:   initutil.FlagValueP2PDHTDisabled,
-			NetworkConfig_DHTUndefined:  initutil.FlagValueP2PDHTDisabled,
+		if dhtValue, ok := map[accounttypes.NetworkConfig_DHTFlag]string{
+			accounttypes.NetworkConfig_DHTClient:     initutil.FlagValueP2PDHTClient,
+			accounttypes.NetworkConfig_DHTServer:     initutil.FlagValueP2PDHTServer,
+			accounttypes.NetworkConfig_DHTAuto:       initutil.FlagValueP2PDHTAuto,
+			accounttypes.NetworkConfig_DHTAutoServer: initutil.FlagValueP2PDHTAutoServer,
+			accounttypes.NetworkConfig_DHTDisabled:   initutil.FlagValueP2PDHTDisabled,
+			accounttypes.NetworkConfig_DHTUndefined:  initutil.FlagValueP2PDHTDisabled,
 		}[dhtFlag]; ok {
 			args = append(args, ArgSet(initutil.FlagNameP2PDHT, dhtValue))
 
@@ -1125,7 +1065,7 @@ func ArgsHasWithPrefix(args []string, prefix string) bool {
 	return false
 }
 
-func (s *service) PushReceive(ctx context.Context, req *PushReceive_Request) (*PushReceive_Reply, error) {
+func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive_Request) (*accounttypes.PushReceive_Reply, error) {
 	payload, err := base64.StdEncoding.DecodeString(req.Payload)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -1150,9 +1090,9 @@ func (s *service) PushReceive(ctx context.Context, req *PushReceive_Request) (*P
 		if err == nil && client != nil {
 			rep, err := client.PushReceive(ctx, &messengertypes.PushReceive_Request{Payload: payload})
 			if err == nil {
-				pushData, err := pushEnrich(rep.Data, accData, s.logger)
+				pushData, err := bertypush.PushEnrich(rep.Data, accData, s.logger)
 				if err == nil {
-					return &PushReceive_Reply{
+					return &accounttypes.PushReceive_Reply{
 						PushData: pushData,
 					}, nil
 				}
@@ -1167,27 +1107,27 @@ func (s *service) PushReceive(ctx context.Context, req *PushReceive_Request) (*P
 		}
 	}
 
-	rawPushData, accountData, err := PushDecrypt(ctx, s.rootdir, payload, &PushDecryptOpts{Logger: s.logger, ExcludedAccounts: excludedAccounts})
+	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.rootdir, payload, &bertypush.PushDecryptOpts{Logger: s.logger, ExcludedAccounts: excludedAccounts})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
 
-	pushData, err := pushEnrich(rawPushData, accountData, s.logger)
+	pushData, err := bertypush.PushEnrich(rawPushData, accountData, s.logger)
 	if err != nil {
 		s.logger.Warn("unable to enrich push data", zap.Error(err))
 		// TODO: should we return early?
 	}
 
-	return &PushReceive_Reply{
+	return &accounttypes.PushReceive_Reply{
 		PushData: pushData,
 	}, nil
 }
 
-func (s *service) PushPlatformTokenRegister(ctx context.Context, request *PushPlatformTokenRegister_Request) (*PushPlatformTokenRegister_Reply, error) {
+func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accounttypes.PushPlatformTokenRegister_Request) (*accounttypes.PushPlatformTokenRegister_Reply, error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	pushPK, _, err := initutil.GetDevicePushKeyForPath(s.devicePushKeyPath, true)
+	pushPK, _, err := accountutils.GetDevicePushKeyForPath(s.devicePushKeyPath, true)
 	if err != nil {
 		return nil, err
 	}
@@ -1202,7 +1142,7 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *PushPl
 	}
 
 	if s.initManager == nil {
-		return &PushPlatformTokenRegister_Reply{}, nil
+		return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
 	}
 
 	client, err := s.initManager.GetProtocolClient()
@@ -1214,5 +1154,5 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *PushPl
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	return &PushPlatformTokenRegister_Reply{}, nil
+	return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
 }

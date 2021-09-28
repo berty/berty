@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -155,14 +156,14 @@ func TestReplicationService_Flow(t *testing.T) {
 		Logger:    logger,
 		Mocknet:   mn,
 		RDVPeer:   rdvp.Peerstore().PeerInfo(rdvp.ID()),
-		Datastore: ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")),
+		Datastore: datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")),
 	}
 
 	ipfsOpts2 := &ipfsutil.TestingAPIOpts{
 		Logger:    logger,
 		Mocknet:   mn,
 		RDVPeer:   rdvp.Peerstore().PeerInfo(rdvp.ID()),
-		Datastore: ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")),
+		Datastore: datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")),
 	}
 
 	require.NoError(t, mn.ConnectAllButSelf())

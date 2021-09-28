@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 const (
@@ -18,8 +19,8 @@ type PushMockedDispatcher struct {
 	queue    map[string][][]byte
 }
 
-func (d *PushMockedDispatcher) TokenType() protocoltypes.PushServiceTokenType {
-	return protocoltypes.PushTokenMQTT
+func (d *PushMockedDispatcher) TokenType() pushtypes.PushServiceTokenType {
+	return pushtypes.PushServiceTokenType_PushTokenMQTT
 }
 
 func (d *PushMockedDispatcher) Dispatch(data []byte, receiver *protocoltypes.PushServiceReceiver) error {

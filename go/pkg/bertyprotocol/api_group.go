@@ -52,12 +52,12 @@ func (s *service) GroupInfo(_ context.Context, req *protocoltypes.GroupInfo_Requ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	member, err := md.member.GetPublic().Raw()
+	member, err := md.PrivateMember().GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	device, err := md.device.GetPublic().Raw()
+	device, err := md.PrivateDevice().GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}

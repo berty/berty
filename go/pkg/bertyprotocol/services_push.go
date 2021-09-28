@@ -13,6 +13,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 const (
@@ -24,7 +25,7 @@ const (
 type PushDispatcher interface {
 	Dispatch(payload []byte, receiver *protocoltypes.PushServiceReceiver) error
 	BundleID() string
-	TokenType() protocoltypes.PushServiceTokenType
+	TokenType() pushtypes.PushServiceTokenType
 }
 
 type pushService struct {
@@ -32,21 +33,21 @@ type pushService struct {
 	privateKey          *[cryptoutil.KeySize]byte
 	publicKey           *[cryptoutil.KeySize]byte
 	dispatchers         map[string]PushDispatcher
-	supportedTokenTypes []*protocoltypes.PushServiceSupportedTokenType
+	supportedTokenTypes []*pushtypes.PushServiceSupportedTokenType
 }
 
-func pushDispatcherKey(tokenType protocoltypes.PushServiceTokenType, bundleID string) string {
+func PushDispatcherKey(tokenType pushtypes.PushServiceTokenType, bundleID string) string {
 	return fmt.Sprintf("%d-%s", tokenType, bundleID)
 }
 
-func (d *pushService) ServerInfo(_ context.Context, _ *protocoltypes.PushServiceServerInfo_Request) (*protocoltypes.PushServiceServerInfo_Reply, error) {
-	return &protocoltypes.PushServiceServerInfo_Reply{
+func (d *pushService) ServerInfo(_ context.Context, _ *pushtypes.PushServiceServerInfo_Request) (*pushtypes.PushServiceServerInfo_Reply, error) {
+	return &pushtypes.PushServiceServerInfo_Reply{
 		PublicKey:           d.publicKey[:],
 		SupportedTokenTypes: d.supportedTokenTypes,
 	}, nil
 }
 
-func (d *pushService) Send(ctx context.Context, request *protocoltypes.PushServiceSend_Request) (*protocoltypes.PushServiceSend_Reply, error) {
+func (d *pushService) Send(ctx context.Context, request *pushtypes.PushServiceSend_Request) (*pushtypes.PushServiceSend_Reply, error) {
 	if len(request.Receivers) == 0 {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no receivers supplied"))
 	}
@@ -71,7 +72,7 @@ func (d *pushService) Send(ctx context.Context, request *protocoltypes.PushServi
 	errCh := make(chan error)
 
 	for i, receiver := range request.Receivers {
-		go func(i int, receiver *protocoltypes.PushServiceOpaqueReceiver) {
+		go func(i int, receiver *pushtypes.PushServiceOpaqueReceiver) {
 			defer wg.Done()
 
 			if err := d.sendSingle(pushPayload, receiver); err != nil {
@@ -89,7 +90,7 @@ func (d *pushService) Send(ctx context.Context, request *protocoltypes.PushServi
 
 	select {
 	case <-subCtx.Done():
-		return &protocoltypes.PushServiceSend_Reply{}, nil
+		return &pushtypes.PushServiceSend_Reply{}, nil
 
 	case err := <-errCh:
 		cancel()
@@ -97,8 +98,16 @@ func (d *pushService) Send(ctx context.Context, request *protocoltypes.PushServi
 	}
 }
 
-func (d *pushService) decodeOpaqueReceiver(receiver *protocoltypes.PushServiceOpaqueReceiver) (*protocoltypes.PushServiceReceiver, error) {
-	receiverBytes, ok := box.OpenAnonymous(nil, receiver.OpaqueToken, d.publicKey, d.privateKey)
+func (d *pushService) decodeOpaqueReceiver(receiver *pushtypes.PushServiceOpaqueReceiver) (*protocoltypes.PushServiceReceiver, error) {
+	return InternalDecodeOpaqueReceiver(d.publicKey, d.privateKey, d.dispatchers, receiver)
+}
+
+func (d *pushService) encryptPushPayloadForReceiver(rawPayload, recipientPublicKey []byte) ([]byte, error) {
+	return InternalEncryptPushPayloadForReceiver(d.privateKey, rawPayload, recipientPublicKey)
+}
+
+func InternalDecodeOpaqueReceiver(publicKey *[cryptoutil.KeySize]byte, privateKey *[cryptoutil.KeySize]byte, dispatchers map[string]PushDispatcher, receiver *pushtypes.PushServiceOpaqueReceiver) (*protocoltypes.PushServiceReceiver, error) {
+	receiverBytes, ok := box.OpenAnonymous(nil, receiver.OpaqueToken, publicKey, privateKey)
 	if !ok {
 		return nil, errcode.ErrCryptoDecrypt.Wrap(fmt.Errorf("unable to decrypt push identifier"))
 	}
@@ -108,14 +117,14 @@ func (d *pushService) decodeOpaqueReceiver(receiver *protocoltypes.PushServiceOp
 		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshal push identifier: %w", err))
 	}
 
-	if _, ok := d.dispatchers[pushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]; !ok {
+	if _, ok := dispatchers[PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]; !ok {
 		return nil, errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported bundle id"))
 	}
 
 	return pushReceiver, nil
 }
 
-func (d *pushService) encryptPushPayloadForReceiver(rawPayload, recipientPublicKey []byte) ([]byte, error) {
+func InternalEncryptPushPayloadForReceiver(privateKey *[cryptoutil.KeySize]byte, rawPayload, recipientPublicKey []byte) ([]byte, error) {
 	nonce, err := cryptoutil.GenerateNonce()
 	if err != nil {
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
@@ -126,9 +135,9 @@ func (d *pushService) encryptPushPayloadForReceiver(rawPayload, recipientPublicK
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	boxed := box.Seal(nil, rawPayload, nonce, receiverKey, d.privateKey)
+	boxed := box.Seal(nil, rawPayload, nonce, receiverKey, privateKey)
 
-	payloadBytes, err := (&protocoltypes.PushExposedData{
+	payloadBytes, err := (&pushtypes.PushExposedData{
 		Nonce: nonce[:],
 		Box:   boxed,
 	}).Marshal()
@@ -139,15 +148,15 @@ func (d *pushService) encryptPushPayloadForReceiver(rawPayload, recipientPublicK
 	return payloadBytes, nil
 }
 
-func (d *pushService) sendSingle(rawPayload []byte, receiver *protocoltypes.PushServiceOpaqueReceiver) error {
+func (d *pushService) sendSingle(rawPayload []byte, receiver *pushtypes.PushServiceOpaqueReceiver) error {
 	pushReceiver, err := d.decodeOpaqueReceiver(receiver)
 	if err != nil {
 		return errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	dispatcher, ok := d.dispatchers[pushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]
+	dispatcher, ok := d.dispatchers[PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]
 	if !ok {
-		return errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported %s", pushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)))
+		return errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported %s", PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)))
 	}
 
 	payloadBytes, err := d.encryptPushPayloadForReceiver(rawPayload, pushReceiver.RecipientPublicKey)
@@ -200,7 +209,7 @@ func newPushService(privateKey *[cryptoutil.KeySize]byte, dispatchers []PushDisp
 
 	curve25519.ScalarBaseMult(service.publicKey, privateKey)
 
-	service.dispatchers, service.supportedTokenTypes, err = pushServiceGenerateDispatchers(dispatchers)
+	service.dispatchers, service.supportedTokenTypes, err = PushServiceGenerateDispatchers(dispatchers)
 	if err != nil {
 		return nil, err
 	}
@@ -213,21 +222,21 @@ func newPushService(privateKey *[cryptoutil.KeySize]byte, dispatchers []PushDisp
 	return service, nil
 }
 
-func pushServiceGenerateDispatchers(dispatchers []PushDispatcher) (map[string]PushDispatcher, []*protocoltypes.PushServiceSupportedTokenType, error) {
+func PushServiceGenerateDispatchers(dispatchers []PushDispatcher) (map[string]PushDispatcher, []*pushtypes.PushServiceSupportedTokenType, error) {
 	serviceDispatchers := make(map[string]PushDispatcher, len(dispatchers))
-	serviceSupportedTypes := make([]*protocoltypes.PushServiceSupportedTokenType, 0, len(dispatchers))
+	serviceSupportedTypes := make([]*pushtypes.PushServiceSupportedTokenType, 0, len(dispatchers))
 
 	for _, dispatcher := range dispatchers {
 		bundleID := dispatcher.BundleID()
 		tokenType := dispatcher.TokenType()
 
-		if _, ok := serviceDispatchers[pushDispatcherKey(tokenType, bundleID)]; ok {
+		if _, ok := serviceDispatchers[PushDispatcherKey(tokenType, bundleID)]; ok {
 			return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("pushservice: %s app %s registered twice", tokenType.String(), bundleID))
 		}
 
-		serviceDispatchers[pushDispatcherKey(tokenType, bundleID)] = dispatcher
+		serviceDispatchers[PushDispatcherKey(tokenType, bundleID)] = dispatcher
 
-		serviceSupportedTypes = append(serviceSupportedTypes, &protocoltypes.PushServiceSupportedTokenType{
+		serviceSupportedTypes = append(serviceSupportedTypes, &pushtypes.PushServiceSupportedTokenType{
 			AppBundleID: bundleID,
 			TokenType:   tokenType,
 		})
@@ -236,7 +245,7 @@ func pushServiceGenerateDispatchers(dispatchers []PushDispatcher) (map[string]Pu
 	return serviceDispatchers, serviceSupportedTypes, nil
 }
 
-func pushSealTokenForServer(receiver *protocoltypes.PushServiceReceiver, server *protocoltypes.PushServer) (*protocoltypes.PushMemberTokenUpdate, error) {
+func PushSealTokenForServer(receiver *protocoltypes.PushServiceReceiver, server *protocoltypes.PushServer) (*protocoltypes.PushMemberTokenUpdate, error) {
 	if server == nil || len(server.ServerKey) != cryptoutil.KeySize {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a server key of %d bytes", cryptoutil.KeySize))
 	}
@@ -266,37 +275,10 @@ func pushSealTokenForServer(receiver *protocoltypes.PushServiceReceiver, server 
 	}, nil
 }
 
-func decryptPushDataFromServer(data []byte, serverPK, ownSK *[32]byte) ([]byte, error) {
-	if serverPK == nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("no push server public key provided"))
-	}
-
-	if ownSK == nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("no push receiver secret key provided"))
-	}
-
-	pushEnv := &protocoltypes.PushExposedData{}
-	if err := pushEnv.Unmarshal(data); err != nil {
-		return nil, errcode.ErrPushInvalidPayload.Wrap(err)
-	}
-
-	nonce, err := cryptoutil.NonceSliceToArray(pushEnv.Nonce)
-	if err != nil {
-		return nil, errcode.ErrPushInvalidPayload.Wrap(err)
-	}
-
-	msgBytes, ok := box.Open(nil, pushEnv.Box, nonce, serverPK, ownSK)
-	if !ok {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("box.Open failed"))
-	}
-
-	return msgBytes, nil
-}
-
 var _ PushService = (*pushService)(nil)
 
 type PushService interface {
-	PushServiceServer
+	pushtypes.PushServiceServer
 
 	Close() error
 }

@@ -11,11 +11,14 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/nacl/box"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func createVirtualOtherPeerSecretsShareSecret(t testing.TB, ctx context.Context, membersStores []*metadataStore) (*ownMemberDevice, *protocoltypes.DeviceSecret) {
+func createVirtualOtherPeerSecretsShareSecret(t testing.TB, ctx context.Context, membersStores []*MetadataStore) (*cryptoutil.OwnMemberDevice, *protocoltypes.DeviceSecret) {
 	// Manually adding another member to the group
 	otherMemberSK, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err)
@@ -23,22 +26,18 @@ func createVirtualOtherPeerSecretsShareSecret(t testing.TB, ctx context.Context,
 	otherDeviceSK, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err)
 
-	otherMD := &ownMemberDevice{
-		member: otherMemberSK,
-		device: otherDeviceSK,
-	}
-
-	ds, err := newDeviceSecret()
+	otherMD := cryptoutil.NewOwnMemberDevice(otherMemberSK, otherDeviceSK)
+	ds, err := cryptoutil.NewDeviceSecret()
 	require.NoError(t, err)
 
 	for _, store := range membersStores {
-		_, err = metadataStoreAddDeviceToGroup(ctx, store, store.g, otherMD)
+		_, err = MetadataStoreAddDeviceToGroup(ctx, store, store.g, otherMD)
 		require.NoError(t, err)
 
 		memDev, err := store.devKS.MemberDeviceForGroup(store.g)
 		require.NoError(t, err)
 
-		_, err = metadataStoreSendSecret(ctx, store, store.g, otherMD, memDev.member.GetPublic(), ds)
+		_, err = MetadataStoreSendSecret(ctx, store, store.g, otherMD, memDev.PrivateMember().GetPublic(), ds)
 		require.NoError(t, err)
 	}
 
@@ -75,20 +74,20 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 	gc, err := s.getContextGroupForID(g.PublicKey)
 	require.NoError(t, err)
 
-	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*metadataStore{gc.metadataStore})
+	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*MetadataStore{gc.metadataStore})
 
 	testPayload := []byte("test payload")
 
-	envBytes, err := sealEnvelopeInternal(testPayload, otherDS, otherMD.device, g, nil)
+	envBytes, err := cryptoutil.SealEnvelope(testPayload, otherDS, otherMD.PrivateDevice(), g, nil)
 	require.NoError(t, err)
 
-	env, headers, err := openEnvelopeHeaders(envBytes, g)
+	env, headers, err := cryptoutil.OpenEnvelopeHeaders(envBytes, g)
 	require.NoError(t, err)
 
 	oosMsgEnv, err := sealOutOfStoreMessageEnvelope(cid.Undef, env, headers, g)
 	require.NoError(t, err)
 
-	openedOOSMessage, err := decryptOutOfStoreMessageEnv(s.groupDatastore, oosMsgEnv, gPK)
+	openedOOSMessage, err := bertypush.DecryptOutOfStoreMessageEnv(s.groupDatastore, oosMsgEnv, gPK)
 	require.NoError(t, err)
 
 	require.Equal(t, headers.Counter, openedOOSMessage.Counter)
@@ -137,15 +136,15 @@ func TestService_PushReceive(t *testing.T) {
 	gc, err := s.getContextGroupForID(g.PublicKey)
 	require.NoError(t, err)
 
-	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*metadataStore{gc.metadataStore})
+	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*MetadataStore{gc.metadataStore})
 
 	testPayload := []byte("test payload")
 	devicePushToken := "token_test"
 
-	envBytes, err := sealEnvelopeInternal(testPayload, otherDS, otherMD.device, g, nil)
+	envBytes, err := cryptoutil.SealEnvelope(testPayload, otherDS, otherMD.PrivateDevice(), g, nil)
 	require.NoError(t, err)
 
-	env, headers, err := openEnvelopeHeaders(envBytes, g)
+	env, headers, err := cryptoutil.OpenEnvelopeHeaders(envBytes, g)
 	require.NoError(t, err)
 
 	dummyCID, err := cid.Parse("QmWATWQ7fVPP2EFGu71UkfnqhYXDYH566qy47CnJDgvs8u")
@@ -154,7 +153,7 @@ func TestService_PushReceive(t *testing.T) {
 	oosMsgEnv, err := sealOutOfStoreMessageEnvelope(dummyCID, env, headers, g)
 	require.NoError(t, err)
 
-	opaqueToken, err := pushSealTokenForServer(&protocoltypes.PushServiceReceiver{
+	opaqueToken, err := PushSealTokenForServer(&protocoltypes.PushServiceReceiver{
 		TokenType:          dispatcher.TokenType(),
 		BundleID:           testutil.PushMockBundleID,
 		Token:              []byte(devicePushToken),
@@ -165,9 +164,9 @@ func TestService_PushReceive(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	_, err = pushServer.Send(ctx, &protocoltypes.PushServiceSend_Request{
+	_, err = pushServer.Send(ctx, &pushtypes.PushServiceSend_Request{
 		Envelope: oosMsgEnv,
-		Receivers: []*protocoltypes.PushServiceOpaqueReceiver{
+		Receivers: []*pushtypes.PushServiceOpaqueReceiver{
 			{
 				OpaqueToken: opaqueToken.Token,
 				ServiceAddr: opaqueToken.Server.ServiceAddr,
@@ -217,7 +216,7 @@ func TestService_PushShareToken(t *testing.T) {
 
 	_, err = s.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
 		Receiver: &protocoltypes.PushServiceReceiver{
-			TokenType:          protocoltypes.PushTokenApplePushNotificationService,
+			TokenType:          pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
 			BundleID:           nameTestPackage,
 			Token:              tokenTestData,
 			RecipientPublicKey: devicePushPK[:],
@@ -248,7 +247,7 @@ func TestService_PushShareToken(t *testing.T) {
 			ServiceAddr: serverAddr1,
 		},
 		Receiver: &protocoltypes.PushServiceReceiver{
-			TokenType:          protocoltypes.PushTokenApplePushNotificationService,
+			TokenType:          pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
 			BundleID:           nameTestPackage,
 			Token:              tokenTestData,
 			RecipientPublicKey: devicePushPK[:],
@@ -285,7 +284,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 
 	_, err = s.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
 		Receiver: &protocoltypes.PushServiceReceiver{
-			TokenType: protocoltypes.PushTokenMQTT,
+			TokenType: pushtypes.PushServiceTokenType_PushTokenMQTT,
 			BundleID:  nameTestPackage,
 			Token:     tokenTestData1,
 		},
@@ -296,12 +295,12 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	require.NotNil(t, currentPush)
 	require.Equal(t, tokenTestData1, currentPush.Token)
 	require.Equal(t, nameTestPackage, currentPush.BundleID)
-	require.Equal(t, protocoltypes.PushTokenMQTT, currentPush.TokenType)
+	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenMQTT, currentPush.TokenType)
 	require.Equal(t, devicePushPK[:], currentPush.RecipientPublicKey)
 
 	_, err = s.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
 		Receiver: &protocoltypes.PushServiceReceiver{
-			TokenType: protocoltypes.PushTokenApplePushNotificationService,
+			TokenType: pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
 			BundleID:  nameTestPackage,
 			Token:     tokenTestData2,
 		},
@@ -312,7 +311,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	require.NotNil(t, currentPush)
 	require.Equal(t, tokenTestData2, currentPush.Token)
 	require.Equal(t, nameTestPackage, currentPush.BundleID)
-	require.Equal(t, protocoltypes.PushTokenApplePushNotificationService, currentPush.TokenType)
+	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService, currentPush.TokenType)
 	require.Equal(t, devicePushPK[:], currentPush.RecipientPublicKey)
 }
 

@@ -84,6 +84,10 @@ func (d *Dispatcher) Notify(typ messengertypes.StreamEvent_Notified_Type, title,
 	return d.StreamEvent(messengertypes.StreamEvent_TypeNotified, event, false)
 }
 
+func (d *Dispatcher) IsEnabled() bool {
+	return true
+}
+
 func NewDispatcher() *Dispatcher {
 	return &Dispatcher{notifiees: make(map[Notifiee]struct{})}
 }

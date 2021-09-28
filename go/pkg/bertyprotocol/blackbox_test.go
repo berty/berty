@@ -8,6 +8,7 @@ import (
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/stretchr/testify/assert"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -22,7 +23,7 @@ func TestTestingClient_impl(t *testing.T) {
 
 	client, cleanup := bertyprotocol.TestingService(ctx, t, bertyprotocol.Opts{
 		Logger:         logger,
-		DeviceKeystore: bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
+		DeviceKeystore: cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore()),
 	})
 	defer cleanup()
 

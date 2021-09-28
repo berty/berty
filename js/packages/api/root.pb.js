@@ -9,7 +9,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertyaccount",
+              go_package: "berty.tech/berty/go/pkg/accounttypes",
               "(gogoproto.marshaler_all)": true,
               "(gogoproto.unmarshaler_all)": true,
               "(gogoproto.sizer_all)": true
@@ -734,7 +734,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 1
                       },
                       tokenType: {
-                        type: "protocol.v1.PushServiceTokenType",
+                        type: "push.v1.PushServiceTokenType",
                         id: 2
                       }
                     }
@@ -742,7 +742,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Reply: {
                     fields: {
                       pushData: {
-                        type: "DecryptedPush",
+                        type: "push.v1.DecryptedPush",
                         id: 1
                       }
                     }
@@ -762,6 +762,151 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      push: {
+        nested: {
+          v1: {
+            options: {
+              go_package: "berty.tech/berty/go/pkg/pushtypes",
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
+            },
+            nested: {
+              PushService: {
+                methods: {
+                  ServerInfo: {
+                    requestType: "PushServiceServerInfo.Request",
+                    responseType: "PushServiceServerInfo.Reply"
+                  },
+                  Send: {
+                    requestType: "PushServiceSend.Request",
+                    responseType: "PushServiceSend.Reply"
+                  }
+                }
+              },
+              PushServiceServerInfo: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      publicKey: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      supportedTokenTypes: {
+                        rule: "repeated",
+                        type: "PushServiceSupportedTokenType",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              PushServiceSupportedTokenType: {
+                fields: {
+                  appBundleId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AppBundleID"
+                    }
+                  },
+                  tokenType: {
+                    type: "PushServiceTokenType",
+                    id: 2
+                  }
+                }
+              },
+              PushServiceTokenType: {
+                values: {
+                  PushTokenUndefined: 0,
+                  PushTokenMQTT: 1,
+                  PushTokenApplePushNotificationService: 2,
+                  PushTokenFirebaseCloudMessaging: 3,
+                  PushTokenWindowsPushNotificationService: 4,
+                  PushTokenHuaweiPushKit: 5,
+                  PushTokenAmazonDeviceMessaging: 6
+                }
+              },
+              PushServiceSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      envelope: {
+                        type: "OutOfStoreMessageEnvelope",
+                        id: 1
+                      },
+                      priority: {
+                        type: "PushServicePriority",
+                        id: 2
+                      },
+                      receivers: {
+                        rule: "repeated",
+                        type: "PushServiceOpaqueReceiver",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              OutOfStoreMessageEnvelope: {
+                fields: {
+                  nonce: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  box: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  groupPublicKey: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              PushExposedData: {
+                fields: {
+                  nonce: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  box: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              PushServicePriority: {
+                values: {
+                  PushPriorityUndefined: 0,
+                  PushPriorityLow: 1,
+                  PushPriorityNormal: 2
+                }
+              },
+              PushServiceOpaqueReceiver: {
+                fields: {
+                  opaqueToken: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  serviceAddr: {
+                    type: "string",
+                    id: 2
                   }
                 }
               },
@@ -3379,71 +3524,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              OutOfStoreMessageEnvelope: {
-                fields: {
-                  nonce: {
-                    type: "bytes",
-                    id: 1
-                  },
-                  box: {
-                    type: "bytes",
-                    id: 2
-                  },
-                  groupPublicKey: {
-                    type: "bytes",
-                    id: 3
-                  }
-                }
-              },
-              PushExposedData: {
-                fields: {
-                  nonce: {
-                    type: "bytes",
-                    id: 1
-                  },
-                  box: {
-                    type: "bytes",
-                    id: 2
-                  }
-                }
-              },
-              PushServicePriority: {
-                values: {
-                  PushPriorityUndefined: 0,
-                  PushPriorityLow: 1,
-                  PushPriorityNormal: 2
-                }
-              },
-              PushServiceTokenType: {
-                values: {
-                  PushTokenUndefined: 0,
-                  PushTokenMQTT: 1,
-                  PushTokenApplePushNotificationService: 2,
-                  PushTokenFirebaseCloudMessaging: 3,
-                  PushTokenWindowsPushNotificationService: 4,
-                  PushTokenHuaweiPushKit: 5,
-                  PushTokenAmazonDeviceMessaging: 6
-                }
-              },
-              PushServiceSupportedTokenType: {
-                fields: {
-                  appBundleId: {
-                    type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AppBundleID"
-                    }
-                  },
-                  tokenType: {
-                    type: "PushServiceTokenType",
-                    id: 2
-                  }
-                }
-              },
               PushServiceReceiver: {
                 fields: {
                   tokenType: {
-                    type: "PushServiceTokenType",
+                    type: "push.v1.PushServiceTokenType",
                     id: 1
                   },
                   bundleId: {
@@ -3460,18 +3544,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   recipientPublicKey: {
                     type: "bytes",
                     id: 4
-                  }
-                }
-              },
-              PushServiceOpaqueReceiver: {
-                fields: {
-                  opaqueToken: {
-                    type: "bytes",
-                    id: 1
-                  },
-                  serviceAddr: {
-                    type: "string",
-                    id: 2
                   }
                 }
               },
@@ -3599,27 +3671,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              PushServiceServerInfo: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {}
-                  },
-                  Reply: {
-                    fields: {
-                      publicKey: {
-                        type: "bytes",
-                        id: 1
-                      },
-                      supportedTokenTypes: {
-                        rule: "repeated",
-                        type: "PushServiceSupportedTokenType",
-                        id: 2
-                      }
-                    }
-                  }
-                }
-              },
               PushShareToken: {
                 fields: {},
                 nested: {
@@ -3678,31 +3729,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {}
                   }
                 }
-              },
-              PushServiceSend: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      envelope: {
-                        type: "OutOfStoreMessageEnvelope",
-                        id: 1
-                      },
-                      priority: {
-                        type: "PushServicePriority",
-                        id: 2
-                      },
-                      receivers: {
-                        rule: "repeated",
-                        type: "PushServiceOpaqueReceiver",
-                        id: 3
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
               }
             }
           }
@@ -3748,10 +3774,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   SendReplyOptions: {
                     requestType: "SendReplyOptions.Request",
                     responseType: "SendReplyOptions.Reply"
-                  },
-                  SendAck: {
-                    requestType: "SendAck.Request",
-                    responseType: "SendAck.Reply"
                   },
                   SystemInfo: {
                     requestType: "SystemInfo.Request",
@@ -4298,32 +4320,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       ownMetadata: {
                         type: "bytes",
                         id: 3
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
-              SendAck: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      groupPk: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
-                      },
-                      messageId: {
-                        type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "MessageID"
-                        }
                       }
                     }
                   },

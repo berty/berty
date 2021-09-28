@@ -988,39 +988,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/SendAck": {
-      "post": {
-        "summary": "SendAck sends an acknowledge payload for given message id.",
-        "operationId": "MessengerService_SendAck",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SendAckReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1SendAckRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/SendContactRequest": {
       "post": {
         "summary": "SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.",
@@ -2755,22 +2722,6 @@
         },
         "payload": {
           "type": "string"
-        }
-      }
-    },
-    "v1SendAckReply": {
-      "type": "object"
-    },
-    "v1SendAckRequest": {
-      "type": "object",
-      "properties": {
-        "group_pk": {
-          "type": "string",
-          "format": "byte"
-        },
-        "message_id": {
-          "type": "string",
-          "format": "byte"
         }
       }
     },

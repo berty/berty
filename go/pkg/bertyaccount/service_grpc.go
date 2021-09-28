@@ -6,20 +6,21 @@ import (
 
 	ma "github.com/multiformats/go-multiaddr"
 
+	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 // Get GRPC listener addresses
-func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *GetGRPCListenerAddrs_Request) (*GetGRPCListenerAddrs_Reply, error) {
+func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *accounttypes.GetGRPCListenerAddrs_Request) (*accounttypes.GetGRPCListenerAddrs_Reply, error) {
 	m, err := s.getInitManager()
 	if err != nil {
 		return nil, err
 	}
 
 	grpcListeners := m.GetGRPCListeners()
-	entries := make([]*GetGRPCListenerAddrs_Reply_Entry, len(grpcListeners))
+	entries := make([]*accounttypes.GetGRPCListenerAddrs_Reply_Entry, len(grpcListeners))
 	for i, l := range grpcListeners {
 		ps := make([]string, 0)
 		ma.ForEach(l.GRPCMultiaddr(), func(c ma.Component) bool {
@@ -28,13 +29,13 @@ func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *GetGRPCListener
 		})
 
 		proto := strings.Join(ps, "/")
-		entries[i] = &GetGRPCListenerAddrs_Reply_Entry{
+		entries[i] = &accounttypes.GetGRPCListenerAddrs_Reply_Entry{
 			Maddr: l.Addr().String(),
 			Proto: proto,
 		}
 	}
 
-	return &GetGRPCListenerAddrs_Reply{
+	return &accounttypes.GetGRPCListenerAddrs_Reply{
 		Entries: entries,
 	}, nil
 }

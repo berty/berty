@@ -17,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -149,7 +150,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 		s := grpc.NewServer()
 
 		// register services bridge client
-		account_svc.RegisterAccountServiceServer(s, b.serviceAccount)
+		accounttypes.RegisterAccountServiceServer(s, b.serviceAccount)
 
 		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
 		b.workers.Add(func() error {

@@ -10,6 +10,7 @@ import (
 	ipfsoptions "github.com/ipfs/interface-go-ipfs-core/options"
 	ipfspath "github.com/ipfs/interface-go-ipfs-core/path"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -41,7 +42,7 @@ func (s *service) AttachmentPrepare(stream protocoltypes.ProtocolService_Attachm
 	defer plaintext.Close()
 
 	// open stream cipher
-	sk, ciphertext, err := attachmentSealer(plaintext, s.logger)
+	sk, ciphertext, err := cryptoutil.AttachmentSealer(plaintext, s.logger)
 	if err != nil {
 		return errcode.ErrCryptoCipherInit.Wrap(err)
 	}
@@ -117,7 +118,7 @@ func (s *service) AttachmentRetrieve(req *protocoltypes.AttachmentRetrieve_Reque
 	defer ciphertext.Close()
 
 	// open stream cipher
-	plaintext, err := attachmentOpener(ciphertext, sk, s.logger)
+	plaintext, err := cryptoutil.AttachmentOpener(ciphertext, sk, s.logger)
 	if err != nil {
 		return errcode.ErrCryptoCipherInit.Wrap(err)
 	}

@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -32,7 +33,7 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 		t.Fatal(err)
 	}
 
-	baseDS = ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey(selfKey.ID().String()))
+	baseDS = datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey(selfKey.ID().String()))
 
 	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
 		Datastore: baseDS,
@@ -88,13 +89,13 @@ func TestDifferentStores(t *testing.T) {
 	api1, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb1 := newTestOrbitDB(ctx, t, logger, api1, ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")))
+	odb1 := newTestOrbitDB(ctx, t, logger, api1, datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")))
 	defer odb1.Close()
 
 	api2, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb2 := newTestOrbitDB(ctx, t, logger, api2, ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")))
+	odb2 := newTestOrbitDB(ctx, t, logger, api2, datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")))
 	defer odb2.Close()
 
 	err = mn.LinkAll()

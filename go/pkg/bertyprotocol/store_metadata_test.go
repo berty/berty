@@ -17,6 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -35,7 +36,7 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	peers, groupSK, cleanup := createPeersWithGroup(ctx, t, "/tmp/secrets_test", memberCount, deviceCount)
+	peers, groupSK, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/secrets_test", memberCount, deviceCount)
 	defer cleanup()
 
 	secretsAdded := make(chan struct{})
@@ -112,7 +113,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, groupSK, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount)
+	peers, groupSK, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/member_test", memberCount, deviceCount)
 	defer cleanup()
 
 	done := make(chan struct{})
@@ -183,7 +184,7 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
+	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
 	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
@@ -253,13 +254,13 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	peersCount := 4
 
 	// Creates N members with M devices each within the same group
-	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
+	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/member_test", peersCount, 1)
 	defer cleanup()
 
 	var (
 		err      error
-		meta     = make([]*metadataStore, peersCount)
-		ownCG    = make([]*groupContext, peersCount)
+		meta     = make([]*MetadataStore, peersCount)
+		ownCG    = make([]*GroupContext, peersCount)
 		contacts = make([]*protocoltypes.ShareableContact, peersCount)
 	)
 
@@ -520,7 +521,7 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	peersCount := 4
 
 	// Creates N members with M devices each within the same group
-	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
+	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/member_test", peersCount, 1)
 	defer cleanup()
 
 	// disclose
@@ -530,7 +531,7 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	sk, err := peers[0].DevKS.ContactGroupPrivKey(peers[1].GC.MemberPubKey())
 	require.NoError(t, err)
 
-	g, err := getGroupForContact(sk)
+	g, err := cryptoutil.GetGroupForContact(sk)
 	require.NoError(t, err)
 
 	cg0, err := peers[0].DB.openGroup(ctx, g, nil)
@@ -550,7 +551,7 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	sk, err = peers[1].DevKS.ContactGroupPrivKey(peers[0].GC.MemberPubKey())
 	require.NoError(t, err)
 
-	g, err = getGroupForContact(sk)
+	g, err = cryptoutil.GetGroupForContact(sk)
 	require.NoError(t, err)
 
 	cg1, err := peers[1].DB.openGroup(ctx, g, nil)
@@ -568,7 +569,7 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
+	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
 	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
@@ -693,7 +694,7 @@ func TestMultiDevices_Basic(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
-	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/multidevices_test", memberCount, deviceCount)
+	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/multidevices_test", memberCount, deviceCount)
 	defer cleanup()
 
 	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
@@ -709,10 +710,10 @@ func TestMultiDevices_Basic(t *testing.T) {
 
 	var (
 		err          error
-		meta         = make([]*metadataStore, totalDevices)
-		ownCG        = make([]*groupContext, totalDevices)
+		meta         = make([]*MetadataStore, totalDevices)
+		ownCG        = make([]*GroupContext, totalDevices)
 		contacts     = make([]*protocoltypes.ShareableContact, totalDevices)
-		listContacts map[string]*accountContact
+		listContacts map[string]*AccountContact
 		groups       []*protocoltypes.Group
 	)
 

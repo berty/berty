@@ -106,7 +106,7 @@ func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *
 	return &gme, nil
 }
 
-func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte, devKS DeviceKeystore) (*protocoltypes.GroupMetadata, proto.Message, [][]byte, error) {
+func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte, devKS cryptoutil.DeviceKeystore) (*protocoltypes.GroupMetadata, proto.Message, [][]byte, error) {
 	env := &protocoltypes.GroupEnvelope{}
 	if err := env.Unmarshal(envelopeBytes); err != nil {
 		return nil, nil, nil, errcode.ErrInvalidInput.Wrap(err)
@@ -143,7 +143,7 @@ func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte, devKS Devic
 		return nil, nil, nil, errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
-	attachmentsCIDs, err := attachmentCIDSliceDecrypt(g, env.GetEncryptedAttachmentCIDs())
+	attachmentsCIDs, err := cryptoutil.AttachmentCIDSliceDecrypt(g, env.GetEncryptedAttachmentCIDs())
 	if err != nil {
 		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
@@ -180,7 +180,7 @@ func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType
 
 	eventBytes := secretbox.Seal(nil, eventClearBytes, nonce, g.GetSharedSecret())
 
-	eCIDs, err := attachmentCIDSliceEncrypt(g, attachmentsCIDs)
+	eCIDs, err := cryptoutil.AttachmentCIDSliceEncrypt(g, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}

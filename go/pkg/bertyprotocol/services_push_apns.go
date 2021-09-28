@@ -11,6 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 const (
@@ -23,8 +24,8 @@ type pushDispatcherAPNS struct {
 	bundleID string
 }
 
-func (d *pushDispatcherAPNS) TokenType() protocoltypes.PushServiceTokenType {
-	return protocoltypes.PushTokenApplePushNotificationService
+func (d *pushDispatcherAPNS) TokenType() pushtypes.PushServiceTokenType {
+	return pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService
 }
 
 func PushDispatcherLoadAPNSCertificates(input *string) ([]PushDispatcher, error) {

@@ -9,7 +9,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 
 	"berty.tech/berty/v2/go/framework/bertybridge"
-	"berty.tech/berty/v2/go/pkg/bertyaccount"
+	"berty.tech/berty/v2/go/pkg/accounttypes"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -53,7 +53,7 @@ func Example() {
 	// open account
 	{
 		// create `CreateAccount` Input
-		input := &bertyaccount.CreateAccount_Request{Args: args}
+		input := &accounttypes.CreateAccount_Request{Args: args}
 		payload, err := proto.Marshal(input)
 		checkErr(err)
 
@@ -87,7 +87,7 @@ func Example() {
 	// check for GRPC listeners
 	{
 		// create `InstanceGetConfiguration` Input
-		input := &bertyaccount.GetGRPCListenerAddrs_Request{}
+		input := &accounttypes.GetGRPCListenerAddrs_Request{}
 		payload, err := proto.Marshal(input)
 		checkErr(err)
 
@@ -111,7 +111,7 @@ func Example() {
 		checkErr(err)
 
 		// deserialize reply
-		var res bertyaccount.GetGRPCListenerAddrs_Reply
+		var res accounttypes.GetGRPCListenerAddrs_Reply
 		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 

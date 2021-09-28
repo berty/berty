@@ -7,59 +7,60 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-type groupContext struct {
+type GroupContext struct {
 	group           *protocoltypes.Group
-	metadataStore   *metadataStore
-	messageStore    *messageStore
-	messageKeystore *messageKeystore
-	memberDevice    *ownMemberDevice
+	metadataStore   *MetadataStore
+	messageStore    *MessageStore
+	messageKeystore *cryptoutil.MessageKeystore
+	memberDevice    *cryptoutil.OwnMemberDevice
 	logger          *zap.Logger
 }
 
-func (gc *groupContext) MessageKeystore() *messageKeystore {
+func (gc *GroupContext) MessageKeystore() *cryptoutil.MessageKeystore {
 	return gc.messageKeystore
 }
 
-func (gc *groupContext) getMemberPrivKey() crypto.PrivKey {
-	return gc.memberDevice.member
+func (gc *GroupContext) getMemberPrivKey() crypto.PrivKey {
+	return gc.memberDevice.PrivateMember()
 }
 
-func (gc *groupContext) MessageStore() *messageStore {
+func (gc *GroupContext) MessageStore() *MessageStore {
 	return gc.messageStore
 }
 
-func (gc *groupContext) MetadataStore() *metadataStore {
+func (gc *GroupContext) MetadataStore() *MetadataStore {
 	return gc.metadataStore
 }
 
-func (gc *groupContext) Group() *protocoltypes.Group {
+func (gc *GroupContext) Group() *protocoltypes.Group {
 	return gc.group
 }
 
-func (gc *groupContext) MemberPubKey() crypto.PubKey {
-	return gc.memberDevice.member.GetPublic()
+func (gc *GroupContext) MemberPubKey() crypto.PubKey {
+	return gc.memberDevice.PrivateMember().GetPublic()
 }
 
-func (gc *groupContext) DevicePubKey() crypto.PubKey {
-	return gc.memberDevice.device.GetPublic()
+func (gc *GroupContext) DevicePubKey() crypto.PubKey {
+	return gc.memberDevice.PrivateDevice().GetPublic()
 }
 
-func (gc *groupContext) Close() error {
+func (gc *GroupContext) Close() error {
 	gc.metadataStore.Close()
 	gc.messageStore.Close()
 
 	return nil
 }
 
-func newContextGroup(group *protocoltypes.Group, metadataStore *metadataStore, messageStore *messageStore, messageKeystore *messageKeystore, memberDevice *ownMemberDevice, logger *zap.Logger) *groupContext {
+func NewContextGroup(group *protocoltypes.Group, metadataStore *MetadataStore, messageStore *MessageStore, messageKeystore *cryptoutil.MessageKeystore, memberDevice *cryptoutil.OwnMemberDevice, logger *zap.Logger) *GroupContext {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
 
-	return &groupContext{
+	return &GroupContext{
 		group:           group,
 		metadataStore:   metadataStore,
 		messageStore:    messageStore,

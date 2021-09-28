@@ -38,7 +38,7 @@ type contactRequestsManager struct {
 	enabled        bool
 	seed           []byte
 	announceCancel context.CancelFunc
-	metadataStore  *metadataStore
+	metadataStore  *MetadataStore
 	lock           sync.Mutex
 	ipfs           ipfsutil.ExtendedCoreAPI
 	accSK          crypto.PrivKey
@@ -416,7 +416,7 @@ func (c *contactRequestsManager) enableIncomingRequests() error {
 	return nil
 }
 
-func initContactRequestsManager(ctx context.Context, s *Swiper, store *metadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) error {
+func initContactRequestsManager(ctx context.Context, s *Swiper, store *MetadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) error {
 	sk, err := store.devKS.AccountPrivKey()
 	if err != nil {
 		return err

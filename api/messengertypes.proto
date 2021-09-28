@@ -37,9 +37,6 @@ service MessengerService {
   // SendReplyOptions sends a list of prefilled response options to a group.
   rpc SendReplyOptions (SendReplyOptions.Request) returns (SendReplyOptions.Reply);
 
-  // SendAck sends an acknowledge payload for given message id.
-  rpc SendAck(SendAck.Request) returns (SendAck.Reply);
-
   // SystemInfo returns runtime information.
   rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
 
@@ -279,14 +276,6 @@ message SendContactRequest {
     BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
     bytes metadata = 2;
     bytes own_metadata = 3;
-  }
-  message Reply {}
-}
-
-message SendAck {
-  message Request {
-    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
-    bytes message_id = 2 [(gogoproto.customname) = "MessageID"];
   }
   message Reply {}
 }

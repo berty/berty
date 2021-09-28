@@ -14,14 +14,15 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func (s *service) getPushClient(host string) (PushServiceClient, error) {
+func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error) {
 	s.muPushClients.RLock()
 
 	if cc, ok := s.pushClients[host]; ok {
 		s.muPushClients.RUnlock()
-		return NewPushServiceClient(cc), nil
+		return pushtypes.NewPushServiceClient(cc), nil
 	}
 
 	s.muPushClients.RUnlock()
@@ -29,7 +30,7 @@ func (s *service) getPushClient(host string) (PushServiceClient, error) {
 	return s.createAndGetPushClientWithoutToken(s.ctx, host)
 }
 
-func (s *service) createAndGetPushClient(ctx context.Context, host string, token string) (PushServiceClient, error) {
+func (s *service) createAndGetPushClient(ctx context.Context, host string, token string) (pushtypes.PushServiceClient, error) {
 	s.muPushClients.Lock()
 	defer s.muPushClients.Unlock()
 
@@ -50,10 +51,10 @@ func (s *service) createAndGetPushClient(ctx context.Context, host string, token
 	go monitorPushServer(s.ctx, cc, s.logger)
 
 	s.pushClients[host] = cc
-	return NewPushServiceClient(cc), err
+	return pushtypes.NewPushServiceClient(cc), err
 }
 
-func (s *service) createAndGetPushClientWithoutToken(ctx context.Context, host string) (PushServiceClient, error) {
+func (s *service) createAndGetPushClientWithoutToken(ctx context.Context, host string) (pushtypes.PushServiceClient, error) {
 	return s.createAndGetPushClient(ctx, host, "")
 }
 
@@ -91,7 +92,7 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 	wg.Add(len(pushTargets))
 
 	for serverAddr, pushTokens := range pushTargets {
-		go func(serverAddr string, pushTokens []*protocoltypes.PushServiceOpaqueReceiver) {
+		go func(serverAddr string, pushTokens []*pushtypes.PushServiceOpaqueReceiver) {
 			s.logger.Info("PushSend - pushing", zap.String("cid", c.String()), zap.String("server", serverAddr))
 			defer wg.Done()
 
@@ -106,9 +107,9 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 				return
 			}
 
-			if _, err := client.Send(ctx, &protocoltypes.PushServiceSend_Request{
+			if _, err := client.Send(ctx, &pushtypes.PushServiceSend_Request{
 				Envelope:  sealedMessageEnvelope,
-				Priority:  protocoltypes.PushPriorityNormal,
+				Priority:  pushtypes.PushServicePriority_PushPriorityNormal,
 				Receivers: pushTokens,
 			}); err != nil {
 				s.logger.Error("error while dialing push server", zap.String("push-server", serverAddr), zap.Error(err))
@@ -122,9 +123,9 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 	return &protocoltypes.PushSend_Reply{}, nil
 }
 
-func (s *service) getPushTargetsByServer(gc *groupContext, targetGroupMembers []*protocoltypes.MemberWithDevices) (map[string][]*protocoltypes.PushServiceOpaqueReceiver, error) {
+func (s *service) getPushTargetsByServer(gc *GroupContext, targetGroupMembers []*protocoltypes.MemberWithDevices) (map[string][]*pushtypes.PushServiceOpaqueReceiver, error) {
 	pushTargets := []*protocoltypes.PushMemberTokenUpdate(nil)
-	serverTokens := map[string][]*protocoltypes.PushServiceOpaqueReceiver{}
+	serverTokens := map[string][]*pushtypes.PushServiceOpaqueReceiver{}
 	targetDevices := []crypto.PubKey(nil)
 
 	if len(targetGroupMembers) == 0 {
@@ -180,7 +181,7 @@ func (s *service) getPushTargetsByServer(gc *groupContext, targetGroupMembers []
 	}
 
 	for _, pushTarget := range pushTargets {
-		serverTokens[pushTarget.Server.ServiceAddr] = append(serverTokens[pushTarget.Server.ServiceAddr], &protocoltypes.PushServiceOpaqueReceiver{OpaqueToken: pushTarget.Token})
+		serverTokens[pushTarget.Server.ServiceAddr] = append(serverTokens[pushTarget.Server.ServiceAddr], &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: pushTarget.Token})
 	}
 
 	return serverTokens, nil
@@ -192,7 +193,7 @@ func (s *service) PushShareToken(ctx context.Context, request *protocoltypes.Pus
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	token, err := pushSealTokenForServer(request.Receiver, request.Server)
+	token, err := PushSealTokenForServer(request.Receiver, request.Server)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -208,7 +209,7 @@ func (s *service) PushSetDeviceToken(ctx context.Context, request *protocoltypes
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	if request.Receiver == nil || request.Receiver.TokenType == protocoltypes.PushTokenUndefined {
+	if request.Receiver == nil || request.Receiver.TokenType == pushtypes.PushServiceTokenType_PushTokenUndefined {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push token provided"))
 	}
 

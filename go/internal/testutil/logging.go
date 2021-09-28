@@ -14,7 +14,7 @@ import (
 	"berty.tech/berty/v2/go/internal/logutil"
 )
 
-const defaultLoggingFilters = "info+:bty.test* error+:*,-ipfs*"
+const defaultLoggingFilters = "debug+:*gorm* info+:bty.test* error+:*,-ipfs*"
 
 var (
 	logFilters     = flag.String("log-filters", defaultLoggingFilters, "log namespaces")

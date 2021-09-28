@@ -14,6 +14,8 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -41,8 +43,8 @@ type loggable interface {
 type NewOrbitDBOptions struct {
 	baseorbitdb.NewOrbitDBOptions
 	Datastore       datastore.Batching
-	MessageKeystore *messageKeystore
-	DeviceKeystore  DeviceKeystore
+	MessageKeystore *cryptoutil.MessageKeystore
+	DeviceKeystore  cryptoutil.DeviceKeystore
 }
 
 func (n *NewOrbitDBOptions) applyDefaults() {
@@ -59,11 +61,11 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 	}
 
 	if n.MessageKeystore == nil {
-		n.MessageKeystore = newMessageKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceMessageKeystore)))
+		n.MessageKeystore = cryptoutil.NewMessageKeystore(datastoreutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(datastoreutil.NamespaceMessageKeystore)))
 	}
 
 	if n.DeviceKeystore == nil {
-		n.DeviceKeystore = NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))))
+		n.DeviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))))
 	}
 
 	// FIXME: add this setting back
@@ -73,11 +75,11 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 type BertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
 	groups          sync.Map // map[string]*protocoltypes.Group
-	groupContexts   sync.Map // map[string]*groupContext
+	groupContexts   sync.Map // map[string]*GroupContext
 	groupsSigPubKey sync.Map // map[string]crypto.PubKey
 	keyStore        *BertySignedKeyStore
-	messageKeystore *messageKeystore
-	deviceKeystore  DeviceKeystore
+	messageKeystore *cryptoutil.MessageKeystore
+	deviceKeystore  cryptoutil.DeviceKeystore
 }
 
 func (s *BertyOrbitDB) registerGroupPrivateKey(g *protocoltypes.Group) error {
@@ -156,7 +158,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 	return bertyDB, nil
 }
 
-func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions, ipfsCoreAPI ipfsutil.ExtendedCoreAPI) (*groupContext, error) {
+func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions, ipfsCoreAPI ipfsutil.ExtendedCoreAPI) (*GroupContext, error) {
 	l := s.Logger()
 
 	sk, err := s.deviceKeystore.AccountPrivKey()
@@ -173,7 +175,7 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 
 	l.Debug("Got AccountProofPrivKey", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-	g, err := getGroupForAccount(sk, skProof)
+	g, err := cryptoutil.GetGroupForAccount(sk, skProof)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
@@ -260,7 +262,7 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 	return nil
 }
 
-func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*groupContext, error) {
+func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
 	if s.deviceKeystore == nil || s.messageKeystore == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db open in naive mode"))
 	}
@@ -289,7 +291,7 @@ func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, op
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	mpkb, err := crypto.MarshalPublicKey(memberDevice.Public().member)
+	mpkb, err := crypto.MarshalPublicKey(memberDevice.Public().Member)
 	if err != nil {
 		mpkb = []byte{}
 	}
@@ -316,7 +318,7 @@ func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, op
 
 	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-	gc := newContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
+	gc := NewContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
 
 	s.Logger().Debug("Created group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
@@ -362,13 +364,13 @@ func (s *BertyOrbitDB) openGroupReplication(ctx context.Context, g *protocoltype
 	return nil
 }
 
-func (s *BertyOrbitDB) getGroupContext(id string) (*groupContext, error) {
+func (s *BertyOrbitDB) getGroupContext(id string) (*GroupContext, error) {
 	g, ok := s.groupContexts.Load(id)
 	if !ok {
 		return nil, errcode.ErrMissingMapKey
 	}
 
-	return g.(*groupContext), nil
+	return g.(*GroupContext), nil
 }
 
 // SetGroupSigPubKey registers a new group signature pubkey, mainly used to
@@ -409,7 +411,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 	return store, nil
 }
 
-func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*metadataStore, error) {
+func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*MetadataStore, error) {
 	l := s.Logger()
 	l.Debug("Opening group metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "Options", Description: fmt.Sprint(options)}}, tyber.Status(tyber.Running))...)
 
@@ -420,7 +422,7 @@ func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.
 
 	l.Debug("Got group store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "DBName", Description: store.DBName()}})...)
 
-	sStore, ok := store.(*metadataStore)
+	sStore, ok := store.(*MetadataStore)
 	if !ok {
 		return nil, tyber.LogFatalError(ctx, l, "Failed to cast group store", errors.New("unable to cast store to metadata store"))
 	}
@@ -430,13 +432,13 @@ func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.
 	return sStore, nil
 }
 
-func (s *BertyOrbitDB) groupMessageStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*messageStore, error) {
+func (s *BertyOrbitDB) groupMessageStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*MessageStore, error) {
 	store, err := s.storeForGroup(ctx, s, g, options, groupMessageStoreType, GroupOpenModeWrite)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
 	}
 
-	mStore, ok := store.(*messageStore)
+	mStore, ok := store.(*MessageStore)
 	if !ok {
 		return nil, errors.New("unable to cast store to message store")
 	}

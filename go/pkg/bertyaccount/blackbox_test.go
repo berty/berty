@@ -16,6 +16,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -45,21 +46,21 @@ func TestFlow(t *testing.T) {
 
 	// no account by default
 	{
-		rep, err := cl.ListAccounts(ctx, &bertyaccount.ListAccounts_Request{})
+		rep, err := cl.ListAccounts(ctx, &accounttypes.ListAccounts_Request{})
 		require.NoError(t, err)
 		require.Empty(t, rep.Accounts)
 	}
 
 	// no logs by default
 	{
-		rep, err := cl.LogfileList(ctx, &bertyaccount.LogfileList_Request{})
+		rep, err := cl.LogfileList(ctx, &accounttypes.LogfileList_Request{})
 		require.NoError(t, err)
 		require.Empty(t, rep.Entries)
 	}
 
 	// try closing an account even if none were loaded
 	{
-		stream, err := cl.CloseAccountWithProgress(ctx, &bertyaccount.CloseAccountWithProgress_Request{})
+		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		_, err = stream.Recv()
 		require.Equal(t, err, io.EOF)
@@ -68,7 +69,7 @@ func TestFlow(t *testing.T) {
 
 	// try to open a non-existing account
 	{
-		stream, err := cl.OpenAccountWithProgress(ctx, &bertyaccount.OpenAccountWithProgress_Request{
+		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
 			AccountID: "account 1",
 		})
 		require.NoError(t, err)
@@ -78,7 +79,7 @@ func TestFlow(t *testing.T) {
 
 	// create and load a new account
 	{
-		rep, err := cl.CreateAccount(ctx, &bertyaccount.CreateAccount_Request{
+		rep, err := cl.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
 			AccountID:   "account 1",
 			AccountName: "my first account",
 		})
@@ -90,7 +91,7 @@ func TestFlow(t *testing.T) {
 
 	// 1 account now
 	{
-		rep, err := cl.ListAccounts(ctx, &bertyaccount.ListAccounts_Request{})
+		rep, err := cl.ListAccounts(ctx, &accounttypes.ListAccounts_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Accounts, 1)
 		require.Equal(t, rep.Accounts[0].AccountID, "account 1")
@@ -101,7 +102,7 @@ func TestFlow(t *testing.T) {
 
 	// try to open an account while we already have an account loaded
 	{
-		stream, err := cl.OpenAccountWithProgress(ctx, &bertyaccount.OpenAccountWithProgress_Request{
+		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
 			AccountID: "account 1",
 		})
 		require.NoError(t, err)
@@ -111,7 +112,7 @@ func TestFlow(t *testing.T) {
 
 	// one log file
 	{
-		rep, err := cl.LogfileList(ctx, &bertyaccount.LogfileList_Request{})
+		rep, err := cl.LogfileList(ctx, &accounttypes.LogfileList_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Entries, 1)
 		require.Equal(t, rep.Entries[0].AccountID, "account 1")
@@ -125,7 +126,7 @@ func TestFlow(t *testing.T) {
 
 	// close the account
 	{
-		stream, err := cl.CloseAccountWithProgress(ctx, &bertyaccount.CloseAccountWithProgress_Request{})
+		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
 		var lastProgress *protocoltypes.Progress
@@ -196,7 +197,7 @@ func TestFlow(t *testing.T) {
 
 	// try closing the account again, even if no account should be loaded anymore
 	{
-		stream, err := cl.CloseAccountWithProgress(ctx, &bertyaccount.CloseAccountWithProgress_Request{})
+		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		_, err = stream.Recv()
 		require.Equal(t, err, io.EOF)
@@ -205,7 +206,7 @@ func TestFlow(t *testing.T) {
 
 	// load the account
 	{
-		stream, err := cl.OpenAccountWithProgress(ctx, &bertyaccount.OpenAccountWithProgress_Request{
+		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
 			AccountID: "account 1",
 		})
 		require.NoError(t, err)
@@ -244,7 +245,7 @@ func TestFlow(t *testing.T) {
 
 	// try closing the account again, even if no account should be loaded anymore
 	{
-		stream, err := cl.CloseAccountWithProgress(ctx, &bertyaccount.CloseAccountWithProgress_Request{})
+		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
 		var lastProgress *protocoltypes.Progress
@@ -316,7 +317,7 @@ func TestFlow(t *testing.T) {
 
 	// two log files
 	{
-		rep, err := cl.LogfileList(ctx, &bertyaccount.LogfileList_Request{})
+		rep, err := cl.LogfileList(ctx, &accounttypes.LogfileList_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Entries, 2)
 	}
@@ -345,14 +346,14 @@ func TestImportExportFlow(t *testing.T) {
 
 	// no account by default
 	{
-		rep, err := cl.ListAccounts(ctx, &bertyaccount.ListAccounts_Request{})
+		rep, err := cl.ListAccounts(ctx, &accounttypes.ListAccounts_Request{})
 		require.NoError(t, err)
 		require.Empty(t, rep.Accounts)
 	}
 
 	// create and load a new account
 	{
-		rep, err := cl.CreateAccount(ctx, &bertyaccount.CreateAccount_Request{
+		rep, err := cl.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
 			AccountID:   "account 1",
 			AccountName: "my first account",
 		})
@@ -390,7 +391,7 @@ func TestImportExportFlow(t *testing.T) {
 
 	// close the account
 	{
-		stream, err := cl.CloseAccountWithProgress(ctx, &bertyaccount.CloseAccountWithProgress_Request{})
+		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
 		var lastProgress *protocoltypes.Progress
@@ -461,7 +462,7 @@ func TestImportExportFlow(t *testing.T) {
 
 	// 1 account now
 	{
-		rep, err := cl.ListAccounts(ctx, &bertyaccount.ListAccounts_Request{})
+		rep, err := cl.ListAccounts(ctx, &accounttypes.ListAccounts_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Accounts, 1)
 		require.Equal(t, rep.Accounts[0].AccountID, "account 1")
@@ -474,7 +475,7 @@ func TestImportExportFlow(t *testing.T) {
 
 	// init a new account based on previous export
 	{
-		stream, err := cl.ImportAccountWithProgress(ctx, &bertyaccount.ImportAccountWithProgress_Request{
+		stream, err := cl.ImportAccountWithProgress(ctx, &accounttypes.ImportAccountWithProgress_Request{
 			AccountID:   "account 2",
 			AccountName: "restored",
 			BackupPath:  exportPath,
@@ -484,7 +485,7 @@ func TestImportExportFlow(t *testing.T) {
 		require.NoError(t, err)
 		steps := 0
 		var lastProgress *protocoltypes.Progress
-		var lastMsg *bertyaccount.ImportAccountWithProgress_Reply
+		var lastMsg *accounttypes.ImportAccountWithProgress_Reply
 		for {
 			msg, err := stream.Recv()
 			if err == io.EOF {
@@ -526,7 +527,7 @@ func TestImportExportFlow(t *testing.T) {
 
 	// 2 accounts now
 	{
-		rep, err := cl.ListAccounts(ctx, &bertyaccount.ListAccounts_Request{})
+		rep, err := cl.ListAccounts(ctx, &accounttypes.ListAccounts_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Accounts, 2)
 
@@ -543,7 +544,7 @@ func TestImportExportFlow(t *testing.T) {
 
 	// try to open an account while we already have an account loaded
 	{
-		stream, err := cl.OpenAccountWithProgress(ctx, &bertyaccount.OpenAccountWithProgress_Request{
+		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
 			AccountID: "account 2",
 		})
 		require.NoError(t, err)
@@ -553,7 +554,7 @@ func TestImportExportFlow(t *testing.T) {
 
 	// close the account
 	{
-		stream, err := cl.CloseAccountWithProgress(ctx, &bertyaccount.CloseAccountWithProgress_Request{})
+		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
 		var lastProgress *protocoltypes.Progress
@@ -586,7 +587,7 @@ func TestImportExportFlow(t *testing.T) {
 
 	// load the restored account
 	{
-		stream, err := cl.OpenAccountWithProgress(ctx, &bertyaccount.OpenAccountWithProgress_Request{
+		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
 			AccountID: "account 2",
 		})
 		require.NoError(t, err)
@@ -624,18 +625,18 @@ func TestImportExportFlow(t *testing.T) {
 	}
 }
 
-func createAccountClient(ctx context.Context, t *testing.T, s bertyaccount.AccountServiceServer) bertyaccount.AccountServiceClient {
+func createAccountClient(ctx context.Context, t *testing.T, s accounttypes.AccountServiceServer) accounttypes.AccountServiceClient {
 	t.Helper()
 
 	srv := grpc.NewServer()
-	bertyaccount.RegisterAccountServiceServer(srv, s)
+	accounttypes.RegisterAccountServiceServer(srv, s)
 
 	l := grpcutil.NewBufListener(ctx, 2048)
 
 	cc, err := l.NewClientConn()
 	assert.NoError(t, err)
 
-	cl := bertyaccount.NewAccountServiceClient(cc)
+	cl := accounttypes.NewAccountServiceClient(cc)
 
 	go srv.Serve(l.Listener)
 
