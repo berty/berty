@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "Ein sicherer Peer-to-Peer-Messenger der mit und ohne Internetzugang funktioniert und sicher über überwachte Netzwerke kommuniziert",
-      "open-registered-account": "In ein registriertes Konto einloggen",
-      "import-button": "Daten von einem bestehenden Konto importieren",
-      "account-selector-create-button": "Ein neues Konto erstellen",
-      "more-options": "Weitere Optionen",
       "button": "Leg los!"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Starte den Berty Knotenpunkt…",
       "desc": "Dies könnte einige Sekunden dauern"
     },
-    "notifications": {
-      "header": "Verpasse keine neuen Nachrichten oder Kontaktanfragen",
-      "recommended": "Empfohlen",
-      "title": "Benachrichtigungen",
-      "desc": "Um diese Funktion nutzen zu können, musst du Berty den Zugriff auf Push-Benachrichtigungen gestatten",
-      "button": "BENACHRICHTIGUNGEN ERLAUBEN",
-      "skip": "ÜBERSPRINGEN UND DIES SPÄTER ERLEDIGEN"
-    },
-    "bluetooth": {
-      "header": "Kommuniziere ohne Internetverbindung (Wifi oder mobile Daten) indem du dein Telefon direkt mit Peers in der Nähe verbindest",
-      "optional": "Optional",
-      "title": "Bluetooth",
-      "desc": "Um diese Funktion nutzen zu können, musst du Berty den Zugriff auf Bluetooth gestatten",
-      "button": "BLUETOOTH AUTORISIEREN",
-      "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
-    },
     "setup-finished": {
       "title": "Einrichtung abgeschlossen!",
       "desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Anfragen",
-        "received-at": "Erhalten",
         "accept": "Akzeptieren",
         "card-title": "Kontaktanfrage!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Neue Gruppe erstellen",
-      "bottom-button": "Kontakt oder Gruppe scannen"
     },
     "suggestion-display-name-initial": "Klicke hier, um hinzuzufügen",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Benachrichtigungseinstellungen",
         "desc": "Hier klicken für Push-Benachrichtigungskonfiguration"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "SPEICHERN",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Für Entwickler",
       "header-right-button": "Einstellungen",
       "network-button": "Netzwerke",
-      "switch-accounts": "Anderes Konto verwenden",
       "edit-profile": "Profil bearbeiten"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Deaktiviert"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Aktiviert",
-        "tag-disabled": "Deaktiviert"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "App-Modus",
@@ -221,9 +204,7 @@
         "sound-button": "Benachrichtigungs-Ton",
         "exceptions-button": {
           "title": "Benachrichtigung bei Fehlern in der App",
-          "preview-value": "Vorschau des Fehlers",
-          "tag": "{{count}} Fehler",
-          "tag_plural": "{{count}} Fehler"
+          "preview-value": "Vorschau des Fehlers"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Benachrichtigungs-Ton",
         "exceptions-button": {
           "title": "Benachrichtigung bei Fehlern in der App",
-          "preview-value": "Vorschau des Fehlers",
-          "tag": "{{count}} Fehler",
-          "tag_plural": "{{count}} Fehler"
+          "tag": "{{count}} Fehler"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth ermöglicht es dir, Nachrichten mit Berty ohne Internetzugriff auszutauschen, indem du dein Gerät direkt mit anderen Geräten in der Nähe verbindest",
-      "activate-button": "Bluetooth aktivieren",
-      "permission-title": "Berty Bluetooth Berechtigung",
-      "android-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die Android API die Standortberechtigung.\nWir verwenden Ihre Standortdaten in keiner Weise.",
-      "ios-permission-description": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die iOS-API diese Berechtigung.",
-      "tag-neutral": "Später nachfragen",
-      "tag-negative": "Abbrechen",
-      "tag-positive": "OK"
+      "activate-button": "Bluetooth aktivieren"
     },
     "mc": {
       "activate-button": "Verbindung zu mehreren Partnern aktivieren"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "App-Aktualisierungen",
-      "up-to-date-desc": "Ihre App ist auf dem neuesten Stand",
-      "version": "Version",
-      "current-tag": "Aktuell",
-      "installed-tag": "Installiert",
-      "initial-tag": "Erstinstallation",
-      "not-installed-tag": "Nicht installiert"
+      "current-tag": "Aktuell"
     },
     "devtools": {
       "title": "Entwicklerwerkzeuge",
-      "theme-editor": "",
       "header-left-button": "Geräteinformationen",
+      "header-middle-button": "Fake-Daten generieren",
+      "header-right-button": "Daemon neu starten",
+      "theme-editor": "",
       "simulate-button": "Streamfehler simulieren",
       "simulate-js-error-button": "JavaScript-Fehler simulieren",
-      "simulate-native-error-button": "Native App-Fehler simulieren",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "fakultativ",
       "tor-required-option": "erforderlich",
       "tor-disabled-option": "deaktiviert",
-      "header-middle-button": "Fake-Daten generieren",
-      "header-right-button": "Daemon neu starten",
       "system-info-button": "System-Info",
       "debug-button": "Debug",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Interaktionen exportieren",
       "dump-members-button": "Mitglieder exportieren",
       "stop-node-button": "Node stoppen",
-      "bot-mode-button": "Bot-Modus",
       "local-grpc-button": "lokale gRPC",
       "console-logs-button": "Konsolen-Protokolle",
       "ipfs-webui-button": "IPFS Webinterface",
-      "notifications-button": "Benachrichtigungen",
       "send-to-all-button": {
         "title": "Nachrichten an alle Kontakte senden",
         "sending": "Wird gesendet...",
         "test": "Test, ",
         "tried": "✔ Senden an {{length}} Kontakte versucht"
       },
-      "footer-left-button": "Geräteinformationen",
-      "footer-middle-button": "Events auflisten",
-      "footer-right-button": "Daemon neu starten",
       "trigger-crashlytics-button": "Crashlytics Absturz auslösen",
       "tyber-attach": "Tyber an {{host}} anhängen",
       "tyber-host-button": {
         "name": "Tyber",
         "bullet-point": "App nach dem Ändern dieses Feldes neu starten"
-      }
+      },
+      "footer-left-button": "Geräteinformationen",
+      "footer-middle-button": "Events auflisten",
+      "footer-right-button": "Daemon neu starten"
     },
     "system-info": {
       "title": "System-Info"
@@ -428,12 +393,6 @@
       "info": "Infos",
       "devices": "Geräte"
     },
-    "welcome-configuration": {
-      "title": "Willkommen an Bord!",
-      "desc": "Lassen Sie uns einen schnellen Überblick über die Einstellungen haben und beenden Sie Ihre erste Konfiguration!",
-      "skip": "Überspringen",
-      "next": "Nächstes"
-    },
     "save-theme": {
       "title": "Theme speichern",
       "desc": "Bitte wählen Sie einen Namen für Ihr Theme!",
@@ -485,19 +444,12 @@
         "accept-button": "Annehmen",
         "accepted-button": "Angenommen"
       },
-      "betabot-box": {
-        "title": "BETA BOT hinzufügen?",
-        "desc": "Du hastn och keine Kontakte. Möchten du den Beta-Bot hinzufügen, um Nachrichten in Berty auszuprobieren?",
-        "skip-button": "Überspringen",
-        "add-button": "Hinzufügen!"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty Verbindung bestätigt! 🎉",
         "request-sent": "Anfrage gesendet ✈",
         "incoming": "Nehmen Sie die Anfrage an, um antworten zu können!",
         "outgoing": "Warte auf Verbindung, um die Antwort zu senden!"
       },
-      "betabot-input-placeholder": "Beta-Bot hinzufügen, um hier schreiben zu können ...",
       "incoming-input-placeholder": "Nehmen Sie die Anfrage an, um hier schreiben zu können ...",
       "input-placeholder": "Hier eingeben..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Dienste verwalten oder hinzufügen"
     },
     "files": {
-      "record-sound": "Tonnachricht aufnehmen",
-      "recording": "Aufnehmen...",
       "gallery": "Galerie",
       "camera": "Kamera",
-      "record": "Aufnehmen",
       "files": "Dateien",
       "microphone": "Mikrofon",
-      "gif": "GIF",
       "search-gif": "Gif suchen",
       "security-access": "Sicherheitszugriff",
       "security-access-desc": "Tippen Sie hier, um die Optionen zu öffnen, um den Zugriff auf Ihre",
@@ -547,6 +495,48 @@
       "replied-to": "Antwort auf"
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Halte zum aufnehmen, lasse los zum senden",
+        "not-sent": "Audionachricht wurde nicht gesendet",
+        "permission-denied": "App ist nicht berechtigt, Ton aufzuzeichnen"
+      },
+      "slide-to-cancel": "Streichen um abbzubrechen",
+      "cancel-button": "Abbrechen"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "Push-Benachrichtigungen",
+      "desc": "Berty App benötigt deine Erlaubnis, um dir lokale oder Push-Benachrichtigungen zu senden. Dies erlaubt dir, benachrichtigt zu werden, wenn du eine Nachricht erhältst."
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die iOS-API diese Berechtigung."
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "Fehler entdeckt",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "Entschuldigen Sie diesen Fehler!",
       "desc": "Francis ist schuld, unser Praktikant. Er hat wohl einen Fehler gemacht. Ach dieser Francis!",
-      "desc-buy": "Er kauft dir ein Bier, wenn du ihn triffst!",
       "desc-em": "*Okay, es gibt keinen Francis im Team Berty.",
       "desc-report": "Schütteln Sie Ihr Telefon und es geht weiter!"
     }
@@ -624,45 +613,5 @@
         "button-cancel": "Abbrechen"
       }
     }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "Halte zum aufnehmen, lasse los zum senden",
-        "not-sent": "Audionachricht wurde nicht gesendet",
-        "permission-denied": "App ist nicht berechtigt, Ton aufzuzeichnen"
-      },
-      "slide-to-cancel": "Streichen um abbzubrechen",
-      "cancel-button": "Abbrechen"
-    }
-  },
-  "medias": {
-    "audio": "Audio",
-    "picture": "Bild",
-    "file": "Datei"
-  },
-  "permission": {
-    "notification": {
-      "title": "Push-Benachrichtigungen",
-      "desc": "Berty App benötigt deine Erlaubnis, um dir lokale oder Push-Benachrichtigungen zu senden. Dies erlaubt dir, benachrichtigt zu werden, wenn du eine Nachricht erhältst."
-    },
-    "p2p": {
-      "title": "Peer-to-Peer",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Kamera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
   }
 }
