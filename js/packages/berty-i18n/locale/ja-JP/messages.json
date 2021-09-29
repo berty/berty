@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "インターネットアクセスやモバイル通信は必要とせず、不安定なネットワークでも機能する安全なピアツーピアメッセージングアプリ",
-      "open-registered-account": "登録済みのアカウントを開く",
-      "import-button": "既存のアカウントからデータをインポート",
-      "account-selector-create-button": "アカウントの作成",
-      "more-options": "その他のオプション",
       "button": ""
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Bertyノードを開始しています",
       "desc": "これは数秒かかることがあります"
     },
-    "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "通知",
-      "desc": "",
-      "button": "通知を許可する",
-      "skip": ""
-    },
-    "bluetooth": {
-      "header": "近くのピアと携帯電話を直接接続して、インターネット接続 (Wi-Fiやデータ通信) を介さず通信します",
-      "optional": "オプション",
-      "title": "Bluetooth",
-      "desc": "この機能を使用するには、Bluetoothの使用許可が必要です",
-      "button": "Bluetoothの使用を許可する",
-      "skip": ""
-    },
     "setup-finished": {
       "title": "セットアップが完了しました!",
       "desc": "",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "リクエスト",
-        "received-at": "受け取った",
         "accept": "承認",
         "card-title": "連絡先リクエスト!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "新しいグループを作成",
-      "bottom-button": "連絡先またはグループをスキャン"
     },
     "suggestion-display-name-initial": "",
     "configurations": {
@@ -118,6 +97,10 @@
       },
       "notification": {
         "display-name": "通知設定",
+        "desc": ""
+      },
+      "replicate": {
+        "display-name": "",
         "desc": ""
       }
     },
@@ -139,6 +122,9 @@
       },
       "save": "保存",
       "skip": ""
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "",
       "header-right-button": "設定",
       "network-button": "ネットワーク一覧",
-      "switch-accounts": "別のアカウントを使う",
       "edit-profile": "プロフィールを編集"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": ""
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "",
@@ -221,9 +204,7 @@
         "sound-button": "サウンド",
         "exceptions-button": {
           "title": "",
-          "preview-value": "追加",
-          "tag": "",
-          "tag_plural": ""
+          "preview-value": "追加"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "サウンド",
         "exceptions-button": {
           "title": "",
-          "preview-value": "追加",
-          "tag": "",
-          "tag_plural": ""
+          "tag": ""
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "後で確認",
-      "tag-negative": "キャンセル",
-      "tag-positive": "OK"
+      "activate-button": ""
     },
     "mc": {
       "activate-button": ""
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "アプリのアップデート",
-      "up-to-date-desc": "",
-      "version": "バージョン",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "current-tag": ""
     },
     "devtools": {
       "title": "",
-      "theme-editor": "",
       "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "theme-editor": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "オプション",
       "tor-required-option": "必須",
       "tor-disabled-option": "",
-      "header-middle-button": "",
-      "header-right-button": "",
       "system-info-button": "",
       "debug-button": "デバッグ",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "",
       "dump-members-button": "",
       "stop-node-button": "",
-      "bot-mode-button": "",
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "通知",
       "send-to-all-button": {
         "title": "",
         "sending": "",
         "test": "",
         "tried": ""
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": "",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "",
+      "footer-middle-button": "",
+      "footer-right-button": ""
     },
     "system-info": {
       "title": ""
@@ -428,12 +393,6 @@
       "info": "",
       "devices": "デバイス"
     },
-    "welcome-configuration": {
-      "title": "",
-      "desc": "",
-      "skip": "",
-      "next": ""
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "承認",
         "accepted-button": ""
       },
-      "betabot-box": {
-        "title": "",
-        "desc": "",
-        "skip-button": "",
-        "add-button": ""
-      },
       "infos-chat": {
         "connection-confirmed": "",
         "request-sent": "",
         "incoming": "",
         "outgoing": ""
       },
-      "betabot-input-placeholder": "",
       "incoming-input-placeholder": "",
       "input-placeholder": "ここに入力..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": ""
     },
     "files": {
-      "record-sound": "",
-      "recording": "録音中...",
       "gallery": "",
       "camera": "カメラ",
-      "record": "録音",
       "files": "ファイル",
       "microphone": "マイク",
-      "gif": "GIF",
       "search-gif": "gifを検索",
       "security-access": "",
       "security-access-desc": "",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "長押しで録音、離すと送信されます",
+        "not-sent": "音声メッセージは送信されていません",
+        "permission-denied": "アプリは音声の録音が許可されていません"
+      },
+      "slide-to-cancel": "スライドして中止",
+      "cancel-button": "キャンセル"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "カメラ",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "バグが検出されました",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "バグを謝罪します!",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -624,45 +613,5 @@
         "button-cancel": "キャンセル"
       }
     }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "長押しで録音、離すと送信されます",
-        "not-sent": "音声メッセージは送信されていません",
-        "permission-denied": "アプリは音声の録音が許可されていません"
-      },
-      "slide-to-cancel": "スライドして中止",
-      "cancel-button": "キャンセル"
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "カメラ",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
   }
 }
