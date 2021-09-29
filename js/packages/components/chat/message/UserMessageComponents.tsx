@@ -11,7 +11,7 @@ import { useStyles } from '@berty-tech/styles'
 import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { pbDateToNum, timeFormat } from '../../utils'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300

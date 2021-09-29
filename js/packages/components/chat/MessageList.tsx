@@ -15,7 +15,7 @@ import { Message } from '@berty-tech/components/chat/message'
 import { ChatDate, updateStickyDate } from '@berty-tech/components/chat/common'
 import { InfosChat } from '@berty-tech/components/InfosChat'
 import { InfosMultiMember } from '@berty-tech/components/chat/InfosMultiMember'
-import { pbDateToNum } from '@berty-tech/components/helpers'
+import { pbDateToNum } from '@berty-tech/components/utils'
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
 	const { ...propsToPass } = props

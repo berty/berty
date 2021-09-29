@@ -9,7 +9,7 @@ import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
 import defaultTheme from '@berty-tech/styles/colors.json'
 import pinkTheme from '@berty-tech/styles/pinktheme-default.json'
 import darkTheme from '@berty-tech/styles/darktheme-default.json'
-import { randomizeThemeColor } from '@berty-tech/components/helpers'
+import { randomizeThemeColor } from '@berty-tech/components/utils'
 
 import { ParsedInteraction } from './types.gen'
 import { SoundKey } from './sounds'

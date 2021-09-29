@@ -12,7 +12,7 @@ import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-te
 import { accountService } from '@berty-tech/store/context'
 
 import { ButtonSetting, StringOptionInput } from '../shared-components/SettingsButtons'
-import { showNeedRestartNotification } from '@berty-tech/components/helpers'
+import { showNeedRestartNotification } from '@berty-tech/components/utils'
 
 // Styles
 const useStylesMode = () => {

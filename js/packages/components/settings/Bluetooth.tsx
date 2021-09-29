@@ -11,7 +11,7 @@ import { ScreenProps } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { showNeedRestartNotification } from '../helpers'
+import { showNeedRestartNotification } from '../utils'
 import { checkPermissions } from '@berty-tech/components/utils'
 import { useNavigation } from '@react-navigation/native'
 

@@ -32,7 +32,7 @@ import {
 	ButtonSettingRow,
 	StringOptionInput,
 } from '../shared-components/SettingsButtons'
-import { showNeedRestartNotification } from '../helpers'
+import { showNeedRestartNotification } from '../utils'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
 
 //

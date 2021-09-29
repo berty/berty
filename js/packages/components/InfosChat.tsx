@@ -8,7 +8,7 @@ import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
 import { useClient, useThemeColor } from '@berty-tech/store/hooks'
 
-import { pbDateToNum, timeFormat } from './helpers'
+import { pbDateToNum, timeFormat } from './utils'
 import { ContactAvatar } from './avatars'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { MessageInvitationButton } from './chat/message/MessageInvitation'

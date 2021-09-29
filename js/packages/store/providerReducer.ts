@@ -2,7 +2,7 @@ import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
 
 import beapi from '@berty-tech/api'
-import { pbDateToNum } from '@berty-tech/components/helpers'
+import { pbDateToNum } from '@berty-tech/components/utils'
 
 import {
 	initialState,

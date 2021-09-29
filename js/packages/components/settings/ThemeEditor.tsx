@@ -18,7 +18,7 @@ import {
 import { createAndSaveFile } from '@berty-tech/store/services'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-import { randomizeThemeColor } from '../helpers'
+import { randomizeThemeColor } from '../utils'
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
 import ThemeColorName from '../modals/ThemeColorName'

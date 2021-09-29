@@ -18,7 +18,7 @@ import { HintBody } from '@berty-tech/components/shared-components'
 import { parseInteraction } from '@berty-tech/store/utils'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { pbDateToNum, timeFormat } from '../../utils'
 import { ContactAvatar, ConversationAvatar } from '../../avatars'
 
 // Styles

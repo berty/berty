@@ -2,7 +2,7 @@ import { EffectCallback, useContext, useEffect, useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
-import { pbDateToNum } from '@berty-tech/components/helpers'
+import { pbDateToNum } from '@berty-tech/components/utils'
 import { Routes } from '@berty-tech/navigation'
 import colors from '@berty-tech/styles/colors.json'
 
