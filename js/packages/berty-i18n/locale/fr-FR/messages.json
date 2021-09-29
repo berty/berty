@@ -514,7 +514,7 @@
     "p2p": {
       "title": "",
       "android-desc": "",
-      "ios-desc": "Pour échanger des messages hors ligne via Bluetooth, l'API d’iOS nécessite une autorisation."
+      "ios-desc": ""
     },
     "camera": {
       "title": "Caméra",
@@ -534,7 +534,7 @@
   "notification": {
     "need-restart": {
       "title": "Nécessite le redémarrage de l'application",
-      "desc": "Pour ce type de notifications et enregistrer ce paramètre, vous devez redémarrer votre application!"
+      "desc": ""
     }
   },
   "error": {
