@@ -85,7 +85,7 @@
         "fifth-bullet-point": "You cannot remove a member from this group"
       },
       "conversations": {
-        "request-sent": "The request is sent. Pending...",
+        "request-sent": "",
         "draft": "Draft: {{message}}"
       }
     },
@@ -100,8 +100,8 @@
         "desc": "Click here for push-notification config"
       },
       "replicate": {
-        "display-name": "P2P Replication",
-        "desc": "Set up replication services"
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -513,8 +513,8 @@
     },
     "p2p": {
       "title": "Bluetooth messaging",
-      "android-desc": "To exchange messages offline via Bluetooth even when the app is in the background, the Android API requires the location permission to be granted. We do not use your location data in any way.",
-      "ios-desc": "To exchange messages offline via Bluetooth, the iOS API requires permission to be granted."
+      "android-desc": "",
+      "ios-desc": ""
     },
     "camera": {
       "title": "Camera",
@@ -534,7 +534,7 @@
   "notification": {
     "need-restart": {
       "title": "Need restart app",
-      "desc": "For this kind of notification, you have to restart your app to save these fields!"
+      "desc": ""
     }
   },
   "error": {
