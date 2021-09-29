@@ -127,20 +127,21 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 	return (
 		<View style={[margin.top.medium]}>
 			<View style={[row.fill]}>
-				{tabs &&
-					tabs.map(obj => (
-						<TabBarItem
-							key={obj.key}
-							name={obj.name}
-							icon={obj.icon}
-							iconPack={obj.iconPack}
-							iconTransform={obj.iconTransform}
-							setEnable={() => setEnable(obj.key)}
-							enable={selectedTab === obj.key}
-							buttonDisabled={obj.buttonDisabled || false}
-							style={obj.style}
-						/>
-					))}
+				{tabs
+					? tabs.map(obj => (
+							<TabBarItem
+								key={obj.key}
+								name={obj.name}
+								icon={obj.icon}
+								iconPack={obj.iconPack}
+								iconTransform={obj.iconTransform}
+								setEnable={() => setEnable(obj.key)}
+								enable={selectedTab === obj.key}
+								buttonDisabled={obj.buttonDisabled || false}
+								style={obj.style}
+							/>
+					  ))
+					: null}
 			</View>
 		</View>
 	)

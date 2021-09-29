@@ -66,7 +66,7 @@ const ContactRequestQR = () => {
 
 	// Make sure we can always see the whole QR code on the screen, even if need to scroll
 	const qrCodeSize = isGteIpadSize
-		? Math.min(windowHeight, windowWidth) * 0.5
+		? Math.min(windowHeight, windowWidth) * 0.35
 		: Math.min(windowHeight * bertyIdContentScaleFactor, windowWidth * bertyIdContentScaleFactor) -
 		  1.25 * titleSize
 
@@ -216,14 +216,14 @@ const BertyIdShare: React.FC<{}> = () => {
 }
 
 const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
-	const [{ padding }, { windowHeight, scaleSize }] = useStyles()
+	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	return (
 		<View
 			style={[
 				padding.medium,
-				{ backgroundColor: colors['background-header'], top: (windowHeight / 8) * scaleSize },
+				{ backgroundColor: colors['background-header'], top: 55 * scaleSize },
 			]}
 		>
 			<BertIdBody user={user} />
