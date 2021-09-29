@@ -162,22 +162,7 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 	)
 
 	if withIPFS {
-		// FIXME(gfanton): pass our tee core to ipfs_log, currently failed because we
-		// pass a multicore instead of a single core
-		config := zap.NewDevelopmentConfig()
-		config.Encoding = consoleEncoding
-		config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-		config.EncoderConfig.EncodeDuration = zapcore.StringDurationEncoder
-		config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeName = stableWidthNameEncoder
-		config.Development = true
-		ipfslogger, err := config.Build()
-		if err != nil {
-			return nil, nil, err
-		}
-
-		ipfs_log.SetPrimaryCore(ipfslogger.Core())
+		ipfs_log.SetPrimaryCore(tee.Core())
 	} else {
 		ipfs_log.SetPrimaryCore(zapcore.NewNopCore())
 	}
