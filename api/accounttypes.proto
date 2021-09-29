@@ -78,6 +78,7 @@ message OpenAccount {
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
     NetworkConfig network_config = 4;
+    string key = 5;
   }
   message Reply {
   }
@@ -88,6 +89,7 @@ message OpenAccountWithProgress {
     repeated string args = 1;
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
+    string key = 4;
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -168,6 +170,7 @@ message CreateAccount {
     repeated string args = 3;
     string logger_filters = 4;
     NetworkConfig network_config = 5;
+    string key = 6;
   }
   message Reply {
     AccountMetadata account_metadata = 1;

@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
 import RNFS from 'react-native-fs'
+import RNSecureKeyStore from 'react-native-secure-key-store'
 
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import beapi from '@berty-tech/api'
@@ -9,8 +10,11 @@ import beapi from '@berty-tech/api'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { defaultThemeColor } from '@berty-tech/store/context'
+import i18n from '@berty-tech/berty-i18n'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 import ExternalTransport from './externalTransport'
+import { FS_KEY_NAME } from './utils'
 import { refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
 import { updateAccount, setPersistentOption } from './providerCallbacks'
 import {
@@ -23,18 +27,18 @@ import {
 	accountService,
 	GlobalPersistentOptionsKeys,
 } from './context'
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import i18n from '@berty-tech/berty-i18n'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
 	bridgeOpts: GoBridgeOpts,
 	selectedAccount: string | null,
 ) => {
+	const key = await RNSecureKeyStore.get(FS_KEY_NAME)
 	await accountService
 		.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
+			key,
 		})
 		.then(async stream => {
 			stream.onMessage((msg, _) => {

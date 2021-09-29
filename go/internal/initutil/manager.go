@@ -44,6 +44,7 @@ const (
 )
 
 type Manager struct {
+	Key string `json:"-"`
 	// Session contains metadata for the current running session.
 	Session struct {
 		// Kind is a string describing the context of the app.
