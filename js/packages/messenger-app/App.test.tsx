@@ -5,10 +5,16 @@ import App from './App'
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer'
 
-jest.useFakeTimers()
+jest.mock('react-native/Libraries/LogBox/LogBox')
 
 describe('Berty MessengerApp', () => {
-	it('Renderer test', () => {
+	beforeEach(() => {
+		jest.resetModules()
+		jest.resetAllMocks()
+		jest.useFakeTimers()
+	})
+	it('Renderer test', done => {
 		renderer.create(<App />)
+		done()
 	})
 })
