@@ -503,12 +503,7 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	dir, err := m.getDatastoreDir()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetMessengerDBForPath(dir, logger)
+	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetMessengerDBForPath(m.Datastore.Dir, logger)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

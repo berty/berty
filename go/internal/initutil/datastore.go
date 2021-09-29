@@ -25,58 +25,6 @@ func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Datastore.LowMemoryProfile, "store.lowmem", m.Datastore.LowMemoryProfile, "enable LowMemory Profile, useful for mobile environment")
 }
 
-func (m *Manager) GetDatastoreDir() (string, error) {
-	defer m.prepareForGetter()()
-
-	return m.getDatastoreDir()
-}
-
-func (m *Manager) getDatastoreDir() (string, error) {
-	m.applyDefaults()
-
-	if m.Datastore.dir != "" {
-		return m.Datastore.dir, nil
-	} else if m.Datastore.InMemory {
-		return accountutils.InMemoryDir, nil
-	}
-
-	if dir, err := getDatastoreDir(m.Datastore.Fs, m.Datastore.Dir); err != nil {
-	} else {
-		m.Datastore.dir = dir
-	}
-
-	inMemory := m.Datastore.dir == accountutils.InMemoryDir
-	m.initLogger.Debug("datastore dir",
-		zap.String("dir", m.Datastore.dir),
-		zap.Bool("in-memory", inMemory),
-	)
-
-	return m.Datastore.dir, nil
-}
-
-func getDatastoreDir(fs afero.Fs, dir string) (string, error) {
-	switch {
-	case dir == "":
-		return "", errcode.TODO.Wrap(fmt.Errorf("--store.dir is empty"))
-	case dir == InMemoryDir:
-		return InMemoryDir, nil
-	}
-
-	dir = path.Join(dir, "account0") // account0 is a suffix that will be used with multi-account later
-
-	_, err := fs.Stat(dir)
-	switch {
-	case os.IsNotExist(err):
-		if err := fs.MkdirAll(dir, 0o700); err != nil {
-			return "", errcode.TODO.Wrap(err)
-		}
-	case err != nil:
-		return "", errcode.TODO.Wrap(err)
-	}
-
-	return dir, nil
-}
-
 func (m *Manager) GetRootDatastore() (datastore.Batching, error) {
 	defer m.prepareForGetter()()
 
@@ -90,16 +38,22 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return m.Datastore.rootDS, nil
 	}
 
-	dir, err := m.getDatastoreDir()
+	path := "root-ds"
+
+	fs, err := m.getFs()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if m.Datastore.rootDS, err = getRootDatastoreForPath(m.Datastore.Fs, dir, m.Datastore.LowMemoryProfile, m.initLogger); err != nil {
+	if m.Datastore.rootDS, err = getRootDatastoreForPath(fs, path, m.Datastore.LowMemoryProfile, m.initLogger); err != nil {
 		return nil, err
 	}
 
+<<<<<<< HEAD
 	m.initLogger.Debug("datastore", zap.Bool("in-memory", dir == accountutils.InMemoryDir))
+=======
+	m.initLogger.Debug("loaded or created root datastore in virtual fs", zap.String("path", path))
+>>>>>>> 78686df6d (fix: make daemon boot)
 
 	return m.Datastore.rootDS, nil
 }

@@ -3,12 +3,12 @@ package ipfsutil
 import (
 	crand "crypto/rand"
 	"encoding/base64"
+	"io/fs"
 	"path/filepath"
 	"time"
 
 	// nolint:staticcheck
 	afrepo "github.com/berty/go-ipfs-repo-afero/pkg/repo"
-	"github.com/berty/gormfs"
 	ipfs_ds "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
@@ -17,8 +17,7 @@ import (
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -85,25 +84,25 @@ func MemRepo() (ipfs_repo.Repo, error) {
 	return repo, nil
 }
 
-func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
+func LoadRepoFromPath(afs afero.Fs, path string, l *zap.Logger) (ipfs_repo.Repo, error) {
+	if l == nil {
+		l = zap.NewNop()
+	}
+
 	if _, err := loadPlugins(path); err != nil {
 		return nil, errors.Wrap(err, "failed to load plugins")
 	}
 
-	db, err := gorm.Open(sqlite.Open(filepath.Join(path, "berty.db")), &gorm.Config{})
-	if err != nil {
+	if err := afs.MkdirAll(path, fs.ModePerm); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	fs, err := gormfs.NewGormFs(db)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	afrepo.DsFs = fs
+	afrepo.DsFs = afs
 
 	// init repo if needed
-	if !afrepo.IsInitialized(fs, path) {
+	if !afrepo.IsInitialized(afs, path) {
+		l.Info("Repo is not initialized")
+
 		cfg, err := createBaseConfig()
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to create base config")
@@ -114,12 +113,13 @@ func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
 			return nil, errors.Wrap(err, "failed to upgrade repo")
 		}
 
-		if err := afrepo.Init(fs, path, ucfg); err != nil {
+		if err := afrepo.Init(afs, path, ucfg); err != nil {
 			return nil, errors.Wrap(err, "failed to init repo")
 		}
 	}
+	l.Info("Repo is initialized")
 
-	return afrepo.Open(fs, path)
+	return afrepo.Open(afs, path)
 }
 
 var DefaultSwarmListeners = []string{
@@ -210,7 +210,7 @@ func upgradeToPersistanceConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) 
 				map[string]interface{}{
 					"mountpoint": "/blocks",
 					"type":       "measure",
-					"prefix":     "flatfs.datastore",
+					"prefix":     "blocks.datastore",
 					"child": map[string]interface{}{
 						"type": "afero",
 						"path": "blocks",
@@ -219,7 +219,7 @@ func upgradeToPersistanceConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) 
 				map[string]interface{}{
 					"mountpoint": "/",
 					"type":       "measure",
-					"prefix":     "leveldb.datastore",
+					"prefix":     "root.datastore",
 					"child": map[string]interface{}{
 						"type": "afero",
 						"path": "datastore",

@@ -29,7 +29,8 @@ func daemonCommand() *ffcli.Command {
 		fs := flag.NewFlagSet("berty daemon", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
 		manager.Session.Kind = "cli.daemon"
-		manager.SetupLoggingFlags(fs)              // also available at root level
+		manager.SetupLoggingFlags(fs) // also available at root level
+		fmt.Println("HALO")
 		manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
 		manager.SetupDefaultGRPCListenersFlags(fs)
 		manager.SetupMetricsFlags(fs)
@@ -58,12 +59,17 @@ func daemonCommand() *ffcli.Command {
 				return err
 			}
 
+			logger.Info("root dir", zap.String("path", manager.Datastore.Dir))
+
 			// since this command is daemon, we want to be sure to run a local daemon with protocol and messenger
 			{
 				_, err := manager.GetLocalProtocolServer()
 				if err != nil {
 					return err
 				}
+
+				logger.Info("protocol server initialized")
+
 				_, err = manager.GetLocalMessengerServer()
 				if err != nil {
 					return err

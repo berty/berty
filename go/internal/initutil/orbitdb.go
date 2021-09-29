@@ -5,7 +5,6 @@ import (
 
 	datastore "github.com/ipfs/go-datastore"
 
-	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -27,15 +26,6 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	orbitDirectory, err := m.getDatastoreDir()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	if orbitDirectory != accountutils.InMemoryDir {
-		orbitDirectory = filepath.Join(orbitDirectory, bertyprotocol.NamespaceOrbitDBDirectory)
-	}
-
 	logger, err := m.getLogger()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -51,6 +41,8 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		deviceKS = cryptoutil.NewDeviceKeystore(deviceDS)
 		cache    = bertyprotocol.NewOrbitDatastoreCache(rootDS)
 	)
+
+	orbitDirectory := filepath.Join(m.Datastore.Dir, bertyprotocol.NamespaceOrbitDBDirectory)
 
 	opts := &bertyprotocol.NewOrbitDBOptions{
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{

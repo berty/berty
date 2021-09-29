@@ -7,7 +7,6 @@ import (
 	mrand "math/rand"
 	"net"
 	"net/http"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -25,6 +24,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
+	"go.uber.org/zap"
 	"moul.io/srand"
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
@@ -144,10 +144,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
+	logger.Info("initializing ipfs")
+
 	mrepo, err := m.setupIPFSRepo()
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
+
+	logger.Info("got ipfs repo", zap.Any("repo", mrepo))
 
 	var dhtmode p2p_dht.ModeOpt = 0
 	switch m.Node.Protocol.DHT {
@@ -269,11 +273,20 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		}
 	}
 
+	logger.Info("initialized ipfs", zap.Any("id", m.Node.Protocol.ipfsNode.Identity))
+
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }
 
 func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
+	l, err := m.getLogger()
+	if err != nil {
+		fmt.Printf("Failed to get logger: %s\n", err.Error())
+		l = zap.NewNop()
+	}
+
 	if m.Datastore.InMemory {
+		l.Info("using memrepo for ipfs")
 		repo, err := ipfsutil.MemRepo()
 		if err != nil {
 			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
@@ -281,14 +294,20 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
 	}
 
-	repopath := filepath.Join(m.Datastore.Dir, "ipfs")
+	repoPath := "ipfs"
+	l.Info("loading or creating ipfs repo in virtual fs", zap.String("path", repoPath))
 
-	repo, err := ipfsutil.LoadRepoFromPath(repopath)
+	fs, err := m.getFs()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	repo, err := ipfsutil.LoadRepoFromPath(fs, repoPath, l)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
 
-	return ipfs_mobile.NewRepoMobile(repopath, repo), nil
+	return ipfs_mobile.NewRepoMobile(repoPath, repo), nil
 }
 
 func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error) {

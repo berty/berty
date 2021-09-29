@@ -5,11 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"path/filepath"
 	"strings"
 	"sync"
 	"text/tabwriter"
 	"time"
 
+	"github.com/berty/gormfs"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
@@ -20,6 +22,7 @@ import (
 	"github.com/spf13/afero"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/progress"
 	"moul.io/zapring"
@@ -220,9 +223,6 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	// generate SessionID using uuidv4 to identify each run
 	m.Session.ID = tyber.NewSessionID()
 
-	// init fs
-	m.Datastore.Fs = afero.NewOsFs()
-
 	// storage path
 	if !opts.DoNotSetDefaultDir {
 		storagePath := configdir.New("berty-tech", "berty")
@@ -237,6 +237,41 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	}
 
 	return &m, nil
+}
+
+func (m *Manager) GetFs() (afero.Fs, error) {
+	defer m.prepareForGetter()()
+
+	if m.getContext().Err() != nil {
+		return nil, m.getContext().Err()
+	}
+	return m.getFs()
+}
+
+func (m *Manager) getFs() (afero.Fs, error) {
+	if m.Datastore.Fs != nil {
+		return m.Datastore.Fs, nil
+	}
+
+	// init fs
+	l, err := m.getLogger()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	dbPath := filepath.Join(m.Datastore.Dir, "fs.db")
+	l.Info("initializing filesystem", zap.String("path", dbPath))
+
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if m.Datastore.Fs, err = gormfs.NewGormFs(db); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return m.Datastore.Fs, nil
 }
 
 func (m *Manager) applyDefaults() {
