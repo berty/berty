@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { dispatch } from '@berty-tech/navigation/rootRef'
 import { Routes } from '@berty-tech/navigation'
 
@@ -15,6 +15,7 @@ import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -67,20 +68,37 @@ const AddThisContact: React.FC<{
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
+	const ctx = useMsgrContext()
 
 	const [password, setPassword] = useState('')
 
 	// TODO: handle error (shouldn't happen since we checked the link previously, but still)
 
 	React.useEffect(() => {
+		const setContactCheckListDone = async () => {
+			await ctx.setPersistentOption({
+				type: PersistentOptionsKeys.CheckList,
+				payload: {
+					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+					contact: {
+						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact,
+						done: true,
+					},
+				},
+			})
+		}
 		if (done && !error) {
+			if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact?.done) {
+				setContactCheckListDone().then()
+			}
+
 			dispatch(
 				CommonActions.reset({
 					routes: [{ name: Routes.Main.Home }],
 				}),
 			)
 		}
-	}, [done, error, navigation])
+	}, [ctx, done, error])
 
 	if (error) {
 		return <InvalidScan type={type} error={error} />

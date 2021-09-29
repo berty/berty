@@ -82,6 +82,18 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 							},
 						},
 					})
+					if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme?.done) {
+						await ctx.setPersistentOption({
+							type: PersistentOptionsKeys.CheckList,
+							payload: {
+								...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+								theme: {
+									...ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme,
+									done: true,
+								},
+							},
+						})
+					}
 				}}
 			/>
 			<ButtonSetting

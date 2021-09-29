@@ -216,9 +216,10 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				</View>
 				{Object.entries(members)
 					.filter(([, m]) => m && !m.isMe)
-					.map(([k, m]) => {
+					.map(([k, m], key) => {
 						return (
 							<View
+								key={key}
 								style={{
 									flexDirection: 'row',
 									alignItems: 'center',

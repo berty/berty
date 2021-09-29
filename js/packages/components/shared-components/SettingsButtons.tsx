@@ -50,9 +50,8 @@ type SettingButtonProps = {
 
 // Style
 const useStylesSettingButton = () => {
-	const [{ flex, padding, margin }] = useStyles()
+	const [{ padding, margin }] = useStyles()
 	return {
-		settingButton: flex.tiny,
 		statePaddingBox: [padding.vertical.tiny, padding.horizontal.small],
 		descBox: [margin.left.scale(20), margin.bottom.medium],
 	}
@@ -111,9 +110,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					: 0.2
 			}
 			style={[
-				_styles.settingButton,
 				style,
-				{ minHeight: 60 * scaleSize, backgroundColor: colors['main-background'] },
+				{ minHeight: 60 * scaleSize, backgroundColor: colors['main-background'], flex: 1 },
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
 				alone ? { shadowColor: colors.shadow } : null,
@@ -229,7 +227,9 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							status='primary'
 							checked={varToggle || isToggle}
 							onChange={
-								actionToggle ? () => actionToggle(!varToggle) : () => setIsToggle(!isToggle)
+								actionToggle
+									? () => actionToggle(varToggle ? false : true)
+									: () => setIsToggle(!isToggle)
 							}
 						/>
 					)}
@@ -594,10 +594,10 @@ export const StringOptionInput: React.FC<{
 	name: string
 	getOptionValue: () => Promise<string> | string
 	setOptionValue: (value: string) => Promise<void> | void
-	bulletPointValue: string
+	bulletPointValue?: string
 	iconColor?: string | undefined
 }> = ({ name, bulletPointValue, getOptionValue, setOptionValue, iconColor }) => {
-	const [{ flex, row, text, margin, padding, border }] = useStyles()
+	const [{ flex, row, text, margin, padding, border }, { scaleSize }] = useStyles()
 	const [value, setValue] = useState('')
 	useEffect(() => {
 		;(async () => {
@@ -623,10 +623,11 @@ export const StringOptionInput: React.FC<{
 						flex.tiny,
 						border.radius.medium,
 						border.medium,
-						padding.small,
+						padding.horizontal.small,
 						row.fill,
 						margin.bottom.small,
 						{
+							height: 45 * scaleSize,
 							alignItems: 'center',
 							borderColor: colors['main-text'],
 						},
@@ -641,7 +642,10 @@ export const StringOptionInput: React.FC<{
 							text.bold.small,
 							text.size.medium,
 							flex.scale(8),
-							{ fontFamily: 'Open Sans', color: colors['main-text'] },
+							{
+								fontFamily: 'Open Sans',
+								color: colors['main-text'],
+							},
 						]}
 						multiline
 					/>
@@ -659,15 +663,17 @@ export const StringOptionInput: React.FC<{
 					</TouchableOpacity>
 				</View>
 
-				<ButtonSettingItem
-					value={bulletPointValue}
-					icon='info-outline'
-					iconColor={colors['background-header']}
-					iconSize={15}
-					disabled
-					styleText={{ color: colors['secondary-text'] }}
-					styleContainer={[margin.bottom.tiny]}
-				/>
+				{bulletPointValue ? (
+					<ButtonSettingItem
+						value={bulletPointValue}
+						icon='info-outline'
+						iconColor={colors['background-header']}
+						iconSize={15}
+						disabled
+						styleText={{ color: colors['secondary-text'] }}
+						styleContainer={[margin.bottom.tiny]}
+					/>
+				) : null}
 			</View>
 		</ButtonSetting>
 	)

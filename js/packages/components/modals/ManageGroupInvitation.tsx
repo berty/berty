@@ -2,17 +2,20 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
 import { Buffer } from 'buffer'
 import { Text, Icon } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
 import { MultiMemberAvatar } from '../avatars'
+import { dispatch } from '@berty-tech/navigation/rootRef'
+import { Routes } from '@berty-tech/navigation'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -64,18 +67,38 @@ export const ManageGroupInvitation: React.FC<{
 	const colors = useThemeColor()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
-	const { t } = useTranslation()
+	const { t }: any = useTranslation()
+	const ctx = useMsgrContext()
 
 	const [password, setPassword] = useState('')
 
 	// TODO: handle error (shouldn't happen since we checked the link previously, but still)
 
 	React.useEffect(() => {
-		if (done && !error) {
-			navigation.goBack()
-			navigation.navigate('Main.Home')
+		const setGroupCheckListDone = async () => {
+			await ctx.setPersistentOption({
+				type: PersistentOptionsKeys.CheckList,
+				payload: {
+					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+					contact: {
+						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact,
+						done: true,
+					},
+				},
+			})
 		}
-	}, [done, error, navigation])
+		if (done && !error) {
+			if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact?.done) {
+				setGroupCheckListDone().then()
+			}
+
+			dispatch(
+				CommonActions.reset({
+					routes: [{ name: Routes.Main.Home }],
+				}),
+			)
+		}
+	}, [ctx, done, error])
 
 	if (error) {
 		return <InvalidScan type={type} error={error} />
@@ -157,7 +180,7 @@ export const ManageGroupInvitation: React.FC<{
 									text.bold.small,
 								]}
 							>
-								Enter the group password
+								{t('modals.group-invitation.password-label')}
 							</TextNative>
 						</View>
 						<View
@@ -177,7 +200,7 @@ export const ManageGroupInvitation: React.FC<{
 								autoCapitalize='none'
 								editable={true}
 								style={[{ fontFamily: 'Open Sans' }, text.bold.small, { width: '100%' }]}
-								placeholder='Password...'
+								placeholder={t('modals.group-invitation.password-placeholder')}
 							/>
 						</View>
 					</View>
@@ -197,7 +220,7 @@ export const ManageGroupInvitation: React.FC<{
 						]}
 					>
 						<Text style={{ textAlign: 'center', color: colors['background-header'] }}>
-							JOIN THIS GROUP
+							{t('modals.group-invitation.join')}
 						</Text>
 					</TouchableOpacity>
 				</View>

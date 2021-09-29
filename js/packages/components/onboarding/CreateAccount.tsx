@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
-import { RESULTS } from 'react-native-permissions'
 import DocumentPicker from 'react-native-document-picker'
 import getPath from '@flyerhq/react-native-android-uri-path'
 
@@ -15,7 +14,6 @@ import { GlobalPersistentOptionsKeys, MsgrState, useMsgrContext } from '@berty-t
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import { checkPermissions } from '../utils'
-import beapi from '@berty-tech/api'
 
 const openDocumentPicker = async (ctx: MsgrState) => {
 	try {
@@ -53,27 +51,10 @@ const CreateAccountBody = () => {
 	}, []) // eslint-disable-line
 
 	const handlePersistentOptions = React.useCallback(async () => {
-		const preset = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.Preset)
-
-		if (preset === String(beapi.account.NetworkConfigPreset.Performance)) {
-			const status = await checkPermissions('p2p', navigate, {
-				isToNavigate: false,
-			})
-			if (status === RESULTS.GRANTED || status === RESULTS.UNAVAILABLE) {
-				setIsPressed(true)
-				await ctx.createNewAccount()
-			} else {
-				await checkPermissions('p2p', navigate, {
-					createNewAccount: true,
-					isToNavigate: true,
-				})
-			}
-		} else {
-			setIsPressed(true)
-			await ctx.createNewAccount()
-		}
+		setIsPressed(true)
+		await ctx.createNewAccount()
 		setIsFinished(true)
-	}, [ctx, navigate])
+	}, [ctx])
 
 	const onPress = React.useCallback(async () => {
 		const displayName = name || `anon#${ctx?.account?.publicKey?.substr(0, 4)}`

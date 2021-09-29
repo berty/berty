@@ -7,15 +7,13 @@ import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { useMsgrContext } from '@berty-tech/store/context'
 import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
 import { Routes } from '@berty-tech/navigation'
 
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
-import { checkPermissions } from '@berty-tech/components/utils'
-import { RESULTS } from 'react-native-permissions'
 
 type ConversationsProps = ViewProps & {
 	items: Array<any>
@@ -403,9 +401,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 }) => {
 	const [{ padding }] = useStyles()
 	const { t }: any = useTranslation()
-	const { navigate } = useNavigation()
 	const colors = useThemeColor()
-	const ctx = useMsgrContext()
 
 	return items.length || suggestions.length || configurations.length ? (
 		<View
@@ -418,40 +414,7 @@ export const Conversations: React.FC<ConversationsProps> = ({
 				},
 			]}
 		>
-			{configurations.map(config => (
-				<SuggestionsItem
-					key={config.key}
-					displayName={t(config.displayName)}
-					desc={t(config.desc)}
-					link=''
-					icon={config.icon}
-					addBot={async () => {
-						switch (config.key) {
-							case 'network':
-								navigate('Main.NetworkOptions')
-								return
-							case 'notification':
-								const status = await checkPermissions('notification', navigate)
-								await ctx.setPersistentOption({
-									type: PersistentOptionsKeys.Configurations,
-									payload: {
-										...ctx.persistentOptions.configurations,
-										notification: {
-											...ctx.persistentOptions.configurations.notification,
-											state: status === RESULTS.GRANTED ? 'added' : 'skipped',
-										},
-									},
-								})
-								return
-							case 'replicate':
-								navigate('Onboarding.ServicesAuth')
-								return
-						}
-					}}
-					style={{ backgroundColor: `${colors[`${config.color}`]}20` }}
-				/>
-			))}
-
+			{/* TODO configurations conv ? */}
 			{items.map((i, key) => (
 				<ConversationsItem
 					key={i.publicKey}

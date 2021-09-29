@@ -208,19 +208,9 @@ export const Navigation: React.FC = () => {
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Onboarding.ChoosePreset}
-				component={Components.Onboarding.ChoosePreset}
-				options={{ headerShown: false }}
-			/>
-			<NavigationStack.Screen
 				name={Routes.Onboarding.CreateAccount}
 				component={Components.Onboarding.CreateAccount}
 				options={{ headerShown: false }}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Onboarding.ServicesAuth}
-				component={Components.Onboarding.ServicesAuth}
-				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.SetupFinished}
@@ -469,15 +459,6 @@ export const Navigation: React.FC = () => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.ChoosePreset}
-				component={Components.Onboarding.ChoosePreset}
-				options={SecondaryBackgroundHeaderScreenOptions({
-					headerShown: false,
-					presentation: 'formSheet',
-					statusBarStyle: 'light',
-				})}
-			/>
-			<NavigationStack.Screen
 				name={Routes.Settings.Notifications}
 				component={Components.Settings.Notifications}
 				options={BackgroundHeaderScreenOptions({
@@ -491,6 +472,15 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.Bluetooth}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.bluetooth.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.NetworkConfig}
+				component={Components.Settings.NetworkConfig}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.network-config.title'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
@@ -557,6 +547,11 @@ export const Navigation: React.FC = () => {
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.ReplicationServices}
+				component={Components.Settings.ReplicationServices}
+				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			{/* Modals */}
 			<NavigationStack.Screen

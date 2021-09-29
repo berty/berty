@@ -114,8 +114,6 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 				case 'denied':
 				case 'limited':
 				case 'unavailable':
-					console.log("case: not 'blocked'")
-					// permissions can be requested
 					await checkPermissions('p2p', navigate, {
 						isToNavigate: true,
 					})
@@ -200,8 +198,6 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 
 	// get Bluetooth permissions state
 	React.useEffect(() => {
-		console.log('useEffect called')
-
 		checkPermissions('p2p', navigate, { isToNavigate: false })
 			.then(result => {
 				if (result && bluetoothPermissions !== result) {
@@ -218,7 +214,6 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	React.useEffect(() => {
 		const disableDrivers = async () => {
 			if (bluetoothPermissions !== 'granted' && bluetoothPermissions !== undefined) {
-				console.log('in useEffect: permissions not granted')
 				const currentConfig = await accountService.networkConfigGet({
 					accountId: selectedAccount,
 				})

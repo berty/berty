@@ -1,11 +1,11 @@
 import React, { useReducer } from 'react'
 import {
-	View,
-	TouchableOpacity,
-	StyleSheet,
-	Image,
 	ActivityIndicator,
+	Image,
 	Pressable,
+	StyleSheet,
+	TouchableOpacity,
+	View,
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { Icon, Input, Text } from '@ui-kitten/components'
@@ -17,6 +17,7 @@ import { useStyles } from '@berty-tech/styles'
 import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import { AccountAvatar } from '../avatars'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Edit Profile
@@ -163,7 +164,17 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 				})
 			}
 
-			// all good, go back
+			await ctx.setPersistentOption({
+				type: PersistentOptionsKeys.CheckList,
+				payload: {
+					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+					avatar: {
+						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].avatar,
+						done: true,
+					},
+				},
+			})
+
 			closeModal()
 		} catch (err) {
 			console.warn(err)

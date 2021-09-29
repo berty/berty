@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMsgrContext } from '@berty-tech/store/context'
+import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
@@ -201,11 +201,25 @@ export const CreateGroupFinalize: React.FC<{
 	const { t }: { t: any } = useTranslation()
 
 	React.useEffect(() => {
-		// TODO: better handle error
+		const setGroupCheckListDone = async () => {
+			await ctx.setPersistentOption({
+				type: PersistentOptionsKeys.CheckList,
+				payload: {
+					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+					group: {
+						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].group,
+						done: true,
+					},
+				},
+			})
+		}
 		if (done) {
 			if (error) {
 				console.error('Failed to create group:', error)
 			} else if (reply?.publicKey) {
+				if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].group?.done) {
+					setGroupCheckListDone().then()
+				}
 				reset({
 					index: 0,
 					routes: [
@@ -222,7 +236,7 @@ export const CreateGroupFinalize: React.FC<{
 				})
 			}
 		}
-	}, [done, error, reset, reply])
+	}, [ctx, done, error, reset, reply])
 	return (
 		<Layout style={[flex.tiny]}>
 			<View style={{ backgroundColor: colors['background-header'] }}>

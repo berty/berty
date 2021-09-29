@@ -152,7 +152,7 @@ const ReplicateGroupContent: React.FC<{
 				iconSize={30}
 				iconColor={colors['background-header']}
 				alone={true}
-				onPress={() => navigation.navigate('Settings.ServicesAuth')}
+				onPress={() => navigation.navigate('Settings.ReplicationServices')}
 			/>
 		</View>
 	)

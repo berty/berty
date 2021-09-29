@@ -1,15 +1,8 @@
-import AsyncStorage from '@react-native-community/async-storage'
-
 import beapi from '@berty-tech/api'
 import { checkPermissions } from '@berty-tech/components/utils'
 
 import { updateShakeAttachments } from './utils'
-import {
-	accountService,
-	GlobalPersistentOptionsKeys,
-	MessengerActions,
-	reducerAction,
-} from './context'
+import { accountService, MessengerActions, reducerAction } from './context'
 
 export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
 	await accountService
@@ -131,9 +124,8 @@ export const getNetworkConfigurationFromPreset = async (
 export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerAction) => void) => {
 	let resp: beapi.account.CreateAccount.Reply
 	try {
-		const preset = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.Preset)
 		const netConf: beapi.account.INetworkConfig = await getNetworkConfigurationFromPreset(
-			parseInt(preset || '0', 10),
+			beapi.account.NetworkConfigPreset.Performance,
 		)
 
 		resp = await accountService.createAccount({ networkConfig: netConf })

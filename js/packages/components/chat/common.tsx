@@ -26,7 +26,7 @@ import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
 import { useReplyReaction } from './ReplyReactionContext'
 import { RESULTS } from 'react-native-permissions'
-import { MessengerActions } from '@berty-tech/store/context'
+import { MessengerActions, PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -182,82 +182,96 @@ export const ChatFooter: React.FC<{
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
 	const [isLoading, setLoading] = useState(false)
 
-	const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: message }).finish()
-
 	const conversation = ctx.conversations[convPk]
 
 	const isFake = (conversation as { fake: boolean }).fake
 	const sendEnabled = !!(!isFake && (message || mediaCids.length > 0))
 
 	const sendMessage = useCallback(
-		(medias: string[] = []) => {
-			ctx.client
-				?.interact({
+		async (medias: string[] = []) => {
+			try {
+				const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: message }).finish()
+				await ctx.client?.interact({
 					conversationPublicKey: convPk,
 					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
 					mediaCids: medias,
 					targetCid: activeReplyInte?.cid,
 				})
-				.then(() => {
-					ctx.dispatch({
-						type: MessengerActions.SetConvsTextInputValue,
+				await ctx.dispatch({
+					type: MessengerActions.SetConvsTextInputValue,
+					payload: {
+						key: convPk,
+						value: '',
+					},
+				})
+				if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].message?.done) {
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.CheckList,
 						payload: {
-							key: convPk,
-							value: '',
+							...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+							message: {
+								...ctx.persistentOptions[PersistentOptionsKeys.CheckList].message,
+								done: true,
+							},
 						},
 					})
-					setMessage('')
-					setInputHeight(35)
-					setMediaCids([])
-					ctx.playSound('messageSent')
-					setActiveReplyInte()
-				})
-				.catch(e => {
-					console.warn('e sending message:', e)
-				})
+				}
+				setMessage('')
+				setInputHeight(35)
+				setMediaCids([])
+				ctx.playSound('messageSent')
+				setActiveReplyInte()
+			} catch (e) {
+				console.warn('e sending message:', e)
+			}
 		},
-		[buf, convPk, ctx, activeReplyInte?.cid, setActiveReplyInte],
+		[message, convPk, ctx, activeReplyInte?.cid, setActiveReplyInte],
 	)
 
 	// TODO: Debug, error on restarting node
-	const handlePressSend = React.useCallback(() => {
-		console.log('recompute handleSend', mediaCids)
+	const handlePressSend = React.useCallback(async () => {
 		if (!sendEnabled) {
 			return
 		}
-		sendMessage()
-	}, [mediaCids, sendEnabled, sendMessage])
+		await sendMessage()
+	}, [sendEnabled, sendMessage])
 
-	const handleCloseFileMenu = (newMedias: string[] | undefined) => {
-		if (newMedias) {
-			sendMessage([...mediaCids, ...newMedias])
-		}
-		setShowAddFileMenu(false)
-	}
+	const handleCloseFileMenu = React.useCallback(
+		async (newMedias: string[] | undefined) => {
+			if (newMedias) {
+				await sendMessage([...mediaCids, ...newMedias])
+			}
+			setShowAddFileMenu(false)
+		},
+		[mediaCids, sendMessage],
+	)
 
-	const prepareMediaAndSend = async (res: beapi.messenger.IMedia[]) => {
-		if (isLoading) {
-			return
-		}
-		setLoading(true)
-		try {
-			const mediaCids = (
-				await amap(res, async doc => {
-					const stream = await client?.mediaPrepare({})
-					await stream?.emit({
-						info: { filename: doc.filename, mimeType: doc.mimeType, displayName: doc.filename },
-						uri: doc.uri,
+	const prepareMediaAndSend = React.useCallback(
+		async (res: beapi.messenger.IMedia[]) => {
+			if (isLoading) {
+				return
+			}
+			setLoading(true)
+			try {
+				const mediaCids = (
+					await amap(res, async doc => {
+						const stream = await client?.mediaPrepare({})
+						await stream?.emit({
+							info: { filename: doc.filename, mimeType: doc.mimeType, displayName: doc.filename },
+							uri: doc.uri,
+						})
+						const reply = await stream?.stopAndRecv()
+						return reply?.cid
 					})
-					const reply = await stream?.stopAndRecv()
-					return reply?.cid
-				})
-			).filter(cid => !!cid)
+				).filter(cid => !!cid)
 
-			handleCloseFileMenu(mediaCids)
-		} catch (err) {}
-		setLoading(false)
-	}
+				await handleCloseFileMenu(mediaCids)
+			} catch (err) {}
+			setLoading(false)
+		},
+		[client, handleCloseFileMenu, isLoading],
+	)
 
 	// animations values
 	const _aMaxWidth = useRef(new Animated.Value(0)).current
@@ -467,7 +481,7 @@ export const ChatFooter: React.FC<{
 											nativeEvent?.contentSize.height > 80 ? 80 : nativeEvent?.contentSize.height,
 										)
 									}
-									autoCorrect
+									autoCorrect={false}
 									style={[
 										text.bold.small,
 										{
