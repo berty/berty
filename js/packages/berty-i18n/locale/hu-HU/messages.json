@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "A biztonságos peer-to-peer üzenetküldő, ami internet, mobiladatok és hálózatba vetett bizalom nélkül is működik",
-      "open-registered-account": "Belépés regisztrált fiókba",
-      "import-button": "Adatok importálása meglévő fiókból",
-      "account-selector-create-button": "Új fiók létrehozása",
-      "more-options": "Több lehetőség",
       "button": "Első lépések"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "Berty node indítása…",
       "desc": "A folyamat eltarthat néhány másodpercig"
     },
-    "notifications": {
-      "header": "",
-      "recommended": "Ajánlott",
-      "title": "Értesítések",
-      "desc": "",
-      "button": "ÉRTESÍTÉSEK ENGEDÉLYEZÉSE",
-      "skip": "KIHAGYJA ÉS KÉSŐBB CSINÁLJA MEG"
-    },
-    "bluetooth": {
-      "header": "",
-      "optional": "Választható",
-      "title": "Bluetooth",
-      "desc": "Ehhez a funkcióhoz engedélyeznie kell a Bluetooth használatát a telefonon",
-      "button": "BLUETOOTH ENGEDÉLYEZÉSE",
-      "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
-    },
     "setup-finished": {
       "title": "A beállítás befejeződött!",
       "desc": "Mostantól használhatja az alkalmazást, elkezdheti hozzáadni a névjegyeket, majd szabadon és privát módon beszélgethet velük",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "Kérések",
-        "received-at": "Fogadott",
         "accept": "Elfogadás",
         "card-title": "Kapcsolat felkérések!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "Elhagyhatja ezt a csoportot",
         "fourth-bullet-point": "Nem törheti ezt a csoportot",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "Új csoport létrehozása",
-      "bottom-button": "Keresés kontakton vagy csoporton belül"
     },
     "suggestion-display-name-initial": "Kattintson ide a hozzáadáshoz",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "Értesítés beállítása",
         "desc": "Kattintson ide a felugró értesítések beállításához"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "MENTÉS",
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "Fejlesztői eszközök",
       "header-right-button": "Beállítások",
       "network-button": "Hálózati Lista",
-      "switch-accounts": "Másik profil használata",
       "edit-profile": "Fiók szerkesztése"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "Letiltva"
       },
       "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Engedélyezve",
-        "tag-disabled": "Letiltva"
+        "title": "Bluetooth"
       },
       "app-mode-button": {
         "title": "App mód",
@@ -221,9 +204,7 @@
         "sound-button": "Hang",
         "exceptions-button": {
           "title": "Kivételek",
-          "preview-value": "Hozzáadás",
-          "tag": "{{count}} kivétel",
-          "tag_plural": "{{count}} kivételek"
+          "preview-value": "Hozzáadás"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "Hang",
         "exceptions-button": {
           "title": "Kivételek",
-          "preview-value": "Hozzáadás",
-          "tag": "{{count}} kivétel",
-          "tag_plural": "{{count}} kivétel"
+          "tag": "{{count}} kivétel"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "A Bluetooth lehetővé teszi, hogy internet-hozzáférés nélkül cserélhessen üzeneteket a Berty segítségével, közvetlenül csatlakoztatva a készüléket a közelben levő felekhez",
-      "activate-button": "Bluetooth aktiválása",
-      "permission-title": "Berty Bluetooth engedély",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "Kérdezze meg később",
-      "tag-negative": "Mégse",
-      "tag-positive": "OK"
+      "activate-button": "Bluetooth aktiválása"
     },
     "mc": {
       "activate-button": "Multipeer kapcsolat aktiválása"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "Frissítések",
-      "up-to-date-desc": "Alkalmazása naprakész",
-      "version": "Verzió",
-      "current-tag": "Jelenlegi",
-      "installed-tag": "Telepített",
-      "initial-tag": "Kezdeti telepítés",
-      "not-installed-tag": "Nem telepített"
+      "current-tag": "Jelenlegi"
     },
     "devtools": {
       "title": "Fejlesztői eszközök",
-      "theme-editor": "Megjelentés & témaszerkesztő",
       "header-left-button": "Eszköz információk",
+      "header-middle-button": "Hamis információ készítése",
+      "header-right-button": "Daemon újraindítása",
+      "theme-editor": "Megjelentés & témaszerkesztő",
       "simulate-button": "Stream hiba szimulálása",
       "simulate-js-error-button": "JavaScript hiba szimulálása",
-      "simulate-native-error-button": "Natív hiba szimulálása",
       "tor-button": "Tor {{option}}",
       "tor-optional-option": "választható",
       "tor-required-option": "kötelező",
       "tor-disabled-option": "letiltva",
-      "header-middle-button": "Hamis információ készítése",
-      "header-right-button": "Daemon újraindítása",
       "system-info-button": "Rendszer információ",
       "debug-button": "Hibakeresés",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "Interakciók kiírása",
       "dump-members-button": "Tagok kiírása",
       "stop-node-button": "Node leállítása",
-      "bot-mode-button": "Bot mód",
       "local-grpc-button": "helyi gRPC",
       "console-logs-button": "Konzol naplók",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "Értesítések",
       "send-to-all-button": {
         "title": "Üzenetek küldése minden kontaktnak",
         "sending": "Küldés...",
         "test": "Teszt, ",
         "tried": ""
       },
-      "footer-left-button": "Eszköz információk",
-      "footer-middle-button": "Események listája",
-      "footer-right-button": "Daemon újraindítása",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "Eszköz információk",
+      "footer-middle-button": "Események listája",
+      "footer-right-button": "Daemon újraindítása"
     },
     "system-info": {
       "title": "Rendszer információ"
@@ -428,12 +393,6 @@
       "info": "Infók",
       "devices": "Eszközök"
     },
-    "welcome-configuration": {
-      "title": "Üdvözöllek a fedélzeten!",
-      "desc": "Gyorsan áttekinthetjük a beállításokat és befejezhetjük az első konfigurációt!",
-      "skip": "TOVÁBB",
-      "next": "KÖVETKEZŐ"
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "ELFOGADÁS",
         "accepted-button": "ELFOGADVA"
       },
-      "betabot-box": {
-        "title": "HOZZÁADJA A BÉTA BOTOT?",
-        "desc": "Még nincs semmilyen kapcsolata jelenleg. Szeretné hozzáadni a Beta Botot a beszélgetések felfedezéséhez és teszteléséhez?",
-        "skip-button": "TOVÁBB",
-        "add-button": "Hozzáadás !"
-      },
       "infos-chat": {
         "connection-confirmed": "👋 Berty kapcsolat megerősítve! 🎉",
         "request-sent": "Kérés Elküldve ✈",
         "incoming": "Elfogadja ezt a kérést a válaszhoz!",
         "outgoing": "Várjuk a válaszod a kacsolódáshoz!"
       },
-      "betabot-input-placeholder": "Betabot hozzáadása az írj ide..-hez",
       "incoming-input-placeholder": "Fogadja el az írási kérelmet ide...",
       "input-placeholder": "Írjon ide..."
     },
@@ -518,14 +470,10 @@
       "manage-add-button": "Szolgáltatások kezelése és hozzáadása"
     },
     "files": {
-      "record-sound": "Hangüzenet felvétele",
-      "recording": "Felvétel...",
       "gallery": "Galéria",
       "camera": "Kamera",
-      "record": "Felvétel",
       "files": "Fájlok",
       "microphone": "Mikrofon",
-      "gif": "GIF",
       "search-gif": "GIF keresése",
       "security-access": "Biztonsági Hozzáférés",
       "security-access-desc": "Koppintson ide a beállítás megnyitásához, hogy engedélyezze",
@@ -547,6 +495,48 @@
       "replied-to": "Válaszolt neki"
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "Tartsa lenyomva felvételhez, engedje el a küldéshez",
+        "not-sent": "Hangüzenet nem lett elküldve",
+        "permission-denied": "Az alkalmazásnak nem engedélyezett a hangfelvétel"
+      },
+      "slide-to-cancel": "<< Csúsztatás a megszakításhoz",
+      "cancel-button": "Mégse"
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "Kamera",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "Hiba észlelve",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "Elnézést a hibáért!",
       "desc": "Ez biztos Francis hibája, a Berty gyakornok fejlesztőjének, aki bizonyosan hibázott. Micsoda bunkó ez a Francis!",
-      "desc-buy": "Ha látod, vesz majd egy sört neked!",
       "desc-em": "* Hát, oké, Francis nincs a Berty-nél.",
       "desc-report": "Rázza meg a telefonját és essünk neki újra!"
     }
@@ -624,45 +613,5 @@
         "button-cancel": "Mégse"
       }
     }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "Tartsa lenyomva felvételhez, engedje el a küldéshez",
-        "not-sent": "Hangüzenet nem lett elküldve",
-        "permission-denied": "Az alkalmazásnak nem engedélyezett a hangfelvétel"
-      },
-      "slide-to-cancel": "<< Csúsztatás a megszakításhoz",
-      "cancel-button": "Mégse"
-    }
-  },
-  "medias": {
-    "audio": "hang",
-    "picture": "kép",
-    "file": "fájl"
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "Kamera",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
   }
 }
