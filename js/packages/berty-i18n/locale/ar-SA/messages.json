@@ -2,10 +2,6 @@
   "onboarding": {
     "getstarted": {
       "desc": "تطبيق المراسلة الآمن بين الأقران الذي يعمل مع أو بدون الوصول إلى الإنترنت أو البيانات الخلوية أو الثقة في الشبكة",
-      "open-registered-account": "تسجيل الدخول",
-      "import-button": "استيراد البيانات من حساب موجود",
-      "account-selector-create-button": "إنشاء حساب جديد",
-      "more-options": "المزيد من الخيارات",
       "button": "الحصول على بداية"
     },
     "select-mode": {
@@ -49,22 +45,6 @@
       "title": "بدء تشغيل عقدة برتي…",
       "desc": "قد يستغرق هذا بضع ثوان"
     },
-    "notifications": {
-      "header": "لا تفوت أي رسالة أو طلب اتصال جديد",
-      "recommended": "موصى",
-      "title": "الإشعارات",
-      "desc": "تحتاج إلى الإذن بدفع الإشعارات من بيرتي على هاتفك",
-      "button": "إشعارات الصلاحية",
-      "skip": "اختراع و هذه الأشرطة"
-    },
-    "bluetooth": {
-      "header": "التواصل دون اتصال بالإنترنت (Wi-Fi أو البيانات) عن طريق الاتصال بالهاتف مباشرة مع الأقران القريبين",
-      "optional": "اختياري",
-      "title": "البلوتوث",
-      "desc": "لاستخدام هذه الميزة، تحتاج إلى الإذن باستخدام البلوتوث على هاتفك",
-      "button": "تفويض البلوتوث",
-      "skip": "اختراع و هذه الأشرطة"
-    },
     "setup-finished": {
       "title": "تم الإعداد!",
       "desc": "يمكنك الآن استخدام التطبيق، بدء إضافة جهات الاتصال والتحدث معهم بحرية وبشكل خاص",
@@ -75,7 +55,6 @@
     "home": {
       "requests": {
         "title": "الطلبات",
-        "received-at": "مستلم",
         "accept": "قبول",
         "card-title": "طلب الاتصال!"
       },
@@ -104,11 +83,11 @@
         "third-bullet-point": "",
         "fourth-bullet-point": "",
         "fifth-bullet-point": ""
+      },
+      "conversations": {
+        "request-sent": "",
+        "draft": ""
       }
-    },
-    "home-modal": {
-      "top-button": "أنشئ مجموعة جديدة",
-      "bottom-button": "فحص جهة الاتصال أو المجموعة"
     },
     "suggestion-display-name-initial": "انقر هنا للإضافة",
     "configurations": {
@@ -119,6 +98,10 @@
       "notification": {
         "display-name": "اعدادات الإشعارات",
         "desc": "انقر هنا لضبط الإشعارات"
+      },
+      "replicate": {
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -139,6 +122,9 @@
       },
       "save": "",
       "skip": "اختراع و هذه الأشرطة"
+    },
+    "scan": {
+      "title": ""
     }
   },
   "settings": {
@@ -147,7 +133,6 @@
       "header-center-button": "أدوات التطوير",
       "header-right-button": "الإعدادات",
       "network-button": "قائمة الشبكات",
-      "switch-accounts": "استخدم حساب آخر",
       "edit-profile": "تعديل الملف الشخصي"
     },
     "network-map": {
@@ -167,9 +152,7 @@
         "tag-disabled": "معطّل"
       },
       "bluetooth-button": {
-        "title": "البلوتوث",
-        "tag-enabled": "مفعّل",
-        "tag-disabled": "معطّل"
+        "title": "البلوتوث"
       },
       "app-mode-button": {
         "title": "نمط التطبيق",
@@ -221,9 +204,7 @@
         "sound-button": "صوت",
         "exceptions-button": {
           "title": "الاستثناءات",
-          "preview-value": "إضافة",
-          "tag": "",
-          "tag_plural": ""
+          "preview-value": "إضافة"
         }
       },
       "group-notifications-button": {
@@ -233,22 +214,14 @@
         "sound-button": "صوت",
         "exceptions-button": {
           "title": "الاستثناءات",
-          "preview-value": "إضافة",
-          "tag": "",
-          "tag_plural": ""
+          "tag": ""
         }
       }
     },
     "bluetooth": {
       "title": "البلوتوث",
       "desc": "",
-      "activate-button": "",
-      "permission-title": "",
-      "android-permission-description": "",
-      "ios-permission-description": "",
-      "tag-neutral": "",
-      "tag-negative": "",
-      "tag-positive": ""
+      "activate-button": ""
     },
     "mc": {
       "activate-button": "تنشيط الاتصال المتعدد الأقران"
@@ -307,26 +280,20 @@
     },
     "updates": {
       "title": "",
-      "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "current-tag": ""
     },
     "devtools": {
       "title": "",
-      "theme-editor": "",
       "header-left-button": "",
+      "header-middle-button": "توليد بيانات مزيفة",
+      "header-right-button": "إعادة تشغيل الرديمون",
+      "theme-editor": "",
       "simulate-button": "",
       "simulate-js-error-button": "",
-      "simulate-native-error-button": "",
       "tor-button": "",
       "tor-optional-option": "",
       "tor-required-option": "",
       "tor-disabled-option": "",
-      "header-middle-button": "توليد بيانات مزيفة",
-      "header-right-button": "إعادة تشغيل الرديمون",
       "system-info-button": "معلومات النظام",
       "debug-button": "",
       "log-button": {
@@ -352,26 +319,24 @@
       "dump-interactions-button": "",
       "dump-members-button": "",
       "stop-node-button": "",
-      "bot-mode-button": "",
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "IPFS WebUI",
-      "notifications-button": "الإشعارات",
       "send-to-all-button": {
         "title": "",
         "sending": "",
         "test": "",
         "tried": ""
       },
-      "footer-left-button": "",
-      "footer-middle-button": "قائمة الأحداث",
-      "footer-right-button": "إعادة تشغيل الرديمون",
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
         "name": "",
         "bullet-point": ""
-      }
+      },
+      "footer-left-button": "",
+      "footer-middle-button": "قائمة الأحداث",
+      "footer-right-button": "إعادة تشغيل الرديمون"
     },
     "system-info": {
       "title": "معلومات النظام"
@@ -428,12 +393,6 @@
       "info": "",
       "devices": "الأجهزة"
     },
-    "welcome-configuration": {
-      "title": "",
-      "desc": "",
-      "skip": "تخطي",
-      "next": ""
-    },
     "save-theme": {
       "title": "",
       "desc": "",
@@ -485,19 +444,12 @@
         "accept-button": "الموافقة",
         "accepted-button": ""
       },
-      "betabot-box": {
-        "title": "",
-        "desc": "",
-        "skip-button": "تخطي",
-        "add-button": ""
-      },
       "infos-chat": {
         "connection-confirmed": "",
         "request-sent": "",
         "incoming": "",
         "outgoing": ""
       },
-      "betabot-input-placeholder": "",
       "incoming-input-placeholder": "",
       "input-placeholder": ""
     },
@@ -518,14 +470,10 @@
       "manage-add-button": ""
     },
     "files": {
-      "record-sound": "",
-      "recording": "يتم التسجيل...",
       "gallery": "",
       "camera": "الكاميرا",
-      "record": "سجل",
       "files": "الملفات",
       "microphone": "الميكروفون",
-      "gif": "",
       "search-gif": "",
       "security-access": "",
       "security-access-desc": "",
@@ -547,6 +495,48 @@
       "replied-to": ""
     }
   },
+  "audio": {
+    "record": {
+      "tooltip": {
+        "usage": "",
+        "not-sent": "",
+        "permission-denied": ""
+      },
+      "slide-to-cancel": "",
+      "cancel-button": ""
+    }
+  },
+  "permission": {
+    "notification": {
+      "title": "",
+      "desc": ""
+    },
+    "p2p": {
+      "title": "",
+      "android-desc": "",
+      "ios-desc": ""
+    },
+    "camera": {
+      "title": "الكاميرا",
+      "desc": ""
+    },
+    "audio": {
+      "title": "",
+      "desc": ""
+    },
+    "button-labels": {
+      "allow": "",
+      "settings": ""
+    },
+    "what-happening": "",
+    "settings-text": ""
+  },
+  "notification": {
+    "need-restart": {
+      "title": "",
+      "desc": ""
+    }
+  },
   "error": {
     "labels": {
       "bug": "",
@@ -561,7 +551,6 @@
     "sorry-screen": {
       "title": "",
       "desc": "",
-      "desc-buy": "",
       "desc-em": "",
       "desc-report": ""
     }
@@ -624,45 +613,5 @@
         "button-cancel": ""
       }
     }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": ""
-    }
-  },
-  "medias": {
-    "audio": "",
-    "picture": "",
-    "file": ""
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "desc": ""
-    },
-    "camera": {
-      "title": "الكاميرا",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "what-happening": "",
-    "settings-text": ""
   }
 }
