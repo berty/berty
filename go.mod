@@ -111,7 +111,7 @@ require (
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
 	moul.io/u v1.25.1
-	moul.io/zapconfig v1.3.0
+	moul.io/zapconfig v1.4.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.1.0
 	moul.io/zapring v1.3.0
