@@ -37,26 +37,26 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	testMsg1 := []byte("first message")
 
-	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/message_test", memberCount, deviceCount)
+	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/message_test", memberCount, deviceCount)
 	defer cleanup()
 
 	dPK0 := peers[0].GC.DevicePubKey()
 	ds0, err := peers[0].MKS.GetDeviceSecret(peers[0].GC.Group(), peers[0].DevKS)
-	assert.NoError(t, err)
-	assert.NotNil(t, ds0)
+	require.NoError(t, err)
+	require.NotNil(t, ds0)
 
 	err = peers[1].MKS.RegisterChainKey(peers[0].GC.Group(), dPK0, ds0, false)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	<-time.After(time.Millisecond * 500)
 
 	out, err := peers[0].GC.MessageStore().ListEvents(ctx, nil, nil, false)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Equal(t, 1, countEntries(out))
+	require.Equal(t, 1, countEntries(out))
 
 	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*2)
 	chSub := peers[1].GC.MessageStore().Subscribe(watcherCtx)
@@ -78,19 +78,19 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	for i := 0; i < entriesCount; i++ {
 		payload := []byte(fmt.Sprintf("test message %d", i))
 		_, err = peers[0].GC.MessageStore().AddMessage(ctx, payload, nil)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	}
 
 	<-watcherCtx.Done()
 
 	out, err = peers[1].GC.MessageStore().ListEvents(ctx, nil, nil, false)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	testutil.FilterStability(t, testutil.Unstable)
 
 	<-time.After(time.Second)
 
-	assert.Equal(t, 1+entriesCount, countEntries(out))
+	require.Equal(t, 1+entriesCount, countEntries(out))
 
 	// TODO: check that ListEvents can be called multiple times with the same output
 	// TODO: check that message are correctly ordered
@@ -122,7 +122,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 
 	testMsg1 := []byte("last message")
 
-	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/message_test", memberCount, deviceCount)
+	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/message_test", memberCount, deviceCount)
 	defer cleanup()
 
 	dPK0 := peers[0].GC.DevicePubKey()

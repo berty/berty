@@ -5,5 +5,6 @@ export default {
 	bridge: pb.lookup('berty.bridge.v1'),
 	messenger: pb.lookup('.berty.messenger.v1'),
 	protocol: pb.lookup('.berty.protocol.v1'),
+	push: pb.lookup('.berty.push.v1'),
 	errcode: pb.lookup('.berty.errcode'),
 }

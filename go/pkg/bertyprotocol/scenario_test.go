@@ -325,7 +325,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	// token, err := issuer.IssueToken([]string{ServiceReplicationID})
 	// require.NoError(t, err)
 	//
-	// _, err = nodeA.Service.(*service).accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
+	// _, err = nodeA.Service.(*service).accountGroup.MetadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
 	// 	Token: token,
 	// 	SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
 	// 		{

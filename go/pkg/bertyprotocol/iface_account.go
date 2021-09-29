@@ -7,6 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -16,20 +17,7 @@ type AccountKeys interface {
 	AccountProofPrivKey() (crypto.PrivKey, error)
 	DevicePrivKey() (crypto.PrivKey, error)
 	ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error)
-	MemberDeviceForGroup(g *protocoltypes.Group) (*OwnMemberDevice, error)
-}
-
-// OwnMemberDevice is own local device part of a group
-type OwnMemberDevice struct {
-	Member crypto.PrivKey
-	Device crypto.PrivKey
-}
-
-func (d *OwnMemberDevice) Public() *MemberDevice {
-	return &MemberDevice{
-		Member: d.Member.GetPublic(),
-		Device: d.Device.GetPublic(),
-	}
+	MemberDeviceForGroup(g *protocoltypes.Group) (*cryptoutil.OwnMemberDevice, error)
 }
 
 // MemberDevice is a remote device part of a group

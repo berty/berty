@@ -35,6 +35,7 @@ type groupView struct {
 	muAggregates sync.Mutex
 	logger       *zap.Logger
 	hasNew       int32
+	lastSentCID  string
 }
 
 func (v *groupView) View() tview.Primitive {
@@ -100,21 +101,6 @@ func newViewGroup(v *tabbedGroupsView, g *protocoltypes.Group, memberPK, deviceP
 		logger:       logger.With(zap.String("group", pkAsShortID(g.PublicKey))),
 		devices:      map[string]*protocoltypes.GroupAddMemberDevice{},
 		secrets:      map[string]*protocoltypes.GroupAddDeviceSecret{},
-	}
-}
-
-func (v *groupView) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent) {
-	if v.g.GroupType != protocoltypes.GroupTypeContact {
-		return
-	}
-
-	_, err := v.v.messenger.SendAck(ctx, &messengertypes.SendAck_Request{
-		GroupPK:   evt.EventContext.GroupPK,
-		MessageID: evt.EventContext.ID,
-	})
-	if err != nil {
-		v.messages.AppendErr(fmt.Errorf("error while sending ack: %s", err.Error()))
-		v.addBadge()
 	}
 }
 
@@ -219,7 +205,6 @@ func (v *groupView) loop(ctx context.Context) {
 					sender:      evt.Headers.DevicePK,
 					receivedAt:  time.Unix(0, am.GetSentDate()*1000000),
 				}, time.Time{})
-				v.ack(ctx, evt)
 			}
 		}
 	}
@@ -321,7 +306,6 @@ func (v *groupView) loop(ctx context.Context) {
 					})
 					v.addBadge()
 
-					v.ack(ctx, evt)
 				case messengertypes.AppMessage_TypeReplyOptions:
 					var payload messengertypes.AppMessage_ReplyOptions
 					err := proto.Unmarshal(am.GetPayload(), &payload)

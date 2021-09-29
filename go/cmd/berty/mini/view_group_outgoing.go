@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/atotto/clipboard"
 
@@ -164,7 +165,11 @@ func commandList() []*command {
 			help:  "Inspect a group store",
 			cmd:   debugInspectStoreCommand,
 		},
-
+		{
+			title: "debug push",
+			help:  "Resend the last message via push",
+			cmd:   debugPushCommand,
+		},
 		{
 			title: "services list",
 			help:  "Lists registered services",
@@ -482,6 +487,43 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 	}
 }
 
+func debugPushCommand(ctx context.Context, v *groupView, _ string) error {
+	if v.lastSentCID == "" {
+		return fmt.Errorf("last message is unknown")
+	}
+
+	c, err := cid.Parse(v.lastSentCID)
+	if err != nil {
+		return err
+	}
+
+	res, err := v.v.protocol.PushSend(ctx, &protocoltypes.PushSend_Request{
+		CID:            c.Bytes(),
+		GroupPublicKey: v.g.PublicKey,
+	})
+	if err != nil {
+		return err
+	}
+
+	if len(res.GroupMembers) == 0 {
+		return fmt.Errorf("no push targets found")
+	}
+
+	targets := []string(nil)
+	for _, m := range res.GroupMembers {
+		for _, d := range m.DevicePKs {
+			targets = append(targets, pkAsShortID(d))
+		}
+	}
+
+	v.syncMessages <- &historyMessage{
+		receivedAt: time.Now(),
+		payload:    []byte(fmt.Sprintf("push sent to %s", strings.Join(targets, ", "))),
+	}
+
+	return nil
+}
+
 func formatDebugInspectGroupStoreReply(rep *protocoltypes.DebugInspectGroupStore_Reply, storeType protocoltypes.DebugInspectGroupLogType) []byte {
 	data := []string(nil)
 
@@ -793,13 +835,18 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 	if err != nil {
 		return err
 	}
-	_, err = v.v.messenger.Interact(ctx, &messengertypes.Interact_Request{
+	ret, err := v.v.messenger.Interact(ctx, &messengertypes.Interact_Request{
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
 		Payload:               payload,
 		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(v.g.PublicKey),
 	})
+	if err != nil {
+		return err
+	}
 
-	return err
+	v.lastSentCID = ret.CID
+
+	return nil
 }
 
 func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {

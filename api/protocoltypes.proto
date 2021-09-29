@@ -3,6 +3,7 @@ syntax = "proto3";
 package berty.protocol.v1;
 
 import "gogoproto/gogo.proto";
+import "pushtypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/protocoltypes";
 
@@ -1389,53 +1390,9 @@ message OutOfStoreMessage {
   bytes nonce = 7;
 }
 
-message OutOfStoreMessageEnvelope {
-  bytes nonce = 1;
-  bytes box = 2;
-  bytes group_public_key = 3;
-}
-
-message PushExposedData {
-  bytes nonce = 1;
-  bytes box = 2;
-}
-
-enum PushServicePriority {
-  PushPriorityUndefined = 0;
-  PushPriorityLow = 1;
-  PushPriorityNormal = 2;
-}
-
-enum PushServiceTokenType {
-  PushTokenUndefined = 0;
-
-  // PushTokenMQTT: Platform independent
-  PushTokenMQTT = 1;
-
-  // PushTokenApplePushNotificationService: iOS, iPadOS, tvOS, macOS
-  PushTokenApplePushNotificationService = 2;
-
-  // PushTokenFirebaseCloudMessaging: Android with GMS, Chrome OS
-  PushTokenFirebaseCloudMessaging = 3;
-
-  // PushTokenWindowsPushNotificationService: Windows, XBox
-  PushTokenWindowsPushNotificationService = 4;
-
-  // PushTokenHuaweiPushKit: Huawei Android devices with AppGallery
-  PushTokenHuaweiPushKit = 5;
-
-  // PushTokenAmazonDeviceMessaging: Fire OS devices
-  PushTokenAmazonDeviceMessaging = 6;
-}
-
-message PushServiceSupportedTokenType {
-  string app_bundle_id = 1 [(gogoproto.customname) = "AppBundleID"];
-  PushServiceTokenType token_type = 2;
-}
-
 message PushServiceReceiver {
   // token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server
-  PushServiceTokenType token_type = 1;
+  push.v1.PushServiceTokenType token_type = 1;
 
   // bundle_id is the app identifier
   string bundle_id = 2 [(gogoproto.customname) = "BundleID"];
@@ -1445,11 +1402,6 @@ message PushServiceReceiver {
 
   // recipient_public_key is the public key which will be used to encrypt the payload
   bytes recipient_public_key = 4;
-}
-
-message PushServiceOpaqueReceiver {
-  bytes opaque_token = 1;
-  string service_addr = 2;
 }
 
 message PushServer {
@@ -1502,19 +1454,6 @@ message PushSend {
   }
 }
 
-message PushServiceServerInfo {
-  message Request {}
-
-  message Reply {
-    // public_key the public key used to encrypt data to the server (ie. a PushServiceReceiver),
-    // to be used with NaCl's Seal and Open
-    bytes public_key = 1;
-
-    // supported_token_types list of token types supported by the server
-    repeated PushServiceSupportedTokenType supported_token_types = 2;
-  }
-}
-
 message PushShareToken {
   message Request {
     bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
@@ -1538,14 +1477,3 @@ message PushSetServer {
   message Reply {}
 }
 
-message PushServiceSend {
-  message Request {
-    OutOfStoreMessageEnvelope envelope = 1;
-
-    PushServicePriority priority = 2;
-
-    repeated PushServiceOpaqueReceiver receivers = 3;
-  }
-
-  message Reply {}
-}

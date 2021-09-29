@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-	"path"
 	"strings"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -22,11 +21,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"moul.io/zapgorm2"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
@@ -45,8 +44,6 @@ const (
 	TorDisabled = "disabled"
 	TorOptional = "optional"
 	TorRequired = "required"
-
-	MessengerDatabaseFilename = "messenger.sqlite"
 )
 
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
@@ -142,6 +139,20 @@ func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
 	return m.getLocalProtocolServer()
 }
 
+func (m *Manager) getPushSecretKey() (*[cryptoutil.KeySize]byte, error) {
+	pushKey := &[cryptoutil.KeySize]byte{}
+	if m.Node.Protocol.DevicePushKeyPath != "" {
+		var err error
+
+		_, pushKey, err = accountutils.GetDevicePushKeyForPath(m.Node.Protocol.DevicePushKeyPath, true)
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+	}
+
+	return pushKey, nil
+}
+
 func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	if m.Node.Protocol.server != nil {
 		return m.Node.Protocol.server, nil
@@ -175,18 +186,13 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	// protocol service
 	{
 		var (
-			deviceDS = ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
-			deviceKS = bertyprotocol.NewDeviceKeystore(deviceDS)
+			deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
+			deviceKS = cryptoutil.NewDeviceKeystore(deviceDS)
 		)
 
-		pushKey := &[cryptoutil.KeySize]byte{}
-		if m.Node.Protocol.DevicePushKeyPath != "" {
-			_, pushSK, err := GetDevicePushKeyForPath(m.Node.Protocol.DevicePushKeyPath, true)
-			if err != nil {
-				return nil, errcode.ErrInternal.Wrap(err)
-			}
-
-			pushKey = pushSK
+		pushKey, err := m.getPushSecretKey()
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
 		}
 
 		// initialize new protocol client
@@ -502,37 +508,12 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = getMessengerDBForPath(dir, logger)
+	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetMessengerDBForPath(dir, logger)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return m.Node.Messenger.db, nil
-}
-
-func getMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
-	var sqliteConn string
-	if dir == InMemoryDir {
-		sqliteConn = ":memory:"
-	} else {
-		sqliteConn = path.Join(dir, MessengerDatabaseFilename)
-	}
-
-	cfg := &gorm.Config{
-		Logger:                                   zapgorm2.New(logger.Named("gorm")),
-		DisableForeignKeyConstraintWhenMigrating: true,
-	}
-	db, err := gorm.Open(sqlite.Open(sqliteConn), cfg)
-	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
-	}
-
-	return db, func() {
-		sqlDB, _ := db.DB()
-		if sqlDB != nil {
-			sqlDB.Close()
-		}
-	}, nil
 }
 
 func (m *Manager) restoreMessengerDataFromExport() error {

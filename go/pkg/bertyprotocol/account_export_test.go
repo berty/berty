@@ -13,6 +13,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/require"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -199,7 +201,7 @@ func TestUnstableRestoreAccount(t *testing.T) {
 		})
 		defer cleanupNodeB()
 
-		dksB := NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(dsB, ds.NewKey(NamespaceDeviceKeystore))))
+		dksB := cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(dsB, ds.NewKey(NamespaceDeviceKeystore))))
 
 		odb, err := NewBertyOrbitDB(ctx, ipfsNodeB.API(), &NewOrbitDBOptions{
 			NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{

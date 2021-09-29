@@ -43,7 +43,7 @@ func (s *service) export(ctx context.Context, output io.Writer) error {
 	}
 
 	s.lock.RLock()
-	groups := make([]*groupContext, len(s.openedGroups))
+	groups := make([]*GroupContext, len(s.openedGroups))
 	i := 0
 	for _, gc := range s.openedGroups {
 		groups[i] = gc
@@ -60,7 +60,7 @@ func (s *service) export(ctx context.Context, output io.Writer) error {
 	return nil
 }
 
-func (s *service) exportGroupContext(ctx context.Context, gc *groupContext, tw *tar.Writer) error {
+func (s *service) exportGroupContext(ctx context.Context, gc *GroupContext, tw *tar.Writer) error {
 	if err := s.exportOrbitDBStore(ctx, gc.metadataStore, tw); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
@@ -126,7 +126,7 @@ func (s *service) exportAccountProofKey(tw *tar.Writer) error {
 	return exportPrivateKey(tw, sk, exportAccountProofKeyFilename)
 }
 
-func (s *service) exportOrbitDBGroupHeads(gc *groupContext, headsMetadata []cid.Cid, headsMessages []cid.Cid, tw *tar.Writer) error {
+func (s *service) exportOrbitDBGroupHeads(gc *GroupContext, headsMetadata []cid.Cid, headsMessages []cid.Cid, tw *tar.Writer) error {
 	cidsMeta := make([][]byte, len(headsMetadata))
 	for i, id := range headsMetadata {
 		cidsMeta[i] = id.Bytes()

@@ -10,6 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 func pushServerCommand() *ffcli.Command {
@@ -99,8 +100,8 @@ func pushServerCommand() *ffcli.Command {
 				return err
 			}
 
-			bertyprotocol.RegisterPushServiceServer(server, pushService)
-			if err := bertyprotocol.RegisterPushServiceHandlerServer(ctx, mux, pushService); err != nil {
+			pushtypes.RegisterPushServiceServer(server, pushService)
+			if err := pushtypes.RegisterPushServiceHandlerServer(ctx, mux, pushService); err != nil {
 				return err
 			}
 

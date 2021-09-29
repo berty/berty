@@ -150,7 +150,6 @@
     - [MultiMemberGroupLeave.Request](#berty.protocol.v1.MultiMemberGroupLeave.Request)
     - [MultiMemberInitialMember](#berty.protocol.v1.MultiMemberInitialMember)
     - [OutOfStoreMessage](#berty.protocol.v1.OutOfStoreMessage)
-    - [OutOfStoreMessageEnvelope](#berty.protocol.v1.OutOfStoreMessageEnvelope)
     - [PeerList](#berty.protocol.v1.PeerList)
     - [PeerList.Peer](#berty.protocol.v1.PeerList.Peer)
     - [PeerList.Reply](#berty.protocol.v1.PeerList.Reply)
@@ -161,7 +160,6 @@
     - [ProtocolMetadata](#berty.protocol.v1.ProtocolMetadata)
     - [PushDeviceServerRegistered](#berty.protocol.v1.PushDeviceServerRegistered)
     - [PushDeviceTokenRegistered](#berty.protocol.v1.PushDeviceTokenRegistered)
-    - [PushExposedData](#berty.protocol.v1.PushExposedData)
     - [PushMemberTokenUpdate](#berty.protocol.v1.PushMemberTokenUpdate)
     - [PushReceive](#berty.protocol.v1.PushReceive)
     - [PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply)
@@ -170,15 +168,7 @@
     - [PushSend.Reply](#berty.protocol.v1.PushSend.Reply)
     - [PushSend.Request](#berty.protocol.v1.PushSend.Request)
     - [PushServer](#berty.protocol.v1.PushServer)
-    - [PushServiceOpaqueReceiver](#berty.protocol.v1.PushServiceOpaqueReceiver)
     - [PushServiceReceiver](#berty.protocol.v1.PushServiceReceiver)
-    - [PushServiceSend](#berty.protocol.v1.PushServiceSend)
-    - [PushServiceSend.Reply](#berty.protocol.v1.PushServiceSend.Reply)
-    - [PushServiceSend.Request](#berty.protocol.v1.PushServiceSend.Request)
-    - [PushServiceServerInfo](#berty.protocol.v1.PushServiceServerInfo)
-    - [PushServiceServerInfo.Reply](#berty.protocol.v1.PushServiceServerInfo.Reply)
-    - [PushServiceServerInfo.Request](#berty.protocol.v1.PushServiceServerInfo.Request)
-    - [PushServiceSupportedTokenType](#berty.protocol.v1.PushServiceSupportedTokenType)
     - [PushSetDeviceToken](#berty.protocol.v1.PushSetDeviceToken)
     - [PushSetDeviceToken.Reply](#berty.protocol.v1.PushSetDeviceToken.Reply)
     - [PushSetDeviceToken.Request](#berty.protocol.v1.PushSetDeviceToken.Request)
@@ -217,8 +207,6 @@
     - [InstanceGetConfiguration.SettingState](#berty.protocol.v1.InstanceGetConfiguration.SettingState)
     - [MonitorGroup.TypeEventMonitor](#berty.protocol.v1.MonitorGroup.TypeEventMonitor)
     - [PeerList.Feature](#berty.protocol.v1.PeerList.Feature)
-    - [PushServicePriority](#berty.protocol.v1.PushServicePriority)
-    - [PushServiceTokenType](#berty.protocol.v1.PushServiceTokenType)
   
     - [ProtocolService](#berty.protocol.v1.ProtocolService)
   
@@ -1343,16 +1331,6 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | encrypted_payload | [bytes](#bytes) |  |  |
 | nonce | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.v1.OutOfStoreMessageEnvelope"></a>
-
-### OutOfStoreMessageEnvelope
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| nonce | [bytes](#bytes) |  |  |
-| box | [bytes](#bytes) |  |  |
-| group_public_key | [bytes](#bytes) |  |  |
-
 <a name="berty.protocol.v1.PeerList"></a>
 
 ### PeerList
@@ -1443,15 +1421,6 @@ Progress define a generic object that can be used to display a progress bar for 
 | token | [PushServiceReceiver](#berty.protocol.v1.PushServiceReceiver) |  |  |
 | device_pk | [bytes](#bytes) |  | device_pk is the public key of the device sending the message |
 
-<a name="berty.protocol.v1.PushExposedData"></a>
-
-### PushExposedData
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| nonce | [bytes](#bytes) |  |  |
-| box | [bytes](#bytes) |  |  |
-
 <a name="berty.protocol.v1.PushMemberTokenUpdate"></a>
 
 ### PushMemberTokenUpdate
@@ -1515,69 +1484,16 @@ Progress define a generic object that can be used to display a progress bar for 
 | server_key | [bytes](#bytes) |  |  |
 | service_addr | [string](#string) |  |  |
 
-<a name="berty.protocol.v1.PushServiceOpaqueReceiver"></a>
-
-### PushServiceOpaqueReceiver
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| opaque_token | [bytes](#bytes) |  |  |
-| service_addr | [string](#string) |  |  |
-
 <a name="berty.protocol.v1.PushServiceReceiver"></a>
 
 ### PushServiceReceiver
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| token_type | [PushServiceTokenType](#berty.protocol.v1.PushServiceTokenType) |  | token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server |
+| token_type | [berty.push.v1.PushServiceTokenType](#berty.push.v1.PushServiceTokenType) |  | token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server |
 | bundle_id | [string](#string) |  | bundle_id is the app identifier |
 | token | [bytes](#bytes) |  | token is the device identifier used |
 | recipient_public_key | [bytes](#bytes) |  | recipient_public_key is the public key which will be used to encrypt the payload |
-
-<a name="berty.protocol.v1.PushServiceSend"></a>
-
-### PushServiceSend
-
-<a name="berty.protocol.v1.PushServiceSend.Reply"></a>
-
-### PushServiceSend.Reply
-
-<a name="berty.protocol.v1.PushServiceSend.Request"></a>
-
-### PushServiceSend.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| envelope | [OutOfStoreMessageEnvelope](#berty.protocol.v1.OutOfStoreMessageEnvelope) |  |  |
-| priority | [PushServicePriority](#berty.protocol.v1.PushServicePriority) |  |  |
-| receivers | [PushServiceOpaqueReceiver](#berty.protocol.v1.PushServiceOpaqueReceiver) | repeated |  |
-
-<a name="berty.protocol.v1.PushServiceServerInfo"></a>
-
-### PushServiceServerInfo
-
-<a name="berty.protocol.v1.PushServiceServerInfo.Reply"></a>
-
-### PushServiceServerInfo.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| public_key | [bytes](#bytes) |  | public_key the public key used to encrypt data to the server (ie. a PushServiceReceiver), to be used with NaCl&#39;s Seal and Open |
-| supported_token_types | [PushServiceSupportedTokenType](#berty.protocol.v1.PushServiceSupportedTokenType) | repeated | supported_token_types list of token types supported by the server |
-
-<a name="berty.protocol.v1.PushServiceServerInfo.Request"></a>
-
-### PushServiceServerInfo.Request
-
-<a name="berty.protocol.v1.PushServiceSupportedTokenType"></a>
-
-### PushServiceSupportedTokenType
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| app_bundle_id | [string](#string) |  |  |
-| token_type | [PushServiceTokenType](#berty.protocol.v1.PushServiceTokenType) |  |  |
 
 <a name="berty.protocol.v1.PushSetDeviceToken"></a>
 
@@ -1914,30 +1830,6 @@ Progress define a generic object that can be used to display a progress bar for 
 | LocalFeature | 3 |  |
 | TorFeature | 4 |  |
 | QuicFeature | 5 |  |
-
-<a name="berty.protocol.v1.PushServicePriority"></a>
-
-### PushServicePriority
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| PushPriorityUndefined | 0 |  |
-| PushPriorityLow | 1 |  |
-| PushPriorityNormal | 2 |  |
-
-<a name="berty.protocol.v1.PushServiceTokenType"></a>
-
-### PushServiceTokenType
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| PushTokenUndefined | 0 |  |
-| PushTokenMQTT | 1 | PushTokenMQTT: Platform independent |
-| PushTokenApplePushNotificationService | 2 | PushTokenApplePushNotificationService: iOS, iPadOS, tvOS, macOS |
-| PushTokenFirebaseCloudMessaging | 3 | PushTokenFirebaseCloudMessaging: Android with GMS, Chrome OS |
-| PushTokenWindowsPushNotificationService | 4 | PushTokenWindowsPushNotificationService: Windows, XBox |
-| PushTokenHuaweiPushKit | 5 | PushTokenHuaweiPushKit: Huawei Android devices with AppGallery |
-| PushTokenAmazonDeviceMessaging | 6 | PushTokenAmazonDeviceMessaging: Fire OS devices |
 
  
 

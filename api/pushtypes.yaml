@@ -1,0 +1,11 @@
+type: google.api.Service
+config_version: 3
+
+http:
+ rules:
+ - selector: berty.push.v1.PushService.ServerInfo
+   post: /berty.push.v1/PushService/ServerInfo
+   body: "*"
+ - selector: berty.push.v1.PushService.Send
+   post: /berty.push.v1/PushService/Send
+   body: "*"

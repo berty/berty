@@ -13,6 +13,7 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -38,7 +39,7 @@ func (s *service) DebugListGroups(req *protocoltypes.DebugListGroups_Request, sr
 			return errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
-		g, err := getGroupForContact(sk)
+		g, err := cryptoutil.GetGroupForContact(sk)
 		if err != nil {
 			return errcode.ErrOrbitDBOpen.Wrap(err)
 		}

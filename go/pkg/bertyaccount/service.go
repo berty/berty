@@ -8,12 +8,14 @@ import (
 
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/androidnearby"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -21,10 +23,10 @@ import (
 )
 
 // Servicex is AccountServiceServer
-var _ AccountServiceServer = (*service)(nil)
+var _ accounttypes.AccountServiceServer = (*service)(nil)
 
 type Service interface {
-	AccountServiceServer
+	accounttypes.AccountServiceServer
 
 	// WakeUp should be used for background task or similar task.
 	WakeUp(ctx context.Context) error
@@ -66,53 +68,54 @@ type service struct {
 	nbDriver          proximity.ProximityDriver
 	devicePushKeyPath string
 	pushPlatformToken *protocoltypes.PushServiceReceiver
+	accountData       *accounttypes.AccountMetadata
 }
 
-func (s *service) NetworkConfigGetPreset(ctx context.Context, req *NetworkConfigGetPreset_Request) (*NetworkConfigGetPreset_Reply, error) {
-	if req.Preset == NetworkConfigPreset_NetPresetPerformance || req.Preset == NetworkConfigPreset_NetPresetUndefined {
-		bluetoothLE := NetworkConfig_Disabled
+func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
+	if req.Preset == accounttypes.NetworkConfigPreset_NetPresetPerformance || req.Preset == accounttypes.NetworkConfigPreset_NetPresetUndefined {
+		bluetoothLE := accounttypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission {
-			bluetoothLE = NetworkConfig_Enabled
+			bluetoothLE = accounttypes.NetworkConfig_Enabled
 		}
 
-		androidNearby := NetworkConfig_Disabled
+		androidNearby := accounttypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission && androidnearby.Supported {
-			androidNearby = NetworkConfig_Enabled
+			androidNearby = accounttypes.NetworkConfig_Enabled
 		}
 
-		appleMC := NetworkConfig_Disabled
+		appleMC := accounttypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission && mc.Supported {
-			appleMC = NetworkConfig_Enabled
+			appleMC = accounttypes.NetworkConfig_Enabled
 		}
 
-		return &NetworkConfigGetPreset_Reply{
-			Config: &NetworkConfig{
+		return &accounttypes.NetworkConfigGetPreset_Reply{
+			Config: &accounttypes.NetworkConfig{
 				Bootstrap:                  []string{initutil.KeywordDefault},
 				AndroidNearby:              androidNearby,
-				DHT:                        NetworkConfig_DHTClient,
+				DHT:                        accounttypes.NetworkConfig_DHTClient,
 				AppleMultipeerConnectivity: appleMC,
 				BluetoothLE:                bluetoothLE,
-				MDNS:                       NetworkConfig_Enabled,
+				MDNS:                       accounttypes.NetworkConfig_Enabled,
 				Rendezvous:                 []string{initutil.KeywordDefault},
-				Tor:                        NetworkConfig_TorOptional,
+				Tor:                        accounttypes.NetworkConfig_TorOptional,
 				StaticRelay:                []string{initutil.KeywordDefault},
-				ShowDefaultServices:        NetworkConfig_Enabled,
+				ShowDefaultServices:        accounttypes.NetworkConfig_Enabled,
 			},
 		}, nil
 	}
 
-	return &NetworkConfigGetPreset_Reply{
-		Config: &NetworkConfig{
+	return &accounttypes.NetworkConfigGetPreset_Reply{
+		Config: &accounttypes.NetworkConfig{
 			Bootstrap:                  []string{initutil.KeywordNone},
-			AndroidNearby:              NetworkConfig_Disabled,
-			DHT:                        NetworkConfig_DHTDisabled,
-			AppleMultipeerConnectivity: NetworkConfig_Disabled,
-			BluetoothLE:                NetworkConfig_Disabled,
-			MDNS:                       NetworkConfig_Disabled,
+			AndroidNearby:              accounttypes.NetworkConfig_Disabled,
+			DHT:                        accounttypes.NetworkConfig_DHTDisabled,
+			AppleMultipeerConnectivity: accounttypes.NetworkConfig_Disabled,
+			BluetoothLE:                accounttypes.NetworkConfig_Disabled,
+			MDNS:                       accounttypes.NetworkConfig_Disabled,
 			Rendezvous:                 []string{initutil.KeywordNone},
-			Tor:                        NetworkConfig_TorDisabled,
+			Tor:                        accounttypes.NetworkConfig_TorDisabled,
 			StaticRelay:                []string{initutil.KeywordNone},
-			ShowDefaultServices:        NetworkConfig_Disabled,
+			ShowDefaultServices:        accounttypes.NetworkConfig_Disabled,
 		},
 	}, nil
 }
@@ -152,7 +155,7 @@ func NewService(opts *Options) (_ Service, err error) {
 		sclients:          opts.ServiceClientRegister,
 		bleDriver:         opts.BleDriver,
 		nbDriver:          opts.NBDriver,
-		devicePushKeyPath: path.Join(opts.RootDirectory, initutil.DefaultPushKeyFilename),
+		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
 	}
 
 	go s.handleLifecycle(rootCtx)

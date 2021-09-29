@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
@@ -30,18 +31,18 @@ import (
 const groupMessageStoreType = "berty_group_messages"
 
 // FIXME: replace cache by a circular buffer to avoid an attack by RAM saturation
-type messageStore struct {
+type MessageStore struct {
 	basestore.BaseStore
 
-	devKS     DeviceKeystore
-	mks       *messageKeystore
+	devKS     cryptoutil.DeviceKeystore
+	mks       *cryptoutil.MessageKeystore
 	g         *protocoltypes.Group
 	logger    *zap.Logger
 	cache     map[string]*ring.Ring
 	cacheLock sync.Mutex
 }
 
-func (m *messageStore) setLogger(l *zap.Logger) {
+func (m *MessageStore) setLogger(l *zap.Logger) {
 	if l == nil {
 		return
 	}
@@ -50,7 +51,7 @@ func (m *messageStore) setLogger(l *zap.Logger) {
 }
 
 // addToCache adds the event into a circular buffer
-func (m *messageStore) addToCache(ctx context.Context, devicePK []byte, e ipfslog.Entry) {
+func (m *MessageStore) addToCache(ctx context.Context, devicePK []byte, e ipfslog.Entry) {
 	bufferSize := 64
 	m.logger.Debug("addToCache", zap.Any("devicePK", devicePK), zap.Any("event", e))
 	m.cacheLock.Lock()
@@ -67,7 +68,7 @@ func (m *messageStore) addToCache(ctx context.Context, devicePK []byte, e ipfslo
 }
 
 // openMessageCacheForPK tries to open messages for a given devicePK
-func (m *messageStore) openMessageCacheForPK(ctx context.Context, devicePK []byte) {
+func (m *MessageStore) openMessageCacheForPK(ctx context.Context, devicePK []byte) {
 	m.cacheLock.Lock()
 	if buffer, ok := m.cache[string(devicePK)]; ok {
 		len := buffer.Len()
@@ -93,7 +94,7 @@ func (m *messageStore) openMessageCacheForPK(ctx context.Context, devicePK []byt
 	m.cacheLock.Unlock()
 }
 
-func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableCache bool) (*protocoltypes.GroupMessageEvent, error) {
+func (m *MessageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableCache bool) (*protocoltypes.GroupMessageEvent, error) {
 	if e == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -107,7 +108,7 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableC
 	ownPK := crypto.PubKey(nil)
 	md, inErr := m.devKS.MemberDeviceForGroup(m.g)
 	if inErr == nil {
-		ownPK = md.device.GetPublic()
+		ownPK = md.PrivateDevice().GetPublic()
 	}
 
 	headers, msg, attachmentsCIDs, err := m.mks.OpenEnvelope(ctx, m.g, ownPK, op.GetValue(), e.GetHash())
@@ -135,7 +136,7 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableC
 }
 
 // FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
-func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *protocoltypes.GroupMessageEvent, error) {
+func (m *MessageStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *protocoltypes.GroupMessageEvent, error) {
 	entries, err := getEntriesInRange(m.OpLog().GetEntries().Reverse().Slice(), since, until)
 	if err != nil {
 		return nil, err
@@ -164,7 +165,7 @@ func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reve
 	return out, nil
 }
 
-func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
+func (m *MessageStore) AddMessage(ctx context.Context, payload []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
 	ctx, newTrace := tyber.ContextWithTraceID(ctx)
 
 	if newTrace {
@@ -199,7 +200,7 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 	return messageStoreAddMessage(ctx, m.g, md, m, payload, attachmentsCIDs, attachmentsSecrets)
 }
 
-func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *ownMemberDevice, m *messageStore, payload []byte, attachmentsCIDs [][]byte, attachmentsSecrets [][]byte) (operation.Operation, error) {
+func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *cryptoutil.OwnMemberDevice, m *MessageStore, payload []byte, attachmentsCIDs [][]byte, attachmentsSecrets [][]byte) (operation.Operation, error) {
 	msg, err := (&protocoltypes.EncryptedMessage{
 		Plaintext:        payload,
 		ProtocolMetadata: &protocoltypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
@@ -208,7 +209,7 @@ func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *own
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := m.mks.SealEnvelope(g, md.device, msg, attachmentsCIDs)
+	env, err := m.mks.SealEnvelope(g, md.PrivateDevice(), msg, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
@@ -261,7 +262,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 			}
 		}
 
-		store := &messageStore{
+		store := &MessageStore{
 			devKS:  s.deviceKeystore,
 			mks:    s.messageKeystore,
 			g:      g,
@@ -325,7 +326,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 	}
 }
 
-func (m *messageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelope, *protocoltypes.MessageHeaders, error) {
+func (m *MessageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelope, *protocoltypes.MessageHeaders, error) {
 	m.cacheLock.Lock()
 	defer m.cacheLock.Unlock()
 
@@ -339,7 +340,7 @@ func (m *messageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelop
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	env, headers, err := openEnvelopeHeaders(op.GetValue(), m.g)
+	env, headers, err := cryptoutil.OpenEnvelopeHeaders(op.GetValue(), m.g)
 	if err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -347,7 +348,7 @@ func (m *messageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelop
 	return env, headers, nil
 }
 
-func (m *messageStore) GetOutOfStoreMessageEnvelope(ctx context.Context, c cid.Cid) (*protocoltypes.OutOfStoreMessageEnvelope, error) {
+func (m *MessageStore) GetOutOfStoreMessageEnvelope(ctx context.Context, c cid.Cid) (*pushtypes.OutOfStoreMessageEnvelope, error) {
 	env, headers, err := m.GetMessageByCID(c)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -361,7 +362,7 @@ func (m *messageStore) GetOutOfStoreMessageEnvelope(ctx context.Context, c cid.C
 	return sealedMessageEnvelope, nil
 }
 
-func sealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelope, headers *protocoltypes.MessageHeaders, g *protocoltypes.Group) (*protocoltypes.OutOfStoreMessageEnvelope, error) {
+func sealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelope, headers *protocoltypes.MessageHeaders, g *protocoltypes.Group) (*pushtypes.OutOfStoreMessageEnvelope, error) {
 	oosMessage := &protocoltypes.OutOfStoreMessage{
 		CID:              id.Bytes(),
 		DevicePK:         headers.DevicePK,
@@ -388,7 +389,7 @@ func sealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelop
 
 	encryptedData := secretbox.Seal(nil, data, nonce, secret)
 
-	return &protocoltypes.OutOfStoreMessageEnvelope{
+	return &pushtypes.OutOfStoreMessageEnvelope{
 		Nonce:          nonce[:],
 		Box:            encryptedData,
 		GroupPublicKey: g.PublicKey,

@@ -17,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 const (
@@ -219,7 +220,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 			continue
 		}
 
-		repl, err := client.ServerInfo(ctx, &protocoltypes.PushServiceServerInfo_Request{})
+		repl, err := client.ServerInfo(ctx, &pushtypes.PushServiceServerInfo_Request{})
 		if err != nil {
 			s.logger.Warn("unable to get server info from push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
 			continue

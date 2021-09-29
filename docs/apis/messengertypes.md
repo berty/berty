@@ -111,6 +111,7 @@
     - [PushReceive](#berty.messenger.v1.PushReceive)
     - [PushReceive.Reply](#berty.messenger.v1.PushReceive.Reply)
     - [PushReceive.Request](#berty.messenger.v1.PushReceive.Request)
+    - [PushReceivedData](#berty.messenger.v1.PushReceivedData)
     - [PushSetAutoShare](#berty.messenger.v1.PushSetAutoShare)
     - [PushSetAutoShare.Reply](#berty.messenger.v1.PushSetAutoShare.Reply)
     - [PushSetAutoShare.Request](#berty.messenger.v1.PushSetAutoShare.Request)
@@ -122,9 +123,6 @@
     - [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply)
     - [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request)
     - [ReplyOption](#berty.messenger.v1.ReplyOption)
-    - [SendAck](#berty.messenger.v1.SendAck)
-    - [SendAck.Reply](#berty.messenger.v1.SendAck.Reply)
-    - [SendAck.Request](#berty.messenger.v1.SendAck.Request)
     - [SendContactRequest](#berty.messenger.v1.SendContactRequest)
     - [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply)
     - [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request)
@@ -1036,8 +1034,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| protocol_data | [berty.protocol.v1.PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) |  |  |
-| interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
+| data | [PushReceivedData](#berty.messenger.v1.PushReceivedData) |  |  |
 
 <a name="berty.messenger.v1.PushReceive.Request"></a>
 
@@ -1046,6 +1043,15 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | payload | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.v1.PushReceivedData"></a>
+
+### PushReceivedData
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| protocol_data | [berty.protocol.v1.PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) |  |  |
+| interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
 
 <a name="berty.messenger.v1.PushSetAutoShare"></a>
 
@@ -1117,23 +1123,6 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | display | [string](#string) |  |  |
 | payload | [string](#string) |  |  |
-
-<a name="berty.messenger.v1.SendAck"></a>
-
-### SendAck
-
-<a name="berty.messenger.v1.SendAck.Reply"></a>
-
-### SendAck.Reply
-
-<a name="berty.messenger.v1.SendAck.Request"></a>
-
-### SendAck.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pk | [bytes](#bytes) |  |  |
-| message_id | [bytes](#bytes) |  |  |
 
 <a name="berty.messenger.v1.SendContactRequest"></a>
 
@@ -1555,7 +1544,6 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
 | SendContactRequest | [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
 | SendReplyOptions | [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request) | [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply) | SendReplyOptions sends a list of prefilled response options to a group. |
-| SendAck | [SendAck.Request](#berty.messenger.v1.SendAck.Request) | [SendAck.Reply](#berty.messenger.v1.SendAck.Reply) | SendAck sends an acknowledge payload for given message id. |
 | SystemInfo | [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply) | SystemInfo returns runtime information. |
 | EchoTest | [EchoTest.Request](#berty.messenger.v1.EchoTest.Request) | [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply) stream | Use to test stream. |
 | EchoDuplexTest | [EchoDuplexTest.Request](#berty.messenger.v1.EchoDuplexTest.Request) stream | [EchoDuplexTest.Reply](#berty.messenger.v1.EchoDuplexTest.Reply) stream | Use to test duplex stream. |

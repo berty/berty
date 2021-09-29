@@ -31,6 +31,7 @@ import (
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
@@ -285,7 +286,7 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 		}
 
-		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+		ipfsDS := datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
 		repo, err = ipfsutil.CreateMockedRepo(ipfsDS)
 		if err != nil {

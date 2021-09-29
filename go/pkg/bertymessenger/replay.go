@@ -9,20 +9,23 @@ import (
 	"github.com/golang/protobuf/proto"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/messengerdb"
+	"berty.tech/berty/v2/go/internal/messengerpayloads"
+	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
-func getEventsReplayerForDB(ctx context.Context, client protocoltypes.ProtocolServiceClient) func(db *dbWrapper) error {
-	return func(db *dbWrapper) error {
-		return replayLogsToDB(ctx, client, db)
+func getEventsReplayerForDB(ctx context.Context, client protocoltypes.ProtocolServiceClient, log *zap.Logger) func(db *messengerdb.DBWrapper) error {
+	return func(db *messengerdb.DBWrapper) error {
+		return replayLogsToDB(ctx, client, db, log)
 	}
 }
 
-func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceClient, wrappedDB *dbWrapper) (err error) {
-	ctx, _, endSection := tyber.Section(ctx, wrappedDB.log, "Replaying logs to database")
+func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceClient, wrappedDB *messengerdb.DBWrapper, log *zap.Logger) (err error) {
+	ctx, _, endSection := tyber.Section(ctx, log, "Replaying logs to database")
 	defer func() { endSection(err, "") }()
 
 	// Get account infos
@@ -30,30 +33,30 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
-	pk := b64EncodeBytes(cfg.GetAccountGroupPK())
+	pk := messengerutil.B64EncodeBytes(cfg.GetAccountGroupPK())
 
-	if err := wrappedDB.firstOrCreateAccount(pk, ""); err != nil {
+	if err := wrappedDB.FirstOrCreateAccount(pk, ""); err != nil {
 		return errcode.ErrDBWrite.Wrap(err)
 	}
 
-	handler := newEventHandler(ctx, wrappedDB, client, zap.NewNop(), nil, true)
+	handler := messengerpayloads.NewEventHandler(ctx, wrappedDB, &MetaFetcherFromProtocolClient{client: client}, messengertypes.NewPostActionsServiceNoop(), zap.NewNop(), nil, true)
 
 	// Replay all account group metadata events
 	// TODO: We should have a toggle to "lock" orbitDB while we replaying events
 	// So we don't miss events that occurred during the replay
-	if err := processMetadataList(cfg.GetAccountGroupPK(), handler); err != nil {
+	if err := processMetadataList(cfg.GetAccountGroupPK(), handler, client); err != nil {
 		return errcode.ErrReplayProcessGroupMetadata.Wrap(err)
 	}
 
 	// Get all groups the account is member of
-	convs, err := wrappedDB.getAllConversations()
+	convs, err := wrappedDB.GetAllConversations()
 	if err != nil {
 		return errcode.ErrDBRead.Wrap(err)
 	}
 
 	for _, conv := range convs {
 		// Replay all other group metadata events
-		groupPK, err := b64DecodeBytes(conv.GetPublicKey())
+		groupPK, err := messengerutil.B64DecodeBytes(conv.GetPublicKey())
 		if err != nil {
 			return errcode.ErrDeserialization.Wrap(err)
 		}
@@ -70,13 +73,13 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 				return errcode.ErrGroupActivate.Wrap(err)
 			}
 
-			if err := processMetadataList(groupPK, handler); err != nil {
+			if err := processMetadataList(groupPK, handler, client); err != nil {
 				return errcode.ErrReplayProcessGroupMetadata.Wrap(err)
 			}
 		}
 
 		// Replay all group message events
-		if err := processMessageList(groupPK, handler); err != nil {
+		if err := processMessageList(groupPK, handler, client); err != nil {
 			return errcode.ErrReplayProcessGroupMessage.Wrap(err)
 		}
 
@@ -93,9 +96,9 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 	return nil
 }
 
-func processMetadataList(groupPK []byte, handler *eventHandler) error {
-	metaList, err := handler.protocolClient.GroupMetadataList(
-		handler.ctx,
+func processMetadataList(groupPK []byte, handler *messengerpayloads.EventHandler, client protocoltypes.ProtocolServiceClient) error {
+	metaList, err := client.GroupMetadataList(
+		handler.Ctx(),
 		&protocoltypes.GroupMetadataList_Request{
 			GroupPK:  groupPK,
 			UntilNow: true,
@@ -106,7 +109,7 @@ func processMetadataList(groupPK []byte, handler *eventHandler) error {
 	}
 
 	for {
-		if handler.ctx.Err() != nil {
+		if handler.Ctx().Err() != nil {
 			return errcode.ErrEventListMetadata.Wrap(err)
 		}
 
@@ -117,17 +120,17 @@ func processMetadataList(groupPK []byte, handler *eventHandler) error {
 			return errcode.ErrEventListMetadata.Wrap(err)
 		}
 
-		if err := handler.handleMetadataEvent(metadata); err != nil {
+		if err := handler.HandleMetadataEvent(metadata); err != nil {
 			return err
 		}
 	}
 }
 
-func processMessageList(groupPK []byte, handler *eventHandler) error {
-	groupPKStr := b64EncodeBytes(groupPK)
+func processMessageList(groupPK []byte, handler *messengerpayloads.EventHandler, client protocoltypes.ProtocolServiceClient) error {
+	groupPKStr := messengerutil.B64EncodeBytes(groupPK)
 
-	msgList, err := handler.protocolClient.GroupMessageList(
-		handler.ctx,
+	msgList, err := client.GroupMessageList(
+		handler.Ctx(),
 		&protocoltypes.GroupMessageList_Request{
 			GroupPK:  groupPK,
 			UntilNow: true,
@@ -138,7 +141,7 @@ func processMessageList(groupPK []byte, handler *eventHandler) error {
 	}
 
 	for {
-		if handler.ctx.Err() != nil {
+		if handler.Ctx().Err() != nil {
 			return errcode.ErrEventListMessage.Wrap(err)
 		}
 
@@ -154,7 +157,7 @@ func processMessageList(groupPK []byte, handler *eventHandler) error {
 			return errcode.ErrDeserialization.Wrap(err)
 		}
 
-		if err := handler.handleAppMessage(groupPKStr, message, &appMsg); err != nil {
+		if err := handler.HandleAppMessage(groupPKStr, message, &appMsg); err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 	}

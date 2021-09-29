@@ -18,12 +18,13 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"golang.org/x/crypto/curve25519"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -50,18 +51,18 @@ type service struct {
 	logger          *zap.Logger
 	ipfsCoreAPI     ipfsutil.ExtendedCoreAPI
 	odb             *BertyOrbitDB
-	accountGroup    *groupContext
-	deviceKeystore  DeviceKeystore
-	openedGroups    map[string]*groupContext
+	accountGroup    *GroupContext
+	deviceKeystore  cryptoutil.DeviceKeystore
+	openedGroups    map[string]*GroupContext
 	lock            sync.RWMutex
 	authSession     atomic.Value
 	close           func() error
 	startedAt       time.Time
 	host            host.Host
-	groupDatastore  *GroupDatastore
-	pushHandler     *pushHandler
+	groupDatastore  *cryptoutil.GroupDatastore
+	pushHandler     bertypush.PushHandler
 	accountCache    ds.Batching
-	messageKeystore *messageKeystore
+	messageKeystore *cryptoutil.MessageKeystore
 	pushClients     map[string]*grpc.ClientConn
 	muPushClients   sync.RWMutex
 }
@@ -70,12 +71,12 @@ type service struct {
 type Opts struct {
 	Logger                 *zap.Logger
 	IpfsCoreAPI            ipfsutil.ExtendedCoreAPI
-	DeviceKeystore         DeviceKeystore
+	DeviceKeystore         cryptoutil.DeviceKeystore
 	DatastoreDir           string
 	RootDatastore          ds.Batching
-	GroupDatastore         *GroupDatastore
+	GroupDatastore         *cryptoutil.GroupDatastore
 	AccountCache           ds.Batching
-	MessageKeystore        *messageKeystore
+	MessageKeystore        *cryptoutil.MessageKeystore
 	OrbitDB                *BertyOrbitDB
 	TinderDriver           tinder.UnregisterDiscovery
 	RendezvousRotationBase time.Duration
@@ -95,18 +96,18 @@ func (opts *Opts) applyPushDefaults() error {
 
 	if opts.GroupDatastore == nil {
 		var err error
-		opts.GroupDatastore, err = NewGroupDatastore(opts.RootDatastore)
+		opts.GroupDatastore, err = cryptoutil.NewGroupDatastore(opts.RootDatastore)
 		if err != nil {
 			return err
 		}
 	}
 
 	if opts.AccountCache == nil {
-		opts.AccountCache = ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceAccountCacheDatastore))
+		opts.AccountCache = datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(datastoreutil.NamespaceAccountCacheDatastore))
 	}
 
 	if opts.MessageKeystore == nil {
-		opts.MessageKeystore = newMessageKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceMessageKeystore)))
+		opts.MessageKeystore = cryptoutil.NewMessageKeystore(datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(datastoreutil.NamespaceMessageKeystore)))
 	}
 
 	return nil
@@ -134,8 +135,8 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 	}
 
 	if opts.DeviceKeystore == nil {
-		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceDeviceKeystore)))
-		opts.DeviceKeystore = NewDeviceKeystore(ks)
+		ks := ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceDeviceKeystore)))
+		opts.DeviceKeystore = cryptoutil.NewDeviceKeystore(ks)
 	}
 
 	if opts.RendezvousRotationBase.Nanoseconds() <= 0 {
@@ -185,7 +186,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 				Directory: &orbitDirectory,
 				Logger:    opts.Logger,
 			},
-			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
+			Datastore:      datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
 			DeviceKeystore: opts.DeviceKeystore,
 		}
 
@@ -248,6 +249,18 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to add account group to group datastore, err: %w", err))
 	}
 
+	pushHandler := (bertypush.PushHandler)(nil)
+	if opts.PushKey != nil {
+		pushHandler, err = bertypush.NewPushHandler(&bertypush.PushHandlerOpts{
+			RootDatastore: opts.RootDatastore,
+			PushKey:       opts.PushKey,
+			Logger:        opts.Logger,
+		})
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to init push handler: %w", err))
+		}
+	}
+
 	s := &service{
 		ctx:            ctx,
 		host:           opts.Host,
@@ -259,12 +272,12 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		accountGroup:   acc,
 		startedAt:      time.Now(),
 		groupDatastore: opts.GroupDatastore,
-		openedGroups: map[string]*groupContext{
+		openedGroups: map[string]*GroupContext{
 			string(acc.Group().PublicKey): acc,
 		},
 		accountCache:    opts.AccountCache,
 		messageKeystore: opts.MessageKeystore,
-		pushHandler:     newPushHandler(opts.PushKey, opts.GroupDatastore, opts.OrbitDB.messageKeystore, opts.AccountCache),
+		pushHandler:     pushHandler,
 		pushClients:     make(map[string]*grpc.ClientConn),
 	}
 
@@ -373,9 +386,4 @@ func (s *service) Status() Status {
 	return Status{
 		Protocol: nil,
 	}
-}
-
-func (s *service) SetPushKey(key *[32]byte) {
-	s.pushHandler.pushSK = key
-	curve25519.ScalarBaseMult(s.pushHandler.pushPK, s.pushHandler.pushSK)
 }

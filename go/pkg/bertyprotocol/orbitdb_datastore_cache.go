@@ -4,7 +4,7 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/cache"
 )
@@ -14,7 +14,7 @@ type datastoreCache struct {
 }
 
 func (d *datastoreCache) Load(directory string, dbAddress address.Address) (datastore.Datastore, error) {
-	return ipfsutil.NewNamespacedDatastore(d.ds, datastore.NewKey(dbAddress.String())), nil
+	return datastoreutil.NewNamespacedDatastore(d.ds, datastore.NewKey(dbAddress.String())), nil
 }
 
 func (d *datastoreCache) Close() error {
@@ -22,7 +22,7 @@ func (d *datastoreCache) Close() error {
 }
 
 func (d *datastoreCache) Destroy(directory string, dbAddress address.Address) error {
-	keys, err := ipfsutil.NewNamespacedDatastore(d.ds, datastore.NewKey(dbAddress.String())).Query(query.Query{KeysOnly: true})
+	keys, err := datastoreutil.NewNamespacedDatastore(d.ds, datastore.NewKey(dbAddress.String())).Query(query.Query{KeysOnly: true})
 	if err != nil {
 		return nil
 	}
@@ -41,7 +41,7 @@ func (d *datastoreCache) Destroy(directory string, dbAddress address.Address) er
 
 func NewOrbitDatastoreCache(ds datastore.Batching) cache.Interface {
 	return &datastoreCache{
-		ds: ipfsutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceOrbitDBDatastore)),
+		ds: datastoreutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceOrbitDBDatastore)),
 	}
 }
 

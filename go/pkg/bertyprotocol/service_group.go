@@ -6,6 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/iface"
@@ -17,7 +18,7 @@ func (s *service) getContactGroup(key crypto.PubKey) (*protocoltypes.Group, erro
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	g, err := getGroupForContact(sk)
+	g, err := cryptoutil.GetGroupForContact(sk)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
@@ -33,7 +34,7 @@ func (s *service) getGroupForPK(pk crypto.PubKey) (*protocoltypes.Group, error) 
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if err = s.groupDatastore.reindex(s.accountGroup.metadataStore, s.deviceKeystore); err != nil {
+	if err = reindexGroupDatastore(s.groupDatastore, s.accountGroup.metadataStore, s.deviceKeystore); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -130,7 +131,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 	return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 }
 
-func (s *service) getContextGroupForID(id []byte) (*groupContext, error) {
+func (s *service) getContextGroupForID(id []byte) (*GroupContext, error) {
 	if len(id) == 0 {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("no group id provided"))
 	}
@@ -145,4 +146,36 @@ func (s *service) getContextGroupForID(id []byte) (*groupContext, error) {
 	}
 
 	return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unknown group or not activated yet"))
+}
+
+func reindexGroupDatastore(gd *cryptoutil.GroupDatastore, m *MetadataStore, deviceKeystore cryptoutil.DeviceKeystore) error {
+	if deviceKeystore == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing device keystore"))
+	}
+
+	for _, g := range m.ListMultiMemberGroups() {
+		if err := gd.Put(g); err != nil {
+			return errcode.ErrInternal.Wrap(err)
+		}
+	}
+
+	for _, contact := range m.ListContactsByStatus(
+		protocoltypes.ContactStateToRequest,
+		protocoltypes.ContactStateReceived,
+		protocoltypes.ContactStateAdded,
+		protocoltypes.ContactStateRemoved,
+		protocoltypes.ContactStateDiscarded,
+		protocoltypes.ContactStateBlocked,
+	) {
+		cPK, err := contact.GetPubKey()
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+
+		if err := gd.PutForContactPK(cPK, deviceKeystore); err != nil {
+			return errcode.ErrInternal.Wrap(err)
+		}
+	}
+
+	return nil
 }

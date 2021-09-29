@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	ipfslog "berty.tech/go-ipfs-log"
@@ -19,13 +20,13 @@ import (
 
 // FIXME: replace members, devices, sentSecrets, contacts and groups by a circular buffer to avoid an attack by RAM saturation
 type metadataStoreIndex struct {
-	members                  map[string][]*memberDevice
-	devices                  map[string]*memberDevice
+	members                  map[string][]*cryptoutil.MemberDevice
+	devices                  map[string]*cryptoutil.MemberDevice
 	handledEvents            map[string]struct{}
 	sentSecrets              map[string]struct{}
 	admins                   map[crypto.PubKey]struct{}
-	contacts                 map[string]*accountContact
-	contactsFromGroupPK      map[string]*accountContact
+	contacts                 map[string]*AccountContact
+	contactsFromGroupPK      map[string]*AccountContact
 	groups                   map[string]*accountGroup
 	serviceTokens            map[string]*protocoltypes.ServiceToken
 	devicePushToken          *protocoltypes.PushDeviceTokenRegistered
@@ -40,8 +41,8 @@ type metadataStoreIndex struct {
 	ownAliasKeySent          bool
 	otherAliasKey            []byte
 	g                        *protocoltypes.Group
-	ownMemberDevice          *memberDevice
-	deviceKeystore           DeviceKeystore
+	ownMemberDevice          *cryptoutil.MemberDevice
+	deviceKeystore           cryptoutil.DeviceKeystore
 	ctx                      context.Context
 	eventEmitter             events.EmitterInterface
 	lock                     sync.RWMutex
@@ -67,8 +68,8 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	entries := log.Values().Slice()
 
 	// Resetting state
-	m.contacts = map[string]*accountContact{}
-	m.contactsFromGroupPK = map[string]*accountContact{}
+	m.contacts = map[string]*AccountContact{}
+	m.contactsFromGroupPK = map[string]*AccountContact{}
 	m.groups = map[string]*accountGroup{}
 	m.serviceTokens = map[string]*protocoltypes.ServiceToken{}
 	m.contactRequestMetadata = map[string][]byte{}
@@ -77,6 +78,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	m.devicePushToken = nil
 	m.devicePushServer = nil
 	m.membersPushTokens = map[string]*protocoltypes.PushMemberTokenUpdate{}
+	m.handledEvents = map[string]struct{}{}
 
 	for i := len(entries) - 1; i >= 0; i-- {
 		e := entries[i]
@@ -148,14 +150,14 @@ func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) err
 		return nil
 	}
 
-	m.devices[string(e.DevicePK)] = &memberDevice{
-		member: member,
-		device: device,
+	m.devices[string(e.DevicePK)] = &cryptoutil.MemberDevice{
+		Member: member,
+		Device: device,
 	}
 
-	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &memberDevice{
-		member: member,
-		device: device,
+	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &cryptoutil.MemberDevice{
+		Member: member,
+		Device: device,
 	})
 
 	return nil
@@ -177,7 +179,7 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if m.ownMemberDevice.device.Equals(senderPK) {
+	if m.ownMemberDevice.Device.Equals(senderPK) {
 		m.sentSecrets[string(e.DestMemberPK)] = struct{}{}
 	}
 
@@ -202,7 +204,7 @@ func (m *metadataStoreIndex) unsafeGetMemberByDevice(pk crypto.PubKey) (crypto.P
 		return nil, errcode.ErrMissingInput
 	}
 
-	return device.member, nil
+	return device.Member, nil
 }
 
 func (m *metadataStoreIndex) getDevicesForMember(pk crypto.PubKey) ([]crypto.PubKey, error) {
@@ -221,7 +223,7 @@ func (m *metadataStoreIndex) getDevicesForMember(pk crypto.PubKey) ([]crypto.Pub
 
 	ret := make([]crypto.PubKey, len(mds))
 	for i, md := range mds {
-		ret[i] = md.device
+		ret[i] = md.Device
 	}
 
 	return ret, nil
@@ -241,14 +243,14 @@ func (m *metadataStoreIndex) DeviceCount() int {
 	return len(m.devices)
 }
 
-func (m *metadataStoreIndex) listContacts() map[string]*accountContact {
+func (m *metadataStoreIndex) listContacts() map[string]*AccountContact {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	contacts := make(map[string]*accountContact)
+	contacts := make(map[string]*AccountContact)
 
 	for k, contact := range m.contacts {
-		contacts[k] = &accountContact{
+		contacts[k] = &AccountContact{
 			state: contact.state,
 			contact: &protocoltypes.ShareableContact{
 				PK:                   contact.contact.PK,
@@ -269,7 +271,7 @@ func (m *metadataStoreIndex) listMembers() []crypto.PubKey {
 	i := 0
 
 	for _, md := range m.members {
-		members[i] = md[0].member
+		members[i] = md[0].Member
 		i++
 	}
 
@@ -284,7 +286,7 @@ func (m *metadataStoreIndex) listDevices() []crypto.PubKey {
 	i := 0
 
 	for _, md := range m.devices {
-		devices[i] = md.device
+		devices[i] = md.Device
 		i++
 	}
 
@@ -316,7 +318,7 @@ type accountGroup struct {
 	group *protocoltypes.Group
 }
 
-type accountContact struct {
+type AccountContact struct {
 	state   protocoltypes.ContactState
 	contact *protocoltypes.ShareableContact
 }
@@ -405,7 +407,7 @@ func (m *metadataStoreIndex) handleContactRequestReferenceReset(event proto.Mess
 	return nil
 }
 
-func (m *metadataStoreIndex) registerContactFromGroupPK(ac *accountContact) error {
+func (m *metadataStoreIndex) registerContactFromGroupPK(ac *AccountContact) error {
 	if m.g.GroupType != protocoltypes.GroupTypeAccount {
 		return errcode.ErrGroupInvalidType
 	}
@@ -420,7 +422,7 @@ func (m *metadataStoreIndex) registerContactFromGroupPK(ac *accountContact) erro
 		return err
 	}
 
-	g, err := getGroupForContact(sk)
+	g, err := cryptoutil.GetGroupForContact(sk)
 	if err != nil {
 		return errcode.ErrOrbitDBOpen.Wrap(err)
 	}
@@ -452,7 +454,7 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Me
 		m.contactRequestMetadata[string(evt.Contact.PK)] = evt.OwnMetadata
 	}
 
-	ac := &accountContact{
+	ac := &AccountContact{
 		state: protocoltypes.ContactStateToRequest,
 		contact: &protocoltypes.ShareableContact{
 			PK:                   evt.Contact.PK,
@@ -477,7 +479,7 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingSent(event proto.Messag
 		return nil
 	}
 
-	ac := &accountContact{
+	ac := &AccountContact{
 		state: protocoltypes.ContactStateAdded,
 		contact: &protocoltypes.ShareableContact{
 			PK: evt.ContactPK,
@@ -508,7 +510,7 @@ func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Me
 		return nil
 	}
 
-	ac := &accountContact{
+	ac := &AccountContact{
 		state: protocoltypes.ContactStateReceived,
 		contact: &protocoltypes.ShareableContact{
 			PK:                   evt.ContactPK,
@@ -533,7 +535,7 @@ func (m *metadataStoreIndex) handleContactRequestIncomingDiscarded(event proto.M
 		return nil
 	}
 
-	ac := &accountContact{
+	ac := &AccountContact{
 		state: protocoltypes.ContactStateDiscarded,
 		contact: &protocoltypes.ShareableContact{
 			PK: evt.ContactPK,
@@ -556,7 +558,7 @@ func (m *metadataStoreIndex) handleContactRequestIncomingAccepted(event proto.Me
 		return nil
 	}
 
-	ac := &accountContact{
+	ac := &AccountContact{
 		state: protocoltypes.ContactStateAdded,
 		contact: &protocoltypes.ShareableContact{
 			PK: evt.ContactPK,
@@ -579,7 +581,7 @@ func (m *metadataStoreIndex) handleContactBlocked(event proto.Message) error {
 		return nil
 	}
 
-	ac := &accountContact{
+	ac := &AccountContact{
 		state: protocoltypes.ContactStateBlocked,
 		contact: &protocoltypes.ShareableContact{
 			PK: evt.ContactPK,
@@ -602,7 +604,7 @@ func (m *metadataStoreIndex) handleContactUnblocked(event proto.Message) error {
 		return nil
 	}
 
-	ac := &accountContact{
+	ac := &AccountContact{
 		state: protocoltypes.ContactStateRemoved,
 		contact: &protocoltypes.ShareableContact{
 			PK: evt.ContactPK,
@@ -716,7 +718,7 @@ func (m *metadataStoreIndex) handlePushDeviceTokenRegistered(event proto.Message
 		return errcode.ErrInvalidInput
 	}
 
-	devicePK, err := m.ownMemberDevice.device.Raw()
+	devicePK, err := m.ownMemberDevice.Device.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
@@ -734,13 +736,17 @@ func (m *metadataStoreIndex) handlePushDeviceTokenRegistered(event proto.Message
 	return nil
 }
 
+func (m *metadataStoreIndex) handleGroupMetadataPayloadSent(_ proto.Message) error {
+	return nil
+}
+
 func (m *metadataStoreIndex) handlePushServerTokenRegistered(event proto.Message) error {
 	e, ok := event.(*protocoltypes.PushDeviceServerRegistered)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
 
-	devicePK, err := m.ownMemberDevice.device.Raw()
+	devicePK, err := m.ownMemberDevice.Device.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
@@ -777,11 +783,11 @@ func (m *metadataStoreIndex) listOtherMembersDevices() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	if m.ownMemberDevice == nil || m.ownMemberDevice.member == nil {
+	if m.ownMemberDevice == nil || m.ownMemberDevice.Member == nil {
 		return nil
 	}
 
-	ownMemberPK, err := m.ownMemberDevice.member.Raw()
+	ownMemberPK, err := m.ownMemberDevice.Member.Raw()
 	if err != nil {
 		m.logger.Warn("unable to serialize member pubkey", zap.Error(err))
 		return nil
@@ -794,7 +800,7 @@ func (m *metadataStoreIndex) listOtherMembersDevices() []crypto.PubKey {
 		}
 
 		for _, md := range devicesForMember {
-			devices = append(devices, md.device)
+			devices = append(devices, md.Device)
 		}
 	}
 
@@ -815,7 +821,7 @@ func (m *metadataStoreIndex) contactRequestsSeed() []byte {
 	return m.contactRequestSeed
 }
 
-func (m *metadataStoreIndex) getContact(pk crypto.PubKey) (*accountContact, error) {
+func (m *metadataStoreIndex) getContact(pk crypto.PubKey) (*AccountContact, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -858,7 +864,7 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 			return fmt.Errorf("couldn't get member for device")
 		}
 
-		if memberPK.Equals(m.ownMemberDevice.member) {
+		if memberPK.Equals(m.ownMemberDevice.Member) {
 			m.ownAliasKeySent = true
 			continue
 		}
@@ -876,16 +882,16 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 }
 
 // newMetadataIndex returns a new index to manage the list of the group members
-func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *protocoltypes.Group, md *memberDevice, devKS DeviceKeystore) iface.IndexConstructor {
+func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *protocoltypes.Group, md *cryptoutil.MemberDevice, devKS cryptoutil.DeviceKeystore) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
-			members:                map[string][]*memberDevice{},
-			devices:                map[string]*memberDevice{},
+			members:                map[string][]*cryptoutil.MemberDevice{},
+			devices:                map[string]*cryptoutil.MemberDevice{},
 			admins:                 map[crypto.PubKey]struct{}{},
 			sentSecrets:            map[string]struct{}{},
 			handledEvents:          map[string]struct{}{},
-			contacts:               map[string]*accountContact{},
-			contactsFromGroupPK:    map[string]*accountContact{},
+			contacts:               map[string]*AccountContact{},
+			contactsFromGroupPK:    map[string]*AccountContact{},
 			groups:                 map[string]*accountGroup{},
 			serviceTokens:          map[string]*protocoltypes.ServiceToken{},
 			contactRequestMetadata: map[string][]byte{},
@@ -921,6 +927,7 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			protocoltypes.EventTypePushMemberTokenUpdate:                  {m.handlePushMemberTokenUpdate},
 			protocoltypes.EventTypePushDeviceTokenRegistered:              {m.handlePushDeviceTokenRegistered},
 			protocoltypes.EventTypePushDeviceServerRegistered:             {m.handlePushServerTokenRegistered},
+			protocoltypes.EventTypeGroupMetadataPayloadSent:               {m.handleGroupMetadataPayloadSent},
 		}
 
 		m.postIndexActions = []func() error{

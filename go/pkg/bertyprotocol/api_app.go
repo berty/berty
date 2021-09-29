@@ -56,7 +56,7 @@ func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMess
 	return &protocoltypes.AppMessageSend_Reply{CID: op.GetEntry().GetHash().Bytes()}, nil
 }
 
-func tyberLogGroupContext(ctx context.Context, logger *zap.Logger, gc *groupContext) {
+func tyberLogGroupContext(ctx context.Context, logger *zap.Logger, gc *GroupContext) {
 	logger.Debug("Got group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{
 		{Name: "GroupType", Description: gc.Group().GetGroupType().String()},
 	})...)

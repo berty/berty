@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/pkg/accounttypes"
 )
 
 func TestFailingProto(t *testing.T) {
@@ -20,7 +21,7 @@ func TestFailingProto(t *testing.T) {
 	 Field #3: 18 Varint Value = 1607959997100877, Hex = CD-E6-C2-E3-E5-CD-ED-02
 	*/
 
-	meta := &AccountMetadata{}
+	meta := &accounttypes.AccountMetadata{}
 	/*
 		-> diff. 3rd field
 

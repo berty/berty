@@ -19,6 +19,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/messengerdb"
+	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -327,7 +329,7 @@ func TestBroken1To1Exchange(t *testing.T) {
 }
 
 func TestBrokenPeersCreateJoinConversation(t *testing.T) {
-	// testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
@@ -360,7 +362,7 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 
 	// get conv link
 	gpk := createdConv.GetPublicKey()
-	gpkb, err := b64DecodeBytes(gpk)
+	gpkb, err := messengerutil.B64DecodeBytes(gpk)
 	require.NoError(t, err)
 	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPK: gpkb, GroupName: convName})
 	require.NoError(t, err)
@@ -1080,13 +1082,13 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 	// sender interacts
 	var beforeSend, afterSend int64
 	{
-		beforeSend = timestampMs(time.Now())
+		beforeSend = messengerutil.TimestampMs(time.Now())
 		userMessage, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: msg})
 		require.NoError(t, err)
 		interactionRequest := messengertypes.Interact_Request{Type: messengertypes.AppMessage_TypeUserMessage, Payload: userMessage, ConversationPublicKey: groupPK}
 		_, err = sender.GetClient().Interact(ctx, &interactionRequest)
 		require.NoError(t, err)
-		afterSend = timestampMs(time.Now())
+		afterSend = messengerutil.TimestampMs(time.Now())
 		logger.Debug("testSendGroupMessage: message sent")
 	}
 
@@ -1385,7 +1387,7 @@ func TestAccountUpdate(t *testing.T) {
 	reply, err := stream.CloseAndRecv()
 	require.NoError(t, err)
 
-	userAvatarCID := b64EncodeBytes(reply.GetAttachmentCID())
+	userAvatarCID := messengerutil.B64EncodeBytes(reply.GetAttachmentCID())
 
 	logger.Info("starting update")
 	const testName = "user"
@@ -1409,7 +1411,7 @@ func TestAccountUpdate(t *testing.T) {
 		cids = append(cids, userInFriend.GetAvatarCID())
 
 		// check attachment
-		cidBytes, err := b64DecodeBytes(avatarCIDInFriend)
+		cidBytes, err := messengerutil.B64DecodeBytes(avatarCIDInFriend)
 		require.NoError(t, err)
 		stream, err := friend.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
 		require.NoError(t, err)
@@ -1516,7 +1518,7 @@ func TestUnstableAccountUpdateGroup(t *testing.T) {
 		cids = append(cids, userInFriend.GetAvatarCID())
 
 		// check attachment
-		cidBytes, err := b64DecodeBytes(avatarCIDInFriend)
+		cidBytes, err := messengerutil.B64DecodeBytes(avatarCIDInFriend)
 		require.NoError(t, err)
 		stream, err := friend.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
 		require.NoError(t, err)
@@ -1562,7 +1564,7 @@ func TestSendBlob(t *testing.T) {
 
 	testCID := reply.GetAttachmentCID()
 
-	b64CID := b64EncodeBytes(testCID)
+	b64CID := messengerutil.B64EncodeBytes(testCID)
 
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
 	require.NoError(t, err)
@@ -1598,10 +1600,10 @@ func TestSendBlob(t *testing.T) {
 	require.NotNil(t, media)
 	cid := media.GetCID()
 	require.NotEmpty(t, cid)
-	require.Equal(t, b64EncodeBytes(testCID), cid)
+	require.Equal(t, messengerutil.B64EncodeBytes(testCID), cid)
 
 	// check attachment
-	cidBytes, err := b64DecodeBytes(cid)
+	cidBytes, err := messengerutil.B64DecodeBytes(cid)
 	require.NoError(t, err)
 	retStream, err := friend.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
 	require.NoError(t, err)
@@ -1715,18 +1717,18 @@ func TestSendMedia(t *testing.T) {
 }
 
 func Test_exportMessengerData(t *testing.T) {
-	db, cleanup := getInMemoryTestDB(t)
+	db, gormDB, cleanup := messengerdb.GetInMemoryTestDB(t)
 	defer cleanup()
 
-	db.db.Create(&messengertypes.Account{PublicKey: "pk_account_1", DisplayName: "display_name", ReplicateNewGroupsAutomatically: true})
-	db.db.Create(&messengertypes.Conversation{PublicKey: "pk_conv_1", UnreadCount: 1000, IsOpen: false})
-	db.db.Create(&messengertypes.Conversation{PublicKey: "pk_conv_2", UnreadCount: 2000, IsOpen: true})
-	db.db.Create(&messengertypes.Conversation{PublicKey: "pk_conv_3", UnreadCount: 3000, IsOpen: false})
+	gormDB.Create(&messengertypes.Account{PublicKey: "pk_account_1", DisplayName: "display_name", ReplicateNewGroupsAutomatically: true})
+	gormDB.Create(&messengertypes.Conversation{PublicKey: "pk_conv_1", UnreadCount: 1000, IsOpen: false})
+	gormDB.Create(&messengertypes.Conversation{PublicKey: "pk_conv_2", UnreadCount: 2000, IsOpen: true})
+	gormDB.Create(&messengertypes.Conversation{PublicKey: "pk_conv_3", UnreadCount: 3000, IsOpen: false})
 
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "messenger-export-")
 	require.NoError(t, err)
 
-	err = exportMessengerData(tmpFile, db.db, zap.NewNop())
+	err = exportMessengerData(tmpFile, db)
 	require.NoError(t, err)
 
 	_, err = tmpFile.Seek(0, io.SeekStart)

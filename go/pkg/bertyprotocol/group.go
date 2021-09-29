@@ -2,19 +2,14 @@ package bertyprotocol
 
 import (
 	"context"
-	"crypto/ed25519"
 	crand "crypto/rand"
-	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
-	"golang.org/x/crypto/hkdf"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
@@ -64,93 +59,7 @@ func NewGroupMultiMember() (*protocoltypes.Group, crypto.PrivKey, error) {
 	return group, priv, nil
 }
 
-func getKeysForGroupOfContact(contactPairSK crypto.PrivKey) (crypto.PrivKey, crypto.PrivKey, error) {
-	// Salt length must be equal to hash length (64 bytes for sha256)
-	hash := sha256.New
-
-	ck, err := contactPairSK.Raw()
-	if err != nil {
-		return nil, nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	// Generate Pseudo Random Key using ck as IKM and salt
-	prk := hkdf.Extract(hash, ck, nil)
-	if len(prk) == 0 {
-		return nil, nil, errcode.ErrInternal
-	}
-
-	// Expand using extracted prk and groupID as info (kind of namespace)
-	kdf := hkdf.Expand(hash, prk, nil)
-
-	// Generate next KDF and message keys
-	groupSeed, err := ioutil.ReadAll(io.LimitReader(kdf, 32))
-	if err != nil {
-		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
-	groupSecretSeed, err := ioutil.ReadAll(io.LimitReader(kdf, 32))
-	if err != nil {
-		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
-	sk1 := ed25519.NewKeyFromSeed(groupSeed)
-	groupSK, _, err := crypto.KeyPairFromStdKey(&sk1)
-	if err != nil {
-		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
-	sk2 := ed25519.NewKeyFromSeed(groupSecretSeed)
-	groupSecretSK, _, err := crypto.KeyPairFromStdKey(&sk2)
-	if err != nil {
-		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
-	return groupSK, groupSecretSK, nil
-}
-
-func getGroupForContact(contactPairSK crypto.PrivKey) (*protocoltypes.Group, error) {
-	groupSK, groupSecretSK, err := getKeysForGroupOfContact(contactPairSK)
-	if err != nil {
-		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-	pubBytes, err := groupSK.GetPublic().Raw()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	signingBytes, err := cryptoutil.SeedFromEd25519PrivateKey(groupSecretSK)
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	return &protocoltypes.Group{
-		PublicKey: pubBytes,
-		Secret:    signingBytes,
-		SecretSig: nil,
-		GroupType: protocoltypes.GroupTypeContact,
-	}, nil
-}
-
-func getGroupForAccount(priv, signing crypto.PrivKey) (*protocoltypes.Group, error) {
-	pubBytes, err := priv.GetPublic().Raw()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	signingBytes, err := cryptoutil.SeedFromEd25519PrivateKey(signing)
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	return &protocoltypes.Group{
-		PublicKey: pubBytes,
-		Secret:    signingBytes,
-		SecretSig: nil,
-		GroupType: protocoltypes.GroupTypeAccount,
-	}, nil
-}
-
-func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.PubKey]*protocoltypes.DeviceSecret {
+func metadataStoreListSecrets(ctx context.Context, gc *GroupContext) map[crypto.PubKey]*protocoltypes.DeviceSecret {
 	publishedSecrets := map[crypto.PubKey]*protocoltypes.DeviceSecret{}
 
 	m := gc.MetadataStore()
@@ -182,7 +91,7 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 	return publishedSecrets
 }
 
-func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) <-chan crypto.PubKey {
+func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *GroupContext) <-chan crypto.PubKey {
 	m := gc.MetadataStore()
 	ch := make(chan crypto.PubKey)
 	sub := m.Subscribe(ctx)
@@ -231,7 +140,7 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) <-
 	return ch
 }
 
-func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContext) <-chan crypto.PubKey {
+func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *GroupContext) <-chan crypto.PubKey {
 	ch := make(chan crypto.PubKey)
 	publishedSecrets := metadataStoreListSecrets(ctx, gc)
 
@@ -250,7 +159,7 @@ func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContex
 	return ch
 }
 
-func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.PubKey, selfAnnouncement bool) error {
+func activateGroupContext(ctx context.Context, gc *GroupContext, contact crypto.PubKey, selfAnnouncement bool) error {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -263,7 +172,7 @@ func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.
 		wg.Done()
 
 		for pk := range ch {
-			if pk.Equals(gc.memberDevice.device.GetPublic()) {
+			if pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
 				select {
 				case syncChMKH <- true:
 				default:
@@ -279,7 +188,7 @@ func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.
 		wg.Done()
 
 		for pk := range ch {
-			if pk.Equals(gc.memberDevice.member.GetPublic()) {
+			if pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
 				select {
 				case syncChSecrets <- true:
 				default:
@@ -295,7 +204,7 @@ func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.
 	start := time.Now()
 	ch := FillMessageKeysHolderUsingPreviousData(ctx, gc)
 	for pk := range ch {
-		if pk.Equals(gc.memberDevice.device.GetPublic()) {
+		if pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
 			select {
 			case syncChMKH <- true:
 			default:
@@ -308,7 +217,7 @@ func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.
 	start = time.Now()
 	ch = SendSecretsToExistingMembers(ctx, gc, contact)
 	for pk := range ch {
-		if pk.Equals(gc.memberDevice.member.GetPublic()) {
+		if pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
 			select {
 			case syncChSecrets <- true:
 			default:
@@ -342,11 +251,11 @@ func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.
 	return nil
 }
 
-func ActivateGroupContext(ctx context.Context, gc *groupContext, contact crypto.PubKey) error {
+func ActivateGroupContext(ctx context.Context, gc *GroupContext, contact crypto.PubKey) error {
 	return activateGroupContext(ctx, gc, contact, true)
 }
 
-func TagGroupContextPeers(ctx context.Context, gc *groupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
+func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
 	id := gc.Group().GroupIDAsString()
 
 	chSub1 := gc.metadataStore.Subscribe(ctx)
@@ -368,7 +277,7 @@ func TagGroupContextPeers(ctx context.Context, gc *groupContext, ipfsCoreAPI ipf
 	}()
 }
 
-func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext, contact crypto.PubKey) <-chan crypto.PubKey {
+func SendSecretsToExistingMembers(ctx context.Context, gctx *GroupContext, contact crypto.PubKey) <-chan crypto.PubKey {
 	ch := make(chan crypto.PubKey)
 	members := gctx.MetadataStore().ListMembers()
 
@@ -414,7 +323,7 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext, conta
 	return ch
 }
 
-func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx *groupContext) <-chan crypto.PubKey {
+func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx *GroupContext) <-chan crypto.PubKey {
 	ch := make(chan crypto.PubKey)
 	sub := gctx.MetadataStore().Subscribe(ctx)
 

@@ -5,18 +5,17 @@ import (
 	"io"
 
 	"github.com/gogo/protobuf/proto"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
 
+	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const exportLocalDBState = "messenger/local_db_state"
 
-func exportMessengerData(writer io.Writer, db *gorm.DB, logger *zap.Logger) error {
+func exportMessengerData(writer io.Writer, db *messengerdb.DBWrapper) error {
 	tw := tar.NewWriter(writer)
 
-	dbState := keepDatabaseLocalState(db, logger)
+	dbState := db.KeepDatabaseLocalState()
 	dbStateBytes, err := proto.Marshal(dbState)
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)

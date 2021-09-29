@@ -293,7 +293,7 @@ daemon.start.docker:
 
 pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 
-pbjs_protos := ../api/bertyaccount.proto ../api/bertybridge.proto ../api/protocoltypes.proto ../api/messengertypes.proto
+pbjs_protos := ../api/accounttypes.proto ../api/bertybridge.proto ../api/protocoltypes.proto ../api/messengertypes.proto ../api/pushtypes.proto
 
 packages/api/root.pb.js: $(wildcard ../api/*) node_modules
 	$(call check-program, npx)
@@ -333,7 +333,7 @@ _gen.config:
 
 ##### gen.sum
 
-gensum_src := Makefile ../api/protocoltypes.proto ../api/messengertypes.proto ../api/bertyaccount.proto
+gensum_src := Makefile ../api/protocoltypes.proto ../api/messengertypes.proto ../api/accounttypes.proto
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp

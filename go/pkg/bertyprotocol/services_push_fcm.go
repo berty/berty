@@ -8,6 +8,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 type pushDispatcherFCM struct {
@@ -15,8 +16,8 @@ type pushDispatcherFCM struct {
 	appID  string
 }
 
-func (d *pushDispatcherFCM) TokenType() protocoltypes.PushServiceTokenType {
-	return protocoltypes.PushTokenFirebaseCloudMessaging
+func (d *pushDispatcherFCM) TokenType() pushtypes.PushServiceTokenType {
+	return pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging
 }
 
 func PushDispatcherLoadFirebaseAPIKey(input *string) ([]PushDispatcher, error) {
