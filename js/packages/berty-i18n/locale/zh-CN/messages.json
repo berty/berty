@@ -85,7 +85,7 @@
         "fifth-bullet-point": "您不能从此群组中删除成员"
       },
       "conversations": {
-        "request-sent": "请求已发送，正在等待...",
+        "request-sent": "",
         "draft": "草稿: {{message}}"
       }
     },
@@ -100,8 +100,8 @@
         "desc": "点击此处查看通知设置"
       },
       "replicate": {
-        "display-name": "复制服务配置",
-        "desc": "点击此处配置复制服务"
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -513,8 +513,8 @@
     },
     "p2p": {
       "title": "蓝牙消息",
-      "android-desc": "即使应用程序在后台，要通过蓝牙离线交换消息，Android API 需要授予位置权限。 我们不会以任何方式使用您的位置数据。",
-      "ios-desc": "要通过蓝牙离线交换消息，iOS API 需要获得许可。"
+      "android-desc": "",
+      "ios-desc": ""
     },
     "camera": {
       "title": "摄像头",
@@ -534,7 +534,7 @@
   "notification": {
     "need-restart": {
       "title": "需要重新启动应用程序",
-      "desc": "对于这类通知，您必须重新启动应用才能保存此字段！"
+      "desc": ""
     }
   },
   "error": {
