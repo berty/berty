@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/afero"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -49,11 +48,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, err
 	}
 
-<<<<<<< HEAD
-	m.initLogger.Debug("datastore", zap.Bool("in-memory", dir == accountutils.InMemoryDir))
-=======
 	m.initLogger.Debug("loaded or created root datastore in virtual fs", zap.String("path", path))
->>>>>>> 78686df6d (fix: make daemon boot)
 
 	return m.Datastore.rootDS, nil
 }

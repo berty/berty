@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/spf13/afero"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
@@ -170,7 +169,6 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 	return d, nil
 }
 
-<<<<<<< HEAD:go/pkg/bertypush/push_opener.go
 type PushDecryptOpts struct {
 	Logger           *zap.Logger
 	ExcludedAccounts []string
@@ -183,11 +181,6 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
-=======
-func PushDecrypt(ctx context.Context, fs afero.Fs, rootDir string, input []byte, logger *zap.Logger) (*messengertypes.PushReceive_Reply, *AccountMetadata, error) {
-	if logger == nil {
-		logger = zap.NewNop()
->>>>>>> db19fb1b7 (feat: use afero for berty's datastore):go/pkg/bertyaccount/push.go
 	}
 
 	_, pushSK, err := accountutils.GetDevicePushKeyForPath(path.Join(rootDir, accountutils.DefaultPushKeyFilename), false)
@@ -209,7 +202,6 @@ func PushDecrypt(ctx context.Context, fs afero.Fs, rootDir string, input []byte,
 	for _, account := range accounts {
 		var reply *messengertypes.PushReceive_Reply
 
-<<<<<<< HEAD:go/pkg/bertypush/push_opener.go
 		ignoreAccount := false
 		for _, excluded := range opts.ExcludedAccounts {
 			if account.AccountID == excluded {
@@ -223,10 +215,6 @@ func PushDecrypt(ctx context.Context, fs afero.Fs, rootDir string, input []byte,
 		}
 
 		accountDir, err := accountutils.GetDatastoreDir(path.Join(rootDir, account.AccountID))
-=======
-		accountDir := path.Join(rootDir, account.AccountID)
-		pushReceiver, tearDown, err := initutil.GetMessengerPushReceiver(ctx, fs, accountDir, pushSK, logger)
->>>>>>> db19fb1b7 (feat: use afero for berty's datastore):go/pkg/bertyaccount/push.go
 		if err != nil {
 			errs = append(errs, err)
 			continue
