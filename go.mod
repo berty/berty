@@ -53,7 +53,7 @@ require (
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kr/pretty v0.2.1
-	github.com/libp2p/go-libp2p v0.15.0
+	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.10.0
 	github.com/libp2p/go-libp2p-discovery v0.5.1
