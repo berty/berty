@@ -8,7 +8,7 @@ import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { pbDateToNum, timeFormat } from '../../utils'
 import { MessageInvitation } from './MessageInvitation'
 import { MessageMonitorMetadata } from './MessageMonitorMetadata'
 import { UserMessage } from './UserMessage'

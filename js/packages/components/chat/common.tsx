@@ -20,7 +20,7 @@ import { useClient, useContact, useMsgrContext, useThemeColor } from '@berty-tec
 import { checkPermissions, getMediaTypeFromMedias } from '@berty-tech/components/utils'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
-import { timeFormat } from '../helpers'
+import { timeFormat } from '../utils'
 import { TabItems } from './file-uploads/types'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'

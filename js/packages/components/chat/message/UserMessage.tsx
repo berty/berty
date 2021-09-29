@@ -20,7 +20,7 @@ import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/typ
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
-import { pbDateToNum } from '../../helpers'
+import { pbDateToNum } from '../../utils'
 import { PictureMessage } from './PictureMessage'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'

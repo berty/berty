@@ -27,8 +27,7 @@ import {
 	useThemeColor,
 } from '@berty-tech/store/hooks'
 
-import { getSource } from '../utils'
-import { timeFormat } from '../helpers'
+import { getSource, timeFormat } from '../utils'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 
 const initialLayout = { width: Dimensions.get('window').width }

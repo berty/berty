@@ -9,7 +9,7 @@ import { useClient, useMsgrContext, useThemeColor } from '@berty-tech/store/hook
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 
-import { pbDateToNum } from '../../helpers'
+import { pbDateToNum } from '../../utils'
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'
 import { UnreadCount } from './UnreadCount'

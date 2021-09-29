@@ -15,7 +15,7 @@ import {
 } from '@berty-tech/store/services'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
-import { showNeedRestartNotification } from '../helpers'
+import { showNeedRestartNotification } from '../utils'
 
 const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()

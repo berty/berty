@@ -12,7 +12,7 @@ import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
 import { Routes } from '@berty-tech/navigation'
 
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { pbDateToNum, timeFormat } from '../../utils'
 import { UnreadCount } from './UnreadCount'
 import { checkPermissions } from '@berty-tech/components/utils'
 import { RESULTS } from 'react-native-permissions'

@@ -17,7 +17,7 @@ import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import beapi from '@berty-tech/api'
 
 import { usePrevious } from '../hooks'
-import { pbDateToNum } from '../helpers'
+import { pbDateToNum } from '../utils'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,
