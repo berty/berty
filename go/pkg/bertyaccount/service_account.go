@@ -121,8 +121,7 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	var initManager *initutil.Manager
 	{
 		var err error
-		if initManager, err = s.openManager(streams, args...); err != nil {
-			errCleanup()
+		if initManager, err = s.openManager(streams, req.Key, args...); err != nil {
 			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
 	}
@@ -261,6 +260,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
+		Key:           req.Key,
 	}
 	if _, err := s.openAccount(&typed, prog); err != nil {
 		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
@@ -352,7 +352,7 @@ func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithPro
 	return nil
 }
 
-func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...string) (*initutil.Manager, error) {
+func (s *service) openManager(defaultLoggerStreams []logutil.Stream, key string, args ...string) (*initutil.Manager, error) {
 	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
@@ -360,6 +360,9 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 	if err != nil {
 		panic(err)
 	}
+
+	// pass encryption key
+	manager.Key = key
 
 	// configure flagset options
 	fs := flag.NewFlagSet("account", flag.ContinueOnError)
@@ -685,6 +688,7 @@ func (s *service) createAccount(req *accounttypes.CreateAccount_Request, prog *p
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
 		NetworkConfig: req.NetworkConfig,
+		Key:           req.Key,
 	}, prog)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

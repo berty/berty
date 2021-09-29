@@ -1,9 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import { generateSecureRandom } from 'react-native-securerandom'
+import { Buffer } from 'buffer'
 
 import beapi from '@berty-tech/api'
 import { checkPermissions } from '@berty-tech/components/utils'
 
-import { updateShakeAttachments } from './utils'
+import { updateShakeAttachments, FS_KEY_NAME } from './utils'
 import {
 	accountService,
 	GlobalPersistentOptionsKeys,
@@ -136,7 +139,18 @@ export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerA
 			parseInt(preset || '0', 10),
 		)
 
-		resp = await accountService.createAccount({ networkConfig: netConf })
+		let key
+		try {
+			key = await RNSecureKeyStore.get(FS_KEY_NAME)
+		} catch (e) {
+			const randomBytes = await generateSecureRandom(32)
+			key = Buffer.from(randomBytes).toString('base64')
+			await RNSecureKeyStore.set(FS_KEY_NAME, key, {
+				accessible: ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY,
+			})
+		}
+
+		resp = await accountService.createAccount({ networkConfig: netConf, key })
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

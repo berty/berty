@@ -44,3 +44,5 @@ export const updateShakeAttachments = async () => {
 		console.warn('Failed to update shake attachments:', e)
 	}
 }
+
+export const FS_KEY_NAME = 'fs-key'

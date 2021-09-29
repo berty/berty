@@ -108,6 +108,7 @@ export namespace berty {
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    key?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -116,6 +117,7 @@ export namespace berty {
                     public accountId: string;
                     public loggerFilters: string;
                     public networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    public key: string;
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -166,6 +168,7 @@ export namespace berty {
                     args?: (string[]|null);
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
+                    key?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -173,6 +176,7 @@ export namespace berty {
                     public args: string[];
                     public accountId: string;
                     public loggerFilters: string;
+                    public key: string;
                     public static create(properties?: berty.account.v1.OpenAccountWithProgress.IRequest): berty.account.v1.OpenAccountWithProgress.Request;
                     public static encode(message: berty.account.v1.OpenAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -599,6 +603,7 @@ export namespace berty {
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    key?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -608,6 +613,7 @@ export namespace berty {
                     public args: string[];
                     public loggerFilters: string;
                     public networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    public key: string;
                     public static create(properties?: berty.account.v1.CreateAccount.IRequest): berty.account.v1.CreateAccount.Request;
                     public static encode(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

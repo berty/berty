@@ -118,6 +118,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "NetworkConfig",
                         id: 4
+                      },
+                      key: {
+                        type: "string",
+                        id: 5
                       }
                     }
                   },
@@ -146,6 +150,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 3
+                      },
+                      key: {
+                        type: "string",
+                        id: 4
                       }
                     }
                   },
@@ -382,6 +390,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "NetworkConfig",
                         id: 5
+                      },
+                      key: {
+                        type: "string",
+                        id: 6
                       }
                     }
                   },
