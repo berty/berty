@@ -9,11 +9,8 @@ const (
 	typeStd    = "std"
 	typeRing   = "ring"
 	typeFile   = "file"
-	typeTyber  = "tyber"
 	typeCustom = "custom"
 )
-
-const tyberFilters = "*"
 
 type Stream struct {
 	kind        string
@@ -22,7 +19,6 @@ type Stream struct {
 	path        string
 	ring        *zapring.Core
 	sessionKind string
-	tyberHost   string
 	baseLogger  *zap.Logger
 }
 
@@ -62,15 +58,6 @@ func NewFileStream(filters, format, path, sessionKind string) Stream {
 		format:      format,
 		path:        path,
 		sessionKind: sessionKind,
-	}
-}
-
-func NewTyberStream(host string) Stream {
-	return Stream{
-		kind:      typeTyber,
-		filters:   tyberFilters,
-		format:    jsonEncoding,
-		tyberHost: host,
 	}
 }
 

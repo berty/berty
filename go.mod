@@ -18,6 +18,7 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
+	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/daixiang0/gci v0.2.9
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
@@ -51,6 +52,7 @@ require (
 	github.com/ipfs/go-log/v2 v2.3.1-0.20210928212129-b7a50af7847a
 	github.com/ipfs/interface-go-ipfs-core v0.5.2
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
+	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kr/pretty v0.2.1
 	github.com/libp2p/go-libp2p v0.15.1
@@ -80,6 +82,7 @@ require (
 	github.com/oklog/run v1.1.0
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/peterbourgon/ff/v3 v3.0.0
+	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0
 	github.com/pseudomuto/protoc-gen-doc v1.4.1

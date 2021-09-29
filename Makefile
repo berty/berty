@@ -33,6 +33,7 @@ tidy:
 	go mod tidy
 	cd js; go mod tidy
 	cd tool; go mod tidy
+	cd tool/tyber/go; go mod tidy
 .PHONY: tidy
 
 
