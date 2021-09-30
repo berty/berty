@@ -25,7 +25,7 @@ require (
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/eknkc/basex v1.0.1
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
-	github.com/fatih/color v1.11.0
+	github.com/fatih/color v1.13.0
 	github.com/gdamore/tcell v1.4.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.4.0
@@ -115,7 +115,7 @@ require (
 	moul.io/zapconfig v1.4.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.1.0
-	moul.io/zapring v1.3.0
+	moul.io/zapring v1.3.2
 	mvdan.cc/gofumpt v0.1.1
 )
 
