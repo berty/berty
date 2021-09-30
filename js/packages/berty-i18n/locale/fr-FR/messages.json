@@ -85,8 +85,8 @@
         "fifth-bullet-point": "Vous ne pouvez pas retirer un membre de ce groupe"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "La demande a été envoyée. En attente...",
+        "draft": "Brouillon : {{message}}"
       }
     },
     "suggestion-display-name-initial": "Cliquer ici pour ajouter",
@@ -100,8 +100,8 @@
         "desc": "Cliquez ici pour configurer les notifications push"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Réplication P2P",
+        "desc": "Configurer des services de réplication"
       }
     },
     "network-options": {
@@ -117,14 +117,14 @@
         "title": "Mode Anonymat complet",
         "desc": "Cette configuration est basée sur des préréglages radicaux fournissant des paramètres de réseaux extrêmement prudents :",
         "no-ip": "Sans adresse IP",
-        "no-mc": "",
+        "no-mc": "Pas de Bluetooth",
         "tor-only": "Tor uniquement"
       },
       "save": "SAUVEGARDER",
       "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
     "scan": {
-      "title": ""
+      "title": "Scan QR Code"
     }
   },
   "settings": {
@@ -297,11 +297,11 @@
       "system-info-button": "Infos système",
       "debug-button": "Debug",
       "log-button": {
-        "name": "",
+        "name": "Format de log",
         "bullet-point": "Redémarrer l'application après avoir modifié ce champ"
       },
       "log-filters-button": {
-        "name": "",
+        "name": "Filtres de logs",
         "bullet-point": "Redémarrer l'application après avoir modifié ce champ"
       },
       "add-dev-conversations-button": "Ajouter conversations de dev",
@@ -328,8 +328,8 @@
         "test": "Test, ",
         "tried": "✔ Tentative d'envoi aux {{length}} contacts"
       },
-      "trigger-crashlytics-button": "",
-      "tyber-attach": "",
+      "trigger-crashlytics-button": "Déclenchement de crashlytics",
+      "tyber-attach": "Attacher Tyber à {{host}}",
       "tyber-host-button": {
         "name": "Tyber",
         "bullet-point": "Redémarrer l'application après avoir modifié ce champ"
@@ -512,9 +512,9 @@
       "desc": "L'application Berty a besoin de votre autorisation pour vous envoyer des notifications locales ou push. Cela vous permettra d'être informé lorsque vous recevrez un message."
     },
     "p2p": {
-      "title": "",
-      "android-desc": "",
-      "ios-desc": ""
+      "title": "Messagerie Bluetooth",
+      "android-desc": "Pour échanger des messages hors ligne via Bluetooth, même lorsque l'application est en arrière-plan, l'API Android nécessite l'autorisation de localisation. Nous n'utilisons pas vos données de localisation de quelque manière que ce soit.",
+      "ios-desc": "Pour échanger des messages hors ligne via Bluetooth, l'API d’iOS nécessite une autorisation."
     },
     "camera": {
       "title": "Caméra",
@@ -534,7 +534,7 @@
   "notification": {
     "need-restart": {
       "title": "Nécessite le redémarrage de l'application",
-      "desc": ""
+      "desc": "Pour ce type de notification, vous devez redémarrer votre application !"
     }
   },
   "error": {
@@ -605,7 +605,7 @@
         "listing-accounts-failed-grpc": "GPRC Erreur lors du référencement des comptes"
       },
       "dump": {
-        "button": ""
+        "button": "Dump l'état de l'application"
       },
       "refresh": "Actualiser",
       "confirm-alert": {
