@@ -25,11 +25,11 @@ on:
 jobs:
   build:
     name: Build for iOS
-    runs-on: macos-latest
+    runs-on: macos-11
     strategy:
       matrix:
-        golang: ['1.16.x']
-        xcode: ['12.4']
+        golang: ['1.17.x']
+        xcode: ['13.x']
         node: ['14.x']
     steps:
       - name: Checkout
