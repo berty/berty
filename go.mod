@@ -115,7 +115,7 @@ require (
 	moul.io/zapconfig v1.4.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.1.0
-	moul.io/zapring v1.3.0
+	moul.io/zapring v1.3.2
 	mvdan.cc/gofumpt v0.1.1
 )
 
