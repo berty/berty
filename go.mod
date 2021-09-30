@@ -53,7 +53,7 @@ require (
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
-	github.com/kr/pretty v0.2.1
+	github.com/kr/pretty v0.3.0
 	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.10.0
@@ -104,7 +104,7 @@ require (
 	google.golang.org/grpc v1.40.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/square/go-jose.v2 v2.6.0
-	gorm.io/driver/sqlite v1.1.4
+	gorm.io/driver/sqlite v1.1.5
 	gorm.io/gorm v1.21.15
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
@@ -115,7 +115,7 @@ require (
 	moul.io/zapconfig v1.4.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.1.0
-	moul.io/zapring v1.3.0
+	moul.io/zapring v1.3.2
 	mvdan.cc/gofumpt v0.1.1
 )
 
