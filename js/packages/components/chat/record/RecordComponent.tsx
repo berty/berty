@@ -345,6 +345,9 @@ export const RecordComponent: React.FC<{
 						return
 					} else if (permState === MicPermStatus.DENIED || permState === MicPermStatus.UNDEFINED) {
 						setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
+						await checkPermissions('audio', navigate, {
+							isToNavigate: true,
+						})
 						return
 					}
 
