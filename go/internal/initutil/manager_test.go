@@ -204,7 +204,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		manager.SetupLoggingFlags(fs)
 		manager.SetupRemoteNodeFlags(fs)
 		manager.SetupEmptyGRPCListenersFlags(fs)
-		err = fs.Parse([]string{"-node.remote-addr", "127.0.0.1:9097", "-log.filters=", "-log.ring-filters="})
+		err = fs.Parse([]string{"-node.remote-addr", "127.0.0.1:9097", "-store.inmem", "-log.filters=", "-log.ring-filters="})
 		require.NoError(t, err)
 		man2 = manager
 	}

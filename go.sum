@@ -131,12 +131,12 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
-github.com/berty/go-ipfs-repo-afero v1.2.2 h1:7iyA8Aqsr2+xWgRze7By3yXihiHLVlWNi5WotTK7Bp0=
-github.com/berty/go-ipfs-repo-afero v1.2.2/go.mod h1:XtZYOa36vBhGGTA8WNPP48tX5DeeO8K2VinPyeyFST8=
+github.com/berty/go-ipfs-repo-afero v1.2.3 h1:6nMxTEzXhTmuG9V7fTkmWn1Ien2y+J4VgA0yoOxSejI=
+github.com/berty/go-ipfs-repo-afero v1.2.3/go.mod h1:XtZYOa36vBhGGTA8WNPP48tX5DeeO8K2VinPyeyFST8=
 github.com/berty/go-libp2p-rendezvous v0.0.0-20210915133138-7b54d608d83a h1:Z+tFl3qpRAaCY3Oe+05EIqFc6gsOI4lWBRDQDVFi7sY=
 github.com/berty/go-libp2p-rendezvous v0.0.0-20210915133138-7b54d608d83a/go.mod h1:IGO+iSlMdu/2iVPPRetcrpBTMYECBuYR/0gwRZfgj/0=
-github.com/berty/gormfs v1.7.3 h1:w8zdub6p+3uzkQLmewRduZcizuzNtEOPIzzriUheWAE=
-github.com/berty/gormfs v1.7.3/go.mod h1:dMSPAs9jS5byuZxMCe1uMXTpJ/KpjGC926NoYpLm3Zc=
+github.com/berty/gormfs v1.8.0 h1:b1WsyFaxVyla0MNYMN9HfHBH2wFmYhkKjWLKaLDLve0=
+github.com/berty/gormfs v1.8.0/go.mod h1:dMSPAs9jS5byuZxMCe1uMXTpJ/KpjGC926NoYpLm3Zc=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdnnjpJbkM4JQ=
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=

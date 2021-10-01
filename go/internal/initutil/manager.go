@@ -186,6 +186,7 @@ type Manager struct {
 	workers    run.Group // replace by something more accurate
 	mutex      sync.Mutex
 	longHelp   [][2]string
+	db         *gorm.DB
 }
 
 type ManagerOpts struct {
@@ -259,15 +260,22 @@ func (m *Manager) getFs() (afero.Fs, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	dbPath := filepath.Join(m.Datastore.Dir, "fs.db")
-	l.Info("initializing filesystem", zap.String("path", dbPath))
+	if m.Datastore.InMemory {
+		m.db, err = gorm.Open(sqlite.Open(":memory:"))
+		if err != nil {
+			return nil, errcode.ErrDBRead.Wrap(err)
+		}
+	} else {
+		dbPath := filepath.Join(m.Datastore.Dir, "fs.db")
+		l.Info("initializing filesystem", zap.String("path", dbPath))
 
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		m.db, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+		if err != nil {
+			return nil, errcode.ErrDBRead.Wrap(err)
+		}
 	}
 
-	if m.Datastore.Fs, err = gormfs.NewGormFs(db); err != nil {
+	if m.Datastore.Fs, err = gormfs.NewGormFs(m.db); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -328,6 +336,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("close-tinder-service")
 	prog.AddStep("close-ipfs-node")
 	prog.AddStep("close-datastore")
+	prog.AddStep("close-database")
 	prog.AddStep("close-ring")
 	prog.AddStep("cleanup-logging")
 	prog.AddStep("finish")
@@ -390,6 +399,13 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("close-datastore").SetAsCurrent()
 	if m.Datastore.rootDS != nil {
 		m.Datastore.rootDS.Close()
+	}
+
+	prog.Get("close-database").SetAsCurrent()
+	if m.db != nil {
+		if udb, err := m.db.DB(); err == nil {
+			udb.Close()
+		}
 	}
 
 	prog.Get("cleanup-logging").SetAsCurrent()

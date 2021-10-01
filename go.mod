@@ -15,8 +15,8 @@ require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
-	github.com/berty/go-ipfs-repo-afero v1.2.2
-	github.com/berty/gormfs v1.7.3
+	github.com/berty/go-ipfs-repo-afero v1.2.3
+	github.com/berty/gormfs v1.8.0
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
