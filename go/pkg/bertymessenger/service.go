@@ -679,7 +679,7 @@ func (svc *service) ActivateContactGroup(contactPK []byte) error {
 	return svc.ActivateGroup(groupPK)
 }
 
-func (svc *service) SendAck(conversationPK, cid string) error {
+func (svc *service) SendAck(cid, conversationPK string) error {
 	tyber.LogStep(svc.ctx, svc.logger, fmt.Sprintf("Sending acknowledge with target %s on group %s", cid, conversationPK))
 	logError := func(text string, err error) error { return tyber.LogError(svc.ctx, svc.logger, text, err) }
 

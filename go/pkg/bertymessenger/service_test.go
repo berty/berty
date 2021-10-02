@@ -1919,3 +1919,40 @@ func TestReply(t *testing.T) {
 		require.Equal(t, "Test", castedValue.GetBody())
 	}
 }
+
+func TestAck(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	ctx, nodes, logger, clean := Testing1To1ProcessWholeStream(t)
+	defer clean()
+	user := nodes[0]
+	userPK := user.GetAccount().GetPublicKey()
+	friend := nodes[1]
+
+	logger.Info("starting test")
+
+	convPK := friend.GetContact(t, userPK).GetConversationPublicKey()
+	require.NotNil(t, convPK)
+
+	// send message
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	require.NoError(t, err)
+
+	interactRes, err := user.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
+		Payload:               payload,
+		ConversationPublicKey: convPK,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, interactRes.GetCID())
+	time.Sleep(1 * time.Second)
+
+	// check reply interaction in nodes
+	for _, user := range nodes {
+		retrievedInteraction := user.GetInteraction(t, interactRes.GetCID())
+		require.NotNil(t, retrievedInteraction)
+		require.Equal(t, retrievedInteraction.CID, interactRes.CID)
+		require.Equal(t, retrievedInteraction.Acknowledged, true)
+	}
+}
+
