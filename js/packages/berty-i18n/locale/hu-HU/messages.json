@@ -364,7 +364,7 @@
       "save": "",
       "export": "",
       "share": "",
-      "import": ""
+      "import": "Téma fájl importálása"
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -394,11 +394,11 @@
       "devices": "Eszközök"
     },
     "save-theme": {
-      "title": "",
-      "desc": "",
-      "placeholder": "",
+      "title": "Téma mentése",
+      "desc": "Kérjük adjon a témának nevet!",
+      "placeholder": "A téma neve...",
       "cancel": "MÉGSE",
-      "add": ""
+      "add": "Hozzáadás!"
     }
   },
   "chat": {
@@ -512,7 +512,7 @@
       "desc": ""
     },
     "p2p": {
-      "title": "",
+      "title": "Bluetooth beszélgetés",
       "android-desc": "",
       "ios-desc": ""
     },
@@ -521,19 +521,19 @@
       "desc": ""
     },
     "audio": {
-      "title": "",
-      "desc": ""
+      "title": "Hangüzenetek",
+      "desc": "A hangüzenetek küldéséhez engedélyeznie kell a mikrofon használatát."
     },
     "button-labels": {
-      "allow": "",
-      "settings": ""
+      "allow": "Engedélyezni",
+      "settings": "Ugorj a beállításokhoz"
     },
-    "what-happening": "",
+    "what-happening": "Mi folyik itt?",
     "settings-text": ""
   },
   "notification": {
     "need-restart": {
-      "title": "",
+      "title": "Szükséges az applikáció újraindítása",
       "desc": ""
     }
   },
