@@ -2,7 +2,6 @@ package initutil
 
 import (
 	"context"
-	"encoding/hex"
 	"flag"
 	"fmt"
 	"net"
@@ -190,7 +189,6 @@ type Manager struct {
 	mutex      sync.Mutex
 	longHelp   [][2]string
 	db         *gorm.DB
-	key        []byte
 }
 
 type ManagerOpts struct {
@@ -224,7 +222,6 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	m.Logging.FileFilters = "*"
 	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer
-	m.key = []byte("replace_me_with_somehting_secure")
 
 	// generate SessionID using uuidv4 to identify each run
 	m.Session.ID = tyber.NewSessionID()
@@ -271,12 +268,12 @@ func (m *Manager) getFs() (afero.Fs, error) {
 	if m.Datastore.InMemory {
 		l.Info("initializing memory filesystem")
 
-		dbName = fmt.Sprintf(":memory:?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", hex.EncodeToString(m.key))
+		dbName = fmt.Sprintf(":memory:?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", m.Key)
 	} else {
 		dbPath := filepath.Join(m.Datastore.Dir, "fs.db")
 		l.Info("initializing filesystem", zap.String("path", dbPath))
 
-		dbName = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, hex.EncodeToString(m.key))
+		dbName = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, m.Key)
 	}
 
 	m.db, err = gorm.Open(sqlcipher.Open(dbName), conf)

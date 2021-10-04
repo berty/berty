@@ -144,7 +144,7 @@ export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerA
 			key = await RNSecureKeyStore.get(FS_KEY_NAME)
 		} catch (e) {
 			const randomBytes = await generateSecureRandom(32)
-			key = Buffer.from(randomBytes).toString('base64')
+			key = Buffer.from(randomBytes).toString('hex')
 			await RNSecureKeyStore.set(FS_KEY_NAME, key, {
 				accessible: ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY,
 			})
