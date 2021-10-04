@@ -26,6 +26,7 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 	"moul.io/progress"
+	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -263,23 +264,23 @@ func (m *Manager) getFs() (afero.Fs, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if m.Datastore.InMemory {
-		dbname := fmt.Sprintf(":memory:?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", hex.EncodeToString(m.key))
+	conf := &gorm.Config{Logger: zapgorm2.New(l.Named("fsgorm"))}
 
-		m.db, err = gorm.Open(sqlcipher.Open(dbname))
-		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(err)
-		}
+	var dbName string
+	if m.Datastore.InMemory {
+		l.Info("initializing memory filesystem")
+
+		dbName = fmt.Sprintf(":memory:?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", hex.EncodeToString(m.key))
 	} else {
 		dbPath := filepath.Join(m.Datastore.Dir, "fs.db")
 		l.Info("initializing filesystem", zap.String("path", dbPath))
 
-		dbname := fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, hex.EncodeToString(m.key))
+		dbName = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, hex.EncodeToString(m.key))
+	}
 
-		m.db, err = gorm.Open(sqlcipher.Open(dbname), &gorm.Config{})
-		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(err)
-		}
+	m.db, err = gorm.Open(sqlcipher.Open(dbName), conf)
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
 	if m.Datastore.Fs, err = gormfs.NewGormFs(m.db); err != nil {
