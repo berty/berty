@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"log"
 	mrand "math/rand"
-	"net"
-	"net/http"
 	"os"
 	"strings"
 
@@ -21,16 +19,13 @@ import (
 	metrics "github.com/libp2p/go-libp2p-core/metrics"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
-	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
-	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
+
+	// libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
 	"github.com/libp2p/go-libp2p/config"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/collectors"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
@@ -183,7 +178,7 @@ func main() {
 			defer host.Close()
 			logHostInfo(logger, host)
 
-			db, err := libp2p_rpdb.OpenDB(ctx, serveURN)
+			/*db, err := libp2p_rpdb.OpenDB(ctx, serveURN)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -225,7 +220,7 @@ func main() {
 
 			if err = gServe.Run(); err != nil {
 				return errcode.TODO.Wrap(err)
-			}
+			}*/
 			return nil
 		},
 	}

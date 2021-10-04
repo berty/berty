@@ -2,6 +2,7 @@ package ipfsutil
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math/rand"
 	"testing"
@@ -22,7 +23,8 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
-	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
+
+	// p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
 	p2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -185,14 +187,17 @@ func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
 }
 
 func TestingRDVP(ctx context.Context, t testing.TB, h host.Host) (*rendezvous.RendezvousService, func()) {
-	db, err := p2p_rpdb.OpenDB(ctx, ":memory:")
+	require.NoError(t, errors.New("rdvp is disabled"))
+
+	/*db, err := p2p_rpdb.OpenDB(ctx, ":memory:")
 	require.NoError(t, err)
 
 	svc := rendezvous.NewRendezvousService(h, db)
 	cleanup := func() {
 		_ = db.Close() // dont use me for now as db is open in_memory
 	}
-	return svc, cleanup
+	return svc, cleanup*/
+	return nil, nil
 }
 
 type coreAPIMock struct {
