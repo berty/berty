@@ -37,7 +37,7 @@
       "header": "Hitelesítés a szolgáltatásokhoz",
       "title": "Szolgáltatások",
       "recommended": "Ajánlott",
-      "desc": "",
+      "desc": "Ez automatikusan másolni fogja a beszélgetéseit egy szerverre",
       "button": "Használja a Berty szolgáltatásait",
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
@@ -59,7 +59,7 @@
         "card-title": "Kapcsolat felkérések!"
       },
       "input-placeholder": "Kulcsszó kereséshez",
-      "no-contacts": "",
+      "no-contacts": "Még nincsenek ismerősei sem beszélgetései",
       "search": {
         "no-results": "Nincs találat"
       },
@@ -78,15 +78,15 @@
       "create-group-finalize": {
         "placeholder": "Csoport neve",
         "about": "Csoport névjegye",
-        "first-bullet-point": "",
+        "first-bullet-point": "Bárki a csoportban kiküldhet meghívásokat vagy átnevezheti a csoportot",
         "second-bullet-point": "Linken keresztül hívhat meg tagokat",
         "third-bullet-point": "Elhagyhatja ezt a csoportot",
         "fourth-bullet-point": "Nem törheti ezt a csoportot",
-        "fifth-bullet-point": ""
+        "fifth-bullet-point": "Nem dobhat ki egy csoporttagot ebből a csoportból"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "Kérelem továbbítva. Várakozás...",
+        "draft": "Vázlat: {{message}}"
       }
     },
     "suggestion-display-name-initial": "Kattintson ide a hozzáadáshoz",
@@ -100,8 +100,8 @@
         "desc": "Kattintson ide a felugró értesítések beállításához"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "P2P replikáció",
+        "desc": "Replikációs szolgáltatások beállítása"
       }
     },
     "network-options": {
@@ -111,11 +111,11 @@
       "allow-expert-mode": "Szakértői mód engedélyezése",
       "tor-compatible": {
         "title": "TOR kompatibilítás",
-        "desc": ""
+        "desc": "Ennek a beállításnak köszönhetően kapcsolódhat a Tor hálózathoz és beszélgethet teljesen névtelen felhasználókkal anélkül, hogy maga is teljesen névtelen módban legyen."
       },
       "full-anon": {
         "title": "Teljesen névtelen mód",
-        "desc": "",
+        "desc": "Ez a konfiguráció radikális beállításokra alapszik és rendkívül elővigyázatos hálozati paramétereket biztosít:",
         "no-ip": "Nincs ip",
         "no-mc": "Nincs mc",
         "tor-only": "Csak Tor"
@@ -124,7 +124,7 @@
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "scan": {
-      "title": ""
+      "title": "QR kód másolása"
     }
   },
   "settings": {
@@ -141,7 +141,7 @@
     },
     "mode": {
       "title": "Beállítások",
-      "desc": "",
+      "desc": "Szabja testre az alkalmazást igényeihez igazítva",
       "notification-file-saved": {
         "title": "Adatok elmentve!",
         "desc": "Elérhető a letöltések mappában"
@@ -167,7 +167,7 @@
       "receive-contact-requests-button": "Fogadott kapcsolati kérések",
       "external-services-button": "Külső szolgáltatások",
       "auto-replicate-button": "Automatikus megismétlés",
-      "auto-replicate-button-unavailable": "",
+      "auto-replicate-button-unavailable": "Először kötelező legalább egy replikációs szerver beállítása",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Helyi Peer felfedezés"
@@ -271,7 +271,7 @@
       "top-left-button": "Privát & Biztonságos",
       "top-right-button": "Peer to peer hálózat",
       "bottom-left-button": "Nincs szükség mobiladatokra",
-      "bottom-right-button": "",
+      "bottom-right-button": "Nem sükséges megbízni a hálozatban",
       "terms-button": "Felhasználási feltételek",
       "privacy-button": "Adatvédelmi irányelvek",
       "software-button": "Szoftver licenc",
@@ -298,13 +298,13 @@
       "debug-button": "Hibakeresés",
       "log-button": {
         "name": "Naplózás formázása",
-        "bullet-point": ""
+        "bullet-point": "Módosítás után indítsa újra az alkalmazást"
       },
       "log-filters-button": {
         "name": "Napló szűrők",
-        "bullet-point": ""
+        "bullet-point": "Módosítás után indítsa újra az alkalmazást"
       },
-      "add-dev-conversations-button": "",
+      "add-dev-conversations-button": "Fejlesztői beszélgetés hozzáadása",
       "share-button": {
         "title": "ID megosztása Discordon",
         "alert-title": "Meg szeretné osztani QR-kódját a \"# dev-logs\"-al a Berty Discord szerveren?",
@@ -331,8 +331,8 @@
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
       "tyber-host-button": {
-        "name": "",
-        "bullet-point": ""
+        "name": "Tyber",
+        "bullet-point": "Módosítás után indítsa újra az alkalmazást"
       },
       "footer-left-button": "Eszköz információk",
       "footer-middle-button": "Események listája",
@@ -344,12 +344,12 @@
     "fake-data": {
       "title": "Hamis információ készítése",
       "contacts-button": "Hamis kontaktok készítése",
-      "multi-members-button": "",
+      "multi-members-button": "Álfelhasználók generálása csoportbeszélgetésekben",
       "messages-button": "Hamis beszélgetés készítése",
       "delete-button": "Hamis információ törlése"
     },
     "add-dev-conversations": {
-      "title": "",
+      "title": "Fejlesztői beszélgetés hozzáadása",
       "add": "{{name}} hozzáadása",
       "tag-bot": "Bot",
       "tag-contact": "Kapcsolat",
@@ -359,11 +359,11 @@
       "title": "IPFS WebUI"
     },
     "theme-editor": {
-      "title": "",
-      "randomize": "",
-      "save": "",
-      "export": "",
-      "share": "",
+      "title": "Téma testreszabása",
+      "randomize": "Téma generálása",
+      "save": "Téma mentése",
+      "export": "Téma mentése mint fájl (exportálásra)",
+      "share": "Téma megosztása mint fájl",
       "import": "Téma fájl importálása"
     },
     "my-berty-ID": {
@@ -491,7 +491,7 @@
     },
     "reply": {
       "response-to": "Válasz neki",
-      "replying-to": "",
+      "replying-to": "Válasz neki:",
       "replied-to": "Válaszolt neki"
     }
   },
@@ -508,17 +508,17 @@
   },
   "permission": {
     "notification": {
-      "title": "",
-      "desc": ""
+      "title": "Push értesítések",
+      "desc": "Berty-nek szükesége van az engedélyére, hogy helyi vagy push értesítéseket küldjön. Így értesül majd új üzenetk érkezéséről."
     },
     "p2p": {
       "title": "Bluetooth beszélgetés",
       "android-desc": "",
-      "ios-desc": ""
+      "ios-desc": "Az internet nélküli, Bluetoothon keresztül való kommunikáláshoz, az iOS API-nak szüksége van az engedélyére."
     },
     "camera": {
       "title": "Kamera",
-      "desc": ""
+      "desc": "Ismerősök QR kód bemásolással való hozzáadásához Berty-nek engedélyezni kell a kamera használatát. A kamera semmi másra nem alkalmazható."
     },
     "audio": {
       "title": "Hangüzenetek",
@@ -529,12 +529,12 @@
       "settings": "Ugorj a beállításokhoz"
     },
     "what-happening": "Mi folyik itt?",
-    "settings-text": ""
+    "settings-text": "A Beállítások menüből engedélyezheti a {{title}}."
   },
   "notification": {
     "need-restart": {
       "title": "Szükséges az applikáció újraindítása",
-      "desc": ""
+      "desc": "A beállítások mentéséhez szükségeltetik az applikáció újraindítása!"
     }
   },
   "error": {
@@ -565,9 +565,9 @@
         "unsupported-remote-mode": "A fiókellenőr távoli módban nem támogatott",
         "data-not-found": "A fiók nem szerepel a listán",
         "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
+          "file-exists": "A {{accountId}} nevű fiók nem található, de létezik egy ilyen nevű fájl.",
+          "account-exists": "Már létezik fiók {{accountId}} néven.",
+          "directory-exists-load-error": "A {{accountId}} nevű fiók nem található, de létezik egy ilyen nevű mappa.",
           "fs-read-error": "Hiba történt a fiókkal kapcsolatos FS-információk lekérésekor",
           "actions-title": "Mit kellene tennünk?",
           "action-account-manager": "Törlés a fiókkezelővel",
