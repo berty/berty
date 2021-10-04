@@ -29,7 +29,7 @@ import (
 )
 
 func TestPushDecryptStandalone(t *testing.T) {
-	//t.Skip("Push token is frequently not received by the second member, while running the whole test suite error while accepting the request")
+	testutil.FilterStability(t, testutil.Unstable)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
