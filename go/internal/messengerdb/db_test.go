@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mattn/go-sqlite3"
+	sqlite3 "github.com/mutecomm/go-sqlcipher/v4"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
@@ -1291,7 +1291,7 @@ func Test_dropAllTables(t *testing.T) {
 }
 
 func Test_isSQLiteError(t *testing.T) {
-	require.False(t, isSQLiteError(nil, sqlite3.ErrConstraint))
+	require.False(t, isSQLiteError(nil, sqlite3.ErrConstraint)))
 	require.False(t, isSQLiteError(fmt.Errorf("err"), sqlite3.ErrConstraint))
 	require.False(t, isSQLiteError(fmt.Errorf("err: %v", sqlite3.ErrConstraint), sqlite3.ErrConstraint))
 	require.True(t, isSQLiteError(sqlite3.Error{Code: sqlite3.ErrConstraint}, sqlite3.ErrConstraint))

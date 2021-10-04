@@ -2,6 +2,7 @@ package initutil
 
 import (
 	"context"
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"net"
@@ -12,6 +13,7 @@ import (
 	"time"
 
 	"github.com/berty/gormfs"
+	sqlcipher "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
@@ -22,7 +24,6 @@ import (
 	"github.com/spf13/afero"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/progress"
 	"moul.io/zapring"
@@ -187,6 +188,7 @@ type Manager struct {
 	mutex      sync.Mutex
 	longHelp   [][2]string
 	db         *gorm.DB
+	key        []byte
 }
 
 type ManagerOpts struct {
@@ -220,6 +222,7 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	m.Logging.FileFilters = "*"
 	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer
+	m.key = []byte("replace_me_with_somehting_secure")
 
 	// generate SessionID using uuidv4 to identify each run
 	m.Session.ID = tyber.NewSessionID()
@@ -261,7 +264,9 @@ func (m *Manager) getFs() (afero.Fs, error) {
 	}
 
 	if m.Datastore.InMemory {
-		m.db, err = gorm.Open(sqlite.Open(":memory:"))
+		dbname := fmt.Sprintf(":memory:?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", hex.EncodeToString(m.key))
+
+		m.db, err = gorm.Open(sqlcipher.Open(dbname))
 		if err != nil {
 			return nil, errcode.ErrDBRead.Wrap(err)
 		}
@@ -269,7 +274,9 @@ func (m *Manager) getFs() (afero.Fs, error) {
 		dbPath := filepath.Join(m.Datastore.Dir, "fs.db")
 		l.Info("initializing filesystem", zap.String("path", dbPath))
 
-		m.db, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+		dbname := fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, hex.EncodeToString(m.key))
+
+		m.db, err = gorm.Open(sqlcipher.Open(dbname), &gorm.Config{})
 		if err != nil {
 			return nil, errcode.ErrDBRead.Wrap(err)
 		}

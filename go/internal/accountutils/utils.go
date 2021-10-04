@@ -9,13 +9,13 @@ import (
 	"path/filepath"
 
 	badger_opts "github.com/dgraph-io/badger/options"
+	sqlcipher "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	ipfsbadger "github.com/ipfs/go-ds-badger"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
@@ -200,7 +200,7 @@ func GetMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), er
 		Logger:                                   zapgorm2.New(logger.Named("gorm")),
 		DisableForeignKeyConstraintWhenMigrating: true,
 	}
-	db, err := gorm.Open(sqlite.Open(sqliteConn), cfg)
+	db, err := gorm.Open(sqlcipher.Open(sqliteConn), cfg)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}

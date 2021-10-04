@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	sqlcipher "github.com/flyingtime/gorm-sqlcipher"
 	"go.uber.org/zap"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/testutil"
@@ -42,7 +42,7 @@ func GetInMemoryTestDB(t testing.TB, opts ...GetInMemoryTestDBOpts) (*DBWrapper,
 		}
 	}
 
-	db, err := gorm.Open(sqlite.Open(fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
+	db, err := gorm.Open(sqlcipher.Open(fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {

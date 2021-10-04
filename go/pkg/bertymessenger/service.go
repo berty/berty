@@ -13,11 +13,11 @@ import (
 	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
+	sqlcipher "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"
@@ -92,7 +92,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 		opts.Logger.Warn("Messenger started without database, creating a volatile one in memory")
 		zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
 		zapLogger.SetAsDefault()
-		db, err := gorm.Open(sqlite.Open(fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
+		db, err := gorm.Open(sqlcipher.Open(fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
 			Logger:                                   zapLogger,
 			DisableForeignKeyConstraintWhenMigrating: true,
 		})

@@ -3,8 +3,8 @@ package messengerdb
 import (
 	"fmt"
 
+	sqlcipher "github.com/flyingtime/gorm-sqlcipher"
 	"go.uber.org/multierr"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -54,7 +54,7 @@ func dropAllTables(db *gorm.DB) error {
 }
 
 func getExpectedDBSchemaForModels(models []interface{}) (map[string][]*ColumnInfo, error) {
-	db, err := gorm.Open(sqlite.Open("file:schema_compare?mode=memory&cache=shared"), &gorm.Config{
+	db, err := gorm.Open(sqlcipher.Open("file:schema_compare?mode=memory&cache=shared"), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {
