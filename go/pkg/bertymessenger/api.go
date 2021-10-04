@@ -237,10 +237,7 @@ func (svc *service) autoReplicateContactGroupOnAllServers(contactPK []byte) {
 		return
 	}
 
-	if _, err := svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{
-		GroupPK:   groupPK,
-		LocalOnly: false,
-	}); err != nil {
+	if err := svc.ActivateGroup(groupPK); err != nil {
 		return
 	}
 
@@ -603,8 +600,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 
 	// activate group
 	{
-		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: pk})
-		if err != nil {
+		if err := svc.ActivateGroup(pk); err != nil {
 			svc.logger.Warn("failed to activate group", zap.String("pk", pkStr))
 		}
 	}
@@ -730,8 +726,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 
 	// activate group
 	{
-		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
-		if err != nil {
+		if err := svc.ActivateGroup(gpkb); err != nil {
 			svc.logger.Warn("failed to activate group", zap.String("pk", messengerutil.B64EncodeBytes(gpkb)))
 		}
 	}
