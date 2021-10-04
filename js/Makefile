@@ -358,6 +358,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	mkdir -p ios/Frameworks
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
+		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		GO111MODULE=on ANDROID_HOME= ANDROID_NDK_HOME= \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
