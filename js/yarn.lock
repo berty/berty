@@ -8439,10 +8439,10 @@ react-native-crypto@^2.0.1:
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
 
-react-native-document-picker@^5.2.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-5.3.0.tgz#90f53def42d87a316b76311c729ba401c2823ffa"
-  integrity sha512-vFw9pHJywEY+xeMGM8LgfZYMw12bXQNi8vf2DblFLh11lSLf6J99nZweAGVDB8Va+Fg6CP+nLfWG2bWgL4XmMw==
+react-native-document-picker@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-6.1.1.tgz#5ae72d489ea6d04f8325802570b1e24fc2c30a66"
+  integrity sha512-WcmPR/z+8dlPRqMCd+LwFXv9S/Q1gihf2lj/X2BVRxqQzQ+UEGo9mXjxcYB7mWKDkAqYS1MjdBcbfDycmTSs/A==
   dependencies:
     invariant "^2.2.4"
 
