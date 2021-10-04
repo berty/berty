@@ -126,19 +126,6 @@ export const MessageList: React.FC<{
 	)
 	const updateStickyDateCB = useCallback(() => updateStickyDate(setStickyDate), [setStickyDate])
 
-	useEffect(
-		() =>
-			fetchMore({
-				setFetchingFrom,
-				setFetchedFirst,
-				fetchingFrom: null,
-				fetchedFirst: false,
-				client: ctx.client,
-				convPk: id,
-			}),
-		[ctx.client, id],
-	)
-
 	useEffect(() => {
 		return () => {
 			if (fetchingFrom !== oldestMessage?.cid) {
