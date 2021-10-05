@@ -71,7 +71,7 @@ export const MessageList: React.FC<{
 	const oldestMessage = useMemo(() => messages[messages.length - 1], [messages])
 
 	const [fetchingFrom, setFetchingFrom] = useState<string | null>(null)
-	const [fetchedFirst, setFetchedFirst] = useState(false)
+	const [fetchedFirst, setFetchedFirst] = useState(rawMessages.length === 0)
 	const BeginningOfTimeComponent =
 		conversation?.type === beapi.messenger.Conversation.Type.ContactType
 			? InfosChat
