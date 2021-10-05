@@ -463,7 +463,7 @@ func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conve
 	conversation := &messengertypes.Conversation{}
 
 	if err := d.db.
-		Joins("ReplyOptions").
+		Joins("ReplyOptions", d.db.Select("cid").Where("cid = conversations.reply_options_cid").Model(&messengertypes.Interaction{})).
 		Preload("ReplicationInfo").
 		First(
 			&conversation,
@@ -496,7 +496,7 @@ func (d *DBWrapper) GetMemberByPK(publicKey string, convPK string) (*messengerty
 func (d *DBWrapper) GetAllConversations() ([]*messengertypes.Conversation, error) {
 	convs := []*messengertypes.Conversation(nil)
 
-	return convs, d.db.Joins("ReplyOptions").Preload("ReplicationInfo").Find(&convs).Error
+	return convs, d.db.Joins("ReplyOptions", d.db.Select("cid").Where("cid = conversations.reply_options_cid").Model(&messengertypes.Interaction{})).Preload("ReplicationInfo").Find(&convs).Error
 }
 
 func (d *DBWrapper) GetAllMembers() ([]*messengertypes.Member, error) {

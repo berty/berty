@@ -738,6 +738,15 @@ func Test_dbWrapper_getAllConversations(t *testing.T) {
 	conversations, err = db.GetAllConversations()
 	require.NoError(t, err)
 	require.Len(t, conversations, 3)
+
+	db.db.Create(&messengertypes.Interaction{CID: "cid1", ConversationPublicKey: "pk1"})
+	db.db.Create(&messengertypes.Interaction{CID: "cid2", ConversationPublicKey: "pk1"})
+	db.db.Create(&messengertypes.Interaction{CID: "cid3", ConversationPublicKey: "pk1"})
+	db.db.Create(&messengertypes.Interaction{CID: "cid4", ConversationPublicKey: "pk1"})
+
+	conversations, err = db.GetAllConversations()
+	require.NoError(t, err)
+	require.Len(t, conversations, 3)
 }
 
 func Test_dbWrapper_getAllInteractions(t *testing.T) {
@@ -948,6 +957,29 @@ func Test_dbWrapper_getConversationByPK(t *testing.T) {
 	require.Equal(t, "conversation_1", conversation.PublicKey)
 	require.NotEmpty(t, conversation.ReplicationInfo)
 	require.Equal(t, "cid_1", conversation.ReplicationInfo[0].CID)
+	require.Nil(t, conversation.ReplyOptions)
+
+	require.NoError(t, db.db.Create(&messengertypes.Interaction{
+		CID:                   "cid_2",
+		ConversationPublicKey: "conversation_1",
+	}).Error)
+	require.NoError(t, db.db.Updates(&messengertypes.Conversation{PublicKey: "conversation_1", ReplyOptionsCID: "cid_2"}).Error)
+
+	conversation, err = db.GetConversationByPK("conversation_1")
+	require.NoError(t, err)
+	require.NotNil(t, conversation)
+	require.Equal(t, "conversation_1", conversation.PublicKey)
+	require.NotNil(t, conversation.ReplyOptions)
+	require.Equal(t, "cid_2", conversation.ReplyOptionsCID)
+	require.Equal(t, "cid_2", conversation.ReplyOptions.CID)
+
+	db.db.Create(&messengertypes.Conversation{PublicKey: "conversation_2"})
+	conversation, err = db.GetConversationByPK("conversation_2")
+	require.NoError(t, err)
+	require.NotNil(t, conversation)
+	require.Equal(t, "conversation_2", conversation.PublicKey)
+	require.Nil(t, conversation.ReplyOptions)
+	require.Empty(t, conversation.ReplyOptionsCID)
 }
 
 func Test_dbWrapper_getDBInfo(t *testing.T) {

@@ -1955,4 +1955,3 @@ func TestAck(t *testing.T) {
 		require.Equal(t, retrievedInteraction.Acknowledged, true)
 	}
 }
-

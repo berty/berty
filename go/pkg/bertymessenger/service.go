@@ -659,7 +659,7 @@ func (svc *service) ActivateGroup(groupPK []byte) error {
 	}
 
 	// subscribe to group
-	if err := svc.subscribeToGroup(context.Background(), groupPK); err != nil {
+	if err := svc.subscribeToGroup(svc.ctx, groupPK); err != nil {
 		return err
 	}
 
