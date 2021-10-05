@@ -1,11 +1,4 @@
-<<<<<<< HEAD
 2d9766331a89161b7fbdcd0975bc94dff9b3b0d8  ../api/protocoltypes.proto
 c3f9f605177d9d30fd1a5a1034c371d3be4f74b4  Makefile
 dc0d6675e66f41c00b859ce42d5e4448b040cfb9  ../api/messengertypes.proto
 de0c5df6f27199cca92dc6c71af408eed7a67d1f  ../api/accounttypes.proto
-=======
-0f549f2f748820eeecb2ec81ef1cf10939b4dc77  ../api/messengertypes.proto
-7b3da12b6b0bec9044951bf8d535b96868fc1548  ../api/protocoltypes.proto
-e848f186f6ce6e8977525db267fd903f2f67692d  ../api/bertyaccount.proto
-fd506cfde0c77f28e333fa7e53b3be20b98edb63  Makefile
->>>>>>> 7adca8368 (feat: refactor tyber streaming to be asynchronous)
