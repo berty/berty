@@ -388,9 +388,9 @@ ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Be
 	touch $@
 
 ios/vendor/xcodegen: ios/XcodeGen.version
-	$(call check-program, wget unzip)
+	$(call check-program, curl unzip)
 	mkdir -p $(TMP)/xcodegen_dl
-	wget https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip -O $(TMP)/xcodegen_dl/xcodegen.zip
+	curl -L https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip > $(TMP)/xcodegen_dl/xcodegen.zip
 	unzip $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
 	mkdir -p $@
 	cp -rf $(TMP)/xcodegen_dl/*/* $@
