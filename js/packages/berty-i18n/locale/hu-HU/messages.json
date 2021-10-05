@@ -59,7 +59,7 @@
         "card-title": "Kapcsolat felkérések!"
       },
       "input-placeholder": "Kulcsszó kereséshez",
-      "no-contacts": "Még nincsenek ismerősei sem beszélgetései",
+      "no-contacts": "Egyenlőre nincsenek ismerősei sem beszélgetései",
       "search": {
         "no-results": "Nincs találat"
       },
@@ -124,7 +124,7 @@
       "skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
     },
     "scan": {
-      "title": "QR kód másolása"
+      "title": "QR-kód másolása"
     }
   },
   "settings": {
@@ -326,7 +326,7 @@
         "title": "Üzenetek küldése minden kontaktnak",
         "sending": "Küldés...",
         "test": "Teszt, ",
-        "tried": ""
+        "tried": "✔ {{length}} ismerősnek próbálkozott elküldeni"
       },
       "trigger-crashlytics-button": "",
       "tyber-attach": "",
@@ -513,12 +513,12 @@
     },
     "p2p": {
       "title": "Bluetooth beszélgetés",
-      "android-desc": "",
+      "android-desc": "A hálózat nélküli Bluetooth-on keresztül, az alkalmazás háttérbehelyezésekor történő üzenetváltáshoz az Android API-nak szüksége van a lokalizáció használatának egedélyezésére. Elhelyezkedési adatait nem használjuk.",
       "ios-desc": "Az internet nélküli, Bluetoothon keresztül való kommunikáláshoz, az iOS API-nak szüksége van az engedélyére."
     },
     "camera": {
       "title": "Kamera",
-      "desc": "Ismerősök QR kód bemásolással való hozzáadásához Berty-nek engedélyezni kell a kamera használatát. A kamera semmi másra nem alkalmazható."
+      "desc": "Ismerősök QR−kód bemásolással való hozzáadásához Berty-nek engedélyezni kell a kamera használatát. A kamera semmi másra nem alkalmazható."
     },
     "audio": {
       "title": "Hangüzenetek",
