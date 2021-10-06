@@ -120,8 +120,6 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 }
 
 func TestReplicationService_Flow(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
-
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 	ctx, cancel := context.WithCancel(context.Background())
@@ -200,17 +198,24 @@ func TestReplicationService_Flow(t *testing.T) {
 	groupReplicable, err := gA.FilterForReplication()
 	require.NoError(t, err)
 
+	t.Log(" --- Register group on replication service ---")
+
 	// TODO: handle auth
 	_, err = replPeer.Service.ReplicateGroup(ctx, &protocoltypes.ReplicationServiceReplicateGroup_Request{
 		Group: groupReplicable,
 	})
 	require.NoError(t, err)
 
+	t.Log(" --- Registered group on replication service ---")
+	t.Log(" --- Sending sync messages ---")
+
 	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"), nil)
 	require.NoError(t, err)
 
 	_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"), nil)
 	require.NoError(t, err)
+
+	t.Log(" --- Sent sync messages ---")
 
 	time.Sleep(time.Millisecond * 250)
 
@@ -230,16 +235,26 @@ func TestReplicationService_Flow(t *testing.T) {
 	odb2.Close()
 	cleanupAPI2()
 
+	t.Log(" --- Closed peer 2 ---")
+	t.Log(" --- Sending async messages ---")
+
 	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 2"), nil)
 	require.NoError(t, err)
 
 	time.Sleep(time.Millisecond * 250)
 
+	t.Log(" --- Sent async messages, should be replicated on service ---")
+
 	odb1.Close()
 	cleanupAPI1()
 
+	t.Log(" --- Closed peer 1 ---")
+
+
 	api2, cleanupAPI2 = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
 	defer cleanupAPI2()
+
+	t.Log(" --- Opening peer 2, and its db ---")
 
 	odb2 = newTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
 	defer odb2.Close()
@@ -247,13 +262,17 @@ func TestReplicationService_Flow(t *testing.T) {
 	err = mn.LinkAll()
 	require.NoError(t, err)
 
+	g2a, err = odb2.openGroup(ctx, gA, nil)
+	require.NoError(t, err)
+
+	time.Sleep(1000 * time.Millisecond)
+
+	t.Log(" --- Waited for peer 2 to replicate data ---")
+
 	evts2, err = g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
 	ops2 = testFilterAppMetadata(t, evts2)
 	require.NoError(t, err)
 
 	assert.Equal(t, 3, len(ops2))
-
-	g2a, err = odb2.openGroup(ctx, gA, nil)
-	require.NoError(t, err)
 }
