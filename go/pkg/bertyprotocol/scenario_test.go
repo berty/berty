@@ -275,7 +275,7 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 }
 
 func TestScenario_ReplicateMessage(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
 	ctx, cancel, mn, rdvPeer := testHelperIPFSSetUp(t)
 	defer cancel()
@@ -303,6 +303,9 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	defer cancel()
 
 	err := mn.LinkAll()
+	require.NoError(t, err)
+
+	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
 
 	for _, net := range mn.Nets() {
@@ -357,6 +360,8 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	time.Sleep(time.Millisecond * 250)
+
 	closeNodeB()
 
 	_, err = nodeA.Service.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
@@ -374,6 +379,12 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
 	}, dsB)
 	defer closeNodeB()
+
+	err = mn.LinkAll()
+	require.NoError(t, err)
+
+	err = mn.ConnectAllButSelf()
+	require.NoError(t, err)
 
 	_, err = nodeB.Service.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 		GroupPK: group.PublicKey,
