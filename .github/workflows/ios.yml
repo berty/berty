@@ -25,13 +25,24 @@ on:
 jobs:
   build:
     name: Build for iOS
-    runs-on: macos-11
+    runs-on: ${{ matrix.runner.labels }}
     strategy:
       matrix:
+        runner: [
+          { name: "GitHub macOS 11", labels: ["macos-11"], selfhosted: false },
+          { name: "DC4 macOS 11", labels: ["self-hosted", "dc4"], selfhosted: true },
+        ]
         golang: ['1.17.x']
         xcode: ['13.x']
         node: ['16.x']
     steps:
+      - name: Pre-checkout cleanup
+        if: ${{ matrix.runner.selfhosted }}
+        run: |
+          if [ -d js/ios/.gomobile-cache ]; then
+            mv js/ios/.gomobile-cache $RUNNER_TEMP/.gomobile-cache
+          fi
+
       - name: Checkout
         uses: actions/checkout@v2.3.4
         with:
@@ -39,10 +50,29 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
+      - name: Post-checkout cleanup
+        if: ${{ matrix.runner.selfhosted }}
+        run: |
+          if [ -d $RUNNER_TEMP/.gomobile-cache ]; then
+            mv $RUNNER_TEMP/.gomobile-cache js/ios/.gomobile-cache
+          fi
+
       - name: Setup XCode
+        if: ${{ !matrix.runner.selfhosted }}
+        # disabled on self-hosted because it requires authentication
         uses: maxim-lobanov/setup-xcode@v1.3.0
         with:
           xcode-version: ${{ matrix.xcode }}
+
+      #- name: Setup Ruby
+      #  uses: ruby/setup-ruby@v1
+      #  env:
+      #    # Needs to be set up for self-hosted runners, see:
+      #    # https://github.com/ruby/setup-ruby#using-self-hosted-runners
+      #    # Image used in runners: summerwind/actions-runner
+      #    ImageOS: macos11
+      #  with:
+      #    ruby-version: 3.0
 
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -53,6 +83,15 @@ jobs:
         uses: actions/setup-node@v2.4.1
         with:
           node-version: ${{ matrix.node }}
+
+      - name: Setup Bundler
+        if: ${{ matrix.runner.selfhosted }}
+        working-directory: ./js/ios
+        run: |
+          gem --version
+          gem install bundler --user-install
+          bundler -v
+          bundle update --bundler
 
       - name: Cache Go modules
         uses: actions/cache@v2.1.6
@@ -109,20 +148,41 @@ jobs:
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
         run: |
-          security create-keychain -p "dummypass" dummy.keychain
-          security default-keychain -s dummy.keychain
-          security unlock-keychain -p "dummypass" dummy.keychain
-          security set-keychain-settings dummy.keychain
-          security import berty-dummy.p12 -t priv -f pkcs12 -P "dummypass" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" dummy.keychain
+          set -x
+          KEYCHAIN_PATH=$RUNNER_TEMP/dummy.keychain
+
+          security create-keychain -p "dummypass" $KEYCHAIN_PATH
+          security default-keychain -s $KEYCHAIN_PATH
+          security unlock-keychain -p "dummypass" $KEYCHAIN_PATH
+          security set-keychain-settings $KEYCHAIN_PATH
+          security import berty-dummy.p12 -t priv -f pkcs12 -P "dummypass" -T /usr/bin/codesign -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" $KEYCHAIN_PATH
 
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env.prod >> js/.env
 
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install iOS app deps (node_modules)
+        working-directory: js
+        run: make node_modules
+
+      - name: Install iOS app deps (gomobile)
+        working-directory: js
+        run: make ios.gomobile
+
+      - name: Install iOS app deps (XCode Workspace)
+        working-directory: js
+        run: make ios.project
+
+      - name: Install iOS app deps (other)
+        working-directory: js
+        run: make ios.app_deps
+
       - name: Build the Archive
         working-directory: js
         run: |
-          make ios.app_deps
           xcodebuild archive \
                 CODE_SIGN_IDENTITY="" \
                 CODE_SIGNING_ALLOWED=NO \
@@ -131,13 +191,17 @@ jobs:
                 -workspace ios/Berty.xcworkspace \
                 -scheme "Berty Yolo" \
                 -sdk iphoneos \
-                -archivePath /tmp/Berty.xcarchive
-          for lib in /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app/Frameworks/*.dylib; do
+                -archivePath $RUNNER_TEMP/Berty.xcarchive
+
+      - name: Patch and sign the Archive
+        working-directory: js
+        run: |
+          for lib in $RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty\ Yolo.app/Frameworks/*.dylib; do
             lipo -remove armv7 -remove armv7s "$lib" -output "$lib"
           done
-          codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
+          codesign -fs "Berty Dummy" $RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
           mkdir Payload
-          mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
+          mv $RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
           zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
 
       - name: Upload the Archive
@@ -150,4 +214,4 @@ jobs:
 #      - name: Check Podfile.lock diff
 #        run: |
 #          set -euo pipefail -o xtrace
-#          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee /tmp/berty-podfile.diff) ]]; then cat /tmp/berty-podfile.diff && false; fi
+#          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee $RUNNER_TEMP/berty-podfile.diff) ]]; then cat $RUNNER_TEMP/berty-podfile.diff && false; fi
