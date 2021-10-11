@@ -2,17 +2,18 @@ package accountutils
 
 import (
 	crand "crypto/rand"
+	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 
-	badger_opts "github.com/dgraph-io/badger/options"
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	ipfsbadger "github.com/ipfs/go-ds-badger"
+	sqlds "github.com/ipfs/go-ds-sql"
+	pgqueries "github.com/ipfs/go-ds-sql/postgres"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 	"gorm.io/driver/sqlite"
@@ -156,36 +157,45 @@ func GetDatastoreDir(dir string) (string, error) {
 	return dir, nil
 }
 
-func GetRootDatastoreForPath(dir string, lowMemoryProfile bool, logger *zap.Logger) (datastore.Batching, error) {
-	var err error
+func GetRootDatastoreForPath(dir string, logger *zap.Logger) (datastore.Batching, error) {
 	inMemory := dir == InMemoryDir
 
 	var ds datastore.Batching
 	if inMemory {
 		ds = datastore.NewMapDatastore()
 	} else {
-		opts := ipfsbadger.DefaultOptions
-		if lowMemoryProfile {
-			applyBadgerLowMemoryProfile(logger, &opts)
+		const tableName = "blocks"
+
+		// Open database
+		// key := "DEADBEEF51E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
+		dbPath := filepath.Join(dir, "datastore.sqlite")
+		// dbURL := fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, key)
+		dbURL := dbPath
+		db, err := sql.Open("sqlite3", dbURL)
+		if err != nil {
+			return nil, errcode.ErrDBOpen.Wrap(err)
 		}
 
-		ds, err = ipfsbadger.NewDatastore(dir, &opts)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+		// Create table if not exists
+		if _, err := db.Exec(fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
+			key TEXT PRIMARY KEY,
+			data BLOB
+		) WITHOUT ROWID;`, tableName)); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(err)
 		}
+
+		// Implement the Queries interface for your SQL impl.
+		// ...or use the provided PostgreSQL queries
+		// pg queries seem to work for sqlite
+		queries := pgqueries.NewQueries(tableName)
+
+		// Instantiate ds
+		ds = sqlds.NewDatastore(db, queries)
 	}
 
 	ds = sync_ds.MutexWrap(ds)
 
 	return ds, nil
-}
-
-func applyBadgerLowMemoryProfile(logger *zap.Logger, o *ipfsbadger.Options) {
-	logger.Info("Using Badger with low memory options")
-	o.Options = o.Options.WithValueLogLoadingMode(badger_opts.FileIO)
-	o.Options = o.Options.WithTableLoadingMode(badger_opts.FileIO)
-	o.Options = o.Options.WithValueLogFileSize(16 << 20) // 16 MB value log file
-	o.Options = o.Options.WithMaxTableSize(8 << 20)      // should already be set by ipfs
 }
 
 func GetMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {

@@ -186,7 +186,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 
@@ -250,7 +249,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 
@@ -339,7 +337,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 
@@ -422,7 +419,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 
@@ -502,7 +498,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 
@@ -557,7 +552,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 
@@ -617,7 +611,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 
@@ -675,7 +668,6 @@ FLAGS
   -preset ...                                                             applies various default values, see ADVANCED section below
   -store.dir /Users/gfanton/Library/Application Support/berty-tech/berty  root datastore directory
   -store.inmem false                                                      disable datastore persistence
-  -store.lowmem false                                                     enable LowMemory Profile, useful for mobile environment
   -tor.binary-path ...                                                    if set berty will use this external tor binary instead of his builtin one
   -tor.mode disabled                                                      changes the behavior of libp2p regarding tor, see advanced help for more details
 

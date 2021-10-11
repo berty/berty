@@ -18,7 +18,7 @@ enum ErrCode {
 
   Undefined = 0; // default value, should never be set manually
 
-  TODO = 666; // indicates that you plan to create an error later
+  TODO = 666;              // indicates that you plan to create an error later
   ErrNotImplemented = 777; // indicates that a method is not implemented yet
   ErrInternal = 888; // indicates an unknown error (without Code), i.e. in gRPC
 
@@ -44,6 +44,7 @@ enum ErrCode {
   ErrMissingMapKey = 107;
   ErrDBWrite = 108;
   ErrDBRead = 109;
+  ErrDBOpen = 124;
   ErrDBDestroy = 120;
   ErrDBMigrate = 121;
   ErrDBReplay = 122;
@@ -202,39 +203,36 @@ enum ErrCode {
   ErrServiceReplicationServer = 4101;
   ErrServiceReplicationMissingEndpoint = 4102;
 
-
-  ErrBertyAccount                  = 5000;
-  ErrBertyAccountNoIDSpecified     = 5001;
-  ErrBertyAccountAlreadyOpened     = 5002;
-  ErrBertyAccountInvalidIDFormat   = 5003;
-  ErrBertyAccountLoggerDecorator   = 5004;
-  ErrBertyAccountGRPCClient        = 5005;
-  ErrBertyAccountOpenAccount       = 5006;
-  ErrBertyAccountDataNotFound      = 5007;
-  ErrBertyAccountMetadataUpdate    = 5008;
-  ErrBertyAccountManagerOpen       = 5009;
-  ErrBertyAccountManagerClose      = 5010;
-  ErrBertyAccountInvalidCLIArgs    = 5011;
-  ErrBertyAccountFSError           = 5012;
-  ErrBertyAccountAlreadyExists     = 5013;
+  ErrBertyAccount = 5000;
+  ErrBertyAccountNoIDSpecified = 5001;
+  ErrBertyAccountAlreadyOpened = 5002;
+  ErrBertyAccountInvalidIDFormat = 5003;
+  ErrBertyAccountLoggerDecorator = 5004;
+  ErrBertyAccountGRPCClient = 5005;
+  ErrBertyAccountOpenAccount = 5006;
+  ErrBertyAccountDataNotFound = 5007;
+  ErrBertyAccountMetadataUpdate = 5008;
+  ErrBertyAccountManagerOpen = 5009;
+  ErrBertyAccountManagerClose = 5010;
+  ErrBertyAccountInvalidCLIArgs = 5011;
+  ErrBertyAccountFSError = 5012;
+  ErrBertyAccountAlreadyExists = 5013;
   ErrBertyAccountNoBackupSpecified = 5014;
-  ErrBertyAccountIDGenFailed       = 5015;
-  ErrBertyAccountCreationFailed    = 5016;
-  ErrBertyAccountUpdateFailed      = 5017;
+  ErrBertyAccountIDGenFailed = 5015;
+  ErrBertyAccountCreationFailed = 5016;
+  ErrBertyAccountUpdateFailed = 5017;
 
-  ErrPush                          = 6000;
-  ErrPushWrongAccount              = 6001;
-  ErrPushUnableToDecrypt           = 6002;
-  ErrPushInvalidPayload            = 6003;
-  ErrPushInvalidServerConfig       = 6004;
-  ErrPushMissingBundleID           = 6005;
-  ErrPushUnknownDestination        = 6006;
-  ErrPushProvider                  = 6007;
-  ErrPushUnknownProvider           = 6008;
-  ErrNoProvidersConfigured         = 6009;
-  ErrInvalidPrivateKey             = 6010;
+  ErrPush = 6000;
+  ErrPushWrongAccount = 6001;
+  ErrPushUnableToDecrypt = 6002;
+  ErrPushInvalidPayload = 6003;
+  ErrPushInvalidServerConfig = 6004;
+  ErrPushMissingBundleID = 6005;
+  ErrPushUnknownDestination = 6006;
+  ErrPushProvider = 6007;
+  ErrPushUnknownProvider = 6008;
+  ErrNoProvidersConfigured = 6009;
+  ErrInvalidPrivateKey = 6010;
 }
 
-message ErrDetails {
-  repeated ErrCode codes = 1;
-}
+message ErrDetails { repeated ErrCode codes = 1; }

@@ -27,9 +27,8 @@ type Header struct {
 			Pedantic bool   `json:"pedantic,omitempty"`
 		} `json:"metrics,omitempty"`
 		Datastore struct {
-			Dir              string `json:"dir,omitempty"`
-			InMemory         bool   `json:"inMemory,omitempty"`
-			LowMemoryProfile bool   `json:"lowMemoryProfile,omitempty"`
+			Dir      string `json:"dir,omitempty"`
+			InMemory bool   `json:"inMemory,omitempty"`
 		} `json:"datastore,omitempty"`
 		Node struct {
 			Preset   string `json:"preset"`

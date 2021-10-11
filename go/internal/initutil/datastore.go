@@ -17,7 +17,6 @@ func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
 	}
 	fs.StringVar(&m.Datastore.Dir, "store.dir", dir, "root datastore directory")
 	fs.BoolVar(&m.Datastore.InMemory, "store.inmem", m.Datastore.InMemory, "disable datastore persistence")
-	fs.BoolVar(&m.Datastore.LowMemoryProfile, "store.lowmem", m.Datastore.LowMemoryProfile, "enable LowMemory Profile, useful for mobile environment")
 }
 
 func (m *Manager) GetDatastoreDir() (string, error) {
@@ -67,7 +66,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if m.Datastore.rootDS, err = accountutils.GetRootDatastoreForPath(dir, m.Datastore.LowMemoryProfile, m.initLogger); err != nil {
+	if m.Datastore.rootDS, err = accountutils.GetRootDatastoreForPath(dir, m.initLogger); err != nil {
 		return nil, err
 	}
 

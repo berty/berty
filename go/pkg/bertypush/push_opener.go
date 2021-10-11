@@ -220,7 +220,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			continue
 		}
 
-		rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, true, opts.Logger)
+		rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, opts.Logger)
 		if err != nil {
 			errs = append(errs, err)
 			continue
