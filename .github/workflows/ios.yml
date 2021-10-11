@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         runner: [
-          { name: "GitHub macOS 11", labels: ["macos-11"], selfhosted: false },
+          # { name: "GitHub macOS 11", labels: ["macos-11"], selfhosted: false },
           { name: "DC4 macOS 11", labels: ["self-hosted", "dc4"], selfhosted: true },
         ]
         golang: ['1.17.x']
