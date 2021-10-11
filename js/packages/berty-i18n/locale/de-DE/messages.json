@@ -514,7 +514,7 @@
     "p2p": {
       "title": "",
       "android-desc": "",
-      "ios-desc": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die iOS-API diese Berechtigung."
+      "ios-desc": ""
     },
     "camera": {
       "title": "Kamera",

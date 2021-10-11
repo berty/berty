@@ -85,7 +85,7 @@
         "fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
       },
       "conversations": {
-        "request-sent": "Richiesta inviata. In attesa di...",
+        "request-sent": "",
         "draft": "Bozza: {{message}}"
       }
     },
@@ -100,8 +100,8 @@
         "desc": "Clicca qui per configurare le notifiche push"
       },
       "replicate": {
-        "display-name": "Configurazione dei servizi di replica",
-        "desc": "Clicca qui per configurare i servizi di replica"
+        "display-name": "",
+        "desc": ""
       }
     },
     "network-options": {
@@ -513,8 +513,8 @@
     },
     "p2p": {
       "title": "Messaggistica Bluetooth",
-      "android-desc": "Per scambiare messaggi offline tramite Bluetooth, anche quando l'app è in background, le API di Android richiedono l'autorizzazione ai permessi sulla posizione. Non utilizziamo la in alcun modo i dati relativi alla tua posizione.",
-      "ios-desc": "Per scambiare messaggi offline tramite Bluetooth, l'API iOS richiede la concessione dell'autorizzazione."
+      "android-desc": "",
+      "ios-desc": ""
     },
     "camera": {
       "title": "Fotocamera",
@@ -534,7 +534,7 @@
   "notification": {
     "need-restart": {
       "title": "Necessario riavvio app",
-      "desc": "Per questo tipo di notifiche devi riavviare l'app per salvare questo campo!"
+      "desc": ""
     }
   },
   "error": {

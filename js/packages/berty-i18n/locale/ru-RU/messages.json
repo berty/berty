@@ -514,7 +514,7 @@
     "p2p": {
       "title": "",
       "android-desc": "",
-      "ios-desc": "Для обмена сообщениями в автономном режиме через Bluetooth требуется разрешение API iOS."
+      "ios-desc": ""
     },
     "camera": {
       "title": "Камера",

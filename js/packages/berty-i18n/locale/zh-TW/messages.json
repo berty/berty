@@ -514,7 +514,7 @@
     "p2p": {
       "title": "",
       "android-desc": "",
-      "ios-desc": "要通過藍牙離線交換消息，iOS API 需要獲得許可。"
+      "ios-desc": ""
     },
     "camera": {
       "title": "攝像頭",
@@ -534,7 +534,7 @@
   "notification": {
     "need-restart": {
       "title": "需要重新啟動應用程序",
-      "desc": "對於這類通知，您必須重新啟動應用才能保存此字段！"
+      "desc": ""
     }
   },
   "error": {
