@@ -29,6 +29,7 @@ import (
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -174,17 +175,20 @@ type Manager struct {
 	InitTimeout time.Duration `json:"InitTimeout,omitempty"`
 
 	// internal
-	ctx        context.Context
-	ctxCancel  func()
-	initLogger *zap.Logger
-	workers    run.Group // replace by something more accurate
-	mutex      sync.Mutex
-	longHelp   [][2]string
+	ctx            context.Context
+	ctxCancel      func()
+	initLogger     *zap.Logger
+	workers        run.Group // replace by something more accurate
+	mutex          sync.Mutex
+	longHelp       [][2]string
+	nativeKeystore sysutil.NativeKeystore
+	storageKey     []byte
 }
 
 type ManagerOpts struct {
 	DoNotSetDefaultDir   bool
 	DefaultLoggerStreams []logutil.Stream
+	NativeKeystore       sysutil.NativeKeystore
 }
 
 func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
@@ -216,6 +220,9 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 
 	// generate SessionID using uuidv4 to identify each run
 	m.Session.ID = tyber.NewSessionID()
+
+	// forward native keystore
+	m.nativeKeystore = opts.NativeKeystore
 
 	// storage path
 	if !opts.DoNotSetDefaultDir {

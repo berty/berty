@@ -133,12 +133,8 @@ func TestReplicationService_Flow(t *testing.T) {
 	}
 	defer os.RemoveAll(pathBase)
 
-	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, zap.NewNop())
+	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, nil, zap.NewNop())
 	require.NoError(t, err)
-
-	defer baseDS.Close()
-
-	baseDS = dssync.MutexWrap(baseDS)
 
 	defer baseDS.Close()
 

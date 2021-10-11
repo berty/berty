@@ -356,6 +356,7 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
+		NativeKeystore:       s.nativeKeystore,
 	})
 	if err != nil {
 		panic(err)
@@ -1107,7 +1108,9 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		}
 	}
 
-	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.rootdir, payload, &bertypush.PushDecryptOpts{Logger: s.logger, ExcludedAccounts: excludedAccounts})
+	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.rootdir, payload, &bertypush.PushDecryptOpts{
+		Logger: s.logger, ExcludedAccounts: excludedAccounts, StorageKey: s.storageKey,
+	})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}

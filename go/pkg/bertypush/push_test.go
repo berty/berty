@@ -18,15 +18,40 @@ import (
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
+	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertypush"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
+
+type MemNativeKeystore struct {
+	dict map[string]string
+}
+
+var _ sysutil.NativeKeystore = (*MemNativeKeystore)(nil)
+
+func (ks *MemNativeKeystore) Get(key string) (string, error) {
+	value, ok := ks.dict[key]
+	if !ok {
+		return "", errcode.ErrNotFound
+	}
+	return value, nil
+}
+
+func (ks *MemNativeKeystore) Put(key, value string) error {
+	ks.dict[key] = value
+	return nil
+}
+
+func NewMemNativeKeystore() sysutil.NativeKeystore {
+	return &MemNativeKeystore{dict: make(map[string]string)}
+}
 
 func TestPushDecryptStandalone(t *testing.T) {
 	testutil.FilterStability(t, testutil.Unstable)
@@ -64,9 +89,11 @@ func TestPushDecryptStandalone(t *testing.T) {
 	svc2Account1 := "acc_2_1"
 
 	// init service
+	svc1Keystore := NewMemNativeKeystore()
 	svc1, err := bertyaccount.NewService(&bertyaccount.Options{
 		RootDirectory: svc1RootDir,
 		Logger:        logger,
+		Keystore:      svc1Keystore,
 	})
 	require.NoError(t, err)
 	defer svc1.Close()
@@ -90,6 +117,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	svc2, err := bertyaccount.NewService(&bertyaccount.Options{
 		RootDirectory: svc2RootDir,
 		Logger:        logger,
+		Keystore:      NewMemNativeKeystore(),
 	})
 	require.NoError(t, err)
 	defer svc2.Close()
@@ -203,7 +231,12 @@ func TestPushDecryptStandalone(t *testing.T) {
 
 	pushContents := base64.StdEncoding.EncodeToString(dispatcher.Shift([]byte(svc1Token)))
 
-	decrypted, err := bertypush.PushDecryptStandalone(svc1RootDir, pushContents)
+	svc1StorageKeyString, err := svc1Keystore.Get("storage")
+	require.NoError(t, err)
+	svc1StorageKey, err := base64.RawURLEncoding.DecodeString(svc1StorageKeyString)
+	require.NoError(t, err)
+
+	decrypted, err := bertypush.PushDecryptStandalone(svc1RootDir, pushContents, svc1StorageKey)
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())

@@ -3,20 +3,23 @@ package accountutils
 import (
 	crand "crypto/rand"
 	"database/sql"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 
+	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	sqlds "github.com/ipfs/go-ds-sql"
 	pgqueries "github.com/ipfs/go-ds-sql/postgres"
+	sqlite3 "github.com/mutecomm/go-sqlcipher/v4"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
@@ -157,7 +160,7 @@ func GetDatastoreDir(dir string) (string, error) {
 	return dir, nil
 }
 
-func GetRootDatastoreForPath(dir string, logger *zap.Logger) (datastore.Batching, error) {
+func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datastore.Batching, error) {
 	inMemory := dir == InMemoryDir
 
 	var ds datastore.Batching
@@ -166,11 +169,34 @@ func GetRootDatastoreForPath(dir string, logger *zap.Logger) (datastore.Batching
 	} else {
 		const tableName = "blocks"
 
-		// Open database
-		// key := "DEADBEEF51E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
+		// Prepare db url
 		dbPath := filepath.Join(dir, "datastore.sqlite")
-		// dbURL := fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, key)
-		dbURL := dbPath
+
+		hasDB := false
+		if _, err := os.Stat(dbPath); err == nil {
+			hasDB = true
+		}
+		hasEncryptedDB, err := sqlite3.IsEncrypted(dbPath)
+		if err != nil {
+			hasEncryptedDB = false
+		}
+
+		var dbURL string
+		if len(key) != 0 {
+			if hasDB && !hasEncryptedDB {
+				return nil, errcode.ErrInvalidInput.Wrap(errors.New("storage key provided while datastore db is NOT encrypted"))
+			}
+			hexKey := hex.EncodeToString(key)
+			dbURL = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, hexKey)
+		} else {
+			if hasDB && hasEncryptedDB {
+				return nil, errcode.ErrInvalidInput.Wrap(errors.New("missing storage key, db is encrypted"))
+			}
+			dbURL = dbPath
+			logger.Warn("root datastore encryption disabled: no key provided")
+		}
+
+		// Open database
 		db, err := sql.Open("sqlite3", dbURL)
 		if err != nil {
 			return nil, errcode.ErrDBOpen.Wrap(err)
@@ -184,9 +210,7 @@ func GetRootDatastoreForPath(dir string, logger *zap.Logger) (datastore.Batching
 			return nil, errcode.ErrDBWrite.Wrap(err)
 		}
 
-		// Implement the Queries interface for your SQL impl.
-		// ...or use the provided PostgreSQL queries
-		// pg queries seem to work for sqlite
+		// Use postgres queries as they seem to work with sqlite
 		queries := pgqueries.NewQueries(tableName)
 
 		// Instantiate ds

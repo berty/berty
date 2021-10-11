@@ -15,6 +15,7 @@ import (
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -49,6 +50,7 @@ type Options struct {
 	NotificationManager   notification.Manager
 	BleDriver             proximity.ProximityDriver
 	NBDriver              proximity.ProximityDriver
+	Keystore              sysutil.NativeKeystore
 	Logger                *zap.Logger
 }
 
@@ -69,6 +71,8 @@ type service struct {
 	devicePushKeyPath string
 	pushPlatformToken *protocoltypes.PushServiceReceiver
 	accountData       *accounttypes.AccountMetadata
+	nativeKeystore    sysutil.NativeKeystore
+	storageKey        []byte
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
@@ -155,6 +159,7 @@ func NewService(opts *Options) (_ Service, err error) {
 		sclients:          opts.ServiceClientRegister,
 		bleDriver:         opts.BleDriver,
 		nbDriver:          opts.NBDriver,
+		nativeKeystore:    opts.Keystore,
 		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
 	}
 

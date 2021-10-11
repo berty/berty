@@ -3,6 +3,7 @@ package initutil
 import (
 	"context"
 	"crypto/ed25519"
+	secrand "crypto/rand"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -17,6 +18,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -306,6 +308,51 @@ func (m *Manager) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 	defer m.prepareForGetter()()
 
 	return m.getMessengerClient()
+}
+
+func (m *Manager) GetStorageKey() ([]byte, error) {
+	defer m.prepareForGetter()()
+	return m.getStorageKey()
+}
+
+func (m *Manager) getStorageKey() ([]byte, error) {
+	if m.storageKey != nil {
+		return m.storageKey, nil
+	}
+
+	if m.nativeKeystore == nil {
+		return nil, nil
+	}
+
+	const keyName = "storage"
+
+	keyString, getErr := m.nativeKeystore.Get(keyName)
+	if getErr != nil {
+		key := make([]byte, 32)
+		if _, err := secrand.Read(key); err != nil {
+			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
+		}
+
+		keyString = base64.RawURLEncoding.EncodeToString(key)
+
+		if err := m.nativeKeystore.Put(keyName, keyString); err != nil {
+			return nil, errcode.ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
+		}
+
+		var err error
+		if keyString, err = m.nativeKeystore.Get(keyName); err != nil {
+			return nil, errcode.ErrKeystorePut.Wrap(multierr.Append(getErr, err))
+		}
+	}
+
+	key, err := base64.RawURLEncoding.DecodeString(keyString)
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	m.storageKey = key
+
+	return m.storageKey, nil
 }
 
 func (m *Manager) SetLifecycleManager(manager *lifecycle.Manager) {
