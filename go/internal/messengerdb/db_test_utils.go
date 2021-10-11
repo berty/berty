@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"go.uber.org/zap"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/testutil"

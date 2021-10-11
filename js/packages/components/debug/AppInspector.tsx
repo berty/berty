@@ -112,7 +112,7 @@ const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, 
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/account0/messenger.sqlite')
+				await RNFS.stat(getRootDir() + '/' + file.name + '/messenger.sqlite')
 				fsi.messengerDBFound = true
 			} catch (e) {}
 

@@ -22,7 +22,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func PushDecryptStandalone(rootDir string, inputB64 string) (*pushtypes.DecryptedPush, error) {
+func PushDecryptStandalone(rootDir string, inputB64 string, storageKey []byte) (*pushtypes.DecryptedPush, error) {
 	input, err := base64.StdEncoding.DecodeString(inputB64)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -33,7 +33,7 @@ func PushDecryptStandalone(rootDir string, inputB64 string) (*pushtypes.Decrypte
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger})
+	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger, StorageKey: storageKey})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
@@ -171,6 +171,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 
 type PushDecryptOpts struct {
 	Logger           *zap.Logger
+	StorageKey       []byte
 	ExcludedAccounts []string
 }
 
@@ -220,7 +221,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			continue
 		}
 
-		rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, opts.Logger)
+		rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, opts.StorageKey, opts.Logger)
 		if err != nil {
 			errs = append(errs, err)
 			continue

@@ -13,11 +13,11 @@ import (
 	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
+	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"

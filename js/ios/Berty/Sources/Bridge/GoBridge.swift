@@ -93,6 +93,7 @@ class GoBridge: NSObject {
             config.setLoggerDriver(LoggerDriver("tech.berty", "protocol"))
             config.setLifeCycleDriver(LifeCycleDriver.shared)
             config.setNotificationDriver(NotificationDriver.shared)
+            config.setKeystoreDriver(KeystoreDriver.shared)
 
             // @TODO(gfanton): make this dir in golang
             var isDirectory: ObjCBool = true

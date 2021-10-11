@@ -309,6 +309,30 @@ func (m *Manager) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 	return m.getMessengerClient()
 }
 
+func (m *Manager) GetStorageKey() ([]byte, error) {
+	defer m.prepareForGetter()()
+	return m.getStorageKey()
+}
+
+func (m *Manager) getStorageKey() ([]byte, error) {
+	if m.storageKey != nil {
+		return m.storageKey, nil
+	}
+
+	if m.nativeKeystore == nil {
+		return nil, nil
+	}
+
+	key, err := accountutils.GetOrCreateStorageKey(m.nativeKeystore)
+	if err != nil {
+		return nil, err
+	}
+
+	m.storageKey = key
+
+	return m.storageKey, nil
+}
+
 func (m *Manager) SetLifecycleManager(manager *lifecycle.Manager) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()

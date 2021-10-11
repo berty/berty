@@ -50,7 +50,7 @@ func TestDifferentStores(t *testing.T) {
 
 	require.NoError(t, mn.ConnectAllButSelf())
 
-	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, zap.NewNop())
+	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, nil, zap.NewNop())
 	require.NoError(t, err)
 
 	defer baseDS.Close()

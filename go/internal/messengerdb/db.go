@@ -7,7 +7,7 @@ import (
 	"time"
 
 	ipfscid "github.com/ipfs/go-cid"
-	sqlite3 "github.com/mattn/go-sqlite3"
+	sqlite3 "github.com/mutecomm/go-sqlcipher/v4"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

@@ -25,6 +25,7 @@ require (
 	github.com/eknkc/basex v1.0.1
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
 	github.com/fatih/color v1.13.0
+	github.com/flyingtime/gorm-sqlcipher v1.1.5
 	github.com/gdamore/tcell v1.4.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.4.0
@@ -64,7 +65,6 @@ require (
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
 	github.com/libp2p/go-libp2p-transport-upgrader v0.4.6
 	github.com/markbates/pkger v0.17.1
-	github.com/mattn/go-sqlite3 v1.14.8
 	github.com/mdomke/git-semver/v5 v5.0.0
 	github.com/mdp/qrterminal v1.0.1
 	github.com/mdp/qrterminal/v3 v3.0.0
@@ -77,6 +77,7 @@ require (
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.0.16
 	github.com/multiformats/go-multistream v0.2.2
+	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
 	github.com/oklog/run v1.1.0
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/peterbourgon/ff/v3 v3.0.0
@@ -103,7 +104,6 @@ require (
 	google.golang.org/grpc v1.40.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/square/go-jose.v2 v2.6.0
-	gorm.io/driver/sqlite v1.1.5
 	gorm.io/gorm v1.21.15
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
@@ -123,7 +123,7 @@ replace (
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 
 	github.com/libp2p/go-libp2p-core => github.com/libp2p/go-libp2p-core v0.9.0
-	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20210915133138-7b54d608d83a // use berty fork of go-libp2p-rendezvous
+	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20211013085524-09965cd64781 // use berty fork of go-libp2p-rendezvous with sqlcipher support
 	github.com/libp2p/go-libp2p-swarm => github.com/libp2p/go-libp2p-swarm v0.5.3
 	github.com/libp2p/go-libp2p-tls => github.com/libp2p/go-libp2p-tls v0.2.0
 

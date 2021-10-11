@@ -37,15 +37,15 @@ initdb:
 exportdb:
 	docker-compose run daemon export \
 	  -store.dir=/store/run \
-	  -export-path=/store/run/account0/export.tar \
+	  -export-path=/store/run/export.tar \
 	  -log.filters=info+*,-ipfs.*
-	ls -la data/daemon/run/account0/export.tar
+	ls -la data/daemon/run/export.tar
 
 importcleandb: _backup-and-clean
 	ls -la data/daemon
 	docker-compose run daemon share-invite \
 	  -store.dir=/store/run \
-	  -node.restore-export-path=/store/clean/account0/export.tar \
+	  -node.restore-export-path=/store/clean/export.tar \
 	  -log.filters=info+*,-ipfs.*
 
 print-qr:

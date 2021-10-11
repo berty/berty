@@ -34,10 +34,11 @@ func (m *Manager) getDatastoreDir() (string, error) {
 		return accountutils.InMemoryDir, nil
 	}
 
-	if dir, err := accountutils.GetDatastoreDir(m.Datastore.Dir); err != nil {
-	} else {
-		m.Datastore.dir = dir
+	dir, err := accountutils.GetDatastoreDir(m.Datastore.Dir)
+	if err != nil {
+		return "", errcode.TODO.Wrap(err)
 	}
+	m.Datastore.dir = dir
 
 	inMemory := m.Datastore.dir == accountutils.InMemoryDir
 	m.initLogger.Debug("datastore dir",
@@ -66,7 +67,12 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if m.Datastore.rootDS, err = accountutils.GetRootDatastoreForPath(dir, m.initLogger); err != nil {
+	storageKey, err := m.getStorageKey()
+	if err != nil {
+		return nil, errcode.ErrKeystoreGet.Wrap(err)
+	}
+
+	if m.Datastore.rootDS, err = accountutils.GetRootDatastoreForPath(dir, storageKey, m.initLogger); err != nil {
 		return nil, err
 	}
 

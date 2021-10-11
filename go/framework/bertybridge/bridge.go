@@ -137,6 +137,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 			LifecycleManager:      b.lifecycleManager,
 			BleDriver:             b.bleDriver,
 			NBDriver:              b.nbDriver,
+			Keystore:              config.keystoreDriver,
 		}
 
 		var err error

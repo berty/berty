@@ -26,7 +26,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
-	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
+	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
 	p2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"

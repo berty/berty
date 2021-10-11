@@ -22,7 +22,7 @@ import (
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
-	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
+	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
 	"github.com/libp2p/go-libp2p/config"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
