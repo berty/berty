@@ -9,13 +9,13 @@ import (
 
 	"github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
-	badger "github.com/ipfs/go-ds-badger"
 	"github.com/libp2p/go-libp2p-core/host"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
@@ -133,8 +133,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	}
 	defer os.RemoveAll(pathBase)
 
-	var baseDS datastore.Batching
-	baseDS, err = badger.NewDatastore(pathBase, nil)
+	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, zap.NewNop())
 	require.NoError(t, err)
 
 	defer baseDS.Close()

@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	badger "github.com/ipfs/go-ds-badger"
 	"github.com/juju/fslock"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -36,22 +36,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	defer lock.Unlock()
 
-	dsPathBase := path.Join(pathBase, "badger")
-
-	for _, dirPath := range []string{dsPathBase} {
-		_, err := os.Stat(dirPath)
-		if err != nil {
-			if !os.IsNotExist(err) {
-				panic(err)
-			}
-			if err := os.MkdirAll(dirPath, 0o700); err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	var baseDS datastore.Batching
-	baseDS, err = badger.NewDatastore(dsPathBase, nil)
+	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, zap.NewNop())
 	require.NoError(t, err)
 
 	defer baseDS.Close()

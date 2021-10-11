@@ -9136,6 +9136,7 @@ export namespace berty {
             ErrMissingMapKey = 107,
             ErrDBWrite = 108,
             ErrDBRead = 109,
+            ErrDBOpen = 124,
             ErrDBDestroy = 120,
             ErrDBMigrate = 121,
             ErrDBReplay = 122,

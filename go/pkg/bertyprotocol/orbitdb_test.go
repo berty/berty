@@ -10,12 +10,12 @@ import (
 
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	badger "github.com/ipfs/go-ds-badger"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
@@ -76,8 +76,7 @@ func TestDifferentStores(t *testing.T) {
 
 	require.NoError(t, mn.ConnectAllButSelf())
 
-	var baseDS datastore.Batching
-	baseDS, err = badger.NewDatastore(pathBase, nil)
+	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, zap.NewNop())
 	require.NoError(t, err)
 
 	defer baseDS.Close()

@@ -21,7 +21,6 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/daixiang0/gci v0.2.9
 	github.com/denisbrodbeck/machineid v1.0.1
-	github.com/dgraph-io/badger v1.6.2
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/eknkc/basex v1.0.1
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
@@ -42,7 +41,7 @@ require (
 	github.com/ipfs-shipyard/gomobile-ipfs/go v0.0.0-20210203140645-9df95f2abec2
 	github.com/ipfs/go-cid v0.1.0
 	github.com/ipfs/go-datastore v0.4.6
-	github.com/ipfs/go-ds-badger v0.2.7
+	github.com/ipfs/go-ds-sql v0.2.0
 	github.com/ipfs/go-ipfs v0.10.0-rc1
 	github.com/ipfs/go-ipfs-config v0.16.0
 	github.com/ipfs/go-ipfs-files v0.0.8

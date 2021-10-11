@@ -86,8 +86,6 @@ Usage of integration:
     	applies various default values, see ADVANCED section below
   -store.dir string
     	root datastore directory (default "/tmp/berty-integration004419521")
-  -store.lowmem
-    	enable LowMemory Profile, useful for mobile environment
   -store.inmem
     	disable datastore persistence
   -tor.binary-path string
