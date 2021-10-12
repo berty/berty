@@ -249,12 +249,12 @@ func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datast
 	return ds, nil
 }
 
-func GetMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+func GetMessengerDBForPath(dir string, key []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
 	if dir != InMemoryDir {
 		dir = path.Join(dir, MessengerDatabaseFilename)
 	}
 
-	return GetGormDBForPath(dir, logger)
+	return GetGormDBForPath(dir, key, logger)
 }
 
 func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
@@ -262,15 +262,19 @@ func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), 
 		dir = path.Join(dir, ReplicationDatabaseFilename)
 	}
 
-	return GetGormDBForPath(dir, logger)
+	return GetGormDBForPath(dir, nil, logger)
 }
 
-func GetGormDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+func GetGormDBForPath(dbPath string, key []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
-	if dir == InMemoryDir {
+	if dbPath == InMemoryDir {
 		sqliteConn = fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())
 	} else {
-		sqliteConn = dir
+		sqliteConn = dbPath
+		if len(key) != 0 {
+			hexKey := hex.EncodeToString(key)
+			sqliteConn = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", sqliteConn, hexKey)
+		}
 	}
 
 	cfg := &gorm.Config{
