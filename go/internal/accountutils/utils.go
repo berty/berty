@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
@@ -26,11 +27,12 @@ import (
 )
 
 const (
-	InMemoryDir               = ":memory:"
-	DefaultPushKeyFilename    = "push.key"
-	AccountMetafileName       = "account_meta"
-	AccountNetConfFileName    = "account_net_conf"
-	MessengerDatabaseFilename = "messenger.sqlite"
+	InMemoryDir                 = ":memory:"
+	DefaultPushKeyFilename      = "push.key"
+	AccountMetafileName         = "account_meta"
+	AccountNetConfFileName      = "account_net_conf"
+	MessengerDatabaseFilename   = "messenger.sqlite"
+	ReplicationDatabaseFilename = "replication.sqlite"
 )
 
 func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[cryptoutil.KeySize]byte, sk *[cryptoutil.KeySize]byte, err error) {
@@ -199,11 +201,27 @@ func GetRootDatastoreForPath(dir string, logger *zap.Logger) (datastore.Batching
 }
 
 func GetMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+	if dir != InMemoryDir {
+		dir = path.Join(dir, MessengerDatabaseFilename)
+	}
+
+	return GetGormDBForPath(dir, logger)
+}
+
+func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+	if dir != InMemoryDir {
+		dir = path.Join(dir, ReplicationDatabaseFilename)
+	}
+
+	return GetGormDBForPath(dir, logger)
+}
+
+func GetGormDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
 	if dir == InMemoryDir {
-		sqliteConn = ":memory:"
+		sqliteConn = fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())
 	} else {
-		sqliteConn = path.Join(dir, MessengerDatabaseFilename)
+		sqliteConn = dir
 	}
 
 	cfg := &gorm.Config{

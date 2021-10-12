@@ -354,7 +354,7 @@ func (m *MessageStore) GetOutOfStoreMessageEnvelope(ctx context.Context, c cid.C
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	sealedMessageEnvelope, err := sealOutOfStoreMessageEnvelope(c, env, headers, m.g)
+	sealedMessageEnvelope, err := SealOutOfStoreMessageEnvelope(c, env, headers, m.g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -362,7 +362,7 @@ func (m *MessageStore) GetOutOfStoreMessageEnvelope(ctx context.Context, c cid.C
 	return sealedMessageEnvelope, nil
 }
 
-func sealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelope, headers *protocoltypes.MessageHeaders, g *protocoltypes.Group) (*pushtypes.OutOfStoreMessageEnvelope, error) {
+func SealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelope, headers *protocoltypes.MessageHeaders, g *protocoltypes.Group) (*pushtypes.OutOfStoreMessageEnvelope, error) {
 	oosMessage := &protocoltypes.OutOfStoreMessage{
 		CID:              id.Bytes(),
 		DevicePK:         headers.DevicePK,

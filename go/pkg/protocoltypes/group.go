@@ -87,3 +87,13 @@ func (m *Group) FilterForReplication() (*Group, error) {
 		SignPub:   groupSigPKBytes,
 	}, nil
 }
+
+func (m *Group) Copy() *Group {
+	return &Group{
+		PublicKey: m.PublicKey,
+		Secret:    m.Secret,
+		SecretSig: m.SecretSig,
+		GroupType: m.GroupType,
+		SignPub:   m.SignPub,
+	}
+}

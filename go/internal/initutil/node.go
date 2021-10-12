@@ -29,6 +29,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -516,6 +517,35 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 	return m.Node.Messenger.db, nil
 }
 
+func (m *Manager) GetReplicationDB() (*gorm.DB, error) {
+	defer m.prepareForGetter()()
+
+	return m.getReplicationDB()
+}
+
+func (m *Manager) getReplicationDB() (*gorm.DB, error) {
+	if m.Node.Replication.db != nil {
+		return m.Node.Replication.db, nil
+	}
+
+	logger, err := m.getLogger()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	dir, err := m.getDatastoreDir()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetReplicationDBForPath(dir, logger)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return m.Node.Replication.db, nil
+}
+
 func (m *Manager) restoreMessengerDataFromExport() error {
 	if m.Node.Messenger.ExportPathToRestore == "" {
 		return nil
@@ -650,7 +680,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 	return m.Node.Messenger.server, nil
 }
 
-func getAuthTokenVerifier(secret, pk string) (*bertyprotocol.AuthTokenVerifier, error) {
+func getAuthTokenVerifier(secret, pk string) (*bertyauth.AuthTokenVerifier, error) {
 	rawSecret, err := base64.RawStdEncoding.DecodeString(secret)
 	if err != nil {
 		return nil, err
@@ -665,7 +695,7 @@ func getAuthTokenVerifier(secret, pk string) (*bertyprotocol.AuthTokenVerifier, 
 		return nil, fmt.Errorf("empty or invalid pk size")
 	}
 
-	return bertyprotocol.NewAuthTokenVerifier(rawSecret, rawPK)
+	return bertyauth.NewAuthTokenVerifier(rawSecret, rawPK)
 }
 
 func safeDefaultDisplayName() string {

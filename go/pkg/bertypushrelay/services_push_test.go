@@ -1,4 +1,4 @@
-package bertyprotocol_test
+package bertypushrelay_test
 
 import (
 	crand "crypto/rand"
@@ -13,6 +13,7 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertypush"
+	"berty.tech/berty/v2/go/pkg/bertypushrelay"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
@@ -25,28 +26,28 @@ var (
 )
 
 func Test_pushDispatcherKey(t *testing.T) {
-	assert.Equal(t, "2-tech.berty.debug", bertyprotocol.PushDispatcherKey(pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService, "tech.berty.debug"))
+	assert.Equal(t, "2-tech.berty.debug", bertypushrelay.PushDispatcherKey(pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService, "tech.berty.debug"))
 }
 
 func Test_NewPushService(t *testing.T) {
-	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, nil, nil)
+	s, err := bertypushrelay.NewPushService(pushDefaultServerSK, nil, nil)
 	require.Nil(t, s)
 	require.Error(t, err)
 
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
 
-	s, err = bertyprotocol.NewPushService(nil, []bertyprotocol.PushDispatcher{dispatcher}, nil)
+	s, err = bertypushrelay.NewPushService(nil, []bertypushrelay.PushDispatcher{dispatcher}, nil)
 	require.Nil(t, s)
 	require.Error(t, err)
 
-	s, err = bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
+	s, err = bertypushrelay.NewPushService(pushDefaultServerSK, []bertypushrelay.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 }
 
 func Test_pushService_ServerInfo(t *testing.T) {
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
-	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
+	s, err := bertypushrelay.NewPushService(pushDefaultServerSK, []bertypushrelay.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 
@@ -62,10 +63,10 @@ func Test_pushService_ServerInfo(t *testing.T) {
 
 func Test_decodeOpaqueReceiver(t *testing.T) {
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
-	dispatchers, _, err := bertyprotocol.PushServiceGenerateDispatchers([]bertyprotocol.PushDispatcher{dispatcher})
+	dispatchers, _, err := bertypushrelay.PushServiceGenerateDispatchers([]bertypushrelay.PushDispatcher{dispatcher})
 	require.NoError(t, err)
 
-	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
+	s, err := bertypushrelay.NewPushService(pushDefaultServerSK, []bertypushrelay.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 
@@ -83,7 +84,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err := bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err := bertypushrelay.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.NoError(t, err)
 	require.NotNil(t, decryptedReceiver)
 
@@ -106,7 +107,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err = bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err = bertypushrelay.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.Error(t, err)
 	require.Nil(t, decryptedReceiver)
 
@@ -124,7 +125,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err = bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err = bertypushrelay.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.Error(t, err)
 	require.Nil(t, decryptedReceiver)
 
@@ -142,7 +143,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 	require.NotEmpty(t, opaqueToken)
 	require.NoError(t, err)
 
-	decryptedReceiver, err = bertyprotocol.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
+	decryptedReceiver, err = bertypushrelay.InternalDecodeOpaqueReceiver(pushDefaultServerPK, pushDefaultServerSK, dispatchers, &pushtypes.PushServiceOpaqueReceiver{OpaqueToken: opaqueToken.Token})
 	require.Error(t, err)
 	require.Nil(t, decryptedReceiver)
 }
@@ -150,17 +151,17 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 func Test_encryptPushPayloadForReceiver_decryptPushDataFromServer(t *testing.T) {
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
 
-	s, err := bertyprotocol.NewPushService(pushDefaultServerSK, []bertyprotocol.PushDispatcher{dispatcher}, nil)
+	s, err := bertypushrelay.NewPushService(pushDefaultServerSK, []bertypushrelay.PushDispatcher{dispatcher}, nil)
 	require.NotNil(t, s)
 	require.NoError(t, err)
 
 	ref := []byte("reference1")
 
-	encrypted1, err := bertyprotocol.InternalEncryptPushPayloadForReceiver(pushDefaultServerSK, ref, pushTestRecipient1PK[:])
+	encrypted1, err := bertypushrelay.InternalEncryptPushPayloadForReceiver(pushDefaultServerSK, ref, pushTestRecipient1PK[:])
 	require.NotEmpty(t, encrypted1)
 	require.NoError(t, err)
 
-	encrypted2, err := bertyprotocol.InternalEncryptPushPayloadForReceiver(pushDefaultServerSK, ref, pushTestRecipient1PK[:])
+	encrypted2, err := bertypushrelay.InternalEncryptPushPayloadForReceiver(pushDefaultServerSK, ref, pushTestRecipient1PK[:])
 	require.NotEmpty(t, encrypted2)
 	require.NoError(t, err)
 

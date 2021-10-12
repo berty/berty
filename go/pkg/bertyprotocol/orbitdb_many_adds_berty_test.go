@@ -50,7 +50,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	defer odb.Close()
 
-	gc, err := odb.openGroup(ctx, g, nil)
+	gc, err := odb.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	defer gc.Close()

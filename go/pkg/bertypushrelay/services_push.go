@@ -1,8 +1,7 @@
-package bertyprotocol
+package bertypushrelay
 
 import (
 	"context"
-	crand "crypto/rand"
 	"fmt"
 	"sync"
 
@@ -16,11 +15,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-const (
-	ServicePushID         = "psh"
-	ServicePushPayloadKey = "p"
-	ServicePushPayloadMax = 4096 // FIXME: find an appropriate value
-)
+const ServicePushPayloadMax = 4096 // FIXME: find an appropriate value
 
 type PushDispatcher interface {
 	Dispatch(payload []byte, receiver *protocoltypes.PushServiceReceiver) error
@@ -243,36 +238,6 @@ func PushServiceGenerateDispatchers(dispatchers []PushDispatcher) (map[string]Pu
 	}
 
 	return serviceDispatchers, serviceSupportedTypes, nil
-}
-
-func PushSealTokenForServer(receiver *protocoltypes.PushServiceReceiver, server *protocoltypes.PushServer) (*protocoltypes.PushMemberTokenUpdate, error) {
-	if server == nil || len(server.ServerKey) != cryptoutil.KeySize {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a server key of %d bytes", cryptoutil.KeySize))
-	}
-
-	if receiver == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected the receiver value to be defined"))
-	}
-
-	serverKey := [cryptoutil.KeySize]byte{}
-	for i, c := range server.ServerKey {
-		serverKey[i] = c
-	}
-
-	opaqueToken, err := receiver.Marshal()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	opaqueToken, err = box.SealAnonymous(nil, opaqueToken, &serverKey, crand.Reader)
-	if err != nil {
-		return nil, err
-	}
-
-	return &protocoltypes.PushMemberTokenUpdate{
-		Token:  opaqueToken,
-		Server: server,
-	}, nil
 }
 
 var _ PushService = (*pushService)(nil)

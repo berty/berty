@@ -9,7 +9,8 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/authtypes"
+	"berty.tech/berty/v2/go/pkg/bertypushrelay"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
@@ -30,7 +31,7 @@ func pushServerCommand() *ffcli.Command {
 		manager.SetupDefaultGRPCListenersFlags(fs)
 
 		// set serviceid for needed by push server
-		manager.Node.Protocol.ServiceID = bertyprotocol.ServicePushID
+		manager.Node.Protocol.ServiceID = authtypes.ServicePushID
 		return fs, nil
 	}
 
@@ -70,15 +71,15 @@ func pushServerCommand() *ffcli.Command {
 				return err
 			}
 
-			dispatchers := []bertyprotocol.PushDispatcher{}
-			apnsDispatchers, err := bertyprotocol.PushDispatcherLoadAPNSCertificates(apns)
+			dispatchers := []bertypushrelay.PushDispatcher{}
+			apnsDispatchers, err := bertypushrelay.PushDispatcherLoadAPNSCertificates(apns)
 			if err != nil {
 				return err
 			}
 
 			dispatchers = append(dispatchers, apnsDispatchers...)
 
-			fcmDispatchers, err := bertyprotocol.PushDispatcherLoadFirebaseAPIKey(fcm)
+			fcmDispatchers, err := bertypushrelay.PushDispatcherLoadFirebaseAPIKey(fcm)
 			if err != nil {
 				return err
 			}
@@ -95,7 +96,7 @@ func pushServerCommand() *ffcli.Command {
 				return err
 			}
 
-			pushService, err := bertyprotocol.NewPushService(key, dispatchers, logger)
+			pushService, err := bertypushrelay.NewPushService(key, dispatchers, logger)
 			if err != nil {
 				return err
 			}

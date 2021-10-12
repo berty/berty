@@ -23,7 +23,7 @@ import (
 )
 
 func Test_service_exportAccountKey(t *testing.T) {
-	ctx, cancel, mn, rdvPeer := testHelperIPFSSetUp(t)
+	ctx, cancel, mn, rdvPeer := TestHelperIPFSSetUp(t)
 	defer cancel()
 
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
@@ -71,7 +71,7 @@ func Test_service_exportAccountKey(t *testing.T) {
 }
 
 func Test_service_exportAccountProofKey(t *testing.T) {
-	ctx, cancel, mn, rdvPeer := testHelperIPFSSetUp(t)
+	ctx, cancel, mn, rdvPeer := TestHelperIPFSSetUp(t)
 	defer cancel()
 
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
@@ -124,7 +124,7 @@ func TestUnstableRestoreAccount(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	ctx, cancel, mn, rdvPeer := testHelperIPFSSetUp(t)
+	ctx, cancel, mn, rdvPeer := TestHelperIPFSSetUp(t)
 	defer cancel()
 
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "test-export-")

@@ -2,35 +2,65 @@ package bertyprotocol
 
 import (
 	"context"
-	"crypto/ed25519"
-	crand "crypto/rand"
 	"fmt"
-	"net"
 	"testing"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
-	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
+
+func TestHelperIPFSSetUp(t *testing.T) (context.Context, context.CancelFunc, libp2p_mocknet.Mocknet, host.Host) {
+	t.Helper()
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	mn := libp2p_mocknet.New(ctx)
+	rdvp, err := mn.GenPeer()
+	require.NoError(t, err, "failed to generate mocked peer")
+
+	return ctx, cancel, mn, rdvp
+}
+
+func NewTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node ipfsutil.CoreAPIMock, baseDS datastore.Batching) *BertyOrbitDB {
+	t.Helper()
+
+	api := node.API()
+	selfKey, err := api.Key().Self(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	baseDS = datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey(selfKey.ID().String()))
+
+	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
+		Datastore: baseDS,
+		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
+			Logger: logger,
+			PubSub: pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
+		},
+	})
+	require.NoError(t, err)
+
+	return odb
+}
 
 type mockedPeer struct {
 	CoreAPI ipfsutil.CoreAPIMock
@@ -49,10 +79,12 @@ type TestingProtocol struct {
 
 	Service Service
 	Client  Client
-}
 
-type TestingReplicationPeer struct {
-	Service ReplicationService
+	RootDatastore  datastore.Batching
+	DeviceKeystore cryptoutil.DeviceKeystore
+	IpfsCoreAPI    ipfsutil.ExtendedCoreAPI
+	OrbitDB        *BertyOrbitDB
+	GroupDatastore *cryptoutil.GroupDatastore
 }
 
 type TestingOpts struct {
@@ -109,6 +141,9 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		require.NoError(t, err)
 	}
 
+	groupDatastore, err := cryptoutil.NewGroupDatastore(ds)
+	require.NoError(t, err)
+
 	serviceOpts := Opts{
 		Host:           node.MockNode().PeerHost,
 		PubSub:         node.PubSub(),
@@ -119,6 +154,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		OrbitDB:        odb,
 		TinderDriver:   node.Tinder(),
 		PushKey:        opts.PushSK,
+		GroupDatastore: groupDatastore,
 	}
 
 	service, cleanupService := TestingService(ctx, t, serviceOpts)
@@ -150,6 +186,12 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		Opts:    &serviceOpts,
 		Client:  client,
 		Service: service,
+
+		RootDatastore:  ds,
+		DeviceKeystore: deviceKeystore,
+		IpfsCoreAPI:    node.API(),
+		OrbitDB:        odb,
+		GroupDatastore: serviceOpts.GroupDatastore,
 	}
 	cleanup := func() {
 		server.Stop()
@@ -170,51 +212,6 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	if opts.ConnectFunc == nil {
 		opts.ConnectFunc = ConnectAll
 	}
-}
-
-func testHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, rdvp peer.AddrInfo, ds datastore.Batching) (*replicationService, context.CancelFunc) {
-	t.Helper()
-
-	if ds == nil {
-		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
-	}
-
-	api, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
-		Logger:    logger,
-		Mocknet:   mn,
-		RDVPeer:   rdvp,
-		Datastore: ds,
-	})
-	odb, err := NewBertyOrbitDB(ctx, api.API(), &NewOrbitDBOptions{
-		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
-			Logger: logger,
-			Cache:  NewOrbitDatastoreCache(ds),
-		},
-	})
-	require.NoError(t, err)
-
-	repl, err := NewReplicationService(ctx, ds, odb, logger)
-	require.NoError(t, err)
-	require.NotNil(t, repl)
-
-	svc, ok := repl.(*replicationService)
-	require.True(t, ok)
-
-	return svc, cleanup
-}
-
-func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, sk ed25519.PublicKey, opts *TestingOpts) (*TestingReplicationPeer, func()) {
-	// TODO: handle auth
-	_ = secret
-	_ = sk
-
-	replServ, cleanupReplMan := testHelperNewReplicationService(ctx, t, nil, opts.Mocknet, opts.RDVPeer, nil)
-
-	return &TestingReplicationPeer{
-			Service: replServ,
-		}, func() {
-			cleanupReplMan()
-		}
 }
 
 func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching, amount int) ([]*TestingProtocol, func()) {
@@ -366,39 +363,6 @@ func ConnectInLine(t *testing.T, m libp2p_mocknet.Mocknet) {
 	}
 }
 
-func PushServerForTests(ctx context.Context, t testing.TB, dispatchers []PushDispatcher, logger *zap.Logger) (PushService, *[32]byte, string, context.CancelFunc) {
-	secret := make([]byte, cryptoutil.KeySize)
-	_, err := crand.Read(secret)
-	require.NoError(t, err)
-
-	pushPK, pushSK, err := box.GenerateKey(crand.Reader)
-	require.NoError(t, err)
-
-	pushService, err := NewPushService(pushSK, dispatchers, logger)
-	require.NoError(t, err)
-
-	ctx, cancel := context.WithCancel(ctx)
-	server := grpc.NewServer()
-
-	mux := grpcgw.NewServeMux()
-
-	pushtypes.RegisterPushServiceServer(server, pushService)
-	err = pushtypes.RegisterPushServiceHandlerServer(ctx, mux, pushService)
-	require.NoError(t, err)
-
-	l, err := net.Listen("tcp", "127.0.0.1:0")
-	require.NoError(t, err)
-
-	go func() {
-		err := server.Serve(l)
-		if err != nil {
-			cancel()
-		}
-	}()
-
-	return pushService, pushPK, l.Addr().String(), cancel
-}
-
 func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string, memberCount int, deviceCount int) ([]*mockedPeer, crypto.PrivKey, func()) {
 	t.Helper()
 
@@ -451,7 +415,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 				t.Fatal(err)
 			}
 
-			gc, err := db.openGroup(ctx, g, nil)
+			gc, err := db.OpenGroup(ctx, g, nil)
 			if err != nil {
 				t.Fatalf("err: creating new group context, %v", err)
 			}

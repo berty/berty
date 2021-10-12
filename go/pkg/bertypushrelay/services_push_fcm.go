@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertypushrelay
 
 import (
 	"encoding/base64"
@@ -64,7 +64,7 @@ func (d *pushDispatcherFCM) Dispatch(payload []byte, receiver *protocoltypes.Pus
 	msg := &fcm.Message{
 		To: string(receiver.Token),
 		Data: map[string]interface{}{
-			ServicePushPayloadKey: base64.RawURLEncoding.EncodeToString(payload),
+			pushtypes.ServicePushPayloadKey: base64.RawURLEncoding.EncodeToString(payload),
 		},
 	}
 

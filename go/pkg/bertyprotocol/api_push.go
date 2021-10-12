@@ -3,19 +3,52 @@ package bertyprotocol
 import (
 	"bytes"
 	"context"
+	crand "crypto/rand"
 	"fmt"
 	"sync"
 
 	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
+
+func PushSealTokenForServer(receiver *protocoltypes.PushServiceReceiver, server *protocoltypes.PushServer) (*protocoltypes.PushMemberTokenUpdate, error) {
+	if server == nil || len(server.ServerKey) != cryptoutil.KeySize {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a server key of %d bytes", cryptoutil.KeySize))
+	}
+
+	if receiver == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected the receiver value to be defined"))
+	}
+
+	serverKey := [cryptoutil.KeySize]byte{}
+	for i, c := range server.ServerKey {
+		serverKey[i] = c
+	}
+
+	opaqueToken, err := receiver.Marshal()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	opaqueToken, err = box.SealAnonymous(nil, opaqueToken, &serverKey, crand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	return &protocoltypes.PushMemberTokenUpdate{
+		Token:  opaqueToken,
+		Server: server,
+	}, nil
+}
 
 func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error) {
 	s.muPushClients.RLock()
@@ -63,7 +96,7 @@ func (s *service) PushReceive(ctx context.Context, request *protocoltypes.PushRe
 }
 
 func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_Request) (*protocoltypes.PushSend_Reply, error) {
-	gc, err := s.getContextGroupForID(request.GroupPublicKey)
+	gc, err := s.GetContextGroupForID(request.GroupPublicKey)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +204,7 @@ func (s *service) getPushTargetsByServer(gc *GroupContext, targetGroupMembers []
 	}
 
 	for _, d := range targetDevices {
-		pushToken, err := gc.metadataStore.getPushTokenForDevice(d)
+		pushToken, err := gc.metadataStore.GetPushTokenForDevice(d)
 		if err != nil {
 			s.logger.Info("unable to get push token for device")
 			continue
@@ -188,7 +221,7 @@ func (s *service) getPushTargetsByServer(gc *GroupContext, targetGroupMembers []
 }
 
 func (s *service) PushShareToken(ctx context.Context, request *protocoltypes.PushShareToken_Request) (*protocoltypes.PushShareToken_Reply, error) {
-	gc, err := s.getContextGroupForID(request.GroupPK)
+	gc, err := s.GetContextGroupForID(request.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -249,6 +282,13 @@ func (s *service) PushSetServer(ctx context.Context, request *protocoltypes.Push
 	}
 
 	return &protocoltypes.PushSetServer_Reply{}, nil
+}
+
+func (s *service) GetCurrentDevicePushConfig() (*protocoltypes.PushServiceReceiver, *protocoltypes.PushServer) {
+	currentToken := s.accountGroup.metadataStore.getCurrentDevicePushToken()
+	currentServer := s.accountGroup.metadataStore.getCurrentDevicePushServer()
+
+	return currentToken, currentServer
 }
 
 func monitorPushServer(ctx context.Context, cc *grpc.ClientConn, logger *zap.Logger) {

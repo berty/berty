@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertyauth
 
 import (
 	"bytes"
@@ -10,6 +10,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/pkg/authtypes"
 )
 
 func mustReadAllBytes(t *testing.T, reader io.ReadCloser) []byte {
@@ -24,7 +26,7 @@ func TestNewAuthTokenServer(t *testing.T) {
 	services := map[string]string{
 		"service": "servicehost:1234",
 	}
-	secret, _, sk := helperGenerateTokenIssuerSecrets(t)
+	secret, _, sk := HelperGenerateTokenIssuerSecrets(t)
 
 	ats, err := NewAuthTokenServer(secret, nil, services, nil)
 	require.Error(t, err)
@@ -62,7 +64,7 @@ func TestNewAuthTokenServer(t *testing.T) {
 	authorizeURL, err := url.Parse(server.URL)
 	require.NoError(t, err)
 
-	authorizeURL.Path = AuthHTTPPathAuthorize
+	authorizeURL.Path = authtypes.AuthHTTPPathAuthorize
 
 	res, err = server.Client().Get(authorizeURL.String())
 	require.NoError(t, err)
@@ -71,26 +73,26 @@ func TestNewAuthTokenServer(t *testing.T) {
 		"URL": "?error=invalid_request&error_description=unexpected+value+for+redirect_uri",
 	})), string(mustReadAllBytes(t, res.Body)))
 
-	responseRedirectURI, err := url.Parse(AuthRedirect)
+	responseRedirectURI, err := url.Parse(authtypes.AuthRedirect)
 	require.NoError(t, err)
 	setURLParam(responseRedirectURI, "error", "invalid_request")
 	setURLParam(responseRedirectURI, "error_description", "unexpected value for response_type")
 
-	setURLParam(authorizeURL, "redirect_uri", AuthRedirect)
+	setURLParam(authorizeURL, "redirect_uri", authtypes.AuthRedirect)
 
 	testAuthorizeQueryURLAndCompareResponse(t, server, authorizeURL, responseRedirectURI)
 
-	setURLParam(authorizeURL, "response_type", AuthResponseType)
+	setURLParam(authorizeURL, "response_type", authtypes.AuthResponseType)
 	setURLParam(responseRedirectURI, "error_description", "unexpected value for client_id")
 
 	testAuthorizeQueryURLAndCompareResponse(t, server, authorizeURL, responseRedirectURI)
 
-	setURLParam(authorizeURL, "client_id", AuthClientID)
+	setURLParam(authorizeURL, "client_id", authtypes.AuthClientID)
 	setURLParam(responseRedirectURI, "error_description", "unexpected value for code_challenge_method")
 
 	testAuthorizeQueryURLAndCompareResponse(t, server, authorizeURL, responseRedirectURI)
 
-	setURLParam(authorizeURL, "code_challenge_method", AuthCodeChallengeMethod)
+	setURLParam(authorizeURL, "code_challenge_method", authtypes.AuthCodeChallengeMethod)
 	setURLParam(responseRedirectURI, "error_description", "unexpected value for state")
 
 	testAuthorizeQueryURLAndCompareResponse(t, server, authorizeURL, responseRedirectURI)
