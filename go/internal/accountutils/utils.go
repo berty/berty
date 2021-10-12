@@ -222,12 +222,16 @@ func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datast
 	return ds, nil
 }
 
-func GetMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+func GetMessengerDBForPath(dir string, key []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
 	if dir == InMemoryDir {
 		sqliteConn = ":memory:"
 	} else {
 		sqliteConn = path.Join(dir, MessengerDatabaseFilename)
+		if len(key) != 0 {
+			hexKey := hex.EncodeToString(key)
+			sqliteConn = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", sqliteConn, hexKey)
+		}
 	}
 
 	cfg := &gorm.Config{

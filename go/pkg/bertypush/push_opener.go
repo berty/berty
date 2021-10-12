@@ -227,7 +227,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			continue
 		}
 
-		db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, opts.Logger)
+		db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, opts.StorageKey, opts.Logger)
 		if err != nil {
 			errs = append(errs, err)
 			rootDS.Close()
