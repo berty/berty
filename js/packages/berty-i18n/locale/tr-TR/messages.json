@@ -582,8 +582,8 @@
         "status": {
           "metadata-found": "Metadata dosyası bulundu",
           "metadata-not-found": "Metadata dosyası bulunmadı",
-          "ipfs-repo-config-found": "IPFS yapılandırma dosyası bulundu",
-          "ipfs-repo-config-not-found": "IPFS yapılandırma dosyası bulunmadı",
+          "ipfs-repo-found": "IPFS yapılandırma dosyası bulundu",
+          "ipfs-repo-not-found": "IPFS yapılandırma dosyası bulunmadı",
           "messenger-db-found": "Haberci DB bulundu",
           "messenger-db-not-found": "Haberci DB bulunmadı"
         },

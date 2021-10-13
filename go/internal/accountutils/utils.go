@@ -2,9 +2,7 @@ package accountutils
 
 import (
 	crand "crypto/rand"
-	"database/sql"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -16,9 +14,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	sqlds "github.com/ipfs/go-ds-sql"
-	pgqueries "github.com/ipfs/go-ds-sql/postgres"
-	sqlite3 "github.com/mutecomm/go-sqlcipher/v4"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
@@ -29,6 +24,7 @@ import (
 	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	encrepo "berty.tech/go-ipfs-repo-encrypted"
 )
 
 const (
@@ -191,57 +187,16 @@ func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datast
 	if inMemory {
 		ds = datastore.NewMapDatastore()
 	} else {
-		const tableName = "blocks"
-
-		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		err := os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
+
 		dbPath := filepath.Join(dir, "datastore.sqlite")
-
-		// Prepare db url
-		hasDB := false
-		if _, err := os.Stat(dbPath); err == nil {
-			hasDB = true
-		}
-		hasEncryptedDB, err := sqlite3.IsEncrypted(dbPath)
+		ds, err = encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "blocks", key)
 		if err != nil {
-			hasEncryptedDB = false
+			return nil, errcode.TODO.Wrap(err)
 		}
-
-		var dbURL string
-		if len(key) != 0 {
-			if hasDB && !hasEncryptedDB {
-				return nil, errcode.ErrInvalidInput.Wrap(errors.New("storage key provided while datastore db is NOT encrypted"))
-			}
-			hexKey := hex.EncodeToString(key)
-			dbURL = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, hexKey)
-		} else {
-			if hasDB && hasEncryptedDB {
-				return nil, errcode.ErrInvalidInput.Wrap(errors.New("missing storage key, db is encrypted"))
-			}
-			dbURL = dbPath
-			logger.Warn("root datastore encryption disabled: no key provided")
-		}
-
-		// Open database
-		db, err := sql.Open("sqlite3", dbURL)
-		if err != nil {
-			return nil, errcode.ErrDBOpen.Wrap(err)
-		}
-
-		// Create table if not exists
-		if _, err := db.Exec(fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
-			key TEXT PRIMARY KEY,
-			data BLOB
-		) WITHOUT ROWID;`, tableName)); err != nil {
-			return nil, errcode.ErrDBWrite.Wrap(err)
-		}
-
-		// Use postgres queries as they seem to work with sqlite
-		queries := pgqueries.NewQueries(tableName)
-
-		// Instantiate ds
-		ds = sqlds.NewDatastore(db, queries)
 	}
 
 	ds = sync_ds.MutexWrap(ds)

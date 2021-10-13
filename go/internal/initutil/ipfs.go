@@ -296,9 +296,14 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
 	}
 
-	repopath := filepath.Join(m.Datastore.Dir, "ipfs")
+	storageKey, err := m.getStorageKey()
+	if err != nil {
+		return nil, errcode.ErrKeystoreGet.Wrap(err)
+	}
 
-	repo, err = ipfsutil.LoadRepoFromPath(repopath)
+	repopath := filepath.Join(m.Datastore.Dir, "ipfs.sqlite")
+
+	repo, err = ipfsutil.LoadRepoFromPath(repopath, storageKey)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}

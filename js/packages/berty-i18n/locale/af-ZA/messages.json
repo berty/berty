@@ -582,8 +582,8 @@
         "status": {
           "metadata-found": "",
           "metadata-not-found": "",
-          "ipfs-repo-config-found": "",
-          "ipfs-repo-config-not-found": "",
+          "ipfs-repo-found": "",
+          "ipfs-repo-not-found": "",
           "messenger-db-found": "",
           "messenger-db-not-found": ""
         },

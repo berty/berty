@@ -95,7 +95,7 @@ class FSItem {
 	fileName: string = ''
 	metadataFileFound: boolean = false
 	messengerDBFound: boolean = false
-	ipfsConfigFound: boolean = false
+	ipfsRepoFound: boolean = false
 }
 
 const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, t: any) => {
@@ -117,8 +117,8 @@ const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, 
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/ipfs/config')
-				fsi.ipfsConfigFound = true
+				await RNFS.stat(getRootDir() + '/' + file.name + '/ipfs.sqlite')
+				fsi.ipfsRepoFound = true
 			} catch (e) {}
 
 			fsi.fileName = file.name
@@ -332,9 +332,9 @@ const AccountsInspector: React.FC<{
 													{t('debug.inspector.accounts.status.metadata-found')}
 												</Text>
 											)}
-											{acc.ipfsConfigFound && (
+											{acc.ipfsRepoFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.ipfs-repo-config-found')}
+													{t('debug.inspector.accounts.status.ipfs-repo-found')}
 												</Text>
 											)}
 											{acc.messengerDBFound && (
@@ -351,9 +351,9 @@ const AccountsInspector: React.FC<{
 													{t('debug.inspector.accounts.status.metadata-not-found')}
 												</Text>
 											)}
-											{!acc.ipfsConfigFound && (
+											{!acc.ipfsRepoFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.ipfs-repo-config-not-found')}
+													{t('debug.inspector.accounts.status.ipfs-repo-not-found')}
 												</Text>
 											)}
 											{!acc.messengerDBFound && (
