@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Aiuto",
       "header-center-button": "Devtools",
       "header-right-button": "Impostazioni",
       "network-button": "Lista Network",
-      "edit-profile": "Modifica il profilo"
+      "edit-profile": "Modifica il profilo",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Ricevi notifiche push",
+        "second-bullet-point": "Ricevi richieste di contatto",
+        "third-bullet-point": "Scoperta peer locale (BLE & DNS Multicast)"
+      },
+      "notifications-button": {
+        "title": "Notifiche",
+        "tag-enabled": "Abilitato",
+        "tag-disabled": "Disabilitato"
+      },
+      "dark-mode-button": "Modalità anonima",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Lista Network",
       "online-peers": "Peer Online"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "Notifiche gruppi",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "DNS Multicast",
+        "desc": "Ricerca Peer locali"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Impostazioni",
@@ -146,32 +212,10 @@
         "title": "Dati salvati!",
         "desc": "Disponibile nella directory dei download"
       },
-      "notifications-button": {
-        "title": "Notifiche",
-        "tag-enabled": "Abilitato",
-        "tag-disabled": "Disabilitato"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Modalità app",
-        "performance-tag": "Prestazioni",
-        "privacy-tag": "Riservatezza",
-        "description-tag": "Facile da usare - Tutte le funzionalità",
-        "first-bullet-point": "Ricevi notifiche push",
-        "second-bullet-point": "Ricevi richieste di contatto",
-        "third-bullet-point": "Scoperta peer locale (BLE & DNS Multicast)"
-      },
-      "dark-mode-button": "Modalità anonima",
       "receive-contact-requests-button": "Ricevi richieste di contatto",
       "external-services-button": "Servizi esterni",
       "auto-replicate-button": "Auto replica",
       "auto-replicate-button-unavailable": "È necessario prima registrare almeno un server di replica",
-      "multicast-dns-button": {
-        "title": "DNS Multicast",
-        "desc": "Ricerca Peer locali"
-      },
       "blocked-contacts-button": {
         "title": "Contatti bloccati",
         "tag": "bloccato"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Impronta",
       "info": "Informazioni",
-      "devices": "Dispositivi"
+      "devices": "Dispositivi",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "Salvataggio tema",
