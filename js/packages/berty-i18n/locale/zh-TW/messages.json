@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "幫助",
       "header-center-button": "開發工具",
       "header-right-button": "設置",
       "network-button": "網絡列表",
-      "edit-profile": "編輯個人信息"
+      "edit-profile": "編輯個人信息",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "接收新消息通知",
+        "second-bullet-point": "接收聯繫人請求",
+        "third-bullet-point": "本地節點發現 (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "消息通知",
+        "tag-enabled": "已啟用",
+        "tag-disabled": "已禁用"
+      },
+      "dark-mode-button": "暗色模式",
+      "bluetooth-button": {
+        "title": "藍牙"
+      }
     },
     "network-map": {
       "title": "網絡列表",
       "online-peers": "在線節點"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "推送通知",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "多播DNS",
+        "desc": "本地節點發現"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "設置",
@@ -146,32 +212,10 @@
         "title": "數據已保存！",
         "desc": "在下載目錄中可用"
       },
-      "notifications-button": {
-        "title": "消息通知",
-        "tag-enabled": "已啟用",
-        "tag-disabled": "已禁用"
-      },
-      "bluetooth-button": {
-        "title": "藍牙"
-      },
-      "app-mode-button": {
-        "title": "應用程序模式",
-        "performance-tag": "性能",
-        "privacy-tag": "隱私",
-        "description-tag": "簡單使用 - 所有功能",
-        "first-bullet-point": "接收新消息通知",
-        "second-bullet-point": "接收聯繫人請求",
-        "third-bullet-point": "本地節點發現 (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "暗色模式",
       "receive-contact-requests-button": "接收聯繫人請求",
       "external-services-button": "外部服務",
       "auto-replicate-button": "自動複製",
       "auto-replicate-button-unavailable": "您必須先註冊至少一個複製服務器",
-      "multicast-dns-button": {
-        "title": "多播DNS",
-        "desc": "本地節點發現"
-      },
       "blocked-contacts-button": {
         "title": "已屏蔽的聯繫人",
         "tag": "已屏蔽"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "指紋",
       "info": "信息",
-      "devices": "設備"
+      "devices": "設備",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "正在保存主題",
