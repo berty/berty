@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Help",
       "header-center-button": "Ontwikkelaars tools",
       "header-right-button": "Instellingen",
       "network-button": "Netwerk Lijst",
-      "edit-profile": "Mijn profiel bewerken"
+      "edit-profile": "Mijn profiel bewerken",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Ontvang push notificaties",
+        "second-bullet-point": "Ontvang contactverzoeken",
+        "third-bullet-point": "Lokale peer detectie (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Notificaties",
+        "tag-enabled": "Ingeschakeld",
+        "tag-disabled": "Uitgeschakeld"
+      },
+      "dark-mode-button": "Donkere modus",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Netwerk Lijst",
       "online-peers": "Online gebruikers"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Lokale peer ontdekking"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Instellingen",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Notificaties",
-        "tag-enabled": "Ingeschakeld",
-        "tag-disabled": "Uitgeschakeld"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "App modus",
-        "performance-tag": "Prestaties",
-        "privacy-tag": "Privacy",
-        "description-tag": "Eenvoudig in gebruik - alle functies",
-        "first-bullet-point": "Ontvang push notificaties",
-        "second-bullet-point": "Ontvang contactverzoeken",
-        "third-bullet-point": "Lokale peer detectie (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Donkere modus",
       "receive-contact-requests-button": "Ontvang contactverzoeken",
       "external-services-button": "Externe diensten",
       "auto-replicate-button": "Automatisch repliceren",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Lokale peer ontdekking"
-      },
       "blocked-contacts-button": {
         "title": "Geblokkeerde contacten",
         "tag": "geblokkeerd"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Vingerafdruk",
       "info": "Informatie",
-      "devices": "Apparaten"
+      "devices": "Apparaten",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
