@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Помощь",
       "header-center-button": "Инструменты для разработчиков",
       "header-right-button": "Настройки",
       "network-button": "Список сетей",
-      "edit-profile": "Редактировать профиль"
+      "edit-profile": "Редактировать профиль",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Получать push-уведомления",
+        "second-bullet-point": "Получать запросы в контакты",
+        "third-bullet-point": "Обнаружение узлов рядом (BLE и Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Уведомления",
+        "tag-enabled": "Включены",
+        "tag-disabled": "Отключены"
+      },
+      "dark-mode-button": "Тёмная тема",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Список сетей",
       "online-peers": "Узлы онлайн"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "Push-уведомления",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": ""
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Настройки",
@@ -146,32 +212,10 @@
         "title": "Данные сохранены!",
         "desc": "Доступно в каталоге загрузок"
       },
-      "notifications-button": {
-        "title": "Уведомления",
-        "tag-enabled": "Включены",
-        "tag-disabled": "Отключены"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Режим приложения",
-        "performance-tag": "Скорость",
-        "privacy-tag": "Приватность",
-        "description-tag": "Простота в использовании, все функции",
-        "first-bullet-point": "Получать push-уведомления",
-        "second-bullet-point": "Получать запросы в контакты",
-        "third-bullet-point": "Обнаружение узлов рядом (BLE и Multicast DNS)"
-      },
-      "dark-mode-button": "Тёмная тема",
       "receive-contact-requests-button": "Получать запросы в контакты",
       "external-services-button": "Внешние сервисы",
       "auto-replicate-button": "Автоматическое сохранение",
       "auto-replicate-button-unavailable": "Сначала необходимо зарегистрировать как минимум один сервер репликации",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Обнаружение узлов рядом"
-      },
       "blocked-contacts-button": {
         "title": "Заблокированные контакты",
         "tag": "заблокировано"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Отпечаток",
       "info": "Информация",
-      "devices": "Устройства"
+      "devices": "Устройства",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "Сохранение темы",
