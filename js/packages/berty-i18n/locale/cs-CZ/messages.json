@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Nápověda",
       "header-center-button": "Nástroje pro vývojáře",
       "header-right-button": "Nastavení",
       "network-button": "Seznam sítí",
-      "edit-profile": "Upravit profil"
+      "edit-profile": "Upravit profil",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Přijímat push oznámení",
+        "second-bullet-point": "Přijímat žádosti o kontakt",
+        "third-bullet-point": "Vyhledat lokální uživatele (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Oznámení",
+        "tag-enabled": "Povolit",
+        "tag-disabled": "Zakázat"
+      },
+      "dark-mode-button": "Tmavý režim",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Seznam sítí",
       "online-peers": "Online uživatelé"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Vyhledat lokální uživatele"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Nastavení",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Oznámení",
-        "tag-enabled": "Povolit",
-        "tag-disabled": "Zakázat"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Režim aplikace",
-        "performance-tag": "Výkon",
-        "privacy-tag": "Soukromí",
-        "description-tag": "Jednoduché použití - všechny funkce",
-        "first-bullet-point": "Přijímat push oznámení",
-        "second-bullet-point": "Přijímat žádosti o kontakt",
-        "third-bullet-point": "Vyhledat lokální uživatele (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Tmavý režim",
       "receive-contact-requests-button": "Přijímat žádosti o kontakt",
       "external-services-button": "Externí služby",
       "auto-replicate-button": "Automaticky kopírovat",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Vyhledat lokální uživatele"
-      },
       "blocked-contacts-button": {
         "title": "Blokované kontakty",
         "tag": "blokováno"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Otisk",
       "info": "Informace",
-      "devices": "Zařízení"
+      "devices": "Zařízení",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
