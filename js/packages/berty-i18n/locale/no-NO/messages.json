@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Hjelp",
       "header-center-button": "Verktøy for utviklere",
       "header-right-button": "Innstillinger",
       "network-button": "Liste over nettverk",
-      "edit-profile": "Rediger profil"
+      "edit-profile": "Rediger profil",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Motta push-varsler",
+        "second-bullet-point": "Motta kontaktforespørsler",
+        "third-bullet-point": "Lokal likemann funnet (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Varsler",
+        "tag-enabled": "Aktivert",
+        "tag-disabled": "Deaktivert"
+      },
+      "dark-mode-button": "Mørk-modus",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Liste over nettverk",
       "online-peers": "Likemenn på nett"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Lokal personoppdagelse"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Innstillinger",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Varsler",
-        "tag-enabled": "Aktivert",
-        "tag-disabled": "Deaktivert"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "App-modus",
-        "performance-tag": "Ytelse",
-        "privacy-tag": "Personvern",
-        "description-tag": "Enkelt å bruke - Alle funksjoner",
-        "first-bullet-point": "Motta push-varsler",
-        "second-bullet-point": "Motta kontaktforespørsler",
-        "third-bullet-point": "Lokal likemann funnet (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Mørk-modus",
       "receive-contact-requests-button": "Motta kontaktforespørsler",
       "external-services-button": "Eksterne tjenester",
       "auto-replicate-button": "Automatisk gjenskaping",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Lokal personoppdagelse"
-      },
       "blocked-contacts-button": {
         "title": "Blokkerte kontakter",
         "tag": "blokkert"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Fingeravtrykk",
       "info": "Infoer",
-      "devices": "Enheter"
+      "devices": "Enheter",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
