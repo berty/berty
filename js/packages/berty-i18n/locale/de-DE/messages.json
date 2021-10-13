@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Hilfe",
       "header-center-button": "Für Entwickler",
       "header-right-button": "Einstellungen",
       "network-button": "Netzwerke",
-      "edit-profile": "Profil bearbeiten"
+      "edit-profile": "Profil bearbeiten",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Push-Benachrichtigungen erhalten",
+        "second-bullet-point": "Kontaktanfragen empfangen",
+        "third-bullet-point": "Lokale Berty-Nutzer finden (Bluetooth und gleiches Netz)"
+      },
+      "notifications-button": {
+        "title": "Benachrichtigungen",
+        "tag-enabled": "Aktiviert",
+        "tag-disabled": "Deaktiviert"
+      },
+      "dark-mode-button": "Dunkler Modus",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Netzwerke",
       "online-peers": "Verbindungen zu anderen Nutzern"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "Push-Benachrichtigungen",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Lokales Netz",
+        "desc": "Berty-Benutzer im gleichen lokalen Netz finden"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Einstellungen",
@@ -146,32 +212,10 @@
         "title": "Daten gespeichert!",
         "desc": "Im Download-Verzeichnis verfügbar"
       },
-      "notifications-button": {
-        "title": "Benachrichtigungen",
-        "tag-enabled": "Aktiviert",
-        "tag-disabled": "Deaktiviert"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "App-Modus",
-        "performance-tag": "Leistung",
-        "privacy-tag": "Privatsphäre",
-        "description-tag": "Einfach zu bedienen - Alle Funktionen",
-        "first-bullet-point": "Push-Benachrichtigungen erhalten",
-        "second-bullet-point": "Kontaktanfragen empfangen",
-        "third-bullet-point": "Lokale Berty-Nutzer finden (Bluetooth und gleiches Netz)"
-      },
-      "dark-mode-button": "Dunkler Modus",
       "receive-contact-requests-button": "Kontaktanfragen empfangen",
       "external-services-button": "Externe Dienste",
       "auto-replicate-button": "Autom. Serverkopien",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Lokales Netz",
-        "desc": "Berty-Benutzer im gleichen lokalen Netz finden"
-      },
       "blocked-contacts-button": {
         "title": "Blockierte Kontakte",
         "tag": "blockiert"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Fingerabdruck",
       "info": "Infos",
-      "devices": "Geräte"
+      "devices": "Geräte",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "Theme speichern",
