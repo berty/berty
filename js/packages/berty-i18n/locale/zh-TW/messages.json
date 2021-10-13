@@ -580,8 +580,8 @@
           "action-cancel": "取消"
         },
         "status": {
-          "metadata-found": "找到元數據文件",
-          "metadata-not-found": "未找到元數據文件",
+          "datastore-found": "找到元數據文件",
+          "datastore-not-found": "未找到元數據文件",
           "ipfs-repo-found": "找到 IPFS 配置文件",
           "ipfs-repo-not-found": "未找到 IPFS 配置文件",
           "messenger-db-found": "發現Messenger DB",

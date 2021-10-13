@@ -580,8 +580,8 @@
           "action-cancel": "Mégse"
         },
         "status": {
-          "metadata-found": "Metaadat fájl megtalálva",
-          "metadata-not-found": "Metaadat fájl nem található",
+          "datastore-found": "Metaadat fájl megtalálva",
+          "datastore-not-found": "Metaadat fájl nem található",
           "ipfs-repo-found": "IPFS konfigurációs fájl megtalálva",
           "ipfs-repo-not-found": "IPFS konfigurációs fájl nem található",
           "messenger-db-found": "Messenger DB megtalálva",

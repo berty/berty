@@ -93,7 +93,7 @@ const confirmActionWrapper = (title: string, action: () => void, t: any) => () =
 
 class FSItem {
 	fileName: string = ''
-	metadataFileFound: boolean = false
+	datastoreFound: boolean = false
 	messengerDBFound: boolean = false
 	ipfsRepoFound: boolean = false
 }
@@ -107,8 +107,8 @@ const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, 
 			const fsi = new FSItem()
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/account_meta')
-				fsi.metadataFileFound = true
+				await RNFS.stat(getRootDir() + '/' + file.name + '/datastore.sqlite')
+				fsi.datastoreFound = true
 			} catch (e) {}
 
 			try {
@@ -327,9 +327,9 @@ const AccountsInspector: React.FC<{
 								<>
 									{!isMetaLoaded && (
 										<>
-											{acc.metadataFileFound && (
+											{acc.datastoreFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.metadata-found')}
+													{t('debug.inspector.accounts.status.datastore-found')}
 												</Text>
 											)}
 											{acc.ipfsRepoFound && (
@@ -346,9 +346,9 @@ const AccountsInspector: React.FC<{
 									)}
 									{isMetaLoaded && !accountProtoEntries[acc.fileName].error && (
 										<>
-											{!acc.metadataFileFound && (
+											{!acc.datastoreFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.metadata-not-found')}
+													{t('debug.inspector.accounts.status.datastore-not-found')}
 												</Text>
 											)}
 											{!acc.ipfsRepoFound && (

@@ -580,8 +580,8 @@
           "action-cancel": "Отменить"
         },
         "status": {
-          "metadata-found": "Найден файл метаданных",
-          "metadata-not-found": "Файл метаданных не найден",
+          "datastore-found": "Найден файл метаданных",
+          "datastore-not-found": "Файл метаданных не найден",
           "ipfs-repo-found": "Найден файл конфигурации IPFS",
           "ipfs-repo-not-found": "Файл конфигурации IPFS не найден",
           "messenger-db-found": "Обнаружена база данных мессенджера",

@@ -580,8 +580,8 @@
           "action-cancel": "Abbrechen"
         },
         "status": {
-          "metadata-found": "Metadaten-Datei gefunden",
-          "metadata-not-found": "Metadaten-Datei nicht gefunden",
+          "datastore-found": "Metadaten-Datei gefunden",
+          "datastore-not-found": "Metadaten-Datei nicht gefunden",
           "ipfs-repo-found": "IPFS-Konfigurationsdatei gefunden",
           "ipfs-repo-not-found": "IPFS-Konfigurationsdatei nicht gefunden",
           "messenger-db-found": "Messenger-DB gefunden",

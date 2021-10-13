@@ -634,8 +634,8 @@
           "action-cancel": "Cancel"
         },
         "status": {
-          "metadata-found": "Metadata file found",
-          "metadata-not-found": "Metadata file not found",
+          "datastore-found": "Datastore found",
+          "datastore-not-found": "Datastore not found",
           "ipfs-repo-found": "IPFS repository found",
           "ipfs-repo-not-found": "IPFS repository not found",
           "messenger-db-found": "Messenger DB found",

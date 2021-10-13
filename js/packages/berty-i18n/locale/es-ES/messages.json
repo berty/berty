@@ -580,8 +580,8 @@
           "action-cancel": "Cancelar"
         },
         "status": {
-          "metadata-found": "Se encontró el archivo de metadatos",
-          "metadata-not-found": "No se encontró el archivo de metadatos",
+          "datastore-found": "Se encontró el archivo de metadatos",
+          "datastore-not-found": "No se encontró el archivo de metadatos",
           "ipfs-repo-found": "Se encontró el archivo IPFS",
           "ipfs-repo-not-found": "No se encontró el archivo IPFS",
           "messenger-db-found": "La base de datos de mensajes fue encontrada",

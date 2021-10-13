@@ -580,8 +580,8 @@
           "action-cancel": "Annuler"
         },
         "status": {
-          "metadata-found": "Fichier de métadonnées trouvé",
-          "metadata-not-found": "Fichier de métadonnées introuvable",
+          "datastore-found": "Données trouvées",
+          "datastore-not-found": "Données introuvables",
           "ipfs-repo-found": "Dépôt IPFS trouvé",
           "ipfs-repo-not-found": "Dépôt IPFS introuvable",
           "messenger-db-found": "Messenger DB trouvé",

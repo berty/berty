@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"testing"
 
+	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/require"
 

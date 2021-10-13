@@ -12,8 +12,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
+
+	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"

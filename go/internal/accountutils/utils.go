@@ -79,7 +79,7 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 	return &pkVal, &skVal, nil
 }
 
-func ListAccounts(rootDir string, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
+func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -102,7 +102,7 @@ func ListAccounts(rootDir string, logger *zap.Logger) ([]*accounttypes.AccountMe
 			continue
 		}
 
-		account, err := GetAccountMetaForName(rootDir, subitem.Name(), logger)
+		account, err := GetAccountMetaForName(rootDir, subitem.Name(), storageKey, logger)
 		if err != nil {
 			accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
 		} else {
@@ -134,15 +134,18 @@ func GetOrCreateStorageKey(ks sysutil.NativeKeystore) ([]byte, error) {
 	return key, nil
 }
 
-func GetAccountMetaForName(rootDir string, accountID string, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
+func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
 
-	metafileName := filepath.Join(rootDir, accountID, AccountMetafileName)
+	ds, err := GetRootDatastoreForPath(filepath.Join(rootDir, accountID), storageKey, logger)
+	if err != nil {
+		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	}
 
-	metaBytes, err := ioutil.ReadFile(metafileName)
-	if os.IsNotExist(err) {
+	metaBytes, err := ds.Get(datastore.NewKey(AccountMetafileName))
+	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrBertyAccountDataNotFound
 	} else if err != nil {
 		logger.Warn("unable to read account metadata", zap.Error(err), zap.String("account-id", accountID))
