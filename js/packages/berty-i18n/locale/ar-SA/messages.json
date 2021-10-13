@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "مساعدة",
       "header-center-button": "أدوات التطوير",
       "header-right-button": "الإعدادات",
       "network-button": "قائمة الشبكات",
-      "edit-profile": "تعديل الملف الشخصي"
+      "edit-profile": "تعديل الملف الشخصي",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "تلقي الإشعارات",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "notifications-button": {
+        "title": "الإشعارات",
+        "tag-enabled": "مفعّل",
+        "tag-disabled": "معطّل"
+      },
+      "dark-mode-button": "",
+      "bluetooth-button": {
+        "title": "البلوتوث"
+      }
     },
     "network-map": {
       "title": "قائمة الشبكات",
       "online-peers": "الأقران على الإنترنت"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "",
+        "desc": ""
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "الإعدادات",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "الإشعارات",
-        "tag-enabled": "مفعّل",
-        "tag-disabled": "معطّل"
-      },
-      "bluetooth-button": {
-        "title": "البلوتوث"
-      },
-      "app-mode-button": {
-        "title": "نمط التطبيق",
-        "performance-tag": "فعالية",
-        "privacy-tag": "الخصوصيات",
-        "description-tag": "سهل الاستخدام - جميع الميزات",
-        "first-bullet-point": "تلقي الإشعارات",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
-      },
-      "dark-mode-button": "",
       "receive-contact-requests-button": "",
       "external-services-button": "الخدمات الخارجية",
       "auto-replicate-button": "",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "",
-        "desc": ""
-      },
       "blocked-contacts-button": {
         "title": "",
         "tag": ""
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "بصمة",
       "info": "",
-      "devices": "الأجهزة"
+      "devices": "الأجهزة",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
