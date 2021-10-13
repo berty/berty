@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Yardım",
       "header-center-button": "Geliştirme araçları",
       "header-right-button": "Ayarlar",
       "network-button": "Ağ Listesi",
-      "edit-profile": "Profili Düzenle"
+      "edit-profile": "Profili Düzenle",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Anlık bildirimler alın",
+        "second-bullet-point": "Bağlantı istekleri alın",
+        "third-bullet-point": "Yerel Kişi Keşfi (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Bildirimler",
+        "tag-enabled": "Aktif",
+        "tag-disabled": "Pasif"
+      },
+      "dark-mode-button": "Koyu tema",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Ağ Listesi",
       "online-peers": "Çevrimiçi Eşler"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Çok yönlü yayın DNS",
+        "desc": "Yerel Kişi Keşfi"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Ayarlar",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Bildirimler",
-        "tag-enabled": "Aktif",
-        "tag-disabled": "Pasif"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Uygulama modu",
-        "performance-tag": "Performans",
-        "privacy-tag": "Gizlilik",
-        "description-tag": "Kullanımı Kolay - Tüm Özellikler",
-        "first-bullet-point": "Anlık bildirimler alın",
-        "second-bullet-point": "İletişim istekleri alın",
-        "third-bullet-point": "Yerel Kişi Keşfi (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Koyu tema",
       "receive-contact-requests-button": "Bağlantı istekleri alın",
       "external-services-button": "Dış hizmetler",
       "auto-replicate-button": "Otomatik çoklama",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Çok yönlü yayın DNS",
-        "desc": "Yerel Kişi Keşfi"
-      },
       "blocked-contacts-button": {
         "title": "Engellenen kişiler",
         "tag": "engellendi"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Parmak izi",
       "info": "Bilgiler",
-      "devices": "Aygıtlar"
+      "devices": "Aygıtlar",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
