@@ -107,7 +107,11 @@ const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, 
 			const fsi = new FSItem()
 
 			try {
+<<<<<<< HEAD
 				await RNFS.stat(getRootDir() + '/' + file.name + '/datastore.sqlite')
+=======
+				await RNFS.stat(getRootDir() + '/' + file.name + '/datatstore.sqlite')
+>>>>>>> bb95ca953 (feat: use root datastore for network config and account meta file)
 				fsi.datastoreFound = true
 			} catch (e) {}
 
