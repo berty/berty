@@ -145,11 +145,11 @@ export enum PersistentOptionsKeys {
 	TyberHost = 'tyberHost',
 	ThemeColor = 'themeColor',
 	OnBoardingFinished = 'onBoardingFinished',
+	CheckList = 'checkList',
 }
 
 export enum GlobalPersistentOptionsKeys {
 	TyberHost = 'global-storage_tyber-host',
-	Preset = 'preset',
 	DisplayName = 'displayName',
 	IsNewAccount = 'isNewAccount',
 }
@@ -227,6 +227,16 @@ export type PersistentOptionsOnBoardingFinished = {
 	isFinished: boolean
 }
 
+export type CheckListItem = {
+	title: string
+	done?: boolean
+	desc?: string
+}
+
+export type PersistentOptionsCheckList = {
+	[key: string]: CheckListItem | boolean
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -268,6 +278,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.OnBoardingFinished
 			payload: PersistentOptionsOnBoardingFinished
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.CheckList
+			payload: PersistentOptionsCheckList
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -280,6 +294,7 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 	[PersistentOptionsKeys.ThemeColor]: PersistentOptionsThemeColor
 	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
+	[PersistentOptionsKeys.CheckList]: PersistentOptionsCheckList
 }
 
 export const DefaultBertyTheme = 'default-berty-theme'
@@ -329,32 +344,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.Log]: {
 			format: 'json',
 		},
-		[PersistentOptionsKeys.Configurations]: {
-			network: {
-				key: 'network',
-				displayName: 'main.configurations.network.display-name',
-				desc: 'main.configurations.network.desc',
-				icon: 'berty_dev_blue_bg',
-				state: 'unread',
-				color: 'background-header',
-			},
-			notification: {
-				key: 'notification',
-				displayName: 'main.configurations.notification.display-name',
-				desc: 'main.configurations.notification.desc',
-				icon: 'berty_bot_orange_bg',
-				state: 'unread',
-				color: 'secondary-background-header',
-			},
-			replicate: {
-				key: 'replicate',
-				displayName: 'main.configurations.replicate.display-name',
-				desc: 'main.configurations.replicate.desc',
-				icon: 'berty_dev_blue_bg',
-				state: 'unread',
-				color: 'background-header',
-			},
-		},
+		[PersistentOptionsKeys.Configurations]: {},
 		[PersistentOptionsKeys.LogFilters]: {
 			format: '*:bty*',
 		},
@@ -364,6 +354,41 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.ThemeColor]: defaultThemeColor(),
 		[PersistentOptionsKeys.OnBoardingFinished]: {
 			isFinished: false,
+		},
+		[PersistentOptionsKeys.CheckList]: {
+			isCollapsed: false,
+			avatar: {
+				title: 'settings.home.check-list.avatar.title',
+				desc: 'settings.home.check-list.avatar.desc',
+			},
+			relay: {
+				title: 'settings.home.check-list.relay.title',
+				desc: 'settings.home.check-list.relay.desc',
+			},
+			contact: {
+				title: 'settings.home.check-list.contact.title',
+				desc: 'settings.home.check-list.contact.desc',
+			},
+			group: {
+				title: 'settings.home.check-list.group.title',
+				desc: 'settings.home.check-list.group.desc',
+			},
+			message: {
+				title: 'settings.home.check-list.message.title',
+				desc: 'settings.home.check-list.message.desc',
+			},
+			'hidden-account': {
+				title: 'settings.home.check-list.hidden-account.title',
+				desc: 'settings.home.check-list.hidden-account.desc',
+			},
+			theme: {
+				title: 'settings.home.check-list.theme.title',
+				desc: 'settings.home.check-list.theme.desc',
+			},
+			'ble-message': {
+				title: 'settings.home.check-list.ble-message.title',
+				desc: 'settings.home.check-list.ble-message.desc',
+			},
 		},
 	}
 }

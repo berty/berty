@@ -170,6 +170,18 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 									},
 								},
 							})
+							if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme?.done) {
+								await ctx.setPersistentOption({
+									type: PersistentOptionsKeys.CheckList,
+									payload: {
+										...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+										theme: {
+											...ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme,
+											done: true,
+										},
+									},
+								})
+							}
 							closeModal()
 						}}
 					>
@@ -216,7 +228,9 @@ export const ThemeColorName: React.FC<{ closeModal: () => void }> = ({ closeModa
 						height: windowHeight,
 					},
 				]}
-				onPress={() => closeModal()}
+				onPress={async () => {
+					closeModal()
+				}}
 			>
 				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
 			</TouchableOpacity>

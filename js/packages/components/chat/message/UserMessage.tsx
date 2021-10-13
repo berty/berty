@@ -561,8 +561,10 @@ export const UserMessage: React.FC<{
 									),
 								]}
 							>
-								{inte.reactions.map(({ emoji }) => (
-									<Text style={{ marginHorizontal: 2, fontSize: 10 }}>{getEmojiByName(emoji)}</Text>
+								{inte.reactions.map(({ emoji }, key) => (
+									<Text key={key} style={{ marginHorizontal: 2, fontSize: 10 }}>
+										{getEmojiByName(emoji)}
+									</Text>
 								))}
 							</View>
 						)}

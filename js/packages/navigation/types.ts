@@ -59,7 +59,7 @@ export namespace ScreenProps {
 		export type NetworkMap = RouteProps<void>
 		export type ThemeEditor = RouteProps<void>
 		export type DeleteAccount = RouteProps<void>
-		export type ChoosePreset = RouteProps<void>
+		export type NetworkConfig = RouteProps<void>
 	}
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
@@ -77,7 +77,6 @@ export namespace Routes {
 		SelectMode = 'Onboarding.SelectMode',
 		Performance = 'Onboarding.Performance',
 		Privacy = 'Onboarding.Privacy',
-		ServicesAuth = 'Onboarding.ServicesAuth',
 		CreateAccount = 'Onboarding.CreateAccount',
 		SetupFinished = 'Onboarding.SetupFinished',
 	}
@@ -124,7 +123,8 @@ export namespace Routes {
 		NetworkMap = 'Settings.NetworkMap',
 		ThemeEditor = 'Settings.ThemeEditor',
 		DeleteAccount = 'Settings.DeleteAccount',
-		ChoosePreset = 'Settings.ChoosePreset',
+		NetworkConfig = 'Settings.NetworkConfig',
+		ReplicationServices = 'Settings.ReplicationServices',
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',

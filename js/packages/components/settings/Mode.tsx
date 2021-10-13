@@ -1,6 +1,6 @@
 import React from 'react'
 import { withInAppNotification } from 'react-native-in-app-notification'
-import { Alert, Platform, ScrollView, Vibration, View } from 'react-native'
+import { Platform, ScrollView, Vibration, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
@@ -9,9 +9,7 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
-import { accountService } from '@berty-tech/store/context'
-
-import { ButtonSetting, StringOptionInput } from '../shared-components/SettingsButtons'
+import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { showNeedRestartNotification } from '@berty-tech/components/helpers'
 
 // Styles
@@ -36,19 +34,6 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 		(s: any) => s.serviceType === serviceTypes.Replication,
 	)
 
-	const sanitizeCheckNetworkConfig = async (newConfig: beapi.account.INetworkConfig) => {
-		try {
-			await accountService.networkConfigSet({
-				accountId: ctx.selectedAccount,
-				config: newConfig,
-			})
-			ctx.setNetworkConfig(newConfig)
-			showNeedRestartNotification(showNotification, ctx, t)
-		} catch (e) {
-			Alert.alert('Input validation field failed!', `${e.message}`)
-		}
-	}
-
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<ButtonSetting
@@ -72,7 +57,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 				iconColor={colors['background-header']}
 				iconSize={30}
 				actionIcon='arrow-ios-forward'
-				onPress={() => navigation.navigate('Settings.ServicesAuth')}
+				onPress={() => navigation.navigate('Settings.ReplicationServices')}
 			/>
 			<ButtonSetting
 				name={t('settings.mode.auto-replicate-button')}
@@ -108,75 +93,6 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 					</Text>
 				)}
 			</ButtonSetting>
-			<ButtonSetting
-				name={t('settings.mode.multicast-dns-button.title')}
-				icon='upload'
-				iconColor={colors['background-header']}
-				iconSize={30}
-				varToggle={ctx.networkConfig.mdns === beapi.account.NetworkConfig.Flag.Enabled}
-				actionToggle={async () => {
-					let newValue = beapi.account.NetworkConfig.Flag.Enabled
-					if (ctx.networkConfig.mdns === beapi.account.NetworkConfig.Flag.Enabled) {
-						newValue = beapi.account.NetworkConfig.Flag.Disabled
-					}
-
-					const newNetConf = {
-						...ctx.networkConfig,
-						mdns: newValue,
-					}
-
-					await accountService.networkConfigSet({
-						accountId: ctx.selectedAccount,
-						config: newNetConf,
-					})
-
-					ctx.setNetworkConfig(newNetConf)
-					showNeedRestartNotification(showNotification, ctx, t)
-				}}
-				toggled
-			>
-				<Text
-					style={[
-						_styles.buttonSettingText,
-						{
-							marginLeft: margin.left.big.marginLeft + 3 * scaleSize,
-							color: colors['secondary-text'],
-						},
-					]}
-				>
-					{t('settings.mode.multicast-dns-button.desc')}
-				</Text>
-			</ButtonSetting>
-			<StringOptionInput
-				name={'Bootstrap'}
-				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
-				getOptionValue={() => ctx.networkConfig.bootstrap.toString()}
-				setOptionValue={async val => {
-					let newConfig = { ...ctx.networkConfig, bootstrap: val.split('\n') }
-					await sanitizeCheckNetworkConfig(newConfig)
-				}}
-				iconColor={colors['background-header']}
-			/>
-			<StringOptionInput
-				name={'RendezVous'}
-				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
-				getOptionValue={() => ctx.networkConfig.rendezvous.toString()}
-				setOptionValue={async val => {
-					let newConfig = { ...ctx.networkConfig, rendezvous: val.split('\n') }
-					await sanitizeCheckNetworkConfig(newConfig)
-				}}
-				iconColor={colors['background-header']}
-			/>
-			<StringOptionInput
-				name={'StaticRelay'}
-				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
-				getOptionValue={() => ctx.networkConfig.staticRelay.toString()}
-				setOptionValue={async val => {
-					let newConfig = { ...ctx.networkConfig, staticRelay: val.split('\n') }
-					await sanitizeCheckNetworkConfig(newConfig)
-				}}
-				iconColor={colors['background-header']}
-			/>
 			<ButtonSetting
 				name={t('settings.mode.blocked-contacts-button.title')}
 				icon='person-delete-outline'

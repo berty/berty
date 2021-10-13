@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "Check list {{tasksDone}}/{{totalTasks}}",
+        "avatar": {
+          "title": "Change your avatar",
+          "desc": "Let's setup a profile picture or art for this account!"
+        },
+        "relay": {
+          "title": "Configure relay",
+          "desc": "Improve your network performance by using a relay powered by Berty Tech non-profit."
+        },
+        "contact": {
+          "title": "Sync with a contact",
+          "desc": "Scan a QR code to add a first contact in your contact list!"
+        },
+        "group": {
+          "title": "Join or create a group",
+          "desc": "Let's create or join your first Berty group!"
+        },
+        "message": {
+          "title": "Send message",
+          "desc": "Say 'Hello world' to a contact!"
+        },
+        "theme": {
+          "title": "Customize theme",
+          "desc": "Let's create your own version of the app, and share it with community!"
+        },
+        "hidden-account": {
+          "title": "Create hidden account",
+          "desc": "Create an invisible account with a specific password to login, and be safe at the airport!"
+        },
+        "ble-message": {
+          "title": "Send message without internet",
+          "desc": "Use the Proximity feature and send a message without any cellular network, or internet connection!"
+        }
+      },
       "header-left-button": "Help",
       "header-center-button": "Devtools",
       "header-right-button": "Settings",
       "network-button": "Network List",
-      "edit-profile": "Edit profile"
+      "edit-profile": "Edit profile",
+      "app-network-button": {
+        "title": "App network configuration",
+        "first-bullet-point": "Receive push notifications",
+        "second-bullet-point": "Receive contact requests",
+        "third-bullet-point": "Local peer discovery (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Notifications",
+        "tag-enabled": "Enabled",
+        "tag-disabled": "Disabled"
+      },
+      "dark-mode-button": "Dark mode",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Network List",
       "online-peers": "Online Peers"
+    },
+    "network-config": {
+      "title": "App network configuration",
+      "desc": "You can change your network configurations",
+      "push-notifications": "Push notifications",
+      "replication-services": "Replication services",
+      "ble": "Bluetooth low energy",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Local Peer discovery"
+      },
+      "dht": "DHT",
+      "bootstrap": "Bootstrap",
+      "rdv": "Rendez vous",
+      "static-relay": "Static relay",
+      "anon-mode": "ANON"
     },
     "mode": {
       "title": "Settings",
@@ -146,32 +212,11 @@
         "title": "Data saved!",
         "desc": "Available in downloads directory"
       },
-      "notifications-button": {
-        "title": "Notifications",
-        "tag-enabled": "Enabled",
-        "tag-disabled": "Disabled"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "App mode",
-        "performance-tag": "Performance",
-        "privacy-tag": "Privacy",
-        "description-tag": "Easy to use - All the features",
-        "first-bullet-point": "Receive push notifications",
-        "second-bullet-point": "Receive contact requests",
-        "third-bullet-point": "Local peer discovery (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Dark mode",
       "receive-contact-requests-button": "Receive contact requests",
       "external-services-button": "External services",
       "auto-replicate-button": "Auto replicate",
       "auto-replicate-button-unavailable": "You must register at least one replication server first",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Local Peer discovery"
-      },
+
       "blocked-contacts-button": {
         "title": "Blocked contacts",
         "tag": "blocked"
@@ -391,7 +436,10 @@
     "group-invitation": {
       "fingerprint": "Fingerprint",
       "info": "Infos",
-      "devices": "Devices"
+      "devices": "Devices",
+      "join": "JOIN THIS GROUP",
+      "password-label": "Enter the group password",
+      "password-placeholder": "Password..."
     },
     "save-theme": {
       "title": "Saving theme",

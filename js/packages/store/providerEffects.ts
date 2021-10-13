@@ -384,7 +384,6 @@ export const updateAccountsPreReady = async (
 	}
 	const displayName = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.DisplayName)
 	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.DisplayName)
-	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.Preset)
 	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.IsNewAccount)
 	if (displayName) {
 		await client

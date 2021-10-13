@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, Animated, ViewStyle } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
@@ -65,24 +65,31 @@ export const Toggle: React.FC<ToggleProps> = ({
 	const checkIconOpacityAnimation = React.useRef(new Animated.Value(checked ? 1 : 0)).current
 	const styleColors = generateStyleColors(status, disabled, colors)
 
+	useEffect(() => {
+		setChecked(defaultChecked)
+	}, [defaultChecked])
+
+	useEffect(() => {
+		Animated.parallel([
+			Animated.timing(circleLeftPositionAnimation, {
+				toValue: !checked ? 0 : CIRCLE_RIGHT_POSITION,
+				duration: 200,
+				useNativeDriver: false,
+			}),
+			Animated.timing(checkIconOpacityAnimation, {
+				toValue: !checked ? 0 : 1,
+				duration: 100,
+				useNativeDriver: false,
+			}),
+		]).start()
+	}, [checked, checkIconOpacityAnimation, circleLeftPositionAnimation])
+
 	return (
 		<TouchableOpacity
 			activeOpacity={0.7}
 			onPress={() => {
 				onChange?.(!checked)
 				setChecked(!checked)
-				Animated.parallel([
-					Animated.timing(circleLeftPositionAnimation, {
-						toValue: checked ? 0 : CIRCLE_RIGHT_POSITION,
-						duration: 200,
-						useNativeDriver: false,
-					}),
-					Animated.timing(checkIconOpacityAnimation, {
-						toValue: checked ? 0 : 1,
-						duration: 100,
-						useNativeDriver: false,
-					}),
-				]).start()
 			}}
 			style={[
 				{

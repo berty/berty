@@ -1,5 +1,12 @@
-import React, { useState } from 'react'
-import { ActivityIndicator, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useMemo, useState } from 'react'
+import {
+	ActivityIndicator,
+	ScrollView,
+	StatusBar,
+	Text as TextNative,
+	TouchableOpacity,
+	View,
+} from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import QRCode from 'react-native-qrcode-svg'
@@ -9,19 +16,15 @@ import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import {
+	CheckListItem,
 	DefaultBertyTheme,
 	DefaultDarkTheme,
 	PersistentOptionsKeys,
 } from '@berty-tech/store/context'
 import i18n from '@berty-tech/berty-i18n'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
-import beapi from '@berty-tech/api'
 
-import {
-	ButtonSetting,
-	ButtonSettingItem,
-	ButtonSettingRow,
-} from '../shared-components/SettingsButtons'
+import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
 import { AccountAvatar } from '../avatars'
 import { EditProfile } from './EditProfile'
@@ -124,14 +127,234 @@ const HomeHeaderAvatar: React.FC = () => {
 	)
 }
 
+const TaskItem: React.FC<{ value: CheckListItem }> = ({ value }) => {
+	const colors = useThemeColor()
+	const [{ text, margin, padding }, { scaleSize }] = useStyles()
+	const { t }: any = useTranslation()
+	const [itemCollapsed, setItemCollapsed] = useState<boolean>(true)
+
+	return (
+		<View
+			style={[
+				padding.top.tiny,
+				{
+					flexDirection: 'row',
+					alignItems: 'flex-start',
+					justifyContent: 'space-between',
+				},
+			]}
+		>
+			<View style={{ flexDirection: 'row', alignItems: 'flex-start', flex: 10 }}>
+				{value?.done ? (
+					<Icon
+						name='checkmark-circle-2'
+						fill={colors['background-header']}
+						width={25 * scaleSize}
+						height={25 * scaleSize}
+					/>
+				) : (
+					<View
+						style={{
+							width: 21 * scaleSize,
+							height: 21 * scaleSize,
+							borderRadius: 21 * scaleSize,
+							borderWidth: 2,
+							borderColor: colors['background-header'],
+							margin: 2 * scaleSize,
+						}}
+					/>
+				)}
+				<View style={{ flexDirection: 'column' }}>
+					<TextNative
+						style={[
+							text.size.medium,
+							margin.left.small,
+							{ fontFamily: 'Open Sans', color: colors['main-text'] },
+						]}
+					>
+						{t(value.title)}
+					</TextNative>
+					{!itemCollapsed ? (
+						<TextNative
+							style={[
+								text.size.scale(13),
+								margin.left.big,
+								{ fontFamily: 'Open Sans', color: colors['main-text'] },
+							]}
+						>
+							{t(value.desc)}
+						</TextNative>
+					) : null}
+				</View>
+			</View>
+			<TouchableOpacity
+				style={[{ alignItems: 'center', flex: 1 }]}
+				onPress={() => setItemCollapsed(!itemCollapsed)}
+			>
+				<Icon
+					name={!itemCollapsed ? 'arrow-downward' : 'arrow-upward'}
+					fill={colors['main-text']}
+					height={25 * scaleSize}
+					width={25 * scaleSize}
+				/>
+			</TouchableOpacity>
+		</View>
+	)
+}
+
+const CheckItems: React.FC<{ openModal: () => void }> = ({ openModal }) => {
+	const ctx = useMsgrContext()
+	const { navigate } = useNativeNavigation()
+
+	const tasks = useMemo(
+		() => Object.entries(ctx.persistentOptions[PersistentOptionsKeys.CheckList]),
+		[ctx.persistentOptions],
+	)
+
+	const handleCheckListItemPress = useCallback(
+		(key: string, value: CheckListItem) => {
+			switch (key) {
+				case 'avatar':
+					if (!value.done) {
+						openModal()
+					}
+					return
+				case 'relay':
+					if (!value.done) {
+						navigate('Settings.ReplicationServices')
+					}
+					return
+				case 'contact':
+					if (!value.done) {
+						navigate('Main.Scan')
+					}
+					return
+				case 'group':
+					if (!value.done) {
+						navigate('Main.CreateGroupAddMembers')
+					}
+					return
+				case 'hidden-account':
+					return
+				case 'theme':
+					if (!value.done) {
+						navigate('Settings.ThemeEditor')
+					}
+					return
+				case 'message':
+					return
+				case 'message-ble':
+					return
+				default:
+					return
+			}
+		},
+		[openModal, navigate],
+	)
+	return (
+		<View>
+			{!ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed
+				? tasks.map((value: [string, boolean | CheckListItem], key) => {
+						const _value = value[1]
+						return typeof _value === 'boolean' ? null : (
+							<TouchableOpacity
+								key={key}
+								onPress={() => handleCheckListItemPress(value[0], _value)}
+							>
+								<TaskItem value={_value} />
+							</TouchableOpacity>
+						)
+				  })
+				: null}
+		</View>
+	)
+}
+
+const CheckList: React.FC<{ openModal: () => void }> = ({ openModal }) => {
+	const colors = useThemeColor()
+	const [{ text, padding, margin, border }, { scaleSize }] = useStyles()
+	const ctx = useMsgrContext()
+	const { t }: any = useTranslation()
+
+	const tasks = useMemo(
+		() => Object.entries(ctx.persistentOptions[PersistentOptionsKeys.CheckList]),
+		[ctx.persistentOptions],
+	)
+	const tasksDone = useMemo(() => tasks.filter(value => value[1].done).length, [tasks])
+
+	return (
+		<View
+			style={[
+				margin.horizontal.medium,
+				margin.top.medium,
+				padding.medium,
+				border.radius.medium,
+				{ backgroundColor: colors['main-background'], flex: 1 },
+			]}
+		>
+			<View>
+				<View
+					style={[
+						!ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed &&
+							margin.bottom.small,
+						{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' },
+					]}
+				>
+					<View style={{ flexDirection: 'row', flex: 10 }}>
+						<TextNative
+							style={[
+								text.size.scale(16),
+								text.bold.medium,
+								margin.right.scale(5),
+								{ fontFamily: 'Open Sans', color: colors['main-text'] },
+							]}
+						>
+							{t('settings.home.check-list.title', { tasksDone, totalTasks: tasks.length })}
+						</TextNative>
+						<Icon
+							name='checkmark-circle-2'
+							fill={colors['background-header']}
+							width={20 * scaleSize}
+							height={20 * scaleSize}
+						/>
+					</View>
+
+					<TouchableOpacity
+						style={[{ alignItems: 'center', flex: 1 }]}
+						onPress={async () => {
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.CheckList,
+								payload: {
+									...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+									isCollapsed: !ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed,
+								},
+							})
+						}}
+					>
+						<Icon
+							name={
+								ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed
+									? 'arrow-downward'
+									: 'arrow-upward'
+							}
+							fill={colors['main-text']}
+							height={25 * scaleSize}
+							width={25 * scaleSize}
+						/>
+					</TouchableOpacity>
+				</View>
+			</View>
+			<CheckItems openModal={openModal} />
+		</View>
+	)
+}
+
 const HomeBodySettings: React.FC = () => {
-	const [{ flex, padding, text, margin, column }] = useStyles()
+	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNativeNavigation()
 	const ctx = useMsgrContext()
 	const { t }: any = useTranslation()
-	const isPrefMode =
-		ctx.networkConfig.showDefaultServices === beapi.account.NetworkConfig.Flag.Enabled
 	const enableNotif = ctx.persistentOptions.notifications.enable
 
 	const items: any = Object.entries(languages).map(([key, attrs]) => ({
@@ -143,67 +366,13 @@ const HomeBodySettings: React.FC = () => {
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, padding.bottom.small]}>
 			<ButtonSetting
-				name={t('settings.mode.app-mode-button.title')}
+				name={t('settings.home.app-network-button.title')}
 				icon='options-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.ChoosePreset')}
-				state={{
-					value: isPrefMode
-						? t('settings.mode.app-mode-button.performance-tag')
-						: t('settings.mode.app-mode-button.privacy-tag'),
-					color: colors['reverted-main-text'],
-					bgColor: isPrefMode ? colors['background-header'] : colors['secondary-background-header'],
-					stateIcon: isPrefMode ? 'flash-outline' : 'lock-outline',
-					stateIconColor: colors['reverted-main-text'],
-				}}
+				onPress={() => navigation.navigate('Settings.NetworkConfig')}
 			>
-				<Text
-					style={[
-						column.item.right,
-						text.bold.small,
-						text.size.tiny,
-						margin.right.scale(60),
-						isPrefMode
-							? { color: colors['background-header'] }
-							: { color: colors['secondary-background-header'] },
-						margin.bottom.small,
-					]}
-				>
-					{t('settings.mode.app-mode-button.description-tag')}
-				</Text>
-				<View style={[padding.right.small]}>
-					<ButtonSettingItem
-						value={t('settings.mode.app-mode-button.first-bullet-point')}
-						icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
-						iconColor={
-							isPrefMode ? colors['background-header'] : colors['secondary-background-header']
-						}
-						disabled
-						styleText={{ color: colors['secondary-text'] }}
-						styleContainer={[margin.bottom.tiny]}
-					/>
-					<ButtonSettingItem
-						value={t('settings.mode.app-mode-button.second-bullet-point')}
-						icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
-						iconColor={
-							isPrefMode ? colors['background-header'] : colors['secondary-background-header']
-						}
-						disabled
-						styleText={{ color: colors['secondary-text'] }}
-						styleContainer={[margin.bottom.tiny]}
-					/>
-					<ButtonSettingItem
-						value={t('settings.mode.app-mode-button.third-bullet-point')}
-						icon={isPrefMode ? 'checkmark-circle-2' : 'close-circle'}
-						iconColor={
-							isPrefMode ? colors['background-header'] : colors['secondary-background-header']
-						}
-						disabled
-						styleText={{ color: colors['secondary-text'] }}
-						styleContainer={[margin.bottom.tiny]}
-					/>
-				</View>
+				{/* TODO bullet point in button */}
 			</ButtonSetting>
 			<DropDownPicker
 				items={items}
@@ -219,26 +388,26 @@ const HomeBodySettings: React.FC = () => {
 				}}
 			/>
 			<ButtonSetting
-				name={t('settings.mode.notifications-button.title')}
+				name={t('settings.home.notifications-button.title')}
 				icon='bell-outline'
 				iconColor={colors['background-header']}
 				state={{
 					value: enableNotif
-						? t('settings.mode.notifications-button.tag-enabled')
-						: t('settings.mode.notifications-button.tag-disabled'),
+						? t('settings.home.notifications-button.tag-enabled')
+						: t('settings.home.notifications-button.tag-disabled'),
 					color: enableNotif ? colors['background-header'] : colors['secondary-text'],
 					bgColor: enableNotif ? colors['positive-asset'] : `${colors['negative-asset']}40`,
 				}}
 				onPress={() => navigation.navigate('Settings.Notifications')}
 			/>
 			<ButtonSetting
-				name={t('settings.mode.bluetooth-button.title')}
+				name={t('settings.home.bluetooth-button.title')}
 				icon='bluetooth-outline'
 				iconColor={colors['background-header']}
 				onPress={() => navigation.navigate('Settings.Bluetooth')}
 			/>
 			<ButtonSetting
-				name={t('settings.mode.dark-mode-button')}
+				name={t('settings.home.dark-mode-button')}
 				icon='moon-outline'
 				iconColor={colors['background-header']}
 				toggled
@@ -342,6 +511,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 						>
 							<View style={{ bottom: -_verticalOffset }}>
 								<HomeHeaderAvatar />
+								<CheckList openModal={() => setOpenModal(true)} />
 								<HomeHeaderGroupButton />
 							</View>
 						</View>

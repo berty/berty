@@ -7,19 +7,14 @@ import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/se
 import { useMsgrContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
-import SwiperCard from './SwiperCard'
-import OnboardingWrapper from './OnboardingWrapper'
+import SwiperCard from '../onboarding/SwiperCard'
+import OnboardingWrapper from '../onboarding/OnboardingWrapper'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const ctx = useMsgrContext()
 	const accountServices = useAccountServices() || []
 	const { t }: any = useTranslation()
-
-	React.useEffect(() => {
-		if (accountServices.length > 0) {
-			next()
-		}
-	}, [next, accountServices.length])
+	const { goBack } = useNavigation()
 
 	return (
 		<SwiperCard
@@ -45,6 +40,17 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 											},
 										},
 									})
+									await ctx.setPersistentOption({
+										type: PersistentOptionsKeys.CheckList,
+										payload: {
+											...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
+											relay: {
+												...ctx.persistentOptions[PersistentOptionsKeys.CheckList].relay,
+												done: true,
+											},
+										},
+									})
+									goBack()
 								} catch (e) {
 									console.log(e)
 								}
@@ -61,7 +67,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	)
 }
 
-export const ServicesAuth: React.FC<{}> = () => {
+export const ReplicationServices: React.FC<{}> = () => {
 	useNotificationsInhibitor(() => true)
 	const { persistentOptions, setPersistentOption } = useMsgrContext()
 	const colors = useThemeColor()
@@ -89,4 +95,4 @@ export const ServicesAuth: React.FC<{}> = () => {
 	)
 }
 
-export default ServicesAuth
+export default ReplicationServices
