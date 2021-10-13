@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Помощ",
       "header-center-button": "Инструмени за програмисти",
       "header-right-button": "Настройки",
       "network-button": "Списък от мрежи",
-      "edit-profile": "Редакция на профила"
+      "edit-profile": "Редакция на профила",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Получаване на push известия",
+        "second-bullet-point": "Получавайте заявки за контакт",
+        "third-bullet-point": "Local peer discovery (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Известия",
+        "tag-enabled": "Включено",
+        "tag-disabled": "Изключено"
+      },
+      "dark-mode-button": "Тъмен режим",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Списък от мрежи",
       "online-peers": "Онлайн peers"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Локално откриване на Peers"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Настройки",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Известия",
-        "tag-enabled": "Включено",
-        "tag-disabled": "Изключено"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Режим на работа",
-        "performance-tag": "Производителност",
-        "privacy-tag": "Поверителност",
-        "description-tag": "Лесен за употреба - Всички функционалности",
-        "first-bullet-point": "Получаване на push известия",
-        "second-bullet-point": "Получавайте заявки за контакт",
-        "third-bullet-point": "Local peer discovery (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Тъмен режим",
       "receive-contact-requests-button": "Получавайте заявки за контакт",
       "external-services-button": "Външни услуги",
       "auto-replicate-button": "Автоматична репликация",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Локално откриване на Peers"
-      },
       "blocked-contacts-button": {
         "title": "Блокирай контакт",
         "tag": "блокиран"
@@ -391,7 +435,10 @@
     "group-invitation": {
       "fingerprint": "Fingerprint",
       "info": "Информация",
-      "devices": "Устройства"
+      "devices": "Устройства",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
