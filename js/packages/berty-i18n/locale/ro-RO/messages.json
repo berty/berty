@@ -180,9 +180,9 @@
         "tag-enabled": "Activate",
         "tag-disabled": "Dezactivate"
       },
-      "dark-mode-button": "",
+      "dark-mode-button": "Mod întunecat",
       "bluetooth-button": {
-        "title": ""
+        "title": "Bluetooth"
       }
     },
     "network-map": {
@@ -196,7 +196,7 @@
       "replication-services": "",
       "ble": "",
       "multicast-dns-button": {
-        "title": "",
+        "title": "DNS Multicast",
         "desc": ""
       },
       "dht": "",
