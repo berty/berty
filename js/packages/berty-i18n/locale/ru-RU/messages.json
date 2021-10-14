@@ -197,7 +197,7 @@
       "ble": "",
       "multicast-dns-button": {
         "title": "Multicast DNS",
-        "desc": ""
+        "desc": "Обнаружение узлов рядом"
       },
       "dht": "",
       "bootstrap": "",
