@@ -1,7 +1,12 @@
 import moment from 'moment'
 import { Long } from 'protobufjs/light'
 
-import { MsgrState } from '@berty-tech/store/context'
+import {
+	CheckListProfileNotification,
+	MsgrState,
+	PersistentOptionsKeys,
+	UpdatesProfileNotification,
+} from '@berty-tech/store/context'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 
@@ -90,6 +95,38 @@ export const getRandomColor = () => {
 	return color
 }
 
+export const showNeedRestartNotification = (showNotification: any, ctx: MsgrState, t: any) => {
+	showNotification({
+		title: t('notification.need-restart.title'),
+		message: t('notification.need-restart.desc'),
+		onPress: async () => {
+			await ctx.restart()
+		},
+		additionalProps: { type: 'message' },
+	})
+}
+
+export const readProfileNotification = async (
+	ctx: MsgrState,
+	type: typeof CheckListProfileNotification | typeof UpdatesProfileNotification,
+) => {
+	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
+	const numberNotifs =
+		type === CheckListProfileNotification
+			? profileNotifs[CheckListProfileNotification]
+			: profileNotifs[UpdatesProfileNotification]
+	if (numberNotifs === 0) {
+		return
+	}
+	await ctx.setPersistentOption({
+		type: PersistentOptionsKeys.ProfileNotification,
+		payload: {
+			...profileNotifs,
+			[type]: numberNotifs - 1,
+		},
+	})
+}
+
 export const randomizeThemeColor = () => {
 	return {
 		'main-text': getRandomColor(),
@@ -105,15 +142,4 @@ export const randomizeThemeColor = () => {
 		'input-background': getRandomColor(),
 		shadow: getRandomColor(),
 	}
-}
-
-export const showNeedRestartNotification = (showNotification: any, ctx: MsgrState, t: any) => {
-	showNotification({
-		title: t('notification.need-restart.title'),
-		message: t('notification.need-restart.desc'),
-		onPress: async () => {
-			await ctx.restart()
-		},
-		additionalProps: { type: 'message' },
-	})
 }

@@ -6,8 +6,10 @@ import LottieView from 'lottie-react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { AccountAvatar } from '@berty-tech/components/avatars'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useProfileNotification, useThemeColor } from '@berty-tech/store/hooks'
+
+import { AccountAvatar } from '../../avatars'
+import { UnreadCount } from '../../main/home/UnreadCount'
 
 export const HomeHeader: React.FC<
 	ViewProps & {
@@ -36,6 +38,7 @@ export const HomeHeader: React.FC<
 	const [{ border, width, height, padding, text, margin, row }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { navigate } = useNativeNavigation()
+	const notifs = useProfileNotification()
 	const { t }: any = useTranslation()
 	const [focus, setFocus] = useState<any>(null)
 	const animate = useRef<any>(null)
@@ -181,6 +184,11 @@ export const HomeHeader: React.FC<
 							}}
 						>
 							<AccountAvatar size={35} />
+							{notifs > 0 ? (
+								<View style={{ position: 'absolute', left: 15 * scaleSize, top: -(3 * scaleSize) }}>
+									<UnreadCount value={notifs} />
+								</View>
+							) : null}
 						</TouchableOpacity>
 					</View>
 				</View>

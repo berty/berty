@@ -146,6 +146,7 @@ export enum PersistentOptionsKeys {
 	ThemeColor = 'themeColor',
 	OnBoardingFinished = 'onBoardingFinished',
 	CheckList = 'checkList',
+	ProfileNotification = 'profileNotification',
 }
 
 export enum GlobalPersistentOptionsKeys {
@@ -237,6 +238,13 @@ export type PersistentOptionsCheckList = {
 	[key: string]: CheckListItem | boolean
 }
 
+export const CheckListProfileNotification = 'checkList'
+export const UpdatesProfileNotification = 'updates'
+export type PersistentOptionsProfileNotification = {
+	[CheckListProfileNotification]: number
+	[UpdatesProfileNotification]: number
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -282,6 +290,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.CheckList
 			payload: PersistentOptionsCheckList
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.ProfileNotification
+			payload: PersistentOptionsProfileNotification
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -295,6 +307,7 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.ThemeColor]: PersistentOptionsThemeColor
 	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
 	[PersistentOptionsKeys.CheckList]: PersistentOptionsCheckList
+	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }
 
 export const DefaultBertyTheme = 'default-berty-theme'
@@ -389,6 +402,10 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 				title: 'settings.home.check-list.ble-message.title',
 				desc: 'settings.home.check-list.ble-message.desc',
 			},
+		},
+		[PersistentOptionsKeys.ProfileNotification]: {
+			[CheckListProfileNotification]: 1,
+			[UpdatesProfileNotification]: 0,
 		},
 	}
 }

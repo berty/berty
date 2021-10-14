@@ -7,10 +7,13 @@ import { Routes } from '@berty-tech/navigation'
 import colors from '@berty-tech/styles/colors.json'
 
 import {
+	CheckListProfileNotification,
 	MessengerActions,
 	MessengerAppState,
 	MsgrContext,
 	NotificationsInhibitor,
+	PersistentOptionsKeys,
+	UpdatesProfileNotification,
 	useMsgrContext,
 } from './context'
 import { fakeContacts, fakeMessages, fakeMultiMemberConversations } from './faker'
@@ -175,6 +178,12 @@ export const useThemeColor = () => {
 		ctx.appState !== MessengerAppState.GetStarted
 		? collectionColors
 		: colors
+}
+
+export const useProfileNotification = () => {
+	const ctx = useMsgrContext()
+	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
+	return profileNotifs[UpdatesProfileNotification] + profileNotifs[CheckListProfileNotification]
 }
 
 //
