@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { View, TouchableOpacity, StyleProp, Animated, Easing, TextInput } from 'react-native'
+import {
+	View,
+	TouchableOpacity,
+	StyleProp,
+	Animated,
+	Easing,
+	TextInput,
+	ScrollView,
+} from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
@@ -411,6 +419,7 @@ type ButtonSettingRowProps = {
 	numberOfLines?: number
 	style?: StyleProp<any>
 	styleText?: StyleProp<any>
+	isScroll?: boolean
 }
 
 // Styles
@@ -426,13 +435,25 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	numberOfLines = 1,
 	style = null,
 	styleText = null,
+	isScroll = false,
 }) => {
 	const _styles = useStylesButtonSettingRow()
 	const [{ flex, row, margin, padding, border, text, opacity }] = useStyles()
 	const colors = useThemeColor()
 
 	return (
-		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
+		<ScrollView
+			contentContainerStyle={[
+				!isScroll && flex.tiny,
+				row.fill,
+				margin.top.medium,
+				padding.bottom.small,
+				style,
+				{ justifyContent: 'center' },
+			]}
+			horizontal
+			showsHorizontalScrollIndicator={false}
+		>
 			{state.map((obj, key) => (
 				<TouchableOpacity
 					key={key}
@@ -449,6 +470,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 							justifyContent: 'center',
 							backgroundColor: colors['main-background'],
 							shadowColor: colors.shadow,
+							width: 100,
 						},
 					]}
 					onPress={obj.onPress}
@@ -468,7 +490,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 					</Text>
 				</TouchableOpacity>
 			))}
-		</View>
+		</ScrollView>
 	)
 }
 

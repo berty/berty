@@ -553,6 +553,24 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.ReplicationServices}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Roadmap}
+				component={Components.Settings.Roadmap}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.roadmap.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Faq}
+				component={Components.Settings.Faq}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.faq.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
 			{/* Modals */}
 			<NavigationStack.Screen
 				name={Routes.Modals.ManageDeepLink}
