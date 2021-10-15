@@ -76,17 +76,17 @@
         "create-group": "إنشاء مجموعة"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "اسم المجموعة",
+        "about": "حول المجموعات",
+        "first-bullet-point": "يمكن لأي شخص في المجموعة إعادة تسميتها و دعوة أعضاء جدد",
+        "second-bullet-point": "يمكنك دعوة الأعضاء عن طريق رابط",
+        "third-bullet-point": "يمكنك مغادرة هذه المجموعة",
+        "fourth-bullet-point": "لا يمكنك حذف هذه المجموعة",
+        "fifth-bullet-point": "لا يمكنك إزالة عضو من هذه المجموعة"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "أُرسل الطلب. يعلق...",
+        "draft": "مسودة: {{message}}"
       }
     },
     "suggestion-display-name-initial": "انقر هنا للإضافة",
@@ -108,19 +108,19 @@
       "welcome-title": "مرحباً بك في خيارات الشبكات",
       "full-anon-mode": "وضع الإخفاء الكامل",
       "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "allow-expert-mode": "السماح بوضع الخبراء",
       "tor-compatible": {
-        "title": "",
+        "title": "متوافق مع تور",
         "desc": ""
       },
       "full-anon": {
         "title": "وضع الإخفاء الكامل",
         "desc": "",
-        "no-ip": "",
+        "no-ip": "لا يوجد ip",
         "no-mc": "",
-        "tor-only": ""
+        "tor-only": "تور فقط"
       },
-      "save": "",
+      "save": "احفظ",
       "skip": "اختراع و هذه الأشرطة"
     },
     "scan": {
@@ -130,9 +130,9 @@
   "settings": {
     "home": {
       "check-list": {
-        "title": "",
+        "title": "قائمة التحقق {{tasksDone}}\\{{totalTasks}}",
         "avatar": {
-          "title": "",
+          "title": "غيّر الصورة الشخصية",
           "desc": ""
         },
         "relay": {
