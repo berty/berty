@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertyauth
 
 import (
 	"crypto/ed25519"
@@ -11,6 +11,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -54,8 +55,8 @@ func NewAuthTokenServer(secret []byte, sk ed25519.PrivateKey, services map[strin
 
 func (a *AuthTokenServer) serveMux() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc(AuthHTTPPathTokenExchange, a.authTokenServerHTTPOAuthToken)
-	mux.HandleFunc(AuthHTTPPathAuthorize, a.authTokenServerHTTPAuthorize)
+	mux.HandleFunc(authtypes.AuthHTTPPathTokenExchange, a.authTokenServerHTTPOAuthToken)
+	mux.HandleFunc(authtypes.AuthHTTPPathAuthorize, a.authTokenServerHTTPAuthorize)
 
 	return mux
 }
@@ -109,10 +110,10 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 	codeChallenge := r.URL.Query().Get("code_challenge")
 
 	for _, vs := range [][2]string{
-		{"redirect_uri", AuthRedirect},
-		{"response_type", AuthResponseType},
-		{"client_id", AuthClientID},
-		{"code_challenge_method", AuthCodeChallengeMethod},
+		{"redirect_uri", authtypes.AuthRedirect},
+		{"response_type", authtypes.AuthResponseType},
+		{"client_id", authtypes.AuthClientID},
+		{"code_challenge_method", authtypes.AuthCodeChallengeMethod},
 	} {
 		if got := r.URL.Query().Get(vs[0]); got != vs[1] {
 			a.authTokenServerRedirectError(w, redirectURI, "invalid_request", fmt.Sprintf("unexpected value for %s", vs[0]), a.logger)
@@ -132,7 +133,7 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 
 	if r.Method == "POST" || a.noClick {
 		// TODO: allow client scope from "scope" query parameter
-		servicesIDs := []string{ServiceReplicationID, ServicePushID}
+		servicesIDs := []string{authtypes.ServiceReplicationID, authtypes.ServicePushID}
 
 		code, err := a.issuer.IssueCode(codeChallenge, servicesIDs)
 		if err != nil {
@@ -155,8 +156,8 @@ func (a *AuthTokenServer) authTokenServerHTTPOAuthToken(w http.ResponseWriter, r
 		return
 	}
 
-	if got := r.Form.Get("grant_type"); AuthGrantType != got {
-		a.authTokenServerJSONError(w, "invalid_request", fmt.Sprintf("expected %s, got %s for %s", AuthGrantType, got, "grant_type"), a.logger)
+	if got := r.Form.Get("grant_type"); authtypes.AuthGrantType != got {
+		a.authTokenServerJSONError(w, "invalid_request", fmt.Sprintf("expected %s, got %s for %s", authtypes.AuthGrantType, got, "grant_type"), a.logger)
 		return
 	}
 

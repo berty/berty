@@ -70,7 +70,7 @@ func (s *service) DebugInspectGroupStore(req *protocoltypes.DebugInspectGroupSto
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid log type specified"))
 	}
 
-	cg, err := s.getContextGroupForID(req.GroupPK)
+	cg, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrInvalidInput.Wrap(err)
 	}

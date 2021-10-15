@@ -20,9 +20,11 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertypush"
+	"berty.tech/berty/v2/go/pkg/bertypushrelay"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -40,8 +42,8 @@ func TestPushDecryptStandalone(t *testing.T) {
 	logger = logger.Named("bty.test")
 
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
-	dispatchers := []bertyprotocol.PushDispatcher{dispatcher}
-	_, pushPK, pushHost, cancel := bertyprotocol.PushServerForTests(ctx, t, dispatchers, logger.Named("bty"))
+	dispatchers := []bertypushrelay.PushDispatcher{dispatcher}
+	_, pushPK, pushHost, cancel := bertypushrelay.PushServerForTests(ctx, t, dispatchers, logger.Named("bty"))
 	defer cancel()
 
 	// prepare deps
@@ -106,18 +108,18 @@ func TestPushDecryptStandalone(t *testing.T) {
 	protocol1, err := svc1.GetProtocolClient()
 	require.NoError(t, err)
 
-	tokenIssuer, err := bertyprotocol.NewAuthTokenIssuer(authServerSecret[:], authServerSK)
+	tokenIssuer, err := bertyauth.NewAuthTokenIssuer(authServerSecret[:], authServerSK)
 	require.NoError(t, err)
 
-	services := map[string]string{bertyprotocol.ServicePushID: pushHost}
+	services := map[string]string{authtypes.ServicePushID: pushHost}
 
-	randomToken, err := bertyprotocol.IssueRandomToken(tokenIssuer, services)
+	randomToken, err := bertyauth.IssueRandomToken(tokenIssuer, services)
 	require.NoError(t, err)
 
 	_, err = protocol1.DebugAuthServiceSetToken(ctx, &protocoltypes.DebugAuthServiceSetToken_Request{
 		Token: &protocoltypes.AuthExchangeResponse{
 			AccessToken: randomToken,
-			Scope:       bertyprotocol.ServicePushID,
+			Scope:       authtypes.ServicePushID,
 			Services:    services,
 		},
 	})

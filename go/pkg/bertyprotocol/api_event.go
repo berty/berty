@@ -41,7 +41,7 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 	)
 
 	// Get group context / check if the group is opened
-	cg, err := s.getContextGroupForID(req.GroupPK)
+	cg, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}
@@ -136,7 +136,7 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 	)
 
 	// Get group context / check if the group is opened
-	cg, err := s.getContextGroupForID(req.GroupPK)
+	cg, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}

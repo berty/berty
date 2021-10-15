@@ -1,9 +1,10 @@
-package bertyprotocol
+package bertyauth
 
 import (
 	"context"
 	stdcrypto "crypto"
 	"crypto/ed25519"
+	"encoding/base64"
 	"fmt"
 
 	"github.com/gofrs/uuid"
@@ -14,21 +15,15 @@ import (
 	"gopkg.in/square/go-jose.v2"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-type ContextAuthValue uint32
-
-const (
-	ContextTokenHashField     ContextAuthValue = iota
-	AuthHTTPPathTokenExchange                  = "/oauth/token" // nolint:gosec
-	AuthHTTPPathAuthorize                      = "/authorize"
-)
-
 type AuthTokenVerifier struct {
-	secret *[32]byte
-	pk     stdcrypto.PublicKey
+	secret   *[32]byte
+	pk       stdcrypto.PublicKey
+	issuerID string
 }
 
 type AuthTokenIssuer struct {
@@ -47,8 +42,9 @@ func NewAuthTokenVerifier(secret []byte, pk ed25519.PublicKey) (*AuthTokenVerifi
 	}
 
 	return &AuthTokenVerifier{
-		secret: secretArr,
-		pk:     pk,
+		secret:   secretArr,
+		pk:       pk,
+		issuerID: base64.StdEncoding.EncodeToString(pk),
 	}, nil
 }
 
@@ -162,7 +158,7 @@ func (r *AuthTokenVerifier) VerifyCode(code, codeVerifier string) (*protocoltype
 		return nil, err
 	}
 
-	if authSessionCodeChallenge(codeVerifier) != codeObj.CodeChallenge {
+	if AuthSessionCodeChallenge(codeVerifier) != codeObj.CodeChallenge {
 		return nil, errcode.ErrServicesAuthCodeChallenge
 	}
 
@@ -228,6 +224,9 @@ func (r *AuthTokenVerifier) GRPCAuthInterceptor(serviceID string) func(ctx conte
 			return nil, status.Errorf(codes.PermissionDenied, err.Error())
 		}
 
-		return context.WithValue(ctx, ContextTokenHashField, tokenData.TokenID), nil
+		ctx = context.WithValue(ctx, authtypes.ContextTokenHashField, tokenData.TokenID)
+		ctx = context.WithValue(ctx, authtypes.ContextTokenIssuerField, r.issuerID)
+
+		return ctx, nil
 	}
 }

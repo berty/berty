@@ -2,6 +2,7 @@ package messengerdb
 
 import (
 	"fmt"
+	"time"
 
 	"go.uber.org/multierr"
 	"gorm.io/driver/sqlite"
@@ -54,7 +55,7 @@ func dropAllTables(db *gorm.DB) error {
 }
 
 func getExpectedDBSchemaForModels(models []interface{}) (map[string][]*ColumnInfo, error) {
-	db, err := gorm.Open(sqlite.Open("file:schema_compare?mode=memory&cache=shared"), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open(fmt.Sprintf("file:schema_compare_%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {

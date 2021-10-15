@@ -9,8 +9,10 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
@@ -18,7 +20,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Registering replication service for group")
 	defer func() { endSection(err, "") }()
 
-	gc, err := s.getContextGroupForID(request.GroupPK)
+	gc, err := s.GetContextGroupForID(request.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -39,7 +41,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 
 	endpoint := ""
 	for _, t := range token.SupportedServices {
-		if t.ServiceType != ServiceReplicationID {
+		if t.ServiceType != authtypes.ServiceReplicationID {
 			continue
 		}
 
@@ -59,9 +61,9 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		return nil, errcode.ErrStreamWrite.Wrap(err)
 	}
 
-	client := NewReplicationServiceClient(cc)
+	client := replicationtypes.NewReplicationServiceClient(cc)
 
-	if _, err = client.ReplicateGroup(ctx, &protocoltypes.ReplicationServiceReplicateGroup_Request{
+	if _, err = client.ReplicateGroup(ctx, &replicationtypes.ReplicationServiceReplicateGroup_Request{
 		Group: replGroup,
 	}); err != nil {
 		return nil, errcode.ErrServiceReplicationServer.Wrap(err)

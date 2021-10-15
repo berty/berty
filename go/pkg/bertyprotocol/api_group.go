@@ -97,7 +97,7 @@ func (s *service) DeactivateGroup(_ context.Context, req *protocoltypes.Deactiva
 }
 
 func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv protocoltypes.ProtocolService_MonitorGroupServer) error {
-	g, err := s.getContextGroupForID(req.GroupPK)
+	g, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMissing.Wrap(err)
 	}

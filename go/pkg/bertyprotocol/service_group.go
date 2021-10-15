@@ -54,7 +54,7 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	cg, err := s.getContextGroupForID(id)
+	cg, err := s.GetContextGroupForID(id)
 	if err != nil || cg == nil {
 		return nil
 	}
@@ -82,7 +82,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	cg, err := s.getContextGroupForID(id)
+	cg, err := s.GetContextGroupForID(id)
 	if err == nil && cg != nil {
 		return nil
 	}
@@ -99,7 +99,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 	case protocoltypes.GroupTypeContact, protocoltypes.GroupTypeMultiMember:
 		dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
 
-		gc, err := s.odb.openGroup(s.ctx, g, dbOpts)
+		gc, err := s.odb.OpenGroup(s.ctx, g, dbOpts)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
@@ -131,7 +131,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 	return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 }
 
-func (s *service) getContextGroupForID(id []byte) (*GroupContext, error) {
+func (s *service) GetContextGroupForID(id []byte) (*GroupContext, error) {
 	if len(id) == 0 {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("no group id provided"))
 	}

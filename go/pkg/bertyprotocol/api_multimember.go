@@ -35,7 +35,7 @@ func (s *service) MultiMemberGroupCreate(ctx context.Context, req *protocoltypes
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to activate group: %w", err))
 	}
 
-	cg, err := s.getContextGroupForID(g.PublicKey)
+	cg, err := s.GetContextGroupForID(g.PublicKey)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -84,7 +84,7 @@ func (s *service) MultiMemberGroupLeave(ctx context.Context, req *protocoltypes.
 
 // MultiMemberGroupAliasResolverDisclose sends an deviceKeystore identity proof to the group members
 func (s *service) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *protocoltypes.MultiMemberGroupAliasResolverDisclose_Request) (*protocoltypes.MultiMemberGroupAliasResolverDisclose_Reply, error) {
-	cg, err := s.getContextGroupForID(req.GroupPK)
+	cg, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}
@@ -104,7 +104,7 @@ func (s *service) MultiMemberGroupAdminRoleGrant(context.Context, *protocoltypes
 
 // MultiMemberGroupInvitationCreate creates a group invitation
 func (s *service) MultiMemberGroupInvitationCreate(ctx context.Context, req *protocoltypes.MultiMemberGroupInvitationCreate_Request) (*protocoltypes.MultiMemberGroupInvitationCreate_Reply, error) {
-	cg, err := s.getContextGroupForID(req.GroupPK)
+	cg, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}

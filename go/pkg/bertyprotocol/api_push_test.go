@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertyprotocol_test
 
 import (
 	"context"
@@ -13,12 +13,19 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertypush"
+	"berty.tech/berty/v2/go/pkg/bertypushrelay"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func createVirtualOtherPeerSecretsShareSecret(t testing.TB, ctx context.Context, membersStores []*MetadataStore) (*cryptoutil.OwnMemberDevice, *protocoltypes.DeviceSecret) {
+type serviceMethods interface {
+	GetContextGroupForID(id []byte) (*bertyprotocol.GroupContext, error)
+	GetCurrentDevicePushConfig() (*protocoltypes.PushServiceReceiver, *protocoltypes.PushServer)
+}
+
+func createVirtualOtherPeerSecretsShareSecret(t testing.TB, ctx context.Context, membersStores []*bertyprotocol.MetadataStore) (*cryptoutil.OwnMemberDevice, *protocoltypes.DeviceSecret) {
 	// Manually adding another member to the group
 	otherMemberSK, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err)
@@ -31,13 +38,13 @@ func createVirtualOtherPeerSecretsShareSecret(t testing.TB, ctx context.Context,
 	require.NoError(t, err)
 
 	for _, store := range membersStores {
-		_, err = MetadataStoreAddDeviceToGroup(ctx, store, store.g, otherMD)
+		_, err = bertyprotocol.MetadataStoreAddDeviceToGroup(ctx, store, store.Group(), otherMD)
 		require.NoError(t, err)
 
-		memDev, err := store.devKS.MemberDeviceForGroup(store.g)
+		memPK, err := store.MemberPK()
 		require.NoError(t, err)
 
-		_, err = MetadataStoreSendSecret(ctx, store, store.g, otherMD, memDev.PrivateMember().GetPublic(), ds)
+		_, err = bertyprotocol.MetadataStoreSendSecret(ctx, store, store.Group(), otherMD, memPK, ds)
 		require.NoError(t, err)
 	}
 
@@ -53,14 +60,13 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 	_, devicePushSK, err := box.GenerateKey(crand.Reader)
 	require.NoError(t, err)
 
-	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
+	tp, cancel := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
-	g, _, err := NewGroupMultiMember()
+	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	s, ok := tp.Service.(*service)
-	require.True(t, ok)
+	s := tp.Service
 
 	gPK, err := g.GetPubKey()
 	require.NoError(t, err)
@@ -68,13 +74,16 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 	_, err = s.MultiMemberGroupJoin(ctx, &protocoltypes.MultiMemberGroupJoin_Request{Group: g})
 	require.NoError(t, err)
 
-	err = s.activateGroup(gPK, false)
+	gPKRaw, err := gPK.Raw()
 	require.NoError(t, err)
 
-	gc, err := s.getContextGroupForID(g.PublicKey)
+	_, err = s.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gPKRaw})
 	require.NoError(t, err)
 
-	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*MetadataStore{gc.metadataStore})
+	gc, err := s.(serviceMethods).GetContextGroupForID(g.PublicKey)
+	require.NoError(t, err)
+
+	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*bertyprotocol.MetadataStore{gc.MetadataStore()})
 
 	testPayload := []byte("test payload")
 
@@ -84,10 +93,10 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 	env, headers, err := cryptoutil.OpenEnvelopeHeaders(envBytes, g)
 	require.NoError(t, err)
 
-	oosMsgEnv, err := sealOutOfStoreMessageEnvelope(cid.Undef, env, headers, g)
+	oosMsgEnv, err := bertyprotocol.SealOutOfStoreMessageEnvelope(cid.Undef, env, headers, g)
 	require.NoError(t, err)
 
-	openedOOSMessage, err := bertypush.DecryptOutOfStoreMessageEnv(s.groupDatastore, oosMsgEnv, gPK)
+	openedOOSMessage, err := bertypush.DecryptOutOfStoreMessageEnv(tp.GroupDatastore, oosMsgEnv, gPK)
 	require.NoError(t, err)
 
 	require.Equal(t, headers.Counter, openedOOSMessage.Counter)
@@ -108,18 +117,17 @@ func TestService_PushReceive(t *testing.T) {
 
 	dispatcher := testutil.NewPushMockedDispatcher(testutil.PushMockBundleID)
 
-	pushServer, err := NewPushService(serverPushSK, []PushDispatcher{dispatcher}, nil)
+	pushServer, err := bertypushrelay.NewPushService(serverPushSK, []bertypushrelay.PushDispatcher{dispatcher}, nil)
 	require.NoError(t, err)
 	require.NotNil(t, pushServer)
 
-	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
+	tp, cancel := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
-	g, gSK, err := NewGroupMultiMember()
+	g, gSK, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	s, ok := tp.Service.(*service)
-	require.True(t, ok)
+	s := tp.Service
 
 	_, err = s.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{Server: &protocoltypes.PushServer{
 		ServerKey:   serverPushPK[:],
@@ -130,13 +138,16 @@ func TestService_PushReceive(t *testing.T) {
 	_, err = s.MultiMemberGroupJoin(ctx, &protocoltypes.MultiMemberGroupJoin_Request{Group: g})
 	require.NoError(t, err)
 
-	err = s.activateGroup(gSK.GetPublic(), false)
+	gPK, _ := gSK.GetPublic().Raw()
 	require.NoError(t, err)
 
-	gc, err := s.getContextGroupForID(g.PublicKey)
+	_, err = s.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gPK})
 	require.NoError(t, err)
 
-	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*MetadataStore{gc.metadataStore})
+	gc, err := s.(serviceMethods).GetContextGroupForID(g.PublicKey)
+	require.NoError(t, err)
+
+	otherMD, otherDS := createVirtualOtherPeerSecretsShareSecret(t, ctx, []*bertyprotocol.MetadataStore{gc.MetadataStore()})
 
 	testPayload := []byte("test payload")
 	devicePushToken := "token_test"
@@ -150,10 +161,10 @@ func TestService_PushReceive(t *testing.T) {
 	dummyCID, err := cid.Parse("QmWATWQ7fVPP2EFGu71UkfnqhYXDYH566qy47CnJDgvs8u")
 	require.NoError(t, err)
 
-	oosMsgEnv, err := sealOutOfStoreMessageEnvelope(dummyCID, env, headers, g)
+	oosMsgEnv, err := bertyprotocol.SealOutOfStoreMessageEnvelope(dummyCID, env, headers, g)
 	require.NoError(t, err)
 
-	opaqueToken, err := PushSealTokenForServer(&protocoltypes.PushServiceReceiver{
+	opaqueToken, err := bertyprotocol.PushSealTokenForServer(&protocoltypes.PushServiceReceiver{
 		TokenType:          dispatcher.TokenType(),
 		BundleID:           testutil.PushMockBundleID,
 		Token:              []byte(devicePushToken),
@@ -202,11 +213,10 @@ func TestService_PushShareToken(t *testing.T) {
 	const nameTestPackage = "test.app"
 	const serverAddr1 = "server1.test"
 
-	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
+	tp, cancel := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
-	s, ok := tp.Service.(*service)
-	require.True(t, ok)
+	s := tp.Service
 
 	_, err = s.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{Server: &protocoltypes.PushServer{
 		ServerKey:   serverPushPK[:],
@@ -224,19 +234,22 @@ func TestService_PushShareToken(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	g, gSK, err := NewGroupMultiMember()
+	g, gSK, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
 	_, err = s.MultiMemberGroupJoin(ctx, &protocoltypes.MultiMemberGroupJoin_Request{Group: g})
 	require.NoError(t, err)
 
-	err = s.activateGroup(gSK.GetPublic(), false)
+	gPK, _ := gSK.GetPublic().Raw()
 	require.NoError(t, err)
 
-	gc, err := s.getContextGroupForID(g.PublicKey)
+	_, err = s.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gPK})
 	require.NoError(t, err)
 
-	pushToken, err := gc.metadataStore.getPushTokenForDevice(gc.DevicePubKey())
+	gc, err := s.(serviceMethods).GetContextGroupForID(g.PublicKey)
+	require.NoError(t, err)
+
+	pushToken, err := gc.MetadataStore().GetPushTokenForDevice(gc.DevicePubKey())
 	require.Error(t, err)
 	require.Nil(t, pushToken)
 
@@ -255,7 +268,7 @@ func TestService_PushShareToken(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	pushToken, err = gc.metadataStore.getPushTokenForDevice(gc.DevicePubKey())
+	pushToken, err = gc.MetadataStore().GetPushTokenForDevice(gc.DevicePubKey())
 	require.NoError(t, err)
 	require.NotNil(t, pushToken)
 	require.Equal(t, serverAddr1, pushToken.Server.ServiceAddr)
@@ -273,13 +286,12 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	tokenTestData2 := []byte("token_test_data_2")
 	const nameTestPackage = "test.app"
 
-	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
+	tp, cancel := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
-	s, ok := tp.Service.(*service)
-	require.True(t, ok)
+	s := tp.Service
 
-	currentPush := s.accountGroup.metadataStore.getCurrentDevicePushToken()
+	currentPush, _ := s.(serviceMethods).GetCurrentDevicePushConfig()
 	require.Nil(t, currentPush)
 
 	_, err = s.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
@@ -291,7 +303,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	currentPush = s.accountGroup.metadataStore.getCurrentDevicePushToken()
+	currentPush, _ = s.(serviceMethods).GetCurrentDevicePushConfig()
 	require.NotNil(t, currentPush)
 	require.Equal(t, tokenTestData1, currentPush.Token)
 	require.Equal(t, nameTestPackage, currentPush.BundleID)
@@ -307,7 +319,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	currentPush = s.accountGroup.metadataStore.getCurrentDevicePushToken()
+	currentPush, _ = s.(serviceMethods).GetCurrentDevicePushConfig()
 	require.NotNil(t, currentPush)
 	require.Equal(t, tokenTestData2, currentPush.Token)
 	require.Equal(t, nameTestPackage, currentPush.BundleID)
@@ -331,13 +343,12 @@ func TestService_PushSetServer(t *testing.T) {
 	serverPushPK2, _, err := box.GenerateKey(crand.Reader)
 	require.NoError(t, err)
 
-	tp, cancel := NewTestingProtocol(ctx, t, &TestingOpts{PushSK: devicePushSK}, nil)
+	tp, cancel := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
-	s, ok := tp.Service.(*service)
-	require.True(t, ok)
+	s := tp.Service
 
-	currentPush := s.accountGroup.metadataStore.getCurrentDevicePushServer()
+	_, currentPush := s.(serviceMethods).GetCurrentDevicePushConfig()
 	require.Nil(t, currentPush)
 
 	_, err = s.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{Server: &protocoltypes.PushServer{
@@ -346,7 +357,7 @@ func TestService_PushSetServer(t *testing.T) {
 	}})
 	require.NoError(t, err)
 
-	currentPush = s.accountGroup.metadataStore.getCurrentDevicePushServer()
+	_, currentPush = s.(serviceMethods).GetCurrentDevicePushConfig()
 	require.NotNil(t, currentPush)
 	require.Equal(t, serverPushPK1[:], currentPush.ServerKey)
 	require.Equal(t, serverAddr1, currentPush.ServiceAddr)
@@ -357,7 +368,7 @@ func TestService_PushSetServer(t *testing.T) {
 	}})
 	require.NoError(t, err)
 
-	currentPush = s.accountGroup.metadataStore.getCurrentDevicePushServer()
+	_, currentPush = s.(serviceMethods).GetCurrentDevicePushConfig()
 	require.NotNil(t, currentPush)
 	require.Equal(t, serverPushPK2[:], currentPush.ServerKey)
 	require.Equal(t, serverAddr2, currentPush.ServiceAddr)

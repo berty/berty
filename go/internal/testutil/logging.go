@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 	"sync"
@@ -61,4 +62,25 @@ func LoggerWithRing(t testing.TB) (*zap.Logger, *zapring.Core, func()) {
 	})
 
 	return loggerInstance, loggerRing, loggerCleanup
+}
+
+func LogTree(t *testing.T, log string, indent int, title bool, args ...interface{}) {
+	t.Helper()
+	if os.Getenv("SHOW_LOG_TREES") != "1" {
+		return
+	}
+
+	if len(args) > 0 {
+		log = fmt.Sprintf(log, args...)
+	}
+
+	if !title {
+		log = "└── " + log
+	}
+
+	for i := 0; i < indent; i++ {
+		log = "│  " + log
+	}
+
+	t.Log(log)
 }

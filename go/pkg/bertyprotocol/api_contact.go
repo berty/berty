@@ -14,7 +14,7 @@ func (s *service) ContactAliasKeySend(ctx context.Context, req *protocoltypes.Co
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Sending contact alias key")
 	defer func() { endSection(err, "") }()
 
-	g, err := s.getContextGroupForID(req.GroupPK)
+	g, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}

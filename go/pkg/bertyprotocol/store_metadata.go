@@ -1116,7 +1116,7 @@ func (m *MetadataStore) getCurrentDevicePushServer() *protocoltypes.PushServer {
 	return registration.Server
 }
 
-func (m *MetadataStore) getPushTokenForDevice(d crypto.PubKey) (*protocoltypes.PushMemberTokenUpdate, error) {
+func (m *MetadataStore) GetPushTokenForDevice(d crypto.PubKey) (*protocoltypes.PushMemberTokenUpdate, error) {
 	m.Index().(*metadataStoreIndex).lock.RLock()
 	defer m.Index().(*metadataStoreIndex).lock.RUnlock()
 
@@ -1131,4 +1131,26 @@ func (m *MetadataStore) getPushTokenForDevice(d crypto.PubKey) (*protocoltypes.P
 	}
 
 	return token, nil
+}
+
+func (m *MetadataStore) MemberPK() (crypto.PubKey, error) {
+	memDev, err := m.devKS.MemberDeviceForGroup(m.g)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return memDev.PrivateMember().GetPublic(), nil
+}
+
+func (m *MetadataStore) DevicePK() (crypto.PubKey, error) {
+	memDev, err := m.devKS.MemberDeviceForGroup(m.g)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return memDev.PrivateDevice().GetPublic(), nil
+}
+
+func (m *MetadataStore) Group() *protocoltypes.Group {
+	return m.g.Copy()
 }

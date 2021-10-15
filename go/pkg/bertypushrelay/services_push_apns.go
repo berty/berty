@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertypushrelay
 
 import (
 	"encoding/base64"
@@ -82,7 +82,7 @@ func pushDispatcherLoadAPNSCertificate(path string) (PushDispatcher, error) {
 
 func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *protocoltypes.PushServiceReceiver) error {
 	pushPayload := payload.NewPayload()
-	pushPayload.Custom(ServicePushPayloadKey, base64.RawURLEncoding.EncodeToString(data))
+	pushPayload.Custom(pushtypes.ServicePushPayloadKey, base64.RawURLEncoding.EncodeToString(data))
 	pushPayload.ContentAvailable()
 	notification := &apns2.Notification{}
 	notification.DeviceToken = string(receiver.Token)

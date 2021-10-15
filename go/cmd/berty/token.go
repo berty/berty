@@ -13,7 +13,7 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertyauth"
 )
 
 // This server is a showcase of a PKCE OAuth 2 token issuer. Its behavior is to
@@ -128,7 +128,7 @@ func tokenServerCommand() *ffcli.Command {
 				services[values[0]] = values[1]
 			}
 
-			server, err := bertyprotocol.NewAuthTokenServer(secret, sk, services, &bertyprotocol.AuthTokenOptions{
+			server, err := bertyauth.NewAuthTokenServer(secret, sk, services, &bertyauth.AuthTokenOptions{
 				Logger:  logger,
 				NoClick: noClick,
 			})

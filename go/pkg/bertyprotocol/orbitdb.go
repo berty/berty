@@ -182,7 +182,7 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 
 	l.Debug("Got account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}})...)
 
-	gc, err := s.openGroup(ctx, g, options)
+	gc, err := s.OpenGroup(ctx, g, options)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -227,7 +227,7 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 			return errcode.ErrInternal.Wrap(err)
 		}
 
-		s.Logger().Debug("openGroup", zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType))
+		s.Logger().Debug("OpenGroup", zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType))
 
 		if metaImpl == nil {
 			metaImpl, err = s.storeForGroup(ctx, s, g, nil, groupMetadataStoreType, GroupOpenModeReplicate)
@@ -262,7 +262,7 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 	return nil
 }
 
-func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
+func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
 	if s.deviceKeystore == nil || s.messageKeystore == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db open in naive mode"))
 	}
@@ -284,7 +284,7 @@ func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, op
 		return nil, err
 	}
 
-	s.Logger().Debug("openGroup", tyber.FormatStepLogFields(ctx, tyber.ZapFieldsToDetails(zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType)))...)
+	s.Logger().Debug("OpenGroup", tyber.FormatStepLogFields(ctx, tyber.ZapFieldsToDetails(zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType)))...)
 
 	memberDevice, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
@@ -329,39 +329,39 @@ func (s *BertyOrbitDB) openGroup(ctx context.Context, g *protocoltypes.Group, op
 	return gc, nil
 }
 
-func (s *BertyOrbitDB) openGroupReplication(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) error {
+func (s *BertyOrbitDB) OpenGroupReplication(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (iface.Store, iface.Store, error) {
 	if g == nil || len(g.PublicKey) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing group or group pubkey"))
-	}
-
-	id := g.GroupIDAsString()
-
-	_, err := s.getGroupContext(id)
-	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
-		return errcode.ErrInternal.Wrap(err)
-	}
-	if err == nil {
-		return nil
+		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing group or group pubkey"))
 	}
 
 	groupID := g.GroupIDAsString()
+
+	gc, err := s.getGroupContext(groupID)
+	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
+		return nil, nil, errcode.ErrInternal.Wrap(err)
+	}
+	if err == nil {
+		return gc.metadataStore, gc.messageStore, nil
+	}
+
 	s.groups.Store(groupID, g)
 
 	if err := s.registerGroupSigningPubKey(g); err != nil {
-		return err
+		return nil, nil, err
 	}
 
-	_, err = s.storeForGroup(ctx, s, g, options, groupMetadataStoreType, GroupOpenModeReplicate)
+	metadataStore, err := s.storeForGroup(ctx, s, g, options, groupMetadataStoreType, GroupOpenModeReplicate)
 	if err != nil {
-		return errors.Wrap(err, "unable to open database")
+		_ = metadataStore.Close()
+		return nil, nil, errors.Wrap(err, "unable to open database")
 	}
 
-	_, err = s.storeForGroup(ctx, s, g, options, groupMessageStoreType, GroupOpenModeReplicate)
+	messageStore, err := s.storeForGroup(ctx, s, g, options, groupMessageStoreType, GroupOpenModeReplicate)
 	if err != nil {
-		return errors.Wrap(err, "unable to open database")
+		return nil, nil, errors.Wrap(err, "unable to open database")
 	}
 
-	return nil
+	return metadataStore, messageStore, nil
 }
 
 func (s *BertyOrbitDB) getGroupContext(id string) (*GroupContext, error) {
@@ -467,4 +467,10 @@ func (s *BertyOrbitDB) getGroupFromOptions(options *iface.NewStoreOptions) (*pro
 	}
 
 	return typed, nil
+}
+
+func (s *BertyOrbitDB) IsGroupLoaded(groupID string) bool {
+	gc, ok := s.groups.Load(groupID)
+
+	return ok && gc != nil
 }

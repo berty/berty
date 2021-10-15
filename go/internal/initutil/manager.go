@@ -158,6 +158,10 @@ type Manager struct {
 			requiredByClient    bool
 			localDBState        *messengertypes.LocalDatabaseState
 		}
+		Replication struct {
+			db        *gorm.DB
+			dbCleanup func()
+		}
 		GRPC struct {
 			RemoteAddr string `json:"RemoteAddr,omitempty"`
 			Listeners  string `json:"Listeners,omitempty"`

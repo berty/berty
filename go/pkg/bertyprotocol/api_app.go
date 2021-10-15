@@ -16,7 +16,7 @@ func (s *service) AppMetadataSend(ctx context.Context, req *protocoltypes.AppMet
 	ctx, newTrace, endSection := tyber.Section(ctx, s.logger, fmt.Sprintf("Sending app metadata to group %s", base64.RawURLEncoding.EncodeToString(req.GroupPK)))
 	defer func() { endSection(err, "") }()
 
-	gc, err := s.getContextGroupForID(req.GroupPK)
+	gc, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
@@ -38,7 +38,7 @@ func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMess
 	ctx, newTrace, endSection := tyber.Section(ctx, s.logger, fmt.Sprintf("Sending message to group %s", base64.RawURLEncoding.EncodeToString(req.GroupPK)))
 	defer func() { endSection(err, "") }()
 
-	gc, err := s.getContextGroupForID(req.GroupPK)
+	gc, err := s.GetContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}

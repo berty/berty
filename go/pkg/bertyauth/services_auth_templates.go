@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertyauth
 
 import "html/template"
 

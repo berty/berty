@@ -27,8 +27,8 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/internal/sysutil"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/banner"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -257,7 +257,7 @@ func (svc *service) autoReplicateGroupOnAllServers(groupPK []byte) {
 		return
 	}
 	for _, s := range acc.ServiceTokens {
-		if s.ServiceType == bertyprotocol.ServiceReplicationID {
+		if s.ServiceType == authtypes.ServiceReplicationID {
 			replicationServices[s.AuthenticationURL] = s
 		}
 	}

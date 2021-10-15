@@ -2,8 +2,6 @@ package bertyprotocol
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -14,76 +12,12 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/net/context/ctxhttp"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/pkg/authtypes"
+	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
-
-const (
-	AuthResponseType        = "code"
-	AuthGrantType           = "authorization_code"
-	AuthRedirect            = "berty://services-auth/"
-	AuthClientID            = "berty"
-	AuthCodeChallengeMethod = "S256"
-)
-
-type authSession struct {
-	state        string
-	codeVerifier string // codeVerifier base64 encoded random value
-	baseURL      string
-}
-
-func authSessionCodeChallenge(codeVerifier string) string {
-	codeChallengeArr := sha256.Sum256([]byte(codeVerifier))
-	codeChallenge := make([]byte, sha256.Size)
-	for i, c := range codeChallengeArr {
-		codeChallenge[i] = c
-	}
-
-	return base64.RawURLEncoding.EncodeToString(codeChallenge)
-}
-
-func authSessionCodeVerifierAndChallenge() (string, string, error) {
-	verifierArr, err := cryptoutil.GenerateNonce()
-	if err != nil {
-		return "", "", err
-	}
-
-	codeVerifierBytes := make([]byte, cryptoutil.NonceSize)
-	for i, c := range verifierArr {
-		codeVerifierBytes[i] = c
-	}
-
-	verifier := base64.RawURLEncoding.EncodeToString(codeVerifierBytes)
-
-	return verifier, authSessionCodeChallenge(verifier), nil
-}
-
-func newAuthSession(baseURL string) (*authSession, string, error) {
-	state, err := cryptoutil.GenerateNonce()
-	if err != nil {
-		return nil, "", err
-	}
-
-	verifier, challenge, err := authSessionCodeVerifierAndChallenge()
-	if err != nil {
-		return nil, "", err
-	}
-
-	stateBytes := make([]byte, cryptoutil.NonceSize)
-	for i, c := range state {
-		stateBytes[i] = c
-	}
-
-	auth := &authSession{
-		baseURL:      baseURL,
-		state:        base64.RawURLEncoding.EncodeToString(stateBytes),
-		codeVerifier: verifier,
-	}
-
-	return auth, challenge, nil
-}
 
 func (s *service) authInitURL(baseURL string) (string, error) {
 	parsedAuthURL, err := url.Parse(baseURL)
@@ -103,7 +37,7 @@ func (s *service) authInitURL(baseURL string) (string, error) {
 
 	baseURL = strings.TrimSuffix(baseURL, "/")
 
-	auth, codeChallenge, err := newAuthSession(baseURL)
+	auth, codeChallenge, err := bertyauth.NewAuthSession(baseURL)
 	if err != nil {
 		return "", err
 	}
@@ -112,13 +46,13 @@ func (s *service) authInitURL(baseURL string) (string, error) {
 
 	return fmt.Sprintf("%s%s?response_type=%s&client_id=%s&redirect_uri=%s&state=%s&code_challenge=%s&code_challenge_method=%s",
 		baseURL,
-		AuthHTTPPathAuthorize,
-		AuthResponseType,
-		AuthClientID,
-		url.QueryEscape(AuthRedirect),
-		auth.state,
+		authtypes.AuthHTTPPathAuthorize,
+		authtypes.AuthResponseType,
+		authtypes.AuthClientID,
+		url.QueryEscape(authtypes.AuthRedirect),
+		auth.State,
 		codeChallenge,
-		AuthCodeChallengeMethod,
+		authtypes.AuthCodeChallengeMethod,
 	), nil
 }
 
@@ -139,21 +73,21 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		return nil, errcode.ErrServicesAuthNotInitialized
 	}
 
-	auth, ok := authUntyped.(*authSession)
+	auth, ok := authUntyped.(*bertyauth.AuthSession)
 	if !ok {
 		return nil, errcode.ErrServicesAuthNotInitialized
 	}
 
-	if auth.state != state {
+	if auth.State != state {
 		return nil, errcode.ErrServicesAuthWrongState
 	}
 
-	endpoint := fmt.Sprintf("%s%s", auth.baseURL, AuthHTTPPathTokenExchange)
+	endpoint := fmt.Sprintf("%s%s", auth.BaseURL, authtypes.AuthHTTPPathTokenExchange)
 	res, err := ctxhttp.PostForm(ctx, http.DefaultClient, endpoint, url.Values{
-		"grant_type":    {AuthGrantType},
+		"grant_type":    {authtypes.AuthGrantType},
 		"code":          {code},
-		"client_id":     {AuthClientID},
-		"code_verifier": {auth.codeVerifier},
+		"client_id":     {authtypes.AuthClientID},
+		"code_verifier": {auth.CodeVerifier},
 	})
 	if err != nil {
 		return nil, errcode.ErrStreamWrite.Wrap(err)
@@ -199,7 +133,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 
 	svcToken := &protocoltypes.ServiceToken{
 		Token:             resMsg.AccessToken,
-		AuthenticationURL: auth.baseURL,
+		AuthenticationURL: auth.BaseURL,
 		SupportedServices: services,
 		Expiration:        -1,
 	}
@@ -210,7 +144,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 
 	// @FIXME(gfanton):  should be handle on the client (js) side
 	for _, service := range services {
-		if service.ServiceType != ServicePushID {
+		if service.ServiceType != authtypes.ServicePushID {
 			continue
 		}
 
