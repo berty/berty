@@ -130,38 +130,38 @@
   "settings": {
     "home": {
       "check-list": {
-        "title": "",
+        "title": "Liste des tâches {{tasksDone}} sur {{totalTasks}}",
         "avatar": {
-          "title": "",
+          "title": "Changer votre avatar",
           "desc": ""
         },
         "relay": {
-          "title": "",
-          "desc": ""
+          "title": "Configurer le relais",
+          "desc": "Améliorez les performances de votre réseau en utilisant un relais propulsé par Berty Tech organisation à but non lucrative."
         },
         "contact": {
-          "title": "",
-          "desc": ""
+          "title": "Synchroniser avec un contact",
+          "desc": "Scannez un code QR pour ajouter un premier contact à votre liste de contacts !"
         },
         "group": {
-          "title": "",
+          "title": "Rejoindre ou créer un groupe",
           "desc": ""
         },
         "message": {
-          "title": "",
-          "desc": ""
+          "title": "Envoyer le message",
+          "desc": "Dites « Bonjour » à un contact !"
         },
         "theme": {
-          "title": "",
+          "title": "Personnaliser le thème",
           "desc": ""
         },
         "hidden-account": {
-          "title": "",
-          "desc": ""
+          "title": "Créer un compte masqué",
+          "desc": "Créer un compte fantôme avec un mot de passe dédié pour être en sécurité sur un réseau public."
         },
         "ble-message": {
-          "title": "",
-          "desc": ""
+          "title": "Envoyer un message sans internet",
+          "desc": "Utilisez la fonction Proximité et envoyez un message sans réseau cellulaire, ni connexion internet !"
         }
       },
       "header-left-button": "Aide",
@@ -170,7 +170,7 @@
       "network-button": "Liste de réseaux",
       "edit-profile": "Modifier mon profil",
       "app-network-button": {
-        "title": "",
+        "title": "Configuration réseau de l'application",
         "first-bullet-point": "Recevoir les notifications push",
         "second-bullet-point": "Recevoir les demandes de contact",
         "third-bullet-point": "Découverte locale de pairs (BLE & Multicast DNS)"
@@ -190,19 +190,19 @@
       "online-peers": "Pairs en ligne"
     },
     "network-config": {
-      "title": "",
-      "desc": "",
+      "title": "Configuration réseau de l'application",
+      "desc": "Vous pouvez modifier vos configurations réseau",
       "push-notifications": "Notifications push",
-      "replication-services": "",
-      "ble": "",
+      "replication-services": "Services de réplication",
+      "ble": "Bluetooth faible consommation d'énergie",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Découverte locale des pairs"
       },
       "dht": "",
       "bootstrap": "",
-      "rdv": "",
-      "static-relay": "",
+      "rdv": "Rendez-vous",
+      "static-relay": "Relais statique",
       "anon-mode": ""
     },
     "mode": {
@@ -437,8 +437,8 @@
       "info": "Infos",
       "devices": "Appareils",
       "join": "",
-      "password-label": "",
-      "password-placeholder": ""
+      "password-label": "Saisir le mot de passe du groupe",
+      "password-placeholder": "Mot de passe..."
     },
     "save-theme": {
       "title": "Sauvegarde du thème",
