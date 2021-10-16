@@ -77,16 +77,16 @@
       },
       "create-group-finalize": {
         "placeholder": "Gruppenname",
-        "about": "",
+        "about": "Über Gruppen",
         "first-bullet-point": "Alle in der Gruppe können diese umbenennen oder neue Mitglieder einladen",
         "second-bullet-point": "Sie können Mitglieder per Link einladen",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "third-bullet-point": "Du kannst diese Gruppe verlassen",
+        "fourth-bullet-point": "Du kannst diese Gruppe nicht löschen",
+        "fifth-bullet-point": "Du kannst keine Teilnehmer dieser Gruppe entfernen"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "Die Anfrage wurde gesendet. In Bearbeitung...",
+        "draft": "Entwurf: {{message}}"
       }
     },
     "suggestion-display-name-initial": "Klicke hier, um hinzuzufügen",
@@ -100,8 +100,8 @@
         "desc": "Hier klicken für Push-Benachrichtigungskonfiguration"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "P2P-Replikation",
+        "desc": "Replikationsdienste einrichten"
       }
     },
     "network-options": {
@@ -124,44 +124,44 @@
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "scan": {
-      "title": ""
+      "title": "QR Code scannen"
     }
   },
   "settings": {
     "home": {
       "check-list": {
-        "title": "",
+        "title": "Checkliste {{tasksDone}}/{{totalTasks}}",
         "avatar": {
-          "title": "",
+          "title": "Ändere dein Avatar",
           "desc": ""
         },
         "relay": {
-          "title": "",
-          "desc": ""
+          "title": "Relay konfigurieren",
+          "desc": "Verbessern Sie Ihre Netzwerkleistung durch die Nutzung eines von Berty Tech zur Verfügung gestellten Relais."
         },
         "contact": {
-          "title": "",
-          "desc": ""
+          "title": "Mit einem Kontakt synchronisieren",
+          "desc": "Scanne den QR code um deinen ersten Kontakt hinzuzufügen!"
         },
         "group": {
-          "title": "",
-          "desc": ""
+          "title": "Einer Gruppe beitreten oder Eine erstellen",
+          "desc": "Lass uns deine erste Berty Gruppe erstellen oder beitreten!"
         },
         "message": {
-          "title": "",
-          "desc": ""
+          "title": "Nachricht senden",
+          "desc": "Sag \"Hallo Welt\" zu einem Kontakt!"
         },
         "theme": {
-          "title": "",
-          "desc": ""
+          "title": "Thema anpassen",
+          "desc": "Lass und deine eigene Version der App erstellen und es mit der Community teilen!"
         },
         "hidden-account": {
-          "title": "",
-          "desc": ""
+          "title": "Erstelle ein versteckten Account",
+          "desc": "Erstelle ein unsichtabren Account mit einem bestimmten Passwort zum einloggen und bleib sicher am Flughafen!"
         },
         "ble-message": {
-          "title": "",
-          "desc": ""
+          "title": "Nachricht ohne Internet senden",
+          "desc": "Nutze das Proximity Feature und sende eine Nachricht ohne mobile Daten oder eine Internetverbindung!"
         }
       },
       "header-left-button": "Hilfe",
@@ -170,7 +170,7 @@
       "network-button": "Netzwerke",
       "edit-profile": "Profil bearbeiten",
       "app-network-button": {
-        "title": "",
+        "title": "Netzwerkeinstellungen",
         "first-bullet-point": "Push-Benachrichtigungen erhalten",
         "second-bullet-point": "Kontaktanfragen empfangen",
         "third-bullet-point": "Lokale Berty-Nutzer finden (Bluetooth und gleiches Netz)"
@@ -190,20 +190,20 @@
       "online-peers": "Verbindungen zu anderen Nutzern"
     },
     "network-config": {
-      "title": "",
-      "desc": "",
+      "title": "App-Netzwerkkonfiguration",
+      "desc": "Du kannst deine Netzwerkeinstellungen ändern",
       "push-notifications": "Push-Benachrichtigungen",
-      "replication-services": "",
-      "ble": "",
+      "replication-services": "Replikationsdienste",
+      "ble": "Bluetooth Low Energy",
       "multicast-dns-button": {
         "title": "Lokales Netz",
         "desc": "Berty-Benutzer im gleichen lokalen Netz finden"
       },
       "dht": "",
       "bootstrap": "",
-      "rdv": "",
-      "static-relay": "",
-      "anon-mode": ""
+      "rdv": "Rendezvous",
+      "static-relay": "Statischer Relay",
+      "anon-mode": "ANON"
     },
     "mode": {
       "title": "Einstellungen",
@@ -215,7 +215,7 @@
       "receive-contact-requests-button": "Kontaktanfragen empfangen",
       "external-services-button": "Externe Dienste",
       "auto-replicate-button": "Autom. Serverkopien",
-      "auto-replicate-button-unavailable": "",
+      "auto-replicate-button-unavailable": "Du musst vorher mindestens einen Replikationsserver registrieren",
       "blocked-contacts-button": {
         "title": "Blockierte Kontakte",
         "tag": "blockiert"
@@ -331,7 +331,7 @@
       "header-left-button": "Geräteinformationen",
       "header-middle-button": "Fake-Daten generieren",
       "header-right-button": "Daemon neu starten",
-      "theme-editor": "",
+      "theme-editor": "Erscheinungsbild & Themen-Editor",
       "simulate-button": "Streamfehler simulieren",
       "simulate-js-error-button": "JavaScript-Fehler simulieren",
       "tor-button": "Tor {{option}}",
@@ -405,10 +405,10 @@
     "theme-editor": {
       "title": "Theme-Editor",
       "randomize": "Theme erstellen",
-      "save": "Dieses Theme speichern",
+      "save": "Dieses Thema speichern",
       "export": "Ausgewähltes Theme als Datei exportieren",
       "share": "Ausgewähltes Theme als Datei teilen",
-      "import": ""
+      "import": "Importiere eine Thema-Datei"
     },
     "my-berty-ID": {
       "qr": "QR",
@@ -436,16 +436,16 @@
       "fingerprint": "Fingerabdruck",
       "info": "Infos",
       "devices": "Geräte",
-      "join": "",
-      "password-label": "",
-      "password-placeholder": ""
+      "join": "TRITT DER GRUPPE BEI",
+      "password-label": "Gruppenpasswort eingeben",
+      "password-placeholder": "Passwort..."
     },
     "save-theme": {
       "title": "Theme speichern",
       "desc": "Bitte wählen Sie einen Namen für Ihr Theme!",
       "placeholder": "Theme-Name...",
       "cancel": "Abbrechen",
-      "add": ""
+      "add": "HINZUFÜGEN!"
     }
   },
   "chat": {
@@ -559,29 +559,29 @@
       "desc": "Berty App benötigt deine Erlaubnis, um dir lokale oder Push-Benachrichtigungen zu senden. Dies erlaubt dir, benachrichtigt zu werden, wenn du eine Nachricht erhältst."
     },
     "p2p": {
-      "title": "",
-      "android-desc": "",
-      "ios-desc": ""
+      "title": "Bluetooth Nachrichtenaustausch",
+      "android-desc": "Um Nachrichten offline über Bluetooth nutzen zu können, auch wenn die App im Hintergrund ist, muss der Android API der Zugriff zum Standort gewährt werden. Wir nutzen die Standortdaten in keiner Weise.",
+      "ios-desc": "Um Nachrichten offline via Bluetooth auszutauschen, benötigt die iOS-API diese Berechtigung."
     },
     "camera": {
       "title": "Kamera",
-      "desc": ""
+      "desc": "Um QR-Codes zu scannen und Kontakte mit deiner hinzuzufügen braucht die Berty deine Berechtigung. Die Kamera wird für nichts anderes genutzt."
     },
     "audio": {
-      "title": "",
-      "desc": ""
+      "title": "Audio-Nachrichten",
+      "desc": "Um Audionachrichten an Ihre Kontakte zu senden, müssen Sie der Berty App Zugriff auf das Mikrofon gewähren."
     },
     "button-labels": {
-      "allow": "",
-      "settings": ""
+      "allow": "Zulassen",
+      "settings": "Gehe zu den Einstellungen"
     },
-    "what-happening": "",
-    "settings-text": ""
+    "what-happening": "Was geht hier ab?",
+    "settings-text": "Sie können {{title}} Berechtigungen in den Einstellungen aktivieren."
   },
   "notification": {
     "need-restart": {
-      "title": "",
-      "desc": ""
+      "title": "Neustart der App erforderlich",
+      "desc": "Für diese Art von Benachrichtigung musst du deine App neu starten, um diese Felder zu speichern!"
     }
   },
   "error": {
