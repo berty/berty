@@ -76,17 +76,17 @@
         "create-group": "CREAR UN GRUPO"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "Nombre del grupo",
+        "about": "Acerca de grupos",
+        "first-bullet-point": "Cualquiera en el grupo puede renombrarlo o invitar a nuevos miembros",
+        "second-bullet-point": "Puedes invitar a miembros a traves del enlace",
+        "third-bullet-point": "Puedes abandonar este grupo",
+        "fourth-bullet-point": "No se puede eliminar este grupo",
+        "fifth-bullet-point": "No se puede eliminar un miembro de este grupo"
       },
       "conversations": {
         "request-sent": "",
-        "draft": ""
+        "draft": "Borrador: {{message}}"
       }
     },
     "suggestion-display-name-initial": "Haz clic aquí para añadir",
@@ -124,7 +124,7 @@
       "skip": "SALTAR Y HACER MÁS TARDE"
     },
     "scan": {
-      "title": ""
+      "title": "Escanear codigo QR"
     }
   },
   "settings": {
@@ -132,7 +132,7 @@
       "check-list": {
         "title": "",
         "avatar": {
-          "title": "",
+          "title": "Cambiar tu avatar",
           "desc": ""
         },
         "relay": {
@@ -140,7 +140,7 @@
           "desc": ""
         },
         "contact": {
-          "title": "",
+          "title": "Sincronizar con un contacto",
           "desc": ""
         },
         "group": {
@@ -265,7 +265,7 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": ""
+      "activate-button": "Activar Bluetooth"
     },
     "mc": {
       "activate-button": "Activar conectividad con múltiples compañeros"
@@ -403,7 +403,7 @@
       "title": "IPFS WebUI"
     },
     "theme-editor": {
-      "title": "",
+      "title": "Editor de temas",
       "randomize": "",
       "save": "",
       "export": "",
@@ -556,32 +556,32 @@
   "permission": {
     "notification": {
       "title": "",
-      "desc": ""
+      "desc": "Berty necesita tu permiso para enviarte notificaciones locales o push. Esto te permitirá ser informado cuando recibas un mensaje."
     },
     "p2p": {
-      "title": "",
-      "android-desc": "",
-      "ios-desc": ""
+      "title": "Mensajería Bluetooth",
+      "android-desc": "Para intercambiar mensajes sin conexión a través de Bluetooth, incluso cuando la aplicación está en segundo plano, la API de Android requiere el permiso de ubicación para ser concedida. No usamos los datos de su ubicación de ninguna manera.",
+      "ios-desc": "Para intercambiar mensajes sin conexión a través de Bluetooth, la API de iOS requiere permiso para ser concedida."
     },
     "camera": {
       "title": "Cámara",
-      "desc": ""
+      "desc": "Para escanear codigos QR y añadir contactos con tu cámara, Berty app necesita tu permiso. La cámara no será usada para otra cosa."
     },
     "audio": {
-      "title": "",
-      "desc": ""
+      "title": "Mensajes de audio",
+      "desc": "Para enviar mensajes de audio a tus contactos, debes permitir el permiso del micrófono a la aplicación Berty."
     },
     "button-labels": {
-      "allow": "",
-      "settings": ""
+      "allow": "Permitir",
+      "settings": "Ir a Ajustes"
     },
-    "what-happening": "",
-    "settings-text": ""
+    "what-happening": "¿Qué está pasando aquí?",
+    "settings-text": "Puedes habilitar el permiso {{title}} desde la configuración."
   },
   "notification": {
     "need-restart": {
-      "title": "",
-      "desc": ""
+      "title": "Es necesario reiniciar la aplicación",
+      "desc": "¡Para este tipo de notificación, tienes que reiniciar la aplicación para guardar estos cambios!"
     }
   },
   "error": {
