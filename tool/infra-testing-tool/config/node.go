@@ -40,7 +40,6 @@ const (
 	none = ":none:"
 )
 
-//var AllNodeTypes = []string{NodeTypePeer, NodeTypeReplication, NodeTypeRDVP, NodeTypeRelay, NodeTypeBootstrap}
 var AllPeerTypes = []string{NodeTypePeer, NodeTypeReplication}
 
 // NodeGroup contains the information about a "group" of nodes declared together (by the 'NodeGroup.Amount' field)
@@ -155,7 +154,7 @@ func (c *NodeGroup) composeComponents() {
 		// GENERATING NETWORK INTERFACES
 
 		// loop over all connections (internet, lan_1, etc)
-		for connectionN, connection := range c.Connections {
+		for _, connection := range c.Connections {
 			networkStack := config.Attributes.connectionComponents[connection.To]
 
 			var assignedSecurityGroup networking.SecurityGroup
@@ -192,32 +191,32 @@ func (c *NodeGroup) composeComponents() {
 				eip := networking.NewElasticIpWithAttributes(&ni)
 				comps = append(comps, eip)
 			} else {
-				// make additional port rules for specific Security Group
-				var proto string
-				switch c.Nodes[i].NodeAttributes.Protocols[connectionN] {
-				case websocket:
-					proto = tcp
-				case quic:
-					proto = udp
-				default:
-					proto = c.Nodes[i].NodeAttributes.Protocols[connectionN]
-				}
-
-				sgre := networking.NewSecurityGroupRuleEgress()
-				sgre.SecurityGroupId = assignedSecurityGroup.GetId()
-				sgre.SetPorts(0)
-				//sgre.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
-				sgre.Protocol = proto
-				sgre.Self = true
-
-				comps = append(comps, sgre)
-
-				sgri := networking.NewSecurityGroupRuleIngress()
-				sgri.SecurityGroupId = assignedSecurityGroup.GetId()
-				sgre.SetPorts(0)
-				//sgri.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
-				sgri.Protocol = proto
-				sgri.Self = true
+				//// make additional port rules for specific Security Group
+				//var proto string
+				//switch c.Nodes[i].NodeAttributes.Protocols[connectionN] {
+				//case websocket:
+				//	proto = tcp
+				//case quic:
+				//	proto = udp
+				//default:
+				//	proto = c.Nodes[i].NodeAttributes.Protocols[connectionN]
+				//}
+				//
+				//sgre := networking.NewSecurityGroupRuleEgress()
+				//sgre.SecurityGroupId = assignedSecurityGroup.GetId()
+				//sgre.SetPorts(0)
+				////sgre.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
+				//sgre.Protocol = proto
+				//sgre.Self = true
+				//
+				//comps = append(comps, sgre)
+				//
+				//sgri := networking.NewSecurityGroupRuleIngress()
+				//sgri.SecurityGroupId = assignedSecurityGroup.GetId()
+				//sgre.SetPorts(0)
+				////sgri.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
+				//sgri.Protocol = proto
+				//sgri.Self = true
 			}
 		}
 
@@ -228,7 +227,11 @@ func (c *NodeGroup) composeComponents() {
 		instance.NetworkInterfaces = networkInterfaces
 		instance.NodeType = c.NodeType
 
-		// GENERATE USERDATA (startup script)
+		// get correct instance type (depends on amount of connections)
+		instance.InstanceType = c.GetCorrectInstanceType()
+
+		// generate listener maddrs
+		// generate announce maddrs
 		var listenerMaddrs []string
 		var announceMaddrs []string
 		for p := range c.Nodes[i].NodeAttributes.Protocols {
@@ -248,7 +251,7 @@ func (c *NodeGroup) composeComponents() {
 		}
 
 		// generate a peerId and pk
-		// only do this for RDVP and Relay
+		// only do this for RDVP, Relay and Bootstrap
 		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay || c.NodeType == NodeTypeBootstrap {
 			peerId, pk, err := genKey()
 			if err != nil {
@@ -259,6 +262,7 @@ func (c *NodeGroup) composeComponents() {
 			c.Nodes[i].NodeAttributes.PeerId = peerId
 		}
 
+		// generate keys for replication
 		if c.NodeType == NodeTypeReplication {
 			var err error
 			c.Nodes[i].NodeAttributes.Sk, err = genServiceKey()
@@ -283,16 +287,16 @@ func (c *NodeGroup) composeComponents() {
 			}
 		}
 
+		// parse the routers for maddrs
 		c.Nodes[i].NodeAttributes.RDVPMaddr, c.Nodes[i].NodeAttributes.RelayMaddr, c.Nodes[i].NodeAttributes.BootstrapMaddr = c.parseRouters()
 
-		// generate the actual userdata
+		// generate and compile userdata
 		s, err := c.Nodes[i].GenerateUserData()
 		if err != nil {
 			panic(err)
 		}
 
 		instance.UserData = s
-		//c.Nodes[i] = node
 		c.Nodes[i].instance = instance
 
 		comps = append(comps, instance)
@@ -579,7 +583,7 @@ func (c *NodeGroup) generateName() string {
 	return fmt.Sprintf("%s-%s", strings.ReplaceAll(c.Name, " ", "-"), uuid.NewString()[:8])
 }
 
-// genkey generates a peerid and pk
+// genKey generates a peerid and pk
 func genKey() (peerid string, privatekey string, err error) {
 	// generate private key
 	priv, _, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.Ed25519, -1, crand.Reader)
@@ -602,6 +606,9 @@ func genKey() (peerid string, privatekey string, err error) {
 	return pid.String(), base64.StdEncoding.EncodeToString(kBytes), nil
 }
 
+// seedFromEd25519PrivateKey returns something
+// not really sure what this function does
+// but needed to make keys work
 func seedFromEd25519PrivateKey(key crypto.PrivKey) ([]byte, error) {
 	// Similar to (*ed25519).Seed()
 	if key.Type() != pb.KeyType_Ed25519 {
@@ -620,6 +627,7 @@ func seedFromEd25519PrivateKey(key crypto.PrivKey) ([]byte, error) {
 	return r[:ed25519.PrivateKeySize-ed25519.PublicKeySize], nil
 }
 
+// genServiceKey generates a service key
 func genServiceKey() ([]byte, error) {
 	priv, _, err := core.GenerateEd25519Key(crand.Reader)
 	if err != nil {
@@ -634,6 +642,7 @@ func genServiceKey() ([]byte, error) {
 	return seed, err
 }
 
+// genSecretKey generates a secret key
 func genSecretKey(servicekey []byte) ([]byte, error) {
 	stdPrivKey := ed25519.NewKeyFromSeed(servicekey)
 	_, pubKey, err := libp2p_ci.KeyPairFromStdKey(&stdPrivKey)
@@ -650,10 +659,14 @@ func genSecretKey(servicekey []byte) ([]byte, error) {
 
 }
 
-func makeInternetSGRules(port int, protocol string, securityGroup networking.SecurityGroup) (comps []iac.Component) {
+// makeInternetSGRules is here to avoid DRY code
+// it returns the components of 2 security group rules
+// egress & ingress
+func makeInternetSGRules(port int, protocol string, self bool, securityGroup networking.SecurityGroup) (comps []iac.Component) {
 	sgre := networking.NewSecurityGroupRuleEgress()
 	sgre.SetPorts(port)
 	sgre.Protocol = protocol
+	sgre.Self = self
 	sgre.SecurityGroupId = securityGroup.GetId()
 
 	comps = append(comps, sgre)
@@ -661,9 +674,28 @@ func makeInternetSGRules(port int, protocol string, securityGroup networking.Sec
 	sgri := networking.NewSecurityGroupRuleIngress()
 	sgri.SetPorts(port)
 	sgri.Protocol = protocol
+	sgre.Self = self
 	sgri.SecurityGroupId = securityGroup.GetId()
 
 	comps = append(comps, sgri)
 
 	return comps
+}
+
+// GetCorrectInstanceType returns a string with the correct AWS Instance type
+// this is based on the amount of connections
+// https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html#AvailableIpPerENI
+func (c *NodeGroup) GetCorrectInstanceType() string {
+	switch len(c.Connections) {
+	case 0, 1, 2:
+		return "t3.nano"
+	case 3:
+		return "t3.small"
+	case 4:
+		return "t3.xlarge"
+	case 5, 6, 7, 8:
+		return "c4.4xlarge"
+	default:
+		panic("too much connections on one peer")
+	}
 }

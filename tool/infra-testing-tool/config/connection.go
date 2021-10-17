@@ -13,8 +13,9 @@ type Connection struct {
 	To       string `yaml:"to"`
 	Protocol string `yaml:"protocol"`
 
-	connType      string
-	infraToolOnly bool
+	connType       string
+	infraToolOnly  bool
+	createdSGRules bool
 }
 
 const (
@@ -128,21 +129,20 @@ func (c Connection) composeComponents() {
 	sg := networking.NewSecurityGroupWithAttributes(&vpc)
 	components = append(components, sg)
 
-	if c.connType == ConnTypeInternet {
-		if c.infraToolOnly {
-			// port 22, tcp, from anywhere for ssh
-			components = append(components, makeInternetSGRules(22, tcp, sg)...)
+	if c.connType == ConnTypeInternet && c.infraToolOnly {
 
-			// port 9090, tcp, from anywhere for infra daemon
-			components = append(components, makeInternetSGRules(9090, tcp, sg)...)
+		// port 22, tcp, from anywhere for ssh
+		components = append(components, makeInternetSGRules(22, tcp, false, sg)...)
 
-			// port 443, tcp, from anywhere for s3 upload
-			components = append(components, makeInternetSGRules(443, tcp, sg)...)
+		// port 9090, tcp, from anywhere for infra daemon
+		components = append(components, makeInternetSGRules(9090, tcp, false, sg)...)
 
-		} else {
-			// all ports, any protocol, from anywhere
-			components = append(components, makeInternetSGRules(0, "-1", sg)...)
-		}
+		// port 443, tcp, from anywhere for s3 upload
+		components = append(components, makeInternetSGRules(443, tcp, false, sg)...)
+
+	} else {
+		// all ports, any protocol, from anywhere
+		components = append(components, makeInternetSGRules(0, "-1",true,  sg)...)
 	}
 
 	for i, comp := range components {

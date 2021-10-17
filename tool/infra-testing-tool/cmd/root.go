@@ -20,7 +20,7 @@ const (
 	fileUsage = "config file to generate infra from"
 
 	DefaultFolderName = "infraState"
-	DefaultTFFile     = DefaultFolderName + "/main.tf"
+	DefaultTFFile     = DefaultFolderName + "/private.tf"
 	DefaultStateFile  = DefaultFolderName + "/state.yaml"
 )
 

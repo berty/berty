@@ -2,6 +2,9 @@ package main
 
 // MVP
 
+//TODO:
+// automatic instance size based on amount of connections
+
 //FIXME:
 // clean up message testing
 

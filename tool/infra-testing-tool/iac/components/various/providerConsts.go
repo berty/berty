@@ -5,6 +5,11 @@ const (
 	// refer to https://golang.org/pkg/text/template/ for templating syntax
 	ProviderTemplate = `provider "aws" {
   region = "{{.Region}}"
+  default_tags {
+	tags = {
+      Product = "Berty"
+  	}
+  }
 }
 `
 

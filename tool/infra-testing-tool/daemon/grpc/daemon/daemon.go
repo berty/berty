@@ -137,6 +137,8 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 
 	logging.Log(fmt.Sprintf("starting test: %+v", test))
 
+	time.Sleep(time.Second * 5)
+
 	go func() {
 		defer func() {
 			s.Lock.Lock()

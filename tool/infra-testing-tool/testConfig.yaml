@@ -1,3 +1,5 @@
+# private connections still don't work wtf?
+
 peer:
     - name: test peers 1
       amount: 2
@@ -11,8 +13,6 @@ peer:
       connections:
           - to: internet
             protocol: tcp
-          - to: internet
-            protocol: ws
       routers:
           - type: rdvp
             address: test rdvp
@@ -27,8 +27,6 @@ rdvp:
       connections:
       - to: internet
         protocol: tcp
-      - to: internet
-        protocol: ws
 
 
 relay:
@@ -37,8 +35,6 @@ relay:
       connections:
       - to: internet
         protocol: tcp
-      - to: internet
-        protocol: ws
 
 bootstrap:
     - name: test bs
@@ -46,8 +42,6 @@ bootstrap:
       connections:
           - to: internet
             protocol: tcp
-          - to: internet
-            protocol: ws
       routers:
           - type: relay
             address: test relay

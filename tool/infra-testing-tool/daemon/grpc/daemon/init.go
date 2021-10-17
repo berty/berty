@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	processLock sync.Mutex
+	processLock      sync.Mutex
 	isProcessRunning bool
 
-	processNames = []string {"berty", "rdvp"}
+	processNames = []string{"berty", "rdvp"}
 )
 
 func init() {
@@ -35,7 +35,6 @@ func StartProcessCheck() {
 			for x := range processList {
 				var process ps.Process
 				process = processList[x]
-
 
 				for p := range processNames {
 					if strings.Contains(process.Executable(), processNames[p]) {

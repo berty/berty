@@ -256,22 +256,37 @@ var (
 			}
 
 			allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, config.GetAllTypes())
-
-			for k := range allNodes {
-				resp, err := allNodes[k].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
-					Folder: strconv.FormatInt(t, 10),
-					Name:   strings.ReplaceAll(allNodes[k].Tags[aws.Ec2TagName], ".", "-"),
-				})
-				if err != nil {
-					return logging.LogErr(err)
-				}
-
-				bucketName, err := aws.GetBucketName()
-				if err != nil {
-					return logging.LogErr(err)
-				}
-				logging.Log(fmt.Sprintf("%v uploaded: %v files to bucket: %s", allNodes[k].Tags[aws.Ec2TagName], resp.UploadCount, bucketName))
+			if err != nil {
+				return logging.LogErr(err)
 			}
+
+			uploadWg := sync.WaitGroup{}
+
+			for n := range allNodes {
+				tempN := n
+				uploadWg.Add(1)
+				go func() {
+					logging.Log(allNodes[tempN].Name)
+					resp, err := allNodes[tempN].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
+						Folder: strconv.FormatInt(t, 10),
+						Name:   strings.ReplaceAll(allNodes[tempN].Tags[aws.Ec2TagName], ".", "-"),
+					})
+
+					if err != nil {
+						panic(logging.LogErr(err))
+					}
+
+					bucketName, err := aws.GetBucketName()
+					if err != nil {
+						panic(logging.LogErr(err))
+					}
+					logging.Log(fmt.Sprintf("%v uploaded: %v files to bucket: %s", allNodes[tempN].Tags[aws.Ec2TagName], resp.UploadCount, bucketName))
+
+					uploadWg.Done()
+				}()
+			}
+
+			uploadWg.Wait()
 
 			return nil
 		},

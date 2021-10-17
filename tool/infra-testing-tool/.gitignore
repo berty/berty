@@ -3,7 +3,7 @@
 terraform.*
 .terraform/
 .main.tf
-*main.tf
+private.tf
 state.yaml
 
 THOUGHTS.md
