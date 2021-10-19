@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-0875befdd531a7a6e2a95ca3c4c784d3f1a08765  ../api/accounttypes.proto
 42529bc9d3b333413c6a1ecaa7ba42fa1add229e  Makefile
-4595926666e922ec5f465b35762298031c78cb31  ../api/protocoltypes.proto
-ee235ce8e4bb451ccfaf31556e2f8c78318c395f  ../api/messengertypes.proto
-=======
-5ff13589b1d43c84a9a4324fb0480589d8080a50  Makefile
-c2d69f1cf2217644bb193cede4b957044f6884ee  ../api/accounttypes.proto
-d8eb31c1f165912016604e753b61da6e507b9e90  ../api/protocoltypes.proto
-dc0d6675e66f41c00b859ce42d5e4448b040cfb9  ../api/messengertypes.proto
->>>>>>> 66387ac60 (feat: encrypted orbitdb links)
+42eb4693b303b95a9f309670cbfb51053282634d  ../api/protocoltypes.proto
+8bc041c2fb6a37f34dd77d523e69283a8b1b5936  ../api/messengertypes.proto
+dafc939422a16f4518a2c5ffaca5310872c986ee  ../api/accounttypes.proto

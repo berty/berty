@@ -1311,6 +1311,10 @@
         "group_sign_pub": {
           "type": "string",
           "format": "byte"
+        },
+        "group_link_key_sig": {
+          "type": "string",
+          "format": "byte"
         }
       },
       "description": "Encrypted is a clear structure containing clear and encrypted fields.\n\nWe prefer to use a clear struct with encrypted fields instead of a simple\nencrypted struct, to improves chances of having a valid structure even\nwith an invalid passphase. This will force an attacker to have more resources\nto test more false-positive guesses."

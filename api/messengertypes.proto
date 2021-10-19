@@ -254,6 +254,7 @@ message BertyLink {
     bytes group_secret_sig = 22;
     berty.protocol.v1.GroupType group_type = 23; // clear
     bytes group_sign_pub = 24;
+    bytes group_link_key_sig = 25;
   }
 
   enum Kind {

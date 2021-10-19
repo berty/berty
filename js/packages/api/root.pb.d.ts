@@ -6359,11 +6359,12 @@ export namespace berty {
             ErrMissingMapKey = 107,
             ErrDBWrite = 108,
             ErrDBRead = 109,
-            ErrDBOpen = 124,
             ErrDBDestroy = 120,
             ErrDBMigrate = 121,
             ErrDBReplay = 122,
             ErrDBRestore = 123,
+            ErrDBOpen = 124,
+            ErrDBClose = 125,
             ErrCryptoRandomGeneration = 200,
             ErrCryptoKeyGeneration = 201,
             ErrCryptoNonceGeneration = 202,
@@ -6476,6 +6477,7 @@ export namespace berty {
             ErrBertyAccountIDGenFailed = 5015,
             ErrBertyAccountCreationFailed = 5016,
             ErrBertyAccountUpdateFailed = 5017,
+            ErrAppStorageNotSupported = 5018,
             ErrPush = 6000,
             ErrPushWrongAccount = 6001,
             ErrPushUnableToDecrypt = 6002,
@@ -7292,6 +7294,7 @@ export namespace berty {
                     groupSecretSig?: (Uint8Array|null);
                     groupType?: (berty.protocol.v1.GroupType|null);
                     groupSignPub?: (Uint8Array|null);
+                    groupLinkKeySig?: (Uint8Array|null);
                 }
 
                 class Encrypted implements IEncrypted {
@@ -7307,6 +7310,7 @@ export namespace berty {
                     public groupSecretSig: Uint8Array;
                     public groupType: berty.protocol.v1.GroupType;
                     public groupSignPub: Uint8Array;
+                    public groupLinkKeySig: Uint8Array;
                     public static create(properties?: berty.messenger.v1.BertyLink.IEncrypted): berty.messenger.v1.BertyLink.Encrypted;
                     public static encode(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -9255,33 +9259,7 @@ export namespace berty {
                 }
             }
 
-<<<<<<< HEAD
-            interface IPushReceivedData {
-                protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
-                interaction?: (berty.messenger.v1.IInteraction|null);
-                alreadyReceived?: (boolean|null);
-            }
-
-            class PushReceivedData implements IPushReceivedData {
-
-                public protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
-                public interaction?: (berty.messenger.v1.IInteraction|null);
-                public alreadyReceived: boolean;
-                public static create(properties?: berty.messenger.v1.IPushReceivedData): berty.messenger.v1.PushReceivedData;
-                public static encode(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushReceivedData;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushReceivedData;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushReceivedData;
-                public static toObject(message: berty.messenger.v1.PushReceivedData, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            interface IPushReceive {
-=======
             interface IInstanceExportData {
->>>>>>> 66387ac60 (feat: encrypted orbitdb links)
             }
 
             class InstanceExportData implements IInstanceExportData {
@@ -9343,160 +9321,6 @@ export namespace berty {
                 autoSharePushTokenFlag?: (boolean|null);
             }
 
-<<<<<<< HEAD
-        enum ErrCode {
-            Undefined = 0,
-            TODO = 666,
-            ErrNotImplemented = 777,
-            ErrInternal = 888,
-            ErrInvalidInput = 100,
-            ErrInvalidRange = 101,
-            ErrMissingInput = 102,
-            ErrSerialization = 103,
-            ErrDeserialization = 104,
-            ErrStreamRead = 105,
-            ErrStreamWrite = 106,
-            ErrStreamTransform = 110,
-            ErrStreamSendAndClose = 111,
-            ErrStreamHeaderWrite = 112,
-            ErrStreamHeaderRead = 115,
-            ErrStreamSink = 113,
-            ErrStreamCloseAndRecv = 114,
-            ErrMissingMapKey = 107,
-            ErrDBWrite = 108,
-            ErrDBRead = 109,
-            ErrDBDestroy = 120,
-            ErrDBMigrate = 121,
-            ErrDBReplay = 122,
-            ErrDBRestore = 123,
-            ErrDBOpen = 124,
-            ErrDBClose = 125,
-            ErrCryptoRandomGeneration = 200,
-            ErrCryptoKeyGeneration = 201,
-            ErrCryptoNonceGeneration = 202,
-            ErrCryptoSignature = 203,
-            ErrCryptoSignatureVerification = 204,
-            ErrCryptoDecrypt = 205,
-            ErrCryptoDecryptPayload = 206,
-            ErrCryptoEncrypt = 207,
-            ErrCryptoKeyConversion = 208,
-            ErrCryptoCipherInit = 209,
-            ErrCryptoKeyDerivation = 210,
-            ErrMap = 300,
-            ErrForEach = 301,
-            ErrKeystoreGet = 400,
-            ErrKeystorePut = 401,
-            ErrNotFound = 404,
-            ErrOrbitDBInit = 1000,
-            ErrOrbitDBOpen = 1001,
-            ErrOrbitDBAppend = 1002,
-            ErrOrbitDBDeserialization = 1003,
-            ErrOrbitDBStoreCast = 1004,
-            ErrIPFSAdd = 1050,
-            ErrIPFSGet = 1051,
-            ErrIPFSInit = 1052,
-            ErrIPFSSetupConfig = 1053,
-            ErrIPFSSetupRepo = 1054,
-            ErrIPFSSetupHost = 1055,
-            ErrHandshakeOwnEphemeralKeyGenSend = 1100,
-            ErrHandshakePeerEphemeralKeyRecv = 1101,
-            ErrHandshakeRequesterAuthenticateBoxKeyGen = 1102,
-            ErrHandshakeResponderAcceptBoxKeyGen = 1103,
-            ErrHandshakeRequesterHello = 1104,
-            ErrHandshakeResponderHello = 1105,
-            ErrHandshakeRequesterAuthenticate = 1106,
-            ErrHandshakeResponderAccept = 1107,
-            ErrHandshakeRequesterAcknowledge = 1108,
-            ErrContactRequestSameAccount = 1200,
-            ErrContactRequestContactAlreadyAdded = 1201,
-            ErrContactRequestContactBlocked = 1202,
-            ErrContactRequestContactUndefined = 1203,
-            ErrContactRequestIncomingAlreadyReceived = 1204,
-            ErrGroupMemberLogEventOpen = 1300,
-            ErrGroupMemberLogEventSignature = 1301,
-            ErrGroupMemberUnknownGroupID = 1302,
-            ErrGroupSecretOtherDestMember = 1303,
-            ErrGroupSecretAlreadySentToMember = 1304,
-            ErrGroupInvalidType = 1305,
-            ErrGroupMissing = 1306,
-            ErrGroupActivate = 1307,
-            ErrGroupDeactivate = 1308,
-            ErrGroupInfo = 1309,
-            ErrEventListMetadata = 1400,
-            ErrEventListMessage = 1401,
-            ErrMessageKeyPersistencePut = 1500,
-            ErrMessageKeyPersistenceGet = 1501,
-            ErrBridgeInterrupted = 1600,
-            ErrBridgeNotRunning = 1601,
-            ErrMessengerInvalidDeepLink = 2000,
-            ErrMessengerDeepLinkRequiresPassphrase = 2001,
-            ErrMessengerDeepLinkInvalidPassphrase = 2002,
-            ErrMessengerStreamEvent = 2003,
-            ErrMessengerContactMetadataUnmarshal = 2004,
-            ErrDBEntryAlreadyExists = 2100,
-            ErrDBAddConversation = 2101,
-            ErrDBAddContactRequestOutgoingSent = 2102,
-            ErrDBAddContactRequestOutgoingEnqueud = 2103,
-            ErrDBAddContactRequestIncomingReceived = 2104,
-            ErrDBAddContactRequestIncomingAccepted = 2105,
-            ErrDBAddGroupMemberDeviceAdded = 2106,
-            ErrDBMultipleRecords = 2107,
-            ErrReplayProcessGroupMetadata = 2200,
-            ErrReplayProcessGroupMessage = 2201,
-            ErrAttachmentPrepare = 2300,
-            ErrAttachmentRetrieve = 2301,
-            ErrProtocolSend = 2302,
-            ErrProtocolEventUnmarshal = 2303,
-            ErrProtocolGetGroupInfo = 2304,
-            ErrTestEcho = 2401,
-            ErrTestEchoRecv = 2402,
-            ErrTestEchoSend = 2403,
-            ErrCLINoTermcaps = 3001,
-            ErrServicesAuth = 4000,
-            ErrServicesAuthNotInitialized = 4001,
-            ErrServicesAuthWrongState = 4002,
-            ErrServicesAuthInvalidResponse = 4003,
-            ErrServicesAuthServer = 4004,
-            ErrServicesAuthCodeChallenge = 4005,
-            ErrServicesAuthServiceInvalidToken = 4006,
-            ErrServicesAuthServiceNotSupported = 4007,
-            ErrServicesAuthUnknownToken = 4008,
-            ErrServicesAuthInvalidURL = 4009,
-            ErrServiceReplication = 4100,
-            ErrServiceReplicationServer = 4101,
-            ErrServiceReplicationMissingEndpoint = 4102,
-            ErrBertyAccount = 5000,
-            ErrBertyAccountNoIDSpecified = 5001,
-            ErrBertyAccountAlreadyOpened = 5002,
-            ErrBertyAccountInvalidIDFormat = 5003,
-            ErrBertyAccountLoggerDecorator = 5004,
-            ErrBertyAccountGRPCClient = 5005,
-            ErrBertyAccountOpenAccount = 5006,
-            ErrBertyAccountDataNotFound = 5007,
-            ErrBertyAccountMetadataUpdate = 5008,
-            ErrBertyAccountManagerOpen = 5009,
-            ErrBertyAccountManagerClose = 5010,
-            ErrBertyAccountInvalidCLIArgs = 5011,
-            ErrBertyAccountFSError = 5012,
-            ErrBertyAccountAlreadyExists = 5013,
-            ErrBertyAccountNoBackupSpecified = 5014,
-            ErrBertyAccountIDGenFailed = 5015,
-            ErrBertyAccountCreationFailed = 5016,
-            ErrBertyAccountUpdateFailed = 5017,
-            ErrAppStorageNotSupported = 5018,
-            ErrPush = 6000,
-            ErrPushWrongAccount = 6001,
-            ErrPushUnableToDecrypt = 6002,
-            ErrPushInvalidPayload = 6003,
-            ErrPushInvalidServerConfig = 6004,
-            ErrPushMissingBundleID = 6005,
-            ErrPushUnknownDestination = 6006,
-            ErrPushProvider = 6007,
-            ErrPushUnknownProvider = 6008,
-            ErrNoProvidersConfigured = 6009,
-            ErrInvalidPrivateKey = 6010
-        }
-=======
             class LocalDatabaseState implements ILocalDatabaseState {
 
                 public publicKey: string;
@@ -9515,7 +9339,6 @@ export namespace berty {
                 public static toObject(message: berty.messenger.v1.LocalDatabaseState, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
->>>>>>> 66387ac60 (feat: encrypted orbitdb links)
 
             interface ILocalConversationState {
                 publicKey?: (string|null);
@@ -10069,12 +9892,14 @@ export namespace berty {
             interface IPushReceivedData {
                 protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
                 interaction?: (berty.messenger.v1.IInteraction|null);
+                alreadyReceived?: (boolean|null);
             }
 
             class PushReceivedData implements IPushReceivedData {
 
                 public protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
                 public interaction?: (berty.messenger.v1.IInteraction|null);
+                public alreadyReceived: boolean;
                 public static create(properties?: berty.messenger.v1.IPushReceivedData): berty.messenger.v1.PushReceivedData;
                 public static encode(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;

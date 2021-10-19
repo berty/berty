@@ -65,11 +65,12 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 		kind = "group"
 		machine.BertyGroup = &messengertypes.BertyGroup{
 			Group: &protocoltypes.Group{
-				PublicKey: link.BertyGroup.Group.PublicKey,
-				Secret:    link.BertyGroup.Group.Secret,
-				SecretSig: link.BertyGroup.Group.SecretSig,
-				GroupType: link.BertyGroup.Group.GroupType,
-				SignPub:   link.BertyGroup.Group.SignPub,
+				PublicKey:  link.BertyGroup.Group.PublicKey,
+				Secret:     link.BertyGroup.Group.Secret,
+				SecretSig:  link.BertyGroup.Group.SecretSig,
+				GroupType:  link.BertyGroup.Group.GroupType,
+				SignPub:    link.BertyGroup.Group.SignPub,
+				LinkKeySig: link.BertyGroup.Group.LinkKeySig,
 			},
 		}
 		if link.BertyGroup.DisplayName != "" {
@@ -96,6 +97,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 			machine.Encrypted.GroupSecretSig = link.Encrypted.GroupSecretSig
 			machine.Encrypted.GroupSignPub = link.Encrypted.GroupSignPub
 			machine.Encrypted.GroupType = link.Encrypted.GroupType
+			machine.Encrypted.GroupLinkKeySig = link.Encrypted.GroupLinkKeySig
 		}
 		*qrOptimized = *link
 	default:
@@ -291,17 +293,19 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 	case messengertypes.BertyLink_GroupV1Kind:
 		decrypted.BertyGroup = &messengertypes.BertyGroup{
 			Group: &protocoltypes.Group{
-				PublicKey: make([]byte, len(link.Encrypted.GroupPublicKey)),
-				Secret:    make([]byte, len(link.Encrypted.GroupSecret)),
-				SecretSig: make([]byte, len(link.Encrypted.GroupSecretSig)),
-				SignPub:   make([]byte, len(link.Encrypted.GroupSignPub)),
-				GroupType: link.Encrypted.GroupType,
+				PublicKey:  make([]byte, len(link.Encrypted.GroupPublicKey)),
+				Secret:     make([]byte, len(link.Encrypted.GroupSecret)),
+				SecretSig:  make([]byte, len(link.Encrypted.GroupSecretSig)),
+				SignPub:    make([]byte, len(link.Encrypted.GroupSignPub)),
+				LinkKeySig: make([]byte, len(link.Encrypted.GroupLinkKeySig)),
+				GroupType:  link.Encrypted.GroupType,
 			},
 		}
 		stream.XORKeyStream(decrypted.BertyGroup.Group.PublicKey, link.Encrypted.GroupPublicKey)
 		stream.XORKeyStream(decrypted.BertyGroup.Group.Secret, link.Encrypted.GroupSecret)
 		stream.XORKeyStream(decrypted.BertyGroup.Group.SecretSig, link.Encrypted.GroupSecretSig)
 		stream.XORKeyStream(decrypted.BertyGroup.Group.SignPub, link.Encrypted.GroupSignPub)
+		stream.XORKeyStream(decrypted.BertyGroup.Group.LinkKeySig, link.Encrypted.GroupLinkKeySig)
 		decrypted.BertyGroup.DisplayName = link.Encrypted.DisplayName
 	}
 
@@ -387,10 +391,12 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		encrypted.Encrypted.GroupSecret = make([]byte, len(link.BertyGroup.Group.Secret))
 		encrypted.Encrypted.GroupSecretSig = make([]byte, len(link.BertyGroup.Group.SecretSig))
 		encrypted.Encrypted.GroupSignPub = make([]byte, len(link.BertyGroup.Group.SignPub))
+		encrypted.Encrypted.GroupLinkKeySig = make([]byte, len(link.BertyGroup.Group.LinkKeySig))
 		stream.XORKeyStream(encrypted.Encrypted.GroupPublicKey, link.BertyGroup.Group.PublicKey)
 		stream.XORKeyStream(encrypted.Encrypted.GroupSecret, link.BertyGroup.Group.Secret)
 		stream.XORKeyStream(encrypted.Encrypted.GroupSecretSig, link.BertyGroup.Group.SecretSig)
 		stream.XORKeyStream(encrypted.Encrypted.GroupSignPub, link.BertyGroup.Group.SignPub)
+		stream.XORKeyStream(encrypted.Encrypted.GroupLinkKeySig, link.BertyGroup.Group.LinkKeySig)
 		encrypted.Encrypted.DisplayName = link.BertyGroup.DisplayName
 
 	default:
