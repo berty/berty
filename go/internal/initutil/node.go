@@ -538,7 +538,7 @@ func (m *Manager) getReplicationDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetReplicationDBForPath(dir, logger)
+	m.Node.Replication.db, m.Node.Replication.dbCleanup, err = accountutils.GetReplicationDBForPath(dir, logger)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

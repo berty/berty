@@ -287,6 +287,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("close-messenger-server")
 	prog.AddStep("close-messenger-protocol-client")
 	prog.AddStep("cleanup-messenger-db")
+	prog.AddStep("cleanup-replication-db")
 	prog.AddStep("close-protocol-server")
 	prog.AddStep("close-tinder-service")
 	prog.AddStep("close-ipfs-node")
@@ -333,6 +334,11 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("cleanup-messenger-db").SetAsCurrent()
 	if m.Node.Messenger.dbCleanup != nil {
 		m.Node.Messenger.dbCleanup()
+	}
+
+	prog.Get("cleanup-replication-db").SetAsCurrent()
+	if m.Node.Replication.dbCleanup != nil {
+		m.Node.Replication.dbCleanup()
 	}
 
 	prog.Get("close-protocol-server").SetAsCurrent()
