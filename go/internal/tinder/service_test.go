@@ -65,7 +65,7 @@ func TestAdvertiseWatchdogs(t *testing.T) {
 	opts := &Opts{
 		Logger: l,
 		// should expired after 4 ticks
-		AdvertiseResetInterval: tick * 4,
+		AdvertiseResetInterval: tick * 5,
 		AdvertiseGracePeriod:   0,
 	}
 
@@ -84,8 +84,8 @@ func TestAdvertiseWatchdogs(t *testing.T) {
 	ok := ms.HasPeerRecord(advertisekey, client.Host.ID())
 	require.True(t, ok)
 
-	// should be expired after 5 ticks
-	time.Sleep(tick * 5)
+	// should be expired after 6 ticks
+	time.Sleep(tick * 6)
 	ok = ms.HasPeerRecord(advertisekey, client.Host.ID())
 	require.False(t, ok)
 }
