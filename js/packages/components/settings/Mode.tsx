@@ -57,7 +57,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 				iconColor={colors['background-header']}
 				iconSize={30}
 				actionIcon='arrow-ios-forward'
-				onPress={() => navigation.navigate('Settings.ReplicationServices')}
+				onPress={() => navigation.navigate('Settings.ServicesAuth')}
 			/>
 			<ButtonSetting
 				name={t('settings.mode.auto-replicate-button')}
