@@ -79,7 +79,6 @@ func TestFlow(t *testing.T) {
 		var gotErr bool
 		for i := 0; i < 1000; i++ {
 			msg, err := stream.Recv()
-
 			if err != nil {
 				require.Nil(t, msg)
 				require.True(t, errcode.Has(err, errcode.ErrBertyAccountDataNotFound))
