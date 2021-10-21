@@ -5,6 +5,7 @@ public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol {
   public static var shared: KeystoreDriver = KeystoreDriver()
   
   public func put(_ key: String?, data: Data?) throws {
+    self.handleAppUninstallation()
     let identifier = key!.data(using: String.Encoding.utf8)!
     let addquery: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
                                    kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
@@ -20,6 +21,7 @@ public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol {
   }
   
   public func get(_ key: String?) throws -> Data {
+    self.handleAppUninstallation()
     let identifier = key!.data(using: String.Encoding.utf8)!
     let getquery: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
                                    kSecAttrGeneric as String: identifier,
@@ -36,4 +38,27 @@ public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol {
     
     return item as! Data
   }
+  
+  private func handleAppUninstallation() {
+    if (!UserDefaults.standard.bool(forKey: "BertyIsAppInstalled")) {
+      self.clearSecureKeyStore()
+      UserDefaults.standard.set(true, forKey:"BertyIsAppInstalled")
+      UserDefaults.standard.synchronize()
+    }
+  }
+  
+  private func clearSecureKeyStore() {
+      let secItemClasses = [
+        kSecClassGenericPassword,
+        kSecAttrGeneric,
+        kSecAttrAccount,
+        kSecClassKey,
+        kSecAttrService
+      ]
+      for secItemClass in secItemClasses {
+        let spec: [String: Any] = [kSecClass as String: secItemClass]
+        SecItemDelete(spec as CFDictionary)
+      }
+  }
+
 }
