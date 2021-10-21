@@ -137,7 +137,7 @@ func TestAddBerty(t *testing.T) {
 	g, _, err := NewGroupMultiMember()
 	require.NoError(t, err)
 
-	storageKey := []byte("42")
+	storageKey := []byte("42424242424242424242424242424242")
 
 	testAddBerty(ctx, t, api, g, pathBase, storageKey, 20, 0)
 	testAddBerty(ctx, t, api, g, pathBase, storageKey, 0, 20)
