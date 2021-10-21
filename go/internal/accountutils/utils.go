@@ -113,24 +113,25 @@ func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*acc
 	return accounts, nil
 }
 
+const StorageKeySize = 32
+
 func GetOrCreateStorageKey(ks sysutil.NativeKeystore) ([]byte, error) {
 	key, getErr := ks.Get(StorageKeyName)
 	if getErr != nil {
-		keyData := make([]byte, cryptoutil.KeySize)
+		keyData := make([]byte, StorageKeySize)
 		if _, err := crand.Read(keyData); err != nil {
 			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
 		if err := ks.Put(StorageKeyName, keyData); err != nil {
-			return nil, errcode.ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
+			return nil, errcode.ErrKeystorePut.Wrap(multierr.Append(getErr, err))
 		}
 
 		var err error
 		if key, err = ks.Get(StorageKeyName); err != nil {
-			return nil, errcode.ErrKeystorePut.Wrap(multierr.Append(getErr, err))
+			return nil, errcode.ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
 		}
 	}
-
 	return key, nil
 }
 
