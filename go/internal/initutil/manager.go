@@ -101,6 +101,8 @@ type Manager struct {
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
 			StaticRelays      string `json:"StaticRelays,omitempty"`
+			LowWatermark      int    `json:"LowWatermark,omitempty"`
+			HighWatermark     int    `json:"HighWatermark,omitempty"`
 			Ble               struct {
 				Enable bool                      `json:"Enable,omitempty"`
 				Driver proximity.ProximityDriver `json:"Driver,omitempty"`

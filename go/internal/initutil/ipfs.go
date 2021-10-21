@@ -27,6 +27,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
+	"go.uber.org/zap"
 	"moul.io/srand"
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
@@ -77,6 +78,8 @@ const (
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	m.SetupPresetFlags(fs)
 	fs.StringVar(&m.Node.Protocol.SwarmListeners, "p2p.swarm-listeners", KeywordDefault, "IPFS swarm listeners")
+	fs.IntVar(&m.Node.Protocol.HighWatermark, "p2p.high-water", 200, "ConnManager high watermark")
+	fs.IntVar(&m.Node.Protocol.LowWatermark, "p2p.low-water", 150, "ConnManager low watermark")
 	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "/ip4/127.0.0.1/tcp/5001", "IPFS API listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
@@ -87,6 +90,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.MDNS, FlagNameP2PMDNS, true, "if true mdns will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
@@ -173,10 +177,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if dhtmode > 0 {
 		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
 		if m.Node.Protocol.DHTRandomWalk {
-			dhtopts = append(dhtopts,
-				p2p_dht.DisableAutoRefresh(),
-				p2p_dht.RoutingTableLatencyTolerance(time.Millisecond*500),
-			)
+			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
 		}
 		routing = ipfsutil.CustomRoutingOption(dhtmode, dhtopts...)
 	} else {
@@ -276,6 +277,8 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		}
 	}
 
+	logger.Debug("local PeerID", zap.String("PeerID", m.Node.Protocol.ipfsNode.Identity.String()))
+
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }
 
@@ -335,6 +338,14 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 
 	if m.Node.Protocol.NoAnnounce != "" {
 		cfg.Addresses.NoAnnounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
+	}
+
+	if m.Node.Protocol.HighWatermark > 0 {
+		cfg.Swarm.ConnMgr.HighWater = m.Node.Protocol.HighWatermark
+	}
+
+	if m.Node.Protocol.LowWatermark > 0 {
+		cfg.Swarm.ConnMgr.LowWater = m.Node.Protocol.LowWatermark
 	}
 
 	if m.Node.Protocol.DisableIPFSNetwork {
@@ -448,7 +459,9 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// enable autorelay
-	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableRelay(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+	if m.Node.Protocol.AutoRelay {
+		p2popts = append(p2popts, libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+	}
 
 	pis, err := m.getStaticRelays()
 	if err != nil {
@@ -465,10 +478,8 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// prefill peerstore with known rdvp servers
-	if m.Node.Protocol.Tor.Mode != TorRequired {
-		for _, p := range rdvpeers {
-			cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
-		}
+	for _, p := range rdvpeers {
+		cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 	}
 
 	return p2popts, nil
@@ -540,7 +551,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	tinderOpts := &tinder.Opts{
 		Logger:                 logger,
 		AdvertiseResetInterval: time.Minute * 2,
-		FindPeerResetInterval:  time.Minute * 2,
+		FindPeerResetInterval:  time.Second * 30,
 		AdvertiseGracePeriod:   time.Minute,
 		BackoffStrategy: &tinder.BackoffOpts{
 			StratFactory: backoffstrat,
