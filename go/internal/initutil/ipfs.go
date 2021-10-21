@@ -301,14 +301,14 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
 
-	repopath := filepath.Join(m.Datastore.Dir, "ipfs.sqlite")
+	dbPath := filepath.Join(m.Datastore.Dir, "ipfs.sqlite")
 
-	repo, err = ipfsutil.LoadRepoFromPath(repopath, storageKey)
+	repo, err = ipfsutil.LoadRepoFromPath(dbPath, storageKey)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
 
-	return ipfs_mobile.NewRepoMobile(repopath, repo), nil
+	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
 }
 
 func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error) {
