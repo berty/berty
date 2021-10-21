@@ -1354,49 +1354,60 @@ func (h *EventHandler) pushDeviceServerRegistered(gme *protocoltypes.GroupMetada
 	return nil
 }
 
-func (h *EventHandler) HandleOutOfStoreAppMessage(groupPK []byte, message *protocoltypes.OutOfStoreMessage, payload []byte) (*mt.Interaction, error) {
+func (h *EventHandler) GetAlreadyHandledMessage(cid ipfscid.Cid) (bool, *mt.Interaction, error) {
+	i, err := h.db.GetInteractionByCID(cid.String())
+	if err == gorm.ErrRecordNotFound {
+		return false, nil, nil
+	} else if err != nil {
+		return false, nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return true, i, nil
+}
+
+func (h *EventHandler) HandleOutOfStoreAppMessage(groupPK []byte, message *protocoltypes.OutOfStoreMessage, payload []byte) (*mt.Interaction, bool, error) {
 	if message == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no message specified"))
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no message specified"))
 	}
 
 	_, c, err := ipfscid.CidFromBytes(message.CID)
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, false, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	if i, err := h.db.GetInteractionByCID(c.String()); err != nil && err != gorm.ErrRecordNotFound {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, false, errcode.ErrDBRead.Wrap(err)
 	} else if err == nil {
 		h.logger.Info("push payload received but was previously handled")
-		return i, nil
+		return i, false, nil
 	}
 
 	env := protocoltypes.EncryptedMessage{}
 	if err := env.Unmarshal(payload); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, false, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	_, am, err := mt.UnmarshalAppMessage(env.Plaintext)
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, false, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	// build interaction
 	i, err := interactionFromOutOfStoreAppMessage(h, groupPK, message, &am)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	i, isNew, err := h.db.AddInteraction(*i)
 	if err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, false, errcode.ErrDBWrite.Wrap(err)
 	}
 
 	if isNew {
 		if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionUpdated, &mt.StreamEvent_InteractionUpdated{Interaction: i}, true); err != nil {
-			return nil, err
+			return nil, false, err
 		}
 	}
 
-	return i, nil
+	return i, isNew, nil
 }

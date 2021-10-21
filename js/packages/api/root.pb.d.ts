@@ -1687,6 +1687,7 @@ export namespace berty {
                 pushType?: (berty.push.v1.DecryptedPush.PushType|null);
                 payloadAttrsJson?: (string|null);
                 deepLink?: (string|null);
+                alreadyReceived?: (boolean|null);
             }
 
             class DecryptedPush implements IDecryptedPush {
@@ -1700,6 +1701,7 @@ export namespace berty {
                 public pushType: berty.push.v1.DecryptedPush.PushType;
                 public payloadAttrsJson: string;
                 public deepLink: string;
+                public alreadyReceived: boolean;
                 public static create(properties?: berty.push.v1.IDecryptedPush): berty.push.v1.DecryptedPush;
                 public static encode(message: berty.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5591,6 +5593,7 @@ export namespace berty {
                     message?: (berty.protocol.v1.IOutOfStoreMessage|null);
                     cleartext?: (Uint8Array|null);
                     groupPublicKey?: (Uint8Array|null);
+                    alreadyReceived?: (boolean|null);
                 }
 
                 class Reply implements IReply {
@@ -5598,6 +5601,7 @@ export namespace berty {
                     public message?: (berty.protocol.v1.IOutOfStoreMessage|null);
                     public cleartext: Uint8Array;
                     public groupPublicKey: Uint8Array;
+                    public alreadyReceived: boolean;
                     public static create(properties?: berty.protocol.v1.PushReceive.IReply): berty.protocol.v1.PushReceive.Reply;
                     public static encode(message: berty.protocol.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -9214,12 +9218,14 @@ export namespace berty {
             interface IPushReceivedData {
                 protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
                 interaction?: (berty.messenger.v1.IInteraction|null);
+                alreadyReceived?: (boolean|null);
             }
 
             class PushReceivedData implements IPushReceivedData {
 
                 public protocolData?: (berty.protocol.v1.PushReceive.IReply|null);
                 public interaction?: (berty.messenger.v1.IInteraction|null);
+                public alreadyReceived: boolean;
                 public static create(properties?: berty.messenger.v1.IPushReceivedData): berty.messenger.v1.PushReceivedData;
                 public static encode(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;

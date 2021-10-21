@@ -11,7 +11,7 @@ import (
 )
 
 type EventHandler interface {
-	HandleOutOfStoreAppMessage(groupPK []byte, message *protocoltypes.OutOfStoreMessage, payload []byte) (*messengertypes.Interaction, error)
+	HandleOutOfStoreAppMessage(groupPK []byte, message *protocoltypes.OutOfStoreMessage, payload []byte) (*messengertypes.Interaction, bool, error)
 }
 
 type messengerPushReceiver struct {
@@ -42,15 +42,16 @@ func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	i, err := m.eventHandler.HandleOutOfStoreAppMessage(clear.GroupPublicKey, clear.Message, clear.Cleartext)
+	i, isNew, err := m.eventHandler.HandleOutOfStoreAppMessage(clear.GroupPublicKey, clear.Message, clear.Cleartext)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
 	return &messengertypes.PushReceive_Reply{
 		Data: &messengertypes.PushReceivedData{
-			ProtocolData: clear,
-			Interaction:  i,
+			ProtocolData:    clear,
+			Interaction:     i,
+			AlreadyReceived: clear.AlreadyReceived || !isNew,
 		},
 	}, nil
 }

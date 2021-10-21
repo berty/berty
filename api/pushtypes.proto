@@ -120,4 +120,5 @@ message DecryptedPush {
   PushType push_type = 7;
   string payload_attrs_json = 8 [(gogoproto.customname) = "PayloadAttrsJSON"];
   string deep_link = 9;
+  bool already_received = 10;
 }

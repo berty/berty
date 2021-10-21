@@ -2907,6 +2907,9 @@
         "group_public_key": {
           "type": "string",
           "format": "byte"
+        },
+        "already_received": {
+          "type": "boolean"
         }
       }
     },

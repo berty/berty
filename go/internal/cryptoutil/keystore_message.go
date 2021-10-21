@@ -436,6 +436,10 @@ func (m *MessageKeystore) OpenPayload(id cid.Cid, groupPK crypto.PubKey, payload
 		}
 	}
 
+	return m.openPayload(di, pk, payload, headers)
+}
+
+func (m *MessageKeystore) openPayload(di *DecryptInfo, pk crypto.PubKey, payload []byte, headers *protocoltypes.MessageHeaders) ([]byte, *DecryptInfo, error) {
 	msg, ok := secretbox.Open(nil, payload, uint64AsNonce(headers.Counter), di.MK)
 	if !ok {
 		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(fmt.Errorf("secret box failed to open message payload"))
@@ -622,9 +626,9 @@ func NewInMemMessageKeystore() (*MessageKeystore, func()) {
 	return NewMessageKeystore(ds), func() { _ = ds.Close() }
 }
 
-func (m *MessageKeystore) OpenOutOfStoreMessage(envelope *protocoltypes.OutOfStoreMessage, groupPublicKey []byte) ([]byte, error) {
+func (m *MessageKeystore) OpenOutOfStoreMessage(envelope *protocoltypes.OutOfStoreMessage, groupPublicKey []byte) ([]byte, bool, error) {
 	if m == nil || envelope == nil || len(groupPublicKey) == 0 {
-		return nil, errcode.ErrInvalidInput
+		return nil, false, errcode.ErrInvalidInput
 	}
 
 	m.lock.Lock()
@@ -632,37 +636,52 @@ func (m *MessageKeystore) OpenOutOfStoreMessage(envelope *protocoltypes.OutOfSto
 
 	gPK, err := crypto.UnmarshalEd25519PublicKey(groupPublicKey)
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, false, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	dPK, err := crypto.UnmarshalEd25519PublicKey(envelope.DevicePK)
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, false, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	clear, _, err := m.OpenPayload(cid.Undef, gPK, envelope.EncryptedPayload, &protocoltypes.MessageHeaders{
+	_, c, err := cid.CidFromBytes(envelope.CID)
+	if err != nil {
+		return nil, false, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	di := &DecryptInfo{NewlyDecrypted: true}
+	if di.MK, err = m.GetKeyForCID(c); err == nil {
+		di.NewlyDecrypted = false
+	} else {
+		di.MK, err = m.getPrecomputedKey(gPK, dPK, envelope.Counter)
+		if err != nil {
+			return nil, false, errcode.ErrCryptoDecrypt.Wrap(err)
+		}
+	}
+
+	clear, di, err := m.openPayload(di, dPK, envelope.EncryptedPayload, &protocoltypes.MessageHeaders{
 		Counter:  envelope.Counter,
 		DevicePK: envelope.DevicePK,
 		Sig:      envelope.Sig,
 	})
 	if err != nil {
-		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
+		return nil, false, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
 	if ok, err := dPK.Verify(clear, envelope.Sig); !ok {
-		return nil, errcode.ErrCryptoSignatureVerification.Wrap(fmt.Errorf("unable to verify message signature"))
+		return nil, false, errcode.ErrCryptoSignatureVerification.Wrap(fmt.Errorf("unable to verify message signature"))
 	} else if err != nil {
-		return nil, errcode.ErrCryptoSignatureVerification.Wrap(err)
+		return nil, false, errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
 	ds, err := m.GetDeviceChainKey(gPK, dPK)
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, false, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	if _, err = m.preComputeKeys(dPK, gPK, ds); err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, false, errcode.ErrInternal.Wrap(err)
 	}
 
-	return clear, nil
+	return clear, di.NewlyDecrypted, nil
 }

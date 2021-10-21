@@ -61,6 +61,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		PushType:                pushtypes.DecryptedPush_Unknown,
 		PayloadAttrsJSON:        "{}",
 		DeepLink:                link,
+		AlreadyReceived:         rawPushData.AlreadyReceived,
 	}
 
 	if rawPushData.Interaction.Member != nil {

@@ -1444,6 +1444,7 @@ Progress define a generic object that can be used to display a progress bar for 
 | message | [OutOfStoreMessage](#berty.protocol.v1.OutOfStoreMessage) |  |  |
 | cleartext | [bytes](#bytes) |  |  |
 | group_public_key | [bytes](#bytes) |  |  |
+| already_received | [bool](#bool) |  |  |
 
 <a name="berty.protocol.v1.PushReceive.Request"></a>
 

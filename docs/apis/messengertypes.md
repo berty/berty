@@ -1052,6 +1052,7 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | protocol_data | [berty.protocol.v1.PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) |  |  |
 | interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
+| already_received | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.PushSetAutoShare"></a>
 

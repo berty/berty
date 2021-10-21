@@ -57,7 +57,7 @@ func NewMemNativeKeystore() sysutil.NativeKeystore {
 }
 
 func TestPushDecryptStandalone(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+	t.Skip()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -182,12 +182,56 @@ func TestPushDecryptStandalone(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	time.Sleep(time.Millisecond * 2000)
-
-	_, err = messenger2.ContactAccept(ctx, &messengertypes.ContactAccept_Request{
-		PublicKey: mess1Acc.Account.PublicKey,
-	})
+	deadline := time.Now().Add(time.Second * 10)
+	acc2PKBytes, err := messengerutil.B64DecodeBytes(mess2Acc.Account.PublicKey)
 	require.NoError(t, err)
+
+	for {
+		if time.Now().After(deadline) {
+			require.Fail(t, "unable to receive contact request")
+			break
+		}
+
+		subMetaList, err := protocol2.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{GroupPK: acc2PKBytes, UntilNow: true})
+		require.NoError(t, err)
+
+		requestFound := false
+		for {
+			meta, err := subMetaList.Recv()
+			if subMetaList.Context().Err() != nil {
+				break
+			}
+
+			require.NoError(t, err)
+
+			if meta.Metadata.EventType == protocoltypes.EventTypeAccountContactRequestIncomingReceived {
+				requestFound = true
+				break
+			}
+		}
+
+		if requestFound {
+			break
+		}
+	}
+
+	for i := 0; i < 10; i++ {
+		_, err = messenger2.ContactAccept(ctx, &messengertypes.ContactAccept_Request{
+			PublicKey: mess1Acc.Account.PublicKey,
+		})
+
+		if err == nil {
+			break
+		}
+
+		if err != nil {
+			if i == 3 {
+				require.NoError(t, err)
+			}
+		}
+
+		time.Sleep(time.Millisecond * 100)
+	}
 
 	mess1PK, err := base64.RawURLEncoding.DecodeString(mess1Acc.Account.PublicKey)
 	require.NoError(t, err)
@@ -211,12 +255,40 @@ func TestPushDecryptStandalone(t *testing.T) {
 	_, err = protocol2.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: grpInf2.Group.PublicKey})
 	require.NoError(t, err)
 
-	time.Sleep(time.Second * 5)
+	deadline = time.Now().Add(time.Second * 10)
+	for {
+		if time.Now().After(deadline) {
+			require.Fail(t, "unable to receive other contact push token")
+			break
+		}
+
+		subMetaList, err := protocol2.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{GroupPK: grpInf1.Group.PublicKey, UntilNow: true})
+		require.NoError(t, err)
+
+		tokenUpdateFound := false
+		for {
+			meta, err := subMetaList.Recv()
+			if subMetaList.Context().Err() != nil {
+				break
+			}
+
+			require.NoError(t, err)
+
+			if meta.Metadata.EventType == protocoltypes.EventTypePushMemberTokenUpdate {
+				tokenUpdateFound = true
+				break
+			}
+		}
+
+		if tokenUpdateFound {
+			break
+		}
+
+		time.Sleep(time.Millisecond * 100)
+	}
 
 	_, err = svc1.CloseAccount(ctx, &accounttypes.CloseAccount_Request{})
 	require.NoError(t, err)
-
-	time.Sleep(time.Second * 1)
 
 	um1 := &messengertypes.AppMessage_UserMessage{Body: "hey1"}
 	um1B, err := proto.Marshal(um1)
@@ -229,8 +301,19 @@ func TestPushDecryptStandalone(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	time.Sleep(time.Second * 5)
-	require.Equal(t, 1, dispatcher.Len([]byte(svc1Token)))
+	deadline = time.Now().Add(time.Second * 10)
+	for {
+		if time.Now().After(deadline) {
+			require.Fail(t, "expected push dispatcher to have a message for other peer")
+			break
+		}
+
+		if dispatcher.Len([]byte(svc1Token)) == 1 {
+			break
+		}
+
+		time.Sleep(time.Millisecond * 100)
+	}
 
 	pushContents := base64.StdEncoding.EncodeToString(dispatcher.Shift([]byte(svc1Token)))
 
@@ -244,8 +327,19 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.Equal(t, svc1Account1, decrypted.AccountID)
 	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decrypted.ConversationPublicKey)
 	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decrypted.PayloadAttrsJSON)
+	require.False(t, decrypted.AlreadyReceived)
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
+
+	// Decode twice
+	decrypted, err = bertypush.PushDecryptStandalone(svc1RootDir, pushContents, svc1StorageKey)
+	require.NoError(t, err)
+
+	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())
+	require.Equal(t, svc1Account1, decrypted.AccountID)
+	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decrypted.ConversationPublicKey)
+	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decrypted.PayloadAttrsJSON)
+	require.True(t, decrypted.AlreadyReceived)
 
 	// Account service with no account opened
 	decryptedUsingAccountSvc, err := svc1.PushReceive(ctx, &accounttypes.PushReceive_Request{Payload: pushContents})
@@ -255,11 +349,9 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountID)
 	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decryptedUsingAccountSvc.PushData.ConversationPublicKey)
 	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJSON)
+	require.True(t, decryptedUsingAccountSvc.PushData.AlreadyReceived)
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
-
-	// @TODO(gfanton): fix this, fail with "no account can decrypt the received push message"
-	t.Skip("skip inconsistent test")
 
 	_, err = svc1.OpenAccount(ctx, &accounttypes.OpenAccount_Request{AccountID: svc1Account1})
 	require.NoError(t, err)
@@ -272,6 +364,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountID)
 	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decryptedUsingAccountSvc.PushData.ConversationPublicKey)
 	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJSON)
+	require.True(t, decryptedUsingAccountSvc.PushData.AlreadyReceived)
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
 
