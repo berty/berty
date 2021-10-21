@@ -80,19 +80,20 @@ func TestFlow(t *testing.T) {
 		for i := 0; i < 1000; i++ {
 			msg, err := stream.Recv()
 
-			// the only kind of non-error message accepted is "init"
-			if msg != nil && msg.Progress != nil {
-				require.Equal(t, msg.Progress.Doing, "init")
-				require.NoError(t, err)
-				continue
-			}
-
 			if err != nil {
 				require.Nil(t, msg)
 				require.True(t, errcode.Has(err, errcode.ErrBertyAccountDataNotFound))
 				gotErr = true
 				break
 			}
+
+			// the only kind of non-error message accepted is "init"
+			if msg != nil && msg.Progress != nil && msg.Progress.Doing != "" {
+				require.Equal(t, msg.Progress.Doing, "init")
+				require.NoError(t, err)
+				continue
+			}
+
 			time.Sleep(10 * time.Millisecond)
 		}
 		require.True(t, gotErr)
