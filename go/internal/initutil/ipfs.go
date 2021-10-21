@@ -173,7 +173,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if dhtmode > 0 {
 		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
 		if m.Node.Protocol.DHTRandomWalk {
-			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
+			dhtopts = append(dhtopts,
+				p2p_dht.DisableAutoRefresh(),
+				p2p_dht.RoutingTableLatencyTolerance(time.Millisecond*500),
+			)
 		}
 		routing = ipfsutil.CustomRoutingOption(dhtmode, dhtopts...)
 	} else {
@@ -445,7 +448,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// enable autorelay
-	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableRelay(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
 
 	pis, err := m.getStaticRelays()
 	if err != nil {
