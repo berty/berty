@@ -576,7 +576,7 @@
       "allow": "Allow",
       "settings": "Go to Settings"
     },
-    "what-happening": "What's happening here?",
+    "skip": "SKIP",
     "settings-text": "You can enable {{title}} permission from Settings."
   },
   "notification": {
