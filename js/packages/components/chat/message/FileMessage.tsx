@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import RNFS from 'react-native-fs'
 
 import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
@@ -15,9 +14,9 @@ export const FileMessage: React.FC<{
 }> = ({ medias, onLongPress, isHighlight }) => {
 	const colors = useThemeColor()
 	const { protocolClient } = useMsgrContext()
-	const [source, setSource] = useState('')
+	const [, setSource] = useState('')
 	const [isLoading, setLoading] = useState(false)
-	const [isDownloaded, setDownloaded] = useState(false)
+	const [isDownloaded] = useState(false)
 	const [{ margin }] = useStyles()
 
 	useEffect(() => {
@@ -51,12 +50,6 @@ export const FileMessage: React.FC<{
 			onLongPress={onLongPress}
 			onPress={() => {
 				setLoading(true)
-				RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${medias[0].filename}`, source, 'base64')
-					.then(() => {
-						setDownloaded(true)
-						setLoading(false)
-					})
-					.catch(err => console.log(err))
 			}}
 		>
 			<Icon
