@@ -100,6 +100,7 @@ type Manager struct {
 			MDNS              bool   `json:"LocalDiscovery,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
+			AutoRelay         bool   `json:"Relay,omitempty"`
 			StaticRelays      string `json:"StaticRelays,omitempty"`
 			LowWatermark      int    `json:"LowWatermark,omitempty"`
 			HighWatermark     int    `json:"HighWatermark,omitempty"`
