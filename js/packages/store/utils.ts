@@ -1,8 +1,9 @@
 import beapi from '@berty-tech/api'
 import Shake, { ShakeFile } from '@shakebugs/react-native-shake'
+import { Buffer } from 'buffer'
 
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
-
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { accountService } from './context'
 
 type TypeNameDict = { [key: string]: beapi.messenger.AppMessage.Type | undefined }
@@ -43,4 +44,25 @@ export const updateShakeAttachments = async () => {
 	} catch (e) {
 		console.warn('Failed to update shake attachments:', e)
 	}
+}
+
+export const prepareMediaBytes = async (
+	client: WelshMessengerServiceClient,
+	info: beapi.messenger.IMedia,
+	bytes: Buffer,
+): Promise<string> => {
+	const stream = await client.mediaPrepare({})
+	await stream.emit({ info })
+	const blockSize = 4 * 1024
+	while (bytes.length > 0) {
+		let end = blockSize
+		if (bytes.length < end) {
+			end = bytes.length
+		}
+		const block = bytes.slice(0, end)
+		await stream.emit({ block })
+		bytes = bytes.slice(blockSize)
+	}
+	const resp = await stream.stopAndRecv()
+	return resp.cid
 }
