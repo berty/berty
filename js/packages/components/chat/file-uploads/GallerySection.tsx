@@ -26,12 +26,16 @@ export const GallerySection: React.FC<{
 	const [{ border, padding, margin }] = useStyles()
 	const colors = useThemeColor()
 
-	const [selectedImages, setSelectedImages] = useState<beapi.messenger.IMedia[]>([])
+	const [selectedImages, setSelectedImages] = useState<
+		(beapi.messenger.IMedia & { uri: string })[]
+	>([])
 	const [galleryImageEndCursor, setGalleryImageEndCursor] = useState<string | null | undefined>(
 		null,
 	)
 
-	const [galleryContents, setGalleryContents] = useState<beapi.messenger.IMedia[]>([])
+	const [galleryContents, setGalleryContents] = useState<
+		(beapi.messenger.IMedia & { uri: string })[]
+	>([])
 
 	async function getInitalGalleryContents() {
 		try {
@@ -64,7 +68,7 @@ export const GallerySection: React.FC<{
 		getInitalGalleryContents()
 	}, [])
 
-	const getUploadableURI = async (item: beapi.messenger.IMedia) => {
+	const getUploadableURI = async (item: beapi.messenger.IMedia & { uri: string }) => {
 		if (Platform.OS === 'android') {
 			return item.uri
 		}
