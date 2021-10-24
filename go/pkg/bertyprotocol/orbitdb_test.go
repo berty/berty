@@ -146,7 +146,7 @@ func TestDifferentStores(t *testing.T) {
 	_, err = g2b.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 3"), nil)
 	require.NoError(t, err)
 
-	time.Sleep(time.Millisecond * 250)
+	time.Sleep(time.Millisecond * 500)
 
 	evt1, err := g1a.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
