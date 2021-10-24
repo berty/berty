@@ -488,7 +488,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	g2a, err = odb2.OpenGroup(ctx, gA, nil)
 	require.NoError(t, err)
 
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(2000 * time.Millisecond)
 
 	t.Log(" --- Waited for peer 2 to replicate data ---")
 
