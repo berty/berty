@@ -30,8 +30,8 @@ export namespace berty {
                 public updateAccount(request: berty.account.v1.UpdateAccount.IRequest): Promise<berty.account.v1.UpdateAccount.Reply>;
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest, callback: berty.account.v1.AccountService.GetGRPCListenerAddrsCallback): void;
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest): Promise<berty.account.v1.GetGRPCListenerAddrs.Reply>;
-                public logfileList(request: berty.account.v1.LogfileList.IRequest, callback: berty.account.v1.AccountService.LogfileListCallback): void;
-                public logfileList(request: berty.account.v1.LogfileList.IRequest): Promise<berty.account.v1.LogfileList.Reply>;
+                public logSessionList(request: berty.account.v1.LogSessionList.IRequest, callback: berty.account.v1.AccountService.LogSessionListCallback): void;
+                public logSessionList(request: berty.account.v1.LogSessionList.IRequest): Promise<berty.account.v1.LogSessionList.Reply>;
                 public getUsername(request: berty.account.v1.GetUsername.IRequest, callback: berty.account.v1.AccountService.GetUsernameCallback): void;
                 public getUsername(request: berty.account.v1.GetUsername.IRequest): Promise<berty.account.v1.GetUsername.Reply>;
                 public networkConfigSet(request: berty.account.v1.NetworkConfigSet.IRequest, callback: berty.account.v1.AccountService.NetworkConfigSetCallback): void;
@@ -76,7 +76,7 @@ export namespace berty {
 
                 type GetGRPCListenerAddrsCallback = (error: (Error|null), response?: berty.account.v1.GetGRPCListenerAddrs.Reply) => void;
 
-                type LogfileListCallback = (error: (Error|null), response?: berty.account.v1.LogfileList.Reply) => void;
+                type LogSessionListCallback = (error: (Error|null), response?: berty.account.v1.LogSessionList.Reply) => void;
 
                 type GetUsernameCallback = (error: (Error|null), response?: berty.account.v1.GetUsername.Reply) => void;
 
@@ -950,89 +950,91 @@ export namespace berty {
                 }
             }
 
-            interface ILogfileList {
+            interface ILogSessionList {
             }
 
-            class LogfileList implements ILogfileList {
+            class LogSessionList implements ILogSessionList {
 
-                public static create(properties?: berty.account.v1.ILogfileList): berty.account.v1.LogfileList;
-                public static encode(message: berty.account.v1.ILogfileList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.account.v1.ILogfileList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogfileList;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogfileList;
+                public static create(properties?: berty.account.v1.ILogSessionList): berty.account.v1.LogSessionList;
+                public static encode(message: berty.account.v1.ILogSessionList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.ILogSessionList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogSessionList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogSessionList;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList;
-                public static toObject(message: berty.account.v1.LogfileList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.LogSessionList;
+                public static toObject(message: berty.account.v1.LogSessionList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            namespace LogfileList {
+            namespace LogSessionList {
 
                 interface IRequest {
                 }
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.account.v1.LogfileList.IRequest): berty.account.v1.LogfileList.Request;
-                    public static encode(message: berty.account.v1.LogfileList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.LogfileList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogfileList.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogfileList.Request;
+                    public static create(properties?: berty.account.v1.LogSessionList.IRequest): berty.account.v1.LogSessionList.Request;
+                    public static encode(message: berty.account.v1.LogSessionList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.LogSessionList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogSessionList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogSessionList.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList.Request;
-                    public static toObject(message: berty.account.v1.LogfileList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.LogSessionList.Request;
+                    public static toObject(message: berty.account.v1.LogSessionList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
-                    entries?: (berty.account.v1.LogfileList.Reply.ILogfile[]|null);
+                    entries?: (berty.account.v1.LogSessionList.Reply.ILogSession[]|null);
                 }
 
                 class Reply implements IReply {
 
-                    public entries: berty.account.v1.LogfileList.Reply.ILogfile[];
-                    public static create(properties?: berty.account.v1.LogfileList.IReply): berty.account.v1.LogfileList.Reply;
-                    public static encode(message: berty.account.v1.LogfileList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.LogfileList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogfileList.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogfileList.Reply;
+                    public entries: berty.account.v1.LogSessionList.Reply.ILogSession[];
+                    public static create(properties?: berty.account.v1.LogSessionList.IReply): berty.account.v1.LogSessionList.Reply;
+                    public static encode(message: berty.account.v1.LogSessionList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.LogSessionList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogSessionList.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogSessionList.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList.Reply;
-                    public static toObject(message: berty.account.v1.LogfileList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.LogSessionList.Reply;
+                    public static toObject(message: berty.account.v1.LogSessionList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 namespace Reply {
 
-                    interface ILogfile {
+                    interface ILogSession {
+                        driver?: (string|null);
                         accountId?: (string|null);
-                        name?: (string|null);
-                        path?: (string|null);
-                        size?: (Long|null);
+                        driverSessionId?: (string|null);
                         kind?: (string|null);
                         time?: (Long|null);
-                        latest?: (boolean|null);
                         errs?: (string|null);
+                        path?: (string|null);
+                        size?: (Long|null);
+                        latest?: (boolean|null);
                     }
 
-                    class Logfile implements ILogfile {
+                    class LogSession implements ILogSession {
 
+                        public driver: string;
                         public accountId: string;
-                        public name: string;
-                        public path: string;
-                        public size: Long;
+                        public driverSessionId: string;
                         public kind: string;
                         public time: Long;
-                        public latest: boolean;
                         public errs: string;
-                        public static create(properties?: berty.account.v1.LogfileList.Reply.ILogfile): berty.account.v1.LogfileList.Reply.Logfile;
-                        public static encode(message: berty.account.v1.LogfileList.Reply.ILogfile, writer?: $protobuf.Writer): $protobuf.Writer;
-                        public static encodeDelimited(message: berty.account.v1.LogfileList.Reply.ILogfile, writer?: $protobuf.Writer): $protobuf.Writer;
-                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogfileList.Reply.Logfile;
-                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogfileList.Reply.Logfile;
+                        public path: string;
+                        public size: Long;
+                        public latest: boolean;
+                        public static create(properties?: berty.account.v1.LogSessionList.Reply.ILogSession): berty.account.v1.LogSessionList.Reply.LogSession;
+                        public static encode(message: berty.account.v1.LogSessionList.Reply.ILogSession, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.account.v1.LogSessionList.Reply.ILogSession, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.LogSessionList.Reply.LogSession;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.LogSessionList.Reply.LogSession;
                         public static verify(message: { [k: string]: any }): (string|null);
-                        public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList.Reply.Logfile;
-                        public static toObject(message: berty.account.v1.LogfileList.Reply.Logfile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public static fromObject(object: { [k: string]: any }): berty.account.v1.LogSessionList.Reply.LogSession;
+                        public static toObject(message: berty.account.v1.LogSessionList.Reply.LogSession, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
                     }
                 }

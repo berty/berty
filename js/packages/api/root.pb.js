@@ -64,9 +64,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "GetGRPCListenerAddrs.Request",
                     responseType: "GetGRPCListenerAddrs.Reply"
                   },
-                  LogfileList: {
-                    requestType: "LogfileList.Request",
-                    responseType: "LogfileList.Reply"
+                  LogSessionList: {
+                    requestType: "LogSessionList.Request",
+                    responseType: "LogSessionList.Reply"
                   },
                   GetUsername: {
                     requestType: "GetUsername.Request",
@@ -534,7 +534,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              LogfileList: {
+              LogSessionList: {
                 fields: {},
                 nested: {
                   Request: {
@@ -544,47 +544,54 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       entries: {
                         rule: "repeated",
-                        type: "Logfile",
+                        type: "LogSession",
                         id: 1
                       }
                     },
                     nested: {
-                      Logfile: {
+                      LogSession: {
                         fields: {
+                          driver: {
+                            type: "string",
+                            id: 1
+                          },
                           accountId: {
                             type: "string",
-                            id: 1,
+                            id: 2,
                             options: {
                               "(gogoproto.customname)": "AccountID"
                             }
                           },
-                          name: {
+                          driverSessionId: {
                             type: "string",
-                            id: 2
-                          },
-                          path: {
-                            type: "string",
-                            id: 3
-                          },
-                          size: {
-                            type: "int64",
-                            id: 4
+                            id: 3,
+                            options: {
+                              "(gogoproto.customname)": "DriverSessionID"
+                            }
                           },
                           kind: {
                             type: "string",
-                            id: 5
+                            id: 4
                           },
                           time: {
                             type: "int64",
-                            id: 6
-                          },
-                          latest: {
-                            type: "bool",
-                            id: 7
+                            id: 5
                           },
                           errs: {
                             type: "string",
+                            id: 6
+                          },
+                          path: {
+                            type: "string",
+                            id: 7
+                          },
+                          size: {
+                            type: "int64",
                             id: 8
+                          },
+                          latest: {
+                            type: "bool",
+                            id: 9
                           }
                         }
                       }

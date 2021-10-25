@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
@@ -24,11 +23,6 @@ import (
 )
 
 func TestFlow(t *testing.T) {
-	// prepare deps
-	tempdir, err := ioutil.TempDir("", "berty-account")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempdir)
-
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
@@ -36,7 +30,7 @@ func TestFlow(t *testing.T) {
 
 	// init service
 	svc, err := bertyaccount.NewService(&bertyaccount.Options{
-		RootDirectory: filepath.Join(tempdir, "root"),
+		RootDirectory: t.TempDir(),
 		Logger:        logger,
 	})
 	require.NoError(t, err)
@@ -53,7 +47,7 @@ func TestFlow(t *testing.T) {
 
 	// no logs by default
 	{
-		rep, err := cl.LogfileList(ctx, &accounttypes.LogfileList_Request{})
+		rep, err := cl.LogSessionList(ctx, &accounttypes.LogSessionList_Request{})
 		require.NoError(t, err)
 		require.Empty(t, rep.Entries)
 	}
@@ -131,18 +125,14 @@ func TestFlow(t *testing.T) {
 		require.True(t, errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened))
 	}
 
-	// one log file
+	// one log session
 	{
-		rep, err := cl.LogfileList(ctx, &accounttypes.LogfileList_Request{})
+		rep, err := cl.LogSessionList(ctx, &accounttypes.LogSessionList_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Entries, 1)
 		require.Equal(t, rep.Entries[0].AccountID, "account 1")
 		require.Equal(t, rep.Entries[0].Kind, "mobile")
-		require.True(t, strings.HasPrefix(rep.Entries[0].Name, "mobile-"))
-		require.NotEmpty(t, rep.Entries[0].Path)
-		require.NotEmpty(t, rep.Entries[0].Time)
-		require.NotEmpty(t, rep.Entries[0].Size)
-		require.True(t, rep.Entries[0].Latest)
+		require.NotEmpty(t, rep.Entries[0].DriverSessionID)
 	}
 
 	// close the account
@@ -338,7 +328,7 @@ func TestFlow(t *testing.T) {
 
 	// two log files
 	{
-		rep, err := cl.LogfileList(ctx, &accounttypes.LogfileList_Request{})
+		rep, err := cl.LogSessionList(ctx, &accounttypes.LogSessionList_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Entries, 2)
 	}

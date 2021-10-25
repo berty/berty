@@ -3,6 +3,7 @@ package initutil
 import (
 	"flag"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -20,6 +21,7 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	if m.Logging.FilePath == "" && m.Session.Kind != "" {
 		m.Logging.FilePath = "<store-dir>/logs"
 	}
+
 	fs.StringVar(&m.Logging.StderrFilters, "log.filters", m.Logging.StderrFilters, "stderr zapfilter configuration")
 	fs.StringVar(&m.Logging.StderrFormat, "log.format", m.Logging.StderrFormat, "stderr logging format. can be: json, console, color, light-console, light-color")
 	fs.StringVar(&m.Logging.FilePath, "log.file", m.Logging.FilePath, "log file path (pattern)")
@@ -61,6 +63,11 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		return m.Logging.zapLogger, nil
 	}
 
+	storageKey, err := m.getStorageKey()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	m.Logging.StderrFilters = strings.ReplaceAll(m.Logging.StderrFilters, KeywordDefault, defaultLoggingFilters)
 	m.Logging.FileFilters = strings.ReplaceAll(m.Logging.FileFilters, KeywordDefault, defaultLoggingFilters)
 
@@ -72,9 +79,12 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		m.Logging.ring = zapring.New(m.Logging.RingSize * 1024 * 1024)
 		streams = append(streams, logutil.NewRingStream(m.Logging.RingFilters, "json", m.Logging.ring))
 	}
-	if m.Logging.FilePath != "" && m.Logging.FileFilters != "" {
+	if m.Logging.FilePath != "" && m.Logging.FileFilters != "" && len(storageKey) == 0 {
 		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<store-dir>", m.Datastore.Dir)
 		streams = append(streams, logutil.NewFileStream(m.Logging.FileFilters, "json", m.Logging.FilePath, m.Session.Kind))
+	}
+	if m.Logging.FileFilters != "" && len(storageKey) != 0 {
+		streams = append(streams, logutil.NewSQLiteStream(m.Logging.FileFilters, "json", filepath.Join(m.Datastore.Dir, "logs.sqlite"), m.Session.Kind, storageKey))
 	}
 	logger, loggerCleanup, err := logutil.NewLogger(streams...)
 	if err != nil {

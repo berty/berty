@@ -2,6 +2,8 @@ package logutil
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	ipfs_log "github.com/ipfs/go-log/v2"
@@ -10,7 +12,9 @@ import (
 	"moul.io/u"
 	"moul.io/zapfilter"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/zapcoregorm"
 )
 
 const (
@@ -120,6 +124,25 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 			w := zapcore.AddSync(writer)
 			core = zapcore.NewCore(enc, w, config.Level)
 			cleanup = u.CombineFuncs(cleanup, func() { _ = writer.Close() })
+		case typeSQLite:
+			dir, _ := filepath.Split(opts.path)
+			if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+				return nil, nil, errcode.TODO.Wrap(err)
+			}
+			db, closeDB, err := accountutils.GetGormDBForPath(opts.path, opts.key, zap.NewNop())
+			if err != nil {
+				return nil, nil, errcode.ErrDBOpen.Wrap(err)
+			}
+			gormCore, err := zapcoregorm.New(db, opts.sessionKind)
+			if err != nil {
+				closeDB()
+				return nil, nil, errcode.TODO.Wrap(err)
+			}
+			core = gormCore
+			cleanup = u.CombineFuncs(cleanup, func() {
+				gormCore.Close()
+				closeDB()
+			})
 		case typeCustom:
 			core = opts.baseLogger.Core()
 		default:

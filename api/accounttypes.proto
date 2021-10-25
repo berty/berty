@@ -18,67 +18,84 @@ service AccountService {
   /// Account
 
   // OpenAccount starts a Berty node.
-  rpc OpenAccount (OpenAccount.Request) returns (OpenAccount.Reply);
+  rpc OpenAccount(OpenAccount.Request) returns (OpenAccount.Reply);
 
-  // OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
-  rpc OpenAccountWithProgress (OpenAccountWithProgress.Request) returns (stream OpenAccountWithProgress.Reply);
+  // OpenAccountWithProgress is similar to OpenAccount, but also streams the
+  // progress.
+  rpc OpenAccountWithProgress(OpenAccountWithProgress.Request)
+      returns (stream OpenAccountWithProgress.Reply);
 
   // CloseAccount closes the currently opened account.
-  rpc CloseAccount (CloseAccount.Request) returns (CloseAccount.Reply);
+  rpc CloseAccount(CloseAccount.Request) returns (CloseAccount.Reply);
 
-  // CloseAccountWithProgress is similar to CloseAccount, but also streams the progress.
-  rpc CloseAccountWithProgress (CloseAccountWithProgress.Request) returns (stream CloseAccountWithProgress.Reply);
+  // CloseAccountWithProgress is similar to CloseAccount, but also streams the
+  // progress.
+  rpc CloseAccountWithProgress(CloseAccountWithProgress.Request)
+      returns (stream CloseAccountWithProgress.Reply);
 
   // ListAccounts retrieves a list of local accounts.
-  rpc ListAccounts (ListAccounts.Request) returns (ListAccounts.Reply);
+  rpc ListAccounts(ListAccounts.Request) returns (ListAccounts.Reply);
 
   // DeleteAccount deletes an account.
-  rpc DeleteAccount (DeleteAccount.Request) returns (DeleteAccount.Reply);
+  rpc DeleteAccount(DeleteAccount.Request) returns (DeleteAccount.Reply);
 
   // ImportAccount imports existing data.
-  rpc ImportAccount (ImportAccount.Request) returns (ImportAccount.Reply);
+  rpc ImportAccount(ImportAccount.Request) returns (ImportAccount.Reply);
 
-  // ImportAccountWithProgress is similar to ImportAccount, but also streams the progress.
-  rpc ImportAccountWithProgress (ImportAccountWithProgress.Request) returns (stream ImportAccountWithProgress.Reply);
+  // ImportAccountWithProgress is similar to ImportAccount, but also streams the
+  // progress.
+  rpc ImportAccountWithProgress(ImportAccountWithProgress.Request)
+      returns (stream ImportAccountWithProgress.Reply);
 
   // CreateAccount creates a new account.
-  rpc CreateAccount (CreateAccount.Request) returns (CreateAccount.Reply);
+  rpc CreateAccount(CreateAccount.Request) returns (CreateAccount.Reply);
 
   // UpdateAccount update account's metadata.
-  rpc UpdateAccount (UpdateAccount.Request) returns (UpdateAccount.Reply);
+  rpc UpdateAccount(UpdateAccount.Request) returns (UpdateAccount.Reply);
 
-  // GetGRPCListenerAddrs return current listeners addrs available on this bridge.
-  rpc GetGRPCListenerAddrs (GetGRPCListenerAddrs.Request) returns (GetGRPCListenerAddrs.Reply);
+  // GetGRPCListenerAddrs return current listeners addrs available on this
+  // bridge.
+  rpc GetGRPCListenerAddrs(GetGRPCListenerAddrs.Request)
+      returns (GetGRPCListenerAddrs.Reply);
 
-  // LogfileList returns a list of logfiles that can be used with Tyber.
-  rpc LogfileList (LogfileList.Request) returns (LogfileList.Reply);
+  // LogSessionList returns the list of stored log sessions.
+  rpc LogSessionList(LogSessionList.Request) returns (LogSessionList.Reply);
 
-  // GetUsername returns the name of the device/user using Android/iOS/universal API
+  // GetUsername returns the name of the device/user using Android/iOS/universal
+  // API
   rpc GetUsername(GetUsername.Request) returns (GetUsername.Reply);
 
   // NetworkConfigSet
-  rpc NetworkConfigSet (NetworkConfigSet.Request) returns (NetworkConfigSet.Reply);
+  rpc NetworkConfigSet(NetworkConfigSet.Request)
+      returns (NetworkConfigSet.Reply);
 
   // NetworkConfigGet
-  rpc NetworkConfigGet (NetworkConfigGet.Request) returns (NetworkConfigGet.Reply);
+  rpc NetworkConfigGet(NetworkConfigGet.Request)
+      returns (NetworkConfigGet.Reply);
 
   // NetworkConfigGetPreset
-  rpc NetworkConfigGetPreset (NetworkConfigGetPreset.Request) returns (NetworkConfigGetPreset.Reply);
+  rpc NetworkConfigGetPreset(NetworkConfigGetPreset.Request)
+      returns (NetworkConfigGetPreset.Reply);
 
   // PushReceive
-  rpc PushReceive (PushReceive.Request) returns (PushReceive.Reply);
+  rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
 
   // PushPlatformTokenRegister
-  rpc PushPlatformTokenRegister (PushPlatformTokenRegister.Request) returns (PushPlatformTokenRegister.Reply);
+  rpc PushPlatformTokenRegister(PushPlatformTokenRegister.Request)
+      returns (PushPlatformTokenRegister.Reply);
 
-  // AppStoragePut puts a value by key in a storage secured by the device enclave if possible
+  // AppStoragePut puts a value by key in a storage secured by the device
+  // enclave if possible
   rpc AppStoragePut(AppStoragePut.Request) returns (AppStoragePut.Reply);
 
-  // AppStorageGet gets a value by key in a storage secured by the device enclave if possible
+  // AppStorageGet gets a value by key in a storage secured by the device
+  // enclave if possible
   rpc AppStorageGet(AppStorageGet.Request) returns (AppStorageGet.Reply);
 
-  // AppStorageRemove removes a value by key in a storage secured by the device enclave if possible
-  rpc AppStorageRemove(AppStorageRemove.Request) returns (AppStorageRemove.Reply);
+  // AppStorageRemove removes a value by key in a storage secured by the device
+  // enclave if possible
+  rpc AppStorageRemove(AppStorageRemove.Request)
+      returns (AppStorageRemove.Reply);
 }
 
 message AppStoragePut {
@@ -90,60 +107,48 @@ message AppStoragePut {
 }
 
 message AppStorageGet {
-  message Request {
-    string key = 1;
-  }
-  message Reply {
-    bytes value = 2;
-  }
+  message Request { string key = 1; }
+  message Reply { bytes value = 2; }
 }
 
 message AppStorageRemove {
-  message Request {
-    string key = 1;
-  }
+  message Request { string key = 1; }
   message Reply {}
 }
 
 message OpenAccount {
   message Request {
     repeated string args = 1;
-    string account_id = 2 [(gogoproto.customname) = "AccountID"];
+    string account_id = 2 [ (gogoproto.customname) = "AccountID" ];
     string logger_filters = 3;
     NetworkConfig network_config = 4;
   }
-  message Reply {
-  }
+  message Reply {}
 }
 
 message OpenAccountWithProgress {
   message Request {
     repeated string args = 1;
-    string account_id = 2 [(gogoproto.customname) = "AccountID"];
+    string account_id = 2 [ (gogoproto.customname) = "AccountID" ];
     string logger_filters = 3;
   }
-  message Reply {
-    berty.protocol.v1.Progress progress = 1;
-  }
+  message Reply { berty.protocol.v1.Progress progress = 1; }
 }
 
 message CloseAccount {
   message Request {}
-  message Reply {
-  }
+  message Reply {}
 }
 
 message CloseAccountWithProgress {
   message Request {}
-  message Reply {
-    berty.protocol.v1.Progress progress = 1;
-  }
+  message Reply { berty.protocol.v1.Progress progress = 1; }
 }
 
 message AccountMetadata {
-  string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
   string name = 2;
-  string avatar_cid = 3 [(gogoproto.customname) = "AvatarCID"];
+  string avatar_cid = 3 [ (gogoproto.customname) = "AvatarCID" ];
   string public_key = 4;
   int64 last_opened = 5;
   int64 creation_date = 6;
@@ -152,36 +157,31 @@ message AccountMetadata {
 
 message ListAccounts {
   message Request {}
-  message Reply {
-    repeated AccountMetadata accounts = 1;
-  }
+  message Reply { repeated AccountMetadata accounts = 1; }
 }
 
 message DeleteAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
   }
-  message Reply {
-  }
+  message Reply {}
 }
 
 message ImportAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
     string account_name = 2;
     string backup_path = 3;
     repeated string args = 4;
     string logger_filters = 5;
     NetworkConfig network_config = 6;
   }
-  message Reply {
-    AccountMetadata account_metadata = 1;
-  }
+  message Reply { AccountMetadata account_metadata = 1; }
 }
 
 message ImportAccountWithProgress {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
     string account_name = 2;
     string backup_path = 3;
     repeated string args = 4;
@@ -196,27 +196,23 @@ message ImportAccountWithProgress {
 
 message CreateAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
     string account_name = 2;
     repeated string args = 3;
     string logger_filters = 4;
     NetworkConfig network_config = 5;
   }
-  message Reply {
-    AccountMetadata account_metadata = 1;
-  }
+  message Reply { AccountMetadata account_metadata = 1; }
 }
 
 message UpdateAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
     string account_name = 2;
-    string avatar_cid = 3 [(gogoproto.customname) = "AvatarCID"];
+    string avatar_cid = 3 [ (gogoproto.customname) = "AvatarCID" ];
     string public_key = 4;
   }
-  message Reply {
-    AccountMetadata account_metadata = 1;
-  }
+  message Reply { AccountMetadata account_metadata = 1; }
 }
 
 message GetGRPCListenerAddrs {
@@ -230,29 +226,29 @@ message GetGRPCListenerAddrs {
   }
 }
 
-message LogfileList {
+message LogSessionList {
   message Request {}
   message Reply {
-    repeated Logfile entries = 1;
+    repeated LogSession entries = 1;
 
-    message Logfile {
-      string account_id = 1 [(gogoproto.customname) = "AccountID"];
-      string name = 2;
-      string path = 3;
-      int64 size = 4;
-      string kind = 5;
-      int64 time = 6;
-      bool latest = 7;
-      string errs = 8;
+    message LogSession {
+      string driver = 1;
+      string account_id = 2 [ (gogoproto.customname) = "AccountID" ];
+      string driver_session_id = 3
+          [ (gogoproto.customname) = "DriverSessionID" ];
+      string kind = 4;
+      int64 time = 5;
+      string errs = 6;
+      string path = 7;
+      int64 size = 8;
+      bool latest = 9;
     }
   }
 }
 
 message GetUsername {
   message Request {}
-  message Reply {
-    string username = 1;
-  }
+  message Reply { string username = 1; }
 }
 
 message NetworkConfig {
@@ -281,24 +277,25 @@ message NetworkConfig {
   repeated string bootstrap = 1;
   repeated string rendezvous = 2;
   repeated string static_relay = 3;
-  DHTFlag dht = 4 [(gogoproto.customname) = "DHT"];
-  Flag bluetooth_le = 5 [(gogoproto.customname) = "BluetoothLE"];
+  DHTFlag dht = 4 [ (gogoproto.customname) = "DHT" ];
+  Flag bluetooth_le = 5 [ (gogoproto.customname) = "BluetoothLE" ];
   Flag apple_multipeer_connectivity = 6;
   Flag android_nearby = 7;
   TorFlag tor = 8;
-  Flag mdns = 9 [(gogoproto.customname) = "MDNS"];
+  Flag mdns = 9 [ (gogoproto.customname) = "MDNS" ];
   Flag show_default_services = 10;
 }
 
 enum NetworkConfigPreset {
-  Undefined = 0 [(gogoproto.enumvalue_customname) = "NetPresetUndefined"];
-  Performance = 1 [(gogoproto.enumvalue_customname) = "NetPresetPerformance"];
-  FullAnonymity = 2 [(gogoproto.enumvalue_customname) = "NetPresetFullAnonymity"];
+  Undefined = 0 [ (gogoproto.enumvalue_customname) = "NetPresetUndefined" ];
+  Performance = 1 [ (gogoproto.enumvalue_customname) = "NetPresetPerformance" ];
+  FullAnonymity = 2
+      [ (gogoproto.enumvalue_customname) = "NetPresetFullAnonymity" ];
 }
 
 message NetworkConfigSet {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
     NetworkConfig config = 2;
   }
   message Reply {}
@@ -306,7 +303,7 @@ message NetworkConfigSet {
 
 message NetworkConfigGet {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1 [ (gogoproto.customname) = "AccountID" ];
   }
   message Reply {
     NetworkConfig default_config = 1;
@@ -323,9 +320,7 @@ message NetworkConfigGetPreset {
     NetworkConfigPreset preset = 1;
     bool has_bluetooth_permission = 2;
   }
-  message Reply {
-    NetworkConfig config = 1;
-  }
+  message Reply { NetworkConfig config = 1; }
 }
 
 message PushReceive {
@@ -333,15 +328,11 @@ message PushReceive {
     string payload = 1;
     push.v1.PushServiceTokenType token_type = 2;
   }
-  message Reply {
-    push.v1.DecryptedPush push_data = 1;
-  }
+  message Reply { push.v1.DecryptedPush push_data = 1; }
 }
 
 message PushPlatformTokenRegister {
-  message Request {
-    protocol.v1.PushServiceReceiver receiver = 1;
-  }
+  message Request { protocol.v1.PushServiceReceiver receiver = 1; }
 
   message Reply {}
 }

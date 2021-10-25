@@ -10,6 +10,7 @@ const (
 	typeRing   = "ring"
 	typeFile   = "file"
 	typeCustom = "custom"
+	typeSQLite = "sql"
 )
 
 type Stream struct {
@@ -20,6 +21,7 @@ type Stream struct {
 	ring        *zapring.Core
 	sessionKind string
 	baseLogger  *zap.Logger
+	key         []byte
 }
 
 func NewStdStream(filters, format, path string) Stream {
@@ -58,6 +60,17 @@ func NewFileStream(filters, format, path, sessionKind string) Stream {
 		format:      format,
 		path:        path,
 		sessionKind: sessionKind,
+	}
+}
+
+func NewSQLiteStream(filters, format, path, sessionKind string, key []byte) Stream {
+	return Stream{
+		kind:        typeSQLite,
+		filters:     filters,
+		format:      format,
+		path:        path,
+		sessionKind: sessionKind,
+		key:         key,
 	}
 }
 

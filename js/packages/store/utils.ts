@@ -28,17 +28,19 @@ export const parseInteraction = (i: beapi.messenger.Interaction): ParsedInteract
 	}
 }
 
+const uniq = <T>(array: T[]) => [...new Set(array)]
+
 export const updateShakeAttachments = async () => {
 	try {
-		const reply = await accountService.logfileList({ latest: true })
+		const reply = await accountService.logSessionList({})
 		if (reply.entries.length <= 0) {
 			return
 		}
-		Shake.setMetadata('logfileList', JSON.stringify(reply.entries, null, 2))
+		Shake.setMetadata('logSessionList', JSON.stringify(reply.entries, null, 2))
 		Shake.setShakeReportData(
-			reply.entries
-				.filter(entry => !!entry.path && entry.latest)
-				.map(entry => ShakeFile.create(entry.path as string)),
+			uniq(reply.entries.filter(entry => !!entry.path && entry.latest).map(e => e.path)).map(path =>
+				ShakeFile.create(path as string),
+			),
 		)
 	} catch (e) {
 		console.warn('Failed to update shake attachments:', e)
