@@ -326,6 +326,12 @@
       "title": "Appuppdateringar",
       "current-tag": "Aktuell"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Utvecklingsverktyg",
       "header-left-button": "Enhetsinformation",
