@@ -326,6 +326,12 @@
       "title": "應用更新",
       "current-tag": "當前的"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "開發工具",
       "header-left-button": "設備信息",
