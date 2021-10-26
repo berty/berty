@@ -326,6 +326,12 @@
       "title": "アプリのアップデート",
       "current-tag": ""
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "",
       "header-left-button": "",
