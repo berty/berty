@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { Text, TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import LottieView from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
@@ -45,7 +45,7 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 		createNewAccount: isToCreateNewAccount,
 	} = params
 
-	const handleOnComplete = async () => {
+	const handleOnComplete = useCallback(async () => {
 		if (isToCreateNewAccount) {
 			await createNewAccount()
 		}
@@ -54,29 +54,24 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 		} else {
 			navigation.goBack()
 		}
-	}
+	}, [isToCreateNewAccount, createNewAccount, navigateNext, navigation])
 
-	const handleAppStateChange = async (nextAppState: string) => {
-		if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-			const status = await checkPermissions(permissionType, navigation.navigate, {
-				isToNavigate: false,
-			})
+	const handleAppStateChange = useCallback(
+		async (nextAppState: string) => {
+			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+				const status = await checkPermissions(permissionType, navigation.navigate, {
+					isToNavigate: false,
+				})
 
-			if (status === RESULTS.GRANTED) {
-				await handleOnComplete()
+				if (status === RESULTS.GRANTED) {
+					await handleOnComplete()
+				}
 			}
-		}
-	}
+		},
+		[handleOnComplete, navigation.navigate, permissionType],
+	)
 
-	useEffect(() => {
-		AppState.addEventListener('change', handleAppStateChange)
-		return () => {
-			AppState.removeEventListener('change', handleAppStateChange)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
-	const requestPermission = async () => {
+	const requestPermission = useCallback(async () => {
 		try {
 			if (permissionStatus === RESULTS.BLOCKED) {
 				return openSettings()
@@ -94,9 +89,8 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 							},
 						},
 					})
-					console.log(status)
 				} catch (err) {
-					console.log('request notification permisison err:', err)
+					console.warn('request notification permisison err:', err)
 				}
 			} else if (permissionType === 'p2p') {
 				const status = await request(
@@ -141,10 +135,25 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 				)
 			}
 		} catch (err) {
-			console.log('request permission err:', err)
+			console.warn('request permission err:', err)
 		}
 		await handleOnComplete()
-	}
+	}, [
+		handleOnComplete,
+		permissionStatus,
+		permissionType,
+		persistentOptions.configurations,
+		selectedAccount,
+		setPersistentOption,
+	])
+
+	useEffect(() => {
+		AppState.addEventListener('change', handleAppStateChange)
+		return () => {
+			AppState.removeEventListener('change', handleAppStateChange)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>
@@ -245,16 +254,18 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 						</Text>
 					</TouchableOpacity>
 				</View>
-				<Text
-					style={{
-						marginTop: 16,
-						color: colors['secondary-text'],
-						textTransform: 'uppercase',
-						textAlign: 'center',
-					}}
-				>
-					{t('permission.what-happening')}
-				</Text>
+				<TouchableOpacity onPress={handleOnComplete}>
+					<Text
+						style={{
+							marginTop: 16,
+							color: colors['secondary-text'],
+							textTransform: 'uppercase',
+							textAlign: 'center',
+						}}
+					>
+						{t('permission.skip')}
+					</Text>
+				</TouchableOpacity>
 			</View>
 		</View>
 	)
