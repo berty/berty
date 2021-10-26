@@ -326,6 +326,12 @@
       "title": "App-oppdateringer",
       "current-tag": "Gjeldende"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Verktøy for utviklere",
       "header-left-button": "Infoer om enheten",
