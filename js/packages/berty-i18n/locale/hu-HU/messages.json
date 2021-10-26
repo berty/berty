@@ -326,6 +326,12 @@
       "title": "Frissítések",
       "current-tag": "Jelenlegi"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Fejlesztői eszközök",
       "header-left-button": "Eszköz információk",
