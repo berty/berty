@@ -326,6 +326,12 @@
       "title": "Нови версии",
       "current-tag": "Текущо"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Инструменти за програмисти",
       "header-left-button": "Информация за устройства",
