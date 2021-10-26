@@ -60,6 +60,8 @@ export namespace ScreenProps {
 		export type ThemeEditor = RouteProps<void>
 		export type DeleteAccount = RouteProps<void>
 		export type NetworkConfig = RouteProps<void>
+		export type Roadmap = RouteProps<void>
+		export type Faq = RouteProps<void>
 	}
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
@@ -125,6 +127,8 @@ export namespace Routes {
 		DeleteAccount = 'Settings.DeleteAccount',
 		NetworkConfig = 'Settings.NetworkConfig',
 		ReplicationServices = 'Settings.ReplicationServices',
+		Roadmap = 'Settings.Roadmap',
+		Faq = 'Settings.Faq',
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',

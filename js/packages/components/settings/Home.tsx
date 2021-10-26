@@ -48,32 +48,40 @@ const HomeHeaderGroupButton: React.FC = () => {
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-	const { navigate } = useNavigation()
+	const { navigate } = useNativeNavigation()
 
 	return (
 		<View style={[padding.horizontal.medium]}>
 			<ButtonSettingRow
+				isScroll
 				state={[
 					{
 						name: t('settings.help.updates-button'),
 						icon: 'arrow-upward-outline',
 						color: colors['background-header'],
 						style: _styles.firstHeaderButton,
-						onPress: () => navigate.settings.appUpdates(),
+						onPress: () => navigate('Settings.AppUpdates'),
 					},
 					{
-						name: t('settings.home.header-left-button'),
+						name: t('settings.faq.title'),
 						icon: 'question-mark-circle-outline',
 						color: colors['secondary-background-header'],
 						style: _styles.firstHeaderButton,
-						onPress: () => navigate.settings.help(),
+						onPress: () => navigate('Settings.Faq'),
 					},
 					{
 						name: t('settings.home.header-right-button'),
 						icon: 'settings-2-outline',
 						color: colors['background-header'],
+						style: _styles.firstHeaderButton,
+						onPress: () => navigate('Settings.Mode'),
+					},
+					{
+						name: t('settings.roadmap.title'),
+						icon: 'calendar-outline',
+						color: colors['background-header'],
 						style: _styles.thirdHeaderButton,
-						onPress: () => navigate.settings.mode(),
+						onPress: () => navigate('Settings.Roadmap'),
 					},
 				]}
 			/>
