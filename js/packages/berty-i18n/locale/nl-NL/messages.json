@@ -326,6 +326,12 @@
       "title": "App updates",
       "current-tag": "Huidige"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Ontwikkeling tools",
       "header-left-button": "Apparaat informatie",
