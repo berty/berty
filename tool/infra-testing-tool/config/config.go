@@ -52,6 +52,32 @@ func init() {
 
 // Validate function validates the config, gives all NodeGroup's their correct type.
 func (c *Config) Validate() error {
+	// VALIDATING SETTINGS
+	if c.Settings.Region == "" {
+		return logging.LogErr(errors.New(aws.ErrNoRegion))
+	}
+
+	if !aws.IsValidRegion(c.Settings.Region) {
+		return logging.LogErr(errors.New(aws.ErrInvalidRegion))
+	}
+
+	aws.SetRegion(c.Settings.Region)
+
+	if c.Settings.KeyName != "" {
+		valid, err := aws.IsValidKeyPair(c.Settings.KeyName)
+		if err != nil {
+			return logging.LogErr(err)
+		}
+
+		if !valid {
+			return logging.LogErr(errors.New(aws.ErrInvalidKeypair))
+		}
+	} else {
+		logging.Log(aws.InfoNoKeyPair)
+	}
+
+
+
 	for i := range c.RDVP {
 
 		c.RDVP[i].NodeType = NodeTypeRDVP
@@ -88,31 +114,6 @@ func (c *Config) Validate() error {
 	}
 	// TODO
 	// add more checks to validate if network topology is correct, etc
-
-	// VALIDATING SETTINGS
-
-	if c.Settings.Region == "" {
-		return logging.LogErr(errors.New(aws.ErrNoRegion))
-	}
-
-	if !aws.IsValidRegion(c.Settings.Region) {
-		return logging.LogErr(errors.New(aws.ErrInvalidRegion))
-	}
-
-	aws.SetRegion(c.Settings.Region)
-
-	if c.Settings.KeyName != "" {
-		valid, err := aws.IsValidKeyPair(c.Settings.KeyName)
-		if err != nil {
-			return logging.LogErr(err)
-		}
-
-		if !valid {
-			return logging.LogErr(errors.New(aws.ErrInvalidKeypair))
-		}
-	} else {
-		logging.Log(aws.InfoNoKeyPair)
-	}
 
 	return nil
 }

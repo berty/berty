@@ -130,18 +130,10 @@ func (c *NodeGroup) composeComponents() {
 		for _, con := range c.Connections {
 			if con.connType == ConnTypeInternet {
 				if hasInternet {
-					//panic(fmt.Sprintf("nodegroup %s, cannot have more than one connection to the internet", c.Name))
+					panic(fmt.Sprintf("nodegroup %s, cannot have more than one connection to the internet", c.Name))
 				}
 
 				hasInternet = true
-			}
-		}
-
-		// if it doesn't have an explicit internet connection
-		// we need to add one to make sure we can talk to the node over ssh and gRPC
-		if !hasInternet {
-			_, ok := config.Attributes.Connections[ConnTypeInternet]
-			if !ok {
 			}
 		}
 
@@ -153,20 +145,26 @@ func (c *NodeGroup) composeComponents() {
 
 		// GENERATING NETWORK INTERFACES
 
+		var securityGroups []*networking.SecurityGroup
+
+		for _, connection := range c.Connections {
+			for _, component := range config.Attributes.connectionComponents[connection.To] {
+				if component.GetType() == networking.SecurityGroupType {
+					sg := component.(networking.SecurityGroup)
+					securityGroups = append(securityGroups, &sg)
+				}
+			}
+		}
+
 		// loop over all connections (internet, lan_1, etc)
 		for _, connection := range c.Connections {
 			networkStack := config.Attributes.connectionComponents[connection.To]
 
-			var assignedSecurityGroup networking.SecurityGroup
+			assignedSecurityGroups := securityGroups
 			var assignedSubnet networking.Subnet
 
 			// loop over the network stack
 			for _, component := range networkStack {
-				// if the component is a security group, add it to the temp var assignedSecurityGroup
-				if component.GetType() == networking.SecurityGroupType {
-					assignedSecurityGroup = component.(networking.SecurityGroup)
-				}
-
 				// if the component is a subnet, add it to the temp var assignedSubnet
 				if component.GetType() == networking.SubnetType {
 					assignedSubnet = component.(networking.Subnet)
@@ -174,7 +172,7 @@ func (c *NodeGroup) composeComponents() {
 			}
 
 			// make a network interface with subnet & security group
-			ni := networking.NewNetworkInterfaceWithAttributes(&assignedSubnet, &assignedSecurityGroup)
+			ni := networking.NewNetworkInterfaceWithAttributes(&assignedSubnet, assignedSecurityGroups)
 			ni.Connection = connection.To
 
 			comps = append(comps, ni)
@@ -190,33 +188,6 @@ func (c *NodeGroup) composeComponents() {
 			if connection.connType == ConnTypeInternet {
 				eip := networking.NewElasticIpWithAttributes(&ni)
 				comps = append(comps, eip)
-			} else {
-				//// make additional port rules for specific Security Group
-				//var proto string
-				//switch c.Nodes[i].NodeAttributes.Protocols[connectionN] {
-				//case websocket:
-				//	proto = tcp
-				//case quic:
-				//	proto = udp
-				//default:
-				//	proto = c.Nodes[i].NodeAttributes.Protocols[connectionN]
-				//}
-				//
-				//sgre := networking.NewSecurityGroupRuleEgress()
-				//sgre.SecurityGroupId = assignedSecurityGroup.GetId()
-				//sgre.SetPorts(0)
-				////sgre.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
-				//sgre.Protocol = proto
-				//sgre.Self = true
-				//
-				//comps = append(comps, sgre)
-				//
-				//sgri := networking.NewSecurityGroupRuleIngress()
-				//sgri.SecurityGroupId = assignedSecurityGroup.GetId()
-				//sgre.SetPorts(0)
-				////sgri.SetPorts(c.Nodes[i].NodeAttributes.Ports[connectionN])
-				//sgri.Protocol = proto
-				//sgri.Self = true
 			}
 		}
 
@@ -657,29 +628,6 @@ func genSecretKey(servicekey []byte) ([]byte, error) {
 
 	return pubKeyRaw, nil
 
-}
-
-// makeInternetSGRules is here to avoid DRY code
-// it returns the components of 2 security group rules
-// egress & ingress
-func makeInternetSGRules(port int, protocol string, self bool, securityGroup networking.SecurityGroup) (comps []iac.Component) {
-	sgre := networking.NewSecurityGroupRuleEgress()
-	sgre.SetPorts(port)
-	sgre.Protocol = protocol
-	sgre.Self = self
-	sgre.SecurityGroupId = securityGroup.GetId()
-
-	comps = append(comps, sgre)
-
-	sgri := networking.NewSecurityGroupRuleIngress()
-	sgri.SetPorts(port)
-	sgri.Protocol = protocol
-	sgre.Self = self
-	sgri.SecurityGroupId = securityGroup.GetId()
-
-	comps = append(comps, sgri)
-
-	return comps
 }
 
 // GetCorrectInstanceType returns a string with the correct AWS Instance type

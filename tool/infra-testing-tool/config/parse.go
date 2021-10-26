@@ -17,6 +17,7 @@ import (
 // then it ranges over the nodes and composes a config for them
 // then it iterates over every component in Components and generates HCL
 // for now it just gets printed out to console
+
 func Parse(b []byte) (components []iac.Component, err error) {
 	logging.Log("loading config")
 
@@ -96,11 +97,11 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	// prepend AMI
 	ami := various.NewAmi()
 	ami.Region = GetRegion()
-	comp, err := ami.Validate()
+	amiComponents, err := ami.Validate()
 	if err != nil {
 		return nil, err
 	}
-	components = prependComponents(components, comp)
+	components = prependComponents(components, amiComponents)
 
 	// prepend new provider (provider aws)
 	// this is always required!

@@ -45,6 +45,7 @@ func (c *NodeGroup) parseConnections() error {
 		// check protocol
 		switch c.Connections[i].Protocol {
 		case quic:
+			//fmt.Println("quic")
 			// ok
 		case websocket:
 			// ok
@@ -140,6 +141,8 @@ func (c Connection) composeComponents() {
 		// port 443, tcp, from anywhere for s3 upload
 		components = append(components, makeInternetSGRules(443, tcp, false, sg)...)
 
+	} else if c.connType == ConnTypeInternet {
+		components = append(components, makeInternetSGRules(0, "-1",false,  sg)...)
 	} else {
 		// all ports, any protocol, from anywhere
 		components = append(components, makeInternetSGRules(0, "-1",true,  sg)...)
@@ -196,4 +199,27 @@ func generateSubnetAZ() string {
 	//TODO
 	// add support for more AZ's here
 	return fmt.Sprintf("%sa", GetRegion())
+}
+
+// makeInternetSGRules is here to avoid DRY code
+// it returns the components of 2 security group rules
+// egress & ingress
+func makeInternetSGRules(port int, protocol string, self bool, securityGroup networking.SecurityGroup) (comps []iac.Component) {
+	sgre := networking.NewSecurityGroupRuleEgress()
+	sgre.SetPorts(port)
+	sgre.Protocol = protocol
+	sgre.Self = self
+	sgre.SecurityGroupId = securityGroup.GetId()
+
+	comps = append(comps, sgre)
+
+	sgri := networking.NewSecurityGroupRuleIngress()
+	sgri.SetPorts(port)
+	sgri.Protocol = protocol
+	sgre.Self = self
+	sgri.SecurityGroupId = securityGroup.GetId()
+
+	comps = append(comps, sgri)
+
+	return comps
 }

@@ -24,12 +24,10 @@ func NewNetworkInterface() NetworkInterface {
 	}
 }
 
-func NewNetworkInterfaceWithAttributes(subnet *Subnet, sg *SecurityGroup) (c NetworkInterface) {
+func NewNetworkInterfaceWithAttributes(subnet *Subnet, sgs []*SecurityGroup) (c NetworkInterface) {
 	c = NewNetworkInterface()
 	c.Subnet = subnet
-	c.SecurityGroups = []*SecurityGroup{
-		sg,
-	}
+	c.SecurityGroups = sgs
 
 	return c
 }
