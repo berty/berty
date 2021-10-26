@@ -326,6 +326,12 @@
       "title": "Uygulama güncelleştirmeleri",
       "current-tag": "Şuanki"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Geliştirici araçları",
       "header-left-button": "Aygıt bilgileri",
