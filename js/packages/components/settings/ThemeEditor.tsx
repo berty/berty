@@ -8,7 +8,7 @@ import getPath from '@flyerhq/react-native-android-uri-path'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import DocumentPicker from 'react-native-document-picker'
 
-import { useStyles } from '@berty-tech/styles'
+import { useStyles, randomizeThemeColor } from '@berty-tech/styles'
 import {
 	defaultThemeColor,
 	PersistentOptionsKeys,
@@ -18,7 +18,6 @@ import {
 import { createAndSaveFile } from '@berty-tech/store/services'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-import { randomizeThemeColor } from '../helpers'
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
 import ThemeColorName from '../modals/ThemeColorName'
