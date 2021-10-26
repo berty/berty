@@ -326,6 +326,12 @@
       "title": "Aggiornamenti dell'app",
       "current-tag": "Attuale"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Strumenti di sviluppo",
       "header-left-button": "Informazioni sul dispositivo",
