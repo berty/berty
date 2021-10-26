@@ -1,7 +1,12 @@
 import moment from 'moment'
 import { Long } from 'protobufjs/light'
 
-import { MsgrState } from '@berty-tech/store/context'
+import {
+	CheckListProfileNotification,
+	MsgrState,
+	PersistentOptionsKeys,
+	UpdatesProfileNotification,
+} from '@berty-tech/store/context'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 
@@ -81,32 +86,6 @@ export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number
 	}
 }
 
-export const getRandomColor = () => {
-	const letters = '0123456789ABCDEF'
-	let color = '#'
-	for (let i = 0; i < 6; i++) {
-		color += letters[Math.floor(Math.random() * 16)]
-	}
-	return color
-}
-
-export const randomizeThemeColor = () => {
-	return {
-		'main-text': getRandomColor(),
-		'main-background': getRandomColor(),
-		'secondary-text': getRandomColor(),
-		'background-header': getRandomColor(),
-		'secondary-background-header': getRandomColor(),
-		'alt-secondary-background-header': getRandomColor(),
-		'reverted-main-text': getRandomColor(),
-		'positive-asset': getRandomColor(),
-		'negative-asset': getRandomColor(),
-		'warning-asset': getRandomColor(),
-		'input-background': getRandomColor(),
-		shadow: getRandomColor(),
-	}
-}
-
 export const showNeedRestartNotification = (showNotification: any, ctx: MsgrState, t: any) => {
 	showNotification({
 		title: t('notification.need-restart.title'),
@@ -115,5 +94,26 @@ export const showNeedRestartNotification = (showNotification: any, ctx: MsgrStat
 			await ctx.restart()
 		},
 		additionalProps: { type: 'message' },
+	})
+}
+
+export const readProfileNotification = async (
+	ctx: MsgrState,
+	type: typeof CheckListProfileNotification | typeof UpdatesProfileNotification,
+) => {
+	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
+	const numberNotifs =
+		type === CheckListProfileNotification
+			? profileNotifs[CheckListProfileNotification]
+			: profileNotifs[UpdatesProfileNotification]
+	if (numberNotifs === 0) {
+		return
+	}
+	await ctx.setPersistentOption({
+		type: PersistentOptionsKeys.ProfileNotification,
+		payload: {
+			...profileNotifs,
+			[type]: numberNotifs - 1,
+		},
 	})
 }

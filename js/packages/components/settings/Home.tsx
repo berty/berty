@@ -17,6 +17,7 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import {
 	CheckListItem,
+	CheckListProfileNotification,
 	DefaultBertyTheme,
 	DefaultDarkTheme,
 	PersistentOptionsKeys,
@@ -29,6 +30,8 @@ import { DropDownPicker } from '../shared-components/DropDownPicker'
 import { AccountAvatar } from '../avatars'
 import { EditProfile } from './EditProfile'
 import logo from '../main/1_berty_picto.png'
+import { UnreadCount } from '../main/home/UnreadCount'
+import { readProfileNotification } from '../helpers'
 
 const _verticalOffset = 30
 
@@ -187,6 +190,7 @@ const TaskItem: React.FC<{ value: CheckListItem }> = ({ value }) => {
 							style={[
 								text.size.scale(13),
 								margin.left.big,
+								margin.vertical.small,
 								{ fontFamily: 'Open Sans', color: colors['main-text'] },
 							]}
 						>
@@ -200,10 +204,10 @@ const TaskItem: React.FC<{ value: CheckListItem }> = ({ value }) => {
 				onPress={() => setItemCollapsed(!itemCollapsed)}
 			>
 				<Icon
-					name={!itemCollapsed ? 'arrow-downward' : 'arrow-upward'}
+					name={itemCollapsed ? 'arrow-ios-downward' : 'arrow-ios-upward'}
 					fill={colors['main-text']}
-					height={25 * scaleSize}
-					width={25 * scaleSize}
+					height={20 * scaleSize}
+					width={20 * scaleSize}
 				/>
 			</TouchableOpacity>
 		</View>
@@ -289,6 +293,13 @@ const CheckList: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 		[ctx.persistentOptions],
 	)
 	const tasksDone = useMemo(() => tasks.filter(value => value[1].done).length, [tasks])
+	const notifs = useMemo(
+		() =>
+			ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification][
+				CheckListProfileNotification
+			],
+		[ctx.persistentOptions],
+	)
 
 	return (
 		<View
@@ -337,6 +348,7 @@ const CheckList: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 									isCollapsed: !ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed,
 								},
 							})
+							await readProfileNotification(ctx, CheckListProfileNotification)
 						}}
 					>
 						<Icon
@@ -350,6 +362,13 @@ const CheckList: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 							width={25 * scaleSize}
 						/>
 					</TouchableOpacity>
+					{notifs > 0 ? (
+						<View
+							style={{ position: 'absolute', right: -(22 * scaleSize), top: -(22 * scaleSize) }}
+						>
+							<UnreadCount value={notifs} />
+						</View>
+					) : null}
 				</View>
 			</View>
 			<CheckItems openModal={openModal} />
