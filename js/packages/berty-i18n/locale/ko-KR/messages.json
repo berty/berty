@@ -326,6 +326,12 @@
       "title": "앱 업데이트",
       "current-tag": ""
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "개발 도구",
       "header-left-button": "장치 정보",
