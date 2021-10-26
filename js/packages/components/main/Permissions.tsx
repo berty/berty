@@ -46,12 +46,10 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 	} = params
 
 	const handleOnComplete = useCallback(async () => {
-		console.log('handleOnComplete')
 		if (isToCreateNewAccount) {
 			await createNewAccount()
 		}
 		if (navigateNext) {
-			console.log('handleOnComplete: navigateNext')
 			navigation.navigate(navigateNext, {})
 		} else {
 			navigation.goBack()
@@ -60,15 +58,12 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 
 	const handleAppStateChange = useCallback(
 		async (nextAppState: string) => {
-			console.log('handleAppStateChange')
 			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-				console.log('handleAppStateChange: first condition')
 				const status = await checkPermissions(permissionType, navigation.navigate, {
 					isToNavigate: false,
 				})
 
 				if (status === RESULTS.GRANTED) {
-					console.log('handleAppStateChange: second condition')
 					await handleOnComplete()
 				}
 			}
@@ -77,7 +72,6 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 	)
 
 	const requestPermission = useCallback(async () => {
-		console.log('requestPermission')
 		try {
 			if (permissionStatus === RESULTS.BLOCKED) {
 				return openSettings()
@@ -95,9 +89,8 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 							},
 						},
 					})
-					console.log(status)
 				} catch (err) {
-					console.log('request notification permisison err:', err)
+					console.warn('request notification permisison err:', err)
 				}
 			} else if (permissionType === 'p2p') {
 				const status = await request(
@@ -133,7 +126,6 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 					})
 				}
 			} else if (permissionType === 'camera') {
-				console.log('requestCamera')
 				await request(
 					Platform.OS === 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA,
 				)
@@ -143,9 +135,8 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 				)
 			}
 		} catch (err) {
-			console.log('request permission err:', err)
+			console.warn('request permission err:', err)
 		}
-		console.log('requestPermission: end, call handleOnComplete')
 		await handleOnComplete()
 	}, [
 		handleOnComplete,
@@ -235,7 +226,7 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 					}}
 				>
 					<TouchableOpacity
-						onPress={async () => await requestPermission()}
+						onPress={requestPermission}
 						style={{
 							backgroundColor: colors['background-header'],
 							paddingVertical: 16,
@@ -263,7 +254,7 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 						</Text>
 					</TouchableOpacity>
 				</View>
-				<TouchableOpacity onPress={async () => await handleOnComplete()}>
+				<TouchableOpacity onPress={handleOnComplete}>
 					<Text
 						style={{
 							marginTop: 16,
