@@ -326,6 +326,12 @@
       "title": "Aktualizace aplikace",
       "current-tag": "Současná"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Nástroje pro vývojáře",
       "header-left-button": "Informace o zařízení",
