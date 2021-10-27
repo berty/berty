@@ -550,7 +550,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	tinderOpts := &tinder.Opts{
 		Logger:                 logger,
 		AdvertiseResetInterval: time.Minute * 2,
-		FindPeerResetInterval:  time.Second * 30,
+		FindPeerResetInterval:  time.Minute * 2,
 		AdvertiseGracePeriod:   time.Minute,
 		BackoffStrategy: &tinder.BackoffOpts{
 			StratFactory: backoffstrat,

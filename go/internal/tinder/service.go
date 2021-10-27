@@ -131,6 +131,7 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 			emitter: emitter,
 		}
 	}
+
 	return &service{
 		Discovery:    disc,
 		Unregisterer: wa,

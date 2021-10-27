@@ -32,7 +32,7 @@ const create = name => (method, call) => async (payload, metadata) => {
 					logResponse(name, eventTitle, msg)
 				}
 			})
-		// unary
+			// unary
 		} else {
 			const title = `[${end - start}ms] [RES] ${method.name}`
 

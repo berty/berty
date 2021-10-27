@@ -25,7 +25,6 @@ import {
 } from './context'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
-import { chainMiddleware } from '@berty-tech/grpc-bridge/middleware/middleware'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 
 export const openAccountWithProgress = async (
@@ -244,9 +243,9 @@ export const openingClients = (
 		rpc = rpcWeb(opts)
 	}
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create("MESSENGER"))
+	const messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
 
-	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create("PROTOCOL"))
+	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
 
 	let precancel = false
 	let cancel = () => {

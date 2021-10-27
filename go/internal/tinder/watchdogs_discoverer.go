@@ -75,6 +75,7 @@ func (w *watchdogsDiscoverer) FindPeers(_ context.Context, ns string, opts ...p2
 		}
 		ft.T.Reset(w.resetInterval)
 
+		// return alreay existing chan
 		return w.disc.FindPeers(ft.Ctx, ns, opts...)
 	}
 
@@ -231,33 +232,10 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 				zap.String("ns", topic),
 				zap.Any("addrs", filterpeer.Addrs))
 
-			go checkPeerConnection(s.logger, s.host, &filterpeer, topic)
-
 			// forward the peer
 			out <- filterpeer
 		}
 	}
 
 	return nil
-}
-
-func checkPeerConnection(logger *zap.Logger, h host.Host, peer *p2p_peer.AddrInfo, ns string) {
-	// fast conn check
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	// try to connect with the given peer
-	if err := h.Connect(ctx, *peer); err != nil {
-		logger.Warn("fast check connect failed with peer", zap.String("peer", peer.ID.String()), zap.String("ns", ns), zap.Error(err))
-		return
-	}
-
-	// show conns for the peer
-	conns := h.Network().ConnsToPeer(peer.ID)
-	strconns := make([]string, len(conns))
-	for i, c := range conns {
-		strconns[i] = c.RemoteMultiaddr().String()
-	}
-
-	logger.Debug("connected with peer", zap.String("peer", peer.ID.String()), zap.Strings("conns", strconns), zap.String("ns", ns))
 }

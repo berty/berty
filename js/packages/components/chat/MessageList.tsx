@@ -58,7 +58,7 @@ export const MessageList: React.FC<{
 	scrollToMessage?: string
 	setStickyDate: any
 	setShowStickyDate: any
-}> = ({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }): JSX.Element => {
+}> = ({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
 	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
