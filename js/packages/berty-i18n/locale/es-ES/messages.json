@@ -581,7 +581,7 @@
       "allow": "Permitir",
       "settings": "Ir a Ajustes"
     },
-    "what-happening": "¿Qué está pasando aquí?",
+    "skip": "SALTAR",
     "settings-text": "Puedes habilitar el permiso {{title}} desde la configuración."
   },
   "notification": {
