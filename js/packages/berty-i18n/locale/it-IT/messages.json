@@ -581,7 +581,7 @@
       "allow": "Consenti",
       "settings": "Vai alle impostazioni"
     },
-    "what-happening": "Che sta succedendo qui?",
+    "skip": "SALTA",
     "settings-text": "Puoi abilitare il permesso {{title}} dalle Impostazioni."
   },
   "notification": {
