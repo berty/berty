@@ -2,7 +2,7 @@
   <img src="https://berty.tech/img/berty.svg" alt="Berty" title="Berty" height="300px" />
 </h1>
 
-<h3 align="center">💬 Berty is a secure peer-to-peer messaging app that works with or without internet access, cellular data or trust in the network</h3>
+<h3 align="center"> Berty is an open, secure, offline-first, peer-to-peer and zero trust messaging app </h3>
 
 <p align="center">
     <a href="https://berty.tech"><img alt="berty.tech" src="https://img.shields.io/badge/berty.tech-2845a7?logo=internet-explorer&style=flat" /></a>
@@ -31,48 +31,74 @@
 
 ---
 
+## TLDR : Install it!
+
+### Mobile
+
+To compile and run the mobile application on your device, see [js/README.md](js/README.md).
+
+### CLI
+
+You can `go run` or `go install` the CLI tool located in `go/cmd/berty`.
+The two main command line utilities are:
+
+- `berty mini`: a CLI messaging app using the Berty Protocol.
+- `berty daemon`: a full node manageable through the Berty Protocol API.
+
 ## Introduction
 
-**Berty** is an anonymous, secure, peer-to-peer protocol that doesn't need an internet connection to function.
+> **Warning**: Berty is still under active development and should not yet be used to exchange sensitive data.
 
-There is a **protocol** that uses advanced cryptography and a **messenger app** that is built on top of the protocol.
+**[Berty](https://berty.tech/)** is a privacy-first messaging application built on top of [the Berty Protocol](https://berty.tech/docs/protocol/).
 
-- No phone number or email required to create an account
-- End-to-end encryption used to encrypt all conversations
-- Focus on leaking as little metadata as possible
-- Decentralized, distributed, serverless
-- No consensus, no blockchain
-- No internet connection required (uses the [BLE technology](https://en.wikipedia.org/wiki/Bluetooth_Low_Energy) and mDNS)
-- Free forever, no data stored, transparent code, open-source
+- *Secure and private* :
+    - Messages are end-to-end encrypted by default
+    - Metadata is kept to a minimum
+    - No phone number or email address is required to create an account
+    - Built to retain its properties even when used on adversarial networks
+- *Censorship-resilient*
+    - Decentralized, distributed, peer-to-peer and serverless
+    - No internet connection is required, thanks to [BLE technology](https://en.wikipedia.org/wiki/Bluetooth_Low_Energy) and [mDNS](https://en.wikipedia.org/wiki/Multicast_DNS).
+- *Open* :
+    - Free forever and open-source
 
-Berty is currently developed by **Berty Technologies**, a French non-profit organization.
+**Berty** is designed to be used as an everyday messaging application. Nonetheless, it was built to primarily serve the following use cases:
 
-Usages:
+- When you need to share sensitive information over untrusted networks, for instance while traveling
+- If you want to communicate anonymously
+- If you want full control over your data and thus don't want to rely on third-party servers
+- In countries that actively monitor and temper with their network, restricting its use and censoring some of its contents 
+- In areas with weak or no connection at all
 
-- When you need to share sensitive information.
-- If you want to communicate with good anonymity.
-- If you don't want to use servers, because you want full control of your data.
-- In countries that have censorship and restrict network access and usage.
-- In areas with weak or no connection or cell reception.
-- When you travel and you want to communicate safely through insecure public connections.
+Berty is currently developed by **[Berty Technologies](https://berty.tech/about)**, a French nonprofit organization.
 
-**Note: the project is made by a small team of humans who are not experts and who make mistakes. Please, do not hesitate to point out if you notice a bug or something missing.** _See the [contribute section](#contribute) below._
+**Note: this project is led by a small team made of humans, who makes mistakes. Please do not hesitate to point out bugs or missing features.** _See the [contribute section](#contribute) below._
 
-> We cannot promise to give you the best app, but we can commit to doing our best in that direction.
+> We cannot promise we will offer you the best application, but we dedicate ourselves to doing our best to create a great one.
+
+### The philosophy behind Berty
+
+We want to contribute to a world where free and secure communications are common and fear of censorship or surveillance are not.
+
+We believe that open-source is more secure, as anyone can examine the code and improve it: this is why we rely on and build open and free software.
+
+As the founding team, our ultimate goal is to progressively relinquish control over Berty and to make it become a truly global community project.
+
+More info on [berty/community](https://github.com/berty/community).
 
 ## Development Status
 
-**Berty is still under active development and should not be used to exchange important data**.
+The current Berty implementation is using the [Berty Protocol](https://berty.tech/docs/protocol/), which means the encryption technique is safe, and it works as a peer-to-peer app! 
 
-The current Berty Messenger implementation is using the Berty Protocol. Which means the encryption is safe and it's a P2P app!
-Berty Messenger has not been hardened yet so avoid using it on devices with weak sandboxes.
-If you're trying to roll your own app based on the protocol, beware that the app layer protocols used by Berty Messenger might change in the future.
+Alas, Berty has not yet been hardened, so please avoid using it on devices with weak sandboxes, such as unpatchable devices that use old Android versions.  
 
-The current Berty Protocol is _partially implemented_. The API will certainly change in a near future, so be prepared to have breaking changes if you start using it right now.
+The current Berty Protocol is _partially implemented_. 
 
-_We will open betas for the different packages and apps soon, so anyone will be able to give it a try even without the coding skills. Subscribe to our newsletter if you want to be notified._
+The API will continue to evolve in the near future. As such, we cannot yet guarantee none-breaking changes, or any kind of API stability. Be prepared for a rough ride if you start rolling the Berty Protocol in your application. 
 
-**Note: this is an ongoing work. The repos are being opened progressively, and there will be more changes and updates.**
+_We will have an open beta for the different packages and applications soon, so anyone will be able to give it a try. [Subscribe](https://tech.us20.list-manage.com/subscribe/post?u=5ca3993c7f0b8f646dcda714b&id=4d7828715b) to our newsletter if you wish to be notified._
+
+**Note: The repositories are being opened progressively, and there will be additional modifications and updates soon.**
 
 ## Under the hood
 
@@ -83,9 +109,9 @@ _We will open betas for the different packages and apps soon, so anyone will be 
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/berty.tech/berty/v2/go/pkg/bertyprotocol?tab=doc)
 [![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow&flag=go.unittests)](https://codecov.io/gh/berty/berty)
 
-A generic SDK that allows developers to write P2P applications. It contains everything needed (encryption, identities, network routing, group management, account management, device management, application lifecycle) so you can just focus on the high-level features of your app.
+The Berty Protocol comes with a generic, but full-featured SDK allowing developers to write peer-to-peer applications. You can just focus on high-level features for your app, we will take care of the rest (encryption, identities, network routing, group management, account management, device management, application lifecycle).
 
-The main concept of the _Berty Protocol_ is the "group", a virtual place where multiple devices can share messages and metadata using [OrbitDB](https://github.com/orbitdb), which itself relies on [IPFS](https://ipfs.io/).
+The main concept of the _Berty Protocol_ is called the "group", a virtual place where multiple devices can share messages and metadata using [OrbitDB](https://github.com/orbitdb), which itself relies on the InterPlanetary File System ([IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System))
 
 <!-- _TODO: add usage examples_ -->
 
@@ -95,63 +121,43 @@ Get it:
 git clone https://github.com/berty/berty
 ```
 
-### Berty Messenger
+### The Berty Messenger
 
 [![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow&flag=js.unittests)](https://codecov.io/gh/berty/berty)
 
-A messenger application written in [React Native](https://reactnative.dev/), that uses the Berty Protocol using [gomobile-ipfs](https://github.com/ipfs-shipyard/gomobile-ipfs), which, in its turn, is using [gomobile](https://github.com/golang/mobile).
+The Berty Messenger, or simply Berty, is a messaging application written in [React Native](https://reactnative.dev/), that uses the Berty Protocol through [gomobile-ipfs](https://github.com/ipfs-shipyard/gomobile-ipfs), which, in turns, is using [gomobile](https://github.com/golang/mobile).
 
 ## Main items in the repo
 
-- [./go](go): Where all the Golang code belongs.
+- [./go](go): Where all the Golang code lies.
   - [./go/pkg/**bertyprotocol**](go/pkg/bertyprotocol): **Berty Protocol** _Golang SDK_ to create secure and autonomous groups using _IPFS_.
-  - [./go/framework/bertybridge](go/framework/bertybridge): gomobile entrypoint.
-  - [./go/cmd/**berty**](go/cmd/berty): Main **Berty CLI**, containing:
+  - [./go/framework/bertybridge](go/framework/bertybridge): The gomobile entrypoint.
+  - [./go/cmd/**berty**](go/cmd/berty): The main **Berty CLI**:
     - `berty daemon`: Runs the whole Berty Protocol instance.
-    - `berty mini`: Simple CLI messenger app using Berty Protocol.
+    - `berty mini`: Simple CLI messenger application using Berty Protocol.
   - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
   - [./go/cmd/**betabot**](go/cmd/betabot): An onboarding bot used during the beta phase.
   - [./go/cmd/**testbot**](go/cmd/testbot): A bot used by integration tests and developers.
-- [./js](js): Where all the Javascript/Typescript code belongs, containing:
+- [./js](js): Where all the Javascript/Typescript code lies:
   - The **Berty Messenger** application, written in React Native.
 - [./docs](docs): Mostly auto-generated documentation.
-
-## Philosophy
-
-We want to contribute to the world of free, secure communication without fear of censorship and surveillance.
-
-Open source is more secure, since anyone can examine the code, improve it and maintain it. Our ultimate goal is to completely lose control of Berty and have it evolve as a global community project.
-
-More info on [berty/community](https://github.com/berty/community).
-
-## Install
-
-### Mobile
-
-To compile and run the mobile app on your device, see [js/README.md](js/README.md).
-
-### CLI
-
-You can `go run` or `go install` the CLI tool located in `go/cmd/berty`.
-The two main commands are:
-
-- `berty mini`: CLI messenger app using Berty Protocol.
-- `berty daemon`: full node manageable through Berty Protocol API.
 
 ## Contributing
 
 ![Contribute to Berty](https://assets.berty.tech/files/contribute-contribute_v2--Contribute-berty-ultra-light.gif)
 
-We really welcome contributions. Your input is the most precious material. We're well aware of that and we thank you in advance. Everyone is encouraged to look at what they can do on their own scale; no effort is too small.
+We welcome contributions! Your input is deeply appreciated and extremely valuable to us. We thank you in advance for it. 
 
-There are plenty of ways to get involved and act for our community. It has been divided into two distinct parts: everything that is related to the code and everything that is not.
+There is no small feat: everyone is encouraged to do what they can to help, based on their ability and interest.
 
-To put it very simply:
+There are plenty of ways to get involved and to help our community, which can roughly be divided in two distinct parts: everything that is related to the code and everything that is not.
 
-- Code-related = Github
-- Not code-related = Open task
+To put it simply:
 
-Everything on contribution is sum up here: [CONTRIBUTING.MD](https://github.com/berty/community/blob/master/CONTRIBUTING.md)
+- Code-related = GitHub
+- Not code-related = Open a task
+
+Everything about contribution is summed up here: [CONTRIBUTING.MD](https://github.com/berty/community/blob/master/CONTRIBUTING.md)
 
 ## Stargazers over time
 
@@ -161,17 +167,14 @@ Everything on contribution is sum up here: [CONTRIBUTING.MD](https://github.com/
 
 - Official website: https://berty.tech
 - Assets: https://assets.berty.tech/
-- App assets & mockups: https://assets.berty.tech/categories/app__v2.4/
+- Application assets & mockups: https://assets.berty.tech/categories/app__v2.4/
 
 ## Contact
 
-Take a look at our [community repo](https://github.com/berty/community/).
-
-See all our available contact methods on the [contact page](https://berty.tech/contact) of our website.
+For a direct contact, see our [contact page](https://berty.tech/contact) of our website. Alternatively, take a look at our [community repository](https://github.com/berty/community/).
 
 ## Licensing
 
 © 2018-2021 [Berty Technologies](https://berty.tech)
-h0
 
-Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) ([`LICENSE-APACHE`](LICENSE-APACHE)) or the [MIT license](https://opensource.org/licenses/MIT) ([`LICENSE-MIT`](LICENSE-MIT)), at your option. See the [`COPYRIGHT`](COPYRIGHT) file for more details.
+Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) ([`LICENSE-APACHE`](LICENSE-APACHE)) or the [MIT license](https://opensource.org/licenses/MIT) ([`LICENSE-MIT`](LICENSE-MIT)), at your discretion. See the [`COPYRIGHT`](COPYRIGHT) file for more details.
