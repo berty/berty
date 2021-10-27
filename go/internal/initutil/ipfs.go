@@ -65,6 +65,7 @@ const (
 	FlagNameP2PNearby                = "p2p.nearby"
 	FlagNameP2PMultipeerConnectivity = "p2p.multipeer-connectivity"
 	FlagNameTorMode                  = "tor.mode"
+	FlagNameP2PTinderDiscover        = "p2p.tinder-discover"
 	FlagNameP2PTinderDHTDriver       = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver      = "p2p.tinder-rdvp-driver"
 
@@ -88,6 +89,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.MDNS, FlagNameP2PMDNS, true, "if true mdns will be enabled")
+	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
@@ -185,8 +187,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	}
 
 	mopts := ipfsutil.MobileOptions{
-		IpfsConfigPatch: m.setupIPFSConfig,
-		// HostConfigFunc:    m.setupIPFSHost,
+		IpfsConfigPatch:   m.setupIPFSConfig,
 		RoutingConfigFunc: m.configIPFSRouting,
 		RoutingOption:     routing,
 		ExtraOpts: map[string]bool{
@@ -454,9 +455,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// localdisc driver
-	if !m.Node.Protocol.MDNS {
-		cfg.Discovery.MDNS.Enabled = false
-	}
+	cfg.Discovery.MDNS.Enabled = m.Node.Protocol.MDNS
 
 	// enable autorelay
 	if m.Node.Protocol.AutoRelay {
@@ -580,14 +579,24 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		return discovery.NewBackoffConnector(host, cacheSize, dialTimeout, backoffstrat)
 	}
 
-	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
-	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
+	popts := []pubsub.Option{
 		pubsub.WithMessageSigning(true),
-		pubsub.WithDiscovery(m.Node.Protocol.discovery,
-			pubsub.WithDiscoverConnector(backoffconnector)),
 		pubsub.WithPeerExchange(true),
 		pt.EventTracerOption(),
-	)
+	}
+
+	if m.Node.Protocol.TinderDiscover {
+		popts = append(popts, pubsub.WithDiscovery(m.Node.Protocol.discovery, pubsub.WithDiscoverConnector(backoffconnector)))
+	} else {
+		advertiseOnly := tinder.DriverDiscovery{
+			Discoverer: tinder.NoopDiscovery,
+			Advertiser: m.Node.Protocol.discovery,
+		}
+		popts = append(popts, pubsub.WithDiscovery(advertiseOnly, pubsub.WithDiscoverConnector(backoffconnector)))
+	}
+
+	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
+	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)
 
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
