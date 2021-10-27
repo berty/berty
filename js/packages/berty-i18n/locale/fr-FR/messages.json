@@ -581,7 +581,7 @@
       "allow": "Autoriser",
       "settings": "Accéder aux paramètres"
     },
-    "what-happening": "Que se passe-t-il ici?",
+    "skip": "PASSER",
     "settings-text": "Vous pouvez activer la permission {{title}} à partir des paramètres."
   },
   "notification": {
