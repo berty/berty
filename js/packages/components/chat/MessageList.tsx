@@ -58,7 +58,7 @@ export const MessageList: React.FC<{
 	scrollToMessage?: string
 	setStickyDate: any
 	setShowStickyDate: any
-}> = ({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
+}> = ({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }): JSX.Element => {
 	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
@@ -111,19 +111,19 @@ export const MessageList: React.FC<{
 		[id, conversation?.type, members, messages],
 	)
 
-	const fetchMoreCB = useCallback<() => void>(
-		() =>
-			fetchMore({
-				setFetchingFrom,
-				setFetchedFirst,
-				fetchingFrom,
-				fetchedFirst,
-				oldestMessage,
-				client: ctx.client,
-				convPk: id,
-			}),
-		[fetchingFrom, fetchedFirst, oldestMessage, ctx.client, id],
-	)
+	const [isLoadingMore, setIsLoadingMore] = useState(false)
+	const fetchMoreCB = useCallback<() => void>(() => {
+		setIsLoadingMore(true)
+		fetchMore({
+			setFetchingFrom,
+			setFetchedFirst,
+			fetchingFrom,
+			fetchedFirst,
+			oldestMessage,
+			client: ctx.client,
+			convPk: id,
+		}).then(() => setIsLoadingMore(false))
+	}, [fetchingFrom, fetchedFirst, oldestMessage, ctx.client, id])
 	const updateStickyDateCB = useCallback(() => updateStickyDate(setStickyDate), [setStickyDate])
 
 	useEffect(() => {
@@ -145,7 +145,7 @@ export const MessageList: React.FC<{
 			keyboardDismissMode='on-drag'
 			data={messages || []}
 			inverted
-			onEndReached={fetchMoreCB}
+			onEndReached={!isLoadingMore ? fetchMoreCB : null}
 			onEndReachedThreshold={0.8}
 			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
 			refreshing={fetchingFrom !== null}

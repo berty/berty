@@ -374,7 +374,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 // eslint-disable-next-line react-hooks/exhaustive-deps
 export const useMountEffect = (effect: EffectCallback) => useEffect(effect, [])
 
-export const fetchMore = ({
+export const fetchMore = async ({
 	setFetchingFrom,
 	setFetchedFirst,
 	fetchingFrom,
@@ -402,7 +402,7 @@ export const fetchMore = ({
 
 	setFetchingFrom(refCid || '')
 
-	client
+	return client
 		?.conversationLoad({
 			options: {
 				amount: 30,
