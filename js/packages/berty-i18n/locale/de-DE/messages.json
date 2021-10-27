@@ -581,7 +581,7 @@
       "allow": "Zulassen",
       "settings": "Gehe zu den Einstellungen"
     },
-    "what-happening": "Was geht hier ab?",
+    "skip": "Überspringen",
     "settings-text": "Sie können {{title}} Berechtigungen in den Einstellungen aktivieren."
   },
   "notification": {
