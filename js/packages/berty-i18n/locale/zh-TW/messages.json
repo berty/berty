@@ -581,7 +581,7 @@
       "allow": "允許",
       "settings": "轉到設置"
     },
-    "what-happening": "這裡發生了什麼？",
+    "skip": "跳過",
     "settings-text": "您可以在設置中啟用 {{title}} 權限。"
   },
   "notification": {
