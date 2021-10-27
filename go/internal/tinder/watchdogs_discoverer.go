@@ -144,13 +144,13 @@ func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts .
 		if err != nil {
 			s.logger.Warn("failed to run find peers",
 				zap.String("driver", driver.Name),
-				zap.String("key", ns),
+				zap.String("ns", ns),
 				zap.Error(err))
 
 			continue
 		}
 
-		s.logger.Debug("findpeer for driver started", zap.String("key", ns), zap.String("driver", driver.Name))
+		s.logger.Debug("findpeer for driver started", zap.String("driver", driver.Name), zap.String("ns", ns))
 		cdrivers = append(cdrivers, &driverChan{
 			cc:     ch,
 			driver: driver,
@@ -164,7 +164,7 @@ func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts .
 
 		// @TODO(gfanton): use optimized method for few drivers
 		err := s.selectFindPeers(ctx, cc, cdrivers)
-		s.logger.Debug("find peers done", zap.String("topic", ns), zap.Error(err))
+		s.logger.Debug("find peers done", zap.String("ns", ns), zap.Error(err))
 	}()
 
 	return cc, nil
@@ -221,13 +221,17 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 			}
 
 			topic := in[sel].topic
+
 			// protect this peer to avoid to be pruned
 			s.ProtectPeer(peer.ID)
+
 			s.logger.Debug("found a peer",
 				zap.String("driver", driver.Name),
-				zap.String("topic", topic),
 				zap.String("peer", filterpeer.ID.String()),
+				zap.String("ns", topic),
 				zap.Any("addrs", filterpeer.Addrs))
+
+			go checkPeerConnection(s.logger, s.host, &filterpeer, topic)
 
 			// forward the peer
 			out <- filterpeer
@@ -235,4 +239,25 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 	}
 
 	return nil
+}
+
+func checkPeerConnection(logger *zap.Logger, h host.Host, peer *p2p_peer.AddrInfo, ns string) {
+	// fast conn check
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	// try to connect with the given peer
+	if err := h.Connect(ctx, *peer); err != nil {
+		logger.Warn("fast check connect failed with peer", zap.String("peer", peer.ID.String()), zap.String("ns", ns), zap.Error(err))
+		return
+	}
+
+	// show conns for the peer
+	conns := h.Network().ConnsToPeer(peer.ID)
+	strconns := make([]string, len(conns))
+	for i, c := range conns {
+		strconns[i] = c.RemoteMultiaddr().String()
+	}
+
+	logger.Debug("connected with peer", zap.String("peer", peer.ID.String()), zap.Strings("conns", strconns), zap.String("ns", ns))
 }
