@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events'
-import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
 import RNFS from 'react-native-fs'
 
@@ -8,7 +7,7 @@ import beapi from '@berty-tech/api'
 
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
-import { defaultThemeColor } from '@berty-tech/store/context'
+import { defaultThemeColor, storageGet, storageRemove } from '@berty-tech/store/context'
 
 import ExternalTransport from './externalTransport'
 import { refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
@@ -78,9 +77,9 @@ const getPersistentOptions = async (
 
 	try {
 		let opts = defaultPersistentOptions()
-		let storedOpts = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount))
+		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
 
-		if (storedOpts !== null) {
+		if (storedOpts) {
 			const parsed = JSON.parse(storedOpts)
 
 			for (let key of Object.values(PersistentOptionsKeys)) {
@@ -176,7 +175,7 @@ export const openingDaemon = async (
 
 	let tyberHost = ''
 	try {
-		tyberHost = (await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) || ''
+		tyberHost = (await storageGet(GlobalPersistentOptionsKeys.TyberHost)) || ''
 		if (tyberHost !== '') {
 			console.warn(`connecting to ${tyberHost}`)
 		}
@@ -187,8 +186,12 @@ export const openingDaemon = async (
 	// Apply store options
 	let bridgeOpts: GoBridgeOpts
 	try {
-		const store = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount.toString()))
-		const opts: PersistentOptions = JSON.parse(store as any)
+		let opts: PersistentOptions | undefined
+		let store = await storageGet(storageKeyForAccount(selectedAccount.toString()))
+		if (store) {
+			opts = JSON.parse(store)
+		}
+
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 
 		// set log flag
@@ -382,9 +385,9 @@ export const updateAccountsPreReady = async (
 	if (appState !== MessengerAppState.PreReady) {
 		return
 	}
-	const displayName = await AsyncStorage.getItem(GlobalPersistentOptionsKeys.DisplayName)
-	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.DisplayName)
-	await AsyncStorage.removeItem(GlobalPersistentOptionsKeys.IsNewAccount)
+	const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
+	await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
+	await storageRemove(GlobalPersistentOptionsKeys.IsNewAccount)
 	if (displayName) {
 		await client
 			?.accountUpdate({ displayName })
@@ -448,7 +451,7 @@ export const deletingStorage = (
 	const f = async () => {
 		if (selectedAccount !== null) {
 			await accountService.deleteAccount({ accountId: selectedAccount })
-			await AsyncStorage.removeItem(storageKeyForAccount(selectedAccount))
+			await storageRemove(storageKeyForAccount(selectedAccount))
 			await refreshAccountList(embedded, dispatch)
 		} else {
 			console.warn('state.selectedAccount is null and this should not occur')

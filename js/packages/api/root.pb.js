@@ -91,6 +91,75 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushPlatformTokenRegister: {
                     requestType: "PushPlatformTokenRegister.Request",
                     responseType: "PushPlatformTokenRegister.Reply"
+                  },
+                  AppStoragePut: {
+                    requestType: "AppStoragePut.Request",
+                    responseType: "AppStoragePut.Reply"
+                  },
+                  AppStorageGet: {
+                    requestType: "AppStorageGet.Request",
+                    responseType: "AppStorageGet.Reply"
+                  },
+                  AppStorageRemove: {
+                    requestType: "AppStorageRemove.Request",
+                    responseType: "AppStorageRemove.Reply"
+                  }
+                }
+              },
+              AppStoragePut: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      key: {
+                        type: "string",
+                        id: 1
+                      },
+                      value: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              AppStorageGet: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      key: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      value: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              AppStorageRemove: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      key: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
                   }
                 }
               },
@@ -6219,6 +6288,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBertyAccountIDGenFailed: 5015,
               ErrBertyAccountCreationFailed: 5016,
               ErrBertyAccountUpdateFailed: 5017,
+              ErrAppStorageNotSupported: 5018,
               ErrPush: 6000,
               ErrPushWrongAccount: 6001,
               ErrPushUnableToDecrypt: 6002,

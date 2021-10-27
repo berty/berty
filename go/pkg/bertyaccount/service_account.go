@@ -59,7 +59,7 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 		return nil, errcode.ErrBertyAccountInvalidIDFormat
 	}
 
-	accountStorePath := filepath.Join(s.rootdir, req.AccountID)
+	accountStorePath := accountutils.GetAccountDir(s.rootdir, req.GetAccountID())
 
 	if _, err := os.Stat(accountStorePath); err != nil {
 		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
@@ -433,7 +433,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
-	if err := os.RemoveAll(filepath.Join(s.rootdir, request.AccountID)); err != nil {
+	if err := os.RemoveAll(accountutils.GetAccountDir(s.rootdir, request.AccountID)); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
@@ -441,7 +441,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 }
 
 func (s *service) putInAccountDatastore(accountID string, key string, value []byte) error {
-	ds, err := accountutils.GetRootDatastoreForPath(filepath.Join(s.rootdir, accountID), s.storageKey, s.logger)
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), s.storageKey, s.logger)
 	if err != nil {
 		return err
 	}
@@ -487,7 +487,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*account
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	accountStorePath := filepath.Join(s.rootdir, accountID)
+	accountStorePath := accountutils.GetAccountDir(s.rootdir, accountID)
 	if err := os.MkdirAll(accountStorePath, 0o700); err != nil {
 		return nil, err
 	}
@@ -794,7 +794,7 @@ func (s *service) generateNewAccountID() (string, error) {
 	for i := 0; ; i++ {
 		candidateID := fmt.Sprintf("%d", i)
 
-		accountDir := filepath.Join(s.rootdir, candidateID)
+		accountDir := accountutils.GetAccountDir(s.rootdir, candidateID)
 		_, err := os.Stat(accountDir)
 		if os.IsNotExist(err) {
 			return candidateID, nil
@@ -840,7 +840,7 @@ func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 }
 
 func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.NetworkConfig, bool) {
-	ds, err := accountutils.GetRootDatastoreForPath(filepath.Join(s.rootdir, accountID), s.storageKey, s.logger)
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), s.storageKey, s.logger)
 	if err != nil {
 		s.logger.Warn("unable to read network configuration for account: failed to get root datastore", zap.Error(err), zap.String("account-id", accountID))
 		return NetworkConfigGetDefault(), false

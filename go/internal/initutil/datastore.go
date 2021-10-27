@@ -36,7 +36,7 @@ func (m *Manager) getDatastoreDir() (string, error) {
 
 	dir, err := accountutils.GetDatastoreDir(m.Datastore.Dir)
 	if err != nil {
-		return "", errcode.TODO.Wrap(err)
+		return "", err
 	}
 	m.Datastore.dir = dir
 

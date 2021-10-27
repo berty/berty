@@ -3,9 +3,12 @@ package bertyaccount
 import (
 	"context"
 	"fmt"
+	"os"
 	"path"
+	"path/filepath"
 	"sync"
 
+	"github.com/ipfs/go-datastore"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
@@ -22,6 +25,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
+	encrepo "berty.tech/go-ipfs-repo-encrypted"
 )
 
 // Servicex is AccountServiceServer
@@ -74,6 +78,7 @@ type service struct {
 	accountData       *accounttypes.AccountMetadata
 	nativeKeystore    sysutil.NativeKeystore
 	storageKey        []byte
+	appStorage        datastore.Datastore
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
@@ -146,11 +151,12 @@ func (o *Options) applyDefault() {
 func NewService(opts *Options) (_ Service, err error) {
 	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
 
+	var s *service
 	endSection := tyber.SimpleSection(rootCtx, opts.Logger, "Initializing AccountService")
-	defer func() { endSection(err) }()
+	defer func() { endSection(err, tyber.WithDetail("RootDir", s.rootdir)) }()
 
 	opts.applyDefault()
-	s := &service{
+	s = &service{
 		rootdir:           opts.RootDirectory,
 		rootCtx:           rootCtx,
 		rootCancel:        rootCancelCtx,
@@ -175,6 +181,16 @@ func NewService(opts *Options) (_ Service, err error) {
 
 	// override grpc logger before manager start to avoid race condition
 	initutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
+
+	dbPath := filepath.Join(s.rootdir, "app.sqlite")
+	if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", s.storageKey)
+	if err != nil {
+		return nil, errcode.ErrDBOpen.Wrap(err)
+	}
+	s.appStorage = encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage"))
 
 	return s, nil
 }

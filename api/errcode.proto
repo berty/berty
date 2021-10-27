@@ -222,6 +222,7 @@ enum ErrCode {
   ErrBertyAccountIDGenFailed = 5015;
   ErrBertyAccountCreationFailed = 5016;
   ErrBertyAccountUpdateFailed = 5017;
+  ErrAppStorageNotSupported = 5018;
 
   ErrPush = 6000;
   ErrPushWrongAccount = 6001;

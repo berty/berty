@@ -3,11 +3,11 @@ import { View, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import AsyncStorage from '@react-native-community/async-storage'
 import { useNavigation } from '@react-navigation/native'
 
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
+import { storageSet, GlobalPersistentOptionsKeys } from '@berty-tech/store/context'
 
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
@@ -54,7 +54,7 @@ export const GetStarted = () => {
 					style={{ ...column.item.center, backgroundColor: colors['background-header'] }}
 					textStyle={{ textTransform: 'uppercase', color: colors['reverted-main-text'] }}
 					onPress={async () => {
-						await AsyncStorage.setItem('isNewAccount', 'isNew')
+						await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
 						navigate('Onboarding.CreateAccount', {})
 					}}
 				>

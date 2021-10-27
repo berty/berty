@@ -1,7 +1,7 @@
-de0c5df6f27199cca92dc6c71af408eed7a67d1f  ../api/accounttypes.proto
+0875befdd531a7a6e2a95ca3c4c784d3f1a08765  ../api/accounttypes.proto
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
 c9892aab5fe409e86f63e53183e5773896145621  ../api/bertyreplication.proto
-12b08691c53e86f091f8eec2c48e3b0f6b23e38f  ../api/errcode.proto
+9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto

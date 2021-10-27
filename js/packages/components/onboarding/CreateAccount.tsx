@@ -3,13 +3,17 @@ import { View, TextInput, Vibration, StatusBar, Platform, ActivityIndicator } fr
 import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
-import AsyncStorage from '@react-native-community/async-storage'
 import DocumentPicker from 'react-native-document-picker'
 import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
-import { GlobalPersistentOptionsKeys, MsgrState, useMsgrContext } from '@berty-tech/store/context'
+import {
+	GlobalPersistentOptionsKeys,
+	MsgrState,
+	storageSet,
+	useMsgrContext,
+} from '@berty-tech/store/context'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -58,7 +62,7 @@ const CreateAccountBody = () => {
 
 	const onPress = React.useCallback(async () => {
 		const displayName = name || `anon#${ctx?.account?.publicKey?.substr(0, 4)}`
-		await AsyncStorage.setItem(GlobalPersistentOptionsKeys.DisplayName, displayName)
+		await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
 
 		handlePersistentOptions()
 			.then(() => {})

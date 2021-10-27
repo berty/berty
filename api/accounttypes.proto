@@ -70,6 +70,39 @@ service AccountService {
 
   // PushPlatformTokenRegister
   rpc PushPlatformTokenRegister (PushPlatformTokenRegister.Request) returns (PushPlatformTokenRegister.Reply);
+
+  // AppStoragePut puts a value by key in a storage secured by the device enclave if possible
+  rpc AppStoragePut(AppStoragePut.Request) returns (AppStoragePut.Reply);
+
+  // AppStorageGet gets a value by key in a storage secured by the device enclave if possible
+  rpc AppStorageGet(AppStorageGet.Request) returns (AppStorageGet.Reply);
+
+  // AppStorageRemove removes a value by key in a storage secured by the device enclave if possible
+  rpc AppStorageRemove(AppStorageRemove.Request) returns (AppStorageRemove.Reply);
+}
+
+message AppStoragePut {
+  message Request {
+    string key = 1;
+    bytes value = 2;
+  }
+  message Reply {}
+}
+
+message AppStorageGet {
+  message Request {
+    string key = 1;
+  }
+  message Reply {
+    bytes value = 2;
+  }
+}
+
+message AppStorageRemove {
+  message Request {
+    string key = 1;
+  }
+  message Reply {}
 }
 
 message OpenAccount {

@@ -44,6 +44,12 @@ export namespace berty {
                 public pushReceive(request: berty.account.v1.PushReceive.IRequest): Promise<berty.account.v1.PushReceive.Reply>;
                 public pushPlatformTokenRegister(request: berty.account.v1.PushPlatformTokenRegister.IRequest, callback: berty.account.v1.AccountService.PushPlatformTokenRegisterCallback): void;
                 public pushPlatformTokenRegister(request: berty.account.v1.PushPlatformTokenRegister.IRequest): Promise<berty.account.v1.PushPlatformTokenRegister.Reply>;
+                public appStoragePut(request: berty.account.v1.AppStoragePut.IRequest, callback: berty.account.v1.AccountService.AppStoragePutCallback): void;
+                public appStoragePut(request: berty.account.v1.AppStoragePut.IRequest): Promise<berty.account.v1.AppStoragePut.Reply>;
+                public appStorageGet(request: berty.account.v1.AppStorageGet.IRequest, callback: berty.account.v1.AccountService.AppStorageGetCallback): void;
+                public appStorageGet(request: berty.account.v1.AppStorageGet.IRequest): Promise<berty.account.v1.AppStorageGet.Reply>;
+                public appStorageRemove(request: berty.account.v1.AppStorageRemove.IRequest, callback: berty.account.v1.AccountService.AppStorageRemoveCallback): void;
+                public appStorageRemove(request: berty.account.v1.AppStorageRemove.IRequest): Promise<berty.account.v1.AppStorageRemove.Reply>;
             }
 
             namespace AccountService {
@@ -83,6 +89,175 @@ export namespace berty {
                 type PushReceiveCallback = (error: (Error|null), response?: berty.account.v1.PushReceive.Reply) => void;
 
                 type PushPlatformTokenRegisterCallback = (error: (Error|null), response?: berty.account.v1.PushPlatformTokenRegister.Reply) => void;
+
+                type AppStoragePutCallback = (error: (Error|null), response?: berty.account.v1.AppStoragePut.Reply) => void;
+
+                type AppStorageGetCallback = (error: (Error|null), response?: berty.account.v1.AppStorageGet.Reply) => void;
+
+                type AppStorageRemoveCallback = (error: (Error|null), response?: berty.account.v1.AppStorageRemove.Reply) => void;
+            }
+
+            interface IAppStoragePut {
+            }
+
+            class AppStoragePut implements IAppStoragePut {
+
+                public static create(properties?: berty.account.v1.IAppStoragePut): berty.account.v1.AppStoragePut;
+                public static encode(message: berty.account.v1.IAppStoragePut, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IAppStoragePut, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStoragePut;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStoragePut;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStoragePut;
+                public static toObject(message: berty.account.v1.AppStoragePut, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace AppStoragePut {
+
+                interface IRequest {
+                    key?: (string|null);
+                    value?: (Uint8Array|null);
+                }
+
+                class Request implements IRequest {
+
+                    public key: string;
+                    public value: Uint8Array;
+                    public static create(properties?: berty.account.v1.AppStoragePut.IRequest): berty.account.v1.AppStoragePut.Request;
+                    public static encode(message: berty.account.v1.AppStoragePut.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.AppStoragePut.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStoragePut.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStoragePut.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStoragePut.Request;
+                    public static toObject(message: berty.account.v1.AppStoragePut.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.account.v1.AppStoragePut.IReply): berty.account.v1.AppStoragePut.Reply;
+                    public static encode(message: berty.account.v1.AppStoragePut.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.AppStoragePut.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStoragePut.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStoragePut.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStoragePut.Reply;
+                    public static toObject(message: berty.account.v1.AppStoragePut.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IAppStorageGet {
+            }
+
+            class AppStorageGet implements IAppStorageGet {
+
+                public static create(properties?: berty.account.v1.IAppStorageGet): berty.account.v1.AppStorageGet;
+                public static encode(message: berty.account.v1.IAppStorageGet, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IAppStorageGet, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStorageGet;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStorageGet;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageGet;
+                public static toObject(message: berty.account.v1.AppStorageGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace AppStorageGet {
+
+                interface IRequest {
+                    key?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public key: string;
+                    public static create(properties?: berty.account.v1.AppStorageGet.IRequest): berty.account.v1.AppStorageGet.Request;
+                    public static encode(message: berty.account.v1.AppStorageGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.AppStorageGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStorageGet.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStorageGet.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageGet.Request;
+                    public static toObject(message: berty.account.v1.AppStorageGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    value?: (Uint8Array|null);
+                }
+
+                class Reply implements IReply {
+
+                    public value: Uint8Array;
+                    public static create(properties?: berty.account.v1.AppStorageGet.IReply): berty.account.v1.AppStorageGet.Reply;
+                    public static encode(message: berty.account.v1.AppStorageGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.AppStorageGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStorageGet.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStorageGet.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageGet.Reply;
+                    public static toObject(message: berty.account.v1.AppStorageGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IAppStorageRemove {
+            }
+
+            class AppStorageRemove implements IAppStorageRemove {
+
+                public static create(properties?: berty.account.v1.IAppStorageRemove): berty.account.v1.AppStorageRemove;
+                public static encode(message: berty.account.v1.IAppStorageRemove, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IAppStorageRemove, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStorageRemove;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStorageRemove;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageRemove;
+                public static toObject(message: berty.account.v1.AppStorageRemove, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace AppStorageRemove {
+
+                interface IRequest {
+                    key?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public key: string;
+                    public static create(properties?: berty.account.v1.AppStorageRemove.IRequest): berty.account.v1.AppStorageRemove.Request;
+                    public static encode(message: berty.account.v1.AppStorageRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.AppStorageRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStorageRemove.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStorageRemove.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageRemove.Request;
+                    public static toObject(message: berty.account.v1.AppStorageRemove.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.account.v1.AppStorageRemove.IReply): berty.account.v1.AppStorageRemove.Reply;
+                    public static encode(message: berty.account.v1.AppStorageRemove.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.AppStorageRemove.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AppStorageRemove.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AppStorageRemove.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageRemove.Reply;
+                    public static toObject(message: berty.account.v1.AppStorageRemove.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
 
             interface IOpenAccount {
@@ -9254,6 +9429,7 @@ export namespace berty {
             ErrBertyAccountIDGenFailed = 5015,
             ErrBertyAccountCreationFailed = 5016,
             ErrBertyAccountUpdateFailed = 5017,
+            ErrAppStorageNotSupported = 5018,
             ErrPush = 6000,
             ErrPushWrongAccount = 6001,
             ErrPushUnableToDecrypt = 6002,

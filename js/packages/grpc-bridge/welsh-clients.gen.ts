@@ -93,6 +93,9 @@ export interface WelshAccountServiceClient {
 	networkConfigGetPreset: UnaryType<beapi.account.AccountService['networkConfigGetPreset']>
 	pushReceive: UnaryType<beapi.account.AccountService['pushReceive']>
 	pushPlatformTokenRegister: UnaryType<beapi.account.AccountService['pushPlatformTokenRegister']>
+	appStoragePut: UnaryType<beapi.account.AccountService['appStoragePut']>
+	appStorageGet: UnaryType<beapi.account.AccountService['appStorageGet']>
+	appStorageRemove: UnaryType<beapi.account.AccountService['appStorageRemove']>
 }
 
 export interface WelshMessengerServiceClient {
