@@ -581,7 +581,7 @@
       "allow": "Engedélyezni",
       "settings": "Ugorj a beállításokhoz"
     },
-    "what-happening": "Mi folyik itt?",
+    "skip": "TOVÁBB",
     "settings-text": "A Beállítások menüből engedélyezheti a {{title}}."
   },
   "notification": {
