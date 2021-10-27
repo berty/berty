@@ -581,7 +581,7 @@
       "allow": "允许",
       "settings": "转到设置"
     },
-    "what-happening": "这里发生了什么？",
+    "skip": "跳过",
     "settings-text": "您可以在设置中启用 {{title}} 权限。"
   },
   "notification": {
