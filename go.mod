@@ -68,7 +68,7 @@ require (
 	github.com/libp2p/go-libp2p-quic-transport v0.12.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
-	github.com/libp2p/go-libp2p-transport-upgrader v0.4.6
+	github.com/libp2p/go-libp2p-transport-upgrader v0.5.0
 	github.com/markbates/pkger v0.17.1
 	github.com/mdomke/git-semver/v5 v5.0.0
 	github.com/mdp/qrterminal v1.0.1
