@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"go.uber.org/multierr"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/pkg/errcode"

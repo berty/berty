@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -18,7 +19,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"

@@ -2,28 +2,30 @@ package accountutils
 
 import (
 	crand "crypto/rand"
-	"database/sql"
+	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
+	"sync"
 	"time"
 
+	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	sqlds "github.com/ipfs/go-ds-sql"
-	pgqueries "github.com/ipfs/go-ds-sql/postgres"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	encrepo "berty.tech/go-ipfs-repo-encrypted"
 )
 
 const (
@@ -33,6 +35,7 @@ const (
 	AccountNetConfFileName      = "account_net_conf"
 	MessengerDatabaseFilename   = "messenger.sqlite"
 	ReplicationDatabaseFilename = "replication.sqlite"
+	StorageKeyName              = "storage"
 )
 
 func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[cryptoutil.KeySize]byte, sk *[cryptoutil.KeySize]byte, err error) {
@@ -77,7 +80,7 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 	return &pkVal, &skVal, nil
 }
 
-func ListAccounts(rootDir string, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
+func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -100,7 +103,7 @@ func ListAccounts(rootDir string, logger *zap.Logger) ([]*accounttypes.AccountMe
 			continue
 		}
 
-		account, err := GetAccountMetaForName(rootDir, subitem.Name(), logger)
+		account, err := GetAccountMetaForName(rootDir, subitem.Name(), storageKey, logger)
 		if err != nil {
 			accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
 		} else {
@@ -111,24 +114,58 @@ func ListAccounts(rootDir string, logger *zap.Logger) ([]*accounttypes.AccountMe
 	return accounts, nil
 }
 
-func GetAccountMetaForName(rootDir string, accountID string, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
+const StorageKeySize = 32
+
+var storageKeyMutex = sync.Mutex{}
+
+func GetOrCreateStorageKey(ks sysutil.NativeKeystore) ([]byte, error) {
+	storageKeyMutex.Lock()
+	defer storageKeyMutex.Unlock()
+
+	key, getErr := ks.Get(StorageKeyName)
+	if getErr != nil {
+		keyData := make([]byte, StorageKeySize)
+		if _, err := crand.Read(keyData); err != nil {
+			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
+		}
+
+		if err := ks.Put(StorageKeyName, keyData); err != nil {
+			return nil, errcode.ErrKeystorePut.Wrap(multierr.Append(getErr, err))
+		}
+
+		var err error
+		if key, err = ks.Get(StorageKeyName); err != nil {
+			return nil, errcode.ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
+		}
+	}
+	return key, nil
+}
+
+func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
 
-	metafileName := filepath.Join(rootDir, accountID, AccountMetafileName)
+	ds, err := GetRootDatastoreForPath(filepath.Join(rootDir, accountID), storageKey, logger)
+	if err != nil {
+		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	}
 
-	metaBytes, err := ioutil.ReadFile(metafileName)
-	if os.IsNotExist(err) {
+	metaBytes, err := ds.Get(datastore.NewKey(AccountMetafileName))
+	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrBertyAccountDataNotFound
 	} else if err != nil {
 		logger.Warn("unable to read account metadata", zap.Error(err), zap.String("account-id", accountID))
 		return nil, errcode.ErrBertyAccountFSError.Wrap(fmt.Errorf("unable to read account metadata: %w", err))
 	}
 
+	if err := ds.Close(); err != nil {
+		return nil, errcode.ErrDBClose.Wrap(err)
+	}
+
 	meta := &accounttypes.AccountMetadata{}
 	if err := proto.Unmarshal(metaBytes, meta); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshall account metadata: %w", err))
+		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshal account metadata: %w", err))
 	}
 
 	meta.AccountID = accountID
@@ -144,8 +181,6 @@ func GetDatastoreDir(dir string) (string, error) {
 		return InMemoryDir, nil
 	}
 
-	dir = path.Join(dir, "account0") // account0 is a suffix that will be used with multi-account later
-
 	_, err := os.Stat(dir)
 	switch {
 	case os.IsNotExist(err):
@@ -159,40 +194,23 @@ func GetDatastoreDir(dir string) (string, error) {
 	return dir, nil
 }
 
-func GetRootDatastoreForPath(dir string, logger *zap.Logger) (datastore.Batching, error) {
+func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datastore.Batching, error) {
 	inMemory := dir == InMemoryDir
 
 	var ds datastore.Batching
 	if inMemory {
 		ds = datastore.NewMapDatastore()
 	} else {
-		const tableName = "blocks"
-
-		// Open database
-		// key := "DEADBEEF51E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
-		dbPath := filepath.Join(dir, "datastore.sqlite")
-		// dbURL := fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", dbPath, key)
-		dbURL := dbPath
-		db, err := sql.Open("sqlite3", dbURL)
+		err := os.MkdirAll(dir, os.ModePerm)
 		if err != nil {
-			return nil, errcode.ErrDBOpen.Wrap(err)
+			return nil, errcode.TODO.Wrap(err)
 		}
 
-		// Create table if not exists
-		if _, err := db.Exec(fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
-			key TEXT PRIMARY KEY,
-			data BLOB
-		) WITHOUT ROWID;`, tableName)); err != nil {
-			return nil, errcode.ErrDBWrite.Wrap(err)
+		dbPath := filepath.Join(dir, "datastore.sqlite")
+		ds, err = encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "blocks", key)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
 		}
-
-		// Implement the Queries interface for your SQL impl.
-		// ...or use the provided PostgreSQL queries
-		// pg queries seem to work for sqlite
-		queries := pgqueries.NewQueries(tableName)
-
-		// Instantiate ds
-		ds = sqlds.NewDatastore(db, queries)
 	}
 
 	ds = sync_ds.MutexWrap(ds)
@@ -200,12 +218,12 @@ func GetRootDatastoreForPath(dir string, logger *zap.Logger) (datastore.Batching
 	return ds, nil
 }
 
-func GetMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+func GetMessengerDBForPath(dir string, key []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
 	if dir != InMemoryDir {
 		dir = path.Join(dir, MessengerDatabaseFilename)
 	}
 
-	return GetGormDBForPath(dir, logger)
+	return GetGormDBForPath(dir, key, logger)
 }
 
 func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
@@ -213,15 +231,19 @@ func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), 
 		dir = path.Join(dir, ReplicationDatabaseFilename)
 	}
 
-	return GetGormDBForPath(dir, logger)
+	return GetGormDBForPath(dir, nil, logger)
 }
 
-func GetGormDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+func GetGormDBForPath(dbPath string, key []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
-	if dir == InMemoryDir {
+	if dbPath == InMemoryDir {
 		sqliteConn = fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())
 	} else {
-		sqliteConn = dir
+		sqliteConn = dbPath
+		if len(key) != 0 {
+			hexKey := hex.EncodeToString(key)
+			sqliteConn = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", sqliteConn, hexKey)
+		}
 	}
 
 	cfg := &gorm.Config{

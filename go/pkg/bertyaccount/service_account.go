@@ -5,13 +5,13 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	"github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
@@ -356,6 +356,7 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
+		NativeKeystore:       s.nativeKeystore,
 	})
 	if err != nil {
 		panic(err)
@@ -395,7 +396,7 @@ func (s *service) ListAccounts(_ context.Context, _ *accounttypes.ListAccounts_R
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	accounts, err := accountutils.ListAccounts(s.rootdir, s.logger)
+	accounts, err := accountutils.ListAccounts(s.rootdir, s.storageKey, s.logger)
 	if err != nil {
 		return nil, err
 	}
@@ -406,7 +407,7 @@ func (s *service) ListAccounts(_ context.Context, _ *accounttypes.ListAccounts_R
 }
 
 func (s *service) getAccountMetaForName(accountID string) (*accounttypes.AccountMetadata, error) {
-	return accountutils.GetAccountMetaForName(s.rootdir, accountID, s.logger)
+	return accountutils.GetAccountMetaForName(s.rootdir, accountID, s.storageKey, s.logger)
 }
 
 func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.DeleteAccount_Request) (_ *accounttypes.DeleteAccount_Reply, err error) {
@@ -429,7 +430,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 	}
 
 	if _, err := s.getAccountMetaForName(request.AccountID); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
 	if err := os.RemoveAll(filepath.Join(s.rootdir, request.AccountID)); err != nil {
@@ -437,6 +438,23 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 	}
 
 	return &accounttypes.DeleteAccount_Reply{}, nil
+}
+
+func (s *service) putInAccountDatastore(accountID string, key string, value []byte) error {
+	ds, err := accountutils.GetRootDatastoreForPath(filepath.Join(s.rootdir, accountID), s.storageKey, s.logger)
+	if err != nil {
+		return err
+	}
+
+	if err := ds.Put(datastore.NewKey(key), value); err != nil {
+		return errcode.ErrBertyAccountFSError.Wrap(err)
+	}
+
+	if err := ds.Close(); err != nil {
+		return errcode.ErrDBClose.Wrap(err)
+	}
+
+	return nil
 }
 
 func (s *service) updateAccountMetadataLastOpened(accountID string) (*accounttypes.AccountMetadata, error) {
@@ -452,9 +470,8 @@ func (s *service) updateAccountMetadataLastOpened(accountID string) (*accounttyp
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := filepath.Join(s.rootdir, accountID, accountutils.AccountMetafileName)
-	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	if err := s.putInAccountDatastore(accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
+		return nil, err
 	}
 
 	meta.AccountID = accountID
@@ -491,9 +508,8 @@ func (s *service) createAccountMetadata(accountID string, name string) (*account
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := filepath.Join(s.rootdir, accountID, accountutils.AccountMetafileName)
-	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	if err := s.putInAccountDatastore(accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
+		return nil, err
 	}
 
 	meta.AccountID = accountID
@@ -737,9 +753,8 @@ func (s *service) updateAccount(req *accounttypes.UpdateAccount_Request) (*accou
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	metafileName := filepath.Join(s.rootdir, req.AccountID, accountutils.AccountMetafileName)
-	if err := ioutil.WriteFile(metafileName, metaBytes, 0o600); err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	if err := s.putInAccountDatastore(req.AccountID, accountutils.AccountMetafileName, metaBytes); err != nil {
+		return nil, err
 	}
 
 	meta.AccountID = req.AccountID
@@ -825,13 +840,22 @@ func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 }
 
 func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.NetworkConfig, bool) {
-	netConfName := filepath.Join(s.rootdir, accountID, accountutils.AccountNetConfFileName)
-	netConfBytes, err := ioutil.ReadFile(netConfName)
-	if os.IsNotExist(err) {
+	ds, err := accountutils.GetRootDatastoreForPath(filepath.Join(s.rootdir, accountID), s.storageKey, s.logger)
+	if err != nil {
+		s.logger.Warn("unable to read network configuration for account: failed to get root datastore", zap.Error(err), zap.String("account-id", accountID))
+		return NetworkConfigGetDefault(), false
+	}
+
+	netConfBytes, err := ds.Get(datastore.NewKey(accountutils.AccountNetConfFileName))
+	if err == datastore.ErrNotFound {
 		return NetworkConfigGetDefault(), false
 	} else if err != nil {
 		s.logger.Warn("unable to read network configuration for account", zap.Error(err), zap.String("account-id", accountID))
 		return NetworkConfigGetDefault(), false
+	}
+
+	if err := ds.Close(); err != nil {
+		s.logger.Warn("unable to close datastore after reading network configuration for account", zap.Error(err), zap.String("account-id", accountID))
 	}
 
 	ret := &accounttypes.NetworkConfig{}
@@ -905,8 +929,7 @@ func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *a
 		return err
 	}
 
-	netConfName := filepath.Join(s.rootdir, accountID, accountutils.AccountNetConfFileName)
-	if err := ioutil.WriteFile(netConfName, data, 0o600); err != nil {
+	if err := s.putInAccountDatastore(accountID, accountutils.AccountNetConfFileName, data); err != nil {
 		return err
 	}
 
@@ -1107,7 +1130,9 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		}
 	}
 
-	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.rootdir, payload, &bertypush.PushDecryptOpts{Logger: s.logger, ExcludedAccounts: excludedAccounts})
+	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.rootdir, payload, &bertypush.PushDecryptOpts{
+		Logger: s.logger, ExcludedAccounts: excludedAccounts, StorageKey: s.storageKey,
+	})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}

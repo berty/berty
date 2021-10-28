@@ -22,7 +22,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func PushDecryptStandalone(rootDir string, inputB64 string) (*pushtypes.DecryptedPush, error) {
+func PushDecryptStandalone(rootDir string, inputB64 string, storageKey []byte) (*pushtypes.DecryptedPush, error) {
 	input, err := base64.StdEncoding.DecodeString(inputB64)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -33,7 +33,7 @@ func PushDecryptStandalone(rootDir string, inputB64 string) (*pushtypes.Decrypte
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger})
+	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger, StorageKey: storageKey})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
@@ -171,6 +171,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 
 type PushDecryptOpts struct {
 	Logger           *zap.Logger
+	StorageKey       []byte
 	ExcludedAccounts []string
 }
 
@@ -188,7 +189,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 		return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("device has no known push key"))
 	}
 
-	accounts, err := accountutils.ListAccounts(rootDir, opts.Logger)
+	accounts, err := accountutils.ListAccounts(rootDir, opts.StorageKey, opts.Logger)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -200,63 +201,65 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 	var errs []error
 
 	for _, account := range accounts {
-		var reply *messengertypes.PushReceive_Reply
+		data, err := func() (*messengertypes.PushReceivedData, error) {
+			var reply *messengertypes.PushReceive_Reply
 
-		ignoreAccount := false
-		for _, excluded := range opts.ExcludedAccounts {
-			if account.AccountID == excluded {
-				ignoreAccount = true
-				break
+			ignoreAccount := false
+			for _, excluded := range opts.ExcludedAccounts {
+				if account.AccountID == excluded {
+					ignoreAccount = true
+					break
+				}
 			}
-		}
 
-		if ignoreAccount {
-			continue
-		}
+			if ignoreAccount {
+				return nil, nil
+			}
 
-		accountDir, err := accountutils.GetDatastoreDir(path.Join(rootDir, account.AccountID))
+			accountDir, err := accountutils.GetDatastoreDir(path.Join(rootDir, account.AccountID))
+			if err != nil {
+				return nil, err
+			}
+
+			rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, opts.StorageKey, opts.Logger)
+			if err != nil {
+				return nil, err
+			}
+			defer rootDS.Close()
+
+			db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, opts.StorageKey, opts.Logger)
+			if err != nil {
+				return nil, err
+			}
+			defer dbCleanup()
+
+			pushHandler, err := NewPushHandler(&PushHandlerOpts{
+				Logger:        opts.Logger,
+				RootDatastore: rootDS,
+				PushKey:       pushSK,
+			})
+			if err != nil {
+				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to initialize push handler: %w", err))
+			}
+
+			evtHandler := messengerpayloads.NewEventHandler(ctx, messengerdb.NewDBWrapper(db, opts.Logger), nil, messengertypes.NewPostActionsServiceNoop(), opts.Logger, nil, false)
+			pushReceiver := NewPushReceiver(pushHandler, evtHandler, opts.Logger)
+
+			reply, err = pushReceiver.PushReceive(ctx, input)
+			if err != nil {
+				opts.Logger.Warn("unable to decrypt push", zap.String("account-id", account.AccountID), zap.Error(err))
+				return nil, err
+			}
+
+			return reply.Data, nil
+		}()
 		if err != nil {
 			errs = append(errs, err)
 			continue
 		}
-
-		rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, opts.Logger)
-		if err != nil {
-			errs = append(errs, err)
-			continue
+		if data != nil {
+			return data, account, nil
 		}
-
-		db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, opts.Logger)
-		if err != nil {
-			errs = append(errs, err)
-			rootDS.Close()
-			continue
-		}
-
-		pushHandler, err := NewPushHandler(&PushHandlerOpts{
-			Logger:        opts.Logger,
-			RootDatastore: rootDS,
-			PushKey:       pushSK,
-		})
-		if err != nil {
-			return nil, nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to initialize push handler: %w", err))
-		}
-
-		evtHandler := messengerpayloads.NewEventHandler(ctx, messengerdb.NewDBWrapper(db, opts.Logger), nil, messengertypes.NewPostActionsServiceNoop(), opts.Logger, nil, false)
-		pushReceiver := NewPushReceiver(pushHandler, evtHandler, opts.Logger)
-
-		reply, err = pushReceiver.PushReceive(ctx, input)
-		if err != nil {
-			dbCleanup()
-			rootDS.Close()
-			opts.Logger.Warn("unable to decrypt push", zap.String("account-id", account.AccountID), zap.Error(err))
-			errs = append(errs, err)
-			continue
-		}
-
-		dbCleanup()
-		rootDS.Close()
-		return reply.Data, account, nil
 	}
 
 	if len(errs) == 0 {

@@ -6,17 +6,18 @@ import (
 	"path/filepath"
 	"time"
 
-	// nolint:staticcheck
 	ipfs_ds "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
 	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
+
+	// nolint:staticcheck
+	encrepo "berty.tech/go-ipfs-repo-encrypted"
 )
 
 // defaultConnMgrHighWater is the default value for the connection managers
@@ -46,13 +47,18 @@ func CreateMockedRepo(dstore ipfs_ds.Batching) (ipfs_repo.Repo, error) {
 	}, nil
 }
 
-func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
-	if _, err := loadPlugins(path); err != nil {
+func LoadRepoFromPath(path string, key []byte) (ipfs_repo.Repo, error) {
+	dir, _ := filepath.Split(path)
+	if _, err := loadPlugins(dir); err != nil {
 		return nil, errors.Wrap(err, "failed to load plugins")
 	}
 
 	// init repo if needed
-	if !ipfs_fsrepo.IsInitialized(path) {
+	isInit, err := encrepo.IsInitialized(path, key)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to check if repo is initialized")
+	}
+	if !isInit {
 		cfg, err := createBaseConfig()
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to create base config")
@@ -63,12 +69,14 @@ func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
 			return nil, errors.Wrap(err, "failed to upgrade repo")
 		}
 
-		if err := ipfs_fsrepo.Init(path, ucfg); err != nil {
+		ucfg.Datastore.Spec = nil
+
+		if err := encrepo.Init(path, key, ucfg); err != nil {
 			return nil, errors.Wrap(err, "failed to init repo")
 		}
 	}
 
-	return ipfs_fsrepo.Open(path)
+	return encrepo.Open(path, key)
 }
 
 var DefaultSwarmListeners = []string{

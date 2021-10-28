@@ -441,7 +441,7 @@ func TestReplicationService_Flow(t *testing.T) {
 
 	t.Log(" --- Sent sync messages ---")
 
-	time.Sleep(time.Millisecond * 500)
+	time.Sleep(time.Millisecond * 1000)
 
 	evts1, err := g1a.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
@@ -465,7 +465,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 2"), nil)
 	require.NoError(t, err)
 
-	time.Sleep(time.Millisecond * 250)
+	time.Sleep(time.Millisecond * 500)
 
 	t.Log(" --- Sent async messages, should be replicated on service ---")
 
@@ -488,7 +488,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	g2a, err = odb2.OpenGroup(ctx, gA, nil)
 	require.NoError(t, err)
 
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(2000 * time.Millisecond)
 
 	t.Log(" --- Waited for peer 2 to replicate data ---")
 

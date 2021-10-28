@@ -73,8 +73,29 @@ func TestFlow(t *testing.T) {
 			AccountID: "account 1",
 		})
 		require.NoError(t, err)
-		_, err = stream.Recv()
-		require.True(t, errcode.Has(err, errcode.ErrBertyAccountDataNotFound))
+
+		// check that we only have init or ErrBertyAccountDataNotFound error.
+		// retry up to 10s.
+		var gotErr bool
+		for i := 0; i < 1000; i++ {
+			msg, err := stream.Recv()
+			if err != nil {
+				require.Nil(t, msg)
+				require.True(t, errcode.Has(err, errcode.ErrBertyAccountDataNotFound))
+				gotErr = true
+				break
+			}
+
+			// the only kind of non-error message accepted is "init"
+			if msg != nil && msg.Progress != nil && msg.Progress.Doing != "" {
+				require.Equal(t, msg.Progress.Doing, "init")
+				require.NoError(t, err)
+				continue
+			}
+
+			time.Sleep(10 * time.Millisecond)
+		}
+		require.True(t, gotErr)
 	}
 
 	// create and load a new account
@@ -513,8 +534,8 @@ func TestImportExportFlow(t *testing.T) {
 
 		// check if duration is between 50ms and 1m
 		// in general, it's around 600ms on Manfred's Linux server
-		require.True(t, lastProgress.Delay > uint64(time.Duration(50*time.Millisecond).Microseconds()))
-		require.True(t, lastProgress.Delay < uint64(time.Duration(1*time.Minute).Microseconds()))
+		require.Greater(t, time.Microsecond*time.Duration(lastProgress.Delay), 50*time.Millisecond)
+		require.Less(t, time.Microsecond*time.Duration(lastProgress.Delay), 1*time.Minute)
 
 		require.NotEmpty(t, lastMsg)
 		require.Equal(t, lastMsg.AccountMetadata.AccountID, "account 2")

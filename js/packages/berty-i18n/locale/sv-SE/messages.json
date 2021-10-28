@@ -633,10 +633,10 @@
           "action-cancel": "Avbryt"
         },
         "status": {
-          "metadata-found": "Metadatafil hittad",
-          "metadata-not-found": "Metadatafil kunde ej hittas",
-          "ipfs-repo-config-found": "IPFS-konfigurationsfil hittades",
-          "ipfs-repo-config-not-found": "IPFS-konfigurationsfil kunde ej hittas",
+          "datastore-found": "Metadatafil hittad",
+          "datastore-not-found": "Metadatafil kunde ej hittas",
+          "ipfs-repo-found": "IPFS-konfigurationsfil hittades",
+          "ipfs-repo-not-found": "IPFS-konfigurationsfil kunde ej hittas",
           "messenger-db-found": "Meddelandedatabas hittades",
           "messenger-db-not-found": "Meddelandedatabas kunde ej hittas"
         },

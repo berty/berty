@@ -21,7 +21,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *protocoltypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
+func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *protocoltypes.Group, pathBase string, storageKey []byte, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
 	testutil.FilterSpeed(t, testutil.Slow)
 	t.Logf("TestAddBerty: amountToAdd: %d, amountCurrentlyPresent: %d\n", amountToAdd, amountCurrentlyPresent)
@@ -36,24 +36,22 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	defer lock.Unlock()
 
-	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, zap.NewNop())
+	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, storageKey, zap.NewNop())
 	require.NoError(t, err)
-
-	defer baseDS.Close()
 
 	baseDS = sync_ds.MutexWrap(baseDS)
 
-	defer baseDS.Close()
+	defer testutil.Close(t, baseDS)
 
 	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{Datastore: baseDS})
 	require.NoError(t, err)
 
-	defer odb.Close()
+	defer testutil.Close(t, odb)
 
 	gc, err := odb.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 
-	defer gc.Close()
+	defer testutil.Close(t, gc)
 
 	err = ActivateGroupContext(ctx, gc, nil)
 	require.NoError(t, err)
@@ -137,10 +135,12 @@ func TestAddBerty(t *testing.T) {
 	g, _, err := NewGroupMultiMember()
 	require.NoError(t, err)
 
-	testAddBerty(ctx, t, api, g, pathBase, 20, 0)
-	testAddBerty(ctx, t, api, g, pathBase, 0, 20)
-	testAddBerty(ctx, t, api, g, pathBase, 20, 20)
-	testAddBerty(ctx, t, api, g, pathBase, 0, 40)
+	storageKey := []byte("42424242424242424242424242424242")
+
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, 20, 0)
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, 0, 20)
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, 20, 20)
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, 0, 40)
 
 	// FIXME: use github.com/stretchr/testify/suite
 }

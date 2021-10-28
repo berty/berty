@@ -22,6 +22,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   private final static String TAG = "GoBridge";
   private final ReactApplicationContext reactContext;
   private final static LoggerDriver rnlogger = new LoggerDriver("tech.berty", "react");
+  private KeystoreDriver keystoreDriver;
 
   // protocol
   private static Bridge bridgeMessenger = null;
@@ -31,7 +32,8 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   public GoBridgeModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
-    rootDir = new File(reactContext.getFilesDir().getAbsolutePath() + "/berty");
+    this.keystoreDriver = new KeystoreDriver(reactContext);
+    rootDir = new File(reactContext.getNoBackupFilesDir().getAbsolutePath() + "/berty");
     System.out.println("root dir: " + rootDir.getAbsolutePath());
     tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/berty");
     System.out.println("temp dir: " + tempDir.getAbsolutePath());
@@ -120,6 +122,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       // set NearBy driver
       BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
       config.setNBDriver(NBDriver);
+
+      // set native keystore driver
+      config.setKeystoreDriver(this.keystoreDriver);
 
       System.out.println("bflifecycle: calling Bertybridge.newBridge");
       this.bridgeMessenger = Bertybridge.newBridge(config);

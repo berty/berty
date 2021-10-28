@@ -633,10 +633,10 @@
           "action-cancel": "取消"
         },
         "status": {
-          "metadata-found": "找到元数据文件",
-          "metadata-not-found": "未找到元数据文件",
-          "ipfs-repo-config-found": "找到 IPFS 配置文件",
-          "ipfs-repo-config-not-found": "未找到 IPFS 配置文件",
+          "datastore-found": "找到元数据文件",
+          "datastore-not-found": "未找到元数据文件",
+          "ipfs-repo-found": "找到 IPFS 配置文件",
+          "ipfs-repo-not-found": "未找到 IPFS 配置文件",
           "messenger-db-found": "发现Messenger DB",
           "messenger-db-not-found": "未找到Messenger DB"
         },

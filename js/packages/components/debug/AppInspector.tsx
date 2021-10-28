@@ -93,9 +93,9 @@ const confirmActionWrapper = (title: string, action: () => void, t: any) => () =
 
 class FSItem {
 	fileName: string = ''
-	metadataFileFound: boolean = false
+	datastoreFound: boolean = false
 	messengerDBFound: boolean = false
-	ipfsConfigFound: boolean = false
+	ipfsRepoFound: boolean = false
 }
 
 const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, t: any) => {
@@ -107,18 +107,18 @@ const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, 
 			const fsi = new FSItem()
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/account_meta')
-				fsi.metadataFileFound = true
+				await RNFS.stat(getRootDir() + '/' + file.name + '/datastore.sqlite')
+				fsi.datastoreFound = true
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/account0/messenger.sqlite')
+				await RNFS.stat(getRootDir() + '/' + file.name + '/messenger.sqlite')
 				fsi.messengerDBFound = true
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(getRootDir() + '/' + file.name + '/ipfs/config')
-				fsi.ipfsConfigFound = true
+				await RNFS.stat(getRootDir() + '/' + file.name + '/ipfs.sqlite')
+				fsi.ipfsRepoFound = true
 			} catch (e) {}
 
 			fsi.fileName = file.name
@@ -236,15 +236,15 @@ const accountAction = async (
 }
 
 // const ExportAllAppData = () => {
-// 	const { t }: { t: any } = useTranslation()
+//	const { t }: { t: any } = useTranslation()
 //
-// 	return (
-// 		<TouchableOpacity style={{ flex: 1 }}>
-// 			<View style={[styles.button]}>
-// 				<Text style={[styles.text, styles.bold]}>{t('debug.inspector.dump.button')}</Text>
-// 			</View>
-// 		</TouchableOpacity>
-// 	)
+//	return (
+//		<TouchableOpacity style={{ flex: 1 }}>
+//			<View style={[styles.button]}>
+//				<Text style={[styles.text, styles.bold]}>{t('debug.inspector.dump.button')}</Text>
+//			</View>
+//		</TouchableOpacity>
+//	)
 // }
 
 const AccountsInspector: React.FC<{
@@ -327,14 +327,14 @@ const AccountsInspector: React.FC<{
 								<>
 									{!isMetaLoaded && (
 										<>
-											{acc.metadataFileFound && (
+											{acc.datastoreFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.metadata-found')}
+													{t('debug.inspector.accounts.status.datastore-found')}
 												</Text>
 											)}
-											{acc.ipfsConfigFound && (
+											{acc.ipfsRepoFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.ipfs-repo-config-found')}
+													{t('debug.inspector.accounts.status.ipfs-repo-found')}
 												</Text>
 											)}
 											{acc.messengerDBFound && (
@@ -346,14 +346,14 @@ const AccountsInspector: React.FC<{
 									)}
 									{isMetaLoaded && !accountProtoEntries[acc.fileName].error && (
 										<>
-											{!acc.metadataFileFound && (
+											{!acc.datastoreFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.metadata-not-found')}
+													{t('debug.inspector.accounts.status.datastore-not-found')}
 												</Text>
 											)}
-											{!acc.ipfsConfigFound && (
+											{!acc.ipfsRepoFound && (
 												<Text style={[styles.text, styles.textError]} numberOfLines={1}>
-													{t('debug.inspector.accounts.status.ipfs-repo-config-not-found')}
+													{t('debug.inspector.accounts.status.ipfs-repo-not-found')}
 												</Text>
 											)}
 											{!acc.messengerDBFound && (

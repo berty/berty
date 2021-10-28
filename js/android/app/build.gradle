@@ -290,6 +290,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-nearby:16.0.0"
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
+    // Add keystore, 1.1 is required to use the MasterKey class
+    implementation "androidx.security:security-crypto:1.1.0-alpha03"
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }
