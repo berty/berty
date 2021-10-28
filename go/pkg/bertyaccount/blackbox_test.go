@@ -532,10 +532,10 @@ func TestImportExportFlow(t *testing.T) {
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
 
-		// check if duration is between 50ms and 1m
+		// check if duration is between 50ms and 2m
 		// in general, it's around 600ms on Manfred's Linux server
 		require.Greater(t, time.Microsecond*time.Duration(lastProgress.Delay), 50*time.Millisecond)
-		require.Less(t, time.Microsecond*time.Duration(lastProgress.Delay), 1*time.Minute)
+		require.Less(t, time.Microsecond*time.Duration(lastProgress.Delay), 2*time.Minute)
 
 		require.NotEmpty(t, lastMsg)
 		require.Equal(t, lastMsg.AccountMetadata.AccountID, "account 2")
