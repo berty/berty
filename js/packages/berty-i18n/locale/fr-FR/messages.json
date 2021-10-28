@@ -133,7 +133,7 @@
         "title": "Liste des tâches {{tasksDone}} sur {{totalTasks}}",
         "avatar": {
           "title": "Changer votre avatar",
-          "desc": ""
+          "desc": "Configure ton image de profil !"
         },
         "relay": {
           "title": "Configurer le relais",
@@ -145,7 +145,7 @@
         },
         "group": {
           "title": "Rejoindre ou créer un groupe",
-          "desc": ""
+          "desc": "Créé ou rejoins ton premier groupe Berty !"
         },
         "message": {
           "title": "Envoyer le message",
@@ -153,7 +153,7 @@
         },
         "theme": {
           "title": "Personnaliser le thème",
-          "desc": ""
+          "desc": "Créé et partage ta version de l’application avec la communauté !"
         },
         "hidden-account": {
           "title": "Créer un compte masqué",
@@ -199,11 +199,11 @@
         "title": "Multicast DNS",
         "desc": "Découverte locale des pairs"
       },
-      "dht": "",
-      "bootstrap": "",
+      "dht": "DHT",
+      "bootstrap": "Bootstrap",
       "rdv": "Rendez-vous",
       "static-relay": "Relais statique",
-      "anon-mode": ""
+      "anon-mode": "ANON"
     },
     "mode": {
       "title": "Paramètres",
@@ -327,10 +327,10 @@
       "current-tag": "Actuelle"
     },
     "faq": {
-      "title": ""
+      "title": "FAQ"
     },
     "roadmap": {
-      "title": ""
+      "title": "Roadmap"
     },
     "devtools": {
       "title": "Outils Dev",
@@ -442,7 +442,7 @@
       "fingerprint": "Empreinte digitale",
       "info": "Infos",
       "devices": "Appareils",
-      "join": "",
+      "join": "REJOINDRE CE GROUPE",
       "password-label": "Saisir le mot de passe du groupe",
       "password-placeholder": "Mot de passe..."
     },
