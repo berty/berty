@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -95,7 +95,7 @@ jobs:
       GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
       - name: Build Docker images
         working-directory: tool/compose-integration
         run: docker-compose build
@@ -129,7 +129,7 @@ jobs:
         run: |
           echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
       - name: Set up Go
         uses: actions/setup-go@v2
         with:

@@ -70,7 +70,7 @@ jobs:
     container: bertytech/protoc:27
     steps:
       - name: checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
       - name: unshallow
         run: git fetch --prune --unshallow
       - name: remove lock files
@@ -132,7 +132,7 @@ jobs:
     runs-on: ubuntu-latest
     container: bertytech/protoc:27
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.4.1
