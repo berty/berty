@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Ajutor",
       "header-center-button": "",
       "header-right-button": "Setări",
       "network-button": "",
-      "edit-profile": ""
+      "edit-profile": "",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Primește notificări push",
+        "second-bullet-point": "Primește cereri de contact",
+        "third-bullet-point": ""
+      },
+      "notifications-button": {
+        "title": "Notificări",
+        "tag-enabled": "Activate",
+        "tag-disabled": "Dezactivate"
+      },
+      "dark-mode-button": "Mod întunecat",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "",
       "online-peers": ""
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "DNS Multicast",
+        "desc": ""
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Setări",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Notificări",
-        "tag-enabled": "Activate",
-        "tag-disabled": "Dezactivate"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Modul aplicației",
-        "performance-tag": "Performanță",
-        "privacy-tag": "Confidențialitate",
-        "description-tag": "",
-        "first-bullet-point": "Primește notificări push",
-        "second-bullet-point": "Primește cereri de contact",
-        "third-bullet-point": ""
-      },
-      "dark-mode-button": "Mod întunecat",
       "receive-contact-requests-button": "Primește cereri de contact",
       "external-services-button": "Servicii externe",
       "auto-replicate-button": "Replicare automată",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "DNS Multicast",
-        "desc": ""
-      },
       "blocked-contacts-button": {
         "title": "Contacte blocate",
         "tag": "blocat"
@@ -282,6 +326,12 @@
       "title": "Actualizări aplicație",
       "current-tag": ""
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "",
       "header-left-button": "Informații dispozitiv",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "Amprentă",
       "info": "Informaţii",
-      "devices": "Dispozitive"
+      "devices": "Dispozitive",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
@@ -528,7 +581,7 @@
       "allow": "",
       "settings": ""
     },
-    "what-happening": "",
+    "skip": "Omite",
     "settings-text": ""
   },
   "notification": {

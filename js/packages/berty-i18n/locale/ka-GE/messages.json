@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "",
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
-      "edit-profile": ""
+      "edit-profile": "",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "notifications-button": {
+        "title": "შეტყობინებები",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "dark-mode-button": "",
+      "bluetooth-button": {
+        "title": ""
+      }
     },
     "network-map": {
       "title": "",
       "online-peers": ""
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "",
+        "desc": ""
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "შეტყობინებები",
-        "tag-enabled": "",
-        "tag-disabled": ""
-      },
-      "bluetooth-button": {
-        "title": ""
-      },
-      "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
-      },
-      "dark-mode-button": "",
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "",
-        "desc": ""
-      },
       "blocked-contacts-button": {
         "title": "",
         "tag": ""
@@ -282,6 +326,12 @@
       "title": "",
       "current-tag": ""
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "",
       "header-left-button": "",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "",
       "info": "",
-      "devices": ""
+      "devices": "",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
@@ -528,7 +581,7 @@
       "allow": "",
       "settings": ""
     },
-    "what-happening": "",
+    "skip": "",
     "settings-text": ""
   },
   "notification": {

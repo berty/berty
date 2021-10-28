@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "ヘルプ",
       "header-center-button": "",
       "header-right-button": "設定",
       "network-button": "ネットワーク一覧",
-      "edit-profile": "プロフィールを編集"
+      "edit-profile": "プロフィールを編集",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "プッシュ通知の受信",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "notifications-button": {
+        "title": "通知",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "dark-mode-button": "ダークモード",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "ネットワーク一覧",
       "online-peers": "オンラインのピア"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "マルチキャストDNS",
+        "desc": ""
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "設定",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "通知",
-        "tag-enabled": "",
-        "tag-disabled": ""
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "",
-        "performance-tag": "パフォーマンス",
-        "privacy-tag": "プライバシー",
-        "description-tag": "使いやすい - すべての機能",
-        "first-bullet-point": "プッシュ通知を受信",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
-      },
-      "dark-mode-button": "ダークモード",
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "マルチキャストDNS",
-        "desc": ""
-      },
       "blocked-contacts-button": {
         "title": "ブロック済みの連絡先",
         "tag": "ブロック済み"
@@ -282,6 +326,12 @@
       "title": "アプリのアップデート",
       "current-tag": ""
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "",
       "header-left-button": "",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "",
       "info": "",
-      "devices": "デバイス"
+      "devices": "デバイス",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
@@ -528,7 +581,7 @@
       "allow": "",
       "settings": ""
     },
-    "what-happening": "",
+    "skip": "",
     "settings-text": ""
   },
   "notification": {

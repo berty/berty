@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Hjälp",
       "header-center-button": "Utvecklingsverktyg",
       "header-right-button": "Inställningar",
       "network-button": "Lista över nätverk",
-      "edit-profile": "Redigera profil"
+      "edit-profile": "Redigera profil",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Ta emot push-aviseringar",
+        "second-bullet-point": "Ta emot kontaktförfrågningar",
+        "third-bullet-point": "Lokala klientupptäckter (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Aviseringar",
+        "tag-enabled": "Aktiv",
+        "tag-disabled": "Inaktiv"
+      },
+      "dark-mode-button": "Mörkt tema",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Lista över nätverk",
       "online-peers": "Aktiva anslutningar"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Lokal utforskning av klienter"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Inställningar",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Aviseringar",
-        "tag-enabled": "Aktiv",
-        "tag-disabled": "Inaktiv"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "App-läge",
-        "performance-tag": "Prestanda",
-        "privacy-tag": "Sekretess",
-        "description-tag": "Lätt att använda - Alla funktioner",
-        "first-bullet-point": "Ta emot push-meddelanden",
-        "second-bullet-point": "Ta emot kontaktförfrågningar",
-        "third-bullet-point": "Lokala klientupptäckter (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Mörkt tema",
       "receive-contact-requests-button": "Ta emot kontaktförfrågningar",
       "external-services-button": "Externa tjänster",
       "auto-replicate-button": "Automatisk replikering",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Lokal utforskning av klienter"
-      },
       "blocked-contacts-button": {
         "title": "Blockerade kontakter",
         "tag": "blockad"
@@ -282,6 +326,12 @@
       "title": "Appuppdateringar",
       "current-tag": "Aktuell"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Utvecklingsverktyg",
       "header-left-button": "Enhetsinformation",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "Fingeravtryck",
       "info": "Detaljer",
-      "devices": "Enheter"
+      "devices": "Enheter",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
@@ -528,7 +581,7 @@
       "allow": "",
       "settings": ""
     },
-    "what-happening": "",
+    "skip": "HOPPA ÖVER",
     "settings-text": ""
   },
   "notification": {

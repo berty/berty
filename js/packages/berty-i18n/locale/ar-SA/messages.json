@@ -76,17 +76,17 @@
         "create-group": "إنشاء مجموعة"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "اسم المجموعة",
+        "about": "حول المجموعات",
+        "first-bullet-point": "يمكن لأي شخص في المجموعة إعادة تسميتها و دعوة أعضاء جدد",
+        "second-bullet-point": "يمكنك دعوة الأعضاء عن طريق رابط",
+        "third-bullet-point": "يمكنك مغادرة هذه المجموعة",
+        "fourth-bullet-point": "لا يمكنك حذف هذه المجموعة",
+        "fifth-bullet-point": "لا يمكنك إزالة عضو من هذه المجموعة"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "أُرسل الطلب. يعلق...",
+        "draft": "مسودة: {{message}}"
       }
     },
     "suggestion-display-name-initial": "انقر هنا للإضافة",
@@ -108,19 +108,19 @@
       "welcome-title": "مرحباً بك في خيارات الشبكات",
       "full-anon-mode": "وضع الإخفاء الكامل",
       "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "allow-expert-mode": "السماح بوضع الخبراء",
       "tor-compatible": {
-        "title": "",
+        "title": "متوافق مع تور",
         "desc": ""
       },
       "full-anon": {
         "title": "وضع الإخفاء الكامل",
         "desc": "",
-        "no-ip": "",
+        "no-ip": "لا يوجد ip",
         "no-mc": "",
-        "tor-only": ""
+        "tor-only": "تور فقط"
       },
-      "save": "",
+      "save": "احفظ",
       "skip": "اختراع و هذه الأشرطة"
     },
     "scan": {
@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "قائمة التحقق {{tasksDone}}\\{{totalTasks}}",
+        "avatar": {
+          "title": "غيّر الصورة الشخصية",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "مساعدة",
       "header-center-button": "أدوات التطوير",
       "header-right-button": "الإعدادات",
       "network-button": "قائمة الشبكات",
-      "edit-profile": "تعديل الملف الشخصي"
+      "edit-profile": "تعديل الملف الشخصي",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "تلقي الإشعارات",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "notifications-button": {
+        "title": "الإشعارات",
+        "tag-enabled": "مفعّل",
+        "tag-disabled": "معطّل"
+      },
+      "dark-mode-button": "",
+      "bluetooth-button": {
+        "title": "البلوتوث"
+      }
     },
     "network-map": {
       "title": "قائمة الشبكات",
       "online-peers": "الأقران على الإنترنت"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "",
+        "desc": ""
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "الإعدادات",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "الإشعارات",
-        "tag-enabled": "مفعّل",
-        "tag-disabled": "معطّل"
-      },
-      "bluetooth-button": {
-        "title": "البلوتوث"
-      },
-      "app-mode-button": {
-        "title": "نمط التطبيق",
-        "performance-tag": "فعالية",
-        "privacy-tag": "الخصوصيات",
-        "description-tag": "سهل الاستخدام - جميع الميزات",
-        "first-bullet-point": "تلقي الإشعارات",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
-      },
-      "dark-mode-button": "",
       "receive-contact-requests-button": "",
       "external-services-button": "الخدمات الخارجية",
       "auto-replicate-button": "",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "",
-        "desc": ""
-      },
       "blocked-contacts-button": {
         "title": "",
         "tag": ""
@@ -282,6 +326,12 @@
       "title": "",
       "current-tag": ""
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "",
       "header-left-button": "",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "بصمة",
       "info": "",
-      "devices": "الأجهزة"
+      "devices": "الأجهزة",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
@@ -528,7 +581,7 @@
       "allow": "",
       "settings": ""
     },
-    "what-happening": "",
+    "skip": "تخطي",
     "settings-text": ""
   },
   "notification": {

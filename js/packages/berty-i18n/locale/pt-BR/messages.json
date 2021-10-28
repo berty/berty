@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Ajuda",
       "header-center-button": "Ferramentas do desenvolvedor",
       "header-right-button": "Configurações",
       "network-button": "Lista de Redes",
-      "edit-profile": "Editar perfil"
+      "edit-profile": "Editar perfil",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Receber notificações de push",
+        "second-bullet-point": "Receber solicitações de contato",
+        "third-bullet-point": "Descoberta local de pares (BLE e DNS Multicast)"
+      },
+      "notifications-button": {
+        "title": "Notificações",
+        "tag-enabled": "Ativado",
+        "tag-disabled": "Desativado"
+      },
+      "dark-mode-button": "Modo escuro",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Lista de Redes",
       "online-peers": "Pares Online"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "DNS Multicast",
+        "desc": "Descoberta local de Pares"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Configurações",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "Notificações",
-        "tag-enabled": "Ativado",
-        "tag-disabled": "Desativado"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Modo do Aplicativo",
-        "performance-tag": "Desempenho",
-        "privacy-tag": "Privacidade",
-        "description-tag": "Fácil de usar - Todas as funcionalidades",
-        "first-bullet-point": "Receber notificações de push",
-        "second-bullet-point": "Receber solicitações de contato",
-        "third-bullet-point": "Descoberta local de pares (BLE e DNS Multicast)"
-      },
-      "dark-mode-button": "Modo escuro",
       "receive-contact-requests-button": "Receber solicitações de contato",
       "external-services-button": "Serviços externos",
       "auto-replicate-button": "Replicar automaticamente",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "DNS Multicast",
-        "desc": "Descoberta local de Pares"
-      },
       "blocked-contacts-button": {
         "title": "Contatos bloqueados",
         "tag": "bloqueado"
@@ -282,6 +326,12 @@
       "title": "Atualizações do aplicativo",
       "current-tag": "Atual"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Ferramentas de desenvolvedor",
       "header-left-button": "Informações do dispositivo",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "Impressão digital",
       "info": "Informações",
-      "devices": "Dispositivos"
+      "devices": "Dispositivos",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
@@ -528,7 +581,7 @@
       "allow": "",
       "settings": ""
     },
-    "what-happening": "",
+    "skip": "PULAR",
     "settings-text": ""
   },
   "notification": {

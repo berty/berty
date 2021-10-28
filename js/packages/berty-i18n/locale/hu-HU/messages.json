@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "Súgó",
       "header-center-button": "Fejlesztői eszközök",
       "header-right-button": "Beállítások",
       "network-button": "Hálózati Lista",
-      "edit-profile": "Fiók szerkesztése"
+      "edit-profile": "Fiók szerkesztése",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "Értesítések bekapcsolása",
+        "second-bullet-point": "Fogadott kapcsolati kérések",
+        "third-bullet-point": "Helyi fél felfedezése (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Értesítések",
+        "tag-enabled": "Engedélyezve",
+        "tag-disabled": "Letiltva"
+      },
+      "dark-mode-button": "Sötét mód",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Hálózati Lista",
       "online-peers": "Online Peer-ek"
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "Push értesítések",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Helyi Peer felfedezés"
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "Beállítások",
@@ -146,32 +212,10 @@
         "title": "Adatok elmentve!",
         "desc": "Elérhető a letöltések mappában"
       },
-      "notifications-button": {
-        "title": "Értesítések",
-        "tag-enabled": "Engedélyezve",
-        "tag-disabled": "Letiltva"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "App mód",
-        "performance-tag": "Teljesítmény",
-        "privacy-tag": "Adatvédelem",
-        "description-tag": "Könnyen használható - Minden funkcióval",
-        "first-bullet-point": "Fogadott előugró értesítések",
-        "second-bullet-point": "Fogadott kapcsolati kérések",
-        "third-bullet-point": "Helyi fél felfedezése (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Sötét mód",
       "receive-contact-requests-button": "Fogadott kapcsolati kérések",
       "external-services-button": "Külső szolgáltatások",
       "auto-replicate-button": "Automatikus megismétlés",
       "auto-replicate-button-unavailable": "Először kötelező legalább egy replikációs szerver beállítása",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Helyi Peer felfedezés"
-      },
       "blocked-contacts-button": {
         "title": "Letiltott kontaktok",
         "tag": "letiltva"
@@ -282,6 +326,12 @@
       "title": "Frissítések",
       "current-tag": "Jelenlegi"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "Fejlesztői eszközök",
       "header-left-button": "Eszköz információk",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "Ujjlenyomat",
       "info": "Infók",
-      "devices": "Eszközök"
+      "devices": "Eszközök",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "Téma mentése",
@@ -528,7 +581,7 @@
       "allow": "Engedélyezni",
       "settings": "Ugorj a beállításokhoz"
     },
-    "what-happening": "Mi folyik itt?",
+    "skip": "TOVÁBB",
     "settings-text": "A Beállítások menüből engedélyezheti a {{title}}."
   },
   "notification": {

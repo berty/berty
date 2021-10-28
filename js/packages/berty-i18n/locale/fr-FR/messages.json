@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "Liste des tâches {{tasksDone}} sur {{totalTasks}}",
+        "avatar": {
+          "title": "Changer votre avatar",
+          "desc": "Configure ton image de profil !"
+        },
+        "relay": {
+          "title": "Configurer le relais",
+          "desc": "Améliorez les performances de votre réseau en utilisant un relais propulsé par Berty Tech organisation à but non lucrative."
+        },
+        "contact": {
+          "title": "Synchroniser avec un contact",
+          "desc": "Scannez un code QR pour ajouter un premier contact à votre liste de contacts !"
+        },
+        "group": {
+          "title": "Rejoindre ou créer un groupe",
+          "desc": "Créé ou rejoins ton premier groupe Berty !"
+        },
+        "message": {
+          "title": "Envoyer le message",
+          "desc": "Dites « Bonjour » à un contact !"
+        },
+        "theme": {
+          "title": "Personnaliser le thème",
+          "desc": "Créé et partage ta version de l’application avec la communauté !"
+        },
+        "hidden-account": {
+          "title": "Créer un compte masqué",
+          "desc": "Créer un compte fantôme avec un mot de passe dédié pour être en sécurité sur un réseau public."
+        },
+        "ble-message": {
+          "title": "Envoyer un message sans internet",
+          "desc": "Utilisez la fonction Proximité et envoyez un message sans réseau cellulaire, ni connexion internet !"
+        }
+      },
       "header-left-button": "Aide",
       "header-center-button": "Devtools",
       "header-right-button": "Paramètres",
       "network-button": "Liste de réseaux",
-      "edit-profile": "Modifier mon profil"
+      "edit-profile": "Modifier mon profil",
+      "app-network-button": {
+        "title": "Configuration réseau de l'application",
+        "first-bullet-point": "Recevoir les notifications push",
+        "second-bullet-point": "Recevoir les demandes de contact",
+        "third-bullet-point": "Découverte locale de pairs (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "Notifications",
+        "tag-enabled": "Activé",
+        "tag-disabled": "Désactivé"
+      },
+      "dark-mode-button": "Mode foncé",
+      "bluetooth-button": {
+        "title": "Bluetooth"
+      }
     },
     "network-map": {
       "title": "Réseaux",
       "online-peers": "Pairs en ligne"
+    },
+    "network-config": {
+      "title": "Configuration réseau de l'application",
+      "desc": "Vous pouvez modifier vos configurations réseau",
+      "push-notifications": "Notifications push",
+      "replication-services": "Services de réplication",
+      "ble": "Bluetooth faible consommation d'énergie",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": "Découverte locale des pairs"
+      },
+      "dht": "DHT",
+      "bootstrap": "Bootstrap",
+      "rdv": "Rendez-vous",
+      "static-relay": "Relais statique",
+      "anon-mode": "ANON"
     },
     "mode": {
       "title": "Paramètres",
@@ -146,32 +212,10 @@
         "title": "Données sauvegardées !",
         "desc": "Disponible dans le répertoire des téléchargements"
       },
-      "notifications-button": {
-        "title": "Notifications",
-        "tag-enabled": "Activé",
-        "tag-disabled": "Désactivé"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      },
-      "app-mode-button": {
-        "title": "Mode de l'application",
-        "performance-tag": "Performance",
-        "privacy-tag": "Confidentialité",
-        "description-tag": "Utilisation simple - Toutes les options",
-        "first-bullet-point": "Recevoir les notifications push",
-        "second-bullet-point": "Recevoir les demandes de contact",
-        "third-bullet-point": "Découverte locale de pairs (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Mode foncé",
       "receive-contact-requests-button": "Recevoir les demandes de contact",
       "external-services-button": "Services externes",
       "auto-replicate-button": "Réplication automatique",
       "auto-replicate-button-unavailable": "Vous devez d'abord inscrire au moins un serveur de réplication",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Découverte locale des pairs"
-      },
       "blocked-contacts-button": {
         "title": "Contacts bloqués",
         "tag": "bloqué"
@@ -282,6 +326,12 @@
       "title": "Mises à jour de l'application",
       "current-tag": "Actuelle"
     },
+    "faq": {
+      "title": "FAQ"
+    },
+    "roadmap": {
+      "title": "Roadmap"
+    },
     "devtools": {
       "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "Empreinte digitale",
       "info": "Infos",
-      "devices": "Appareils"
+      "devices": "Appareils",
+      "join": "REJOINDRE CE GROUPE",
+      "password-label": "Saisir le mot de passe du groupe",
+      "password-placeholder": "Mot de passe..."
     },
     "save-theme": {
       "title": "Sauvegarde du thème",
@@ -528,7 +581,7 @@
       "allow": "Autoriser",
       "settings": "Accéder aux paramètres"
     },
-    "what-happening": "Que se passe-t-il ici?",
+    "skip": "PASSER",
     "settings-text": "Vous pouvez activer la permission {{title}} à partir des paramètres."
   },
   "notification": {

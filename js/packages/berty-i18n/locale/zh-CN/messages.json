@@ -85,7 +85,7 @@
         "fifth-bullet-point": "您不能从此群组中删除成员"
       },
       "conversations": {
-        "request-sent": "",
+        "request-sent": "请求已发送，等待中...",
         "draft": "草稿: {{message}}"
       }
     },
@@ -100,8 +100,8 @@
         "desc": "点击此处查看通知设置"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "P2P 复制",
+        "desc": "设置复制服务"
       }
     },
     "network-options": {
@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "检查列表 {{tasksDone}}/{{totalTasks}}",
+        "avatar": {
+          "title": "更改您的头像",
+          "desc": "让我们为此帐户设置一个个人资料图片或艺术！"
+        },
+        "relay": {
+          "title": "配置中继",
+          "desc": "通过使用由 Berty Tech 非营利机构提供的中继，提高您的网络性能。"
+        },
+        "contact": {
+          "title": "同步联系人",
+          "desc": "扫描二维码以在您的联系人列表中添加第一个联系人！"
+        },
+        "group": {
+          "title": "加入或创建一个组",
+          "desc": "让我们创建或加入您的第一个Berty小组！"
+        },
+        "message": {
+          "title": "发送信息",
+          "desc": "对联系人说“你好，世界”！"
+        },
+        "theme": {
+          "title": "自定义主题",
+          "desc": "让我们创建您自己的应用程序版本，然后与社区分享！"
+        },
+        "hidden-account": {
+          "title": "创建隐藏账户",
+          "desc": "创建一个隐形的帐户，并使用特定密码登录，在机场更安全！"
+        },
+        "ble-message": {
+          "title": "在没有互联网的情况下发送消息",
+          "desc": "使用附近功能，在没有任何蜂窝网络或互联网连接的情况下发送消息！"
+        }
+      },
       "header-left-button": "帮助",
       "header-center-button": "开发工具",
       "header-right-button": "设置",
       "network-button": "网络列表",
-      "edit-profile": "编辑个人信息"
+      "edit-profile": "编辑个人信息",
+      "app-network-button": {
+        "title": "应用程序网络配置",
+        "first-bullet-point": "接收新消息通知",
+        "second-bullet-point": "接收联系人请求",
+        "third-bullet-point": "本地节点发现 (BLE & Multicast DNS)"
+      },
+      "notifications-button": {
+        "title": "消息通知",
+        "tag-enabled": "已启用",
+        "tag-disabled": "已禁用"
+      },
+      "dark-mode-button": "暗色模式",
+      "bluetooth-button": {
+        "title": "蓝牙"
+      }
     },
     "network-map": {
       "title": "网络列表",
       "online-peers": "在线节点"
+    },
+    "network-config": {
+      "title": "应用程序网络配置",
+      "desc": "您可以更改网络配置",
+      "push-notifications": "推送通知",
+      "replication-services": "复制服务",
+      "ble": "低功耗蓝牙",
+      "multicast-dns-button": {
+        "title": "多播DNS",
+        "desc": "本地节点发现"
+      },
+      "dht": "分布式哈希表 DHT",
+      "bootstrap": "引导列表",
+      "rdv": "",
+      "static-relay": "静态中继器",
+      "anon-mode": ""
     },
     "mode": {
       "title": "设置",
@@ -146,32 +212,10 @@
         "title": "数据已保存！",
         "desc": "在下载目录中可用"
       },
-      "notifications-button": {
-        "title": "消息通知",
-        "tag-enabled": "已启用",
-        "tag-disabled": "已禁用"
-      },
-      "bluetooth-button": {
-        "title": "蓝牙"
-      },
-      "app-mode-button": {
-        "title": "App模式",
-        "performance-tag": "性能",
-        "privacy-tag": "隐私",
-        "description-tag": "简单使用 - 所有功能",
-        "first-bullet-point": "接收新消息通知",
-        "second-bullet-point": "接收联系人请求",
-        "third-bullet-point": "本地节点发现 (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "暗色模式",
       "receive-contact-requests-button": "接收联系人请求",
       "external-services-button": "外部服务",
       "auto-replicate-button": "自动复制",
       "auto-replicate-button-unavailable": "您必须先注册至少一个复制服务器",
-      "multicast-dns-button": {
-        "title": "多播DNS",
-        "desc": "本地节点发现"
-      },
       "blocked-contacts-button": {
         "title": "已屏蔽的联系人",
         "tag": "已屏蔽"
@@ -282,6 +326,12 @@
       "title": "应用更新",
       "current-tag": "当前的"
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "开发工具",
       "header-left-button": "设备信息",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "指纹",
       "info": "信息",
-      "devices": "设备"
+      "devices": "设备",
+      "join": "加入此群组",
+      "password-label": "输入群组密码",
+      "password-placeholder": "密码..."
     },
     "save-theme": {
       "title": "正在保存主题",
@@ -513,8 +566,8 @@
     },
     "p2p": {
       "title": "蓝牙消息",
-      "android-desc": "",
-      "ios-desc": ""
+      "android-desc": "要通过蓝牙离线交换消息，即使应用程序在后台，Android API也需要授予位置权限。我们不会以任何方式使用您的位置数据。",
+      "ios-desc": "要通过蓝牙离线交换消息，iOS API需要授予权限。"
     },
     "camera": {
       "title": "摄像头",
@@ -528,13 +581,13 @@
       "allow": "允许",
       "settings": "转到设置"
     },
-    "what-happening": "这里发生了什么？",
+    "skip": "跳过",
     "settings-text": "您可以在设置中启用 {{title}} 权限。"
   },
   "notification": {
     "need-restart": {
       "title": "需要重新启动应用程序",
-      "desc": ""
+      "desc": "对于此类通知，您必须重新启动应用程序以保存这些内容！"
     }
   },
   "error": {

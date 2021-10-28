@@ -129,15 +129,81 @@
   },
   "settings": {
     "home": {
+      "check-list": {
+        "title": "",
+        "avatar": {
+          "title": "",
+          "desc": ""
+        },
+        "relay": {
+          "title": "",
+          "desc": ""
+        },
+        "contact": {
+          "title": "",
+          "desc": ""
+        },
+        "group": {
+          "title": "",
+          "desc": ""
+        },
+        "message": {
+          "title": "",
+          "desc": ""
+        },
+        "theme": {
+          "title": "",
+          "desc": ""
+        },
+        "hidden-account": {
+          "title": "",
+          "desc": ""
+        },
+        "ble-message": {
+          "title": "",
+          "desc": ""
+        }
+      },
       "header-left-button": "지원",
       "header-center-button": "",
       "header-right-button": "설정",
       "network-button": "",
-      "edit-profile": "프로필 수정"
+      "edit-profile": "프로필 수정",
+      "app-network-button": {
+        "title": "",
+        "first-bullet-point": "푸시 알림 수신하기",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "notifications-button": {
+        "title": "알림",
+        "tag-enabled": "켜짐",
+        "tag-disabled": "꺼짐"
+      },
+      "dark-mode-button": "다크모드",
+      "bluetooth-button": {
+        "title": "블루투스"
+      }
     },
     "network-map": {
       "title": "",
       "online-peers": ""
+    },
+    "network-config": {
+      "title": "",
+      "desc": "",
+      "push-notifications": "",
+      "replication-services": "",
+      "ble": "",
+      "multicast-dns-button": {
+        "title": "Multicast DNS",
+        "desc": ""
+      },
+      "dht": "",
+      "bootstrap": "",
+      "rdv": "",
+      "static-relay": "",
+      "anon-mode": ""
     },
     "mode": {
       "title": "설정",
@@ -146,32 +212,10 @@
         "title": "",
         "desc": ""
       },
-      "notifications-button": {
-        "title": "알림",
-        "tag-enabled": "켜짐",
-        "tag-disabled": "꺼짐"
-      },
-      "bluetooth-button": {
-        "title": "블루투스"
-      },
-      "app-mode-button": {
-        "title": "",
-        "performance-tag": "성능",
-        "privacy-tag": "",
-        "description-tag": "쉬운 사용법 - 모든 기능",
-        "first-bullet-point": "푸시 알림 수신하기",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
-      },
-      "dark-mode-button": "다크모드",
       "receive-contact-requests-button": "",
       "external-services-button": "외부 서비스",
       "auto-replicate-button": "자동 복제",
       "auto-replicate-button-unavailable": "",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": ""
-      },
       "blocked-contacts-button": {
         "title": "",
         "tag": ""
@@ -282,6 +326,12 @@
       "title": "앱 업데이트",
       "current-tag": ""
     },
+    "faq": {
+      "title": ""
+    },
+    "roadmap": {
+      "title": ""
+    },
     "devtools": {
       "title": "개발 도구",
       "header-left-button": "장치 정보",
@@ -391,7 +441,10 @@
     "group-invitation": {
       "fingerprint": "지문",
       "info": "정보",
-      "devices": "장치"
+      "devices": "장치",
+      "join": "",
+      "password-label": "",
+      "password-placeholder": ""
     },
     "save-theme": {
       "title": "",
@@ -528,7 +581,7 @@
       "allow": "",
       "settings": ""
     },
-    "what-happening": "",
+    "skip": "넘기기",
     "settings-text": ""
   },
   "notification": {
