@@ -23,7 +23,7 @@ class GoBridge: NSObject {
 
     // protocol
     var bridgeMessenger: BertybridgeBridge?
-    let rootdir: URL
+    var rootdir: URL
 
     static func requiresMainQueueSetup() -> Bool {
         return true
@@ -101,6 +101,9 @@ class GoBridge: NSObject {
             if !exist {
                 try FileManager.default.createDirectory(atPath: self.rootdir.path, withIntermediateDirectories: true, attributes: nil)
             }
+            var values = URLResourceValues()
+            values.isExcludedFromBackup = true
+            try self.rootdir.setResourceValues(values)
 
             NSLog("root dir: `%@`", self.rootdir.path)
             config.setRootDir(self.rootdir.path)

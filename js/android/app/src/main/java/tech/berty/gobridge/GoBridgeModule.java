@@ -33,7 +33,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     super(reactContext);
     this.reactContext = reactContext;
     this.keystoreDriver = new KeystoreDriver(reactContext);
-    rootDir = new File(reactContext.getFilesDir().getAbsolutePath() + "/berty");
+    rootDir = new File(reactContext.getNoBackupFilesDir().getAbsolutePath() + "/berty");
     System.out.println("root dir: " + rootDir.getAbsolutePath());
     tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/berty");
     System.out.println("temp dir: " + tempDir.getAbsolutePath());
