@@ -7,9 +7,10 @@ import java.security.GeneralSecurityException;
 import android.util.Base64;
 import android.content.SharedPreferences;
 import android.content.Context;
+import android.security.keystore.StrongBoxUnavailableException;
 
 import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;
+import androidx.security.crypto.MasterKey;
 
 import bertybridge.NativeKeystoreDriver;
 
@@ -37,7 +38,7 @@ public class KeystoreDriver implements NativeKeystoreDriver {
     private SharedPreferences getSecureSharedPreferences() throws GeneralSecurityException, IOException {
         return EncryptedSharedPreferences.create(
             "secret_shared_prefs",
-            MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
+            MasterKey.DEFAULT_MASTER_KEY_ALIAS,
             this.ctx,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
