@@ -40,9 +40,9 @@ public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol {
   }
   
   private func handleAppUninstallation() {
-    if (!UserDefaults.standard.bool(forKey: "BertyIsAppInstalled")) {
+    if (!UserDefaults.standard.bool(forKey: "BertyNativeKeystoreIsAppInstalled")) {
       self.clearSecureKeyStore()
-      UserDefaults.standard.set(true, forKey:"BertyIsAppInstalled")
+      UserDefaults.standard.set(true, forKey:"BertyNativeKeystoreIsAppInstalled")
       UserDefaults.standard.synchronize()
     }
   }
