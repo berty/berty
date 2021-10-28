@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sync"
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
@@ -115,7 +116,12 @@ func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*acc
 
 const StorageKeySize = 32
 
+var storageKeyMutex = sync.Mutex{}
+
 func GetOrCreateStorageKey(ks sysutil.NativeKeystore) ([]byte, error) {
+	storageKeyMutex.Lock()
+	defer storageKeyMutex.Unlock()
+
 	key, getErr := ks.Get(StorageKeyName)
 	if getErr != nil {
 		keyData := make([]byte, StorageKeySize)
