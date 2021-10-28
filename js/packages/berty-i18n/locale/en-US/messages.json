@@ -130,38 +130,38 @@
   "settings": {
     "home": {
       "check-list": {
-        "title": "",
+        "title": "Check list {{tasksDone}}/{{totalTasks}}",
         "avatar": {
-          "title": "",
-          "desc": ""
+          "title": "Change your avatar",
+          "desc": "Let's setup a profile picture for this account!"
         },
         "relay": {
-          "title": "",
-          "desc": ""
+          "title": "Configure relay",
+          "desc": "Improve your network performance by using a relay powered by Berty Tech non-profit."
         },
         "contact": {
-          "title": "",
-          "desc": ""
+          "title": "Sync with a contact",
+          "desc": "Scan a QR code to add a first contact in your contact list!"
         },
         "group": {
-          "title": "",
-          "desc": ""
+          "title": "Join or create a group",
+          "desc": "Let's create or join your first Berty group!"
         },
         "message": {
-          "title": "",
-          "desc": ""
+          "title": "Send message",
+          "desc": "Say 'Hello world' to a contact!"
         },
         "theme": {
-          "title": "",
-          "desc": ""
+          "title": "Customize theme",
+          "desc": "Let's create your own version of the app, and share it with community!"
         },
         "hidden-account": {
-          "title": "",
-          "desc": ""
+          "title": "Create hidden account",
+          "desc": "Create an invisible account with a specific password to login, and be safe at the airport!"
         },
         "ble-message": {
-          "title": "",
-          "desc": ""
+          "title": "Send message without internet",
+          "desc": "Use the Proximity feature and send a message without any cellular network, or internet connection!"
         }
       },
       "header-left-button": "Help",
@@ -170,19 +170,19 @@
       "network-button": "Network List",
       "edit-profile": "Edit profile",
       "app-network-button": {
-        "title": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
+        "title": "App network configuration",
+        "first-bullet-point": "Receive push notifications",
+        "second-bullet-point": "Receive contact requests",
+        "third-bullet-point": "Local peer discovery (BLE & Multicast DNS)"
       },
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Notifications",
+        "tag-enabled": "Enabled",
+        "tag-disabled": "Disabled"
       },
-      "dark-mode-button": "",
+      "dark-mode-button": "Dark mode",
       "bluetooth-button": {
-        "title": ""
+        "title": "Bluetooth"
       }
     },
     "network-map": {
@@ -190,20 +190,20 @@
       "online-peers": "Online Peers"
     },
     "network-config": {
-      "title": "",
-      "desc": "",
-      "push-notifications": "",
-      "replication-services": "",
-      "ble": "",
+      "title": "App network configuration",
+      "desc": "You can change your network configurations",
+      "push-notifications": "Push notifications",
+      "replication-services": "Replication services",
+      "ble": "Bluetooth low energy",
       "multicast-dns-button": {
-        "title": "",
-        "desc": ""
+        "title": "Multicast DNS",
+        "desc": "Local Peer discovery"
       },
-      "dht": "",
-      "bootstrap": "",
-      "rdv": "",
-      "static-relay": "",
-      "anon-mode": ""
+      "dht": "DHT",
+      "bootstrap": "Bootstrap",
+      "rdv": "Rendez vous",
+      "static-relay": "Static relay",
+      "anon-mode": "ANON"
     },
     "mode": {
       "title": "Settings",
@@ -327,10 +327,10 @@
       "current-tag": "Current"
     },
     "faq": {
-      "title": ""
+      "title": "FAQ"
     },
     "roadmap": {
-      "title": ""
+      "title": "Roadmap"
     },
     "devtools": {
       "title": "Dev tools",
@@ -442,9 +442,9 @@
       "fingerprint": "Fingerprint",
       "info": "Infos",
       "devices": "Devices",
-      "join": "",
-      "password-label": "",
-      "password-placeholder": ""
+      "join": "JOIN THIS GROUP",
+      "password-label": "Enter the group password",
+      "password-placeholder": "Password..."
     },
     "save-theme": {
       "title": "Saving theme",
@@ -581,7 +581,7 @@
       "allow": "Allow",
       "settings": "Go to Settings"
     },
-    "skip": "",
+    "skip": "SKIP",
     "settings-text": "You can enable {{title}} permission from Settings."
   },
   "notification": {
