@@ -153,9 +153,13 @@ func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, 
 		return nil, errcode.ErrBertyAccountFSError.Wrap(fmt.Errorf("unable to read account metadata: %w", err))
 	}
 
+	if err := ds.Close(); err != nil {
+		return nil, errcode.ErrDBClose.Wrap(err)
+	}
+
 	meta := &accounttypes.AccountMetadata{}
 	if err := proto.Unmarshal(metaBytes, meta); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshall account metadata: %w", err))
+		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshal account metadata: %w", err))
 	}
 
 	meta.AccountID = accountID

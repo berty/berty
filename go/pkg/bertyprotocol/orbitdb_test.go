@@ -53,23 +53,21 @@ func TestDifferentStores(t *testing.T) {
 	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, nil, zap.NewNop())
 	require.NoError(t, err)
 
-	defer baseDS.Close()
-
 	baseDS = sync_ds.MutexWrap(baseDS)
 
-	defer baseDS.Close()
+	defer testutil.Close(t, baseDS)
 
 	api1, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
 	odb1 := NewTestOrbitDB(ctx, t, logger, api1, datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")))
-	defer odb1.Close()
+	defer testutil.Close(t, odb1)
 
 	api2, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
 	odb2 := NewTestOrbitDB(ctx, t, logger, api2, datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")))
-	defer odb2.Close()
+	defer testutil.Close(t, odb2)
 
 	err = mn.LinkAll()
 	require.NoError(t, err)

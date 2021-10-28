@@ -430,7 +430,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 	}
 
 	if _, err := s.getAccountMetaForName(request.AccountID); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
 	if err := os.RemoveAll(filepath.Join(s.rootdir, request.AccountID)); err != nil {
@@ -448,6 +448,10 @@ func (s *service) putInAccountDatastore(accountID string, key string, value []by
 
 	if err := ds.Put(datastore.NewKey(key), value); err != nil {
 		return errcode.ErrBertyAccountFSError.Wrap(err)
+	}
+
+	if err := ds.Close(); err != nil {
+		return errcode.ErrDBClose.Wrap(err)
 	}
 
 	return nil
@@ -848,6 +852,10 @@ func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.Netwo
 	} else if err != nil {
 		s.logger.Warn("unable to read network configuration for account", zap.Error(err), zap.String("account-id", accountID))
 		return NetworkConfigGetDefault(), false
+	}
+
+	if err := ds.Close(); err != nil {
+		s.logger.Warn("unable to close datastore after reading network configuration for account", zap.Error(err), zap.String("account-id", accountID))
 	}
 
 	ret := &accounttypes.NetworkConfig{}

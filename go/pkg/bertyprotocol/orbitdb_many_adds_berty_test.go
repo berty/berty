@@ -39,21 +39,19 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, storageKey, zap.NewNop())
 	require.NoError(t, err)
 
-	defer baseDS.Close()
-
 	baseDS = sync_ds.MutexWrap(baseDS)
 
-	defer baseDS.Close()
+	defer testutil.Close(t, baseDS)
 
 	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{Datastore: baseDS})
 	require.NoError(t, err)
 
-	defer odb.Close()
+	defer testutil.Close(t, odb)
 
 	gc, err := odb.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 
-	defer gc.Close()
+	defer testutil.Close(t, gc)
 
 	err = ActivateGroupContext(ctx, gc, nil)
 	require.NoError(t, err)
