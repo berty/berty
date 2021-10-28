@@ -112,7 +112,7 @@ require (
 	google.golang.org/grpc v1.40.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/square/go-jose.v2 v2.6.0
-	gorm.io/gorm v1.21.15
+	gorm.io/gorm v1.22.2
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/progress v1.4.0
