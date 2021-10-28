@@ -969,8 +969,9 @@ github.com/libp2p/go-libp2p-interface-pnet v0.0.1/go.mod h1:el9jHpQAXK5dnTpKA4yf
 github.com/libp2p/go-libp2p-kad-dht v0.9.0/go.mod h1:LEKcCFHxnvypOPaqZ0m6h0fLQ9Y8t1iZMOg7a0aQDD4=
 github.com/libp2p/go-libp2p-kad-dht v0.11.1/go.mod h1:5ojtR2acDPqh/jXf5orWy8YGb8bHQDS+qeDcoscL/PI=
 github.com/libp2p/go-libp2p-kad-dht v0.12.2/go.mod h1:mznpWRg0Nbkr9PB2Dm9XWN24V2BChE3FT1dHmwaDVws=
-github.com/libp2p/go-libp2p-kad-dht v0.13.1 h1:wQgzOpoc+dcPVDb3h0HNWUjon5JiYEqsA4iNBUtIA7A=
 github.com/libp2p/go-libp2p-kad-dht v0.13.1/go.mod h1:iVdxmsKHVPQSCGPP4V/A+tDFCLsxrREZUBX8ohOcKDw=
+github.com/libp2p/go-libp2p-kad-dht v0.14.0 h1:xblSy8sc17hda1aFTZ82QAxlbHBGpSUqzwhbJYIy7Ds=
+github.com/libp2p/go-libp2p-kad-dht v0.14.0/go.mod h1:EgS8TcQNGOouQQ3bBO3zchTZ8ojERO7EIUjyzl/be8g=
 github.com/libp2p/go-libp2p-kbucket v0.3.1/go.mod h1:oyjT5O7tS9CQurok++ERgc46YLwEpuGoFq9ubvoUOio=
 github.com/libp2p/go-libp2p-kbucket v0.4.7 h1:spZAcgxifvFZHBD8tErvppbnNiKA5uokDu3CV7axu70=
 github.com/libp2p/go-libp2p-kbucket v0.4.7/go.mod h1:XyVo99AfQH0foSf176k4jY1xUJ2+jUJIZCSDm7r2YKk=
@@ -2230,8 +2231,8 @@ gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b h1:h8qDotaEPuJATrMmW04NCwg7v
 gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gorm.io/gorm v1.20.11/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
 gorm.io/gorm v1.21.9/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
-gorm.io/gorm v1.21.15 h1:gAyaDoPw0lCyrSFWhBlahbUA1U4P5RViC1uIqoB+1Rk=
-gorm.io/gorm v1.21.15/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
+gorm.io/gorm v1.22.2 h1:1iKcvyJnR5bHydBhDqTwasOkoo6+o4Ms5cknSt6qP7I=
+gorm.io/gorm v1.22.2/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
 grpc.go4.org v0.0.0-20170609214715-11d0a25b4919/go.mod h1:77eQGdRu53HpSqPFJFmuJdjuHRquDANNeA4x7B8WQ9o=
 honnef.co/go/tools v0.0.0-20180728063816-88497007e858/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=

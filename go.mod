@@ -63,7 +63,7 @@ require (
 	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.11.0
 	github.com/libp2p/go-libp2p-discovery v0.5.1
-	github.com/libp2p/go-libp2p-kad-dht v0.13.1
+	github.com/libp2p/go-libp2p-kad-dht v0.14.0
 	github.com/libp2p/go-libp2p-pubsub v0.5.4
 	github.com/libp2p/go-libp2p-quic-transport v0.12.0
 	github.com/libp2p/go-libp2p-record v0.1.3
@@ -112,7 +112,7 @@ require (
 	google.golang.org/grpc v1.40.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/square/go-jose.v2 v2.6.0
-	gorm.io/gorm v1.21.15
+	gorm.io/gorm v1.22.2
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/progress v1.4.0
