@@ -22,11 +22,11 @@ import (
 
 // defaultConnMgrHighWater is the default value for the connection managers
 // 'high water' mark
-const defaultConnMgrHighWater = 50
+const defaultConnMgrHighWater = 200
 
 // defaultConnMgrLowWater is the default value for the connection managers 'low
 // water' mark
-const defaultConnMgrLowWater = 10
+const defaultConnMgrLowWater = 150
 
 // defaultConnMgrGracePeriod is the default value for the connection managers
 // grace period

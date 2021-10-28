@@ -99,9 +99,13 @@ type Manager struct {
 			DHTRandomWalk     bool   `json:"DHTRandomWalk,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
 			MDNS              bool   `json:"LocalDiscovery,omitempty"`
+			TinderDiscover    bool   `json:"TinderDiscover,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
+			AutoRelay         bool   `json:"Relay,omitempty"`
 			StaticRelays      string `json:"StaticRelays,omitempty"`
+			LowWatermark      int    `json:"LowWatermark,omitempty"`
+			HighWatermark     int    `json:"HighWatermark,omitempty"`
 			Ble               struct {
 				Enable bool                      `json:"Enable,omitempty"`
 				Driver proximity.ProximityDriver `json:"Driver,omitempty"`

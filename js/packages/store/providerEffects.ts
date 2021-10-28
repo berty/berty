@@ -25,6 +25,7 @@ import {
 } from './context'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
+import { logger } from '@berty-tech/grpc-bridge/middleware'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -224,14 +225,13 @@ export const openingClients = (
 	eventEmitter: EventEmitter,
 	daemonAddress: string,
 	embedded: boolean,
-) => {
+): void => {
 	if (appState !== MessengerAppState.OpeningWaitingForClients) {
 		return
 	}
 
 	console.log('starting stream')
 
-	const messengerMiddlewares = null
 	let rpc
 	if (embedded) {
 		rpc = rpcBridge
@@ -243,9 +243,9 @@ export const openingClients = (
 		rpc = rpcWeb(opts)
 	}
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpc, messengerMiddlewares)
+	const messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
 
-	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, null)
+	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
 
 	let precancel = false
 	let cancel = () => {

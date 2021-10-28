@@ -27,6 +27,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
+	"go.uber.org/zap"
 	"moul.io/srand"
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
@@ -64,6 +65,7 @@ const (
 	FlagNameP2PNearby                = "p2p.nearby"
 	FlagNameP2PMultipeerConnectivity = "p2p.multipeer-connectivity"
 	FlagNameTorMode                  = "tor.mode"
+	FlagNameP2PTinderDiscover        = "p2p.tinder-discover"
 	FlagNameP2PTinderDHTDriver       = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver      = "p2p.tinder-rdvp-driver"
 
@@ -77,6 +79,8 @@ const (
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	m.SetupPresetFlags(fs)
 	fs.StringVar(&m.Node.Protocol.SwarmListeners, "p2p.swarm-listeners", KeywordDefault, "IPFS swarm listeners")
+	fs.IntVar(&m.Node.Protocol.HighWatermark, "p2p.high-water", 200, "ConnManager high watermark")
+	fs.IntVar(&m.Node.Protocol.LowWatermark, "p2p.low-water", 150, "ConnManager low watermark")
 	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "/ip4/127.0.0.1/tcp/5001", "IPFS API listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
@@ -85,8 +89,10 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.MDNS, FlagNameP2PMDNS, true, "if true mdns will be enabled")
+	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
@@ -181,8 +187,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	}
 
 	mopts := ipfsutil.MobileOptions{
-		IpfsConfigPatch: m.setupIPFSConfig,
-		// HostConfigFunc:    m.setupIPFSHost,
+		IpfsConfigPatch:   m.setupIPFSConfig,
 		RoutingConfigFunc: m.configIPFSRouting,
 		RoutingOption:     routing,
 		ExtraOpts: map[string]bool{
@@ -273,6 +278,8 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		}
 	}
 
+	logger.Debug("local PeerID", zap.String("PeerID", m.Node.Protocol.ipfsNode.Identity.String()))
+
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }
 
@@ -337,6 +344,14 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 
 	if m.Node.Protocol.NoAnnounce != "" {
 		cfg.Addresses.NoAnnounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
+	}
+
+	if m.Node.Protocol.HighWatermark > 0 {
+		cfg.Swarm.ConnMgr.HighWater = m.Node.Protocol.HighWatermark
+	}
+
+	if m.Node.Protocol.LowWatermark > 0 {
+		cfg.Swarm.ConnMgr.LowWater = m.Node.Protocol.LowWatermark
 	}
 
 	if m.Node.Protocol.DisableIPFSNetwork {
@@ -445,12 +460,12 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// localdisc driver
-	if !m.Node.Protocol.MDNS {
-		cfg.Discovery.MDNS.Enabled = false
-	}
+	cfg.Discovery.MDNS.Enabled = m.Node.Protocol.MDNS
 
 	// enable autorelay
-	p2popts = append(p2popts, libp2p.ListenAddrs(), libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+	if m.Node.Protocol.AutoRelay {
+		p2popts = append(p2popts, libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+	}
 
 	pis, err := m.getStaticRelays()
 	if err != nil {
@@ -467,10 +482,8 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// prefill peerstore with known rdvp servers
-	if m.Node.Protocol.Tor.Mode != TorRequired {
-		for _, p := range rdvpeers {
-			cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
-		}
+	for _, p := range rdvpeers {
+		cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 	}
 
 	return p2popts, nil
@@ -571,14 +584,24 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		return discovery.NewBackoffConnector(host, cacheSize, dialTimeout, backoffstrat)
 	}
 
-	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
-	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
+	popts := []pubsub.Option{
 		pubsub.WithMessageSigning(true),
-		pubsub.WithDiscovery(m.Node.Protocol.discovery,
-			pubsub.WithDiscoverConnector(backoffconnector)),
 		pubsub.WithPeerExchange(true),
 		pt.EventTracerOption(),
-	)
+	}
+
+	if m.Node.Protocol.TinderDiscover {
+		popts = append(popts, pubsub.WithDiscovery(m.Node.Protocol.discovery, pubsub.WithDiscoverConnector(backoffconnector)))
+	} else {
+		advertiseOnly := tinder.DriverDiscovery{
+			Discoverer: tinder.NoopDiscovery,
+			Advertiser: m.Node.Protocol.discovery,
+		}
+		popts = append(popts, pubsub.WithDiscovery(advertiseOnly, pubsub.WithDiscoverConnector(backoffconnector)))
+	}
+
+	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
+	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)
 
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)

@@ -1,32 +1,13 @@
-const logStyle = {
-	rpcOK:
-		'font-weight:bold;color:#FFFFFF;background-color:#46868C;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:left;font-family:arial, helvetica, sans-serif;line-height:1;',
-	rpcERROR:
-		'font-weight:bold;color:#FFFFFF;background-color:#880606;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:left;font-family:arial, helvetica, sans-serif;line-height:1;',
-	title: 'font-weight:normal;font-style:italic;color:#FFFFFF;background-color:#000000;',
+const logRequest = (name, title, req) => {
+	console.log(`>>>[${name}] ${title}: "${JSON.stringify(req)}"`)
 }
 
-const rpcLogger = (name, title, req, res, err) => {
-	try {
-		if (err) {
-			console.group(`%c ${name} %c %s`, logStyle.rpcERROR, logStyle.title, title)
-			console.warn(err.message)
-		} else {
-			console.groupCollapsed(`%c ${name} %c %s`, logStyle.rpcOK, logStyle.title, title)
-		}
+const logResponse = (name, title, res) => {
+	console.log(`<<<[${name}] ${title}: ${JSON.stringify(res)}`)
+}
 
-		if (req) {
-			console.dir(req)
-		}
-
-		if (res) {
-			console.dir(res)
-		}
-
-		console.groupEnd()
-	} catch (err) {
-		console.log(`[${name}]`, title, req, res, err)
-	}
+const logError = (name, title, err) => {
+	console.warn(`[${name}] ${title}: ${err}`)
 }
 
 const create = name => (method, call) => async (payload, metadata) => {
@@ -34,33 +15,36 @@ const create = name => (method, call) => async (payload, metadata) => {
 
 	const start = new Date().getTime()
 	try {
+		const title = `[REQ] ${method.name}`
+
+		logRequest(name, title, request)
+
 		const res = await call(payload, metadata)
 		const end = new Date().getTime()
 
 		// stream
 		if (method.requestStream || method.responseStream) {
-			const title = `[${end - start}ms] ${method.name}`
-			rpcLogger(name, title, request, null, null)
-
-			const eventTitle = `<= ${method.name} event`
+			const eventTitle = `[EVT] ${method.name}`
 			res.onMessage((msg, err) => {
 				if (err) {
-					rpcLogger(name, eventTitle, null, null, err)
+					logError(name, eventTitle, err)
 				} else {
-					rpcLogger(name, eventTitle, null, msg, null)
+					logResponse(name, eventTitle, msg)
 				}
 			})
-		} else {
 			// unary
-			const title = `[${end - start}ms] ${method.name}`
-			rpcLogger(name, title, request, res, null)
+		} else {
+			const title = `[${end - start}ms] [RES] ${method.name}`
+
+			logResponse(name, title, res)
 		}
 
 		return res
 	} catch (err) {
 		const end = new Date().getTime()
-		const title = `[${end - start}ms] ${method.name}`
-		rpcLogger(name, title, request, null, err)
+		const title = `[${end - start}ms] [ERR] ${method.name}`
+
+		logError(name, title, err)
 
 		throw err
 	}

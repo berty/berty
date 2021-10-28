@@ -75,6 +75,7 @@ func (w *watchdogsDiscoverer) FindPeers(_ context.Context, ns string, opts ...p2
 		}
 		ft.T.Reset(w.resetInterval)
 
+		// return alreay existing chan
 		return w.disc.FindPeers(ft.Ctx, ns, opts...)
 	}
 
@@ -144,13 +145,13 @@ func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts .
 		if err != nil {
 			s.logger.Warn("failed to run find peers",
 				zap.String("driver", driver.Name),
-				zap.String("key", ns),
+				zap.String("ns", ns),
 				zap.Error(err))
 
 			continue
 		}
 
-		s.logger.Debug("findpeer for driver started", zap.String("key", ns), zap.String("driver", driver.Name))
+		s.logger.Debug("findpeer for driver started", zap.String("driver", driver.Name), zap.String("ns", ns))
 		cdrivers = append(cdrivers, &driverChan{
 			cc:     ch,
 			driver: driver,
@@ -164,7 +165,7 @@ func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts .
 
 		// @TODO(gfanton): use optimized method for few drivers
 		err := s.selectFindPeers(ctx, cc, cdrivers)
-		s.logger.Debug("find peers done", zap.String("topic", ns), zap.Error(err))
+		s.logger.Debug("find peers done", zap.String("ns", ns), zap.Error(err))
 	}()
 
 	return cc, nil
@@ -221,12 +222,14 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 			}
 
 			topic := in[sel].topic
+
 			// protect this peer to avoid to be pruned
 			s.ProtectPeer(peer.ID)
+
 			s.logger.Debug("found a peer",
 				zap.String("driver", driver.Name),
-				zap.String("topic", topic),
 				zap.String("peer", filterpeer.ID.String()),
+				zap.String("ns", topic),
 				zap.Any("addrs", filterpeer.Addrs))
 
 			// forward the peer
