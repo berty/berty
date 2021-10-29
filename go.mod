@@ -63,8 +63,8 @@ require (
 	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.11.0
 	github.com/libp2p/go-libp2p-discovery v0.5.1
-	github.com/libp2p/go-libp2p-kad-dht v0.13.1
-	github.com/libp2p/go-libp2p-pubsub v0.5.4
+	github.com/libp2p/go-libp2p-kad-dht v0.14.0
+	github.com/libp2p/go-libp2p-pubsub v0.5.5
 	github.com/libp2p/go-libp2p-quic-transport v0.12.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
