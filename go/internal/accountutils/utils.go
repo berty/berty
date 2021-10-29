@@ -85,13 +85,15 @@ func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*acc
 		logger = zap.NewNop()
 	}
 
-	if _, err := os.Stat(rootDir); os.IsNotExist(err) {
+	accountsDir := GetAccountsDir(rootDir)
+
+	if _, err := os.Stat(accountsDir); os.IsNotExist(err) {
 		return []*accounttypes.AccountMetadata{}, nil
 	} else if err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	subitems, err := ioutil.ReadDir(rootDir)
+	subitems, err := ioutil.ReadDir(accountsDir)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -146,7 +148,7 @@ func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, 
 		logger = zap.NewNop()
 	}
 
-	ds, err := GetRootDatastoreForPath(filepath.Join(rootDir, accountID), storageKey, logger)
+	ds, err := GetRootDatastoreForPath(GetAccountDir(rootDir, accountID), storageKey, logger)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -171,6 +173,20 @@ func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, 
 	meta.AccountID = accountID
 
 	return meta, nil
+}
+
+func GetAccountsDir(rootDir string) string {
+	if rootDir == InMemoryDir {
+		return rootDir
+	}
+	return filepath.Join(rootDir, "accounts")
+}
+
+func GetAccountDir(rootDir, accountID string) string {
+	if rootDir == InMemoryDir {
+		return rootDir
+	}
+	return filepath.Join(GetAccountsDir(rootDir), accountID)
 }
 
 func GetDatastoreDir(dir string) (string, error) {

@@ -120,7 +120,11 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 						return (
 							<AccountButton
 								key={key}
-								name={account?.error ? `Incompatible account ${account.name}` : account.name}
+								name={
+									account?.error
+										? `Incompatible account ${account.name}\n${account.error}`
+										: account.name
+								}
 								onPress={async () => {
 									if (ctx.selectedAccount !== account.accountId) {
 										await ctx.switchAccount(account.accountId)

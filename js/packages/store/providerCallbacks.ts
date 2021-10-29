@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage'
-
 import beapi from '@berty-tech/api'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
@@ -16,6 +14,9 @@ import {
 	defaultPersistentOptions,
 	MessengerActions,
 	PersistentOptionsUpdate,
+	storageRemove,
+	storageGet,
+	storageSet,
 } from './context'
 
 export const importAccount = async (
@@ -117,7 +118,7 @@ export const deleteAccount = async (
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
 		await accountService.deleteAccount({ accountId: selectedAccount })
-		await AsyncStorage.removeItem(storageKeyForAccount(selectedAccount))
+		await storageRemove(storageKeyForAccount(selectedAccount))
 		accounts = await refreshAccountList(embedded, dispatch)
 	} else {
 		console.warn('state.selectedAccount is null and this should not occur')
@@ -175,9 +176,9 @@ export const setPersistentOption = async (
 
 	try {
 		let opts = {}
-		let persistOpts = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount))
+		let persistOpts = await storageGet(storageKeyForAccount(selectedAccount))
 
-		if (persistOpts !== null) {
+		if (persistOpts) {
 			opts = JSON.parse(persistOpts)
 		}
 
@@ -187,10 +188,7 @@ export const setPersistentOption = async (
 			[action.type]: action.payload,
 		}
 
-		await AsyncStorage.setItem(
-			storageKeyForAccount(selectedAccount),
-			JSON.stringify(updatedPersistOpts),
-		)
+		await storageSet(storageKeyForAccount(selectedAccount), JSON.stringify(updatedPersistOpts))
 
 		dispatch({
 			type: MessengerActions.SetPersistentOption,

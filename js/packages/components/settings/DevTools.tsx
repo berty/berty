@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { Player } from '@react-native-community/audio-toolkit'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import Long from 'long'
-import AsyncStorage from '@react-native-community/async-storage'
 import crashlytics from '@react-native-firebase/crashlytics'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
@@ -15,6 +14,8 @@ import {
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
 	PersistentOptionsKeys,
+	storageGet,
+	storageSet,
 } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -505,11 +506,11 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				name={t('settings.devtools.tyber-host-button.name')}
 				bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
 				getOptionValue={async () =>
-					(await AsyncStorage.getItem(GlobalPersistentOptionsKeys.TyberHost)) ||
+					(await storageGet(GlobalPersistentOptionsKeys.TyberHost)) ||
 					defaultPersistentOptions().tyberHost.address
 				}
-				setOptionValue={val => {
-					AsyncStorage.setItem(GlobalPersistentOptionsKeys.TyberHost, val)
+				setOptionValue={async val => {
+					await storageSet(GlobalPersistentOptionsKeys.TyberHost, val)
 					showNeedRestartNotification(showNotification, ctx, t)
 				}}
 			/>

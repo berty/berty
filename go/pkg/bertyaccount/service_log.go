@@ -7,6 +7,7 @@ import (
 
 	"moul.io/u"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -27,7 +28,7 @@ func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList
 	ret := accounttypes.LogfileList_Reply{}
 
 	for _, account := range accounts.Accounts {
-		logsDir := filepath.Join(s.rootdir, account.AccountID, "logs")
+		logsDir := filepath.Join(accountutils.GetAccountDir(s.rootdir, account.AccountID), "logs")
 		files, err := logutil.LogfileList(logsDir)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
