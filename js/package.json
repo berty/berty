@@ -35,7 +35,7 @@
     "emoji-datasource": "^6.0.1",
     "faker": "^5.2.0",
     "google-palette": "^1.1.0",
-    "google-protobuf": "^3.14.0",
+    "google-protobuf": "^3.19.1",
     "i18next": "^19.8.5",
     "linkify-it": "^3.0.2",
     "lottie-react-native": "^4.1.3",
