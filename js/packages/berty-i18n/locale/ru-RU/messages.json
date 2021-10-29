@@ -133,7 +133,7 @@
         "title": "Чек-лист {{tasksDone}}/{{totalTasks}}",
         "avatar": {
           "title": "Изменить свой аватар",
-          "desc": "Давайте установим изображение профиля или арт для этого аккаунта!"
+          "desc": ""
         },
         "relay": {
           "title": "Настроить реле",
@@ -633,10 +633,10 @@
           "action-cancel": "Отменить"
         },
         "status": {
-          "datastore-found": "Найден файл метаданных",
-          "datastore-not-found": "Файл метаданных не найден",
-          "ipfs-repo-found": "Найден файл конфигурации IPFS",
-          "ipfs-repo-not-found": "Файл конфигурации IPFS не найден",
+          "datastore-found": "",
+          "datastore-not-found": "",
+          "ipfs-repo-found": "",
+          "ipfs-repo-not-found": "",
           "messenger-db-found": "Обнаружена база данных мессенджера",
           "messenger-db-not-found": "База данных мессенджера не найдена"
         },
