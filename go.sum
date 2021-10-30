@@ -2,8 +2,8 @@ bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnD
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 berty.tech/go-ipfs-log v1.5.0 h1:Ky49kb9pIDkU+FkaAAvXk7TSRMcZCc0oUKhCvABAc+U=
 berty.tech/go-ipfs-log v1.5.0/go.mod h1:vAO6rQeT3Q5ap+hkk7nwNETPxlE8l6ZhGz7vxuWDls8=
-berty.tech/go-ipfs-repo-encrypted v1.0.5 h1:r0lBRFVxrN7B4MbHCVnC5dTa6s1o0jB/UtazEfq+iv4=
-berty.tech/go-ipfs-repo-encrypted v1.0.5/go.mod h1:q5qteVVJTko1jYBklGcNFXAByYA8EUWwJGl/qHlrL5M=
+berty.tech/go-ipfs-repo-encrypted v1.0.8 h1:gfnS5Ccq1PrO0yTvR30DiCyOfyAxhkQTtQSQ50P6vo0=
+berty.tech/go-ipfs-repo-encrypted v1.0.8/go.mod h1:qupyNaqdVPZr7JLZ+6U4X/O037eil3J+hghBBXK8i4c=
 berty.tech/go-libp2p-tor-transport v0.8.4 h1:/GyXnO8ngHaJ7SGk9nP1tepCX8HzyC2Ebr26X+fmEq0=
 berty.tech/go-libp2p-tor-transport v0.8.4/go.mod h1:ng3uORmnjkr5ZYxLd0sxra3z+ScbqS0u+x7Zqdin608=
 berty.tech/go-libtor v1.0.345 h1:i39HFWq5oRN1wf30Dhlo2cVnyXMdjn9Sb4zYfzuZZ4s=
