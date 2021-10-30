@@ -5283,10 +5283,10 @@ human-signals@^2.1.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
-i18next@^19.8.5:
-  version "19.9.2"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.9.2.tgz#ea5a124416e3c5ab85fddca2c8e3c3669a8da397"
-  integrity sha512-0i6cuo6ER6usEOtKajUUDj92zlG+KArFia0857xxiEHAQcUwh/RtOQocui1LPJwunSYT574Pk64aNva1kwtxZg==
+i18next@^21.3.3:
+  version "21.3.3"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.3.3.tgz#1065d557328db29a2e1f33526ed37608cdb0242c"
+  integrity sha512-Wv5arCT9pK35nfhOzTdS64T7JpPcoqnkOEidxc4zF0DZ8KetpvmnkO+uWkXy+DFz6zWzPX7U9bIemwBqpFRprw==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
