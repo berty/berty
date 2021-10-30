@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/ipfs/go-datastore"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
@@ -202,12 +203,14 @@ func (s *service) Close() (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
+	err = s.appStorage.Close()
+
 	s.rootCancel()
 	if s.initManager != nil {
-		return s.initManager.Close(nil)
+		err = multierr.Append(err, s.initManager.Close(nil))
 	}
 
-	return nil
+	return err
 }
 
 func (s *service) getInitManager() (m *initutil.Manager, err error) {
