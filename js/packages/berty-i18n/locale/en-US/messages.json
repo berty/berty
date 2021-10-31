@@ -133,7 +133,7 @@
         "title": "Check list {{tasksDone}}/{{totalTasks}}",
         "avatar": {
           "title": "Change your avatar",
-          "desc": ""
+          "desc": "Let's setup a profile picture for this account!"
         },
         "relay": {
           "title": "Configure relay",
@@ -633,10 +633,10 @@
           "action-cancel": "Cancel"
         },
         "status": {
-          "datastore-found": "",
-          "datastore-not-found": "",
-          "ipfs-repo-found": "",
-          "ipfs-repo-not-found": "",
+          "datastore-found": "Datastore found",
+          "datastore-not-found": "Datastore not found",
+          "ipfs-repo-found": "IPFS repository found",
+          "ipfs-repo-not-found": "IPFS repository not found",
           "messenger-db-found": "Messenger DB found",
           "messenger-db-not-found": "Messenger DB not found"
         },
