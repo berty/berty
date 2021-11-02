@@ -1440,6 +1440,7 @@ message PushReceive {
     OutOfStoreMessage message = 1;
     bytes cleartext = 2;
     bytes group_public_key = 3;
+    bool already_received = 4;
   }
 }
 

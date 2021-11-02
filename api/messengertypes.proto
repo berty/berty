@@ -890,6 +890,7 @@ message PushSetAutoShare {
 message PushReceivedData {
   protocol.v1.PushReceive.Reply protocol_data = 1;
   Interaction interaction = 2;
+  bool already_received = 3;
 }
 
 message PushReceive {

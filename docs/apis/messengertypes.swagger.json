@@ -1660,6 +1660,9 @@
         "group_public_key": {
           "type": "string",
           "format": "byte"
+        },
+        "already_received": {
+          "type": "boolean"
         }
       }
     },
@@ -2689,6 +2692,9 @@
         },
         "interaction": {
           "$ref": "#/definitions/v1Interaction"
+        },
+        "already_received": {
+          "type": "boolean"
         }
       }
     },

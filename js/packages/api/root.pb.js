@@ -1022,6 +1022,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   deepLink: {
                     type: "string",
                     id: 9
+                  },
+                  alreadyReceived: {
+                    type: "bool",
+                    id: 10
                   }
                 },
                 nested: {
@@ -3701,6 +3705,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       groupPublicKey: {
                         type: "bytes",
                         id: 3
+                      },
+                      alreadyReceived: {
+                        type: "bool",
+                        id: 4
                       }
                     }
                   }
@@ -6111,6 +6119,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   interaction: {
                     type: "Interaction",
                     id: 2
+                  },
+                  alreadyReceived: {
+                    type: "bool",
+                    id: 3
                   }
                 }
               },

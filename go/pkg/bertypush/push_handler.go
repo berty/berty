@@ -152,15 +152,16 @@ func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Re
 		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	clear, err := s.messageKeystore.OpenOutOfStoreMessage(oosMessage, oosMessageEnv.GroupPublicKey)
+	clear, newlyDecrypted, err := s.messageKeystore.OpenOutOfStoreMessage(oosMessage, oosMessageEnv.GroupPublicKey)
 	if err != nil {
 		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
 	return &protocoltypes.PushReceive_Reply{
-		Message:        oosMessage,
-		Cleartext:      clear,
-		GroupPublicKey: oosMessageEnv.GroupPublicKey,
+		Message:         oosMessage,
+		Cleartext:       clear,
+		GroupPublicKey:  oosMessageEnv.GroupPublicKey,
+		AlreadyReceived: !newlyDecrypted,
 	}, nil
 }
 
