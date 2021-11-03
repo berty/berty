@@ -126,8 +126,9 @@ type Manager struct {
 				Mode       string `json:"Mode,omitempty"`
 				BinaryPath string `json:"BinaryPath,omitempty"`
 			} `json:"Tor,omitempty"`
-			PushPlatformToken string `json:"PushPlatformToken,omitempty"`
-			DevicePushKeyPath string `json:"DevicePushKeyPath,omitempty"`
+			PushPlatformToken   string `json:"PushPlatformToken,omitempty"`
+			DevicePushKeyPath   string `json:"DevicePushKeyPath,omitempty"`
+			ServiceInsecureMode bool   `json:"ServiceInsecureMode,omitempty"`
 
 			// internal
 			ServiceID         string
