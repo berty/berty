@@ -2,17 +2,25 @@
 ## Config
 ##
 
-
 GO ?= go
 GOPATH ?= $(HOME)/go
 GO_TAGS ?= -tags fts5
 GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic $(GO_TAGS)
 GO_TEST_PATH ?= ./...
+GO_TEST_ENV ?=
 
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
 VERSION ?= `go run github.com/mdomke/git-semver/v5`
 LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+
+# @FIXME(gfanton): on macOS Monterey (12.0.x) we currently need to set the
+# environment variable `MallocNanoZone` to 0 to avoid a SIGABRT or SIGSEGV
+# see https://github.com/golang/go/issues/49138
+MACOS_VERSION=$(shell defaults read /System/Library/CoreServices/SystemVersion.plist 'ProductVersion' 2>/dev/null | sed 's/\.[0-9]$$//')
+ifeq ($(MACOS_VERSION),12.0)
+GO_TEST_ENV := MallocNanoZone=0 $(GO_TEST_ENV)
+endif
 
 ##
 ## General rules
