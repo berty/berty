@@ -2,11 +2,13 @@ package bertyprotocol
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/authtypes"
@@ -53,10 +55,18 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		return nil, errcode.ErrServiceReplicationMissingEndpoint
 	}
 
-	cc, err := grpc.Dial(endpoint, []grpc.DialOption{
+	gopts := []grpc.DialOption{
 		grpc.WithPerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token.Token)),
-		grpc.WithInsecure(), // TODO: remove this, enforce security
-	}...)
+	}
+
+	if s.grpcInsecure {
+		gopts = append(gopts, grpc.WithInsecure())
+	} else {
+		tlsconfig := credentials.NewTLS(&tls.Config{InsecureSkipVerify: true}) // nolint:gosec
+		gopts = append(gopts, grpc.WithTransportCredentials(tlsconfig))
+	}
+
+	cc, err := grpc.Dial(endpoint, gopts...)
 	if err != nil {
 		return nil, errcode.ErrStreamWrite.Wrap(err)
 	}

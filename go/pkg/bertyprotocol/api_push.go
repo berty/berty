@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	crand "crypto/rand"
+	"crypto/tls"
 	"fmt"
 	"sync"
 
@@ -12,6 +13,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -72,10 +74,18 @@ func (s *service) createAndGetPushClient(ctx context.Context, host string, token
 		s.pushClients[host] = nil
 	}
 
-	cc, err := grpc.DialContext(ctx, host,
+	gopts := []grpc.DialOption{
 		grpc.WithPerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token)),
-		grpc.WithInsecure(), // @FIXME(gfanton): this is very insecure
-	)
+	}
+
+	if s.grpcInsecure {
+		gopts = append(gopts, grpc.WithInsecure())
+	} else {
+		tlsconfig := credentials.NewTLS(&tls.Config{InsecureSkipVerify: true}) // nolint:gosec
+		gopts = append(gopts, grpc.WithTransportCredentials(tlsconfig))
+	}
+
+	cc, err := grpc.DialContext(ctx, host, gopts...)
 	if err != nil {
 		return nil, err
 	}

@@ -50,6 +50,7 @@ const (
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
 	fs.StringVar(&m.Node.Protocol.PushPlatformToken, "node.default-push-token", "", "base 64 encoded default platform push token")
+	fs.BoolVar(&m.Node.Protocol.ServiceInsecureMode, "node.service-insecure", false, "use insecure connection on services")
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
 	// p2p.remote-ipfs
@@ -198,15 +199,16 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 
 		// initialize new protocol client
 		opts := bertyprotocol.Opts{
-			Host:           m.Node.Protocol.ipfsNode.PeerHost,
-			PubSub:         m.Node.Protocol.pubsub,
-			TinderDriver:   m.Node.Protocol.discovery,
-			IpfsCoreAPI:    m.Node.Protocol.ipfsAPI,
-			Logger:         logger,
-			RootDatastore:  rootDS,
-			DeviceKeystore: deviceKS,
-			OrbitDB:        odb,
-			PushKey:        pushKey,
+			Host:             m.Node.Protocol.ipfsNode.PeerHost,
+			PubSub:           m.Node.Protocol.pubsub,
+			TinderDriver:     m.Node.Protocol.discovery,
+			IpfsCoreAPI:      m.Node.Protocol.ipfsAPI,
+			Logger:           logger,
+			RootDatastore:    rootDS,
+			DeviceKeystore:   deviceKS,
+			OrbitDB:          odb,
+			PushKey:          pushKey,
+			GRPCInsecureMode: m.Node.Protocol.ServiceInsecureMode,
 		}
 
 		m.Node.Protocol.server, err = bertyprotocol.New(m.getContext(), opts)

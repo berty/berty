@@ -65,6 +65,7 @@ type service struct {
 	messageKeystore *cryptoutil.MessageKeystore
 	pushClients     map[string]*grpc.ClientConn
 	muPushClients   sync.RWMutex
+	grpcInsecure    bool
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -82,6 +83,7 @@ type Opts struct {
 	RendezvousRotationBase time.Duration
 	Host                   host.Host
 	PubSub                 *pubsub.PubSub
+	GRPCInsecureMode       bool
 	LocalOnly              bool
 	close                  func() error
 	PushKey                *[cryptoutil.KeySize]byte
@@ -279,6 +281,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		messageKeystore: opts.MessageKeystore,
 		pushHandler:     pushHandler,
 		pushClients:     make(map[string]*grpc.ClientConn),
+		grpcInsecure:    opts.GRPCInsecureMode,
 	}
 
 	s.startTyberTinderMonitor()
