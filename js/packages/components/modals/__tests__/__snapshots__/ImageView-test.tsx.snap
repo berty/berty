@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ImageView modal renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <Modal
+      hardwareAccelerated={false}
+      transparent={true}
+      visible={true}
+    >
+      <View
+        onLayout={[Function]}
+        style={
+          Object {
+            "flex": 1,
+            "overflow": "hidden",
+          }
+        }
+      >
+        <View>
+          <View
+            style={
+              Object {
+                "zIndex": 9,
+              }
+            }
+          >
+            <View
+              style={
+                Object {
+                  "backgroundColor": "transparent",
+                  "opacity": 0,
+                }
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "bottom": 0,
+                    "justifyContent": "center",
+                    "left": 0,
+                    "position": "absolute",
+                    "top": 0,
+                    "zIndex": 13,
+                  }
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                />
+              </View>
+              <View
+                style={
+                  Object {
+                    "bottom": 0,
+                    "justifyContent": "center",
+                    "position": "absolute",
+                    "right": 0,
+                    "top": 0,
+                    "zIndex": 13,
+                  }
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                />
+              </View>
+              <View
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "transform": Array [
+                      Object {
+                        "translateX": 0,
+                      },
+                    ],
+                    "width": 0,
+                  }
+                }
+              />
+              <View
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "backgroundColor": "transparent",
+                    "justifyContent": "center",
+                    "left": 0,
+                    "position": "absolute",
+                    "right": 0,
+                    "top": 38,
+                    "zIndex": 13,
+                  }
+                }
+              >
+                <Text
+                  style={
+                    Object {
+                      "backgroundColor": "transparent",
+                      "color": "white",
+                      "fontSize": 16,
+                      "textShadowColor": "rgba(0, 0, 0, 0.3)",
+                      "textShadowOffset": Object {
+                        "height": 0.5,
+                        "width": 0,
+                      },
+                      "textShadowRadius": 0,
+                    }
+                  }
+                >
+                  1/0
+                </Text>
+              </View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "bottom": 0,
+                      "position": "absolute",
+                      "zIndex": 9,
+                    },
+                    Object {},
+                  ]
+                }
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  </View>
+</RNCSafeAreaProvider>
+`;
