@@ -183,6 +183,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		if opts.DatastoreDir != InMemoryDirectory {
 			orbitDirectory = filepath.Join(opts.DatastoreDir, NamespaceOrbitDBDirectory)
 		}
+
 		odbOpts := &NewOrbitDBOptions{
 			NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 				Directory: &orbitDirectory,

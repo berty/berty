@@ -6,7 +6,7 @@ import (
 )
 
 // return only public addrs
-func FilterPublicAddrs(ms []ma.Multiaddr) []ma.Multiaddr {
+func PublicAddrsOnly(ms []ma.Multiaddr) []ma.Multiaddr {
 	filetred := []ma.Multiaddr{}
 	for _, m := range ms {
 		if manet.IsPublicAddr(m) {
@@ -18,7 +18,7 @@ func FilterPublicAddrs(ms []ma.Multiaddr) []ma.Multiaddr {
 }
 
 // return anything but public addrs
-func FilterPrivateAddrs(ms []ma.Multiaddr) []ma.Multiaddr {
+func PrivateAddrOnly(ms []ma.Multiaddr) []ma.Multiaddr {
 	filetred := []ma.Multiaddr{}
 	for _, m := range ms {
 		if !manet.IsPublicAddr(m) {

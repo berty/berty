@@ -131,19 +131,20 @@ type Manager struct {
 			ServiceInsecureMode bool   `json:"ServiceInsecureMode,omitempty"`
 
 			// internal
-			ServiceID         string
-			needAuth          bool
-			ipfsNode          *core.IpfsNode
-			ipfsAPI           ipfsutil.ExtendedCoreAPI
-			pubsub            *pubsub.PubSub
-			discovery         tinder.Service
-			server            bertyprotocol.Service
-			ipfsAPIListeners  []net.Listener
-			ipfsWebUIListener net.Listener
-			client            protocoltypes.ProtocolServiceClient
-			requiredByClient  bool
-			ipfsWebUICleanup  func()
-			orbitDB           *bertyprotocol.BertyOrbitDB
+			TinderDisableServiceFilter bool
+			ServiceID                  string
+			needAuth                   bool
+			ipfsNode                   *core.IpfsNode
+			ipfsAPI                    ipfsutil.ExtendedCoreAPI
+			pubsub                     *pubsub.PubSub
+			discovery                  tinder.Service
+			server                     bertyprotocol.Service
+			ipfsAPIListeners           []net.Listener
+			ipfsWebUIListener          net.Listener
+			client                     protocoltypes.ProtocolServiceClient
+			requiredByClient           bool
+			ipfsWebUICleanup           func()
+			orbitDB                    *bertyprotocol.BertyOrbitDB
 		}
 		Messenger struct {
 			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`

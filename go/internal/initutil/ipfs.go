@@ -56,18 +56,19 @@ func (m *Manager) SetNBDriver(d proximity.ProximityDriver) {
 }
 
 const (
-	FlagNameP2PBootstrap             = "p2p.bootstrap"
-	FlagNameP2PDHT                   = "p2p.dht"
-	FlagNameP2PMDNS                  = "p2p.mdns"
-	FlagNameP2PStaticRelays          = "p2p.static-relays"
-	FlagNameP2PRDVP                  = "p2p.rdvp"
-	FlagNameP2PBLE                   = "p2p.ble"
-	FlagNameP2PNearby                = "p2p.nearby"
-	FlagNameP2PMultipeerConnectivity = "p2p.multipeer-connectivity"
-	FlagNameTorMode                  = "tor.mode"
-	FlagNameP2PTinderDiscover        = "p2p.tinder-discover"
-	FlagNameP2PTinderDHTDriver       = "p2p.tinder-dht-driver"
-	FlagNameP2PTinderRDVPDriver      = "p2p.tinder-rdvp-driver"
+	FlagNameP2PBootstrap                  = "p2p.bootstrap"
+	FlagNameP2PDHT                        = "p2p.dht"
+	FlagNameP2PMDNS                       = "p2p.mdns"
+	FlagNameP2PStaticRelays               = "p2p.static-relays"
+	FlagNameP2PRDVP                       = "p2p.rdvp"
+	FlagNameP2PBLE                        = "p2p.ble"
+	FlagNameP2PNearby                     = "p2p.nearby"
+	FlagNameP2PMultipeerConnectivity      = "p2p.multipeer-connectivity"
+	FlagNameTorMode                       = "tor.mode"
+	FlagNameP2PTinderDiscover             = "p2p.tinder-discover"
+	FlagNameP2PTinderDHTDriver            = "p2p.tinder-dht-driver"
+	FlagNameP2PTinderRDVPDriver           = "p2p.tinder-rdvp-driver"
+	FlagNameP2PTinderDisableServiceFilter = "p2p.tinder-disable-filter"
 
 	FlagValueP2PDHTDisabled   = "none"
 	FlagValueP2PDHTClient     = "client"
@@ -92,6 +93,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.TinderDisableServiceFilter, FlagNameP2PTinderDisableServiceFilter, false, "if true rdvp driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
@@ -518,14 +520,20 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	// rdvp driver
 	if m.Node.Protocol.TinderRDVPDriver {
+		rdvpfilter := tinder.PublicAddrsOnly
+		if !m.Node.Protocol.TinderDisableServiceFilter {
+			rdvpfilter = tinder.NoFilter
+		}
+
 		if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
 			for _, peer := range rdvpeers {
 				h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
 				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
 
 				name := fmt.Sprintf("rdvp#%.6s", peer.ID)
+
 				drivers = append(drivers,
-					tinder.NewDriverFromUnregisterDiscovery(name, udisc, tinder.NoFilter))
+					tinder.NewDriverFromUnregisterDiscovery(name, udisc, rdvpfilter))
 			}
 		}
 	}
@@ -533,16 +541,8 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// dht driver
 	if m.Node.Protocol.DHT != "none" && m.Node.Protocol.TinderDHTDriver {
 		// dht driver
-		drivers = append(drivers, tinder.NewDriverFromRouting("dht", r, nil))
+		drivers = append(drivers, tinder.NewDriverFromRouting("dht", r, tinder.NoFilter))
 	}
-
-	// localdisc driver
-	// @TODO(gfanton): check if this is useful
-	// if m.Node.Protocol.MDNS {
-	// 	localdisc := tinder.NewLocalDiscovery(logger, h, rng)
-	// 	drivers = append(drivers,
-	// 		tinder.NewDriverFromUnregisterDiscovery("localdisc", localdisc, tinder.FilterPrivateAddrs))
-	// }
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 

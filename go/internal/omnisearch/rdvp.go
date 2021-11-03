@@ -50,7 +50,7 @@ func NewRdvpConstructorFromPeerInfo(pis ...peer.AddrInfo) func(*zap.Logger, host
 				peer := pis[lenrdvpeers]
 				h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
 				rdvp := tinder.NewRendezvousDiscovery(log, h, peer.ID, rng)
-				driver := tinder.NewDriverFromUnregisterDiscovery("rdvp", rdvp, tinder.FilterPublicAddrs)
+				driver := tinder.NewDriverFromUnregisterDiscovery("rdvp", rdvp, tinder.PublicAddrsOnly)
 				drivers = append(drivers, driver)
 			}
 		}
