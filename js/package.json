@@ -115,6 +115,9 @@
   },
   "jest": {
     "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
