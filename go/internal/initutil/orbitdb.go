@@ -12,6 +12,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
+	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
@@ -54,9 +55,10 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 
 	opts := &bertyprotocol.NewOrbitDBOptions{
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
-			Cache:     cache,
-			Directory: &orbitDirectory,
-			Logger:    logger,
+			Cache:                cache,
+			Directory:            &orbitDirectory,
+			Logger:               logger,
+			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.PeerHost),
 		},
 		Datastore:      rootDS,
 		DeviceKeystore: deviceKS,
