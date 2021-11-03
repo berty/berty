@@ -9,7 +9,7 @@ require (
 	berty.tech/go-libp2p-tor-transport v0.8.4
 	berty.tech/go-orbit-db v1.13.0
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
-	fyne.io/fyne/v2 v2.1.0
+	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
