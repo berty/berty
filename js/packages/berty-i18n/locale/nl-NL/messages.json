@@ -20,7 +20,7 @@
         "desc": "Voor extreem voorzichtige gebruikers",
         "disable-push-notif": "Push notificaties uitgeschakeld",
         "disable-local-peer-discovery": "Lokale peer detectie uitgeschakeld",
-        "disable-local-peer-discovery-desc": "",
+        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
         "disable-contact-request": "Contact verzoeken uitgeschakeld",
         "on-same-network": "Lokaal op hetzelfde netwerk/wifi"
       }
@@ -76,17 +76,17 @@
         "create-group": "MAAK EEN GROEP"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "Groepsnaam",
+        "about": "Over groepen",
+        "first-bullet-point": "Iedereen in de groep kan deze hernoemen of nieuwe leden uitnodigen",
+        "second-bullet-point": "U kunt leden uitnodigen via een link",
+        "third-bullet-point": "Je kunt deze groep verlaten",
+        "fourth-bullet-point": "Je kunt deze groep niet verwijderen",
+        "fifth-bullet-point": "Je kunt een lid van deze groep niet verwijderen"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "Het verzoek is verzonden. In behandeling...",
+        "draft": "Concept: {{message}}"
       }
     },
     "suggestion-display-name-initial": "Klik hier om toe te voegen",
@@ -100,21 +100,21 @@
         "desc": "Klik hier voor push-notificatie configuratie"
       },
       "replicate": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "P2P Replicatie",
+        "desc": "Replicatie services instellen"
       }
     },
     "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
+      "welcome-title": "Welkom bij de netwerkopties",
+      "full-anon-mode": "Full Anon Modus",
       "simple-tor-compatible": "",
-      "allow-expert-mode": "",
+      "allow-expert-mode": "Sta Expert Modus toe",
       "tor-compatible": {
-        "title": "",
-        "desc": ""
+        "title": "TOR Compatibel",
+        "desc": "Met deze configuratie kun je met het TOR-netwerk verbinden. Je kunt in gesprek gaan met Full Anon gebruikers zonder zelf in extreem anonieme modus te zijn."
       },
       "full-anon": {
-        "title": "",
+        "title": "Full Anon Modus",
         "desc": "",
         "no-ip": "Geen ip",
         "no-mc": "",
@@ -124,44 +124,44 @@
       "skip": "OVERSLAAN EN LATER UITVOEREN"
     },
     "scan": {
-      "title": ""
+      "title": "Scan QR Code"
     }
   },
   "settings": {
     "home": {
       "check-list": {
-        "title": "",
+        "title": "Bekijk lijst {{tasksDone}}/{{totalTasks}}",
         "avatar": {
-          "title": "",
-          "desc": ""
+          "title": "Wijzig je avatar",
+          "desc": "Stel een profielfoto in voor dit account!"
         },
         "relay": {
-          "title": "",
-          "desc": ""
+          "title": "Configureer relay",
+          "desc": "Verbeter je netwerkprestaties door het gebruik van een relay van een Berty Tech non-profit."
         },
         "contact": {
-          "title": "",
-          "desc": ""
+          "title": "Synchroniseer met een contact",
+          "desc": "Scan een QR-code om een eerste contact toe te voegen aan je contactlijst!"
         },
         "group": {
-          "title": "",
-          "desc": ""
+          "title": "Word lid of maak zelf een groep aan",
+          "desc": "Word lid of maak je eerste Berty groep aan!"
         },
         "message": {
-          "title": "",
-          "desc": ""
+          "title": "Verstuur bericht",
+          "desc": "Zeg 'Hallo wereld' tegen een contact!"
         },
         "theme": {
-          "title": "",
-          "desc": ""
+          "title": "Thema aanpassen",
+          "desc": "Maak je eigen versie van de app en deel deze met de community!"
         },
         "hidden-account": {
-          "title": "",
-          "desc": ""
+          "title": "Verborgen account aanmaken",
+          "desc": "Maak een onzichtbaar account met een specifiek wachtwoord aan om in te loggen. Zo ben je veilig op het vliegveld!"
         },
         "ble-message": {
-          "title": "",
-          "desc": ""
+          "title": "Stuur bericht zonder internet",
+          "desc": "Gebruik de nabijheidsfunctie en stuur een bericht zonder mobiel netwerk of internetverbinding!"
         }
       },
       "header-left-button": "Help",
@@ -170,7 +170,7 @@
       "network-button": "Netwerk Lijst",
       "edit-profile": "Mijn profiel bewerken",
       "app-network-button": {
-        "title": "",
+        "title": "Netwerkconfiguratie",
         "first-bullet-point": "Ontvang push notificaties",
         "second-bullet-point": "Ontvang contactverzoeken",
         "third-bullet-point": "Lokale peer detectie (BLE & Multicast DNS)"
@@ -190,32 +190,32 @@
       "online-peers": "Online gebruikers"
     },
     "network-config": {
-      "title": "",
-      "desc": "",
-      "push-notifications": "",
-      "replication-services": "",
-      "ble": "",
+      "title": "Netwerkconfiguratie",
+      "desc": "Je kunt de netwerkconfiguraties wijzigen",
+      "push-notifications": "Pushmeldingen",
+      "replication-services": "Replicatie services",
+      "ble": "Bluetooth low energy",
       "multicast-dns-button": {
         "title": "Multicast DNS",
         "desc": "Lokale peer ontdekking"
       },
-      "dht": "",
-      "bootstrap": "",
-      "rdv": "",
-      "static-relay": "",
-      "anon-mode": ""
+      "dht": "DHT",
+      "bootstrap": "Bootstrap",
+      "rdv": "Rendez vous",
+      "static-relay": "Static relay",
+      "anon-mode": "ANON"
     },
     "mode": {
       "title": "Instellingen",
       "desc": "Pas alles aan om de app te krijgen die aan je behoeften voldoet",
       "notification-file-saved": {
-        "title": "",
-        "desc": ""
+        "title": "Gegevens opgeslagen!",
+        "desc": "Beschikbaar in de downloads map"
       },
       "receive-contact-requests-button": "Ontvang contactverzoeken",
       "external-services-button": "Externe diensten",
       "auto-replicate-button": "Automatisch repliceren",
-      "auto-replicate-button-unavailable": "",
+      "auto-replicate-button-unavailable": "Je moet minimaal een replicatieserver registreren",
       "blocked-contacts-button": {
         "title": "Geblokkeerde contacten",
         "tag": "geblokkeerd"
@@ -566,7 +566,7 @@
     },
     "p2p": {
       "title": "",
-      "android-desc": "",
+      "android-desc": "Om offline berichten via Bluetooth te kunnen versturen met de app werkend op de achtergrond, vereist de Android API dat gebruik van de locatie wordt toegestaan. We gebruiken jouw locatiegegevens op geen enkele manier.",
       "ios-desc": ""
     },
     "camera": {
