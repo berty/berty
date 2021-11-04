@@ -12,7 +12,7 @@ METRO_RN_PORT ?= 8081
 IOS_DEVICE ?=
 ANDROID_DEVICE ?=
 GO ?= go # this allows to override the go version used
-GO_TAGS ?= -tags fts5
+GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 
 ## Internal variables
 

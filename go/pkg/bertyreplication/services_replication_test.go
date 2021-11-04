@@ -503,7 +503,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	ops2 = testutil.TestFilterAppMetadata(t, evts2)
 	require.NoError(t, err)
 
-	//assert.Equal(t, 3, len(ops2))
+	// assert.Equal(t, 3, len(ops2))
 }
 
 func TestReplicationService_InvalidFlow(t *testing.T) {
