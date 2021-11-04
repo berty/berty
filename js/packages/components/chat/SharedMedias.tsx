@@ -11,10 +11,9 @@ import {
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import RNFS from 'react-native-fs'
 import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
-import linkifyFn from 'linkify-it'
+import LinkifyIt from 'linkify-it'
 import Hyperlink from 'react-native-hyperlink'
 
 import beapi from '@berty-tech/api'
@@ -28,11 +27,11 @@ import {
 } from '@berty-tech/store/hooks'
 
 import { getSource } from '../utils'
-import { timeFormat } from '../helpers'
+import { pbDateToNum, timeFormat } from '../helpers'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 
 const initialLayout = { width: Dimensions.get('window').width }
-const linkify = linkifyFn().tlds(tlds, true)
+const linkify = LinkifyIt().tlds(tlds, true)
 
 export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> = ({
 	route: {
@@ -59,29 +58,44 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 		return messages
 			.reverse()
 			.filter(inte => inte?.medias?.[0]?.mimeType?.startsWith('image'))
-			.reduce((arr, current) => [...arr, ...current.medias], [])
+			.reduce((arr, current) => [...arr, ...(current.medias || [])], [] as beapi.messenger.IMedia[])
 	}, [messages])
 
 	const documents = React.useMemo(() => {
 		return messages
 			.reverse()
 			.filter(inte => inte?.medias?.[0] && !inte.medias?.[0].mimeType?.startsWith('image'))
-			.reduce((arr, current) => [...arr, { ...current.medias[0], sentDate: current.sentDate }], [])
+			.reduce((arr, current) => {
+				if (!current.medias?.length) {
+					return arr
+				}
+				return [
+					...arr,
+					{ ...current.medias[0], sentDate: current.sentDate as unknown as number | Date },
+				]
+			}, [] as (beapi.messenger.IMedia & { sentDate: number | Date })[])
 	}, [messages])
 
-	const links: { url: string; sentDate: number }[] = React.useMemo(() => {
+	const links = React.useMemo(() => {
 		return messages
 			.reverse()
-			.filter(inte => inte?.payload?.body && linkify.test(inte.payload.body))
-			.reduce(
-				(arr, current) => [
-					...arr,
-					...linkify
-						.match(current.payload.body)
-						.map(item => ({ url: item.url, sentDate: current.sentDate })),
-				],
-				[],
+			.filter(
+				inte =>
+					inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
+					linkify.test(inte.payload.body),
 			)
+			.reduce((arr, current) => {
+				if (current?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage) {
+					return arr
+				}
+				return [
+					...arr,
+					...(linkify.match(current.payload.body) as { url: string }[]).map(item => ({
+						url: item.url,
+						sentDate: pbDateToNum(current.sentDate),
+					})),
+				]
+			}, [] as { url: string; sentDate: number }[])
 	}, [messages])
 
 	useEffect(() => {
@@ -192,12 +206,6 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 								flexDirection: 'row',
 								alignItems: 'center',
 							}}
-							onPress={async () => {
-								const source = await getSource(protocolClient, doc.cid)
-								RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${doc.filename}`, source, 'base64')
-									.then(() => {})
-									.catch(err => console.log(err))
-							}}
 						>
 							<Icon name='file' height={20} width={20} fill={colors['secondary-text']} />
 							<Text
@@ -206,7 +214,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 									textDecorationLine: 'underline',
 								}}
 							>
-								{doc.filename}
+								{doc.filename || undefined}
 							</Text>
 						</TouchableOpacity>
 
