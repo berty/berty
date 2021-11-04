@@ -51,7 +51,7 @@ const createStreamMethod = <M extends pbjs.Method>(method: M, streamCall: unknow
 						const res = responseType.decode(buf)
 						listener(res, null)
 					} catch (e) {
-						console.error('invalid response type', e)
+						console.warn('invalid response type', e)
 					}
 				})
 			},
