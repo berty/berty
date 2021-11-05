@@ -48,7 +48,7 @@ require (
 	github.com/ipfs/go-ipfs v0.10.0
 	github.com/ipfs/go-ipfs-blockstore v1.0.4 // indirect
 	github.com/ipfs/go-ipfs-config v0.16.0
-	github.com/ipfs/go-ipfs-files v0.0.8
+	github.com/ipfs/go-ipfs-files v0.0.9
 	github.com/ipfs/go-ipfs-keystore v0.0.2
 	github.com/ipfs/go-ipld-cbor v0.0.5
 	github.com/ipfs/go-log/v2 v2.3.1-0.20210928212129-b7a50af7847a
@@ -109,7 +109,7 @@ require (
 	golang.org/x/sys v0.0.0-20211020174200-9d6173849985 // indirect
 	golang.org/x/tools v0.1.7
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
-	google.golang.org/grpc v1.40.0
+	google.golang.org/grpc v1.42.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/square/go-jose.v2 v2.6.0
 	gorm.io/gorm v1.22.2
@@ -122,7 +122,7 @@ require (
 	moul.io/zapconfig v1.4.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.1.0
-	moul.io/zapring v1.3.2
+	moul.io/zapring v1.3.3
 	mvdan.cc/gofumpt v0.1.1
 )
 
