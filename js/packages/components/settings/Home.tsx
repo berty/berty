@@ -27,7 +27,7 @@ import i18n from '@berty-tech/berty-i18n'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { DropDownPicker } from '../shared-components/DropDownPicker'
+import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { AccountAvatar } from '../avatars'
 import { EditProfile } from './EditProfile'
 import logo from '../main/1_berty_picto.png'
@@ -404,33 +404,16 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, padding.bottom.small]}>
 			<ButtonSetting
-				name={'AutoPush'}
+				name={t('settings.home.expert-setup')}
 				icon='options-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				toggled
-				varToggle={ctx.account?.autoSharePushTokenFlag === true}
-				actionToggle={() =>
-					ctx.client?.pushSetAutoShare({
-						enabled: !ctx.account?.autoSharePushTokenFlag,
-					})
-				}
-			>
-				{/* TODO bullet point in button */}
-			</ButtonSetting>
-			<ButtonSetting
-				name={t('settings.home.app-network-button.title')}
-				icon='options-outline'
-				iconSize={30}
-				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.NetworkConfig')}
-			>
-				{/* TODO bullet point in button */}
-			</ButtonSetting>
+				onPress={() => navigation.navigate('Onboarding.ExpertSetup')}
+			/>
 			<DropDownPicker
 				items={items}
 				defaultValue={ctx.persistentOptions?.i18n.language}
-				onChangeItem={async (item: any) => {
+				onChangeItem={async (item: Item) => {
 					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.I18N,
 						payload: {

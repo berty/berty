@@ -1,5 +1,5 @@
 import React from 'react'
-import { StatusBar } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
@@ -25,9 +25,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	return (
 		<SwiperCard
 			header={t('onboarding.services-auth.header')}
-			label={t('onboarding.services-auth.recommended')}
 			title={t('onboarding.services-auth.title')}
-			description={t('onboarding.services-auth.desc')}
 			button={
 				accountServices.length > 0
 					? undefined
@@ -74,21 +72,23 @@ export const ReplicationServices: ScreenFC<'Settings.ReplicationServices'> = ({
 	return (
 		<OnboardingWrapper>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<ServicesAuthBody
-				next={async () => {
-					await setPersistentOption({
-						type: PersistentOptionsKeys.Configurations,
-						payload: {
-							...persistentOptions.configurations,
-							replicate: {
-								...persistentOptions.configurations.replicate,
-								state: 'skipped',
+			<View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
+				<ServicesAuthBody
+					next={async () => {
+						await setPersistentOption({
+							type: PersistentOptionsKeys.Configurations,
+							payload: {
+								...persistentOptions.configurations,
+								replicate: {
+									...persistentOptions.configurations.replicate,
+									state: 'skipped',
+								},
 							},
-						},
-					})
-					goBack()
-				}}
-			/>
+						})
+						goBack()
+					}}
+				/>
+			</View>
 		</OnboardingWrapper>
 	)
 }

@@ -9,6 +9,7 @@ export type ScreensParams = {
 	'Onboarding.GetStarted': undefined
 	'Onboarding.CreateAccount': undefined
 	'Onboarding.SetupFinished': undefined
+	'Onboarding.ExpertSetup': undefined
 
 	// Main
 
@@ -62,7 +63,6 @@ export type ScreensParams = {
 	'Settings.NetworkMap': undefined
 	'Settings.ThemeEditor': undefined
 	'Settings.DeleteAccount': undefined
-	'Settings.NetworkConfig': undefined
 	'Settings.Roadmap': undefined
 	'Settings.Faq': undefined
 	'Settings.ReplicationServices': undefined

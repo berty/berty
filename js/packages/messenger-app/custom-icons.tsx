@@ -9,7 +9,7 @@ import Bubble from './custom-icons-svgs/bubble.svg'
 import Users from './custom-icons-svgs/users.svg'
 import UserPlus from './custom-icons-svgs/user-plus.svg'
 import Quote from './custom-icons-svgs/quote.svg'
-import Earth from './custom-icons-svgs/Earth_.svg'
+import Earth from './custom-icons-svgs/earth.svg'
 import Network from './custom-icons-svgs/chart-network-light.svg'
 import Plus from './custom-icons-svgs/plus.svg'
 import AccountBerty from './custom-icons-svgs/account-berty.svg'
@@ -34,6 +34,15 @@ import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
 import Volume from './custom-icons-svgs/volume.svg'
 import Prev from './custom-icons-svgs/prev.svg'
 import Next from './custom-icons-svgs/next.svg'
+import Settings from './custom-icons-svgs/settings.svg'
+import Config from './custom-icons-svgs/config.svg'
+import Proximity from './custom-icons-svgs/proximity.svg'
+import Peer from './custom-icons-svgs/peer.svg'
+import Services from './custom-icons-svgs/services.svg'
+import ExpertBluetooth from './custom-icons-svgs/expert-bluetooth.svg'
+import ExpertSetting from './custom-icons-svgs/expert-mdns.svg'
+import ExpertPushNotif from './custom-icons-svgs/expert-push-notif.svg'
+import ExpertNode from './custom-icons-svgs/expert-node.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -69,6 +78,15 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	volume: Volume,
 	prev: Prev,
 	next: Next,
+	settings: Settings,
+	config: Config,
+	proximity: Proximity,
+	peer: Peer,
+	services: Services,
+	'expert-ble': ExpertBluetooth,
+	'expert-setting': ExpertSetting,
+	'expert-push-notif': ExpertPushNotif,
+	'expert-node': ExpertNode,
 }
 
 const CustomIcon: React.FC<{

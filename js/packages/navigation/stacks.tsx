@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { Linking } from 'react-native'
+import * as RawComponents from '@berty-tech/components'
+import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import {
 	createNativeStackNavigator,
 	NativeStackNavigationOptions,
 } from '@react-navigation/native-stack'
-import mapValues from 'lodash/mapValues'
 import { Icon } from '@ui-kitten/components'
+import mapValues from 'lodash/mapValues'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import * as RawComponents from '@berty-tech/components'
-import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-
-import { ScreensParams } from './types'
+import { Linking } from 'react-native'
 import { dispatch } from './rootRef'
+import { ScreensParams } from './types'
 
 export const CustomTitleStyle: () => any = () => {
 	const [, { scaleSize }] = useStyles()
@@ -204,6 +202,11 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={'Onboarding.SetupFinished'}
 				component={Components.Onboarding.SetupFinished}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Onboarding.ExpertSetup'}
+				component={Components.Onboarding.ExpertSetup}
 				options={{ headerShown: false }}
 			/>
 			{/* Main */}
@@ -453,15 +456,6 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.Bluetooth}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.bluetooth.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.NetworkConfig'}
-				component={Components.Settings.NetworkConfig}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.network-config.title'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}

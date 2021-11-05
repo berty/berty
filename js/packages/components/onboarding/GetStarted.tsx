@@ -2,7 +2,6 @@ import React from 'react'
 import { View, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 import {
 	storageSet,
@@ -18,52 +17,72 @@ import Button from './Button'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
-	const [{ absolute, column, flex, padding, text }] = useStyles()
+	const [{ column, margin, padding, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 
 	return (
-		<SafeAreaView
+		<View
 			style={[
-				absolute.fill,
-				column.justify,
 				padding.medium,
-				{ backgroundColor: colors['main-background'] },
+				{ backgroundColor: colors['main-background'], flex: 1, justifyContent: 'center' },
 			]}
 		>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-			<View style={[flex.medium]} />
-			<View style={[flex.big, { flexDirection: 'row', justifyContent: 'center' }]}>
-				<Logo height='60%' width='65%' />
+			{/* <View style={[flex.medium]} /> */}
+			<View style={[margin.bottom.big, { flexDirection: 'row', justifyContent: 'center' }]}>
+				<Logo />
 			</View>
-			<View style={[flex.medium]}>
-				<Text
-					style={[
-						padding.horizontal.medium,
-						text.align.center,
-						text.align.bottom,
-						{
-							lineHeight: 24,
-							letterSpacing: 0.4,
-							color: colors['main-text'],
-						},
-					]}
-				>
-					{t('onboarding.getstarted.desc') as any}
-				</Text>
+			<View>
+				<View>
+					<Text
+						style={[
+							padding.horizontal.medium,
+							text.align.center,
+							text.align.bottom,
+							text.size.large,
+							{
+								fontWeight: '700',
+								color: colors['background-header'],
+							},
+						]}
+					>
+						{t('onboarding.getstarted.title') as any}
+					</Text>
+				</View>
+				<View style={[margin.top.small]}>
+					<Text
+						style={[
+							padding.horizontal.medium,
+							text.align.center,
+							text.align.bottom,
+							{
+								fontStyle: 'italic',
+								fontWeight: '400',
+								color: colors['main-text'],
+							},
+						]}
+					>
+						{t('onboarding.getstarted.desc') as any}
+					</Text>
+				</View>
+				<View style={[margin.top.big]}>
+					<Button
+						style={{
+							...column.item.center,
+							backgroundColor: colors['background-header'],
+							paddingHorizontal: 70 * scaleSize,
+						}}
+						textStyle={{ textTransform: 'uppercase', color: colors['reverted-main-text'] }}
+						onPress={async () => {
+							await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
+							navigate('Onboarding.CreateAccount')
+						}}
+					>
+						{t('onboarding.getstarted.button')}
+					</Button>
+				</View>
 			</View>
-			<View style={[flex.medium]}>
-				<Button
-					style={{ ...column.item.center, backgroundColor: colors['background-header'] }}
-					textStyle={{ textTransform: 'uppercase', color: colors['reverted-main-text'] }}
-					onPress={async () => {
-						await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
-						navigate('Onboarding.CreateAccount')
-					}}
-				>
-					{t('onboarding.getstarted.button')}
-				</Button>
-			</View>
-		</SafeAreaView>
+		</View>
 	)
 }

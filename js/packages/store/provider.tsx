@@ -91,10 +91,19 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 			state.client,
 			state.selectedAccount,
 			state.account,
+			state.protocolClient,
 			embedded,
 			dispatch,
 		).then()
-	}, [state.appState, state.client, state.selectedAccount, state.account, embedded, dispatch])
+	}, [
+		state.appState,
+		state.client,
+		state.selectedAccount,
+		state.account,
+		state.protocolClient,
+		embedded,
+		dispatch,
+	])
 
 	useEffect(
 		() => closingDaemon(state.appState, state.clearClients, dispatch),
@@ -127,7 +136,7 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 	)
 
 	const callbackCreateNewAccount = useCallback(
-		() => createNewAccount(embedded, dispatch),
+		(newConfig?: beapi.account.INetworkConfig) => createNewAccount(embedded, dispatch, newConfig),
 		[embedded],
 	)
 

@@ -10,8 +10,8 @@ const OnboardingWrapper = ({ children }) => {
 	const colors = useThemeColor()
 
 	return (
-		<SafeAreaView style={[absolute.fill, { backgroundColor: colors['background-header'] }]}>
-			<View style={absolute.fill}>
+		<SafeAreaView style={[{ flex: 1, backgroundColor: colors['background-header'] }]}>
+			<View style={{ flex: 1 }}>
 				<KeyboardAvoidingView
 					style={[absolute.fill]}
 					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

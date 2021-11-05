@@ -16,11 +16,10 @@ const Button: React.FC<{
 	return (
 		<TouchableOpacity
 			style={[
-				padding.horizontal.big,
 				margin.top.medium,
 				padding.medium,
 				border.radius.small,
-				{ backgroundColor: colors['positive-asset'] },
+				{ backgroundColor: colors['background-header'] },
 				style,
 			]}
 			onPress={onPress}
@@ -30,7 +29,7 @@ const Button: React.FC<{
 					text.size.medium,
 					text.align.center,
 					text.bold.medium,
-					{ color: colors['background-header'] },
+					{ color: colors['reverted-main-text'] },
 					textStyle,
 				]}
 			>
