@@ -43,7 +43,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/ipfs-shipyard/gomobile-ipfs/go v0.0.0-20210203140645-9df95f2abec2
 	github.com/ipfs/go-cid v0.1.0
-	github.com/ipfs/go-datastore v0.4.6
+	github.com/ipfs/go-datastore v0.5.0
 	github.com/ipfs/go-filestore v1.0.0 // indirect
 	github.com/ipfs/go-ipfs v0.10.0
 	github.com/ipfs/go-ipfs-blockstore v1.0.4 // indirect
@@ -63,7 +63,7 @@ require (
 	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.11.0
 	github.com/libp2p/go-libp2p-discovery v0.5.1
-	github.com/libp2p/go-libp2p-kad-dht v0.14.0
+	github.com/libp2p/go-libp2p-kad-dht v0.15.0
 	github.com/libp2p/go-libp2p-pubsub v0.5.6
 	github.com/libp2p/go-libp2p-quic-transport v0.12.0
 	github.com/libp2p/go-libp2p-record v0.1.3
