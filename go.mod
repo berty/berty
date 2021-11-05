@@ -48,7 +48,7 @@ require (
 	github.com/ipfs/go-ipfs v0.10.0
 	github.com/ipfs/go-ipfs-blockstore v1.0.4 // indirect
 	github.com/ipfs/go-ipfs-config v0.16.0
-	github.com/ipfs/go-ipfs-files v0.0.8
+	github.com/ipfs/go-ipfs-files v0.0.9
 	github.com/ipfs/go-ipfs-keystore v0.0.2
 	github.com/ipfs/go-ipld-cbor v0.0.5
 	github.com/ipfs/go-log/v2 v2.3.1-0.20210928212129-b7a50af7847a
