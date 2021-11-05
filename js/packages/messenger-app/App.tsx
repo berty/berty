@@ -22,9 +22,6 @@ import { ErrorScreen } from '@berty-tech/components/error'
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
 
-// TODO: Implement push notif handling on JS
-import { NativeModules, NativeEventEmitter } from 'react-native'
-
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {
 		RNBootSplash.hide({ fade: true })
@@ -33,22 +30,9 @@ const BootSplashInhibitor = () => {
 }
 
 export const App: React.FC = () => {
-	var pushNotif = new NativeEventEmitter(NativeModules.EventEmitter)
-
 	React.useEffect(() => {
 		Shake.start()
-		try {
-			pushNotif.addListener('onPushReceived', data => console.info('FRONT PUSH NOTIF:', data))
-		} catch (e) {
-			console.error('Push notif add listener failed: ' + e)
-		}
-
 		return () => {
-			try {
-				pushNotif.remove() // Unsubscribe from native event emitter
-			} catch (e) {
-				console.error('Push notif remove listener failed: ' + e)
-			}
 			isReadyRef.current = false
 		}
 	}, [])

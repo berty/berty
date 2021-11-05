@@ -49,6 +49,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		logger.Error("unable to create link for interaction", zap.String("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
 		link = bertylinks.LinkInternalPrefix
 	}
+	logger.Debug("link from InternalLinkToMessage", zap.String("link", link))
 
 	d := &pushtypes.DecryptedPush{
 		AccountID:               accountData.AccountID,

@@ -29,7 +29,6 @@ import i18n from '@berty-tech/berty-i18n'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 
 import { NativeModules } from 'react-native'
-import { checkPermissions } from '@berty-tech/components/utils'
 const { PushTokenRequester } = NativeModules
 
 export const openAccountWithProgress = async (
@@ -234,7 +233,7 @@ export const openingClients = async (
 	eventEmitter: EventEmitter,
 	daemonAddress: string,
 	embedded: boolean,
-): void => {
+) => {
 	if (appState !== MessengerAppState.OpeningWaitingForClients) {
 		return
 	}
@@ -257,30 +256,27 @@ export const openingClients = async (
 	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
 
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
-		PushTokenRequester.request()
-			.then(responseJSON => {
+		try {
+			const responseJSON = await PushTokenRequester.request()
+			try {
 				let response = JSON.parse(responseJSON)
-				protocolClient
-					.pushSetDeviceToken({
-						receiver: beapi.protocol.PushServiceReceiver.create({
-							tokenType:
-								Platform.OS === 'ios'
-									? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
-									: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
-							bundleId: response.bundleId,
-							token: new Uint8Array(base64.toByteArray(response.token)),
-						}),
-					})
-					.then(() => {
-						console.info(`Push token registred: ${responseJSON}`)
-					})
-					.catch(err => {
-						console.warn(`Push token registration failed: ${err}`)
-					})
-			})
-			.catch(err => {
-				console.warn(`Push token request failed: ${err}`)
-			})
+				await protocolClient.pushSetDeviceToken({
+					receiver: beapi.protocol.PushServiceReceiver.create({
+						tokenType:
+							Platform.OS === 'ios'
+								? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
+								: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+						bundleId: response.bundleId,
+						token: new Uint8Array(base64.toByteArray(response.token)),
+					}),
+				})
+				console.info('Push token registred:', responseJSON)
+			} catch (err) {
+				console.log('Error: Push token registration failed:', err)
+			}
+		} catch (err) {
+			console.log('Error: Push token request failed:', err)
+		}
 	}
 
 	let precancel = false

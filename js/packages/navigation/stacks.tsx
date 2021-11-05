@@ -105,6 +105,7 @@ function useLinking() {
 
 	useEffect(() => {
 		function handleOpenUrl(ev: any) {
+			console.log('handleOpenUrl:', ev.url)
 			setUrl(null)
 			setUrl(ev.url)
 		}
@@ -125,6 +126,7 @@ const DeepLinkBridge: React.FC = () => {
 	const [url, error] = useLinking()
 
 	useEffect(() => {
+		console.log('DeepLinkBridge:', url, error)
 		if (url && !error && !(url as string).startsWith('berty://services-auth')) {
 			navigation.navigate('ManageDeepLink', { type: 'link', value: url })
 		}

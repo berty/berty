@@ -93,9 +93,6 @@ const CreateAccountBody = () => {
 						loop={false}
 						onAnimationFinish={async () => {
 							Vibration.vibrate(500)
-							await checkPermissions('p2p', navigate, {
-								isToNavigate: false,
-							})
 						}}
 					/>
 				)}
@@ -109,6 +106,9 @@ const CreateAccountBody = () => {
 						button={{
 							text: t('onboarding.create-account.button'),
 							onPress: async () => {
+								await checkPermissions('p2p', navigate, {
+									isToNavigate: true,
+								})
 								const status = await checkPermissions('notification', navigate, {
 									isToNavigate: false,
 								})

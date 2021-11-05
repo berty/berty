@@ -47,7 +47,13 @@ func (link *BertyLink) IsValid() error {
 			return errcode.ErrInvalidInput
 		}
 		return nil
+	case BertyLink_MessageV1Kind:
+		if link.BertyMessageRef == nil {
+			return errcode.ErrMissingInput
+		}
+		return nil
 	}
+
 	return errcode.ErrInvalidInput
 }
 
