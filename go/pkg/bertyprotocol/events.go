@@ -117,7 +117,7 @@ func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte, devKS crypt
 		return nil, nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	data, ok := secretbox.Open(nil, env.Event, nonce, g.GetSharedSecret())
+	data, ok := secretbox.Open(nil, env.Event, nonce, cryptoutil.GetSharedSecret(g))
 	if !ok {
 		return nil, nil, nil, errcode.ErrGroupMemberLogEventOpen
 	}
@@ -178,7 +178,7 @@ func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	eventBytes := secretbox.Seal(nil, eventClearBytes, nonce, g.GetSharedSecret())
+	eventBytes := secretbox.Seal(nil, eventClearBytes, nonce, cryptoutil.GetSharedSecret(g))
 
 	eCIDs, err := cryptoutil.AttachmentCIDSliceEncrypt(g, attachmentsCIDs)
 	if err != nil {

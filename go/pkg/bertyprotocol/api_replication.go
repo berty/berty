@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -17,6 +18,30 @@ import (
 	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
+
+func FilterGroupForReplication(m *protocoltypes.Group) (*protocoltypes.Group, error) {
+	groupSigPK, err := m.GetSigningPubKey()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	groupSigPKBytes, err := groupSigPK.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	linkKey, err := cryptoutil.GetLinkKeyArray(m)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &protocoltypes.Group{
+		PublicKey:  m.PublicKey,
+		SignPub:    groupSigPKBytes,
+		LinkKey:    linkKey[:],
+		LinkKeySig: m.LinkKeySig,
+	}, nil
+}
 
 func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *protocoltypes.ReplicationServiceRegisterGroup_Request) (_ *protocoltypes.ReplicationServiceRegisterGroup_Reply, err error) {
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Registering replication service for group")
@@ -27,7 +52,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	replGroup, err := gc.group.FilterForReplication()
+	replGroup, err := FilterGroupForReplication(gc.group)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

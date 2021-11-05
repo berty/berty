@@ -64,7 +64,7 @@ func SealEnvelope(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypt
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
 
-	encryptedHeaders := secretbox.Seal(nil, headers, nonce, g.GetSharedSecret())
+	encryptedHeaders := secretbox.Seal(nil, headers, nonce, GetSharedSecret(g))
 
 	encryptedAttachmentsCIDs, err := AttachmentCIDSliceEncrypt(g, attachmentsCIDs)
 	if err != nil {
@@ -96,7 +96,7 @@ func OpenEnvelopeHeaders(data []byte, g *protocoltypes.Group) (*protocoltypes.Me
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	headersBytes, ok := secretbox.Open(nil, env.MessageHeaders, nonce, g.GetSharedSecret())
+	headersBytes, ok := secretbox.Open(nil, env.MessageHeaders, nonce, GetSharedSecret(g))
 	if !ok {
 		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(fmt.Errorf("secretbox failed to open headers"))
 	}

@@ -266,11 +266,12 @@ func TestEncryptLink(t *testing.T) {
 				Kind: messengertypes.BertyLink_GroupV1Kind,
 				BertyGroup: &messengertypes.BertyGroup{
 					Group: &protocoltypes.Group{
-						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
-						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType: protocoltypes.GroupTypeMultiMember,
-						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+						PublicKey:  []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+						Secret:     []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
+						SecretSig:  []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
+						GroupType:  protocoltypes.GroupTypeMultiMember,
+						SignPub:    []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+						LinkKeySig: []byte{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7},
 					},
 				},
 			},
@@ -297,11 +298,12 @@ func TestEncryptLink(t *testing.T) {
 				BertyGroup: &messengertypes.BertyGroup{
 					DisplayName: "The Group Name!",
 					Group: &protocoltypes.Group{
-						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
-						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType: protocoltypes.GroupTypeMultiMember,
-						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+						PublicKey:  []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+						Secret:     []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
+						SecretSig:  []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
+						GroupType:  protocoltypes.GroupTypeMultiMember,
+						SignPub:    []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+						LinkKeySig: []byte{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7},
 					},
 				},
 			},
@@ -382,7 +384,7 @@ const (
 	validContactInternalBlob = "NRRA6DJQB9USRIK1:IUUML2-IFBSG7CN6V7XM.UJD70:OI9S/1ZOT67.I443FR8TNRBODZSDLI4N5GSZNN5:V$R$JYYB-J9E854Y.H95CZQ/DVUTPDUJK9M0ARA*"
 
 	// validGroupBlob and validGroupInternalBlob were generated thanks to `$ berty groupinit`
-	validGroupBlob         = "5QdUv6Fn3uvfPy8tqZSw7SDVFvv7cnNHhpMHtGNVHBHMBJscFiWxBDd9wnphtqMMdmcmNQin64m44XkBVFWoSRKPboXszWi1dvjJz7Z3WmfJMJMHRHuyub553R9h2JFxCBZBvqZyvxtVrqu9gMRG5TRk1DduS9suYCXB3finDx7uxvx1fkuWtDzeqPMBw9g6Zx"
+	validGroupBlob         = "8ejngpAxnMP44v7zSfzhJwCF3kfwFf1Yy7X9PoWNhnEFpPirg6jUKBYcoZP83tJ22y41P5uT5QBMTHkqc4UGTTVpinuBrEg45VB8sHbPePnKLy2XEUZ9ynxqVoSVWw3m3LFJHfs87q5MDmMsqX9i85MkKDDWY7mnCKNttJGcHrHnYxKyWdUKAqV2T3VbE2wG1PtnQUrSmbgAv5T7QnWV646qYJTqKydMtGTJUiWEdBPKkWDx7jkkovRh4LRXfKEpcwXHgRw3yFfC29pxP7mZK8xsz3t5"
 	validGroupInternalBlob = "EHJBK/TI1ETK.QPUU.E0ONINK9ZDPW2:.NB4DH/7C.HSXI..XUIS82*J7M1GJVWX/:O7X1C36NC5YAHW-D-M7A8NBAW3NPQP-Z8H.VPJOFVH1*0*FN202136-91H/UTNJXSNVFY7E$NV$A/O1BYIR:*H.N3JELJJE5V*U5Y319YNA9S1R.3TNO4-*0HW4W9*W/T3LOD3LW2JA/0:LZ31LH.4VKNWGN*LF-:89MXMYEN*R7*LSYR"
 )
 

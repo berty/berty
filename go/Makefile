@@ -4,7 +4,7 @@
 
 GO ?= go
 GOPATH ?= $(HOME)/go
-GO_TAGS ?= -tags fts5
+GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic $(GO_TAGS)
 GO_TEST_PATH ?= ./...
 GO_TEST_ENV ?=

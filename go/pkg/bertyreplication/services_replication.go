@@ -2,6 +2,7 @@ package bertyreplication
 
 import (
 	"context"
+	"crypto/ed25519"
 	"fmt"
 	"time"
 
@@ -54,6 +55,9 @@ func (s *replicationService) ReplicateGroupStats(ctx context.Context, request *r
 		return nil, errcode.ErrNotFound
 	}
 
+	g.SignPub = ""
+	g.LinkKey = ""
+
 	return &replicationtypes.ReplicateGroupStats_Reply{Group: g}, nil
 }
 
@@ -67,6 +71,7 @@ func (s *replicationService) GroupRegister(token, tokenIssuer string, group *pro
 	}
 
 	pkStr := messengerutil.B64EncodeBytes(group.PublicKey)
+	linkKeyStr := messengerutil.B64EncodeBytes(group.LinkKey)
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
 		count := int64(0)
@@ -92,6 +97,7 @@ func (s *replicationService) GroupRegister(token, tokenIssuer string, group *pro
 			tx.Model(&replicationtypes.ReplicatedGroup{}).Create(&replicationtypes.ReplicatedGroup{
 				PublicKey: pkStr,
 				SignPub:   messengerutil.B64EncodeBytes(group.SignPub),
+				LinkKey:   linkKeyStr,
 				CreatedAt: time.Now().UnixNano(),
 				UpdatedAt: time.Now().UnixNano(),
 			})
@@ -202,6 +208,26 @@ func (s *replicationService) ReplicateGroup(ctx context.Context, req *replicatio
 	token := ctx.Value(authtypes.ContextTokenHashField)
 	if token == nil {
 		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInternal.Wrap(fmt.Errorf("no token found"))
+	}
+
+	if len(req.Group.SignPub) != ed25519.PublicKeySize {
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing sign pub"))
+	}
+
+	if len(req.Group.PublicKey) != ed25519.PublicKeySize {
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing public key"))
+	}
+
+	if len(req.Group.LinkKey) == 0 {
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing link key"))
+	}
+
+	if len(req.Group.LinkKeySig) != ed25519.SignatureSize {
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing link key signature"))
+	}
+
+	if ok := ed25519.Verify(req.Group.PublicKey, req.Group.LinkKey, req.Group.LinkKeySig); !ok {
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCryptoSignatureVerification.Wrap(fmt.Errorf("invalid link key"))
 	}
 
 	tokenIssuer := ctx.Value(authtypes.ContextTokenIssuerField)

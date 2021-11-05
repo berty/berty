@@ -16,8 +16,14 @@ func (m *ReplicatedGroup) ToGroup() (*protocoltypes.Group, error) {
 		return nil, err
 	}
 
+	linkKey, err := messengerutil.B64DecodeBytes(m.LinkKey)
+	if err != nil {
+		return nil, err
+	}
+
 	return &protocoltypes.Group{
 		PublicKey: pk,
 		SignPub:   signPub,
+		LinkKey:   linkKey,
 	}, nil
 }

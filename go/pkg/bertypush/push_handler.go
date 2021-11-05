@@ -176,7 +176,7 @@ func DecryptOutOfStoreMessageEnv(gd cryptoutil.GroupDatastoreReadOnly, env *push
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find group, err: %w", err))
 	}
 
-	secret := g.GetSharedSecret()
+	secret := cryptoutil.GetSharedSecret(g)
 
 	data, ok := secretbox.Open(nil, env.Box, nonce, secret)
 	if !ok {

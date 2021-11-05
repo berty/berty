@@ -402,6 +402,7 @@ to test more false-positive guesses.
 | group_secret_sig | [bytes](#bytes) |  |  |
 | group_type | [berty.protocol.v1.GroupType](#berty.protocol.v1.GroupType) |  | clear |
 | group_sign_pub | [bytes](#bytes) |  |  |
+| group_link_key_sig | [bytes](#bytes) |  |  |
 
 <a name="berty.messenger.v1.Contact"></a>
 

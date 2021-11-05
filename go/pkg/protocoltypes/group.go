@@ -64,30 +64,6 @@ func (m *Group) GroupIDAsString() string {
 	return hex.EncodeToString(m.PublicKey)
 }
 
-func (m *Group) GetSharedSecret() *[32]byte {
-	sharedSecret := [32]byte{}
-	copy(sharedSecret[:], m.Secret)
-
-	return &sharedSecret
-}
-
-func (m *Group) FilterForReplication() (*Group, error) {
-	groupSigPK, err := m.GetSigningPubKey()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	groupSigPKBytes, err := groupSigPK.Raw()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	return &Group{
-		PublicKey: m.PublicKey,
-		SignPub:   groupSigPKBytes,
-	}, nil
-}
-
 func (m *Group) Copy() *Group {
 	return &Group{
 		PublicKey: m.PublicKey,

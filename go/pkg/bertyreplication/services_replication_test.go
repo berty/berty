@@ -71,7 +71,7 @@ func TestReplicationService_GroupSubscribe(t *testing.T) {
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	replGroup, err := g.FilterForReplication()
+	replGroup, err := bertyprotocol.FilterGroupForReplication(g)
 	require.NoError(t, err)
 
 	err = repl.GroupSubscribe(replGroup, messengerutil.B64EncodeBytes(replGroup.PublicKey))
@@ -98,7 +98,7 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	replGroup, err := g.FilterForReplication()
+	replGroup, err := bertyprotocol.FilterGroupForReplication(g)
 	require.NoError(t, err)
 
 	err = repl.GroupRegister("token", "issuer", replGroup)
@@ -168,7 +168,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	replGroup, err := g.FilterForReplication()
+	replGroup, err := bertyprotocol.FilterGroupForReplication(g)
 	require.NoError(t, err)
 
 	err = repl.GroupRegister("token", "issuer", replGroup)
@@ -198,7 +198,8 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
-	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.SignPub), res.Group.SignPub)
+	require.Equal(t, "", res.Group.SignPub)
+	require.Equal(t, "", res.Group.LinkKey)
 	require.Equal(t, int64(0), res.Group.MessageEntriesCount)
 	require.Equal(t, int64(0), res.Group.MetadataEntriesCount)
 	require.Equal(t, "", res.Group.MessageLatestHead)
@@ -244,7 +245,8 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
-	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.SignPub), res.Group.SignPub)
+	require.Equal(t, "", res.Group.SignPub)
+	require.Equal(t, "", res.Group.LinkKey)
 	require.NotEqual(t, int64(0), res.Group.CreatedAt)
 	require.NotEqual(t, int64(0), res.Group.UpdatedAt)
 	require.Equal(t, previousCreatedAt, res.Group.CreatedAt)
@@ -288,7 +290,8 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
-	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.SignPub), res.Group.SignPub)
+	require.Equal(t, "", res.Group.SignPub)
+	require.Equal(t, "", res.Group.LinkKey)
 	require.NotEqual(t, int64(0), res.Group.CreatedAt)
 	require.NotEqual(t, int64(0), res.Group.UpdatedAt)
 	require.Equal(t, previousCreatedAt, res.Group.CreatedAt)
@@ -332,7 +335,8 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
-	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.SignPub), res.Group.SignPub)
+	require.Equal(t, "", res.Group.SignPub)
+	require.Equal(t, "", res.Group.LinkKey)
 	require.NotEqual(t, int64(0), res.Group.CreatedAt)
 	require.NotEqual(t, int64(0), res.Group.UpdatedAt)
 	require.Equal(t, previousCreatedAt, res.Group.CreatedAt)
@@ -416,7 +420,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	require.NoError(t, bertyprotocol.ActivateGroupContext(ctx, g1a, nil))
 	require.NoError(t, bertyprotocol.ActivateGroupContext(ctx, g2a, nil))
 
-	groupReplicable, err := gA.FilterForReplication()
+	groupReplicable, err := bertyprotocol.FilterGroupForReplication(gA)
 	require.NoError(t, err)
 
 	t.Log(" --- Register group on replication service ---")
@@ -462,8 +466,10 @@ func TestReplicationService_Flow(t *testing.T) {
 	t.Log(" --- Closed peer 2 ---")
 	t.Log(" --- Sending async messages ---")
 
-	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 2"), nil)
-	require.NoError(t, err)
+	for i := 0; i < 50; i++ {
+		_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte(fmt.Sprintf("From 1 - 2: %d", i)), nil)
+		require.NoError(t, err)
+	}
 
 	time.Sleep(time.Millisecond * 500)
 
@@ -497,5 +503,58 @@ func TestReplicationService_Flow(t *testing.T) {
 	ops2 = testutil.TestFilterAppMetadata(t, evts2)
 	require.NoError(t, err)
 
-	//assert.Equal(t, 3, len(ops2))
+	// assert.Equal(t, 3, len(ops2))
+}
+
+func TestReplicationService_InvalidFlow(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	pathBase, err := ioutil.TempDir("", "odb_replication_service")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(pathBase)
+
+	baseDS := datastore.Datastore(datastore.NewMapDatastore())
+	defer baseDS.Close()
+
+	baseDS = dssync.MutexWrap(baseDS)
+	defer baseDS.Close()
+
+	mn := mocknet.New(ctx)
+	rdvp, err := mn.GenPeer()
+	require.NoError(t, err, "failed to generate mocked peer")
+
+	defer rdvp.Close()
+
+	_, cleanrdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
+	defer cleanrdvp()
+
+	tokenSecret, tokenPK, _ := bertyauth.HelperGenerateTokenIssuerSecrets(t)
+	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &bertyprotocol.TestingOpts{
+		Mocknet: mn,
+		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+	})
+	defer cancel()
+
+	gA, _, err := bertyprotocol.NewGroupMultiMember()
+	require.NoError(t, err)
+
+	groupReplicable, err := bertyprotocol.FilterGroupForReplication(gA)
+	require.NoError(t, err)
+
+	groupReplicable.LinkKey = []byte("nope this is invalid")
+
+	t.Log(" --- Register group on replication service ---")
+
+	ctx = context.WithValue(ctx, authtypes.ContextTokenHashField, "token1")
+	ctx = context.WithValue(ctx, authtypes.ContextTokenIssuerField, "issuer1")
+
+	// Changing update key, making the group impossible to track
+
+	_, err = replPeer.Service.ReplicateGroup(ctx, &replicationtypes.ReplicationServiceReplicateGroup_Request{
+		Group: groupReplicable,
+	})
+	require.Error(t, err)
 }
