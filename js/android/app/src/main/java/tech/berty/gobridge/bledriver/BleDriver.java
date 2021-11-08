@@ -23,9 +23,13 @@ public class BleDriver {
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
     public static Handler mainHandler = new Handler(Looper.getMainLooper());
     public static Handler mHandshakeHandler;
-    public static Handler mCallbacksHandler;
     private Looper mHandshakeLooper;
+    public static Handler mCallbacksHandler;
     private Looper mCallbacksLooper;
+    public static Handler mWriteHandler;
+    private Looper mWriteLooper;
+    public static Handler mReadHandler;
+    private Looper mReadLooper;
     private static volatile BleDriver mBleDriver;
     private final Context mAppContext;
     private BluetoothManager mBluetoothManager;
@@ -208,6 +212,23 @@ public class BleDriver {
             Looper.loop();
         });
         mThread2.start();
+
+        Thread mThread3 = new Thread(() -> {
+            Looper.prepare();
+            mWriteLooper = Looper.myLooper();
+            mWriteHandler = new Handler(mWriteLooper);
+            Looper.loop();
+        });
+        mThread3.start();
+
+        Thread mThread4 = new Thread(() -> {
+            Looper.prepare();
+            mReadLooper = Looper.myLooper();
+            mReadHandler = new Handler(mReadLooper);
+            Looper.loop();
+        });
+        mThread4.start();
+
         Log.d(TAG, "startBleDriver: mThread started");
 
         if (!mGattServer.start(mLocalPid)) {
@@ -215,8 +236,7 @@ public class BleDriver {
             return;
         }
 
-        int pidLen = mLocalPid.length();
-        if (!mAdvertiser.start(mLocalPid.substring(pidLen - 4, pidLen))) {
+        if (!mAdvertiser.start(idFromPid(mLocalPid))) {
             Log.e(TAG, "startBleDriver: failed to start advertising");
             stopBleDriver();
             return;
@@ -264,6 +284,9 @@ public class BleDriver {
         mGattServer.stop();
         setStarted(false);
         mHandshakeLooper.quit();
+        mCallbacksLooper.quit();
+        mWriteLooper.quit();
+        mReadLooper.quit();
     }
 
     public synchronized void StopBleDriver() {
@@ -275,7 +298,6 @@ public class BleDriver {
     }
 
     public boolean SendToPeer(String remotePID, byte[] payload) {
-        Log.d(TAG, "SendToPeer(): remotePID=" + remotePID + " payload=" + Base64.encodeToString(payload, Base64.DEFAULT));
         Peer peer;
         PeerDevice peerDevice;
         BluetoothGattCharacteristic writer;
@@ -290,18 +312,32 @@ public class BleDriver {
             return false;
         }
 
-        if (peerDevice.isClientConnected()) {
-            if ((writer = peerDevice.getWriterCharacteristic()) == null) {
-                Log.e(TAG, "SendToPeer error: WriterCharacteristic is null");
+        if (peerDevice.canUseL2cap() && peerDevice.getBluetoothSocket() != null && peerDevice.getBluetoothSocket().isConnected()) {
+            if (!peerDevice.l2capWrite(payload)) {
+                Log.e(TAG, String.format("SendToPeer error: l2capWrite failed: device=%s", peerDevice.getMACAddress()));
                 return false;
             }
 
-            return peerDevice.write(writer, payload, false, true);
-        } else if (peerDevice.isServerConnected()) {
-            return mGattServer.writeAndNotify(peerDevice, payload);
+            return true;
         } else {
-            Log.e(TAG, "SendToPeer error: remote device is disconnected");
-            return false;
+            if (peerDevice.isClientConnected()) {
+                if ((writer = peerDevice.getWriterCharacteristic()) == null) {
+                    Log.e(TAG, "SendToPeer error: WriterCharacteristic is null");
+                    return false;
+                }
+
+                return peerDevice.write(writer, payload, false);
+            } else if (peerDevice.isServerConnected()) {
+                return mGattServer.writeAndNotify(peerDevice, payload);
+            } else {
+                Log.e(TAG, "SendToPeer error: remote device is disconnected");
+                return false;
+            }
         }
+    }
+
+    public static String idFromPid(String pid) {
+        int pidLen = pid.length();
+        return pid.substring(pidLen - 4, pidLen);
     }
 }

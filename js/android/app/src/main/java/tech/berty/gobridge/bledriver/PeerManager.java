@@ -47,16 +47,18 @@ public class PeerManager {
         Peer peer;
 
         if ((peer = mPeers.get(peerID)) == null) {
-            Log.e(TAG, String.format("unregisterDevices error: Peer not found: peer=%s", peerID));
+            Log.i(TAG, String.format("unregisterDevices error: Peer not found: peer=%s", peerID));
             return;
         }
 
         if (peer.isHandshakeSuccessful()) {
             Log.i(TAG, String.format("unregisterDevices: call HandleLostPeer for peer: peer=%s", peerID));
-            BleInterface.BLEHandleLostPeer(peerID);
+            BleDriver.mCallbacksHandler.post(() -> {
+                BleInterface.BLEHandleLostPeer(peerID);
+            });
         }
 
-        peer.disconnectAndRemoveDevices();
+        peer.removeDevices();
         mPeers.remove(peerID);
     }
 

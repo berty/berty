@@ -237,7 +237,7 @@ public class Scanner extends ScanCallback {
 
     @Override
     public void onScanResult(int callbackType, ScanResult result) {
-        Log.v(TAG, "onScanResult called with result: " + result);
+//        Log.v(TAG, "onScanResult called with result: " + result);
         foundMap.put(result.getDevice().getAddress(), result);
         super.onScanResult(callbackType, result);
     }
@@ -257,7 +257,7 @@ public class Scanner extends ScanCallback {
 
         List<ParcelUuid> services;
         if ((services = result.getScanRecord().getServiceUuids()) == null || !services.contains(GattServer.P_SERVICE_UUID)) {
-            Log.v(TAG, "parseResult: service not found, device=" + device.getAddress());
+//            Log.v(TAG, "parseResult: service not found, device=" + device.getAddress());
             countDown.countDown();
             return;
         }
@@ -304,7 +304,7 @@ public class Scanner extends ScanCallback {
                 return;
             } else {
                 Log.i(TAG, String.format("parseResult: scanned a new device=%s id=%s", device.getAddress(), id));
-                peerDevice = new PeerDevice(mContext, device, mLocalPID);
+                peerDevice = new PeerDevice(mContext, device, mLocalPID, true);
                 DeviceManager.put(peerDevice.getMACAddress(), peerDevice);
             }
         }

@@ -1,11 +1,14 @@
 package tech.berty.gobridge.bledriver;
 
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+
+import androidx.arch.core.executor.TaskExecutor;
 
 // Vastly inspired from https://medium.com/@martijn.van.welie/making-android-ble-work-part-1-a736dcd53b02
 // Github repo: https://github.com/weliem/blessed-android
@@ -16,16 +19,21 @@ public class BleQueue {
     private static final int MAX_TRIES = 3;
 
     // timeout in ms before cancelling task
-    private static final long TIMEOUT = 10000;
+    private static final long TIMEOUT = 5000;
     private final Queue<TaskDelay> mCommandQueue = new ConcurrentLinkedQueue<>();
     private String mId;
     private Runnable mTimeoutRunnable;
+    private Handler mHandler;
 
     private boolean mCommandQueueBusy = false;
     private boolean mIsRetrying = false;
     private int mNrTries = 0;
 
     private int mIndex = 0;
+
+    public BleQueue(Handler mHandler) {
+        this.mHandler = mHandler;
+    }
 
     public synchronized void setId(String id) {
         mId = id;
@@ -60,7 +68,7 @@ public class BleQueue {
         Log.d(TAG, String.format("id=%s completedCommand: index=%d", mId, currentCommand.index));
         if (currentCommand.callback != null) {
             Log.d(TAG, String.format("id=%s completedCommand: callback for index=%d", mId, currentCommand.index));
-            BleDriver.mainHandler.post(() -> currentCommand.callback.run(status));
+            mHandler.post(() -> currentCommand.callback.run(status));
         }
         mIsRetrying = false;
         mCommandQueueBusy = false;
@@ -99,7 +107,7 @@ public class BleQueue {
 
         cancelTimer();
         mTimeoutRunnable = () -> {
-            Log.i(TAG, String.format("mainHandler: id=%s startTimer: cancel connection: index=%s", mId, bluetoothCommand.index));
+            Log.i(TAG, String.format("BleQueue id=%s startTimer: cancel runnable: index=%s", mId, bluetoothCommand.index));
 
             mCommandQueue.poll();
             mIsRetrying = false;
@@ -110,13 +118,13 @@ public class BleQueue {
             mTimeoutRunnable = null;
         };
 
-        BleDriver.mainHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
+        mHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
     }
 
     private void cancelTimer() {
         Log.v(TAG, String.format("id=%s cancelTimer called", mId));
         if (mTimeoutRunnable != null) {
-            BleDriver.mainHandler.removeCallbacks(mTimeoutRunnable);
+            mHandler.removeCallbacks(mTimeoutRunnable);
             mTimeoutRunnable = null;
         }
     }
@@ -149,7 +157,7 @@ public class BleQueue {
         if (!mIsRetrying) {
             mNrTries = 0;
         }
-        BleDriver.mainHandler.postDelayed(() -> {
+        mHandler.postDelayed(() -> {
             try {
                 startTimer();
                 bluetoothCommand.task.run();
@@ -161,6 +169,10 @@ public class BleQueue {
     }
 
     public synchronized void clear() {
+        TaskDelay taskDelay = mCommandQueue.poll();
+        if (taskDelay != null) {
+            mHandler.removeCallbacks(taskDelay.task);
+        }
         mCommandQueue.clear();
         mCommandQueueBusy = false;
     }
