@@ -23,6 +23,7 @@
 + (CBUUID *__nonnull)peerUUID;
 + (CBUUID *__nonnull)writerUUID;
 + (NSString *__nonnull)NSDataToHex:(NSData *__nonnull)data;
++ (void) printLongLog:(NSString *__nonnull)message;
 
 @property (readwrite) BOOL pmEnable;
 @property (readwrite) BOOL cmEnable;
@@ -54,8 +55,8 @@
 - (void)stopScanning;
 - (void)startAdvertising;
 - (void)stopAdvertising;
-- (void)cancelPeripheralConnection:(CBPeripheral *__nullable)peripheral;
-- (void)cancelAllPeripheralConnections;
+- (void)disconnect:(BertyDevice *__nonnull)device;
+- (void)closeAllConnections;
 - (BertyDevice *__nullable)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier;
 - (BertyDevice *__nullable)findPeripheralFromPID:(NSString *__nonnull)peerID;
 - (BOOL)writeAndNotify:(BertyDevice *__nonnull)device data:(NSData *__nonnull)data;

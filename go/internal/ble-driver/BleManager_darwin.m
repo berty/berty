@@ -59,6 +59,23 @@ static inline char itoh(int i) {
                                      freeWhenDone:YES] autorelease];
 }
 
++ (void) printLongLog:(NSString *__nonnull)message {
+    if ([message length] > 4000) {
+        NSLog(@"message.length=%lu", [message length]);
+        unsigned long int chunkCount = [message length] / 4000;     // integer division
+        for (int i = 0; i <= chunkCount; i++) {
+            int max = 4000 * (i + 1);
+            if (max >= [message length]) {
+                NSLog(@"chunk %d of %lu: %@", i, chunkCount, [message substringWithRange:NSMakeRange(4000 * i, [message length] - (4000 * i))]);
+            } else {
+                NSLog(@"chunk %d of %lu: %@", i, chunkCount, [message substringWithRange:NSMakeRange(4000 * i, 4000)]);
+            }
+        }
+    } else {
+        NSLog(@"%@", message);
+    }
+}
+
 // TODO: No need to check error on this?
 - (instancetype __nonnull) initScannerAndAdvertiser {
     os_log_debug(OS_LOG_BLE, "🟢 peripheralManager: initScannerAndAdvertiser");
@@ -152,7 +169,6 @@ static inline char itoh(int i) {
     [self.serviceAdded countDown];
 }
 
-
 #pragma mark - go called functions
 
 - (void)startScanning {
@@ -220,12 +236,13 @@ static inline char itoh(int i) {
                 
                 // publish l2cap channel
                 self.psm = 0;
-                // TODO: fix l2cap
-                //[self.pManager publishL2CAPChannelWithEncryption:false];
+                if (@available(iOS 11.0, *)) {
+                    [self.pManager publishL2CAPChannelWithEncryption:false];
+                }
                 
                 [self.pManager startAdvertising:@{ CBAdvertisementDataLocalNameKey:self.ID, CBAdvertisementDataServiceUUIDsKey:@[self.serviceUUID]}];
             } else {
-                os_log_error(OS_LOG_BLE, "startAdvertising error: localPID is null");
+                os_log_error(OS_LOG_BLE, "startAdvertising error: local ID is null");
             }
         }
     }
@@ -235,94 +252,45 @@ static inline char itoh(int i) {
     @synchronized (self.pManager) {
         if (self.pmEnable && [self.pManager isAdvertising]) {
             os_log_debug(OS_LOG_BLE, "🟢 stopAdvertising()");
-            if (self.psm != 0) {
-                [self.pManager unpublishL2CAPChannel:self.psm];
+            if (@available(iOS 11.0, *)) {
+                if (self.psm != 0) {
+                    [self.pManager unpublishL2CAPChannel:self.psm];
+                }
             }
             [self.pManager stopAdvertising];
         }
     }
 }
 
-// client side handle disconnection
-// else destroy object for server side
+// Only the client side can disconnect
 - (void)disconnect:(BertyDevice *__nonnull)device {
     if (device.peripheral != nil && device.clientSideIdentifier != nil) {
         os_log_debug(OS_LOG_BLE, "🟢 disconnect: client device=%{public}@", [device clientSideIdentifier]);
         if (device.peripheral.state == CBPeripheralStateConnecting || device.peripheral.state == CBPeripheralStateConnected) {
             [self.cManager cancelPeripheralConnection:device.peripheral];
-        }
-    } else if (device.serverSideIdentifier != nil) {
-        os_log_debug(OS_LOG_BLE, "🟢 disconnect: server device=%{public}@", [device serverSideIdentifier]);
-        // check if client device exists with another peripheral identifier
-        if (device.remotePeerID != nil) {
-            ConnectedPeer *peer = [PeerManager getPeer:device.remotePeerID];
-            
-            // client handles disconnection
-            if (peer.client != nil) {
-                [self cancelPeripheralConnection:peer.client.peripheral];
-                [peer setChannel:nil];
-            } else {
-                // no client, destroy object here
-                [PeerManager unregisterDevice:device];
-            }
-        }
-        @synchronized (self.bDevices) {
-            [self.bDevices removeObject:device];
-        }
-    }
-}
-
-- (void)cancelPeripheralConnection:(CBPeripheral *__nullable)peripheral {
-    if (self.cmEnable) {
-        if (!peripheral) {
-            os_log_info(OS_LOG_BLE, "🟡 cancelPeripheralConnection: peripheral is null, cannot cancel the connection");
+        } else {
+            os_log(OS_LOG_BLE, "🟢 disconnect: client device=%{public}@ not connected", [device clientSideIdentifier]);
             return ;
         }
-        
-        BertyDevice *bDevice = [self findPeripheral:peripheral];
-        
-        if (bDevice != nil && bDevice.peripheral != nil) {
-            os_log_debug(OS_LOG_BLE, "🟢 cancelPeripheralConnection: device %{public}@", [bDevice.peripheral.identifier UUIDString]);
-            bDevice.peripheral.delegate = nil;
-            if (bDevice.peripheral.state == CBPeripheralStateConnecting || bDevice.peripheral.state == CBPeripheralStateConnected) {
-                [self.cManager cancelPeripheralConnection:peripheral];
-            }
-            // Object is removed by didDisconnectPeripheral
-            /*@synchronized (self.bDevices) {
-             [self.bDevices removeObject:bDevice];
-             }*/
-        }
+    } else {
+        [device closeBertyDevice];
     }
 }
 
-- (void)cancelAllPeripheralConnections {
-    os_log_debug(OS_LOG_BLE, "🟢 cancelAllPeripheralConnection()");
+- (void)closeAllConnections {
+    os_log_debug(OS_LOG_BLE, "🟢 closeAllConnections()");
     if (self.cmEnable) {
         @synchronized (self.bDevices) {
-            for (BertyDevice *bDevice in self.bDevices) {
-                if (bDevice.peripheral != nil) {
-                    os_log_debug(OS_LOG_BLE, "🟢 cancelAllPeripheralConnection() Cancel");
-                    [self.cManager cancelPeripheralConnection:bDevice.peripheral];
-                    [bDevice.queue clear];
-                    [bDevice.writeQ clear];
-                } else {
-                    os_log_debug(OS_LOG_BLE, "🟢 cancelAllPeripheralConnection() Cancel null");
-                }
+            for (BertyDevice *device in self.bDevices) {
+                [self disconnect:device];
             }
-            os_log_debug(OS_LOG_BLE, "🟢 cancelAllPeripheralConnection() Full end");
-            [PeerManager removeAllPeers];
-            [self.bDevices removeAllObjects];
-            [self.pManager removeAllServices];
         }
     }
 }
 
 - (BOOL)writeAndNotify:(BertyDevice *__nonnull)device data:(NSData *__nonnull)data {
-    os_log_debug(OS_LOG_BLE, "writeAndNotify: identifier=%{public}@ base64=%{public}@ data=%{public}@", [device getIdentifier], [data base64EncodedStringWithOptions:0], [BleManager NSDataToHex:data]);
-    if (![device.peer isServerReady]) {
-        os_log_error(OS_LOG_BLE, "writeAndNotify error: identifier=%{public}@ server not connected", [device getIdentifier]);
-        return FALSE;
-    }
+    os_log_debug(OS_LOG_BLE, "writeAndNotify: identifier=%{public}@ base64=%{public}@", [device getIdentifier], [data base64EncodedStringWithOptions:0]);
+    [BleManager printLongLog:[BleManager NSDataToHex:data]];
     
     BOOL success = FALSE;
     NSUInteger mtu = device.cbCentral.maximumUpdateValueLength;
@@ -330,6 +298,11 @@ static inline char itoh(int i) {
     NSUInteger dataLen = [data length];
     
     while (offset < dataLen) {
+        if (![device.peer isServerReady]) {
+            os_log_error(OS_LOG_BLE, "writeAndNotify error: identifier=%{public}@ server not connected", [device getIdentifier]);
+            return FALSE;
+        }
+        
         self.writerLactch = [[CountDownLatch alloc] initCount:1];
         NSUInteger toWriteLen = (dataLen - offset) < mtu ? (dataLen - offset) : mtu;
         NSData *toWrite = [[data subdataWithRange:NSMakeRange(offset, toWriteLen)] retain];
@@ -513,7 +486,8 @@ static inline char itoh(int i) {
         }
         // peripheral already known by CBPeripheralManager (advertising)
         // adding info given by CBCentralManager (scanning)
-        [nDevice setPeripheral:peripheral central:self];
+        os_log_debug(OS_LOG_BLE, "didDiscoverPeripheral: address=%@ name=%@: already known", peripheral.identifier, id);
+        nDevice.peripheral = peripheral;
         nDevice.clientSideIdentifier = [peripheral.identifier UUIDString];
     } else {
         nDevice = [self findPeripheralFromName:id];
@@ -537,25 +511,11 @@ static inline char itoh(int i) {
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     os_log(OS_LOG_BLE, "🟡 didDisconnectPeripheral() for device %{public}@ with error %{public}@", [peripheral.identifier UUIDString], error);
-    BertyDevice *nDevice = [self findPeripheral:peripheral];
-    if (nDevice != nil) {
-        
-        // remove peerManager ref
-        if (nDevice.peripheral != nil) {
-            os_log(OS_LOG_BLE, "🟡 didDisconnectPeripheral() for device %{public}@ with error %{public}@", nDevice.peripheral, error);
-            
-            if (nDevice.remotePeerID != nil) {
-                os_log(OS_LOG_BLE, "🟡 didDisconnectPeripheral() for device %{public}@ with error %{public}@", nDevice.remotePeerID, error);
-                
-                [PeerManager unregisterDevice:nDevice];
-            }
-            
-            [nDevice.queue clear];
-            [nDevice.writeQ clear];
-            
-            @synchronized (self.bDevices) {
-                [self.bDevices removeObject:nDevice];
-            }
+    BertyDevice *device = [self findPeripheral:peripheral];
+    if (device != nil) {
+        [device closeBertyDevice];
+        @synchronized (self.bDevices) {
+            [self.bDevices removeObject:device];
         }
     }
 }
@@ -654,6 +614,10 @@ static inline char itoh(int i) {
     
     device.cbCentral = central;
     
+    // Server doesn't know if the L2CAP handshake failed on the client side
+    // so we have to set it manually at this step.
+    device.l2capServerHandshakeRunning = FALSE;
+    
     // complete handshake
     device.peer = [PeerManager registerDevice:device withPeerID:device.remotePeerID isClient:FALSE];
     if (device.peer == nil) {
@@ -674,7 +638,10 @@ static inline char itoh(int i) {
         return ;
     }
     
-    [self disconnect:device];
+    [device closeBertyDevice];
+    @synchronized (self.bDevices) {
+        [self.bDevices removeObject:device];
+    }
 }
 
 - (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral {
@@ -716,55 +683,6 @@ static inline char itoh(int i) {
     }
 }
 
-- (void)peripheralManager:(CBPeripheralManager *)peripheral didPublishL2CAPChannel:(CBL2CAPPSM)PSM error:(NSError *)error {
-    if (error != nil) {
-        os_log_error(OS_LOG_BLE, "peripheralManager didPublishL2CAPChannel error=%{public}@", error);
-        return ;
-    }
-    os_log_debug(OS_LOG_BLE, "peripheralManager didPublishL2CAPChannel: PSM=%hu", PSM);
-    self.psm = PSM;
-}
-
-- (void)peripheralManager:(CBPeripheralManager *)peripheral didUnpublishL2CAPChannel:(CBL2CAPPSM)PSM error:(NSError *)error {
-    os_log_debug(OS_LOG_BLE, "peripheralManager didUnpublishL2CAPChannel called");
-    self.psm = 0;
-}
-
-- (void)peripheralManager:(CBPeripheralManager *)peripheral didOpenL2CAPChannel:(CBL2CAPChannel *)channel error:(NSError *)error {
-    if (error != nil) {
-        os_log_error(OS_LOG_BLE, "peripheralManager didOpenL2CAPChannel error=%{public}@", error);
-        return ;
-    }
-    
-    // BertyDevice *device;
-    // if ((device = [self findPeripheralFromIdentifier:channel.peer.identifier]) == nil) {
-    //     os_log_error(OS_LOG_BLE, "peripheralManager didOpenL2CAPChannel error: peripheral=%{public}@ not found", [channel.peer.identifier UUIDString]);
-    //     return ;
-    // }
-    
-    // ConnectedPeer *peer = [PeerManager getPeer:device.remotePeerID];
-    // if (peer == nil) {
-    //     os_log_error(OS_LOG_BLE, "peripheralManager didOpenL2CAPChannel error: peripheral=%{public}@ peer not found", [channel.peer.identifier UUIDString]);
-    //     return ;
-    // }
-    
-    // os_log_debug(OS_LOG_BLE, "peripheralManager didOpenL2CAPChannel: peripheral=%{public}@ setup channel", [channel.peer.identifier UUIDString]);
-    // [peer setChannel:channel];
-    // [channel.inputStream open];
-    // [channel.outputStream open];
-    
-    // dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    //     [device l2capRead:peer];
-    // });
-    
-    // [peer setServer:device];
-    // [peer setServerReady:TRUE];
-    // if (![device checkAndHandleFoundPeer]) {
-    //     [self disconnect:device];
-    //     return ;
-    // }
-}
-
 #pragma mark - read
 
 
@@ -781,6 +699,7 @@ static inline char itoh(int i) {
             return ;
         }
         
+        // Write PSM to big endian
         int psm = NSSwapHostIntToBig(self.psm);
         NSMutableData *toSend = [[NSMutableData alloc] initWithBytes:&psm length:sizeof(psm)];
         [toSend appendData:[self.localPID dataUsingEncoding:NSUTF8StringEncoding]];
@@ -788,46 +707,6 @@ static inline char itoh(int i) {
         
         [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
         [toSend release];
-        
-        //            ConnectedPeer *peer = [PeerManager getPeer:device.remotePeerID];
-        //            if (!peer) {
-        //                os_log_debug(OS_LOG_BLE, "🟡 didReceiveReadRequests: peerID unknown in the PeerManager");
-        //                peer = [[ConnectedPeer alloc] init];
-        //                [peer setServer:remote];
-        //                [peer setServerReady:TRUE];
-        //                [PeerManager addPeer:peer forPeerID:remote.remotePeerID];
-        //                [peer release];
-        //
-        //                [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-        //                [toSend release];
-        //                toSend = nil;
-        //            } else {
-        //                if ([peer isConnected]) {
-        //                    os_log_error(OS_LOG_BLE, "🔴 didReceiveReadRequests(): peerID is already connected");
-        //                    [peripheral respondToRequest:request withResult:CBATTErrorReadNotPermitted];
-        //
-        //                    [self disconnect:remote];
-        //                    [toSend release];
-        //                    return ;
-        //                }
-        //                [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-        //                [toSend release];
-        //                toSend = nil;
-        //                if (remote.psm != 0 && peer.channel == nil && self.psm != 0) {
-        //                    // wait for l2cap connection
-        //                    os_log_debug(OS_LOG_BLE, "🟢 didReceiveReadRequests(): wait for l2cap incoming connection: identifier=%{public}@", [request.central.identifier UUIDString]);
-        //                } else {
-        //                    [peer setServer:remote];
-        //                    [peer setServerReady:TRUE];
-        //
-        //                    os_log_debug(OS_LOG_BLE, "🟢 didReceiveReadRequests(): local peerID sent=%{public}@", [NSString stringWithUTF8String:request.value.bytes]);
-        //
-        //                    if (![remote checkAndHandleFoundPeer]) {
-        //                        [self disconnect:remote];
-        //                        return ;
-        //                    }
-        //                }
-        //            }
     } else {
         os_log_error(OS_LOG_BLE, "🔴 didReceiveReadRequests(): bad characteristic");
         [peripheral respondToRequest:request withResult:CBATTErrorRequestNotSupported];
@@ -844,19 +723,19 @@ static inline char itoh(int i) {
     NSData *data = nil;
     
     for (CBATTRequest *request in requests) {
-        os_log_debug(OS_LOG_BLE, "🟢 didReceiveWriteRequests() writer called for device %{public}@", [request.central.identifier UUIDString]);
+        os_log_debug(OS_LOG_BLE, "didReceiveWriteRequests: identifier=%{public}@ base64=%{public}@", [request.central.identifier UUIDString], [data base64EncodedStringWithOptions:0]);
+        [BleManager printLongLog:[BleManager NSDataToHex:data]];
         
-        os_log_debug(OS_LOG_BLE, "🟢 didReceiveWriteRequests(): payload: %{public}@", request.value);
         CBMutableCharacteristic *characteristic;
         
         @synchronized (self.bDevices) {
             // check if we hold a remote device of this type
             device = [self findPeripheralFromIdentifier:request.central.identifier];
             if (device == nil) {
-                device = [[BertyDevice alloc]initWithIdentifier:[request.central.identifier UUIDString] asClient:FALSE];
+                device = [[BertyDevice alloc]initWithIdentifier:[request.central.identifier UUIDString] central:self asClient:FALSE];
                 [self.bDevices addObject:device];
                 [device release];
-                os_log_debug(OS_LOG_BLE, "🟢 didReceiveWriteRequests() device %{public}@ added to BleManager.bDevices",
+                os_log_debug(OS_LOG_BLE, "🟢 didReceiveWriteRequests: identifier=%{public}@ added to BleManager.bDevices",
                              [request.central.identifier UUIDString]);
             }
         }
@@ -868,7 +747,7 @@ static inline char itoh(int i) {
             characteristic = self.peerIDCharacteristic;
         } else {
             os_log_error(OS_LOG_BLE, "🔴 didReceiveWriteRequests(): bad characteristic");
-            [self disconnect:device];
+            [device closeBertyDevice];
             [peripheral respondToRequest:request withResult:CBATTErrorWriteNotPermitted];
             return ;
         }
@@ -880,7 +759,7 @@ static inline char itoh(int i) {
         BOOL(^handler)(NSData *) = [device.characteristicHandlers objectForKey:[request.characteristic.UUID UUIDString]];
         if (!handler(data)) {
             os_log_error(OS_LOG_BLE, "🔴 didReceiveWriteRequests: handle failed");
-            [self disconnect:device];
+            [device closeBertyDevice];
             [peripheral respondToRequest:request withResult:CBATTErrorWriteNotPermitted];
         }
         
@@ -890,6 +769,60 @@ static inline char itoh(int i) {
     }
     
     [peripheral respondToRequest:[requests objectAtIndex:0] withResult:CBATTErrorSuccess];
+}
+
+#pragma mark - L2cap
+
+- (void)peripheralManager:(CBPeripheralManager *)peripheral didPublishL2CAPChannel:(CBL2CAPPSM)PSM error:(NSError *)error {
+    if (error != nil) {
+        os_log_error(OS_LOG_BLE, "peripheralManager didPublishL2CAPChannel error=%{public}@", error);
+        return ;
+    }
+    os_log_debug(OS_LOG_BLE, "peripheralManager didPublishL2CAPChannel: PSM=%hu", PSM);
+    self.psm = PSM;
+}
+
+- (void)peripheralManager:(CBPeripheralManager *)peripheral didUnpublishL2CAPChannel:(CBL2CAPPSM)PSM error:(NSError *)error {
+    os_log_debug(OS_LOG_BLE, "peripheralManager didUnpublishL2CAPChannel called");
+    
+    self.psm = 0;
+}
+
+- (void)peripheralManager:(CBPeripheralManager *)peripheral didOpenL2CAPChannel:(CBL2CAPChannel *)channel error:(NSError *)error API_AVAILABLE(ios(11.0)) {
+    os_log_debug(OS_LOG_BLE, "peripheralManager didOpenL2CAPChannel called: peripheral=%{public}@", [channel.peer.identifier UUIDString]);
+    
+    if (error != nil) {
+        os_log_error(OS_LOG_BLE, "peripheralManager didOpenL2CAPChannel error=%{public}@", error);
+        return ;
+    }
+    
+    BertyDevice *device;
+    if ((device = [self findPeripheralFromIdentifier:channel.peer.identifier]) == nil) {
+        os_log_error(OS_LOG_BLE, "peripheralManager didOpenL2CAPChannel error: peripheral=%{public}@ not found", [channel.peer.identifier UUIDString]);
+        return ;
+    }
+        
+    device.l2capChannel = channel;
+    
+    device.l2capThread = [[NSThread alloc] initWithBlock:^{
+        os_log_debug(OS_LOG_BLE, "🟢 didOpenL2CAPChannel called: device=%{public}@: in thread", [device getIdentifier]);
+        
+        channel.inputStream.delegate = device;
+        [channel.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [channel.inputStream open];
+        channel.outputStream.delegate = device;
+        [channel.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [channel.outputStream open];
+        
+        @autoreleasepool {
+            do {
+                [[NSRunLoop currentRunLoop] run];
+            } while (device.peer != nil && [device.peer isConnected]);
+        }
+    }];
+    [device.l2capThread start];
+    
+    device.l2capServerHandshakeRunning = TRUE;
 }
 
 @end

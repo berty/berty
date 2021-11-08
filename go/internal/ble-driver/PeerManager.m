@@ -54,11 +54,6 @@ static NSMutableDictionary *connectedPeers = nil;
     ConnectedPeer *peer;
     
     @synchronized (connectedPeers) {
-        if (!BLEBridgeHandleFoundPeer(peerID)) {
-            os_log_error(OS_LOG_BLE, "registerDevice failed: identifier=%{public}@ HandleFoundPeer failed: peer=%{public}@", [device getIdentifier], peerID);
-            return NULL;
-        }
-        
         peer = [self getPeer:peerID];
         if (isClient) {
             peer.client = device;
@@ -66,8 +61,15 @@ static NSMutableDictionary *connectedPeers = nil;
             peer.server = device;
         }
         
-        [peer setConnected:TRUE];
-
+        device.peer = peer;
+        
+        peer.connected = TRUE;
+        
+        if (!BLEBridgeHandleFoundPeer(peerID)) {
+            os_log_error(OS_LOG_BLE, "registerDevice failed: identifier=%{public}@ HandleFoundPeer failed: peer=%{public}@", [device getIdentifier], peerID);
+            return NULL;
+        }
+        
         [device flushCache];
     }
     

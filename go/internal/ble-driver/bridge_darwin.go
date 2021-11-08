@@ -31,6 +31,9 @@ type Driver struct {
 var _ proximity.ProximityDriver = (*Driver)(nil)
 
 func NewDriver(logger *zap.Logger) proximity.ProximityDriver {
+	if logger == nil {
+		logger = zap.NewNop()
+	}
 	logger = logger.Named("BLE")
 	logger.Debug("NewDriver()")
 

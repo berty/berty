@@ -24,7 +24,7 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 #define _BERTY_ON_D_THREAD(block) dispatch_async(self.dQueue, block)
 #define _BERTY_ON_W_THREAD(block) dispatch_async(self.writeQueue, block)
 
-@interface BertyDevice : NSObject <CBPeripheralDelegate>
+@interface BertyDevice : NSObject <CBPeripheralDelegate, NSStreamDelegate>
 
 @property (nonatomic, strong, nonnull) NSString *name;
 @property (nonatomic, strong, nonnull) NSDictionary *serviceDict;
@@ -32,31 +32,52 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 @property (nonatomic, strong, nonnull) NSString *serverSideIdentifier;
 @property (nonatomic, strong, nonnull) NSString *clientSideIdentifier;
 @property (nonatomic, assign, nullable) BleManager *manager;
-@property (nonatomic, strong, nonnull) BleQueue *queue;
+@property (nonatomic, strong, nonnull) BleQueue *connectionQ;
 @property (nonatomic, strong, nonnull) BleQueue *writeQ;
+@property (nonatomic, strong, nonnull) BleQueue *readQ;
+@property (nonatomic, strong, nullable) NSObject *writerLatch;
 @property (nonatomic, strong, nullable) CBCharacteristic *peerIDCharacteristic;
 @property (nonatomic, strong, nullable) CBCharacteristic *writerCharacteristic;
 @property (nonatomic, strong, nonnull) NSDictionary* characteristicHandlers;
 @property (nonatomic, strong, nonnull) NSDictionary* characteristicData;
 @property (nonatomic, strong, nullable) NSData *remainingData;
 @property (nonatomic, strong, nullable) NSString *remotePeerID;
-@property (nonatomic, strong, nullable) CountDownLatch *l2capLatch;
 @property (readwrite) int psm;
 @property (nonatomic, strong, nullable) ConnectedPeer *peer;
 @property (nonatomic, strong, nonnull) CBCentral *cbCentral;
 @property (nonatomic, strong, nonnull) CircularQueue *dataCache;
+@property (readwrite) BOOL isDisconnecting;
 
-- (instancetype __nullable)initWithIdentifier:(NSString *__nonnull)identifier asClient:(BOOL)client;
+- (instancetype __nullable)initWithIdentifier:(NSString *__nonnull)identifier central:(BleManager *__nonnull)manager asClient:(BOOL)client;
 - (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral central:(BleManager *__nonnull)manager withName:(NSString *__nonnull)name;
-- (void)setPeripheral:(CBPeripheral *__nonnull)peripheral central:(BleManager *__nonnull)manager;
-- (BOOL)writeToCharacteristic:(NSData *__nonnull)data forCharacteristic:(CBCharacteristic *__nonnull)characteristic withEOD:(BOOL)eod tryL2cap:(BOOL)tryL2cap;
+- (void)closeBertyDevice;
+- (BOOL)writeToCharacteristic:(NSData *__nonnull)data forCharacteristic:(CBCharacteristic *__nonnull)characteristic withEOD:(BOOL)eod;
 - (void)handshake;
 - (void)handleConnect:(NSError * __nullable)error;
 - (void)connectWithOptions:(NSDictionary * __nullable)options;
-- (void)l2capRead:(ConnectedPeer *__nonnull)peer;
 - (NSString *__nonnull)getIdentifier;
 - (void)flushCache;
 
 @end
 
+API_AVAILABLE(ios(11.0))
+@interface BertyDevice()
+
+@property (strong, nullable) NSThread *l2capThread;
+@property (strong, nullable) CBL2CAPChannel *l2capChannel;
+@property (strong, nullable) NSData *l2capWriteData;
+@property (readwrite) NSInteger l2capWriteIndex;
+@property (readwrite) BOOL useL2cap;
+@property (readwrite) BOOL l2capClientHandshakeRunning;
+@property (readwrite) BOOL l2capServerHandshakeRunning;
+@property (strong, nullable) CountDownLatch *l2capHandshakeLatch;
+@property (readwrite) BOOL l2capHandshakeStepStatus;
+@property (copy, nullable) dispatch_block_t l2capHandshakeBlock;
+@property (strong, nullable) NSMutableData *l2capHandshakeData;
+@property (strong, nullable) NSMutableData *l2capHandshakeRecvData;
+@property (readwrite) NSUInteger l2capHandshakeRecvDataLen;
+
+- (BOOL)l2capWrite:(NSData *__nonnull)data;
+
+@end
 #endif

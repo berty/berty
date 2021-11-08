@@ -16,11 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, nullable) BertyDevice *client;
 @property (nonatomic, assign, nullable) BertyDevice *server;
 @property (readwrite, getter=isConnected) BOOL connected;
-@property (strong, nullable) CBL2CAPChannel *channel;
 
 - (BOOL)isClientReady;
 - (BOOL)isServerReady;
-- (BOOL)isReady;
 
 @end
 

@@ -18,8 +18,4 @@
     return self.server != nil;
 }
 
-- (BOOL)isReady {
-        return [self isClientReady] && [self isServerReady];
-}
-
 @end

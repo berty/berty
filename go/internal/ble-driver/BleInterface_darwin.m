@@ -54,7 +54,7 @@ void BLEStop(void) {
     os_log_debug(OS_LOG_BLE, "🟢 BLEStop()");
     [getManager() stopScanning];
     [getManager() stopAdvertising];
-    [getManager() cancelAllPeripheralConnections];
+    [getManager() closeAllConnections];
 }
 
 int BLESendToPeer(char *remotePID, void *payload, int length) {
@@ -74,11 +74,18 @@ int BLESendToPeer(char *remotePID, void *payload, int length) {
         return 0;
     }
     
-    if ([bDevice.peer isClientReady]) {
-        status = [bDevice writeToCharacteristic:cPayload forCharacteristic:bDevice.writerCharacteristic withEOD:FALSE tryL2cap:TRUE];
-    } else if ([bDevice.peer isServerReady]) {
-        status = [getManager() writeAndNotify:bDevice data:cPayload];
+    if (bDevice.useL2cap && bDevice.l2capChannel != nil) {
+        status = [bDevice l2capWrite:cPayload];
+    } else {
+        if ([bDevice.peer isClientReady]) {
+            status = [bDevice writeToCharacteristic:cPayload forCharacteristic:bDevice.writerCharacteristic withEOD:FALSE];
+        } else if ([bDevice.peer isServerReady]) {
+            status = [getManager() writeAndNotify:bDevice data:cPayload];
+        } else {
+            os_log_error(OS_LOG_BLE, "BLESendToPeer error: device not connected");
+        }
     }
+    
     [cPID release];
     [cPayload release];
     return status;
@@ -97,7 +104,7 @@ void BLECloseConnWithPeer(char *remotePID) {
     os_log_error(OS_LOG_BLE, "🟢 BLECloseConnWithPeer()");
     BertyDevice *bDevice = [getManager() findPeripheralFromPID:[NSString stringWithUTF8String:remotePID]];
     if (bDevice != nil) {
-        [getManager() cancelPeripheralConnection:bDevice.peripheral];
+        [getManager() disconnect:bDevice];
     }
 }
 
