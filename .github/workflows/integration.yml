@@ -68,6 +68,7 @@ jobs:
       - name: Run integration test suite
         run: |
           berty-integration \
+            -p2p.disc-disable-filter=true \
             -integration.testbot=`cat ./config/config.gen.json | jq -r '.berty.contacts["testbot"].link'` \
             -integration.benchmark > benchmark_result.json
       - name: Download previous benchmark data
