@@ -13,7 +13,6 @@ import (
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
 	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
-	p2p_dualdht "github.com/libp2p/go-libp2p-kad-dht/dual"
 	p2p_record "github.com/libp2p/go-libp2p-record"
 )
 
@@ -109,13 +108,12 @@ func CustomRoutingOption(mode p2p_dht.ModeOpt, opts ...p2p_dht.Option) func(
 		validator p2p_record.Validator,
 		bootstrapPeers ...p2p_peer.AddrInfo,
 	) (p2p_routing.Routing, error) {
-		return p2p_dualdht.New(ctx, host,
-			p2p_dualdht.DHTOption(append(opts,
-				p2p_dht.Mode(mode),
-				p2p_dht.Datastore(dstore),
-				p2p_dht.Validator(validator),
-				p2p_dht.BootstrapPeers(bootstrapPeers...),
-			)...))
+		return p2p_dht.New(ctx, host, append(opts,
+			p2p_dht.Mode(mode),
+			p2p_dht.Datastore(dstore),
+			p2p_dht.Validator(validator),
+			p2p_dht.BootstrapPeers(bootstrapPeers...),
+		)...)
 	}
 }
 

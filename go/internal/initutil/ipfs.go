@@ -540,8 +540,13 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	// dht driver
 	if m.Node.Protocol.DHT != "none" && m.Node.Protocol.TinderDHTDriver {
+		dhtfilter := tinder.PublicAddrsOnly
+		if !m.Node.Protocol.DisableDiscoverFilterAddrs {
+			dhtfilter = tinder.NoFilter
+		}
+
 		// dht driver
-		drivers = append(drivers, tinder.NewDriverFromRouting("dht", r, tinder.NoFilter))
+		drivers = append(drivers, tinder.NewDriverFromRouting("dht", r, dhtfilter))
 	}
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
