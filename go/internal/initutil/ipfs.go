@@ -68,7 +68,7 @@ const (
 	FlagNameP2PTinderDiscover             = "p2p.tinder-discover"
 	FlagNameP2PTinderDHTDriver            = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver           = "p2p.tinder-rdvp-driver"
-	FlagNameP2PTinderDisableServiceFilter = "p2p.tinder-disable-filter"
+	FlagNameP2PDisableDiscoverAddrsFilter = "p2p.disc-disable-filter"
 
 	FlagValueP2PDHTDisabled   = "none"
 	FlagValueP2PDHTClient     = "client"
@@ -93,7 +93,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
-	fs.BoolVar(&m.Node.Protocol.TinderDisableServiceFilter, FlagNameP2PTinderDisableServiceFilter, false, "if true rdvp driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
@@ -521,7 +521,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// rdvp driver
 	if m.Node.Protocol.TinderRDVPDriver {
 		rdvpfilter := tinder.PublicAddrsOnly
-		if !m.Node.Protocol.TinderDisableServiceFilter {
+		if m.Node.Protocol.DisableDiscoverFilterAddrs {
 			rdvpfilter = tinder.NoFilter
 		}
 
@@ -541,7 +541,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// dht driver
 	if m.Node.Protocol.DHT != "none" && m.Node.Protocol.TinderDHTDriver {
 		dhtfilter := tinder.PublicAddrsOnly
-		if !m.Node.Protocol.DisableDiscoverFilterAddrs {
+		if m.Node.Protocol.DisableDiscoverFilterAddrs {
 			dhtfilter = tinder.NoFilter
 		}
 

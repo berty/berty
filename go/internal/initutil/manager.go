@@ -131,7 +131,7 @@ type Manager struct {
 			ServiceInsecureMode bool   `json:"ServiceInsecureMode,omitempty"`
 
 			// internal
-			TinderDisableServiceFilter bool
+			DisableDiscoverFilterAddrs bool
 			ServiceID                  string
 			needAuth                   bool
 			ipfsNode                   *core.IpfsNode

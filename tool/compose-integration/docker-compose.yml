@@ -58,7 +58,7 @@ services:
       berty daemon
         -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
         -p2p.mdns=false
-        -p2p.tinder-disable-filter=true
+        -p2p.disc-disable-filter=true
         -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
       "
     depends_on:
@@ -80,7 +80,7 @@ services:
       berty daemon
         -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
         -p2p.mdns=false
-        -p2p.tinder-disable-filter=true
+        -p2p.disc-disable-filter=true
         -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
       "
     depends_on:
