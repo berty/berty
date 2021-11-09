@@ -2,6 +2,7 @@ package initutil
 
 import (
 	"path/filepath"
+	"time"
 
 	datastore "github.com/ipfs/go-datastore"
 
@@ -60,8 +61,9 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 			Logger:               logger,
 			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.PeerHost),
 		},
-		Datastore:      rootDS,
-		DeviceKeystore: deviceKS,
+		Datastore:              rootDS,
+		DeviceKeystore:         deviceKS,
+		RendezvousRotationBase: time.Duration(m.Node.Protocol.RendezvousRotationBase),
 	}
 
 	if node.PubSub != nil {

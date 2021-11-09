@@ -36,6 +36,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -106,6 +107,8 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, FlagNameTorMode, defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
+	fs.Int64Var(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", int64(rendezvous.DefaultRotationInterval), "rendezvous rotation base for node")
+
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
 		fmt.Sprintf("equivalent to -p2p.swarm-listeners=%s,CUSTOM", strings.Join(ipfsutil.DefaultSwarmListeners, ",")),

@@ -50,11 +50,13 @@ func NewTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 
 	baseDS = datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey(selfKey.ID().String()))
 
+	pubSub := pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil)
+
 	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
 		Datastore: baseDS,
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
 			Logger: logger,
-			PubSub: pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
+			PubSub: pubSub,
 		},
 	})
 	require.NoError(t, err)
@@ -130,9 +132,11 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 	if odb == nil {
 		var err error
 
+		pubSub := pubsubraw.NewPubSub(node.PubSub(), node.MockNode().PeerHost.ID(), opts.Logger, nil)
+
 		odb, err = NewBertyOrbitDB(ctx, node.API(), &NewOrbitDBOptions{
 			NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
-				PubSub: pubsubraw.NewPubSub(node.PubSub(), node.MockNode().PeerHost.ID(), opts.Logger, nil),
+				PubSub: pubSub,
 				Logger: opts.Logger,
 			},
 			Datastore:      ds,

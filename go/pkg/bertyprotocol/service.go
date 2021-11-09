@@ -23,6 +23,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -142,7 +143,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 	}
 
 	if opts.RendezvousRotationBase.Nanoseconds() <= 0 {
-		opts.RendezvousRotationBase = time.Hour * 24
+		opts.RendezvousRotationBase = rendezvous.DefaultRotationInterval
 	}
 
 	if opts.IpfsCoreAPI == nil {
@@ -189,8 +190,9 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 				Directory: &orbitDirectory,
 				Logger:    opts.Logger,
 			},
-			Datastore:      datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
-			DeviceKeystore: opts.DeviceKeystore,
+			Datastore:              datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
+			DeviceKeystore:         opts.DeviceKeystore,
+			RendezvousRotationBase: opts.RendezvousRotationBase,
 		}
 
 		if opts.Host != nil {
