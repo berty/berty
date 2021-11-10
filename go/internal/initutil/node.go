@@ -102,6 +102,7 @@ func (m *Manager) SetupLocalMessengerServerFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Messenger.RebuildSqlite, "node.rebuild-db", false, "reconstruct messenger DB from OrbitDB logs")
 	fs.BoolVar(&m.Node.Messenger.DisableGroupMonitor, "node.disable-group-monitor", false, "disable group monitoring")
 	fs.StringVar(&m.Node.Messenger.DisplayName, "node.display-name", safeDefaultDisplayName(), "display name")
+	fs.StringVar(&m.Node.Messenger.EventsDumpPath, "node.events-dump-path", "", "will dump stream events to this path in json lines format if set")
 	// node.db-opts // see https://github.com/mattn/go-sqlite3#connection-string
 }
 
@@ -693,6 +694,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		StateBackup:         m.Node.Messenger.localDBState,
 		Ring:                m.Logging.ring,
 		PlatformPushToken:   pushPlatformToken,
+		EventsDumpPath:      m.Node.Messenger.EventsDumpPath,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {

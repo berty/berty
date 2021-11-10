@@ -5,9 +5,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
-	"errors"
+	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -18,6 +19,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"moul.io/u"
@@ -76,6 +78,7 @@ type Opts struct {
 	StateBackup         *mt.LocalDatabaseState
 	PlatformPushToken   *protocoltypes.PushServiceReceiver
 	Ring                *zapring.Core
+	EventsDumpPath      string
 
 	// LogFilePath defines the location of the current session's log file.
 	//
@@ -253,6 +256,24 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 
 	// monitor messenger lifecycle
 	go svc.monitorState(ctx)
+
+	// Dump events if requested
+	if opts.EventsDumpPath != "" {
+		file, err := os.OpenFile(opts.EventsDumpPath, os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModePerm)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to open events dump file")
+		}
+		svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(c *mt.StreamEvent) error {
+			json, err := json.Marshal(c)
+			if err != nil {
+				return errors.Wrap(err, "faild to marshal metadata event")
+			}
+			if _, err := fmt.Fprintln(file, string(json)); err != nil {
+				return errors.Wrap(err, "failed to write event to file")
+			}
+			return nil
+		}})
+	}
 
 	// Dispatch app notifications to native manager
 	svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(se *mt.StreamEvent) error {

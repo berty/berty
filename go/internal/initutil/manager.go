@@ -153,6 +153,7 @@ type Manager struct {
 			RebuildSqlite        bool   `json:"RebuildSqlite,omitempty"`
 			MessengerSqliteOpts  string `json:"MessengerSqliteOpts,omitempty"`
 			ExportPathToRestore  string `json:"ExportPathToRestore,omitempty"`
+			EventsDumpPath       string `json:"EventsDumpPath,omitempty"`
 
 			// internal
 			protocolClient      bertyprotocol.Client
