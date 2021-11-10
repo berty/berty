@@ -5,11 +5,15 @@ import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useClient, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import {
+	useMessengerClient,
+	useMessengerContext,
+	useThemeColor,
+	pbDateToNum,
+} from '@berty-tech/store'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 
-import { pbDateToNum } from '../../helpers'
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'
 import { UnreadCount } from './UnreadCount'
@@ -85,8 +89,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	conversationPublicKey,
 	createdDate: createdDateStr,
 }) => {
-	const ctx = useMsgrContext()
-	const client = useClient()
+	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
 	const { dispatch } = useNavigation()
 	const { contactReqContainer, declineButton, acceptButton, buttonsWrapper } =

@@ -7,15 +7,16 @@ import {
 	fetchMore,
 	useConversation,
 	useConvInteractions,
-	useMsgrContext,
-} from '@berty-tech/store/hooks'
+	useMessengerContext,
+	pbDateToNum,
+	ParsedInteraction,
+} from '@berty-tech/store'
 import beapi from '@berty-tech/api'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
-import { Message } from '@berty-tech/components/chat/message'
-import { ChatDate, updateStickyDate } from '@berty-tech/components/chat/common'
-import { InfosChat } from '@berty-tech/components/InfosChat'
-import { InfosMultiMember } from '@berty-tech/components/chat/InfosMultiMember'
-import { pbDateToNum } from '@berty-tech/components/helpers'
+
+import { InfosChat } from '../InfosChat'
+import { Message } from './message'
+import { ChatDate, updateStickyDate } from './common'
+import { InfosMultiMember } from './InfosMultiMember'
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
 	const { ...propsToPass } = props
@@ -61,7 +62,7 @@ export const MessageList: React.FC<{
 }> = ({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
 	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const members = ctx.members[id]
 	const rawMessages = useConvInteractions(id)
 	const messages = useMemo(

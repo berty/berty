@@ -6,7 +6,7 @@ import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
-import { useClient, useThemeColor } from '@berty-tech/store/hooks'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 
 import { MenuListItem } from './MenuListItem'
@@ -23,7 +23,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
 	const [isLoading, setLoading] = useState(false)
-	const client = useClient()
+	const client = useMessengerClient()
 	const colors = useThemeColor()
 
 	const LIST_CONFIG = [

@@ -3,12 +3,16 @@ import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import {
+	pbDateToNum,
+	ParsedInteraction,
+	PersistentOptionsKeys,
+	useMessengerContext,
+	useThemeColor,
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { timeFormat } from '../../helpers'
 import { MessageInvitation } from './MessageInvitation'
 import { MessageMonitorMetadata } from './MessageMonitorMetadata'
 import { UserMessage } from './UserMessage'
@@ -27,7 +31,7 @@ export const Message: React.FC<{
 	replyOf?: ParsedInteraction
 	scrollToCid: (cid: string) => void
 }> = ({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const [{ text, padding }] = useStyles()
 	const colors = useThemeColor()
 	if (!inte) {

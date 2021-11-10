@@ -11,9 +11,9 @@ import {
 	useContactList,
 	useConversation,
 	useConvMemberList,
-	useMsgrContext,
+	useMessengerContext,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+} from '@berty-tech/store'
 
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'
@@ -93,7 +93,7 @@ export const MultiMemberSettingsAddMembers: React.FC<{
 	const [{ flex, margin }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t }: { t: any } = useTranslation()
 
 	const conv = useConversation(route.params.convPK)

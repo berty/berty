@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
-import MsgrContext, { accountService, initialState, PersistentOptionsKeys } from './context'
+import beapi from '@berty-tech/api'
+
+import { MessengerContext, initialState } from './context'
 import {
 	initialLaunch,
 	openingDaemon,
@@ -23,12 +25,17 @@ import {
 	setReaction,
 } from './providerCallbacks'
 import { createNewAccount, getUsername } from './effectableCallbacks'
-import { reducer } from './providerReducer'
-import { playSound, SoundKey } from './sounds'
-import beapi from '@berty-tech/api'
+import { reducer } from './reducer'
+import { playSound } from './sounds'
+import { PersistentOptionsKeys, SoundKey } from './types'
+import { accountService } from './accountService'
 
-export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
-	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
+export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
+	const [state, dispatch] = React.useReducer(reducer, {
+		...initialState,
+		daemonAddress,
+		embedded,
+	})
 	const [eventEmitter] = React.useState(new EventEmitter())
 	const [debugMode, setDebugMode] = React.useState(false)
 	const [networkConfig, setNetworkConfig] = useState<beapi.account.INetworkConfig>({})
@@ -204,7 +211,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 	}, [state.selectedAccount])
 
 	return (
-		<MsgrContext.Provider
+		<MessengerContext.Provider
 			value={{
 				...state,
 				dispatch,
@@ -228,8 +235,6 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 			}}
 		>
 			{children}
-		</MsgrContext.Provider>
+		</MessengerContext.Provider>
 	)
 }
-
-export default MsgrProvider

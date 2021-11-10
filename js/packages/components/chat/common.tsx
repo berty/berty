@@ -13,11 +13,20 @@ import { Icon, Text } from '@ui-kitten/components'
 import moment from 'moment'
 import ImagePicker from 'react-native-image-crop-picker'
 import { useNavigation } from '@react-navigation/native'
+import { RESULTS } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useClient, useContact, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { checkPermissions, getMediaTypeFromMedias } from '@berty-tech/components/utils'
+import {
+	MessengerActions,
+	PersistentOptionsKeys,
+	useContact,
+	useMessengerContext,
+	useMessengerClient,
+	useThemeColor,
+} from '@berty-tech/store'
+import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
+import rnutil from '@berty-tech/rnutil'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
@@ -25,8 +34,6 @@ import { TabItems } from './file-uploads/types'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
 import { useReplyReaction } from './ReplyReactionContext'
-import { RESULTS } from 'react-native-permissions'
-import { MessengerActions, PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -161,8 +168,8 @@ export const ChatFooter: React.FC<{
 	disabled?: boolean
 	placeholder: string
 }> = ({ convPk, disabled = false, placeholder }) => {
-	const ctx = useMsgrContext()
-	const client = useClient()
+	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 	const { navigate } = useNavigation()
 
 	const [message, setMessage] = useState(ctx.convsTextInputValue[convPk] || '')
@@ -553,7 +560,7 @@ export const ChatFooter: React.FC<{
 								]}
 								onPress={async () => {
 									setActivateTab(TabItems.Camera)
-									const permissionStatus = await checkPermissions('camera', navigate)
+									const permissionStatus = await rnutil.checkPermissions('camera', navigate)
 									if (permissionStatus !== RESULTS.GRANTED) {
 										return
 									}

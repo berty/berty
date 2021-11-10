@@ -1,16 +1,7 @@
 import mapValues from 'lodash/mapValues'
 import { Player } from '@react-native-community/audio-toolkit'
 
-const soundsMap = {
-	messageReceived: 'message_received.mp3',
-	messageSent: 'message_sent.mp3',
-	contactRequestSent: 'contact_request_sent.mp3',
-	contactRequestReceived: 'contact_request_received.mp3',
-	contactRequestAccepted: 'contact_request_accepted.mp3',
-	groupCreated: 'group_created.mp3',
-}
-
-export type SoundKey = keyof typeof soundsMap
+import { SoundKey, soundsMap } from './types'
 
 export const playSoundFile = (encodedFile: string) => {
 	const p = new Player(`data:audio/aac;base64,${encodedFile}`, {
@@ -50,7 +41,7 @@ export const playSound = (name: SoundKey) => {
 }
 
 export const playSoundAsync = (name: SoundKey) => {
-	return new Promise(resolve => {
+	return new Promise<void>(resolve => {
 		const p = preloadedSounds[name]
 		if (!p) {
 			console.warn(`Tried to play unknown sound "${name}"`)

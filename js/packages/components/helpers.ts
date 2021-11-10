@@ -1,12 +1,11 @@
 import moment from 'moment'
-import { Long } from 'protobufjs/light'
 
 import {
 	CheckListProfileNotification,
-	MsgrState,
+	MessengerState,
 	PersistentOptionsKeys,
 	UpdatesProfileNotification,
-} from '@berty-tech/store/context'
+} from '@berty-tech/store/types'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 
@@ -77,16 +76,7 @@ export const timeFormat = { fmtTimestamp1, fmtTimestamp2, fmtTimestamp3 }
 export const strToTimestamp = (dateStr?: string): number =>
 	new Date(parseInt(dateStr || '0', 10)).getTime()
 
-export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number => {
-	try {
-		return !pbTimestamp ? 0 : parseInt(pbTimestamp as string, 10)
-	} catch (e) {
-		console.warn(`Error parsing date ${pbTimestamp}; returning zero`)
-		return 0
-	}
-}
-
-export const showNeedRestartNotification = (showNotification: any, ctx: MsgrState, t: any) => {
+export const showNeedRestartNotification = (showNotification: any, ctx: MessengerState, t: any) => {
 	showNotification({
 		title: t('notification.need-restart.title'),
 		message: t('notification.need-restart.desc'),
@@ -98,7 +88,7 @@ export const showNeedRestartNotification = (showNotification: any, ctx: MsgrStat
 }
 
 export const readProfileNotification = async (
-	ctx: MsgrState,
+	ctx: MessengerState,
 	type: typeof CheckListProfileNotification | typeof UpdatesProfileNotification,
 ) => {
 	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]

@@ -17,9 +17,9 @@ import {
 	useLastConvInteraction,
 	useReadEffect,
 	useNotificationsInhibitor,
-	useMsgrContext,
+	useMessengerContext,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+} from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 
 import { ChatFooter, ChatDate } from './common'
@@ -49,7 +49,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	useReadEffect(params.convId, 1000)
 	const conv = useConversation(params?.convId)
 	const { t } = useTranslation()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const insets = useSafeAreaInsets()
 	const navigation = useNativeNavigation()
 

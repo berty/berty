@@ -2,29 +2,28 @@ import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import RNFS from 'react-native-fs'
 
-import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import beapi from '@berty-tech/api'
-
-import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
-import { defaultThemeColor, storageGet, storageRemove } from '@berty-tech/store/context'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import i18n from '@berty-tech/berty-i18n'
+import { Service } from '@berty-tech/grpc-bridge'
+import { logger } from '@berty-tech/grpc-bridge/middleware'
+import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 
 import ExternalTransport from './externalTransport'
 import { refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
 import { updateAccount, setPersistentOption } from './providerCallbacks'
+import { defaultPersistentOptions, defaultThemeColor } from './context'
 import {
-	defaultPersistentOptions,
 	MessengerActions,
 	MessengerAppState,
 	PersistentOptions,
 	PersistentOptionsKeys,
 	reducerAction,
-	accountService,
 	GlobalPersistentOptionsKeys,
-} from './context'
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import i18n from '@berty-tech/berty-i18n'
-import { logger } from '@berty-tech/grpc-bridge/middleware'
+} from './types'
+import { accountService, storageRemove, storageGet } from './accountService'
+import { streamEventToAction } from './convert'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -279,23 +278,14 @@ export const openingClients = (
 					console.warn('received empty event')
 					return
 				}
-
-				const enumName = beapi.messenger.StreamEvent.Type[evt.type]
-				if (!enumName) {
-					console.warn('failed to get event type name')
+				const action = streamEventToAction(evt)
+				if (!action) {
 					return
 				}
-
-				const payloadName = enumName.substr('Type'.length)
-				const pbobj = (beapi.messenger.StreamEvent as any)[payloadName]
-				if (!pbobj) {
-					console.warn('failed to find a protobuf object matching the event type')
-					return
-				}
-				const eventPayload = pbobj.decode(evt.payload)
 				if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
 					const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
-						name => (beapi.messenger.StreamEvent.Notified.Type as any)[name] === eventPayload.type,
+						name =>
+							(beapi.messenger.StreamEvent.Notified.Type as any)[name] === action.payload.type,
 					)
 					if (!enumName) {
 						console.warn('failed to get event type name')
@@ -308,18 +298,14 @@ export const openingClients = (
 						console.warn('failed to find a protobuf object matching the notification type')
 						return
 					}
-					eventPayload.payload = pbobj.decode(eventPayload.payload)
+					action.payload.payload = pbobj.decode(action.payload.payload)
 					eventEmitter.emit('notification', {
-						type: eventPayload.type,
+						type: action.payload.type,
 						name: payloadName,
-						payload: eventPayload,
+						payload: action.payload,
 					})
 				} else {
-					dispatch({
-						type: evt.type,
-						name: payloadName,
-						payload: eventPayload,
-					})
+					dispatch(action)
 				}
 			})
 			await stream.start()

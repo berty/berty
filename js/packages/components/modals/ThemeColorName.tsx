@@ -5,8 +5,12 @@ import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { CurrentGeneratedTheme, PersistentOptionsKeys } from '@berty-tech/store/context'
+import {
+	useMessengerContext,
+	useThemeColor,
+	CurrentGeneratedTheme,
+	PersistentOptionsKeys,
+} from '@berty-tech/store'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'
@@ -16,7 +20,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 	const [{ row, text, margin, padding, border, opacity }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesDefaultModal()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t } = useTranslation()
 
 	return (

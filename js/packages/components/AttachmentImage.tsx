@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 'react-native'
 
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMessengerContext } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 
 import { getSource } from './utils'
@@ -9,7 +9,7 @@ import { getSource } from './utils'
 const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<ImageProps, 'source'>> =
 	props => {
 		const { navigate } = useNavigation()
-		const { protocolClient, medias } = useMsgrContext()
+		const { protocolClient, medias } = useMessengerContext()
 		const [source, setSource] = useState('')
 		const { cid, ...imageProps } = props
 		const mimeType = medias[cid]?.mimeType || 'image/jpeg'

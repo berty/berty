@@ -2,29 +2,26 @@ import { EffectCallback, useContext, useEffect, useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
-import { pbDateToNum } from '@berty-tech/components/helpers'
 import { Routes } from '@berty-tech/navigation'
 import colors from '@berty-tech/styles/colors.json'
 
+import { MessengerContext, useMessengerContext } from './context'
 import {
-	CheckListProfileNotification,
 	MessengerActions,
+	CheckListProfileNotification,
 	MessengerAppState,
-	MsgrContext,
 	NotificationsInhibitor,
 	PersistentOptionsKeys,
 	UpdatesProfileNotification,
-	useMsgrContext,
-} from './context'
+} from './types'
+import { pbDateToNum } from './convert'
 import { fakeContacts, fakeMessages, fakeMultiMemberConversations } from './faker'
 import { ParsedInteraction } from './types.gen'
-
-export { useMsgrContext }
 
 export type Maybe<T> = T | null | undefined
 
 export const useGetMessage = (id: Maybe<string>, convId: Maybe<string>) => {
-	const ctx = useContext(MsgrContext)
+	const ctx = useContext(MessengerContext)
 	const intes = ctx.interactions[convId as string]
 	if (!intes) {
 		return undefined
@@ -33,7 +30,7 @@ export const useGetMessage = (id: Maybe<string>, convId: Maybe<string>) => {
 }
 
 export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
-	const ctx = useContext(MsgrContext)
+	const ctx = useContext(MessengerContext)
 	const conversations = ctx.conversations
 	const contact = ctx.contacts[contactPk as string]
 	if (!contact) {
@@ -43,12 +40,12 @@ export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
 }
 
 export const useAccount = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return ctx.account
 }
 
-export const useClient = () => {
-	const ctx = useMsgrContext()
+export const useMessengerClient = () => {
+	const ctx = useMessengerContext()
 	return ctx.client
 }
 
@@ -58,7 +55,7 @@ export const useOneToOneContact = (convPk: Maybe<string>) => {
 }
 
 export const useContact = (contactPk: Maybe<string>) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	if (!contactPk) {
 		return undefined
 	}
@@ -66,7 +63,7 @@ export const useContact = (contactPk: Maybe<string>) => {
 }
 
 export const useContacts = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return ctx.contacts
 }
 
@@ -108,7 +105,7 @@ export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
 }
 
 export const useConversationList = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return Object.values(ctx.conversations) as beapi.messenger.IConversation[]
 }
 
@@ -125,7 +122,7 @@ export const useSortedConversationList = () => {
 }
 
 export const useConversation = (publicKey: Maybe<string>) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	if (!publicKey) {
 		return undefined
 	}
@@ -133,7 +130,7 @@ export const useConversation = (publicKey: Maybe<string>) => {
 }
 
 export const useConvInteractions = (publicKey: Maybe<string>) => {
-	const { interactions } = useMsgrContext()
+	const { interactions } = useMessengerContext()
 	return interactions[publicKey as string] || []
 }
 
@@ -142,7 +139,7 @@ export const useConversationsCount = () => {
 }
 
 export const useConvMembers = (publicKey: Maybe<string>) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return ctx.members[publicKey as string] || {}
 }
 
@@ -162,12 +159,12 @@ export const useConvMemberList = (publicKey: Maybe<string>) => {
 }
 
 export const usePersistentOptions = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return ctx.persistentOptions || {}
 }
 
 export const useThemeColor = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	let collectionColors = {}
 	Object.entries(ctx.persistentOptions?.themeColor.collection).map(value => {
 		if (value[0] === ctx.persistentOptions?.themeColor.selected) {
@@ -181,7 +178,7 @@ export const useThemeColor = () => {
 }
 
 export const useProfileNotification = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
 	return profileNotifs[UpdatesProfileNotification] + profileNotifs[CheckListProfileNotification]
 }
@@ -192,7 +189,7 @@ export const useProfileNotification = () => {
 
 // Generate n fake conversations with n fake contacts, one UserMessage per conv
 export const useGenerateFakeContacts = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const prevFakeCount: number = Object.values(ctx.contacts).reduce(
 		(r, c) => ((c as any).fake ? r + 1 : r),
 		0,
@@ -207,7 +204,7 @@ export const useGenerateFakeContacts = () => {
 }
 
 export const useGenerateFakeMultiMembers = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const prevFakeCount = Object.values(ctx.conversations).reduce(
 		(r, c) =>
 			(c as any).fake && c?.type === beapi.messenger.Conversation.Type.MultiMemberType ? r + 1 : r,
@@ -224,7 +221,7 @@ export const useGenerateFakeMultiMembers = () => {
 
 // Generate n fake messages for all fake conversations
 export const useGenerateFakeMessages = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const fakeConversationList = useConversationList().filter(c => (c as any).fake === true)
 	const fakeMembersListList = fakeConversationList.map(conv =>
 		Object.values(ctx.members[conv.publicKey || ''] || {}).filter((member: any) => member.fake),
@@ -254,7 +251,7 @@ export const useGenerateFakeMessages = () => {
 
 // Delete all fake data
 export const useDeleteFakeData = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return () =>
 		ctx.dispatch({
 			type: MessengerActions.DeleteFakeData,
@@ -281,7 +278,7 @@ export const useLastConvInteraction = (
 }
 
 const useDispatch = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return ctx.dispatch
 }
 
@@ -315,7 +312,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
 	const navigation = useNavigation()
 
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 
 	const conv = useConversation(publicKey)
 	const fake = (conv && (conv as any).fake) || false

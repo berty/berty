@@ -4,9 +4,8 @@ import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { PersistentOptionsKeys, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { ScreenProps } from '@berty-tech/navigation'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 
@@ -26,7 +25,7 @@ const BodyNotifications: React.FC<{}> = () => {
 	const _styles = useStylesNotifications()
 	const [{ flex, padding, margin }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 
 	return (
@@ -144,7 +143,7 @@ const BodyNotifications: React.FC<{}> = () => {
 }
 
 export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 	const [{ padding, text }, { scaleSize }] = useStyles()

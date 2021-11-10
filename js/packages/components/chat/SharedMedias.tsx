@@ -20,14 +20,15 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import {
-	useMsgrContext,
+	useMessengerContext,
 	useConvInteractions,
-	useClient,
+	useMessengerClient,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+	pbDateToNum,
+} from '@berty-tech/store'
 
 import { getSource } from '../utils'
-import { pbDateToNum, timeFormat } from '../helpers'
+import { timeFormat } from '../helpers'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 
 const initialLayout = { width: Dimensions.get('window').width }
@@ -43,9 +44,9 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const [activeIndex, setActiveIndex] = useState(0)
-	const { protocolClient } = useMsgrContext()
+	const { protocolClient } = useMessengerContext()
 	const [images, setImages] = useState<any[]>([])
-	const client = useClient()
+	const client = useMessengerClient()
 
 	const messages = useConvInteractions(convPk).filter(
 		msg =>

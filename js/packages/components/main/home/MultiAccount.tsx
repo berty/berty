@@ -13,13 +13,17 @@ import DocumentPicker from 'react-native-document-picker'
 import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
-import { MessengerActions, MsgrState, useMsgrContext } from '@berty-tech/store/context'
-import { closeAccountWithProgress } from '@berty-tech/store/effectableCallbacks'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import {
+	MessengerActions,
+	MessengerState,
+	useMessengerContext,
+	closeAccountWithProgress,
+	useThemeColor,
+} from '@berty-tech/store'
 
 import { GenericAvatar } from '../../avatars'
 
-const openDocumentPicker = async (ctx: MsgrState) => {
+const openDocumentPicker = async (ctx: MessengerState) => {
 	try {
 		const res = await DocumentPicker.pick({
 			// @ts-ignore
@@ -95,10 +99,10 @@ const AccountButton: React.FC<{
 }
 
 export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { dispatch } = useMsgrContext()
+	const { dispatch } = useMessengerContext()
 	const { t } = useTranslation()
 
 	return (

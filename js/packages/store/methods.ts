@@ -3,7 +3,8 @@ import { useReducer, useCallback } from 'react'
 import beapi from '@berty-tech/api'
 
 import { MessengerMethodsHooks, ProtocolMethodsHooks } from './types.gen'
-import { MsgrState, useMsgrContext } from './context'
+import { useMessengerContext } from './context'
+import { MessengerState } from './types'
 
 const initialState: MethodState<any> = { error: null, reply: null, done: false, called: false }
 
@@ -39,7 +40,7 @@ const callAction = () => ({ type: 'CALL' })
 const makeMethodHook =
 	<R>(getClient: (ctx: any) => any, key: string) =>
 	() => {
-		const ctx = useMsgrContext()
+		const ctx = useMessengerContext()
 		const client = getClient(ctx)
 
 		const [state, dispatch] = useReducer<(state: MethodState<R>, action: any) => MethodState<R>>(
@@ -90,7 +91,7 @@ const getServiceMethods = (service: any) => {
 	}
 }
 
-const makeServiceHooks = <S>(service: S, getClient: (ctx: MsgrState) => any) =>
+const makeServiceHooks = <S>(service: S, getClient: (ctx: MessengerState) => any) =>
 	Object.keys(getServiceMethods(service)).reduce(
 		(r, key) => ({ ...r, ['use' + key]: makeMethodHook(getClient, key) }),
 		{},

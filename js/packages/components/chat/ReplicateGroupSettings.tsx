@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useMsgrContext, Maybe, useThemeColor } from '@berty-tech/store/hooks'
+import { useConversation, useMessengerContext, Maybe, useThemeColor } from '@berty-tech/store'
 import { ScreenProps } from '@berty-tech/navigation'
 import {
 	servicesAuthViaDefault,
@@ -97,7 +97,7 @@ const getReplicationStatusColor = (status: replicationServerStatus): string => {
 const ReplicateGroupContent: React.FC<{
 	conversationPublicKey?: Maybe<string>
 }> = ({ conversationPublicKey }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const conversation = ctx.conversations[conversationPublicKey as string]
 	const services = useAccountServices()
 	const navigation = useNavigation()

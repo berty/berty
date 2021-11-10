@@ -3,17 +3,16 @@ import { AppState, View, ScrollView, Linking, Platform } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { withInAppNotification } from 'react-native-in-app-notification'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { accountService } from '@berty-tech/store/context'
+import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { ScreenProps } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
+import rnutil from '@berty-tech/rnutil'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { showNeedRestartNotification } from '../helpers'
-import { checkPermissions } from '@berty-tech/components/utils'
-import { useNavigation } from '@react-navigation/native'
 
 //
 // Bluetooth
@@ -41,7 +40,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 	({ showNotification, bluetoothPermissions, setBluetoothPermissions }: any) => {
 		const [{ flex, padding, margin }] = useStyles()
 		const colors = useThemeColor()
-		const ctx = useMsgrContext()
+		const ctx = useMessengerContext()
 		const { t }: { t: any } = useTranslation()
 		const { navigate } = useNavigation()
 
@@ -50,7 +49,8 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 		useEffect(() => {
 			const _handleAppStateChange = (nextAppState: any) => {
 				if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-					checkPermissions('p2p', navigate, { isToNavigate: false })
+					rnutil
+						.checkPermissions('p2p', navigate, { isToNavigate: false })
 						.then(result => {
 							setBluetoothPermissions(result)
 							toActivate(result)
@@ -114,13 +114,13 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 				case 'denied':
 				case 'limited':
 				case 'unavailable':
-					await checkPermissions('p2p', navigate, {
+					await rnutil.checkPermissions('p2p', navigate, {
 						isToNavigate: true,
 					})
 					showNeedRestartNotification(showNotification, ctx, t)
 					break
 				case 'blocked':
-					await checkPermissions('p2p', navigate, {
+					await rnutil.checkPermissions('p2p', navigate, {
 						isToNavigate: true,
 					})
 					await Linking.openSettings()
@@ -190,7 +190,7 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const [bluetoothPermissions, setBluetoothPermissions] = useState<
 		'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined
 	>()
-	const { selectedAccount, setNetworkConfig } = useMsgrContext()
+	const { selectedAccount, setNetworkConfig } = useMessengerContext()
 	const [{ padding, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
@@ -198,7 +198,8 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 
 	// get Bluetooth permissions state
 	React.useEffect(() => {
-		checkPermissions('p2p', navigate, { isToNavigate: false })
+		rnutil
+			.checkPermissions('p2p', navigate, { isToNavigate: false })
 			.then(result => {
 				if (result && bluetoothPermissions !== result) {
 					console.log('useEffect: permissions changed')

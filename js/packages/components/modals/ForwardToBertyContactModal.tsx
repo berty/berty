@@ -8,12 +8,12 @@ import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import {
 	useSortedConversationList,
-	useMsgrContext,
+	useMessengerContext,
 	useThemeColor,
+	useMessengerClient,
 	Maybe,
-} from '@berty-tech/store/hooks'
-import { useClient } from '@berty-tech/store/hooks'
-import { prepareMediaBytes } from '@berty-tech/store/utils'
+	prepareMediaBytes,
+} from '@berty-tech/store'
 
 import { ConversationAvatar } from '../avatars'
 
@@ -25,8 +25,8 @@ export const ForwardToBertyContactModal: React.FC<{
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const conversations = useSortedConversationList()
-	const ctx = useMsgrContext()
-	const client = useClient()
+	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 
 	const prepareMediaAndSend = async (convPk: Maybe<string>) => {
 		if (!client) {

@@ -7,7 +7,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { Maybe, useConversation, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { Maybe, useConversation, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import {
 	ButtonSetting,
@@ -15,6 +15,7 @@ import {
 	ButtonSettingRow,
 	ButtonDropDown,
 } from '../shared-components/SettingsButtons'
+
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 
 //
@@ -71,7 +72,7 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const [picture, setPicture] = useState<ImageOrVideo | undefined>(undefined)
 	const [{ text, margin, row }] = useStyles()
 	const colors = useThemeColor()
@@ -162,7 +163,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const [{ padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
 	const navigation = useNavigation()

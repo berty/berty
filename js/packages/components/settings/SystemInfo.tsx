@@ -6,16 +6,14 @@ import { useNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor } from '@berty-tech/store/hooks'
-
-import { useMsgrContext } from '@berty-tech/store/context'
+import { useThemeColor, useMessengerContext } from '@berty-tech/store'
 
 export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 	const navigation = useNavigation()
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
-	const { networkConfig } = useMsgrContext()
+	const { networkConfig } = useMessengerContext()
 
 	React.useEffect(() => {
 		call()

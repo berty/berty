@@ -7,15 +7,14 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { dispatch } from '@berty-tech/navigation/rootRef'
+import { Routes } from '@berty-tech/navigation'
+import { PersistentOptionsKeys, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
 import { MultiMemberAvatar } from '../avatars'
-import { dispatch } from '@berty-tech/navigation/rootRef'
-import { Routes } from '@berty-tech/navigation'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -68,7 +67,7 @@ export const ManageGroupInvitation: React.FC<{
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t }: any = useTranslation()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 
 	const [password, setPassword] = useState('')
 

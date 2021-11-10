@@ -12,9 +12,9 @@ import {
 	useMember,
 	useConversation,
 	Maybe,
-	useMsgrContext,
+	useMessengerContext,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+} from '@berty-tech/store'
 import { navigate } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
@@ -242,7 +242,7 @@ export const ContactAvatar: React.FC<{
 	pressable?: boolean
 }> = ({ publicKey, size, style, fallbackNameSeed, pressable }) => {
 	const contact = useContact(publicKey)
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	if (suggestion) {
 		return (
@@ -292,7 +292,7 @@ export const MultiMemberAvatar: React.FC<{
 	fallbackNameSeed?: Maybe<string>
 	pressable?: boolean
 }> = ({ size, style, publicKey, fallbackNameSeed, pressable }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const conv = useConversation(publicKey)
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	let content: React.ReactElement
@@ -332,7 +332,7 @@ export const ConversationAvatar: React.FC<{
 	style?: AvatarStyle
 }> = ({ publicKey, size, style }) => {
 	const conv = useConversation(publicKey)
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 
 	if (conv) {
 		if (conv.type === beapi.messenger.Conversation.Type.MultiMemberType) {

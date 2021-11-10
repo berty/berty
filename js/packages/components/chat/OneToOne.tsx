@@ -13,12 +13,12 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import {
 	useContact,
-	useMsgrContext,
+	useMessengerContext,
 	useConversation,
 	useReadEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+} from '@berty-tech/store'
 import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 
 import { ContactAvatar } from '../avatars'
@@ -153,7 +153,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const { t } = useTranslation()
 	const conv = useConversation(params?.convId)
 	const contact = useContact(conv?.contactPublicKey)
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const navigation = useNativeNavigation()
 	const { navigate } = useNavigation()
 

@@ -16,14 +16,15 @@ import { ScreenProps } from '@berty-tech/navigation'
 import {
 	useConversationsCount,
 	useIncomingContactRequests,
-	useMsgrContext,
+	useMessengerContext,
 	useNotificationsInhibitor,
 	useSortedConversationList,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+} from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
+import rnutil from '@berty-tech/rnutil'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'
@@ -32,7 +33,6 @@ import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
-import { checkPermissions } from '@berty-tech/components/utils'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -100,7 +100,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
 	const { navigate } = useNativeNavigation()
-	const { client } = useMsgrContext()
+	const { client } = useMessengerContext()
 
 	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight, windowHeight }] = useStyles()
 	const colors = useThemeColor()
@@ -115,7 +115,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		[lowSearchText],
 	)
 
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const suggestions = Object.values(ctx.persistentOptions?.suggestions).filter(
 		(i: any) => i.state === 'unread',
 	)
@@ -316,7 +316,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 					fill={colors['secondary-text']}
 					backgroundColor={colors['main-background']}
 					onPress={async () => {
-						await checkPermissions('camera', navigate, {
+						await rnutil.checkPermissions('camera', navigate, {
 							navigateNext: 'Main.Scan',
 							isToNavigate: true,
 							createNewAccount: false,

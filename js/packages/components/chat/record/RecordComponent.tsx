@@ -10,12 +10,14 @@ import { Recorder } from '@react-native-community/audio-toolkit'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
+import { RESULTS } from 'react-native-permissions'
 
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { playSound } from '@berty-tech/store/sounds'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import rnutil from '@berty-tech/rnutil'
 
 import {
 	limitIntensities,
@@ -27,8 +29,6 @@ import {
 } from './common'
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
-import { checkPermissions } from '@berty-tech/components/utils'
-import { RESULTS } from 'react-native-permissions'
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -42,7 +42,7 @@ const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
 const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await checkPermissions('audio', navigate)
+	const permissionStatus = await rnutil.checkPermissions('audio', navigate)
 	if (permissionStatus === RESULTS.GRANTED) {
 		return MicPermStatus.GRANTED
 	}
@@ -115,7 +115,7 @@ export const RecordComponent: React.FC<{
 	minAudioDuration = 1000,
 	convPk,
 }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const recorder = React.useRef<Recorder | undefined>(undefined)
 	const [recorderFilePath, setRecorderFilePath] = useState('')
 	const { t } = useTranslation()
@@ -345,7 +345,7 @@ export const RecordComponent: React.FC<{
 						return
 					} else if (permState === MicPermStatus.DENIED || permState === MicPermStatus.UNDEFINED) {
 						setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
-						await checkPermissions('audio', navigate, {
+						await rnutil.checkPermissions('audio', navigate, {
 							isToNavigate: true,
 						})
 						return

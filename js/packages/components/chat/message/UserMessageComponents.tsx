@@ -6,12 +6,18 @@ import { Icon, Text } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import tlds from 'tlds'
 
-import { Maybe, useClient, useThemeColor } from '@berty-tech/store/hooks'
+import {
+	Maybe,
+	useMessengerClient,
+	useThemeColor,
+	pbDateToNum,
+	InteractionUserMessage,
+	ParsedInteraction,
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { timeFormat } from '../../helpers'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
@@ -70,7 +76,7 @@ export const HyperlinkUserMessage: React.FC<{
 		payload: { body: message },
 	} = inte
 
-	const client = useClient()
+	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const navigation = useNativeNavigation()
 	const [{ margin, padding, column, border }, { scaleSize }] = useStyles()

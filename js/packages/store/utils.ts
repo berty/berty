@@ -1,33 +1,10 @@
-import beapi from '@berty-tech/api'
 import Shake, { ShakeFile } from '@shakebugs/react-native-shake'
 import { Buffer } from 'buffer'
 
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
+import beapi from '@berty-tech/api'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { accountService } from './context'
 
-type TypeNameDict = { [key: string]: beapi.messenger.AppMessage.Type | undefined }
-
-export const parseInteraction = (i: beapi.messenger.Interaction): ParsedInteraction => {
-	const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(name => {
-		return (beapi.messenger.AppMessage.Type as unknown as TypeNameDict)[name] === i.type
-	})
-	const name = typeName?.substr('Type'.length)
-	const pbobj = (beapi.messenger.AppMessage as any)[name as any]
-
-	if (!pbobj) {
-		return {
-			...i,
-			type: beapi.messenger.AppMessage.Type.Undefined,
-			payload: undefined,
-		}
-	}
-
-	return {
-		...i,
-		payload: pbobj.decode(i.payload),
-	}
-}
+import { accountService } from './accountService'
 
 export const updateShakeAttachments = async () => {
 	try {

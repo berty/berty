@@ -5,8 +5,9 @@ import { Icon, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
+import { pbDateToNum } from '@berty-tech/store/convert'
 
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { timeFormat } from '../../helpers'
 import { InteractionMonitorMetadata } from '@berty-tech/store/types.gen'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor

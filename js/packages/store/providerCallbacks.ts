@@ -8,16 +8,9 @@ import {
 	closeAccountWithProgress,
 	importAccountWithProgress,
 } from './effectableCallbacks'
-import {
-	accountService,
-	reducerAction,
-	defaultPersistentOptions,
-	MessengerActions,
-	PersistentOptionsUpdate,
-	storageRemove,
-	storageGet,
-	storageSet,
-} from './context'
+import { defaultPersistentOptions } from './context'
+import { accountService, storageRemove, storageGet, storageSet } from './accountService'
+import { MessengerActions, PersistentOptionsUpdate, reducerAction } from './types'
 
 export const importAccount = async (
 	embedded: boolean,

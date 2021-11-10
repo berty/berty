@@ -6,11 +6,10 @@ import { Text } from '@ui-kitten/components'
 import { RouteProp, useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, useMsgrContext } from '@berty-tech/store/hooks'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import { useThemeColor, useMessengerContext, PersistentOptionsKeys } from '@berty-tech/store'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
+import rnutil from '@berty-tech/rnutil'
 
-import { checkPermissions } from '../utils'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import Button from '../onboarding/Button'
 
@@ -22,7 +21,7 @@ enum Modes {
 export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
 	const checkNotificationPermission = route?.params?.checkNotificationPermission
 	const { t }: { t: any } = useTranslation()
-	const { setPersistentOption, persistentOptions } = useMsgrContext()
+	const { setPersistentOption, persistentOptions } = useMessengerContext()
 	const { goBack, navigate } = useNavigation()
 
 	const [mode, setMode] = useState(Modes.FullAnon)
@@ -57,7 +56,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 		goBack()
 
 		if (checkNotificationPermission) {
-			const notificationStatus = await checkPermissions('notification', navigate, {
+			const notificationStatus = await rnutil.checkPermissions('notification', navigate, {
 				isToNavigate: false,
 			})
 			if (notificationStatus === RESULTS.GRANTED) {
@@ -72,7 +71,7 @@ export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route
 					},
 				})
 			} else {
-				await checkPermissions('notification', navigate)
+				await rnutil.checkPermissions('notification', navigate)
 			}
 		}
 	}
