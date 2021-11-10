@@ -5,6 +5,8 @@ declare module '*.svg' {
 	export default content
 }
 
+declare var __DEV__: boolean | undefined
+
 declare module 'react-native-in-app-notification'
 declare module 'linkify-it'
 declare module 'react-native-flags'
