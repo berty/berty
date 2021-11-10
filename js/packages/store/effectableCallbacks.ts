@@ -39,40 +39,41 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 export const importAccountWithProgress = async (
 	path: string,
 	dispatch: (arg0: reducerAction) => void,
-) => {
-	let resp: beapi.account.ImportAccountWithProgress.Reply | null = null
-	await accountService
-		.importAccountWithProgress({ backupPath: path })
-		.then(async stream => {
-			stream.onMessage(async (msg, _) => {
-				if (msg?.progress?.state !== 'done') {
-					dispatch({
-						type: MessengerActions.SetStateStreamInProgress,
-						payload: {
-							msg: msg,
-							stream: 'Import account',
-						},
-					})
-				} else {
-					dispatch({
-						type: MessengerActions.SetStateStreamDone,
-					})
-				}
-				if (msg?.accountMetadata) {
-					resp = msg
-				}
-				return
+) =>
+	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(resolve => {
+		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
+		accountService
+			.importAccountWithProgress({ backupPath: path })
+			.then(async stream => {
+				stream.onMessage(async (msg, _) => {
+					if (msg?.progress?.state !== 'done') {
+						dispatch({
+							type: MessengerActions.SetStateStreamInProgress,
+							payload: {
+								msg: msg,
+								stream: 'Import account',
+							},
+						})
+					} else {
+						dispatch({
+							type: MessengerActions.SetStateStreamDone,
+						})
+						resolve(metaMsg)
+					}
+					if (msg?.accountMetadata) {
+						metaMsg = msg
+					}
+				})
+				await stream.start()
 			})
-			await stream.start()
-		})
-		.catch(err => {
-			dispatch({
-				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to close node: ${err}`) },
+			.catch(err => {
+				dispatch({
+					type: MessengerActions.SetStreamError,
+					payload: { error: new Error(`Failed to import account: ${err}`) },
+				})
+				resolve(null)
 			})
-		})
-	return resp
-}
+	})
 
 export const refreshAccountList = async (
 	embedded: boolean,
