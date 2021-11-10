@@ -8,6 +8,8 @@ export type ServiceClientType<S> = S extends beapi.protocol.ProtocolService
 	? WelshAccountServiceClient
 	: S extends beapi.messenger.MessengerService
 	? WelshMessengerServiceClient
+	: S extends beapi.bridge.BridgeService
+	? WelshBridgeServiceClient
 	: never
 
 export interface WelshProtocolServiceClient {
@@ -136,4 +138,13 @@ export interface WelshMessengerServiceClient {
 	tyberHostAttach: UnaryType<beapi.messenger.MessengerService['tyberHostAttach']>
 	pushSetAutoShare: UnaryType<beapi.messenger.MessengerService['pushSetAutoShare']>
 	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
+}
+
+export interface WelshBridgeServiceClient {
+	clientInvokeUnary: UnaryType<beapi.bridge.BridgeService['clientInvokeUnary']>
+	createClientStream: UnaryType<beapi.bridge.BridgeService['createClientStream']>
+	clientStreamSend: UnaryType<beapi.bridge.BridgeService['clientStreamSend']>
+	clientStreamRecv: UnaryType<beapi.bridge.BridgeService['clientStreamRecv']>
+	clientStreamClose: UnaryType<beapi.bridge.BridgeService['clientStreamClose']>
+	clientStreamCloseAndRecv: UnaryType<beapi.bridge.BridgeService['clientStreamCloseAndRecv']>
 }

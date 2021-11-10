@@ -10,6 +10,7 @@ const services = [
 	'berty.protocol.v1.ProtocolService',
 	'berty.account.v1.AccountService',
 	'berty.messenger.v1.MessengerService',
+	'berty.bridge.v1.BridgeService',
 ]
 
 console.log('\nexport type ServiceClientType<S> =')
