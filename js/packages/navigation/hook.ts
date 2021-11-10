@@ -42,7 +42,6 @@ const createNavigation = ({ navigate, goBack, dispatch }: NavigationProp<any>) =
 				selectMode: createNavigateFunc(navigate, Routes.Onboarding.SelectMode),
 				performance: createNavigateFunc(navigate, Routes.Onboarding.Performance),
 				privacy: createNavigateFunc(navigate, Routes.Onboarding.Privacy),
-				servicesAuth: createNavigateFunc(navigate, Routes.Onboarding.ServicesAuth),
 			},
 			main: {
 				home: createNavigateFunc<ScreenProps.Main.Home>(navigate, Routes.Main.Home),
