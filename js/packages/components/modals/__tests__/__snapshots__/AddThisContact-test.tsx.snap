@@ -1,0 +1,1354 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddThisContact modal renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "height": "100%",
+            "justifyContent": "center",
+          },
+          Object {
+            "padding": 16,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "paddingHorizontal": 16,
+            },
+            Object {
+              "paddingBottom": 16,
+            },
+            Object {
+              "borderRadius": 24,
+            },
+            Object {
+              "backgroundColor": "#FFFFFF",
+              "width": "100%",
+            },
+          ]
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "position": "absolute",
+                "top": -50,
+              },
+              Object {
+                "alignSelf": "center",
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              Array [
+                Object {
+                  "shadowOffset": Object {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 2,
+                },
+                Array [
+                  Object {
+                    "shadowOffset": Object {
+                      "height": 4,
+                      "width": 0,
+                    },
+                    "shadowOpacity": 0.2,
+                    "shadowRadius": 8,
+                  },
+                  Object {
+                    "alignItems": "stretch",
+                    "flexDirection": "row",
+                    "justifyContent": "space-evenly",
+                  },
+                  Object {
+                    "shadowColor": "#000000",
+                  },
+                ],
+                Object {
+                  "alignItems": "center",
+                  "backgroundColor": "#FFFFFF",
+                  "borderRadius": 50,
+                  "height": 100,
+                  "justifyContent": "center",
+                  "shadowColor": "#000000",
+                  "width": 100,
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Array [
+                  Array [
+                    Object {
+                      "shadowOffset": Object {
+                        "height": 4,
+                        "width": 0,
+                      },
+                      "shadowOpacity": 0.2,
+                      "shadowRadius": 8,
+                    },
+                    Object {
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-evenly",
+                    },
+                    Object {
+                      "shadowColor": "#000000",
+                    },
+                  ],
+                  Object {
+                    "alignItems": "center",
+                    "backgroundColor": "#71b483",
+                    "borderRadius": 50,
+                    "height": 100,
+                    "justifyContent": "center",
+                    "width": 100,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Object {
+                    "color": "#FFFFFF",
+                    "fontSize": 50,
+                    "includeFontPadding": false,
+                  }
+                }
+              >
+                A
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "paddingTop": 55,
+              },
+            ]
+          }
+        >
+          <Text
+            appearance="default"
+            category="p1"
+            style={
+              Array [
+                Object {
+                  "color": "#222B45",
+                  "fontFamily": "Open Sans",
+                  "fontSize": 15,
+                  "fontWeight": "600",
+                },
+                Object {
+                  "textAlign": "center",
+                },
+              ]
+            }
+          >
+            Alice
+          </Text>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 16,
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Array [
+                  Object {
+                    "alignItems": "stretch",
+                    "flexDirection": "row",
+                    "justifyContent": "space-between",
+                  },
+                ]
+              }
+            >
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "flex": 1,
+                    "opacity": 1,
+                    "paddingBottom": 4,
+                  }
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      false,
+                      Object {
+                        "alignItems": "center",
+                        "justifyContent": "space-between",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "height": 25,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <SvgMock
+                        color="#525BEC"
+                        height={25}
+                        style={
+                          Object {
+                            "transform": undefined,
+                          }
+                        }
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                  <Text
+                    appearance="default"
+                    category="p1"
+                    style={
+                      Array [
+                        Object {
+                          "color": "#222B45",
+                          "fontFamily": "Open Sans",
+                          "fontSize": 15,
+                          "fontWeight": "600",
+                        },
+                        Array [
+                          Object {
+                            "fontWeight": "bold",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "fontSize": 24,
+                          },
+                          Object {
+                            "color": "#525BEC",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    modals.add-this-contact.fingerprint
+                  </Text>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "bottom": 0,
+                        "left": "2.5%",
+                        "position": "absolute",
+                        "width": "95%",
+                      },
+                      Array [
+                        Object {
+                          "borderWidth": 2,
+                        },
+                        Object {
+                          "borderRadius": 2,
+                        },
+                        Object {
+                          "borderColor": "#525BEC",
+                        },
+                      ],
+                      false,
+                    ]
+                  }
+                />
+              </View>
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "flex": 1,
+                    "opacity": 1,
+                    "paddingBottom": 4,
+                  }
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "opacity": 0.2,
+                      },
+                      Object {
+                        "alignItems": "center",
+                        "justifyContent": "space-between",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "height": 25,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGSvgView
+                        align="xMidYMid"
+                        bbHeight={25}
+                        bbWidth={25}
+                        fill="#383B62"
+                        focusable={false}
+                        height={25}
+                        meetOrSlice={0}
+                        minX={0}
+                        minY={0}
+                        style={
+                          Array [
+                            Object {
+                              "backgroundColor": "transparent",
+                              "borderWidth": 0,
+                            },
+                            Object {
+                              "transform": undefined,
+                            },
+                            Object {
+                              "flex": 0,
+                              "height": 25,
+                              "width": 25,
+                            },
+                          ]
+                        }
+                        vbHeight={24}
+                        vbWidth={24}
+                        width={25}
+                      >
+                        <RNSVGGroup
+                          fill={4281875298}
+                          propList={
+                            Array [
+                              "fill",
+                            ]
+                          }
+                        >
+                          <RNSVGGroup>
+                            <RNSVGGroup>
+                              <RNSVGRect
+                                height="24"
+                                matrix={
+                                  Array [
+                                    -1,
+                                    1.2246467991473532e-16,
+                                    -1.2246467991473532e-16,
+                                    -1,
+                                    24,
+                                    24,
+                                  ]
+                                }
+                                opacity={0}
+                                width="24"
+                                x={0}
+                                y={0}
+                              />
+                              <RNSVGPath
+                                d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"
+                              />
+                              <RNSVGCircle
+                                cx="12"
+                                cy="8"
+                                r="1"
+                              />
+                              <RNSVGPath
+                                d="M12 10a1 1 0 0 0-1 1v5a1 1 0 0 0 2 0v-5a1 1 0 0 0-1-1z"
+                              />
+                            </RNSVGGroup>
+                          </RNSVGGroup>
+                        </RNSVGGroup>
+                      </RNSVGSvgView>
+                    </View>
+                  </View>
+                  <Text
+                    appearance="default"
+                    category="p1"
+                    style={
+                      Array [
+                        Object {
+                          "color": "#222B45",
+                          "fontFamily": "Open Sans",
+                          "fontSize": 15,
+                          "fontWeight": "600",
+                        },
+                        Array [
+                          Object {
+                            "fontWeight": "bold",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "fontSize": 24,
+                          },
+                          Object {
+                            "color": "#383B62",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    modals.add-this-contact.info
+                  </Text>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "bottom": 0,
+                        "left": "2.5%",
+                        "position": "absolute",
+                        "width": "95%",
+                      },
+                      Array [
+                        Object {
+                          "borderWidth": 2,
+                        },
+                        Object {
+                          "borderRadius": 2,
+                        },
+                        Object {
+                          "borderColor": "#383B62",
+                        },
+                      ],
+                      Object {
+                        "opacity": 0.2,
+                      },
+                    ]
+                  }
+                />
+              </View>
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "flex": 1,
+                    "opacity": 1,
+                    "paddingBottom": 4,
+                  }
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "opacity": 0.2,
+                      },
+                      Object {
+                        "alignItems": "center",
+                        "justifyContent": "space-between",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "height": 25,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <Text
+                        allowFontScaling={false}
+                        style={
+                          Array [
+                            Object {
+                              "color": "#383B62",
+                              "fontSize": 25,
+                            },
+                            Object {
+                              "transform": Array [
+                                Object {
+                                  "rotate": "22.5deg",
+                                },
+                                Object {
+                                  "scale": 0.8,
+                                },
+                              ],
+                            },
+                            Object {
+                              "fontFamily": "Feather",
+                              "fontStyle": "normal",
+                              "fontWeight": "normal",
+                            },
+                            Object {},
+                          ]
+                        }
+                      >
+                        
+                      </Text>
+                    </View>
+                  </View>
+                  <Text
+                    appearance="default"
+                    category="p1"
+                    style={
+                      Array [
+                        Object {
+                          "color": "#222B45",
+                          "fontFamily": "Open Sans",
+                          "fontSize": 15,
+                          "fontWeight": "600",
+                        },
+                        Array [
+                          Object {
+                            "fontWeight": "bold",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "fontSize": 24,
+                          },
+                          Object {
+                            "color": "#383B62",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    modals.add-this-contact.devices
+                  </Text>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "bottom": 0,
+                        "left": "2.5%",
+                        "position": "absolute",
+                        "width": "95%",
+                      },
+                      Array [
+                        Object {
+                          "borderWidth": 2,
+                        },
+                        Object {
+                          "borderRadius": 2,
+                        },
+                        Object {
+                          "borderColor": "#383B62",
+                        },
+                      ],
+                      Object {
+                        "opacity": 0.2,
+                      },
+                    ]
+                  }
+                />
+              </View>
+            </View>
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 32,
+                },
+              ]
+            }
+          >
+            <View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "borderRadius": 16,
+                    },
+                    Object {
+                      "padding": 16,
+                    },
+                    Object {
+                      "backgroundColor": "#F7F8FF",
+                      "width": "100%",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "column",
+                        "justifyContent": "flex-start",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "alignItems": "stretch",
+                          "flexDirection": "row",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      375A
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      02A9
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      A1BA
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      7483
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "alignItems": "stretch",
+                          "flexDirection": "row",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      8741
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      9DD6
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      EFB6
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      588E
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "alignItems": "stretch",
+                          "flexDirection": "row",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      A1B9
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      B8F1
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      39E0
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      D60E
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "alignItems": "stretch",
+                          "flexDirection": "row",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      F77A
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      6A47
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      C66A
+                    </Text>
+                    <Text
+                      appearance="default"
+                      category="p1"
+                      style={
+                        Array [
+                          Object {
+                            "color": "#222B45",
+                            "fontFamily": "Open Sans",
+                            "fontSize": 15,
+                            "fontWeight": "600",
+                          },
+                          Array [
+                            Object {
+                              "fontWeight": "bold",
+                            },
+                            Object {
+                              "fontSize": 24,
+                            },
+                            Object {
+                              "color": "#525BEC",
+                              "fontFamily": "Courier",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      4ED3
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "stretch",
+                "flexDirection": "row",
+                "justifyContent": "space-between",
+              },
+              Object {
+                "padding": 16,
+              },
+            ]
+          }
+        >
+          <View
+            accessible={true}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "backgroundColor": "#CED2FF",
+                "borderRadius": 9,
+                "flex": 3,
+                "opacity": 1,
+                "paddingVertical": 12,
+              }
+            }
+          >
+            <Text
+              appearance="default"
+              category="p1"
+              style={
+                Array [
+                  Object {
+                    "color": "#222B45",
+                    "fontFamily": "Open Sans",
+                    "fontSize": 15,
+                    "fontWeight": "600",
+                  },
+                  Object {
+                    "color": "#525BEC",
+                    "textAlign": "center",
+                  },
+                ]
+              }
+            >
+              ADD THIS CONTACT
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "stretch",
+            "alignSelf": "center",
+            "backgroundColor": "#FFFFFF",
+            "borderRadius": 22.5,
+            "bottom": "2%",
+            "flexDirection": "column",
+            "height": 45,
+            "justifyContent": "space-evenly",
+            "opacity": 1,
+            "paddingVertical": 16,
+            "position": "absolute",
+            "shadowColor": "#000000",
+            "shadowOffset": Object {
+              "height": 1,
+              "width": 0,
+            },
+            "shadowOpacity": 0.2,
+            "shadowRadius": 2,
+            "width": 45,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "transform": Array [
+                Object {
+                  "scale": 1,
+                },
+              ],
+            }
+          }
+        >
+          <RNSVGSvgView
+            align="xMidYMid"
+            bbHeight={25}
+            bbWidth={25}
+            fill="#979797"
+            focusable={false}
+            height={25}
+            meetOrSlice={0}
+            minX={0}
+            minY={0}
+            style={
+              Array [
+                Object {
+                  "backgroundColor": "transparent",
+                  "borderWidth": 0,
+                },
+                Array [
+                  Object {
+                    "alignSelf": "center",
+                  },
+                  Object {
+                    "opacity": 0.5,
+                  },
+                ],
+                Object {
+                  "flex": 0,
+                  "height": 25,
+                  "width": 25,
+                },
+              ]
+            }
+            vbHeight={24}
+            vbWidth={24}
+            width={25}
+          >
+            <RNSVGGroup
+              fill={4288124823}
+              opacity={0.5}
+              propList={
+                Array [
+                  "fill",
+                ]
+              }
+            >
+              <RNSVGGroup>
+                <RNSVGGroup>
+                  <RNSVGRect
+                    height="24"
+                    matrix={
+                      Array [
+                        -1,
+                        1.2246467991473532e-16,
+                        -1.2246467991473532e-16,
+                        -1,
+                        24,
+                        24,
+                      ]
+                    }
+                    opacity={0}
+                    width="24"
+                    x={0}
+                    y={0}
+                  />
+                  <RNSVGPath
+                    d="M13.41 12l4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42l4.3 4.29-4.3 4.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z"
+                  />
+                </RNSVGGroup>
+              </RNSVGGroup>
+            </RNSVGGroup>
+          </RNSVGSvgView>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

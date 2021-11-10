@@ -111,7 +111,7 @@ const AudioPreview: React.FC<{
 }
 
 export const AudioMessage: React.FC<{
-	medias: Array<beapi.messenger.Media>
+	medias: Array<beapi.messenger.IMedia>
 	onLongPress: () => void
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
@@ -197,6 +197,9 @@ export const AudioMessage: React.FC<{
 			>
 				<TouchableOpacity
 					onPress={() => {
+						if (!cid) {
+							return
+						}
 						if (globalPlayer.metadata?.id === medias[0].cid) {
 							handlePlayPause()
 						} else if (protocolClient) {

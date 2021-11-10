@@ -1,0 +1,411 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InvalidScan modal renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "padding": 16,
+          },
+          Object {
+            "height": "100%",
+            "justifyContent": "center",
+          },
+        ]
+      }
+    >
+      <View
+        onLayout={[Function]}
+        style={
+          Array [
+            Object {
+              "padding": 16,
+            },
+            Object {
+              "borderRadius": 16,
+            },
+            Object {
+              "backgroundColor": "#FFFFFF",
+            },
+            undefined,
+          ]
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "bottom": 78,
+              },
+            ]
+          }
+        >
+          <View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "shadowOffset": Object {
+                      "height": 1,
+                      "width": 0,
+                    },
+                    "shadowOpacity": 0.2,
+                    "shadowRadius": 2,
+                  },
+                  Object {
+                    "marginBottom": 16,
+                  },
+                  Object {
+                    "alignSelf": "center",
+                  },
+                  Object {
+                    "alignItems": "stretch",
+                    "flexDirection": "column",
+                    "justifyContent": "space-evenly",
+                  },
+                  Array [
+                    Object {
+                      "width": 120,
+                    },
+                    Object {
+                      "height": 120,
+                    },
+                    Object {
+                      "borderRadius": 60,
+                    },
+                  ],
+                  Object {
+                    "backgroundColor": "#FFFFFF",
+                    "shadowColor": "#000000",
+                  },
+                ]
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "transform": Array [
+                      Object {
+                        "scale": 1,
+                      },
+                    ],
+                  }
+                }
+              >
+                <RNSVGSvgView
+                  align="xMidYMid"
+                  bbHeight={100}
+                  bbWidth={100}
+                  fill="#F64278"
+                  focusable={false}
+                  height={100}
+                  meetOrSlice={0}
+                  minX={0}
+                  minY={0}
+                  style={
+                    Array [
+                      Object {
+                        "backgroundColor": "transparent",
+                        "borderWidth": 0,
+                      },
+                      Array [
+                        Object {
+                          "alignSelf": "center",
+                        },
+                      ],
+                      Object {
+                        "flex": 0,
+                        "height": 100,
+                        "width": 100,
+                      },
+                    ]
+                  }
+                  vbHeight={24}
+                  vbWidth={24}
+                  width={100}
+                >
+                  <RNSVGGroup
+                    fill={4294328952}
+                    propList={
+                      Array [
+                        "fill",
+                      ]
+                    }
+                  >
+                    <RNSVGGroup>
+                      <RNSVGGroup>
+                        <RNSVGRect
+                          height="24"
+                          opacity={0}
+                          width="24"
+                          x={0}
+                          y={0}
+                        />
+                        <RNSVGPath
+                          d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"
+                        />
+                        <RNSVGCircle
+                          cx="12"
+                          cy="16"
+                          r="1"
+                        />
+                        <RNSVGPath
+                          d="M12 7a1 1 0 0 0-1 1v5a1 1 0 0 0 2 0V8a1 1 0 0 0-1-1z"
+                        />
+                      </RNSVGGroup>
+                    </RNSVGGroup>
+                  </RNSVGGroup>
+                </RNSVGSvgView>
+              </View>
+            </View>
+            <View>
+              <Text
+                appearance="default"
+                category="p1"
+                style={
+                  Array [
+                    Object {
+                      "color": "#222B45",
+                      "fontFamily": "Open Sans",
+                      "fontSize": 15,
+                      "fontWeight": "600",
+                    },
+                    Array [
+                      Object {
+                        "fontWeight": "bold",
+                      },
+                      Object {
+                        "textAlign": "center",
+                      },
+                      Object {
+                        "color": "#F64278",
+                      },
+                    ],
+                  ]
+                }
+              >
+                modals.manage-deep-link.invalid-link
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "borderRadius": 16,
+                },
+                Object {
+                  "padding": 16,
+                },
+                Object {
+                  "marginTop": 40,
+                },
+                Object {
+                  "backgroundColor": "#F6427840",
+                },
+              ]
+            }
+          >
+            <Text
+              appearance="default"
+              category="p1"
+              style={
+                Array [
+                  Object {
+                    "color": "#222B45",
+                    "fontFamily": "Open Sans",
+                    "fontSize": 15,
+                    "fontWeight": "600",
+                  },
+                  Array [
+                    Object {
+                      "textAlign": "center",
+                    },
+                    Object {
+                      "fontWeight": "bold",
+                    },
+                    Object {
+                      "fontFamily": "Courier",
+                      "fontSize": 14,
+                    },
+                    Object {
+                      "color": "#F64278",
+                    },
+                  ],
+                ]
+              }
+            >
+              Error: Test error
+            </Text>
+          </View>
+          <View
+            style={
+              Object {
+                "alignItems": "stretch",
+                "flexDirection": "row",
+                "justifyContent": "space-evenly",
+              }
+            }
+          >
+            <View
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "alignItems": "stretch",
+                  "borderColor": "#A5A7C5",
+                  "borderRadius": 9,
+                  "borderWidth": 2,
+                  "flexDirection": "row",
+                  "justifyContent": "space-between",
+                  "marginBottom": 16,
+                  "marginTop": 50,
+                  "opacity": 1,
+                  "paddingBottom": 9,
+                  "paddingLeft": 9,
+                  "paddingRight": 16,
+                  "paddingTop": 9,
+                }
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "transform": Array [
+                      Object {
+                        "scale": 1,
+                      },
+                    ],
+                  }
+                }
+              >
+                <RNSVGSvgView
+                  align="xMidYMid"
+                  bbHeight={30}
+                  bbWidth={30}
+                  fill="#979797"
+                  focusable={false}
+                  height={30}
+                  meetOrSlice={0}
+                  minX={0}
+                  minY={0}
+                  style={
+                    Array [
+                      Object {
+                        "backgroundColor": "transparent",
+                        "borderWidth": 0,
+                      },
+                      Object {
+                        "alignSelf": "center",
+                      },
+                      Object {
+                        "flex": 0,
+                        "height": 30,
+                        "width": 30,
+                      },
+                    ]
+                  }
+                  vbHeight={24}
+                  vbWidth={24}
+                  width={30}
+                >
+                  <RNSVGGroup
+                    fill={4288124823}
+                    propList={
+                      Array [
+                        "fill",
+                      ]
+                    }
+                  >
+                    <RNSVGGroup>
+                      <RNSVGGroup>
+                        <RNSVGRect
+                          height="24"
+                          matrix={
+                            Array [
+                              -1,
+                              1.2246467991473532e-16,
+                              -1.2246467991473532e-16,
+                              -1,
+                              24,
+                              24,
+                            ]
+                          }
+                          opacity={0}
+                          width="24"
+                          x={0}
+                          y={0}
+                        />
+                        <RNSVGPath
+                          d="M13.41 12l4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42l4.3 4.29-4.3 4.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z"
+                        />
+                      </RNSVGGroup>
+                    </RNSVGGroup>
+                  </RNSVGGroup>
+                </RNSVGSvgView>
+              </View>
+              <Text
+                appearance="default"
+                category="p1"
+                style={
+                  Array [
+                    Object {
+                      "color": "#222B45",
+                      "fontFamily": "Open Sans",
+                      "fontSize": 15,
+                      "fontWeight": "600",
+                    },
+                    Array [
+                      Object {
+                        "paddingLeft": 9,
+                      },
+                      Object {
+                        "alignSelf": "center",
+                      },
+                      Array [
+                        Object {
+                          "fontSize": 34,
+                        },
+                      ],
+                      Object {
+                        "color": "#979797",
+                      },
+                    ],
+                  ]
+                }
+              >
+                modals.invalid-scan.dismiss-button
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;
