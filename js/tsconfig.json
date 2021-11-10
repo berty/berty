@@ -1,10 +1,13 @@
 {
 	"include": [
-		"packages/store/**/*",
+		"packages",
 		"global.d.ts"
 	],
 	"exclude": [
-		"**/*.test.*",
+		"packages/web-dev-app",
+		"packages/components",
+		"packages/navigation",
+		"packages/messenger-app"
 	],
 	"compilerOptions": {
 		/* Basic Options */
