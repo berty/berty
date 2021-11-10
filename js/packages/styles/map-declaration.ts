@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import mem from 'mem'
-import _ from 'lodash'
+import mapValues from 'lodash/mapValues'
 
 import { Declaration, Styles, ColorsStyles } from './types'
 import { initialScaleSize, initialFontScale, initialScaleHeight } from './constant'
@@ -207,7 +207,7 @@ export const mapDeclarationWithDims = (
 					StyleSheet.create({
 						scale: {
 							position: 'absolute',
-							..._.mapValues(values, v => (v || 0) * scaleSize),
+							...mapValues(values, v => (v || 0) * scaleSize),
 						},
 					}).scale,
 				{ cacheKey: JSON.stringify },
@@ -240,7 +240,7 @@ export const mapDeclarationWithDims = (
 
 export const mapScaledDeclarationWithDims = (
 	decl: Declaration,
-	{ fontScale, scaleSize, scaleHeight } = {
+	{ fontScale, scaleSize, scaleHeight: _ } = {
 		fontScale: initialFontScale,
 		scaleSize: initialScaleSize,
 		scaleHeight: initialScaleHeight,
@@ -249,12 +249,12 @@ export const mapScaledDeclarationWithDims = (
 	return mapDeclarationWithDims(
 		{
 			...decl,
-			sides: _.mapValues(decl.sides, (n: number) => n * scaleSize),
+			sides: mapValues(decl.sides, (n: number) => n * scaleSize),
 			text: {
 				...decl.text,
-				sizes: _.mapValues(decl.text.sizes, (n: number) => n * fontScale),
+				sizes: mapValues(decl.text.sizes, (n: number) => n * fontScale),
 			},
 		},
-		{ fontScale, scaleSize, scaleHeight },
+		{ fontScale, scaleSize },
 	)
 }
