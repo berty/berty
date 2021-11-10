@@ -5,9 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { usePersistentOptions, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { NotificationsInhibitor } from '@berty-tech/store/context'
-import { SoundKey } from '@berty-tech/store/sounds'
+import {
+	usePersistentOptions,
+	useMessengerContext,
+	useThemeColor,
+	NotificationsInhibitor,
+	SoundKey,
+} from '@berty-tech/store'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
@@ -66,7 +70,7 @@ const GatedNotificationBody: React.FC<any> = props => {
 	const prevProps = usePrevious(props)
 	const justOpened = props.isOpen && !prevProps?.isOpen
 
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const persistentOptions = usePersistentOptions()
 
 	const notif = props.additionalProps as beapi.messenger.StreamEvent.INotified | undefined

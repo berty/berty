@@ -1,8 +1,9 @@
 import beapi from '@berty-tech/api'
-import { checkPermissions } from '@berty-tech/components/utils'
+import rnutil from '@berty-tech/rnutil'
 
 import { updateShakeAttachments } from './utils'
-import { accountService, MessengerActions, reducerAction } from './context'
+import { reducerAction, MessengerActions } from './types'
+import { accountService } from './accountService'
 
 export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
 	await accountService
@@ -107,7 +108,7 @@ export const getNetworkConfigurationFromPreset = async (
 	preset: beapi.account.NetworkConfigPreset | null | undefined,
 ): Promise<beapi.account.INetworkConfig> => {
 	const hasBluetoothPermission =
-		(await checkPermissions('p2p', null, { isToNavigate: false })) === 'granted'
+		(await rnutil.checkPermissions('p2p', null, { isToNavigate: false })) === 'granted'
 
 	const configForPreset = await accountService.networkConfigGetPreset({
 		preset: preset || beapi.account.NetworkConfigPreset.Undefined,

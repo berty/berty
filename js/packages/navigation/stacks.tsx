@@ -10,8 +10,7 @@ import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import * as RawComponents from '@berty-tech/components'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { MessengerAppState } from '@berty-tech/store/context'
+import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { Routes } from './types'
@@ -147,7 +146,7 @@ Components = mapValues(RawComponents, SubComponents =>
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
-	const context = useMsgrContext()
+	const context = useMessengerContext()
 	const colors = useThemeColor()
 	const [{}, { scaleSize }] = useStyles()
 	const { t }: any = useTranslation()

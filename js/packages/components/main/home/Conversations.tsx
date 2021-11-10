@@ -7,12 +7,16 @@ import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useMsgrContext } from '@berty-tech/store/context'
-import { useLastConvInteraction, useThemeColor } from '@berty-tech/store/hooks'
+import {
+	pbDateToNum,
+	useLastConvInteraction,
+	useThemeColor,
+	useMessengerContext,
+} from '@berty-tech/store'
 import { Routes } from '@berty-tech/navigation'
 
 import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 
 type ConversationsProps = ViewProps & {
@@ -64,7 +68,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		isLast,
 	} = props
 
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 
 	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)

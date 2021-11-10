@@ -12,11 +12,11 @@ import { useStyles, randomizeThemeColor } from '@berty-tech/styles'
 import {
 	defaultThemeColor,
 	PersistentOptionsKeys,
-	useMsgrContext,
+	useMessengerContext,
 	CurrentGeneratedTheme,
-} from '@berty-tech/store/context'
+	useThemeColor,
+} from '@berty-tech/store'
 import { createAndSaveFile } from '@berty-tech/store/services'
-import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
@@ -53,7 +53,7 @@ const exportColorThemeToFile = async (themeColor: any, fileName: string): Promis
 }
 
 const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
@@ -149,7 +149,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 })
 
 const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 	const { t } = useTranslation()

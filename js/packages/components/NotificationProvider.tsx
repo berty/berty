@@ -1,12 +1,12 @@
 import React from 'react'
 import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMessengerContext } from '@berty-tech/store/context'
 
 import NotificationBody from './NotificationBody'
 
 const NotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
-	const { addNotificationListener, removeNotificationListener } = useMsgrContext()
+	const { addNotificationListener, removeNotificationListener } = useMessengerContext()
 
 	React.useEffect(() => {
 		const listener = (evt: any) => {

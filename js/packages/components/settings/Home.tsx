@@ -14,14 +14,16 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import {
+	useAccount,
+	useMessengerContext,
+	useThemeColor,
 	CheckListItem,
 	CheckListProfileNotification,
 	DefaultBertyTheme,
 	DefaultDarkTheme,
 	PersistentOptionsKeys,
-} from '@berty-tech/store/context'
+} from '@berty-tech/store'
 import i18n from '@berty-tech/berty-i18n'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
 
@@ -215,7 +217,7 @@ const TaskItem: React.FC<{ value: CheckListItem }> = ({ value }) => {
 }
 
 const CheckItems: React.FC<{ openModal: () => void }> = ({ openModal }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { navigate } = useNativeNavigation()
 
 	const tasks = useMemo(
@@ -285,7 +287,7 @@ const CheckItems: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 const CheckList: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 	const colors = useThemeColor()
 	const [{ text, padding, margin, border }, { scaleSize }] = useStyles()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 
 	const tasks = useMemo(
@@ -380,7 +382,7 @@ const HomeBodySettings: React.FC = () => {
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNativeNavigation()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const enableNotif = ctx.persistentOptions.notifications.enable
 

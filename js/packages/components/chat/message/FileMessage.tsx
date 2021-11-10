@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { getSource } from '../../utils'
@@ -13,7 +13,7 @@ export const FileMessage: React.FC<{
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
 	const colors = useThemeColor()
-	const { protocolClient } = useMsgrContext()
+	const { protocolClient } = useMessengerContext()
 	const [, setSource] = useState('')
 	const [isLoading, setLoading] = useState(false)
 	const [isDownloaded] = useState(false)

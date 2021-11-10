@@ -4,11 +4,11 @@ import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
 import {
-	useClient,
+	useMessengerClient,
 	useConversation,
 	useOneToOneContact,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
 
@@ -87,7 +87,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 }) => {
 	const [{ row, flex, text, margin }] = useStyles()
 	const colors = useThemeColor()
-	const client = useClient()
+	const client = useMessengerClient()
 	const [error, setError] = useState(false)
 	const [{ convPk, displayName }, setPdlInfo] = useState({ convPk: '', displayName: '' })
 	const [accepting, setAccepting] = useState(false)

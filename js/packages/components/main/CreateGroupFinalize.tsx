@@ -8,8 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { PersistentOptionsKeys, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'
@@ -196,7 +195,7 @@ export const CreateGroupFinalize: React.FC<{
 	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const insets = useSafeAreaInsets()
 	const { t }: { t: any } = useTranslation()
 

@@ -6,7 +6,7 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps } from '@berty-tech/navigation'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import {
 	servicesAuthViaURL,
 	servicesAuthViaDefault,
@@ -23,7 +23,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const { t }: any = useTranslation()
 
 	const [url, setURL] = useState('')
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const accountServices = useAccountServices()
 
 	return (

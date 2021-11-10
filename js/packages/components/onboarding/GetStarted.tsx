@@ -5,9 +5,13 @@ import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 
-import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
+import {
+	storageSet,
+	GlobalPersistentOptionsKeys,
+	useNotificationsInhibitor,
+	useThemeColor,
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { storageSet, GlobalPersistentOptionsKeys } from '@berty-tech/store/context'
 
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'

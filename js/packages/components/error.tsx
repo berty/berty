@@ -6,7 +6,7 @@ import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
 
 import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, useMsgrContext } from '@berty-tech/store/hooks'
+import { useThemeColor, useMessengerContext } from '@berty-tech/store'
 
 import AppInspector from './debug/AppInspector'
 
@@ -238,7 +238,7 @@ export const ErrorScreen: React.FC<{ children: React.ReactElement }> = ({ childr
 
 	const [error, setError] = React.useState<Error | null>(null)
 
-	const { debugMode, embedded } = useMsgrContext()
+	const { debugMode, embedded } = useMessengerContext()
 
 	const errorHandler = (err: Error) => {
 		setError(err)

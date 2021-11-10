@@ -15,10 +15,10 @@ import {
 	useThemeColor,
 } from '@berty-tech/store/hooks'
 import { HintBody } from '@berty-tech/components/shared-components'
-import { parseInteraction } from '@berty-tech/store/utils'
+import { parseInteraction, pbDateToNum } from '@berty-tech/store/convert'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
-import { pbDateToNum, timeFormat } from '../../helpers'
+import { timeFormat } from '../../helpers'
 import { ContactAvatar, ConversationAvatar } from '../../avatars'
 
 // Styles

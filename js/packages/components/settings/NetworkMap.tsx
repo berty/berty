@@ -15,9 +15,9 @@ import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import beapi from '@berty-tech/api'
+import { pbDateToNum } from '@berty-tech/store/convert'
 
 import { usePrevious } from '../hooks'
-import { pbDateToNum } from '../helpers'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,

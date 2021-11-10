@@ -12,12 +12,16 @@ import { Icon, Input, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
-import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import {
+	PersistentOptionsKeys,
+	useAccount,
+	useMessengerContext,
+	useThemeColor,
+} from '@berty-tech/store'
 
+import { KeyboardAvoidingView } from '../shared-components/KeyboardAvoidingView'
 import { AccountAvatar } from '../avatars'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Edit Profile
@@ -80,7 +84,7 @@ const initialState: State = {
 }
 
 const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 
@@ -15,7 +15,7 @@ export const PictureMessage: React.FC<{
 }> = ({ medias, onLongPress, isHighlight }) => {
 	const [{ border }] = useStyles()
 	const colors = useThemeColor()
-	const { protocolClient } = useMsgrContext()
+	const { protocolClient } = useMessengerContext()
 	const [images, setImages] = useState<any[]>([])
 	const navigation = useNavigation()
 	useEffect(() => {

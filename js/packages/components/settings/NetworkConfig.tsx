@@ -6,19 +6,22 @@ import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import {
+	useMessengerContext,
+	useThemeColor,
+	accountService,
+	getNetworkConfigurationFromPreset,
+} from '@berty-tech/store'
 import { ButtonSetting, StringOptionInput } from '@berty-tech/components/shared-components'
 import { useStyles } from '@berty-tech/styles'
-import { accountService } from '@berty-tech/store/context'
 import { showNeedRestartNotification } from '@berty-tech/components/helpers'
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
-import { getNetworkConfigurationFromPreset } from '@berty-tech/store/effectableCallbacks'
-import { checkPermissions } from '@berty-tech/components/utils'
+import rnutil from '@berty-tech/rnutil'
 
 const BodyNetworkConfig: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const colors = useThemeColor()
 	const [{ padding, text, margin }, { scaleSize }] = useStyles()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const { networkConfig, selectedAccount, setNetworkConfig } = ctx
 	const { navigate } = useNavigation()
@@ -124,7 +127,7 @@ const BodyNetworkConfig: React.FC = withInAppNotification(({ showNotification }:
 						showNeedRestartNotification(showNotification, ctx, t)
 					}
 
-					const bluetoothPermissions = await checkPermissions('p2p', navigate, {
+					const bluetoothPermissions = await rnutil.checkPermissions('p2p', navigate, {
 						isToNavigate: false,
 					})
 					switch (bluetoothPermissions) {
@@ -132,12 +135,12 @@ const BodyNetworkConfig: React.FC = withInAppNotification(({ showNotification }:
 							await updateValue()
 							break
 						case 'unavailable':
-							await checkPermissions('p2p', navigate, {
+							await rnutil.checkPermissions('p2p', navigate, {
 								isToNavigate: true,
 							})
 							break
 						case 'blocked':
-							await checkPermissions('p2p', navigate, {
+							await rnutil.checkPermissions('p2p', navigate, {
 								isToNavigate: true,
 							})
 							await Linking.openSettings()
@@ -238,7 +241,7 @@ const BodyNetworkConfig: React.FC = withInAppNotification(({ showNotification }:
 export const NetworkConfig: React.FC = () => {
 	const colors = useThemeColor()
 	const [{ padding, text }, { scaleSize }] = useStyles()
-	const { selectedAccount, setNetworkConfig } = useMsgrContext()
+	const { selectedAccount, setNetworkConfig } = useMessengerContext()
 	const { t }: any = useTranslation()
 
 	useEffect(() => {

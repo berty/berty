@@ -3,12 +3,13 @@ import Share from 'react-native-share'
 import { Buffer } from 'buffer'
 import InAppBrowser from 'react-native-inappbrowser-reborn'
 import RNFS from 'react-native-fs'
+
 import beapi from '@berty-tech/api'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { Service } from '@berty-tech/grpc-bridge'
 
-import { MsgrState } from './context'
+import { MessengerState } from './types'
 import { useAccount } from './hooks'
 
 export enum serviceTypes {
@@ -35,11 +36,11 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 	)
 }
 
-export const servicesAuthViaDefault = async (ctx: MsgrState): Promise<void> => {
+export const servicesAuthViaDefault = async (ctx: MessengerState): Promise<void> => {
 	return servicesAuthViaURL(ctx, bertyOperatedServer)
 }
 
-export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<void> => {
+export const servicesAuthViaURL = async (ctx: MessengerState, url: string): Promise<void> => {
 	if (!ctx.protocolClient) {
 		return
 	}
@@ -55,7 +56,7 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 
 		if (!resp.secureUrl) {
 			let allowNonSecure = false
-			await new Promise(resolve => {
+			await new Promise<void>(resolve => {
 				Alert.alert(
 					'Security warning',
 					'The provided URL is using a non secure connection, do you want to continue?',
@@ -67,7 +68,7 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 								resolve()
 							},
 						},
-						{ text: 'Go back', onPress: resolve },
+						{ text: 'Go back', onPress: () => resolve() },
 					],
 				)
 			})
@@ -109,7 +110,7 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 }
 
 export const replicateGroup = async (
-	ctx: MsgrState,
+	ctx: MessengerState,
 	conversationPublicKey: string,
 	tokenID: string,
 ): Promise<void> => {
@@ -218,6 +219,7 @@ export const exportAccountToFile = async (accountId: string | null) => {
 			Platform.OS === 'android'
 				? await createAndSaveFile(outFile, fileName)
 				: await Share.open({
+						title: 'Berty backup',
 						url: `file://${outFile}`,
 						type: 'application/x-tar',
 				  })

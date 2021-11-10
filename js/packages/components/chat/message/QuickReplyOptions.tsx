@@ -3,15 +3,14 @@ import { TouchableOpacity, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
-import { useMsgrContext } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor, useMessengerContext } from '@berty-tech/store'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
 	option: beapi.messenger.IReplyOption
 }> = ({ convPk, option }) => {
-	const ctx: any = useMsgrContext()
+	const ctx: any = useMessengerContext()
 	const colors = useThemeColor()
 	const [{ padding, border, margin }] = useStyles()
 

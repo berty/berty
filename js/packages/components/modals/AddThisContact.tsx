@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { useMessengerContext, useThemeColor, PersistentOptionsKeys } from '@berty-tech/store'
 import { dispatch } from '@berty-tech/navigation/rootRef'
 import { Routes } from '@berty-tech/navigation'
 
@@ -15,7 +15,6 @@ import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -68,7 +67,7 @@ const AddThisContact: React.FC<{
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 
 	const [password, setPassword] = useState('')
 

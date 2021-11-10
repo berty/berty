@@ -6,8 +6,7 @@ import { Buffer } from 'buffer'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import { useMessengerContext, useThemeColor, PersistentOptionsKeys } from '@berty-tech/store'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { base64ToURLBase64 } from '../utils'
@@ -47,7 +46,7 @@ export const AddBotBody: React.FC<{ displayName: string; link: string; closeModa
 		const [{ row, text, margin, padding, border, opacity }, { scaleHeight }] = useStyles()
 		const colors = useThemeColor()
 		const _styles = useStylesDefaultModal()
-		const { setPersistentOption, persistentOptions } = useMsgrContext()
+		const { setPersistentOption, persistentOptions } = useMessengerContext()
 		const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
 		const {
 			reply: pdlReply,

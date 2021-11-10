@@ -9,14 +9,13 @@ import RNBootSplash from 'react-native-bootsplash'
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
 import { StreamGate, ListGate } from '@berty-tech/components/gates'
-import MsgrProvider from '@berty-tech/store/provider'
+import { MessengerProvider, useMountEffect } from '@berty-tech/store'
 import { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { Navigation } from '@berty-tech/navigation/stacks'
 import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/NotificationProvider'
 import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
 import { MusicPlayerProvider } from '@berty-tech/music-player'
-import { useMountEffect } from '@berty-tech/store/hooks'
 import { ErrorScreen } from '@berty-tech/components/error'
 
 import { FeatherIconsPack } from './feather-icons'
@@ -30,18 +29,18 @@ const BootSplashInhibitor = () => {
 }
 
 export const App: React.FC = () => {
-	React.useEffect(() => {
+	useMountEffect(() => {
 		Shake.start()
 
 		return () => {
 			isReadyRef.current = false
 		}
-	}, [])
+	})
 
 	return (
 		<SafeAreaProvider>
 			<StyleProvider>
-				<MsgrProvider embedded daemonAddress='http://localhost:1337'>
+				<MessengerProvider embedded daemonAddress='http://localhost:1337'>
 					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 					<ThemeProvider>
 						<ErrorScreen>
@@ -65,7 +64,7 @@ export const App: React.FC = () => {
 							</NavigationContainer>
 						</ErrorScreen>
 					</ThemeProvider>
-				</MsgrProvider>
+				</MessengerProvider>
 			</StyleProvider>
 		</SafeAreaProvider>
 	)

@@ -17,7 +17,7 @@ import beapi from '@berty-tech/api'
 import { berty } from '@berty-tech/api/root.pb'
 import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { useMsgrContext } from '@berty-tech/store/context'
+import { useMessengerContext } from '@berty-tech/store'
 
 export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
 
@@ -379,7 +379,7 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 }) => {
 	const [lastUpdate, setLastUpdate] = useState(Date.now())
 	const { t }: { t: any } = useTranslation()
-	const { setDebugMode } = useMsgrContext()
+	const { setDebugMode } = useMessengerContext()
 
 	const refresh = useCallback(() => setLastUpdate(Date.now()), [setLastUpdate])
 

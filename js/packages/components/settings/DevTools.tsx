@@ -16,7 +16,10 @@ import {
 	PersistentOptionsKeys,
 	storageGet,
 	storageSet,
-} from '@berty-tech/store/context'
+	useAccount,
+	useMessengerContext,
+	useThemeColor,
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
@@ -25,7 +28,6 @@ import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 
 import {
 	ButtonSetting,
@@ -217,21 +219,21 @@ const DumpAccount: React.FC = () => {
 }
 
 const DumpContacts: React.FC = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const text = JSON.stringify(ctx.contacts, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-contacts-button')} text={text} />
 }
 
 const DumpConversations: React.FC = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const text = JSON.stringify(ctx.conversations, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-conversations-button')} text={text} />
 }
 
 const DumpInteractions: React.FC = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const text = JSON.stringify(ctx.interactions, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-interactions-button')} text={text} />
@@ -241,7 +243,7 @@ const SendToAll: React.FC = () => {
 	const [disabled, setDisabled] = useState(false)
 	const { t } = useTranslation()
 	const [name, setName] = useState<any>(t('settings.devtools.send-to-all-button.title'))
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const convs: any[] = Object.values(ctx.conversations).filter(
 		(conv: any) => conv.type === beapi.messenger.Conversation.Type.ContactType && !conv.fake,
@@ -284,14 +286,14 @@ const SendToAll: React.FC = () => {
 }
 
 const DumpMembers: React.FC = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const text = JSON.stringify(ctx.members, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-members-button')} text={text} />
 }
 
 const PlaySound: React.FC = () => {
-	const { playSound } = useMsgrContext()
+	const { playSound } = useMessengerContext()
 	const colors = useThemeColor()
 
 	return (
@@ -321,7 +323,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const [{ padding, flex, margin, text }] = useStyles()
 	const { navigate } = useNavigation()
 	const navigation = useNativeNavigation()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t } = useTranslation()
 	const tyberHosts = useRef<{ [key: string]: string[] }>({})
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

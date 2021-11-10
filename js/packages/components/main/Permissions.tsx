@@ -12,16 +12,19 @@ import {
 import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { accountService, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import {
+	accountService,
+	PersistentOptionsKeys,
+	useMessengerContext,
+	useThemeColor,
+} from '@berty-tech/store'
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
 import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
 import p2pLottie from '@berty-tech/assets/p2p-lottie.json'
 import beapi from '@berty-tech/api'
 import { ScreenProps } from '@berty-tech/navigation'
-
-import { checkPermissions } from '../utils'
+import rnutil from '@berty-tech/rnutil'
 
 const animations = {
 	audio: audioLottie,
@@ -36,7 +39,7 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const { persistentOptions, setPersistentOption, createNewAccount, selectedAccount } =
-		useMsgrContext()
+		useMessengerContext()
 	const navigation = useNavigation()
 	const {
 		permissionType,
@@ -59,7 +62,7 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 	const handleAppStateChange = useCallback(
 		async (nextAppState: string) => {
 			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-				const status = await checkPermissions(permissionType, navigation.navigate, {
+				const status = await rnutil.checkPermissions(permissionType, navigation.navigate, {
 					isToNavigate: false,
 				})
 

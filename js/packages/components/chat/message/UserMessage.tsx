@@ -11,16 +11,17 @@ import beapi from '@berty-tech/api'
 import {
 	useLastConvInteraction,
 	useContact,
-	useMsgrContext,
+	useMessengerContext,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+	InteractionUserMessage,
+	ParsedInteraction,
+	pbDateToNum,
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { getEmojiByName, getMediaTypeFromMedias } from '@berty-tech/components/utils'
-import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
-import { pbDateToNum } from '../../helpers'
 import { PictureMessage } from './PictureMessage'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
@@ -171,7 +172,7 @@ export const UserMessage: React.FC<{
 		replyOf?.member
 
 	const _styles = useStylesMessage()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const [{ row, margin, padding, column, text, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()

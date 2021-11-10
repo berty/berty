@@ -5,10 +5,14 @@ import { Icon, Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext } from '@berty-tech/store/context'
-import { useClient, useThemeColor } from '@berty-tech/store/hooks'
+import {
+	pbDateToNum,
+	useMessengerClient,
+	useThemeColor,
+	useMessengerContext,
+} from '@berty-tech/store'
 
-import { pbDateToNum, timeFormat } from './helpers'
+import { timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { MessageInvitationButton } from './chat/message/MessageInvitation'
@@ -61,9 +65,9 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	const { t }: any = useTranslation()
 
 	const [acceptDisabled, setAcceptDisabled] = useState<boolean>(false)
-	const { playSound } = useMsgrContext()
+	const { playSound } = useMessengerContext()
 
-	const client = useClient()
+	const client = useMessengerClient()
 	const decline: any = () => {}
 
 	useEffect(() => {
@@ -148,7 +152,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
 

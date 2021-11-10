@@ -4,8 +4,12 @@ import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { CommonActions } from '@react-navigation/native'
 
-import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import {
+	useNotificationsInhibitor,
+	useThemeColor,
+	PersistentOptionsKeys,
+	useMessengerContext,
+} from '@berty-tech/store'
 import { Routes } from '@berty-tech/navigation'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 
@@ -20,7 +24,7 @@ const SetupFinishedBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
-	const { setPersistentOption } = useMsgrContext()
+	const { setPersistentOption } = useMessengerContext()
 
 	return isAccount ? (
 		<>

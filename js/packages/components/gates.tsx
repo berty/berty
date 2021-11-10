@@ -2,14 +2,15 @@ import React from 'react'
 import { ActivityIndicator, Button, Text, TextInput, View, Image, StatusBar } from 'react-native'
 import * as Progress from 'react-native-progress'
 
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
 import {
+	MessengerAppState,
+	useMessengerContext,
+	useThemeColor,
 	isClosing,
 	isDeletingState,
 	isReadyingBasics,
 	MessengerActions,
-	MessengerAppState,
-} from '@berty-tech/store/context'
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import source from '@berty-tech/assets/loader_dots.gif'
 
@@ -43,7 +44,7 @@ const LoaderDots: React.FC = () => {
 const StreamInProgressCmp: React.FC<{}> = () => {
 	const [{ text }] = useStyles()
 	const colors = useThemeColor()
-	const { streamInProgress: stream } = useMsgrContext()
+	const { streamInProgress: stream } = useMessengerContext()
 
 	return (
 		<View style={{ backgroundColor: colors['main-background'] }}>
@@ -93,7 +94,7 @@ export const StreamGate: React.FC = ({ children }) => {
 		streamInProgress,
 		deleteAccount,
 		restart,
-	} = useMsgrContext()
+	} = useMessengerContext()
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()
 	const changeAddress = React.useCallback(() => {
@@ -138,7 +139,7 @@ export const StreamGate: React.FC = ({ children }) => {
 }
 
 export const ListGate: React.FC = ({ children }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 
 	if (!isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
@@ -153,7 +154,7 @@ export const ListGate: React.FC = ({ children }) => {
 }
 
 const DeleteProgressScreen = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	let text = 'Unknown state'
 	switch (ctx.appState) {
 		case MessengerAppState.DeletingClosingDaemon:
@@ -173,7 +174,7 @@ const DeleteProgressScreen = () => {
 }
 
 export const DeleteGate: React.FC = ({ children }) => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 
 	if (ctx && isDeletingState(ctx.appState)) {
 		return <DeleteProgressScreen />

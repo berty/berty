@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import moment from 'moment'
 
-import { useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
 import beapi from '@berty-tech/api'
@@ -116,7 +116,7 @@ export const AudioMessage: React.FC<{
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
 	const colors = useThemeColor()
-	const { protocolClient, client } = useMsgrContext()
+	const { protocolClient, client } = useMessengerContext()
 	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
 	const { player: globalPlayer, load: globalPlayerLoad, handlePlayPause } = useMusicPlayer()
 	const cid = useMemo(() => medias[0].cid, [medias])

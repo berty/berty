@@ -1,21 +1,22 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
 import './App.css'
-import { MsgrContext, useMsgrContext } from '@berty-tech/store/context'
-import { MsgrProvider } from '@berty-tech/store/provider'
 import {
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
 	useContactList,
 	useConversationList,
 	useMountEffect,
-} from '@berty-tech/store/hooks'
+	MsgrProvider,
+	MessengerContext,
+	useMessengerContext,
+} from '@berty-tech/store'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import beapi from '@berty-tech/api'
 
 const CreateAccount: React.FC = () => {
 	const [name, setName] = useState('')
 	const [error, setError] = useState(null)
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const handleCreate = React.useCallback(() => {
 		setError(null)
 		ctx.client?.accountUpdate({ displayName: name }).catch((err: any) => setError(err))
@@ -35,7 +36,7 @@ const CreateAccount: React.FC = () => {
 }
 
 const Account: React.FC = () => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const account = ctx.account
 	return (
 		<>
@@ -46,14 +47,14 @@ const Account: React.FC = () => {
 }
 
 const AccountGate: React.FC = ({ children }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	return ctx.account && ctx.account.displayName !== '' ? <>{children}</> : <CreateAccount />
 }
 
 const AddContact: React.FC = () => {
 	const [link, setLink] = useState('')
 	const [error, setError] = useState(null)
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const handleAdd = React.useCallback(() => {
 		setError(null)
 		ctx.client?.contactRequest({ link }).catch((err: any) => setError(err))
@@ -78,7 +79,7 @@ const JSONed: React.FC<{ value: any }> = ({ value }) => (
 )
 
 const ContactSearchResultLastMessage: React.FC<{ convId: string }> = ({ convId }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const intes = (ctx.interactions as any)[convId]
 	if (!intes) {
 		return null
@@ -130,7 +131,7 @@ const SearchContacts: React.FC = () => {
 }
 
 const AcceptButton: React.FC<{ publicKey: string }> = ({ publicKey }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const [error, setError] = React.useState(null)
 	const handleAccept = React.useCallback(() => {
 		setError(null)
@@ -145,7 +146,7 @@ const AcceptButton: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 }
 
 const Contacts: React.FC = () => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	return (
 		<>
 			<h2>Contacts</h2>
@@ -166,7 +167,7 @@ const Contacts: React.FC = () => {
 }
 
 const Interaction: React.FC<{ value: any }> = ({ value }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	console.log('render inte', value)
 
 	const [error, setError] = useState(null)
@@ -208,7 +209,7 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 }
 
 const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const conv = (ctx.conversations as any)[publicKey] || {}
 	const displayName =
 		conv.displayName ||
@@ -289,7 +290,7 @@ const ConvButton: React.FC<{ conv: any; onSelect: any; selected: string }> = ({
 	onSelect,
 	selected,
 }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const unreadCount = parseInt(conv.unreadCount, 10)
 	return (
 		<button
@@ -306,7 +307,7 @@ const ConvButton: React.FC<{ conv: any; onSelect: any; selected: string }> = ({
 }
 
 const Conversations: React.FC = () => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const conversations = React.useMemo(
 		() => [...Object.values(ctx.conversations)], // TODO: add sortDate
 		[ctx.conversations],
@@ -389,7 +390,7 @@ const CreateMultiMember = () => {
 const SendToAll: React.FC = () => {
 	const [latestError, setLatestError] = useState(null)
 	const [disabled, setDisabled] = useState(false)
-	const ctx: any = React.useContext(MsgrContext)
+	const ctx: any = React.useContext(MessengerContext)
 	const convs: any[] = Object.values(ctx.conversations).filter(
 		(conv: any) => conv.type === beapi.messenger.Conversation.Type.ContactType && !conv.fake,
 	)
@@ -438,7 +439,7 @@ const SendToAll: React.FC = () => {
 const JoinMultiMember = () => {
 	const [link, setLink] = useState('')
 	const [error, setError] = useState(null)
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const handleJoin = React.useCallback(() => {
 		setError(null)
 		ctx.client?.conversationJoin({ link }).catch((err: any) => setError(err))
@@ -459,7 +460,7 @@ const JoinMultiMember = () => {
 }
 
 const MultiMemberList = () => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const convs = Object.values(ctx.conversations).filter(
 		(conv) => conv.type === beapi.messenger.Conversation.Type.MultiMemberType,
 	)
@@ -491,7 +492,7 @@ const MultiMember: React.FC = () => {
 }
 
 const DumpStore: React.FC = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	return <JSONed value={ctx} />
 }
 
@@ -528,7 +529,7 @@ const Tabs: React.FC = () => {
 }
 
 const ListGate: React.FC = ({ children }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	if (ctx && ctx.listDone) {
 		return <>{children}</>
 	} else {
@@ -551,7 +552,7 @@ function getParam(sVar: string) {
 const daemonAddrParamName = 'daemonAddress'
 
 const StreamGate: React.FC = ({ children }) => {
-	const ctx = React.useContext(MsgrContext)
+	const ctx = React.useContext(MessengerContext)
 	const exampleAddr = `${window.location.protocol}//${window.location.host}/?${daemonAddrParamName}=http://localhost:1337`
 	if (ctx.streamError) {
 		return (

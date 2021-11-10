@@ -7,19 +7,20 @@ import DocumentPicker from 'react-native-document-picker'
 import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store/hooks'
 import {
 	GlobalPersistentOptionsKeys,
-	MsgrState,
+	MessengerState,
 	storageSet,
-	useMsgrContext,
-} from '@berty-tech/store/context'
+	useMessengerContext,
+	useNotificationsInhibitor,
+	useThemeColor,
+} from '@berty-tech/store'
+import rnutil from '@berty-tech/rnutil'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
-import { checkPermissions } from '../utils'
 
-const openDocumentPicker = async (ctx: MsgrState) => {
+const openDocumentPicker = async (ctx: MessengerState) => {
 	try {
 		const res = await DocumentPicker.pick({
 			// @ts-ignore
@@ -38,7 +39,7 @@ const openDocumentPicker = async (ctx: MsgrState) => {
 }
 
 const CreateAccountBody = () => {
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const [{ text, padding, margin, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
@@ -93,7 +94,7 @@ const CreateAccountBody = () => {
 						loop={false}
 						onAnimationFinish={async () => {
 							Vibration.vibrate(500)
-							await checkPermissions('p2p', navigate, {
+							await rnutil.checkPermissions('p2p', navigate, {
 								isToNavigate: false,
 							})
 						}}

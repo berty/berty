@@ -7,10 +7,11 @@ import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useMsgrContext, useThemeColor } from '@berty-tech/store/hooks'
+import { useAccount, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
-import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { showNeedRestartNotification } from '@berty-tech/components/helpers'
+
+import { ButtonSetting } from '../shared-components/SettingsButtons'
 
 // Styles
 const useStylesMode = () => {
@@ -24,7 +25,7 @@ const useStylesMode = () => {
 const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin }, { scaleSize }] = useStyles()
-	const ctx = useMsgrContext()
+	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const colors = useThemeColor()
 	const navigation = useReactNavigation()
