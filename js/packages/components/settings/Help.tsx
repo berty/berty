@@ -2,9 +2,9 @@ import React from 'react'
 import { View, ScrollView, StatusBar } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -68,13 +68,13 @@ const BodyHelp: React.FC<{}> = () => {
 				name={t('settings.help.updates-button')}
 				icon='arrow-upward-outline'
 				iconColor={colors['secondary-background-header']}
-				onPress={() => navigate.settings.appUpdates()}
+				onPress={() => navigate('Settings.AppUpdates')}
 			/>
 			<ButtonSetting
 				name={t('settings.help.about-button')}
 				icon='info-outline'
 				iconColor={colors['secondary-background-header']}
-				onPress={() => navigate.settings.aboutBerty()}
+				onPress={() => navigate('Settings.AboutBerty')}
 			/>
 			<ButtonSetting
 				name={t('settings.help.account-button')}
@@ -142,7 +142,7 @@ const BodyHelp: React.FC<{}> = () => {
 	)
 }
 
-export const Help: React.FC<ScreenProps.Settings.Help> = () => {
+export const Help: React.FC = () => {
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 

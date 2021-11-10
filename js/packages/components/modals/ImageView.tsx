@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next'
 import CameraRoll from '@react-native-community/cameraroll'
 import Share from 'react-native-share'
 import ImageViewer from 'react-native-image-zoom-viewer'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useConversationsCount, useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
-import { useNavigation } from '@berty-tech/navigation'
 
 import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
 

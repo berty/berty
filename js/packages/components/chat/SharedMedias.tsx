@@ -15,10 +15,10 @@ import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
 import LinkifyIt from 'linkify-it'
 import Hyperlink from 'react-native-hyperlink'
+import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
 import {
 	useMessengerContext,
 	useConvInteractions,
@@ -160,7 +160,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 					<TouchableOpacity
 						key={image.cid}
 						onPress={() => {
-							navigate.modals.imageView({ images: [image] })
+							navigate('Modals.ImageView', { images: [image] })
 						}}
 						activeOpacity={0.9}
 					>
@@ -246,7 +246,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 						<Hyperlink
 							onPress={async url => {
 								if (client && (await isBertyDeepLink(client, url))) {
-									navigate.modals.manageDeepLink({ type: 'link', value: url })
+									navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 
 									return
 								}

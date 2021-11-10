@@ -4,6 +4,7 @@ import palette from 'google-palette'
 import { SHA3 } from 'sha3'
 import { Buffer } from 'buffer'
 import { withBadge } from 'react-native-elements'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -14,8 +15,7 @@ import {
 	Maybe,
 	useMessengerContext,
 	useThemeColor,
-} from '@berty-tech/store'
-import { navigate } from '@berty-tech/navigation'
+} from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
@@ -142,6 +142,7 @@ export const HardcodedAvatar: React.FC<{
 }> = ({ size, style, name, pressable }) => {
 	const [{ border }] = useStyles()
 	const colors = useThemeColor()
+	const { navigate } = useNavigation()
 
 	let avatar = hardcodedAvatars[name]
 	if (!avatar) {
@@ -153,7 +154,7 @@ export const HardcodedAvatar: React.FC<{
 			activeOpacity={0.9}
 			disabled={!pressable}
 			onPress={() => {
-				navigate('ImageView', { images: [avatar], previewOnly: true })
+				navigate('Modals.ImageView', { images: [avatar], previewOnly: true })
 			}}
 			style={[
 				border.shadow.medium,

@@ -3,10 +3,10 @@ import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { Player } from '@react-native-community/audio-toolkit'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import Long from 'long'
 import crashlytics from '@react-native-firebase/crashlytics'
 import { withInAppNotification } from 'react-native-in-app-notification'
+import { useNavigation } from '@react-navigation/native'
 
 import {
 	accountService,
@@ -21,7 +21,7 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import beapi from '@berty-tech/api'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
@@ -76,7 +76,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 						color: colors['alt-secondary-background-header'],
 						style: _styles.buttonRow,
 						onPress: () => {
-							navigate.settings.fakeData()
+							navigate('Settings.FakeData')
 						},
 					},
 					{
@@ -153,14 +153,14 @@ const DiscordShareButton: React.FC = () => {
 		if (done) {
 			Vibration.vibrate(500)
 			if (error) {
-				navigate.settings.devText({
+				navigate('Settings.DevText', {
 					text: error.toString(),
 				})
 			} else {
 				goBack()
 			}
 		}
-	}, [done, error, goBack, navigate.settings])
+	}, [done, error, goBack, navigate])
 
 	const createDiscordShareAlert = () =>
 		Alert.alert(
@@ -206,7 +206,7 @@ const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) =>
 			icon='activity-outline'
 			iconSize={30}
 			iconColor={colors['alt-secondary-background-header']}
-			onPress={() => navigate.settings.devText({ text })}
+			onPress={() => navigate('Settings.DevText', { text })}
 		/>
 	)
 }
@@ -322,7 +322,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, text }] = useStyles()
 	const { navigate } = useNavigation()
-	const navigation = useNativeNavigation()
 	const ctx = useMessengerContext()
 	const { t } = useTranslation()
 	const tyberHosts = useRef<{ [key: string]: string[] }>({})
@@ -409,7 +408,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				icon='info-outline'
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigate.settings.systemInfo()}
+				onPress={() => navigate('Settings.SystemInfo')}
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.simulate-button')}
@@ -547,7 +546,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				icon='plus-outline'
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigation.navigate('Settings.AddDevConversations')}
+				onPress={() => navigate('Settings.AddDevConversations')}
 			/>
 			<DiscordShareButton />
 			<NativeCallButton />

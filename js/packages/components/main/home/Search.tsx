@@ -4,9 +4,10 @@ import { Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
-import { Routes, useNavigation } from '@berty-tech/navigation'
+import { Routes } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import {
 	useConversation,
@@ -244,7 +245,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 			onPress={() =>
 				!conv
 					? data.state === beapi.messenger.Contact.State.IncomingRequest
-						? navigate.main.contactRequest({ contactId: data.publicKey })
+						? navigate('Main.ContactRequest', { contactId: data.publicKey })
 						: null
 					: dispatch(
 							CommonActions.navigate({

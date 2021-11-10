@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { useMessengerContext } from '@berty-tech/store'
-import { useNavigation } from '@berty-tech/navigation'
 
 import { getSource } from './utils'
 
@@ -44,7 +44,7 @@ const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<Imag
 		) : (
 			<TouchableOpacity
 				onPress={() => {
-					navigate.modals.imageView({ images: [{ uri: source }], previewOnly: true })
+					navigate('Modals.ImageView', { images: [{ uri: source }], previewOnly: true })
 				}}
 			>
 				<Image source={{ uri: source }} {...imageProps} />

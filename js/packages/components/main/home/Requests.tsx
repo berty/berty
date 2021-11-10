@@ -3,6 +3,7 @@ import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
+import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import {
@@ -11,7 +12,7 @@ import {
 	useThemeColor,
 	pbDateToNum,
 } from '@berty-tech/store'
-import { Routes, useNavigation } from '@berty-tech/navigation'
+import { Routes } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 
 import { ContactAvatar } from '../../avatars'

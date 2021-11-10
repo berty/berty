@@ -1,4 +1,3 @@
-export { useNavigation } from './hook'
 export type { ScreenProps } from './types'
 export { Routes } from './types'
 export type { RouteProps } from './types'

@@ -9,8 +9,8 @@ import {
 } from 'react-native'
 import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
-import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useContactList, useThemeColor } from '@berty-tech/store/hooks'
 import { ContactPicker } from '@berty-tech/components/shared-components'
@@ -194,7 +194,7 @@ export const CreateGroupAddMembers: React.FC<{
 }> = ({ onSetMember, onRemoveMember, members }) => {
 	const [{ flex, margin }, { scaleHeight }] = useStyles()
 	const colors = useThemeColor()
-	const navigation = useNavigation()
+	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const accountContacts = useContactList()
 
@@ -222,7 +222,7 @@ export const CreateGroupAddMembers: React.FC<{
 			<FooterCreateGroup
 				title={t('main.home.create-group.continue')}
 				icon='arrow-forward-outline'
-				action={navigation.navigate.main.createGroup.createGroupFinalize}
+				action={navigate('CreateGroup.CreateGroupFinalize')}
 			/>
 		</Layout>
 	)

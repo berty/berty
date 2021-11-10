@@ -3,10 +3,11 @@ import { View, ScrollView, Share, StatusBar, TouchableOpacity } from 'react-nati
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
+import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import { Maybe, useConversation, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import {
@@ -62,7 +63,7 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 						color: colors['background-header'],
 						style: _styles.thirdHeaderButton,
 						disabled: !link || undefined,
-						onPress: link ? () => navigate.chat.multiMemberQR({ convId: publicKey }) : undefined,
+						onPress: link ? () => navigate('Chat.MultiMemberQR', { convId: publicKey }) : undefined,
 					},
 				]}
 			/>
@@ -166,7 +167,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const ctx = useMessengerContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
-	const navigation = useNavigation()
+	const { navigate } = useNavigation()
 	const memberLength = Object.values(members).length
 	const memberText = memberLength < 2 ? 'member' : 'members'
 	const { t } = useTranslation()
@@ -177,7 +178,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 			<ButtonSetting
 				name={t('chat.multi-member-settings.media-button')}
 				icon='image-outline'
-				onPress={() => navigation.navigate.chat.sharedMedias({ convPk: publicKey })}
+				onPress={() => navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.notifications-button')}
@@ -253,9 +254,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				name={t('chat.multi-member-settings.add-member-button')}
 				icon='user-plus'
 				iconPack='custom'
-				onPress={() =>
-					navigation.navigate.chat.multiMemberSettingsAddMembers({ convPK: publicKey })
-				}
+				onPress={() => navigate('Chat.MultiMemberSettingsAddMembers', { convPK: publicKey })}
 			/>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.invite-button')}
@@ -279,7 +278,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				iconSize={30}
 				actionIcon='arrow-ios-forward'
 				onPress={() => {
-					navigation.navigate.chat.replicateGroupSettings({ convId: publicKey })
+					navigate('Chat.ReplicateGroupSettings', { convId: publicKey })
 				}}
 			/>
 			<ButtonSetting

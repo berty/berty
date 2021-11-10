@@ -1,15 +1,16 @@
 import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useConversation, useThemeColor } from '@berty-tech/store/hooks'
-import { navigate, Routes } from '@berty-tech/navigation'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 
 const ContactRequestReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
 	const colors = useThemeColor()
+	const { navigate } = useNavigation()
 	const _styles = useStylesNotification()
 
 	const { payload } = props?.additionalProps?.payload || {}
@@ -17,7 +18,7 @@ const ContactRequestReceived: React.FC<any> = ({ onClose, title, message, ...pro
 
 	const handlePressConvMessage = () => {
 		if (conv) {
-			navigate(Routes.Chat.OneToOne, { convId: conv.publicKey })
+			navigate('Chat.OneToOne', { convId: conv.publicKey })
 		} else {
 			console.warn('Notif: ContactRequestReceived: Conversation not found')
 		}
@@ -30,7 +31,6 @@ const ContactRequestReceived: React.FC<any> = ({ onClose, title, message, ...pro
 		<TouchableOpacity
 			style={_styles.touchable}
 			activeOpacity={conv ? 0.3 : 1}
-			//underlayColor='transparent'
 			onPress={handlePressConvMessage}
 		>
 			<View style={_styles.innerTouchable}>

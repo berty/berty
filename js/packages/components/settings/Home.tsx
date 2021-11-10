@@ -8,12 +8,12 @@ import {
 	View,
 } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import {
 	useAccount,
 	useMessengerContext,
@@ -53,7 +53,7 @@ const HomeHeaderGroupButton: React.FC = () => {
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-	const { navigate } = useNativeNavigation()
+	const { navigate } = useNavigation()
 
 	return (
 		<View style={[padding.horizontal.medium]}>
@@ -100,7 +100,7 @@ const HomeHeaderAvatar: React.FC = () => {
 		useStyles()
 	const colors = useThemeColor()
 	const account = useAccount()
-	const navigation = useNavigation()
+	const { navigate } = useNavigation()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.3
 
 	return (
@@ -112,7 +112,7 @@ const HomeHeaderAvatar: React.FC = () => {
 					padding.top.scale(40),
 					{ backgroundColor: colors['main-background'] },
 				]}
-				onPress={() => navigation.navigate.settings.myBertyId()}
+				onPress={() => navigate('Settings.MyBertyId')}
 			>
 				<View style={[{ alignItems: 'center' }]}>
 					<View style={{ position: 'absolute', top: -73 }}>
@@ -218,7 +218,7 @@ const TaskItem: React.FC<{ value: CheckListItem }> = ({ value }) => {
 
 const CheckItems: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 	const ctx = useMessengerContext()
-	const { navigate } = useNativeNavigation()
+	const { navigate } = useNavigation()
 
 	const tasks = useMemo(
 		() => Object.entries(ctx.persistentOptions[PersistentOptionsKeys.CheckList]),
@@ -381,7 +381,7 @@ const CheckList: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 const HomeBodySettings: React.FC = () => {
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
-	const navigation = useNativeNavigation()
+	const { navigate } = useNavigation()
 	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const enableNotif = ctx.persistentOptions.notifications.enable
@@ -399,7 +399,7 @@ const HomeBodySettings: React.FC = () => {
 				icon='options-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.NetworkConfig')}
+				onPress={() => navigate('Settings.NetworkConfig')}
 			>
 				{/* TODO bullet point in button */}
 			</ButtonSetting>
@@ -427,13 +427,13 @@ const HomeBodySettings: React.FC = () => {
 					color: enableNotif ? colors['background-header'] : colors['secondary-text'],
 					bgColor: enableNotif ? colors['positive-asset'] : `${colors['negative-asset']}40`,
 				}}
-				onPress={() => navigation.navigate('Settings.Notifications')}
+				onPress={() => navigate('Settings.Notifications')}
 			/>
 			<ButtonSetting
 				name={t('settings.home.bluetooth-button.title')}
 				icon='bluetooth-outline'
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.Bluetooth')}
+				onPress={() => navigate('Settings.Bluetooth')}
 			/>
 			<ButtonSetting
 				name={t('settings.home.dark-mode-button')}
@@ -459,13 +459,13 @@ const HomeBodySettings: React.FC = () => {
 				icon='color-palette-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.ThemeEditor')}
+				onPress={() => navigate('Settings.ThemeEditor')}
 			/>
 			<ButtonSetting
 				name={t('settings.home.header-center-button')}
 				icon='options-2-outline'
 				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigation.navigate('Settings.DevTools')}
+				onPress={() => navigate('Settings.DevTools')}
 			/>
 		</View>
 	)
@@ -477,10 +477,10 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const [{ row, margin, text, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-	const navigation = useNativeNavigation()
+	const { setOptions } = useNavigation()
 
 	React.useLayoutEffect(() => {
-		navigation.setOptions({
+		setOptions({
 			headerRight: ({ tintColor }: any) => (
 				<TouchableOpacity
 					onPress={() => setOpenModal(true)}
@@ -508,11 +508,11 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 
 	React.useEffect(() => {
 		if (openModal) {
-			navigation.setOptions({
+			setOptions({
 				headerShown: false,
 			})
 		} else {
-			navigation.setOptions({
+			setOptions({
 				headerShown: true,
 			})
 		}

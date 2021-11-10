@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useContacts, useThemeColor } from '@berty-tech/store/hooks'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'

@@ -1,10 +1,10 @@
 import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useConversation, useThemeColor } from '@berty-tech/store/hooks'
-import { navigate, Routes } from '@berty-tech/navigation'
 
 import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'
@@ -13,6 +13,7 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 	const [{ text }] = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesNotification()
+	const { navigate } = useNavigation()
 
 	const { payload } = props?.additionalProps?.payload || {}
 	const convExists = useConversation(payload.conversation?.publicKey)
@@ -24,8 +25,8 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 			// TODO: Investigate: doesn't work if app crashes and is restarted
 			navigate(
 				payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
-					? Routes.Chat.OneToOne
-					: Routes.Chat.Group,
+					? 'Chat.OneToOne'
+					: 'Chat.Group',
 				{ convId: payload.conversation?.publicKey, scrollToMessage: payload?.interaction?.cid },
 			)
 		} else {
@@ -40,7 +41,6 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 		<TouchableOpacity
 			style={_styles.touchable}
 			activeOpacity={convExists ? 0.3 : 1}
-			//underlayColor='transparent'
 			onPress={handlePressConvMessage}
 		>
 			<View style={_styles.innerTouchable}>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
 
 import { getSource } from '../../utils'
 import { ImageCounter } from '../ImageCounter'
@@ -17,7 +17,7 @@ export const PictureMessage: React.FC<{
 	const colors = useThemeColor()
 	const { protocolClient } = useMessengerContext()
 	const [images, setImages] = useState<any[]>([])
-	const navigation = useNavigation()
+	const { navigate } = useNavigation()
 	useEffect(() => {
 		if (!protocolClient) {
 			return
@@ -55,7 +55,7 @@ export const PictureMessage: React.FC<{
 				{medias.slice(0, medias.length > 4 ? 4 : medias.length).map((media: any, index: number) => (
 					<TouchableOpacity
 						onPress={() => {
-							navigation.navigate.modals.imageView({ images })
+							navigate('Modals.ImageView', { images })
 						}}
 						onLongPress={onLongPress}
 						activeOpacity={1}
