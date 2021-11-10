@@ -156,6 +156,7 @@ lint: node_modules
 	# ignore web-dev-app until it's integrated with new tools config
 	echo '/packages/web-dev-app/' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
+	npx tsc # check static typing
 
 .PHONY: lint.fix
 lint.fix: node_modules
@@ -166,6 +167,7 @@ lint.fix: node_modules
 	# ignore web-dev-app until it's integrated with new tools config
 	echo '/packages/web-dev-app/' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
+	npx tsc # check static typing
 
 ###################
 # Build/Run rules #
