@@ -1,0 +1,49 @@
+{
+  "members": {
+    "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao": {
+      "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao": {
+        "publicKey": "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao",
+        "displayName": "anon#uxa7",
+        "conversationPublicKey": "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao",
+        "isMe": true
+      }
+    },
+    "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA": {
+      "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao": {
+        "publicKey": "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao",
+        "displayName": "anon#uxa7",
+        "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+        "isMe": true
+      },
+      "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4": {
+        "publicKey": "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4",
+        "displayName": "anon#nZyV",
+        "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA"
+      }
+    }
+  },
+  "contacts": {
+    "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4": {
+      "publicKey": "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4",
+      "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+      "conversation": {
+        "publicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+        "type": "ContactType",
+        "contactPublicKey": "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4",
+        "createdDate": "1636546080611"
+      },
+      "state": "Accepted",
+      "createdDate": "1636546080610",
+      "infoDate": "1636546082544"
+    }
+  },
+  "conversations": {
+    "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA": {
+      "publicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+      "type": "ContactType",
+      "contactPublicKey": "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4",
+      "createdDate": "1636546080611"
+    }
+  },
+  "interactions": {}
+}

@@ -427,3 +427,12 @@ node_modules: package.json
 	$(call check-program, yarn)
 	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
+
+packages/fixtures/%-store.json: packages/fixtures/%-events.json node_modules
+	npx ts-node -r tsconfig-paths/register ./packages/fixtures/gen-store $< $@
+
+fixtures:
+	rm -f $(wildcard packages/fixtures/*-events.json)
+	cd ../go && go run ./cmd/gen-fixtures-events ../js/packages/fixtures
+	$(MAKE) packages/fixtures/alice-store.json packages/fixtures/bob-store.json
+.PHONY: fixtures
