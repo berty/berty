@@ -1,15 +1,13 @@
 import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useThemeColor, useMessengerContext } from '@berty-tech/store'
 
-export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
-	const navigation = useNavigation()
+export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()

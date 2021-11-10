@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import {
 	ScrollView,
@@ -12,7 +11,7 @@ import {
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
 
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useConversationsCount,
 	useIncomingContactRequests,
@@ -73,7 +72,7 @@ const FooterButton: React.FC<{
 	)
 }
 
-export const Home: React.FC<ScreenProps.Main.Home> = () => {
+export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor((_ctx, notif) =>
 		[T.TypeMessageReceived, T.TypeContactRequestReceived, T.TypeContactRequestSent].includes(
 			notif.type as any,
@@ -99,7 +98,6 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
-	const { navigate } = useNativeNavigation()
 	const { client } = useMessengerContext()
 
 	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight, windowHeight }] = useStyles()

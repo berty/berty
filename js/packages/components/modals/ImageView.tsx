@@ -7,20 +7,12 @@ import Share from 'react-native-share'
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversationsCount, useThemeColor } from '@berty-tech/store/hooks'
-import beapi from '@berty-tech/api'
-import { useNavigation } from '@berty-tech/navigation'
+import { useConversationsCount, useThemeColor } from '@berty-tech/store'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
 import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
 
-export const ImageView: React.FC<{
-	route: {
-		params: {
-			images: beapi.messenger.IMedia[]
-			previewOnly?: boolean
-		}
-	}
-}> = ({
+export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 	route: {
 		params: { images, previewOnly = false },
 	},
@@ -45,26 +37,33 @@ export const ImageView: React.FC<{
 		{
 			title: t('chat.files.save-to-gallery'),
 			onPress() {
-				images[currentIndex] &&
-					CameraRoll.save(images[currentIndex].uri, { type: 'photo' })
-						.then(() => {
-							setModalVisibility(false)
-							handleMessage(t('chat.files.image-saved'))
-						})
-						.catch(err => console.log(err))
+				const uri = images[currentIndex]?.uri
+				if (!uri) {
+					return
+				}
+				CameraRoll.save(uri, { type: 'photo' })
+					.then(() => {
+						setModalVisibility(false)
+						handleMessage(t('chat.files.image-saved'))
+					})
+					.catch(err => console.log(err))
 			},
 		},
 		{
 			title: t('chat.files.share'),
 			onPress() {
-				images[currentIndex] &&
-					Share.open({
-						url: images[currentIndex].uri,
+				const img = images[currentIndex]
+				if (!img) {
+					return
+				}
+				Share.open({
+					title: img.displayName || img.filename || 'Image from Berty',
+					url: img.uri,
+				})
+					.then(() => {})
+					.catch(err => {
+						err && console.log(err)
 					})
-						.then(() => {})
-						.catch(err => {
-							err && console.log(err)
-						})
 			},
 		},
 		...(hasConversation

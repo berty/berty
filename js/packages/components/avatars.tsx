@@ -153,7 +153,7 @@ export const HardcodedAvatar: React.FC<{
 			activeOpacity={0.9}
 			disabled={!pressable}
 			onPress={() => {
-				navigate('ImageView', { images: [avatar], previewOnly: true })
+				navigate('Modals.ImageView', { images: [avatar], previewOnly: true })
 			}}
 			style={[
 				border.shadow.medium,

@@ -124,9 +124,11 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 			onPress: async () => {
 				setActiveTab(TabItems.Files)
 				try {
-					const res = await DocumentPicker.pick({
-						type: [DocumentPicker.types.allFiles],
-					})
+					const res = (
+						await DocumentPicker.pick({
+							type: [DocumentPicker.types.allFiles],
+						})
+					)[0][0]
 					prepareMediaAndSend([
 						{
 							filename: res.name,
@@ -134,7 +136,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 							mimeType: res.type,
 						},
 					])
-				} catch (err) {
+				} catch (err: any) {
 					if (DocumentPicker.isCancel(err)) {
 						// ignore
 					}
@@ -154,7 +156,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 		},
 	]
 
-	const prepareMediaAndSend = async (res: beapi.messenger.IMedia[]) => {
+	const prepareMediaAndSend = async (res: (beapi.messenger.IMedia & { uri?: string })[]) => {
 		if (isLoading) {
 			return
 		}

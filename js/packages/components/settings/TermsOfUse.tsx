@@ -4,6 +4,7 @@ import { Layout, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { ScreenFC } from '@berty-tech/navigation'
 
 //
 // TermsOfUse
@@ -81,7 +82,7 @@ const BodyTermsOfUse: React.FC<{}> = () => {
 	)
 }
 
-export const TermsOfUse: React.FC<{}> = () => {
+export const TermsOfUse: ScreenFC<'Settings.TermsOfUse'> = () => {
 	const colors = useThemeColor()
 
 	return (

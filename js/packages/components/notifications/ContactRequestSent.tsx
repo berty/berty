@@ -2,8 +2,8 @@ import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useThemeColor } from '@berty-tech/store/hooks'
-import { navigate, Routes } from '@berty-tech/navigation'
+import { useConversation, useThemeColor } from '@berty-tech/store'
+import { navigate } from '@berty-tech/navigation'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 
@@ -16,10 +16,10 @@ const ContactRequestSent: React.FC<any> = ({ onClose, title, message, ...props }
 	const conv = useConversation(payload.contact?.conversationPublicKey)
 
 	const handlePressConvMessage = () => {
-		if (conv) {
-			navigate(Routes.Chat.OneToOne, { convId: conv.publicKey })
+		if (conv?.publicKey) {
+			navigate('Chat.OneToOne', { convId: conv.publicKey })
 		} else {
-			console.warn('Notif: ContactRequestSent: Conversation not found')
+			console.warn('Notif: ContactRequestSent: Conversation not found or no public key')
 		}
 		if (typeof onClose === 'function') {
 			onClose()

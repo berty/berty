@@ -1,138 +1,83 @@
+import React from 'react'
+
 import beapi from '@berty-tech/api'
+import { StackScreenProps } from '@react-navigation/stack'
 
-export type RouteProps<T> = { route: { params: T } }
+export type ScreensParams = {
+	// Onboarding
 
-export namespace ScreenProps {
-	export namespace Onboarding {
-		export type GetStarted = RouteProps<void>
-		export type SelectMode = RouteProps<void>
-		export type Performance = RouteProps<void>
-		export type Privacy = RouteProps<void>
-		export type ServicesAuth = RouteProps<void>
-		export type CreateAccount = RouteProps<void>
-		export type SetupFinished = RouteProps<void>
+	'Onboarding.GetStarted': undefined
+	'Onboarding.CreateAccount': undefined
+	'Onboarding.SetupFinished': undefined
+
+	// Main
+
+	'Main.Home': undefined
+	'Main.ContactRequest': { contactId: string }
+	'Main.Scan': undefined
+	'Main.NetworkOptions': { checkNotificationPermission: boolean }
+	'Main.Permissions': {
+		permissionType: 'p2p' | 'audio' | 'notification' | 'camera'
+		permissionStatus: 'blocked' | 'denied'
+		navigateNext: keyof ScreensParams
+		createNewAccount: boolean
 	}
-	export namespace Main {
-		export type Home = RouteProps<void>
-		export type ContactRequest = RouteProps<{ contactId: string }>
-		export type Scan = RouteProps<void>
-		export type Permissions = RouteProps<{
-			permissionType: 'p2p' | 'audio' | 'notification' | 'camera'
-			permissionStatus: 'blocked' | 'denied'
-			navigateNext: string
-			createNewAccount: boolean
-		}>
-		export namespace CreateGroup {
-			export type CreateGroupAddMembers = RouteProps<void>
-			export type CreateGroupFinalize = RouteProps<void>
-		}
+
+	// Create group
+
+	'Main.CreateGroupAddMembers': undefined
+	'Main.CreateGroupFinalize': undefined
+
+	// Chat
+
+	'Chat.OneToOne': { convId: string; scrollToMessage?: string | null }
+	'Chat.Group': { convId: string; scrollToMessage?: string | null }
+	'Chat.OneToOneSettings': { convId: string }
+	'Chat.ContactSettings': { contactId: string }
+	'Group.MultiMemberSettings': { convId: string }
+	'Group.MultiMemberSettingsAddMembers': { convPK: string }
+	'Chat.MultiMemberQR': { convId: string }
+	'Chat.ReplicateGroupSettings': { convId: string }
+	'Chat.SharedMedias': { convPk: string }
+
+	// Settings
+
+	'Settings.Home': undefined
+	'Settings.MyBertyId': undefined
+	'Settings.AppUpdates': undefined
+	'Settings.Help': undefined
+	'Settings.Mode': undefined
+	'Settings.Notifications': undefined
+	'Settings.Bluetooth': undefined
+	'Settings.ServicesAuth': undefined
+	'Settings.AboutBerty': undefined
+	'Settings.TermsOfUse': undefined
+	'Settings.DevTools': undefined
+	'Settings.IpfsWebUI': undefined
+	'Settings.SystemInfo': undefined
+	'Settings.FakeData': undefined
+	'Settings.AddDevConversations': undefined
+	'Settings.DevText': { text: string }
+	'Settings.NetworkMap': undefined
+	'Settings.ThemeEditor': undefined
+	'Settings.DeleteAccount': undefined
+	'Settings.NetworkConfig': undefined
+	'Settings.Roadmap': undefined
+	'Settings.Faq': undefined
+	'Settings.ReplicationServices': undefined
+
+	// Modals
+
+	'Modals.ManageDeepLink': {
+		type: 'qr' | 'link'
+		value: string
 	}
-	export namespace Chat {
-		export type OneToOne = RouteProps<{ convId: string; scrollToMessage?: string }>
-		export type Group = RouteProps<{ convId: string }>
-		export type OneToOneSettings = RouteProps<{ convId: string }>
-		export type ContactSettings = RouteProps<{ contactId: string }>
-		export type MultiMemberSettings = RouteProps<{ convId: string }>
-		export type MultiMemberSettingsAddMembers = RouteProps<{}>
-		export type ReplicateGroupSettings = RouteProps<{ convId: string }>
-		export type MultiMemberQR = RouteProps<{ convId: string }>
-		export type SharedMedias = RouteProps<{}>
-	}
-	export namespace Settings {
-		export type Home = RouteProps<void>
-		export type MyBertyId = RouteProps<void>
-		export type AppUpdates = RouteProps<void>
-		export type Help = RouteProps<void>
-		export type Mode = RouteProps<void>
-		export type BlockedContacts = RouteProps<void>
-		export type Notifications = RouteProps<void>
-		export type Bluetooth = RouteProps<void>
-		export type ServicesAuth = RouteProps<void>
-		export type AboutBerty = RouteProps<void>
-		export type TermsOfUse = RouteProps<void>
-		export type DevTools = RouteProps<void>
-		export type IpfsWebUI = RouteProps<void>
-		export type SystemInfo = RouteProps<void>
-		export type FakeData = RouteProps<void>
-		export type AddDevConversations = RouteProps<void>
-		export type DevText = RouteProps<{ text: string }>
-		export type NetworkMap = RouteProps<void>
-		export type ThemeEditor = RouteProps<void>
-		export type DeleteAccount = RouteProps<void>
-		export type NetworkConfig = RouteProps<void>
-		export type Roadmap = RouteProps<void>
-		export type Faq = RouteProps<void>
-	}
-	export namespace Modals {
-		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
-		export type ImageView = RouteProps<{
-			images: beapi.messenger.IMedia[]
-			previewOnly?: boolean
-		}>
+	'Modals.ImageView': {
+		images: (beapi.messenger.IMedia & { uri?: string })[]
+		previewOnly?: boolean
 	}
 }
 
-export namespace Routes {
-	export enum Onboarding {
-		GetStarted = 'Onboarding.GetStarted',
-		ChoosePreset = 'Onboarding.ChoosePreset',
-		SelectMode = 'Onboarding.SelectMode',
-		Performance = 'Onboarding.Performance',
-		Privacy = 'Onboarding.Privacy',
-		CreateAccount = 'Onboarding.CreateAccount',
-		SetupFinished = 'Onboarding.SetupFinished',
-	}
-	export enum Main {
-		Home = 'Main.Home',
-		ContactRequest = 'Main.ContactRequest',
-		Scan = 'Main.Scan',
-		NetworkOptions = 'Main.NetworkOptions',
-		Permissions = 'Main.Permissions',
-	}
-	export enum CreateGroup {
-		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',
-		CreateGroupFinalize = 'Main.CreateGroupFinalize',
-	}
-	export enum Chat {
-		OneToOne = 'Chat.OneToOne',
-		Group = 'Chat.Group',
-		OneToOneSettings = 'Chat.OneToOneSettings',
-		ContactSettings = 'Chat.ContactSettings',
-		MultiMemberSettings = 'Group.MultiMemberSettings',
-		MultiMemberSettingsAddMembers = 'Group.MultiMemberSettingsAddMembers',
-		MultiMemberQR = 'Chat.MultiMemberQR',
-		ReplicateGroupSettings = 'Chat.ReplicateGroupSettings',
-		SharedMedias = 'Chat.SharedMedias',
-	}
-	export enum Settings {
-		Home = 'Settings.Home',
-		MyBertyId = 'Settings.MyBertyId',
-		AppUpdates = 'Settings.AppUpdates',
-		Help = 'Settings.Help',
-		Mode = 'Settings.Mode',
-		BlockedContacts = 'Settings.BlockedContacts',
-		Notifications = 'Settings.Notifications',
-		Bluetooth = 'Settings.Bluetooth',
-		ServicesAuth = 'Settings.ServicesAuth',
-		AboutBerty = 'Settings.AboutBerty',
-		TermsOfUse = 'Settings.TermsOfUse',
-		DevTools = 'Settings.DevTools',
-		SystemInfo = 'Settings.SystemInfo',
-		IpfsWebUI = 'Settings.IpfsWebUI',
-		DevText = 'Settings.DevText',
-		FakeData = 'Settings.FakeData',
-		AddDevConversations = 'Settings.AddDevConversations',
-		NetworkMap = 'Settings.NetworkMap',
-		ThemeEditor = 'Settings.ThemeEditor',
-		DeleteAccount = 'Settings.DeleteAccount',
-		NetworkConfig = 'Settings.NetworkConfig',
-		ReplicationServices = 'Settings.ReplicationServices',
-		Roadmap = 'Settings.Roadmap',
-		Faq = 'Settings.Faq',
-	}
-	export enum Modals {
-		SendContactRequest = 'SendContactRequest',
-		ManageDeepLink = 'ManageDeepLink',
-		ImageView = 'ImageView',
-	}
-}
+export type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>
+
+export type ScreenFC<T extends keyof ScreensParams> = React.FC<ScreenProps<T>>

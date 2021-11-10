@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty-tech/store'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 
 import { Request } from '../shared-components/Request'
@@ -30,13 +30,13 @@ const useStylesContactRequest = () => {
 	}
 }
 
-export const ContactRequest: React.FC<ScreenProps.Main.ContactRequest> = ({
+export const ContactRequest: ScreenFC<'Main.ContactRequest'> = ({
 	route: { params },
+	navigation: { goBack },
 }) => {
 	const _styles = useStylesContactRequest()
 	const colors = useThemeColor()
-	const { goBack } = useNavigation()
-	const { call: accept } = (messengerMethodsHooks as any).useContactAccept()
+	const { call: accept } = messengerMethodsHooks.useContactAccept()
 	return (
 		<Request
 			contactPublicKey={params.contactId}

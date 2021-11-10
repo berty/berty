@@ -3,14 +3,20 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 import { Platform, ScrollView, Vibration, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
-import { showNeedRestartNotification } from '@berty-tech/components/helpers'
+import {
+	useAccount,
+	useMessengerContext,
+	useThemeColor,
+	exportAccountToFile,
+	serviceTypes,
+	useAccountServices,
+} from '@berty-tech/store'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
+import { showNeedRestartNotification } from '../helpers'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 
 // Styles
@@ -22,13 +28,13 @@ const useStylesMode = () => {
 	}
 }
 
-const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
+const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin }, { scaleSize }] = useStyles()
 	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const colors = useThemeColor()
-	const navigation = useReactNavigation()
+	const navigation = useNavigation()
 	const account: beapi.messenger.IAccount | null | undefined = useAccount()
 	const services = useAccountServices()
 	const replicationServices = services.filter(
@@ -139,7 +145,7 @@ const BodyMode: React.FC<{}> = withInAppNotification(({ showNotification }: any)
 	)
 })
 
-export const Mode: React.FC<{}> = () => {
+export const Mode: ScreenFC<'Settings.Mode'> = () => {
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 	const [{ padding, text }, { scaleSize }] = useStyles()

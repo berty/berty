@@ -2,7 +2,6 @@ import { EffectCallback, useContext, useEffect, useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
-import { Routes } from '@berty-tech/navigation'
 import colors from '@berty-tech/styles/colors.json'
 
 import { MessengerContext, useMessengerContext } from './context'
@@ -348,7 +347,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 			const { routes } = navigation.getState()
 			for (let route of routes) {
 				if (
-					(route.name === Routes.Chat.OneToOne || route.name === Routes.Chat.Group) &&
+					(route.name === 'Chat.OneToOne' || route.name === 'Chat.MultiMember') &&
 					(route.params as any)?.convId === publicKey
 				) {
 					return

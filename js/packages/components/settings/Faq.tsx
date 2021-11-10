@@ -3,9 +3,10 @@ import { StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { WebView } from 'react-native-webview'
 
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty-tech/store'
+import { ScreenFC } from '@berty-tech/navigation'
 
-export const Faq = () => {
+export const Faq: ScreenFC<'Settings.Faq'> = () => {
 	const colors = useThemeColor()
 
 	return (

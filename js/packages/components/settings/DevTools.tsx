@@ -3,7 +3,6 @@ import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { Player } from '@react-native-community/audio-toolkit'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import Long from 'long'
 import crashlytics from '@react-native-firebase/crashlytics'
 import { withInAppNotification } from 'react-native-in-app-notification'
@@ -21,7 +20,7 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import beapi from '@berty-tech/api'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
@@ -76,7 +75,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 						color: colors['alt-secondary-background-header'],
 						style: _styles.buttonRow,
 						onPress: () => {
-							navigate.settings.fakeData()
+							navigate('Settings.FakeData')
 						},
 					},
 					{
@@ -97,7 +96,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 const NativeCallButton: React.FC = () => {
 	// create middleware(s) if needed
 	const messengerMiddlewares = middleware.chain(
-		__DEV__ ? middleware.logger.create('MESSENGER') : null, // eslint-disable-line
+		__DEV__ ? middleware.logger.create('MESSENGER') : null,
 	)
 	const colors = useThemeColor()
 
@@ -144,7 +143,7 @@ const NativeCallButton: React.FC = () => {
 
 const DiscordShareButton: React.FC = () => {
 	const { navigate, goBack } = useNavigation()
-	const account: any = useAccount()
+	const account = useAccount()
 	const { call, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
@@ -153,14 +152,14 @@ const DiscordShareButton: React.FC = () => {
 		if (done) {
 			Vibration.vibrate(500)
 			if (error) {
-				navigate.settings.devText({
+				navigate('Settings.DevText', {
 					text: error.toString(),
 				})
 			} else {
 				goBack()
 			}
 		}
-	}, [done, error, goBack, navigate.settings])
+	}, [done, error, goBack, navigate])
 
 	const createDiscordShareAlert = () =>
 		Alert.alert(
@@ -175,7 +174,7 @@ const DiscordShareButton: React.FC = () => {
 					text: t('settings.devtools.share-button.alert-accept-button'),
 					onPress: () => {
 						call({
-							displayName: account.displayName,
+							displayName: account?.displayName,
 						})
 					},
 					style: 'default',
@@ -206,7 +205,7 @@ const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) =>
 			icon='activity-outline'
 			iconSize={30}
 			iconColor={colors['alt-secondary-background-header']}
-			onPress={() => navigate.settings.devText({ text })}
+			onPress={() => navigate('Settings.DevText', { text })}
 		/>
 	)
 }
@@ -322,12 +321,11 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, text }] = useStyles()
 	const { navigate } = useNavigation()
-	const navigation = useNativeNavigation()
+	const navigation = useNavigation()
 	const ctx = useMessengerContext()
 	const { t } = useTranslation()
 	const tyberHosts = useRef<{ [key: string]: string[] }>({})
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [rerender, setRerender] = useState(0)
+	const [, setRerender] = useState(0)
 	const colors = useThemeColor()
 
 	const addTyberHost = useCallback(
@@ -409,7 +407,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				icon='info-outline'
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigate.settings.systemInfo()}
+				onPress={() => navigate('Settings.SystemInfo')}
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.simulate-button')}
@@ -600,7 +598,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon='arrow-ios-forward'
-				onPress={() => navigate.settings.ipfsWebUI()}
+				onPress={() => navigate('Settings.IpfsWebUI')}
 			/>
 			<SendToAll />
 			<PlaySound />
@@ -651,7 +649,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	)
 })
 
-export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
+export const DevTools: ScreenFC<'Settings.DevTools'> = () => {
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 

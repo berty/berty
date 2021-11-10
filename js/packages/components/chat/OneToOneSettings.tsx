@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import { ScrollView, View, StatusBar, TouchableOpacity } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
-import { ScreenProps } from '@berty-tech/navigation'
-import { useContact, useConversation, useThemeColor } from '@berty-tech/store/hooks'
+import { ScreenFC } from '@berty-tech/navigation'
+import { useContact, useConversation, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -86,10 +85,13 @@ const OneToOneHeaderButtons: React.FC<{}> = () => {
 	)
 }
 
-const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
+const OneToOneBody: React.FC<{
+	publicKey: string
+	isIncoming: boolean
+	navigation: ComponentProps<typeof OneToOneSettings>['navigation']
+}> = ({ publicKey, isIncoming, navigation }) => {
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
-	const navigation = useNavigation()
 	const { t } = useTranslation()
 
 	return (
@@ -137,12 +139,12 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 	)
 }
 
-export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
+export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
 	route: { params },
+	navigation,
 }) => {
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const navigation = useNavigation()
 	const { convId } = params
 	const conv = useConversation(convId)
 	const contact = useContact(conv?.contactPublicKey)
@@ -185,7 +187,11 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 						<OneToOneHeader contact={contact} />
 						<OneToOneHeaderButtons />
 					</View>
-					<OneToOneBody {...conv} isIncoming={isIncoming} />
+					<OneToOneBody
+						publicKey={conv.publicKey || ''}
+						isIncoming={isIncoming}
+						navigation={navigation}
+					/>
 				</ScrollView>
 			</View>
 		</>

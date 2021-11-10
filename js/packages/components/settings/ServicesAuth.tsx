@@ -5,14 +5,15 @@ import { useTranslation } from 'react-i18next'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps } from '@berty-tech/navigation'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
+	useMessengerContext,
+	useThemeColor,
 	servicesAuthViaURL,
 	servicesAuthViaDefault,
 	useAccountServices,
 	serviceNames,
-} from '@berty-tech/store/services'
+} from '@berty-tech/store'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'
@@ -103,7 +104,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	)
 })
 
-export const ServicesAuth: React.FC<ScreenProps.Settings.ServicesAuth> = () => {
+export const ServicesAuth: ScreenFC<'Settings.ServicesAuth'> = () => {
 	const colors = useThemeColor()
 
 	return (

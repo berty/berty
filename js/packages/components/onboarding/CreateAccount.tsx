@@ -12,6 +12,7 @@ import {
 	MessengerState,
 	storageSet,
 	useMessengerContext,
+	useMountEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
 } from '@berty-tech/store'
@@ -19,17 +20,20 @@ import rnutil from '@berty-tech/rnutil'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
+import { ScreenFC } from '@berty-tech/navigation'
 
 const openDocumentPicker = async (ctx: MessengerState) => {
 	try {
-		const res = await DocumentPicker.pick({
-			// @ts-ignore
-			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
-		})
+		const res = (
+			await DocumentPicker.pick({
+				// @ts-ignore
+				type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
+			})
+		)[0]
 		const replaced =
 			Platform.OS === 'android' ? getPath(res[0].uri) : res[0].uri.replace(/^file:\/\//, '')
 		await ctx.importAccount(replaced)
-	} catch (err) {
+	} catch (err: any) {
 		if (DocumentPicker.isCancel(err)) {
 			// ignore
 		} else {
@@ -48,12 +52,12 @@ const CreateAccountBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const { navigate } = useNavigation()
 
-	React.useEffect(() => {
+	useMountEffect(() => {
 		ctx
 			.getUsername()
-			.then(({ username }) => setName(username))
+			.then(reply => reply && setName(reply.username))
 			.catch(err2 => console.warn('Failed to fetch username:', err2))
-	}, []) // eslint-disable-line
+	})
 
 	const handlePersistentOptions = React.useCallback(async () => {
 		setIsPressed(true)
@@ -154,7 +158,7 @@ const CreateAccountBody = () => {
 	)
 }
 
-export const CreateAccount = () => {
+export const CreateAccount: ScreenFC<'Onboarding.CreateAccount'> = () => {
 	useNotificationsInhibitor(() => true)
 	const colors = useThemeColor()
 

@@ -14,6 +14,7 @@ import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { ScreenFC } from '@berty-tech/navigation'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()
@@ -211,7 +212,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	)
 }
 
-export const DeleteAccount: React.FC<{}> = () => {
+export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const [layout, setLayout] = useState(0)
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()

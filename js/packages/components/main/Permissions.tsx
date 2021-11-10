@@ -9,7 +9,6 @@ import {
 	RESULTS,
 	openSettings,
 } from 'react-native-permissions'
-import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -23,7 +22,7 @@ import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
 import p2pLottie from '@berty-tech/assets/p2p-lottie.json'
 import beapi from '@berty-tech/api'
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
 
 const animations = {
@@ -33,14 +32,13 @@ const animations = {
 	p2p: p2pLottie,
 }
 
-export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { params } }) => {
+export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, navigation }) => {
 	const appState = useRef(AppState.currentState)
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const { persistentOptions, setPersistentOption, createNewAccount, selectedAccount } =
 		useMessengerContext()
-	const navigation = useNavigation()
 	const {
 		permissionType,
 		permissionStatus,
@@ -53,7 +51,7 @@ export const Permissions: React.FC<ScreenProps.Main.Permissions> = ({ route: { p
 			await createNewAccount()
 		}
 		if (navigateNext) {
-			navigation.navigate(navigateNext, {})
+			navigation.navigate(navigateNext)
 		} else {
 			navigation.goBack()
 		}

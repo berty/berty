@@ -66,7 +66,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
-					{stream?.msg?.progress?.doing}
+					{stream?.msg.doing}
 				</Text>
 				<Text
 					style={[
@@ -75,9 +75,9 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
-					{stream?.msg?.progress?.completed} / {stream?.msg?.progress?.total}
+					{stream?.msg.completed} / {stream?.msg.total}
 				</Text>
-				<Progress.Bar progress={stream?.msg?.progress?.progress} width={200} />
+				<Progress.Bar progress={stream?.msg.progress} width={200} />
 			</View>
 		</View>
 	)

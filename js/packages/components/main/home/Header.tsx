@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Platform, ScrollView, TextInput, TouchableOpacity, View, ViewProps } from 'react-native'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { useProfileNotification, useThemeColor } from '@berty-tech/store/hooks'
+import { useProfileNotification, useThemeColor } from '@berty-tech/store'
+import { useNavigation } from '@berty-tech/navigation'
 
 import { AccountAvatar } from '../../avatars'
 import { UnreadCount } from '../../main/home/UnreadCount'
@@ -37,7 +37,7 @@ export const HomeHeader: React.FC<
 }) => {
 	const [{ border, width, height, padding, text, margin, row }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { navigate } = useNativeNavigation()
+	const { navigate } = useNavigation()
 	const notifs = useProfileNotification()
 	const { t }: any = useTranslation()
 	const [focus, setFocus] = useState<any>(null)

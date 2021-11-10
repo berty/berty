@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
 import { Buffer } from 'buffer'
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions } from '@react-navigation/native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor, PersistentOptionsKeys } from '@berty-tech/store'
+import { useMessengerContext, useThemeColor, setCheckListItemDone } from '@berty-tech/store'
 import { dispatch } from '@berty-tech/navigation/rootRef'
-import { Routes } from '@berty-tech/navigation'
+import { useNavigation } from '@berty-tech/navigation'
 
 import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
@@ -74,26 +74,11 @@ const AddThisContact: React.FC<{
 	// TODO: handle error (shouldn't happen since we checked the link previously, but still)
 
 	React.useEffect(() => {
-		const setContactCheckListDone = async () => {
-			await ctx.setPersistentOption({
-				type: PersistentOptionsKeys.CheckList,
-				payload: {
-					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-					contact: {
-						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact,
-						done: true,
-					},
-				},
-			})
-		}
 		if (done && !error) {
-			if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact?.done) {
-				setContactCheckListDone().then()
-			}
-
+			setCheckListItemDone(ctx, 'contact')
 			dispatch(
 				CommonActions.reset({
-					routes: [{ name: Routes.Main.Home }],
+					routes: [{ name: 'Main.Home' }],
 				}),
 			)
 		}

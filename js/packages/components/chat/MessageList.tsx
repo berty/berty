@@ -66,7 +66,10 @@ export const MessageList: React.FC<{
 	const members = ctx.members[id]
 	const rawMessages = useConvInteractions(id)
 	const messages = useMemo(
-		() => rawMessages.filter(message => !message.payload?.options?.length),
+		() =>
+			rawMessages.filter(
+				message => message.type !== beapi.messenger.AppMessage.Type.TypeReplyOptions,
+			),
 		[rawMessages],
 	)
 	const oldestMessage = useMemo(

@@ -3,6 +3,7 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
+import { ScreenFC } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import {
 	useGenerateFakeContacts,
@@ -10,7 +11,7 @@ import {
 	useDeleteFakeData,
 	useGenerateFakeMessages,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
+} from '@berty-tech/store'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 
@@ -62,7 +63,7 @@ const BodyFakeData = () => {
 	)
 }
 
-export const FakeData = () => {
+export const FakeData: ScreenFC<'Settings.FakeData'> = () => {
 	const colors = useThemeColor()
 
 	return (

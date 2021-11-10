@@ -3,7 +3,6 @@ import { View, StatusBar } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation } from '@react-navigation/native'
 
 import {
 	storageSet,
@@ -12,15 +11,15 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+import { ScreenFC } from '@berty-tech/navigation'
 
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
 
-export const GetStarted = () => {
+export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
 	const [{ absolute, column, flex, padding, text }] = useStyles()
 	const colors = useThemeColor()
-	const { navigate } = useNavigation()
 	const { t }: any = useTranslation()
 
 	return (
@@ -59,7 +58,7 @@ export const GetStarted = () => {
 					textStyle={{ textTransform: 'uppercase', color: colors['reverted-main-text'] }}
 					onPress={async () => {
 						await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
-						navigate('Onboarding.CreateAccount', {})
+						navigate('Onboarding.CreateAccount')
 					}}
 				>
 					{t('onboarding.getstarted.button')}

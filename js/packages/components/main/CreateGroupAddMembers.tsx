@@ -222,7 +222,7 @@ export const CreateGroupAddMembers: React.FC<{
 			<FooterCreateGroup
 				title={t('main.home.create-group.continue')}
 				icon='arrow-forward-outline'
-				action={navigation.navigate.main.createGroup.createGroupFinalize}
+				action={navigation.navigate('Main.CreateGroupFinalize')}
 			/>
 		</Layout>
 	)

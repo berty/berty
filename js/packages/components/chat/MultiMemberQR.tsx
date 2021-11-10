@@ -2,10 +2,10 @@ import React from 'react'
 import QRCode from 'react-native-qrcode-svg'
 import { Share, TouchableOpacity, View, Text, StatusBar } from 'react-native'
 import { Icon, Layout } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
 
-import { ScreenProps } from '@berty-tech/navigation'
-import { useAccount, useConversation, useThemeColor } from '@berty-tech/store/hooks'
+import beapi from '@berty-tech/api'
+import { ScreenFC } from '@berty-tech/navigation'
+import { useAccount, useConversation, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { MultiMemberAvatar } from '../avatars'
@@ -37,7 +37,7 @@ const useStylesMultiMemberQr = () => {
 	}
 }
 
-export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
+export const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ conv }) => {
 	const [{ padding, margin, border, column, text }, { windowHeight, windowWidth }] = useStyles()
 	const colors = useThemeColor()
 	const { styleBertyIdContent, requestAvatarSize } = useStylesMultiMemberQr()
@@ -79,21 +79,23 @@ export const SelectedContent: React.FC<{ conv: any }> = ({ conv }) => {
 			</View>
 			<View style={[padding.horizontal.big, { top: -30 }]}>
 				<View style={[column.item.center]}>
-					<QRCode
-						size={_contentScaleFactor * Math.min(windowHeight, windowWidth)}
-						value={conv.link}
-						logo={logo}
-						mode='circle'
-						color={colors['background-header']}
-						backgroundColor={colors['main-background']}
-					/>
+					{!!conv.link && (
+						<QRCode
+							size={_contentScaleFactor * Math.min(windowHeight, windowWidth)}
+							value={conv.link}
+							logo={logo}
+							mode='circle'
+							color={colors['background-header']}
+							backgroundColor={colors['main-background']}
+						/>
+					)}
 				</View>
 			</View>
 		</View>
 	)
 }
 
-const BertyIdShare: React.FC<{}> = () => {
+const BertyIdShare: React.FC = () => {
 	const [{ row, border, flex }] = useStyles()
 	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesMultiMemberQr()
@@ -133,7 +135,7 @@ const BertyIdShare: React.FC<{}> = () => {
 	)
 }
 
-const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
+const MultiMemberComponent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ conv }) => {
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
@@ -155,15 +157,15 @@ const MultiMemberComponent: React.FC<{ conv: any }> = ({ conv }) => {
 	)
 }
 
-export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
+export const MultiMemberQR: ScreenFC<'Chat.MultiMemberQR'> = ({
 	route: {
 		params: { convId },
 	},
+	navigation,
 }) => {
 	const colors = useThemeColor()
 	const conv = useConversation(convId)
 	const { iconIdSize } = useStylesMultiMemberQr()
-	const navigation = useNavigation()
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({

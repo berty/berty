@@ -18,7 +18,6 @@ import {
 	pbDateToNum,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { getEmojiByName, getMediaTypeFromMedias } from '@berty-tech/components/utils'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
@@ -27,6 +26,7 @@ import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
 import { useReplyReaction } from '../ReplyReactionContext'
 import PopoverView from './Popover'
+import { getEmojiByName, getMediaTypeFromMedias } from '../../utils'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -210,7 +210,7 @@ export const UserMessage: React.FC<{
 		}
 		if (activePopoverCid === inte.cid) {
 			setActivePopoverCid(null)
-		} else if (animatedValue._value === 0) {
+		} else if ((animatedValue as any)._value === 0) {
 			setActivePopoverCid(inte.cid)
 		}
 		Animated.timing(animatedValue, {
@@ -300,8 +300,11 @@ export const UserMessage: React.FC<{
 
 							<TouchableOpacity
 								onPress={() => {
-									scrollToCid(replyOf?.cid)
-									setHighlightCid(replyOf?.cid)
+									if (!replyOf?.cid) {
+										return
+									}
+									scrollToCid(replyOf.cid)
+									setHighlightCid(replyOf.cid)
 								}}
 								style={[
 									border.radius.top.medium,
@@ -318,11 +321,11 @@ export const UserMessage: React.FC<{
 									numberOfLines={1}
 									style={{ color: repliedToColors?.msgTextColor, fontSize: 10, lineHeight: 17 }}
 								>
-									{replyOf?.payload?.body
-										? replyOf.payload.body
-										: `${t('chat.reply.response-to')} ${t(
-												`medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
-										  )}`}
+									{(replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
+										replyOf.payload.body) ||
+										`${t('chat.reply.response-to')} ${t(
+											`medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
+										)}`}
 								</Text>
 							</TouchableOpacity>
 						</View>
@@ -562,11 +565,13 @@ export const UserMessage: React.FC<{
 									),
 								]}
 							>
-								{inte.reactions.map(({ emoji }, key) => (
-									<Text key={key} style={{ marginHorizontal: 2, fontSize: 10 }}>
-										{getEmojiByName(emoji)}
-									</Text>
-								))}
+								{inte.reactions
+									.filter(({ emoji }) => typeof emoji === 'string')
+									.map(({ emoji }) => (
+										<Text key={emoji} style={{ marginHorizontal: 2, fontSize: 10 }}>
+											{getEmojiByName(emoji as string)}
+										</Text>
+									))}
 							</View>
 						)}
 					</View>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Linking } from 'react-native'
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import {
 	createNativeStackNavigator,
 	NativeStackNavigationOptions,
@@ -13,11 +13,11 @@ import * as RawComponents from '@berty-tech/components'
 import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
-import { Routes } from './types'
+import { ScreensParams } from './types'
 import { dispatch } from './rootRef'
 
 export const CustomTitleStyle: () => any = () => {
-	const [{}, { scaleSize }] = useStyles()
+	const [, { scaleSize }] = useStyles()
 	return {
 		headerTitleStyle: {
 			fontFamily: 'Open Sans',
@@ -87,9 +87,9 @@ const AltBackgroundHeaderScreenOptions: (
 	}
 }
 
-function useLinking() {
+function useLinking(): [string | null, unknown] {
 	const [url, setUrl] = useState<string | null>(null)
-	const [error, setError] = useState()
+	const [error, setError] = useState<unknown>()
 
 	async function initialUrl() {
 		try {
@@ -120,12 +120,12 @@ function useLinking() {
 }
 
 const DeepLinkBridge: React.FC = () => {
-	const navigation = useNavigation()
+	const navigation = useNavigation<NavigationProp<ScreensParams>>()
 	const [url, error] = useLinking()
 
 	useEffect(() => {
 		if (url && !error && !(url as string).startsWith('berty://services-auth')) {
-			navigation.navigate('ManageDeepLink', { type: 'link', value: url })
+			navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 		}
 	}, [url, error, navigation])
 
@@ -144,11 +144,12 @@ Components = mapValues(RawComponents, SubComponents =>
 	)),
 )
 
-const NavigationStack = createNativeStackNavigator()
+const NavigationStack = createNativeStackNavigator<ScreensParams>()
+
 export const Navigation: React.FC = () => {
 	const context = useMessengerContext()
 	const colors = useThemeColor()
-	const [{}, { scaleSize }] = useStyles()
+	const [, { scaleSize }] = useStyles()
 	const { t }: any = useTranslation()
 
 	const [members, setMembers] = useState([] as any[])
@@ -171,21 +172,21 @@ export const Navigation: React.FC = () => {
 			case MessengerAppState.Ready:
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: Routes.Main.Home }],
+						routes: [{ name: 'Main.Home' }],
 					}),
 				)
 				return
 			case MessengerAppState.PreReady:
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: Routes.Onboarding.SetupFinished }],
+						routes: [{ name: 'Onboarding.SetupFinished' }],
 					}),
 				)
 				return
 			case MessengerAppState.GetStarted:
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: Routes.Onboarding.GetStarted }],
+						routes: [{ name: 'Onboarding.GetStarted' }],
 					}),
 				)
 				return
@@ -195,39 +196,37 @@ export const Navigation: React.FC = () => {
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				context.appState === MessengerAppState.GetStarted
-					? Routes.Onboarding.GetStarted
-					: Routes.Main.Home
+				context.appState === MessengerAppState.GetStarted ? 'Onboarding.GetStarted' : 'Main.Home'
 			}
 		>
 			{/* OnBoarding */}
 			<NavigationStack.Screen
-				name={Routes.Onboarding.GetStarted}
+				name={'Onboarding.GetStarted'}
 				component={Components.Onboarding.GetStarted}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Onboarding.CreateAccount}
+				name={'Onboarding.CreateAccount'}
 				component={Components.Onboarding.CreateAccount}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Onboarding.SetupFinished}
+				name={'Onboarding.SetupFinished'}
 				component={Components.Onboarding.SetupFinished}
 				options={{ headerShown: false }}
 			/>
 			{/* Main */}
 			<NavigationStack.Screen
-				name={Routes.Main.Home}
+				name={'Main.Home'}
 				component={Components.Main.Home}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Main.ContactRequest}
+				name={'Main.ContactRequest'}
 				component={Components.Main.ContactRequest}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Main.Scan}
+				name={'Main.Scan'}
 				component={Components.Main.Scan}
 				options={SecondaryBackgroundHeaderScreenOptions({
 					title: t('main.scan.title'),
@@ -244,18 +243,18 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Main.NetworkOptions}
+				name={'Main.NetworkOptions'}
 				component={Components.Main.NetworkOptions}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Main.Permissions}
+				name={'Main.Permissions'}
 				component={Components.Main.Permissions}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			{/* CreateGroup */}
 			<NavigationStack.Screen
-				name={Routes.CreateGroup.CreateGroupAddMembers}
+				name={'Main.CreateGroupAddMembers'}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -280,7 +279,7 @@ export const Navigation: React.FC = () => {
 				)}
 			</NavigationStack.Screen>
 			<NavigationStack.Screen
-				name={Routes.CreateGroup.CreateGroupFinalize}
+				name={'Main.CreateGroupFinalize'}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -302,17 +301,17 @@ export const Navigation: React.FC = () => {
 			</NavigationStack.Screen>
 			{/* Chat */}
 			<NavigationStack.Screen
-				name={Routes.Chat.OneToOne}
+				name={'Chat.OneToOne'}
 				component={Components.Chat.OneToOne}
 				options={ChatScreenOptions()}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.Group}
+				name={'Chat.Group'}
 				component={Components.Chat.MultiMember}
 				options={ChatScreenOptions()}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.OneToOneSettings}
+				name={'Chat.OneToOneSettings'}
 				component={Components.Chat.OneToOneSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: '',
@@ -320,7 +319,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.ContactSettings}
+				name={'Chat.ContactSettings'}
 				component={Components.Chat.ContactSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: '',
@@ -328,7 +327,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.MultiMemberSettings}
+				name={'Group.MultiMemberSettings'}
 				component={Components.Chat.MultiMemberSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: '',
@@ -336,7 +335,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.MultiMemberQR}
+				name={'Chat.MultiMemberQR'}
 				component={Components.Chat.MultiMemberQR}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.multi-member-qr.title'),
@@ -345,7 +344,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.MultiMemberSettingsAddMembers}
+				name={'Group.MultiMemberSettingsAddMembers'}
 				component={Components.Chat.MultiMemberSettingsAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.add-members.members'),
@@ -354,7 +353,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.ReplicateGroupSettings}
+				name={'Chat.ReplicateGroupSettings'}
 				component={Components.Chat.ReplicateGroupSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.replicate-group-settings.title'),
@@ -363,7 +362,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.SharedMedias}
+				name={'Chat.SharedMedias'}
 				component={Components.Chat.SharedMedias}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.shared-medias.title'),
@@ -373,14 +372,14 @@ export const Navigation: React.FC = () => {
 			/>
 			{/* Settings */}
 			<NavigationStack.Screen
-				name={Routes.Settings.Home}
+				name={'Settings.Home'}
 				component={Components.Settings.Home}
 				options={BackgroundHeaderScreenOptions({
 					title: '',
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.MyBertyId}
+				name={'Settings.MyBertyId'}
 				component={Components.Settings.MyBertyId}
 				options={BackgroundHeaderScreenOptions({
 					title: 'My Berty ID',
@@ -388,7 +387,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.AppUpdates}
+				name={'Settings.AppUpdates'}
 				component={Components.Settings.AppUpdates}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.updates.title'),
@@ -397,7 +396,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.Help}
+				name={'Settings.Help'}
 				component={Components.Settings.Help}
 				options={SecondaryBackgroundHeaderScreenOptions({
 					title: t('settings.help.title'),
@@ -406,7 +405,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.AboutBerty}
+				name={'Settings.AboutBerty'}
 				component={Components.Settings.AboutBerty}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.about.title'),
@@ -415,7 +414,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.TermsOfUse}
+				name={'Settings.TermsOfUse'}
 				component={Components.Settings.TermsOfUse}
 				options={BackgroundHeaderScreenOptions({
 					title: 'Terms of use',
@@ -424,7 +423,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.Mode}
+				name={'Settings.Mode'}
 				component={Components.Settings.Mode}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.mode.title'),
@@ -432,7 +431,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.NetworkMap}
+				name={'Settings.NetworkMap'}
 				component={Components.Settings.NetworkMap}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.network-map.title'),
@@ -441,7 +440,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.ServicesAuth}
+				name={'Settings.ServicesAuth'}
 				component={Components.Settings.ServicesAuth}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.services-auth.title'),
@@ -450,7 +449,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.DeleteAccount}
+				name={'Settings.DeleteAccount'}
 				component={Components.Settings.DeleteAccount}
 				options={{
 					headerShown: false,
@@ -458,7 +457,7 @@ export const Navigation: React.FC = () => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.Notifications}
+				name={'Settings.Notifications'}
 				component={Components.Settings.Notifications}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.notifications.title'),
@@ -467,7 +466,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.Bluetooth}
+				name={'Settings.Bluetooth'}
 				component={Components.Settings.Bluetooth}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.bluetooth.title'),
@@ -476,7 +475,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.NetworkConfig}
+				name={'Settings.NetworkConfig'}
 				component={Components.Settings.NetworkConfig}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.network-config.title'),
@@ -485,7 +484,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.DevTools}
+				name={'Settings.DevTools'}
 				component={Components.Settings.DevTools}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.devtools.title'),
@@ -494,7 +493,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.FakeData}
+				name={'Settings.FakeData'}
 				component={Components.Settings.FakeData}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.fake-data.title'),
@@ -503,7 +502,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.ThemeEditor}
+				name={'Settings.ThemeEditor'}
 				component={Components.Settings.ThemeEditor}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.theme-editor.title'),
@@ -512,7 +511,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.SystemInfo}
+				name={'Settings.SystemInfo'}
 				component={Components.Settings.SystemInfo}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.system-info.title'),
@@ -521,7 +520,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.AddDevConversations}
+				name={'Settings.AddDevConversations'}
 				component={Components.Settings.AddDevConversations}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.add-dev-conversations.title'),
@@ -530,7 +529,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.IpfsWebUI}
+				name={'Settings.IpfsWebUI'}
 				component={Components.Settings.IpfsWebUI}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.ipfs-webui.title'),
@@ -539,7 +538,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.DevText}
+				name={'Settings.DevText'}
 				component={Components.Settings.DevText}
 				options={AltBackgroundHeaderScreenOptions({
 					title: '',
@@ -548,12 +547,12 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.ReplicationServices}
+				name={'Settings.ReplicationServices'}
 				component={Components.Settings.ReplicationServices}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.Roadmap}
+				name={'Settings.Roadmap'}
 				component={Components.Settings.Roadmap}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.roadmap.title'),
@@ -562,7 +561,7 @@ export const Navigation: React.FC = () => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.Faq}
+				name={'Settings.Faq'}
 				component={Components.Settings.Faq}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.faq.title'),
@@ -572,7 +571,7 @@ export const Navigation: React.FC = () => {
 			/>
 			{/* Modals */}
 			<NavigationStack.Screen
-				name={Routes.Modals.ManageDeepLink}
+				name={'Modals.ManageDeepLink'}
 				component={Components.Modals.ManageDeepLink}
 				options={{
 					presentation: 'containedTransparentModal',
@@ -581,7 +580,7 @@ export const Navigation: React.FC = () => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Modals.ImageView}
+				name={'Modals.ImageView'}
 				component={Components.Modals.ImageView}
 				options={{
 					presentation: 'containedTransparentModal',

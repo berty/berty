@@ -5,9 +5,9 @@ import { Buffer } from 'buffer'
 import { BlurView } from '@react-native-community/blur'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 
 import { ManageGroupInvitation } from './ManageGroupInvitation'
@@ -15,9 +15,7 @@ import AddThisContact from './AddThisContact'
 import { base64ToURLBase64 } from '../utils'
 import InvalidScan from './InvalidScan'
 
-export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
-	route: { params },
-}) => {
+export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { params } }) => {
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
 	const colors = useThemeColor()
 	React.useEffect(() => {
@@ -38,7 +36,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 				link={params.value}
 				displayName={pdlReply.link.bertyGroup?.displayName || ''}
 				publicKey={base64ToURLBase64(
-					new Buffer(pdlReply.link.bertyGroup?.group?.publicKey || new Uint8Array()).toString(
+					Buffer.from(pdlReply.link.bertyGroup?.group?.publicKey || new Uint8Array()).toString(
 						'base64',
 					),
 				)}
@@ -53,7 +51,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 				type={params.type}
 				displayName={pdlReply.link.bertyId?.displayName || ''}
 				publicKey={base64ToURLBase64(
-					new Buffer(pdlReply.link.bertyId?.accountPk || new Uint8Array()).toString('base64'),
+					Buffer.from(pdlReply.link.bertyId?.accountPk || new Uint8Array()).toString('base64'),
 				)}
 				isPassword={false}
 			/>
@@ -66,7 +64,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 					type={params.type}
 					displayName={pdlReply.link.bertyId?.displayName || ''}
 					publicKey={base64ToURLBase64(
-						new Buffer(pdlReply.link.bertyId?.accountPk || new Uint8Array()).toString('base64'),
+						Buffer.from(pdlReply.link.bertyId?.accountPk || new Uint8Array()).toString('base64'),
 					)}
 					isPassword={true}
 				/>
@@ -77,7 +75,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 					link={params.value}
 					displayName={pdlReply.link.bertyGroup?.displayName || ''}
 					publicKey={base64ToURLBase64(
-						new Buffer(pdlReply.link.bertyGroup?.group?.publicKey || new Uint8Array()).toString(
+						Buffer.from(pdlReply.link.bertyGroup?.group?.publicKey || new Uint8Array()).toString(
 							'base64',
 						),
 					)}

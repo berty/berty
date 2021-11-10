@@ -19,20 +19,23 @@ import {
 	useMessengerContext,
 	closeAccountWithProgress,
 	useThemeColor,
+	pbDateToNum,
+	Maybe,
 } from '@berty-tech/store'
 
 import { GenericAvatar } from '../../avatars'
 
 const openDocumentPicker = async (ctx: MessengerState) => {
 	try {
-		const res = await DocumentPicker.pick({
-			// @ts-ignore
-			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
-		})
+		const res = (
+			await DocumentPicker.pick({
+				type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
+			})
+		)[0][0]
 		const replaced =
 			Platform.OS === 'android' ? getPath(res.uri) : res.uri.replace(/^file:\/\//, '')
 		await ctx.importAccount(replaced)
-	} catch (err) {
+	} catch (err: any) {
 		if (DocumentPicker.isCancel(err)) {
 			// ignore
 		} else {
@@ -44,9 +47,9 @@ const openDocumentPicker = async (ctx: MessengerState) => {
 const AccountButton: React.FC<{
 	name: string | null | undefined
 	onPress: ((event: GestureResponderEvent) => void) | undefined
-	avatar: any
+	avatar: JSX.Element
 	selected?: boolean
-	incompatible?: string
+	incompatible?: Maybe<string>
 }> = ({ name, onPress, avatar, selected = false, incompatible = null }) => {
 	const [{ margin, text, padding, border }] = useStyles()
 	const colors = useThemeColor()
@@ -119,7 +122,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 				showsVerticalScrollIndicator={false}
 			>
 				{ctx.accounts
-					.sort((a, b) => a.creationDate - b.creationDate)
+					.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
 					.map((account, key) => {
 						return (
 							<AccountButton
@@ -131,7 +134,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 								}
 								onPress={async () => {
 									if (ctx.selectedAccount !== account.accountId) {
-										await ctx.switchAccount(account.accountId)
+										await ctx.switchAccount(account.accountId || '')
 									} else if (ctx.selectedAccount === account.accountId && !account?.error) {
 										onPress()
 									}
@@ -140,7 +143,8 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 									<GenericAvatar
 										size={40}
 										cid={account?.avatarCid}
-										fallbackSeed={account?.publicKey}
+										colorSeed={account?.publicKey}
+										nameSeed={account?.name}
 									/>
 								}
 								selected={ctx.selectedAccount === account.accountId}

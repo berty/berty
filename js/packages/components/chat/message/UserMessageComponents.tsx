@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Linking, View, TouchableOpacity } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
-import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Icon, Text } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import tlds from 'tlds'
@@ -16,6 +15,7 @@ import {
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { useNavigation } from '@berty-tech/navigation'
 
 import { timeFormat } from '../../helpers'
 
@@ -78,7 +78,7 @@ export const HyperlinkUserMessage: React.FC<{
 
 	const client = useMessengerClient()
 	const colors = useThemeColor()
-	const navigation = useNativeNavigation()
+	const navigation = useNavigation()
 	const [{ margin, padding, column, border }, { scaleSize }] = useStyles()
 	const [isReadMore, setReadMore] = useState(false)
 
@@ -117,7 +117,7 @@ export const HyperlinkUserMessage: React.FC<{
 			<Hyperlink
 				onPress={async url => {
 					if (client && (await isBertyDeepLink(client, url))) {
-						navigation.navigate('ManageDeepLink', { type: 'link', value: url })
+						navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 						return
 					}
 					Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))
@@ -134,7 +134,7 @@ export const HyperlinkUserMessage: React.FC<{
 						},
 					]}
 				>
-					{isReadMore ? message.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
+					{isReadMore ? message?.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message || ''}
 				</Text>
 
 				{isReadMore && (

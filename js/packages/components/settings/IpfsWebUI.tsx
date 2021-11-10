@@ -4,8 +4,8 @@ import { Layout } from '@ui-kitten/components'
 import { WebView } from 'react-native-webview'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps } from '@berty-tech/navigation'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { ScreenFC } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store'
 
 //
 // IpfsWebUI
@@ -24,7 +24,7 @@ const BodyIpfsWebUI: React.FC<{}> = () => {
 	)
 }
 
-export const IpfsWebUI: React.FC<ScreenProps.Settings.IpfsWebUI> = () => {
+export const IpfsWebUI: ScreenFC<'Settings.IpfsWebUI'> = () => {
 	const colors = useThemeColor()
 
 	return (

@@ -1,23 +1,23 @@
 import React, { useMemo } from 'react'
 import { SectionList, Text as TextNative, TouchableHighlight, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
-import { CommonActions } from '@react-navigation/native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
-import { Routes, useNavigation } from '@berty-tech/navigation'
+import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import {
 	useConversation,
 	useContact,
 	useConvInteractions,
 	useThemeColor,
-} from '@berty-tech/store/hooks'
-import { HintBody } from '@berty-tech/components/shared-components'
-import { parseInteraction, pbDateToNum } from '@berty-tech/store/convert'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
+	parseInteraction,
+	pbDateToNum,
+	ParsedInteraction,
+} from '@berty-tech/store'
 
+import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'
 import { ContactAvatar, ConversationAvatar } from '../../avatars'
 
@@ -114,7 +114,7 @@ const MessageSearchResult: React.FC<{
 const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = '' }) => {
 	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
 	const { plainMessageText, searchResultHighlightText, nameHighlightText } = useStylesSearch()
-	const { navigate, dispatch } = useNavigation()
+	const { navigate } = useNavigation()
 
 	let convPk: string
 	switch (kind) {
@@ -241,24 +241,24 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	return (
 		<TouchableHighlight
 			underlayColor={!conv ? 'transparent' : color.light.grey}
-			onPress={() =>
-				!conv
-					? data.state === beapi.messenger.Contact.State.IncomingRequest
-						? navigate.main.contactRequest({ contactId: data.publicKey })
-						: null
-					: dispatch(
-							CommonActions.navigate({
-								name:
-									conv.type === beapi.messenger.Conversation.Type.ContactType
-										? Routes.Chat.OneToOne
-										: Routes.Chat.Group,
-								params: {
-									convId: convPk,
-									scrollToMessage: kind === SearchResultKind.Interaction && inte ? inte.cid : null,
-								},
-							}),
-					  )
-			}
+			onPress={() => {
+				if (!conv) {
+					if (data.state === beapi.messenger.Contact.State.IncomingRequest) {
+						navigate('Main.ContactRequest', { contactId: data.publicKey })
+					}
+					return
+				}
+				navigate({
+					name:
+						conv.type === beapi.messenger.Conversation.Type.ContactType
+							? 'Chat.OneToOne'
+							: 'Chat.Group',
+					params: {
+						convId: convPk,
+						scrollToMessage: kind === SearchResultKind.Interaction && inte ? inte.cid : null,
+					},
+				})
+			}}
 		>
 			<View style={[row.center, padding.medium, border.bottom.tiny, border.color.light.grey]}>
 				{avatar}

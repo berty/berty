@@ -209,7 +209,7 @@ export const AddBotBody: React.FC<{ displayName: string; link: string; closeModa
 								},
 							]}
 							onPress={async () => {
-								if (pdlDone && !pdlError) {
+								if (pdlDone && !pdlError && pdlReply.link?.bertyId?.accountPk) {
 									await setPersistentOption({
 										type: PersistentOptionsKeys.Suggestions,
 										payload: {
@@ -218,7 +218,7 @@ export const AddBotBody: React.FC<{ displayName: string; link: string; closeModa
 												...persistentOptions.suggestions[displayName],
 												state: 'added',
 												pk: base64ToURLBase64(
-													new Buffer(pdlReply.link.bertyId.accountPk).toString('base64'),
+													Buffer.from(pdlReply.link.bertyId.accountPk).toString('base64'),
 												),
 											},
 										},

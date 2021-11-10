@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty-tech/store'
+import { useNavigation } from '@berty-tech/navigation'
 
 //
 // Scan Invalid
@@ -104,7 +104,7 @@ const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 	)
 }
 
-const InvalidScanDismissButton: React.FC<{}> = () => {
+const InvalidScanDismissButton: React.FC = () => {
 	const _styles = useStylesInvalidScan()
 	const [{ row, margin, padding }] = useStyles()
 	const colors = useThemeColor()
@@ -120,7 +120,6 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 						navigation.goBack()
 					} catch (e) {
 						console.warn("couldn't go back:", e)
-						navigation.navigate('Tabs')
 					}
 				}}
 			>

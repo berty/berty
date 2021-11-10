@@ -10,8 +10,7 @@ import {
 	PersistentOptionsKeys,
 	useMessengerContext,
 } from '@berty-tech/store'
-import { Routes } from '@berty-tech/navigation'
-import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
+import { ScreenFC, dispatch as navDispatch } from '@berty-tech/navigation'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -98,7 +97,7 @@ const SetupFinishedBody = () => {
 								() =>
 									navDispatch(
 										CommonActions.reset({
-											routes: [{ name: Routes.Main.Home }],
+											routes: [{ name: 'Main.Home' }],
 										}),
 									),
 								1500,
@@ -174,7 +173,7 @@ const SetupFinishedBody = () => {
 	)
 }
 
-export const SetupFinished = () => {
+export const SetupFinished: ScreenFC<'Onboarding.SetupFinished'> = () => {
 	useNotificationsInhibitor(() => true)
 	const colors = useThemeColor()
 

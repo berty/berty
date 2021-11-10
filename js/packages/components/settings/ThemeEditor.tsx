@@ -15,8 +15,10 @@ import {
 	useMessengerContext,
 	CurrentGeneratedTheme,
 	useThemeColor,
+	createAndSaveFile,
+	setCheckListItemDone,
 } from '@berty-tech/store'
-import { createAndSaveFile } from '@berty-tech/store/services'
+import { ScreenFC } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
@@ -39,6 +41,7 @@ const importColorThemeFileToStorage = async (uri: string) => {
 const shareColorTheme = async (fileName: string) => {
 	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.json'
 	await Share.open({
+		title: 'Berty theme',
 		url: `file://${outFile}`,
 		type: '*/*',
 	})
@@ -66,7 +69,11 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={async () => {
-					const document = await openThemeColorFile()
+					const documents = await openThemeColorFile()
+					if (!documents.length && !documents[0].length) {
+						return
+					}
+					const document = documents[0][0]
 					const themeColors = await importColorThemeFileToStorage(document.uri)
 					const themeName = document.name.split('.')[0]
 					await ctx.setPersistentOption({
@@ -81,18 +88,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 							},
 						},
 					})
-					if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme?.done) {
-						await ctx.setPersistentOption({
-							type: PersistentOptionsKeys.CheckList,
-							payload: {
-								...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-								theme: {
-									...ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme,
-									done: true,
-								},
-							},
-						})
-					}
+					await setCheckListItemDone(ctx, 'theme')
 				}}
 			/>
 			<ButtonSetting
@@ -214,7 +210,7 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 	)
 }
 
-export const ThemeEditor: React.FC<{}> = () => {
+export const ThemeEditor: ScreenFC<'Settings.ThemeEditor'> = () => {
 	const [isModal, setIsModal] = React.useState<boolean>(false)
 	const colors = useThemeColor()
 

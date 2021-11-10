@@ -3,11 +3,10 @@ import { AppState, View, ScrollView, Linking, Platform } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { withInAppNotification } from 'react-native-in-app-notification'
-import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import rnutil from '@berty-tech/rnutil'
 
@@ -186,7 +185,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = withInAppNotification(
 	},
 )
 
-export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
+export const Bluetooth: ScreenFC<'Settings.Bluetooth'> = ({ navigation: { navigate } }) => {
 	const [bluetoothPermissions, setBluetoothPermissions] = useState<
 		'unavailable' | 'blocked' | 'denied' | 'granted' | 'limited' | undefined
 	>()
@@ -194,7 +193,6 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const [{ padding, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-	const { navigate } = useNavigation()
 
 	// get Bluetooth permissions state
 	React.useEffect(() => {

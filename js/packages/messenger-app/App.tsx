@@ -30,6 +30,7 @@ const BootSplashInhibitor = () => {
 
 export const App: React.FC = () => {
 	useMountEffect(() => {
+		// @ts-ignore
 		Shake.start()
 
 		return () => {

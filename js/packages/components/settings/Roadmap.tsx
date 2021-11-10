@@ -1,11 +1,12 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
-
-import { useThemeColor } from '@berty-tech/store/hooks'
 import WebView from 'react-native-webview'
 
-export const Roadmap = () => {
+import { useThemeColor } from '@berty-tech/store'
+import { ScreenFC } from '@berty-tech/navigation'
+
+export const Roadmap: ScreenFC<'Settings.Roadmap'> = () => {
 	const colors = useThemeColor()
 
 	return (

@@ -3,12 +3,12 @@ import { View, TouchableOpacity, Image, StatusBar } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { RESULTS } from 'react-native-permissions'
 import { Text } from '@ui-kitten/components'
-import { RouteProp, useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor, useMessengerContext, PersistentOptionsKeys } from '@berty-tech/store'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
 import rnutil from '@berty-tech/rnutil'
+import { ScreenFC } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import Button from '../onboarding/Button'
@@ -18,11 +18,11 @@ enum Modes {
 	TORCompatible,
 }
 
-export const NetworkOptions: React.FC<{ route: RouteProp<any, any> }> = ({ route }) => {
-	const checkNotificationPermission = route?.params?.checkNotificationPermission
+export const NetworkOptions: ScreenFC<'Main.NetworkOptions'> = ({ route, navigation }) => {
+	const checkNotificationPermission = route.params.checkNotificationPermission
 	const { t }: { t: any } = useTranslation()
 	const { setPersistentOption, persistentOptions } = useMessengerContext()
-	const { goBack, navigate } = useNavigation()
+	const { goBack, navigate } = navigation
 
 	const [mode, setMode] = useState(Modes.FullAnon)
 	const [toggleValues, setToggleValues] = useState({

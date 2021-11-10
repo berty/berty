@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
 import moment from 'moment'
 import ImagePicker from 'react-native-image-crop-picker'
-import { useNavigation } from '@react-navigation/native'
 import { RESULTS } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
@@ -25,8 +24,8 @@ import {
 	useMessengerClient,
 	useThemeColor,
 } from '@berty-tech/store'
-import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
 import rnutil from '@berty-tech/rnutil'
+import { useNavigation } from '@berty-tech/navigation'
 
 import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
@@ -34,6 +33,7 @@ import { TabItems } from './file-uploads/types'
 import { SecurityAccess } from './file-uploads/SecurityAccess'
 import { RecordComponent } from './record/RecordComponent'
 import { useReplyReaction } from './ReplyReactionContext'
+import { getMediaTypeFromMedias } from '../utils'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -212,14 +212,17 @@ export const ChatFooter: React.FC<{
 						value: '',
 					},
 				})
-				if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].message?.done) {
+				if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].items.message?.done) {
 					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.CheckList,
 						payload: {
 							...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-							message: {
-								...ctx.persistentOptions[PersistentOptionsKeys.CheckList].message,
-								done: true,
+							items: {
+								...ctx.persistentOptions[PersistentOptionsKeys.CheckList].items,
+								message: {
+									...ctx.persistentOptions[PersistentOptionsKeys.CheckList].items.message,
+									done: true,
+								},
 							},
 						},
 					})
@@ -255,7 +258,7 @@ export const ChatFooter: React.FC<{
 	)
 
 	const prepareMediaAndSend = React.useCallback(
-		async (res: beapi.messenger.IMedia[]) => {
+		async (res: (beapi.messenger.IMedia & { uri?: string })[]) => {
 			if (isLoading) {
 				return
 			}
@@ -452,7 +455,7 @@ export const ChatFooter: React.FC<{
 								<ReplyMessageBar
 									activeReplyInte={activeReplyInte}
 									contact={contact}
-									maxWidth={aMaxWidth?.value}
+									maxWidth={(aMaxWidth as any)?.value}
 								/>
 							)}
 							<View

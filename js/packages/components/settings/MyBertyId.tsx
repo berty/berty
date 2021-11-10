@@ -5,7 +5,8 @@ import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useThemeColor } from '@berty-tech/store/hooks'
+import { useAccount, useThemeColor } from '@berty-tech/store'
+import { ScreenFC } from '@berty-tech/navigation'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -121,13 +122,12 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 	}
 }
 
-const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
+const BertIdBody: React.FC = () => {
 	const [{ border, margin, padding, opacity }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId()
 	const [selectedContent, setSelectedContent] = useState('qr')
-	const account = useAccount()
 	const { t } = useTranslation()
 
 	return (
@@ -143,7 +143,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 			<View
 				style={{ flex: 1, alignItems: 'center', justifyContent: 'center', bottom: 40 * scaleSize }}
 			>
-				<AccountAvatar {...user} seed={account?.publicKey} size={requestAvatarSize} />
+				<AccountAvatar size={requestAvatarSize} />
 			</View>
 			<View style={[padding.horizontal.big]}>
 				<TabBar
@@ -175,7 +175,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	)
 }
 
-const BertyIdShare: React.FC<{}> = () => {
+const BertyIdShare: React.FC = () => {
 	const [{ row, border, flex }] = useStyles()
 	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId()
@@ -215,7 +215,7 @@ const BertyIdShare: React.FC<{}> = () => {
 	)
 }
 
-const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
+const MyBertyIdComponent: React.FC = () => {
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
@@ -226,19 +226,19 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 				{ backgroundColor: colors['background-header'], top: 55 * scaleSize },
 			]}
 		>
-			<BertIdBody user={user} />
+			<BertIdBody />
 			<BertyIdShare />
 		</View>
 	)
 }
 
-export const MyBertyId: React.FC<{ user: any }> = ({ user }) => {
+export const MyBertyId: ScreenFC<'Settings.MyBertyId'> = () => {
 	const colors = useThemeColor()
 
 	return (
 		<Layout style={{ backgroundColor: colors['background-header'], flex: 1 }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<MyBertyIdComponent user={user} />
+			<MyBertyIdComponent />
 		</Layout>
 	)
 }
