@@ -36,7 +36,7 @@ export const importAccount = async (
 		throw new Error('no account returned')
 	}
 
-	if (!resp.accountMetadata.accountId) {
+	if (!resp.accountMetadata?.accountId) {
 		throw new Error('no account id returned')
 	}
 

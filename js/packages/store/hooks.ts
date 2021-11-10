@@ -168,7 +168,7 @@ export const useThemeColor = () => {
 	let collectionColors = {}
 	Object.entries(ctx.persistentOptions?.themeColor.collection).map(value => {
 		if (value[0] === ctx.persistentOptions?.themeColor.selected) {
-			collectionColors = value[1]?.colors
+			collectionColors = (value[1] as any)?.colors
 		}
 	})
 	return Object.entries(ctx.persistentOptions?.themeColor.collection).length &&
@@ -349,7 +349,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 			for (let route of routes) {
 				if (
 					(route.name === Routes.Chat.OneToOne || route.name === Routes.Chat.Group) &&
-					route.params?.convId === publicKey
+					(route.params as any)?.convId === publicKey
 				) {
 					return
 				}

@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest --silent",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "patch-package && npx jetify"
+    "postinstall": "patch-package && ./fix-types.sh && npx jetify"
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
@@ -96,9 +96,8 @@
     "@types/jest": "^26.0.20",
     "@types/linkify-it": "^3.0.2",
     "@types/lodash": "^4.14.168",
-    "@types/react-native": "^0.63.46",
     "@types/react-native-share": "^3.3.1",
-    "@types/react-test-renderer": "^16.9.4",
+    "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
     "babel-jest": "^26.6.3",

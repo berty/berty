@@ -5,6 +5,8 @@ declare module '*.svg' {
 	export default content
 }
 
+declare var __DEV__: boolean | undefined
+
 declare module 'react-native-in-app-notification'
 declare module 'linkify-it'
 declare module 'react-native-flags'
@@ -12,6 +14,7 @@ declare module 'react-native-emoji-board'
 declare module 'react-native-android-keyboard-adjust'
 declare module 'emoji-datasource'
 declare module '@flyerhq/react-native-android-uri-path'
+declare module 'eventemitter3'
 
 declare module 'google-palette' {
 	const content: (type: string, count: number) => string[]
