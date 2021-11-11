@@ -12,9 +12,9 @@ import { useTranslation } from 'react-i18next'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useContactList, useThemeColor } from '@berty-tech/store/hooks'
-import { ContactPicker } from '@berty-tech/components/shared-components'
+import { useContactList, useThemeColor } from '@berty-tech/store'
 
+import { ContactPicker } from '../shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { ContactAvatar } from '../avatars'
 
@@ -222,7 +222,7 @@ export const CreateGroupAddMembers: React.FC<{
 			<FooterCreateGroup
 				title={t('main.home.create-group.continue')}
 				icon='arrow-forward-outline'
-				action={navigation.navigate('Main.CreateGroupFinalize')}
+				action={() => navigation.navigate('Main.CreateGroupFinalize')}
 			/>
 		</Layout>
 	)

@@ -36,7 +36,15 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 					},
 				]}
 			>
-				<TouchableOpacity onPress={() => action()}>
+				<TouchableOpacity
+					onPress={() => {
+						if (typeof action !== 'function') {
+							console.warn('action is not a function:', action)
+							return
+						}
+						action()
+					}}
+				>
 					<View
 						style={[
 							padding.horizontal.medium,
