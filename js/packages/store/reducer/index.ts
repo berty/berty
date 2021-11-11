@@ -1,5 +1,5 @@
 import { isExpectedAppStateChange } from '../context'
-import { MessengerState, reducerAction } from '../types'
+import { MessengerAppState, MessengerState, reducerAction } from '../types'
 import { eventStreamReducerActions } from './eventStreamReducer'
 import { uiReducerActions } from './uiReducer'
 
@@ -15,7 +15,11 @@ export const reducer = (oldState: MessengerState, action: reducerAction): Messen
 		const newState = reducerActions[action.type](oldState, action)
 
 		if (!isExpectedAppStateChange(oldState.appState, newState.appState)) {
-			console.warn(`unexpected app state change from ${oldState.appState} to ${newState.appState}`)
+			console.warn(
+				`unexpected app state change from ${MessengerAppState[oldState.appState]} to ${
+					MessengerAppState[newState.appState]
+				}`,
+			)
 		}
 
 		return newState
