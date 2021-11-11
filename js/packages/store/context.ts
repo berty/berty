@@ -45,7 +45,7 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.ClosingDaemon,
 	],
-	[MessengerAppState.OpeningWaitingForDaemon]: [MessengerAppState.OpeningWaitingForClients],
+	[MessengerAppState.OpeningWaitingForDaemon]: [MessengerAppState.StreamDone],
 	[MessengerAppState.OpeningWaitingForClients]: [
 		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.OpeningListingEvents,
@@ -79,7 +79,7 @@ const expectedAppStateChanges: any = {
 	[MessengerAppState.PreReady]: [MessengerAppState.Ready],
 	[MessengerAppState.StreamDone]: [
 		MessengerAppState.GetStarted,
-		MessengerAppState.OpeningWaitingForDaemon,
+		MessengerAppState.OpeningWaitingForClients,
 	],
 }
 

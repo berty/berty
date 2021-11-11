@@ -191,7 +191,7 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 
 	useEffect(() => {
 		if (state.selectedAccount === null) {
-			console.warn('no account id supplied')
+			console.log('no account id supplied')
 			setNetworkConfig({})
 			return
 		}
