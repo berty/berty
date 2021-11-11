@@ -34,7 +34,7 @@ import { KeyboardAvoidingView } from '../shared-components/KeyboardAvoidingView'
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
-export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params } }, navigation) => {
+export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigation }) => {
 	useNotificationsInhibitor((_ctx, notif) => {
 		if (
 			notif.type === NT.TypeMessageReceived &&
