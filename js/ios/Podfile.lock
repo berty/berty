@@ -119,15 +119,15 @@ PODS:
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - OpenSSL-Universal (1.1.180)
-  - Permission-BluetoothPeripheral (3.0.5):
+  - Permission-BluetoothPeripheral (3.1.0):
     - RNPermissions
-  - Permission-Camera (3.0.5):
+  - Permission-Camera (3.1.0):
     - RNPermissions
-  - Permission-Microphone (3.0.5):
+  - Permission-Microphone (3.1.0):
     - RNPermissions
-  - Permission-Notifications (3.0.5):
+  - Permission-Notifications (3.1.0):
     - RNPermissions
-  - Permission-PhotoLibrary (3.0.5):
+  - Permission-PhotoLibrary (3.1.0):
     - RNPermissions
   - PromisesObjC (2.0.0)
   - RCT-Folly (2020.01.13.00):
@@ -333,20 +333,20 @@ PODS:
     - React-Core
   - react-native-camera/RN (3.44.3):
     - React-Core
-  - react-native-cameraroll (4.0.4):
+  - react-native-cameraroll (4.1.2):
     - React-Core
   - react-native-document-picker (7.1.1):
     - React-Core
-  - react-native-pager-view (5.4.0):
+  - react-native-pager-view (5.4.9):
     - React-Core
   - react-native-restart (0.0.20):
     - React-Core
-  - react-native-safe-area-context (3.3.0):
+  - react-native-safe-area-context (3.3.2):
     - React-Core
   - react-native-shake (14.1.3):
     - React
     - Shake (~> 14.1.0-rc)
-  - react-native-webview (11.13.0):
+  - react-native-webview (11.14.2):
     - React-Core
   - React-perflogger (0.64.2)
   - React-RCTActionSheet (0.64.2):
@@ -416,7 +416,7 @@ PODS:
     - React
   - ReactNativeExceptionHandler (2.10.10):
     - React-Core
-  - RNBootSplash (3.2.4):
+  - RNBootSplash (3.2.6):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
@@ -431,29 +431,29 @@ PODS:
     - React
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNImageCropPicker (0.35.3):
+  - RNImageCropPicker (0.37.1):
     - React-Core
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.35.3)
+    - RNImageCropPicker/QBImagePickerController (= 0.37.1)
     - TOCropViewController
-  - RNImageCropPicker/QBImagePickerController (0.35.3):
+  - RNImageCropPicker/QBImagePickerController (0.37.1):
     - React-Core
     - React-RCTImage
     - TOCropViewController
   - RNInAppBrowser (3.6.3):
     - React-Core
-  - RNPermissions (3.0.5):
+  - RNPermissions (3.1.0):
     - React-Core
   - RNReanimated (1.13.3):
     - React-Core
-  - RNScreens (3.5.0):
+  - RNScreens (3.9.0):
     - React-Core
     - React-RCTImage
-  - RNShare (7.1.1):
+  - RNShare (7.2.1):
     - React-Core
   - RNSVG (12.1.1):
     - React
-  - RNVectorIcons (8.1.0):
+  - RNVectorIcons (9.0.0):
     - React-Core
   - Shake (14.1.6)
   - TOCropViewController (2.6.0)
@@ -725,11 +725,11 @@ SPEC CHECKSUMS:
   lottie-react-native: b561920bba7ec727ec94a473b683cffba00faece
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
-  Permission-BluetoothPeripheral: deb3e2052364da825f8516d200c40f066b5ff421
-  Permission-Camera: ac603073e4128e51e6ca3c39129778f05b4082fa
-  Permission-Microphone: f795f37089f6de4c71ae147b32770a5ebfdee08c
-  Permission-Notifications: 16ccd862111103378a7bab9fb1c5c71addffc348
-  Permission-PhotoLibrary: 0748c1a490fad126dfe36dbea8234dedfe59cc27
+  Permission-BluetoothPeripheral: e3bdcbf170bd1760881633941d4021b3d8e77f5a
+  Permission-Camera: 0db4fd6e1c556c1cf47f38b989a8084cea3ec3dd
+  Permission-Microphone: 7b75718196244a6e59dd60f82f12962562c2ea12
+  Permission-Notifications: e247d69c22ae72770d1c5314ad6ccd1256c57c83
+  Permission-PhotoLibrary: 9dcf80d1353d81b9f1e210c34291591236aaf2b6
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
@@ -744,13 +744,13 @@ SPEC CHECKSUMS:
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: b8cc03e2feec0c04403d0998e37cf519d8fd4c6f
-  react-native-cameraroll: 88f4e62d9ecd0e1f253abe4f685474f2ea14bfa2
+  react-native-cameraroll: 2957f2bce63ae896a848fbe0d5352c1bd4d20866
   react-native-document-picker: f4cc4df2eff8c9015d862a59bdaef11a153f1292
-  react-native-pager-view: 54970cc27fdef14db2dcfedadb091d711e88065d
+  react-native-pager-view: 3ee7d4c7697fb3ef788346e834a60cca97ed8540
   react-native-restart: a01029aadfe8e71f9e8205fdb17da2f0a4472d50
-  react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
+  react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-shake: 8048c196ab884399df8397d7a9e9e48b3f2996ff
-  react-native-webview: 133a6a5149f963259646e710b4545c67ef35d7c9
+  react-native-webview: cc4ac8f021a832dce2979e1f48c5595341dd2fb5
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
   React-RCTAnimation: 6a2e76ab50c6f25b428d81b76a5a45351c4d77aa
@@ -765,20 +765,20 @@ SPEC CHECKSUMS:
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   ReactNativeAudioToolkit: de9610f323e855ac6574be8c99621f3d57c5df06
   ReactNativeExceptionHandler: b11ff67c78802b2f62eed0e10e75cb1ef7947c60
-  RNBootSplash: 4844706cbb56a3270556c9b94e59dedadccd47e4
+  RNBootSplash: 51eef7e143faeab63f81ddbb7c1de38b8fba66ed
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFBApp: 6fbdb0d684c16507c4eb51689d4ff4cfef3bf11f
   RNFBCrashlytics: 629aeb5619dd7501a28a3be42d0728de8f3d7bf8
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNImageCropPicker: 08ba3a2e2f4f8833d606f01906c371e382c4dea9
+  RNImageCropPicker: 94e8bd51427605303c5cee5a5f1d9a1bd0df16d3
   RNInAppBrowser: 3ff3a3b8f458aaf25aaee879d057352862edf357
-  RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911
+  RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
-  RNScreens: 01ab149b5dd5c27f5ff26741b1d2bdf2cee1af35
-  RNShare: a22398d8d02336133e28bf8b6e0b47b31abade41
+  RNScreens: 4d79118be80f79fa1f4aa131909a1d6e86280af3
+  RNShare: edd621a71124961e29a7ba43a84bd1c6f9980d88
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
-  RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
+  RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
   Shake: b5fdaf455492a402285781ad81918808458523eb
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
