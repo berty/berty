@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
-import { View, TextInput, Vibration, StatusBar, Platform, ActivityIndicator } from 'react-native'
+import { View, TextInput, Vibration, StatusBar, ActivityIndicator } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'
-import DocumentPicker from 'react-native-document-picker'
-import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import {
 	GlobalPersistentOptionsKeys,
-	MessengerState,
 	storageSet,
 	useMessengerContext,
 	useMountEffect,
@@ -21,26 +18,7 @@ import rnutil from '@berty-tech/rnutil'
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 import { ScreenFC } from '@berty-tech/navigation'
-
-const openDocumentPicker = async (ctx: MessengerState) => {
-	try {
-		const res = (
-			await DocumentPicker.pick({
-				// @ts-ignore
-				type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
-			})
-		)[0]
-		const replaced =
-			Platform.OS === 'android' ? getPath(res[0].uri) : res[0].uri.replace(/^file:\/\//, '')
-		await ctx.importAccount(replaced)
-	} catch (err: any) {
-		if (DocumentPicker.isCancel(err)) {
-			// ignore
-		} else {
-			console.error(err)
-		}
-	}
-}
+import { importAccountFromDocumentPicker } from '../pickerUtils'
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
@@ -117,7 +95,7 @@ const CreateAccountBody = () => {
 						}}
 						secondButton={{
 							text: t('onboarding.create-account.import-account'),
-							onPress: () => openDocumentPicker(ctx),
+							onPress: () => importAccountFromDocumentPicker(ctx),
 						}}
 					>
 						<TextInput

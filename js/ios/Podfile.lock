@@ -118,8 +118,6 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - OGReactNativeWaveform (2.0.5):
-    - React
   - OpenSSL-Universal (1.1.180)
   - Permission-BluetoothPeripheral (3.0.5):
     - RNPermissions
@@ -337,7 +335,7 @@ PODS:
     - React-Core
   - react-native-cameraroll (4.0.4):
     - React-Core
-  - react-native-document-picker (5.3.0):
+  - react-native-document-picker (7.1.1):
     - React-Core
   - react-native-pager-view (5.4.0):
     - React-Core
@@ -490,7 +488,6 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - Interactable (from `../node_modules/react-native-interactable`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
-  - OGReactNativeWaveform (from `../node_modules/react-native-audiowaveform`)
   - Permission-BluetoothPeripheral (from `../node_modules/react-native-permissions/ios/BluetoothPeripheral`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
   - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone`)
@@ -591,8 +588,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-interactable"
   lottie-react-native:
     :path: "../node_modules/lottie-react-native"
-  OGReactNativeWaveform:
-    :path: "../node_modules/react-native-audiowaveform"
   Permission-BluetoothPeripheral:
     :path: "../node_modules/react-native-permissions/ios/BluetoothPeripheral"
   Permission-Camera:
@@ -729,7 +724,6 @@ SPEC CHECKSUMS:
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   lottie-react-native: b561920bba7ec727ec94a473b683cffba00faece
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  OGReactNativeWaveform: f789fabadbf3904c7cba84d183405395861b8fed
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   Permission-BluetoothPeripheral: deb3e2052364da825f8516d200c40f066b5ff421
   Permission-Camera: ac603073e4128e51e6ca3c39129778f05b4082fa
@@ -751,7 +745,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: b8cc03e2feec0c04403d0998e37cf519d8fd4c6f
   react-native-cameraroll: 88f4e62d9ecd0e1f253abe4f685474f2ea14bfa2
-  react-native-document-picker: 226068006be4c52f8ef7f32d855ee025a12e9e64
+  react-native-document-picker: f4cc4df2eff8c9015d862a59bdaef11a153f1292
   react-native-pager-view: 54970cc27fdef14db2dcfedadb091d711e88065d
   react-native-restart: a01029aadfe8e71f9e8205fdb17da2f0a4472d50
   react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
