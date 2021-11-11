@@ -77,7 +77,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 				>
 					{stream?.msg.completed} / {stream?.msg.total}
 				</Text>
-				<Progress.Bar progress={stream?.msg.progress} width={200} />
+				<Progress.Bar progress={stream?.msg.progress || 0} width={200} />
 			</View>
 		</View>
 	)

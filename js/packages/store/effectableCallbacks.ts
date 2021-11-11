@@ -2,7 +2,7 @@ import beapi from '@berty-tech/api'
 import rnutil from '@berty-tech/rnutil'
 
 import { updateShakeAttachments } from './utils'
-import { reducerAction, MessengerActions } from './types'
+import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'
 
 export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
@@ -11,13 +11,17 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 		.then(async stream => {
 			stream.onMessage((msg, _) => {
 				if (msg?.progress?.state !== 'done') {
-					dispatch({
-						type: MessengerActions.SetStateStreamInProgress,
-						payload: {
-							msg: msg,
+					const progress = msg?.progress
+					if (progress) {
+						const payload: StreamInProgress = {
+							msg: progress,
 							stream: 'Close account',
-						},
-					})
+						}
+						dispatch({
+							type: MessengerActions.SetStateStreamInProgress,
+							payload,
+						})
+					}
 				} else {
 					dispatch({
 						type: MessengerActions.SetStateStreamDone,
@@ -47,13 +51,17 @@ export const importAccountWithProgress = async (
 			.then(async stream => {
 				stream.onMessage(async (msg, _) => {
 					if (msg?.progress?.state !== 'done') {
-						dispatch({
-							type: MessengerActions.SetStateStreamInProgress,
-							payload: {
-								msg: msg,
+						const progress = msg?.progress
+						if (progress) {
+							const payload: StreamInProgress = {
+								msg: progress,
 								stream: 'Import account',
-							},
-						})
+							}
+							dispatch({
+								type: MessengerActions.SetStateStreamInProgress,
+								payload,
+							})
+						}
 					} else {
 						dispatch({
 							type: MessengerActions.SetStateStreamDone,

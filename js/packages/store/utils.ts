@@ -43,3 +43,5 @@ export const prepareMediaBytes = async (
 	const resp = await stream.stopAndRecv()
 	return resp.cid
 }
+
+export const storageKeyForAccount = (accountID: string) => `storage_${accountID}`

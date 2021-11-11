@@ -165,7 +165,7 @@ export const uiReducerActions: {
 		return {
 			...oldState,
 			notificationsInhibitors: oldState.notificationsInhibitors.filter(
-				inh => inh != action.payload.inhibitor,
+				inh => inh !== action.payload.inhibitor,
 			),
 		}
 	},
