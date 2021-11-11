@@ -124,11 +124,9 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 			onPress: async () => {
 				setActiveTab(TabItems.Files)
 				try {
-					const res = (
-						await DocumentPicker.pick({
-							type: [DocumentPicker.types.allFiles],
-						})
-					)[0][0]
+					const res = await DocumentPicker.pickSingle({
+						type: [DocumentPicker.types.allFiles],
+					})
 					prepareMediaAndSend([
 						{
 							filename: res.name,
@@ -139,6 +137,8 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 				} catch (err: any) {
 					if (DocumentPicker.isCancel(err)) {
 						// ignore
+					} else {
+						console.warn(err)
 					}
 				}
 			},

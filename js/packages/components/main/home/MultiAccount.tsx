@@ -1,21 +1,11 @@
 import React from 'react'
-import {
-	GestureResponderEvent,
-	Platform,
-	ScrollView,
-	Text,
-	TouchableOpacity,
-	View,
-} from 'react-native'
+import { GestureResponderEvent, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import DocumentPicker from 'react-native-document-picker'
-import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import {
 	MessengerActions,
-	MessengerState,
 	useMessengerContext,
 	closeAccountWithProgress,
 	useThemeColor,
@@ -24,25 +14,7 @@ import {
 } from '@berty-tech/store'
 
 import { GenericAvatar } from '../../avatars'
-
-const openDocumentPicker = async (ctx: MessengerState) => {
-	try {
-		const res = (
-			await DocumentPicker.pick({
-				type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
-			})
-		)[0][0]
-		const replaced =
-			Platform.OS === 'android' ? getPath(res.uri) : res.uri.replace(/^file:\/\//, '')
-		await ctx.importAccount(replaced)
-	} catch (err: any) {
-		if (DocumentPicker.isCancel(err)) {
-			// ignore
-		} else {
-			console.error(err)
-		}
-	}
-}
+import { importAccountFromDocumentPicker } from '@berty-tech/components/pickerUtils'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -180,7 +152,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 				/>
 				<AccountButton
 					name={t('main.home.multi-account.import-button')}
-					onPress={() => openDocumentPicker(ctx)}
+					onPress={() => importAccountFromDocumentPicker(ctx)}
 					avatar={
 						<View
 							style={{

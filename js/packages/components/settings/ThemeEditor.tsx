@@ -25,11 +25,17 @@ import { DropDownPicker } from '../shared-components/DropDownPicker'
 import ThemeColorName from '../modals/ThemeColorName'
 
 const openThemeColorFile = async () => {
-	const document = await DocumentPicker.pick({
-		// @ts-ignore
-		type: Platform.OS === 'android' ? ['*/*'] : ['public.item'],
-	})
-	return document
+	try {
+		return await DocumentPicker.pickSingle({
+			type: Platform.OS === 'android' ? ['*/*'] : ['public.item'],
+		})
+	} catch (err: any) {
+		if (DocumentPicker.isCancel(err)) {
+			// ignore
+		} else {
+			console.warn(err)
+		}
+	}
 }
 
 const importColorThemeFileToStorage = async (uri: string) => {
@@ -69,11 +75,10 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={async () => {
-					const documents = await openThemeColorFile()
-					if (!documents.length && !documents[0].length) {
+					const document = await openThemeColorFile()
+					if (!document) {
 						return
 					}
-					const document = documents[0][0]
 					const themeColors = await importColorThemeFileToStorage(document.uri)
 					const themeName = document.name.split('.')[0]
 					await ctx.setPersistentOption({
