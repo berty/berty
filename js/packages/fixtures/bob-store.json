@@ -1,0 +1,106 @@
+{
+  "members": {
+    "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4": {
+      "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4": {
+        "publicKey": "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4",
+        "displayName": "anon#nZyV",
+        "conversationPublicKey": "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4",
+        "isMe": true
+      }
+    },
+    "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA": {
+      "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4": {
+        "publicKey": "nZyVEsKrAXI26X7wokn1UQDnlRoFkL4hJE4YLnKYKj4",
+        "displayName": "anon#nZyV",
+        "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+        "isMe": true
+      },
+      "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao": {
+        "publicKey": "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao",
+        "displayName": "anon#uxa7",
+        "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA"
+      }
+    }
+  },
+  "contacts": {
+    "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao": {
+      "publicKey": "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao",
+      "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+      "conversation": {
+        "publicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+        "type": "ContactType",
+        "contactPublicKey": "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao",
+        "createdDate": "1636546080529"
+      },
+      "state": "Accepted",
+      "createdDate": "1636546080529",
+      "sentDate": "1636546080535",
+      "infoDate": "1636546082543"
+    }
+  },
+  "conversations": {
+    "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA": {
+      "publicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+      "type": "ContactType",
+      "contactPublicKey": "uxa7l_AHVFgo--kArR3Vt3qfL9H3T0V4w11-LL96wao",
+      "createdDate": "1636546080529"
+    }
+  },
+  "interactions": {
+    "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA": [
+      {
+        "medias": [],
+        "reactions": [],
+        "cid": "__monitor-group-1",
+        "type": 100,
+        "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+        "payload": {
+          "event": {
+            "type": "TypeEventMonitorPeerJoin",
+            "peerJoin": {
+              "peerId": "12D3KooWBg1xtL9KVjUSvU3GPXf8pDzABo3uzSdQxPinyJuvP1KT",
+              "maddrs": [
+                "/ip4/172.17.0.1/tcp/39565",
+                "/ip6/::1/udp/49447/quic",
+                "/ip4/192.168.1.123/udp/41444/quic"
+              ],
+              "topic": "/orbitdb/bafyreif7sryb7l2ghq44k2lmshkqtjtckmhv5ddi2bzaipyn2f7dub2w6i/c0f86b16c06bf07fe2197e8f7aa934571b4fea7b6ec0bb467ad1a4d1abfe6c60_berty_group_messages"
+            }
+          }
+        },
+        "sentDate": {
+          "low": 163542760,
+          "high": 381,
+          "unsigned": false
+        }
+      },
+      {
+        "medias": [],
+        "reactions": [],
+        "cid": "__monitor-group-2",
+        "type": 100,
+        "conversationPublicKey": "wPhrFsBr8H_iGX6Peqk0VxtP6ntuwLtGetGk0av-bGA",
+        "payload": {
+          "event": {
+            "type": "TypeEventMonitorPeerJoin",
+            "peerJoin": {
+              "peerId": "12D3KooWBg1xtL9KVjUSvU3GPXf8pDzABo3uzSdQxPinyJuvP1KT",
+              "maddrs": [
+                "/ip4/172.17.0.1/tcp/39565",
+                "/ip6/::1/udp/49447/quic",
+                "/ip4/192.168.1.123/udp/41444/quic"
+              ],
+              "topic": "/orbitdb/bafyreif7sryb7l2ghq44k2lmshkqtjtckmhv5ddi2bzaipyn2f7dub2w6i/c0f86b16c06bf07fe2197e8f7aa934571b4fea7b6ec0bb467ad1a4d1abfe6c60_berty_group_messages"
+            }
+          }
+        },
+        "sentDate": {
+          "low": 163542760,
+          "high": 381,
+          "unsigned": false
+        }
+      }
+    ]
+  },
+  "medias": {}
+}
