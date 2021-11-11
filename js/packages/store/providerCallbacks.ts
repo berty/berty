@@ -1,7 +1,7 @@
 import beapi from '@berty-tech/api'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import { storageKeyForAccount } from './providerEffects'
+import { storageKeyForAccount } from './utils'
 import { Maybe } from './hooks'
 import {
 	refreshAccountList,

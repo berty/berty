@@ -29,7 +29,7 @@ export type NotificationsInhibitor = (
 ) => boolean | 'sound-only'
 
 export type StreamInProgress = {
-	msg: beapi.protocol.Progress
+	msg: beapi.protocol.IProgress
 	stream: string
 }
 

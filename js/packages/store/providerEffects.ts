@@ -21,9 +21,11 @@ import {
 	PersistentOptionsKeys,
 	reducerAction,
 	GlobalPersistentOptionsKeys,
+	StreamInProgress,
 } from './types'
 import { accountService, storageRemove, storageGet } from './accountService'
 import { streamEventToAction } from './convert'
+import { storageKeyForAccount } from './utils'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -37,14 +39,18 @@ export const openAccountWithProgress = async (
 		})
 		.then(async stream => {
 			stream.onMessage((msg, _) => {
-				if (msg?.progress?.doing !== 'done') {
-					dispatch({
-						type: MessengerActions.SetStateStreamInProgress,
-						payload: {
-							msg: msg,
+				if (msg?.progress?.state !== 'done') {
+					const progress = msg?.progress
+					if (progress) {
+						const payload: StreamInProgress = {
+							msg: progress,
 							stream: 'Open account',
-						},
-					})
+						}
+						dispatch({
+							type: MessengerActions.SetStateStreamInProgress,
+							payload,
+						})
+					}
 				} else {
 					dispatch({
 						type: MessengerActions.SetStateStreamDone,
@@ -63,8 +69,6 @@ export const openAccountWithProgress = async (
 			})
 		})
 }
-
-export const storageKeyForAccount = (accountID: string) => `storage_${accountID}`
 
 const getPersistentOptions = async (
 	dispatch: (arg0: reducerAction) => void,
