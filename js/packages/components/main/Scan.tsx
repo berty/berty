@@ -2,23 +2,17 @@ import React, { useState } from 'react'
 import { View, TextInput, Button, Vibration, Text as TextNative, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { useNavigation } from '@react-navigation/native'
 
+import { useNavigation } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import ScanTarget from './scan_target.svg'
+import { ScreenFC } from '@berty-tech/navigation'
 
 //
 // Scan => Scan QrCode of an other contact
 //
-
-// Types
-type ScanInfosTextProps = {
-	textProps: string
-}
-
-// Styles
 
 const useStylesScan = () => {
 	const [{ border, height, width }, { fontScale, scaleSize }] = useStyles()
@@ -34,7 +28,7 @@ const useStylesScan = () => {
 	}
 }
 
-const ScanBody: React.FC<{}> = () => {
+const ScanBody: React.FC = () => {
 	const navigation = useNavigation()
 	const [
 		{ background, margin, flex, column, border },
@@ -67,7 +61,7 @@ const ScanBody: React.FC<{}> = () => {
 				onRead={({ data, type }) => {
 					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
 						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-						navigation.navigate('ManageDeepLink', { type: 'qr', value: data })
+						navigation.navigate('Modals.ManageDeepLink', { type: 'qr', value: data })
 						Vibration.vibrate(1000)
 					}
 				}}
@@ -80,7 +74,7 @@ const ScanBody: React.FC<{}> = () => {
 	)
 }
 
-const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
+const ScanInfosText: React.FC<{ textProps: string }> = ({ textProps }) => {
 	const _styles = useStylesScan()
 	const [{ row, padding, margin, text }] = useStyles()
 	const colors = useThemeColor()
@@ -109,7 +103,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 	)
 }
 
-const DevReferenceInput = () => {
+const DevReferenceInput: React.FC = () => {
 	const [ref, setRef] = useState('')
 	const colors = useThemeColor()
 	const navigation = useNavigation()
@@ -124,7 +118,7 @@ const DevReferenceInput = () => {
 			<Button
 				title='Submit'
 				onPress={() => {
-					navigation.navigate('ManageDeepLink', { type: 'link', value: ref })
+					navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: ref })
 					Vibration.vibrate(1000)
 				}}
 			/>
@@ -132,7 +126,7 @@ const DevReferenceInput = () => {
 	)
 }
 
-export const Scan: React.FC = () => {
+export const Scan: ScreenFC<'Main.Scan'> = () => {
 	const [{ flex, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 

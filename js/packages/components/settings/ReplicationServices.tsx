@@ -1,14 +1,16 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
 
-import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/services'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import {
+	servicesAuthViaDefault,
+	useAccountServices,
 	PersistentOptionsKeys,
 	useMessengerContext,
 	useNotificationsInhibitor,
 	useThemeColor,
+	setCheckListItemDone,
 } from '@berty-tech/store'
 
 import SwiperCard from '../onboarding/SwiperCard'
@@ -44,16 +46,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 											},
 										},
 									})
-									await ctx.setPersistentOption({
-										type: PersistentOptionsKeys.CheckList,
-										payload: {
-											...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-											relay: {
-												...ctx.persistentOptions[PersistentOptionsKeys.CheckList].relay,
-												done: true,
-											},
-										},
-									})
+									await setCheckListItemDone(ctx, 'relay')
 									goBack()
 								} catch (e) {
 									console.log(e)
@@ -71,11 +64,12 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	)
 }
 
-export const ReplicationServices: React.FC<{}> = () => {
+export const ReplicationServices: ScreenFC<'Settings.ReplicationServices'> = ({
+	navigation: { goBack },
+}) => {
 	useNotificationsInhibitor(() => true)
 	const { persistentOptions, setPersistentOption } = useMessengerContext()
 	const colors = useThemeColor()
-	const { goBack } = useNavigation()
 
 	return (
 		<OnboardingWrapper>

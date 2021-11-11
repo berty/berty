@@ -8,8 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { dispatch } from '@berty-tech/navigation/rootRef'
-import { Routes } from '@berty-tech/navigation'
-import { PersistentOptionsKeys, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { setCheckListItemDone, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -74,26 +73,11 @@ export const ManageGroupInvitation: React.FC<{
 	// TODO: handle error (shouldn't happen since we checked the link previously, but still)
 
 	React.useEffect(() => {
-		const setGroupCheckListDone = async () => {
-			await ctx.setPersistentOption({
-				type: PersistentOptionsKeys.CheckList,
-				payload: {
-					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-					contact: {
-						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact,
-						done: true,
-					},
-				},
-			})
-		}
 		if (done && !error) {
-			if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].contact?.done) {
-				setGroupCheckListDone().then()
-			}
-
+			setCheckListItemDone(ctx, 'contact')
 			dispatch(
 				CommonActions.reset({
-					routes: [{ name: Routes.Main.Home }],
+					routes: [{ name: 'Main.Home' }],
 				}),
 			)
 		}

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { PersistentOptionsKeys, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 
@@ -142,7 +142,7 @@ const BodyNotifications: React.FC<{}> = () => {
 	)
 }
 
-export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () => {
+export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()

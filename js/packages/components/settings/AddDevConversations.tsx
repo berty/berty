@@ -2,13 +2,13 @@ import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { globals } from '@berty-tech/config'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
 type ValueOf<T> = T[keyof T]
 
@@ -68,7 +68,7 @@ const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 			actionIcon={null}
 			state={state}
 			onPress={() => {
-				navigation.navigate('ManageDeepLink', { type: 'link', value: link })
+				navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: link })
 			}}
 		/>
 	)
@@ -89,7 +89,7 @@ const BodyAddContactList = () => {
 	)
 }
 
-export const AddDevConversations = () => {
+export const AddDevConversations: ScreenFC<'Settings.AddDevConversations'> = () => {
 	const colors = useThemeColor()
 
 	return (

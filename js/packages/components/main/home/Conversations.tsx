@@ -1,9 +1,7 @@
 import React from 'react'
 import { StyleProp, TouchableHighlight, View, ViewProps } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
@@ -13,9 +11,9 @@ import {
 	useThemeColor,
 	useMessengerContext,
 } from '@berty-tech/store'
-import { Routes } from '@berty-tech/navigation'
+import { useNavigation } from '@berty-tech/navigation'
 
-import { ConversationAvatar, HardcodedAvatar } from '../../avatars'
+import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
 import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 
@@ -81,7 +79,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 
 	const [{ row, border, flex, padding, text, opacity, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { dispatch } = useNavigation()
+	const { navigate } = useNavigation()
 
 	let description
 	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
@@ -131,23 +129,19 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 			onPress={
 				type === beapi.messenger.Conversation.Type.MultiMemberType
 					? () =>
-							dispatch(
-								CommonActions.navigate({
-									name: Routes.Chat.Group,
-									params: {
-										convId: publicKey,
-									},
-								}),
-							)
+							navigate({
+								name: 'Chat.Group',
+								params: {
+									convId: publicKey,
+								},
+							})
 					: () =>
-							dispatch(
-								CommonActions.navigate({
-									name: Routes.Chat.OneToOne,
-									params: {
-										convId: publicKey,
-									},
-								}),
-							)
+							navigate({
+								name: 'Chat.OneToOne',
+								params: {
+									convId: publicKey,
+								},
+							})
 			}
 		>
 			<View
@@ -290,7 +284,7 @@ const SuggestionsItem: React.FC<{
 	desc: string
 	link: string
 	addBot: any
-	icon: string
+	icon: HardcodedAvatarKey
 	isLast?: boolean
 	style?: StyleProp<any>
 }> = ({ displayName, desc, link, addBot, icon, style, isLast = false }) => {

@@ -185,7 +185,7 @@ export type PersistentOptionsTyberHost = {
 
 export type PersistentOptionsThemeColor = {
 	selected: string
-	collection: {}
+	collection: { [key: string]: { colors: unknown } }
 }
 
 export type PersistentOptionsOnBoardingFinished = {
@@ -199,7 +199,8 @@ export type CheckListItem = {
 }
 
 export type PersistentOptionsCheckList = {
-	[key: string]: CheckListItem | boolean
+	isCollapsed?: boolean
+	items: { [key: string]: CheckListItem }
 }
 
 export const CheckListProfileNotification = 'checkList'

@@ -187,6 +187,7 @@ targets:
     - name: Bundle React Native code and images
       script: |
         export NODE_BINARY=node
+        export ENTRY_FILE=index.ts
         ../node_modules/react-native/scripts/react-native-xcode.sh
     - name: Setup Crashlitics
       script: "${PODS_ROOT}/FirebaseCrashlytics/run"

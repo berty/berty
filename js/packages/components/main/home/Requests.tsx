@@ -1,7 +1,6 @@
 import React from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { CommonActions } from '@react-navigation/native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
@@ -11,7 +10,7 @@ import {
 	useThemeColor,
 	pbDateToNum,
 } from '@berty-tech/store'
-import { Routes, useNavigation } from '@berty-tech/navigation'
+import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 
 import { ContactAvatar } from '../../avatars'
@@ -92,7 +91,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const ctx = useMessengerContext()
 	const client = useMessengerClient()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
-	const { dispatch } = useNavigation()
+	const { navigate } = useNavigation()
 	const { contactReqContainer, declineButton, acceptButton, buttonsWrapper } =
 		useStylesContactRequest()
 	const { t }: any = useTranslation()
@@ -106,14 +105,12 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 			style={contactReqContainer}
 			onPress={() => {
 				if (conversationPublicKey) {
-					dispatch(
-						CommonActions.navigate({
-							name: Routes.Chat.OneToOne,
-							params: {
-								convId: conversationPublicKey,
-							},
-						}),
-					)
+					navigate({
+						name: 'Chat.OneToOne',
+						params: {
+							convId: conversationPublicKey,
+						},
+					})
 				}
 			}}
 		>

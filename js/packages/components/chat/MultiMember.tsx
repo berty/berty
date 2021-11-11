@@ -6,12 +6,9 @@ import { useTranslation } from 'react-i18next'
 import EmojiBoard from 'react-native-emoji-board'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
-import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
-import { MessageList } from '@berty-tech/components/chat/MessageList'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useConversation,
 	useLastConvInteraction,
@@ -19,12 +16,15 @@ import {
 	useNotificationsInhibitor,
 	useMessengerContext,
 	useThemeColor,
+	pbDateToNum,
 } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 
 import { ChatFooter, ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
 import { ReplyReactionProvider } from './ReplyReactionContext'
+import { MessageList } from './MessageList'
+import { KeyboardAvoidingView } from '../shared-components/KeyboardAvoidingView'
 
 //
 // MultiMember
@@ -34,7 +34,7 @@ import { ReplyReactionProvider } from './ReplyReactionContext'
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
-export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
+export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params } }, navigation) => {
 	useNotificationsInhibitor((_ctx, notif) => {
 		if (
 			notif.type === NT.TypeMessageReceived &&
@@ -51,7 +51,6 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const { t } = useTranslation()
 	const ctx = useMessengerContext()
 	const insets = useSafeAreaInsets()
-	const navigation = useNativeNavigation()
 
 	const [editValue, setEditValue] = useState(conv?.displayName || '')
 	const [isEdit, setIsEdit] = useState(false)
@@ -156,7 +155,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 
 	return (
 		<ReplyReactionProvider>
-			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }) => {
+			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }: any) => {
 				const onRemoveEmojiBoard = () => {
 					setActivePopoverCid(activeEmojiKeyboardCid)
 					setActiveEmojiKeyboardCid(null)
@@ -179,7 +178,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 											right: 0,
 										}}
 									>
-										<ChatDate date={stickyDate} />
+										<ChatDate date={pbDateToNum(stickyDate)} />
 									</View>
 								)}
 							</KeyboardAvoidingView>
@@ -199,7 +198,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 											right: 0,
 										}}
 									>
-										<ChatDate date={stickyDate} />
+										<ChatDate date={pbDateToNum(stickyDate)} />
 									</View>
 								)}
 							</>
@@ -214,7 +213,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 								/>
 								<EmojiBoard
 									showBoard={true}
-									onClick={emoji => {
+									onClick={(emoji: any) => {
 										ctx.client
 											?.interact({
 												conversationPublicKey: conv?.publicKey,

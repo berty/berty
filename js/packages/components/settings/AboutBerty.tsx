@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import { View, ScrollView, Linking, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { ScreenFC } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 
@@ -80,9 +80,10 @@ const HeaderAboutBerty: React.FC<{}> = () => {
 	)
 }
 
-const BodyAboutBerty: React.FC<{}> = () => {
+const BodyAboutBerty: React.FC<{ navigation: ComponentProps<typeof AboutBerty>['navigation'] }> = ({
+	navigation,
+}) => {
 	const _styles = useStylesAboutBerty()
-	const navigation = useNavigation()
 	const [{ flex, margin, padding }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
@@ -95,7 +96,7 @@ const BodyAboutBerty: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={colors['background-header']}
 				actionIcon='arrow-ios-forward'
-				onPress={() => navigation.navigate.settings.termsOfUse()}
+				onPress={() => navigation.navigate('Settings.TermsOfUse')}
 			/>
 			<ButtonSetting
 				name={t('settings.about.privacy-button')}
@@ -136,7 +137,7 @@ const BodyAboutBerty: React.FC<{}> = () => {
 	)
 }
 
-export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
+export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = ({ navigation }) => {
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 
@@ -147,7 +148,7 @@ export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
 				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
 					<HeaderAboutBerty />
 				</View>
-				<BodyAboutBerty />
+				<BodyAboutBerty navigation={navigation} />
 			</ScrollView>
 		</Layout>
 	)

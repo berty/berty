@@ -1,18 +1,20 @@
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import { ScrollView, View } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useMessengerContext, Maybe, useThemeColor } from '@berty-tech/store'
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
+	useConversation,
+	useMessengerContext,
+	Maybe,
+	useThemeColor,
 	servicesAuthViaDefault,
 	useAccountServices,
 	serviceTypes,
 	replicateGroup,
-} from '@berty-tech/store/services'
+} from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
@@ -96,11 +98,11 @@ const getReplicationStatusColor = (status: replicationServerStatus): string => {
 
 const ReplicateGroupContent: React.FC<{
 	conversationPublicKey?: Maybe<string>
-}> = ({ conversationPublicKey }) => {
+	navigation: ComponentProps<typeof ReplicateGroupSettings>['navigation']
+}> = ({ conversationPublicKey, navigation }) => {
 	const ctx = useMessengerContext()
-	const conversation = ctx.conversations[conversationPublicKey as string]
+	const conversation = useConversation(conversationPublicKey)
 	const services = useAccountServices()
-	const navigation = useNavigation()
 	const [{ margin, flex, padding }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
@@ -158,23 +160,23 @@ const ReplicateGroupContent: React.FC<{
 	)
 }
 
-export const ReplicateGroupSettings: React.FC<ScreenProps.Chat.ReplicateGroupSettings> = ({
+export const ReplicateGroupSettings: ScreenFC<'Chat.ReplicateGroupSettings'> = ({
 	route,
+	navigation,
 }) => {
 	const { convId } = route.params
 	const [{ padding }] = useStyles()
-	const { goBack } = useNavigation()
 	const conv = useConversation(convId)
 
 	if (!conv) {
-		goBack()
+		navigation.goBack()
 		return null
 	}
 
 	return (
 		<Layout style={{ flex: 1 }}>
 			<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
-				<ReplicateGroupContent conversationPublicKey={conv.publicKey} />
+				<ReplicateGroupContent conversationPublicKey={conv.publicKey} navigation={navigation} />
 			</ScrollView>
 		</Layout>
 	)

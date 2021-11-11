@@ -1,7 +1,9 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 
-export const DevText: React.FC<{ route: { params: { text: string } } }> = ({
+import { ScreenFC } from '@berty-tech/navigation'
+
+export const DevText: ScreenFC<'Settings.DevText'> = ({
 	route: {
 		params: { text },
 	},

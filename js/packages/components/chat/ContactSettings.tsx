@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useContacts, useThemeColor } from '@berty-tech/store/hooks'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -134,9 +134,11 @@ const ContactSettingsBody: React.FC<{ id: string }> = ({ id }) => {
 	)
 }
 
-export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ route }) => {
+export const ContactSettings: ScreenFC<'Chat.ContactSettings'> = ({
+	route,
+	navigation: { goBack },
+}) => {
 	const { contactId } = route.params
-	const { goBack } = useNavigation()
 	const colors = useThemeColor()
 	const contact: any = (useContacts() as any)[contactId] || null
 	const [{ padding }] = useStyles()

@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import { View, ScrollView, StatusBar } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { ScreenFC } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 
@@ -55,11 +55,12 @@ const HeaderHelp: React.FC<{}> = () => {
 	)
 }
 
-const BodyHelp: React.FC<{}> = () => {
+const BodyHelp: React.FC<{ navigation: ComponentProps<typeof Help>['navigation'] }> = ({
+	navigation: { navigate },
+}) => {
 	const _styles = useStylesHelp()
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
-	const { navigate } = useNavigation()
 	const { t }: any = useTranslation()
 
 	return (
@@ -68,13 +69,13 @@ const BodyHelp: React.FC<{}> = () => {
 				name={t('settings.help.updates-button')}
 				icon='arrow-upward-outline'
 				iconColor={colors['secondary-background-header']}
-				onPress={() => navigate.settings.appUpdates()}
+				onPress={() => navigate('Settings.AppUpdates')}
 			/>
 			<ButtonSetting
 				name={t('settings.help.about-button')}
 				icon='info-outline'
 				iconColor={colors['secondary-background-header']}
-				onPress={() => navigate.settings.aboutBerty()}
+				onPress={() => navigate('Settings.AboutBerty')}
 			/>
 			<ButtonSetting
 				name={t('settings.help.account-button')}
@@ -142,7 +143,7 @@ const BodyHelp: React.FC<{}> = () => {
 	)
 }
 
-export const Help: React.FC<ScreenProps.Settings.Help> = () => {
+export const Help: ScreenFC<'Settings.Help'> = ({ navigation }) => {
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 
@@ -153,7 +154,7 @@ export const Help: React.FC<ScreenProps.Settings.Help> = () => {
 				<View style={[padding.medium, { backgroundColor: colors['secondary-background-header'] }]}>
 					<HeaderHelp />
 				</View>
-				<BodyHelp />
+				<BodyHelp navigation={navigation} />
 			</ScrollView>
 		</Layout>
 	)

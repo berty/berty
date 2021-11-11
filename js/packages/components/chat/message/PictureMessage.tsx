@@ -55,7 +55,7 @@ export const PictureMessage: React.FC<{
 				{medias.slice(0, medias.length > 4 ? 4 : medias.length).map((media: any, index: number) => (
 					<TouchableOpacity
 						onPress={() => {
-							navigation.navigate.modals.imageView({ images })
+							navigation.navigate('Modals.ImageView', { images })
 						}}
 						onLongPress={onLongPress}
 						activeOpacity={1}

@@ -3,7 +3,7 @@ import { View, ScrollView, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { ScreenProps } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useThemeColor } from '@berty-tech/store/hooks'
@@ -45,7 +45,7 @@ const BodyUpdates: React.FC<{}> = () => {
 	)
 }
 
-export const AppUpdates: React.FC<ScreenProps.Settings.AppUpdates> = () => {
+export const AppUpdates: ScreenFC<'Settings.AppUpdates'> = () => {
 	const colors = useThemeColor()
 
 	return (

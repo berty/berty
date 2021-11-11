@@ -322,7 +322,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 						<View>
 							<Text style={[padding.left.small, text.size.medium]}>{name}</Text>
 						</View>
-						{state && state.value && state.color && state.bgColor && (
+						{state && state.value && state.color && state.bgColor && state.iconSize && (
 							<View
 								style={[
 									margin.right.medium,

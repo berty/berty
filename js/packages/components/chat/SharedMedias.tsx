@@ -18,7 +18,7 @@ import Hyperlink from 'react-native-hyperlink'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useMessengerContext,
 	useConvInteractions,
@@ -34,14 +34,14 @@ import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)
 
-export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> = ({
+export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	route: {
 		params: { convPk },
 	},
+	navigation: { navigate },
 }) => {
 	const [{ flex, margin, text, padding, border }] = useStyles()
 	const colors = useThemeColor()
-	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const [activeIndex, setActiveIndex] = useState(0)
 	const { protocolClient } = useMessengerContext()
@@ -160,7 +160,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 					<TouchableOpacity
 						key={image.cid}
 						onPress={() => {
-							navigate.modals.imageView({ images: [image] })
+							navigate('Modals.ImageView', { images: [image] })
 						}}
 						activeOpacity={0.9}
 					>
@@ -246,8 +246,7 @@ export const SharedMedias: React.FC<{ route: { params: { convPk: string } } }> =
 						<Hyperlink
 							onPress={async url => {
 								if (client && (await isBertyDeepLink(client, url))) {
-									navigate.modals.manageDeepLink({ type: 'link', value: url })
-
+									navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 									return
 								}
 								Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))

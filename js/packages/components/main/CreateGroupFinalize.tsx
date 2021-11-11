@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
-import { Routes } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { PersistentOptionsKeys, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { setCheckListItemDone, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useNavigation } from '@berty-tech/navigation'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'
@@ -184,7 +183,7 @@ export const CreateGroupFinalize: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
-	const { goBack, reset } = useNativeNavigation()
+	const { goBack, reset } = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
 	const { call, error, done, reply } = (messengerMethodsHooks as any).useConversationCreate()
 
@@ -200,33 +199,19 @@ export const CreateGroupFinalize: React.FC<{
 	const { t }: { t: any } = useTranslation()
 
 	React.useEffect(() => {
-		const setGroupCheckListDone = async () => {
-			await ctx.setPersistentOption({
-				type: PersistentOptionsKeys.CheckList,
-				payload: {
-					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-					group: {
-						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].group,
-						done: true,
-					},
-				},
-			})
-		}
 		if (done) {
 			if (error) {
 				console.error('Failed to create group:', error)
 			} else if (reply?.publicKey) {
-				if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].group?.done) {
-					setGroupCheckListDone().then()
-				}
+				setCheckListItemDone(ctx, 'group')
 				reset({
 					index: 0,
 					routes: [
 						{
-							name: Routes.Main.Home,
+							name: 'Main.Home',
 						},
 						{
-							name: Routes.Chat.Group,
+							name: 'Chat.Group',
 							params: {
 								convId: reply.publicKey,
 							},

@@ -3,8 +3,8 @@ import { TouchableOpacity, View, Text } from 'react-native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useThemeColor } from '@berty-tech/store/hooks'
-import { navigate, Routes } from '@berty-tech/navigation'
+import { useConversation, useThemeColor } from '@berty-tech/store'
+import { navigate } from '@berty-tech/navigation'
 
 import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'
@@ -24,8 +24,8 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 			// TODO: Investigate: doesn't work if app crashes and is restarted
 			navigate(
 				payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
-					? Routes.Chat.OneToOne
-					: Routes.Chat.Group,
+					? 'Chat.OneToOne'
+					: 'Chat.Group',
 				{ convId: payload.conversation?.publicKey, scrollToMessage: payload?.interaction?.cid },
 			)
 		} else {

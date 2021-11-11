@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ComponentProps, useState } from 'react'
 import { View, ScrollView, Share, StatusBar, TouchableOpacity } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
@@ -6,7 +6,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { useNavigation, ScreenFC } from '@berty-tech/navigation'
 import { Maybe, useConversation, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import {
@@ -15,7 +15,6 @@ import {
 	ButtonSettingRow,
 	ButtonDropDown,
 } from '../shared-components/SettingsButtons'
-
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 
 //
@@ -62,7 +61,7 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 						color: colors['background-header'],
 						style: _styles.thirdHeaderButton,
 						disabled: !link || undefined,
-						onPress: link ? () => navigate.chat.multiMemberQR({ convId: publicKey }) : undefined,
+						onPress: link ? () => navigate('Chat.MultiMemberQR', { convId: publicKey }) : undefined,
 					},
 				]}
 			/>
@@ -160,13 +159,16 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 	)
 }
 
-const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
+const MultiMemberSettingsBody: React.FC<{
+	publicKey: string
+	link: string
+	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
+}> = ({ publicKey, link, navigation }) => {
 	const [{ padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
-	const navigation = useNavigation()
 	const memberLength = Object.values(members).length
 	const memberText = memberLength < 2 ? 'member' : 'members'
 	const { t } = useTranslation()
@@ -177,7 +179,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 			<ButtonSetting
 				name={t('chat.multi-member-settings.media-button')}
 				icon='image-outline'
-				onPress={() => navigation.navigate.chat.sharedMedias({ convPk: publicKey })}
+				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.notifications-button')}
@@ -254,7 +256,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				icon='user-plus'
 				iconPack='custom'
 				onPress={() =>
-					navigation.navigate.chat.multiMemberSettingsAddMembers({ convPK: publicKey })
+					navigation.navigate('Group.MultiMemberSettingsAddMembers', { convPK: publicKey })
 				}
 			/>
 			<ButtonSetting
@@ -279,7 +281,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				iconSize={30}
 				actionIcon='arrow-ios-forward'
 				onPress={() => {
-					navigation.navigate.chat.replicateGroupSettings({ convId: publicKey })
+					navigation.navigate('Chat.ReplicateGroupSettings', { convId: publicKey })
 				}}
 			/>
 			<ButtonSetting
@@ -298,15 +300,17 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	)
 }
 
-export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings> = ({ route }) => {
+export const MultiMemberSettings: ScreenFC<'Group.MultiMemberSettings'> = ({
+	route,
+	navigation,
+}) => {
 	const { convId } = route.params
 	const conv = useConversation(convId)
-	const { goBack } = useNavigation()
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 
 	if (!conv) {
-		goBack()
+		navigation.goBack()
 		return null
 	}
 	return (
@@ -317,7 +321,11 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 					<GroupChatSettingsHeader publicKey={conv.publicKey} />
 					<GroupChatSettingsHeaderButtons {...conv} />
 				</View>
-				<MultiMemberSettingsBody {...conv} />
+				<MultiMemberSettingsBody
+					publicKey={conv.publicKey || ''}
+					link={conv.link || ''}
+					navigation={navigation}
+				/>
 			</ScrollView>
 		</Layout>
 	)

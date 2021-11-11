@@ -14,7 +14,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import {
-	PersistentOptionsKeys,
+	setCheckListItemDone,
 	useAccount,
 	useMessengerContext,
 	useThemeColor,
@@ -107,7 +107,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 			if (pic) {
 				dispatch({ type: 'SET_PICTURE', pic })
 			}
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.code !== 'E_PICKER_CANCELLED') {
 				dispatch({ type: 'SET_ERROR', err })
 			}
@@ -153,7 +153,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 				updated = true
 			}
 
-			if (state.name && state.name != account?.displayName) {
+			if (state.name && state.name !== account?.displayName) {
 				update.displayName = state.name
 				updated = true
 			}
@@ -166,18 +166,11 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 					accountId: ctx.selectedAccount,
 					avatarCid: update.avatarCid,
 				})
-			}
 
-			await ctx.setPersistentOption({
-				type: PersistentOptionsKeys.CheckList,
-				payload: {
-					...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-					avatar: {
-						...ctx.persistentOptions[PersistentOptionsKeys.CheckList].avatar,
-						done: true,
-					},
-				},
-			})
+				if (update.avatarCid) {
+					await setCheckListItemDone(ctx, 'avatar')
+				}
+			}
 
 			closeModal()
 		} catch (err) {

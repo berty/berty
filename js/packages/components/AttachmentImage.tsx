@@ -44,7 +44,7 @@ const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<Imag
 		) : (
 			<TouchableOpacity
 				onPress={() => {
-					navigate.modals.imageView({ images: [{ uri: source }], previewOnly: true })
+					navigate('Modals.ImageView', { images: [{ uri: source }], previewOnly: true })
 				}}
 			>
 				<Image source={{ uri: source }} {...imageProps} />

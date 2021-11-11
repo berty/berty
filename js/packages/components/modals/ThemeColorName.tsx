@@ -10,6 +10,7 @@ import {
 	useThemeColor,
 	CurrentGeneratedTheme,
 	PersistentOptionsKeys,
+	setCheckListItemDone,
 } from '@berty-tech/store'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
@@ -174,18 +175,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 									},
 								},
 							})
-							if (!ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme?.done) {
-								await ctx.setPersistentOption({
-									type: PersistentOptionsKeys.CheckList,
-									payload: {
-										...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-										theme: {
-											...ctx.persistentOptions[PersistentOptionsKeys.CheckList].theme,
-											done: true,
-										},
-									},
-								})
-							}
+							setCheckListItemDone(ctx, 'theme')
 							closeModal()
 						}}
 					>

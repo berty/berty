@@ -1,10 +1,11 @@
 {
 	"include": [
-		"packages/store/**/*",
-		"global.d.ts"
+		"global.d.ts",
+		"index.ts",
+		"packages"
 	],
 	"exclude": [
-		"**/*.test.*",
+		"packages/web-dev-app"
 	],
 	"compilerOptions": {
 		/* Basic Options */
@@ -47,7 +48,9 @@
 		"moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
 		"baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
 		"paths": {
-			"@berty-tech/*": ["./packages/*"]
+			"@berty-tech/*": [
+				"./packages/*"
+			]
 		}
 		/* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */ ,
 		// "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */

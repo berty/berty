@@ -3,7 +3,6 @@ import { Layout, Text } from '@ui-kitten/components'
 import React, { useCallback, useEffect } from 'react'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import {
@@ -12,11 +11,13 @@ import {
 	accountService,
 	getNetworkConfigurationFromPreset,
 } from '@berty-tech/store'
-import { ButtonSetting, StringOptionInput } from '@berty-tech/components/shared-components'
 import { useStyles } from '@berty-tech/styles'
-import { showNeedRestartNotification } from '@berty-tech/components/helpers'
-import { Toggle } from '@berty-tech/components/shared-components/Toggle'
 import rnutil from '@berty-tech/rnutil'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+
+import { ButtonSetting, StringOptionInput } from '../shared-components'
+import { showNeedRestartNotification } from '../helpers'
+import { Toggle } from '../shared-components/Toggle'
 
 const BodyNetworkConfig: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const colors = useThemeColor()
@@ -37,8 +38,8 @@ const BodyNetworkConfig: React.FC = withInAppNotification(({ showNotification }:
 				})
 				await ctx.setNetworkConfig(newConfig)
 				showNeedRestartNotification(showNotification, ctx, t)
-			} catch (e) {
-				Alert.alert('Input validation field failed!', `${e.message}`)
+			} catch (e: any) {
+				Alert.alert('Input validation field failed!', `${e?.message}`)
 			}
 		},
 		[ctx, showNotification, t],
@@ -238,7 +239,7 @@ const BodyNetworkConfig: React.FC = withInAppNotification(({ showNotification }:
 	)
 })
 
-export const NetworkConfig: React.FC = () => {
+export const NetworkConfig: ScreenFC<'Settings.NetworkConfig'> = () => {
 	const colors = useThemeColor()
 	const [{ padding, text }, { scaleSize }] = useStyles()
 	const { selectedAccount, setNetworkConfig } = useMessengerContext()

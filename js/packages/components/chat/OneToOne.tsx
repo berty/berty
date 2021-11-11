@@ -6,10 +6,9 @@ import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import EmojiBoard from 'react-native-emoji-board'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import {
 	useContact,
@@ -18,6 +17,7 @@ import {
 	useReadEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
+	pbDateToNum,
 } from '@berty-tech/store'
 import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 
@@ -109,7 +109,7 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 					<TouchableOpacity
 						activeOpacity={contact ? 0.2 : 0.5}
 						style={[!contact ? opacity(0.5) : null, flex.small, row.right]}
-						onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
+						onPress={() => navigate('Chat.OneToOneSettings', { convId: convPk })}
 					>
 						<ContactAvatar size={40 * scaleSize} publicKey={conv.contactPublicKey} />
 					</TouchableOpacity>
@@ -133,7 +133,7 @@ export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
-export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params } }) => {
+export const OneToOne: ScreenFC<'Chat.OneToOne'> = ({ route: { params }, navigation }) => {
 	useNotificationsInhibitor((_ctx, notif) => {
 		if (
 			(notif.type === NT.TypeContactRequestSent &&
@@ -154,8 +154,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const conv = useConversation(params?.convId)
 	const contact = useContact(conv?.contactPublicKey)
 	const ctx = useMessengerContext()
-	const navigation = useNativeNavigation()
-	const { navigate } = useNavigation()
+	const { navigate } = navigation
 
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const isFooterDisable = isIncoming
@@ -181,7 +180,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 				<TouchableOpacity
 					activeOpacity={contact ? 0.2 : 0.5}
 					style={[!contact ? opacity(0.5) : null]}
-					onPress={() => navigate.chat.oneToOneSettings({ convId: params.convId })}
+					onPress={() => navigate('Chat.OneToOneSettings', { convId: params.convId })}
 				>
 					<ContactAvatar size={40 * scaleSize} publicKey={conv?.contactPublicKey} />
 				</TouchableOpacity>
@@ -191,7 +190,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 
 	return (
 		<ReplyReactionProvider>
-			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }) => {
+			{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }: any) => {
 				const onRemoveEmojiBoard = () => {
 					setActivePopoverCid(activeEmojiKeyboardCid)
 					setActiveEmojiKeyboardCid(null)
@@ -222,7 +221,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 											right: 0,
 										}}
 									>
-										<ChatDate date={stickyDate} />
+										<ChatDate date={pbDateToNum(stickyDate)} />
 									</View>
 								)}
 							</KeyboardAvoidingView>
@@ -247,7 +246,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 											right: 0,
 										}}
 									>
-										<ChatDate date={stickyDate} />
+										<ChatDate date={pbDateToNum(stickyDate)} />
 									</View>
 								)}
 							</>
@@ -262,7 +261,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 								/>
 								<EmojiBoard
 									showBoard={true}
-									onClick={emoji => {
+									onClick={(emoji: { name: string }) => {
 										ctx.client
 											?.interact({
 												conversationPublicKey: conv?.publicKey,

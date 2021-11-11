@@ -14,10 +14,9 @@ import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty-tech/api'
-import { berty } from '@berty-tech/api/root.pb'
 import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { useMessengerContext } from '@berty-tech/store'
+import { pbDateToNum, useMessengerContext } from '@berty-tech/store'
 
 export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
 
@@ -136,7 +135,7 @@ const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, 
 }
 
 const fetchProtoAccountList = (
-	updateAccountProtoEntries: (arg: { [key: string]: berty.account.v1.IAccountMetadata }) => void,
+	updateAccountProtoEntries: (arg: { [key: string]: beapi.account.IAccountMetadata }) => void,
 	t: any,
 ) => {
 	const f = async () => {
@@ -148,7 +147,7 @@ const fetchProtoAccountList = (
 		}
 
 		const allAccounts = (await resp).accounts.reduce<{
-			[key: string]: berty.account.v1.IAccountMetadata
+			[key: string]: beapi.account.IAccountMetadata
 		}>((all, e) => ({ ...all, [e.accountId!]: e }), {})
 
 		updateAccountProtoEntries(allAccounts)
@@ -178,7 +177,7 @@ const accountAction = async (
 		} else {
 			title = t('debug.inspector.accounts.action-delete.account-exists', { accountId: accountId })
 		}
-	} catch (err) {
+	} catch (err: any) {
 		console.warn(err)
 		Alert.alert(t('debug.inspector.accounts.action-delete.fs-read-error'), err.message)
 		return
@@ -253,7 +252,7 @@ const AccountsInspector: React.FC<{
 }> = ({ lastRefresh, setLastUpdate }) => {
 	const [accountFSFiles, updateAccountFSFiles] = useState<Array<FSItem>>([])
 	const [accountProtoEntries, updateAccountProtoEntries] = useState<{
-		[key: string]: berty.account.v1.IAccountMetadata
+		[key: string]: beapi.account.IAccountMetadata
 	}>({})
 	const { t }: { t: any } = useTranslation()
 
@@ -294,7 +293,7 @@ const AccountsInspector: React.FC<{
 											<Text numberOfLines={1} style={[styles.text]}>
 												{t('debug.inspector.accounts.infos.aligned.created', {
 													created: new Date(
-														parseInt(accountProtoEntries[acc.fileName].creationDate, 10) / 1000,
+														pbDateToNum(accountProtoEntries[acc.fileName].creationDate) / 1000,
 													).toUTCString(),
 												})}
 											</Text>
@@ -304,7 +303,7 @@ const AccountsInspector: React.FC<{
 											<Text numberOfLines={1} style={[styles.text]}>
 												{t('debug.inspector.accounts.infos.aligned.opened', {
 													opened: new Date(
-														parseInt(accountProtoEntries[acc.fileName].lastOpened, 10) / 1000,
+														pbDateToNum(accountProtoEntries[acc.fileName].lastOpened) / 1000,
 													).toUTCString(),
 												})}
 											</Text>

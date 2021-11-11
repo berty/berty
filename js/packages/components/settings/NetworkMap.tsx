@@ -9,13 +9,12 @@ import {
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@react-navigation/native'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import beapi from '@berty-tech/api'
-import { pbDateToNum } from '@berty-tech/store/convert'
+import { ScreenFC } from '@berty-tech/navigation'
+import { useStyles } from '@berty-tech/styles'
+import { useThemeColor, pbDateToNum } from '@berty-tech/store'
+import { protocolMethodsHooks } from '@berty-tech/store/methods'
 
 import { usePrevious } from '../hooks'
 
@@ -263,8 +262,7 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 	)
 }
 
-export const NetworkMap = () => {
-	const navigation = useNavigation()
+export const NetworkMap: ScreenFC<'Settings.NetworkMap'> = ({ navigation }) => {
 	const colors = useThemeColor()
 	const [{}, { scaleSize }] = useStyles()
 	const { reply: peers = {}, call, called } = protocolMethodsHooks.usePeerList()

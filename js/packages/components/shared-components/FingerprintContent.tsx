@@ -4,7 +4,7 @@ import { Text } from '@ui-kitten/components'
 import { SHA3 } from 'sha3'
 
 import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { Maybe, useThemeColor } from '@berty-tech/store'
 
 //
 // FingerprintContent => Generally on TabBar there is a TabItem Fingerpint that show this component
@@ -52,7 +52,7 @@ const FingerprintContentFaction: React.FC<{ digestPart: string }> = ({ digestPar
 	)
 }
 
-export const FingerprintContent: React.FC<{ seed: string; isEncrypted: boolean }> = ({
+export const FingerprintContent: React.FC<{ seed: Maybe<string>; isEncrypted?: boolean }> = ({
 	seed,
 	isEncrypted,
 }) => {
