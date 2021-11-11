@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest --silent",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "patch-package && ./fix-types.sh && npx jetify"
+    "postinstall": "patch-package && node ./fix-types.js && npx jetify"
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
@@ -59,7 +59,7 @@
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-hyperlink": "^0.0.19",
-    "react-native-image-crop-picker": "^0.35.3",
+    "react-native-image-crop-picker": "^0.37.1",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-in-app-notification": "git+https://github.com/robcalcroft/react-native-in-app-notification.git",
     "react-native-inappbrowser-reborn": "^3.5.1",

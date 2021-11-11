@@ -8504,10 +8504,10 @@ react-native-hyperlink@^0.0.19:
     linkify-it "^2.2.0"
     mdurl "^1.0.0"
 
-react-native-image-crop-picker@^0.35.3:
-  version "0.35.3"
-  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.35.3.tgz#cc9ae109ae5ac2d0877a0c5ac51935421a3651d8"
-  integrity sha512-JMBmtfdJvxvPNTjSmiqNaBuEAqwwzyYvgvwiOU8ikIE113RD6hPV+wpxGFCqGJPzJF/JO6uEzpDOcFCfHZbmtQ==
+react-native-image-crop-picker@^0.37.1:
+  version "0.37.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.37.1.tgz#15981a108fedfbacb49ee8401b977b296d00e8d3"
+  integrity sha512-Jk0VTC/c+sU9a1bl0CjAy3SlOXScZ0Pg2STG+qJnYhUQQN1XIbvHYYk30vk0GY/xVQGyslT2ECRzXYIYrQnN3w==
 
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"
