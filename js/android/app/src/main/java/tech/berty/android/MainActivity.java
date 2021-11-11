@@ -8,11 +8,15 @@ import com.zoontek.rnbootsplash.RNBootSplash; // needed by react-native-bootspla
 import com.shakebugs.shake.Shake;
 import android.view.MotionEvent;
 
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+
 public class MainActivity extends ReactActivity {
 
   /**
-   * Returns the name of the main component registered from JavaScript. This is used to schedule
-   * rendering of the component.
+   * Returns the name of the main component registered from JavaScript. This is
+   * used to schedule rendering of the component.
    */
   @Override
   protected String getMainComponentName() {
@@ -21,14 +25,24 @@ public class MainActivity extends ReactActivity {
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-      Shake.handleTouchEvent(ev, this);
-      return super.dispatchTouchEvent(ev);
+    Shake.handleTouchEvent(ev, this);
+    return super.dispatchTouchEvent(ev);
   }
 
-   // needed by react-native-bootsplash
+  protected ReactActivityDelegate createReactActivityDelegate() {
+    return new ReactActivityDelegate(this, getMainComponentName()) {
+      @Override
+      protected ReactRootView createRootView() {
+        return new RNGestureHandlerEnabledRootView(MainActivity.this);
+      }
+    };
+  }
+
+  // needed by react-native-bootsplash
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    RNBootSplash.init(R.drawable.bootsplash, MainActivity.this); // <- display the generated bootsplash.xml drawable over our MainActivity
+    RNBootSplash.init(R.drawable.bootsplash, MainActivity.this); // <- display the generated bootsplash.xml drawable
+                                                                 // over our MainActivity
   }
 }
