@@ -76,6 +76,8 @@ const (
 	FlagValueP2PDHTServer     = "server"
 	FlagValueP2PDHTAuto       = "auto"
 	FlagValueP2PDHTAutoServer = "autoserver"
+
+	ipfsIdentityLastUpdateKey = "ipfs_identity_last_update"
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
@@ -107,7 +109,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, FlagNameTorMode, defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
-	fs.Int64Var(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", int64(rendezvous.DefaultRotationInterval), "rendezvous rotation base for node")
+	fs.DurationVar(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", rendezvous.DefaultRotationInterval, "rendezvous rotation base for node")
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
@@ -320,7 +322,56 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
 
+	repo, err = m.resetRepoIdentityIfExpired(repo, dbPath, storageKey)
+	if err != nil {
+		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+	}
+
 	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
+}
+
+func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string, storageKey []byte) (ipfs_repo.Repo, error) {
+	rootDS, err := m.getRootDatastore()
+	if err != nil {
+		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+	}
+
+	lastUpdate := time.Now()
+	lastUpdateKey := datastore.NewKey(ipfsIdentityLastUpdateKey)
+
+	lastUpdateRaw, err := rootDS.Get(lastUpdateKey)
+	switch err {
+	case nil:
+		lastUpdate, err = time.Parse(time.RFC3339Nano, string(lastUpdateRaw))
+		if err != nil {
+			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+		}
+	case datastore.ErrNotFound:
+		// key does not exist, force recreation
+		lastUpdate = time.Time{}
+	default:
+		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+	}
+
+	rendezvousRotationBase, err := m.GetRendezvousRotationBase()
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if lastUpdate.Before(time.Now().Add(-rendezvousRotationBase)) {
+		repo, err = ipfsutil.ResetExistingRepoIdentity(repo, dbPath, storageKey)
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+		lastUpdate = time.Now()
+		lastUpdateRaw = []byte(lastUpdate.Format(time.RFC3339Nano))
+
+		if err := rootDS.Put(lastUpdateKey, lastUpdateRaw); err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+	}
+
+	return repo, nil
 }
 
 func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error) {
@@ -736,4 +787,12 @@ func (m *Manager) torIsEnabled() bool {
 		return true
 	}
 	return false
+}
+
+func (m *Manager) GetRendezvousRotationBase() (time.Duration, error) {
+	if m.Node.Protocol.RendezvousRotationBase < 0 {
+		return 0, errcode.ErrInvalidInput.Wrap(fmt.Errorf("rendezvousRotationBase must be positive"))
+	}
+
+	return m.Node.Protocol.RendezvousRotationBase, nil
 }

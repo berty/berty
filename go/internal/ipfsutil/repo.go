@@ -64,7 +64,7 @@ func LoadRepoFromPath(path string, key []byte) (ipfs_repo.Repo, error) {
 			return nil, errors.Wrap(err, "failed to create base config")
 		}
 
-		ucfg, err := upgradeToPersistanceConfig(cfg)
+		ucfg, err := upgradeToPersistentConfig(cfg)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to upgrade repo")
 		}
@@ -88,28 +88,15 @@ var DefaultSwarmListeners = []string{
 
 func createBaseConfig() (*ipfs_cfg.Config, error) {
 	c := ipfs_cfg.Config{}
-	priv, pub, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.Ed25519, 2048, crand.Reader) // nolint:staticcheck
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	pid, err := p2p_peer.IDFromPublicKey(pub) // nolint:staticcheck
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
 
 	// set default bootstrap
 	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
 	c.Peering.Peers = []p2p_peer.AddrInfo{}
 
 	// Identity
-	c.Identity.PeerID = pid.Pretty()
-	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
+	if err := resetRepoIdentity(&c); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
 
 	// Discovery
 	c.Discovery.MDNS.Enabled = true
@@ -135,7 +122,60 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 	return &c, nil
 }
 
-func upgradeToPersistanceConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) {
+func ResetExistingRepoIdentity(repo ipfs_repo.Repo, path string, key []byte) (ipfs_repo.Repo, error) {
+	cfg, err := repo.Config()
+	if err != nil {
+		_ = repo.Close()
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if err := resetRepoIdentity(cfg); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	updatedCfg, err := upgradeToPersistentConfig(cfg)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to upgrade repo")
+	}
+
+	err = repo.SetConfig(updatedCfg)
+	_ = repo.Close()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	repo, err = encrepo.Open(path, key)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return repo, nil
+}
+
+func resetRepoIdentity(c *ipfs_cfg.Config) error {
+	priv, pub, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.Ed25519, 2048, crand.Reader) // nolint:staticcheck
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	pid, err := p2p_peer.IDFromPublicKey(pub) // nolint:staticcheck
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	privkeyb, err := p2p_ci.MarshalPrivateKey(priv)
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	// Identity
+	c.Identity.PeerID = pid.Pretty()
+	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
+
+	return nil
+}
+
+func upgradeToPersistentConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) {
 	cfgCopy, err := cfg.Clone()
 	if err != nil {
 		return nil, err

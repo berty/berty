@@ -2,7 +2,6 @@ package initutil
 
 import (
 	"path/filepath"
-	"time"
 
 	datastore "github.com/ipfs/go-datastore"
 
@@ -54,6 +53,11 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		cache    = bertyprotocol.NewOrbitDatastoreCache(rootDS)
 	)
 
+	rendezvousRotationBase, err := m.GetRendezvousRotationBase()
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
 	opts := &bertyprotocol.NewOrbitDBOptions{
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 			Cache:                cache,
@@ -63,7 +67,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		},
 		Datastore:              rootDS,
 		DeviceKeystore:         deviceKS,
-		RendezvousRotationBase: time.Duration(m.Node.Protocol.RendezvousRotationBase),
+		RendezvousRotationBase: rendezvousRotationBase,
 	}
 
 	if node.PubSub != nil {

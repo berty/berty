@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/user"
 	"strings"
-	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
@@ -199,6 +198,11 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			return nil, errcode.TODO.Wrap(err)
 		}
 
+		rendezvousRotationBase, err := m.GetRendezvousRotationBase()
+		if err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+
 		// initialize new protocol client
 		opts := bertyprotocol.Opts{
 			Host:                   m.Node.Protocol.ipfsNode.PeerHost,
@@ -211,7 +215,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			OrbitDB:                odb,
 			PushKey:                pushKey,
 			GRPCInsecureMode:       m.Node.Protocol.ServiceInsecureMode,
-			RendezvousRotationBase: time.Duration(m.Node.Protocol.RendezvousRotationBase),
+			RendezvousRotationBase: rendezvousRotationBase,
 		}
 
 		m.Node.Protocol.server, err = bertyprotocol.New(m.getContext(), opts)
