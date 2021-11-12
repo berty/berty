@@ -1,9 +1,13 @@
 const logRequest = (name, title, req) => {
-	console.log(`>>>[${name}] ${title}: "${JSON.stringify(req)}"`)
+	console.log(`>>>[${name}] ${title}: ${JSON.stringify(req)}`)
 }
 
 const logResponse = (name, title, res) => {
 	console.log(`<<<[${name}] ${title}: ${JSON.stringify(res)}`)
+}
+
+const logEOF = (name, title) => {
+	console.log(`EOF[${name}] ${title}`)
 }
 
 const logError = (name, title, err) => {
@@ -26,7 +30,9 @@ const create = name => (method, call) => async (payload, metadata) => {
 		if (method.requestStream || method.responseStream) {
 			const eventTitle = `[EVT] ${method.name}`
 			res.onMessage((msg, err) => {
-				if (err) {
+				if (err?.message === 'EOF') {
+					logEOF(name, eventTitle)
+				} else if (err) {
 					logError(name, eventTitle, err)
 				} else {
 					logResponse(name, eventTitle, msg)

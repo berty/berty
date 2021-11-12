@@ -26,3 +26,8 @@ declare module '*.png'
 declare module '*.gif'
 
 declare module '*.json'
+
+declare module 'react-native-restart' {
+	import RNRestart from 'react-native-restart/lib/typescript'
+	export default RNRestart
+}
