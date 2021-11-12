@@ -44,18 +44,20 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		permissionStatus,
 		navigateNext,
 		createNewAccount: isToCreateNewAccount,
+		onComplete,
 	} = params
 
 	const handleOnComplete = useCallback(async () => {
 		if (isToCreateNewAccount) {
 			await createNewAccount()
 		}
+		await onComplete()
 		if (navigateNext) {
 			navigation.navigate(navigateNext)
 		} else {
 			navigation.goBack()
 		}
-	}, [isToCreateNewAccount, createNewAccount, navigateNext, navigation])
+	}, [isToCreateNewAccount, createNewAccount, navigateNext, navigation, onComplete])
 
 	const handleAppStateChange = useCallback(
 		async (nextAppState: string) => {

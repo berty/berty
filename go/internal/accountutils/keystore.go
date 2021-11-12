@@ -1,4 +1,4 @@
-package sysutil
+package accountutils
 
 type NativeKeystore interface {
 	Put(key string, data []byte) error

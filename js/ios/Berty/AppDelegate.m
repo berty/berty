@@ -32,7 +32,6 @@ static void InitializeFlipper(UIApplication *application) {
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #ifdef FB_SONARKIT_ENABLED
@@ -71,6 +70,9 @@ static void InitializeFlipper(UIApplication *application) {
   [self.window makeKeyAndVisible];
 
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // needed by react-native-bootsplash
+
+  UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+  center.delegate = self;
 
   return YES;
 }
@@ -122,6 +124,41 @@ static void InitializeFlipper(UIApplication *application) {
    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
   return [RCTLinkingManager application:application openURL:url options:options];
+}
+
+// Callbacks for APNS token request
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  [PushTokenRequester.shared onRequestSucceeded:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+  [PushTokenRequester.shared onRequestFailed:error];
+}
+
+// Called when push notification was received in foreground
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+{
+  NSString *payload = notification.request.content.userInfo[BertybridgeServicePushPayloadKey];
+
+  if (payload != nil) {
+    EventEmitter *eventEmitter = EventEmitter.shared;
+    if (eventEmitter != nil) {
+      // Send the payload to JS
+      [eventEmitter sendEventWithName:@"onPushReceived" body:payload];
+    }
+  }
+
+  // Ignore push notif from here, JS will decide to display it or not
+  completionHandler(UNNotificationPresentationOptionNone);
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
+{
+  // if (<deeplink available in push notif>) {
+  //    openDeeplink()
+  // }
+
+  completionHandler();
 }
 
 @end

@@ -23,13 +23,13 @@ import (
 	"moul.io/progress"
 	"moul.io/zapring"
 
+	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
-	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -191,14 +191,14 @@ type Manager struct {
 	workers        run.Group // replace by something more accurate
 	mutex          sync.Mutex
 	longHelp       [][2]string
-	nativeKeystore sysutil.NativeKeystore
+	nativeKeystore accountutils.NativeKeystore
 	storageKey     []byte
 }
 
 type ManagerOpts struct {
 	DoNotSetDefaultDir   bool
 	DefaultLoggerStreams []logutil.Stream
-	NativeKeystore       sysutil.NativeKeystore
+	NativeKeystore       accountutils.NativeKeystore
 }
 
 func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {

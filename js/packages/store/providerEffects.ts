@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import RNFS from 'react-native-fs'
+import base64 from 'base64-js'
+import { Platform, NativeModules } from 'react-native'
 
 import beapi from '@berty-tech/api'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
@@ -26,6 +28,8 @@ import {
 import { accountService, storageRemove, storageGet } from './accountService'
 import { streamEventToAction } from './convert'
 import { storageKeyForAccount } from './utils'
+
+const { PushTokenRequester } = NativeModules
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -132,7 +136,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 					console.log('File deleted')
 				})
 				.catch(() => {
-					console.log('File berty backup does not exist')
+					console.log('File berty backup does not exist') // here
 				})
 			dispatch({ type: MessengerActions.SetNextAccount, payload: accountSelected.accountId })
 			return
@@ -225,13 +229,13 @@ export const openingDaemon = async (
 }
 
 // handle state OpeningWaitingForClients
-export const openingClients = (
+export const openingClients = async (
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
 	eventEmitter: EventEmitter,
 	daemonAddress: string,
 	embedded: boolean,
-): void => {
+): Promise<void> => {
 	if (appState !== MessengerAppState.OpeningWaitingForClients) {
 		return
 	}
@@ -252,6 +256,33 @@ export const openingClients = (
 	const messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
 
 	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
+
+	if (Platform.OS === 'ios' || Platform.OS === 'android') {
+		PushTokenRequester.request()
+			.then((responseJSON: string) => {
+				let response = JSON.parse(responseJSON)
+				protocolClient
+					.pushSetDeviceToken({
+						receiver: beapi.protocol.PushServiceReceiver.create({
+							tokenType:
+								Platform.OS === 'ios'
+									? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
+									: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+							bundleId: response.bundleId,
+							token: new Uint8Array(base64.toByteArray(response.token)),
+						}),
+					})
+					.then(() => {
+						console.info(`Push token registred: ${responseJSON}`)
+					})
+					.catch(err => {
+						console.warn(`Push token registration failed: ${err}`)
+					})
+			})
+			.catch((err: Error) => {
+				console.warn(`Push token request failed: ${err}`)
+			})
+	}
 
 	let precancel = false
 	let cancel = () => {

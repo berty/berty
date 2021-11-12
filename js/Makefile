@@ -207,7 +207,7 @@ ios.log:
 ios.project: ios/Berty.xcworkspace
 
 .PHONY: ios.gomobile
-ios.gomobile: ios/Frameworks/Bertybridge.xcframework
+ios.gomobile: ios/Frameworks/Bertybridge.xcframework ios/Frameworks/Bertypush.xcframework
 
 #### Android
 
@@ -354,6 +354,7 @@ _write_gen_sum:
 #### iOS
 
 ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
+	mkdir -p ios/.gomobile-cache
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && ANDROID_HOME= ANDROID_NDK_HOME= $(GO) run golang.org/x/mobile/cmd/gomobile init
@@ -366,11 +367,35 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 			-o js/$@ \
 			-v $(ext_ldflags) \
 			$(GO_TAGS) \
-			-cache "$(PWD)/ios/.gomobile-cache" \
+			-cache "$(PWD)/ios/.gomobile-cache/bertybridge" \
 			-target ios \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
 	touch $@
+	cd .. && $(GO) mod tidy
+
+ios/Frameworks/Bertypush.xcframework: $(bridge_src)
+	mkdir -p ios/.gomobile-cache
+	cd .. && $(GO) mod download
+	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
+	cd .. && ANDROID_HOME= ANDROID_NDK_HOME= $(GO) run golang.org/x/mobile/cmd/gomobile init
+	mkdir -p ios/Frameworks
+	cd .. && \
+		PATH="$(PATH):`go env GOPATH`/bin" \
+		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
+		GO111MODULE=on ANDROID_HOME= ANDROID_NDK_HOME= \
+		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
+			-o js/$@ \
+			-v $(ext_ldflags) \
+			$(GO_TAGS) \
+			-cache "$(PWD)/ios/.gomobile-cache/bertypush" \
+			-target ios \
+			-iosversion $(minimum_ios_ver) \
+			./go/framework/bertypush
+	touch $@
+	cd .. && $(GO) mod tidy
+
+
 
 ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json node_modules
 	$(call check-program, bundle)
@@ -420,6 +445,7 @@ android/libs/gobridge.aar: $(bridge_src)
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
 	touch $@
+	cd .. && $(GO) mod tidy
 
 #### React
 

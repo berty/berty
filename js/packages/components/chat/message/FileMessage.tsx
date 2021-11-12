@@ -48,7 +48,7 @@ export const FileMessage: React.FC<{
 				},
 			]}
 			onLongPress={onLongPress}
-			onPress={() => {
+			onPress={async () => {
 				setLoading(true)
 			}}
 		>

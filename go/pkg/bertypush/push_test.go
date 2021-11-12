@@ -19,7 +19,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/messengerutil"
-	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/authtypes"
@@ -37,7 +36,7 @@ type MemNativeKeystore struct {
 	dict map[string][]byte
 }
 
-var _ sysutil.NativeKeystore = (*MemNativeKeystore)(nil)
+var _ accountutils.NativeKeystore = (*MemNativeKeystore)(nil)
 
 func (ks *MemNativeKeystore) Get(key string) ([]byte, error) {
 	value, ok := ks.dict[key]
@@ -52,7 +51,7 @@ func (ks *MemNativeKeystore) Put(key string, value []byte) error {
 	return nil
 }
 
-func NewMemNativeKeystore() sysutil.NativeKeystore {
+func NewMemNativeKeystore() accountutils.NativeKeystore {
 	return &MemNativeKeystore{dict: make(map[string][]byte)}
 }
 
@@ -320,7 +319,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	svc1StorageKey, err := svc1Keystore.Get(accountutils.StorageKeyName)
 	require.NoError(t, err)
 
-	decrypted, err := bertypush.PushDecryptStandalone(svc1RootDir, pushContents, svc1StorageKey)
+	decrypted, err := bertypush.PushDecryptStandalone(logger, svc1RootDir, pushContents, svc1StorageKey)
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())
@@ -332,7 +331,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
 
 	// Decode twice
-	decrypted, err = bertypush.PushDecryptStandalone(svc1RootDir, pushContents, svc1StorageKey)
+	decrypted, err = bertypush.PushDecryptStandalone(logger, svc1RootDir, pushContents, svc1StorageKey)
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())

@@ -8,5 +8,5 @@ index dd34c98..f406bbe 100644
          def mergeResourcesTask = tasks.findByName("merge${targetName}Resources")
 +        currentAssetsCopyTask.dependsOn(currentBundleTask) // See: https://github.com/facebook/react-native/issues/31157
          mergeResourcesTask.dependsOn(currentAssetsCopyTask)
- 
+
          packageTask.dependsOn(currentAssetsCopyTask)

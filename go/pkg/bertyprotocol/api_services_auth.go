@@ -142,19 +142,23 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		return nil, err
 	}
 
+	s.logger.Debug("start PushServer registering")
 	// @FIXME(gfanton):  should be handle on the client (js) side
 	for _, service := range services {
 		if service.ServiceType != authtypes.ServicePushID {
 			continue
 		}
 
-		client, err := s.createAndGetPushClient(ctx, service.ServiceEndpoint, svcToken.Token)
+		s.logger.Debug("registering PushServer")
+		client, err := s.getPushClient(service.ServiceEndpoint)
 		if err != nil {
 			s.logger.Warn("unable to connect to push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
 			continue
 		}
 
-		repl, err := client.ServerInfo(ctx, &pushtypes.PushServiceServerInfo_Request{})
+		repl, err := client.ServerInfo(ctx, &pushtypes.PushServiceServerInfo_Request{},
+			gRPCCredentialOption(svcToken.Token),
+		)
 		if err != nil {
 			s.logger.Warn("unable to get server info from push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
 			continue
@@ -169,7 +173,10 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 
 		if err != nil {
 			s.logger.Warn("unable to set push server", zap.Error(err))
+			continue
 		}
+
+		s.logger.Debug("PushServer registered", zap.String("host", service.ServiceEndpoint))
 	}
 
 	return &protocoltypes.AuthServiceCompleteFlow_Reply{

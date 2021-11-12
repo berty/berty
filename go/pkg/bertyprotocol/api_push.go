@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	crand "crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"sync"
 
@@ -51,36 +52,22 @@ func PushSealTokenForServer(receiver *protocoltypes.PushServiceReceiver, server 
 }
 
 func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error) {
-	s.muPushClients.RLock()
-
-	if cc, ok := s.pushClients[host]; ok {
-		s.muPushClients.RUnlock()
-		return pushtypes.NewPushServiceClient(cc), nil
-	}
-
-	s.muPushClients.RUnlock()
-
-	return s.createAndGetPushClientWithoutToken(s.ctx, host)
-}
-
-func (s *service) createAndGetPushClient(ctx context.Context, host string, token string) (pushtypes.PushServiceClient, error) {
 	s.muPushClients.Lock()
 	defer s.muPushClients.Unlock()
 
 	if cc, ok := s.pushClients[host]; ok {
-		cc.Close()
-		s.pushClients[host] = nil
+		return pushtypes.NewPushServiceClient(cc), nil
 	}
 
 	gopts := []grpc.DialOption{
-		grpc.WithPerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token)),
+		grpc.WithPerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", "")),
 	}
 
 	if s.grpcInsecure {
 		gopts = append(gopts, grpc.WithInsecure())
 	}
 
-	cc, err := grpc.DialContext(ctx, host, gopts...)
+	cc, err := grpc.DialContext(s.ctx, host, gopts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,12 +75,7 @@ func (s *service) createAndGetPushClient(ctx context.Context, host string, token
 	// monitor push client state
 	go monitorPushServer(s.ctx, cc, s.logger)
 
-	s.pushClients[host] = cc
 	return pushtypes.NewPushServiceClient(cc), err
-}
-
-func (s *service) createAndGetPushClientWithoutToken(ctx context.Context, host string) (pushtypes.PushServiceClient, error) {
-	return s.createAndGetPushClient(ctx, host, "")
 }
 
 func (s *service) PushReceive(ctx context.Context, request *protocoltypes.PushReceive_Request) (*protocoltypes.PushReceive_Reply, error) {
@@ -130,6 +112,7 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 	wg.Add(len(pushTargets))
 
 	for serverAddr, pushTokens := range pushTargets {
+		// @FIXME(gfanton): find a better way to get service token
 		go func(serverAddr string, pushTokens []*pushtypes.PushServiceOpaqueReceiver) {
 			s.logger.Info("PushSend - pushing", zap.String("cid", c.String()), zap.String("server", serverAddr))
 			defer wg.Done()
@@ -145,14 +128,17 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 				return
 			}
 
-			if _, err := client.Send(ctx, &pushtypes.PushServiceSend_Request{
+			_, err = client.Send(ctx, &pushtypes.PushServiceSend_Request{
 				Envelope:  sealedMessageEnvelope,
 				Priority:  pushtypes.PushServicePriority_PushPriorityNormal,
 				Receivers: pushTokens,
-			}); err != nil {
+			})
+			if err != nil {
 				s.logger.Error("error while dialing push server", zap.String("push-server", serverAddr), zap.Error(err))
 				return
 			}
+
+			s.logger.Debug("send push notification successfully", zap.String("cid", c.String()), zap.String("endpoint", serverAddr))
 		}(serverAddr, pushTokens)
 	}
 
@@ -239,6 +225,7 @@ func (s *service) PushShareToken(ctx context.Context, request *protocoltypes.Pus
 	if _, err := gc.metadataStore.SendPushToken(ctx, token); err != nil {
 		return nil, err
 	}
+	s.logger.Debug("send push token done")
 
 	return &protocoltypes.PushShareToken_Reply{}, nil
 }
@@ -254,12 +241,15 @@ func (s *service) PushSetDeviceToken(ctx context.Context, request *protocoltypes
 	request.Receiver.RecipientPublicKey = s.pushHandler.PushPK()[:]
 
 	if currentReceiver := s.accountGroup.metadataStore.getCurrentDevicePushToken(); currentReceiver != nil && bytes.Equal(currentReceiver.Token, request.Receiver.Token) {
+		s.logger.Warn("push device token already set", zap.String("b64 token", base64.StdEncoding.EncodeToString(request.Receiver.Token)))
 		return &protocoltypes.PushSetDeviceToken_Reply{}, nil
 	}
 
 	if _, err := s.accountGroup.metadataStore.RegisterDevicePushToken(ctx, request.Receiver); err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
+
+	s.logger.Debug("push token device set", zap.Int("token len", len(request.Receiver.Token)))
 
 	return &protocoltypes.PushSetDeviceToken_Reply{}, nil
 }
@@ -304,4 +294,8 @@ func monitorPushServer(ctx context.Context, cc *grpc.ClientConn, logger *zap.Log
 			zap.String("target", cc.Target()),
 			zap.String("state", currentState.String()))
 	}
+}
+
+func gRPCCredentialOption(token string) grpc.CallOption {
+	return grpc.PerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token))
 }

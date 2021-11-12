@@ -1,7 +1,7 @@
 package bertybridge
 
-import "berty.tech/berty/v2/go/internal/sysutil"
+import "berty.tech/berty/v2/go/internal/accountutils"
 
 type NativeKeystoreDriver interface {
-	sysutil.NativeKeystore
+	accountutils.NativeKeystore
 }
