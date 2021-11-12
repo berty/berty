@@ -1,3 +1,4 @@
+//go:build !darwin || (darwin && !cgo) || catalyst
 // +build !darwin darwin,!cgo catalyst
 
 package mc

@@ -67,7 +67,7 @@ on:
 jobs:
   gen-go-and-docs:
     runs-on: ubuntu-latest
-    container: bertytech/protoc:27
+    container: bertytech/protoc:28
     steps:
       - name: checkout
         uses: actions/checkout@v2.3.5
@@ -130,7 +130,7 @@ jobs:
       matrix:
         node: [14.x]
     runs-on: ubuntu-latest
-    container: bertytech/protoc:27
+    container: bertytech/protoc:28
     steps:
       - uses: actions/checkout@v2.3.5
 

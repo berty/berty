@@ -1,3 +1,4 @@
+//go:build !bertygui
 // +build !bertygui
 
 package main

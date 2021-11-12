@@ -1,3 +1,4 @@
+//go:build !android && !darwin
 // +build !android,!darwin
 
 package tempdir

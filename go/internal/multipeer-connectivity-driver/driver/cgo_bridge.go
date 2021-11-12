@@ -1,3 +1,4 @@
+//go:build darwin && cgo && !catalyst
 // +build darwin,cgo,!catalyst
 
 package driver
