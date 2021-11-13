@@ -2020,10 +2020,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.1.0.tgz#e42b1bef12d2415411519fd528e64b593b1363dc"
   integrity sha512-W/J0fNYVO01tioHjvYWQ9m6RgndVtbElzYozBq1ZPrHO/iCzlqoySHl4gO/fpCl9QEFjvJfjPgtPMTMlsoq5DQ==
 
-"@react-native-community/hooks@^2.8.0":
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/hooks/-/hooks-2.8.0.tgz#c36e1c9c7ca5cc58b489b7d5ce1b6441f9f09c16"
-  integrity sha512-xL9Mfd3Sft74hGWdGDOcq3jbvZT93gGzvcg3rnvemOPaNec8cmC2SQk3OI8LomyGcF8MedZQzQPFyfRoRi8npA==
+"@react-native-community/hooks@^2.8.1":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@react-native-community/hooks/-/hooks-2.8.1.tgz#6e785431db49318048fdd14b601998437b6cc200"
+  integrity sha512-DCmCIC0Gn9m6K0Mlg2MwNmTxMEpBu5lTLsI6b/XUAv/vLGa6o+X7RhCai4FWeqkjCU36+ZOwaLzDo4NBWMXaoQ==
 
 "@react-native-community/masked-view@^0.1.10":
   version "0.1.11"
@@ -8486,10 +8486,10 @@ react-freeze@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-freeze/-/react-freeze-1.0.0.tgz#b21c65fe1783743007c8c9a2952b1c8879a77354"
   integrity sha512-yQaiOqDmoKqks56LN9MTgY06O0qQHgV4FUrikH357DydArSZHQhl0BJFqGKIZoTqi8JizF9Dxhuk1FIZD6qCaw==
 
-react-i18next@^11.14.1:
-  version "11.14.1"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.14.1.tgz#fa210fc1a3011c26e75b36c27ce708cbe6b54d59"
-  integrity sha512-2M4E3G6fZHMirSfIY6F9704J5wMaqsfrrixueIDkQzbD80txtQ2RHSOe79aRqrgEnAl9MdcH0kK4PmvkbVLhAA==
+react-i18next@^11.14.2:
+  version "11.14.2"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.14.2.tgz#2ff28f6a0ddf06eaf79435ed6c70c441d709cf34"
+  integrity sha512-fmDhwNA0zDmSEL3BBT5qwNMvxrKu25oXDDAZyHprfB0AHZmWXfBmRLf8MX8i1iBd2I2C2vsA2D9wxYBIwzooEQ==
   dependencies:
     "@babel/runtime" "^7.14.5"
     html-parse-stringify "^3.0.1"
@@ -8624,10 +8624,10 @@ react-native-hyperlink@^0.0.19:
     linkify-it "^2.2.0"
     mdurl "^1.0.0"
 
-react-native-image-crop-picker@^0.37.1:
-  version "0.37.1"
-  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.37.1.tgz#15981a108fedfbacb49ee8401b977b296d00e8d3"
-  integrity sha512-Jk0VTC/c+sU9a1bl0CjAy3SlOXScZ0Pg2STG+qJnYhUQQN1XIbvHYYk30vk0GY/xVQGyslT2ECRzXYIYrQnN3w==
+react-native-image-crop-picker@^0.37.2:
+  version "0.37.2"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.37.2.tgz#3aadc4ae4812c9975c49a294d9a17ffae057dbb4"
+  integrity sha512-YwZXW21Km8+3tSt0smTaLVgY4398c0/OJcpcH6EP0JDOt1BNNxl/R8m6qdvnwdXdIoa0CCnMVW6TL9IN5ia9OA==
 
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"
@@ -8834,10 +8834,10 @@ react-native-vector-icons@^9.0.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-webview@^11.14.2:
-  version "11.14.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.14.2.tgz#31e62864b28f950fd887bf20469fe8cd71101d29"
-  integrity sha512-4pRLskbu98xmC8q+YY9cfshSxhywVran+tQ0ou7V6Js0ye2Zb33dDpe6d7QUWD39w5LbYSI3knpxLLVDAVm0hA==
+react-native-webview@^11.14.3:
+  version "11.14.3"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.14.3.tgz#31da92b8fd21f4d1192e057867478598153a6f5d"
+  integrity sha512-y/+7mE6by/uLGSIVmlp1xpJvL37rAuOL90EWTJYKZWL5iM8lN+pQkj/zwcPcGu4zNmuHdXXUk/cMR8hE89mNYg==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
