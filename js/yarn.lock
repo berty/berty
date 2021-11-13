@@ -1240,10 +1240,10 @@
     base64-js "^1.2.3"
     xmlbuilder "^14.0.0"
 
-"@flyerhq/react-native-android-uri-path@^2.1.0":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@flyerhq/react-native-android-uri-path/-/react-native-android-uri-path-2.1.3.tgz#4767bb18c4b5a5a191f88e59598d987858d4f393"
-  integrity sha512-jn1gmFbxYbmCQ5aGcr3IArgyo0A34YIAYG5cszhNK3YJjTr12MuqPGltWz293Q+zve34i8ydh1xRTIJcLeBjZA==
+"@flyerhq/react-native-android-uri-path@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@flyerhq/react-native-android-uri-path/-/react-native-android-uri-path-2.2.2.tgz#eb8126a203cd4cd6340bc259fd0fd8a57e2549a4"
+  integrity sha512-skD22PqU3SqxI0WetXAHWQ4Vcu76VCvW5g10sK8dwlNaDWEla68qGXvDFLtdzhFoHKu1s6xXM1oIc6Q7EGd2ew==
 
 "@hapi/hoek@^9.0.0":
   version "9.2.0"

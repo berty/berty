@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
-    "@flyerhq/react-native-android-uri-path": "^2.1.0",
+    "@flyerhq/react-native-android-uri-path": "^2.2.2",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@react-native-community/audio-toolkit": "git+https://github.com/sakul-budhathoki/react-native-audio-toolkit.git#3e81181e97154ce84b6927fd5e5a484782d36d70",
     "@react-native-community/blur": "^3.6.0",
