@@ -6,7 +6,7 @@ platform :ios, '12.0'
 target 'Berty' do
   config = use_native_modules!
 
-use_react_native!(
+  use_react_native!(
     :path => config[:reactNativePath],
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
@@ -20,35 +20,34 @@ use_react_native!(
   pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
 
-
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # FIX see: https://github.com/facebook/flipper/issues/2215#issuecomment-829102757
-  use_flipper!({
-                   'Flipper-Folly' => '2.5.3',
-                   'Flipper' => '0.87.0',
-                   'Flipper-RSocket' => '1.3.1',
-                   # use a custom glog.podspec to support apple m1
-                   'Flipper-Glog' => { :podspec => "./glog/glog.podspec"},
-               })
+  # you should disable the next line.
+  use_flipper!()
 
   post_install do |installer|
     react_native_post_install(installer)
-
-    # enable only active arch for all pods
-    installer.pods_project.build_configurations.each do |config|
-      config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
-    end
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
 
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         # set ios deployment target for all pods
+        # see https://github.com/facebook/flipper/issues/834#issuecomment-899725463
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+        config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+        config.build_settings["ONLY_ACTIVE_ARCH"] = "YES"
 
         # replace swift version 4.X -> 5.0
         if config.build_settings.key?('SWIFT_VERSION') && config.build_settings['SWIFT_VERSION'].start_with?('4.')
           config.build_settings['SWIFT_VERSION'] = '5.0'
+        end
+      end
+
+      case target.name
+      when 'RCT-Folly'
+        target.build_configurations.each do |config|
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
         end
       end
     end

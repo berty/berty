@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
-    "@flyerhq/react-native-android-uri-path": "^2.1.0",
+    "@flyerhq/react-native-android-uri-path": "^2.2.2",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@react-native-community/audio-toolkit": "git+https://github.com/sakul-budhathoki/react-native-audio-toolkit.git#3e81181e97154ce84b6927fd5e5a484782d36d70",
     "@react-native-community/blur": "^3.6.0",
@@ -46,7 +46,7 @@
     "protobufjs": "^6.10.2",
     "react": "17.0.2",
     "react-i18next": "^11.14.2",
-    "react-native": "0.64.2",
+    "react-native": "0.66.3",
     "react-native-android-keyboard-adjust": "^1.2.0",
     "react-native-bootsplash": "^3.2.6",
     "react-native-camera": "^4.2.1",
@@ -77,13 +77,13 @@
     "react-native-share": "^7.2.1",
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^3.1.1",
-    "react-native-v8": "^0.64.0-patch.0",
+    "react-native-v8": "^0.66.0-patch.0",
     "react-native-vector-icons": "^9.0.0",
     "react-native-webview": "^11.14.3",
     "sha3": "^2.1.4",
     "string.fromcodepoint": "^1.0.0",
     "tlds": "^1.226.0",
-    "v8-android-jit": "^9.88.0"
+    "v8-android-jit": "^9.93.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -105,7 +105,7 @@
     "eslint": "^7.14.0",
     "jest": "^27.3.1",
     "metro-config": "^0.66.2",
-    "metro-react-native-babel-preset": "^0.64.0",
+    "metro-react-native-babel-preset": "^0.66.2",
     "react-dev-utils": "^11.0.4",
     "react-native-svg-transformer": "^0.14.3",
     "react-test-renderer": "^17.0.2",

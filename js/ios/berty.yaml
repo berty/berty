@@ -244,8 +244,6 @@ targets:
     dependencies:
       - framework: ./Frameworks/Bertypush.xcframework
         embed: false
-      - framework: "${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"
-        embed: false
 
 include:
 - info.yaml
