@@ -1,3 +1,4 @@
+//go:build (!android && !ios) || (ios && catalyst)
 // +build !android,!ios ios,catalyst
 
 package username

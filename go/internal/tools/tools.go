@@ -1,3 +1,4 @@
+//go:build tools
 // +build tools
 
 // Package tools ensures that `go mod` detect some required dependencies.
