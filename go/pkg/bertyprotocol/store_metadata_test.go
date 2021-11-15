@@ -179,7 +179,9 @@ func ipfsAPIUsingMockNet(ctx context.Context, t *testing.T) (ipfsutil.ExtendedCo
 	return node.API(), cleanupNode
 }
 
-func TestMetadataRendezvousPointLifecycle(t *testing.T) {
+func TestFlappyMetadataRendezvousPointLifecycle(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Flappy, testutil.Fast)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -684,8 +686,8 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	require.Equal(t, groups[0].GroupType, g2.GroupType)
 }
 
-func TestMultiDevices_Basic(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+func TestFlappyMultiDevices_Basic(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Flappy, testutil.Slow)
 
 	memberCount := 2
 	deviceCount := 3

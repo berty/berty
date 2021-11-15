@@ -104,11 +104,13 @@ go.unittest: pb.generate
 .PHONY: go.unittest
 
 
-go.unstable-tests: pb.generate
-	TEST_STABILITY=unstable go run moul.io/testman test -v -timeout=600s -retry=10 -run ^TestUnstable ./pkg/bertymessenger
-	TEST_STABILITY=unstable go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol # FIXME: run on other unstable functions too
+go.flappy-tests: pb.generate
+	TEST_STABILITY=flappy go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestFlappy ./pkg/bertymessenger
+	TEST_STABILITY=flappy go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestFlappy ./pkg/bertybot
+	TEST_STABILITY=flappy go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestFlappy ./pkg/bertyprotocol
+	TEST_STABILITY=flappy go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol
 	# FIXME: run on other packages too
-.PHONY: go.unstable-tests
+.PHONY: go.flappy-tests
 
 
 go.broken-tests: pb.generate
@@ -173,14 +175,14 @@ $(gen_sum): $(gen_src)
 	  set -xe; \
 	  $(GO) mod download; \
 	  docker run \
-	    --user="$$uid" \
-	    --volume="`go env GOPATH`/pkg/mod:/go/pkg/mod" \
-	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
-	    --workdir="/go/src/berty.tech/berty/go" \
-	    --entrypoint="sh" \
-	    --rm \
-	    bertytech/protoc:28 \
-	    -xec 'make generate_local'; \
+		--user="$$uid" \
+		--volume="`go env GOPATH`/pkg/mod:/go/pkg/mod" \
+		--volume="$(PWD)/..:/go/src/berty.tech/berty" \
+		--workdir="/go/src/berty.tech/berty/go" \
+		--entrypoint="sh" \
+		--rm \
+		bertytech/protoc:28 \
+		-xec 'make generate_local'; \
 	  $(MAKE) tidy \
 	)
 .PHONY: pb.generate

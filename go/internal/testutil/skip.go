@@ -12,7 +12,7 @@ type Stability string
 
 const (
 	Stable       Stability = "stable"
-	Unstable     Stability = "unstable"
+	Flappy       Stability = "flappy"
 	Broken       Stability = "broken"
 	AnyStability Stability = "any"
 )
@@ -55,11 +55,11 @@ func parseEnv() {
 
 	for _, level := range strings.Split(stabFilter, ",") {
 		switch Stability(level) {
-		case Stable, Unstable, Broken:
+		case Stable, Flappy, Broken:
 			enabledStability[Stability(level)] = true
 		case AnyStability:
 			enabledStability[Stable] = true
-			enabledStability[Unstable] = true
+			enabledStability[Flappy] = true
 			enabledStability[Broken] = true
 		default:
 			panic(fmt.Sprintf("invalid stability level: %q", level))

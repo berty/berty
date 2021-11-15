@@ -45,15 +45,15 @@ type testFunc func(context.Context, *testing.T, ...*bertyprotocol.TestingProtoco
 
 func TestScenario_CreateMultiMemberGroup(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectInLine", 3, bertyprotocol.ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"5 clients/connectInLine", 5, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"8 clients/connectInLine", 8, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},
-		{"10 clients/connectInLine", 10, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40},
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"3 clients/connectInLine", 3, bertyprotocol.ConnectInLine, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 20},
+		{"5 clients/connectInLine", 5, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 20},
+		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"8 clients/connectInLine", 8, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40},
+		{"10 clients/connectInLine", 10, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*bertyprotocol.TestingProtocol) {
@@ -63,15 +63,15 @@ func TestScenario_CreateMultiMemberGroup(t *testing.T) {
 
 func TestScenario_MessageMultiMemberGroup(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectInLine", 3, bertyprotocol.ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"5 clients/connectInLine", 5, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"8 clients/connectInLine", 8, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},
-		{"10 clients/connectInLine", 10, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40},
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"3 clients/connectInLine", 3, bertyprotocol.ConnectInLine, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 20},
+		{"5 clients/connectInLine", 5, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 20},
+		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"8 clients/connectInLine", 8, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40},
+		{"10 clients/connectInLine", 10, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*bertyprotocol.TestingProtocol) {
@@ -109,15 +109,15 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 	const ngroup = 3
 
 	cases := []testCase{
-		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"3 clients/connectInLine", 3, bertyprotocol.ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10},
-		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"5 clients/connectInLine", 5, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20},
-		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"8 clients/connectInLine", 8, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
-		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},
-		{"10 clients/connectInLine", 10, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40},
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"3 clients/connectInLine", 3, bertyprotocol.ConnectInLine, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 20},
+		{"5 clients/connectInLine", 5, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 20},
+		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"8 clients/connectInLine", 8, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40},
+		{"10 clients/connectInLine", 10, bertyprotocol.ConnectInLine, testutil.Slow, testutil.Flappy, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*bertyprotocol.TestingProtocol) {
@@ -135,10 +135,10 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20}, // marked as "unstable" because it failed multiple times on the CI recently
-		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20}, // marked as "unstable" because it failed multiple times on the CI recently
-		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30}, // marked as "unstable" because it failed multiple times on the CI recently
-		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40}, // marked as "unstable" because it failed multiple times on the CI recently
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20}, // marked as "flappy" because it failed multiple times on the CI recently
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20}, // marked as "flappy" because it failed multiple times on the CI recently
+		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30}, // marked as "flappy" because it failed multiple times on the CI recently
+		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40}, // marked as "flappy" because it failed multiple times on the CI recently
 		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Broken, time.Second * 60},
 	}
 
@@ -149,9 +149,9 @@ func TestScenario_AddContact(t *testing.T) {
 
 func TestScenario_MessageContactGroup(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20},
-		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20},
-		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20},
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20},
+		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30},
 		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Broken, time.Second * 40},
 		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Broken, time.Second * 60},
 	}
@@ -334,13 +334,13 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	// require.NoError(t, err)
 	//
 	// _, err = nodeA.Service.(*service).accountGroup.MetadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
-	// 	Token: token,
-	// 	SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
-	// 		{
-	// 			ServiceType:     ServiceReplicationID,
-	// 			ServiceEndpoint: "", // TODO
-	// 		},
-	// 	},
+	//	Token: token,
+	//	SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
+	//		{
+	//			ServiceType:     ServiceReplicationID,
+	//			ServiceEndpoint: "", // TODO
+	//		},
+	//	},
 	// })
 	// require.NoError(t, err)
 
