@@ -83,7 +83,7 @@
     "sha3": "^2.1.4",
     "string.fromcodepoint": "^1.0.0",
     "tlds": "^1.226.0",
-    "v8-android-jit": "^9.88.0"
+    "v8-android-jit": "^9.93.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
