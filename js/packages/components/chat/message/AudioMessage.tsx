@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo } from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { View, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import moment from 'moment'
 
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
 import beapi from '@berty-tech/api'
@@ -11,6 +11,7 @@ import { playSoundAsync } from '@berty-tech/store/sounds'
 
 import { limitIntensities, voiceMemoFilename } from '../record/common'
 import { getSource } from '../../utils'
+import { useMessengerContext } from '@berty-tech/store'
 
 const volumeValueShown = 50
 
@@ -54,10 +55,11 @@ export const WaveForm: React.FC<{
 							<View
 								style={{
 									backgroundColor:
-										duration &&
-										index < Math.floor((currentTime! / duration) * normalizedIntensities.length)
+										currentTime === 0 ||
+										(duration &&
+											index < Math.floor((currentTime! / duration) * normalizedIntensities.length))
 											? colors['main-background']
-											: colors['background-header'],
+											: `${colors['main-background']}80`,
 									minHeight: 5,
 									height: 70 * intensity + '%',
 									flex: 2,
@@ -69,7 +71,7 @@ export const WaveForm: React.FC<{
 					)
 				})}
 			</View>
-			<Text style={[{ color: colors['background-header'] }, margin.left.tiny, text.size.small]}>
+			<Text style={[{ color: colors['main-background'] }, margin.small, text.size.scale(9)]}>
 				{moment.utc(duration).format('mm:ss')}
 			</Text>
 		</View>
@@ -98,7 +100,7 @@ const AudioPreview: React.FC<{
 	if (normalizedIntensities === null) {
 		return (
 			<View style={{ flex: 1 }}>
-				<Text style={{ color: colors['background-header'] }} numberOfLines={1}>
+				<Text style={{ color: colors['main-background'] }} numberOfLines={1}>
 					{media.filename!}
 				</Text>
 			</View>
@@ -111,10 +113,11 @@ const AudioPreview: React.FC<{
 }
 
 export const AudioMessage: React.FC<{
-	medias: beapi.messenger.IMedia[]
+	medias: Array<beapi.messenger.IMedia>
 	onLongPress: () => void
 	isHighlight: boolean
-}> = ({ medias, onLongPress, isHighlight }) => {
+	isMine: boolean
+}> = ({ medias, onLongPress, isHighlight, isMine }) => {
 	const colors = useThemeColor()
 	const { protocolClient, client } = useMessengerContext()
 	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
@@ -164,77 +167,122 @@ export const AudioMessage: React.FC<{
 	}, [cid, isPlaying, globalPlayer.player, globalPlayerLoad, client, protocolClient, filename])
 
 	return (
-		<TouchableOpacity
-			style={{ alignItems: 'center' }}
-			onLongPress={onLongPress}
-			activeOpacity={0.9}
-		>
+		<View style={{ position: 'relative', zIndex: 2 }}>
 			<View
-				style={[
-					{
-						backgroundColor: colors['input-background'],
-						alignItems: 'center',
-						justifyContent: 'center',
-						height: 50,
-						width: windowWidth - 100,
-						maxWidth: 400,
-						flexDirection: 'row',
-					},
-					border.radius.small,
-					isHighlight && {
-						borderColor: colors['background-header'],
-						borderWidth: 1,
-						shadowColor: colors.shadow,
-						shadowOffset: {
-							width: 0,
-							height: 8,
-						},
-						shadowOpacity: 0.44,
-						shadowRadius: 10.32,
-						elevation: 16,
-					},
-				]}
+				style={{
+					position: 'absolute',
+					bottom: -8,
+					[isMine ? 'right' : 'left']: 10,
+					transform: [{ rotate: isMine ? '-45deg' : '45deg' }, { scaleX: isMine ? 1 : -1 }],
+				}}
 			>
-				<TouchableOpacity
-					onPress={async () => {
-						if (globalPlayer.metadata?.id === medias[0].cid) {
-							handlePlayPause()
-						} else if (protocolClient && cid) {
-							globalPlayerLoad(
-								getSource(protocolClient, cid).then(src => [
-									`data:${medias[0].mimeType};base64,${src}`,
-									{
-										id: cid,
-									},
-								]),
-							)
-						}
-					}}
+				<View
 					style={[
-						padding.top.tiny,
-						padding.left.scale(10),
-						border.radius.small,
-						margin.tiny,
 						{
-							alignSelf: 'center',
+							position: 'absolute',
+							backgroundColor: colors['background-header'],
+							width: 25,
+							height: 30,
+							bottom: 0,
+							borderBottomLeftRadius: 25,
+							right: -12,
+							zIndex: -1,
+						},
+					]}
+				/>
+				<View
+					style={[
+						{
+							position: 'absolute',
+							backgroundColor: colors['main-background'],
+							width: 20,
+							height: 35,
+							bottom: -6,
+							borderBottomLeftRadius: 50,
+							right: -16,
+							zIndex: -1,
+						},
+					]}
+				/>
+			</View>
+			<TouchableWithoutFeedback style={{ alignItems: 'center' }} onLongPress={onLongPress}>
+				<View
+					style={[
+						{
+							backgroundColor: colors['background-header'],
 							alignItems: 'center',
 							justifyContent: 'center',
+							height: 50,
+							width: windowWidth - 100,
+							maxWidth: 400,
+							flexDirection: 'row',
+						},
+						border.radius.big,
+						isHighlight && {
+							borderColor: colors['background-header'],
+							borderWidth: 1,
+							shadowColor: colors.shadow,
+							shadowOffset: {
+								width: 0,
+								height: 8,
+							},
+							shadowOpacity: 0.44,
+							shadowRadius: 10.32,
+							elevation: 16,
 						},
 					]}
 				>
-					<Icon
-						name={isPlaying ? 'pause' : 'play'}
-						fill={colors['background-header']}
-						height={26 * scaleSize}
-						width={26 * scaleSize}
-						pack='custom'
+					<TouchableOpacity
+						onPress={async () => {
+							if (globalPlayer.metadata?.id === medias[0].cid) {
+								handlePlayPause()
+							} else if (protocolClient && cid) {
+								globalPlayerLoad(
+									getSource(protocolClient, cid).then(src => [
+										`data:${medias[0].mimeType};base64,${src}`,
+										{
+											id: cid,
+										},
+									]),
+								)
+							}
+						}}
+						style={[
+							padding.left.scale(10),
+							border.radius.small,
+							margin.left.small,
+							margin.right.tiny,
+							{
+								alignSelf: 'center',
+								alignItems: 'center',
+								justifyContent: 'center',
+							},
+						]}
+					>
+						<View
+							style={[
+								padding.scale(7),
+								border.radius.scale(12),
+								{
+									backgroundColor: `${colors['main-background']}80`,
+								},
+							]}
+						>
+							<Icon
+								name={isPlaying ? 'pause' : 'play'}
+								fill={colors['main-background']}
+								height={16 * scaleSize}
+								width={16 * scaleSize}
+								pack='custom'
+							/>
+						</View>
+					</TouchableOpacity>
+					<AudioPreview
+						media={medias[0]}
+						currentTime={isPlaying ? globalPlayer.player?.currentTime : 0}
 					/>
-				</TouchableOpacity>
-				<AudioPreview
-					media={medias[0]}
-					currentTime={isPlaying ? globalPlayer.player?.currentTime : 0}
-				/>
-			</View>
-		</TouchableOpacity>
+				</View>
+			</TouchableWithoutFeedback>
+		</View>
 	)
 }

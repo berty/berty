@@ -471,6 +471,7 @@ export const UserMessage: React.FC<{
 																		medias={inte.medias}
 																		onLongPress={togglePopover}
 																		isHighlight={isHighlight}
+																		isMine={!!inte.isMine}
 																	/>
 																)
 															} else {
