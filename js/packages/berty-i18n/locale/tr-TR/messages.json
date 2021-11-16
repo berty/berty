@@ -633,10 +633,10 @@
           "action-cancel": "İptal"
         },
         "status": {
-          "datastore-found": "Metadata dosyası bulundu",
-          "datastore-not-found": "Metadata dosyası bulunmadı",
-          "ipfs-repo-found": "IPFS yapılandırma dosyası bulundu",
-          "ipfs-repo-not-found": "IPFS yapılandırma dosyası bulunmadı",
+          "datastore-found": "",
+          "datastore-not-found": "",
+          "ipfs-repo-found": "",
+          "ipfs-repo-not-found": "",
           "messenger-db-found": "Haberci DB bulundu",
           "messenger-db-not-found": "Haberci DB bulunmadı"
         },

@@ -633,10 +633,10 @@
           "action-cancel": "Abbrechen"
         },
         "status": {
-          "datastore-found": "Metadaten-Datei gefunden",
-          "datastore-not-found": "Metadaten-Datei nicht gefunden",
-          "ipfs-repo-found": "IPFS-Konfigurationsdatei gefunden",
-          "ipfs-repo-not-found": "IPFS-Konfigurationsdatei nicht gefunden",
+          "datastore-found": "",
+          "datastore-not-found": "",
+          "ipfs-repo-found": "",
+          "ipfs-repo-not-found": "",
           "messenger-db-found": "Messenger-DB gefunden",
           "messenger-db-not-found": "Messenger-DB nicht gefunden"
         },

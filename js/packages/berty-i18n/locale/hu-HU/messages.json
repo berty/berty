@@ -633,10 +633,10 @@
           "action-cancel": "Mégse"
         },
         "status": {
-          "datastore-found": "Metaadat fájl megtalálva",
-          "datastore-not-found": "Metaadat fájl nem található",
-          "ipfs-repo-found": "IPFS konfigurációs fájl megtalálva",
-          "ipfs-repo-not-found": "IPFS konfigurációs fájl nem található",
+          "datastore-found": "",
+          "datastore-not-found": "",
+          "ipfs-repo-found": "",
+          "ipfs-repo-not-found": "",
           "messenger-db-found": "Messenger DB megtalálva",
           "messenger-db-not-found": "Messenger DB nem található"
         },
