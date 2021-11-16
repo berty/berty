@@ -11,7 +11,7 @@ jobs:
     name: Release Note Preview
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2.4.0
     - run: |
         git fetch --prune --unshallow --tags
     - uses: snyk/release-notes-preview@v1.6.2
