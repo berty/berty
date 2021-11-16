@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
-	"runtime"
 	"testing"
 	"time"
 
@@ -51,12 +50,9 @@ func TestNewService(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestAdvertiseWatchdogs(t *testing.T) {
+func TestFlappyAdvertiseWatchdogs(t *testing.T) {
+	testutil.FilterStability(t, testutil.Flappy)
 	const advertisekey = "test_key"
-
-	if runtime.GOOS == "windows" {
-		t.Skip("this test fail sometimes on windows for unknown reason")
-	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
