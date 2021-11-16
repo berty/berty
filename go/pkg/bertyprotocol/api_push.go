@@ -17,7 +17,6 @@ import (
 	"google.golang.org/grpc/credentials"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -65,7 +64,10 @@ func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error
 	if s.grpcInsecure {
 		creds = grpc.WithInsecure()
 	} else {
-		creds = grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{}))
+		tlsconfig := credentials.NewTLS(&tls.Config{
+			MinVersion: tls.VersionTLS12,
+		})
+		creds = grpc.WithTransportCredentials(tlsconfig)
 	}
 
 	cc, err := grpc.DialContext(s.ctx, host, creds)
@@ -295,8 +297,4 @@ func monitorPushServer(ctx context.Context, cc *grpc.ClientConn, logger *zap.Log
 			zap.String("target", cc.Target()),
 			zap.String("state", currentState.String()))
 	}
-}
-
-func gRPCCredentialOption(token string) grpc.CallOption {
-	return grpc.PerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token))
 }

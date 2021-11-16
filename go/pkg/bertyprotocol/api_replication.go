@@ -87,7 +87,9 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 	if s.grpcInsecure {
 		gopts = append(gopts, grpc.WithInsecure())
 	} else {
-		tlsconfig := credentials.NewTLS(&tls.Config{})
+		tlsconfig := credentials.NewTLS(&tls.Config{
+			MinVersion: tls.VersionTLS12,
+		})
 		gopts = append(gopts, grpc.WithTransportCredentials(tlsconfig))
 	}
 
