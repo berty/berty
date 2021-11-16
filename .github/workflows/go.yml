@@ -78,7 +78,7 @@ jobs:
   #
   # we hope we can remove this job because all the tests are stable 100% of the time
   flappy-tests:
-    name: "Flappy tests"
+    name: "Flappy tests (Linux)"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -233,12 +233,15 @@ jobs:
       #    name: codecov-umbrella
       #    fail_ci_if_error: false
 
-  go-install-on-darwin:
-    name: "make install (darwin)"
+  go-tests-on-macos:
+    name: "Stable tests (macos)"
     runs-on: macos-latest
     strategy:
       matrix:
         golang: ['1.17.x']
+    env:
+      OS: macos-latest
+      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.5
@@ -252,13 +255,42 @@ jobs:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
-      - name: Install the project on Darwin
-        run: cd go && make install
+      - name: Compile the project on Unix-like operating systems
+        working-directory: go
+        run: |
+          touch gen.sum # avoid triggering make generate
+          make go.install
       - name: Check go.mod and go.sum
         run: |
           go mod tidy -v
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
+      - name: Run fast tests multiple times
+        working-directory: go
+        env:
+          TEST_SPEED: fast
+          GO_TEST_OPTS: -test.timeout=600s -count 1 -tags fts5
+        run: set -o pipefail; make go.unittest | tee test_log.txt
+      - name: Run all tests
+        working-directory: go
+        env:
+          TEST_SPEED: any
+          GO_TEST_OPTS: -test.timeout=600s -count 1 -tags fts5
+        run: make go.unittest
+      - name: Run all tests with race flag and generate coverage
+        working-directory: go
+        env:
+          TEST_SPEED: any
+          GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags fts5 -coverprofile=coverage.txt -covermode=atomic
+        run: make go.unittest
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          file: ./go/coverage.txt
+          flags: go.unittests
+          env_vars: OS,GOLANG
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
   # TODO: consider adding various GOARCH check per OS.
   #       i.e., to validate that we build on 32/64bit.
