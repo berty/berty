@@ -633,10 +633,10 @@
           "action-cancel": "Anuluj"
         },
         "status": {
-          "datastore-found": "Znaleziono plik metadanych",
-          "datastore-not-found": "Nie znaleziono pliku metadanych",
-          "ipfs-repo-found": "Znaleziono plik konfiguracyjny IPFS",
-          "ipfs-repo-not-found": "Nie znaleziono pliku konfiguracyjnego IPFS",
+          "datastore-found": "",
+          "datastore-not-found": "",
+          "ipfs-repo-found": "",
+          "ipfs-repo-not-found": "",
           "messenger-db-found": "Znaleziono DB komunikatora",
           "messenger-db-not-found": "Nie znaleziono DB komunikatora"
         },
