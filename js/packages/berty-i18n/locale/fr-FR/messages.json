@@ -133,7 +133,7 @@
         "title": "Liste des tâches {{tasksDone}} sur {{totalTasks}}",
         "avatar": {
           "title": "Changer votre avatar",
-          "desc": "Configure ton image de profil !"
+          "desc": ""
         },
         "relay": {
           "title": "Configurer le relais",
@@ -633,10 +633,10 @@
           "action-cancel": "Annuler"
         },
         "status": {
-          "datastore-found": "Données trouvées",
-          "datastore-not-found": "Données introuvables",
-          "ipfs-repo-found": "Dépôt IPFS trouvé",
-          "ipfs-repo-not-found": "Dépôt IPFS introuvable",
+          "datastore-found": "",
+          "datastore-not-found": "",
+          "ipfs-repo-found": "",
+          "ipfs-repo-not-found": "",
           "messenger-db-found": "Messenger DB trouvé",
           "messenger-db-not-found": "Messenger DB introuvable"
         },
