@@ -2,11 +2,13 @@ package bertyprotocol
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -84,9 +86,12 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 
 	if s.grpcInsecure {
 		gopts = append(gopts, grpc.WithInsecure())
+	} else {
+		tlsconfig := credentials.NewTLS(&tls.Config{})
+		gopts = append(gopts, grpc.WithTransportCredentials(tlsconfig))
 	}
 
-	cc, err := grpc.Dial(endpoint, gopts...)
+	cc, err := grpc.DialContext(context.Background(), endpoint, gopts...)
 	if err != nil {
 		return nil, errcode.ErrStreamWrite.Wrap(err)
 	}
