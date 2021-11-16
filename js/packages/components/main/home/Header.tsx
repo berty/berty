@@ -147,7 +147,7 @@ export const HomeHeader: React.FC<
 									]}
 								/>
 							</View>
-							{value?.length ? (
+							{!!value?.length && (
 								<TouchableOpacity
 									style={{
 										justifyContent: 'center',
@@ -163,7 +163,7 @@ export const HomeHeader: React.FC<
 										height={20 * scaleSize}
 									/>
 								</TouchableOpacity>
-							) : null}
+							)}
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={{
@@ -184,11 +184,17 @@ export const HomeHeader: React.FC<
 							}}
 						>
 							<AccountAvatar size={35} />
-							{notifs > 0 ? (
-								<View style={{ position: 'absolute', left: 15 * scaleSize, top: -(3 * scaleSize) }}>
+							{notifs > 0 && (
+								<View
+									style={{
+										position: 'absolute',
+										left: 15 * scaleSize,
+										top: -(3 * scaleSize),
+									}}
+								>
 									<UnreadCount value={notifs} />
 								</View>
-							) : null}
+							)}
 						</TouchableOpacity>
 					</View>
 				</View>

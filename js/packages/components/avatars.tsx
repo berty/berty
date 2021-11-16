@@ -53,13 +53,13 @@ export const GenericAvatar: React.FC<{
 			innerSize--
 		}
 		content = (
-			<>
+			<View>
 				<AttachmentImage
 					cid={cid}
 					style={{ width: innerSize, height: innerSize, borderRadius: innerSize / 2 }}
 					pressable={pressable}
 				/>
-				{isEditable ? (
+				{isEditable && (
 					<View
 						style={[
 							{
@@ -72,8 +72,8 @@ export const GenericAvatar: React.FC<{
 							border.radius.scale(innerSize / 2),
 						]}
 					/>
-				) : null}
-			</>
+				)}
+			</View>
 		)
 	} else {
 		let iconSize = Math.round(innerSize - innerSize / 10) // adjust for jdenticon bug
@@ -81,9 +81,9 @@ export const GenericAvatar: React.FC<{
 			iconSize--
 		}
 		content = (
-			<>
+			<View>
 				<NameAvatar size={size} style={style} colorSeed={colorSeed} nameSeed={nameSeed} />
-				{isEditable ? (
+				{isEditable && (
 					<View
 						style={[
 							{
@@ -96,12 +96,12 @@ export const GenericAvatar: React.FC<{
 							border.radius.scale(innerSize / 2),
 						]}
 					/>
-				) : null}
-			</>
+				)}
+			</View>
 		)
 	}
 	return (
-		<>
+		<View style={{ zIndex: -1 }}>
 			<View
 				style={[
 					border.shadow.medium,
@@ -119,7 +119,7 @@ export const GenericAvatar: React.FC<{
 			>
 				{content}
 			</View>
-		</>
+		</View>
 	)
 }
 
