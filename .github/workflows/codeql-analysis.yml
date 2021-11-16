@@ -14,9 +14,26 @@ name: "CodeQL"
 on:
   push:
     branches: [ master, v1 ]
+    paths:
+      - 'go/**'
+      - '!**.md'
+      - 'go.*'
+      - '**.go'
+      - 'js/**'
+      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '.github/workflows/codeql-analysis.yml'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ master ]
+    paths:
+      - 'go/**'
+      - '!**.md'
+      - 'go.*'
+      - '**.go'
+      - 'js/**'
+      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '.github/workflows/codeql-analysis.yml'
+
   schedule:
     - cron: '28 12 * * 4'
 
