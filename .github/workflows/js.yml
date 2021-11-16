@@ -36,8 +36,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ matrix.node }}-v2-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-v2-
+          key:          ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-
       - name: "Fetch deps"
         run: |
           cd js

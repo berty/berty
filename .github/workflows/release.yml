@@ -37,8 +37,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
       - name: Run GoReleaser
         if: steps.semantic.outputs.new-release-published == 'true'
         uses: goreleaser/goreleaser-action@v2.6.1
