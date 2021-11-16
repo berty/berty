@@ -13,8 +13,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
-func TestUnstableBotCommunication(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestFlappyBotCommunication(t *testing.T) {
+	testutil.FilterStability(t, testutil.Flappy)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)

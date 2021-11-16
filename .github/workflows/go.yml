@@ -28,7 +28,7 @@ jobs:
     needs: golangci-lint
     strategy:
       matrix:
-        golang: ['1.16.x']
+        golang: ['1.17.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.5
@@ -68,21 +68,21 @@ jobs:
           args: --timeout=10m
           # only-new-issues: true
 
-  # this is unusual to have a job that checks the unstable tests.
+  # this is not very common to have a job that checks the flappy tests.
   #
-  # reason: some tests are unstable, they works, but not always;
+  # reason: some tests are flappy, they works, but not always;
   #         this job checks that they are working sometimes.
-  #         if this job fails, then a tests switched from "unstable" to "broken".
+  #         if this job fails, then a test is "broken", not "flappy".
   #
-  #         summary: this job checks that "unstable tests" do not become "broken tests".
+  #         summary: this job checks that "flappy tests" do not become "broken tests".
   #
-  # we hope we can remove this job because all the tests are stable 100% of the time :)
-  unstable-tests:
-    name: "Unstable tests"
+  # we hope we can remove this job because all the tests are stable 100% of the time
+  flappy-tests:
+    name: "Flappy tests"
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golang: ['1.16.x']
+        golang: ['1.17.x']
     env:
       OS: ubuntu-latest
       GOLANG: ${{ matrix.golang }}
@@ -112,12 +112,12 @@ jobs:
           go mod tidy -v
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
-      - name: Run fast unstable tests
+      - name: Run fast flappy tests
         working-directory: go
         env:
           TEST_SPEED: fast
-          TEST_STABILITY: unstable
-        run: make go.unstable-tests
+          TEST_STABILITY: flappy
+        run: make go.flappy-tests
       # FIXME: coverage
 
   go-tests-on-linux:
@@ -187,7 +187,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        golang: ['1.16.x']
+        golang: ['1.17.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.5
@@ -238,7 +238,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        golang: ['1.16.x']
+        golang: ['1.17.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.5

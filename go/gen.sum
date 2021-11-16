@@ -8,4 +8,4 @@ c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 8bc041c2fb6a37f34dd77d523e69283a8b1b5936  ../api/messengertypes.proto
 42eb4693b303b95a9f309670cbfb51053282634d  ../api/protocoltypes.proto
 a658b3797030d0f3ada12d122f460f87071e9d88  ../api/pushtypes.proto
-d56517eb5ad572dd10b7c57a1bf617567bb10218  Makefile
+d7eb3486ba9cfa4f4958d983db76d8d677ef1c63  Makefile

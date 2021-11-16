@@ -91,8 +91,8 @@ func TestServiceSetNameAsync(t *testing.T) {
 	}
 }
 
-func TestUnstableServiceStreamCancel(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestFlappyServiceStreamCancel(t *testing.T) {
+	testutil.FilterStability(t, testutil.Flappy)
 
 	ctx, ctxCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -1430,8 +1430,8 @@ func TestAccountUpdate(t *testing.T) {
 	logger.Error("test done")
 }
 
-func TestUnstableAccountUpdateGroup(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+func TestFlappyAccountUpdateGroup(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Flappy, testutil.Slow)
 
 	// PREPARE
 	logger, cleanup := testutil.Logger(t)
