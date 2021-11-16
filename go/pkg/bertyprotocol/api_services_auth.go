@@ -83,6 +83,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 	}
 
 	endpoint := fmt.Sprintf("%s%s", auth.BaseURL, authtypes.AuthHTTPPathTokenExchange)
+	s.logger.Debug("auth service start", zap.String("endpoint", endpoint))
 	res, err := ctxhttp.PostForm(ctx, http.DefaultClient, endpoint, url.Values{
 		"grant_type":    {authtypes.AuthGrantType},
 		"code":          {code},
@@ -131,6 +132,8 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		i++
 	}
 
+	s.logger.Debug("auth flow services", zap.Any("services", services))
+
 	svcToken := &protocoltypes.ServiceToken{
 		Token:             resMsg.AccessToken,
 		AuthenticationURL: auth.BaseURL,
@@ -142,23 +145,24 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		return nil, err
 	}
 
-	s.logger.Debug("start PushServer registering")
 	// @FIXME(gfanton):  should be handle on the client (js) side
+	registeredPushServer := 0
 	for _, service := range services {
 		if service.ServiceType != authtypes.ServicePushID {
 			continue
 		}
 
-		s.logger.Debug("registering PushServer")
+		s.logger.Debug("registering push server", zap.String("endpoint", service.GetServiceEndpoint()))
 		client, err := s.getPushClient(service.ServiceEndpoint)
 		if err != nil {
 			s.logger.Warn("unable to connect to push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
 			continue
 		}
 
-		repl, err := client.ServerInfo(ctx, &pushtypes.PushServiceServerInfo_Request{},
-			gRPCCredentialOption(svcToken.Token),
-		)
+		repl, err := client.ServerInfo(ctx, &pushtypes.PushServiceServerInfo_Request{})
+
+		s.logger.Debug("server info", zap.Int("supported push services ", len(repl.GetSupportedTokenTypes())))
+
 		if err != nil {
 			s.logger.Warn("unable to get server info from push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
 			continue
@@ -176,7 +180,12 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 			continue
 		}
 
-		s.logger.Debug("PushServer registered", zap.String("host", service.ServiceEndpoint))
+		registeredPushServer++
+		s.logger.Debug("push server registered", zap.String("endpoint", service.GetServiceEndpoint()))
+	}
+
+	if registeredPushServer == 0 {
+		s.logger.Warn("no push server found/registered")
 	}
 
 	return &protocoltypes.AuthServiceCompleteFlow_Reply{
