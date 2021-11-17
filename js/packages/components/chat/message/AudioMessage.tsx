@@ -234,7 +234,10 @@ export const AudioMessage: React.FC<{
 				>
 					<TouchableOpacity
 						onPress={async () => {
-							if (globalPlayer.metadata?.id === medias[0].cid) {
+							if (
+								globalPlayer.metadata?.id === medias[0].cid &&
+								globalPlayer.player?.currentTime !== -1
+							) {
 								handlePlayPause()
 							} else if (protocolClient && cid) {
 								globalPlayerLoad(
