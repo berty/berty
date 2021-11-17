@@ -212,6 +212,7 @@ targets:
       Yolo Release: Configs/Yolo.xcconfig
     settings:
       base:
+        ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: false
         PRODUCT_NAME: NotificationService
         CODE_SIGN_STYLE: Automatic
         INFOPLIST_FILE: NotificationService/Info.plist
