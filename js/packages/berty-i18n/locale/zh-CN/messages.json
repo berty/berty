@@ -636,7 +636,7 @@
           "datastore-found": "",
           "datastore-not-found": "",
           "ipfs-repo-found": "",
-          "ipfs-repo-not-found": "",
+          "ipfs-repo-not-found": "未找到 IPFS 配置文件",
           "messenger-db-found": "发现Messenger DB",
           "messenger-db-not-found": "未找到Messenger DB"
         },
