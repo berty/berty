@@ -260,7 +260,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 	return (
 		<View style={[margin.vertical.big]}>
 			<View style={[row.left]}>
-				<TouchableOpacity onPress={handlePicturePressed}>{image}</TouchableOpacity>
+				<Pressable onPress={handlePicturePressed}>{image}</Pressable>
 				<View style={[flex.tiny, margin.left.big]}>
 					<Input
 						label={t('settings.edit-profile.name-input-label') as any}
