@@ -26,6 +26,8 @@ schemes:
         Berty: all
     run:
       config: Debug
+      environmentVariables:
+        OS_ACTIVITY_MODE: debug
     archive:
       config: Debug
   Berty AppStore:
@@ -44,6 +46,8 @@ schemes:
         Berty: all
     run:
       config: Staff Release
+      environmentVariables:
+        OS_ACTIVITY_MODE: debug
     archive:
       config: Staff Release
   Berty Yolo:
@@ -53,6 +57,8 @@ schemes:
         Berty: all
     run:
       config: Yolo Release
+      environmentVariables:
+        OS_ACTIVITY_MODE: debug
     archive:
       config: Yolo Release
 
