@@ -168,13 +168,27 @@ jobs:
         working-directory: js
         run: make node_modules
 
-      - name: Install iOS app deps (gomobile)
+      - name: Extracts pods hashes
+        # we need to ignore the diff on some pods lock due to https://github.com/facebook/react-native/issues/31121
         working-directory: js
-        run: make ios.gomobile
+        run: node packages/scripts/extract-pods-hashes.js
 
       - name: Install iOS app deps (XCode Workspace)
         working-directory: js
         run: make ios.project
+
+      - name: Check Podfile.lock diff
+        working-directory: js
+        run: |
+          set -euo pipefail -o xtrace
+          cp ios/Podfile.lock ios/Podfile.lock.bak
+          node packages/scripts/restore-pods-hashes.js # see https://github.com/facebook/react-native/issues/31121
+          if [[ $(git diff --text ios/Podfile.lock 2>&1 | tee $RUNNER_TEMP/berty-podfile.diff) ]]; then cat $RUNNER_TEMP/berty-podfile.diff && false; fi
+          mv ios/Podfile.lock.bak ios/Podfile.lock
+
+      - name: Install iOS app deps (gomobile)
+        working-directory: js
+        run: make ios.gomobile
 
       - name: Install iOS app deps (other)
         working-directory: js
@@ -210,8 +224,3 @@ jobs:
           path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
           name: berty-yolo-${{github.sha}}.dummy-signed-ipa
           if-no-files-found: error
-
-#      - name: Check Podfile.lock diff
-#        run: |
-#          set -euo pipefail -o xtrace
-#          if [[ $(git diff --text js/ios/Podfile.lock 2>&1 | tee $RUNNER_TEMP/berty-podfile.diff) ]]; then cat $RUNNER_TEMP/berty-podfile.diff && false; fi
