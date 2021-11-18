@@ -62,8 +62,6 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
 
         var type: OSLogType
         switch level {
-            // @FIXME(gfanton): on some device: debug log dont show up on the Console.
-            // for the moment, use default type for debug
         case Level.debug:
             type = .debug
         case Level.info:
