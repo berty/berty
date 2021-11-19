@@ -2,7 +2,7 @@
   "berty": {
     "contacts": {
       "betabot": {
-        "link": "https://berty.tech/id#contact/oZBLFkhRFWg9NXmy8wtjzZKeeUwfaWQVkUXfNY6h9z4QnGXuXSox8zs2yXeFHzt9DKJ8B4WHy7Zjy1g8tSat6ee2Jh7vp4J/name=BetaBot",
+        "link": "https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=BetaBot",
         "name": "BetaBot",
         "description": "Official BetaBot",
         "kind": "Bot",
@@ -18,7 +18,7 @@
         "icon": "berty_dev_green_bg"
       },
       "testbot": {
-        "link": "https://berty.tech/id#contact/oZBLEm5FDrREbh7sfjfqCUbSuJFLr5QM3tdui8KFVVoaHf6vNsepEzxX6YFAcKvZBZPnNmzYS1YSwSiBfQ9qHM1QGeHRDHK/name=TestBot",
+        "link": "https://berty.tech/id#contact/oZBLExQaU8TTubcawgfs8AVcH9FbFV5J1kdEVqgueBaFCMWsADV341pCv26zcHMv3GaTL6UHPzVoHzLoereFQLmBGAh2QKb/name=TestBot",
         "name": "TestBot",
         "description": "Official TestBot",
         "kind": "Bot",
