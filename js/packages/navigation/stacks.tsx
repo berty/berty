@@ -152,20 +152,6 @@ export const Navigation: React.FC = () => {
 	const [, { scaleSize }] = useStyles()
 	const { t }: any = useTranslation()
 
-	const [members, setMembers] = useState([] as any[])
-	const setMember = (contact: any) => {
-		if (members.find(member => member.publicKey === contact.publicKey)) {
-			return
-		}
-		setMembers([...members, contact])
-	}
-	const removeMember = (id: string) => {
-		const filtered = members.filter(member => member.publicKey !== id)
-		if (filtered.length !== members.length) {
-			setMembers(filtered)
-		}
-	}
-
 	useEffect(() => {
 		console.log('context app State', context.appState)
 		switch (context.appState) {
@@ -270,13 +256,7 @@ export const Navigation: React.FC = () => {
 					presentation: 'formSheet',
 				})}
 			>
-				{() => (
-					<Components.Main.CreateGroupAddMembers
-						members={members}
-						onRemoveMember={removeMember}
-						onSetMember={setMember}
-					/>
-				)}
+				{() => <Components.Main.CreateGroupAddMembers />}
 			</NavigationStack.Screen>
 			<NavigationStack.Screen
 				name={'Main.CreateGroupFinalize'}
@@ -295,9 +275,7 @@ export const Navigation: React.FC = () => {
 					presentation: 'formSheet',
 				})}
 			>
-				{() => (
-					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
-				)}
+				{() => <Components.Main.CreateGroupFinalize />}
 			</NavigationStack.Screen>
 			{/* Chat */}
 			<NavigationStack.Screen

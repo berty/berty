@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { StatusBar, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Layout } from '@ui-kitten/components'
@@ -18,6 +18,8 @@ import {
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'
 import { ContactPicker } from '../shared-components'
+import { useSelector } from 'react-redux'
+import { selectInvitationListMembers } from '@berty-tech/redux/reducers/newGroup.reducer'
 
 export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsAddMembers'> = ({
 	route,
@@ -31,21 +33,8 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsA
 	const conv = useConversation(route.params.convPK)
 	const convMembers = useConvMemberList(route.params.convPK)
 	const initialMembers = convMembers.filter(member => !member.isMe)
-	const [members, setMembers] = useState(initialMembers)
 	const accountContacts = useContactList()
-
-	const onRemoveMember = (id: string) => {
-		const filtered = members.filter(member => member.publicKey !== id)
-		if (filtered.length !== members.length) {
-			setMembers(filtered)
-		}
-	}
-	const onSetMember = (contact: any) => {
-		if (members.find(member => member.publicKey === contact.publicKey)) {
-			return
-		}
-		setMembers([...members, contact])
-	}
+	const members = useSelector(selectInvitationListMembers)
 
 	const invitationsToGroup = React.useCallback(async () => {
 		try {
@@ -80,21 +69,12 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsA
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
-				<MemberList
-					initialMembers={initialMembers}
-					members={members}
-					onRemoveMember={onRemoveMember}
-				/>
+				<MemberList initialMembers={initialMembers} />
 			</SafeAreaView>
 			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
 					<Header title={t('chat.add-members.contacts')} first style={[margin.bottom.scale(-1)]} />
-					<ContactPicker
-						members={members}
-						onSetMember={onSetMember}
-						onRemoveMember={onRemoveMember}
-						accountContacts={accountContacts}
-					/>
+					<ContactPicker accountContacts={accountContacts} />
 				</View>
 			</View>
 			<FooterCreateGroup
