@@ -194,15 +194,13 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	tyber.LogStep(tyberCtx, opts.Logger, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
 	pkStr := messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())
 
-	// shortPkStr := pkStr
-	// const shortLen = 6
-	// if len(shortPkStr) > shortLen {
-	// 	shortPkStr = shortPkStr[:shortLen]
-	// }
+	shortPkStr := pkStr
+	const shortLen = 6
+	if len(shortPkStr) > shortLen {
+		shortPkStr = shortPkStr[:shortLen]
+	}
 
-	// @FIXME(gfanton): disable this since it silent log on `Console.app` for an
-	// unknown reason
-	// opts.Logger = opts.Logger.With(zap.String("a", shortPkStr))
+	opts.Logger = opts.Logger.With(zap.String("a", shortPkStr))
 
 	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
