@@ -112,16 +112,16 @@ require (
 	google.golang.org/grpc v1.42.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/square/go-jose.v2 v2.6.0
-	gorm.io/gorm v1.22.2
+	gorm.io/gorm v1.22.3
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/progress v1.4.0
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
-	moul.io/u v1.25.1
+	moul.io/u v1.27.0
 	moul.io/zapconfig v1.4.0
 	moul.io/zapfilter v1.6.1
-	moul.io/zapgorm2 v1.1.0
+	moul.io/zapgorm2 v1.1.1
 	moul.io/zapring v1.3.3
 	mvdan.cc/gofumpt v0.1.1
 )
