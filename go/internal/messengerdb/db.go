@@ -14,6 +14,7 @@ import (
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -933,11 +934,11 @@ func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messeng
 		}
 		isNew = true
 	} else if err != nil {
-		d.log.Error("error while creating interaction: ", zap.Error(err), zap.String("cid", rawInte.CID))
+		d.log.Error("error while creating interaction: ", zap.Error(err), logutil.PrivateString("cid", rawInte.CID))
 		return nil, false, err
 	}
 
-	d.log.Debug("adding cid: ", zap.String("cid", rawInte.CID))
+	d.log.Debug("adding cid: ", logutil.PrivateString("cid", rawInte.CID))
 
 	// FIXME: CID should not trusted when out of store,
 	//  we persist the first entry seen with a given CID

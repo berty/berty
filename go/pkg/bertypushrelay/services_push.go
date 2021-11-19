@@ -12,6 +12,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -73,7 +74,7 @@ func (d *pushService) Send(ctx context.Context, request *pushtypes.PushServiceSe
 				atomic.AddInt32(&errCount, 1)
 			} else {
 				secretToken := fmt.Sprintf("%.10s...", base64.StdEncoding.EncodeToString(receiver.OpaqueToken))
-				d.logger.Debug("successfully send push notification", zap.Int("index", i), zap.String("target token", secretToken), zap.Error(err))
+				d.logger.Debug("successfully send push notification", zap.Int("index", i), logutil.PrivateString("target token", secretToken), zap.Error(err))
 			}
 
 			wg.Done()

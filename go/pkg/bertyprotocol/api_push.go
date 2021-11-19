@@ -17,6 +17,7 @@ import (
 	"google.golang.org/grpc/credentials"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -107,7 +108,7 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 	}
 
 	if len(pushTargets) == 0 {
-		s.logger.Info("PushSend - pushing - no targets", zap.String("cid", c.String()))
+		s.logger.Info("PushSend - pushing - no targets", logutil.PrivateString("cid", c.String()))
 		return &protocoltypes.PushSend_Reply{}, nil
 	}
 
@@ -117,17 +118,17 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 	for serverAddr, pushTokens := range pushTargets {
 		// @FIXME(gfanton): find a better way to get service token
 		go func(serverAddr string, pushTokens []*pushtypes.PushServiceOpaqueReceiver) {
-			s.logger.Info("PushSend - pushing", zap.String("cid", c.String()), zap.String("server", serverAddr))
+			s.logger.Info("PushSend - pushing", logutil.PrivateString("cid", c.String()), logutil.PrivateString("server", serverAddr))
 			defer wg.Done()
 
 			if len(pushTokens) == 0 {
-				s.logger.Info("no push receivers", zap.String("push-server", serverAddr))
+				s.logger.Info("no push receivers", logutil.PrivateString("push-server", serverAddr))
 				return
 			}
 
 			client, err := s.getPushClient(serverAddr)
 			if err != nil {
-				s.logger.Error("error while dialing push server", zap.String("push-server", serverAddr), zap.Error(err))
+				s.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
 				return
 			}
 
@@ -137,11 +138,11 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 				Receivers: pushTokens,
 			})
 			if err != nil {
-				s.logger.Error("error while dialing push server", zap.String("push-server", serverAddr), zap.Error(err))
+				s.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
 				return
 			}
 
-			s.logger.Debug("send push notification successfully", zap.String("cid", c.String()), zap.String("endpoint", serverAddr))
+			s.logger.Debug("send push notification successfully", logutil.PrivateString("cid", c.String()), logutil.PrivateString("endpoint", serverAddr))
 		}(serverAddr, pushTokens)
 	}
 
@@ -244,7 +245,7 @@ func (s *service) PushSetDeviceToken(ctx context.Context, request *protocoltypes
 	request.Receiver.RecipientPublicKey = s.pushHandler.PushPK()[:]
 
 	if currentReceiver := s.accountGroup.metadataStore.getCurrentDevicePushToken(); currentReceiver != nil && bytes.Equal(currentReceiver.Token, request.Receiver.Token) {
-		s.logger.Warn("push device token already set", zap.String("b64 token", base64.StdEncoding.EncodeToString(request.Receiver.Token)))
+		s.logger.Warn("push device token already set", logutil.PrivateString("b64 token", base64.StdEncoding.EncodeToString(request.Receiver.Token)))
 		return &protocoltypes.PushSetDeviceToken_Reply{}, nil
 	}
 
@@ -294,7 +295,7 @@ func monitorPushServer(ctx context.Context, cc *grpc.ClientConn, logger *zap.Log
 	for cc.WaitForStateChange(ctx, currentState) {
 		currentState = cc.GetState()
 		logger.Debug("push grpc client state updated",
-			zap.String("target", cc.Target()),
-			zap.String("state", currentState.String()))
+			logutil.PrivateString("target", cc.Target()),
+			logutil.PrivateString("state", currentState.String()))
 	}
 }

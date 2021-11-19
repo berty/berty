@@ -19,6 +19,8 @@ import (
 	"sync"
 
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 type mplex struct {
@@ -52,7 +54,7 @@ func (m *mplex) addInputCache(c *RingBufferMap) {
 }
 
 func (m *mplex) write(s []byte) {
-	m.logger.Debug("write", zap.Binary("payload", s))
+	m.logger.Debug("write", logutil.PrivateBinary("payload", s))
 	_, err := m.output.Write(s)
 	if err != nil {
 		m.logger.Error("write: write pipe error", zap.Error(err))

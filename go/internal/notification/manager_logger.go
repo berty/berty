@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 // LoggerManager is a Manager
@@ -19,8 +21,8 @@ func NewLoggerManager(logger *zap.Logger) Manager {
 
 func (m *LoggerManager) Notify(notif *Notification) error {
 	m.logger.Info("notification triggered",
-		zap.String("title", notif.Title),
-		zap.String("body", notif.Body))
+		logutil.PrivateString("title", notif.Title),
+		logutil.PrivateString("body", notif.Body))
 	return nil
 }
 

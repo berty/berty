@@ -14,6 +14,7 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -47,7 +48,7 @@ func (m *MessageStore) setLogger(l *zap.Logger) {
 		return
 	}
 
-	m.logger = l.With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
+	m.logger = l.With(logutil.PrivateString("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
 }
 
 // addToCache adds the event into a circular buffer

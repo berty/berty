@@ -10,8 +10,8 @@ import (
 
 	"github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
-	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -80,7 +80,7 @@ func daemonCommand() *ffcli.Command {
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-				logger.Named("main").Info("daemon initialized", zap.String("peer-id", info.PeerID), zap.Strings("listeners", info.Listeners))
+				logger.Named("main").Info("daemon initialized", logutil.PrivateString("peer-id", info.PeerID), logutil.PrivateStrings("listeners", info.Listeners))
 			}
 
 			// display startup info

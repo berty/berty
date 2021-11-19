@@ -10,6 +10,7 @@ import (
 	qrcode "github.com/skip2/go-qrcode"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
@@ -196,17 +197,17 @@ func newCreateMultiMember(mc *msgrContext) wfr {
 		if len(name) == 0 {
 			return
 		}
-		mc.logger.Info("creating group", zap.String("name", name))
+		mc.logger.Info("creating group", logutil.PrivateString("name", name))
 
 		ctx, cancel := context.WithCancel(mc.ctx)
 		resp, err := mc.client.ConversationCreate(ctx, &messengertypes.ConversationCreate_Request{DisplayName: name})
 		cancel()
 		if err != nil {
-			mc.logger.Error("creating group", zap.String("name", name), zap.Error(err))
+			mc.logger.Error("creating group", logutil.PrivateString("name", name), zap.Error(err))
 			return
 		}
 
-		mc.logger.Info("create group success", zap.Any("reply", resp))
+		mc.logger.Info("create group success", logutil.PrivateAny("reply", resp))
 		nameEntry.SetText("")
 	})
 

@@ -5,6 +5,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 )
 
@@ -33,7 +34,7 @@ func newNotificationManagerAdapter(logger *zap.Logger, driver NotificationDriver
 
 func (a *notificationManagerAdapter) Notify(notif *notification.Notification) error {
 	a.logger.Debug("notification triggered",
-		zap.String("title", notif.Title), zap.String("body", notif.Body))
+		logutil.PrivateString("title", notif.Title), logutil.PrivateString("body", notif.Body))
 	return a.driver.Post(&LocalNotification{
 		Title:    notif.Title,
 		Body:     notif.Body,
@@ -43,7 +44,7 @@ func (a *notificationManagerAdapter) Notify(notif *notification.Notification) er
 
 func (a *notificationManagerAdapter) Schedule(notif *notification.Notification, interval time.Duration) error {
 	a.logger.Debug("notification scheduled",
-		zap.String("title", notif.Title), zap.String("body", notif.Body))
+		logutil.PrivateString("title", notif.Title), logutil.PrivateString("body", notif.Body))
 	return a.driver.Post(&LocalNotification{
 		Title:    notif.Title,
 		Body:     notif.Body,

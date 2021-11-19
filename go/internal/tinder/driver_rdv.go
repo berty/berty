@@ -141,7 +141,7 @@ func (c *rendezvousDiscovery) FindPeers(ctx context.Context, ns string, opts ...
 		count = limit
 	}
 
-	// c.logger.Debug("found peers", zap.String("key", ns), zap.Int("count", count))
+	// c.logger.Debug("found peers", logutil.PrivateString("key", ns), zap.Int("count", count))
 
 	// fmt.Printf("rdvp findpeers found [%s]: %d peers found\n", ns, count)
 	chPeer := make(chan peer.AddrInfo, count)

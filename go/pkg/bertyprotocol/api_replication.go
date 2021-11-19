@@ -12,6 +12,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -106,7 +107,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		return nil, errcode.ErrServiceReplicationServer.Wrap(err)
 	}
 
-	s.logger.Info("group will be replicated", zap.String("public-key", base64.RawURLEncoding.EncodeToString(request.GroupPK)))
+	s.logger.Info("group will be replicated", logutil.PrivateString("public-key", base64.RawURLEncoding.EncodeToString(request.GroupPK)))
 
 	if _, err := gc.metadataStore.SendGroupReplicating(ctx, token, endpoint); err != nil {
 		s.logger.Error("error while notifying group about replication", zap.Error(err))

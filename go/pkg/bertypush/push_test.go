@@ -14,10 +14,10 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -246,7 +246,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 
 	require.Equal(t, grpInf1.Group.PublicKey, grpInf2.Group.PublicKey)
 
-	logger.Error("conversation for contacts", zap.String("conversation-pk", messengerutil.B64EncodeBytes(grpInf1.Group.PublicKey)))
+	logger.Error("conversation for contacts", logutil.PrivateString("conversation-pk", messengerutil.B64EncodeBytes(grpInf1.Group.PublicKey)))
 
 	_, err = protocol1.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: grpInf1.Group.PublicKey})
 	require.NoError(t, err)

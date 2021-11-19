@@ -23,6 +23,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/internal/discordlog"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/streamutil"
@@ -555,7 +556,7 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 					svc.logger.Error("failed to unmarshal payload for logging", zap.Error(err))
 					payload = nil
 				}
-				svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()), zap.Any("payload", payload))
+				svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()), logutil.PrivateAny("payload", payload))
 			}
 
 			if err := sub.Send(&messengertypes.EventStream_Reply{Event: e}); err != nil {
@@ -596,12 +597,12 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 	}
 	pk := cr.GetGroupPK()
 	pkStr := messengerutil.B64EncodeBytes(pk)
-	svc.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
+	svc.logger.Info("Created conv", logutil.PrivateString("dn", req.GetDisplayName()), logutil.PrivateString("pk", pkStr))
 
 	// activate group
 	{
 		if err := svc.ActivateGroup(pk); err != nil {
-			svc.logger.Warn("failed to activate group", zap.String("pk", pkStr))
+			svc.logger.Warn("failed to activate group", logutil.PrivateString("pk", pkStr))
 		}
 	}
 
@@ -727,7 +728,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 	// activate group
 	{
 		if err := svc.ActivateGroup(gpkb); err != nil {
-			svc.logger.Warn("failed to activate group", zap.String("pk", messengerutil.B64EncodeBytes(gpkb)))
+			svc.logger.Warn("failed to activate group", logutil.PrivateString("pk", messengerutil.B64EncodeBytes(gpkb)))
 		}
 	}
 
@@ -806,7 +807,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *messengertypes.Accou
 			svc.logger.Debug("AccountUpdate: nothing to do")
 			return nil
 		}
-		svc.logger.Debug("AccountUpdate: updating account", zap.String("display_name", dn), zap.String("avatar_cid", avatarCID))
+		svc.logger.Debug("AccountUpdate: updating account", logutil.PrivateString("display_name", dn), logutil.PrivateString("avatar_cid", avatarCID))
 
 		ret, err := svc.internalInstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{DisplayName: dn})
 		if err != nil {
@@ -917,7 +918,7 @@ func (svc *service) ContactAccept(ctx context.Context, req *messengertypes.Conta
 		return nil, errcode.ErrInvalidInput
 	}
 
-	svc.logger.Debug("retrieving contact", zap.String("contact_pk", pk))
+	svc.logger.Debug("retrieving contact", logutil.PrivateString("contact_pk", pk))
 
 	c, err := svc.db.GetContactByPK(pk)
 	if err != nil {
@@ -1135,10 +1136,10 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, req *me
 		return nil, errcode.ErrMissingInput
 	}
 
-	svc.logger.Info("attempting replicating group", zap.String("public-key", gpk))
+	svc.logger.Info("attempting replicating group", logutil.PrivateString("public-key", gpk))
 	gpkb, err := messengerutil.B64DecodeBytes(gpk)
 	if err != nil {
-		svc.logger.Error("failed to decode group pk", zap.String("public-key", gpk), zap.Error(err))
+		svc.logger.Error("failed to decode group pk", logutil.PrivateString("public-key", gpk), zap.Error(err))
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
@@ -1148,11 +1149,11 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, req *me
 	})
 
 	if err != nil {
-		svc.logger.Error("failed to replicate group", zap.String("public-key", gpk), zap.String("token-id", req.TokenID), zap.Error(err))
+		svc.logger.Error("failed to replicate group", logutil.PrivateString("public-key", gpk), logutil.PrivateString("token-id", req.TokenID), zap.Error(err))
 		return nil, err
 	}
 
-	svc.logger.Info("replicating group", zap.String("public-key", gpk), zap.String("token-id", req.TokenID), zap.Error(err))
+	svc.logger.Info("replicating group", logutil.PrivateString("public-key", gpk), logutil.PrivateString("token-id", req.TokenID), zap.Error(err))
 
 	return &messengertypes.ReplicationServiceRegisterGroup_Reply{}, nil
 }
@@ -1325,7 +1326,7 @@ func (svc *service) MediaPrepare(srv messengertypes.MessengerService_MediaPrepar
 		// dispatch event if new
 		if added[0] {
 			if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeMediaUpdated, &messengertypes.StreamEvent_MediaUpdated{Media: &media}, true); err != nil {
-				svc.logger.Error("unable to dispatch notification for media", zap.String("cid", media.CID), zap.Error(err))
+				svc.logger.Error("unable to dispatch notification for media", logutil.PrivateString("cid", media.CID), zap.Error(err))
 			}
 		}
 
@@ -1651,13 +1652,13 @@ func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
 
 	i, err := svc.db.GetInteractionByCID(id.String())
 	if err != nil {
-		svc.logger.Error("unable to retrieve interaction", zap.Error(err), zap.String("cid", id.String()))
+		svc.logger.Error("unable to retrieve interaction", zap.Error(err), logutil.PrivateString("cid", id.String()))
 		return
 	}
 
 	if i.Type != messengertypes.AppMessage_TypeUserMessage {
 		// Nothing to do, move along
-		svc.logger.Debug("push: nothing to send, invalid interaction type", zap.String("cid", id.String()), zap.String("type", i.Type.String()))
+		svc.logger.Debug("push: nothing to send, invalid interaction type", logutil.PrivateString("cid", id.String()), zap.String("type", i.Type.String()))
 		return
 	}
 
@@ -1666,17 +1667,17 @@ func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
 	// svc.handlerMutex.Lock()
 	// defer svc.handlerMutex.Unlock()
 
-	svc.logger.Info("attempting to push interaction", zap.String("cid", id.String()))
+	svc.logger.Info("attempting to push interaction", logutil.PrivateString("cid", id.String()))
 	_, err = svc.protocolClient.PushSend(svc.ctx, &protocoltypes.PushSend_Request{
 		CID:            id.Bytes(),
 		GroupPublicKey: groupPK,
 	})
 	if err != nil {
-		svc.logger.Error("unable to push interaction", zap.Error(err), zap.String("cid", id.String()))
+		svc.logger.Error("unable to push interaction", zap.Error(err), logutil.PrivateString("cid", id.String()))
 		return
 	}
 
-	svc.logger.Info("pushed interaction", zap.String("cid", id.String()))
+	svc.logger.Info("pushed interaction", logutil.PrivateString("cid", id.String()))
 }
 
 func (svc *service) PushReceive(ctx context.Context, request *messengertypes.PushReceive_Request) (*messengertypes.PushReceive_Reply, error) {

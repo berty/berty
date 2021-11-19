@@ -10,6 +10,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notify"
 )
 
@@ -83,10 +84,10 @@ func (n *NetworkUpdate) subscribeToNetworkUpdate() {
 			for _, uaddr := range e.Current {
 				switch uaddr.Action {
 				case event.Added:
-					n.logger.Debug("new addr", zap.String("addr", uaddr.Address.String()))
+					n.logger.Debug("new addr", logutil.PrivateString("addr", uaddr.Address.String()))
 					nadd++
 				case event.Removed:
-					n.logger.Debug("removed addr", zap.String("addr", uaddr.Address.String()))
+					n.logger.Debug("removed addr", logutil.PrivateString("addr", uaddr.Address.String()))
 					ndel++
 				}
 			}

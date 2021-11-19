@@ -10,6 +10,8 @@ import (
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	p2p_pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 type PubSubAPI struct {
@@ -99,7 +101,7 @@ func (ps *PubSubAPI) Subscribe(ctx context.Context, topic string, opts ...ipfs_i
 		return nil, err
 	}
 
-	ps.logger.Debug("subscribing", zap.String("topic", topic))
+	ps.logger.Debug("subscribing", logutil.PrivateString("topic", topic))
 	sub, err := t.Subscribe()
 	if err != nil {
 		return nil, err

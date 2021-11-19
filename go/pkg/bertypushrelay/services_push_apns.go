@@ -11,6 +11,7 @@ import (
 	"github.com/sideshow/apns2/payload"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -101,7 +102,7 @@ func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *protocoltypes.PushS
 	notification.PushType = apns2.PushTypeAlert
 
 	d.logger.Debug("apns notification",
-		zap.String("token device", secretToken),
+		logutil.PrivateString("token device", secretToken),
 		zap.String("bundleid", d.bundleID))
 
 	response, err := d.client.Push(notification)

@@ -9,6 +9,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 var ignoredTags = map[string]bool{
@@ -54,11 +56,11 @@ func (cl *connLogger) getPeerTags(p peer.ID) []string {
 }
 
 func (cl *connLogger) Listen(n network.Network, m ma.Multiaddr) {
-	cl.logger.Debug("Listener opened", zap.String("Multiaddr", m.String()))
+	cl.logger.Debug("Listener opened", logutil.PrivateString("Multiaddr", m.String()))
 }
 
 func (cl *connLogger) ListenClose(n network.Network, m ma.Multiaddr) {
-	cl.logger.Debug("Listener closed", zap.String("Multiaddr", m.String()))
+	cl.logger.Debug("Listener closed", logutil.PrivateString("Multiaddr", m.String()))
 }
 
 func (cl *connLogger) Connected(net network.Network, c network.Conn) {
@@ -67,10 +69,10 @@ func (cl *connLogger) Connected(net network.Network, c network.Conn) {
 		<-time.After(10 * time.Millisecond)
 		if tags := cl.getPeerTags(c.RemotePeer()); tags != nil {
 			cl.logger.Info("Connected",
-				zap.String("peer", c.RemotePeer().Pretty()),
-				zap.String("to", c.LocalMultiaddr().String()),
-				zap.String("from", c.RemoteMultiaddr().String()),
-				zap.Strings("tags", tags),
+				logutil.PrivateString("peer", c.RemotePeer().Pretty()),
+				logutil.PrivateString("to", c.LocalMultiaddr().String()),
+				logutil.PrivateString("from", c.RemoteMultiaddr().String()),
+				logutil.PrivateStrings("tags", tags),
 			)
 		}
 	}()
@@ -79,10 +81,10 @@ func (cl *connLogger) Connected(net network.Network, c network.Conn) {
 func (cl *connLogger) Disconnected(n network.Network, c network.Conn) {
 	if tags := cl.getPeerTags(c.RemotePeer()); tags != nil {
 		cl.logger.Info("Disconnected",
-			zap.String("peer", c.RemotePeer().Pretty()),
-			zap.String("to", c.LocalMultiaddr().String()),
-			zap.String("from", c.RemoteMultiaddr().String()),
-			zap.Strings("tags", tags),
+			logutil.PrivateString("peer", c.RemotePeer().Pretty()),
+			logutil.PrivateString("to", c.LocalMultiaddr().String()),
+			logutil.PrivateString("from", c.RemoteMultiaddr().String()),
+			logutil.PrivateStrings("tags", tags),
 		)
 	}
 }
@@ -90,10 +92,10 @@ func (cl *connLogger) Disconnected(n network.Network, c network.Conn) {
 func (cl *connLogger) OpenedStream(n network.Network, s network.Stream) {
 	if tags := cl.getPeerTags(s.Conn().RemotePeer()); tags != nil {
 		cl.logger.Debug("Stream opened",
-			zap.String("peer", s.Conn().RemotePeer().Pretty()),
-			zap.String("to", s.Conn().LocalMultiaddr().String()),
-			zap.String("from", s.Conn().RemoteMultiaddr().String()),
-			zap.Strings("tags", tags),
+			logutil.PrivateString("peer", s.Conn().RemotePeer().Pretty()),
+			logutil.PrivateString("to", s.Conn().LocalMultiaddr().String()),
+			logutil.PrivateString("from", s.Conn().RemoteMultiaddr().String()),
+			logutil.PrivateStrings("tags", tags),
 		)
 	}
 }
@@ -101,10 +103,10 @@ func (cl *connLogger) OpenedStream(n network.Network, s network.Stream) {
 func (cl *connLogger) ClosedStream(n network.Network, s network.Stream) {
 	if tags := cl.getPeerTags(s.Conn().RemotePeer()); tags != nil {
 		cl.logger.Debug("Stream closed",
-			zap.String("peer", s.Conn().RemotePeer().Pretty()),
-			zap.String("to", s.Conn().LocalMultiaddr().String()),
-			zap.String("from", s.Conn().RemoteMultiaddr().String()),
-			zap.Strings("tags", tags),
+			logutil.PrivateString("peer", s.Conn().RemotePeer().Pretty()),
+			logutil.PrivateString("to", s.Conn().LocalMultiaddr().String()),
+			logutil.PrivateString("from", s.Conn().RemoteMultiaddr().String()),
+			logutil.PrivateStrings("tags", tags),
 		)
 	}
 }

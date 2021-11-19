@@ -27,13 +27,13 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
-	"go.uber.org/zap"
 	"moul.io/srand"
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/rendezvous"
@@ -285,7 +285,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		}
 	}
 
-	logger.Debug("local PeerID", zap.String("PeerID", m.Node.Protocol.ipfsNode.Identity.String()))
+	logger.Debug("local PeerID", logutil.PrivateString("PeerID", m.Node.Protocol.ipfsNode.Identity.String()))
 
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }

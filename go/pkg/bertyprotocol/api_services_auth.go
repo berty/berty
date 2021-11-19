@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/net/context/ctxhttp"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -83,7 +84,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 	}
 
 	endpoint := fmt.Sprintf("%s%s", auth.BaseURL, authtypes.AuthHTTPPathTokenExchange)
-	s.logger.Debug("auth service start", zap.String("endpoint", endpoint))
+	s.logger.Debug("auth service start", logutil.PrivateString("endpoint", endpoint))
 	res, err := ctxhttp.PostForm(ctx, http.DefaultClient, endpoint, url.Values{
 		"grant_type":    {authtypes.AuthGrantType},
 		"code":          {code},
@@ -152,10 +153,10 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 			continue
 		}
 
-		s.logger.Debug("registering push server", zap.String("endpoint", service.GetServiceEndpoint()))
+		s.logger.Debug("registering push server", logutil.PrivateString("endpoint", service.GetServiceEndpoint()))
 		client, err := s.getPushClient(service.ServiceEndpoint)
 		if err != nil {
-			s.logger.Warn("unable to connect to push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
+			s.logger.Warn("unable to connect to push server", logutil.PrivateString("endpoint", service.ServiceEndpoint), zap.Error(err))
 			continue
 		}
 
@@ -164,7 +165,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		s.logger.Debug("server info", zap.Int("supported push services ", len(repl.GetSupportedTokenTypes())))
 
 		if err != nil {
-			s.logger.Warn("unable to get server info from push server", zap.String("endpoint", service.ServiceEndpoint), zap.Error(err))
+			s.logger.Warn("unable to get server info from push server", logutil.PrivateString("endpoint", service.ServiceEndpoint), zap.Error(err))
 			continue
 		}
 
@@ -181,7 +182,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		}
 
 		registeredPushServer++
-		s.logger.Debug("push server registered", zap.String("endpoint", service.GetServiceEndpoint()))
+		s.logger.Debug("push server registered", logutil.PrivateString("endpoint", service.GetServiceEndpoint()))
 	}
 
 	if registeredPushServer == 0 {

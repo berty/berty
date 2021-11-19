@@ -22,6 +22,7 @@ import (
 	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
@@ -155,7 +156,7 @@ func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, 
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrBertyAccountDataNotFound
 	} else if err != nil {
-		logger.Warn("unable to read account metadata", zap.Error(err), zap.String("account-id", accountID))
+		logger.Warn("unable to read account metadata", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return nil, errcode.ErrBertyAccountFSError.Wrap(fmt.Errorf("unable to read account metadata: %w", err))
 	}
 

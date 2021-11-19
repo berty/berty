@@ -9,6 +9,8 @@ import (
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 type watchdogsAdvertiser struct {
@@ -61,7 +63,7 @@ func (wa *watchdogsAdvertiser) Advertise(_ context.Context, ns string, opts ...p
 		wa.watchdogs[ns] = time.AfterFunc(wa.resetInterval, func() {
 			cancel()
 			wa.logger.Debug("advertise expired",
-				zap.String("ns", ns),
+				logutil.PrivateString("ns", ns),
 				zap.Duration("duration", time.Since(timer)),
 			)
 
@@ -73,7 +75,7 @@ func (wa *watchdogsAdvertiser) Advertise(_ context.Context, ns string, opts ...p
 			// wa.unregister(ctx, ns)
 		})
 		wa.advertises(wctx, ns, opts...)
-		wa.logger.Debug("advertise started", zap.String("ns", ns))
+		wa.logger.Debug("advertise started", logutil.PrivateString("ns", ns))
 	}
 
 	wa.muAdvertiser.Unlock()
@@ -108,7 +110,7 @@ func (wa *watchdogsAdvertiser) advertise(ctx context.Context, d *Driver, ns stri
 		if err != nil {
 			wa.logger.Warn("unable to advertise",
 				zap.String("driver", d.Name),
-				zap.String("ns", ns), zap.Error(err))
+				logutil.PrivateString("ns", ns), zap.Error(err))
 			select {
 			case <-ctx.Done():
 				return
@@ -125,7 +127,7 @@ func (wa *watchdogsAdvertiser) advertise(ctx context.Context, d *Driver, ns stri
 
 		wa.logger.Debug("advertise",
 			zap.String("driver", d.Name),
-			zap.String("ns", ns),
+			logutil.PrivateString("ns", ns),
 			zap.Duration("ttl", ttl),
 			zap.Duration("took", took),
 			zap.Duration("next", deadline),

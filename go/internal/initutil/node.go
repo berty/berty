@@ -17,7 +17,6 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -29,6 +28,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -456,7 +456,7 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 		case authtypes.ServiceReplicationID:
 			authFunc = man.GRPCAuthInterceptor(serviceID)
 		case "":
-			logger.Warn("GRPCAuth: Internal field ServiceID should not be empty", zap.String("serviceID", serviceID))
+			logger.Warn("GRPCAuth: Internal field ServiceID should not be empty", logutil.PrivateString("serviceID", serviceID))
 		default:
 		}
 	}
@@ -501,11 +501,11 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 			m.Node.GRPC.listeners[idx] = l
 
 			m.workers.Add(func() error {
-				m.initLogger.Info("serving", zap.String("maddr", maddrStr))
+				m.initLogger.Info("serving", logutil.PrivateString("maddr", maddrStr))
 				return server.Serve(l)
 			}, func(error) {
 				l.Close()
-				m.initLogger.Debug("closing done", zap.String("maddr", maddrStr))
+				m.initLogger.Debug("closing done", logutil.PrivateString("maddr", maddrStr))
 			})
 		}
 	}

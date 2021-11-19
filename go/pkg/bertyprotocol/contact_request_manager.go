@@ -19,6 +19,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/handshake"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -257,7 +258,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	for _, contact := range c.metadataStore.ListContactsByStatus(protocoltypes.ContactStateToRequest) {
 		ownMeta, err := c.metadataStore.GetRequestOwnMetadataForContact(contact.PK)
 		if err != nil {
-			c.logger.Warn("error while retrieving own metadata for contact", zap.Binary("pk", contact.PK), zap.Error(err))
+			c.logger.Warn("error while retrieving own metadata for contact", logutil.PrivateBinary("pk", contact.PK), zap.Error(err))
 		}
 
 		if err := c.enqueueRequest(context.TODO(), contact, ownMeta); err != nil {

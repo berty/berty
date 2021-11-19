@@ -16,6 +16,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -66,7 +67,7 @@ func (m *MetadataStore) setLogger(l *zap.Logger) {
 		return
 	}
 
-	// m.logger = l.Named("store").With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
+	// m.logger = l.Named("store").With(logutil.PrivateString("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
 	m.logger = l.Named("metastore")
 
 	if index, ok := m.Index().(loggable); ok {
@@ -1081,7 +1082,7 @@ func newSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 }
 
 func (m *MetadataStore) SendPushToken(ctx context.Context, t *protocoltypes.PushMemberTokenUpdate) (operation.Operation, error) {
-	m.logger.Debug("sending push token to device", zap.String("server", t.Server.ServiceAddr))
+	m.logger.Debug("sending push token to device", logutil.PrivateString("server", t.Server.ServiceAddr))
 	return m.attributeSignAndAddEvent(ctx, &protocoltypes.PushMemberTokenUpdate{
 		Server: t.Server,
 		Token:  t.Token,

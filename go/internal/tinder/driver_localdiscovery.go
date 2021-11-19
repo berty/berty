@@ -24,6 +24,7 @@ import (
 	msmux "github.com/multiformats/go-multistream"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 )
 
@@ -351,8 +352,8 @@ func (ld *localDiscovery) handleStream(s network.Stream) {
 		// fill the remote cache
 		for _, rec := range lr.Records {
 			ld.logger.Debug("saving remote record in cache",
-				zap.String("remoteID", s.Conn().RemotePeer().String()),
-				zap.String("CID", rec.Cid),
+				logutil.PrivateString("remoteID", s.Conn().RemotePeer().String()),
+				logutil.PrivateString("CID", rec.Cid),
 				zap.Int64("expire", rec.Expire))
 			cache, ok := ld.getCache(rec.Cid)
 			if !ok {

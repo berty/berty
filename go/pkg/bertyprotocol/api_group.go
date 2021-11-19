@@ -8,9 +8,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -132,7 +132,7 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 			// trim floodsub topic (if present)
 			e.Topic = strings.TrimPrefix(e.Topic, "floodsub:")
 
-			s.logger.Debug("got topic", zap.String("ns", e.Topic), zap.String("ns to match", topic))
+			s.logger.Debug("got topic", logutil.PrivateString("ns", e.Topic), logutil.PrivateString("ns to match", topic))
 			// skip if we are filtering by topic
 			if topic != "" && topic != e.Topic {
 				continue
