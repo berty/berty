@@ -196,12 +196,13 @@ jobs:
       - name: Patch and sign the Archive
         working-directory: js
         run: |
-          for lib in $RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty\ Yolo.app/Frameworks/*.dylib; do
+          APP_PATH=$RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
+          for lib in $APP_PATH/Frameworks/*.dylib APP_PATH/PlugIns/NotificationService.appex/Frameworks/*.dylib; do
             lipo -remove armv7 -remove armv7s "$lib" -output "$lib"
           done
-          codesign -fs "Berty Dummy" $RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
+          codesign -fs "Berty Dummy" $APP_PATH
           mkdir Payload
-          mv $RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
+          mv $APP_PATH Payload/
           zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
 
       - name: Upload the Archive
