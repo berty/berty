@@ -88,7 +88,7 @@ class GoBridge: NSObject {
                 throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
             }
 
-            config.setLoggerDriver(LoggerDriver("tech.berty", "protocol"))
+            config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
             config.setLifeCycleDriver(LifeCycleDriver.shared)
             config.setNotificationDriver(NotificationDriver.shared)
             config.setKeystoreDriver(KeystoreDriver.shared)

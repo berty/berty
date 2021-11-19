@@ -89,6 +89,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
+
 	if opts.DB == nil {
 		opts.Logger.Warn("Messenger started without database, creating a volatile one in memory")
 		zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
@@ -115,6 +116,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 		opts.LifeCycleManager = lifecycle.NewManager(StateActive)
 	}
 
+	opts.Logger = opts.Logger.Named("msg")
 	return cleanup, nil
 }
 
@@ -152,38 +154,32 @@ func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipf
 }
 
 func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err error) {
-	l := opts.Logger
-	if l == nil {
-		l = zap.NewNop()
-	}
-	tyberCtx, _, tyberEndSection := tyber.Section(context.Background(), l, "Initializing MessengerService version "+bertyversion.Version)
-	defer func() { tyberEndSection(err, "") }()
-
 	optsCleanup, err := opts.applyDefaults()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("error while applying default of messenger opts: %w", err))
 	}
-	opts.Logger = opts.Logger.Named("msg")
-	l = opts.Logger
+
+	tyberCtx, _, tyberEndSection := tyber.Section(context.Background(), opts.Logger, "Initializing MessengerService version "+bertyversion.Version)
+	defer func() { tyberEndSection(err, "") }()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	db := messengerdb.NewDBWrapper(opts.DB, opts.Logger)
 
 	if opts.StateBackup != nil {
-		tyber.LogStep(tyberCtx, l, "Restoring db state")
+		tyber.LogStep(tyberCtx, opts.Logger, "Restoring db state")
 
 		if err := db.RestoreFromBackup(opts.StateBackup, func() error {
-			return replayLogsToDB(ctx, client, db, l)
+			return replayLogsToDB(ctx, client, db, opts.Logger)
 		}); err != nil {
 			cancel()
 			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore exported state: %w", err))
 		}
-	} else if err := db.InitDB(getEventsReplayerForDB(ctx, client, l)); err != nil {
+	} else if err := db.InitDB(getEventsReplayerForDB(ctx, client, opts.Logger)); err != nil {
 		cancel()
 		return nil, errcode.TODO.Wrap(fmt.Errorf("error during db init: %w", err))
 	}
 
-	tyber.LogStep(tyberCtx, l, "Database initialization succeeded")
+	tyber.LogStep(tyberCtx, opts.Logger, "Database initialization succeeded")
 
 	cancel()
 
@@ -194,8 +190,10 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	if err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
 	}
-	tyber.LogStep(tyberCtx, l, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
+
+	tyber.LogStep(tyberCtx, opts.Logger, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
 	pkStr := messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())
+
 	shortPkStr := pkStr
 	const shortLen = 6
 	if len(shortPkStr) > shortLen {
@@ -203,7 +201,6 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}
 
 	opts.Logger = opts.Logger.With(zap.String("a", shortPkStr))
-	l = opts.Logger
 
 	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
@@ -231,7 +228,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		acc, err := svc.db.GetAccount()
 		switch {
 		case errcode.Is(err, errcode.ErrNotFound): // account not found, create a new one
-			tyber.LogStep(tyberCtx, l, "Account not found, creating a new one", tyber.WithDetail("PublicKey", pkStr))
+			tyber.LogStep(tyberCtx, opts.Logger, "Account not found, creating a new one", tyber.WithDetail("PublicKey", pkStr))
 			ret, err := svc.internalInstanceShareableBertyID(ctx, &mt.InstanceShareableBertyID_Request{})
 			if err != nil {
 				return nil, errcode.TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
@@ -247,7 +244,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			return nil, errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
 		default: // account exists, and public keys match
 			// noop
-			tyber.LogStep(tyberCtx, l, "Found account", tyber.WithDetail("PublicKey", pkStr))
+			tyber.LogStep(tyberCtx, opts.Logger, "Found account", tyber.WithDetail("PublicKey", pkStr))
 		}
 	}
 
@@ -264,7 +261,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		{
 			payload, err := se.UnmarshalPayload()
 			if err != nil {
-				l.Error("unable to unmarshal Notified", zap.Error(err))
+				opts.Logger.Error("unable to unmarshal Notified", zap.Error(err))
 				return nil
 			}
 			notif = payload.(*mt.StreamEvent_Notified)
@@ -275,14 +272,14 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 				Title: notif.GetTitle(),
 				Body:  notif.GetBody(),
 			}); err != nil {
-				l.Error("unable to trigger notify", zap.Error(err))
+				opts.Logger.Error("unable to trigger notify", zap.Error(err))
 			}
 		}
 
 		return nil
 	}})
 
-	tyberSubsCtx, _, endSection := tyber.Section(context.TODO(), l, "Subscribing to groups on MessengerService init")
+	tyberSubsCtx, _, endSection := tyber.Section(context.TODO(), opts.Logger, "Subscribing to groups on MessengerService init")
 	defer func() { endSection(err, "") }()
 
 	// Subscribe to account group metadata

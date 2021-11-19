@@ -49,25 +49,23 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
       throw LoggerError.invalidLevel
     }
 
-    guard let out = message else {
-      throw LoggerError.emptyMessage
-    }
-
-    guard let subsystem = namespace else {
-      throw LoggerError.emptyNamespace
+    let out = message ?? ""
+    var subsystem: String
+    if let namespace = namespace, namespace != ""  {
+      subsystem = self.subsytem + "." + namespace
+    } else {
+      subsystem = self.subsytem
     }
 
     if #available(iOS 10.0, *) {
-        let logger = OSLog(subsystem: self.subsytem + "." + subsystem, category: self.category)
+        let logger = OSLog(subsystem: subsystem, category: self.category)
 
         var type: OSLogType
         switch level {
-            // @FIXME(gfanton): on some device: debug log dont show up on the Console.
-            // for the moment, use default type for debug
         case Level.debug:
-            type = .default
+            type = .debug
         case Level.info:
-            type = .default
+            type = .info
         case Level.warn:
             type = .error
         case Level.error, Level.dPanic, Level.panic, Level.fatal:
