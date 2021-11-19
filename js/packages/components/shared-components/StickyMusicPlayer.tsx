@@ -6,8 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useStyles } from '@berty-tech/styles'
 import { useMusicPlayer } from '@berty-tech/music-player'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { navigationRef, ScreensParams } from '@berty-tech/navigation'
 
 export const HEIGHT_OF_PLAYER = 60
+
+const hidePlayerRoutes: (keyof ScreensParams)[] = ['Chat.OneToOne', 'Chat.Group']
 
 export const StickMusicPlayer = () => {
 	const [{ border, padding, margin }, { windowWidth, scaleSize }] = useStyles()
@@ -15,6 +18,8 @@ export const StickMusicPlayer = () => {
 	const [animatedWidth] = useState(new Animated.Value(0))
 	const { player, unload, handlePlayPause, refresh } = useMusicPlayer()
 	const { top } = useSafeAreaInsets()
+	const currentRoute: keyof ScreensParams = navigationRef.current?.getCurrentRoute()
+		?.name as keyof ScreensParams
 
 	useEffect(() => {
 		if (player.player?.isPlaying) {
@@ -38,7 +43,7 @@ export const StickMusicPlayer = () => {
 		}
 	}, [animatedWidth, windowWidth, player, refresh])
 
-	if (!player.player) {
+	if (!player.player || hidePlayerRoutes.includes(currentRoute)) {
 		return null
 	}
 
