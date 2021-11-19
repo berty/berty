@@ -1,6 +1,9 @@
 package tech.berty.notification;
 
 import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -45,17 +48,25 @@ public class NotificationService extends FirebaseMessagingService {
 
         String message = "you have a new message";
         try {
-            JSONObject payloadAtts = new JSONObject(dpush.getPayloadAttrsJSON());
-            message = payloadAtts.getString("message");
+            JSONObject payloadAttrs = new JSONObject(dpush.getPayloadAttrsJSON());
+            message = payloadAttrs.getString("message");
         } catch (JSONException e) {
             Log.w(TAG, "Unable to unmarshall json payload:", e);
         }
+
+        // Create deepLink on click interaction
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(dpush.getDeepLink()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         // Create Notification according to builder pattern
         Notification notification = new NotificationCompat.Builder(this, NotificationHelper.CHANNEL_ID_MESSAGE)
             .setContentTitle(dpush.getMemberDisplayName())
             .setContentText(message)
             .setSmallIcon(android.R.drawable.stat_notify_chat)
+            .setContentIntent(pendingIntent)
             .build();
 
         // Send notification
