@@ -81,7 +81,7 @@ export const GenericAvatar: React.FC<{
 			iconSize--
 		}
 		content = (
-			<View>
+			<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 				<NameAvatar size={size} style={style} colorSeed={colorSeed} nameSeed={nameSeed} />
 				{isEditable && (
 					<View
