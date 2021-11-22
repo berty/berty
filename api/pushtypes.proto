@@ -74,7 +74,7 @@ message PushServiceSend {
 message OutOfStoreMessageEnvelope {
   bytes nonce = 1;
   bytes box = 2;
-  bytes group_reference = 4 [(gogoproto.customname) = "GroupReference"];
+  bytes group_public_key = 3;
 }
 
 message PushExposedData {

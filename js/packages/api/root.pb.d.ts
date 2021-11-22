@@ -1612,14 +1612,14 @@ export namespace berty {
             interface IOutOfStoreMessageEnvelope {
                 nonce?: (Uint8Array|null);
                 box?: (Uint8Array|null);
-                groupReference?: (Uint8Array|null);
+                groupPublicKey?: (Uint8Array|null);
             }
 
             class OutOfStoreMessageEnvelope implements IOutOfStoreMessageEnvelope {
 
                 public nonce: Uint8Array;
                 public box: Uint8Array;
-                public groupReference: Uint8Array;
+                public groupPublicKey: Uint8Array;
                 public static create(properties?: berty.push.v1.IOutOfStoreMessageEnvelope): berty.push.v1.OutOfStoreMessageEnvelope;
                 public static encode(message: berty.push.v1.IOutOfStoreMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.push.v1.IOutOfStoreMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5840,26 +5840,6 @@ export namespace berty {
                     public static toObject(message: berty.protocol.v1.PushSetServer.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
-            }
-
-            interface IFirstLastCounters {
-                first?: (Long|null);
-                last?: (Long|null);
-            }
-
-            class FirstLastCounters implements IFirstLastCounters {
-
-                public first: Long;
-                public last: Long;
-                public static create(properties?: berty.protocol.v1.IFirstLastCounters): berty.protocol.v1.FirstLastCounters;
-                public static encode(message: berty.protocol.v1.IFirstLastCounters, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.protocol.v1.IFirstLastCounters, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.FirstLastCounters;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.FirstLastCounters;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.FirstLastCounters;
-                public static toObject(message: berty.protocol.v1.FirstLastCounters, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
             }
         }
     }

@@ -313,10 +313,6 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 					continue
 				}
 
-				if err := s.messageKeystore.UpdatePushGroupReferences(messageEvent.Headers.DevicePK, messageEvent.Headers.Counter, g); err != nil {
-					store.logger.Error("unable to update push group references", zap.Error(err))
-				}
-
 				store.logger.Debug(
 					"Got message store payload",
 					tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Payload", Description: string(messageEvent.Message)}}, tyber.EndTrace)...,
@@ -393,19 +389,9 @@ func SealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelop
 
 	encryptedData := secretbox.Seal(nil, data, nonce, secret)
 
-	groupPushSecret, err := cryptoutil.GetGroupPushSecret(g)
-	if err != nil {
-		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
-	pushGroupRef, err := cryptoutil.CreatePushGroupReference(headers.DevicePK, headers.Counter, groupPushSecret)
-	if err != nil {
-		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
 	return &pushtypes.OutOfStoreMessageEnvelope{
 		Nonce:          nonce[:],
 		Box:            encryptedData,
-		GroupReference: pushGroupRef,
+		GroupPublicKey: g.PublicKey,
 	}, nil
 }
