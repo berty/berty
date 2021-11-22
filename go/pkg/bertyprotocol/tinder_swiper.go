@@ -2,15 +2,14 @@ package bertyprotocol
 
 import (
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/binary"
 	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/rendezvous"
 )
 
 type Swiper struct {
@@ -116,9 +115,9 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- peer.AddrInfo, done func()) {
 	defer done()
 	for {
-		roundedTime := roundTimePeriod(time.Now(), s.interval)
-		topicForTime := generateRendezvousPointForPeriod(topic, seed, roundedTime)
-		periodEnd := nextTimePeriod(roundedTime, s.interval)
+		roundedTime := rendezvous.RoundTimePeriod(time.Now(), s.interval)
+		topicForTime := rendezvous.GenerateRendezvousPointForPeriod(topic, seed, roundedTime)
+		periodEnd := rendezvous.NextTimePeriod(roundedTime, s.interval)
 		err := s.watchUntilDeadline(ctx, out, string(topicForTime), periodEnd)
 		switch err {
 		case nil:
@@ -152,15 +151,15 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 				}
 			}
 
-			roundedTime := roundTimePeriod(time.Now(), s.interval)
-			currentTopic = string(generateRendezvousPointForPeriod(topic, seed, roundedTime))
+			roundedTime := rendezvous.RoundTimePeriod(time.Now(), s.interval)
+			currentTopic = string(rendezvous.GenerateRendezvousPointForPeriod(topic, seed, roundedTime))
 			_, err := s.topicJoin(currentTopic)
 			if err != nil {
 				s.logger.Error("failed to announce topic", zap.Error(err))
 				return
 			}
 
-			periodEnd := nextTimePeriod(roundedTime, s.interval)
+			periodEnd := rendezvous.NextTimePeriod(roundedTime, s.interval)
 			select {
 			case <-ctx.Done():
 				return
@@ -168,39 +167,4 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 			}
 		}
 	}()
-}
-
-func roundTimePeriod(date time.Time, interval time.Duration) time.Time {
-	if interval < 0 {
-		interval = -interval
-	}
-
-	intervalSeconds := int64(interval.Seconds())
-
-	periodsElapsed := date.Unix() / intervalSeconds
-	totalTime := periodsElapsed * intervalSeconds
-
-	return time.Unix(totalTime, 0).In(date.Location())
-}
-
-func nextTimePeriod(date time.Time, interval time.Duration) time.Time {
-	if interval < 0 {
-		interval = -interval
-	}
-
-	return roundTimePeriod(date, interval).Add(interval)
-}
-
-func generateRendezvousPointForPeriod(topic, seed []byte, date time.Time) []byte {
-	buf := make([]byte, 8)
-	mac := hmac.New(sha256.New, append(topic, seed...))
-	binary.BigEndian.PutUint64(buf, uint64(date.Unix()))
-
-	_, err := mac.Write(buf)
-	if err != nil {
-		panic(err)
-	}
-	sum := mac.Sum(nil)
-
-	return sum
 }

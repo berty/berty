@@ -196,8 +196,6 @@ func TestFlappyMetadataRendezvousPointLifecycle(t *testing.T) {
 	assert.NoError(t, err)
 
 	meta := ownCG.MetadataStore()
-	index, ok := meta.Index().(*metadataStoreIndex)
-	require.True(t, ok)
 
 	accSK, err := peers[0].DevKS.AccountPrivKey()
 	assert.NoError(t, err)
@@ -219,10 +217,8 @@ func TestFlappyMetadataRendezvousPointLifecycle(t *testing.T) {
 	assert.Equal(t, accPK, shareableContact.PK)
 	assert.Equal(t, 32, len(shareableContact.PublicRendezvousSeed))
 
-	// fake not set rdv seed, enable rdv point
 	_, err = meta.ContactRequestEnable(ctx)
 	assert.NoError(t, err)
-	index.contactRequestSeed = nil
 
 	enabled, shareableContact = meta.GetIncomingContactRequestsStatus()
 	assert.True(t, enabled)

@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
@@ -17,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -24,6 +26,7 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
+	"berty.tech/go-orbit-db/pubsub/pubsubcoreapi"
 )
 
 type GroupOpenMode uint64
@@ -42,9 +45,10 @@ type loggable interface {
 
 type NewOrbitDBOptions struct {
 	baseorbitdb.NewOrbitDBOptions
-	Datastore       datastore.Batching
-	MessageKeystore *cryptoutil.MessageKeystore
-	DeviceKeystore  cryptoutil.DeviceKeystore
+	Datastore              datastore.Batching
+	MessageKeystore        *cryptoutil.MessageKeystore
+	DeviceKeystore         cryptoutil.DeviceKeystore
+	RendezvousRotationBase time.Duration
 }
 
 func (n *NewOrbitDBOptions) applyDefaults() {
@@ -68,6 +72,10 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 		n.DeviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))))
 	}
 
+	if n.RendezvousRotationBase.Nanoseconds() <= 0 {
+		n.RendezvousRotationBase = rendezvous.DefaultRotationInterval
+	}
+
 	// FIXME: add this setting back
 	n.DirectChannelFactory = nil
 }
@@ -80,6 +88,7 @@ type BertyOrbitDB struct {
 	keyStore        *BertySignedKeyStore
 	messageKeystore *cryptoutil.MessageKeystore
 	deviceKeystore  cryptoutil.DeviceKeystore
+	pubSub          *PubSubWithRotation
 }
 
 func (s *BertyOrbitDB) registerGroupPrivateKey(g *protocoltypes.Group) error {
@@ -137,6 +146,18 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 	options.Keystore = ks
 	options.Identity = &identityprovider.Identity{}
 
+	if options.PubSub == nil {
+		self, err := ipfs.Key().Self(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		options.PubSub = pubsubcoreapi.NewPubSub(ipfs, self.ID(), time.Second, options.Logger, options.Tracer)
+	}
+
+	pubSub := NewPubSubWithRotation(options.PubSub, options.RendezvousRotationBase)
+	options.PubSub = pubSub
+
 	orbitDB, err := baseorbitdb.NewOrbitDB(ctx, ipfs, &options.NewOrbitDBOptions)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -147,6 +168,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 		keyStore:        ks,
 		deviceKeystore:  options.DeviceKeystore,
 		messageKeystore: options.MessageKeystore,
+		pubSub:          pubSub,
 	}
 
 	if err := bertyDB.RegisterAccessControllerType(NewSimpleAccessController); err != nil {
@@ -395,9 +417,21 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 
 	l.Debug("Opening store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "Options", Description: fmt.Sprint(options)}}, tyber.Status(tyber.Running))...)
 
-	options.StoreType = &storeType
+	linkKey, err := cryptoutil.GetLinkKeyArray(g)
+	if err != nil {
+		return nil, err
+	}
 
-	store, err := o.Open(ctx, fmt.Sprintf("%s_%s", g.GroupIDAsString(), storeType), options)
+	options.StoreType = &storeType
+	name := fmt.Sprintf("%s_%s", g.GroupIDAsString(), storeType)
+
+	addr, err := o.DetermineAddress(ctx, name, storeType, &orbitdb.DetermineAddressOptions{AccessController: options.AccessController})
+	if err != nil {
+		return nil, err
+	}
+	s.pubSub.RegisterGroupLinkKey(addr.String(), linkKey[:])
+
+	store, err := o.Open(ctx, name, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}

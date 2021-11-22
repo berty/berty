@@ -198,18 +198,24 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			return nil, errcode.TODO.Wrap(err)
 		}
 
+		rendezvousRotationBase, err := m.GetRendezvousRotationBase()
+		if err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+
 		// initialize new protocol client
 		opts := bertyprotocol.Opts{
-			Host:             m.Node.Protocol.ipfsNode.PeerHost,
-			PubSub:           m.Node.Protocol.pubsub,
-			TinderDriver:     m.Node.Protocol.discovery,
-			IpfsCoreAPI:      m.Node.Protocol.ipfsAPI,
-			Logger:           logger,
-			RootDatastore:    rootDS,
-			DeviceKeystore:   deviceKS,
-			OrbitDB:          odb,
-			PushKey:          pushKey,
-			GRPCInsecureMode: m.Node.Protocol.ServiceInsecureMode,
+			Host:                   m.Node.Protocol.ipfsNode.PeerHost,
+			PubSub:                 m.Node.Protocol.pubsub,
+			TinderDriver:           m.Node.Protocol.discovery,
+			IpfsCoreAPI:            m.Node.Protocol.ipfsAPI,
+			Logger:                 logger,
+			RootDatastore:          rootDS,
+			DeviceKeystore:         deviceKS,
+			OrbitDB:                odb,
+			PushKey:                pushKey,
+			GRPCInsecureMode:       m.Node.Protocol.ServiceInsecureMode,
+			RendezvousRotationBase: rendezvousRotationBase,
 		}
 
 		m.Node.Protocol.server, err = bertyprotocol.New(m.getContext(), opts)

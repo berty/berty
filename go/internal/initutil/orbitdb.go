@@ -53,6 +53,11 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		cache    = bertyprotocol.NewOrbitDatastoreCache(rootDS)
 	)
 
+	rendezvousRotationBase, err := m.GetRendezvousRotationBase()
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
 	opts := &bertyprotocol.NewOrbitDBOptions{
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 			Cache:                cache,
@@ -60,8 +65,9 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 			Logger:               logger,
 			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.PeerHost),
 		},
-		Datastore:      rootDS,
-		DeviceKeystore: deviceKS,
+		Datastore:              rootDS,
+		DeviceKeystore:         deviceKS,
+		RendezvousRotationBase: rendezvousRotationBase,
 	}
 
 	if node.PubSub != nil {
