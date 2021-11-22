@@ -942,9 +942,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "bytes",
                     id: 2
                   },
-                  groupPublicKey: {
+                  groupReference: {
                     type: "bytes",
-                    id: 3
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "GroupReference"
+                    }
                   }
                 }
               },
@@ -3816,6 +3819,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              FirstLastCounters: {
+                fields: {
+                  first: {
+                    type: "uint64",
+                    id: 1
+                  },
+                  last: {
+                    type: "uint64",
+                    id: 2
                   }
                 }
               }

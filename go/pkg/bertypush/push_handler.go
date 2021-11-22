@@ -142,7 +142,12 @@ func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Re
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	gPK, err := crypto.UnmarshalEd25519PublicKey(oosMessageEnv.GroupPublicKey)
+	gPKBytes, err := s.messageKeystore.GetByPushGroupReference(oosMessageEnv.GroupReference)
+	if err != nil {
+		return nil, errcode.ErrNotFound.Wrap(err)
+	}
+
+	gPK, err := crypto.UnmarshalEd25519PublicKey(gPKBytes)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -152,15 +157,22 @@ func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Re
 		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	clear, newlyDecrypted, err := s.messageKeystore.OpenOutOfStoreMessage(oosMessage, oosMessageEnv.GroupPublicKey)
+	clear, newlyDecrypted, err := s.messageKeystore.OpenOutOfStoreMessage(oosMessage, gPKBytes)
 	if err != nil {
 		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
+	}
+
+	g, err := s.groupDatastore.Get(gPK)
+	if err == nil {
+		if err := s.messageKeystore.UpdatePushGroupReferences(oosMessage.DevicePK, oosMessage.Counter, g); err != nil {
+			s.logger.Error("unable to update push group references", zap.Error(err))
+		}
 	}
 
 	return &protocoltypes.PushReceive_Reply{
 		Message:         oosMessage,
 		Cleartext:       clear,
-		GroupPublicKey:  oosMessageEnv.GroupPublicKey,
+		GroupPublicKey:  gPKBytes,
 		AlreadyReceived: !newlyDecrypted,
 	}, nil
 }
