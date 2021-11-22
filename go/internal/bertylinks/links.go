@@ -497,7 +497,7 @@ func InternalLinkToMessage(accountID, groupPK, cid string) (string, error) {
 
 const (
 	LinkWebPrefix       = "https://berty.tech/id#"
-	LinkInternalPrefix  = "berty://"
+	LinkInternalPrefix  = "BERTY://"
 	DefaultChecksumSize = 1 // 1-byte length by default (should have ~1/256 false-positive in case of invalid password)
 )
 

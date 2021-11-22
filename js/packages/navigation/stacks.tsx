@@ -104,6 +104,7 @@ function useLinking(): [string | null, unknown] {
 
 	useEffect(() => {
 		function handleOpenUrl(ev: any) {
+			console.log('handleOpenUrl:', ev.url)
 			setUrl(null)
 			setUrl(ev.url)
 		}
@@ -120,14 +121,16 @@ function useLinking(): [string | null, unknown] {
 }
 
 const DeepLinkBridge: React.FC = () => {
-	const navigation = useNavigation<NavigationProp<ScreensParams>>()
 	const [url, error] = useLinking()
+	const navigation = useNavigation<NavigationProp<ScreensParams>>()
+	const ctx = useMessengerContext()
 
 	useEffect(() => {
-		if (url && !error && !(url as string).startsWith('berty://services-auth')) {
+		if (!ctx.handledLink && url && !error && !(url as string).startsWith('berty://services-auth')) {
+			ctx.setHandledLink(true)
 			navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 		}
-	}, [url, error, navigation])
+	}, [url, error, navigation, ctx])
 
 	return null
 }
@@ -136,12 +139,14 @@ let Components: typeof RawComponents
 
 // @ts-ignore
 Components = mapValues(RawComponents, SubComponents =>
-	mapValues(SubComponents, (Component: React.FC) => (props: any) => (
-		<>
-			<DeepLinkBridge />
-			<Component {...props} />
-		</>
-	)),
+	mapValues(SubComponents, (Component: React.FC) => (props: any) => {
+		return (
+			<>
+				<DeepLinkBridge />
+				<Component {...props} />
+			</>
+		)
+	}),
 )
 
 const NavigationStack = createNativeStackNavigator<ScreensParams>()

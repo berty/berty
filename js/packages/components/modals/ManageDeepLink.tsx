@@ -7,8 +7,9 @@ import { BlurView } from '@react-native-community/blur'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor } from '@berty-tech/store'
+import { useThemeColor, useMessengerContext } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
+import { useNavigation } from '@berty-tech/navigation'
 
 import { ManageGroupInvitation } from './ManageGroupInvitation'
 import AddThisContact from './AddThisContact'
@@ -17,7 +18,10 @@ import InvalidScan from './InvalidScan'
 
 export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { params } }) => {
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
+	const navigation = useNavigation()
+
 	React.useEffect(() => {
 		if (!called) {
 			call({ link: params.value })
@@ -82,6 +86,16 @@ export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { par
 					type={params.type}
 					isPassword={true}
 				/>
+			)
+		}
+	} else if (pdlReply?.link?.encrypted?.kind === beapi.messenger.BertyLink.Kind.MessageV1Kind) {
+		const conv = ctx.conversations[pdlReply?.link?.bertyMessageRef?.groupPk as string]
+		if (conv?.publicKey) {
+			navigation.navigate(
+				conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
+					? 'Chat.Group'
+					: 'Chat.OneToOne',
+				{ convId: conv?.publicKey },
 			)
 		}
 	}

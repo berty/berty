@@ -96,6 +96,8 @@ export type MessengerState = {
 	setDebugMode: (value: boolean) => void
 	networkConfig: beapi.account.INetworkConfig
 	setNetworkConfig: (value: beapi.account.INetworkConfig) => void
+	handledLink: boolean
+	setHandledLink: (value: boolean) => void
 }
 
 export enum PersistentOptionsKeys {

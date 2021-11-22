@@ -21,8 +21,6 @@ import { ErrorScreen } from '@berty-tech/components/error'
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
 
-// TODO: Implement push notif handling on JS
-import { NativeModules, NativeEventEmitter } from 'react-native'
 import { Provider as ReduxProvider } from 'react-redux'
 import reduxStore from '@berty-tech/redux/store'
 
@@ -37,26 +35,6 @@ export const App: React.FC = () => {
 	useMountEffect(() => {
 		// @ts-ignore
 		Shake.start()
-
-		if (NativeModules.EventEmitter) {
-			try {
-				var eventListener = new NativeEventEmitter(NativeModules.EventEmitter).addListener(
-					'onPushReceived',
-					data => console.info('FRONT PUSH NOTIF:', data),
-				)
-				return () => {
-					try {
-						eventListener.remove() // Unsubscribe from native event emitter
-					} catch (e) {
-						console.error('Push notif remove listener failed: ' + e)
-					}
-					isReadyRef.current = false
-				}
-			} catch (e) {
-				console.error('Push notif add listener failed: ' + e)
-			}
-		}
-
 		return () => {
 			isReadyRef.current = false
 		}
