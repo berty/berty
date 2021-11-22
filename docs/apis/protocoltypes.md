@@ -92,7 +92,6 @@
     - [DeviceSecret](#berty.protocol.v1.DeviceSecret)
     - [EncryptedMessage](#berty.protocol.v1.EncryptedMessage)
     - [EventContext](#berty.protocol.v1.EventContext)
-    - [FirstLastCounters](#berty.protocol.v1.FirstLastCounters)
     - [Group](#berty.protocol.v1.Group)
     - [GroupAddAdditionalRendezvousSeed](#berty.protocol.v1.GroupAddAdditionalRendezvousSeed)
     - [GroupAddDeviceSecret](#berty.protocol.v1.GroupAddDeviceSecret)
@@ -847,15 +846,6 @@ EventContext adds context (its id, its parents and its attachments) to an event
 | parent_ids | [bytes](#bytes) | repeated | id are the the CIDs of the underlying parents of the OrbitDB event |
 | group_pk | [bytes](#bytes) |  | group_pk receiving the event |
 | attachment_cids | [bytes](#bytes) | repeated | attachment_cids is a list of attachment that can be retrieved |
-
-<a name="berty.protocol.v1.FirstLastCounters"></a>
-
-### FirstLastCounters
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| first | [uint64](#uint64) |  |  |
-| last | [uint64](#uint64) |  |  |
 
 <a name="berty.protocol.v1.Group"></a>
 

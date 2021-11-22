@@ -1487,8 +1487,3 @@ message PushSetServer {
   message Reply {}
 }
 
-
-message FirstLastCounters {
-  uint64 first = 1;
-  uint64 last = 2;
-}

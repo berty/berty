@@ -2,7 +2,6 @@ package cryptoutil
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"sync"
 
@@ -15,8 +14,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
-
-const precomputePushRefsCount = 100
 
 type MessageKeystore struct {
 	lock                 sync.Mutex
@@ -212,14 +209,6 @@ func (m *MessageKeystore) registerChainKey(g *protocoltypes.Group, devicePK cryp
 
 	if err := m.putDeviceChainKey(groupPK, devicePK, ds); err != nil {
 		return errcode.ErrInternal.Wrap(err)
-	}
-
-	devicePKBytes, err := devicePK.Raw()
-	if err == nil {
-		if err := m.UpdatePushGroupReferences(devicePKBytes, ds.Counter, g); err != nil {
-			// TODO: log
-			_ = err
-		}
 	}
 
 	return nil
@@ -695,105 +684,4 @@ func (m *MessageKeystore) OpenOutOfStoreMessage(envelope *protocoltypes.OutOfSto
 	}
 
 	return clear, di.NewlyDecrypted, nil
-}
-
-func (m *MessageKeystore) refKey(ref []byte) datastore.Key {
-	return datastore.KeyWithNamespaces([]string{
-		"push-refs", base64.RawURLEncoding.EncodeToString(ref),
-	})
-}
-
-func (m *MessageKeystore) refFirstLastKey(groupPK, devicePK []byte) datastore.Key {
-	return datastore.KeyWithNamespaces([]string{
-		"push-refs",
-		base64.RawURLEncoding.EncodeToString(groupPK),
-		base64.RawURLEncoding.EncodeToString(devicePK),
-	})
-}
-
-func (m *MessageKeystore) GetByPushGroupReference(ref []byte) ([]byte, error) {
-	return m.store.Get(m.refKey(ref))
-}
-
-func (m *MessageKeystore) UpdatePushGroupReferences(devicePK []byte, first uint64, group GroupWithSecret) error {
-	refsExisting := []uint64(nil)
-	refsToCreate := []uint64(nil)
-
-	groupPushSecret, err := GetGroupPushSecret(group)
-	if err != nil {
-		return errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
-	currentFirst, currentLast, err := m.firstLastCachedGroupRefsForMember(devicePK, group)
-	if err == nil {
-		for i := currentFirst; i != currentLast; i++ {
-			refsExisting = append(refsExisting, i)
-		}
-	}
-
-	// keep previous refs
-	last := first + precomputePushRefsCount
-	first -= precomputePushRefsCount
-	for i := first; i != last; i++ {
-		found := false
-
-		// Ignore refs that should be kept
-		for j := 0; j < len(refsExisting); j++ {
-			if refsExisting[j] == i {
-				refsExisting[j] = refsExisting[len(refsExisting)-1]
-				refsExisting = refsExisting[:len(refsExisting)-1]
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			refsToCreate = append(refsToCreate, i)
-		}
-	}
-
-	// Remove useless old refs
-	for i := 0; i < len(refsExisting); i++ {
-		ref, err := CreatePushGroupReference(devicePK, refsExisting[i], groupPushSecret)
-		if err != nil {
-			// TODO: log
-			continue
-		}
-
-		if err := m.store.Delete(m.refKey(ref)); err != nil {
-			// TODO: log
-			continue
-		}
-	}
-
-	// Add new refs
-	for i := 0; i < len(refsToCreate); i++ {
-		ref, err := CreatePushGroupReference(devicePK, refsToCreate[i], groupPushSecret)
-		if err != nil {
-			// TODO: log
-			continue
-		}
-
-		if err := m.store.Put(m.refKey(ref), group.GetPublicKey()); err != nil {
-			// TODO: log
-			continue
-		}
-	}
-
-	return nil
-}
-
-func (m *MessageKeystore) firstLastCachedGroupRefsForMember(devicePK []byte, group GroupWithSecret) (uint64, uint64, error) {
-	key := m.refFirstLastKey(group.GetPublicKey(), devicePK)
-	bytes, err := m.store.Get(key)
-	if err != nil {
-		return 0, 0, err
-	}
-
-	ret := protocoltypes.FirstLastCounters{}
-	if err := ret.Unmarshal(bytes); err != nil {
-		return 0, 0, err
-	}
-
-	return ret.First, ret.Last, nil
 }
