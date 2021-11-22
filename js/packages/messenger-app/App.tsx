@@ -23,6 +23,8 @@ import { CustomIconsPack } from './custom-icons'
 
 // TODO: Implement push notif handling on JS
 import { NativeModules, NativeEventEmitter } from 'react-native'
+import { Provider as ReduxProvider } from 'react-redux'
+import reduxStore from '@berty-tech/redux/store'
 
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {
@@ -63,31 +65,33 @@ export const App: React.FC = () => {
 	return (
 		<SafeAreaProvider>
 			<StyleProvider>
-				<MessengerProvider embedded daemonAddress='http://localhost:1337'>
-					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
-					<ThemeProvider>
-						<ErrorScreen>
-							<NavigationContainer
-								ref={navigationRef}
-								onReady={() => {
-									isReadyRef.current = true
-								}}
-							>
-								<NotificationProvider>
-									<BootSplashInhibitor />
-									<StreamGate>
-										<ListGate>
-											<MusicPlayerProvider>
-												<StickMusicPlayer />
-												<Navigation />
-											</MusicPlayerProvider>
-										</ListGate>
-									</StreamGate>
-								</NotificationProvider>
-							</NavigationContainer>
-						</ErrorScreen>
-					</ThemeProvider>
-				</MessengerProvider>
+				<ReduxProvider store={reduxStore}>
+					<MessengerProvider embedded daemonAddress='http://localhost:1337'>
+						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+						<ThemeProvider>
+							<ErrorScreen>
+								<NavigationContainer
+									ref={navigationRef}
+									onReady={() => {
+										isReadyRef.current = true
+									}}
+								>
+									<NotificationProvider>
+										<BootSplashInhibitor />
+										<StreamGate>
+											<ListGate>
+												<MusicPlayerProvider>
+													<StickMusicPlayer />
+													<Navigation />
+												</MusicPlayerProvider>
+											</ListGate>
+										</StreamGate>
+									</NotificationProvider>
+								</NavigationContainer>
+							</ErrorScreen>
+						</ThemeProvider>
+					</MessengerProvider>
+				</ReduxProvider>
 			</StyleProvider>
 		</SafeAreaProvider>
 	)

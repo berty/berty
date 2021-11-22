@@ -17,6 +17,13 @@ import { useContactList, useThemeColor } from '@berty-tech/store'
 import { ContactPicker } from '../shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { ContactAvatar } from '../avatars'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+	removeMemberFromInvitationListById,
+	selectInvitationListMembers,
+} from '@berty-tech/redux/reducers/newGroup.reducer'
+import { AppDispatch } from '@berty-tech/redux/store'
+import { berty } from '@berty-tech/api/root.pb'
 
 export const Header: React.FC<{
 	title: string
@@ -98,12 +105,12 @@ export const Header: React.FC<{
 }
 
 const MemberItem: React.FC<{
-	member: any
-	onRemove: () => void
+	member: berty.messenger.v1.IContact
 	canRemove: boolean | undefined
-}> = ({ member, onRemove, canRemove }) => {
+}> = ({ member, canRemove }) => {
 	const [{ padding, column, text, row, maxWidth, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
+	const dispatch = useDispatch<AppDispatch>()
 
 	return (
 		<View style={[padding.horizontal.medium, maxWidth(100)]}>
@@ -139,7 +146,7 @@ const MemberItem: React.FC<{
 								shadowColor: colors.shadow,
 							},
 						]}
-						onPress={onRemove}
+						onPress={() => dispatch(removeMemberFromInvitationListById(member.publicKey!))}
 					>
 						<Icon
 							name='close-outline'
@@ -155,11 +162,10 @@ const MemberItem: React.FC<{
 }
 
 export const MemberList: React.FC<{
-	members: any[]
-	onRemoveMember: (id: string) => void
 	initialMembers?: any[]
-}> = ({ members, onRemoveMember, initialMembers = [] }) => {
+}> = ({ initialMembers = [] }) => {
 	const [{ padding }] = useStyles()
+	const members = useSelector(selectInvitationListMembers)
 
 	return (
 		<View style={{ height: 135 }}>
@@ -172,7 +178,6 @@ export const MemberList: React.FC<{
 					<MemberItem
 						key={member.publicKey}
 						member={member}
-						onRemove={() => onRemoveMember(member.publicKey)}
 						canRemove={
 							initialMembers
 								? !initialMembers.find(
@@ -187,11 +192,7 @@ export const MemberList: React.FC<{
 	)
 }
 
-export const CreateGroupAddMembers: React.FC<{
-	onSetMember: (contact: any) => void
-	onRemoveMember: (id: string) => void
-	members: any[]
-}> = ({ onSetMember, onRemoveMember, members }) => {
+export const CreateGroupAddMembers: React.FC = () => {
 	const [{ flex, margin }, { scaleHeight }] = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
@@ -202,7 +203,7 @@ export const CreateGroupAddMembers: React.FC<{
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<View style={{ backgroundColor: colors['background-header'] }}>
-				<MemberList members={members} onRemoveMember={onRemoveMember} />
+				<MemberList />
 			</View>
 			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
@@ -211,12 +212,7 @@ export const CreateGroupAddMembers: React.FC<{
 						first
 						style={[margin.bottom.scale(-1)]}
 					/>
-					<ContactPicker
-						members={members}
-						onSetMember={onSetMember}
-						onRemoveMember={onRemoveMember}
-						accountContacts={accountContacts}
-					/>
+					<ContactPicker accountContacts={accountContacts} />
 				</View>
 			</View>
 			<FooterCreateGroup

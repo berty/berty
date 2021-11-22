@@ -13,6 +13,8 @@ import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
+import { useSelector } from 'react-redux'
+import { selectInvitationListMembers } from '@berty-tech/redux/reducers/newGroup.reducer'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()
@@ -68,6 +70,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 	const _styles = useStylesCreateGroup()
 	const insets = useSafeAreaInsets()
 	const restScreen = windowHeight - layout - 380 * scaleSize - insets.bottom // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
+
 	return (
 		<View style={[height(300 + restScreen), padding.horizontal.large]}>
 			<View style={[row.center]}>
@@ -179,13 +182,11 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 	)
 }
 
-export const CreateGroupFinalize: React.FC<{
-	members: any[]
-	onRemoveMember: (id: string) => void
-}> = ({ members, onRemoveMember }) => {
+export const CreateGroupFinalize: React.FC = () => {
 	const { goBack, reset } = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
 	const { call, error, done, reply } = (messengerMethodsHooks as any).useConversationCreate()
+	const members = useSelector(selectInvitationListMembers)
 
 	const createGroup = React.useCallback(
 		() => call({ displayName: groupName, contactsToInvite: members.map(m => m.publicKey) }),
@@ -225,7 +226,7 @@ export const CreateGroupFinalize: React.FC<{
 		<Layout style={[flex.tiny]}>
 			<View style={{ backgroundColor: colors['background-header'] }}>
 				<View onLayout={e => setLayout(e.nativeEvent.layout.height)}>
-					<MemberList members={members} onRemoveMember={onRemoveMember} />
+					<MemberList />
 					<Header
 						title={t('main.home.create-group.add-members')}
 						onPress={() => goBack()}

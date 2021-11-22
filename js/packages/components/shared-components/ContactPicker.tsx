@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
 import { CheckBox, Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,14 @@ import { useStyles } from '@berty-tech/styles'
 import { useAccountContactSearchResults, useThemeColor } from '@berty-tech/store/hooks'
 
 import { ContactAvatar } from '../avatars'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+	addMemberToInvitationList,
+	removeMemberFromInvitationListById,
+	resetInvitationList,
+	selectInvitationListMembers,
+} from '@berty-tech/redux/reducers/newGroup.reducer'
+import { berty } from '@berty-tech/api/root.pb'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -21,38 +29,29 @@ const useStylesCreateGroup = () => {
 
 // Type
 type ContactPickerProps = {
-	onSetMember: (contact: any) => void
-	onRemoveMember: (id: string) => void
-	members: any[]
 	accountContacts: beapi.messenger.IContact[]
 }
 
 type ContactItemProps = {
 	separateBar?: boolean
-	contact: any
+	contact: berty.messenger.v1.IContact
 	added: boolean
-	onSetMember: (contact: any) => void
-	onRemoveMember: (id: string) => void
 }
 
-const ContactItem: React.FC<ContactItemProps> = ({
-	onSetMember,
-	onRemoveMember,
-	contact,
-	added,
-	separateBar = true,
-}) => {
+const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar = true }) => {
 	const [{ row, margin, padding }, { scaleSize }] = useStyles()
 	const _styles = useStylesCreateGroup()
 	const colors = useThemeColor()
+	const dispatch = useDispatch()
+
 	return (
 		<View>
 			<TouchableOpacity
 				onPress={() => {
 					if (added) {
-						onRemoveMember(contact.publicKey)
+						dispatch(removeMemberFromInvitationListById(contact.publicKey!))
 					} else {
-						onSetMember(contact)
+						dispatch(addMemberToInvitationList(contact))
 					}
 				}}
 				style={[row.fill, padding.right.small]}
@@ -67,7 +66,7 @@ const ContactItem: React.FC<ContactItemProps> = ({
 							{ flexShrink: 1, color: colors['main-text'] },
 						]}
 					>
-						{contact.displayName}
+						{contact.displayName!}
 					</Text>
 				</View>
 				<View style={[row.item.justify]}>
@@ -75,9 +74,9 @@ const ContactItem: React.FC<ContactItemProps> = ({
 						checked={added}
 						onChange={(isChecked: any) => {
 							if (isChecked) {
-								onSetMember(contact)
+								dispatch(addMemberToInvitationList(contact))
 							} else {
-								onRemoveMember(contact.publicKey)
+								dispatch(removeMemberFromInvitationListById(contact.publicKey!))
 							}
 						}}
 					/>
@@ -88,21 +87,22 @@ const ContactItem: React.FC<ContactItemProps> = ({
 	)
 }
 
-export const ContactPicker: React.FC<ContactPickerProps> = ({
-	onSetMember,
-	onRemoveMember,
-	members,
-	accountContacts,
-}) => {
+export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts }) => {
 	const [{ padding, row, margin, border }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useAccountContactSearchResults(searchText)
 	const { t }: { t: any } = useTranslation()
+	const members = useSelector(selectInvitationListMembers)
+	const dispatch = useDispatch()
 	let contacts = searchText.length ? searchContacts : accountContacts
 	contacts = contacts.filter(
 		(contact: any) => contact.state === beapi.messenger.Contact.State.Accepted,
 	)
+
+	useEffect(() => {
+		dispatch(resetInvitationList())
+	}, [dispatch])
 
 	return (
 		<View
@@ -151,8 +151,6 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({
 				{contacts.map((contact, index) => (
 					<ContactItem
 						key={contact.publicKey}
-						onSetMember={onSetMember}
-						onRemoveMember={onRemoveMember}
 						added={!!members.find(member => member.publicKey === contact.publicKey)}
 						contact={contact}
 						separateBar={index < contacts.length - 1}
