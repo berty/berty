@@ -269,19 +269,19 @@ jobs:
         working-directory: go
         env:
           TEST_SPEED: fast
-          GO_TEST_OPTS: -test.timeout=600s -count 1 -tags fts5
+          GO_TEST_OPTS: -test.timeout=600s -count 1 -tags "fts5 sqlite sqlite_unlock_notify"
         run: set -o pipefail; make go.unittest | tee test_log.txt
       - name: Run all tests
         working-directory: go
         env:
           TEST_SPEED: any
-          GO_TEST_OPTS: -test.timeout=600s -count 1 -tags fts5
+          GO_TEST_OPTS: -test.timeout=600s -count 1 -tags "fts5 sqlite sqlite_unlock_notify"
         run: make go.unittest
       - name: Run all tests with race flag and generate coverage
         working-directory: go
         env:
           TEST_SPEED: any
-          GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags fts5 -coverprofile=coverage.txt -covermode=atomic
+          GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags "fts5 sqlite sqlite_unlock_notify" -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0

@@ -1,13 +1,14 @@
 package rendezvous_test
 
 import (
-	"berty.tech/berty/v2/go/internal/rendezvous"
 	"encoding/hex"
 	"fmt"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/rendezvous"
 )
 
 func TestRoundTimePeriod_Next(t *testing.T) {
@@ -91,4 +92,3 @@ func TestGenerateRendezvousPointForPeriod(t *testing.T) {
 		})
 	}
 }
-
