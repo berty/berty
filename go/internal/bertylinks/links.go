@@ -179,7 +179,7 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 
 			return &link, nil
 		default:
-			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unsupported link type: %q", parts[0]))
+			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unsupported link type"))
 		}
 	}
 

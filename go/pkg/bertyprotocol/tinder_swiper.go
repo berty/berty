@@ -9,8 +9,8 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 )
 
 type Swiper struct {

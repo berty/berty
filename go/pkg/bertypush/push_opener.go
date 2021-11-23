@@ -129,7 +129,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 
 		link, err := bertylinks.UnmarshalLink(invitation.Link, nil)
 		if err != nil {
-			logger.Error("unable to unmarshal group invitation link", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
+			logger.Error("unable to unmarshal group invitation link", logutil.PrivateString("link", invitation.Link), logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
 			break
 		}
 

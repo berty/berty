@@ -169,6 +169,7 @@ func (svc *service) ParseDeepLink(_ context.Context, req *messengertypes.ParseDe
 
 	link, err := bertylinks.UnmarshalLink(req.Link, req.Passphrase)
 	if err != nil {
+		svc.logger.Error("unable to parse deeplink", logutil.PrivateString("link", req.Link), zap.Error(err))
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
 	ret.Link = link
@@ -704,6 +705,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 
 	link, err := bertylinks.UnmarshalLink(url, req.Passphrase)
 	if err != nil {
+		svc.logger.Error("unable to parse deeplink", logutil.PrivateString("link", req.Link), zap.Error(err))
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
 	if link.Kind == messengertypes.BertyLink_EncryptedV1Kind {
@@ -854,6 +856,7 @@ func (svc *service) ContactRequest(ctx context.Context, req *messengertypes.Cont
 
 	link, err := bertylinks.UnmarshalLink(req.GetLink(), req.Passphrase)
 	if err != nil {
+		svc.logger.Error("unable to parse deeplink", logutil.PrivateString("link", req.Link), zap.Error(err))
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
 	if link.Kind == messengertypes.BertyLink_EncryptedV1Kind {

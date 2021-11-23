@@ -1,7 +1,6 @@
 package logutil
 
 import (
-	"crypto/hmac"
 	crand "crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
@@ -22,15 +21,18 @@ type PrivateField struct {
 }
 
 func (p *PrivateField) hash(value string) string {
-	mac := hmac.New(sha256.New, p.Namespace)
-	_, err := mac.Write([]byte(value))
-	if err != nil {
+	hash := sha256.New()
+	if _, err := hash.Write(p.Namespace); err != nil {
 		return "unrepresentable"
 	}
 
-	sum := mac.Sum(nil)
+	if _, err := hash.Write([]byte(value)); err != nil {
+		return "unrepresentable"
+	}
 
-	return hex.EncodeToString(sum)
+	hashed := hash.Sum(nil)
+
+	return hex.EncodeToString(hashed)
 }
 
 func (p *PrivateField) PrivateString(key string, value string) zap.Field {
@@ -111,7 +113,7 @@ func SetGlobal(namespace []byte, enabled bool) {
 	mu.Unlock()
 }
 
-func init() {
+func init() { // nolint:gochecknoinits
 	namespace := make([]byte, 32)
 	_, err := crand.Reader.Read(namespace)
 	if err != nil {

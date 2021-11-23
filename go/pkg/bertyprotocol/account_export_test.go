@@ -201,7 +201,7 @@ func TestFlappyRestoreAccount(t *testing.T) {
 		})
 		defer cleanupNodeB()
 
-		dksB := cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(dsB, ds.NewKey(NamespaceDeviceKeystore))))
+		dksB := cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(dsB, ds.NewKey(NamespaceDeviceKeystore))), nil)
 
 		odb, err := NewBertyOrbitDB(ctx, ipfsNodeB.API(), &NewOrbitDBOptions{
 			NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{

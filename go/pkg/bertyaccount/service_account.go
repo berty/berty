@@ -105,6 +105,9 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 
 	// setup manager logger
 	prog.Get("setup-logger").SetAsCurrent()
+	// TODO: deactivate logs privacy on dev, use a constant string across launches
+	// logutil.SetGlobal([]byte(XXX), true)
+
 	streams := []logutil.Stream(nil)
 	{
 		if req.LoggerFilters == "" {

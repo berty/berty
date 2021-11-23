@@ -190,7 +190,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	{
 		var (
 			deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
-			deviceKS = cryptoutil.NewDeviceKeystore(deviceDS)
+			deviceKS = cryptoutil.NewDeviceKeystore(deviceDS, nil)
 		)
 
 		pushKey, err := m.getPushSecretKey()

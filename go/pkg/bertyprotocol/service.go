@@ -139,7 +139,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 
 	if opts.DeviceKeystore == nil {
 		ks := ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceDeviceKeystore)))
-		opts.DeviceKeystore = cryptoutil.NewDeviceKeystore(ks)
+		opts.DeviceKeystore = cryptoutil.NewDeviceKeystore(ks, nil)
 	}
 
 	if opts.RendezvousRotationBase.Nanoseconds() <= 0 {

@@ -27,6 +27,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
+	"go.uber.org/zap"
 	"moul.io/srand"
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
@@ -227,7 +228,8 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	for _, addr := range cfg.Addresses.API {
 		maddr, err := ma.NewMultiaddr(addr)
 		if err != nil {
-			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("unable to parse api addr `%s`: %w", addr, err))
+			logger.Error("unable to parse api addr", zap.Error(err), logutil.PrivateString("addr", addr))
+			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("unable to parse api addr: %w", err))
 		}
 
 		var l manet.Listener

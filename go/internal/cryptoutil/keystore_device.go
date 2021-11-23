@@ -14,7 +14,9 @@ import (
 	ipfscid "github.com/ipfs/go-cid"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -36,8 +38,13 @@ type DeviceKeystore interface {
 }
 
 type deviceKeystore struct {
-	ks keystore.Keystore
-	mu sync.Mutex
+	ks     keystore.Keystore
+	mu     sync.Mutex
+	logger *zap.Logger
+}
+
+type DeviceKeystoreOpts struct {
+	Logger *zap.Logger
 }
 
 const (
@@ -312,6 +319,7 @@ func (a *deviceKeystore) AttachmentSecret(cidBytes []byte) ([]byte, error) {
 func (a *deviceKeystore) AttachmentSecretPut(cidBytes []byte, s []byte) error {
 	sk, err := attachmentKeyUnmarshal(s)
 	if err != nil {
+		a.logger.Error("unable to unmarshal attachment secret", logutil.PrivateBinary("secret", s), logutil.PrivateBinary("cid-bytes", cidBytes), zap.Error(err))
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
@@ -393,9 +401,18 @@ func NewDeviceSecret() (*protocoltypes.DeviceSecret, error) {
 }
 
 // NewDeviceKeystore creates a new deviceKeystore instance, if the keystore does not hold an deviceKeystore key, one will be created when required
-func NewDeviceKeystore(ks keystore.Keystore) DeviceKeystore {
+func NewDeviceKeystore(ks keystore.Keystore, opts *DeviceKeystoreOpts) DeviceKeystore {
+	if opts == nil {
+		opts = &DeviceKeystoreOpts{}
+	}
+
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
+	}
+
 	return &deviceKeystore{
-		ks: ks,
+		ks:     ks,
+		logger: opts.Logger,
 	}
 }
 

@@ -114,7 +114,7 @@ func attachmentKeyMarshal(sk libp2pcrypto.PrivKey) ([]byte, error) {
 
 func attachmentKeyUnmarshal(s []byte) (libp2pcrypto.PrivKey, error) {
 	if len(s) <= len(attachmentKeyV0Prefix) || !bytes.Equal(s[:len(attachmentKeyV0Prefix)], []byte(attachmentKeyV0Prefix)) {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid secret prefix %s", s))
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid secret prefix"))
 	}
 	skBytes := s[len(attachmentKeyV0Prefix):]
 

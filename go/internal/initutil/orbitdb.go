@@ -49,7 +49,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 
 	var (
 		deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
-		deviceKS = cryptoutil.NewDeviceKeystore(deviceDS)
+		deviceKS = cryptoutil.NewDeviceKeystore(deviceDS, nil)
 		cache    = bertyprotocol.NewOrbitDatastoreCache(rootDS)
 	)
 

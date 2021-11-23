@@ -125,7 +125,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 
 	deviceKeystore := opts.DeviceKeystore
 	if deviceKeystore == nil {
-		deviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceDeviceKeystore))))
+		deviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceDeviceKeystore))), nil)
 	}
 
 	odb := opts.OrbitDB
@@ -397,7 +397,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 			ca, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsopts)
 
 			if j == 0 {
-				devKS = cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
+				devKS = cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
 			} else {
 				accSK, err := devKS.AccountPrivKey()
 				require.NoError(t, err, "deviceKeystore private key")
