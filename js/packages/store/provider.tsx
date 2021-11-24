@@ -39,6 +39,7 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 	const [eventEmitter] = React.useState(new EventEmitter())
 	const [debugMode, setDebugMode] = React.useState(false)
 	const [networkConfig, setNetworkConfig] = useState<beapi.account.INetworkConfig>({})
+	const [handledLink, setHandledLink] = useState<boolean>(false)
 
 	useEffect(() => {
 		console.log('State change:', state.appState + '\n')
@@ -231,6 +232,8 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 				removeReaction: callbackRemoveReaction,
 				networkConfig: networkConfig,
 				setNetworkConfig: setNetworkConfig,
+				handledLink,
+				setHandledLink,
 			}}
 		>
 			{children}

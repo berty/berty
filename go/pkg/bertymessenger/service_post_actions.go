@@ -30,6 +30,16 @@ func (p *serviceEventHandlerPostActions) ConversationJoined(conversation *messen
 		p.svc.logger.Warn("failed to activate group", zap.String("pk", messengerutil.B64EncodeBytes(gpkb)))
 	}
 
+	acc, err := p.svc.db.GetAccount()
+	if err != nil {
+		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	}
+	if acc.AutoSharePushTokenFlag {
+		if err := p.svc.sharePushTokenForConversation(conversation); err != nil {
+			p.svc.logger.Error("unable to send push token to conversation", zap.Error(err), zap.String("conversation-pk", conversation.PublicKey))
+		}
+	}
+
 	return nil
 }
 
@@ -54,11 +64,17 @@ func (p serviceEventHandlerPostActions) ContactConversationJoined(contact *messe
 		})...)
 	}
 
-	conversation, err := p.svc.db.GetConversationByPK(contact.ConversationPublicKey)
+	acc, err := p.svc.db.GetAccount()
 	if err != nil {
-		p.svc.logger.Error("unable to retrieve conversation", zap.Error(err), zap.String("contact-pk", contact.PublicKey))
-	} else if err := p.svc.sharePushTokenForConversation(conversation); err != nil {
-		p.svc.logger.Error("unable to send push token to contact", zap.Error(err), zap.String("contact-pk", contact.PublicKey))
+		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	}
+	if acc.AutoSharePushTokenFlag {
+		conversation, err := p.svc.db.GetConversationByPK(contact.ConversationPublicKey)
+		if err != nil {
+			p.svc.logger.Error("unable to retrieve conversation", zap.Error(err), zap.String("contact-pk", contact.PublicKey))
+		} else if err := p.svc.sharePushTokenForConversation(conversation); err != nil {
+			p.svc.logger.Error("unable to send push token to contact", zap.Error(err), zap.String("contact-pk", contact.PublicKey))
+		}
 	}
 
 	return nil

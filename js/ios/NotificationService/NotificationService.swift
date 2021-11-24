@@ -86,6 +86,7 @@ class NotificationService: UNNotificationServiceExtension, BertypushPrinterProto
     // TODO: implement display logic
     self.bestAttemptContent!.title = decrypted.memberDisplayName
     self.bestAttemptContent!.body = payload.message
+    self.bestAttemptContent!.userInfo["deepLink"] = decrypted.deepLink
     contentHandler(self.bestAttemptContent!)
   }
 

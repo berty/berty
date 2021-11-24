@@ -317,7 +317,7 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 
 	conversation, err := h.db.AddConversation(groupPK)
 	switch {
-	case errors.Is(err, errcode.ErrDBEntryAlreadyExists):
+	case errcode.Is(err, errcode.ErrDBEntryAlreadyExists):
 		h.logger.Info("conversation already in db")
 	case err != nil:
 		return errcode.ErrDBAddConversation.Wrap(err)

@@ -152,11 +152,16 @@ static void InitializeFlipper(UIApplication *application) {
   completionHandler(UNNotificationPresentationOptionNone);
 }
 
+// Called when a push notification is clicked on
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
 {
-  // if (<deeplink available in push notif>) {
-  //    openDeeplink()
-  // }
+  // If a deepLink exists in push notification, open it
+  if (response.notification.request.content.userInfo != nil) {
+    NSString *deepLink = response.notification.request.content.userInfo[@"deepLink"];
+    if (deepLink != nil) {
+      [[UIApplication sharedApplication] openURL:[NSURL URLWithString: deepLink] options:@{} completionHandler:nil];
+    }
+  }
 
   completionHandler();
 }

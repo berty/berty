@@ -404,6 +404,21 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, padding.bottom.small]}>
 			<ButtonSetting
+				name={'AutoPush'}
+				icon='options-outline'
+				iconSize={30}
+				iconColor={colors['background-header']}
+				toggled
+				varToggle={ctx.account?.autoSharePushTokenFlag === true}
+				actionToggle={() =>
+					ctx.client?.pushSetAutoShare({
+						enabled: !ctx.account?.autoSharePushTokenFlag,
+					})
+				}
+			>
+				{/* TODO bullet point in button */}
+			</ButtonSetting>
+			<ButtonSetting
 				name={t('settings.home.app-network-button.title')}
 				icon='options-outline'
 				iconSize={30}

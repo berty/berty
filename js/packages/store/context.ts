@@ -242,6 +242,8 @@ export const initialState = {
 
 	networkConfig: {},
 	setNetworkConfig: () => {},
+	handledLink: false,
+	setHandledLink: () => {},
 }
 
 export const MessengerContext = createContext<MessengerState>(initialState)

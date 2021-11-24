@@ -507,6 +507,7 @@ export const ChatFooter: React.FC<{
 									}
 									returnKeyType={isTablet ? 'send' : 'default'}
 									onSubmitEditing={() => isTablet && handlePressSend()}
+									autoFocus
 								/>
 							</View>
 						</Animated.View>

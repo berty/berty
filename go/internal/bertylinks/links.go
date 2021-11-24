@@ -100,6 +100,14 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 			machine.Encrypted.GroupLinkKeySig = link.Encrypted.GroupLinkKeySig
 		}
 		*qrOptimized = *link
+	case messengertypes.BertyLink_MessageV1Kind:
+		kind = "message"
+		machine.BertyMessageRef = &messengertypes.BertyLink_BertyMessageRef{
+			AccountID: link.BertyMessageRef.AccountID,
+			GroupPK:   link.BertyMessageRef.GroupPK,
+			MessageID: link.BertyMessageRef.MessageID,
+		}
+		*qrOptimized = *link
 	default:
 		return "", "", errcode.ErrInvalidInput
 	}
@@ -238,6 +246,11 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 			}
 			if name := human.Get("name"); name != "" && link.Encrypted.DisplayName == "" {
 				link.Encrypted.DisplayName = name
+			}
+		case "message":
+			link.Kind = messengertypes.BertyLink_MessageV1Kind
+			if link.Encrypted == nil {
+				link.BertyMessageRef = &messengertypes.BertyLink_BertyMessageRef{}
 			}
 		default:
 			return nil, errcode.ErrInvalidInput
@@ -467,11 +480,14 @@ func InternalLinkToMessage(accountID, groupPK, cid string) (string, error) {
 		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("message cid should not be empty"))
 	}
 
-	internal, _, err := MarshalLink(&messengertypes.BertyLink{BertyMessageRef: &messengertypes.BertyLink_BertyMessageRef{
-		AccountID: accountID,
-		GroupPK:   groupPK,
-		MessageID: cid,
-	}})
+	internal, _, err := MarshalLink(&messengertypes.BertyLink{
+		BertyMessageRef: &messengertypes.BertyLink_BertyMessageRef{
+			AccountID: accountID,
+			GroupPK:   groupPK,
+			MessageID: cid,
+		},
+		Kind: messengertypes.BertyLink_MessageV1Kind,
+	})
 	if err != nil {
 		return "", errcode.ErrSerialization.Wrap(err)
 	}

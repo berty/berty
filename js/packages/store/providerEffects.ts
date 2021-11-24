@@ -273,7 +273,7 @@ export const openingClients = async (
 						}),
 					})
 					.then(() => {
-						console.info(`Push token registred: ${responseJSON}`)
+						console.info(`Push token registered: ${responseJSON}`)
 					})
 					.catch(err => {
 						console.warn(`Push token registration failed: ${err}`)
