@@ -71,33 +71,33 @@
         "title": "",
         "add-members": "",
         "group-info": "",
-        "search-placeholder": "",
-        "continue": "",
-        "create-group": ""
+        "search-placeholder": "Αναζήτηση",
+        "continue": "ΣΥΝΕΧΕΙΑ",
+        "create-group": "ΔΗΜΙΟΥΡΓΙΑ ΟΜΑΔΑΣ"
       },
       "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
+        "placeholder": "Όνομα ομάδας",
+        "about": "Σχετικά με τις ομάδες",
+        "first-bullet-point": "Οποιοσδήποτε στην ομάδα μπορεί να την μετονομάσει ή να προσκαλέσει νέα μέλη",
+        "second-bullet-point": "Μπορείτε να προσκαλέσετε μέλη μέσω συνδέσμου",
+        "third-bullet-point": "Μπορείτε να αποχωρήσετε από αυτήν την ομάδα",
+        "fourth-bullet-point": "Δεν μπορείτε να διαγράψετε αυτήν την ομάδα",
+        "fifth-bullet-point": "Δεν μπορείτε να αφαιρέσετε ένα μέλος από αυτήν την ομάδα"
       },
       "conversations": {
-        "request-sent": "",
-        "draft": ""
+        "request-sent": "Το αίτημα έχει αποσταλεί. Σε εκκρεμότητα...",
+        "draft": "Πρόχειρο: {{message}}"
       }
     },
-    "suggestion-display-name-initial": "",
+    "suggestion-display-name-initial": "Πατήστε εδώ για προσθήκη",
     "configurations": {
       "network": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Ρυθμίσεις Δικτύου",
+        "desc": "Πατήστε εδώ για να ολοκληρώσετε τις ρυθμίσεις δικτύου"
       },
       "notification": {
-        "display-name": "",
-        "desc": ""
+        "display-name": "Ρυθμίσεις Ειδοποιήσεων",
+        "desc": "Πατήστε εδώ για ρυθμίσεις ειδοποιήσεων (push-notification)"
       },
       "replicate": {
         "display-name": "",
@@ -106,34 +106,34 @@
     },
     "network-options": {
       "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
+      "full-anon-mode": "Πλήρης Λειτουργία Anon",
+      "simple-tor-compatible": "Απλό Συμβατό Σύστημα TOR",
       "allow-expert-mode": "",
       "tor-compatible": {
-        "title": "",
+        "title": "Συμβατό Σύστημα TOR",
         "desc": ""
       },
       "full-anon": {
-        "title": "",
+        "title": "Πλήρης Λειτουργία Anon",
         "desc": "",
         "no-ip": "",
         "no-mc": "",
         "tor-only": ""
       },
-      "save": "",
+      "save": "ΑΠΟΘΗΚΕΥΣΗ",
       "skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
     },
     "scan": {
-      "title": ""
+      "title": "Σάρωση του κωδικού QR (QR Code)"
     }
   },
   "settings": {
     "home": {
       "check-list": {
-        "title": "",
+        "title": "Λίστα Ελέγχου {{tasksDone}}/{{totalTasks}}",
         "avatar": {
-          "title": "",
-          "desc": ""
+          "title": "Αλλαγή avatar",
+          "desc": "Ας ρυθμίσουμε μια εικόνα προφίλ για αυτόν τον λογαριασμό!"
         },
         "relay": {
           "title": "",
@@ -227,19 +227,19 @@
       "title": "",
       "qr-will-update": "",
       "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
+      "save": "Αποθήκευση αλλαγών",
+      "cancel": "Άκυρο",
+      "name-input-placeholder": "Όνομα...",
       "name-input-label": "Όνομα"
     },
     "notifications": {
       "title": "Ειδοποιήσεις",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "enabled-desc": "Έχετε ενεργοποιήσει τις ειδοποιήσεις!",
+      "disabled-desc": "Δεν έχετε ενεργοποιήσει τις ειδοποιήσεις για αυτήν την εφαρμογή",
+      "activate-button": "Ενεργοποίηση ειδοποιήσεων",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "Αίτημα επαφής",
+        "desc": "Ειδοποίηση κάθε φορά που κάποιος σας στέλνει αίτημα επαφής"
       },
       "messages-notifications-button": {
         "title": "Μηνύματα ειδοποιήσεων",
@@ -264,8 +264,8 @@
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
-      "activate-button": ""
+      "desc": "Το Bluetooth σας επιτρέπει να ανταλλάξετε μηνύματα χρησιμοποιώντας το Berty χωρίς πρόσβαση στο διαδίκτυο συνδέοντας τη συσκευή σας απευθείας με τους κοντινούς χρήστες",
+      "activate-button": "Ενεργοποίηση Bluetooth"
     },
     "mc": {
       "activate-button": ""
@@ -291,7 +291,7 @@
       "title": "",
       "first-desc": "",
       "desc": "",
-      "cancel-button": "",
+      "cancel-button": "ΑΚΥΡΟ",
       "delete-button": ""
     },
     "help": {
@@ -307,11 +307,11 @@
       "message-button": "",
       "group-button": "",
       "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
+      "ask-button": "Κάντε μια ερώτηση",
+      "report-button": "Αναφορά σφάλματος"
     },
     "about": {
-      "title": "",
+      "title": "Σχετικά με το Berty",
       "top-left-button": "",
       "top-right-button": "",
       "bottom-left-button": "",
@@ -320,14 +320,14 @@
       "privacy-button": "",
       "software-button": "",
       "contact-button": "",
-      "website-button": ""
+      "website-button": "Ιστοσελίδα"
     },
     "updates": {
-      "title": "",
+      "title": "Ενημερώσεις εφαρμογής",
       "current-tag": ""
     },
     "faq": {
-      "title": ""
+      "title": "Συχνές Ερωτήσεις"
     },
     "roadmap": {
       "title": ""
