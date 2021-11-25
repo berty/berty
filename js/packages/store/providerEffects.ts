@@ -28,6 +28,7 @@ import {
 import { accountService, storageRemove, storageGet } from './accountService'
 import { streamEventToAction } from './convert'
 import { storageKeyForAccount } from './utils'
+import { persistor } from '@berty-tech/redux/store'
 
 const { PushTokenRequester } = NativeModules
 
@@ -85,7 +86,9 @@ const getPersistentOptions = async (
 
 	try {
 		let opts = defaultPersistentOptions()
+		console.log('begin to get persistent data')
 		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
+		console.log('end to get persistent data')
 
 		if (storedOpts) {
 			const parsed = JSON.parse(storedOpts)
@@ -159,6 +162,7 @@ export const openingLocalSettings = async (
 	}
 
 	try {
+		persistor.persist()
 		await getPersistentOptions(dispatch, selectedAccount)
 		dispatch({ type: MessengerActions.SetStateOpeningMarkConversationsClosed })
 	} catch (e) {
