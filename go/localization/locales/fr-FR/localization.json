@@ -2,29 +2,29 @@
   "push": {
     "message": {},
     "error": {
-      "title": ""
+      "title": "échec du déchiffrement push"
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Envoyé un message vocal",
+      "bodyWithNumberOfMedia_other": "A envoyé %[1]v messages vocaux"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "A envoyé un gif",
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' gifs"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "A envoyé une photo",
       "bodyWithNumberOfMedia_other": ""
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "A envoyé un média",
       "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": ""
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Invitation au groupe '%[1]v'"
     },
     "memberNameChanged": {},
     "memberDetailsChanged": {},
