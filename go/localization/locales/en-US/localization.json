@@ -1,0 +1,33 @@
+{
+  "push": {
+    "message": {},
+    "error": {
+      "title": "decrypt push failed"
+    },
+    "voiceMessage": {
+      "bodyWithNumberOfMedia_one": "Sent a voice message",
+      "bodyWithNumberOfMedia_other": "Sent %[1]v voice messages"
+    },
+    "gif": {
+      "bodyWithNumberOfMedia_one": "Sent a gif",
+      "bodyWithNumberOfMedia_other": "Sent %[1]v gifs"
+    },
+    "photo": {
+      "bodyWithNumberOfMedia_one": "Sent a photo",
+      "bodyWithNumberOfMedia_other": "Sent %[1]v photos"
+    },
+    "media": {
+      "bodyWithNumberOfMedia_one": "Sent a media",
+      "bodyWithNumberOfMedia_other": "Sent %[1]v medias"
+    },
+    "reaction": {
+      "bodyWithDisplayNameAndEmoji": "%[1]v reacted with %[2]v to your message"
+    },
+    "groupInvitation": {
+      "bodyWithGroupName": "Invited you to '%[1]v' group"
+    },
+    "memberNameChanged": {},
+    "memberDetailsChanged": {},
+    "MemberPictureChanged": {}
+  }
+}
