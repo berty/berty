@@ -1,0 +1,33 @@
+{
+  "push": {
+    "message": {},
+    "error": {
+      "title": ""
+    },
+    "voiceMessage": {
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
+    },
+    "gif": {
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
+    },
+    "photo": {
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
+    },
+    "media": {
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
+    },
+    "reaction": {
+      "bodyWithDisplayNameAndEmoji": ""
+    },
+    "groupInvitation": {
+      "bodyWithGroupName": ""
+    },
+    "memberNameChanged": {},
+    "memberDetailsChanged": {},
+    "MemberPictureChanged": {}
+  }
+}
