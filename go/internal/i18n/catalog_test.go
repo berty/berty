@@ -49,11 +49,13 @@ func TestLocalizationFiles(t *testing.T) {
 		{enUS, "nested.key1", nil, "nested_message_1", assert.Equal},
 		{enUS, "keyWithValue", args("bart"), "bart just connected", assert.Equal},
 		{enUS, "keyWithMultipleValue", args("bart", "lisa"), "bart and lisa just connected", assert.Equal},
-		{enUS, "keyWithPluralCount", args(1), "there is 1 star in the sky", assert.Equal},
-		{enUS, "keyWithPluralCount", args(10), "there are 10 stars in the sky", assert.Equal},
-		{frFR, "keyWithPluralCount", args(11), "il y'a 11 etoiles dans le ciel", assert.Equal},
-		{frCA, "keyWithPluralCount", args(1), "il y'a 1 etoile dans le ciel", assert.Equal},
-		{esES, "nested.key1", args(11), "nested_message_1", assert.Equal},
+		{frFR, "nested.key1", nil, "nested_message_1-fr", assert.Equal},
+		{frCA, "nested.key1", nil, "nested_message_1-fr", assert.Equal},
+		{esES, "nested.key1", nil, "nested_message_1", assert.Equal},
+		{enUS, "keyWithPluralCount", []interface{}{1}, "there is 1 star in the sky", assert.Equal},
+		{enUS, "keyWithPluralCount", []interface{}{10}, "there are 10 stars in the sky", assert.Equal},
+		{frFR, "keyWithPluralCount", []interface{}{11}, "il y'a 11 etoiles dans le ciel", assert.Equal},
+		{frCA, "keyWithPluralCount", []interface{}{1}, "il y'a 1 etoile dans le ciel", assert.Equal},
 	}
 
 	cat := NewCatalog(enUS)

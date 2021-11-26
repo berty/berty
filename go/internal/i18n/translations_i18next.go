@@ -60,8 +60,18 @@ func (l *localizationsJSON) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+type pcases struct {
+	// Specific include Form such as `Zero` `One` `Two` `Few` `Many`, ``x=`, `x<`
+	specific []interface{}
+	// other is the last fallback
+	other []interface{}
+}
+
+// other should always be set as last item
+func (p *pcases) getSelectCases() []interface{} { return append(p.specific, p.other...) }
+
 func (l *localizationsJSON) generateCatalog(root string, tree map[string]*ContentNode) error {
-	selector := make(map[string][]interface{})
+	selector := make(map[string]*pcases)
 	for k, value := range tree {
 		keys := strings.Split(k, "_")
 		if len(keys) == 0 {
@@ -103,15 +113,24 @@ func (l *localizationsJSON) generateCatalog(root string, tree map[string]*Conten
 		// add it has plurals
 		cases, ok := selector[key]
 		if !ok {
-			cases = []interface{}{}
+			cases = &pcases{
+				specific: []interface{}{},
+				other:    []interface{}{},
+			}
 		}
 
-		cases = append(cases, form, value.Message)
+		if strings.ToLower(form) == "other" {
+			cases.other = []interface{}{form, value.Message}
+		} else {
+			cases.specific = []interface{}{form, value.Message}
+		}
+
 		selector[key] = cases
 	}
 
 	for key, cases := range selector {
-		if err := l.Builder.Set(l.Lang, key, plural.Selectf(1, "", cases...)); err != nil {
+		list := cases.getSelectCases()
+		if err := l.Builder.Set(l.Lang, key, plural.Selectf(1, "", list...)); err != nil {
 			return fmt.Errorf("unable to set plural key `%s`: %w", key, err)
 		}
 	}
