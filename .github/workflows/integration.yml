@@ -1,7 +1,10 @@
 name: Integration
 on:
-  schedule:
-    - cron: '0 * * * *'
+  # @moul: temporarily disabled.
+  #        the test is flappy and the current notification system make it not very useful.
+  #        I think that we should move the prod integration test to an external monitoring and only keep the CI/CD related integration test here.
+  #schedule:
+  #  - cron: '0 * * * *'
   push:
     tags:
       - v*
