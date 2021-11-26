@@ -53,6 +53,9 @@ import (
 	// required by gomobile
 	_ "golang.org/x/mobile/cmd/gomobile"
 
+	// required by i18n
+	_ "golang.org/x/text/cmd/gotext"
+
 	// required by Makefile
 	_ "golang.org/x/tools/cmd/goimports"
 

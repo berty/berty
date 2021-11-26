@@ -813,6 +813,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       pushData: {
                         type: "push.v1.DecryptedPush",
                         id: 1
+                      },
+                      push: {
+                        type: "push.v1.FormatedPush",
+                        id: 2
                       }
                     }
                   }
@@ -1048,6 +1052,30 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       MemberDetailsChanged: 11,
                       ReplyOptions: 12
                     }
+                  }
+                }
+              },
+              FormatedPush: {
+                fields: {
+                  pushType: {
+                    type: "DecryptedPush.PushType",
+                    id: 1
+                  },
+                  title: {
+                    type: "string",
+                    id: 2
+                  },
+                  subtitle: {
+                    type: "string",
+                    id: 3
+                  },
+                  body: {
+                    type: "string",
+                    id: 4
+                  },
+                  deepLink: {
+                    type: "string",
+                    id: 5
                   }
                 }
               }

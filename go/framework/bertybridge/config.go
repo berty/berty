@@ -2,6 +2,7 @@ package bertybridge
 
 // Config is used to build a bertybridge configuration using only simple types or types returned by the bertybridge package.
 type Config struct {
+	language       string
 	dLogger        NativeLoggerDriver
 	lc             LifeCycleDriver
 	notifdriver    NotificationDriver
@@ -24,3 +25,4 @@ func (c *Config) SetLifeCycleDriver(lc LifeCycleDriver)           { c.lc = lc }
 func (c *Config) SetKeystoreDriver(d NativeKeystoreDriver)        { c.keystoreDriver = d }
 func (c *Config) SetRootDir(rootdir string)                       { c.RootDirPath = rootdir }
 func (c *Config) AppendCLIArg(arg string)                         { c.CLIArgs = append(c.CLIArgs, arg) }
+func (c *Config) SetLanguage(lang string)                         { c.language = lang }

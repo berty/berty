@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"golang.org/x/text/language"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -41,6 +42,7 @@ type Bridge struct {
 	bleDriver      proximity.ProximityDriver
 	nbDriver       proximity.ProximityDriver
 	logger         *zap.Logger
+	lang           language.Tag
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
@@ -76,6 +78,14 @@ func NewBridge(config *Config) (*Bridge, error) {
 
 		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
 		initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
+	}
+
+	// check language
+	{
+		var err error
+		if b.lang, err = language.Parse(config.language); err != nil {
+			return nil, fmt.Errorf("unable to parse language `%s`: %w", config.language, err)
+		}
 	}
 
 	// setup notification manager
@@ -131,6 +141,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 		opts := account_svc.Options{
 			RootDirectory: config.RootDirPath,
 
+			Language:              b.lang,
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,
 			Logger:                b.logger,

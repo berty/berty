@@ -85,7 +85,6 @@ lint: go.lint
 
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
 
-
 go.tidy: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) mod tidy

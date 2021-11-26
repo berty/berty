@@ -107,6 +107,7 @@ require (
 	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
 	golang.org/x/sys v0.0.0-20211020174200-9d6173849985 // indirect
+	golang.org/x/text v0.3.7
 	golang.org/x/tools v0.1.7
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/grpc v1.42.0

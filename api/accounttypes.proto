@@ -333,6 +333,7 @@ message PushReceive {
   }
   message Reply {
     push.v1.DecryptedPush push_data = 1;
+    push.v1.FormatedPush push = 2;
   }
 }
 

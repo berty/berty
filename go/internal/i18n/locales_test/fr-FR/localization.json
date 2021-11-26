@@ -1,0 +1,11 @@
+{
+  "key1": "message1-fr",
+  "key2": "message2-fr",
+  "nested": {
+    "key1": "nested_message_1-fr"
+  },
+  "keyWithValue": "%s est connecte",
+  "keyWithMultipleValue": "%s et %s sont connectes",
+  "keyWithPluralCount_one": "il y'a %s etoile dans le ciel",
+  "keyWithPluralCount_other": "il y'a %d etoiles dans le ciel"
+}

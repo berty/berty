@@ -19,5 +19,9 @@ files: [
   {
   "source" : "/go/localization/locales/en-US/localization.json",
   "translation" : "/go/localization/locales/%locale%/%original_file_name%",
+  },
+  {
+   "source" : "/js/ios/Local/en-US.lproj/Localizable.strings",
+   "translation" : "/js/ios/Local/%locale%.lproj/%original_file_name%",
   }
 ]
