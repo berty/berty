@@ -133,7 +133,7 @@
         "title": "检查列表 {{tasksDone}}/{{totalTasks}}",
         "avatar": {
           "title": "更改您的头像",
-          "desc": ""
+          "desc": "让我们为此帐户设置个人资料图片！"
         },
         "relay": {
           "title": "配置中继",
@@ -203,7 +203,7 @@
       "bootstrap": "引导列表",
       "rdv": "",
       "static-relay": "静态中继器",
-      "anon-mode": ""
+      "anon-mode": "匿名"
     },
     "mode": {
       "title": "设置",
@@ -327,10 +327,10 @@
       "current-tag": "当前的"
     },
     "faq": {
-      "title": ""
+      "title": "常见问题"
     },
     "roadmap": {
-      "title": ""
+      "title": "路线图"
     },
     "devtools": {
       "title": "开发工具",
@@ -633,9 +633,9 @@
           "action-cancel": "取消"
         },
         "status": {
-          "datastore-found": "",
-          "datastore-not-found": "",
-          "ipfs-repo-found": "",
+          "datastore-found": "找到数据存储",
+          "datastore-not-found": "未找到数据存储",
+          "ipfs-repo-found": "找到 IPFS 配置文件",
           "ipfs-repo-not-found": "未找到 IPFS 配置文件",
           "messenger-db-found": "发现Messenger DB",
           "messenger-db-not-found": "未找到Messenger DB"
