@@ -99,6 +99,7 @@ func (l *localizationsJSON) generateCatalog(root string, tree map[string]*Conten
 
 		// @TODO(gfanton): validate form ?
 		form := keys[1]
+
 		// add it has plurals
 		cases, ok := selector[key]
 		if !ok {
