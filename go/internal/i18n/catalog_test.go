@@ -2,7 +2,6 @@ package i18n
 
 import (
 	"embed"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -51,7 +50,7 @@ func TestLocalizationFiles(t *testing.T) {
 		{enUS, "keyWithValue", args("bart"), "bart just connected", assert.Equal},
 		{enUS, "keyWithMultipleValue", args("bart", "lisa"), "bart and lisa just connected", assert.Equal},
 		{enUS, "keyWithPluralCount", args(1), "there is one star in the sky", assert.Equal},
-		{enUS, "keyWithPluralCount", args(10), "there are 100 stars in the sky", assert.Equal},
+		{enUS, "keyWithPluralCount", args(10), "there are 10 stars in the sky", assert.Equal},
 		{frFR, "keyWithPluralCount", args(11), "il y'a 11 etoiles dans le ciel", assert.Equal},
 		{frCA, "keyWithPluralCount", args(11), "il y'a 11 etoiles dans le ciel", assert.Equal},
 		{esES, "nested.key1", args(11), "nested_message_1", assert.Equal},
@@ -67,7 +66,6 @@ func TestLocalizationFiles(t *testing.T) {
 		}
 
 		msg := p.Sprintf(tc.key, args...)
-		fmt.Println(msg, tc.result)
 		tc.equality(t, tc.result, msg, "wrong translation for [%s] `%s`", tc.lang.String(), tc.key) // success
 	}
 }

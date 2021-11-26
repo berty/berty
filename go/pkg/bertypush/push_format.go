@@ -3,6 +3,7 @@ package bertypush
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"golang.org/x/text/message"
 
@@ -11,16 +12,13 @@ import (
 
 type formatedPayload map[string]string
 
-func (p formatedPayload) get(key string, v interface{}) error {
+func (p formatedPayload) get(key string, value *string) error {
 	res, ok := p[key]
 	if !ok {
 		return fmt.Errorf("payload key not found: %s", key)
 	}
 
-	if err := json.Unmarshal([]byte(res), v); err != nil {
-		return fmt.Errorf("unable to unmarshal `%s`: %w", key, err)
-	}
-
+	*value = res
 	return nil
 }
 
@@ -56,28 +54,43 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 		fmtpush.Body = printer.Sprintf("push.reaction.bodyWithDisplayNameAndEmoji", decrypted.MemberDisplayName, emoji)
 
 	case pushtypes.DecryptedPush_VoiceMessage:
-		mediasCount := 1
+		var mediasCount string
 		_ = payload.get("medias-count", &mediasCount)
+
+		var c int
+		if c, err = strconv.Atoi(mediasCount); err != nil {
+			c = 1
+		}
 
 		fmtpush.Title = decrypted.MemberDisplayName
 		fmtpush.Subtitle = ""
-		fmtpush.Body = printer.Sprintf("push.voiceMessage.bodyWithNumberOfMedia", mediasCount)
+		fmtpush.Body = printer.Sprintf("push.voiceMessage.bodyWithNumberOfMedia", c)
 
 	case pushtypes.DecryptedPush_Photo:
-		mediasCount := 1
+		var mediasCount string
 		_ = payload.get("medias-count", &mediasCount)
+
+		var c int
+		if c, err = strconv.Atoi(mediasCount); err != nil {
+			c = 1
+		}
 
 		fmtpush.Title = decrypted.MemberDisplayName
 		fmtpush.Subtitle = ""
-		fmtpush.Body = printer.Sprintf("push.photo.bodyWithNumberOfMedia", mediasCount)
+		fmtpush.Body = printer.Sprintf("push.photo.bodyWithNumberOfMedia", c)
 
 	case pushtypes.DecryptedPush_Gif:
-		mediasCount := 1
+		var mediasCount string
 		_ = payload.get("medias-count", &mediasCount)
+
+		var c int
+		if c, err = strconv.Atoi(mediasCount); err != nil {
+			c = 1
+		}
 
 		fmtpush.Title = decrypted.MemberDisplayName
 		fmtpush.Subtitle = ""
-		fmtpush.Body = printer.Sprintf("push.gif.bodyWithNumberOfMedia", mediasCount)
+		fmtpush.Body = printer.Sprintf("push.gif.bodyWithNumberOfMedia", c)
 
 	case pushtypes.DecryptedPush_GroupInvitation:
 		var groupName string

@@ -30,7 +30,7 @@ func (c *Config) SetLifeCycleDriver(lc LifeCycleDriver)           { c.lc = lc }
 func (c *Config) SetKeystoreDriver(d NativeKeystoreDriver)        { c.keystoreDriver = d }
 func (c *Config) SetRootDir(rootdir string)                       { c.RootDirPath = rootdir }
 func (c *Config) AppendCLIArg(arg string)                         { c.CLIArgs = append(c.CLIArgs, arg) }
-func (c *Config) SetPreferredLanguage(preferred string)           { c.languages = strings.Split(prefered, ",") }
+func (c *Config) SetPreferredLanguage(preferred string)           { c.languages = strings.Split(preferred, ",") }
 func (c *Config) AppendPreferredLanguage(preferred string) {
-	c.languages = append(c.languages, prefered)
+	c.languages = append(c.languages, preferred)
 }
