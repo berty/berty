@@ -36,7 +36,7 @@ type Service interface {
 	accounttypes.AccountServiceServer
 
 	// SetLanguage set the use language for translate
-	SetLanguage(l language.Tag)
+	SetPreferedLanguages(tags ...language.Tag)
 
 	// WakeUp should be used for background task or similar task.
 	WakeUp(ctx context.Context) error
@@ -54,7 +54,7 @@ type Service interface {
 type Options struct {
 	RootDirectory string
 
-	Language              language.Tag
+	Languages             []language.Tag
 	ServiceClientRegister bertybridge.ServiceClientRegister
 	LifecycleManager      *lifecycle.Manager
 	NotificationManager   notification.Manager
@@ -72,7 +72,7 @@ type service struct {
 	logger       *zap.Logger
 
 	rootdir           string
-	language          language.Tag
+	languages         []language.Tag
 	muService         sync.RWMutex
 	initManager       *initutil.Manager
 	lifecycleManager  *lifecycle.Manager
@@ -141,8 +141,8 @@ func (o *Options) applyDefault() {
 		o.Logger = zap.NewNop()
 	}
 
-	if o.Language.IsRoot() {
-		o.Language = language.MustParse("en-US")
+	if o.Languages == nil {
+		o.Languages = []language.Tag{}
 	}
 
 	if o.ServiceClientRegister == nil {
@@ -167,7 +167,7 @@ func NewService(opts *Options) (_ Service, err error) {
 
 	opts.applyDefault()
 	s = &service{
-		language:          opts.Language,
+		languages:         opts.Languages,
 		rootdir:           opts.RootDirectory,
 		rootCtx:           rootCtx,
 		rootCancel:        rootCancelCtx,
@@ -206,8 +206,8 @@ func NewService(opts *Options) (_ Service, err error) {
 	return s, nil
 }
 
-func (s *service) SetLanguage(l language.Tag) {
-	s.language = l
+func (s *service) SetPreferedLanguages(tags ...language.Tag) {
+	s.languages = tags
 }
 
 func (s *service) Close() (err error) {

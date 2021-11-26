@@ -1145,7 +1145,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 	}
 
 	cat := localization.Catalog()
-	p := cat.NewPrinter(s.language)
+	p := cat.NewPrinter(s.languages...)
 
 	formated := bertypush.FormatDecryptedPush(pushData, p)
 	return &accounttypes.PushReceive_Reply{

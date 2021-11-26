@@ -89,9 +89,14 @@ class GoBridge: NSObject {
             }
 
             config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
+
+            // get user preferred languages
+            let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
+
             config.setLifeCycleDriver(LifeCycleDriver.shared)
             config.setNotificationDriver(NotificationDriver.shared)
             config.setKeystoreDriver(KeystoreDriver.shared)
+            config.setPreferedLanguage(preferredLanguages)
 
             // @TODO(gfanton): make this dir in golang
             var isDirectory: ObjCBool = true

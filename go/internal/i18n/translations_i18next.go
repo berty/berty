@@ -89,6 +89,10 @@ func (l *localizationsJSON) generateCatalog(root string, tree map[string]*Conten
 			continue
 		}
 
+		if value.Message == "" {
+			continue // skip empty value
+		}
+
 		// is it regular message ?
 		if len(keys) == 1 {
 			l.Builder.SetString(l.Lang, key, value.Message)

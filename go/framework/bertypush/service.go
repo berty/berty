@@ -1,11 +1,11 @@
 package bertypush
 
 import (
-	"fmt"
-	"sync"
+	"strings"
 
 	"go.uber.org/zap"
 	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/localization"
@@ -23,46 +23,54 @@ const (
 	StorageKeyName        = accountutils.StorageKeyName
 )
 
-var (
-	mulang      sync.RWMutex
-	currentLang = language.MustParse("en-US")
-)
+type Config struct {
+	languages []string
+	logger    LoggerDriver
+}
 
-func SetLanguage(slang string) error {
-	mulang.Lock()
-	defer mulang.Lock()
+func (c *Config) SetLoggerPrinter(p LoggerDriver)    { c.logger = p }
+func (c *Config) SetPreferedLanguages(lang string)   { c.languages = strings.Split(lang, ",") }
+func (c *Config) AppendPreferedLanguage(lang string) { c.languages = append(c.languages, lang) }
 
-	lang, err := language.Parse(slang)
-	if err != nil {
-		return fmt.Errorf("unable to parse language `%s`: %w", lang, err)
+type PushStandalone struct {
+	logger  *zap.Logger
+	printer *message.Printer
+}
+
+func NewPushStandalone(c *Config) *PushStandalone {
+	logger := zap.NewNop()
+
+	if c.logger != nil {
+		logger = newLogger(c.logger)
 	}
 
-	currentLang = lang
-	return nil
+	tags := []language.Tag{}
+	fields := []string{}
+	for _, lang := range c.languages {
+		tag, err := language.Parse(lang)
+		if err != nil {
+			logger.Warn("unable to parse language", zap.String("lang", lang), zap.Error(err))
+			continue
+		}
+
+		fields = append(fields, tag.String())
+		tags = append(tags, tag)
+	}
+	logger.Info("user preferred language loaded", zap.Strings("language", fields))
+
+	catalog := localization.Catalog()
+	return &PushStandalone{
+		printer: catalog.NewPrinter(tags...),
+		logger:  logger,
+	}
 }
 
-func PushDecryptStandaloneWithLogger(p Printer, rootDir string, inputB64 string, storageKey []byte) (*FormatedPush, error) {
-	logger := newLogger(p)
-	return pushDecryptStandalone(logger, rootDir, inputB64, storageKey)
-}
-
-func PushDecryptStandalone(rootDir string, inputB64 string, storageKey []byte) (*FormatedPush, error) {
-	logger := zap.NewNop()
-	return pushDecryptStandalone(logger, rootDir, inputB64, storageKey)
-}
-
-func pushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, storageKey []byte) (*FormatedPush, error) {
-	decrypted, err := bertypush.PushDecryptStandalone(logger, rootDir, inputB64, storageKey)
+func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, storageKey []byte) (*FormatedPush, error) {
+	decrypted, err := bertypush.PushDecryptStandalone(s.logger, rootDir, inputB64, storageKey)
 	if err != nil {
 		return nil, err
 	}
 
-	catalog := localization.Catalog()
-
-	mulang.RLock()
-	p := catalog.NewPrinter(currentLang)
-	mulang.RUnlock()
-
-	formated := bertypush.FormatDecryptedPush(decrypted, p)
+	formated := bertypush.FormatDecryptedPush(decrypted, s.printer)
 	return (*FormatedPush)(formated), err
 }

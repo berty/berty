@@ -7,14 +7,14 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type Printer interface {
+type LoggerDriver interface {
 	Print(string)
 }
 
 type nativeLogger struct {
 	zapcore.Core
 	enc zapcore.Encoder
-	p   Printer
+	p   LoggerDriver
 }
 
 func (mc *nativeLogger) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcore.CheckedEntry {
@@ -31,7 +31,7 @@ func (mc *nativeLogger) Write(entry zapcore.Entry, fields []zapcore.Field) error
 	return nil
 }
 
-func newLogger(p Printer) *zap.Logger {
+func newLogger(p LoggerDriver) *zap.Logger {
 	if p == nil {
 		return zap.NewNop()
 	}

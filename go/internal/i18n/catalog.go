@@ -24,9 +24,10 @@ func NewCatalog(defaultlang language.Tag) *Catalog {
 	}
 }
 
-func (c *Catalog) NewPrinter(lang language.Tag) *message.Printer {
+func (c *Catalog) NewPrinter(preferedlang ...language.Tag) *message.Printer {
 	var cat catalog.Catalog = c.Builder
-	tag, _ := language.MatchStrings(cat.Matcher(), lang.String(), c.fallback.String())
+	preferedlang = append(preferedlang, c.fallback)
+	tag, _, _ := cat.Matcher().Match(preferedlang...)
 	return message.NewPrinter(tag, message.Catalog(cat))
 }
 

@@ -42,7 +42,7 @@ type Bridge struct {
 	bleDriver      proximity.ProximityDriver
 	nbDriver       proximity.ProximityDriver
 	logger         *zap.Logger
-	lang           language.Tag
+	langtags       []language.Tag
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
@@ -80,12 +80,21 @@ func NewBridge(config *Config) (*Bridge, error) {
 		initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
 	}
 
-	// check language
+	// parse language
 	{
-		var err error
-		if b.lang, err = language.Parse(config.language); err != nil {
-			return nil, fmt.Errorf("unable to parse language `%s`: %w", config.language, err)
+		fields := []string{}
+		for _, lang := range config.languages {
+			tag, err := language.Parse(lang)
+			if err != nil {
+				b.logger.Warn("unable to parse language", zap.String("lang", lang), zap.Error(err))
+				continue
+			}
+
+			fields = append(fields, tag.String())
+			b.langtags = append(b.langtags, tag)
 		}
+
+		b.logger.Info("user preferred language loaded", zap.Strings("language", fields))
 	}
 
 	// setup notification manager
@@ -141,7 +150,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 		opts := account_svc.Options{
 			RootDirectory: config.RootDirPath,
 
-			Language:              b.lang,
+			Languages:             b.langtags,
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,
 			Logger:                b.logger,
