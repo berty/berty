@@ -4,8 +4,8 @@
   "nested": {
     "key1": "nested_message_1-fr"
   },
-  "keyWithValue": "%s est connecte",
-  "keyWithMultipleValue": "%s et %s sont connectes",
-  "keyWithPluralCount_one": "il y'a %s etoile dans le ciel",
-  "keyWithPluralCount_other": "il y'a %d etoiles dans le ciel"
+  "keyWithValue": "%[1]v est connecte",
+  "keyWithMultipleValue": "%[1]v et %[2]v sont connectes",
+  "keyWithPluralCount_one": "il y'a une etoile dans le ciel",
+  "keyWithPluralCount_other": "il y'a %[1]v etoiles dans le ciel"
 }

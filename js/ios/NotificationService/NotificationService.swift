@@ -31,7 +31,7 @@ class NotificationService: UNNotificationServiceExtension {
     override init() {
         let config = BertypushConfig()
         let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
-        config.setPreferedLanguages(preferredLanguages)
+        config.setPreferredLanguages(preferredLanguages)
         config.setLoggerPrinter(LoggerDriver(oslogger))
         pushStandalone = BertypushNewPushStandalone(config)!
         super.init()

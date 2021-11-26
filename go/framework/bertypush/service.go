@@ -28,9 +28,9 @@ type Config struct {
 	logger    LoggerDriver
 }
 
-func (c *Config) SetLoggerPrinter(p LoggerDriver)    { c.logger = p }
-func (c *Config) SetPreferedLanguages(lang string)   { c.languages = strings.Split(lang, ",") }
-func (c *Config) AppendPreferedLanguage(lang string) { c.languages = append(c.languages, lang) }
+func (c *Config) SetLoggerPrinter(p LoggerDriver)     { c.logger = p }
+func (c *Config) SetPreferredLanguages(lang string)   { c.languages = strings.Split(lang, ",") }
+func (c *Config) AppendPreferredLanguage(lang string) { c.languages = append(c.languages, lang) }
 
 type PushStandalone struct {
 	logger  *zap.Logger

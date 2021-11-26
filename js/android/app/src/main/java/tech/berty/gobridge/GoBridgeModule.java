@@ -118,7 +118,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
       // load and set user preferred language
       String tags = Resources.getSystem().getConfiguration().getLocales().toLanguageTags();
-      config.setPreferedLanguage(tags);
+      config.setPreferredLanguage(tags);
 
       // set root dir
       Log.i(TAG, "root dir: " + rootDir.getAbsolutePath());

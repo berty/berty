@@ -47,10 +47,6 @@ type localizationsJSON struct {
 	Lang    language.Tag
 }
 
-type localizationJSON struct {
-	Plural map[plural.Form]string
-}
-
 func (l *localizationsJSON) UnmarshalJSON(b []byte) error {
 	tree := make(map[string]*ContentNode)
 	if err := json.Unmarshal(b, &tree); err != nil {
@@ -95,7 +91,9 @@ func (l *localizationsJSON) generateCatalog(root string, tree map[string]*Conten
 
 		// is it regular message ?
 		if len(keys) == 1 {
-			l.Builder.SetString(l.Lang, key, value.Message)
+			if err := l.Builder.SetString(l.Lang, key, value.Message); err != nil {
+				return fmt.Errorf("unable to set string key `%s`: %w", key, err)
+			}
 			continue
 		}
 

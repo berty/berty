@@ -5,7 +5,7 @@
     "key1" : "nested_message_1"
   },
   "keyWithValue": "%[1]v just connected",
-  "keyWithMultipleValue": "%s and %s just connected",
+  "keyWithMultipleValue": "%[1]v and %[2]v just connected",
   "keyWithPluralCount_one": "there is one star in the sky",
-  "keyWithPluralCount_other": "there are %d stars in the sky"
+  "keyWithPluralCount_other": "there are %[1]v stars in the sky"
 }

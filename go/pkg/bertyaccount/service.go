@@ -36,7 +36,7 @@ type Service interface {
 	accounttypes.AccountServiceServer
 
 	// SetLanguage set the use language for translate
-	SetPreferedLanguages(tags ...language.Tag)
+	SetPreferredLanguages(tags ...language.Tag)
 
 	// WakeUp should be used for background task or similar task.
 	WakeUp(ctx context.Context) error
@@ -206,7 +206,7 @@ func NewService(opts *Options) (_ Service, err error) {
 	return s, nil
 }
 
-func (s *service) SetPreferedLanguages(tags ...language.Tag) {
+func (s *service) SetPreferredLanguages(tags ...language.Tag) {
 	s.languages = tags
 }
 

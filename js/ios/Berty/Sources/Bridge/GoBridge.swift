@@ -96,7 +96,7 @@ class GoBridge: NSObject {
             config.setLifeCycleDriver(LifeCycleDriver.shared)
             config.setNotificationDriver(NotificationDriver.shared)
             config.setKeystoreDriver(KeystoreDriver.shared)
-            config.setPreferedLanguage(preferredLanguages)
+            config.setPreferredLanguage(preferredLanguages)
 
             // @TODO(gfanton): make this dir in golang
             var isDirectory: ObjCBool = true
