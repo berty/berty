@@ -6,41 +6,57 @@ import (
 	"runtime"
 	"time"
 
-	"go.uber.org/zap"
-
+	push "berty.tech/berty/v2/go/framework/bertypush"
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
-	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
-
-type DecryptedPush pushtypes.DecryptedPush
 
 const (
 	ServicePushPayloadKey = pushtypes.ServicePushPayloadKey
 	StorageKeyName        = accountutils.StorageKeyName
 )
 
-func PushDecryptStandaloneWithLogger(p Printer, rootDir string, inputB64 string, storageKey []byte) (*DecryptedPush, error) {
-	logger := newPrinterLogger(p)
-	return pushDecryptStandalone(logger, rootDir, inputB64, storageKey)
+type (
+	DecryptedPush pushtypes.DecryptedPush
+	FormatedPush  pushtypes.FormatedPush
+)
+
+type PushConfig struct {
+	p *push.Config
 }
 
-func PushDecryptStandalone(rootDir string, inputB64 string, storageKey []byte) (*DecryptedPush, error) {
-	logger := zap.NewNop()
-	return pushDecryptStandalone(logger, rootDir, inputB64, storageKey)
+func NewPushConfig() *PushConfig {
+	return &PushConfig{
+		p: &push.Config{},
+	}
 }
 
-func pushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, storageKey []byte) (*DecryptedPush, error) {
-	decrypted, err := bertypush.PushDecryptStandalone(logger, rootDir, inputB64, storageKey)
+func (c *PushConfig) SetPreferredLanguages(lang string) { c.p.SetPreferredLanguages(lang) }
+func (c *PushConfig) SetDriverLogger(logger NativeLoggerDriver) {
+	l := newLogger(logger)
+	c.p.SetLogger(l)
+}
+
+type PushStandalone struct {
+	p *push.PushStandalone
+}
+
+func NewPushStandalone(c *PushConfig) *PushStandalone {
+	s := push.NewPushStandalone(c.p)
+	return &PushStandalone{s}
+}
+
+func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, storageKey []byte) (*FormatedPush, error) {
+	f, err := s.p.Decrypt(rootDir, inputB64, storageKey)
 	if err != nil {
 		return nil, err
 	}
 
-	return (*DecryptedPush)(decrypted), nil
+	return (*FormatedPush)(f), nil
 }
 
-func (b *Bridge) PushDecrypt(inputB64 string) (*DecryptedPush, error) {
+func (b *Bridge) PushDecrypt(inputB64 string) (*FormatedPush, error) {
 	if b == nil || b.serviceAccount == nil {
 		return nil, fmt.Errorf("unable to call push receive on an empty bridge/serviceAccount instance")
 	}
@@ -66,6 +82,6 @@ func (b *Bridge) PushDecrypt(inputB64 string) (*DecryptedPush, error) {
 		return nil, err
 	}
 
-	decrypt := res.GetPushData()
-	return (*DecryptedPush)(decrypt), nil
+	formatpush := res.GetPush()
+	return (*FormatedPush)(formatpush), nil
 }

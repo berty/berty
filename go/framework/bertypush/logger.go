@@ -11,24 +11,40 @@ type LoggerDriver interface {
 	Print(string)
 }
 
-type nativeLogger struct {
+type nativeCore struct {
 	zapcore.Core
-	enc zapcore.Encoder
-	p   LoggerDriver
+	enc    zapcore.Encoder
+	logger LoggerDriver
 }
 
-func (mc *nativeLogger) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcore.CheckedEntry {
-	return checked.AddCore(entry, mc)
+func NewNativeDriverCore(core zapcore.Core, enc zapcore.Encoder, nlogger LoggerDriver) zapcore.Core {
+	return &nativeCore{
+		Core:   core,
+		enc:    enc,
+		logger: nlogger,
+	}
 }
 
-func (mc *nativeLogger) Write(entry zapcore.Entry, fields []zapcore.Field) error {
-	buff, err := mc.enc.EncodeEntry(entry, fields)
+func (n *nativeCore) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcore.CheckedEntry {
+	return checked.AddCore(entry, n)
+}
+
+func (n *nativeCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
+	buff, err := n.enc.EncodeEntry(entry, fields)
 	if err != nil {
 		return err
 	}
 
-	mc.p.Print(buff.String())
+	n.logger.Print(buff.String())
 	return nil
+}
+
+func (n *nativeCore) With(fields []zapcore.Field) zapcore.Core {
+	return &nativeCore{
+		Core:   n.Core.With(fields),
+		enc:    n.enc,
+		logger: n.logger,
+	}
 }
 
 func newLogger(p LoggerDriver) *zap.Logger {
@@ -44,16 +60,14 @@ func newLogger(p LoggerDriver) *zap.Logger {
 	nativeEncoderConfig.CallerKey = ""
 
 	nativeEncoder := zapcore.NewConsoleEncoder(nativeEncoderConfig)
-	nativeOutput := zapcore.Lock(os.Stderr)
+	nativeOutput := zapcore.AddSync(os.Stdout)
 
 	nativeLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool { return lvl >= zapcore.DebugLevel })
-	nativeCore := &nativeLogger{
-		Core: zapcore.NewCore(nativeEncoder, nativeOutput, nativeLevel),
-		enc:  nativeEncoder,
-		p:    p,
-	}
+	core := zapcore.NewCore(nativeEncoder, nativeOutput, nativeLevel)
+	ncore := NewNativeDriverCore(core, nativeEncoder, p)
 
 	// create logger
-	logger := zap.New(nativeCore)
+	logger := zap.New(ncore)
+
 	return logger
 }

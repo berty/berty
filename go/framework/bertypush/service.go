@@ -13,10 +13,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-type (
-	DecryptedPush pushtypes.DecryptedPush
-	FormatedPush  pushtypes.FormatedPush
-)
+type FormatedPush pushtypes.FormatedPush
 
 const (
 	ServicePushPayloadKey = pushtypes.ServicePushPayloadKey
@@ -25,12 +22,19 @@ const (
 
 type Config struct {
 	languages []string
-	logger    LoggerDriver
+	logger    *zap.Logger
 }
 
-func (c *Config) SetLoggerPrinter(p LoggerDriver)     { c.logger = p }
-func (c *Config) SetPreferredLanguages(lang string)   { c.languages = strings.Split(lang, ",") }
-func (c *Config) AppendPreferredLanguage(lang string) { c.languages = append(c.languages, lang) }
+func NewConfig() *Config {
+	return &Config{
+		languages: []string{},
+		logger:    zap.NewNop(),
+	}
+}
+
+func (c *Config) SetLogger(l *zap.Logger)           { c.logger = l }
+func (c *Config) SetLoggerDriver(p LoggerDriver)    { c.logger = newLogger(p) }
+func (c *Config) SetPreferredLanguages(lang string) { c.languages = strings.Split(lang, ",") }
 
 type PushStandalone struct {
 	logger  *zap.Logger
@@ -41,7 +45,7 @@ func NewPushStandalone(c *Config) *PushStandalone {
 	logger := zap.NewNop()
 
 	if c.logger != nil {
-		logger = newLogger(c.logger)
+		logger = c.logger
 	}
 
 	tags := []language.Tag{}

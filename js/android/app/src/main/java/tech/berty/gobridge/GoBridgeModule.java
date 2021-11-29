@@ -98,7 +98,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   // Protocol //
   //////////////
 
-  @RequiresApi(api = Build.VERSION_CODES.N)
   @ReactMethod
   public void initBridge(Promise promise) {
     try {
@@ -117,8 +116,13 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       config.setLoggerDriver(logger);
 
       // load and set user preferred language
-      String tags = Resources.getSystem().getConfiguration().getLocales().toLanguageTags();
-      config.setPreferredLanguage(tags);
+      String tags = null;
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+          tags = Resources.getSystem().getConfiguration().getLocales().toLanguageTags();
+      } else {
+          tags = Resources.getSystem().getConfiguration().locale.toLanguageTag();
+      }
+      config.setPreferredLanguages(tags);
 
       // set root dir
       Log.i(TAG, "root dir: " + rootDir.getAbsolutePath());

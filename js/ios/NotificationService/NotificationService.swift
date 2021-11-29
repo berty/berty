@@ -29,10 +29,10 @@ class NotificationService: UNNotificationServiceExtension {
     var bestAttemptContent: UNMutableNotificationContent?
 
     override init() {
-        let config = BertypushConfig()
+        let config = BertypushNewConfig()!
         let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
         config.setPreferredLanguages(preferredLanguages)
-        config.setLoggerPrinter(LoggerDriver(oslogger))
+        config.setLoggerDriver(LoggerDriver(oslogger))
         pushStandalone = BertypushNewPushStandalone(config)!
         super.init()
     }
