@@ -69,7 +69,7 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 	}
 
 	if n.DeviceKeystore == nil {
-		n.DeviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))))
+		n.DeviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))), nil)
 	}
 
 	if n.RendezvousRotationBase.Nanoseconds() <= 0 {

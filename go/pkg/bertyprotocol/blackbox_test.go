@@ -23,7 +23,7 @@ func TestTestingClient_impl(t *testing.T) {
 
 	client, cleanup := bertyprotocol.TestingService(ctx, t, bertyprotocol.Opts{
 		Logger:         logger,
-		DeviceKeystore: cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore()),
+		DeviceKeystore: cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil),
 	})
 	defer cleanup()
 

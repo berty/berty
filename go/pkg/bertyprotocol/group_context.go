@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
@@ -66,6 +67,6 @@ func NewContextGroup(group *protocoltypes.Group, metadataStore *MetadataStore, m
 		messageStore:    messageStore,
 		messageKeystore: messageKeystore,
 		memberDevice:    memberDevice,
-		logger:          logger.With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(group.PublicKey)))),
+		logger:          logger.With(logutil.PrivateString("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(group.PublicKey)))),
 	}
 }

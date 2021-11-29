@@ -9,6 +9,8 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	ps_pb "github.com/libp2p/go-libp2p-pubsub/pb"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 // PubsubMonitor is an EventTracer
@@ -87,7 +89,7 @@ func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 		if err != nil {
 			pt.logger.Warn("unable to parse peerid",
 				zap.String("type", e.GetType().String()),
-				zap.String("topic", e.GetGraft().GetTopic()))
+				logutil.PrivateString("topic", e.GetGraft().GetTopic()))
 			return
 		}
 
@@ -106,7 +108,7 @@ func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 		if err != nil {
 			pt.logger.Warn("unable to parse peerid",
 				zap.String("type", e.GetType().String()),
-				zap.String("topic", e.GetGraft().GetTopic()))
+				logutil.PrivateString("topic", e.GetGraft().GetTopic()))
 			return
 		}
 

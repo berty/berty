@@ -5,6 +5,8 @@ import (
 	"sync"
 
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 // RingBufferMap is a map of string:ringBuffer(aka circular buffer)
@@ -35,7 +37,7 @@ func NewRingBufferMap(logger *zap.Logger, size int) *RingBufferMap {
 
 // Add adds the payload into a circular cache
 func (rbm *RingBufferMap) Add(peerID string, payload []byte) {
-	rbm.logger.Debug("Add", zap.String("peerID", peerID), zap.Binary("payload", payload))
+	rbm.logger.Debug("Add", logutil.PrivateString("peerID", peerID), logutil.PrivateBinary("payload", payload))
 
 	var rBuffer *ringBuffer
 
@@ -60,7 +62,7 @@ func (rbm *RingBufferMap) Add(peerID string, payload []byte) {
 
 // Flush puts the cache contents into a chan and clears it
 func (rbm *RingBufferMap) Flush(peerID string) <-chan []byte {
-	rbm.logger.Debug("flushCache", zap.String("peerID", peerID))
+	rbm.logger.Debug("flushCache", logutil.PrivateString("peerID", peerID))
 
 	c := make(chan []byte)
 
@@ -78,7 +80,7 @@ func (rbm *RingBufferMap) Flush(peerID string) <-chan []byte {
 					continue
 				}
 
-				rbm.logger.Debug("flushCache", zap.Binary("payload", payload))
+				rbm.logger.Debug("flushCache", logutil.PrivateBinary("payload", payload))
 				c <- payload
 
 				rBuffer.buffer.Value = nil

@@ -12,7 +12,7 @@ import (
 
 func Test_New_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 	ks := keystore.NewMemKeystore()
-	acc := cryptoutil.NewDeviceKeystore(ks)
+	acc := cryptoutil.NewDeviceKeystore(ks, nil)
 	assert.NotNil(t, acc)
 
 	sk1, err := acc.AccountPrivKey()
@@ -42,7 +42,7 @@ func Test_New_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 
 func Test_NewWithExistingKeys_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := cryptoutil.NewDeviceKeystore(ks1)
+	acc1 := cryptoutil.NewDeviceKeystore(ks1, nil)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)
@@ -76,7 +76,7 @@ func Test_NewWithExistingKeys_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 
 func Test_DevicePrivKey(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := cryptoutil.NewDeviceKeystore(ks1)
+	acc1 := cryptoutil.NewDeviceKeystore(ks1, nil)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)
@@ -104,14 +104,14 @@ func Test_DevicePrivKey(t *testing.T) {
 
 func Test_ContactGroupPrivKey(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := cryptoutil.NewDeviceKeystore(ks1)
+	acc1 := cryptoutil.NewDeviceKeystore(ks1, nil)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)
 	assert.NotNil(t, sk1)
 
 	ks2 := keystore.NewMemKeystore()
-	acc2 := cryptoutil.NewDeviceKeystore(ks2)
+	acc2 := cryptoutil.NewDeviceKeystore(ks2, nil)
 
 	sk2, err := acc2.AccountPrivKey()
 	assert.NoError(t, err)
@@ -134,7 +134,7 @@ func Test_MemberDeviceForGroup_contact(t *testing.T) {
 
 func Test_MemberDeviceForGroup_multimember(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := cryptoutil.NewDeviceKeystore(ks1)
+	acc1 := cryptoutil.NewDeviceKeystore(ks1, nil)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)

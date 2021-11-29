@@ -25,6 +25,7 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"
@@ -200,7 +201,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		shortPkStr = shortPkStr[:shortLen]
 	}
 
-	opts.Logger = opts.Logger.With(zap.String("a", shortPkStr))
+	opts.Logger = opts.Logger.With(logutil.PrivateString("a", shortPkStr))
 
 	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
@@ -381,7 +382,7 @@ func (svc *service) subscribeToMetadata(tctx context.Context, gpkb []byte) error
 			cid, err := ipfscid.Cast(gme.EventContext.ID)
 			eventHandler := svc.eventHandler
 			if err != nil {
-				svc.logger.Error("failed to cast cid for logging", zap.Binary("cid-bytes", gme.EventContext.ID))
+				svc.logger.Error("failed to cast cid for logging", logutil.PrivateBinary("cid-bytes", gme.EventContext.ID))
 				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
 				eventHandler = eventHandler.WithContext(ctx)
 			} else {
@@ -437,7 +438,7 @@ func (svc *service) subscribeToMessages(tctx context.Context, gpkb []byte) error
 			cid, err := ipfscid.Cast(gme.EventContext.ID)
 			eventHandler := svc.eventHandler
 			if err != nil {
-				svc.logger.Error("failed to cast cid for logging", zap.String("type", am.GetType().String()), zap.Binary("cid-bytes", gme.EventContext.ID))
+				svc.logger.Error("failed to cast cid for logging", zap.String("type", am.GetType().String()), logutil.PrivateBinary("cid-bytes", gme.EventContext.ID))
 				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
 				eventHandler = eventHandler.WithContext(ctx)
 			} else {
@@ -710,7 +711,7 @@ func (svc *service) sharePushTokenForConversation(conversation *mt.Conversation)
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation supplied"))
 	}
 
-	svc.logger.Info("sharing push token", zap.String("conversation-pk", conversation.PublicKey))
+	svc.logger.Info("sharing push token", logutil.PrivateString("conversation-pk", conversation.PublicKey))
 
 	account, err := svc.db.GetAccount()
 	if err != nil {
@@ -810,7 +811,7 @@ func (svc *service) pushDeviceTokenBroadcast(account *mt.Account) error {
 
 	for _, c := range conversations {
 		if err := svc.sharePushTokenForConversationInternal(c, server, token); err != nil {
-			svc.logger.Error("unable to share push token on conversation", zap.String("conversation-pk", c.PublicKey), zap.Error(err))
+			svc.logger.Error("unable to share push token on conversation", logutil.PrivateString("conversation-pk", c.PublicKey), zap.Error(err))
 		}
 	}
 

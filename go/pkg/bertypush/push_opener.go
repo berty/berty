@@ -14,6 +14,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -46,7 +47,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 
 	link, err := bertylinks.InternalLinkToMessage(accountData.AccountID, rawPushData.Interaction.ConversationPublicKey, rawPushData.Interaction.CID)
 	if err != nil {
-		logger.Error("unable to create link for interaction", zap.String("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
+		logger.Error("unable to create link for interaction", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
 		link = bertylinks.LinkInternalPrefix
 	}
 
@@ -72,7 +73,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		m := &messengertypes.AppMessage_UserMessage{}
 		err := proto.Unmarshal(rawPushData.Interaction.Payload, m)
 		if err != nil {
-			logger.Error("unable to unmarshal user message", zap.String("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
+			logger.Error("unable to unmarshal user message", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
 			break
 		}
 
@@ -110,7 +111,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		r := &messengertypes.AppMessage_UserReaction{}
 		err := proto.Unmarshal(rawPushData.Interaction.Payload, r)
 		if err != nil {
-			logger.Error("unable to unmarshal reaction", zap.String("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
+			logger.Error("unable to unmarshal reaction", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
 			break
 		}
 
@@ -122,18 +123,18 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		invitation := &messengertypes.AppMessage_GroupInvitation{}
 		err := proto.Unmarshal(rawPushData.Interaction.Payload, invitation)
 		if err != nil {
-			logger.Error("unable to unmarshal group invitation", zap.String("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
+			logger.Error("unable to unmarshal group invitation", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
 			break
 		}
 
 		link, err := bertylinks.UnmarshalLink(invitation.Link, nil)
 		if err != nil {
-			logger.Error("unable to unmarshal group invitation link", zap.String("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
+			logger.Error("unable to unmarshal group invitation link", logutil.PrivateString("link", invitation.Link), logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
 			break
 		}
 
 		if link.Kind != messengertypes.BertyLink_GroupV1Kind {
-			logger.Error("invalid group invitation link received", zap.String("cid", string(rawPushData.ProtocolData.Message.CID)), zap.String("link-kind", link.Kind.String()))
+			logger.Error("invalid group invitation link received", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.String("link-kind", link.Kind.String()))
 			break
 		}
 
@@ -149,13 +150,13 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		// TODO: get old values
 
 	case messengertypes.AppMessage_TypeAcknowledge:
-		logger.Debug("received a push notification for an ack, this should not happen", zap.String("cid", rawPushData.Interaction.CID))
+		logger.Debug("received a push notification for an ack, this should not happen", logutil.PrivateString("cid", rawPushData.Interaction.CID))
 
 	case messengertypes.AppMessage_TypeReplyOptions:
 		d.PushType = pushtypes.DecryptedPush_ReplyOptions
 
 	default:
-		logger.Debug("unknown message type", zap.String("message-type", rawPushData.Interaction.Type.String()), zap.String("cid", rawPushData.Interaction.CID))
+		logger.Debug("unknown message type", zap.String("message-type", rawPushData.Interaction.Type.String()), logutil.PrivateString("cid", rawPushData.Interaction.CID))
 	}
 
 	if len(payloadAttrs) > 0 {
@@ -246,7 +247,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 
 			reply, err = pushReceiver.PushReceive(ctx, input)
 			if err != nil {
-				opts.Logger.Warn("unable to decrypt push", zap.String("account-id", account.AccountID), zap.Error(err))
+				opts.Logger.Warn("unable to decrypt push", logutil.PrivateString("account-id", account.AccountID), zap.Error(err))
 				return nil, err
 			}
 

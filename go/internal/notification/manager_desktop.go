@@ -6,6 +6,7 @@ import (
 	"github.com/gen2brain/beeep"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	pack "berty.tech/berty/v2/go/internal/packingutil"
 )
 
@@ -22,7 +23,7 @@ func NewDesktopManager(logger *zap.Logger, appicon string) Manager {
 }
 
 func (m *DesktopManager) Notify(notif *Notification) error {
-	m.logger.Debug("notification", zap.String("title", notif.Title), zap.String("body", notif.Body))
+	m.logger.Debug("notification", logutil.PrivateString("title", notif.Title), logutil.PrivateString("body", notif.Body))
 	fpack, err := pack.EmbedToSHM(m.appicon)
 	if err != nil {
 		return err
@@ -32,7 +33,7 @@ func (m *DesktopManager) Notify(notif *Notification) error {
 }
 
 func (m *DesktopManager) Schedule(notif *Notification, interval time.Duration) error {
-	m.logger.Debug("scheduling notification", zap.String("title", notif.Title))
+	m.logger.Debug("scheduling notification", logutil.PrivateString("title", notif.Title))
 	time.AfterFunc(interval, func() {
 		if err := m.Notify(notif); err != nil {
 			m.logger.Error("unable to trigger scheduled notification", zap.Error(err))

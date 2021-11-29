@@ -44,7 +44,7 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 
 	args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
 
-	s.logger.Info("opening account with args", zap.Strings("args", args))
+	s.logger.Info("opening account with args", logutil.PrivateStrings("args", args))
 
 	if req.AccountID == "" {
 		return nil, errcode.ErrBertyAccountNoIDSpecified
@@ -105,6 +105,9 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 
 	// setup manager logger
 	prog.Get("setup-logger").SetAsCurrent()
+	// TODO: deactivate logs privacy on dev, use a constant string across launches
+	// logutil.SetGlobal([]byte(XXX), true)
+
 	streams := []logutil.Stream(nil)
 	{
 		if req.LoggerFilters == "" {
@@ -114,7 +117,7 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 		nativeLoggerStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
 		streams = append(streams, nativeLoggerStream)
 	}
-	s.logger.Info("opening account", zap.Strings("args", args), zap.String("account-id", req.AccountID))
+	s.logger.Info("opening account", logutil.PrivateStrings("args", args), logutil.PrivateString("account-id", req.AccountID))
 
 	// setup manager
 	prog.Get("setup-manager").SetAsCurrent()
@@ -842,7 +845,7 @@ func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.NetworkConfig, bool) {
 	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), s.storageKey, s.logger)
 	if err != nil {
-		s.logger.Warn("unable to read network configuration for account: failed to get root datastore", zap.Error(err), zap.String("account-id", accountID))
+		s.logger.Warn("unable to read network configuration for account: failed to get root datastore", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false
 	}
 
@@ -850,17 +853,17 @@ func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.Netwo
 	if err == datastore.ErrNotFound {
 		return NetworkConfigGetDefault(), false
 	} else if err != nil {
-		s.logger.Warn("unable to read network configuration for account", zap.Error(err), zap.String("account-id", accountID))
+		s.logger.Warn("unable to read network configuration for account", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false
 	}
 
 	if err := ds.Close(); err != nil {
-		s.logger.Warn("unable to close datastore after reading network configuration for account", zap.Error(err), zap.String("account-id", accountID))
+		s.logger.Warn("unable to close datastore after reading network configuration for account", zap.Error(err), logutil.PrivateString("account-id", accountID))
 	}
 
 	ret := &accounttypes.NetworkConfig{}
 	if err := ret.Unmarshal(netConfBytes); err != nil {
-		s.logger.Warn("unable to parse network configuration for account", zap.Error(err), zap.String("account-id", accountID))
+		s.logger.Warn("unable to parse network configuration for account", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false
 	}
 

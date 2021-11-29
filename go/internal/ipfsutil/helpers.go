@@ -14,6 +14,8 @@ import (
 	madns "github.com/multiformats/go-multiaddr-dns"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, error) {
@@ -84,9 +86,9 @@ func ParseAndResolveMaddrs(ctx context.Context, logger *zap.Logger, addrs []stri
 				addrStrings[i] = maddr.String()
 			}
 			logger.Debug("rdvp peer resolved addrs",
-				zap.String("input", addr),
-				// zap.String("ID", rdvpeer.ID.Pretty()),
-				zap.Strings("addrs", addrStrings),
+				logutil.PrivateString("input", addr),
+				// logutil.PrivateString("ID", rdvpeer.ID.Pretty()),
+				logutil.PrivateStrings("addrs", addrStrings),
 			)
 			outPeersUnmatched[j] = rdvpeer
 		}(i, v)

@@ -9,6 +9,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/rendezvous"
 )
 
@@ -67,7 +68,7 @@ func (s *Swiper) topicLeave(topic string) (err error) {
 
 // watchUntilDeadline looks for peers providing a resource for a given period
 func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInfo, topic string, end time.Time) error {
-	s.logger.Debug("start watching", zap.String("topic", topic))
+	s.logger.Debug("start watching", logutil.PrivateString("topic", topic))
 	tp, err := s.topicJoin(topic)
 	if err != nil {
 		return err
@@ -97,8 +98,8 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 		switch pe.Type {
 		case pubsub.PeerJoin:
 			s.logger.Debug("peer joined topic",
-				zap.String("topic", topic),
-				zap.String("peer", pe.Peer.ShortString()),
+				logutil.PrivateString("topic", topic),
+				logutil.PrivateString("peer", pe.Peer.ShortString()),
 			)
 			select {
 			case <-ctx.Done():

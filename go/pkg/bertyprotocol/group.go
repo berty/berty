@@ -14,6 +14,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/stores"
@@ -313,12 +314,12 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *GroupContext, conta
 
 			if _, err := gctx.MetadataStore().SendSecret(ctx, pk); err != nil {
 				if !errcode.Is(err, errcode.ErrGroupSecretAlreadySentToMember) {
-					gctx.logger.Info("secret already sent secret to member", zap.String("memberpk", base64.StdEncoding.EncodeToString(rawPK)))
+					gctx.logger.Info("secret already sent secret to member", logutil.PrivateString("memberpk", base64.StdEncoding.EncodeToString(rawPK)))
 					ch <- pk
 					continue
 				}
 			} else {
-				gctx.logger.Info("sent secret to existing member", zap.String("memberpk", base64.StdEncoding.EncodeToString(rawPK)))
+				gctx.logger.Info("sent secret to existing member", logutil.PrivateString("memberpk", base64.StdEncoding.EncodeToString(rawPK)))
 				ch <- pk
 			}
 		}

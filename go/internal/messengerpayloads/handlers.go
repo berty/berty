@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -214,14 +215,14 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 
 	if handler.isVisibleEvent && isNew {
 		if err := h.dispatchVisibleInteraction(i); err != nil {
-			h.logger.Error("Unable to dispatch notification for interaction", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(zap.String("cid", i.CID), zap.Error(err)))...)
+			h.logger.Error("Unable to dispatch notification for interaction", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(logutil.PrivateString("cid", i.CID), zap.Error(err)))...)
 		}
 	}
 
 	for i, media := range medias {
 		if mediasAdded[i] {
 			if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeMediaUpdated, &mt.StreamEvent_MediaUpdated{Media: media}, true); err != nil {
-				h.logger.Error("Unable to dispatch notification for media", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(zap.String("cid", media.CID), zap.Error(err)))...)
+				h.logger.Error("Unable to dispatch notification for media", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(logutil.PrivateString("cid", media.CID), zap.Error(err)))...)
 			}
 		}
 	}
@@ -276,7 +277,7 @@ func (h *EventHandler) groupReplicating(gme *protocoltypes.GroupMetadataEvent) e
 	}
 
 	if conv, err := h.db.GetConversationByPK(convPK); err != nil {
-		h.logger.Warn("unknown conversation", zap.String("conversation-pk", convPK))
+		h.logger.Warn("unknown conversation", logutil.PrivateString("conversation-pk", convPK))
 	} else if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
 		return err
 	}
@@ -338,7 +339,7 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 		return err
 	}
 
-	h.logger.Info("AccountGroupJoined", zap.String("pk", groupPK), zap.String("known-as", conversation.GetDisplayName()))
+	h.logger.Info("AccountGroupJoined", logutil.PrivateString("pk", groupPK), logutil.PrivateString("known-as", conversation.GetDisplayName()))
 
 	return nil
 }
@@ -741,7 +742,7 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 		}
 
 		for _, elem := range backlog {
-			h.logger.Info("found elem in backlog", zap.String("type", elem.GetType().String()), zap.String("device-pk", elem.GetDevicePublicKey()), zap.String("conv", elem.GetConversationPublicKey()))
+			h.logger.Info("found elem in backlog", zap.String("type", elem.GetType().String()), logutil.PrivateString("device-pk", elem.GetDevicePublicKey()), logutil.PrivateString("conv", elem.GetConversationPublicKey()))
 
 			elem.MemberPublicKey = mpk
 
@@ -800,7 +801,7 @@ func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i 
 	target, err := tx.MarkInteractionAsAcknowledged(i.TargetCID)
 	switch {
 	case err == gorm.ErrRecordNotFound:
-		h.logger.Debug("added ack in backlog", zap.String("target", i.TargetCID), zap.String("cid", i.GetCID()))
+		h.logger.Debug("added ack in backlog", logutil.PrivateString("target", i.TargetCID), logutil.PrivateString("cid", i.GetCID()))
 		i, _, err = tx.AddInteraction(*i)
 		if err != nil {
 			return nil, false, err
@@ -816,7 +817,7 @@ func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i 
 
 		if target != nil {
 			if err := messengerutil.StreamInteraction(h.dispatcher, tx, target.CID, false); err != nil {
-				h.logger.Error("error while sending stream event", zap.String("public-key", i.ConversationPublicKey), zap.String("cid", i.CID), zap.Error(err))
+				h.logger.Error("error while sending stream event", logutil.PrivateString("public-key", i.ConversationPublicKey), logutil.PrivateString("cid", i.CID), zap.Error(err))
 			}
 		}
 
@@ -867,7 +868,7 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 	var contact *mt.Contact
 	if i.Conversation.Type == mt.Conversation_ContactType {
 		if contact, err = tx.GetContactByPK(i.Conversation.ContactPublicKey); err != nil {
-			h.logger.Warn("1to1 message contact not found", zap.String("public-key", i.Conversation.ContactPublicKey), zap.Error(err))
+			h.logger.Warn("1to1 message contact not found", logutil.PrivateString("public-key", i.Conversation.ContactPublicKey), zap.Error(err))
 		}
 	}
 
@@ -932,14 +933,14 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 		if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeContactUpdated, &mt.StreamEvent_ContactUpdated{Contact: c}, false); err != nil {
 			return nil, false, err
 		}
-		h.logger.Debug("dispatched contact update", zap.String("name", c.GetDisplayName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+		h.logger.Debug("dispatched contact update", logutil.PrivateString("name", c.GetDisplayName()), logutil.PrivateString("device-pk", i.GetDevicePublicKey()), logutil.PrivateString("conv", i.ConversationPublicKey))
 
 		return i, false, nil
 	}
 
 	if i.MemberPublicKey == "" {
 		// store in backlog
-		h.logger.Info("storing SetUserInfo in backlog", zap.String("name", payload.GetDisplayName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+		h.logger.Info("storing SetUserInfo in backlog", logutil.PrivateString("name", payload.GetDisplayName()), logutil.PrivateString("device-pk", i.GetDevicePublicKey()), logutil.PrivateString("conv", i.ConversationPublicKey))
 		ni, isNew, err := tx.AddInteraction(*i)
 		if err != nil {
 			return nil, false, err
@@ -1037,7 +1038,7 @@ func interactionFromAppMessage(h *EventHandler, gpk string, gme *protocoltypes.G
 	mpk := ""
 	dev, err := h.db.GetDeviceByPK(dpk)
 	if err != nil {
-		h.logger.Error("failed to get memberPK from devicePK", zap.Error(err), zap.Bool("is-me", isMe), zap.String("device-pk", dpk), zap.String("group", gpk), zap.Any("app-message-type", am.GetType()))
+		h.logger.Error("failed to get memberPK from devicePK", zap.Error(err), zap.Bool("is-me", isMe), logutil.PrivateString("device-pk", dpk), logutil.PrivateString("group", gpk), zap.Any("app-message-type", am.GetType()))
 	} else {
 		mpk = dev.MemberPublicKey
 		isMe = messengerutil.B64EncodeBytes(memPK) == dev.MemberPublicKey
@@ -1084,7 +1085,7 @@ func interactionFetchRelations(tx *messengerdb.DBWrapper, i *mt.Interaction, log
 		// fetch member from db
 		member, err := tx.GetMemberByPK(i.MemberPublicKey, i.ConversationPublicKey)
 		if err != nil {
-			logger.Warn("multimember message member not found", zap.String("public-key", i.MemberPublicKey), zap.Error(err))
+			logger.Warn("multimember message member not found", logutil.PrivateString("public-key", i.MemberPublicKey), zap.Error(err))
 		}
 
 		i.Member = member
@@ -1148,7 +1149,7 @@ func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatc
 	}
 
 	for _, c := range cids {
-		logger.Debug("found ack in backlog", zap.String("target", c), zap.String("cid", i.GetCID()))
+		logger.Debug("found ack in backlog", logutil.PrivateString("target", c), logutil.PrivateString("cid", i.GetCID()))
 		if err := dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: c}, false); err != nil {
 			return err
 		}
@@ -1227,7 +1228,7 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 		if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: c}, false); err != nil {
 			return nil, false, err
 		}
-		h.logger.Debug("dispatched conversation update", zap.String("name", c.GetDisplayName()), zap.String("conv", i.ConversationPublicKey))
+		h.logger.Debug("dispatched conversation update", logutil.PrivateString("name", c.GetDisplayName()), logutil.PrivateString("conv", i.ConversationPublicKey))
 
 		return i, false, nil
 	}
@@ -1251,7 +1252,7 @@ func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOf
 
 	dpk := messengerutil.B64EncodeBytes(outOfStoreMessage.DevicePK)
 
-	h.logger.Debug("received app message", zap.String("type", amt.String()), zap.Int("numMedias", len(am.GetMedias())))
+	h.logger.Debug("received app message", logutil.PrivateString("type", amt.String()), zap.Int("numMedias", len(am.GetMedias())))
 
 	mpk := ""
 	dev, err := h.db.GetDeviceByPK(dpk)

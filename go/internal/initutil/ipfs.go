@@ -34,6 +34,7 @@ import (
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/rendezvous"
@@ -227,7 +228,8 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	for _, addr := range cfg.Addresses.API {
 		maddr, err := ma.NewMultiaddr(addr)
 		if err != nil {
-			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("unable to parse api addr `%s`: %w", addr, err))
+			logger.Error("unable to parse api addr", zap.Error(err), logutil.PrivateString("addr", addr))
+			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("unable to parse api addr: %w", err))
 		}
 
 		var l manet.Listener
@@ -285,7 +287,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		}
 	}
 
-	logger.Debug("local PeerID", zap.String("PeerID", m.Node.Protocol.ipfsNode.Identity.String()))
+	logger.Debug("local PeerID", logutil.PrivateString("PeerID", m.Node.Protocol.ipfsNode.Identity.String()))
 
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }

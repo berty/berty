@@ -23,7 +23,7 @@ import (
 func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms *bertyprotocol.MetadataStore, g *protocoltypes.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *protocoltypes.DeviceSecret) {
 	t.Helper()
 
-	acc := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
+	acc := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
 	md, err := acc.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
@@ -79,7 +79,7 @@ func Test_EncryptMessagePayload(t *testing.T) {
 
 	_ = gSK
 
-	acc1 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
+	acc1 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
 
 	omd1, err := acc1.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
@@ -93,7 +93,7 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	initialCounter := ds1.Counter
 	firstSK := append([]byte(nil), ds1.ChainKey...)
 
-	acc2 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
+	acc2 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
 
 	omd2, err := acc2.MemberDeviceForGroup(g)
 
@@ -266,7 +266,7 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	assert.NoError(t, err)
 
-	acc1 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
+	acc1 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
 	mkh1, cleanup := cryptoutil.NewInMemMessageKeystore()
 	defer cleanup()
 
@@ -281,7 +281,7 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	err = mkh1.RegisterChainKey(g, gc1.DevicePubKey(), ds1, true)
 	assert.NoError(t, err)
 
-	acc2 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
+	acc2 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
 	mkh2, cleanup := cryptoutil.NewInMemMessageKeystore()
 	defer cleanup()
 
@@ -321,8 +321,8 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	assert.NoError(t, err)
 
-	acc1 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
-	acc2 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore())
+	acc1 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
+	acc2 := cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
 
 	omd1, err := acc1.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
