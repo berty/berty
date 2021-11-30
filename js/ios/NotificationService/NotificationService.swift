@@ -94,10 +94,12 @@ class NotificationService: UNNotificationServiceExtension {
     }
 
     func displayFallback() {
-        // TODO: add i18n
-        self.bestAttemptContent!.title = "Fallback Title"
-        self.bestAttemptContent!.subtitle = "Fallback Subtitle"
-        self.bestAttemptContent!.body = "Fallback Body"
+        let defaultPushMessage = NSLocalizedString("BertyPushMessage", comment: "default push title")
+        let defaultPushMessageError = NSLocalizedString("BertyPushMessageError", comment: "default push decryption error")
+
+        self.bestAttemptContent!.title = defaultPushMessage
+        self.bestAttemptContent!.subtitle = ""
+        self.bestAttemptContent!.body = defaultPushMessageError
 
         // Display fallback content
         self.contentHandler!(self.bestAttemptContent!)
