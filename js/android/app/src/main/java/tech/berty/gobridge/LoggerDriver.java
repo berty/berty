@@ -39,8 +39,10 @@ public class LoggerDriver implements NativeLoggerDriver {
             throw new Exception("Empty message");
         }
 
-        if (namespace == null) {
-            throw new Exception("Empty namespace");
+        if (namespace != null && namespace != "") {
+            namespace = this.subsystem + "." + namespace;
+        } else {
+            namespace = this.subsystem;
         }
 
         int priority;
@@ -71,7 +73,7 @@ public class LoggerDriver implements NativeLoggerDriver {
                 priority = Log.INFO;
         }
         LogPrinter logPrinter = new LogPrinter(priority, namespace);
-        String out = String.format("[%s] [%s]: %s", level, this.subsystem + "." + namespace, message);
+        String out = String.format("[%s] [%s]: %s", level, namespace, message);
         logPrinter.println(out);
 
         FirebaseCrashlytics.getInstance().log(out);

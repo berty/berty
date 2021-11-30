@@ -26,6 +26,7 @@ import (
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
+	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -1146,8 +1147,13 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		// TODO: should we return early?
 	}
 
+	cat := localization.Catalog()
+	p := cat.NewPrinter(s.languages...)
+
+	formated := bertypush.FormatDecryptedPush(pushData, p)
 	return &accounttypes.PushReceive_Reply{
 		PushData: pushData,
+		Push:     formated,
 	}, nil
 }
 

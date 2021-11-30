@@ -1,6 +1,11 @@
 package tech.berty.gobridge;
 
+import android.content.res.Resources;
+import android.os.Build;
+import android.os.LocaleList;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -10,6 +15,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
 
 import java.io.File;
+import java.util.Locale;
 
 import tech.berty.rootdir.RootDirModule;
 
@@ -108,6 +114,15 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       // init logger
       LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
       config.setLoggerDriver(logger);
+
+      // load and set user preferred language
+      String tags = null;
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+          tags = Resources.getSystem().getConfiguration().getLocales().toLanguageTags();
+      } else {
+          tags = Resources.getSystem().getConfiguration().locale.toLanguageTag();
+      }
+      config.setPreferredLanguages(tags);
 
       // set root dir
       Log.i(TAG, "root dir: " + rootDir.getAbsolutePath());

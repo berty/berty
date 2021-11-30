@@ -1375,11 +1375,13 @@ export namespace berty {
 
                 interface IReply {
                     pushData?: (berty.push.v1.IDecryptedPush|null);
+                    push?: (berty.push.v1.IFormatedPush|null);
                 }
 
                 class Reply implements IReply {
 
                     public pushData?: (berty.push.v1.IDecryptedPush|null);
+                    public push?: (berty.push.v1.IFormatedPush|null);
                     public static create(properties?: berty.account.v1.PushReceive.IReply): berty.account.v1.PushReceive.Reply;
                     public static encode(message: berty.account.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1730,6 +1732,32 @@ export namespace berty {
                     MemberDetailsChanged = 11,
                     ReplyOptions = 12
                 }
+            }
+
+            interface IFormatedPush {
+                pushType?: (berty.push.v1.DecryptedPush.PushType|null);
+                title?: (string|null);
+                subtitle?: (string|null);
+                body?: (string|null);
+                deepLink?: (string|null);
+            }
+
+            class FormatedPush implements IFormatedPush {
+
+                public pushType: berty.push.v1.DecryptedPush.PushType;
+                public title: string;
+                public subtitle: string;
+                public body: string;
+                public deepLink: string;
+                public static create(properties?: berty.push.v1.IFormatedPush): berty.push.v1.FormatedPush;
+                public static encode(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.FormatedPush;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.FormatedPush;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.FormatedPush;
+                public static toObject(message: berty.push.v1.FormatedPush, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
             }
         }
     }

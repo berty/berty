@@ -94,6 +94,7 @@ message PushServiceOpaqueReceiver {
   string service_addr = 2;
 }
 
+
 message DecryptedPush {
   enum PushType {
     Unknown = 0;
@@ -121,4 +122,12 @@ message DecryptedPush {
   string payload_attrs_json = 8 [(gogoproto.customname) = "PayloadAttrsJSON"];
   string deep_link = 9;
   bool already_received = 10;
+}
+
+message FormatedPush {
+  DecryptedPush.PushType push_type = 1;
+  string title = 2;
+  string subtitle = 3;
+  string body = 4;
+  string deep_link = 5;
 }

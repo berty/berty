@@ -11,6 +11,7 @@ import (
 	"github.com/ipfs/go-datastore"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"golang.org/x/text/language"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/androidnearby"
@@ -34,6 +35,9 @@ var _ accounttypes.AccountServiceServer = (*service)(nil)
 type Service interface {
 	accounttypes.AccountServiceServer
 
+	// SetLanguage set the use language for translate
+	SetPreferredLanguages(tags ...language.Tag)
+
 	// WakeUp should be used for background task or similar task.
 	WakeUp(ctx context.Context) error
 
@@ -50,6 +54,7 @@ type Service interface {
 type Options struct {
 	RootDirectory string
 
+	Languages             []language.Tag
 	ServiceClientRegister bertybridge.ServiceClientRegister
 	LifecycleManager      *lifecycle.Manager
 	NotificationManager   notification.Manager
@@ -67,6 +72,7 @@ type service struct {
 	logger       *zap.Logger
 
 	rootdir           string
+	languages         []language.Tag
 	muService         sync.RWMutex
 	initManager       *initutil.Manager
 	lifecycleManager  *lifecycle.Manager
@@ -135,6 +141,10 @@ func (o *Options) applyDefault() {
 		o.Logger = zap.NewNop()
 	}
 
+	if o.Languages == nil {
+		o.Languages = []language.Tag{}
+	}
+
 	if o.ServiceClientRegister == nil {
 		o.ServiceClientRegister = bertybridge.NewNoopServiceClientRegister()
 	}
@@ -157,6 +167,7 @@ func NewService(opts *Options) (_ Service, err error) {
 
 	opts.applyDefault()
 	s = &service{
+		languages:         opts.Languages,
 		rootdir:           opts.RootDirectory,
 		rootCtx:           rootCtx,
 		rootCancel:        rootCancelCtx,
@@ -193,6 +204,10 @@ func NewService(opts *Options) (_ Service, err error) {
 	s.appStorage = encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage"))
 
 	return s, nil
+}
+
+func (s *service) SetPreferredLanguages(tags ...language.Tag) {
+	s.languages = tags
 }
 
 func (s *service) Close() (err error) {
