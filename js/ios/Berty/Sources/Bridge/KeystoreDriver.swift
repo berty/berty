@@ -2,31 +2,8 @@ import Foundation
 import Bertybridge
 import Bertypush
 
-enum KeystoreDriverError: Error {
-    case groupID
-}
-extension KeystoreDriverError: LocalizedError {
-    public var errorDescription: String? {
-        switch self {
-        case .groupID:
-            return NSLocalizedString(
-                "unable to retrieve appGroupID key from Info.plist",
-                comment: ""
-            )
-        }
-    }
-}
-
 public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol, BertypushNativeKeystoreDriverProtocol {
   public static var shared: KeystoreDriver = KeystoreDriver()
-  
-  private func getAppGroupID() throws -> String {
-    guard let appGroupID = Bundle.main.object(forInfoDictionaryKey: "appGroupID") as? String else {
-      throw KeystoreDriverError.groupID
-    }
-
-    return appGroupID
-  }
 
   public func put(_ key: String?, data: Data?) throws {
     try self.handleAppUninstallation()
@@ -37,7 +14,7 @@ public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol, 
                                    kSecAttrAccount as String: identifier,
                                    kSecAttrService as String: "BertyNativeKeystore",
                                    kSecValueData as String: data!,
-                                   kSecAttrAccessGroup as String: try getAppGroupID()]
+                                   kSecAttrAccessGroup as String: try Common.groupID()]
     let status = SecItemAdd(addquery as CFDictionary, nil)
     guard status == errSecSuccess else {
       let errstr = SecCopyErrorMessageString(status, nil)! as String
@@ -54,7 +31,7 @@ public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol, 
                                    kSecAttrService as String: "BertyNativeKeystore",
                                    kSecReturnData as String: kCFBooleanTrue!,
                                    kSecMatchLimit as String: kSecMatchLimitOne,
-                                   kSecAttrAccessGroup as String: try getAppGroupID()]
+                                   kSecAttrAccessGroup as String: try Common.groupID()]
     var item: CFTypeRef?
     let status = SecItemCopyMatching(getquery as CFDictionary, &item)
     if status != errSecSuccess {
@@ -65,12 +42,11 @@ public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol, 
   }
 
   private func handleAppUninstallation() throws {
-    if let userDefaults = UserDefaults(suiteName: try getAppGroupID()) {
-      if (!userDefaults.bool(forKey: "BertyNativeKeystoreIsAppInstalled")) {
-        self.clearSecureKeyStore()
-        userDefaults.set(true, forKey:"BertyNativeKeystoreIsAppInstalled")
-        userDefaults.synchronize()
-      }
+    let commonUserDefaults = try Common.userDefaults()
+    if (!commonUserDefaults.bool(forKey: "BertyNativeKeystoreIsAppInstalled")) {
+      self.clearSecureKeyStore()
+      commonUserDefaults.set(true, forKey:"BertyNativeKeystoreIsAppInstalled")
+      commonUserDefaults.synchronize()
     }
   }
 

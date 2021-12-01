@@ -29,6 +29,14 @@ class NotificationService: UNNotificationServiceExtension {
     var bestAttemptContent: UNMutableNotificationContent?
 
     override init() {
+        // Sync languages settings with app
+        do {
+          let languages = try Common.userDefaults().object(forKey: "AppleLanguages")
+          UserDefaults.standard.setValue(languages, forKey: "AppleLanguages")
+        } catch {
+          os_log("language sync with app failed: %@", log: oslogger, type: .error, error.localizedDescription)
+        }
+
         let config = BertypushNewConfig()!
         let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
         config.setPreferredLanguages(preferredLanguages)

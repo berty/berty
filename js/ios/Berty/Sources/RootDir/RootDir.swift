@@ -8,17 +8,11 @@
 import Foundation
 
 enum RootDirError: Error {
-    case groupID
     case path
 }
 extension RootDirError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .groupID:
-            return NSLocalizedString(
-                "unable to retrieve appGroupID key from Info.plist",
-                comment: ""
-            )
         case .path:
             return NSLocalizedString(
                 "unable to get app group path url",
@@ -29,10 +23,7 @@ extension RootDirError: LocalizedError {
 }
 
 func RootDirGet() throws -> String {
-  guard let appGroupID = Bundle.main.object(forInfoDictionaryKey: "appGroupID") as? String else {
-    throw RootDirError.groupID
-  }
-  guard let appGroupPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
+  guard let appGroupPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: try Common.groupID()) else {
     throw RootDirError.path
   }
   let rootDirPath = appGroupPath.appendingPathComponent("berty", isDirectory: true)
