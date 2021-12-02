@@ -1,670 +1,695 @@
 {
-  "onboarding": {
-    "getstarted": {
-      "desc": "",
-      "button": "COMEÇAR"
-    },
-    "select-mode": {
-      "title": "Escolha uma predefinição",
-      "change-later": "Poderá mudar mais tarde!",
-      "performance": {
-        "title": "Desempenho",
-        "desc": "Fácil de usar - Todas as funcionalidades",
-        "push-notif": "Receber notificações push",
-        "offline-message": "Mensagens offline com Bluetooth",
-        "add-contact": "Adicionar contactos facilmente",
-        "fast-message": "A entrega de mensagens mais rápida"
-      },
-      "high-level": {
-        "title": "Anonimato Total",
-        "desc": "Para utilizadores extremamente cautelosos",
-        "disable-push-notif": "Notificações push desativadas",
-        "disable-local-peer-discovery": "",
-        "disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
-        "disable-contact-request": "Pedidos de contacto desativados",
-        "on-same-network": "Local na mesma rede/wifi"
-      }
-    },
-    "create-account": {
-      "title": "Criar a sua conta",
-      "desc": "Um nome é a única informação necessária",
-      "required": "Necessário",
-      "placeholder": "Nome",
-      "button": "CRIAR CONTA",
-      "import-account": "IMPORTAR CONTA"
-    },
-    "services-auth": {
-      "header": "Autenticar-se nos serviços",
-      "title": "Serviços",
-      "recommended": "Recomendado",
-      "desc": "Isto irá replicar as tuas conversas num servidor",
-      "button": "Usar os serviços operados pelo Berty",
-      "skip": "SALTAR E FAZER MAIS TARDE"
-    },
-    "generate-key": {
-      "title": "A iniciar o nó do Berty…",
-      "desc": "Isto pode demorar alguns segundos"
-    },
-    "setup-finished": {
-      "title": "Configuração finalizada!",
-      "desc": "A app está pronta a ser usada, adicione contactos e converse livremente e em privado com eles",
-      "button": "COMECE A USAR O BERTY"
-    }
-  },
-  "main": {
-    "home": {
-      "requests": {
-        "title": "Pedidos de mensagem",
-        "accept": "",
-        "card-title": "Pedido de contacto!"
-      },
-      "input-placeholder": "Pesquisar palavra-chave",
-      "no-contacts": "Ainda não tem nenhum contacto ou chat",
-      "search": {
-        "no-results": "Não foram encontrados resultados"
-      },
-      "multi-account": {
-        "create-button": "",
-        "import-button": ""
-      },
-      "create-group": {
-        "title": "Novo Grupo",
-        "add-members": "Adicionar membros",
-        "group-info": "Informação do Grupo",
-        "search-placeholder": "Pesquisar",
-        "continue": "CONTINUAR",
-        "create-group": "CRIAR UM GRUPO"
-      },
-      "create-group-finalize": {
-        "placeholder": "",
-        "about": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": "",
-        "fourth-bullet-point": "",
-        "fifth-bullet-point": ""
-      },
-      "conversations": {
-        "request-sent": "",
-        "draft": ""
-      }
-    },
-    "suggestion-display-name-initial": "",
-    "configurations": {
-      "network": {
-        "display-name": "Configuração de Rede",
-        "desc": ""
-      },
-      "notification": {
-        "display-name": "",
-        "desc": ""
-      },
-      "replicate": {
-        "display-name": "",
-        "desc": ""
-      }
-    },
-    "network-options": {
-      "welcome-title": "",
-      "full-anon-mode": "",
-      "simple-tor-compatible": "",
-      "allow-expert-mode": "",
-      "tor-compatible": {
-        "title": "",
-        "desc": ""
-      },
-      "full-anon": {
-        "title": "",
-        "desc": "",
-        "no-ip": "",
-        "no-mc": "",
-        "tor-only": ""
-      },
-      "save": "GUARDAR",
-      "skip": "SALTAR E FAZER MAIS TARDE"
-    },
-    "scan": {
-      "title": ""
-    }
-  },
-  "settings": {
-    "home": {
-      "check-list": {
-        "title": "",
-        "avatar": {
-          "title": "",
-          "desc": ""
-        },
-        "relay": {
-          "title": "",
-          "desc": ""
-        },
-        "contact": {
-          "title": "",
-          "desc": ""
-        },
-        "group": {
-          "title": "",
-          "desc": ""
-        },
-        "message": {
-          "title": "",
-          "desc": ""
-        },
-        "theme": {
-          "title": "",
-          "desc": ""
-        },
-        "hidden-account": {
-          "title": "",
-          "desc": ""
-        },
-        "ble-message": {
-          "title": "",
-          "desc": ""
-        }
-      },
-      "header-left-button": "Ajuda",
-      "header-center-button": "Ferramentas de Programador",
-      "header-right-button": "Definições",
-      "network-button": "Lista de redes",
-      "edit-profile": "Editar perfil",
-      "app-network-button": {
-        "title": "",
-        "first-bullet-point": "Receber notificações push",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
-      },
-      "notifications-button": {
-        "title": "Notificações",
-        "tag-enabled": "Ativado",
-        "tag-disabled": "Desativado"
-      },
-      "dark-mode-button": "",
-      "bluetooth-button": {
-        "title": "Bluetooth"
-      }
-    },
-    "network-map": {
-      "title": "Lista de redes",
-      "online-peers": ""
-    },
-    "network-config": {
-      "title": "",
-      "desc": "",
-      "push-notifications": "",
-      "replication-services": "",
-      "ble": "",
-      "multicast-dns-button": {
-        "title": "",
-        "desc": ""
-      },
-      "dht": "",
-      "bootstrap": "",
-      "rdv": "",
-      "static-relay": "",
-      "anon-mode": ""
-    },
-    "mode": {
-      "title": "Definições",
-      "desc": "",
-      "notification-file-saved": {
-        "title": "",
-        "desc": ""
-      },
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
-      "auto-replicate-button-unavailable": "",
-      "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
-      },
-      "delete-account-button": "",
-      "backup-account-button": ""
-    },
-    "edit-profile": {
-      "title": "",
-      "qr-will-update": "",
-      "ocr-wont-update": "",
-      "save": "",
-      "cancel": "Cancelar",
-      "name-input-placeholder": "",
-      "name-input-label": "Nome"
-    },
-    "notifications": {
-      "title": "Notificações",
-      "enabled-desc": "Ativou as notificações!",
-      "disabled-desc": "Não ativou as notificações para esta app",
-      "activate-button": "Ativar as notificações",
-      "contact-request-button": {
-        "title": "Pedido de contacto",
-        "desc": "Receber notificação quando alguém enviar um pedido de contacto"
-      },
-      "messages-notifications-button": {
-        "title": "Notificações de mensagens",
-        "display-button": "Mostrar notificações",
-        "preview-button": "Pré-visualizar mensagens",
-        "sound-button": "Som",
-        "exceptions-button": {
-          "title": "Excepções",
-          "preview-value": "Adicionar"
-        }
-      },
-      "group-notifications-button": {
-        "title": "Notificações de grupos",
-        "display-button": "Mostrar notificações",
-        "preview-button": "Pré-visualizar mensagens",
-        "sound-button": "Som",
-        "exceptions-button": {
-          "title": "Excepções",
-          "tag": "{{count}} excepção"
-        }
-      }
-    },
-    "bluetooth": {
-      "title": "Bluetooth",
-      "desc": "",
-      "activate-button": ""
-    },
-    "mc": {
-      "activate-button": ""
-    },
-    "nearby": {
-      "activate-button": ""
-    },
-    "services-auth": {
-      "title": "",
-      "operated-services-button": "Usar os serviços operados pelo Berty",
-      "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": "Adicionar"
-      },
-      "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
-      }
-    },
-    "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
-    },
-    "help": {
-      "title": "Ajuda",
-      "security-privacy-button": {
-        "title": "",
-        "desc": ""
-      },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "Definições",
-      "ask-button": "",
-      "report-button": ""
-    },
-    "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
-      "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": ""
-    },
-    "updates": {
-      "title": "",
-      "current-tag": ""
-    },
-    "faq": {
-      "title": ""
-    },
-    "roadmap": {
-      "title": ""
-    },
-    "devtools": {
-      "title": "",
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "theme-editor": "",
-      "simulate-button": "",
-      "simulate-js-error-button": "",
-      "tor-button": "",
-      "tor-optional-option": "",
-      "tor-required-option": "",
-      "tor-disabled-option": "",
-      "system-info-button": "",
-      "debug-button": "",
-      "log-button": {
-        "name": "",
-        "bullet-point": ""
-      },
-      "log-filters-button": {
-        "name": "",
-        "bullet-point": ""
-      },
-      "add-dev-conversations-button": "",
-      "share-button": {
-        "title": "",
-        "alert-title": "",
-        "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
-      },
-      "native-bridge-button": "",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
-      "stop-node-button": "",
-      "local-grpc-button": "",
-      "console-logs-button": "",
-      "ipfs-webui-button": "",
-      "send-to-all-button": {
-        "title": "",
-        "sending": "",
-        "test": "",
-        "tried": ""
-      },
-      "trigger-crashlytics-button": "",
-      "tyber-attach": "",
-      "tyber-host-button": {
-        "name": "",
-        "bullet-point": ""
-      },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
-    },
-    "system-info": {
-      "title": ""
-    },
-    "fake-data": {
-      "title": "",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
-      "delete-button": ""
-    },
-    "add-dev-conversations": {
-      "title": "",
-      "add": "",
-      "tag-bot": "",
-      "tag-contact": "",
-      "tag-conversation": ""
-    },
-    "ipfs-webui": {
-      "title": ""
-    },
-    "theme-editor": {
-      "title": "",
-      "randomize": "",
-      "save": "",
-      "export": "",
-      "share": "",
-      "import": ""
-    },
-    "my-berty-ID": {
-      "qr": "",
-      "fingerprint": "",
-      "devices": ""
-    }
-  },
-  "modals": {
-    "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": "",
-      "contact-already-added": "",
-      "contact-already-added-message": ""
-    },
-    "invalid-scan": {
-      "dismiss-button": ""
-    },
-    "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
-    },
-    "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": "",
-      "join": "",
-      "password-label": "",
-      "password-placeholder": ""
-    },
-    "save-theme": {
-      "title": "",
-      "desc": "",
-      "placeholder": "",
-      "cancel": "",
-      "add": ""
-    }
-  },
-  "chat": {
-    "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
-    },
-    "multi-member": {
-      "input-placeholder": ""
-    },
-    "multi-member-settings": {
-      "header-left-button": "Pesquisar",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "members-button": {
-        "title": "",
-        "unknown": ""
-      },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
-      "leave-button": ""
-    },
-    "add-members": {
-      "members": "",
-      "contacts": "",
-      "add": ""
-    },
-    "multi-member-qr": {
-      "title": ""
-    },
-    "one-to-one": {
-      "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
-      },
-      "infos-chat": {
-        "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
-        "outgoing": ""
-      },
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
-    },
-    "one-to-one-settings": {
-      "header-left-button": "Pesquisar",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
-    },
-    "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
-    },
-    "files": {
-      "gallery": "",
-      "camera": "",
-      "files": "",
-      "microphone": "",
-      "search-gif": "",
-      "security-access": "",
-      "security-access-desc": "",
-      "save-to-gallery": "",
-      "share": "",
-      "forward-berty": "",
-      "forward": "",
-      "image-saved": ""
-    },
-    "shared-medias": {
-      "title": "",
-      "medias": "",
-      "links": "",
-      "documents": ""
-    },
-    "reply": {
-      "response-to": "",
-      "replying-to": "",
-      "replied-to": ""
-    }
-  },
-  "audio": {
-    "record": {
-      "tooltip": {
-        "usage": "",
-        "not-sent": "",
-        "permission-denied": ""
-      },
-      "slide-to-cancel": "",
-      "cancel-button": "Cancelar"
-    }
-  },
-  "permission": {
-    "notification": {
-      "title": "",
-      "desc": ""
-    },
-    "p2p": {
-      "title": "",
-      "android-desc": "",
-      "ios-desc": ""
-    },
-    "camera": {
-      "title": "",
-      "desc": ""
-    },
-    "audio": {
-      "title": "",
-      "desc": ""
-    },
-    "button-labels": {
-      "allow": "",
-      "settings": ""
-    },
-    "skip": "",
-    "settings-text": ""
-  },
-  "notification": {
-    "need-restart": {
-      "title": "",
-      "desc": ""
-    }
-  },
-  "error": {
-    "labels": {
-      "bug": "",
-      "crash": ""
-    },
-    "restart-app": "",
-    "wtf-screen": {
-      "title": "",
-      "desc": "",
-      "desc-report": ""
-    },
-    "sorry-screen": {
-      "title": "",
-      "desc": "",
-      "desc-em": "",
-      "desc-report": ""
-    }
-  },
-  "debug": {
-    "inspector": {
-      "show-button": "",
-      "hide-button": "",
-      "title": "",
-      "accounts": {
-        "title": "",
-        "unsupported-remote-mode": "",
-        "data-not-found": "",
-        "action-delete": {
-          "file-exists": "",
-          "account-exists": "",
-          "directory-exists-load-error": "",
-          "fs-read-error": "",
-          "actions-title": "",
-          "action-account-manager": "",
-          "action-account-manager-confirm": "",
-          "action-force-delete": "",
-          "action-force-delete-confirm": "",
-          "error-close": "",
-          "error-delete": "",
-          "success-feedback": "",
-          "action-cancel": "Cancelar"
-        },
-        "status": {
-          "datastore-found": "",
-          "datastore-not-found": "",
-          "ipfs-repo-found": "",
-          "ipfs-repo-not-found": "",
-          "messenger-db-found": "",
-          "messenger-db-not-found": ""
-        },
-        "infos": {
-          "aligned": {
-            "name": "",
-            "created": "",
-            "opened": "",
-            "error": ""
-          }
-        }
-      },
-      "errors": {
-        "title": "",
-        "header-reported": "",
-        "header-all-clear": "",
-        "listing-files-failed": "",
-        "listing-accounts-failed": "",
-        "listing-accounts-failed-grpc": ""
-      },
-      "dump": {
-        "button": ""
-      },
-      "refresh": "",
-      "confirm-alert": {
-        "button-confirm": "",
-        "button-cancel": "Cancelar"
-      }
-    }
-  }
+	"onboarding": {
+		"getstarted": {
+			"title": "",
+			"desc": "",
+			"button": ""
+		},
+		"select-mode": {
+			"title": "Escolha uma predefinição",
+			"change-later": "Poderá mudar mais tarde!",
+			"performance": {
+				"title": "Desempenho",
+				"desc": "Fácil de usar - Todas as funcionalidades",
+				"push-notif": "Receber notificações push",
+				"offline-message": "Mensagens offline com Bluetooth",
+				"add-contact": "Adicionar contactos facilmente",
+				"fast-message": "A entrega de mensagens mais rápida"
+			},
+			"high-level": {
+				"title": "Anonimato Total",
+				"desc": "Para utilizadores extremamente cautelosos",
+				"disable-push-notif": "Notificações push desativadas",
+				"disable-local-peer-discovery": "",
+				"disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
+				"disable-contact-request": "Pedidos de contacto desativados",
+				"on-same-network": "Local na mesma rede/wifi"
+			}
+		},
+		"create-account": {
+			"title": "Criar a sua conta",
+			"desc": "Um nome é a única informação necessária",
+			"required": "Necessário",
+			"placeholder": "",
+			"button": "CRIAR CONTA",
+			"advanced": "",
+			"import-account": "",
+			"link-device": "",
+			"expert-setup": "",
+			"more": "",
+			"good-to-know": {
+				"title": "",
+				"first-point": "",
+				"second-point": ""
+			}
+		},
+		"expert-setup": {
+			"title": "",
+			"desc": "",
+			"more-about": {
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
+			},
+			"config-title": "",
+			"config-desc": "",
+			"learn-more": "",
+			"first-part": {
+				"title": "",
+				"first-button": "",
+				"second-button": ""
+			},
+			"second-part": {
+				"title": "",
+				"first-button": "",
+				"second-button": ""
+			},
+			"third-part": {
+				"title": "Serviços",
+				"first-button": "",
+				"second-button": {
+					"title": "",
+					"placeholder": ""
+				},
+				"third-button": "",
+				"connect": ""
+			},
+			"apply-changes": "",
+			"skip": ""
+		},
+		"services-auth": {
+			"header": "Autenticar-se nos serviços",
+			"title": "Serviços",
+			"recommended": "Recomendado",
+			"desc": "Isto irá replicar as tuas conversas num servidor",
+			"button": "Usar os serviços operados pelo Berty",
+			"skip": "SALTAR E FAZER MAIS TARDE"
+		},
+		"exper-setup": {},
+		"generate-key": {
+			"title": "A iniciar o nó do Berty…",
+			"desc": "Isto pode demorar alguns segundos"
+		},
+		"setup-finished": {
+			"title": "Configuração finalizada!",
+			"desc": "A app está pronta a ser usada, adicione contactos e converse livremente e em privado com eles",
+			"button": "COMECE A USAR O BERTY"
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "Pedidos de mensagem",
+				"accept": "",
+				"card-title": "Pedido de contacto!"
+			},
+			"input-placeholder": "Pesquisar palavra-chave",
+			"no-contacts": "Ainda não tem nenhum contacto ou chat",
+			"search": {
+				"no-results": "Não foram encontrados resultados"
+			},
+			"multi-account": {
+				"create-button": "",
+				"import-button": ""
+			},
+			"create-group": {
+				"title": "Novo Grupo",
+				"add-members": "Adicionar membros",
+				"group-info": "Informação do Grupo",
+				"search-placeholder": "Pesquisar",
+				"continue": "CONTINUAR",
+				"create-group": "CRIAR UM GRUPO"
+			},
+			"create-group-finalize": {
+				"placeholder": "",
+				"about": "",
+				"first-bullet-point": "",
+				"second-bullet-point": "",
+				"third-bullet-point": "",
+				"fourth-bullet-point": "",
+				"fifth-bullet-point": ""
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": "",
+		"configurations": {
+			"network": {
+				"display-name": "Configuração de Rede",
+				"desc": ""
+			},
+			"notification": {
+				"display-name": "",
+				"desc": ""
+			},
+			"replicate": {
+				"display-name": "",
+				"desc": ""
+			}
+		},
+		"network-options": {
+			"welcome-title": "",
+			"full-anon-mode": "",
+			"simple-tor-compatible": "",
+			"allow-expert-mode": "",
+			"tor-compatible": {
+				"title": "",
+				"desc": ""
+			},
+			"full-anon": {
+				"title": "",
+				"desc": "",
+				"no-ip": "",
+				"no-mc": "",
+				"tor-only": ""
+			},
+			"save": "GUARDAR",
+			"skip": "SALTAR E FAZER MAIS TARDE"
+		},
+		"scan": {
+			"title": ""
+		}
+	},
+	"settings": {
+		"home": {
+			"check-list": {
+				"title": "",
+				"avatar": {
+					"title": "",
+					"desc": ""
+				},
+				"relay": {
+					"title": "",
+					"desc": ""
+				},
+				"contact": {
+					"title": "",
+					"desc": ""
+				},
+				"group": {
+					"title": "",
+					"desc": ""
+				},
+				"message": {
+					"title": "",
+					"desc": ""
+				},
+				"theme": {
+					"title": "",
+					"desc": ""
+				},
+				"hidden-account": {
+					"title": "",
+					"desc": ""
+				},
+				"ble-message": {
+					"title": "",
+					"desc": ""
+				}
+			},
+			"header-left-button": "Ajuda",
+			"header-center-button": "Ferramentas de Programador",
+			"header-right-button": "Definições",
+			"network-button": "Lista de redes",
+			"edit-profile": "Editar perfil",
+			"expert-setup": "",
+			"notifications-button": {
+				"title": "Notificações",
+				"tag-enabled": "Ativado",
+				"tag-disabled": "Desativado"
+			},
+			"dark-mode-button": "",
+			"bluetooth-button": {
+				"title": "Bluetooth"
+			}
+		},
+		"network-map": {
+			"title": "Lista de redes",
+			"online-peers": ""
+		},
+		"mode": {
+			"title": "Definições",
+			"desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			},
+			"receive-contact-requests-button": "",
+			"external-services-button": "",
+			"auto-replicate-button": "",
+			"auto-replicate-button-unavailable": "",
+			"blocked-contacts-button": {
+				"title": "",
+				"tag": ""
+			},
+			"delete-account-button": "",
+			"backup-account-button": ""
+		},
+		"edit-profile": {
+			"title": "",
+			"qr-will-update": "",
+			"ocr-wont-update": "",
+			"save": "",
+			"cancel": "Cancelar",
+			"name-input-placeholder": "",
+			"name-input-label": "Nome"
+		},
+		"notifications": {
+			"title": "Notificações",
+			"enabled-desc": "Ativou as notificações!",
+			"disabled-desc": "Não ativou as notificações para esta app",
+			"activate-button": "Ativar as notificações",
+			"contact-request-button": {
+				"title": "Pedido de contacto",
+				"desc": "Receber notificação quando alguém enviar um pedido de contacto"
+			},
+			"messages-notifications-button": {
+				"title": "Notificações de mensagens",
+				"display-button": "Mostrar notificações",
+				"preview-button": "Pré-visualizar mensagens",
+				"sound-button": "Som",
+				"exceptions-button": {
+					"title": "Excepções",
+					"preview-value": "Adicionar"
+				}
+			},
+			"group-notifications-button": {
+				"title": "Notificações de grupos",
+				"display-button": "Mostrar notificações",
+				"preview-button": "Pré-visualizar mensagens",
+				"sound-button": "Som",
+				"exceptions-button": {
+					"title": "Excepções",
+					"tag": "{{count}} excepção"
+				}
+			}
+		},
+		"bluetooth": {
+			"title": "Bluetooth",
+			"desc": "",
+			"activate-button": ""
+		},
+		"mc": {
+			"activate-button": ""
+		},
+		"nearby": {
+			"activate-button": ""
+		},
+		"services-auth": {
+			"title": "",
+			"operated-services-button": "Usar os serviços operados pelo Berty",
+			"register-service-button": {
+				"title": "",
+				"input-placeholder": "",
+				"action": "Adicionar"
+			},
+			"registered-services-button": {
+				"title": "",
+				"sample-no-services": "",
+				"sample-unknown-service": ""
+			}
+		},
+		"delete-account": {
+			"title": "",
+			"first-desc": "",
+			"desc": "",
+			"cancel-button": "",
+			"delete-button": ""
+		},
+		"help": {
+			"title": "Ajuda",
+			"security-privacy-button": {
+				"title": "",
+				"desc": ""
+			},
+			"updates-button": "",
+			"about-button": "",
+			"account-button": "",
+			"contact-button": "",
+			"message-button": "",
+			"group-button": "",
+			"settings-button": "Definições",
+			"ask-button": "",
+			"report-button": ""
+		},
+		"about": {
+			"title": "",
+			"top-left-button": "",
+			"top-right-button": "",
+			"bottom-left-button": "",
+			"bottom-right-button": "",
+			"terms-button": "",
+			"privacy-button": "",
+			"software-button": "",
+			"contact-button": "",
+			"website-button": ""
+		},
+		"updates": {
+			"title": "",
+			"current-tag": ""
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "",
+			"header-left-button": "",
+			"header-middle-button": "",
+			"header-right-button": "",
+			"theme-editor": "",
+			"simulate-button": "",
+			"simulate-js-error-button": "",
+			"tor-button": "",
+			"tor-optional-option": "",
+			"tor-required-option": "",
+			"tor-disabled-option": "",
+			"system-info-button": "",
+			"debug-button": "",
+			"log-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"log-filters-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"add-dev-conversations-button": "",
+			"share-button": {
+				"title": "",
+				"alert-title": "",
+				"alert-message": "",
+				"alert-accept-button": "",
+				"alert-cancel-button": ""
+			},
+			"native-bridge-button": "",
+			"dump-account-button": "",
+			"dump-contacts-button": "",
+			"dump-conversations-button": "",
+			"dump-interactions-button": "",
+			"dump-members-button": "",
+			"stop-node-button": "",
+			"local-grpc-button": "",
+			"console-logs-button": "",
+			"ipfs-webui-button": "",
+			"send-to-all-button": {
+				"title": "",
+				"sending": "",
+				"test": "",
+				"tried": ""
+			},
+			"trigger-crashlytics-button": "",
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"footer-left-button": "",
+			"footer-middle-button": "",
+			"footer-right-button": ""
+		},
+		"system-info": {
+			"title": ""
+		},
+		"fake-data": {
+			"title": "",
+			"contacts-button": "",
+			"multi-members-button": "",
+			"messages-button": "",
+			"delete-button": ""
+		},
+		"add-dev-conversations": {
+			"title": "",
+			"add": "",
+			"tag-bot": "",
+			"tag-contact": "",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": ""
+		},
+		"theme-editor": {
+			"title": "",
+			"randomize": "",
+			"save": "",
+			"export": "",
+			"share": "",
+			"import": ""
+		},
+		"my-berty-ID": {
+			"qr": "",
+			"fingerprint": "",
+			"devices": ""
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "",
+			"invalid-qr": "",
+			"error": "",
+			"contact-already-added": "",
+			"contact-already-added-message": ""
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"add-this-contact": {
+			"fingerprint": "",
+			"info": "",
+			"devices": ""
+		},
+		"group-invitation": {
+			"fingerprint": "",
+			"info": "",
+			"devices": "",
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "",
+			"placeholder": "",
+			"cancel": "",
+			"add": ""
+		}
+	},
+	"chat": {
+		"contact-settings": {
+			"mark-button": "",
+			"block-button": "",
+			"delete-button": "",
+			"fingerprint": "",
+			"info": "",
+			"devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": ""
+		},
+		"multi-member-settings": {
+			"header-left-button": "Pesquisar",
+			"header-middle-button": "",
+			"header-right-button": "",
+			"media-button": "",
+			"notifications-button": "",
+			"members-button": {
+				"title": "",
+				"unknown": ""
+			},
+			"add-member-button": "",
+			"invite-button": "",
+			"save-button": "",
+			"erase-button": "",
+			"leave-button": ""
+		},
+		"add-members": {
+			"members": "",
+			"contacts": "",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": ""
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "",
+				"refuse-button": "",
+				"accept-button": "",
+				"accepted-button": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "",
+				"request-sent": "",
+				"incoming": "",
+				"outgoing": ""
+			},
+			"incoming-input-placeholder": "",
+			"input-placeholder": ""
+		},
+		"one-to-one-settings": {
+			"header-left-button": "Pesquisar",
+			"header-middle-button": "",
+			"header-right-button": "",
+			"media-button": "",
+			"notifications-button": "",
+			"mutual-button": "",
+			"save-button": "",
+			"erase-button": ""
+		},
+		"replicate-group-settings": {
+			"title": "",
+			"no-registered-button": "",
+			"connect-button": "",
+			"manage-add-button": ""
+		},
+		"files": {
+			"gallery": "",
+			"camera": "",
+			"files": "",
+			"microphone": "",
+			"search-gif": "",
+			"security-access": "",
+			"security-access-desc": "",
+			"save-to-gallery": "",
+			"share": "",
+			"forward-berty": "",
+			"forward": "",
+			"image-saved": ""
+		},
+		"shared-medias": {
+			"title": "",
+			"medias": "",
+			"links": "",
+			"documents": ""
+		},
+		"reply": {
+			"response-to": "",
+			"replying-to": "",
+			"replied-to": ""
+		}
+	},
+	"audio": {
+		"record": {
+			"tooltip": {
+				"usage": "",
+				"not-sent": "",
+				"permission-denied": ""
+			},
+			"slide-to-cancel": "",
+			"cancel-button": "Cancelar"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"p2p": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "",
+		"wtf-screen": {
+			"title": "",
+			"desc": "",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "",
+			"title": "",
+			"accounts": {
+				"title": "",
+				"unsupported-remote-mode": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "",
+					"directory-exists-load-error": "",
+					"fs-read-error": "",
+					"actions-title": "",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "",
+					"action-force-delete": "",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "",
+					"action-cancel": "Cancelar"
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "",
+						"created": "",
+						"opened": "",
+						"error": ""
+					}
+				}
+			},
+			"errors": {
+				"title": "",
+				"header-reported": "",
+				"header-all-clear": "",
+				"listing-files-failed": "",
+				"listing-accounts-failed": "",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "",
+			"confirm-alert": {
+				"button-confirm": "",
+				"button-cancel": "Cancelar"
+			}
+		}
+	}
 }
