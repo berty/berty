@@ -1,19 +1,17 @@
-import React, { useState } from 'react'
-import { View, ActivityIndicator as Spinner, Vibration, StatusBar } from 'react-native'
-import { useTranslation } from 'react-i18next'
-import LottieView from 'lottie-react-native'
-import { CommonActions } from '@react-navigation/native'
-
+import { dispatch as navDispatch, ScreenFC } from '@berty-tech/navigation'
 import {
-	useNotificationsInhibitor,
-	useThemeColor,
 	PersistentOptionsKeys,
 	useMessengerContext,
+	useNotificationsInhibitor,
+	useThemeColor,
 } from '@berty-tech/store'
-import { ScreenFC, dispatch as navDispatch } from '@berty-tech/navigation'
-
-import SwiperCard from './SwiperCard'
+import { CommonActions } from '@react-navigation/native'
+import LottieView from 'lottie-react-native'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator as Spinner, StatusBar, Vibration, View } from 'react-native'
 import OnboardingWrapper from './OnboardingWrapper'
+import SwiperCard from './SwiperCard'
 
 const SetupFinishedBody = () => {
 	const { t }: any = useTranslation()
@@ -45,7 +43,7 @@ const SetupFinishedBody = () => {
 					}}
 				/>
 			)}
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 4 }}>
 				<LottieView
 					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
 					autoPlay
@@ -78,10 +76,10 @@ const SetupFinishedBody = () => {
 						/>
 					))}
 			</View>
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 3 }}>
 				<SwiperCard
 					title={t('onboarding.setup-finished.title')}
-					description={t('onboarding.setup-finished.desc')}
+					desc={t('onboarding.setup-finished.desc')}
 					button={{
 						text: t('onboarding.setup-finished.button'),
 						onPress: async () => {
@@ -109,7 +107,7 @@ const SetupFinishedBody = () => {
 		</>
 	) : (
 		<>
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 4 }}>
 				<LottieView
 					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
 					autoPlay
@@ -161,10 +159,10 @@ const SetupFinishedBody = () => {
 					/>
 				)}
 			</View>
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 3 }}>
 				<SwiperCard
 					title={t('onboarding.generate-key.title')}
-					description={t('onboarding.generate-key.desc')}
+					desc={t('onboarding.generate-key.desc')}
 				>
 					<Spinner size='large' color={colors['secondary-text']} />
 				</SwiperCard>

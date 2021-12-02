@@ -1,16 +1,17 @@
-import { Alert, Platform, PermissionsAndroid } from 'react-native'
-import Share from 'react-native-share'
 import { Buffer } from 'buffer'
-import InAppBrowser from 'react-native-inappbrowser-reborn'
+import { Alert, PermissionsAndroid, Platform } from 'react-native'
 import RNFS from 'react-native-fs'
+import InAppBrowser from 'react-native-inappbrowser-reborn'
+import Share from 'react-native-share'
 
 import beapi from '@berty-tech/api'
+import { Service } from '@berty-tech/grpc-bridge'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { Service } from '@berty-tech/grpc-bridge'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import { MessengerState } from './types'
 import { useAccount } from './hooks'
+import { MessengerState } from './types'
 
 export enum serviceTypes {
 	Replication = 'rpl',
@@ -37,18 +38,21 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 }
 
 export const servicesAuthViaDefault = async (ctx: MessengerState): Promise<void> => {
-	return servicesAuthViaURL(ctx, bertyOperatedServer)
+	return servicesAuthViaURL(ctx.protocolClient, bertyOperatedServer)
 }
 
-export const servicesAuthViaURL = async (ctx: MessengerState, url: string): Promise<void> => {
-	if (!ctx.protocolClient) {
+export const servicesAuthViaURL = async (
+	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
+	url: string,
+): Promise<void> => {
+	if (!protocolClient) {
 		return
 	}
 
 	let authURL = ''
 	try {
 		// PKCE OAuth flow
-		const resp = await ctx.protocolClient?.authServiceInitFlow({
+		const resp = await protocolClient?.authServiceInitFlow({
 			authUrl: url,
 		})
 
@@ -100,7 +104,7 @@ export const servicesAuthViaURL = async (ctx: MessengerState, url: string): Prom
 			}
 
 			const responseURL = response.url
-			await ctx.protocolClient?.authServiceCompleteFlow({
+			await protocolClient?.authServiceCompleteFlow({
 				callbackUrl: responseURL,
 			})
 		} catch (e) {

@@ -23,7 +23,6 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 							? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
 							: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
 				})
-				console.log('push:', push)
 				const reply = await ctx.client?.parseDeepLink({ link: push.pushData?.deepLink })
 				const intes = ctx.interactions[reply?.link?.bertyMessageRef?.groupPk as string]
 				const inte = intes.find(i => i.cid === reply?.link?.bertyMessageRef?.messageId)
@@ -31,7 +30,6 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 					const convPK = push.pushData?.conversationPublicKey
 					if (convPK) {
 						const conv = ctx.conversations[convPK]
-						console.log('CONV', conv)
 						const title =
 							conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
 								? conv.displayName

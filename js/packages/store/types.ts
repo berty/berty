@@ -73,7 +73,7 @@ export type MessengerState = {
 	}>
 
 	setPersistentOption: (arg0: PersistentOptionsUpdate) => Promise<void>
-	createNewAccount: () => Promise<void>
+	createNewAccount: (arg0?: beapi.account.INetworkConfig) => Promise<void>
 	importAccount: (arg0: string) => Promise<void>
 	switchAccount: (arg0: string) => Promise<void>
 	updateAccount: (arg0: any) => Promise<void>

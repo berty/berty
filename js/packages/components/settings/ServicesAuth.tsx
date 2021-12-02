@@ -63,7 +63,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 					alone={false}
 					onPress={async () => {
 						try {
-							await servicesAuthViaURL(ctx, url)
+							await servicesAuthViaURL(ctx.protocolClient, url)
 							showNeedRestartNotification(showNotification, ctx, t)
 						} catch (e) {
 							// ignoring

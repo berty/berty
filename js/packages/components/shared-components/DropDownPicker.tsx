@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, Animated, Easing } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
-
-import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
+import { Icon, Text } from '@ui-kitten/components'
+import React, { useState } from 'react'
+import { Animated, Easing, TouchableOpacity, View } from 'react-native'
 
-type Item = {
+export type Item = {
 	label: string
 	value: string
 }
@@ -14,9 +13,20 @@ export const DropDownPicker: React.FC<{
 	items: Item[]
 	defaultValue: string | null
 	onChangeItem: (item: Item) => void
+	icon?: string
+	pack?: string
+	placeholder?: string
 	mode?: 'languages' | 'themeCollection'
-}> = ({ items, defaultValue, onChangeItem, mode = 'languages' }) => {
-	const [{ padding, border, opacity, text }, { scaleSize }] = useStyles()
+}> = ({
+	items,
+	defaultValue,
+	onChangeItem,
+	icon = null,
+	pack = '',
+	placeholder = null,
+	mode = 'languages',
+}) => {
+	const [{ padding, border, opacity, text, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	const [isOpen, setOpen] = useState(false)
@@ -74,9 +84,26 @@ export const DropDownPicker: React.FC<{
 				]}
 				onPress={toggleView}
 			>
-				<Text style={[text.size.medium, { color: colors['main-text'] }]}>
-					{selectedItem?.label}
-				</Text>
+				{icon ? (
+					<View style={[margin.right.medium]}>
+						<Icon
+							name={icon}
+							pack={pack}
+							fill={colors['main-text']}
+							width={25 * scaleSize}
+							height={25 * scaleSize}
+						/>
+					</View>
+				) : null}
+				{placeholder && !selectedItem?.label ? (
+					<Text style={[text.size.medium, { color: `${colors['main-text']}50` }]}>
+						{placeholder}
+					</Text>
+				) : (
+					<Text style={[text.size.medium, { color: colors['main-text'] }]}>
+						{selectedItem?.label}
+					</Text>
+				)}
 				<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
 					<Animated.View style={[{ transform: [{ rotate: rotateAnimation }] }]}>
 						<Icon name='arrow-ios-downward' height={25} width={25} fill={colors['main-text']} />

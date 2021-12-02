@@ -21,6 +21,7 @@ import { Toggle } from '@berty-tech/components/shared-components/Toggle'
 // Type
 type SettingButtonProps = {
 	name: string
+	color?: string
 	textSize?: number | null
 	image?: string
 	icon?: string
@@ -46,6 +47,8 @@ type SettingButtonProps = {
 	actionIconColor?: string
 	actionToggle?: any
 	varToggle?: boolean
+	toggleStatus?: 'primary' | 'secondary'
+	backgroundColor?: string
 	style?: StyleProp<any>[]
 	textStyle?: StyleProp<any>[]
 	// action
@@ -67,6 +70,7 @@ const useStylesSettingButton = () => {
 
 export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	name,
+	color = null,
 	textSize,
 	image = null,
 	icon = null,
@@ -80,10 +84,12 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	actionIconSize = 25,
 	actionToggle = null,
 	varToggle = null,
+	toggleStatus = 'primary',
 	previewValue = null,
 	previewValueColor,
 	alone = true,
 	toggled = false,
+	backgroundColor = null,
 	style = null,
 	textStyle = null,
 	actionIcon = !toggled && 'arrow-ios-forward',
@@ -105,6 +111,12 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	if (!previewValueColor) {
 		previewValueColor = colors['main-text']
 	}
+	if (!backgroundColor) {
+		backgroundColor = colors['main-background']
+	}
+	if (!color) {
+		color = colors['main-text']
+	}
 
 	return (
 		<TouchableOpacity
@@ -119,7 +131,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 			}
 			style={[
 				style,
-				{ minHeight: 60 * scaleSize, backgroundColor: colors['main-background'], flex: 1 },
+				{ minHeight: 60 * scaleSize, backgroundColor, flex: 1 },
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
 				alone ? { shadowColor: colors.shadow } : null,
@@ -163,7 +175,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							style={[
 								padding.left.small,
 								text.size.scale(textSize || 15),
-								{ maxWidth: windowWidth - 150, color: colors['main-text'] },
+								{ maxWidth: windowWidth - 150, color },
 								textStyle,
 							]}
 						>
@@ -232,7 +244,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						<Toggle
 							disabled={disabled}
 							style={padding.right.scale(5)}
-							status='primary'
+							status={toggleStatus}
 							checked={varToggle || isToggle}
 							onChange={
 								actionToggle

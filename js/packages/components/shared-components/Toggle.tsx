@@ -9,7 +9,7 @@ const CIRCLE_WIDTH = 30
 const BORDER_RADIUS_WIDTH = 1
 const CIRCLE_RIGHT_POSITION = TOGGLE_WIDTH - CIRCLE_WIDTH - BORDER_RADIUS_WIDTH * 2
 
-type Status = 'primary'
+type Status = 'primary' | 'secondary'
 type ToggleProps = {
 	status: Status
 	checked?: boolean
@@ -40,6 +40,12 @@ const generateStyleColors = (
 			primary: {
 				circleBackground: 'white',
 				toggleBackgroundInactive: '#EDF0F3',
+				toggleBackgroundActive: colors['background-header'],
+				checkColor: colors['background-header'],
+			},
+			secondary: {
+				circleBackground: 'white',
+				toggleBackgroundInactive: '#C7C6FF61',
 				toggleBackgroundActive: colors['background-header'],
 				checkColor: colors['background-header'],
 			},

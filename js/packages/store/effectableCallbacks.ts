@@ -131,14 +131,20 @@ export const getNetworkConfigurationFromPreset = async (
 	return {}
 }
 
-export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerAction) => void) => {
+export const createAccount = async (
+	embedded: boolean,
+	dispatch: (arg0: reducerAction) => void,
+	newConfig?: beapi.account.INetworkConfig,
+) => {
 	let resp: beapi.account.CreateAccount.Reply
 	try {
 		const netConf: beapi.account.INetworkConfig = await getNetworkConfigurationFromPreset(
 			beapi.account.NetworkConfigPreset.Performance,
 		)
 
-		resp = await accountService.createAccount({ networkConfig: netConf })
+		resp = await accountService.createAccount({
+			networkConfig: newConfig || { ...netConf, staticRelay: [] },
+		})
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return
@@ -159,13 +165,14 @@ export const createAccount = async (embedded: boolean, dispatch: (arg0: reducerA
 export const createNewAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
+	newConfig?: beapi.account.INetworkConfig,
 ) => {
 	if (!embedded) {
 		return
 	}
 
 	try {
-		await createAccount(embedded, dispatch)
+		await createAccount(embedded, dispatch, newConfig)
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

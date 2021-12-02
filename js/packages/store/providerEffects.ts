@@ -1,32 +1,33 @@
+import base64 from 'base64-js'
 import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
+import { NativeModules, Platform } from 'react-native'
 import RNFS from 'react-native-fs'
-import base64 from 'base64-js'
-import { Platform, NativeModules } from 'react-native'
 
 import beapi from '@berty-tech/api'
-import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
+import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import ExternalTransport from './externalTransport'
-import { refreshAccountList, closeAccountWithProgress } from './effectableCallbacks'
-import { updateAccount, setPersistentOption } from './providerCallbacks'
+import { accountService, storageGet, storageRemove } from './accountService'
 import { defaultPersistentOptions, defaultThemeColor } from './context'
+import { streamEventToAction } from './convert'
+import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
+import ExternalTransport from './externalTransport'
+import { setPersistentOption, updateAccount } from './providerCallbacks'
+import { bertyOperatedServer, servicesAuthViaURL } from './services'
 import {
+	GlobalPersistentOptionsKeys,
 	MessengerActions,
 	MessengerAppState,
 	PersistentOptions,
 	PersistentOptionsKeys,
 	reducerAction,
-	GlobalPersistentOptionsKeys,
 	StreamInProgress,
 } from './types'
-import { accountService, storageRemove, storageGet } from './accountService'
-import { streamEventToAction } from './convert'
 import { storageKeyForAccount } from './utils'
 
 const { PushTokenRequester } = NativeModules
@@ -400,6 +401,7 @@ export const updateAccountsPreReady = async (
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	selectedAccount: string | null,
 	account: beapi.messenger.IAccount | null | undefined,
+	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
@@ -425,6 +427,10 @@ export const updateAccountsPreReady = async (
 		type: PersistentOptionsKeys.ThemeColor,
 		payload: defaultThemeColor(),
 	})
+	const config = await accountService.networkConfigGet({ accountId: selectedAccount })
+	if (config.currentConfig?.staticRelay && config.currentConfig?.staticRelay[0] === ':default:') {
+		await servicesAuthViaURL(protocolClient, bertyOperatedServer)
+	}
 }
 
 // handle states DeletingClosingDaemon, ClosingDaemon
