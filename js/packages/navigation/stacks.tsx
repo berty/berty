@@ -209,6 +209,11 @@ export const Navigation: React.FC = () => {
 				component={Components.Onboarding.ExpertSetup}
 				options={{ headerShown: false }}
 			/>
+			<NavigationStack.Screen
+				name={'Onboarding.WebViews'}
+				component={Components.Onboarding.WebViews}
+				options={{ title: '', headerBackTitle: '', headerTintColor: colors['main-text'] }}
+			/>
 			{/* Main */}
 			<NavigationStack.Screen
 				name={'Main.Home'}

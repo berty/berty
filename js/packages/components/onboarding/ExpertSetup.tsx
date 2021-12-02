@@ -5,6 +5,7 @@ import {
 	Linking,
 	SafeAreaView,
 	ScrollView,
+	StatusBar,
 	Text,
 	TextInput,
 	TouchableOpacity,
@@ -142,15 +143,17 @@ const MoreAbout: React.FC<{}> = () => {
 	)
 }
 
-const ConfigPart: React.FC<{ number: number; title: string; icon: string; iconSize?: number }> = ({
-	number,
-	title,
-	icon,
-	iconSize = 40,
-}) => {
+const ConfigPart: React.FC<{
+	number: number
+	title: string
+	icon: string
+	url: string
+	iconSize?: number
+}> = ({ number, title, icon, url, iconSize = 40 }) => {
 	const [{ padding, text, margin, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
+	const { navigate } = useNavigation()
 
 	return (
 		<View
@@ -208,6 +211,9 @@ const ConfigPart: React.FC<{ number: number; title: string; icon: string; iconSi
 			</View>
 			<TouchableOpacity
 				style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end' }}
+				onPress={() => {
+					navigate('Onboarding.WebViews', { url })
+				}}
 			>
 				<Text
 					style={[
@@ -431,27 +437,6 @@ const CustomReplicationNode: React.FC<{
 					}}
 				/>
 			</View>
-			{/* <TouchableOpacity
-				style={[
-					padding.medium,
-					border.radius.medium,
-					{ backgroundColor: '#CED2FF', alignItems: 'center' },
-				]}
-				onPress={() => {
-					if (node === 'berty') {
-						navigate('Settings.ReplicationServices')
-					}
-				}}
-			>
-				<Text
-					style={[
-						text.size.medium,
-						{ fontFamily: 'Open Sans', fontWeight: '700', color: '#3F49EA' },
-					]}
-				>
-					{t('onboarding.expert-setup.third-part.connect')}
-				</Text>
-			</TouchableOpacity> */}
 		</View>
 	)
 }
@@ -501,11 +486,17 @@ const CustomConfig: React.FC<{
 					number={1}
 					title={t('onboarding.expert-setup.first-part.title')}
 					icon='proximity'
+					url='https://guide.berty.tech/learn-more/proximity'
 				/>
 				<Proximity setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
 			<View style={[margin.top.medium]}>
-				<ConfigPart number={2} title={t('onboarding.expert-setup.second-part.title')} icon='peer' />
+				<ConfigPart
+					number={2}
+					title={t('onboarding.expert-setup.second-part.title')}
+					icon='peer'
+					url='https://guide.berty.tech/learn-more/peer-to-peer'
+				/>
 				<PeerToPeer setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
 			<View style={[margin.top.medium]}>
@@ -514,6 +505,7 @@ const CustomConfig: React.FC<{
 					title={t('onboarding.expert-setup.third-part.title')}
 					icon='services'
 					iconSize={50}
+					url='https://guide.berty.tech/learn-more/berty-services'
 				/>
 				<Services setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
@@ -600,6 +592,7 @@ export const ExpertSetup: ScreenFC<'Onboarding.ExpertSetup'> = ({ navigation: { 
 		ctx.networkConfig,
 	)
 	const [isNew, setIsNew] = React.useState<string | null>(null)
+	const { navigate } = useNavigation()
 
 	useMountEffect(() => {
 		ctx
@@ -619,6 +612,7 @@ export const ExpertSetup: ScreenFC<'Onboarding.ExpertSetup'> = ({ navigation: { 
 
 	return (
 		<SafeAreaView style={{ backgroundColor: '#1B1C2B', flex: 1 }}>
+			<StatusBar barStyle='light-content' />
 			<ScrollView bounces={false} contentContainerStyle={[padding.medium, padding.bottom.big]}>
 				<ExpertSetupBackground top={0} />
 				<ExpertSetupBackground top={650} />
@@ -642,12 +636,15 @@ export const ExpertSetup: ScreenFC<'Onboarding.ExpertSetup'> = ({ navigation: { 
 				<MoreAbout />
 				<View style={[margin.top.medium]}>
 					<ButtonSetting
-						name='Read more about expert mode'
+						name={t('onboarding.expert-setup.read-more')}
 						color={colors['reverted-main-text']}
 						icon='info-outline'
 						iconColor='#6E6DFF'
 						actionIconColor={colors['reverted-main-text']}
 						backgroundColor={colors['alt-secondary-background-header']}
+						onPress={() =>
+							navigate('Onboarding.WebViews', { url: 'https://guide.berty.tech/learn-more' })
+						}
 					/>
 				</View>
 				<CustomConfig setNewConfig={setNewConfig} newConfig={newConfig} />
