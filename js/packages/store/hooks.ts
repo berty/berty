@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import colors from '@berty-tech/styles/colors.json'
+import darkTheme from '@berty-tech/styles/darktheme-default.json'
 
 import { MessengerContext, useMessengerContext } from './context'
 import {
@@ -165,11 +166,15 @@ export const usePersistentOptions = () => {
 export const useThemeColor = () => {
 	const ctx = useMessengerContext()
 	let collectionColors = {}
-	Object.entries(ctx.persistentOptions?.themeColor.collection).map(value => {
-		if (value[0] === ctx.persistentOptions?.themeColor.selected) {
-			collectionColors = (value[1] as any)?.colors
-		}
-	})
+	if (ctx.persistentOptions?.themeColor.isDark) {
+		collectionColors = darkTheme
+	} else {
+		Object.entries(ctx.persistentOptions?.themeColor.collection).map(value => {
+			if (value[0] === ctx.persistentOptions?.themeColor.selected) {
+				collectionColors = (value[1] as any)?.colors
+			}
+		})
+	}
 	return Object.entries(ctx.persistentOptions?.themeColor.collection).length &&
 		ctx.appState !== MessengerAppState.GetStarted
 		? collectionColors

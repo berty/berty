@@ -19,8 +19,6 @@ import {
 	useThemeColor,
 	CheckListItem,
 	CheckListProfileNotification,
-	DefaultBertyTheme,
-	DefaultDarkTheme,
 	PersistentOptionsKeys,
 } from '@berty-tech/store'
 import i18n from '@berty-tech/berty-i18n'
@@ -447,16 +445,13 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 				icon='moon-outline'
 				iconColor={colors['background-header']}
 				toggled
-				varToggle={ctx.persistentOptions.themeColor.selected === DefaultDarkTheme}
+				varToggle={ctx.persistentOptions.themeColor.isDark}
 				actionToggle={async () => {
 					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.ThemeColor,
 						payload: {
 							...ctx.persistentOptions.themeColor,
-							selected:
-								ctx.persistentOptions.themeColor.selected !== DefaultDarkTheme
-									? DefaultDarkTheme
-									: DefaultBertyTheme,
+							isDark: !ctx.persistentOptions.themeColor.isDark,
 						},
 					})
 				}}

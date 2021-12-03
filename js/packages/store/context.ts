@@ -108,6 +108,7 @@ export const defaultThemeColor = () => {
 			[DefaultPinkTheme]: { colors: pinkTheme },
 			[DefaultDarkTheme]: { colors: darkTheme },
 		},
+		isDark: false,
 	}
 }
 

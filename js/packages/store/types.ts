@@ -188,6 +188,7 @@ export type PersistentOptionsTyberHost = {
 export type PersistentOptionsThemeColor = {
 	selected: string
 	collection: { [key: string]: { colors: unknown } }
+	isDark: boolean
 }
 
 export type PersistentOptionsOnBoardingFinished = {

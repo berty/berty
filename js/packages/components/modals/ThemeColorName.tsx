@@ -11,6 +11,7 @@ import {
 	CurrentGeneratedTheme,
 	PersistentOptionsKeys,
 	setCheckListItemDone,
+	DefaultDarkTheme,
 } from '@berty-tech/store'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
@@ -173,6 +174,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 												ctx.persistentOptions.themeColor.collection[CurrentGeneratedTheme].colors,
 										},
 									},
+									isDark: themeName === DefaultDarkTheme,
 								},
 							})
 							setCheckListItemDone(ctx, 'theme')

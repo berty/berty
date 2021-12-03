@@ -16,6 +16,7 @@ import {
 	CurrentGeneratedTheme,
 	useThemeColor,
 	createAndSaveFile,
+	DefaultDarkTheme,
 	setCheckListItemDone,
 } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
@@ -91,6 +92,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 									colors: JSON.parse(themeColors),
 								},
 							},
+							isDark: false,
 						},
 					})
 					await setCheckListItemDone(ctx, 'theme')
@@ -181,6 +183,7 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 									colors: themeColor,
 								},
 							},
+							isDark: false,
 						},
 					})
 				}}
@@ -196,8 +199,22 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 			<DropDownPicker
 				items={items}
 				mode={'themeCollection'}
-				defaultValue={ctx.persistentOptions?.themeColor.selected}
+				defaultValue={
+					ctx.persistentOptions.themeColor.isDark
+						? DefaultDarkTheme
+						: ctx.persistentOptions?.themeColor.selected
+				}
 				onChangeItem={async (item: any) => {
+					if (item.label === DefaultDarkTheme) {
+						await ctx.setPersistentOption({
+							type: PersistentOptionsKeys.ThemeColor,
+							payload: {
+								...ctx.persistentOptions.themeColor,
+								isDark: true,
+							},
+						})
+						return
+					}
 					await ctx.setPersistentOption({
 						type: PersistentOptionsKeys.ThemeColor,
 						payload: {
@@ -206,6 +223,7 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 								...ctx.persistentOptions.themeColor.collection,
 								[item.label]: item.value,
 							},
+							isDark: false,
 						},
 					})
 				}}
