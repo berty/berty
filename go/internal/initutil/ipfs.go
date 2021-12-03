@@ -495,7 +495,8 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// Setup Android Nearby
-	if m.Node.Protocol.Nearby.Enable {
+	// TODO: fix Android Nearby running with the BLE driver (L2CAP inteferences)
+	/*if m.Node.Protocol.Nearby.Enable {
 		if m.Node.Protocol.Nearby.Driver != nil {
 			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, m.Node.Protocol.Nearby.Driver.DefaultAddr())
 			p2popts = append(p2popts,
@@ -503,7 +504,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		} else {
 			logger.Warn("cannot enable Android Nearby on an unsupported platform")
 		}
-	}
+	}*/
 
 	// Setup MC
 	if m.Node.Protocol.MultipeerConnectivity {
