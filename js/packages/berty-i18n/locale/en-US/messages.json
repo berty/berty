@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "PROTECT YOUR PRIVACY",
+			"desc": "free & secure peer-to-peer messaging",
+			"button": "DISCOVER"
 		},
 		"select-mode": {
 			"title": "Choose a preset",
@@ -30,53 +30,53 @@
 			"title": "Create your account",
 			"desc": "A name is the only information required",
 			"required": "Required",
-			"placeholder": "",
+			"placeholder": "Choose your nickname",
 			"button": "CREATE MY ACCOUNT",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "ADVANCED",
+			"import-account": "IMPORT ACCOUNT",
+			"link-device": "LINK DEVICE",
+			"expert-setup": "EXPERT SETUP",
+			"more": "MORE INFO",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Good to know:",
+				"first-point": "Your account is created locally",
+				"second-point": "Nickname is optional and can be edited"
 			}
 		},
 		"expert-setup": {
-			"title": "",
-			"desc": "",
+			"title": "Expert mode",
+			"desc": "Find documentation and create your own config.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Welcome in the expert mode",
+				"first-paragraph": "Here you’ll be able to create your own custom configuration to fit with your needs.",
+				"second-paragraph": "We’ll present you every options to allow you to understand what’s happening behind the hood.",
+				"third-paragraph": "You’ll also find ressources link to hack it. This section is for experts only!"
 			},
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"config-title": "Custom configs",
+			"config-desc": "3 steps of app configuration. Customize everything now!",
+			"learn-more": "Learn more",
 			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Proximity",
+				"first-button": "Bluetooth Low Energy",
+				"second-button": "Multicast DNS"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Peer-to-Peer",
+				"first-button": "Distributed Hash Table",
+				"second-button": "TOR Activation"
 			},
 			"third-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Services",
+				"first-button": "Push notifications",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "Setup your own node",
+					"placeholder": "Enter server address"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": "Select a certified node",
+				"connect": "CONNECT YOUR BOOSTER NODE"
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": "APPLY CHANGES",
+			"skip": "Skip and do this later"
 		},
 		"services-auth": {
 			"header": "Authenticate to services",
@@ -215,7 +215,7 @@
 			"header-right-button": "Settings",
 			"network-button": "Network List",
 			"edit-profile": "Edit profile",
-			"expert-setup": "",
+			"expert-setup": "Expert configuration",
 			"notifications-button": {
 				"title": "Notifications",
 				"tag-enabled": "Enabled",
