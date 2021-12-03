@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "PROTÉGEZ VOTRE VIE PRIVÉE",
+			"desc": "messagerie P2P gratuite et sécurisée",
+			"button": "DÉCOUVRIR"
 		},
 		"select-mode": {
 			"title": "Choisir un pré-réglage",
@@ -30,53 +30,53 @@
 			"title": "Créer votre compte",
 			"desc": "Seul le nom est requis",
 			"required": "Requis",
-			"placeholder": "",
+			"placeholder": "Choisissez votre pseudo",
 			"button": "CRÉER MON COMPTE",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "AVANCÉ",
+			"import-account": "IMPORTER UN COMPTE",
+			"link-device": "LIER UN APPAREIL",
+			"expert-setup": "INSTALLATION EXPERT",
+			"more": "PLUS D'INFOS",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Bon à savoir :",
+				"first-point": "Votre compte est créé localement",
+				"second-point": "Le pseudo est facultatif et peut être modifié"
 			}
 		},
 		"expert-setup": {
-			"title": "",
-			"desc": "",
+			"title": "Mode expert",
+			"desc": "Trouvez de la documentation et créez votre propre configuration.",
 			"more-about": {
-				"title": "",
+				"title": "Bienvenue dans le mode Expert",
 				"first-paragraph": "",
-				"second-paragraph": "",
+				"second-paragraph": "Nous vous présenterons toutes les options pour vous permettre de comprendre ce qui se passe sous le capot.",
 				"third-paragraph": ""
 			},
-			"config-title": "",
+			"config-title": "Configurations personnalisées",
 			"config-desc": "",
-			"learn-more": "",
+			"learn-more": "En savoir plus",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Proximité",
+				"first-button": "Bluetooth faible consommation d'énergie",
 				"second-button": "Multicast DNS"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Pair à pair",
+				"first-button": "Tableau distribué de hachage",
+				"second-button": "Activation TOR"
 			},
 			"third-part": {
 				"title": "Services",
 				"first-button": "Notifications push",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "Configurez votre propre nœud",
+					"placeholder": "Entrez l'adresse du serveur"
 				},
-				"third-button": "",
+				"third-button": "Sélectionner un nœud certifié",
 				"connect": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": "APPLIQUER LES CHANGEMENTS",
+			"skip": "Ignorer pour le moment"
 		},
 		"services-auth": {
 			"header": "S'authentifier aux services",
@@ -215,7 +215,7 @@
 			"header-right-button": "Paramètres",
 			"network-button": "Liste de réseaux",
 			"edit-profile": "Modifier mon profil",
-			"expert-setup": "",
+			"expert-setup": "Configuration expert",
 			"notifications-button": {
 				"title": "Notifications",
 				"tag-enabled": "Activé",
