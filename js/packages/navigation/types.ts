@@ -22,7 +22,7 @@ export type ScreensParams = {
 		permissionStatus: 'blocked' | 'denied'
 		navigateNext: keyof ScreensParams
 		createNewAccount: boolean
-		onComplete: () => Promise<void>
+		onComplete?: () => Promise<void>
 	}
 
 	// Create group
