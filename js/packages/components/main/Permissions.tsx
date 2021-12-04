@@ -51,7 +51,9 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		if (isToCreateNewAccount) {
 			await createNewAccount()
 		}
-		await onComplete()
+		if (typeof onComplete === 'function') {
+			await onComplete()
+		}
 		if (navigateNext) {
 			navigation.navigate(navigateNext)
 		} else {
