@@ -38,6 +38,17 @@ static void InitializeFlipper(UIApplication *application) {
   InitializeFlipper(application);
 #endif
 
+  // Set deepLink in right launchOptions key if opened from push notif
+  if (launchOptions != nil && launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] != nil) {
+    NSString *deepLink = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey][@"deepLink"];
+    if (deepLink != nil) {
+      NSMutableDictionary *editedLaunchOptions = [launchOptions mutableCopy];
+      [editedLaunchOptions setObject:[NSURL URLWithString: deepLink] forKey:UIApplicationLaunchOptionsURLKey];
+      [editedLaunchOptions removeObjectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+      launchOptions = [editedLaunchOptions copy];
+    }
+  }
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"Berty"
@@ -159,10 +170,12 @@ static void InitializeFlipper(UIApplication *application) {
   if (response.notification.request.content.userInfo != nil) {
     NSString *deepLink = response.notification.request.content.userInfo[@"deepLink"];
     if (deepLink != nil) {
-      [[UIApplication sharedApplication] openURL:[NSURL URLWithString: deepLink] options:@{} completionHandler:nil];
+      [[UIApplication sharedApplication] openURL:[NSURL URLWithString: deepLink] options:@{} completionHandler:^(BOOL success) {
+        completionHandler();
+      }];
+      return;
     }
   }
-
   completionHandler();
 }
 
