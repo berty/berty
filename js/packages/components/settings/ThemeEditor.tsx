@@ -27,9 +27,10 @@ import ThemeColorName from '../modals/ThemeColorName'
 
 const openThemeColorFile = async () => {
 	try {
-		return await DocumentPicker.pickSingle({
-			type: Platform.OS === 'android' ? ['*/*'] : ['public.item'],
+		const document = await DocumentPicker.pick({
+			type: DocumentPicker.types.allFiles,
 		})
+		return document[0]
 	} catch (err: any) {
 		if (DocumentPicker.isCancel(err)) {
 			// ignore
@@ -41,7 +42,7 @@ const openThemeColorFile = async () => {
 
 const importColorThemeFileToStorage = async (uri: string) => {
 	const file = Platform.OS === 'android' ? getPath(uri) : uri.replace(/^file:\/\//, '')
-	const theme = await RNFS.readFile(file, 'utf8')
+	const theme = await RNFS.readFile(file)
 	return theme
 }
 
@@ -56,7 +57,7 @@ const shareColorTheme = async (fileName: string) => {
 
 const exportColorThemeToFile = async (themeColor: any, fileName: string): Promise<void> => {
 	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.json'
-	await RNFS.writeFile(outFile, 'utf8')
+	await RNFS.writeFile(outFile, themeColor, 'utf8')
 	Platform.OS === 'android'
 		? await createAndSaveFile(outFile, fileName, 'json')
 		: await shareColorTheme(fileName)
