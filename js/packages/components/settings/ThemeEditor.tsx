@@ -27,10 +27,9 @@ import ThemeColorName from '../modals/ThemeColorName'
 
 const openThemeColorFile = async () => {
 	try {
-		const document = await DocumentPicker.pick({
+		return await DocumentPicker.pickSingle({
 			type: DocumentPicker.types.allFiles,
 		})
-		return document[0]
 	} catch (err: any) {
 		if (DocumentPicker.isCancel(err)) {
 			// ignore
