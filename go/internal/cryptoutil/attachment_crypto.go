@@ -36,7 +36,7 @@ type attachmentCipher struct {
 }
 
 func attachmentNewCipher(sk libp2pcrypto.PrivKey) (*attachmentCipher, error) {
-	key, err := sk.Raw()
+	key, err := SeedFromEd25519PrivateKey(sk)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -72,7 +72,7 @@ func AttachmentSealer(plaintext io.Reader, l *zap.Logger) (libp2pcrypto.PrivKey,
 		return nil, nil, errcode.ErrCryptoCipherInit.Wrap(err)
 	}
 
-	return sk, streamutil.FuncBlockTransformer(make([]byte, attachmentCipherblockSize-16), plaintext, l, func(pt []byte) ([]byte, error) {
+	return sk, streamutil.FuncBlockTransformer(make([]byte, attachmentCipherblockSize-ac.aead.Overhead()), plaintext, l, func(pt []byte) ([]byte, error) {
 		ct := ac.aead.Seal([]byte(nil), ac.nonceBuf[:], pt, []byte(nil))
 
 		ac.nonce.Add(ac.nonce, bigOne)
