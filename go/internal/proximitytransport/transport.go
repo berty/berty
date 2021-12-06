@@ -219,6 +219,9 @@ func (t *proximityTransport) HandleFoundPeer(sRemotePID string) bool {
 	t.host.Peerstore().AddAddr(remotePID, remoteMa,
 		pstore.TempAddrTTL)
 
+	// Delete previous cache if it exists
+	t.cache.Delete(sRemotePID)
+
 	// Peer with lexicographical smallest peerID inits libp2p connection.
 	if listener.Addr().String() < sRemotePID {
 		t.logger.Debug("HandleFoundPeer: outgoing libp2p connection")
