@@ -45,7 +45,7 @@ jobs:
           go-version: ${{ matrix.golang }}
 
       - name: Setup Node
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.0
         with:
           node-version: ${{ matrix.node }}
 
