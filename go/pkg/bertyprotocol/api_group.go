@@ -185,7 +185,7 @@ func monitorHandlePubsubEvent(e *ipfsutil.EvtPubSubTopic, h host.Host) *protocol
 			m.PeerJoin.Maddrs[i] = conn.RemoteMultiaddr().String()
 		}
 
-	case ipfsutil.TypeEventMonitorPeerLeaved:
+	case ipfsutil.TypeEventMonitorPeerLeft:
 		m.Type = protocoltypes.TypeEventMonitorPeerLeave
 		m.PeerLeave = &protocoltypes.MonitorGroup_EventMonitorPeerLeave{}
 

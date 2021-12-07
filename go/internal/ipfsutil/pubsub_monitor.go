@@ -21,7 +21,7 @@ type EventMonitor int
 const (
 	TypeEventMonitorPeerUnknown EventMonitor = iota
 	TypeEventMonitorPeerJoined
-	TypeEventMonitorPeerLeaved
+	TypeEventMonitorPeerLeft
 )
 
 type EventTracer interface {
@@ -79,7 +79,7 @@ func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 		topic := e.GetLeave().GetTopic()
 		peer := pt.h.ID()
 		pt.Emit(&EvtPubSubTopic{
-			EventType: TypeEventMonitorPeerLeaved,
+			EventType: TypeEventMonitorPeerLeft,
 			Topic:     topic,
 			PeerID:    peer,
 		})
@@ -96,7 +96,7 @@ func (pt *PubsubMonitor) Trace(e *ps_pb.TraceEvent) {
 		topics := pt.popTopicFromPeer(peerid)
 		for _, topic := range topics {
 			pt.Emit(&EvtPubSubTopic{
-				EventType: TypeEventMonitorPeerLeaved,
+				EventType: TypeEventMonitorPeerLeft,
 				Topic:     topic,
 				PeerID:    peerid,
 			})
