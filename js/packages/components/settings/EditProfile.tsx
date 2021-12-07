@@ -7,7 +7,6 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native'
-import { BlurView } from '@react-native-community/blur'
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
@@ -382,7 +381,6 @@ export const EditProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }
 			onPress={() => closeModal()}
 			style={[StyleSheet.absoluteFill, { justifyContent: 'flex-end' }]}
 		>
-			<BlurView style={[StyleSheet.absoluteFill]} blurType='dark' />
 			<KeyboardAvoidingView behavior='padding'>
 				<View
 					style={[
