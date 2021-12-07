@@ -1,82 +1,82 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "SKYDDA DIN INTEGRITET",
+			"desc": "gratis & säker peer-to-peer kommunikation",
+			"button": "UPPTÄCK"
 		},
 		"select-mode": {
-			"title": "",
-			"change-later": "",
+			"title": "Välj ett förval",
+			"change-later": "Du kan välja att ändra det senare!",
 			"performance": {
 				"title": "Prestanda",
 				"desc": "Lätt att använda - alla funktioner",
 				"push-notif": "Ta emot push-aviseringar",
-				"offline-message": "",
+				"offline-message": "Offline kommunikation via Bluetooth",
 				"add-contact": "Lägg enkelt till kontakter",
 				"fast-message": "Snabbast möjliga leverans av meddelanden"
 			},
 			"high-level": {
-				"title": "",
-				"desc": "",
+				"title": "Fullständig anonymitet",
+				"desc": "För extremt försiktiga användare",
 				"disable-push-notif": "Push-aviseringar avstängda",
 				"disable-local-peer-discovery": "Sökning efter lokala noder avstängd",
-				"disable-local-peer-discovery-desc": "",
+				"disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
 				"disable-contact-request": "Kontaktförfrågningar avstängda",
-				"on-same-network": ""
+				"on-same-network": "Lokalt på samma nätverk/wifi"
 			}
 		},
 		"create-account": {
 			"title": "Skapa ditt konto",
 			"desc": "Ett namn är den enda information som behövs",
 			"required": "Obligatorisk",
-			"placeholder": "",
+			"placeholder": "Välj ditt smeknamn",
 			"button": "SKAPA MITT KONTO",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "AVANCERAT",
+			"import-account": "IMPORTERA KONTO",
+			"link-device": "LÄNKA ENHET",
+			"expert-setup": "EXPERT SETUP",
+			"more": "MER INFO",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Bra att veta:",
+				"first-point": "Ditt konto är skapat lokalt",
+				"second-point": "Smeknamn är valfritt och kan ändras"
 			}
 		},
 		"expert-setup": {
-			"title": "",
-			"desc": "",
+			"title": "Expert-läge",
+			"desc": "Hitta dokumentation och skapa din egen konfiguration.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Välkommen till expertläget",
+				"first-paragraph": "Här kommer du att kunna skapa din egen anpassade konfiguration för att passa dina behov.",
+				"second-paragraph": "Vi kommer att presentera alla alternativ för att låta dig förstå vad som händer bakom huven.",
+				"third-paragraph": "Du hittar också resurslänkar för att hacka den. Detta avsnitt är endast för experter!"
 			},
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"config-title": "Anpassade konfigurationer",
+			"config-desc": "3 steg i appkonfigurationen. Anpassa allt nu!",
+			"learn-more": "Läs mer",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Närhet",
+				"first-button": "Bluetooth Low Energy",
 				"second-button": "Multicast DNS"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Peer-to-peer",
+				"first-button": "Distribuerad hashtabell",
+				"second-button": "TOR aktivering"
 			},
 			"third-part": {
 				"title": "Tjänster",
-				"first-button": "",
+				"first-button": "Push-notiser",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "Konfigurera din egen nod",
+					"placeholder": "Ange serveradress"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": "Välj en certifierad nod",
+				"connect": "ANSLUT DIN BOOSTER NODE"
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": "SPARA ÄNDRINGAR",
+			"skip": "Hoppa över och gör detta senare"
 		},
 		"services-auth": {
 			"header": "Autentisera till tjänster",
@@ -114,100 +114,100 @@
 				"import-button": "Importera konto"
 			},
 			"create-group": {
-				"title": "",
-				"add-members": "",
-				"group-info": "",
+				"title": "Ny grupp",
+				"add-members": "Lägg till medlemmar",
+				"group-info": "Gruppinformation",
 				"search-placeholder": "Sök",
-				"continue": "",
-				"create-group": ""
+				"continue": "FORTSÄTT",
+				"create-group": "SKAPA EN GRUPP"
 			},
 			"create-group-finalize": {
-				"placeholder": "",
-				"about": "",
-				"first-bullet-point": "",
-				"second-bullet-point": "",
-				"third-bullet-point": "",
-				"fourth-bullet-point": "",
-				"fifth-bullet-point": ""
+				"placeholder": "Gruppnamn",
+				"about": "Om grupperna",
+				"first-bullet-point": "Vem som helst i gruppen kan byta namn på den eller bjuda in nya medlemmar",
+				"second-bullet-point": "Du kan bjuda in medlemmar via länk",
+				"third-bullet-point": "Du kan lämna denna grupp",
+				"fourth-bullet-point": "Du kan inte ta bort denna grupp",
+				"fifth-bullet-point": "Du kan inte ta bort medlemmar från denna grupp"
 			},
 			"conversations": {
-				"request-sent": "",
-				"draft": ""
+				"request-sent": "Begäran har skickats. Inväntar svar...",
+				"draft": "Utkast: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "",
+		"suggestion-display-name-initial": "Klicka här för att lägga till",
 		"configurations": {
 			"network": {
-				"display-name": "",
-				"desc": ""
+				"display-name": "Nätverkskonfiguration",
+				"desc": "Klicka här för att slutföra nätverkskonfigurationen"
 			},
 			"notification": {
-				"display-name": "",
-				"desc": ""
+				"display-name": "Aviseringskonfiguration",
+				"desc": "Klicka här för push-aviseringskonfiguration"
 			},
 			"replicate": {
-				"display-name": "",
-				"desc": ""
+				"display-name": "P2P replikering",
+				"desc": "Konfigurera replikeringstjänster"
 			}
 		},
 		"network-options": {
-			"welcome-title": "",
-			"full-anon-mode": "",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
+			"welcome-title": "Välkommen till Nätverksinställningarna",
+			"full-anon-mode": "Fullständigt anonymläge",
+			"simple-tor-compatible": "Enkel TOR-kompatibel",
+			"allow-expert-mode": "Tillåt expertläge",
 			"tor-compatible": {
-				"title": "",
-				"desc": ""
+				"title": "TOR kompatibel",
+				"desc": "Denna konfiguration gör att du kan ansluta till TOR-nätverket och diskutera med fullständigt anonym-användare utan att vara dig själv i ett extremt anonymt läge."
 			},
 			"full-anon": {
-				"title": "",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
+				"title": "Fullständigt anonymläge",
+				"desc": "Denna konfiguration är baserad på radikala förinställningar som ger extremt försiktiga nätverksparametrar:",
+				"no-ip": "Ingen IP",
+				"no-mc": "Ingen MC",
+				"tor-only": "Endast TOR"
 			},
-			"save": "",
+			"save": "SPARA",
 			"skip": "HOPPA ÖVER OCH GÖR SENARE"
 		},
 		"scan": {
-			"title": ""
+			"title": "Skanna QR-kod"
 		}
 	},
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "",
+				"title": "Checklista {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
-					"title": "",
-					"desc": ""
+					"title": "Ändra din profilbild",
+					"desc": "Låt oss ställa in en profilbild för detta konto!"
 				},
 				"relay": {
-					"title": "",
-					"desc": ""
+					"title": "Konfigurera relä",
+					"desc": "Förbättra nätverksprestandan med hjälp av en relä som drivs av Berty Techs ideella organisation."
 				},
 				"contact": {
-					"title": "",
-					"desc": ""
+					"title": "Synkronisera med en kontakt",
+					"desc": "Skanna en QR-kod för att lägga till en första kontakt i din kontaktlista!"
 				},
 				"group": {
-					"title": "",
-					"desc": ""
+					"title": "Gå med i eller skapa en grupp",
+					"desc": "Låt oss skapa eller gå med i din första Berty grupp!"
 				},
 				"message": {
-					"title": "",
-					"desc": ""
+					"title": "Skicka meddelande",
+					"desc": "Säg 'Hej världen' till en kontakt!"
 				},
 				"theme": {
-					"title": "",
-					"desc": ""
+					"title": "Skräddarsy tema",
+					"desc": "Skapa din egen version av appen och dela den med gemenskapen!"
 				},
 				"hidden-account": {
-					"title": "",
-					"desc": ""
+					"title": "Skapa ett dolt konto",
+					"desc": "Skapa ett osynligt konto med ett specifikt lösenord för att logga in, så du kan känna dig säkrare på flygplatsen!"
 				},
 				"ble-message": {
-					"title": "",
-					"desc": ""
+					"title": "Skicka meddelande utan internet",
+					"desc": "Använd närhetsfunktionen och skicka ett meddelande utan mobilnätverk eller internetanslutning!"
 				}
 			},
 			"header-left-button": "Hjälp",
@@ -215,7 +215,7 @@
 			"header-right-button": "Inställningar",
 			"network-button": "Lista över nätverk",
 			"edit-profile": "Redigera profil",
-			"expert-setup": "",
+			"expert-setup": "Expertinställningar",
 			"notifications-button": {
 				"title": "Aviseringar",
 				"tag-enabled": "Aktiv",
@@ -234,13 +234,13 @@
 			"title": "Inställningar",
 			"desc": "Anpassa allt för att få appen som passar just dina behov",
 			"notification-file-saved": {
-				"title": "",
-				"desc": ""
+				"title": "Data sparad!",
+				"desc": "Tillgänglig i din nedladdningsmapp"
 			},
 			"receive-contact-requests-button": "Ta emot kontaktförfrågningar",
 			"external-services-button": "Externa tjänster",
 			"auto-replicate-button": "Automatisk replikering",
-			"auto-replicate-button-unavailable": "",
+			"auto-replicate-button-unavailable": "Du måste registrera minst en replikeringsserver först",
 			"blocked-contacts-button": {
 				"title": "Blockerade kontakter",
 				"tag": "blockad"
@@ -289,14 +289,14 @@
 		},
 		"bluetooth": {
 			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
+			"desc": "Med Bluetooth kan du utbyta meddelanden med Berty utan internetuppkoppling genom att ansluta direkt med andra enheter i närheten",
+			"activate-button": "Aktivera Bluetooth"
 		},
 		"mc": {
 			"activate-button": "Aktivera multi-klient anslutning"
 		},
 		"nearby": {
-			"activate-button": ""
+			"activate-button": "Aktivera Android Nearby"
 		},
 		"services-auth": {
 			"title": "Externa tjänster",
@@ -352,17 +352,17 @@
 			"current-tag": "Aktuell"
 		},
 		"faq": {
-			"title": ""
+			"title": "Vanliga frågor"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Roadmap"
 		},
 		"devtools": {
 			"title": "Utvecklingsverktyg",
 			"header-left-button": "Enhetsinformation",
 			"header-middle-button": "Generera låtsatsdata",
 			"header-right-button": "Starta om bakgrundstjänst",
-			"theme-editor": "",
+			"theme-editor": "Utseende & tema verktyg",
 			"simulate-button": "Simulera streaming fel",
 			"simulate-js-error-button": "Simulera JavaScript-fel",
 			"tor-button": "Tor {{option}}",
@@ -372,17 +372,17 @@
 			"system-info-button": "Systeminformation",
 			"debug-button": "Debug",
 			"log-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "Loggformat",
+				"bullet-point": "Starta om appen efter att du ändrat detta fält"
 			},
 			"log-filters-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "Loggfilter",
+				"bullet-point": "Starta om appen efter att du ändrat detta fält"
 			},
 			"add-dev-conversations-button": "Lägg till utvecklarkonversationer",
 			"share-button": {
 				"title": "Dela ID via Discord",
-				"alert-title": "",
+				"alert-title": "Vill du dela din QR-kod till \"#dev-logs\" på Berty's Discord?",
 				"alert-message": "Detta kommer att tillåta annan personal att skanna din QR-kod eller kopiera din kontaktlänk.",
 				"alert-accept-button": "Javisst 👍",
 				"alert-cancel-button": "Nej"
@@ -403,11 +403,11 @@
 				"test": "Test, ",
 				"tried": "✔ Försökte skicka till {{length}} kontakter"
 			},
-			"trigger-crashlytics-button": "",
-			"tyber-attach": "",
+			"trigger-crashlytics-button": "Utlös crashlytics krasch",
+			"tyber-attach": "Tyber anknyt till {{host}}",
 			"tyber-host-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "Tyber",
+				"bullet-point": "Starta om appen efter att du ändrat detta fält"
 			},
 			"footer-left-button": "Enhetsinformation",
 			"footer-middle-button": "Visa händelser",
@@ -434,12 +434,12 @@
 			"title": "IPFS webbgränssnitt"
 		},
 		"theme-editor": {
-			"title": "",
-			"randomize": "",
-			"save": "",
-			"export": "",
-			"share": "",
-			"import": ""
+			"title": "Tema redigerare",
+			"randomize": "Generera tema",
+			"save": "Spara temat",
+			"export": "Exportera valt tema till fil",
+			"share": "Dela valt tema som fil",
+			"import": "Importera en tema fil"
 		},
 		"my-berty-ID": {
 			"qr": "QR",
@@ -467,16 +467,16 @@
 			"fingerprint": "Fingeravtryck",
 			"info": "Detaljer",
 			"devices": "Enheter",
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "GÅ MED I GRUPPEN",
+			"password-label": "Ange gruppens lösenord",
+			"password-placeholder": "Lösenord..."
 		},
 		"save-theme": {
-			"title": "",
-			"desc": "",
-			"placeholder": "",
+			"title": "Sparar temat",
+			"desc": "Vänligen välj ett namn för ditt tema!",
+			"placeholder": "Temats namn...",
 			"cancel": "AVBRYT",
-			"add": ""
+			"add": "LÄGG TILL!"
 		}
 	},
 	"chat": {
@@ -489,7 +489,7 @@
 			"devices": "Enheter"
 		},
 		"multi-member": {
-			"input-placeholder": ""
+			"input-placeholder": "Skriv här..."
 		},
 		"multi-member-settings": {
 			"header-left-button": "Sök",
@@ -509,8 +509,8 @@
 		},
 		"add-members": {
 			"members": "Medlemmar",
-			"contacts": "",
-			"add": ""
+			"contacts": "Kontakter",
+			"add": "Lägg till!"
 		},
 		"multi-member-qr": {
 			"title": "QR Grupp"
@@ -529,7 +529,7 @@
 				"outgoing": "Väntar på att ditt kontaktsvar ska ansluta!"
 			},
 			"incoming-input-placeholder": "Godkänn förfrågan för att skriva här...",
-			"input-placeholder": ""
+			"input-placeholder": "Skriv här..."
 		},
 		"one-to-one-settings": {
 			"header-left-button": "Sök",
@@ -562,57 +562,57 @@
 			"image-saved": "Bild sparad i galleriet"
 		},
 		"shared-medias": {
-			"title": "",
-			"medias": "",
-			"links": "",
-			"documents": ""
+			"title": "Delad media",
+			"medias": "Media",
+			"links": "Länkar",
+			"documents": "Dokument"
 		},
 		"reply": {
-			"response-to": "",
-			"replying-to": "",
-			"replied-to": ""
+			"response-to": "Svar till",
+			"replying-to": "Du svarar till",
+			"replied-to": "Svarat till"
 		}
 	},
 	"audio": {
 		"record": {
 			"tooltip": {
-				"usage": "",
-				"not-sent": "",
-				"permission-denied": ""
+				"usage": "Håll in för att spela in, släpp för att skicka",
+				"not-sent": "Ljudmeddelandet har inte skickats",
+				"permission-denied": "Appen saknar behörighet att spela in ljud"
 			},
-			"slide-to-cancel": "",
+			"slide-to-cancel": "<< Svep för att avbryta",
 			"cancel-button": "Avbryt"
 		}
 	},
 	"permission": {
 		"notification": {
-			"title": "",
-			"desc": ""
+			"title": "Push-aviseringar",
+			"desc": "Berty appen behöver din tillåtelse för att skicka lokala- eller push-aviseringar. Detta gör att du kan informeras när du får ett meddelande."
 		},
 		"p2p": {
-			"title": "",
-			"android-desc": "",
-			"ios-desc": ""
+			"title": "Bluetooth-kommunikation",
+			"android-desc": "För att kunna utbyta meddelanden offline via Bluetooth även när appen är i bakgrunden kräver Android API åtkomst till platsdata. Vi använder inte dina platsdata på något sätt.",
+			"ios-desc": "För att kunna utbyta meddelanden offline via Bluetooth kräver iOS behörighets-API tillåtelse."
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": ""
+			"desc": "För att skanna QR-koden och lägga till kontakter med din kamera behöver Berty appen din tillåtelse. Kameran kan inte användas för något annat."
 		},
 		"audio": {
-			"title": "",
-			"desc": ""
+			"title": "Ljudmeddelanden",
+			"desc": "För att skicka ljudmeddelande till dina kontakter måste du tillåta mikrofonbehörighet till Berty appen."
 		},
 		"button-labels": {
-			"allow": "",
-			"settings": ""
+			"allow": "Tillåt",
+			"settings": "Gå till inställningar"
 		},
 		"skip": "HOPPA ÖVER",
-		"settings-text": ""
+		"settings-text": "Du kan aktivera {{title}} behörighet från inställningar."
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
-			"desc": ""
+			"title": "Kräver omstart av appen",
+			"desc": "För denna typ av avisering måste du starta om appen för att spara dessa fält!"
 		}
 	},
 	"error": {
@@ -658,19 +658,19 @@
 					"action-cancel": "Avbryt"
 				},
 				"status": {
-					"datastore-found": "",
-					"datastore-not-found": "",
-					"ipfs-repo-found": "",
-					"ipfs-repo-not-found": "",
+					"datastore-found": "Datalagring hittades",
+					"datastore-not-found": "Datalagring hittades ej",
+					"ipfs-repo-found": "IPFS repository hittades",
+					"ipfs-repo-not-found": "IPFS repository hittades ej",
 					"messenger-db-found": "Meddelandedatabas hittades",
 					"messenger-db-not-found": "Meddelandedatabas kunde ej hittas"
 				},
 				"infos": {
 					"aligned": {
-						"name": "",
+						"name": "Namn: {{name}}",
 						"created": "Skapad: {{created}}",
 						"opened": "Öppnad:  {{opened}}",
-						"error": ""
+						"error": "Fel: {{error}}"
 					}
 				}
 			},
