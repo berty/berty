@@ -1,4 +1,4 @@
-import React, { ComponentProps, useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
 	ActivityIndicator,
 	ScrollView,
@@ -12,7 +12,7 @@ import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import {
 	useAccount,
 	useMessengerContext,
@@ -45,61 +45,60 @@ const useStylesHome = () => {
 	}
 }
 
-const HomeHeaderGroupButton: React.FC<{ navigation: ComponentProps<typeof Home>['navigation'] }> =
-	({ navigation: { navigate } }) => {
-		const _styles = useStylesHome()
-		const [{ padding }] = useStyles()
-		const colors = useThemeColor()
-		const { t }: any = useTranslation()
+const HomeHeaderGroupButton: React.FC = () => {
+	const _styles = useStylesHome()
+	const [{ padding }] = useStyles()
+	const colors = useThemeColor()
+	const { t }: any = useTranslation()
+	const { navigate } = useNavigation()
 
-		return (
-			<View style={[padding.horizontal.medium]}>
-				<ButtonSettingRow
-					isScroll
-					state={[
-						{
-							name: t('settings.help.updates-button'),
-							icon: 'arrow-upward-outline',
-							color: colors['background-header'],
-							style: _styles.firstHeaderButton,
-							onPress: () => navigate('Settings.AppUpdates'),
-						},
-						{
-							name: t('settings.faq.title'),
-							icon: 'question-mark-circle-outline',
-							color: colors['secondary-background-header'],
-							style: _styles.firstHeaderButton,
-							onPress: () => navigate('Settings.Faq'),
-						},
-						{
-							name: t('settings.home.header-right-button'),
-							icon: 'settings-2-outline',
-							color: colors['background-header'],
-							style: _styles.firstHeaderButton,
-							onPress: () => navigate('Settings.Mode'),
-						},
-						{
-							name: t('settings.roadmap.title'),
-							icon: 'calendar-outline',
-							color: colors['background-header'],
-							style: _styles.thirdHeaderButton,
-							onPress: () => navigate('Settings.Roadmap'),
-						},
-					]}
-				/>
-			</View>
-		)
-	}
+	return (
+		<View style={[padding.horizontal.medium]}>
+			<ButtonSettingRow
+				isScroll
+				state={[
+					{
+						name: t('settings.help.updates-button'),
+						icon: 'arrow-upward-outline',
+						color: colors['background-header'],
+						style: _styles.firstHeaderButton,
+						onPress: () => navigate('Settings.AppUpdates'),
+					},
+					{
+						name: t('settings.faq.title'),
+						icon: 'question-mark-circle-outline',
+						color: colors['secondary-background-header'],
+						style: _styles.firstHeaderButton,
+						onPress: () => navigate('Settings.Faq'),
+					},
+					{
+						name: t('settings.home.header-right-button'),
+						icon: 'settings-2-outline',
+						color: colors['background-header'],
+						style: _styles.firstHeaderButton,
+						onPress: () => navigate('Settings.Mode'),
+					},
+					{
+						name: t('settings.roadmap.title'),
+						icon: 'calendar-outline',
+						color: colors['background-header'],
+						style: _styles.thirdHeaderButton,
+						onPress: () => navigate('Settings.Roadmap'),
+					},
+				]}
+			/>
+		</View>
+	)
+}
 
-const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navigation'] }> = ({
-	navigation,
-}) => {
+const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ row, border, padding }, { windowWidth, windowHeight, scaleHeight, scaleSize }] =
 		useStyles()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.3
+	const { navigate } = useNavigation()
 
 	return (
 		<View style={[row.center, padding.top.small]}>
@@ -110,7 +109,7 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 					padding.top.scale(40),
 					{ backgroundColor: colors['main-background'] },
 				]}
-				onPress={() => navigation.navigate('Settings.MyBertyId')}
+				onPress={() => navigate('Settings.MyBertyId')}
 			>
 				<View style={[{ alignItems: 'center' }]}>
 					<View style={{ position: 'absolute', top: -73 }}>
@@ -216,9 +215,9 @@ const TaskItem: React.FC<{ value: CheckListItem }> = ({ value }) => {
 
 const CheckItems: React.FC<{
 	openModal: () => void
-	navigation: ComponentProps<typeof Home>['navigation']
-}> = ({ openModal, navigation: { navigate } }) => {
+}> = ({ openModal }) => {
 	const ctx = useMessengerContext()
+	const { navigate } = useNavigation()
 
 	const tasks = useMemo(
 		() => Object.entries(ctx.persistentOptions[PersistentOptionsKeys.CheckList].items),
@@ -286,8 +285,7 @@ const CheckItems: React.FC<{
 
 const CheckList: React.FC<{
 	openModal: () => void
-	navigation: ComponentProps<typeof Home>['navigation']
-}> = ({ openModal, navigation }) => {
+}> = ({ openModal }) => {
 	const colors = useThemeColor()
 	const [{ text, padding, margin, border }, { scaleSize }] = useStyles()
 	const ctx = useMessengerContext()
@@ -379,19 +377,18 @@ const CheckList: React.FC<{
 					) : null}
 				</View>
 			</View>
-			<CheckItems openModal={openModal} navigation={navigation} />
+			<CheckItems openModal={openModal} />
 		</View>
 	)
 }
 
-const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navigation'] }> = ({
-	navigation,
-}) => {
+const HomeBodySettings: React.FC = () => {
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const enableNotif = ctx.persistentOptions.notifications.enable
+	const { navigate } = useNavigation()
 
 	const items: any = Object.entries(languages).map(([key, attrs]) => ({
 		label: attrs.localName,
@@ -406,7 +403,7 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 				icon='options-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Onboarding.ExpertSetup')}
+				onPress={() => navigate('Onboarding.ExpertSetup')}
 			/>
 			<DropDownPicker
 				items={items}
@@ -432,13 +429,13 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 					color: enableNotif ? colors['background-header'] : colors['secondary-text'],
 					bgColor: enableNotif ? colors['positive-asset'] : `${colors['negative-asset']}40`,
 				}}
-				onPress={() => navigation.navigate('Settings.Notifications')}
+				onPress={() => navigate('Settings.Notifications')}
 			/>
 			<ButtonSetting
 				name={t('settings.home.bluetooth-button.title')}
 				icon='bluetooth-outline'
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.Bluetooth')}
+				onPress={() => navigate('Settings.Bluetooth')}
 			/>
 			<ButtonSetting
 				name={t('settings.home.dark-mode-button')}
@@ -461,27 +458,28 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 				icon='color-palette-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.ThemeEditor')}
+				onPress={() => navigate('Settings.ThemeEditor')}
 			/>
 			<ButtonSetting
 				name={t('settings.home.header-center-button')}
 				icon='options-2-outline'
 				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigation.navigate('Settings.DevTools')}
+				onPress={() => navigate('Settings.DevTools')}
 			/>
 		</View>
 	)
 }
 
-export const Home: ScreenFC<'Settings.Home'> = ({ navigation }) => {
+export const Home: ScreenFC<'Settings.Home'> = () => {
 	const [openModal, setOpenModal] = useState(false)
 	const account = useAccount()
 	const [{ row, margin, text, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+	const { setOptions } = useNavigation()
 
 	React.useLayoutEffect(() => {
-		navigation.setOptions({
+		setOptions({
 			headerRight: ({ tintColor }: any) => (
 				<TouchableOpacity
 					onPress={() => setOpenModal(true)}
@@ -505,15 +503,15 @@ export const Home: ScreenFC<'Settings.Home'> = ({ navigation }) => {
 				</TouchableOpacity>
 			),
 		})
-	}, [margin.right.small, navigation, scaleSize, t, text.size.medium])
+	}, [margin.right.small, setOptions, scaleSize, t, text.size.medium])
 
 	React.useEffect(() => {
 		if (openModal) {
-			navigation.setOptions({
+			setOptions({
 				headerShown: false,
 			})
 		} else {
-			navigation.setOptions({
+			setOptions({
 				headerShown: true,
 			})
 		}
@@ -540,12 +538,12 @@ export const Home: ScreenFC<'Settings.Home'> = ({ navigation }) => {
 							]}
 						>
 							<View style={{ bottom: -_verticalOffset }}>
-								<HomeHeaderAvatar navigation={navigation} />
-								<CheckList openModal={() => setOpenModal(true)} navigation={navigation} />
-								<HomeHeaderGroupButton navigation={navigation} />
+								<HomeHeaderAvatar />
+								<CheckList openModal={() => setOpenModal(true)} />
+								<HomeHeaderGroupButton />
 							</View>
 						</View>
-						<HomeBodySettings navigation={navigation} />
+						<HomeBodySettings />
 					</ScrollView>
 				)}
 			</View>
