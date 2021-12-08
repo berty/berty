@@ -23,24 +23,13 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 							? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
 							: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
 				})
-				const reply = await ctx.client?.parseDeepLink({ link: push.pushData?.deepLink })
-				const intes = ctx.interactions[reply?.link?.bertyMessageRef?.groupPk as string]
-				const inte = intes.find(i => i.cid === reply?.link?.bertyMessageRef?.messageId)
 				if (!push.pushData?.alreadyReceived) {
 					const convPK = push.pushData?.conversationPublicKey
 					if (convPK) {
 						const conv = ctx.conversations[convPK]
-						const title =
-							conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-								? conv.displayName
-								: Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === convPK)
-										?.displayName
 						showNotification({
-							title,
-							message:
-								inte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage
-									? inte?.payload?.body
-									: null,
+							title: push.push?.title,
+							message: push.push?.body,
 							onPress: () => {
 								navigate({
 									name:
@@ -74,7 +63,7 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 					console.warn('Push notif remove listener failed: ' + e)
 				}
 			}
-		}, [ctx.client, ctx.contacts, ctx.conversations, ctx.interactions, navigate, showNotification])
+		})
 		return null
 	},
 )
