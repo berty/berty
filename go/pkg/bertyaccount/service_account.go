@@ -1104,6 +1104,9 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		initManager = nil
 	}
 
+	cat := localization.Catalog()
+	printer := cat.NewPrinter(s.languages...)
+
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -1118,9 +1121,11 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 			rep, err := client.PushReceive(ctx, &messengertypes.PushReceive_Request{Payload: payload})
 			if err == nil {
 				pushData, err := bertypush.PushEnrich(rep.Data, accData, s.logger)
+				formated := bertypush.FormatDecryptedPush(pushData, printer)
 				if err == nil {
 					return &accounttypes.PushReceive_Reply{
 						PushData: pushData,
+						Push:     formated,
 					}, nil
 				}
 
@@ -1147,10 +1152,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		// TODO: should we return early?
 	}
 
-	cat := localization.Catalog()
-	p := cat.NewPrinter(s.languages...)
-
-	formated := bertypush.FormatDecryptedPush(pushData, p)
+	formated := bertypush.FormatDecryptedPush(pushData, printer)
 	return &accounttypes.PushReceive_Reply{
 		PushData: pushData,
 		Push:     formated,
