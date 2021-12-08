@@ -9,6 +9,7 @@ BERTY_DAEMON_PORT ?= 1337
 BERTY_DAEMON_OPTS ?= -p2p.webui-listener=""
 BERTY_DAEMON_STORE ?= -store.dir=$(BERTY_DAEMON_PORT).db.d
 METRO_RN_PORT ?= 8081
+IOS_RN_FLAGS ?= --udid
 IOS_DEVICE ?=
 ANDROID_DEVICE ?=
 GO ?= go # this allows to override the go version used
@@ -186,7 +187,7 @@ ios.debug: ios.app_deps
 		--port="$(METRO_RN_PORT)" \
 		--configuration='Debug' \
 		--scheme='Berty Debug' \
-		$(if $(IOS_DEVICE),--simulator='$(IOS_DEVICE)',)
+		$(if $(IOS_DEVICE),$(IOS_RN_FLAGS)='$(IOS_DEVICE)',)
 
 .PHONY: ios.release
 ios.release: ios.app_deps
@@ -196,7 +197,7 @@ ios.release: ios.app_deps
 		--port="$(METRO_RN_PORT)" \
 		--configuration='AppStore Release' \
 		--scheme='Berty AppStore' \
-		$(if $(IOS_DEVICE),--simulator='$(IOS_DEVICE)',)
+		$(if $(IOS_DEVICE),$(IOS_RN_FLAGS)='$(IOS_DEVICE)',)
 
 .PHONY: ios.log
 ios.log:
