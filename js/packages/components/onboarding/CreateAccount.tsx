@@ -30,7 +30,7 @@ const AdvancedButton: React.FC<{
 		<TouchableOpacity
 			onPress={onPress ? () => onPress() : () => {}}
 			style={[
-				padding.scale(10),
+				padding.scale(14),
 				border.radius.small,
 				margin.vertical.scale(1),
 				{
