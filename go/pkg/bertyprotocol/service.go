@@ -196,7 +196,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		}
 
 		if opts.Host != nil {
-			odbOpts.DirectChannelFactory = directchannel.InitDirectChannelFactory(opts.Host)
+			odbOpts.DirectChannelFactory = directchannel.InitDirectChannelFactory(opts.Logger, opts.Host)
 		}
 
 		odb, err := NewBertyOrbitDB(ctx, opts.IpfsCoreAPI, odbOpts)
