@@ -43,7 +43,7 @@ linters:
     - gofmt
     - gofumpt
     - goimports
-    - golint
+    - revive
     #- gomnd         # nice to have
     - gomodguard
     - gosec
@@ -54,7 +54,7 @@ linters:
     - nakedret
     - noctx
     #- nolintlint
-    - scopelint
+    - exportloopref
     - sqlclosecheck
     - staticcheck
     - structcheck
