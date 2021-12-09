@@ -172,13 +172,6 @@ export const Navigation: React.FC = () => {
 					}),
 				)
 				return
-			case MessengerAppState.GetStarted:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Onboarding.GetStarted' }],
-					}),
-				)
-				return
 		}
 	}, [context.appState])
 
