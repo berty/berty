@@ -107,13 +107,13 @@ const Advanced = () => {
 							title={t('onboarding.create-account.expert-setup')}
 							onPress={() => navigate('Onboarding.ExpertSetup')}
 						/>
-						<AdvancedButton icon='smartphone-outline' title='LINK DEVICE' />
+						{/*<AdvancedButton icon='smartphone-outline' title='LINK DEVICE' />*/}
 						<AdvancedButton
 							icon='folder-outline'
-							title={t('onboarding.create-account.advanced')}
+							title={t('onboarding.create-account.import-account')}
 							onPress={() => importAccountFromDocumentPicker(ctx)}
 						/>
-						<AdvancedButton icon='info-outline' title={t('onboarding.create-account.more')} />
+						{/*<AdvancedButton icon='info-outline' title={t('onboarding.create-account.more')} />*/}
 					</View>
 				) : null}
 			</View>
@@ -123,7 +123,7 @@ const Advanced = () => {
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
-	const [{ padding, margin, border }, { scaleSize }] = useStyles()
+	const [{ padding, margin, border }] = useStyles()
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
 	const [isFinished, setIsFinished] = useState(false)
@@ -181,13 +181,7 @@ const CreateAccountBody = () => {
 				]}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<Icon
-						name='info-outline'
-						width={25 * scaleSize}
-						height={25 * scaleSize}
-						fill={colors['background-header']}
-					/>
-					<View style={{ flexDirection: 'column', alignItems: 'center' }}>
+					<View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
 						<Text style={[{ fontFamily: 'Open Sans', fontWeight: '600' }]}>
 							{t('onboarding.create-account.good-to-know.title')}
 						</Text>
