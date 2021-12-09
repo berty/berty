@@ -1,5 +1,5 @@
 export { GetStarted } from './GetStarted'
 export { CreateAccount } from './CreateAccount'
 export { SetupFinished } from './SetupFinished'
-export { ExpertSetup } from './ExpertSetup'
+export { AdvancedSettings } from './AdvancedSettings'
 export { WebViews } from './WebViews'

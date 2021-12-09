@@ -107,8 +107,8 @@ const Advanced = () => {
 						<AdvancedButton
 							icon='settings'
 							pack='custom'
-							title={t('onboarding.create-account.expert-setup')}
-							onPress={() => navigate('Onboarding.ExpertSetup')}
+							title={t('onboarding.advanced-settings.title').toUpperCase()}
+							onPress={() => navigate('Onboarding.AdvancedSettings')}
 						/>
 						{/*<AdvancedButton icon='smartphone-outline' title='LINK DEVICE' />*/}
 						<AdvancedButton

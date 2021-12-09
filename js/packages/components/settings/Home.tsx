@@ -1,5 +1,12 @@
 import React, { ComponentProps, useState } from 'react'
-import { ActivityIndicator, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native'
+import {
+	ActivityIndicator,
+	ScrollView,
+	Share,
+	StatusBar,
+	TouchableOpacity,
+	View,
+} from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
@@ -8,16 +15,14 @@ import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useAccount,
+	MessengerActions,
 	useMessengerContext,
+	closeAccountWithProgress,
 	useThemeColor,
-	PersistentOptionsKeys,
 } from '@berty-tech/store'
-import { languages } from '@berty-tech/berty-i18n/locale/languages'
-import { setAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
 import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { AccountAvatar } from '../avatars'
 import { EditProfile } from './EditProfile'
 import logo from '../main/1_berty_picto.png'
@@ -46,15 +51,7 @@ const HomeHeaderGroupButton: React.FC<{ navigation: ComponentProps<typeof Home>[
 		return (
 			<View style={[padding.horizontal.medium]}>
 				<ButtonSettingRow
-					isScroll
 					state={[
-						{
-							name: t('settings.help.updates-button'),
-							icon: 'arrow-upward-outline',
-							color: colors['background-header'],
-							style: _styles.firstHeaderButton,
-							onPress: () => navigate('Settings.AppUpdates'),
-						},
 						{
 							name: t('settings.faq.title'),
 							icon: 'question-mark-circle-outline',
@@ -63,18 +60,18 @@ const HomeHeaderGroupButton: React.FC<{ navigation: ComponentProps<typeof Home>[
 							onPress: () => navigate('Settings.Faq'),
 						},
 						{
-							name: t('settings.home.header-right-button'),
-							icon: 'settings-2-outline',
-							color: colors['background-header'],
-							style: _styles.firstHeaderButton,
-							onPress: () => navigate('Settings.Mode'),
-						},
-						{
 							name: t('settings.roadmap.title'),
 							icon: 'calendar-outline',
 							color: colors['background-header'],
-							style: _styles.thirdHeaderButton,
+							style: _styles.secondHeaderButton,
 							onPress: () => navigate('Settings.Roadmap'),
+						},
+						{
+							name: t('settings.mode.title'),
+							icon: 'settings-2-outline',
+							color: colors['background-header'],
+							style: _styles.thirdHeaderButton,
+							onPress: () => navigate('Settings.Mode'),
 						},
 					]}
 				/>
@@ -90,7 +87,7 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 		useStyles()
 	const colors = useThemeColor()
 	const account = useAccount()
-	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.3
+	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
 
 	return (
 		<View style={[row.center, padding.top.small]}>
@@ -98,14 +95,14 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 				style={[
 					border.radius.medium,
 					padding.scale(20),
-					padding.top.scale(40),
+					padding.top.scale(55),
 					{ backgroundColor: colors['main-background'] },
 				]}
 				onPress={() => navigation.navigate('Settings.MyBertyId')}
 			>
 				<View style={[{ alignItems: 'center' }]}>
-					<View style={{ position: 'absolute', top: -73 }}>
-						<AccountAvatar size={60 * scaleSize} />
+					<View style={{ position: 'absolute', top: -(90 * scaleSize) }}>
+						<AccountAvatar size={80 * scaleSize} />
 					</View>
 					<Text style={[_styles.headerNameText, { color: colors['main-text'] }]}>
 						{account?.displayName || ''}
@@ -134,79 +131,46 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 }) => {
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMessengerContext()
-	const { t, i18n } = useTranslation()
-	const enableNotif = ctx.persistentOptions.notifications.enable
-	const dispatch = useAppDispatch()
-	console.log(i18n.language)
+	const { t }: any = useTranslation()
+	const reduxDispatch = useAppDispatch()
+	const { dispatch } = useMessengerContext()
+	const account = useAccount()
+	const url = account?.link
 
-	const items = Object.entries(languages).map(([key, attrs]) => ({
-		label: attrs.localName,
-		value: key,
-	}))
-
-	items.push({ label: 'Debug', value: 'cimode' })
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, padding.bottom.small]}>
 			<ButtonSetting
-				name={t('settings.home.expert-setup')}
-				icon='options-outline'
+				name={t('settings.home.share-link')}
+				icon='attach-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Onboarding.ExpertSetup')}
-			/>
-			<DropDownPicker
-				items={items}
-				defaultValue={i18n.language}
-				onChangeItem={(item: Item) => dispatch(setAccountLanguage(item.value))}
-			/>
-			<ButtonSetting
-				name={t('settings.home.notifications-button.title')}
-				icon='bell-outline'
-				iconColor={colors['background-header']}
-				state={{
-					value: enableNotif
-						? t('settings.home.notifications-button.tag-enabled')
-						: t('settings.home.notifications-button.tag-disabled'),
-					color: enableNotif ? colors['background-header'] : colors['secondary-text'],
-					bgColor: enableNotif ? colors['positive-asset'] : `${colors['negative-asset']}40`,
-				}}
-				onPress={() => navigation.navigate('Settings.Notifications')}
-			/>
-			<ButtonSetting
-				name={t('settings.home.bluetooth-button.title')}
-				icon='bluetooth-outline'
-				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.Bluetooth')}
-			/>
-			<ButtonSetting
-				name={t('settings.home.dark-mode-button')}
-				icon='moon-outline'
-				iconColor={colors['background-header']}
-				toggled
-				varToggle={ctx.persistentOptions.themeColor.isDark}
-				actionToggle={async () => {
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.ThemeColor,
-						payload: {
-							...ctx.persistentOptions.themeColor,
-							isDark: !ctx.persistentOptions.themeColor.isDark,
-						},
-					})
+				onPress={async () => {
+					if (url) {
+						try {
+							await Share.share({ url })
+						} catch (e) {
+							console.error(e)
+						}
+					}
 				}}
 			/>
 			<ButtonSetting
-				name={t('settings.devtools.theme-editor')}
-				icon='color-palette-outline'
+				name={t('settings.home.create-group')}
+				icon='add-new-group'
+				iconPack='custom'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.ThemeEditor')}
+				onPress={() => navigation.navigate('Main.CreateGroupAddMembers')}
 			/>
 			<ButtonSetting
-				name={t('settings.home.header-center-button')}
-				icon='options-2-outline'
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigation.navigate('Settings.DevTools')}
+				name={t('settings.home.create-new-account')}
+				icon='plus-circle'
+				iconSize={30}
+				iconColor={colors['background-header']}
+				onPress={async () => {
+					await closeAccountWithProgress(dispatch, reduxDispatch)
+					await dispatch({ type: MessengerActions.SetStateOnBoardingReady })
+				}}
 			/>
 		</View>
 	)

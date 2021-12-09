@@ -465,6 +465,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 			]}
 			horizontal
 			showsHorizontalScrollIndicator={false}
+			scrollEnabled={isScroll}
 		>
 			{state.map((obj, key) => (
 				<TouchableOpacity

@@ -35,7 +35,6 @@
 			"advanced": "ADVANCED",
 			"import-account": "IMPORT ACCOUNT",
 			"link-device": "LINK DEVICE",
-			"expert-setup": "EXPERT SETUP",
 			"more": "MORE INFO",
 			"good-to-know": {
 				"title": "Good to know:",
@@ -43,16 +42,16 @@
 				"second-point": "Nickname is optional and can be edited"
 			}
 		},
-		"expert-setup": {
-			"title": "Expert mode",
+		"advanced-settings": {
+			"title": "Advanced settings",
 			"desc": "Find documentation and create your own config.",
 			"more-about": {
-				"title": "Welcome in the expert mode",
+				"title": "Welcome in the advanced settings",
 				"first-paragraph": "Here you’ll be able to create your own custom configuration to fit with your needs.",
 				"second-paragraph": "We’ll present you every options to allow you to understand what’s happening behind the hood.",
 				"third-paragraph": "You’ll also find ressources link to hack it. This section is for experts only!"
 			},
-			"read-more": "Read more about expert mode",
+			"read-more": "Read more about advanced settings",
 			"config-title": "Custom configs",
 			"config-desc": "3 steps of app configuration. Customize everything now!",
 			"learn-more": "Learn more",
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Services",
+				"network-button": "Network List",
 				"first-button": "Push notifications",
 				"second-button": {
 					"title": "Setup your own node",
 					"placeholder": "Enter server address"
 				},
-				"third-button": "Select a certified node",
-				"connect": "CONNECT YOUR BOOSTER NODE"
+				"third-button": "Select a certified node"
 			},
 			"apply-changes": "APPLY CHANGES",
 			"skip": "Skip and do this later"
@@ -217,21 +216,10 @@
 					"desc": "Use the Proximity feature and send a message without any cellular network, or internet connection!"
 				}
 			},
-			"header-left-button": "Help",
-			"header-center-button": "Devtools",
-			"header-right-button": "Settings",
-			"network-button": "Network List",
 			"edit-profile": "Edit profile",
-			"expert-setup": "Expert configuration",
-			"notifications-button": {
-				"title": "Notifications",
-				"tag-enabled": "Enabled",
-				"tag-disabled": "Disabled"
-			},
-			"dark-mode-button": "Dark mode",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "Share link",
+			"create-group": "Create group",
+			"create-new-account": "Create new account"
 		},
 		"network-map": {
 			"title": "Network List",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "Settings",
 			"desc": "Customize everything to get the app that fits your needs",
+			"in-app-notifications": "In-app notifications",
+			"dark-mode-button": "Dark mode",
+			"devtools": "Devtools",
+			"network-config": "Network configuration",
 			"notification-file-saved": {
 				"title": "Data saved!",
 				"desc": "Available in downloads directory"

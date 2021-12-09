@@ -174,7 +174,7 @@ export const WelcomeChecklist: React.FC<{
 	)
 
 	return (
-		<View
+		<TouchableOpacity
 			style={[
 				margin.horizontal.medium,
 				margin.top.medium,
@@ -182,6 +182,7 @@ export const WelcomeChecklist: React.FC<{
 				border.radius.medium,
 				{ backgroundColor: colors['main-background'], flex: 1 },
 			]}
+			onPress={() => dispatch(toggleChecklist())}
 		>
 			<View>
 				<View
@@ -233,6 +234,6 @@ export const WelcomeChecklist: React.FC<{
 				</View>
 			</View>
 			<CheckItems openEditProfile={openEditProfile} />
-		</View>
+		</TouchableOpacity>
 	)
 }
