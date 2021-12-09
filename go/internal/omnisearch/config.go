@@ -17,8 +17,8 @@ func (c *coordinatorConfig) usingConstructorMake(constructor interface{}, target
 	if typ.Kind() != reflect.Func {
 		return nil, fmt.Errorf("got a %s", typ.Name())
 	}
-	var iTgt int = -1
-	var iError int = -1
+	iTgt := -1
+	iError := -1
 	// Finding the index of the returns we want.
 	{
 		i := typ.NumOut()

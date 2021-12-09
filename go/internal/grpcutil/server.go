@@ -16,10 +16,10 @@ import (
 const BertyCustomPrefix = 0xbe00
 
 const (
-	P_GRPC           = BertyCustomPrefix + 0x0002 //nolint:golint
-	P_GRPC_WEB       = BertyCustomPrefix + 0x0004 //nolint:golint
-	P_GRPC_WEBSOCKET = BertyCustomPrefix + 0x0008 //nolint:golint
-	P_GRPC_GATEWAY   = BertyCustomPrefix + 0x0016 //nolint:golint
+	P_GRPC           = BertyCustomPrefix + 0x0002 //nolint:revive
+	P_GRPC_WEB       = BertyCustomPrefix + 0x0004 //nolint:revive
+	P_GRPC_WEBSOCKET = BertyCustomPrefix + 0x0008 //nolint:revive
+	P_GRPC_GATEWAY   = BertyCustomPrefix + 0x0016 //nolint:revive
 )
 
 var protos = []ma.Protocol{

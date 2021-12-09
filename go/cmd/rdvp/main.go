@@ -124,11 +124,11 @@ func main() {
 			// load existing or generate new identity
 			var priv libp2p_ci.PrivKey
 			if servePK != "" {
-				kBytes, err := base64.StdEncoding.DecodeString(servePK)
+				kbytes, err := base64.StdEncoding.DecodeString(servePK)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-				priv, err = libp2p_ci.UnmarshalPrivateKey(kBytes)
+				priv, err = libp2p_ci.UnmarshalPrivateKey(kbytes)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -243,11 +243,11 @@ func main() {
 				return flag.ErrHelp
 			}
 
-			kBytes, err := base64.StdEncoding.DecodeString(sharekeyPK)
+			kbytes, err := base64.StdEncoding.DecodeString(sharekeyPK)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-			priv, err := libp2p_ci.UnmarshalPrivateKey(kBytes)
+			priv, err := libp2p_ci.UnmarshalPrivateKey(kbytes)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -278,12 +278,12 @@ func main() {
 				return errcode.TODO.Wrap(err)
 			}
 
-			kBytes, err := libp2p_ci.MarshalPrivateKey(priv)
+			kbytes, err := libp2p_ci.MarshalPrivateKey(priv)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
 
-			fmt.Println(base64.StdEncoding.EncodeToString(kBytes))
+			fmt.Println(base64.StdEncoding.EncodeToString(kbytes))
 			return nil
 		},
 	}
