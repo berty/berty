@@ -13,7 +13,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 	activeTab,
 	close,
 }) => {
-	const [{ border, padding, margin }] = useStyles()
+	const [{ border, padding, margin }, { scaleSize }] = useStyles()
 	const { t }: { t: any } = useTranslation()
 	const colors = useThemeColor()
 
@@ -108,9 +108,8 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 						flexDirection: 'row',
 						alignItems: 'center',
 						justifyContent: 'center',
-						flex: 1,
 					},
-					padding.large,
+					padding.small,
 					border.radius.top.large,
 				]}
 			>
@@ -133,22 +132,28 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 			<TouchableOpacity
 				onPress={activeTabConfig.onPress}
 				style={[
+					padding.small,
 					{
 						alignItems: 'center',
 						justifyContent: 'center',
-						height: 300,
 					},
-					padding.large,
 				]}
 			>
 				<Icon
 					name={activeTabConfig.iconName}
 					fill={colors['secondary-text']}
-					height={70}
-					width={70}
+					height={36 * scaleSize}
+					width={36 * scaleSize}
 					pack='custom'
 				/>
-				<Text style={[margin.tiny, padding.large, { textAlign: 'center' }]}>
+				<Text
+					style={[
+						margin.tiny,
+						padding.horizontal.large,
+						padding.vertical.small,
+						{ textAlign: 'center' },
+					]}
+				>
 					{t('chat.files.security-access-desc')} {t(activeTabConfig.title)}
 				</Text>
 			</TouchableOpacity>

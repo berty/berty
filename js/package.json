@@ -82,6 +82,7 @@
     "react-native-vector-icons": "^9.0.0",
     "react-native-webview": "^11.14.3",
     "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
     "redux-persist": "^6.0.0",
     "sha3": "^2.1.4",
     "string.fromcodepoint": "^1.0.0",

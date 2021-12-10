@@ -289,6 +289,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 				<View style={[{ flexDirection: 'row', alignItems: 'flex-end' }, padding.top.large]}>
 					{tabs.map((tab, index) => (
 						<TouchableOpacity
+							key={index}
 							activeOpacity={0.9}
 							onPress={() => setActiveIndex(index)}
 							style={[

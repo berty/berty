@@ -46,13 +46,19 @@ const expectedAppStateChanges: any = {
 		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.ClosingDaemon,
 	],
-	[MessengerAppState.OpeningWaitingForDaemon]: [MessengerAppState.StreamDone],
+	[MessengerAppState.OpeningWaitingForDaemon]: [
+		MessengerAppState.StreamDone,
+		MessengerAppState.OpeningWaitingForClients,
+	],
 	[MessengerAppState.OpeningWaitingForClients]: [
 		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.OpeningListingEvents,
 		MessengerAppState.OpeningMarkConversationsAsClosed,
 	],
-	[MessengerAppState.OpeningListingEvents]: [MessengerAppState.OpeningGettingLocalSettings],
+	[MessengerAppState.OpeningListingEvents]: [
+		MessengerAppState.OpeningWaitingForDaemon,
+		MessengerAppState.OpeningGettingLocalSettings,
+	],
 	[MessengerAppState.OpeningGettingLocalSettings]: [
 		MessengerAppState.OpeningMarkConversationsAsClosed,
 	],
@@ -62,6 +68,7 @@ const expectedAppStateChanges: any = {
 	],
 	[MessengerAppState.GetStarted]: [MessengerAppState.OpeningWaitingForDaemon],
 	[MessengerAppState.Ready]: [
+		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.DeletingClosingDaemon,
 		MessengerAppState.ClosingDaemon,
 		MessengerAppState.OpeningWaitingForClients,
@@ -217,7 +224,6 @@ export const initialState = {
 	notificationsInhibitors: [],
 
 	persistentOptions: defaultPersistentOptions(),
-	convsTextInputValue: {},
 	daemonAddress: '',
 	initialListComplete: false,
 	clearClients: null,

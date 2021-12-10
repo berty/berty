@@ -1,8 +1,64 @@
+import beapi from '@berty-tech/api'
+
 const logRequest = (name, title, req) => {
+	// Berty messenger specific filters, TODO: extract
+	if (req?.block?.length > 42) {
+		req = { ...req, block: req.block.length }
+	}
+	if (req?.event?.payload?.length > 42) {
+		req = {
+			...req,
+			event: {
+				...req.event,
+				type: beapi.messenger.StreamEvent.Type[req.event.type],
+				payload: req?.event?.payload?.length,
+			},
+		}
+	}
+	// End of berty messenger specific filters
+
 	console.log(`>>>[${name}] ${title}: ${JSON.stringify(req)}`)
 }
 
 const logResponse = (name, title, res) => {
+	// Berty messenger specific filters, TODO: extract
+	if (title.indexOf('AttachmentRetrieve') !== -1) {
+		return
+	}
+	if (title.indexOf('EventStream') !== -1) {
+		const typeName = beapi.messenger.StreamEvent.Type[res?.event?.type]
+		const tName = typeName?.substr('Type'.length)
+		const pbobj = beapi.messenger.StreamEvent[tName]
+
+		if (pbobj) {
+			console.log(
+				`<<<[${name}] ${title}: ${JSON.stringify({
+					...res,
+					event: {
+						...res.event,
+						type: typeName,
+						payload: pbobj.decode(res.event.payload),
+					},
+				})}`,
+			)
+			return
+		}
+	}
+	if (res?.block?.length > 42) {
+		res = { ...res, block: res.block.length }
+	}
+	if (res?.event?.payload?.length > 42) {
+		res = {
+			...res,
+			event: {
+				...res.event,
+				type: beapi.messenger.StreamEvent.Type[res.event.type],
+				payload: res?.event?.payload?.length,
+			},
+		}
+	}
+	// End of berty messenger specific filters
+
 	console.log(`<<<[${name}] ${title}: ${JSON.stringify(res)}`)
 }
 
@@ -11,6 +67,16 @@ const logEOF = (name, title) => {
 }
 
 const logError = (name, title, err) => {
+	// Berty messenger specific filters, TODO: extract
+	if (
+		title.indexOf('ConversationLoad') !== -1 &&
+		`${err}`.indexOf(`#${beapi.errcode.ErrCode.ErrNotFound}`) !== -1
+	) {
+		console.log(`[${name}] ${title}: ${err}`)
+		return
+	}
+	// End of berty messenger specific filters
+
 	console.warn(`[${name}] ${title}: ${err}`)
 }
 

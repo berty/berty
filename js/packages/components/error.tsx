@@ -53,7 +53,7 @@ const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
 	)
 }
 
-const RestartButton: React.FC<{}> = ({}) => {
+const RestartButton: React.FC = () => {
 	const [{ border, margin, padding }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
@@ -87,10 +87,34 @@ const RestartButton: React.FC<{}> = ({}) => {
 	)
 }
 
-const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.ReactElement[] }> = ({
-	labelTitle,
-	children,
-}) => {
+const ErrorDetails: React.FC<{ error: Error }> = ({ error }) => {
+	const [collapsed, setCollapsed] = React.useState(true)
+	const [{ margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+	const handlePress = React.useCallback(() => {
+		setCollapsed(!collapsed)
+	}, [collapsed])
+	return (
+		<View style={margin.top.big}>
+			<TouchableOpacity style={{ flexDirection: 'row' }} onPress={handlePress}>
+				<Icon
+					name={collapsed ? 'arrow-forward-outline' : 'arrow-downward-outline'}
+					width={25 * scaleSize}
+					height={25 * scaleSize}
+					fill={colors['background-header']}
+				/>
+				<Text>Details</Text>
+			</TouchableOpacity>
+			{collapsed || <Text>{error.message}</Text>}
+		</View>
+	)
+}
+
+const ErrorScreenContainer: React.FC<{
+	labelTitle: string
+	children: React.ReactElement[]
+	error: Error
+}> = ({ labelTitle, children, error }) => {
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
 
@@ -113,6 +137,7 @@ const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.React
 					</View>
 					<View style={[padding.horizontal.large, { alignItems: 'center' }]}>
 						{children}
+						<ErrorDetails error={error} />
 						<RestartButton />
 					</View>
 				</Body>
@@ -121,12 +146,16 @@ const ErrorScreenContainer: React.FC<{ labelTitle: string; children: React.React
 	)
 }
 
-const WTFScreen: React.FC<{}> = ({}) => {
+type ErrorScreenProps = {
+	error: Error
+}
+
+const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 	const [{ margin }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	return (
-		<ErrorScreenContainer labelTitle={t('error.labels.bug')}>
+		<ErrorScreenContainer error={error} labelTitle={t('error.labels.bug')}>
 			<View
 				style={[
 					margin.top.big,
@@ -174,13 +203,13 @@ const WTFScreen: React.FC<{}> = ({}) => {
 	)
 }
 
-const SorryScreen: React.FC<{}> = ({}) => {
+const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 	const [{ margin }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 
 	return (
-		<ErrorScreenContainer labelTitle={t('error.labels.crash')}>
+		<ErrorScreenContainer error={error} labelTitle={t('error.labels.crash')}>
 			<Icon
 				name='wrong-man'
 				fill={colors['background-header']}
@@ -233,8 +262,9 @@ const SorryScreen: React.FC<{}> = ({}) => {
 		</ErrorScreenContainer>
 	)
 }
-export const ErrorScreen: React.FC<{ children: React.ReactElement }> = ({ children }) => {
-	const components = [<WTFScreen />, <SorryScreen />]
+
+export const ErrorScreen: React.FC = ({ children }) => {
+	const components = [WTFScreen, SorryScreen]
 
 	const [error, setError] = React.useState<Error | null>(null)
 
@@ -257,8 +287,8 @@ export const ErrorScreen: React.FC<{ children: React.ReactElement }> = ({ childr
 	}
 
 	if (error !== null) {
-		const component = components[Math.floor(Math.random() * components.length)]
-		return component
+		const Component = components[Math.floor(Math.random() * components.length)]
+		return <Component error={error} />
 	}
-	return children
+	return <>{children}</>
 }

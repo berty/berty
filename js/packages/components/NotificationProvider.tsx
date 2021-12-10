@@ -4,7 +4,7 @@ import { InAppNotificationProvider, withInAppNotification } from 'react-native-i
 import { useMessengerContext } from '@berty-tech/store/context'
 
 import NotificationBody from './NotificationBody'
-import { NativeEventEmitter, NativeModules, Platform } from 'react-native'
+import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
 import { accountService } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
@@ -46,9 +46,10 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 					}
 				}
 			}
+			let eventListener: EmitterSubscription | undefined
 			if (NativeModules.EventEmitter) {
 				try {
-					var eventListener = new NativeEventEmitter(NativeModules.EventEmitter).addListener(
+					eventListener = new NativeEventEmitter(NativeModules.EventEmitter).addListener(
 						'onPushReceived',
 						pushNotifListener,
 					)
@@ -58,12 +59,12 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 			}
 			return () => {
 				try {
-					eventListener.remove() // Unsubscribe from native event emitter
+					eventListener?.remove() // Unsubscribe from native event emitter
 				} catch (e) {
 					console.warn('Push notif remove listener failed: ' + e)
 				}
 			}
-		})
+		}, [ctx.conversations, navigate, showNotification])
 		return null
 	},
 )

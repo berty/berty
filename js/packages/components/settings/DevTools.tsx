@@ -428,7 +428,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => {
-					throw {}
+					throw new Error('test error')
 				}}
 			/>
 			<ButtonSetting

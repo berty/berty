@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
-import { View, Modal, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native'
+import { View, Modal, Platform, TouchableOpacity } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
 import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
+import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
+import rnutil from '@berty-tech/rnutil'
+import { useNavigation } from '@berty-tech/navigation'
 
 import { MenuListItem } from './MenuListItem'
 import { GallerySection } from './GallerySection'
@@ -25,6 +28,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 	const [isLoading, setLoading] = useState(false)
 	const client = useMessengerClient()
 	const colors = useThemeColor()
+	const navigate = useNavigation()
 
 	const LIST_CONFIG = [
 		{
@@ -71,25 +75,10 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 			title: t('chat.files.camera'),
 			onPress: async () => {
 				setActiveTab(TabItems.Camera)
-				try {
-					const status = await check(
-						Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
-					)
-					if (status !== RESULTS.GRANTED) {
-						try {
-							const status = await request(
-								Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
-							)
-							if (status !== RESULTS.GRANTED) {
-								setSecurityAccessVisibility(true)
-								return
-							}
-						} catch (err) {
-							console.log(err)
-						}
-					}
-				} catch (err) {
-					console.log(err)
+				const permissionStatus = await rnutil.checkPermissions('camera', navigate)
+				if (permissionStatus !== RESULTS.GRANTED) {
+					console.warn('camera permission:', permissionStatus)
+					return
 				}
 				try {
 					await ImagePicker.clean()
@@ -127,10 +116,14 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					const res = await DocumentPicker.pickSingle({
 						type: [DocumentPicker.types.allFiles],
 					})
+					let uri = res.uri
+					if (Platform.OS === 'android') {
+						uri = 'file://' + getPath(uri)
+					}
 					prepareMediaAndSend([
 						{
 							filename: res.name,
-							uri: res.uri,
+							uri: uri,
 							mimeType: res.type,
 						},
 					])
@@ -141,17 +134,6 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 						console.warn(err)
 					}
 				}
-			},
-		},
-		{
-			iconProps: {
-				name: 'bertyzzz',
-				fill: 'white',
-				pack: 'custom',
-			},
-			title: 'Bertyzz!',
-			onPress: () => {
-				// setActiveTab(TabItems.Bertyzz)
 			},
 		},
 	]
@@ -198,8 +180,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					onClose()
 				}}
 			/>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+			<View
 				style={{
 					zIndex: 999,
 					position: 'absolute',
@@ -240,7 +221,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 						)}
 					</View>
 				</View>
-			</KeyboardAvoidingView>
+			</View>
 		</Modal>
 	)
 }

@@ -3,6 +3,8 @@ import LottieView from 'lottie-react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, StatusBar, Text, TouchableOpacity, Vibration, View } from 'react-native'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
@@ -13,6 +15,7 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { CreateAccountBox } from './CreateAccountBox'
@@ -129,6 +132,8 @@ const CreateAccountBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const { navigate } = useNavigation()
 	const { t } = useTranslation()
+	const headerHeight = useHeaderHeight()
+	const insets = useSafeAreaInsets()
 
 	useMountEffect(() => {
 		ctx
@@ -138,44 +143,48 @@ const CreateAccountBody = () => {
 	})
 
 	return (
-		<View style={{ flex: 1 }}>
-			<View style={{ flex: 5 }}>
+		<View style={[{ flex: 1 }]}>
+			<LottieView
+				source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+				autoPlay
+				loop
+				style={{ width: '100%', position: 'absolute' }}
+			/>
+			{!isFinished ? (
 				<LottieView
-					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
 					autoPlay
-					loop
-					style={{ width: '100%' }}
+					loop={false}
+					style={{ position: 'absolute', width: '100%' }}
 				/>
-				{!isFinished ? (
-					<LottieView
-						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
-						autoPlay
-						loop={false}
-					/>
-				) : (
-					<LottieView
-						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield dissapear.json')}
-						autoPlay
-						loop={false}
-						onAnimationFinish={async () => {
-							Vibration.vibrate(500)
-							await rnutil.checkPermissions('p2p', navigate, {
-								isToNavigate: false,
-							})
-						}}
-					/>
-				)}
-				<Advanced />
-			</View>
-			{defaultName ? (
-				<View style={{ flex: 6 }}>
+			) : (
+				<LottieView
+					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield dissapear.json')}
+					autoPlay
+					loop={false}
+					onAnimationFinish={async () => {
+						Vibration.vibrate(500)
+						await rnutil.checkPermissions('p2p', navigate, {
+							isToNavigate: false,
+						})
+					}}
+					style={{ position: 'absolute', width: '100%' }}
+				/>
+			)}
+			<IOSOnlyKeyboardAvoidingView
+				style={{ flex: 1, justifyContent: 'flex-end' }}
+				behavior='padding'
+				keyboardVerticalOffset={headerHeight + insets.top}
+			>
+				{!!defaultName && (
 					<CreateAccountBox defaultName={defaultName} setIsFinished={setIsFinished} />
-				</View>
-			) : null}
+				)}
+			</IOSOnlyKeyboardAvoidingView>
 			<View
 				style={[
 					padding.medium,
-					margin.medium,
+					margin.bottom.medium,
+					margin.horizontal.medium,
 					border.radius.large,
 					{ backgroundColor: colors['main-background'] },
 				]}
@@ -194,6 +203,7 @@ const CreateAccountBody = () => {
 					</View>
 				</View>
 			</View>
+			<Advanced />
 		</View>
 	)
 }

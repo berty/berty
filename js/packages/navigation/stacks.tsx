@@ -118,7 +118,7 @@ function useLinking(): [string | null, unknown] {
 	return [url, error]
 }
 
-const DeepLinkBridge: React.FC = () => {
+const DeepLinkBridge: React.FC = React.memo(() => {
 	const [url, error] = useLinking()
 	const navigation = useNavigation<NavigationProp<ScreensParams>>()
 	const ctx = useMessengerContext()
@@ -131,25 +131,27 @@ const DeepLinkBridge: React.FC = () => {
 	}, [url, error, navigation, ctx])
 
 	return null
-}
+})
 
 let Components: typeof RawComponents
 
 // @ts-ignore
 Components = mapValues(RawComponents, SubComponents =>
-	mapValues(SubComponents, (Component: React.FC) => (props: any) => {
-		return (
-			<>
-				<DeepLinkBridge />
-				<Component {...props} />
-			</>
-		)
-	}),
+	mapValues(
+		SubComponents,
+		(Component: React.FC): React.FC =>
+			React.memo(props => (
+				<>
+					<DeepLinkBridge />
+					<Component {...props} />
+				</>
+			)),
+	),
 )
 
 const NavigationStack = createNativeStackNavigator<ScreensParams>()
 
-export const Navigation: React.FC = () => {
+export const Navigation: React.FC = React.memo(() => {
 	const context = useMessengerContext()
 	const colors = useThemeColor()
 	const [, { scaleSize }] = useStyles()
@@ -242,6 +244,7 @@ export const Navigation: React.FC = () => {
 			{/* CreateGroup */}
 			<NavigationStack.Screen
 				name={'Main.CreateGroupAddMembers'}
+				component={Components.Main.CreateGroupAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -256,11 +259,10 @@ export const Navigation: React.FC = () => {
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
-			>
-				{() => <Components.Main.CreateGroupAddMembers />}
-			</NavigationStack.Screen>
+			/>
 			<NavigationStack.Screen
 				name={'Main.CreateGroupFinalize'}
+				component={Components.Main.CreateGroupFinalize}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -275,9 +277,7 @@ export const Navigation: React.FC = () => {
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
-			>
-				{() => <Components.Main.CreateGroupFinalize />}
-			</NavigationStack.Screen>
+			/>
 			{/* Chat */}
 			<NavigationStack.Screen
 				name={'Chat.OneToOne'}
@@ -559,4 +559,4 @@ export const Navigation: React.FC = () => {
 			/>
 		</NavigationStack.Navigator>
 	)
-}
+})

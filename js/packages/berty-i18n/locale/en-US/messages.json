@@ -549,6 +549,7 @@
 		},
 		"files": {
 			"gallery": "Gallery",
+			"no-images": "No images",
 			"camera": "Camera",
 			"files": "Files",
 			"microphone": "Microphone",

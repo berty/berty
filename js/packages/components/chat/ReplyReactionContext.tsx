@@ -28,7 +28,7 @@ export const ReplyReactionContext = createContext<{
 	setHighlightCid: () => {},
 })
 
-export const ReplyReactionProvider: React.FC = ({ children }) => {
+export const ReplyReactionProvider: React.FC = React.memo(({ children }) => {
 	const [activePopoverCid, setActivePopoverCid] = useState<CID>()
 	const [highlightCid, setHighlight] = useState<CID>()
 	const [activeEmojiKeyboardCid, setActiveEmojiKeyboardCid] = useState<CID>()
@@ -53,6 +53,6 @@ export const ReplyReactionProvider: React.FC = ({ children }) => {
 			{typeof children === 'function' ? children(value) : children}
 		</ReplyReactionContext.Provider>
 	)
-}
+})
 
 export const useReplyReaction = () => useContext(ReplyReactionContext)

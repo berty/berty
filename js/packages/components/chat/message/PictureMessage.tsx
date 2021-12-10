@@ -66,6 +66,7 @@ export const PictureMessage: React.FC<{
 							left: index * 18,
 							bottom: index * 15,
 						}}
+						key={media.cid}
 					>
 						<View
 							key={media.cid}

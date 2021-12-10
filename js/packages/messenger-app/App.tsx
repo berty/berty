@@ -5,30 +5,35 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import Shake from '@shakebugs/react-native-shake'
 import RNBootSplash from 'react-native-bootsplash'
+import { Provider as ReduxProvider } from 'react-redux'
+import { View } from 'react-native'
 
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
 import { StreamGate, ListGate } from '@berty-tech/components/gates'
-import { MessengerProvider, useMountEffect } from '@berty-tech/store'
+import { MessengerProvider, useMountEffect, useThemeColor } from '@berty-tech/store'
 import { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { Navigation } from '@berty-tech/navigation/stacks'
 import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/NotificationProvider'
-import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
+// import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
 import { MusicPlayerProvider } from '@berty-tech/music-player'
 import { ErrorScreen } from '@berty-tech/components/error'
+import reduxStore from '@berty-tech/redux/store'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
 
-import { Provider as ReduxProvider } from 'react-redux'
-import reduxStore from '@berty-tech/redux/store'
-
-const BootSplashInhibitor = () => {
+const BootSplashInhibitor: React.FC = React.memo(() => {
 	useMountEffect(() => {
 		RNBootSplash.hide({ fade: true })
 	})
 	return null
+})
+
+const Background: React.FC = ({ children }) => {
+	const colors = useThemeColor()
+	return <View style={{ flex: 1, backgroundColor: colors['main-background'] }}>{children}</View>
 }
 
 export const App: React.FC = () => {
@@ -47,26 +52,28 @@ export const App: React.FC = () => {
 					<MessengerProvider embedded daemonAddress='http://localhost:1337'>
 						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 						<ThemeProvider>
-							<ErrorScreen>
-								<NavigationContainer
-									ref={navigationRef}
-									onReady={() => {
-										isReadyRef.current = true
-									}}
-								>
-									<NotificationProvider>
-										<BootSplashInhibitor />
-										<StreamGate>
-											<ListGate>
-												<MusicPlayerProvider>
-													<StickMusicPlayer />
-													<Navigation />
-												</MusicPlayerProvider>
-											</ListGate>
-										</StreamGate>
-									</NotificationProvider>
-								</NavigationContainer>
-							</ErrorScreen>
+							<Background>
+								<ErrorScreen>
+									<NavigationContainer
+										ref={navigationRef}
+										onReady={() => {
+											isReadyRef.current = true
+										}}
+									>
+										<NotificationProvider>
+											<BootSplashInhibitor />
+											<StreamGate>
+												<ListGate>
+													<MusicPlayerProvider>
+														{/*<StickMusicPlayer />*/}
+														<Navigation />
+													</MusicPlayerProvider>
+												</ListGate>
+											</StreamGate>
+										</NotificationProvider>
+									</NavigationContainer>
+								</ErrorScreen>
+							</Background>
 						</ThemeProvider>
 					</MessengerProvider>
 				</ReduxProvider>

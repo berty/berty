@@ -7,7 +7,8 @@ import { Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-import { RecordingState } from './common'
+import { RecordingState } from '../../audioMessageCommon'
+import { SendButton } from '../ChatFooterButtons'
 
 export const RecordingComponent: React.FC<{
 	recordingState: RecordingState
@@ -20,12 +21,13 @@ export const RecordingComponent: React.FC<{
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
+	const horizontalGutter = 8 * scaleSize
+
 	return (
 		<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
 			<View
 				style={[
 					margin.left.medium,
-					margin.right.tiny,
 					{
 						flexDirection: 'row',
 						justifyContent: 'center',
@@ -46,10 +48,10 @@ export const RecordingComponent: React.FC<{
 							top: 0,
 							bottom: 0,
 							justifyContent: 'center',
+							marginRight: horizontalGutter,
 						},
 						padding.horizontal.small,
 						border.radius.small,
-						margin.right.small,
 					]}
 				>
 					<Text style={{ color: colors['reverted-main-text'] }}>
@@ -148,36 +150,17 @@ export const RecordingComponent: React.FC<{
 				<View
 					style={[
 						{
-							right: 0,
-							height: 50,
-							justifyContent: 'center',
+							justifyContent: 'flex-end',
 							alignItems: 'flex-end',
 							paddingRight: 15 * scaleSize,
 						},
 					]}
 				>
-					<TouchableOpacity
-						style={[
-							{
-								alignItems: 'center',
-								justifyContent: 'center',
-								width: 36 * scaleSize,
-								height: 36 * scaleSize,
-								backgroundColor: colors['background-header'],
-								borderRadius: 18,
-							},
-						]}
+					<SendButton
 						onPress={() => {
 							setRecordingState(RecordingState.COMPLETE)
 						}}
-					>
-						<Icon
-							name='paper-plane-outline'
-							width={20 * scaleSize}
-							height={20 * scaleSize}
-							fill={colors['reverted-main-text']}
-						/>
-					</TouchableOpacity>
+					/>
 				</View>
 			)}
 		</View>

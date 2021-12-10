@@ -1,82 +1,16 @@
 import React, { useEffect, useMemo } from 'react'
 import { View, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
-import moment from 'moment'
 
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
 import beapi from '@berty-tech/api'
 import { playSoundAsync } from '@berty-tech/store/sounds'
-
-import { limitIntensities, voiceMemoFilename } from '../record/common'
-import { getSource } from '../../utils'
 import { useMessengerContext } from '@berty-tech/store'
 
-const volumeValueShown = 50
-
-const normalizeVolumeIntensities = (intensities: Array<number>) => {
-	const min = Math.min(...intensities)
-	const max = Math.max(...intensities)
-
-	intensities = limitIntensities(
-		intensities.map(i => (i - min) / (max - min)),
-		volumeValueShown,
-	)
-
-	return intensities
-}
-
-export const WaveForm: React.FC<{
-	intensities: any[]
-	duration: number | null
-	currentTime?: number
-}> = ({ intensities, duration, currentTime = 0 }) => {
-	const normalizedIntensities = useMemo(
-		() => normalizeVolumeIntensities(intensities),
-		[intensities],
-	)
-	const [{ margin, text }] = useStyles()
-	const colors = useThemeColor()
-	return (
-		<View
-			style={{
-				flexDirection: 'row',
-				alignItems: 'center',
-				flex: 1,
-				padding: 8,
-				height: '100%',
-			}}
-		>
-			<View style={{ flex: 1, flexDirection: 'row', height: '100%', alignItems: 'center' }}>
-				{normalizedIntensities.map((intensity, index) => {
-					return (
-						<React.Fragment key={index}>
-							<View
-								style={{
-									backgroundColor:
-										currentTime === 0 ||
-										(duration &&
-											index < Math.floor((currentTime! / duration) * normalizedIntensities.length))
-											? colors['main-background']
-											: `${colors['main-background']}80`,
-									minHeight: 5,
-									height: 70 * intensity + '%',
-									flex: 2,
-									borderRadius: 5,
-								}}
-							/>
-							<View style={{ flex: 1 }} />
-						</React.Fragment>
-					)
-				})}
-			</View>
-			<Text style={[{ color: colors['main-background'] }, margin.small, text.size.scale(9)]}>
-				{moment.utc(duration).format('mm:ss')}
-			</Text>
-		</View>
-	)
-}
+import { normalizeVolumeIntensities, voiceMemoFilename, WaveForm } from '../audioMessageCommon'
+import { getSource } from '../../utils'
 
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia
