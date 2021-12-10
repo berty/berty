@@ -12,6 +12,8 @@ import {
 	useMessengerContext,
 } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
+import { useAppSelector } from '@berty-tech/redux/react-redux'
+import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reducer'
 
 import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
 import { timeFormat } from '../../helpers'
@@ -80,6 +82,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 	const [{ row, border, flex, padding, text, opacity, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
+	const chatInputText = useAppSelector(state => selectChatInputText(state, publicKey))
 
 	let description
 	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
@@ -99,7 +102,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 			? displayName
 			: contact?.displayName || ''
 
-	if (lastInte?.medias?.length) {
+	if (!chatInputText && lastInte?.medias?.length) {
 		if (lastInte.medias[0].mimeType?.startsWith('image')) {
 			messageType = 'picture'
 			description = `${lastInte.isMine ? 'You' : userDisplayName} sent ${
@@ -113,9 +116,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		}
 	}
 
-	if (ctx.convsTextInputValue[publicKey]) {
+	if (chatInputText) {
 		description = t('main.home.conversations.draft', {
-			message: ctx.convsTextInputValue[publicKey],
+			message: chatInputText,
 		})
 	}
 
@@ -240,7 +243,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 								{
 									flexGrow: 2,
 									flexShrink: 1,
-									fontStyle: ctx.convsTextInputValue[publicKey] ? 'italic' : 'normal',
+									fontStyle: chatInputText ? 'italic' : 'normal',
 								},
 								text.size.small,
 								unreadCount

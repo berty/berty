@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, FlatList, ListRenderItem, View } from 'react-native'
+import {
+	ActivityIndicator,
+	ActivityIndicatorProps,
+	FlatList,
+	ListRenderItem,
+	View,
+} from 'react-native'
 import moment from 'moment'
 
 import { useStyles } from '@berty-tech/styles'
@@ -18,22 +24,19 @@ import { Message } from './message'
 import { ChatDate, updateStickyDate } from './common'
 import { InfosMultiMember } from './InfosMultiMember'
 
-const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
+const CenteredActivityIndicator: React.FC<ActivityIndicatorProps> = React.memo(props => {
 	const { ...propsToPass } = props
 	return (
 		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 			<ActivityIndicator {...propsToPass} />
 		</View>
 	)
-}
+})
 
-const DateSeparator = ({
-	current,
-	next,
-}: {
+const DateSeparator: React.FC<{
 	current: ParsedInteraction
 	next?: ParsedInteraction
-}) => {
+}> = React.memo(({ current, next }) => {
 	const [{ margin }] = useStyles()
 
 	if (!next) {
@@ -52,14 +55,20 @@ const DateSeparator = ({
 			<ChatDate date={pbDateToNum(next.sentDate)} />
 		</View>
 	)
-}
+})
+
+const NoopComponent: React.FC = () => null
+
+const emptyObject = {}
+
+const keyExtractor = (item: ParsedInteraction, index: number) => item.cid || `${index}`
 
 export const MessageList: React.FC<{
 	id: string
 	scrollToMessage?: string
 	setStickyDate: any
 	setShowStickyDate: any
-}> = ({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
+}> = React.memo(({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
 	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMessengerContext()
@@ -87,38 +96,41 @@ export const MessageList: React.FC<{
 			? InfosChat
 			: conversation?.type === beapi.messenger.Conversation.Type.MultiMemberType
 			? InfosMultiMember
-			: ({}) => null
+			: NoopComponent
 
 	const initialScrollIndex = undefined
-	const flatListRef: any = React.useRef(null)
+	const flatListRef = React.useRef<FlatList>(null)
 
-	const onScrollToIndexFailed = () => {
-		flatListRef?.current?.scrollToIndex({ index: 0 })
-	}
+	const handleScrollToIndexFailed = useCallback(() => {
+		flatListRef.current?.scrollToIndex({ index: 0 })
+	}, [])
+
+	const handleScrollToCid = useCallback(
+		cid => {
+			flatListRef.current?.scrollToIndex({
+				index: messages.findIndex(message => message.cid === cid),
+			})
+		},
+		[messages],
+	)
 
 	const renderItem: ListRenderItem<ParsedInteraction> = useCallback(
-		({ item, index }) => {
-			return (
-				<>
-					{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
-					<Message
-						inte={item}
-						convKind={conversation?.type || beapi.messenger.Conversation.Type.Undefined}
-						convPK={id || ''}
-						members={members || {}}
-						previousMessage={index < messages.length - 1 ? messages[index + 1] : undefined}
-						nextMessage={index > 0 ? messages[index - 1] : undefined}
-						replyOf={messages.find(message => message.cid === item.targetCid)}
-						scrollToCid={cid => {
-							flatListRef?.current?.scrollToIndex({
-								index: messages.findIndex(message => message.cid === cid),
-							})
-						}}
-					/>
-				</>
-			)
-		},
-		[id, conversation?.type, members, messages],
+		({ item, index }) => (
+			<>
+				{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
+				<Message
+					inte={item}
+					convKind={conversation?.type || beapi.messenger.Conversation.Type.Undefined}
+					convPK={id || ''}
+					members={members || emptyObject}
+					previousMessage={index < messages.length - 1 ? messages[index + 1] : undefined}
+					nextMessage={index > 0 ? messages[index - 1] : undefined}
+					replyOf={messages.find(message => message.cid === item.targetCid)}
+					scrollToCid={handleScrollToCid}
+				/>
+			</>
+		),
+		[id, conversation?.type, members, messages, handleScrollToCid],
 	)
 
 	const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -136,6 +148,32 @@ export const MessageList: React.FC<{
 	}, [fetchingFrom, fetchedFirst, oldestMessage, ctx.client, id])
 	const updateStickyDateCB = useCallback(() => updateStickyDate(setStickyDate), [setStickyDate])
 
+	const handleScrollBeginDrag = useCallback(() => {
+		setShowStickyDate(false) // TODO: tmp until hide if start of conversation is visible
+	}, [setShowStickyDate])
+	const handleScrollEndDrag = useCallback(() => {
+		setTimeout(() => setShowStickyDate(false), 2000)
+	}, [setShowStickyDate])
+
+	const listFooterComponent = React.useMemo(
+		() =>
+			!conversation || fetchingFrom !== null ? (
+				<CenteredActivityIndicator />
+			) : fetchedFirst ? (
+				<BeginningOfTimeComponent {...conversation} />
+			) : null,
+		[BeginningOfTimeComponent, conversation, fetchingFrom, fetchedFirst],
+	)
+
+	const style = React.useMemo(
+		() => [overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }],
+		[overflow, row.item.fill, flex.tiny, scaleHeight],
+	)
+	const contentContainerStyle = React.useMemo(
+		() => ({ paddingBottom: 35 * scaleHeight }),
+		[scaleHeight],
+	)
+
 	useEffect(() => {
 		return () => {
 			if (fetchingFrom !== oldestMessage?.cid) {
@@ -148,33 +186,23 @@ export const MessageList: React.FC<{
 		<FlatList
 			overScrollMode='never'
 			initialScrollIndex={initialScrollIndex}
-			onScrollToIndexFailed={onScrollToIndexFailed}
-			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
-			contentContainerStyle={{ paddingBottom: 35 * scaleHeight }}
+			onScrollToIndexFailed={handleScrollToIndexFailed}
+			style={style}
+			contentContainerStyle={contentContainerStyle}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			data={messages || []}
+			data={messages}
 			inverted
 			onEndReached={!isLoadingMore ? fetchMoreCB : null}
 			onEndReachedThreshold={0.8}
-			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
+			keyExtractor={keyExtractor}
 			refreshing={fetchingFrom !== null}
-			ListFooterComponent={
-				!conversation || fetchingFrom !== null ? (
-					<CenteredActivityIndicator />
-				) : fetchedFirst ? (
-					<BeginningOfTimeComponent {...conversation} />
-				) : null
-			}
+			ListFooterComponent={listFooterComponent}
 			renderItem={renderItem}
 			onViewableItemsChanged={__DEV__ ? undefined : updateStickyDateCB}
 			initialNumToRender={20}
-			onScrollBeginDrag={() => {
-				setShowStickyDate(false) // TODO: tmp until hide if start of conversation is visible
-			}}
-			onScrollEndDrag={() => {
-				setTimeout(() => setShowStickyDate(false), 2000)
-			}}
+			onScrollBeginDrag={handleScrollBeginDrag}
+			onScrollEndDrag={handleScrollEndDrag}
 		/>
 	)
-}
+})

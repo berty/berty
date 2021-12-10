@@ -1,6 +1,6 @@
-import { berty } from '@berty-tech/api/root.pb'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '../store'
+
+import beapi from '@berty-tech/api'
 
 /**
  *
@@ -8,8 +8,8 @@ import type { RootState } from '../store'
  *
  */
 
-type stateType = {
-	members: berty.messenger.v1.IContact[]
+export type GroupCreationState = {
+	members: beapi.messenger.IContact[]
 }
 
 /**
@@ -18,9 +18,18 @@ type stateType = {
  *
  */
 
-const initialState: stateType = {
+export const sliceName = 'newGroup'
+
+const makeRoot = <T>(val: T) => ({
+	[sliceName]: val,
+})
+
+const initialState: GroupCreationState = {
 	members: [],
 }
+
+const rootInitialState = makeRoot(initialState)
+type LocalRootState = typeof rootInitialState
 
 /**
  *
@@ -33,14 +42,17 @@ const slice = createSlice({
 	initialState,
 	reducers: {
 		addMemberToInvitationList(
-			{ members }: stateType,
-			{ payload: contact }: PayloadAction<berty.messenger.v1.IContact>,
+			{ members }: GroupCreationState,
+			{ payload: contact }: PayloadAction<beapi.messenger.IContact>,
 		) {
 			if (!members.find(member => member.publicKey === contact.publicKey)) {
 				members.push(contact)
 			}
 		},
-		removeMemberFromInvitationListById(state: stateType, { payload: id }: PayloadAction<string>) {
+		removeMemberFromInvitationListById(
+			state: GroupCreationState,
+			{ payload: id }: PayloadAction<string>,
+		) {
 			const filtered = state.members.filter(member => member.publicKey !== id)
 			if (filtered.length !== state.members.length) {
 				state.members = filtered
@@ -58,8 +70,10 @@ const slice = createSlice({
  *
  */
 
-export const selectInvitationListMembers = (state: RootState): berty.messenger.v1.IContact[] =>
-	state.newGroup.members
+const selectSlice = (state: LocalRootState) => state[sliceName]
+
+export const selectInvitationListMembers = (state: LocalRootState): beapi.messenger.IContact[] =>
+	selectSlice(state).members
 
 export const {
 	addMemberToInvitationList,
@@ -67,4 +81,4 @@ export const {
 	resetInvitationList,
 } = slice.actions
 
-export default slice.reducer
+export default makeRoot(slice.reducer)

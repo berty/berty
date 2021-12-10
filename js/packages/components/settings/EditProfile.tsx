@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	View,
+	KeyboardAvoidingView,
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { Icon, Input, Text } from '@ui-kitten/components'
@@ -20,7 +21,6 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 
-import { KeyboardAvoidingView } from '../shared-components/KeyboardAvoidingView'
 import { AccountAvatar } from '../avatars'
 
 //

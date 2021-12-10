@@ -41,7 +41,7 @@ export const GenericAvatar: React.FC<{
 	isEditable?: boolean
 	nameSeed: Maybe<string>
 	pressable?: boolean
-}> = ({ cid, size, colorSeed, style, isEditable = false, nameSeed, pressable }) => {
+}> = React.memo(({ cid, size, colorSeed, style, isEditable = false, nameSeed, pressable }) => {
 	const [{ border }] = useStyles()
 	const colors = useThemeColor()
 
@@ -121,7 +121,7 @@ export const GenericAvatar: React.FC<{
 			</View>
 		</View>
 	)
-}
+})
 
 const hardcodedAvatars = {
 	berty_dev_green_bg: GreenDevAvatar,
@@ -139,7 +139,7 @@ export const HardcodedAvatar: React.FC<{
 	style?: AvatarStyle
 	name: HardcodedAvatarKey
 	pressable?: boolean
-}> = ({ size, style, name, pressable }) => {
+}> = React.memo(({ size, style, name, pressable }) => {
 	const [{ border }] = useStyles()
 	const colors = useThemeColor()
 
@@ -175,13 +175,13 @@ export const HardcodedAvatar: React.FC<{
 			/>
 		</TouchableOpacity>
 	)
-}
+})
 
 export const AccountAvatar: React.FC<{
 	size: number
 	style?: AvatarStyle
 	isEditable?: boolean
-}> = ({ size, style, isEditable }) => {
+}> = React.memo(({ size, style, isEditable }) => {
 	const account = useAccount()
 	const colors = useThemeColor()
 	return (
@@ -194,14 +194,14 @@ export const AccountAvatar: React.FC<{
 			isEditable={isEditable}
 		/>
 	)
-}
+})
 
 export const NameAvatar: React.FC<{
 	colorSeed: Maybe<string>
 	size: number
 	style?: AvatarStyle
 	nameSeed: Maybe<string>
-}> = ({ colorSeed, size, style, nameSeed }) => {
+}> = React.memo(({ colorSeed, size, style, nameSeed }) => {
 	const colors = useThemeColor()
 
 	const h = new SHA3(256).update(Buffer.from(colorSeed || '', 'base64')).digest()
@@ -232,7 +232,7 @@ export const NameAvatar: React.FC<{
 			</Text>
 		</View>
 	)
-}
+})
 
 export const ContactAvatar: React.FC<{
 	publicKey: Maybe<string>
@@ -240,7 +240,7 @@ export const ContactAvatar: React.FC<{
 	style?: AvatarStyle
 	fallbackNameSeed?: Maybe<string>
 	pressable?: boolean
-}> = ({ publicKey, size, style, fallbackNameSeed, pressable }) => {
+}> = React.memo(({ publicKey, size, style, fallbackNameSeed, pressable }) => {
 	const contact = useContact(publicKey)
 	const ctx = useMessengerContext()
 	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
@@ -264,14 +264,14 @@ export const ContactAvatar: React.FC<{
 			pressable={pressable}
 		/>
 	)
-}
+})
 
 export const MemberAvatar: React.FC<{
 	publicKey: Maybe<string>
 	conversationPublicKey: Maybe<string>
 	size: number
 	pressable?: boolean
-}> = ({ publicKey, conversationPublicKey, size, pressable }) => {
+}> = React.memo(({ publicKey, conversationPublicKey, size, pressable }) => {
 	const member = useMember({ publicKey, conversationPublicKey })
 
 	return (
@@ -283,7 +283,7 @@ export const MemberAvatar: React.FC<{
 			pressable={pressable}
 		/>
 	)
-}
+})
 
 export const MultiMemberAvatar: React.FC<{
 	size: number
@@ -291,46 +291,60 @@ export const MultiMemberAvatar: React.FC<{
 	publicKey?: Maybe<string>
 	fallbackNameSeed?: Maybe<string>
 	pressable?: boolean
-}> = ({ size, style, publicKey, fallbackNameSeed, pressable }) => {
+}> = React.memo(({ size, style, publicKey, fallbackNameSeed, pressable }) => {
 	const ctx = useMessengerContext()
 	const conv = useConversation(publicKey)
-	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
-	let content: React.ReactElement
-	if (suggestion) {
-		content = (
-			<HardcodedAvatar
-				size={size}
-				style={style}
-				name={suggestion.icon as any}
-				pressable={pressable}
-			/>
+	// this useMemo prevents flickering
+	return React.useMemo(() => {
+		const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
+			v => v.pk === publicKey,
 		)
-	} else {
-		content = (
-			<GenericAvatar
-				size={size}
-				style={style}
-				cid={conv?.avatarCid}
-				colorSeed={publicKey}
-				nameSeed={conv?.displayName || fallbackNameSeed}
-				pressable={pressable}
-			/>
-		)
-	}
-	const badgeSize = size / 3
-	class GroupBadge extends React.Component {
-		render = () => <HardcodedAvatar size={badgeSize} name={'group'} />
-	}
-	const Avatar = () => content
-	const WrappedAvatar = withBadge('', { Component: GroupBadge })(Avatar)
-	return <WrappedAvatar />
-}
+		let content: React.ReactElement
+		if (suggestion) {
+			content = (
+				<HardcodedAvatar
+					size={size}
+					style={style}
+					name={suggestion.icon as any}
+					pressable={pressable}
+				/>
+			)
+		} else {
+			content = (
+				<GenericAvatar
+					size={size}
+					style={style}
+					cid={conv?.avatarCid}
+					colorSeed={publicKey}
+					nameSeed={conv?.displayName || fallbackNameSeed}
+					pressable={pressable}
+				/>
+			)
+		}
+		const badgeSize = size / 3
+		class GroupBadge extends React.Component {
+			render = () => <HardcodedAvatar size={badgeSize} name={'group'} />
+		}
+		const Avatar = () => content
+		const WrappedAvatar = withBadge('', { Component: GroupBadge })(Avatar)
+		return <WrappedAvatar />
+	}, [
+		conv?.avatarCid,
+		conv?.displayName,
+		ctx.persistentOptions?.suggestions,
+		fallbackNameSeed,
+		pressable,
+		publicKey,
+		size,
+		style,
+	])
+})
 
 export const ConversationAvatar: React.FC<{
 	publicKey: Maybe<string>
 	size: number
 	style?: AvatarStyle
-}> = ({ publicKey, size, style }) => {
+}> = React.memo(({ publicKey, size, style }) => {
 	const conv = useConversation(publicKey)
 	const ctx = useMessengerContext()
 
@@ -348,4 +362,4 @@ export const ConversationAvatar: React.FC<{
 	}
 
 	return <GenericAvatar size={size} style={style} cid='' colorSeed={publicKey} nameSeed={'C'} />
-}
+})

@@ -1,4 +1,4 @@
-import { EffectCallback, useContext, useEffect, useMemo } from 'react'
+import React, { EffectCallback, useContext, useEffect, useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
@@ -121,7 +121,9 @@ export const useSortedConversationList = () => {
 	)
 }
 
-export const useConversation = (publicKey: Maybe<string>) => {
+export const useConversation = (
+	publicKey: Maybe<string>,
+): (beapi.messenger.IConversation & { fake?: Maybe<boolean> }) | undefined => {
 	const ctx = useMessengerContext()
 	if (!publicKey) {
 		return undefined
@@ -129,9 +131,15 @@ export const useConversation = (publicKey: Maybe<string>) => {
 	return ctx.conversations[publicKey]
 }
 
+const emptyList: never[] = []
+const emptyObject = {}
+
 export const useConvInteractions = (publicKey: Maybe<string>) => {
 	const { interactions } = useMessengerContext()
-	return interactions[publicKey as string] || []
+	if (!publicKey) {
+		return emptyList
+	}
+	return interactions[publicKey] || emptyList
 }
 
 export const useConversationsCount = () => {
@@ -165,20 +173,32 @@ export const usePersistentOptions = () => {
 
 export const useThemeColor = () => {
 	const ctx = useMessengerContext()
-	let collectionColors = {}
-	if (ctx.persistentOptions?.themeColor.isDark) {
-		collectionColors = darkTheme
-	} else {
-		Object.entries(ctx.persistentOptions?.themeColor.collection).map(value => {
+	return React.useMemo(() => {
+		if (ctx.persistentOptions?.themeColor.isDark) {
+			return darkTheme
+		}
+
+		if (
+			!Object.entries(ctx.persistentOptions?.themeColor.collection).length ||
+			ctx.appState === MessengerAppState.GetStarted
+		) {
+			return colors
+		}
+
+		let collectionColors = emptyObject
+		for (const value of Object.entries(ctx.persistentOptions?.themeColor.collection)) {
 			if (value[0] === ctx.persistentOptions?.themeColor.selected) {
 				collectionColors = (value[1] as any)?.colors
+				break
 			}
-		})
-	}
-	return Object.entries(ctx.persistentOptions?.themeColor.collection).length &&
-		ctx.appState !== MessengerAppState.GetStarted
-		? collectionColors
-		: colors
+		}
+		return collectionColors
+	}, [
+		ctx.appState,
+		ctx.persistentOptions?.themeColor.collection,
+		ctx.persistentOptions?.themeColor.isDark,
+		ctx.persistentOptions?.themeColor.selected,
+	])
 }
 
 export const useProfileNotification = () => {

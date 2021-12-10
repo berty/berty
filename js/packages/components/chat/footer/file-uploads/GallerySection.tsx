@@ -6,16 +6,18 @@ import {
 	Image,
 	Platform,
 	ActivityIndicator,
+	Text,
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import CameraRoll from '@react-native-community/cameraroll'
 import RNFS from 'react-native-fs'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
-import { ImageCounter } from '../ImageCounter'
+import { ImageCounter } from '../../ImageCounter'
 
 const GALLERY_IMAGE_PER_PAGE = 30
 
@@ -25,6 +27,7 @@ export const GallerySection: React.FC<{
 }> = ({ prepareMediaAndSend, isLoading }) => {
 	const [{ border, padding, margin }] = useStyles()
 	const colors = useThemeColor()
+	const { t }: { t: any } = useTranslation()
 
 	const [selectedImages, setSelectedImages] = useState<
 		(beapi.messenger.IMedia & { uri: string })[]
@@ -32,6 +35,8 @@ export const GallerySection: React.FC<{
 	const [galleryImageEndCursor, setGalleryImageEndCursor] = useState<string | null | undefined>(
 		null,
 	)
+
+	const [loading, setLoading] = useState(true)
 
 	const [galleryContents, setGalleryContents] = useState<
 		(beapi.messenger.IMedia & { uri: string })[]
@@ -42,6 +47,8 @@ export const GallerySection: React.FC<{
 			const photos = await CameraRoll.getPhotos({
 				first: GALLERY_IMAGE_PER_PAGE,
 			})
+
+			setLoading(false)
 
 			setGalleryContents(
 				photos.edges.map(
@@ -100,92 +107,96 @@ export const GallerySection: React.FC<{
 
 	return (
 		<>
-			{galleryContents.length > 0 && (
-				<ScrollView
-					onScroll={async ({ nativeEvent: { layoutMeasurement, contentOffset, contentSize } }) => {
-						if (
-							galleryImageEndCursor &&
-							layoutMeasurement.height + contentOffset.y >= contentSize.height - 20
-						) {
-							try {
-								const photos = await CameraRoll.getPhotos({
-									first: GALLERY_IMAGE_PER_PAGE,
-									after: galleryImageEndCursor,
-								})
+			<ScrollView
+				onScroll={async ({ nativeEvent: { layoutMeasurement, contentOffset, contentSize } }) => {
+					if (
+						galleryImageEndCursor &&
+						layoutMeasurement.height + contentOffset.y >= contentSize.height - 20
+					) {
+						try {
+							const photos = await CameraRoll.getPhotos({
+								first: GALLERY_IMAGE_PER_PAGE,
+								after: galleryImageEndCursor,
+							})
 
-								setGalleryContents(prev => [
-									...prev,
-									...photos.edges.map(
-										({
-											node: {
-												image: { filename, uri },
-												type: mime,
-											},
-										}) => ({
-											filename: filename || '',
-											uri,
-											mime,
-										}),
-									),
-								])
+							setGalleryContents(prev => [
+								...prev,
+								...photos.edges.map(
+									({
+										node: {
+											image: { filename, uri },
+											type: mime,
+										},
+									}) => ({
+										filename: filename || '',
+										uri,
+										mime,
+									}),
+								),
+							])
 
-								setGalleryImageEndCursor(
-									photos.page_info.has_next_page ? photos.page_info.end_cursor : null,
-								)
-							} catch (err) {
-								console.log('getPhotos err', err)
-							}
+							setGalleryImageEndCursor(
+								photos.page_info.has_next_page ? photos.page_info.end_cursor : null,
+							)
+						} catch (err) {
+							console.log('getPhotos err', err)
 						}
-					}}
-					scrollEventThrottle={400}
-					style={[{ height: 300 }, padding.medium]}
-					contentContainerStyle={{
-						flexDirection: 'row',
-						flexWrap: 'wrap',
-						alignItems: 'center',
-						justifyContent: 'center',
-						backgroundColor: colors['main-background'],
-					}}
-				>
-					{galleryContents.map(content => (
-						<TouchableOpacity
-							activeOpacity={0.8}
-							key={content.filename}
-							style={[
-								{ backgroundColor: colors['main-background'], position: 'relative' },
-								padding.tiny,
-								border.radius.tiny,
-								margin.bottom.tiny,
-							]}
-							onPress={() => {
-								setSelectedImages(prevImages => {
-									if (prevImages.find(prevImage => prevImage.filename === content.filename)) {
-										return prevImages.filter(image => image.filename !== content.filename)
-									} else {
-										return [...prevImages, content]
-									}
-								})
-							}}
-						>
-							<Image
-								source={{ uri: content.uri || '' }}
-								style={[{ height: 110, width: 100 }, border.radius.tiny]}
-							/>
-							{selectedImages.find(image => image.filename === content.filename) && (
-								<View style={{ position: 'absolute', top: 5, right: 5 }}>
-									<Icon
-										height={40}
-										width={40}
-										name='checkmark-circle-2'
-										fill={colors['reverted-main-text']}
-										style={{}}
-									/>
-								</View>
-							)}
-						</TouchableOpacity>
-					))}
-				</ScrollView>
-			)}
+					}
+				}}
+				scrollEventThrottle={400}
+				style={[{ maxHeight: 150 }, padding.medium]}
+				contentContainerStyle={{
+					flexDirection: 'row',
+					flexWrap: 'wrap',
+					alignItems: 'center',
+					justifyContent: 'center',
+					backgroundColor: colors['main-background'],
+				}}
+			>
+				{loading ? (
+					<ActivityIndicator />
+				) : (
+					galleryContents.length <= 0 && <Text>{t('chat.files.no-images')}</Text>
+				)}
+				{galleryContents.map(content => (
+					<TouchableOpacity
+						activeOpacity={0.8}
+						key={content.cid || content.uri}
+						style={[
+							{ backgroundColor: colors['main-background'], position: 'relative' },
+							padding.tiny,
+							border.radius.tiny,
+							margin.bottom.tiny,
+						]}
+						onPress={() => {
+							setSelectedImages(prevImages => {
+								if (prevImages.find(prevImage => prevImage.uri === content.uri)) {
+									return prevImages.filter(image => image.uri !== content.uri)
+								} else {
+									return [...prevImages, content]
+								}
+							})
+						}}
+					>
+						<Image
+							source={{ uri: content.uri || '' }}
+							style={[{ height: 110, width: 100 }, border.radius.tiny]}
+						/>
+						{selectedImages.find(image => image.uri === content.uri) && (
+							<View style={{ position: 'absolute', top: 5, right: 5 }}>
+								<Icon
+									height={40}
+									width={40}
+									name='checkmark-circle-2'
+									fill={colors['reverted-main-text']}
+									style={{}}
+								/>
+							</View>
+						)}
+					</TouchableOpacity>
+				))}
+			</ScrollView>
+
 			{selectedImages.length > 0 && (
 				<View
 					style={[

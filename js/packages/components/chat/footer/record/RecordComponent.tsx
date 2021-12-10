@@ -26,7 +26,7 @@ import {
 	volumeValueLowest,
 	volumeValuePrecision,
 	voiceMemoFilename,
-} from './common'
+} from '../../audioMessageCommon'
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
 
@@ -100,20 +100,20 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 export const RecordComponent: React.FC<{
 	convPk: string
 	component: React.ReactNode
-	aFixMicro: Animated.AnimatedInterpolation
 	distanceCancel?: number
 	distanceLock?: number
 	minAudioDuration?: number
 	disableLockMode?: boolean
+	disabled?: boolean
 }> = ({
 	children,
 	component,
-	aFixMicro,
-	distanceCancel = 200,
-	distanceLock = 80,
+	distanceCancel = 90,
+	distanceLock = 40,
 	disableLockMode = false,
-	minAudioDuration = 1000,
+	minAudioDuration = 2000,
 	convPk,
+	disabled,
 }) => {
 	const ctx = useMessengerContext()
 	const recorder = React.useRef<Recorder | undefined>(undefined)
@@ -124,11 +124,18 @@ export const RecordComponent: React.FC<{
 	const [{ border, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
+	/*const setRecordingState = React.useCallback(
+		(state: RecordingState, msg?: string) => {
+			console.log('setRecordingState', msg, RecordingState[state])
+			_setRecordingState(state)
+		},
+		[_setRecordingState],
+	)*/
 	const [recordingStart, setRecordingStart] = useState(Date.now())
 	const [clearRecordingInterval, setClearRecordingInterval] = useState<ReturnType<
 		typeof setInterval
 	> | null>(null)
-	const [xy, setXY] = useState({ x: 0, y: 0 })
+	//const [xy, setXY] = useState({ x: 0, y: 0 })
 	const [currentTime, setCurrentTime] = useState(Date.now())
 	const [helpMessageTimeoutID, _setHelpMessageTimeoutID] = useState<ReturnType<
 		typeof setTimeout
@@ -193,12 +200,11 @@ export const RecordComponent: React.FC<{
 	}, [isRecording, recordingColorVal])
 
 	const clearRecording = useCallback(() => {
+		setRecordingState(RecordingState.NOT_RECORDING)
 		if (clearRecordingInterval === null) {
 			return
 		}
-
 		clearInterval(clearRecordingInterval)
-		setRecordingState(RecordingState.NOT_RECORDING)
 		setRecordDuration(null)
 		;(recorder.current as any)?.removeListener('meter', addMeteredValue)
 	}, [addMeteredValue, clearRecordingInterval])
@@ -269,7 +275,7 @@ export const RecordComponent: React.FC<{
 
 					if (err !== null) {
 						if (duration) {
-							sendComplete({ duration })
+							if (duration >= minAudioDuration) sendComplete({ duration })
 						} else {
 							console.warn(err)
 						}
@@ -306,7 +312,13 @@ export const RecordComponent: React.FC<{
 
 	const updateRecordingPressEvent = useCallback(
 		(e: LongPressGestureHandlerGestureEvent) => {
-			setXY({ x: e.nativeEvent.x, y: e.nativeEvent.y })
+			//console.log('gesture event', e)
+
+			if (disabled) {
+				return
+			}
+
+			//setXY({ x: e.nativeEvent.x, y: e.nativeEvent.y })
 
 			if (
 				recordingState !== RecordingState.RECORDING &&
@@ -315,26 +327,47 @@ export const RecordComponent: React.FC<{
 				return
 			}
 
-			if (e.nativeEvent.x < -distanceCancel && e.nativeEvent.y > -20 && e.nativeEvent.y < 70) {
+			if (e.nativeEvent.x < -distanceCancel /* && e.nativeEvent.y > -20 && e.nativeEvent.y < 70*/) {
+				console.log('cancel recording')
 				setHelpMessageValue({
 					message: t('audio.record.tooltip.not-sent'),
 				})
+				console.log('slide cancel')
 				setRecordingState(RecordingState.PENDING_CANCEL)
 				return
 			}
 
-			if (!disableLockMode && e.nativeEvent.y < -distanceLock && xy.x > -20 && xy.x < 50) {
+			if (
+				!disableLockMode &&
+				e.nativeEvent.y < -distanceLock /* &&
+				e.nativeEvent.x > -20 &&
+				e.nativeEvent.x < 50*/
+			) {
+				console.log('locking recording')
 				setRecordingState(RecordingState.RECORDING_LOCKED)
 				return
 			}
 		},
-		[disableLockMode, distanceCancel, distanceLock, recordingState, setHelpMessageValue, t, xy.x],
+		[
+			disableLockMode,
+			distanceCancel,
+			distanceLock,
+			recordingState,
+			setHelpMessageValue,
+			t,
+			disabled,
+		],
 	)
 
 	const recordingPressStatus = useCallback(
 		async (e: LongPressGestureHandlerStateChangeEvent) => {
+			if (disabled) {
+				return
+			}
+
 			// Pressed
-			if (e.nativeEvent.state === State.BEGAN || e.nativeEvent.state === State.ACTIVE) {
+			if (e.nativeEvent.state === State.ACTIVE) {
+				console.log('start')
 				if (recordingState === RecordingState.NOT_RECORDING) {
 					const permState = await acquireMicPerm(navigate)
 					if (permState === MicPermStatus.NEWLY_GRANTED) {
@@ -380,9 +413,9 @@ export const RecordComponent: React.FC<{
 							} catch (e) {
 								console.warn(['err' + e])
 							}
-							setRecordingState(RecordingState.RECORDING)
 						}
 					})
+					setRecordingState(RecordingState.RECORDING)
 				}
 
 				return
@@ -390,14 +423,14 @@ export const RecordComponent: React.FC<{
 
 			// Released
 			if (e.nativeEvent.state === State.END) {
-				if (recordingState === RecordingState.RECORDING) {
-					setRecordingState(RecordingState.COMPLETE)
-				}
+				console.log('end')
+				setRecordingState(RecordingState.COMPLETE)
 
 				return
 			}
 
 			if (e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED) {
+				console.log('state cancel', e.nativeEvent.state)
 				setRecordingState(RecordingState.PENDING_CANCEL)
 				return
 			}
@@ -410,6 +443,7 @@ export const RecordComponent: React.FC<{
 			t,
 			updateCurrentTime,
 			addMeteredValue,
+			disabled,
 		],
 	)
 
@@ -417,7 +451,7 @@ export const RecordComponent: React.FC<{
 		<View style={[{ flexDirection: 'row' }]}>
 			{helpMessage !== '' && (
 				<TouchableOpacity
-					style={{ position: 'absolute', top: -30, right: 0 }}
+					style={{ position: 'absolute', top: -30, right: 0, zIndex: 42000 }}
 					onPress={() => clearHelpMessageValue()}
 				>
 					<View
@@ -451,22 +485,24 @@ export const RecordComponent: React.FC<{
 					setHelpMessageValue={setHelpMessageValue}
 				/>
 			)}
-			{recordingState === RecordingState.NOT_RECORDING && (
+			{(recordingState === RecordingState.NOT_RECORDING ||
+				recordingState === RecordingState.PENDING_CANCEL) && (
 				<View style={[padding.left.scale(10), { flex: 1 }]}>{children}</View>
 			)}
 			{(recordingState === RecordingState.NOT_RECORDING ||
-				recordingState === RecordingState.RECORDING) && (
+				recordingState === RecordingState.RECORDING ||
+				recordingState === RecordingState.PENDING_CANCEL) && (
 				<LongPressGestureHandler
 					minDurationMs={0}
-					maxDist={100 * scaleSize}
+					maxDist={42000}
 					onGestureEvent={updateRecordingPressEvent}
 					onHandlerStateChange={recordingPressStatus}
+					shouldCancelWhenOutside={false}
 				>
-					<Animated.View
+					<View
 						style={[
 							{
-								right: aFixMicro,
-								justifyContent: 'center',
+								justifyContent: 'flex-end',
 								alignItems: 'flex-end',
 								paddingRight: 15 * scaleSize,
 							},
@@ -477,7 +513,9 @@ export const RecordComponent: React.FC<{
 								style={{
 									justifyContent: 'center',
 									alignItems: 'center',
-									borderRadius: 100,
+									borderRadius: 18 * scaleSize,
+									borderWidth: 1,
+									borderColor: `${colors['reverted-main-text']}c0`,
 									backgroundColor: colors['background-header'],
 									width: 36 * scaleSize,
 									height: 36 * scaleSize,
@@ -487,17 +525,19 @@ export const RecordComponent: React.FC<{
 									paddingVertical: 5,
 								}}
 							>
-								<Icon
-									name='lock'
-									pack='feather'
-									height={20 * scaleSize}
-									width={20 * scaleSize}
-									fill={colors['reverted-main-text']}
-								/>
+								<View style={{ paddingBottom: 2 * scaleSize }}>
+									<Icon
+										name='lock'
+										pack='feather'
+										height={18 * scaleSize}
+										width={18 * scaleSize}
+										fill={colors['reverted-main-text']}
+									/>
+								</View>
 							</View>
 						)}
 						<View>{component}</View>
-					</Animated.View>
+					</View>
 				</LongPressGestureHandler>
 			)}
 		</View>

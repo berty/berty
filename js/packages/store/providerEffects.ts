@@ -110,11 +110,13 @@ const getPersistentOptions = async (
 }
 
 export const initBridge = async () => {
-	await GoBridge.initBridge()
-		.then(() => console.log('bridge init done'))
-		.catch(err => {
-			console.warn('unable to init bridge ', Object.keys(err), err.domain)
-		})
+	try {
+		console.log('bridge methods: ', Object.keys(GoBridge))
+		await GoBridge.initBridge()
+		console.log('bridge init done')
+	} catch (err: any) {
+		console.error('unable to init bridge: ', err)
+	}
 }
 
 export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {

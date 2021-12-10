@@ -1,3 +1,5 @@
+import { isEqual } from 'lodash'
+
 import beapi from '@berty-tech/api'
 
 import { MessengerState, reducerAction } from '../types'
@@ -19,7 +21,9 @@ const mergeInteractions = (existing: Array<ParsedInteraction>, toAdd: Array<Pars
 		if (!i.conversationPublicKey || !i.cid) {
 			continue
 		}
-		m[i.cid] = i
+		if (!isEqual(m[i.cid], i)) {
+			m[i.cid] = i
+		}
 	}
 	const l = Object.values(m)
 	return sortInteractions(l)
@@ -63,11 +67,17 @@ export const eventStreamReducerActions: {
 			}
 		}
 
+		let newConv = action.payload.conversation
+		const prevConv = oldState.conversations[action.payload.conversation.publicKey]
+		if (isEqual(prevConv, newConv)) {
+			newConv = prevConv
+		}
+
 		return {
 			...oldState,
 			conversations: {
 				...oldState.conversations,
-				[action.payload.conversation.publicKey]: action.payload.conversation,
+				[action.payload.conversation.publicKey]: newConv,
 			},
 			interactions: {
 				...oldState.interactions,

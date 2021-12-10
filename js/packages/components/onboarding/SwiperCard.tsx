@@ -2,7 +2,6 @@ import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { Card } from '../shared-components/Card'
 import Button from './Button'
 
@@ -18,7 +17,7 @@ const SwiperCard: React.FC<{
 	const colors = useThemeColor()
 
 	return (
-		<SafeAreaView style={[{ flex: 1 }]}>
+		<View>
 			<Text style={[text.size.large, text.align.center, { color: colors['reverted-main-text'] }]}>
 				{header}
 			</Text>
@@ -76,7 +75,7 @@ const SwiperCard: React.FC<{
 					) : null}
 				</View>
 			</Card>
-		</SafeAreaView>
+		</View>
 	)
 }
 

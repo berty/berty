@@ -195,13 +195,6 @@ export const uiReducerActions: {
 		...oldState,
 		appState: MessengerAppState.GetStarted,
 	}),
-	[MessengerActions.SetConvsTextInputValue]: (oldState, action) => ({
-		...oldState,
-		convsTextInputValue: {
-			...oldState.convsTextInputValue,
-			[action.payload.key]: action.payload.value,
-		},
-	}),
 }
 
 export const uiReducer = (oldState: MessengerState, action: reducerAction): MessengerState => {

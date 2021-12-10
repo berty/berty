@@ -14,8 +14,9 @@ import {
 	volumeValuesAttached,
 	volumeValueLowest,
 	volumeValuePrecision,
-} from './common'
-import { WaveForm } from '../message/AudioMessage'
+	WaveForm,
+} from '../../audioMessageCommon'
+import { SendButton } from '../ChatFooterButtons'
 
 export const PreviewComponent: React.FC<{
 	meteredValuesRef: React.MutableRefObject<number[]>
@@ -40,7 +41,7 @@ export const PreviewComponent: React.FC<{
 
 	return (
 		<View
-			style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }, margin.horizontal.medium]}
+			style={[{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }, margin.horizontal.medium]}
 		>
 			<TouchableOpacity
 				style={[
@@ -131,32 +132,15 @@ export const PreviewComponent: React.FC<{
 						)}
 						currentTime={isPlaying && player?.currentTime}
 						duration={recordDuration}
+						color={colors['background-header']}
 					/>
 				</View>
 			</View>
-			<TouchableOpacity
-				style={[
-					padding.horizontal.small,
-					{
-						alignItems: 'center',
-						justifyContent: 'center',
-						width: 36 * scaleSize,
-						height: 36 * scaleSize,
-						backgroundColor: colors['background-header'],
-						borderRadius: 18,
-					},
-				]}
+			<SendButton
 				onPress={() => {
 					setRecordingState(RecordingState.COMPLETE)
 				}}
-			>
-				<Icon
-					name='paper-plane-outline'
-					width={20 * scaleSize}
-					height={20 * scaleSize}
-					fill={colors['reverted-main-text']}
-				/>
-			</TouchableOpacity>
+			/>
 		</View>
 	)
 }

@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import { check, checkNotifications, PERMISSIONS, RESULTS } from 'react-native-permissions'
+import { check, checkNotifications, PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
 export const checkPermissions = async (
 	permissionType: 'p2p' | 'audio' | 'notification' | 'camera',
@@ -26,9 +26,18 @@ export const checkPermissions = async (
 				: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
 		)
 	} else if (permissionType === 'camera') {
-		status = await check(
-			Platform.OS === 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA,
-		)
+		try {
+			status = await check(
+				Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
+			)
+			if (status !== RESULTS.GRANTED) {
+				status = await request(
+					Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
+				)
+			}
+		} catch (err) {
+			console.log(err)
+		}
 	} else if (permissionType === 'audio') {
 		status = await check(
 			Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,

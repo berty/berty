@@ -7,7 +7,7 @@ import { useNavigation } from '@berty-tech/navigation'
 import { getSource } from './utils'
 
 const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<ImageProps, 'source'>> =
-	props => {
+	React.memo(props => {
 		const { navigate } = useNavigation()
 		const { protocolClient, medias } = useMessengerContext()
 		const [source, setSource] = useState('')
@@ -50,6 +50,6 @@ const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<Imag
 				<Image source={{ uri: source }} {...imageProps} />
 			</TouchableOpacity>
 		)
-	}
+	})
 
 export default AttachmentImage

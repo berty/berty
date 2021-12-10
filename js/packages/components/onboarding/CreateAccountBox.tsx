@@ -49,7 +49,7 @@ export const CreateAccountBox: React.FC<{
 	}, [ctx, name, handlePersistentOptions])
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View>
 			{!isPressed ? (
 				<SwiperCard
 					title={t('onboarding.create-account.title')}

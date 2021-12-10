@@ -30,18 +30,33 @@ export const Message: React.FC<{
 	nextMessage?: ParsedInteraction
 	replyOf?: ParsedInteraction
 	scrollToCid: (cid: string) => void
-}> = ({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
-	const ctx = useMessengerContext()
-	const [{ text, padding }] = useStyles()
-	const colors = useThemeColor()
-	if (!inte) {
-		return null
-	}
-	const sentDate = pbDateToNum(inte?.sentDate)
+}> = React.memo(
+	({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
+		const ctx = useMessengerContext()
+		const [{ text, padding }] = useStyles()
+		const colors = useThemeColor()
 
-	if (inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
-		return (
-			<>
+		const sentDate = pbDateToNum(inte?.sentDate)
+
+		const textColor = colors['secondary-text']
+		const textStyle = React.useMemo(
+			() => [
+				inte?.isMine ? text.align.right : text.align.left,
+				text.size.scale(11),
+				text.bold.small,
+				{ color: textColor },
+			],
+			[text.size, inte?.isMine, text.align.right, text.align.left, text.bold.small, textColor],
+		)
+
+		const viewStyle = React.useMemo(() => [padding.horizontal.medium], [padding.horizontal.medium])
+
+		if (!inte) {
+			return null
+		}
+
+		if (inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
+			return (
 				<UserMessage
 					inte={inte}
 					members={members}
@@ -52,35 +67,26 @@ export const Message: React.FC<{
 					replyOf={replyOf}
 					scrollToCid={scrollToCid}
 				/>
-			</>
-		)
-	} else if (
-		inte.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation &&
-		convKind === beapi.messenger.Conversation.Type.ContactType
-	) {
-		return (
-			<>
-				<View style={[padding.horizontal.medium]}>
-					<Text
-						style={[
-							inte.isMine ? text.align.right : text.align.left,
-							text.size.scale(11),
-							text.bold.small,
-							{ color: colors['secondary-text'] },
-						]}
-					>
-						{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}
-					</Text>
-				</View>
-				<MessageInvitation message={inte} />
-			</>
-		)
-	} else if (
-		inte.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata &&
-		ctx?.persistentOptions[PersistentOptionsKeys.Debug].enable
-	) {
-		return <MessageMonitorMetadata inte={inte} />
-	} else {
-		return null
-	}
-}
+			)
+		} else if (
+			inte.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation &&
+			convKind === beapi.messenger.Conversation.Type.ContactType
+		) {
+			return (
+				<>
+					<View style={viewStyle}>
+						<Text style={textStyle}>{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}</Text>
+					</View>
+					<MessageInvitation message={inte} />
+				</>
+			)
+		} else if (
+			inte.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata &&
+			ctx?.persistentOptions[PersistentOptionsKeys.Debug].enable
+		) {
+			return <MessageMonitorMetadata inte={inte} />
+		} else {
+			return null
+		}
+	},
+)

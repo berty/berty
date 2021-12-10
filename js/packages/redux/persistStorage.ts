@@ -1,10 +1,6 @@
 import { Buffer } from 'buffer'
 
-import beapi from '@berty-tech/api'
-import { Service } from '@berty-tech/grpc-bridge'
-import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
-
-const accountService = Service(beapi.account.AccountService, rpcBridge, null)
+import { accountService } from '@berty-tech/store/accountService'
 
 const setItem = async (key: string, value: string) => {
 	await accountService.appStoragePut({ key, value: Buffer.from(value, 'utf-8') })

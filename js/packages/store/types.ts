@@ -61,7 +61,6 @@ export type MessengerState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 
 	persistentOptions: PersistentOptions
-	convsTextInputValue: { [key: string]: string }
 	accounts: beapi.account.IAccountMetadata[]
 	initialListComplete: boolean
 	clearClients: (() => Promise<void>) | null
@@ -301,7 +300,6 @@ export enum MessengerActions {
 	BridgeClosed = 'BRIDGE_CLOSED',
 	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
 	RemoveNotificationInhibitor = 'REMOVE_NOTIFICATION_INHIBITOR',
-	SetConvsTextInputValue = 'SET_CONVS_TEXT_INPUT_VALUE',
 }
 
 export declare type reducerAction = {
