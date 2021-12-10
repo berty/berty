@@ -23,42 +23,44 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const { goBack } = useNavigation()
 
 	return (
-		<SwiperCard
-			header={t('onboarding.services-auth.header')}
-			title={t('onboarding.services-auth.title')}
-			button={
-				accountServices.length > 0
-					? undefined
-					: {
-							text: t('onboarding.services-auth.button'),
-							onPress: async () => {
-								try {
-									await servicesAuthViaDefault(ctx)
-									await ctx.setPersistentOption({
-										type: PersistentOptionsKeys.Configurations,
-										payload: {
-											...ctx.persistentOptions.configurations,
-											replicate: {
-												...ctx.persistentOptions.configurations.replicate,
-												state: 'added',
+		<View style={{ flex: 1 }}>
+			<SwiperCard
+				header={t('onboarding.services-auth.header')}
+				title={t('onboarding.services-auth.title')}
+				button={
+					accountServices.length > 0
+						? undefined
+						: {
+								text: t('onboarding.services-auth.button'),
+								onPress: async () => {
+									try {
+										await servicesAuthViaDefault(ctx)
+										await ctx.setPersistentOption({
+											type: PersistentOptionsKeys.Configurations,
+											payload: {
+												...ctx.persistentOptions.configurations,
+												replicate: {
+													...ctx.persistentOptions.configurations.replicate,
+													state: 'added',
+												},
 											},
-										},
-									})
-									await setCheckListItemDone(ctx, 'relay')
-									goBack()
-								} catch (e) {
-									console.log(e)
-								}
-							},
-					  }
-			}
-			skip={{
-				text: t('onboarding.services-auth.skip'),
-				onPress: async () => {
-					await next()
-				},
-			}}
-		/>
+										})
+										await setCheckListItemDone(ctx, 'relay')
+										goBack()
+									} catch (e) {
+										console.log(e)
+									}
+								},
+						  }
+				}
+				skip={{
+					text: t('onboarding.services-auth.skip'),
+					onPress: async () => {
+						await next()
+					},
+				}}
+			/>
+		</View>
 	)
 }
 
