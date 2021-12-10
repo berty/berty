@@ -11,6 +11,8 @@ import { Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { persistor } from '@berty-tech/redux/store'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { accountService, storageGet, storageRemove } from './accountService'
 import { defaultPersistentOptions, defaultThemeColor } from './context'
@@ -29,7 +31,6 @@ import {
 	StreamInProgress,
 } from './types'
 import { storageKeyForAccount } from './utils'
-import { persistor } from '@berty-tech/redux/store'
 
 const { PushTokenRequester } = NativeModules
 
@@ -44,7 +45,7 @@ export const openAccountWithProgress = async (
 			accountId: selectedAccount?.toString(),
 		})
 		.then(async stream => {
-			stream.onMessage((msg, _) => {
+			stream.onMessage(msg => {
 				if (msg?.progress?.state !== 'done') {
 					const progress = msg?.progress
 					if (progress) {
@@ -61,6 +62,7 @@ export const openAccountWithProgress = async (
 					dispatch({
 						type: MessengerActions.SetStateStreamDone,
 					})
+					persistor.persist()
 				}
 				return
 			})
@@ -115,7 +117,11 @@ export const initBridge = async () => {
 		await GoBridge.initBridge()
 		console.log('bridge init done')
 	} catch (err: any) {
-		console.error('unable to init bridge: ', err)
+		if (err?.message?.indexOf('already started') === -1) {
+			console.error('unable to init bridge: ', err)
+		} else {
+			console.log('bridge already started: ', err)
+		}
 	}
 }
 
@@ -165,7 +171,6 @@ export const openingLocalSettings = async (
 	}
 
 	try {
-		persistor.persist()
 		await getPersistentOptions(dispatch, selectedAccount)
 		dispatch({ type: MessengerActions.SetStateOpeningMarkConversationsClosed })
 	} catch (e) {
@@ -444,6 +449,7 @@ export const closingDaemon = (
 	appState: MessengerAppState,
 	clearClients: (() => Promise<void>) | null,
 	dispatch: (arg0: reducerAction) => void,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (
 		appState !== MessengerAppState.ClosingDaemon &&
@@ -457,7 +463,7 @@ export const closingDaemon = (
 				if (clearClients) {
 					await clearClients()
 				}
-				await closeAccountWithProgress(dispatch)
+				await closeAccountWithProgress(dispatch, reduxDispatch)
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}

@@ -12,10 +12,8 @@ import (
 )
 
 func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorageGet_Request) (reply *accounttypes.AppStorageGet_Reply, outErr error) {
-	global := false
-
 	var storage datastore.Datastore
-	if global {
+	if req.GetGlobal() {
 		if s.appStorage == nil {
 			return nil, errcode.ErrAppStorageNotSupported
 		}
@@ -30,8 +28,16 @@ func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorag
 			return nil, errcode.ErrBertyAccountDataNotFound
 		}
 
+		var storageKey []byte
+		if s.nativeKeystore != nil {
+			var err error
+			if storageKey, err = accountutils.GetOrCreateStorageKeyForAccount(s.nativeKeystore, accountID); err != nil {
+				return nil, err
+			}
+		}
+
 		var err error
-		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, s.storageKey); err != nil {
+		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, storageKey); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
@@ -46,10 +52,8 @@ func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorag
 }
 
 func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStoragePut_Request) (reply *accounttypes.AppStoragePut_Reply, outErr error) {
-	global := false
-
 	var storage datastore.Datastore
-	if global {
+	if req.GetGlobal() {
 		if s.appStorage == nil {
 			return nil, errcode.ErrAppStorageNotSupported
 		}
@@ -64,8 +68,16 @@ func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStorag
 			return nil, errcode.ErrBertyAccountDataNotFound
 		}
 
+		var storageKey []byte
+		if s.nativeKeystore != nil {
+			var err error
+			if storageKey, err = accountutils.GetOrCreateStorageKeyForAccount(s.nativeKeystore, accountID); err != nil {
+				return nil, err
+			}
+		}
+
 		var err error
-		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, s.storageKey); err != nil {
+		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, storageKey); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
@@ -80,10 +92,8 @@ func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStorag
 }
 
 func (s *service) AppStorageRemove(ctx context.Context, req *accounttypes.AppStorageRemove_Request) (reply *accounttypes.AppStorageRemove_Reply, outErr error) {
-	global := false
-
 	var storage datastore.Datastore
-	if global {
+	if req.GetGlobal() {
 		if s.appStorage == nil {
 			return nil, errcode.ErrAppStorageNotSupported
 		}
@@ -98,8 +108,16 @@ func (s *service) AppStorageRemove(ctx context.Context, req *accounttypes.AppSto
 			return nil, errcode.ErrBertyAccountDataNotFound
 		}
 
+		var storageKey []byte
+		if s.nativeKeystore != nil {
+			var err error
+			if storageKey, err = accountutils.GetOrCreateStorageKeyForAccount(s.nativeKeystore, accountID); err != nil {
+				return nil, err
+			}
+		}
+
 		var err error
-		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, s.storageKey); err != nil {
+		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, storageKey); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()

@@ -1,12 +1,5 @@
-import React, { ComponentProps, useCallback, useMemo, useState } from 'react'
-import {
-	ActivityIndicator,
-	ScrollView,
-	StatusBar,
-	Text as TextNative,
-	TouchableOpacity,
-	View,
-} from 'react-native'
+import React, { ComponentProps, useState } from 'react'
+import { ActivityIndicator, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
@@ -17,8 +10,6 @@ import {
 	useAccount,
 	useMessengerContext,
 	useThemeColor,
-	CheckListItem,
-	CheckListProfileNotification,
 	PersistentOptionsKeys,
 } from '@berty-tech/store'
 import i18n from '@berty-tech/berty-i18n'
@@ -29,8 +20,7 @@ import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { AccountAvatar } from '../avatars'
 import { EditProfile } from './EditProfile'
 import logo from '../main/1_berty_picto.png'
-import { UnreadCount } from '../main/home/UnreadCount'
-import { readProfileNotification } from '../helpers'
+import { WelcomeChecklist } from './WelcomeChecklist'
 
 const _verticalOffset = 30
 
@@ -134,252 +124,6 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 					</View>
 				</View>
 			</TouchableOpacity>
-		</View>
-	)
-}
-
-const TaskItem: React.FC<{ value: CheckListItem }> = ({ value }) => {
-	const colors = useThemeColor()
-	const [{ text, margin, padding }, { scaleSize }] = useStyles()
-	const { t }: any = useTranslation()
-	const [itemCollapsed, setItemCollapsed] = useState<boolean>(true)
-
-	return (
-		<View
-			style={[
-				padding.top.tiny,
-				{
-					flexDirection: 'row',
-					alignItems: 'flex-start',
-					justifyContent: 'space-between',
-				},
-			]}
-		>
-			<View style={{ flexDirection: 'row', alignItems: 'flex-start', flex: 10 }}>
-				{value?.done ? (
-					<Icon
-						name='checkmark-circle-2'
-						fill={colors['background-header']}
-						width={25 * scaleSize}
-						height={25 * scaleSize}
-					/>
-				) : (
-					<View
-						style={{
-							width: 21 * scaleSize,
-							height: 21 * scaleSize,
-							borderRadius: 21 * scaleSize,
-							borderWidth: 2,
-							borderColor: colors['background-header'],
-							margin: 2 * scaleSize,
-						}}
-					/>
-				)}
-				<View style={{ flexDirection: 'column' }}>
-					<TextNative
-						style={[
-							text.size.medium,
-							margin.left.small,
-							{ fontFamily: 'Open Sans', color: colors['main-text'] },
-						]}
-					>
-						{t(value.title)}
-					</TextNative>
-					{!itemCollapsed ? (
-						<TextNative
-							style={[
-								text.size.scale(13),
-								margin.left.big,
-								margin.vertical.small,
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
-							]}
-						>
-							{t(value.desc)}
-						</TextNative>
-					) : null}
-				</View>
-			</View>
-			<TouchableOpacity
-				style={[{ alignItems: 'center', flex: 1 }]}
-				onPress={() => setItemCollapsed(!itemCollapsed)}
-			>
-				<Icon
-					name={itemCollapsed ? 'arrow-ios-downward' : 'arrow-ios-upward'}
-					fill={colors['main-text']}
-					height={20 * scaleSize}
-					width={20 * scaleSize}
-				/>
-			</TouchableOpacity>
-		</View>
-	)
-}
-
-const CheckItems: React.FC<{
-	openModal: () => void
-	navigation: ComponentProps<typeof Home>['navigation']
-}> = ({ openModal, navigation: { navigate } }) => {
-	const ctx = useMessengerContext()
-
-	const tasks = useMemo(
-		() => Object.entries(ctx.persistentOptions[PersistentOptionsKeys.CheckList].items),
-		[ctx.persistentOptions],
-	)
-
-	const handleCheckListItemPress = useCallback(
-		(key: string, value: CheckListItem) => {
-			switch (key) {
-				case 'avatar':
-					if (!value.done) {
-						openModal()
-					}
-					return
-				case 'relay':
-					if (!value.done) {
-						navigate('Settings.ReplicationServices')
-					}
-					return
-				case 'contact':
-					if (!value.done) {
-						navigate('Main.Scan')
-					}
-					return
-				case 'group':
-					if (!value.done) {
-						navigate('Main.CreateGroupAddMembers')
-					}
-					return
-				case 'hidden-account':
-					return
-				case 'theme':
-					if (!value.done) {
-						navigate('Settings.ThemeEditor')
-					}
-					return
-				case 'message':
-					return
-				case 'message-ble':
-					return
-				default:
-					return
-			}
-		},
-		[openModal, navigate],
-	)
-	return (
-		<View>
-			{!ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed
-				? tasks.map((value, key) => {
-						const _value = value[1]
-						return typeof _value === 'boolean' ? null : (
-							<TouchableOpacity
-								key={key}
-								onPress={() => handleCheckListItemPress(value[0], _value)}
-							>
-								<TaskItem value={_value} />
-							</TouchableOpacity>
-						)
-				  })
-				: null}
-		</View>
-	)
-}
-
-const CheckList: React.FC<{
-	openModal: () => void
-	navigation: ComponentProps<typeof Home>['navigation']
-}> = ({ openModal, navigation }) => {
-	const colors = useThemeColor()
-	const [{ text, padding, margin, border }, { scaleSize }] = useStyles()
-	const ctx = useMessengerContext()
-	const { t }: any = useTranslation()
-
-	const tasks = useMemo(
-		() => Object.entries(ctx.persistentOptions[PersistentOptionsKeys.CheckList]),
-		[ctx.persistentOptions],
-	)
-	const tasksDone = useMemo(
-		() => tasks.filter(value => typeof value[1] !== 'boolean' && value[1].done).length,
-		[tasks],
-	)
-	const notifs = useMemo(
-		() =>
-			ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification][
-				CheckListProfileNotification
-			],
-		[ctx.persistentOptions],
-	)
-
-	return (
-		<View
-			style={[
-				margin.horizontal.medium,
-				margin.top.medium,
-				padding.medium,
-				border.radius.medium,
-				{ backgroundColor: colors['main-background'], flex: 1 },
-			]}
-		>
-			<View>
-				<View
-					style={[
-						!ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed &&
-							margin.bottom.small,
-						{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' },
-					]}
-				>
-					<View style={{ flexDirection: 'row', flex: 10 }}>
-						<TextNative
-							style={[
-								text.size.scale(16),
-								text.bold.medium,
-								margin.right.scale(5),
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
-							]}
-						>
-							{t('settings.home.check-list.title', { tasksDone, totalTasks: tasks.length })}
-						</TextNative>
-						<Icon
-							name='checkmark-circle-2'
-							fill={colors['background-header']}
-							width={20 * scaleSize}
-							height={20 * scaleSize}
-						/>
-					</View>
-
-					<TouchableOpacity
-						style={[{ alignItems: 'center', flex: 1 }]}
-						onPress={async () => {
-							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.CheckList,
-								payload: {
-									...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-									isCollapsed: !ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed,
-								},
-							})
-							await readProfileNotification(ctx, CheckListProfileNotification)
-						}}
-					>
-						<Icon
-							name={
-								ctx.persistentOptions[PersistentOptionsKeys.CheckList].isCollapsed
-									? 'arrow-downward'
-									: 'arrow-upward'
-							}
-							fill={colors['main-text']}
-							height={25 * scaleSize}
-							width={25 * scaleSize}
-						/>
-					</TouchableOpacity>
-					{notifs > 0 ? (
-						<View
-							style={{ position: 'absolute', right: -(22 * scaleSize), top: -(22 * scaleSize) }}
-						>
-							<UnreadCount value={notifs} />
-						</View>
-					) : null}
-				</View>
-			</View>
-			<CheckItems openModal={openModal} navigation={navigation} />
 		</View>
 	)
 }
@@ -541,7 +285,7 @@ export const Home: ScreenFC<'Settings.Home'> = ({ navigation }) => {
 						>
 							<View style={{ bottom: -_verticalOffset }}>
 								<HomeHeaderAvatar navigation={navigation} />
-								<CheckList openModal={() => setOpenModal(true)} navigation={navigation} />
+								<WelcomeChecklist openEditProfile={() => setOpenModal(true)} />
 								<HomeHeaderGroupButton navigation={navigation} />
 							</View>
 						</View>

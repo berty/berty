@@ -2,24 +2,37 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer, PersistorOptions } from 'redux-persist'
 import persistStorage from './persistStorage'
 
-import newGroupReducer from './reducers/newGroup.reducer'
-import chatInputsRootReducer from './reducers/chatInputs.reducer'
+import newGroupReducer, { sliceName as newGroupSliceName } from './reducers/newGroup.reducer'
+import chatInputsRootReducer, {
+	sliceName as chatInputsSliceName,
+} from './reducers/chatInputs.reducer'
+import checklistRootReducer, { sliceName as checklistSliceName } from './reducers/checklist.reducer'
 
 const persistConfig = {
 	key: 'persistStore',
 	storage: persistStorage,
-	whitelist: [], // reducers to persist (strings)
+	whitelist: [newGroupSliceName, chatInputsSliceName, checklistSliceName], // reducers to persist (strings)
 }
 
 const rootReducer = combineReducers({
 	...newGroupReducer,
 	...chatInputsRootReducer,
+	...checklistRootReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
+export const resetAccountStore = () => ({ type: 'RESET' })
+
+const resettableReducer: typeof persistedReducer = (state, action, ...other) => {
+	if (action.type === 'RESET') {
+		return persistedReducer(undefined, action)
+	}
+	return persistedReducer(state, action, ...other)
+}
+
 const store = configureStore({
-	reducer: persistedReducer,
+	reducer: resettableReducer,
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware({
 			serializableCheck: false,

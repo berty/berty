@@ -6,15 +6,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { setCheckListItemDone, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
+import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
+import { selectInvitationListMembers } from '@berty-tech/redux/reducers/newGroup.reducer'
+import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
-import { useSelector } from 'react-redux'
-import { selectInvitationListMembers } from '@berty-tech/redux/reducers/newGroup.reducer'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()
@@ -185,11 +186,12 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 export const CreateGroupFinalize: React.FC = () => {
 	const { goBack, reset } = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	const { call, error, done, reply } = (messengerMethodsHooks as any).useConversationCreate()
-	const members = useSelector(selectInvitationListMembers)
+	const { call, error, done, reply } = messengerMethodsHooks.useConversationCreate()
+	const members = useAppSelector(selectInvitationListMembers)
+	const dispatch = useAppDispatch()
 
 	const createGroup = React.useCallback(
-		() => call({ displayName: groupName, contactsToInvite: members.map(m => m.publicKey) }),
+		() => call({ displayName: groupName, contactsToInvite: members.map(m => m.publicKey) as any }),
 		[groupName, members, call],
 	)
 	const [layout, setLayout] = useState<number>(0)
@@ -202,9 +204,9 @@ export const CreateGroupFinalize: React.FC = () => {
 	React.useEffect(() => {
 		if (done) {
 			if (error) {
-				console.error('Failed to create group:', error)
+				console.warn('Failed to create group:', error)
 			} else if (reply?.publicKey) {
-				setCheckListItemDone(ctx, 'group')
+				dispatch(setChecklistItemDone({ key: 'group' }))
 				reset({
 					index: 0,
 					routes: [
@@ -221,7 +223,7 @@ export const CreateGroupFinalize: React.FC = () => {
 				})
 			}
 		}
-	}, [ctx, done, error, reset, reply])
+	}, [done, error, reset, reply, dispatch])
 	return (
 		<Layout style={[flex.tiny]}>
 			<View style={{ backgroundColor: colors['background-header'] }}>

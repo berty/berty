@@ -118,12 +118,14 @@ export namespace berty {
                 interface IRequest {
                     key?: (string|null);
                     value?: (Uint8Array|null);
+                    global?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
                     public key: string;
                     public value: Uint8Array;
+                    public global: boolean;
                     public static create(properties?: berty.account.v1.AppStoragePut.IRequest): berty.account.v1.AppStoragePut.Request;
                     public static encode(message: berty.account.v1.AppStoragePut.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.AppStoragePut.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -172,11 +174,13 @@ export namespace berty {
 
                 interface IRequest {
                     key?: (string|null);
+                    global?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
                     public key: string;
+                    public global: boolean;
                     public static create(properties?: berty.account.v1.AppStorageGet.IRequest): berty.account.v1.AppStorageGet.Request;
                     public static encode(message: berty.account.v1.AppStorageGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.AppStorageGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -227,11 +231,13 @@ export namespace berty {
 
                 interface IRequest {
                     key?: (string|null);
+                    global?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
                     public key: string;
+                    public global: boolean;
                     public static create(properties?: berty.account.v1.AppStorageRemove.IRequest): berty.account.v1.AppStorageRemove.Request;
                     public static encode(message: berty.account.v1.AppStorageRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.AppStorageRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

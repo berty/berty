@@ -12,9 +12,10 @@ import {
 	pbDateToNum,
 	Maybe,
 } from '@berty-tech/store'
+import { importAccountFromDocumentPicker } from '@berty-tech/components/pickerUtils'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { GenericAvatar } from '../../avatars'
-import { importAccountFromDocumentPicker } from '@berty-tech/components/pickerUtils'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -79,6 +80,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 	const colors = useThemeColor()
 	const { dispatch } = useMessengerContext()
 	const { t } = useTranslation()
+	const reduxDispatch = useAppDispatch()
 
 	return (
 		<TouchableOpacity
@@ -127,7 +129,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 				<AccountButton
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
-						await closeAccountWithProgress(dispatch)
+						await closeAccountWithProgress(dispatch, reduxDispatch)
 						await dispatch({ type: MessengerActions.SetStateOnBoardingReady })
 					}}
 					avatar={

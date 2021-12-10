@@ -1,5 +1,6 @@
 import beapi from '@berty-tech/api'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { storageKeyForAccount } from './utils'
 import { Maybe } from './hooks'
@@ -16,6 +17,7 @@ export const importAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	path: string,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (!embedded) {
 		return
@@ -25,7 +27,7 @@ export const importAccount = async (
 	let resp: beapi.account.ImportAccountWithProgress.Reply | null
 
 	try {
-		await closeAccountWithProgress(dispatch)
+		await closeAccountWithProgress(dispatch, reduxDispatch)
 		resp = await importAccountWithProgress(path, dispatch)
 	} catch (e) {
 		console.warn('unable to import account', e)
@@ -83,13 +85,14 @@ export const switchAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	accountID: string,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (!embedded) {
 		return
 	}
 
 	try {
-		await closeAccountWithProgress(dispatch)
+		await closeAccountWithProgress(dispatch, reduxDispatch)
 	} catch (e) {
 		console.warn('unable to close account', e)
 		return
@@ -101,12 +104,13 @@ export const deleteAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	selectedAccount: string | null,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (!embedded) {
 		return
 	}
 	// close current account service
-	await closeAccountWithProgress(dispatch)
+	await closeAccountWithProgress(dispatch, reduxDispatch)
 	let accounts: beapi.account.IAccountMetadata[] = []
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
@@ -143,13 +147,14 @@ export const restart = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	accountID: Maybe<string>,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (!embedded) {
 		return
 	}
 
 	try {
-		await closeAccountWithProgress(dispatch)
+		await closeAccountWithProgress(dispatch, reduxDispatch)
 	} catch (e) {
 		console.warn('unable to close account')
 		return

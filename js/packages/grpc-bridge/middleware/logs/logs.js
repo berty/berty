@@ -5,6 +5,9 @@ const logRequest = (name, title, req) => {
 	if (req?.block?.length > 42) {
 		req = { ...req, block: req.block.length }
 	}
+	if (title.indexOf('AppStorage') !== -1 && req?.value?.length > 42) {
+		req = { ...req, value: req.value.length }
+	}
 	if (req?.event?.payload?.length > 42) {
 		req = {
 			...req,
@@ -43,6 +46,9 @@ const logResponse = (name, title, res) => {
 			)
 			return
 		}
+	}
+	if (title.indexOf('AppStorage') !== -1 && res?.value?.length > 42) {
+		res = { ...res, value: res.value.length }
 	}
 	if (res?.block?.length > 42) {
 		res = { ...res, block: res.block.length }

@@ -9,7 +9,6 @@ import pinkTheme from '@berty-tech/styles/pinktheme-default.json'
 import darkTheme from '@berty-tech/styles/darktheme-default.json'
 
 import {
-	CheckListProfileNotification,
 	MessengerAppState,
 	MessengerState as MessengerState,
 	PersistentOptions,
@@ -161,45 +160,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.OnBoardingFinished]: {
 			isFinished: false,
 		},
-		[PersistentOptionsKeys.CheckList]: {
-			isCollapsed: false,
-			items: {
-				avatar: {
-					title: 'settings.home.check-list.avatar.title',
-					desc: 'settings.home.check-list.avatar.desc',
-				},
-				relay: {
-					title: 'settings.home.check-list.relay.title',
-					desc: 'settings.home.check-list.relay.desc',
-				},
-				contact: {
-					title: 'settings.home.check-list.contact.title',
-					desc: 'settings.home.check-list.contact.desc',
-				},
-				group: {
-					title: 'settings.home.check-list.group.title',
-					desc: 'settings.home.check-list.group.desc',
-				},
-				message: {
-					title: 'settings.home.check-list.message.title',
-					desc: 'settings.home.check-list.message.desc',
-				},
-				'hidden-account': {
-					title: 'settings.home.check-list.hidden-account.title',
-					desc: 'settings.home.check-list.hidden-account.desc',
-				},
-				theme: {
-					title: 'settings.home.check-list.theme.title',
-					desc: 'settings.home.check-list.theme.desc',
-				},
-				'ble-message': {
-					title: 'settings.home.check-list.ble-message.title',
-					desc: 'settings.home.check-list.ble-message.desc',
-				},
-			},
-		},
 		[PersistentOptionsKeys.ProfileNotification]: {
-			[CheckListProfileNotification]: 1,
 			[UpdatesProfileNotification]: 0,
 		},
 	}
@@ -259,25 +220,3 @@ export const MessengerContext = createContext<MessengerState>(initialState)
 export default MessengerContext
 
 export const useMessengerContext = (): MessengerState => useContext(MessengerContext)
-
-export const isCheckListItemDone = (ctx: MessengerState, key: string): boolean =>
-	!!ctx.persistentOptions[PersistentOptionsKeys.CheckList].items[key].done
-
-export const setCheckListItemDone = async (ctx: MessengerState, key: string): Promise<void> => {
-	if (isCheckListItemDone(ctx, key)) {
-		return
-	}
-	return ctx.setPersistentOption({
-		type: PersistentOptionsKeys.CheckList,
-		payload: {
-			...ctx.persistentOptions[PersistentOptionsKeys.CheckList],
-			items: {
-				...ctx.persistentOptions[PersistentOptionsKeys.CheckList].items,
-				[key]: {
-					...ctx.persistentOptions[PersistentOptionsKeys.CheckList].items[key],
-					done: true,
-				},
-			},
-		},
-	})
-}

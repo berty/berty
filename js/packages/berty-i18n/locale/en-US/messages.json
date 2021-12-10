@@ -183,7 +183,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Check list {{tasksDone}}/{{totalTasks}}",
+				"title": "Welcome Checklist {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Change your avatar",
 					"desc": "Let's setup a profile picture for this account!"

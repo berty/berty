@@ -4,13 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
 
-import {
-	Maybe,
-	setCheckListItemDone,
-	useConversation,
-	useMessengerClient,
-	useMessengerContext,
-} from '@berty-tech/store'
+import { Maybe, useConversation, useMessengerClient, useMessengerContext } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
 	resetChatInput,
@@ -22,6 +16,7 @@ import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
 import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
+import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { useReplyReaction } from '../ReplyReactionContext'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
@@ -84,7 +79,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					dispatch(resetChatInput(convPK))
 					ctx.playSound('messageSent')
 					setActiveReplyInte()
-					await setCheckListItemDone(ctx, 'message')
+					dispatch(setChecklistItemDone({ key: 'message' }))
 				} catch (e) {
 					console.warn('e sending message:', e)
 				}

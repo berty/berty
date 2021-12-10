@@ -118,6 +118,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       value: {
                         type: "bytes",
                         id: 2
+                      },
+                      global: {
+                        type: "bool",
+                        id: 3
                       }
                     }
                   },
@@ -134,6 +138,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       key: {
                         type: "string",
                         id: 1
+                      },
+                      global: {
+                        type: "bool",
+                        id: 2
                       }
                     }
                   },
@@ -155,6 +163,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       key: {
                         type: "string",
                         id: 1
+                      },
+                      global: {
+                        type: "bool",
+                        id: 2
                       }
                     }
                   },

@@ -10,7 +10,6 @@ import {
 	useThemeColor,
 	CurrentGeneratedTheme,
 	PersistentOptionsKeys,
-	setCheckListItemDone,
 	DefaultDarkTheme,
 } from '@berty-tech/store'
 
@@ -177,7 +176,6 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 									isDark: themeName === DefaultDarkTheme,
 								},
 							})
-							setCheckListItemDone(ctx, 'theme')
 							closeModal()
 						}}
 					>

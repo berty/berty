@@ -1,11 +1,16 @@
 import beapi from '@berty-tech/api'
 import rnutil from '@berty-tech/rnutil'
+import { persistor, resetAccountStore } from '@berty-tech/redux/store'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { updateShakeAttachments } from './utils'
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'
 
-export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
+export const closeAccountWithProgress = async (
+	dispatch: (arg0: reducerAction) => void,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
+) => {
 	await accountService
 		.closeAccountWithProgress({})
 		.then(async stream => {
@@ -29,8 +34,11 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 				}
 				return
 			})
+			await persistor.flush()
+			persistor.pause()
 			await stream.start()
 			console.log('node is closed')
+			reduxDispatch(resetAccountStore())
 		})
 		.catch(err => {
 			dispatch({
@@ -145,6 +153,7 @@ export const createAccount = async (
 		resp = await accountService.createAccount({
 			networkConfig: newConfig || { ...netConf, staticRelay: [] },
 		})
+		persistor.persist()
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

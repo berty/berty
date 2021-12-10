@@ -1,7 +1,6 @@
 import moment from 'moment'
 
 import {
-	CheckListProfileNotification,
 	MessengerState,
 	PersistentOptionsKeys,
 	UpdatesProfileNotification,
@@ -89,13 +88,10 @@ export const showNeedRestartNotification = (showNotification: any, ctx: Messenge
 
 export const readProfileNotification = async (
 	ctx: MessengerState,
-	type: typeof CheckListProfileNotification | typeof UpdatesProfileNotification,
+	type: typeof UpdatesProfileNotification,
 ) => {
 	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
-	const numberNotifs =
-		type === CheckListProfileNotification
-			? profileNotifs[CheckListProfileNotification]
-			: profileNotifs[UpdatesProfileNotification]
+	const numberNotifs = profileNotifs[UpdatesProfileNotification]
 	if (numberNotifs === 0) {
 		return
 	}
