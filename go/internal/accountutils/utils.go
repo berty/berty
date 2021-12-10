@@ -209,6 +209,11 @@ func GetDatastoreDir(dir string) (string, error) {
 	return dir, nil
 }
 
+func GetAccountAppStorage(rootDir string, accountID string, key []byte) (datastore.Datastore, error) {
+	dbPath := filepath.Join(GetAccountDir(rootDir, accountID), "app-account.sqlite")
+	return encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", key)
+}
+
 func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datastore.Batching, error) {
 	inMemory := dir == InMemoryDir
 
