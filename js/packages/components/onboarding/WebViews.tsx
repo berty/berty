@@ -2,18 +2,19 @@ import React from 'react'
 import { StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 
-import { ScreenFC } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store'
+import { ScreenFC } from '@berty-tech/navigation'
 
-import { WebViews } from '../shared-components'
+import { WebViews as SharedWebViews } from '../shared-components'
 
-export const Faq: ScreenFC<'Settings.Faq'> = () => {
+export const WebViews: ScreenFC<'Onboarding.WebViews'> = ({ route: { params } }) => {
+	const { url } = params
 	const colors = useThemeColor()
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<StatusBar barStyle='dark-content' />
-			<WebViews url='https://guide.berty.tech/faq' />
+			<SharedWebViews url={url} />
 		</Layout>
 	)
 }

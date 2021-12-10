@@ -10,6 +10,7 @@ export type ScreensParams = {
 	'Onboarding.CreateAccount': undefined
 	'Onboarding.SetupFinished': undefined
 	'Onboarding.ExpertSetup': undefined
+	'Onboarding.WebViews': { url: string }
 
 	// Main
 
