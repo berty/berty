@@ -7,6 +7,7 @@ import { randomizeThemeColor } from '@berty-tech/styles'
 import defaultTheme from '@berty-tech/styles/colors.json'
 import pinkTheme from '@berty-tech/styles/pinktheme-default.json'
 import darkTheme from '@berty-tech/styles/darktheme-default.json'
+import darkLFTheme from '@berty-tech/styles/DarkLF-theme.json'
 
 import {
 	CheckListProfileNotification,
@@ -99,6 +100,7 @@ export const DefaultBertyTheme = 'default-berty-theme'
 export const CurrentGeneratedTheme = 'current-generated'
 export const DefaultPinkTheme = 'pink-theme'
 export const DefaultDarkTheme = 'dark-theme'
+export const DarkLFTheme = 'dark-lf-theme'
 
 export const defaultThemeColor = () => {
 	return {
@@ -108,6 +110,7 @@ export const defaultThemeColor = () => {
 			[CurrentGeneratedTheme]: { colors: randomizeThemeColor() },
 			[DefaultPinkTheme]: { colors: pinkTheme },
 			[DefaultDarkTheme]: { colors: darkTheme },
+			[DarkLFTheme]: { colors: darkLFTheme },
 		},
 		isDark: false,
 	}

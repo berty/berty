@@ -39,7 +39,7 @@ const AccountButton: React.FC<{
 						? colors['secondary-text']
 						: selected
 						? colors['positive-asset']
-						: colors['reverted-main-text'],
+						: colors['main-background'],
 				},
 			]}
 			onPress={onPress}
