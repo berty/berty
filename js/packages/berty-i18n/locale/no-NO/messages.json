@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "Oppsett fullført!",
 			"desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
 			"button": "BEGYNN Å BRUKE BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "Galleri",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
