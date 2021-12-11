@@ -52,7 +52,7 @@
 				"second-paragraph": "We’ll present you every options to allow you to understand what’s happening behind the hood.",
 				"third-paragraph": "You’ll also find ressources link to hack it. This section is for experts only!"
 			},
-			"read-more": "Read more about expert mode",
+			"read-more": "",
 			"config-title": "Custom configs",
 			"config-desc": "3 steps of app configuration. Customize everything now!",
 			"learn-more": "Learn more",
@@ -98,10 +98,10 @@
 			"button": "START USING BERTY"
 		},
 		"web-views": {
-			"title": "WebViews",
-			"desc": "We are getting ready to load webviews on the network. Do you still want to open it ?",
-			"first-button": "Cancel",
-			"second-button": "Yes"
+			"title": "",
+			"desc": "",
+			"first-button": "",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -556,7 +556,7 @@
 		},
 		"files": {
 			"gallery": "Gallery",
-			"no-images": "No images",
+			"no-images": "",
 			"camera": "Camera",
 			"files": "Files",
 			"microphone": "Microphone",
