@@ -52,6 +52,7 @@
 				"second-paragraph": "Vi kommer att presentera alla alternativ för att låta dig förstå vad som händer bakom huven.",
 				"third-paragraph": "Du hittar också resurslänkar för att hacka den. Detta avsnitt är endast för experter!"
 			},
+			"read-more": "",
 			"config-title": "Anpassade konfigurationer",
 			"config-desc": "3 steg i appkonfigurationen. Anpassa allt nu!",
 			"learn-more": "Läs mer",
@@ -95,6 +96,12 @@
 			"title": "Genomgång slutförd!",
 			"desc": "Du kan nu använda appen, börja lägga till kontakter och prata fritt med dem utan övervakning",
 			"button": "BÖRJA ANVÄNDA BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "Galleri",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
