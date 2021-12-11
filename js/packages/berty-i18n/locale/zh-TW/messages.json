@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "設置完成！",
 			"desc": "您現在可以使用該應用，開始添加聯繫人以及與他們自由私下聊天",
 			"button": "開始使用 Berty"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "取消",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "相冊",
+			"no-images": "",
 			"camera": "攝像頭",
 			"files": "文件",
 			"microphone": "麥克風",
