@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "Настройка завершена!",
 			"desc": "Теперь вы можете использовать приложение, начните добавлять контакты и общайтесь с ними свободно и приватно",
 			"button": "НАЧАТЬ ИСПОЛЬЗОВАТЬ BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Отменить",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "Галерея",
+			"no-images": "",
 			"camera": "Камера",
 			"files": "Файлы",
 			"microphone": "Микрофон",
