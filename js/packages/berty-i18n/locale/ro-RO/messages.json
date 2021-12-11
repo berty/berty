@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "Configurare finalizată!",
 			"desc": "",
 			"button": "ÎNCEPE SĂ UTILIZEZI BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Anulează",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "",
 			"files": "",
 			"microphone": "",
