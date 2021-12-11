@@ -52,6 +52,7 @@
 				"second-paragraph": "Nous vous présenterons toutes les options pour vous permettre de comprendre ce qui se passe sous le capot.",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "Configurations personnalisées",
 			"config-desc": "",
 			"learn-more": "En savoir plus",
@@ -95,6 +96,12 @@
 			"title": "Configuration terminée !",
 			"desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
 			"button": "LANCER BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Annuler",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,7 +556,7 @@
 		},
 		"files": {
 			"gallery": "Galerie",
-			"no-images": "Pas d'images",
+			"no-images": "",
 			"camera": "Caméra",
 			"files": "Fichiers",
 			"microphone": "Microphone",
