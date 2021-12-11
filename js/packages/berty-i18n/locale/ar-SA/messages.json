@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "تم الإعداد!",
 			"desc": "يمكنك الآن استخدام التطبيق، بدء إضافة جهات الاتصال والتحدث معهم بحرية وبشكل خاص",
 			"button": "ابدأ استخدام البيرتي"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "الكاميرا",
 			"files": "الملفات",
 			"microphone": "الميكروفون",
