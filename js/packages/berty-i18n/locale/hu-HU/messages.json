@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "A beállítás befejeződött!",
 			"desc": "Mostantól használhatja az alkalmazást, elkezdheti hozzáadni a névjegyeket, majd szabadon és privát módon beszélgethet velük",
 			"button": "BERTY HASZNÁLATÁNAK KEZDÉSE"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Mégse",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "Galéria",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Fájlok",
 			"microphone": "Mikrofon",
