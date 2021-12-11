@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "Η εγκατάσταση ολοκληρώθηκε!",
 			"desc": "Τώρα μπορείτε να χρησιμοποιήσετε την εφαρμογή, να αρχίσετε να προσθέτετε επαφές και να μιλάτε ελεύθερα και ιδιωτικά μαζί τους",
 			"button": "ΕΝΑΡΞΗ ΧΡΗΣΗΣ ΤΟΥ BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Άκυρο",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "",
 			"files": "",
 			"microphone": "",
