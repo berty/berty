@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "Configuração finalizada!",
 			"desc": "A app está pronta a ser usada, adicione contactos e converse livremente e em privado com eles",
 			"button": "COMECE A USAR O BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Cancelar",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "",
 			"files": "",
 			"microphone": "",
