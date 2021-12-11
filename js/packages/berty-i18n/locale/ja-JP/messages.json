@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "セットアップが完了しました!",
 			"desc": "",
 			"button": "Bertyを使用開始"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "キャンセル",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "カメラ",
 			"files": "ファイル",
 			"microphone": "マイク",
