@@ -52,6 +52,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -95,6 +96,12 @@
 			"title": "Kurulum bitti!",
 			"desc": "Artık uygulamayı kullanabilir, kişi eklemeye başlayabilir ve onlarla özgürce ve özel olarak konuşabilirsiniz",
 			"button": "BERTY KULLANMAYA BAŞLA"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "İptal",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -549,6 +556,7 @@
 		},
 		"files": {
 			"gallery": "Galeri",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Dosyalar",
 			"microphone": "Mikrofon",
