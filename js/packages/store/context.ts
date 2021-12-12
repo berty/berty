@@ -1,6 +1,5 @@
 import { createContext, useContext } from 'react'
 import { Platform } from 'react-native'
-import i18next from '@berty-tech/berty-i18n'
 
 import { globals } from '@berty-tech/config'
 import { randomizeThemeColor } from '@berty-tech/styles'
@@ -136,9 +135,6 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		}
 	})
 	return {
-		[PersistentOptionsKeys.I18N]: {
-			language: i18next.language || 'en-US',
-		},
 		[PersistentOptionsKeys.Notifications]: {
 			enable: true,
 		},

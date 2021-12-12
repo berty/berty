@@ -100,7 +100,6 @@ export type MessengerState = {
 }
 
 export enum PersistentOptionsKeys {
-	I18N = 'i18n',
 	Notifications = 'notifications',
 	Suggestions = 'suggestions',
 	Debug = 'debug',
@@ -117,10 +116,6 @@ export enum GlobalPersistentOptionsKeys {
 	TyberHost = 'global-storage_tyber-host',
 	DisplayName = 'displayName',
 	IsNewAccount = 'isNewAccount',
-}
-
-export type PersistentOptionsI18N = {
-	language: string
 }
 
 export type PersistentOptionsNotifications = {
@@ -206,10 +201,6 @@ export type PersistentOptionsProfileNotification = {
 
 export type PersistentOptionsUpdate =
 	| {
-			type: typeof PersistentOptionsKeys.I18N
-			payload: Partial<PersistentOptionsI18N>
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.Notifications
 			payload: Partial<PersistentOptionsNotifications>
 	  }
@@ -251,7 +242,6 @@ export type PersistentOptionsUpdate =
 	  }
 
 export type PersistentOptions = {
-	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
 	[PersistentOptionsKeys.Suggestions]: PersistentOptionsSuggestions
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug

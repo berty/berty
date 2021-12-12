@@ -5,7 +5,7 @@ import { NativeModules, Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
 import beapi from '@berty-tech/api'
-import i18n from '@berty-tech/berty-i18n'
+import i18n, { osLanguage } from '@berty-tech/berty-i18n'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
@@ -376,11 +376,9 @@ export const openingClients = async (
 // handle state OpeningMarkConversationsAsClosed
 export const openingCloseConvos = async (
 	appState: MessengerAppState,
-	language: string,
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined },
 	persistentOptions: PersistentOptions,
-	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
 	if (appState !== MessengerAppState.OpeningMarkConversationsAsClosed) {
@@ -400,10 +398,10 @@ export const openingCloseConvos = async (
 	persistentOptions.onBoardingFinished.isFinished
 		? dispatch({ type: MessengerActions.SetStateReady })
 		: dispatch({ type: MessengerActions.SetStatePreReady })
+}
 
-	if (language) {
-		await i18n.changeLanguage(language)
-	}
+export const syncAccountLanguage = async (accountLanguage: string | undefined) => {
+	await i18n.changeLanguage(accountLanguage || osLanguage)
 }
 
 // handle state PreReady
