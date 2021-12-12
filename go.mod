@@ -5,7 +5,7 @@ go 1.16
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
 	berty.tech/go-ipfs-log v1.5.0
-	berty.tech/go-ipfs-repo-encrypted v1.0.9
+	berty.tech/go-ipfs-repo-encrypted v1.0.11
 	berty.tech/go-libp2p-tor-transport v0.8.4
 	berty.tech/go-orbit-db v1.13.2
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
