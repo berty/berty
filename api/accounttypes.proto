@@ -83,6 +83,7 @@ message AppStoragePut {
   message Request {
     string key = 1;
     bytes value = 2;
+    bool global = 3;
   }
   message Reply {}
 }
@@ -90,6 +91,7 @@ message AppStoragePut {
 message AppStorageGet {
   message Request {
     string key = 1;
+    bool global = 2;
   }
   message Reply {
     bytes value = 2;
@@ -99,6 +101,7 @@ message AppStorageGet {
 message AppStorageRemove {
   message Request {
     string key = 1;
+    bool global = 2;
   }
   message Reply {}
 }

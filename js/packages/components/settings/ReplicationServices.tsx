@@ -10,8 +10,9 @@ import {
 	useMessengerContext,
 	useNotificationsInhibitor,
 	useThemeColor,
-	setCheckListItemDone,
 } from '@berty-tech/store'
+import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import SwiperCard from '../onboarding/SwiperCard'
 import OnboardingWrapper from '../onboarding/OnboardingWrapper'
@@ -21,6 +22,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const accountServices = useAccountServices() || []
 	const { t }: any = useTranslation()
 	const { goBack } = useNavigation()
+	const dispatch = useAppDispatch()
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -45,7 +47,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 												},
 											},
 										})
-										await setCheckListItemDone(ctx, 'relay')
+										dispatch(setChecklistItemDone({ key: 'relay' }))
 										goBack()
 									} catch (e) {
 										console.log(e)

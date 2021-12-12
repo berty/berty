@@ -361,6 +361,7 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
 		NativeKeystore:       s.nativeKeystore,
+		AccountID:            s.accountData.AccountID,
 	})
 	if err != nil {
 		panic(err)
@@ -400,7 +401,7 @@ func (s *service) ListAccounts(_ context.Context, _ *accounttypes.ListAccounts_R
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	accounts, err := accountutils.ListAccounts(s.rootdir, s.storageKey, s.logger)
+	accounts, err := accountutils.ListAccounts(s.rootdir, s.nativeKeystore, s.logger)
 	if err != nil {
 		return nil, err
 	}
@@ -411,7 +412,14 @@ func (s *service) ListAccounts(_ context.Context, _ *accounttypes.ListAccounts_R
 }
 
 func (s *service) getAccountMetaForName(accountID string) (*accounttypes.AccountMetadata, error) {
-	return accountutils.GetAccountMetaForName(s.rootdir, accountID, s.storageKey, s.logger)
+	var storageKey []byte
+	if s.nativeKeystore != nil {
+		var err error
+		if storageKey, err = accountutils.GetOrCreateStorageKeyForAccount(s.nativeKeystore, accountID); err != nil {
+			return nil, err
+		}
+	}
+	return accountutils.GetAccountMetaForName(s.rootdir, accountID, storageKey, s.logger)
 }
 
 func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.DeleteAccount_Request) (_ *accounttypes.DeleteAccount_Reply, err error) {
@@ -445,7 +453,15 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 }
 
 func (s *service) putInAccountDatastore(accountID string, key string, value []byte) error {
-	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), s.storageKey, s.logger)
+	var storageKey []byte
+	if s.nativeKeystore != nil {
+		var err error
+		if storageKey, err = accountutils.GetOrCreateStorageKeyForAccount(s.nativeKeystore, accountID); err != nil {
+			return err
+		}
+	}
+
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, s.logger)
 	if err != nil {
 		return err
 	}
@@ -844,7 +860,16 @@ func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 }
 
 func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.NetworkConfig, bool) {
-	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), s.storageKey, s.logger)
+	var storageKey []byte
+	if s.nativeKeystore != nil {
+		var err error
+		if storageKey, err = accountutils.GetOrCreateStorageKeyForAccount(s.nativeKeystore, accountID); err != nil {
+			s.logger.Warn("unable to read network configuration for account: failed to get account storage key", zap.Error(err), logutil.PrivateString("account-id", accountID))
+			return NetworkConfigGetDefault(), false
+		}
+	}
+
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, s.logger)
 	if err != nil {
 		s.logger.Warn("unable to read network configuration for account: failed to get root datastore", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false
@@ -1140,7 +1165,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 	}
 
 	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.rootdir, payload, &bertypush.PushDecryptOpts{
-		Logger: s.logger, ExcludedAccounts: excludedAccounts, StorageKey: s.storageKey,
+		Logger: s.logger, ExcludedAccounts: excludedAccounts, Keystore: s.nativeKeystore,
 	})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)

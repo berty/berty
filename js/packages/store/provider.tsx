@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
 import beapi from '@berty-tech/api'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { MessengerContext, initialState } from './context'
 import {
@@ -27,7 +28,7 @@ import {
 import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
-import { PersistentOptionsKeys, SoundKey } from './types'
+import { MessengerAppState, PersistentOptionsKeys, SoundKey } from './types'
 import { accountService } from './accountService'
 
 export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
@@ -42,7 +43,7 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 	const [handledLink, setHandledLink] = useState<boolean>(false)
 
 	useEffect(() => {
-		console.log('State change:', state.appState + '\n')
+		console.log('State change:', MessengerAppState[state.appState] + '\n')
 	}, [state.appState])
 
 	useEffect(() => {
@@ -105,9 +106,11 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 		dispatch,
 	])
 
+	const reduxDispatch = useAppDispatch()
+
 	useEffect(
-		() => closingDaemon(state.appState, state.clearClients, dispatch),
-		[state.clearClients, state.appState],
+		() => closingDaemon(state.appState, state.clearClients, dispatch, reduxDispatch),
+		[state.clearClients, state.appState, reduxDispatch],
 	)
 
 	useEffect(
@@ -116,23 +119,23 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 	)
 
 	const callbackImportAccount = useCallback(
-		(path: string) => importAccount(embedded, dispatch, path),
-		[embedded],
+		(path: string) => importAccount(embedded, dispatch, path, reduxDispatch),
+		[embedded, reduxDispatch],
 	)
 
 	const callbackRestart = useCallback(
-		() => restart(embedded, dispatch, state.selectedAccount),
-		[state.selectedAccount, embedded],
+		() => restart(embedded, dispatch, state.selectedAccount, reduxDispatch),
+		[state.selectedAccount, embedded, reduxDispatch],
 	)
 
 	const callbackDeleteAccount = useCallback(
-		() => deleteAccount(embedded, dispatch, state.selectedAccount),
-		[embedded, state.selectedAccount],
+		() => deleteAccount(embedded, dispatch, state.selectedAccount, reduxDispatch),
+		[embedded, state.selectedAccount, reduxDispatch],
 	)
 
 	const callbackSwitchAccount = useCallback(
-		(account: string) => switchAccount(embedded, dispatch, account),
-		[embedded],
+		(account: string) => switchAccount(embedded, dispatch, account, reduxDispatch),
+		[embedded, reduxDispatch],
 	)
 
 	const callbackCreateNewAccount = useCallback(

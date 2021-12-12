@@ -81,7 +81,7 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 	return &pkVal, &skVal, nil
 }
 
-func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
+func ListAccounts(rootDir string, ks NativeKeystore, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -106,6 +106,15 @@ func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*acc
 			continue
 		}
 
+		var storageKey []byte
+		if ks != nil {
+			var err error
+			if storageKey, err = GetOrCreateStorageKeyForAccount(ks, subitem.Name()); err != nil {
+				accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
+				continue
+			}
+		}
+
 		account, err := GetAccountMetaForName(rootDir, subitem.Name(), storageKey, logger)
 		if err != nil {
 			accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
@@ -119,27 +128,35 @@ func ListAccounts(rootDir string, storageKey []byte, logger *zap.Logger) ([]*acc
 
 var storageKeyMutex = sync.Mutex{}
 
-func GetOrCreateStorageKey(ks NativeKeystore) ([]byte, error) {
+func getOrCreateStorageKey(ks NativeKeystore, keyName string) ([]byte, error) {
 	storageKeyMutex.Lock()
 	defer storageKeyMutex.Unlock()
 
-	key, getErr := ks.Get(StorageKeyName)
+	key, getErr := ks.Get(keyName)
 	if getErr != nil {
 		keyData := make([]byte, StorageKeySize)
 		if _, err := crand.Read(keyData); err != nil {
 			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
-		if err := ks.Put(StorageKeyName, keyData); err != nil {
+		if err := ks.Put(keyName, keyData); err != nil {
 			return nil, errcode.ErrKeystorePut.Wrap(multierr.Append(getErr, err))
 		}
 
 		var err error
-		if key, err = ks.Get(StorageKeyName); err != nil {
+		if key, err = ks.Get(keyName); err != nil {
 			return nil, errcode.ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
 		}
 	}
 	return key, nil
+}
+
+func GetOrCreateMasterStorageKey(ks NativeKeystore) ([]byte, error) {
+	return getOrCreateStorageKey(ks, StorageKeyName)
+}
+
+func GetOrCreateStorageKeyForAccount(ks NativeKeystore, accountID string) ([]byte, error) {
+	return getOrCreateStorageKey(ks, fmt.Sprintf("%s/%s", StorageKeyName, accountID))
 }
 
 func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
@@ -207,6 +224,11 @@ func GetDatastoreDir(dir string) (string, error) {
 	}
 
 	return dir, nil
+}
+
+func GetAccountAppStorage(rootDir string, accountID string, key []byte) (datastore.Datastore, error) {
+	dbPath := filepath.Join(GetAccountDir(rootDir, accountID), "app-account.sqlite")
+	return encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", key)
 }
 
 func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datastore.Batching, error) {

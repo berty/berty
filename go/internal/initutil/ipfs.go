@@ -312,7 +312,7 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
 	}
 
-	storageKey, err := m.getStorageKey()
+	storageKey, err := m.getAccountStorageKey()
 	if err != nil {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}

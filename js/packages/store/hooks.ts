@@ -4,11 +4,12 @@ import { useNavigation } from '@react-navigation/native'
 import beapi from '@berty-tech/api'
 import colors from '@berty-tech/styles/colors.json'
 import darkTheme from '@berty-tech/styles/darktheme-default.json'
+import { useAppSelector } from '@berty-tech/redux/react-redux'
+import { selectChecklistSeen } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { MessengerContext, useMessengerContext } from './context'
 import {
 	MessengerActions,
-	CheckListProfileNotification,
 	MessengerAppState,
 	NotificationsInhibitor,
 	PersistentOptionsKeys,
@@ -204,7 +205,9 @@ export const useThemeColor = () => {
 export const useProfileNotification = () => {
 	const ctx = useMessengerContext()
 	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
-	return profileNotifs[UpdatesProfileNotification] + profileNotifs[CheckListProfileNotification]
+	const checklistSeen = useAppSelector(selectChecklistSeen)
+	const checklistNotifs = checklistSeen ? 0 : 1
+	return profileNotifs[UpdatesProfileNotification] + checklistNotifs
 }
 
 //

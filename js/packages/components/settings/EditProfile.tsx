@@ -14,12 +14,9 @@ import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	setCheckListItemDone,
-	useAccount,
-	useMessengerContext,
-	useThemeColor,
-} from '@berty-tech/store'
+import { useAccount, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { AccountAvatar } from '../avatars'
 
@@ -87,10 +84,11 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+	const dispatch = useAppDispatch()
 
 	const account = useAccount()
 
-	const [state, dispatch] = useReducer(reducer, {
+	const [state, localDispatch] = useReducer(reducer, {
 		...initialState,
 		name: account?.displayName || undefined,
 	})
@@ -105,11 +103,11 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 				mediaType: 'photo',
 			})
 			if (pic) {
-				dispatch({ type: 'SET_PICTURE', pic })
+				localDispatch({ type: 'SET_PICTURE', pic })
 			}
 		} catch (err: any) {
 			if (err?.code !== 'E_PICKER_CANCELLED') {
-				dispatch({ type: 'SET_ERROR', err })
+				localDispatch({ type: 'SET_ERROR', err })
 			}
 		}
 	}
@@ -118,7 +116,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 
 	const handleSave = async () => {
 		try {
-			dispatch({ type: 'SAVE' })
+			localDispatch({ type: 'SAVE' })
 
 			const update: any = {}
 			let updated = false
@@ -168,14 +166,14 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 				})
 
 				if (update.avatarCid) {
-					await setCheckListItemDone(ctx, 'avatar')
+					dispatch(setChecklistItemDone({ key: 'avatar' }))
 				}
 			}
 
 			closeModal()
 		} catch (err) {
 			console.warn(err)
-			dispatch({ type: 'SET_ERROR', err })
+			localDispatch({ type: 'SET_ERROR', err })
 		}
 	}
 
@@ -266,7 +264,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 						label={t('settings.edit-profile.name-input-label') as any}
 						placeholder={t('settings.edit-profile.name-input-placeholder')}
 						value={state.name}
-						onChangeText={name => dispatch({ type: 'SET_NAME', name })}
+						onChangeText={name => localDispatch({ type: 'SET_NAME', name })}
 						style={{ backgroundColor: colors['input-background'] }}
 					/>
 				</View>

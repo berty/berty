@@ -17,7 +17,6 @@ import {
 	useThemeColor,
 	createAndSaveFile,
 	DefaultDarkTheme,
-	setCheckListItemDone,
 } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
 
@@ -95,7 +94,6 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 							isDark: false,
 						},
 					})
-					await setCheckListItemDone(ctx, 'theme')
 				}}
 			/>
 			<ButtonSetting

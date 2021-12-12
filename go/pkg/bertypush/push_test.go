@@ -316,10 +316,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 
 	pushContents := base64.StdEncoding.EncodeToString(dispatcher.Shift([]byte(svc1Token)))
 
-	svc1StorageKey, err := svc1Keystore.Get(accountutils.StorageKeyName)
-	require.NoError(t, err)
-
-	decrypted, err := bertypush.PushDecryptStandalone(logger, svc1RootDir, pushContents, svc1StorageKey)
+	decrypted, err := bertypush.PushDecryptStandalone(logger, svc1RootDir, pushContents, svc1Keystore)
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())
@@ -331,7 +328,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
 
 	// Decode twice
-	decrypted, err = bertypush.PushDecryptStandalone(logger, svc1RootDir, pushContents, svc1StorageKey)
+	decrypted, err = bertypush.PushDecryptStandalone(logger, svc1RootDir, pushContents, svc1Keystore)
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())

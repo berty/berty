@@ -7,9 +7,11 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor, setCheckListItemDone } from '@berty-tech/store'
-import { dispatch } from '@berty-tech/navigation/rootRef'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useNavigation } from '@berty-tech/navigation'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
@@ -68,6 +70,7 @@ const AddThisContact: React.FC<{
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
 	const ctx = useMessengerContext()
+	const dispatch = useAppDispatch()
 
 	const [password, setPassword] = useState('')
 
@@ -75,14 +78,14 @@ const AddThisContact: React.FC<{
 
 	React.useEffect(() => {
 		if (done && !error) {
-			setCheckListItemDone(ctx, 'contact')
-			dispatch(
+			dispatch(setChecklistItemDone({ key: 'contact' }))
+			navDispatch(
 				CommonActions.reset({
 					routes: [{ name: 'Main.Home' }],
 				}),
 			)
 		}
-	}, [ctx, done, error])
+	}, [ctx, done, error, dispatch])
 
 	if (error) {
 		return <InvalidScan type={type} error={error} />

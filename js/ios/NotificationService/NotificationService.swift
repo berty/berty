@@ -60,18 +60,9 @@ class NotificationService: UNNotificationServiceExtension {
 
         os_log("starting push decrypt", log: oslogger)
 
-        var storageKey: Data
-        do {
-            storageKey = try KeystoreDriver.shared.get(BertypushStorageKeyName)
-        } catch {
-            os_log("getting storage key failed: %@", log: oslogger, type: .error, error.localizedDescription)
-            displayFallback()
-            return
-        }
-
         var decrypted: BertypushFormatedPush
         do {
-            decrypted = try self.pushStandalone.decrypt(rootDir, inputB64: data, storageKey: storageKey)
+            decrypted = try self.pushStandalone.decrypt(rootDir, inputB64: data, ks: KeystoreDriver.shared)
         } catch {
             os_log("Push notif decryption failed: %@", log: oslogger, type: .error, error.localizedDescription)
             displayFallback()

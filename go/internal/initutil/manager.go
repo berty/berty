@@ -186,20 +186,22 @@ type Manager struct {
 	InitTimeout time.Duration `json:"InitTimeout,omitempty"`
 
 	// internal
-	ctx            context.Context
-	ctxCancel      func()
-	initLogger     *zap.Logger
-	workers        run.Group // replace by something more accurate
-	mutex          sync.Mutex
-	longHelp       [][2]string
-	nativeKeystore accountutils.NativeKeystore
-	storageKey     []byte
+	ctx               context.Context
+	ctxCancel         func()
+	initLogger        *zap.Logger
+	workers           run.Group // replace by something more accurate
+	mutex             sync.Mutex
+	longHelp          [][2]string
+	nativeKeystore    accountutils.NativeKeystore
+	accountStorageKey []byte
+	accountID         string
 }
 
 type ManagerOpts struct {
 	DoNotSetDefaultDir   bool
 	DefaultLoggerStreams []logutil.Stream
 	NativeKeystore       accountutils.NativeKeystore
+	AccountID            string
 }
 
 func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
@@ -209,6 +211,8 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 
 	m := Manager{}
 	m.ctx, m.ctxCancel = context.WithCancel(ctx)
+
+	m.accountID = opts.AccountID
 
 	// special default values:
 	// this is not the good place to put all the default values.

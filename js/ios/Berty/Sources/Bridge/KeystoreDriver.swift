@@ -1,5 +1,6 @@
 import Foundation
 import Bertybridge
+import Bertypush
 
 enum KeystoreDriverError: Error {
     case groupID
@@ -16,7 +17,7 @@ extension KeystoreDriverError: LocalizedError {
     }
 }
 
-public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol {
+public class KeystoreDriver: NSObject, BertybridgeNativeKeystoreDriverProtocol, BertypushNativeKeystoreDriverProtocol {
   public static var shared: KeystoreDriver = KeystoreDriver()
   
   private func getAppGroupID() throws -> String {

@@ -23,7 +23,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func PushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, storageKey []byte) (*pushtypes.DecryptedPush, error) {
+func PushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, ks accountutils.NativeKeystore) (*pushtypes.DecryptedPush, error) {
 	input, err := base64.RawURLEncoding.DecodeString(inputB64)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -32,7 +32,7 @@ func PushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger, StorageKey: storageKey})
+	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger, Keystore: ks})
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
@@ -171,7 +171,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 
 type PushDecryptOpts struct {
 	Logger           *zap.Logger
-	StorageKey       []byte
+	Keystore         accountutils.NativeKeystore
 	ExcludedAccounts []string
 }
 
@@ -189,7 +189,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 		return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("device has no known push key"))
 	}
 
-	accounts, err := accountutils.ListAccounts(rootDir, opts.StorageKey, opts.Logger)
+	accounts, err := accountutils.ListAccounts(rootDir, opts.Keystore, opts.Logger)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -221,13 +221,20 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				return nil, err
 			}
 
-			rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, opts.StorageKey, opts.Logger)
+			var storageKey []byte
+			if opts.Keystore != nil {
+				if storageKey, err = accountutils.GetOrCreateStorageKeyForAccount(opts.Keystore, account.AccountID); err != nil {
+					return nil, err
+				}
+			}
+
+			rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, storageKey, opts.Logger)
 			if err != nil {
 				return nil, err
 			}
 			defer rootDS.Close()
 
-			db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, opts.StorageKey, opts.Logger)
+			db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, storageKey, opts.Logger)
 			if err != nil {
 				return nil, err
 			}

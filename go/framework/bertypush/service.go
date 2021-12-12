@@ -69,8 +69,12 @@ func NewPushStandalone(c *Config) *PushStandalone {
 	}
 }
 
-func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, storageKey []byte) (*FormatedPush, error) {
-	decrypted, err := bertypush.PushDecryptStandalone(s.logger, rootDir, inputB64, storageKey)
+type NativeKeystoreDriver interface {
+	accountutils.NativeKeystore
+}
+
+func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, ks NativeKeystoreDriver) (*FormatedPush, error) {
+	decrypted, err := bertypush.PushDecryptStandalone(s.logger, rootDir, inputB64, ks)
 	if err != nil {
 		return nil, err
 	}

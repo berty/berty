@@ -134,13 +134,13 @@ public class NotificationService extends FirebaseMessagingService {
                         return;
                     }
 
-                    byte[] storageKey = new KeystoreDriver(getApplicationContext()).get(Bertybridge.StorageKeyName);
+                    KeystoreDriver keystore = new KeystoreDriver(getApplicationContext());
                     FormatedPush format;
                     Bridge bridge = GoBridgeModule.getBridgeMessenger();
                     if (bridge == null) {
                         // create a native push notification when app is in background
                         String rootDir = new RootDirModule(new ReactApplicationContext(getApplicationContext())).getRootDir();
-                        format = this.push.decrypt(rootDir, data, storageKey);
+                        format = this.push.decrypt(rootDir, data, keystore);
                     } else {
                         format = bridge.pushDecrypt(data);
                     }

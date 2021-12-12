@@ -83,7 +83,7 @@ type service struct {
 	pushPlatformToken *protocoltypes.PushServiceReceiver
 	accountData       *accounttypes.AccountMetadata
 	nativeKeystore    accountutils.NativeKeystore
-	storageKey        []byte
+	masterStorageKey  []byte
 	appStorage        datastore.Datastore
 }
 
@@ -182,7 +182,7 @@ func NewService(opts *Options) (_ Service, err error) {
 	}
 
 	if s.nativeKeystore != nil {
-		s.storageKey, err = accountutils.GetOrCreateStorageKey(s.nativeKeystore)
+		s.masterStorageKey, err = accountutils.GetOrCreateMasterStorageKey(s.nativeKeystore)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -197,7 +197,7 @@ func NewService(opts *Options) (_ Service, err error) {
 	if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", s.storageKey)
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", s.masterStorageKey)
 	if err != nil {
 		return nil, errcode.ErrDBOpen.Wrap(err)
 	}

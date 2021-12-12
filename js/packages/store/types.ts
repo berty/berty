@@ -110,7 +110,6 @@ export enum PersistentOptionsKeys {
 	TyberHost = 'tyberHost',
 	ThemeColor = 'themeColor',
 	OnBoardingFinished = 'onBoardingFinished',
-	CheckList = 'checkList',
 	ProfileNotification = 'profileNotification',
 }
 
@@ -200,15 +199,8 @@ export type CheckListItem = {
 	desc?: string
 }
 
-export type PersistentOptionsCheckList = {
-	isCollapsed?: boolean
-	items: { [key: string]: CheckListItem }
-}
-
-export const CheckListProfileNotification = 'checkList'
 export const UpdatesProfileNotification = 'updates'
 export type PersistentOptionsProfileNotification = {
-	[CheckListProfileNotification]: number
 	[UpdatesProfileNotification]: number
 }
 
@@ -254,10 +246,6 @@ export type PersistentOptionsUpdate =
 			payload: PersistentOptionsOnBoardingFinished
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.CheckList
-			payload: PersistentOptionsCheckList
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.ProfileNotification
 			payload: PersistentOptionsProfileNotification
 	  }
@@ -273,7 +261,6 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 	[PersistentOptionsKeys.ThemeColor]: PersistentOptionsThemeColor
 	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
-	[PersistentOptionsKeys.CheckList]: PersistentOptionsCheckList
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }
 

@@ -47,8 +47,8 @@ func NewPushStandalone(c *PushConfig) *PushStandalone {
 	return &PushStandalone{s}
 }
 
-func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, storageKey []byte) (*FormatedPush, error) {
-	f, err := s.p.Decrypt(rootDir, inputB64, storageKey)
+func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, ks NativeKeystoreDriver) (*FormatedPush, error) {
+	f, err := s.p.Decrypt(rootDir, inputB64, ks)
 	if err != nil {
 		return nil, err
 	}
