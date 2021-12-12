@@ -4,7 +4,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
 
-import { Maybe, useConversation, useMessengerClient, useMessengerContext } from '@berty-tech/store'
+import {
+	Maybe,
+	useConversation,
+	useMessengerClient,
+	useMessengerContext,
+	useThemeColor,
+} from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
 	resetChatInput,
@@ -39,7 +45,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const dispatch = useAppDispatch()
 		const message = useAppSelector(state => selectChatInputText(state, convPK))
 		const mediaCids = useAppSelector(state => selectChatInputMediaList(state, convPK))
-
+		const colors = useThemeColor()
 		const { navigate } = useNavigation()
 		const { activeReplyInte, setActiveReplyInte } = useReplyReaction() // FIXME: move to redux
 		const [, { scaleSize }] = useStyles()
@@ -198,7 +204,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 
 		// render
 		return (
-			<View style={{ backgroundColor: 'white' }}>
+			<View style={{ backgroundColor: colors['main-background'] }}>
 				<View
 					style={{
 						paddingLeft: 10 * scaleSize,
