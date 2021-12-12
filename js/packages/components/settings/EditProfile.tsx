@@ -133,7 +133,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 					info: {
 						mimeType: state.pic.mime,
 						filename: state.pic.filename,
-						displayName: state.pic.filename,
+						displayName: state.pic.filename || 'picture',
 					},
 					uri: avatarURI,
 				})

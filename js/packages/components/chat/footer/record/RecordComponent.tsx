@@ -25,7 +25,6 @@ import {
 	volumeValuesAttached,
 	volumeValueLowest,
 	volumeValuePrecision,
-	voiceMemoFilename,
 } from '../../audioMessageCommon'
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
@@ -82,11 +81,17 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 		await Promise.all(
 			res.map(async doc => {
 				const stream = await client?.mediaPrepare({})
+				console.log(
+					'sending:',
+					beapi.messenger.AudioPreview.decode(
+						beapi.messenger.MediaMetadata.decode(doc.metadataBytes!).items[0].payload!,
+					),
+				)
 				await stream?.emit({
 					info: {
 						filename: doc.filename,
 						mimeType: doc.mimeType,
-						displayName: doc.filename,
+						displayName: doc.displayName || doc.filename || 'document',
 						metadataBytes: doc.metadataBytes,
 					},
 					uri: doc.uri,
@@ -96,6 +101,9 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 			}),
 		)
 	).filter(cid => !!cid)
+
+const audioMessageDisplayName = (startDate: Date): string =>
+	`audiorec_${startDate.getFullYear()}:${startDate.getMonth()}:${startDate.getDate()}:${startDate.getHours()}:${startDate.getMinutes()}:${startDate.getSeconds()}`
 
 export const RecordComponent: React.FC<{
 	convPk: string
@@ -210,11 +218,14 @@ export const RecordComponent: React.FC<{
 	}, [addMeteredValue, clearRecordingInterval])
 
 	const sendComplete = useCallback(
-		({ duration }: { duration: number }) => {
+		({ duration, start }: { duration: number; start: number }) => {
 			Vibration.vibrate(400)
+			const startDate = new Date(start)
+			const displayName = audioMessageDisplayName(startDate)
 			attachMedias(ctx.client!, [
 				{
-					filename: voiceMemoFilename,
+					displayName,
+					filename: displayName + '.aac',
 					mimeType: 'audio/aac',
 					uri: recorderFilePath,
 					metadataBytes: beapi.messenger.MediaMetadata.encode({
@@ -275,7 +286,7 @@ export const RecordComponent: React.FC<{
 
 					if (err !== null) {
 						if (duration) {
-							if (duration >= minAudioDuration) sendComplete({ duration })
+							if (duration >= minAudioDuration) sendComplete({ duration, start: recordingStart })
 						} else {
 							console.warn(err)
 						}
@@ -284,7 +295,7 @@ export const RecordComponent: React.FC<{
 							message: t('audio.record.tooltip.usage'),
 						})
 					} else {
-						sendComplete({ duration })
+						sendComplete({ duration, start: recordingStart })
 					}
 
 					clearRecording()

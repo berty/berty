@@ -15,27 +15,36 @@ import { getSource } from '../../utils'
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia
 	currentTime?: number
-}> = ({ media, currentTime = 0 }) => {
+}> = React.memo(({ media, currentTime = 0 }) => {
 	const colors = useThemeColor()
+	const [{ padding, margin }] = useStyles()
+
 	const [normalizedIntensities, duration] = useMemo(() => {
-		const metadata = beapi.messenger.MediaMetadata.decode(media.metadataBytes!)
+		if (!media.metadataBytes) {
+			return [null, null]
+		}
+
+		const metadata = beapi.messenger.MediaMetadata.decode(media.metadataBytes)
 		const previews = metadata?.items.filter(
 			m => m.metadataType === beapi.messenger.MediaMetadataType.MetadataAudioPreview,
 		)
 
 		if (previews === undefined || previews.length === 0) {
+			console.log('no preview: ', metadata)
 			return [null, null]
 		}
 
 		const preview = beapi.messenger.AudioPreview.decode(previews[0].payload!)
+
+		console.log('preview', preview)
 		return [normalizeVolumeIntensities(preview.volumeIntensities), preview.durationMs]
 	}, [media.metadataBytes])
 
 	if (normalizedIntensities === null) {
 		return (
-			<View style={{ flex: 1 }}>
-				<Text style={{ color: colors['main-background'] }} numberOfLines={1}>
-					{media.filename!}
+			<View style={[{ flex: 1 }, padding.horizontal.small, margin.right.small]}>
+				<Text style={{ color: colors['main-background'] }} numberOfLines={1} ellipsizeMode='tail'>
+					{media.displayName || media.filename || 'audio'}
 				</Text>
 			</View>
 		)
@@ -44,7 +53,7 @@ const AudioPreview: React.FC<{
 	return (
 		<WaveForm intensities={normalizedIntensities} duration={duration} currentTime={currentTime} />
 	)
-}
+})
 
 export const AudioMessage: React.FC<{
 	medias: Array<beapi.messenger.IMedia>
@@ -56,12 +65,12 @@ export const AudioMessage: React.FC<{
 	const { protocolClient, client } = useMessengerContext()
 	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
 	const { player: globalPlayer, load: globalPlayerLoad, handlePlayPause } = useMusicPlayer()
-	const cid = useMemo(() => medias[0].cid, [medias])
-	const filename = useMemo(() => medias[0].filename, [medias])
+	const mediaCID = useMemo(() => medias[0].cid, [medias])
+	const mimeType = (medias.length > 0 && medias[0].mimeType) || 'blob'
 
 	const isPlaying = useMemo(
-		() => globalPlayer.metadata?.id === cid && globalPlayer.player?.isPlaying === true,
-		[globalPlayer.metadata?.id, globalPlayer.player?.isPlaying, cid],
+		() => globalPlayer.metadata?.id === mediaCID && globalPlayer.player?.isPlaying === true,
+		[globalPlayer.metadata?.id, globalPlayer.player?.isPlaying, mediaCID],
 	)
 
 	useEffect(() => {
@@ -70,14 +79,14 @@ export const AudioMessage: React.FC<{
 		}
 
 		return () => {
-			if (filename !== voiceMemoFilename || globalPlayer.player?.isStopped === false) {
+			if (!mimeType.startsWith('audio') || globalPlayer.player?.isStopped === false) {
 				return
 			}
 
 			globalPlayerLoad(
 				(async (): Promise<[string, PlayerItemMetadata]> => {
 					const next = await client?.mediaGetRelated({
-						cid: cid,
+						cid: mediaCID,
 						fileNames: [voiceMemoFilename],
 					})
 
@@ -90,7 +99,7 @@ export const AudioMessage: React.FC<{
 					const src = await srcP
 
 					return [
-						`data:${next.media?.mimeType};base64,${src}`,
+						`data:${mimeType};base64,${src}`,
 						{
 							id: next.media?.cid!,
 						},
@@ -98,15 +107,15 @@ export const AudioMessage: React.FC<{
 				})(),
 			)
 		}
-	}, [cid, isPlaying, globalPlayer.player, globalPlayerLoad, client, protocolClient, filename])
+	}, [mediaCID, isPlaying, globalPlayer.player, globalPlayerLoad, client, protocolClient, mimeType])
 
 	return (
 		<View style={{ position: 'relative', zIndex: 2 }}>
 			<View
 				style={{
 					position: 'absolute',
-					bottom: -8,
-					[isMine ? 'right' : 'left']: 10,
+					bottom: -2 * scaleSize,
+					[isMine ? 'right' : 'left']: 10 * scaleSize,
 					transform: [{ rotate: isMine ? '-45deg' : '45deg' }, { scaleX: isMine ? 1 : -1 }],
 				}}
 			>
@@ -115,11 +124,11 @@ export const AudioMessage: React.FC<{
 						{
 							position: 'absolute',
 							backgroundColor: colors['background-header'],
-							width: 25,
-							height: 30,
-							bottom: 0,
-							borderBottomLeftRadius: 25,
-							right: -12,
+							width: 25 * scaleSize,
+							height: 30 * scaleSize,
+							bottom: 1 * scaleSize,
+							borderBottomLeftRadius: 25 * scaleSize,
+							right: -12 * scaleSize,
 							zIndex: -1,
 						},
 					]}
@@ -129,11 +138,11 @@ export const AudioMessage: React.FC<{
 						{
 							position: 'absolute',
 							backgroundColor: colors['main-background'],
-							width: 20,
-							height: 35,
-							bottom: -6,
-							borderBottomLeftRadius: 50,
-							right: -16,
+							width: 20 * scaleSize,
+							height: 35 * scaleSize,
+							bottom: -6 * scaleSize,
+							borderBottomLeftRadius: 50 * scaleSize,
+							right: -16 * scaleSize,
 							zIndex: -1,
 						},
 					]}
@@ -173,12 +182,12 @@ export const AudioMessage: React.FC<{
 								globalPlayer.player?.currentTime !== -1
 							) {
 								handlePlayPause()
-							} else if (protocolClient && cid) {
+							} else if (protocolClient && mediaCID) {
 								globalPlayerLoad(
-									getSource(protocolClient, cid).then(src => [
-										`data:${medias[0].mimeType};base64,${src}`,
+									getSource(protocolClient, mediaCID).then(src => [
+										`data:${mimeType};base64,${src}`,
 										{
-											id: cid,
+											id: mediaCID,
 										},
 									]),
 								)
