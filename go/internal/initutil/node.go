@@ -319,27 +319,10 @@ func (m *Manager) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 }
 
 func (m *Manager) GetAccountStorageKey() ([]byte, error) {
-	defer m.prepareForGetter()()
-	return m.getAccountStorageKey()
-}
-
-func (m *Manager) getAccountStorageKey() ([]byte, error) {
-	if m.accountStorageKey != nil {
-		return m.accountStorageKey, nil
-	}
-
 	if m.nativeKeystore == nil {
 		return nil, nil
 	}
-
-	key, err := accountutils.GetOrCreateStorageKeyForAccount(m.nativeKeystore, m.accountID)
-	if err != nil {
-		return nil, err
-	}
-
-	m.accountStorageKey = key
-
-	return m.accountStorageKey, nil
+	return accountutils.GetOrCreateStorageKeyForAccount(m.nativeKeystore, m.accountID)
 }
 
 func (m *Manager) SetLifecycleManager(manager *lifecycle.Manager) {
@@ -543,7 +526,7 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	key, err := m.getAccountStorageKey()
+	key, err := m.GetAccountStorageKey()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

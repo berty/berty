@@ -67,7 +67,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	storageKey, err := m.getAccountStorageKey()
+	storageKey, err := m.GetAccountStorageKey()
 	if err != nil {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
