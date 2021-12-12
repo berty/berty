@@ -83,7 +83,6 @@ type service struct {
 	pushPlatformToken *protocoltypes.PushServiceReceiver
 	accountData       *accounttypes.AccountMetadata
 	nativeKeystore    accountutils.NativeKeystore
-	masterStorageKey  []byte
 	appStorage        datastore.Datastore
 }
 
@@ -181,23 +180,24 @@ func NewService(opts *Options) (_ Service, err error) {
 		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
 	}
 
-	if s.nativeKeystore != nil {
-		s.masterStorageKey, err = accountutils.GetOrCreateMasterStorageKey(s.nativeKeystore)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
 	go s.handleLifecycle(rootCtx)
 
 	// override grpc logger before manager start to avoid race condition
 	initutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
 
+	// init app storage
 	dbPath := filepath.Join(s.rootdir, "app.sqlite")
 	if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", s.masterStorageKey)
+	storageKey := ([]byte)(nil)
+	if s.nativeKeystore != nil {
+		storageKey, err = accountutils.GetOrCreateMasterStorageKey(s.nativeKeystore)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey)
 	if err != nil {
 		return nil, errcode.ErrDBOpen.Wrap(err)
 	}
