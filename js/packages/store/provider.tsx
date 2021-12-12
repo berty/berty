@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
 import beapi from '@berty-tech/api'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
 
 import { MessengerContext, initialState } from './context'
 import {
@@ -15,6 +15,7 @@ import {
 	closingDaemon,
 	deletingStorage,
 	updateAccountsPreReady,
+	syncAccountLanguage,
 } from './providerEffects'
 import {
 	setPersistentOption,
@@ -30,6 +31,7 @@ import { reducer } from './reducer'
 import { playSound } from './sounds'
 import { MessengerAppState, PersistentOptionsKeys, SoundKey } from './types'
 import { accountService } from './accountService'
+import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
 
 export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
 	const [state, dispatch] = React.useReducer(reducer, {
@@ -70,21 +72,17 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 	useEffect(() => {
 		openingCloseConvos(
 			state.appState,
-			state.persistentOptions.i18n.language,
 			state.client,
 			state.conversations,
 			state.persistentOptions,
-			embedded,
 			dispatch,
 		).then()
-	}, [
-		state.appState,
-		state.persistentOptions.i18n.language,
-		state.client,
-		state.conversations,
-		state.persistentOptions,
-		embedded,
-	])
+	}, [state.appState, state.client, state.conversations, state.persistentOptions, embedded])
+
+	const accountLanguage = useAppSelector(selectAccountLanguage)
+	useEffect(() => {
+		syncAccountLanguage(accountLanguage)
+	}, [accountLanguage])
 
 	useEffect(() => {
 		updateAccountsPreReady(

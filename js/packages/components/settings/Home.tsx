@@ -12,8 +12,9 @@ import {
 	useThemeColor,
 	PersistentOptionsKeys,
 } from '@berty-tech/store'
-import i18n from '@berty-tech/berty-i18n'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
+import { setAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
@@ -134,10 +135,12 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
-	const { t }: any = useTranslation()
+	const { t, i18n } = useTranslation()
 	const enableNotif = ctx.persistentOptions.notifications.enable
+	const dispatch = useAppDispatch()
+	console.log(i18n.language)
 
-	const items: any = Object.entries(languages).map(([key, attrs]) => ({
+	const items = Object.entries(languages).map(([key, attrs]) => ({
 		label: attrs.localName,
 		value: key,
 	}))
@@ -154,16 +157,8 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 			/>
 			<DropDownPicker
 				items={items}
-				defaultValue={ctx.persistentOptions?.i18n.language}
-				onChangeItem={async (item: Item) => {
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.I18N,
-						payload: {
-							language: item.value,
-						},
-					})
-					await i18n.changeLanguage(item.value)
-				}}
+				defaultValue={i18n.language}
+				onChangeItem={(item: Item) => dispatch(setAccountLanguage(item.value))}
 			/>
 			<ButtonSetting
 				name={t('settings.home.notifications-button.title')}
