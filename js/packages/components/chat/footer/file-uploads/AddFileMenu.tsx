@@ -148,7 +148,11 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 				await amap(res, async doc => {
 					const stream = await client?.mediaPrepare({})
 					await stream?.emit({
-						info: { filename: doc.filename, mimeType: doc.mimeType, displayName: doc.filename },
+						info: {
+							filename: doc.filename,
+							mimeType: doc.mimeType,
+							displayName: doc.displayName || doc.filename || 'document',
+						},
 						uri: doc.uri,
 					})
 					const reply = await stream?.stopAndRecv()

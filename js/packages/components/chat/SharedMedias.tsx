@@ -8,6 +8,7 @@ import {
 	Image,
 	Dimensions,
 	Linking,
+	Share,
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +16,7 @@ import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
 import LinkifyIt from 'linkify-it'
 import Hyperlink from 'react-native-hyperlink'
+import RNFS from 'react-native-fs'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -25,6 +27,8 @@ import {
 	useMessengerClient,
 	useThemeColor,
 	pbDateToNum,
+	retrieveMediaBytes,
+	Maybe,
 } from '@berty-tech/store'
 
 import { getSource } from '../utils'
@@ -33,6 +37,18 @@ import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)
+
+const iconInfoFromMimeType = (mimeType: Maybe<string>): { name: string; pack?: string } => {
+	if (mimeType) {
+		if (mimeType.startsWith('audio')) {
+			return { name: 'headphones' }
+		}
+		if (mimeType.startsWith('image')) {
+			return { name: 'image' }
+		}
+	}
+	return { name: 'file' }
+}
 
 export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	route: {
@@ -105,12 +121,13 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 		}
 
 		Promise.all(
-			pictures.map((media: any) => {
-				return getSource(protocolClient, media.cid)
-					.then(src => {
-						return { ...media, uri: `data:${media.mimeType};base64,${src}` }
-					})
-					.catch(e => console.error('failed to get picture message image:', e))
+			pictures.map(async (media: any) => {
+				try {
+					const src = await getSource(protocolClient, media.cid)
+					return { ...media, uri: `data:${media.mimeType};base64,${src}` }
+				} catch (e) {
+					return console.error('failed to get picture message image:', e)
+				}
 			}),
 		).then((images: any) => setImages(images.filter(Boolean)))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -207,15 +224,42 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								flexDirection: 'row',
 								alignItems: 'center',
 							}}
+							onPress={async () => {
+								if (!client || !doc.cid) {
+									return
+								}
+								const { data } = await retrieveMediaBytes(client, doc.cid)
+								const tmpFilename = RNFS.TemporaryDirectoryPath + '/' + (doc.filename || 'document')
+								try {
+									console.log('will share', data.length / 1000 / 1000, 'MB')
+									await RNFS.writeFile(tmpFilename, data.toString('base64'), 'base64')
+									await Share.share({ url: 'file://' + tmpFilename })
+								} catch (err: any) {
+									if (!(typeof err?.message === 'string' && err.message.contains('cancelled'))) {
+										console.warn('failed to write shareable file: ', err)
+									}
+								}
+								try {
+									await RNFS.unlink(tmpFilename)
+								} catch (err) {
+									console.warn('failed to unlink shareable file: ', err)
+								}
+							}}
 						>
-							<Icon name='file' height={20} width={20} fill={colors['secondary-text']} />
+							<Icon
+								{...iconInfoFromMimeType(doc.mimeType)}
+								height={20}
+								width={20}
+								fill={colors['secondary-text']}
+								style={margin.right.small}
+							/>
 							<Text
 								style={{
 									fontStyle: 'italic',
 									textDecorationLine: 'underline',
 								}}
 							>
-								{doc.filename || undefined}
+								{doc.displayName || doc.filename || 'document'}
 							</Text>
 						</TouchableOpacity>
 
