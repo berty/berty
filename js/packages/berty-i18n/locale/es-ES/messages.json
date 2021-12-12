@@ -1,7 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
+			"title": "PROTEGE TU PRIVACIDAD",
 			"desc": "",
 			"button": ""
 		},
@@ -30,13 +30,13 @@
 			"title": "Crear una nueva cuenta",
 			"desc": "Un nombre es la única información requerida",
 			"required": "Requerido",
-			"placeholder": "",
+			"placeholder": "Elige tu apodo",
 			"button": "CREAR MI CUENTA",
-			"advanced": "",
+			"advanced": "AVANZADO",
 			"import-account": "",
-			"link-device": "",
+			"link-device": "ENLAZAR DISPOSITIVO",
 			"expert-setup": "",
-			"more": "",
+			"more": "MÁS INFO",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
@@ -44,26 +44,26 @@
 			}
 		},
 		"expert-setup": {
-			"title": "",
+			"title": "Modo experto",
 			"desc": "",
 			"more-about": {
-				"title": "",
+				"title": "Bienvenido al modo experto",
 				"first-paragraph": "",
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
-			"read-more": "",
+			"read-more": "Leer más sobre el modo experto",
 			"config-title": "",
 			"config-desc": "",
-			"learn-more": "",
+			"learn-more": "Aprender más",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Proximidad",
+				"first-button": "Bluetooth Low Energy",
 				"second-button": "Multicast DNS"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Red entre iguales (P2P)",
+				"first-button": "Tabla Hash distribuida",
 				"second-button": ""
 			},
 			"third-part": {
@@ -71,13 +71,13 @@
 				"first-button": "",
 				"second-button": {
 					"title": "",
-					"placeholder": ""
+					"placeholder": "Introducir dirección del servidor"
 				},
 				"third-button": "",
 				"connect": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": "APLICAR CAMBIOS",
+			"skip": "Omitir y hacer esto más tarde"
 		},
 		"services-auth": {
 			"header": "Autenticar a los servicios",
@@ -101,7 +101,7 @@
 			"title": "",
 			"desc": "",
 			"first-button": "Cancelar",
-			"second-button": ""
+			"second-button": "Sí"
 		}
 	},
 	"main": {
@@ -194,18 +194,18 @@
 				},
 				"contact": {
 					"title": "Sincronizar con un contacto",
-					"desc": ""
+					"desc": "¡Escanea un código QR para agregar un primer contacto a tu lista de contactos!"
 				},
 				"group": {
-					"title": "",
+					"title": "Unirse o crear grupo",
 					"desc": ""
 				},
 				"message": {
-					"title": "",
+					"title": "Enviar mensaje",
 					"desc": ""
 				},
 				"theme": {
-					"title": "",
+					"title": "Personalizar tema",
 					"desc": ""
 				},
 				"hidden-account": {
