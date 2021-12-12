@@ -165,13 +165,13 @@ export const ChatTextInput: React.FC<{
 						text.bold.small,
 						{
 							maxHeight: 150 * scaleSize,
-							color: disabled ? colors['secondary-text'] : colors['background-header'],
+							color: disabled ? colors['secondary-text'] : colors['main-text'],
 							fontFamily: 'Open Sans',
 						},
 					]}
 					autoCorrect={false}
 					placeholder={placeholder || undefined}
-					placeholderTextColor={isFocused ? colors['background-header'] : colors['secondary-text']}
+					placeholderTextColor={isFocused ? colors['main-text'] : colors['secondary-text']}
 					returnKeyType={isTablet ? 'send' : 'default'}
 					onSubmitEditing={() => {
 						if (isTablet && typeof handleTabletSubmit === 'function') {

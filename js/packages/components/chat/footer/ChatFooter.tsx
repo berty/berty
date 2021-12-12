@@ -232,7 +232,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 							<View style={{ marginRight: horizontalGutter }}>
 								<MoreButton n={mediaCids.length} onPress={handlePressMore} />
 							</View>
-
 							<ChatTextInput
 								disabled={disabled}
 								handleTabletSubmit={handlePressSend}
