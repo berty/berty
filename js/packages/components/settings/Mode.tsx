@@ -4,114 +4,72 @@ import { Platform, ScrollView, Vibration, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import {
-	useAccount,
 	useMessengerContext,
 	useThemeColor,
 	exportAccountToFile,
-	serviceTypes,
-	useAccountServices,
+	PersistentOptionsKeys,
 } from '@berty-tech/store'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
-import { showNeedRestartNotification } from '../helpers'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 
-// Styles
-const useStylesMode = () => {
-	const [{ text, margin }] = useStyles()
-	return {
-		buttonListUnderStateText: [text.bold.small, text.size.tiny, margin.right.scale(60)],
-		buttonSettingText: [text.bold.small, text.size.small],
-	}
-}
-
 const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => {
-	const _styles = useStylesMode()
-	const [{ flex, padding, margin }, { scaleSize }] = useStyles()
+	const [{ flex, padding, margin }] = useStyles()
 	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
-	const account: beapi.messenger.IAccount | null | undefined = useAccount()
-	const services = useAccountServices()
-	const replicationServices = services.filter(
-		(s: any) => s.serviceType === serviceTypes.Replication,
-	)
 
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<ButtonSetting
-				name={t('settings.home.network-button')}
-				icon='earth'
+				name={t('settings.mode.in-app-notifications')}
+				icon='bell-outline'
+				iconSize={30}
+				iconColor={colors['background-header']}
+				toggled
+				disabled
+			/>
+			<ButtonSetting
+				name={t('onboarding.advanced-settings.title')}
+				icon='peer'
 				iconPack='custom'
-				iconColor={colors['background-header']}
-				onPress={() => navigation.navigate('Settings.NetworkMap')}
-			/>
-			<ButtonSetting
-				name={t('settings.mode.receive-contact-requests-button')}
-				icon='person-done-outline'
-				iconColor={colors['background-header']}
 				iconSize={30}
-				toggled
-				disabled
-			/>
-			<ButtonSetting
-				name={t('settings.mode.external-services-button')}
-				icon='cube-outline'
 				iconColor={colors['background-header']}
-				iconSize={30}
-				actionIcon='arrow-ios-forward'
-				onPress={() => navigation.navigate('Settings.ServicesAuth')}
+				onPress={() => navigation.navigate('Onboarding.AdvancedSettings')}
 			/>
+			{__DEV__ ? (
+				<ButtonSetting
+					name={t('settings.mode.devtools')}
+					icon='options-2-outline'
+					iconColor={colors['alt-secondary-background-header']}
+					onPress={() => navigation.navigate('Settings.DevTools')}
+				/>
+			) : null}
 			<ButtonSetting
-				name={t('settings.mode.auto-replicate-button')}
-				icon='cloud-upload-outline'
+				name={t('settings.mode.dark-mode-button')}
+				icon='moon-outline'
 				iconColor={colors['background-header']}
 				toggled
-				varToggle={
-					(replicationServices.length !== 0 && account?.replicateNewGroupsAutomatically) ||
-					undefined
-				}
+				varToggle={ctx.persistentOptions.themeColor.isDark}
 				actionToggle={async () => {
-					if (replicationServices.length === 0) {
-						return
-					}
-					await ctx.client?.replicationSetAutoEnable({
-						enabled: !account?.replicateNewGroupsAutomatically,
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.ThemeColor,
+						payload: {
+							...ctx.persistentOptions.themeColor,
+							isDark: !ctx.persistentOptions.themeColor.isDark,
+						},
 					})
-					showNeedRestartNotification(showNotification, ctx, t)
 				}}
-				disabled={replicationServices.length === 0}
-			>
-				{replicationServices.length === 0 && (
-					<Text
-						style={[
-							_styles.buttonSettingText,
-							{
-								marginLeft: margin.left.big.marginLeft + 3 * scaleSize,
-								color: colors['secondary-text'],
-							},
-						]}
-					>
-						{t('settings.mode.auto-replicate-button-unavailable')}
-					</Text>
-				)}
-			</ButtonSetting>
+			/>
 			<ButtonSetting
-				name={t('settings.mode.blocked-contacts-button.title')}
-				icon='person-delete-outline'
+				name={t('settings.devtools.theme-editor')}
+				icon='color-palette-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
-				state={{
-					value: `3 ${t('settings.mode.blocked-contacts-button.tag')}`,
-					color: colors['background-header'],
-					bgColor: colors['positive-asset'],
-				}}
-				actionIcon='arrow-ios-forward'
-				disabled
+				onPress={() => navigation.navigate('Settings.ThemeEditor')}
 			/>
 			<ButtonSetting
 				name={t('settings.mode.backup-account-button')}

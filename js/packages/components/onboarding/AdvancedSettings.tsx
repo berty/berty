@@ -25,6 +25,9 @@ import {
 	useMessengerContext,
 	useMountEffect,
 	useThemeColor,
+	useAccount,
+	serviceTypes,
+	useAccountServices,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
@@ -107,7 +110,7 @@ const MoreAbout: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', fontWeight: '700', color: colors['reverted-main-text'] },
 					]}
 				>
-					{t('onboarding.expert-setup.more-about.title')}
+					{t('onboarding.advanced-settings.more-about.title')}
 				</Text>
 			</View>
 			<View style={[padding.horizontal.medium, margin.top.medium]}>
@@ -118,7 +121,7 @@ const MoreAbout: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', fontWeight: '600', color: colors['reverted-main-text'] },
 					]}
 				>
-					{t('onboarding.expert-setup.more-about.first-paragraph')}
+					{t('onboarding.advanced-settings.more-about.first-paragraph')}
 				</Text>
 				<Text
 					style={[
@@ -127,7 +130,7 @@ const MoreAbout: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', fontWeight: '600', color: colors['reverted-main-text'] },
 					]}
 				>
-					{t('onboarding.expert-setup.more-about.second-paragraph')}
+					{t('onboarding.advanced-settings.more-about.second-paragraph')}
 				</Text>
 				<Text
 					style={[
@@ -136,7 +139,7 @@ const MoreAbout: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', fontWeight: '600', color: colors['reverted-main-text'] },
 					]}
 				>
-					{t('onboarding.expert-setup.more-about.third-paragraph')}
+					{t('onboarding.advanced-settings.more-about.third-paragraph')}
 				</Text>
 			</View>
 		</View>
@@ -221,7 +224,7 @@ const ConfigPart: React.FC<{
 						{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] },
 					]}
 				>
-					{t('onboarding.expert-setup.learn-more')}
+					{t('onboarding.advanced-settings.learn-more')}
 				</Text>
 				<Icon name='arrow-ios-forward' fill={colors['reverted-main-text']} width={20} height={20} />
 			</TouchableOpacity>
@@ -241,7 +244,7 @@ const Proximity: React.FC<{
 	return (
 		<View>
 			<ButtonSetting
-				name={t('onboarding.expert-setup.first-part.first-button')}
+				name={t('onboarding.advanced-settings.first-part.first-button')}
 				color={colors['reverted-main-text']}
 				icon='expert-ble'
 				iconPack='custom'
@@ -294,7 +297,7 @@ const Proximity: React.FC<{
 				}
 			/>
 			<ButtonSetting
-				name={t('onboarding.expert-setup.first-part.second-button')}
+				name={t('onboarding.advanced-settings.first-part.second-button')}
 				color={colors['reverted-main-text']}
 				icon='expert-setting'
 				iconPack='custom'
@@ -331,7 +334,7 @@ const PeerToPeer: React.FC<{
 	return (
 		<View>
 			<ButtonSetting
-				name={t('onboarding.expert-setup.second-part.first-button')}
+				name={t('onboarding.advanced-settings.second-part.first-button')}
 				color={colors['reverted-main-text']}
 				icon='expert-setting'
 				iconPack='custom'
@@ -352,7 +355,7 @@ const PeerToPeer: React.FC<{
 				}}
 			/>
 			<ButtonSetting
-				name={t('onboarding.expert-setup.second-part.second-button')}
+				name={t('onboarding.advanced-settings.second-part.second-button')}
 				color={colors['reverted-main-text']}
 				icon='privacy'
 				iconPack='custom'
@@ -373,11 +376,12 @@ const CustomReplicationNode: React.FC<{
 	const [{ padding, border, margin, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
+	const [customNode, setCustomNode] = React.useState<boolean>(false)
 
 	return (
 		<View>
 			<ButtonSetting
-				name={t('onboarding.expert-setup.third-part.second-button.title')}
+				name={t('onboarding.advanced-settings.third-part.second-button.title')}
 				color={colors['reverted-main-text']}
 				icon='expert-setting'
 				iconPack='custom'
@@ -386,57 +390,62 @@ const CustomReplicationNode: React.FC<{
 				actionIconSize={30}
 				actionIconColor='#6E6DFF'
 				backgroundColor={colors['alt-secondary-background-header']}
+				onPress={() => setCustomNode(!customNode)}
 			/>
-			<View
-				style={[
-					padding.medium,
-					border.radius.medium,
-					margin.top.small,
-					{
-						height: 60 * scaleSize,
-						backgroundColor: colors['main-background'],
-						flexDirection: 'row',
-						alignItems: 'center',
-					},
-				]}
-			>
-				<View style={[margin.right.medium]}>
-					<Icon
-						width={25 * scaleSize}
-						height={25 * scaleSize}
-						fill={colors['main-text']}
-						name='expert-node'
-						pack='custom'
-					/>
-				</View>
+			{customNode ? (
+				<>
+					<View
+						style={[
+							padding.medium,
+							border.radius.medium,
+							margin.top.small,
+							{
+								height: 60 * scaleSize,
+								backgroundColor: colors['main-background'],
+								flexDirection: 'row',
+								alignItems: 'center',
+							},
+						]}
+					>
+						<View style={[margin.right.medium]}>
+							<Icon
+								width={25 * scaleSize}
+								height={25 * scaleSize}
+								fill={colors['main-text']}
+								name='expert-node'
+								pack='custom'
+							/>
+						</View>
 
-				<TextInput
-					placeholderTextColor={`${colors['main-text']}50`}
-					placeholder={t('onboarding.expert-setup.third-part.second-button.placeholder')}
-					style={[text.size.medium, { fontFamily: 'Open Sans', fontWeight: '600', flex: 1 }]}
-					onChangeText={(text: string) => {
-						setNewConfig({
-							...newConfig,
-							staticRelay: [text],
-						})
-					}}
-				/>
-			</View>
-			<View style={{ top: -(12 * scaleSize) }}>
-				<DropDownPicker
-					items={[{ label: 'berty-static-relay', value: ':default:' }]}
-					defaultValue={newConfig?.staticRelay ? newConfig?.staticRelay[0] : null}
-					icon='expert-node'
-					pack='custom'
-					placeholder={t('onboarding.expert-setup.third-part.third-button')}
-					onChangeItem={async (item: Item) => {
-						setNewConfig({
-							...newConfig,
-							staticRelay: [item.value],
-						})
-					}}
-				/>
-			</View>
+						<TextInput
+							placeholderTextColor={`${colors['main-text']}50`}
+							placeholder={t('onboarding.advanced-settings.third-part.second-button.placeholder')}
+							style={[text.size.medium, { fontFamily: 'Open Sans', fontWeight: '600', flex: 1 }]}
+							onChangeText={(text: string) => {
+								setNewConfig({
+									...newConfig,
+									staticRelay: [text],
+								})
+							}}
+						/>
+					</View>
+					<View style={{ top: -(12 * scaleSize) }}>
+						<DropDownPicker
+							items={[{ label: 'berty-static-relay', value: ':default:' }]}
+							defaultValue={newConfig?.staticRelay ? newConfig?.staticRelay[0] : null}
+							icon='expert-node'
+							pack='custom'
+							placeholder={t('onboarding.advanced-settings.third-part.third-button')}
+							onChangeItem={async (item: Item) => {
+								setNewConfig({
+									...newConfig,
+									staticRelay: [item.value],
+								})
+							}}
+						/>
+					</View>
+				</>
+			) : null}
 		</View>
 	)
 }
@@ -444,27 +453,102 @@ const CustomReplicationNode: React.FC<{
 const Services: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
 	newConfig: beapi.account.INetworkConfig | null
-}> = props => {
-	const colors = useThemeColor()
-	const { t } = useTranslation()
+}> = withInAppNotification(
+	(props: {
+		setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
+		newConfig: beapi.account.INetworkConfig | null
+		showNotification: any
+	}) => {
+		const colors = useThemeColor()
+		const { t } = useTranslation()
+		const navigation = useNavigation()
+		const account: beapi.messenger.IAccount | null | undefined = useAccount()
+		const services = useAccountServices()
+		const [{ margin, text }, { scaleSize }] = useStyles()
+		const ctx = useMessengerContext()
 
-	return (
-		<View>
-			<ButtonSetting
-				name={t('onboarding.expert-setup.third-part.first-button')}
-				color={colors['reverted-main-text']}
-				icon='expert-push-notif'
-				iconPack='custom'
-				iconColor='#6E6DFF'
-				actionIconColor={colors['reverted-main-text']}
-				backgroundColor={colors['alt-secondary-background-header']}
-				toggled
-				toggleStatus='secondary'
-			/>
-			<CustomReplicationNode {...props} />
-		</View>
-	)
-}
+		const replicationServices = services.filter(
+			(s: any) => s.serviceType === serviceTypes.Replication,
+		)
+
+		return (
+			<View>
+				<ButtonSetting
+					name={t('onboarding.advanced-settings.third-part.network-button')}
+					icon='earth'
+					iconPack='custom'
+					color={colors['reverted-main-text']}
+					iconColor='#6E6DFF'
+					actionIconColor={colors['reverted-main-text']}
+					backgroundColor={colors['alt-secondary-background-header']}
+					onPress={() => navigation.navigate('Settings.NetworkMap')}
+				/>
+				<ButtonSetting
+					name={t('settings.mode.external-services-button')}
+					icon='cube-outline'
+					color={colors['reverted-main-text']}
+					iconColor='#6E6DFF'
+					actionIconColor={colors['reverted-main-text']}
+					backgroundColor={colors['alt-secondary-background-header']}
+					iconSize={30}
+					actionIcon='arrow-ios-forward'
+					onPress={() => navigation.navigate('Settings.ServicesAuth')}
+				/>
+				<ButtonSetting
+					name={t('settings.mode.auto-replicate-button')}
+					icon='cloud-upload-outline'
+					color={colors['reverted-main-text']}
+					iconColor='#6E6DFF'
+					actionIconColor={colors['reverted-main-text']}
+					backgroundColor={colors['alt-secondary-background-header']}
+					toggled
+					toggleStatus='secondary'
+					varToggle={
+						(replicationServices.length !== 0 && account?.replicateNewGroupsAutomatically) ||
+						undefined
+					}
+					actionToggle={async () => {
+						if (replicationServices.length === 0) {
+							return
+						}
+						await ctx.client?.replicationSetAutoEnable({
+							enabled: !account?.replicateNewGroupsAutomatically,
+						})
+						showNeedRestartNotification(props.showNotification, ctx, t)
+					}}
+					disabled={replicationServices.length === 0}
+				>
+					{replicationServices.length === 0 && (
+						<Text
+							style={[
+								text.bold.small,
+								text.size.small,
+								{
+									marginLeft: margin.left.big.marginLeft + 3 * scaleSize,
+									color: colors['secondary-text'],
+								},
+							]}
+						>
+							{t('settings.mode.auto-replicate-button-unavailable')}
+						</Text>
+					)}
+				</ButtonSetting>
+				<ButtonSetting
+					name={t('onboarding.advanced-settings.third-part.first-button')}
+					color={colors['reverted-main-text']}
+					icon='expert-push-notif'
+					iconPack='custom'
+					iconColor='#6E6DFF'
+					actionIconColor={colors['reverted-main-text']}
+					backgroundColor={colors['alt-secondary-background-header']}
+					toggled
+					toggleStatus='secondary'
+				/>
+				<CustomReplicationNode {...props} />
+			</View>
+		)
+	},
+)
 
 const CustomConfig: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
@@ -473,18 +557,11 @@ const CustomConfig: React.FC<{
 	const [{ margin }] = useStyles()
 	const { t } = useTranslation()
 	return (
-		<View style={[margin.top.scale(70)]}>
-			<TitleBox
-				title={t('onboarding.expert-setup.config-title')}
-				desc={t('onboarding.expert-setup.config-desc')}
-				icon='config'
-				iconSize={60}
-				pack='custom'
-			/>
-			<View style={[margin.top.medium]}>
+		<View style={[margin.top.scale(50)]}>
+			<View>
 				<ConfigPart
 					number={1}
-					title={t('onboarding.expert-setup.first-part.title')}
+					title={t('onboarding.advanced-settings.first-part.title')}
 					icon='proximity'
 					url='https://guide.berty.tech/learn-more/proximity'
 				/>
@@ -493,7 +570,7 @@ const CustomConfig: React.FC<{
 			<View style={[margin.top.medium]}>
 				<ConfigPart
 					number={2}
-					title={t('onboarding.expert-setup.second-part.title')}
+					title={t('onboarding.advanced-settings.second-part.title')}
 					icon='peer'
 					url='https://guide.berty.tech/learn-more/peer-to-peer'
 				/>
@@ -502,7 +579,7 @@ const CustomConfig: React.FC<{
 			<View style={[margin.top.medium]}>
 				<ConfigPart
 					number={3}
-					title={t('onboarding.expert-setup.third-part.title')}
+					title={t('onboarding.advanced-settings.third-part.title')}
 					icon='services'
 					iconSize={50}
 					url='https://guide.berty.tech/learn-more/berty-services'
@@ -513,7 +590,7 @@ const CustomConfig: React.FC<{
 	)
 }
 
-const ExpertSetupBackground: React.FC<{ top: number }> = ({ top }) => {
+const AdvancedSettingsBackground: React.FC<{ top: number }> = ({ top }) => {
 	const [{}, { scaleSize, windowWidth }] = useStyles()
 	return (
 		<Image
@@ -562,7 +639,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 							{ fontFamily: 'Open Sans', fontWeight: '700', color: colors['reverted-main-text'] },
 						]}
 					>
-						{t('onboarding.expert-setup.apply-changes')}
+						{t('onboarding.advanced-settings.apply-changes')}
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -575,14 +652,16 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 							{ fontFamily: 'Open Sans', color: colors['negative-asset'], fontStyle: 'italic' },
 						]}
 					>
-						{t('onboarding.expert-setup.skip')}
+						{t('onboarding.advanced-settings.skip')}
 					</Text>
 				</TouchableOpacity>
 			</View>
 		)
 	})
 
-export const ExpertSetup: ScreenFC<'Onboarding.ExpertSetup'> = ({ navigation: { goBack } }) => {
+export const AdvancedSettings: ScreenFC<'Onboarding.AdvancedSettings'> = ({
+	navigation: { goBack },
+}) => {
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const [{ padding, margin }, { scaleSize }] = useStyles()
@@ -614,9 +693,9 @@ export const ExpertSetup: ScreenFC<'Onboarding.ExpertSetup'> = ({ navigation: { 
 		<SafeAreaView style={{ backgroundColor: '#1B1C2B', flex: 1 }}>
 			<StatusBar barStyle='light-content' />
 			<ScrollView bounces={false} contentContainerStyle={[padding.medium, padding.bottom.big]}>
-				<ExpertSetupBackground top={0} />
-				<ExpertSetupBackground top={650} />
-				<ExpertSetupBackground top={1300} />
+				<AdvancedSettingsBackground top={0} />
+				<AdvancedSettingsBackground top={650} />
+				<AdvancedSettingsBackground top={1300} />
 				<TouchableOpacity onPress={() => goBack()}>
 					<Icon
 						name='arrow-back'
@@ -627,8 +706,8 @@ export const ExpertSetup: ScreenFC<'Onboarding.ExpertSetup'> = ({ navigation: { 
 				</TouchableOpacity>
 				<View style={[margin.top.scale(20)]}>
 					<TitleBox
-						title={t('onboarding.expert-setup.title')}
-						desc={t('onboarding.expert-setup.desc')}
+						title={t('onboarding.advanced-settings.title')}
+						desc={t('onboarding.advanced-settings.desc')}
 						icon='privacy'
 						pack='custom'
 					/>
@@ -636,7 +715,7 @@ export const ExpertSetup: ScreenFC<'Onboarding.ExpertSetup'> = ({ navigation: { 
 				<MoreAbout />
 				<View style={[margin.top.medium]}>
 					<ButtonSetting
-						name={t('onboarding.expert-setup.read-more')}
+						name={t('onboarding.advanced-settings.read-more')}
 						color={colors['reverted-main-text']}
 						icon='info-outline'
 						iconColor='#6E6DFF'

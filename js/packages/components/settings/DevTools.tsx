@@ -27,6 +27,10 @@ import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { languages } from '@berty-tech/berty-i18n/locale/languages'
+import i18n from '@berty-tech/berty-i18n'
+import { setAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
+import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import {
 	ButtonSetting,
@@ -35,7 +39,7 @@ import {
 	StringOptionInput,
 } from '../shared-components/SettingsButtons'
 import { showNeedRestartNotification } from '../helpers'
-import { DropDownPicker } from '../shared-components/DropDownPicker'
+import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 
 //
 // DevTools
@@ -327,6 +331,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const tyberHosts = useRef<{ [key: string]: string[] }>({})
 	const [, setRerender] = useState(0)
 	const colors = useThemeColor()
+	const dispatch = useAppDispatch()
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -339,6 +344,12 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 		},
 		[tyberHosts, setRerender],
 	)
+	const items: any = Object.entries(languages).map(([key, attrs]) => ({
+		label: attrs.localName,
+		value: key,
+	}))
+
+	items.push({ label: 'Debug', value: 'cimode' })
 
 	useEffect(() => {
 		let subStream: any = null
@@ -602,6 +613,11 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			/>
 			<SendToAll />
 			<PlaySound />
+			<DropDownPicker
+				items={items}
+				defaultValue={i18n.language}
+				onChangeItem={(item: Item) => dispatch(setAccountLanguage(item.value))}
+			/>
 			<ButtonSetting
 				name={t('debug.inspector.show-button')}
 				icon='umbrella-outline'

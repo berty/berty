@@ -9,7 +9,7 @@ export type ScreensParams = {
 	'Onboarding.GetStarted': undefined
 	'Onboarding.CreateAccount': undefined
 	'Onboarding.SetupFinished': undefined
-	'Onboarding.ExpertSetup': undefined
+	'Onboarding.AdvancedSettings': undefined
 	'Onboarding.WebViews': { url: string }
 
 	// Main
@@ -17,7 +17,6 @@ export type ScreensParams = {
 	'Main.Home': undefined
 	'Main.ContactRequest': { contactId: string }
 	'Main.Scan': undefined
-	'Main.NetworkOptions': { checkNotificationPermission: boolean }
 	'Main.Permissions': {
 		permissionType: 'p2p' | 'audio' | 'notification' | 'camera'
 		permissionStatus: 'blocked' | 'denied'
@@ -50,8 +49,6 @@ export type ScreensParams = {
 	'Settings.AppUpdates': undefined
 	'Settings.Help': undefined
 	'Settings.Mode': undefined
-	'Settings.Notifications': undefined
-	'Settings.Bluetooth': undefined
 	'Settings.ServicesAuth': undefined
 	'Settings.AboutBerty': undefined
 	'Settings.TermsOfUse': undefined

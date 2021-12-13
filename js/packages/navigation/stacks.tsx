@@ -200,8 +200,8 @@ export const Navigation: React.FC = React.memo(() => {
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.ExpertSetup'}
-				component={Components.Onboarding.ExpertSetup}
+				name={'Onboarding.AdvancedSettings'}
+				component={Components.Onboarding.AdvancedSettings}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
@@ -235,11 +235,6 @@ export const Navigation: React.FC = React.memo(() => {
 					),
 					presentation: 'formSheet',
 				})}
-			/>
-			<NavigationStack.Screen
-				name={'Main.NetworkOptions'}
-				component={Components.Main.NetworkOptions}
-				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			<NavigationStack.Screen
 				name={'Main.Permissions'}
@@ -439,24 +434,6 @@ export const Navigation: React.FC = React.memo(() => {
 					headerShown: false,
 					presentation: 'formSheet',
 				}}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Notifications'}
-				component={Components.Settings.Notifications}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.notifications.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Bluetooth'}
-				component={Components.Settings.Bluetooth}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.bluetooth.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
 			/>
 			<NavigationStack.Screen
 				name={'Settings.DevTools'}
