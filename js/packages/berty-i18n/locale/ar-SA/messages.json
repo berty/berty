@@ -183,7 +183,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "قائمة التحقق {{tasksDone}}\\{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "غيّر الصورة الشخصية",
 					"desc": ""
