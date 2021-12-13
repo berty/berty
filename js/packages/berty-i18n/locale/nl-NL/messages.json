@@ -183,7 +183,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Bekijk lijst {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Wijzig je avatar",
 					"desc": "Stel een profielfoto in voor dit account!"
