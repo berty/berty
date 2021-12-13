@@ -39,7 +39,8 @@ export const ReplyMessageBar: React.FC = () => {
 				{
 					backgroundColor: activeReplyInte?.backgroundColor,
 					paddingVertical: 4,
-					paddingHorizontal: 10,
+					paddingLeft: 10,
+					paddingRight: 18,
 					zIndex: 0,
 					flexDirection: 'row',
 					justifyContent: 'space-between',
@@ -110,7 +111,7 @@ export const ReplyMessageBar: React.FC = () => {
 					height={18}
 					width={18}
 					fill={activeReplyInte?.textColor}
-					style={{ marginTop: 4, transform: [{ rotate: '45deg' }] }}
+					style={{ marginTop: 2, transform: [{ rotate: '45deg' }] }}
 				/>
 			</TouchableOpacity>
 		</View>
