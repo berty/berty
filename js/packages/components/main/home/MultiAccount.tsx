@@ -14,6 +14,7 @@ import {
 } from '@berty-tech/store'
 import { importAccountFromDocumentPicker } from '@berty-tech/components/pickerUtils'
 import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import beapi from '@berty-tech/api'
 
 import { GenericAvatar } from '../../avatars'
 
@@ -74,13 +75,26 @@ const AccountButton: React.FC<{
 	)
 }
 
-export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
+export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => {
 	const ctx = useMessengerContext()
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { dispatch } = useMessengerContext()
 	const { t } = useTranslation()
 	const reduxDispatch = useAppDispatch()
+
+	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
+	const handlePress = async (account: beapi.account.IAccountMetadata) => {
+		if (isHandlingPress) {
+			return
+		}
+		setIsHandlingPress(true)
+		if (ctx.selectedAccount !== account.accountId) {
+			return ctx.switchAccount(account.accountId || '')
+		} else if (ctx.selectedAccount === account.accountId && !account.error) {
+			return onPress()
+		}
+	}
 
 	return (
 		<TouchableOpacity
@@ -97,22 +111,16 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 			>
 				{ctx.accounts
 					.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
-					.map((account, key) => {
+					.map(account => {
 						return (
 							<AccountButton
-								key={key}
+								key={account.accountId}
 								name={
 									account?.error
 										? `Incompatible account ${account.name}\n${account.error}`
 										: account.name
 								}
-								onPress={async () => {
-									if (ctx.selectedAccount !== account.accountId) {
-										await ctx.switchAccount(account.accountId || '')
-									} else if (ctx.selectedAccount === account.accountId && !account?.error) {
-										onPress()
-									}
-								}}
+								onPress={() => handlePress(account)}
 								avatar={
 									<GenericAvatar
 										size={40}

@@ -81,6 +81,24 @@ const logError = (name, title, err) => {
 		console.log(`[${name}] ${title}: ${err}`)
 		return
 	}
+	if (
+		title.indexOf('AppStorageGet') !== -1 &&
+		`${err}`.indexOf('datastore: key not found') !== -1
+	) {
+		console.log(`[${name}] ${title}: ${err}`)
+		return
+	}
+	if (
+		title.indexOf('GetGRPCListenerAddrs') !== -1 &&
+		`${err}`.indexOf('init manager not initialized') !== -1
+	) {
+		console.log(`[${name}] ${title}: ${err}`)
+		return
+	}
+	if (title.indexOf('EventStream') !== -1 && `${err}`.indexOf('Canceled') !== -1) {
+		console.log(`[${name}] ${title}: ${err}`)
+		return
+	}
 	// End of berty messenger specific filters
 
 	console.warn(`[${name}] ${title}: ${err}`)
