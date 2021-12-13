@@ -16,7 +16,6 @@ type ChatInputState = {
 	id: string
 	text: string
 	mediaList: string[] // cids
-	replyTarget?: string // cid
 }
 
 const newChatInputState: (convPK: string) => ChatInputState = convPK => ({
@@ -85,11 +84,6 @@ const slice = createSlice({
 					mediaList: [...ent.mediaList, ...cids],
 				},
 			})
-		},
-		startChatInputReply(state, { payload }: PayloadAction<{ convPK: string; cid: string }>) {
-			const { convPK, cid } = payload
-			ensureEntityExists(state, convPK)
-			adapter.updateOne(state, { id: convPK, changes: { replyTarget: cid } })
 		},
 	},
 })
