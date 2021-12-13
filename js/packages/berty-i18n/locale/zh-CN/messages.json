@@ -183,7 +183,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "检查列表 {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "更改您的头像",
 					"desc": "让我们为此帐户设置个人资料图片！"
