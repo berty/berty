@@ -84,6 +84,7 @@ const expectedAppStateChanges: any = {
 	],
 	[MessengerAppState.PreReady]: [MessengerAppState.Ready],
 	[MessengerAppState.StreamDone]: [
+		MessengerAppState.OpeningWaitingForDaemon,
 		MessengerAppState.GetStarted,
 		MessengerAppState.OpeningWaitingForClients,
 	],

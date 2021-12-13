@@ -16,7 +16,11 @@ export const closeAccountWithProgress = async (
 		.then(async stream => {
 			stream.onMessage((msg, err) => {
 				if (err) {
-					console.log('Account store reset')
+					if (err.EOF) {
+						console.log('Node is closed')
+					} else {
+						console.warn('Error while closing node:', err)
+					}
 					reduxDispatch(resetAccountStore())
 					dispatch({
 						type: MessengerActions.SetStateStreamDone,
@@ -35,18 +39,14 @@ export const closeAccountWithProgress = async (
 							payload,
 						})
 					}
-				} else {
-					dispatch({
-						type: MessengerActions.SetStateStreamDone,
-					})
 				}
 			})
 			await persistor.flush()
 			persistor.pause()
 			await stream.start()
-			console.log('node is closed')
 		})
 		.catch(err => {
+			console.warn('Failed to close node:', err)
 			reduxDispatch(resetAccountStore())
 			dispatch({
 				type: MessengerActions.SetStreamError,
