@@ -183,7 +183,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Checklista {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Ändra din profilbild",
 					"desc": "Låt oss ställa in en profilbild för detta konto!"
