@@ -1,18 +1,19 @@
 import React from 'react'
+import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
 import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
+import { CommonActions } from '@react-navigation/native'
 
 import { useMessengerContext } from '@berty-tech/store/context'
-
-import NotificationBody from './NotificationBody'
-import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
 import { accountService } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 
+import NotificationBody from './NotificationBody'
+
 export const PushNotificationBridge: React.FC = withInAppNotification(
 	({ showNotification }: any) => {
 		const ctx = useMessengerContext()
-		const { navigate } = useNavigation()
+		const { navigate, dispatch } = useNavigation()
 
 		React.useEffect(() => {
 			const pushNotifListener = async (data: any) => {
@@ -31,15 +32,22 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 							title: push.push?.title,
 							message: push.push?.body,
 							onPress: () => {
-								navigate({
-									name:
-										conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-											? 'Chat.Group'
-											: 'Chat.OneToOne',
-									params: {
-										convId: convPK,
-									},
-								})
+								dispatch(
+									CommonActions.reset({
+										routes: [
+											{ name: 'Main.Home' },
+											{
+												name:
+													conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
+														? 'Chat.Group'
+														: 'Chat.OneToOne',
+												params: {
+													convId: convPK,
+												},
+											},
+										],
+									}),
+								)
 							},
 							additionalProps: { type: 'message' },
 						})
@@ -64,7 +72,7 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 					console.warn('Push notif remove listener failed: ' + e)
 				}
 			}
-		}, [ctx.conversations, navigate, showNotification])
+		}, [ctx.conversations, dispatch, navigate, showNotification])
 		return null
 	},
 )
