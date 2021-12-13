@@ -39,13 +39,29 @@ export const openAccountWithProgress = async (
 	bridgeOpts: GoBridgeOpts,
 	selectedAccount: string | null,
 ) => {
+	console.log('Opening account', selectedAccount)
 	await accountService
 		.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
 		})
 		.then(async stream => {
-			stream.onMessage(msg => {
+			stream.onMessage((msg, err) => {
+				if (err?.EOF) {
+					console.log('activating persist with account:', selectedAccount?.toString())
+					persistor.persist()
+					dispatch({
+						type: MessengerActions.SetStateStreamDone,
+					})
+					return
+				}
+				if (err && !err.OK) {
+					console.warn('open account error:', err)
+					dispatch({
+						type: MessengerActions.SetStateStreamDone,
+					})
+					return
+				}
 				if (msg?.progress?.state !== 'done') {
 					const progress = msg?.progress
 					if (progress) {
@@ -58,13 +74,7 @@ export const openAccountWithProgress = async (
 							payload,
 						})
 					}
-				} else {
-					dispatch({
-						type: MessengerActions.SetStateStreamDone,
-					})
-					persistor.persist()
 				}
-				return
 			})
 			await stream.start()
 			console.log('node is opened')
