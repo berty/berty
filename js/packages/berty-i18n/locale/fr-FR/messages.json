@@ -183,7 +183,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Liste des tâches {{tasksDone}} sur {{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Changer votre avatar",
 					"desc": "Configurer une image de profil !"
