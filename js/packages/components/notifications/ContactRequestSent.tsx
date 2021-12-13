@@ -1,9 +1,10 @@
 import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useConversation, useThemeColor } from '@berty-tech/store'
-import { navigate } from '@berty-tech/navigation'
+import { dispatch } from '@berty-tech/navigation'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 
@@ -17,7 +18,19 @@ const ContactRequestSent: React.FC<any> = ({ onClose, title, message, ...props }
 
 	const handlePressConvMessage = () => {
 		if (conv?.publicKey) {
-			navigate('Chat.OneToOne', { convId: conv.publicKey })
+			dispatch(
+				CommonActions.reset({
+					routes: [
+						{ name: 'Main.Home' },
+						{
+							name: 'Chat.OneToOne',
+							params: {
+								convId: conv.publicKey,
+							},
+						},
+					],
+				}),
+			)
 		} else {
 			console.warn('Notif: ContactRequestSent: Conversation not found or no public key')
 		}

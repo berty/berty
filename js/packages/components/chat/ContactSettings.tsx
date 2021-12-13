@@ -7,7 +7,6 @@ import { useStyles } from '@berty-tech/styles'
 import { useContacts, useThemeColor } from '@berty-tech/store/hooks'
 import { ScreenFC } from '@berty-tech/navigation'
 
-import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
 import { ContactAvatar } from '../avatars'
@@ -73,14 +72,6 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 								icon: 'info-outline',
 								buttonDisabled: true,
 							},
-							{
-								key: 'devices',
-								name: t('chat.contact-settings.devices'),
-								icon: 'smartphone',
-								iconPack: 'feather',
-								iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
-								buttonDisabled: true,
-							},
 						]}
 						onTabChange={setSelectedContent}
 					/>
@@ -89,47 +80,6 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 					</ContactSettingsHeaderContent>
 				</View>
 			</View>
-		</View>
-	)
-}
-
-const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
-	const deleteContact = ({ id }: { id: string }) => {
-		console.warn(`attempted to delete ${id}, operation not implemented`)
-	}
-	const { t } = useTranslation()
-	const colors = useThemeColor()
-	return (
-		<ButtonSetting
-			name={t('chat.contact-settings.delete-button')}
-			icon='trash-2-outline'
-			iconColor={colors['secondary-background-header']}
-			onPress={() => deleteContact({ id })}
-			disabled
-		/>
-	)
-}
-
-const ContactSettingsBody: React.FC<{ id: string }> = ({ id }) => {
-	const [{ padding }] = useStyles()
-	const colors = useThemeColor()
-	const { t } = useTranslation()
-	return (
-		<View style={padding.medium}>
-			<ButtonSetting
-				name={t('chat.contact-settings.mark-button')}
-				icon='checkmark-circle-2'
-				iconDependToggle
-				toggled
-				disabled
-			/>
-			<ButtonSetting
-				name={t('chat.contact-settings.block-button')}
-				icon='slash-outline'
-				iconColor={colors['secondary-background-header']}
-				disabled
-			/>
-			<DeleteContactButton id={id} />
 		</View>
 	)
 }
@@ -164,7 +114,7 @@ export const ContactSettings: ScreenFC<'Chat.ContactSettings'> = ({
 					<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
 						<ContactSettingsHeader contact={contact} />
 					</View>
-					<ContactSettingsBody id={contact.publicKey} />
+					{/* <ContactSettingsBody id={contact.publicKey} /> */}
 				</ScrollView>
 			</View>
 		</>

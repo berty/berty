@@ -1,10 +1,11 @@
 import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useConversation, useThemeColor } from '@berty-tech/store'
-import { navigate } from '@berty-tech/navigation'
+import { dispatch } from '@berty-tech/navigation'
 
 import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'
@@ -22,11 +23,22 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 	const handlePressConvMessage = () => {
 		if (convExists && inteExists) {
 			// TODO: Investigate: doesn't work if app crashes and is restarted
-			navigate(
-				payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
-					? 'Chat.OneToOne'
-					: 'Chat.Group',
-				{ convId: payload.conversation?.publicKey, scrollToMessage: payload?.interaction?.cid },
+			dispatch(
+				CommonActions.reset({
+					routes: [
+						{ name: 'Main.Home' },
+						{
+							name:
+								payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
+									? 'Chat.OneToOne'
+									: 'Chat.Group',
+							params: {
+								convId: payload.conversation?.publicKey,
+								scrollToMessage: payload?.interaction?.cid,
+							},
+						},
+					],
+				}),
 			)
 		} else {
 			console.warn('Notif: Conversation or interaction not found')
