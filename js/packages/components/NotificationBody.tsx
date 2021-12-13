@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import {
-	usePersistentOptions,
 	useMessengerContext,
 	useThemeColor,
 	NotificationsInhibitor,
@@ -66,17 +65,18 @@ const notifsSounds: { [key: number]: SoundKey } = {
 	[T.TypeContactRequestSent]: 'contactRequestSent',
 }
 
-const GatedNotificationBody: React.FC<any> = props => {
+const GatedNotificationBody: React.FC<{
+	isOpen?: boolean
+	additionalProps?: beapi.messenger.StreamEvent.INotified
+	onClose?: () => void
+}> = props => {
 	const prevProps = usePrevious(props)
-	const justOpened = props.isOpen && !prevProps?.isOpen
-
 	const ctx = useMessengerContext()
-	const persistentOptions = usePersistentOptions()
 
-	const notif = props.additionalProps as beapi.messenger.StreamEvent.INotified | undefined
-
-	const isValid = notif && props.isOpen && persistentOptions?.notifications?.enable
-
+	const justOpened = props.isOpen && !prevProps?.isOpen
+	const notif = props.additionalProps
+	const isValid = !!(notif && props.isOpen && ctx.account?.shouldNotify)
+	const notifType = notif?.type || 0
 	const inhibit = isValid
 		? ctx.notificationsInhibitors.reduce<ReturnType<NotificationsInhibitor>>((r, inh) => {
 				if (r === false) {
@@ -85,8 +85,6 @@ const GatedNotificationBody: React.FC<any> = props => {
 				return r
 		  }, false)
 		: true
-
-	const notifType = notif?.type || 0
 
 	useEffect(() => {
 		const sound: SoundKey | undefined = notifsSounds[notifType]
@@ -97,7 +95,7 @@ const GatedNotificationBody: React.FC<any> = props => {
 	}, [ctx, notifType, justOpened, inhibit])
 
 	if (!isValid || inhibit) {
-		if (props.isOpen) {
+		if (props.isOpen && typeof props.onClose === 'function') {
 			props.onClose()
 		}
 		return null

@@ -455,13 +455,21 @@ func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 		return err
 	}
 
-	err = h.dispatcher.Notify(
-		mt.StreamEvent_Notified_TypeContactRequestSent,
-		"Contact request sent",
-		"To: "+contact.GetDisplayName(),
-		&mt.StreamEvent_Notified_ContactRequestSent{Contact: contact},
-	)
-	if err != nil {
+	if err := func() error {
+		conv, err := h.db.GetConversationByPK(contact.ConversationPublicKey)
+		if err != nil {
+			return err
+		}
+		if !conv.ShouldNotify {
+			return nil
+		}
+		return h.dispatcher.Notify(
+			mt.StreamEvent_Notified_TypeContactRequestSent,
+			"Contact request sent",
+			"To: "+contact.GetDisplayName(),
+			&mt.StreamEvent_Notified_ContactRequestSent{Contact: contact},
+		)
+	}(); err != nil {
 		h.logger.Warn("Failed to notify", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
 			{Name: "Error", Description: err.Error()},
 		})...)
@@ -541,13 +549,15 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		return err
 	}
 
-	err = h.dispatcher.Notify(
+	if !conversation.ShouldNotify {
+		return nil
+	}
+	if err := h.dispatcher.Notify(
 		mt.StreamEvent_Notified_TypeContactRequestReceived,
 		"Contact request received",
 		"From: "+contact.GetDisplayName(),
 		&mt.StreamEvent_Notified_ContactRequestReceived{Contact: contact},
-	)
-	if err != nil {
+	); err != nil {
 		h.logger.Warn("failed to notify", zap.Error(err))
 	}
 
@@ -891,9 +901,11 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 		Contact:      contact,
 	}
 
-	err = h.dispatcher.Notify(mt.StreamEvent_Notified_TypeMessageReceived, title, body, &msgRecvd)
-	if err != nil {
-		h.logger.Error("failed to notify", zap.Error(err))
+	if i.Conversation.GetShouldNotify() {
+		err = h.dispatcher.Notify(mt.StreamEvent_Notified_TypeMessageReceived, title, body, &msgRecvd)
+		if err != nil {
+			h.logger.Error("failed to notify", zap.Error(err))
+		}
 	}
 
 	return i, isNew, nil
@@ -1215,7 +1227,7 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 		}
 		c.InfoDate = i.GetSentDate()
 
-		_, err = tx.UpdateConversation(mt.Conversation{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
+		_, err = tx.UpsertConversation(mt.Conversation{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
 		if err != nil {
 			return nil, false, err
 		}

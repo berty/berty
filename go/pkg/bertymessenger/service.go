@@ -247,6 +247,9 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			// noop
 			tyber.LogStep(tyberCtx, opts.Logger, "Found account", tyber.WithDetail("PublicKey", pkStr))
 		}
+		if acc != nil {
+			svc.dispatcher.SetShouldNotify(acc.ShouldNotify)
+		}
 	}
 
 	// monitor messenger lifecycle
@@ -775,7 +778,7 @@ func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conve
 			return err
 		}
 
-		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
+		if _, err := svc.db.UpsertConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier, ShouldNotify: true}); err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
 		}
 	}

@@ -104,6 +104,12 @@
     - [MessageSearch.Reply](#berty.messenger.v1.MessageSearch.Reply)
     - [MessageSearch.Request](#berty.messenger.v1.MessageSearch.Request)
     - [MetadataEvent](#berty.messenger.v1.MetadataEvent)
+    - [NotificationConversationSetEnabled](#berty.messenger.v1.NotificationConversationSetEnabled)
+    - [NotificationConversationSetEnabled.Reply](#berty.messenger.v1.NotificationConversationSetEnabled.Reply)
+    - [NotificationConversationSetEnabled.Request](#berty.messenger.v1.NotificationConversationSetEnabled.Request)
+    - [NotificationSetEnabled](#berty.messenger.v1.NotificationSetEnabled)
+    - [NotificationSetEnabled.Reply](#berty.messenger.v1.NotificationSetEnabled.Reply)
+    - [NotificationSetEnabled.Request](#berty.messenger.v1.NotificationSetEnabled.Request)
     - [PaginatedInteractionsOptions](#berty.messenger.v1.PaginatedInteractionsOptions)
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
@@ -195,6 +201,7 @@
 | auto_share_push_token_flag | [bool](#bool) |  |  |
 | device_push_token | [bytes](#bytes) |  |  |
 | device_push_server | [bytes](#bytes) |  |  |
+| should_notify | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -487,6 +494,7 @@ to test more false-positive guesses.
 | avatar_cid | [string](#string) |  |  |
 | info_date | [int64](#int64) |  | info_date is used when SetGroupInfo is called |
 | shared_push_token_identifier | [string](#string) |  |  |
+| should_notify | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 
@@ -990,6 +998,39 @@ Composite primary key
 | conversation_public_key | [string](#string) |  |  |
 | metadata_event_type | [berty.protocol.v1.EventType](#berty.protocol.v1.EventType) |  |  |
 | payload | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.v1.NotificationConversationSetEnabled"></a>
+
+### NotificationConversationSetEnabled
+
+<a name="berty.messenger.v1.NotificationConversationSetEnabled.Reply"></a>
+
+### NotificationConversationSetEnabled.Reply
+
+<a name="berty.messenger.v1.NotificationConversationSetEnabled.Request"></a>
+
+### NotificationConversationSetEnabled.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| value | [bool](#bool) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.NotificationSetEnabled"></a>
+
+### NotificationSetEnabled
+
+<a name="berty.messenger.v1.NotificationSetEnabled.Reply"></a>
+
+### NotificationSetEnabled.Reply
+
+<a name="berty.messenger.v1.NotificationSetEnabled.Request"></a>
+
+### NotificationSetEnabled.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| value | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.PaginatedInteractionsOptions"></a>
 
@@ -1574,6 +1615,8 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | TyberHostAttach | [TyberHostAttach.Request](#berty.messenger.v1.TyberHostAttach.Request) | [TyberHostAttach.Reply](#berty.messenger.v1.TyberHostAttach.Reply) | TyberHostAttach |
 | PushSetAutoShare | [PushSetAutoShare.Request](#berty.messenger.v1.PushSetAutoShare.Request) | [PushSetAutoShare.Reply](#berty.messenger.v1.PushSetAutoShare.Reply) | PushSetAutoShare Sets whether new groups should receive our push token automatically or not |
 | PushReceive | [PushReceive.Request](#berty.messenger.v1.PushReceive.Request) | [PushReceive.Reply](#berty.messenger.v1.PushReceive.Reply) | PushReceive handles a push payload, decrypts it if possible, adds it to the local store |
+| NotificationSetEnabled | [NotificationSetEnabled.Request](#berty.messenger.v1.NotificationSetEnabled.Request) | [NotificationSetEnabled.Reply](#berty.messenger.v1.NotificationSetEnabled.Reply) | NotificationSetEnabled enables or disables all notifications |
+| NotificationConversationSetEnabled | [NotificationConversationSetEnabled.Request](#berty.messenger.v1.NotificationConversationSetEnabled.Request) | [NotificationConversationSetEnabled.Reply](#berty.messenger.v1.NotificationConversationSetEnabled.Reply) | NotificationConversationSetEnabled enables or disables notifications for a specific conversation |
 
  
 

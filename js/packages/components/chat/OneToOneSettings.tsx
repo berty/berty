@@ -8,7 +8,7 @@ import { ScreenFC } from '@berty-tech/navigation'
 import { useContact, useConversation, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
-import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { ButtonSetting, ConversationNotificationToggle } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
@@ -48,12 +48,7 @@ const OneToOneBody: React.FC<{
 				icon='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
-			<ButtonSetting
-				name={t('chat.one-to-one-settings.notifications-button')}
-				icon='bell-outline'
-				toggled
-				disabled
-			/>
+			<ConversationNotificationToggle publicKey={publicKey} />
 			{!isIncoming && (
 				<ButtonSetting
 					name={t('chat.one-to-one-settings.save-button')}

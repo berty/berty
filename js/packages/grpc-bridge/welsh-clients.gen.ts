@@ -138,6 +138,10 @@ export interface WelshMessengerServiceClient {
 	tyberHostAttach: UnaryType<beapi.messenger.MessengerService['tyberHostAttach']>
 	pushSetAutoShare: UnaryType<beapi.messenger.MessengerService['pushSetAutoShare']>
 	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
+	notificationSetEnabled: UnaryType<beapi.messenger.MessengerService['notificationSetEnabled']>
+	notificationConversationSetEnabled: UnaryType<
+		beapi.messenger.MessengerService['notificationConversationSetEnabled']
+	>
 }
 
 export interface WelshBridgeServiceClient {

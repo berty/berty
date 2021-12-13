@@ -29,7 +29,7 @@ import {
 import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
-import { MessengerAppState, PersistentOptionsKeys, SoundKey } from './types'
+import { MessengerAppState, SoundKey } from './types'
 import { accountService } from './accountService'
 import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
 
@@ -171,14 +171,16 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 
 	const callbackSetDebugMode = useCallback((value: boolean) => setDebugMode(value), [])
 
+	const shouldNotify = !!state.account?.shouldNotify
+
 	const callbackPlaySound = useCallback(
 		(sound: SoundKey) => {
-			if (state.persistentOptions[PersistentOptionsKeys.Notifications].enable) {
+			if (shouldNotify) {
 				playSound(sound)
 			}
 			return
 		},
-		[state.persistentOptions],
+		[shouldNotify],
 	)
 
 	const callbackAddReaction = useCallback(

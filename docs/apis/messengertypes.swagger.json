@@ -823,6 +823,72 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/NotificationConversationSetEnabled": {
+      "post": {
+        "summary": "NotificationConversationSetEnabled enables or disables notifications for a specific conversation",
+        "operationId": "MessengerService_NotificationConversationSetEnabled",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1NotificationConversationSetEnabledReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1NotificationConversationSetEnabledRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/NotificationSetEnabled": {
+      "post": {
+        "summary": "NotificationSetEnabled enables or disables all notifications",
+        "operationId": "MessengerService_NotificationSetEnabled",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1NotificationSetEnabledReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1NotificationSetEnabledRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ParseDeepLink": {
       "post": {
         "summary": "ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure\nthat can be used to display information.\nThis action is read-only.",
@@ -1570,6 +1636,9 @@
         "device_push_server": {
           "type": "string",
           "format": "byte"
+        },
+        "should_notify": {
+          "type": "boolean"
         }
       }
     },
@@ -2030,6 +2099,9 @@
         },
         "shared_push_token_identifier": {
           "type": "string"
+        },
+        "should_notify": {
+          "type": "boolean"
         }
       }
     },
@@ -2610,6 +2682,31 @@
           "type": "string"
         },
         "oldest_to_newest": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1NotificationConversationSetEnabledReply": {
+      "type": "object"
+    },
+    "v1NotificationConversationSetEnabledRequest": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "boolean"
+        },
+        "conversation_public_key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1NotificationSetEnabledReply": {
+      "type": "object"
+    },
+    "v1NotificationSetEnabledRequest": {
+      "type": "object",
+      "properties": {
+        "value": {
           "type": "boolean"
         }
       }

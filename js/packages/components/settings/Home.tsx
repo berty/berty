@@ -1,4 +1,4 @@
-import React, { ComponentProps, useState } from 'react'
+import React, { useState } from 'react'
 import {
 	ActivityIndicator,
 	ScrollView,
@@ -12,7 +12,7 @@ import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import {
 	useAccount,
 	MessengerActions,
@@ -28,61 +28,62 @@ import { EditProfile } from './EditProfile'
 import logo from '../main/1_berty_picto.png'
 import { WelcomeChecklist } from './WelcomeChecklist'
 
-const _verticalOffset = 30
+const verticalOffset = 30
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
-	return {
-		firstHeaderButton: [margin.right.scale(20), height(90)],
-		secondHeaderButton: [margin.right.scale(20), height(90)],
-		thirdHeaderButton: height(90),
-		headerNameText: text.size.scale(13),
-		scrollViewPadding: padding.bottom.scale(50),
-	}
+	return React.useMemo(
+		() => ({
+			firstHeaderButton: [margin.right.scale(20), height(90)],
+			secondHeaderButton: [margin.right.scale(20), height(90)],
+			thirdHeaderButton: height(90),
+			headerNameText: text.size.scale(13),
+			scrollViewPadding: padding.bottom.scale(50),
+		}),
+		[margin.right, height, text.size, padding.bottom],
+	)
 }
 
-const HomeHeaderGroupButton: React.FC<{ navigation: ComponentProps<typeof Home>['navigation'] }> =
-	({ navigation: { navigate } }) => {
-		const _styles = useStylesHome()
-		const [{ padding }] = useStyles()
-		const colors = useThemeColor()
-		const { t }: any = useTranslation()
+const HomeHeaderGroupButton: React.FC = React.memo(() => {
+	const styles = useStylesHome()
+	const [{ padding }] = useStyles()
+	const colors = useThemeColor()
+	const { t } = useTranslation()
+	const { navigate } = useNavigation()
 
-		return (
-			<View style={[padding.horizontal.medium]}>
-				<ButtonSettingRow
-					state={[
-						{
-							name: t('settings.faq.title'),
-							icon: 'question-mark-circle-outline',
-							color: colors['secondary-background-header'],
-							style: _styles.firstHeaderButton,
-							onPress: () => navigate('Settings.Faq'),
-						},
-						{
-							name: t('settings.roadmap.title'),
-							icon: 'calendar-outline',
-							color: colors['background-header'],
-							style: _styles.secondHeaderButton,
-							onPress: () => navigate('Settings.Roadmap'),
-						},
-						{
-							name: t('settings.mode.title'),
-							icon: 'settings-2-outline',
-							color: colors['background-header'],
-							style: _styles.thirdHeaderButton,
-							onPress: () => navigate('Settings.Mode'),
-						},
-					]}
-				/>
-			</View>
-		)
-	}
+	return (
+		<View style={[padding.horizontal.medium]}>
+			<ButtonSettingRow
+				state={[
+					{
+						name: t('settings.faq.title'),
+						icon: 'question-mark-circle-outline',
+						color: colors['secondary-background-header'],
+						style: styles.firstHeaderButton,
+						onPress: () => navigate('Settings.Faq'),
+					},
+					{
+						name: t('settings.roadmap.title'),
+						icon: 'calendar-outline',
+						color: colors['background-header'],
+						style: styles.secondHeaderButton,
+						onPress: () => navigate('Settings.Roadmap'),
+					},
+					{
+						name: t('settings.mode.title'),
+						icon: 'settings-2-outline',
+						color: colors['background-header'],
+						style: styles.thirdHeaderButton,
+						onPress: () => navigate('Settings.Mode'),
+					},
+				]}
+			/>
+		</View>
+	)
+})
 
-const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navigation'] }> = ({
-	navigation,
-}) => {
-	const _styles = useStylesHome()
+const HomeHeaderAvatar: React.FC = React.memo(() => {
+	const styles = useStylesHome()
 	const [{ row, border, padding }, { windowWidth, windowHeight, scaleHeight, scaleSize }] =
 		useStyles()
 	const ctx = useMessengerContext()
@@ -90,6 +91,7 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 	const account = useAccount()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
 	const [link, setLink] = React.useState<string>('')
+	const navigation = useNavigation()
 
 	React.useEffect(() => {
 		const getAccountLink = async () => {
@@ -122,11 +124,11 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 					<View style={{ position: 'absolute', top: -(90 * scaleSize) }}>
 						<AccountAvatar size={80 * scaleSize} />
 					</View>
-					<Text style={[_styles.headerNameText, { color: colors['main-text'] }]}>
+					<Text style={[styles.headerNameText, { color: colors['main-text'] }]}>
 						{account?.displayName || ''}
 					</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
-						{(link && (
+						{link && (
 							<QRCode
 								size={qrCodeSize}
 								value={link}
@@ -135,24 +137,22 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 								mode='circle'
 								backgroundColor={colors['main-background']}
 							/>
-						)) ||
-							null}
+						)}
 					</View>
 				</View>
 			</TouchableOpacity>
 		</View>
 	)
-}
+})
 
-const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navigation'] }> = ({
-	navigation,
-}) => {
+const HomeBodySettings: React.FC = React.memo(() => {
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
+	const account = useAccount()
 	const reduxDispatch = useAppDispatch()
 	const { dispatch } = useMessengerContext()
-	const account = useAccount()
+	const navigation = useNavigation()
 	const url = account?.link
 
 	return (
@@ -192,18 +192,18 @@ const HomeBodySettings: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 			/>
 		</View>
 	)
-}
+})
 
-export const Home: ScreenFC<'Settings.Home'> = ({ navigation }) => {
+export const Home: ScreenFC<'Settings.Home'> = React.memo(({ navigation }) => {
 	const [openModal, setOpenModal] = useState(false)
 	const account = useAccount()
 	const [{ row, margin, text, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
-			headerRight: ({ tintColor }: any) => (
+			headerRight: ({ tintColor }) => (
 				<TouchableOpacity
 					onPress={() => setOpenModal(true)}
 					style={{
@@ -215,7 +215,7 @@ export const Home: ScreenFC<'Settings.Home'> = ({ navigation }) => {
 					}}
 				>
 					<Text style={[{ color: tintColor }, margin.right.small, text.size.medium]}>
-						{t('settings.home.edit-profile')}
+						<>{t('settings.home.edit-profile')}</>
 					</Text>
 					<Icon
 						name='edit-outline'
@@ -257,20 +257,20 @@ export const Home: ScreenFC<'Settings.Home'> = ({ navigation }) => {
 							style={[
 								{ backgroundColor: colors['background-header'] },
 								border.radius.bottom.medium,
-								margin.bottom.scale(_verticalOffset),
+								margin.bottom.scale(verticalOffset),
 							]}
 						>
-							<View style={{ bottom: -_verticalOffset }}>
-								<HomeHeaderAvatar navigation={navigation} />
+							<View style={{ bottom: -verticalOffset }}>
+								<HomeHeaderAvatar />
 								<WelcomeChecklist openEditProfile={() => setOpenModal(true)} />
-								<HomeHeaderGroupButton navigation={navigation} />
+								<HomeHeaderGroupButton />
 							</View>
 						</View>
-						<HomeBodySettings navigation={navigation} />
+						<HomeBodySettings />
 					</ScrollView>
 				)}
 			</View>
 			{openModal && <EditProfile closeModal={() => setOpenModal(false)} />}
 		</>
 	)
-}
+})

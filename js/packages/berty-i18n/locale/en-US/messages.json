@@ -228,7 +228,7 @@
 		"mode": {
 			"title": "Settings",
 			"desc": "Customize everything to get the app that fits your needs",
-			"in-app-notifications": "In-app notifications",
+			"notifications": "Notifications",
 			"dark-mode-button": "Dark mode",
 			"devtools": "Devtools",
 			"network-config": "Network configuration",

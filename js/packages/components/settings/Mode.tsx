@@ -10,6 +10,8 @@ import {
 	useThemeColor,
 	exportAccountToFile,
 	PersistentOptionsKeys,
+	useMessengerClient,
+	useAccount,
 } from '@berty-tech/store'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
@@ -21,16 +23,29 @@ const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => 
 	const { t }: any = useTranslation()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
+	const client = useMessengerClient()
+	const account = useAccount()
+	const shouldNotify = !!account?.shouldNotify
 
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<ButtonSetting
-				name={t('settings.mode.in-app-notifications')}
+				name={t('settings.mode.notifications')}
 				icon='bell-outline'
 				iconSize={30}
 				iconColor={colors['background-header']}
 				toggled
-				disabled
+				varToggle={shouldNotify}
+				actionToggle={async () => {
+					if (!account) {
+						return
+					}
+					try {
+						await client?.notificationSetEnabled({ value: !shouldNotify })
+					} catch (err) {
+						console.warn('failed to toggle notification:', err)
+					}
+				}}
 			/>
 			<ButtonSetting
 				name={t('onboarding.advanced-settings.title')}

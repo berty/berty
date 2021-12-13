@@ -297,6 +297,20 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useNotificationSetEnabled: () => {
+		error: any
+		call: (req?: beapi.messenger.NotificationSetEnabled.IRequest) => void
+		reply: beapi.messenger.NotificationSetEnabled.IReply | null
+		done: boolean
+		called: boolean
+	}
+	useNotificationConversationSetEnabled: () => {
+		error: any
+		call: (req?: beapi.messenger.NotificationConversationSetEnabled.IRequest) => void
+		reply: beapi.messenger.NotificationConversationSetEnabled.IReply | null
+		done: boolean
+		called: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {

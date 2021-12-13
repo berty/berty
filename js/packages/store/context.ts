@@ -139,9 +139,6 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		}
 	})
 	return {
-		[PersistentOptionsKeys.Notifications]: {
-			enable: true,
-		},
 		[PersistentOptionsKeys.Suggestions]: suggestions,
 		[PersistentOptionsKeys.Debug]: {
 			enable: false,

@@ -11,6 +11,7 @@ import { Maybe, useConversation, useMessengerContext, useThemeColor } from '@ber
 
 import {
 	ButtonSetting,
+	ConversationNotificationToggle,
 	FactionButtonSetting,
 	ButtonDropDown,
 } from '../shared-components/SettingsButtons'
@@ -128,12 +129,7 @@ const MultiMemberSettingsBody: React.FC<{
 				icon='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
-			<ButtonSetting
-				name={t('chat.multi-member-settings.notifications-button')}
-				icon='bell-outline'
-				toggled
-				disabled
-			/>
+			<ConversationNotificationToggle publicKey={publicKey} />
 			<FactionButtonSetting
 				name={t('chat.multi-member-settings.members-button.title')}
 				icon='users'

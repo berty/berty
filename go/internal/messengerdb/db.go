@@ -273,7 +273,7 @@ func (d *DBWrapper) AddConversation(groupPK string) (*messengertypes.Conversatio
 	return finalConv, nil
 }
 
-func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, error) {
+func (d *DBWrapper) UpsertConversation(c messengertypes.Conversation) (bool, error) {
 	if c.PublicKey == "" {
 		return false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
@@ -375,7 +375,7 @@ func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 		Model(&messengertypes.Account{}).
 		FirstOrCreate(
 			&messengertypes.Account{},
-			&messengertypes.Account{PublicKey: pk, Link: link},
+			&messengertypes.Account{PublicKey: pk, Link: link, ShouldNotify: true},
 		).
 		Error; err != nil && !isSQLiteError(err, sqlite3.ErrConstraint) {
 		return err

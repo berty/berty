@@ -96,6 +96,12 @@ service MessengerService {
 
   // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
+
+  // NotificationSetEnabled enables or disables all notifications
+  rpc NotificationSetEnabled(NotificationSetEnabled.Request) returns (NotificationSetEnabled.Reply);
+
+  // NotificationConversationSetEnabled enables or disables notifications for a specific conversation
+  rpc NotificationConversationSetEnabled(NotificationConversationSetEnabled.Request) returns (NotificationConversationSetEnabled.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -407,6 +413,7 @@ message Account {
   bool auto_share_push_token_flag = 8 [(gogoproto.moretags) = "gorm:\"default:true\""];
   bytes device_push_token = 9;
   bytes device_push_server = 10;
+  bool should_notify = 11 [(gogoproto.moretags) = "gorm:\"default:true\""];
 }
 
 message ServiceToken {
@@ -528,6 +535,7 @@ message Conversation {
   // info_date is used when SetGroupInfo is called
   int64 info_date = 18;
   string shared_push_token_identifier = 19;
+  bool should_notify = 20 [(gogoproto.moretags) = "gorm:\"default:true\""];
 }
 
 message ConversationReplicationInfo {
@@ -900,5 +908,24 @@ message PushReceive {
   }
   message Reply {
     PushReceivedData data = 1;
+  }
+}
+
+message NotificationSetEnabled {
+  message Request {
+    bool value = 1;
+  }
+  message Reply {
+
+  }
+}
+
+message NotificationConversationSetEnabled {
+  message Request {
+    bool value = 1;
+    string conversation_public_key = 2;
+  }
+  message Reply {
+
   }
 }

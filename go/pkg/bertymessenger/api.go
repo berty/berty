@@ -631,10 +631,11 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 		Type:                   messengertypes.Conversation_MultiMemberType,
 		LocalDevicePublicKey:   messengerutil.B64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            messengerutil.TimestampMs(time.Now()),
+		ShouldNotify:           true,
 	}
 
 	// Update database
-	isNew, err := svc.db.UpdateConversation(*conv)
+	isNew, err := svc.db.UpsertConversation(*conv)
 	if err != nil {
 		return nil, err
 	}
@@ -747,10 +748,11 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 		Type:                   messengertypes.Conversation_MultiMemberType,
 		LocalDevicePublicKey:   messengerutil.B64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            messengerutil.TimestampMs(time.Now()),
+		ShouldNotify:           true,
 	}
 
 	// update db
-	isNew, err := svc.db.UpdateConversation(conv)
+	isNew, err := svc.db.UpsertConversation(conv)
 	if err != nil {
 		return nil, err
 	}

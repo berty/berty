@@ -6,6 +6,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/multierr"
 
+	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
@@ -15,8 +16,9 @@ type Notifiee interface {
 }
 
 type Dispatcher struct {
-	mutex     sync.RWMutex
-	notifiees map[Notifiee]struct{}
+	mutex                       sync.RWMutex
+	notifiees                   map[Notifiee]struct{}
+	shouldDispatchNotifications bool
 }
 
 func (d *Dispatcher) Register(n Notifiee) func() {
@@ -56,6 +58,9 @@ func (d *Dispatcher) StreamEvent(typ messengertypes.StreamEvent_Type, msg proto.
 	// can be parallelized if needed
 	var errs error
 	d.mutex.RLock()
+	if event.Type == messengertypes.StreamEvent_TypeNotified && !d.shouldDispatchNotifications {
+		return nil
+	}
 	for n := range d.notifiees {
 		if err := n.StreamEvent(event); err != nil {
 			errs = multierr.Append(errs, err)
@@ -88,8 +93,16 @@ func (d *Dispatcher) IsEnabled() bool {
 	return true
 }
 
+func (d *Dispatcher) SetShouldNotify(val bool) {
+	d.mutex.Lock()
+	defer d.mutex.Unlock()
+	d.shouldDispatchNotifications = val
+}
+
+var _ messengerutil.Dispatcher = (*Dispatcher)(nil)
+
 func NewDispatcher() *Dispatcher {
-	return &Dispatcher{notifiees: make(map[Notifiee]struct{})}
+	return &Dispatcher{notifiees: make(map[Notifiee]struct{}), shouldDispatchNotifications: true}
 }
 
 type NotifieeBundle struct {

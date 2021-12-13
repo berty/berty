@@ -6641,6 +6641,10 @@ export namespace berty {
                 public pushSetAutoShare(request: berty.messenger.v1.PushSetAutoShare.IRequest): Promise<berty.messenger.v1.PushSetAutoShare.Reply>;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest, callback: berty.messenger.v1.MessengerService.PushReceiveCallback): void;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest): Promise<berty.messenger.v1.PushReceive.Reply>;
+                public notificationSetEnabled(request: berty.messenger.v1.NotificationSetEnabled.IRequest, callback: berty.messenger.v1.MessengerService.NotificationSetEnabledCallback): void;
+                public notificationSetEnabled(request: berty.messenger.v1.NotificationSetEnabled.IRequest): Promise<berty.messenger.v1.NotificationSetEnabled.Reply>;
+                public notificationConversationSetEnabled(request: berty.messenger.v1.NotificationConversationSetEnabled.IRequest, callback: berty.messenger.v1.MessengerService.NotificationConversationSetEnabledCallback): void;
+                public notificationConversationSetEnabled(request: berty.messenger.v1.NotificationConversationSetEnabled.IRequest): Promise<berty.messenger.v1.NotificationConversationSetEnabled.Reply>;
             }
 
             namespace MessengerService {
@@ -6714,6 +6718,10 @@ export namespace berty {
                 type PushSetAutoShareCallback = (error: (Error|null), response?: berty.messenger.v1.PushSetAutoShare.Reply) => void;
 
                 type PushReceiveCallback = (error: (Error|null), response?: berty.messenger.v1.PushReceive.Reply) => void;
+
+                type NotificationSetEnabledCallback = (error: (Error|null), response?: berty.messenger.v1.NotificationSetEnabled.Reply) => void;
+
+                type NotificationConversationSetEnabledCallback = (error: (Error|null), response?: berty.messenger.v1.NotificationConversationSetEnabled.Reply) => void;
             }
 
             interface IPaginatedInteractionsOptions {
@@ -7952,6 +7960,7 @@ export namespace berty {
                 autoSharePushTokenFlag?: (boolean|null);
                 devicePushToken?: (Uint8Array|null);
                 devicePushServer?: (Uint8Array|null);
+                shouldNotify?: (boolean|null);
             }
 
             class Account implements IAccount {
@@ -7965,6 +7974,7 @@ export namespace berty {
                 public autoSharePushTokenFlag: boolean;
                 public devicePushToken: Uint8Array;
                 public devicePushServer: Uint8Array;
+                public shouldNotify: boolean;
                 public static create(properties?: berty.messenger.v1.IAccount): berty.messenger.v1.Account;
                 public static encode(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8208,6 +8218,7 @@ export namespace berty {
                 avatarCid?: (string|null);
                 infoDate?: (Long|null);
                 sharedPushTokenIdentifier?: (string|null);
+                shouldNotify?: (boolean|null);
             }
 
             class Conversation implements IConversation {
@@ -8231,6 +8242,7 @@ export namespace berty {
                 public avatarCid: string;
                 public infoDate: Long;
                 public sharedPushTokenIdentifier: string;
+                public shouldNotify: boolean;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -10016,6 +10028,114 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushReceive.Reply;
                     public static toObject(message: berty.messenger.v1.PushReceive.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface INotificationSetEnabled {
+            }
+
+            class NotificationSetEnabled implements INotificationSetEnabled {
+
+                public static create(properties?: berty.messenger.v1.INotificationSetEnabled): berty.messenger.v1.NotificationSetEnabled;
+                public static encode(message: berty.messenger.v1.INotificationSetEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.INotificationSetEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.NotificationSetEnabled;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.NotificationSetEnabled;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.NotificationSetEnabled;
+                public static toObject(message: berty.messenger.v1.NotificationSetEnabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace NotificationSetEnabled {
+
+                interface IRequest {
+                    value?: (boolean|null);
+                }
+
+                class Request implements IRequest {
+
+                    public value: boolean;
+                    public static create(properties?: berty.messenger.v1.NotificationSetEnabled.IRequest): berty.messenger.v1.NotificationSetEnabled.Request;
+                    public static encode(message: berty.messenger.v1.NotificationSetEnabled.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.NotificationSetEnabled.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.NotificationSetEnabled.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.NotificationSetEnabled.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.NotificationSetEnabled.Request;
+                    public static toObject(message: berty.messenger.v1.NotificationSetEnabled.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.NotificationSetEnabled.IReply): berty.messenger.v1.NotificationSetEnabled.Reply;
+                    public static encode(message: berty.messenger.v1.NotificationSetEnabled.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.NotificationSetEnabled.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.NotificationSetEnabled.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.NotificationSetEnabled.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.NotificationSetEnabled.Reply;
+                    public static toObject(message: berty.messenger.v1.NotificationSetEnabled.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface INotificationConversationSetEnabled {
+            }
+
+            class NotificationConversationSetEnabled implements INotificationConversationSetEnabled {
+
+                public static create(properties?: berty.messenger.v1.INotificationConversationSetEnabled): berty.messenger.v1.NotificationConversationSetEnabled;
+                public static encode(message: berty.messenger.v1.INotificationConversationSetEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.INotificationConversationSetEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.NotificationConversationSetEnabled;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.NotificationConversationSetEnabled;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.NotificationConversationSetEnabled;
+                public static toObject(message: berty.messenger.v1.NotificationConversationSetEnabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace NotificationConversationSetEnabled {
+
+                interface IRequest {
+                    value?: (boolean|null);
+                    conversationPublicKey?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public value: boolean;
+                    public conversationPublicKey: string;
+                    public static create(properties?: berty.messenger.v1.NotificationConversationSetEnabled.IRequest): berty.messenger.v1.NotificationConversationSetEnabled.Request;
+                    public static encode(message: berty.messenger.v1.NotificationConversationSetEnabled.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.NotificationConversationSetEnabled.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.NotificationConversationSetEnabled.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.NotificationConversationSetEnabled.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.NotificationConversationSetEnabled.Request;
+                    public static toObject(message: berty.messenger.v1.NotificationConversationSetEnabled.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.NotificationConversationSetEnabled.IReply): berty.messenger.v1.NotificationConversationSetEnabled.Reply;
+                    public static encode(message: berty.messenger.v1.NotificationConversationSetEnabled.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.NotificationConversationSetEnabled.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.NotificationConversationSetEnabled.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.NotificationConversationSetEnabled.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.NotificationConversationSetEnabled.Reply;
+                    public static toObject(message: berty.messenger.v1.NotificationConversationSetEnabled.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

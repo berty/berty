@@ -11,8 +11,9 @@ import {
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useConversation, useMessengerClient, useThemeColor } from '@berty-tech/store/hooks'
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
+import { useTranslation } from 'react-i18next'
 
 //
 // Button Setting
@@ -257,6 +258,31 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 			</View>
 			{children && <View style={[_styles.descBox]}>{children}</View>}
 		</TouchableOpacity>
+	)
+}
+
+export const ConversationNotificationToggle: React.FC<{ publicKey: string }> = ({ publicKey }) => {
+	const conv = useConversation(publicKey)
+	const { t } = useTranslation()
+	const client = useMessengerClient()
+
+	return (
+		<ButtonSetting
+			name={t('chat.multi-member-settings.notifications-button')}
+			icon='bell-outline'
+			toggled
+			varToggle={conv ? !!conv.shouldNotify : true}
+			disabled={!conv}
+			actionToggle={() => {
+				if (!client || !conv) {
+					return
+				}
+				client.notificationConversationSetEnabled({
+					conversationPublicKey: publicKey,
+					value: !conv.shouldNotify,
+				})
+			}}
+		/>
 	)
 }
 

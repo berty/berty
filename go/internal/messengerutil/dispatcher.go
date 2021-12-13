@@ -10,6 +10,7 @@ import (
 type Dispatcher interface {
 	StreamEvent(typ mt.StreamEvent_Type, msg proto.Message, isNew bool) error
 	Notify(typ mt.StreamEvent_Notified_Type, title, body string, msg proto.Message) error
+	SetShouldNotify(val bool)
 	IsEnabled() bool
 }
 
@@ -47,3 +48,9 @@ func (*NoopDispatcher) Notify(typ mt.StreamEvent_Notified_Type, title, body stri
 func (*NoopDispatcher) IsEnabled() bool {
 	return false
 }
+
+func (*NoopDispatcher) SetShouldNotify(val bool) {
+
+}
+
+var _ Dispatcher = (*NoopDispatcher)(nil)

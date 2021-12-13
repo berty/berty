@@ -4536,6 +4536,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushReceive: {
                     requestType: "PushReceive.Request",
                     responseType: "PushReceive.Reply"
+                  },
+                  NotificationSetEnabled: {
+                    requestType: "NotificationSetEnabled.Request",
+                    responseType: "NotificationSetEnabled.Reply"
+                  },
+                  NotificationConversationSetEnabled: {
+                    requestType: "NotificationConversationSetEnabled.Request",
+                    responseType: "NotificationConversationSetEnabled.Reply"
                   }
                 }
               },
@@ -5325,6 +5333,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   devicePushServer: {
                     type: "bytes",
                     id: 10
+                  },
+                  shouldNotify: {
+                    type: "bool",
+                    id: 11,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:default:true"
+                    }
                   }
                 }
               },
@@ -5716,6 +5731,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   sharedPushTokenIdentifier: {
                     type: "string",
                     id: 19
+                  },
+                  shouldNotify: {
+                    type: "bool",
+                    id: 20,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:default:true"
+                    }
                   }
                 },
                 nested: {
@@ -6711,6 +6733,42 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 1
                       }
                     }
+                  }
+                }
+              },
+              NotificationSetEnabled: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      value: {
+                        type: "bool",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              NotificationConversationSetEnabled: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      value: {
+                        type: "bool",
+                        id: 1
+                      },
+                      conversationPublicKey: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
                   }
                 }
               }
