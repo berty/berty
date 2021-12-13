@@ -183,7 +183,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Λίστα Ελέγχου {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Αλλαγή avatar",
 					"desc": "Ας ρυθμίσουμε μια εικόνα προφίλ για αυτόν τον λογαριασμό!"
