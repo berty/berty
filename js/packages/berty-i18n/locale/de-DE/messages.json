@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Dienste",
+				"network-button": "Netzwerke",
 				"first-button": "Push-Benachrichtigungen",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -217,21 +216,10 @@
 					"desc": "Nutze das Proximity Feature und sende eine Nachricht ohne mobile Daten oder eine Internetverbindung!"
 				}
 			},
-			"header-left-button": "Hilfe",
-			"header-center-button": "Für Entwickler",
-			"header-right-button": "Einstellungen",
-			"network-button": "Netzwerke",
 			"edit-profile": "Profil bearbeiten",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Benachrichtigungen",
-				"tag-enabled": "Aktiviert",
-				"tag-disabled": "Deaktiviert"
-			},
-			"dark-mode-button": "Dunkler Modus",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Konto erstellen"
 		},
 		"network-map": {
 			"title": "Netzwerke",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "Einstellungen",
 			"desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
+			"in-app-notifications": "",
+			"dark-mode-button": "Dunkler Modus",
+			"devtools": "Für Entwickler",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Daten gespeichert!",
 				"desc": "Im Download-Verzeichnis verfügbar"
