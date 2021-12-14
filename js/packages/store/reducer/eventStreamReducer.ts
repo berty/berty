@@ -57,7 +57,13 @@ export const eventStreamReducerActions: {
 	[beapi.messenger.StreamEvent.Type.TypeConversationUpdated]: (oldState, action) => {
 		const interactionsRewrite: { [key: string]: ParsedInteraction[] } = {}
 
-		if (!action.payload.conversation.isOpen) {
+		// TODO: dig why action.payload.conversation is null
+		if (!action?.payload?.conversation) {
+			return {
+				...oldState,
+			}
+		}
+		if (!action?.payload?.conversation?.isOpen) {
 			const newestInteraction = newestMeaningfulInteraction(
 				(oldState.interactions || {})[action.payload.conversation.publicKey] || [],
 			)
