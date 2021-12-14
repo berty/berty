@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "服務",
+				"network-button": "網絡列表",
 				"first-button": "推送通知",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -217,21 +216,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "幫助",
-			"header-center-button": "開發工具",
-			"header-right-button": "設置",
-			"network-button": "網絡列表",
 			"edit-profile": "編輯個人信息",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "消息通知",
-				"tag-enabled": "已啟用",
-				"tag-disabled": "已禁用"
-			},
-			"dark-mode-button": "暗色模式",
-			"bluetooth-button": {
-				"title": "藍牙"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "創建新賬戶"
 		},
 		"network-map": {
 			"title": "網絡列表",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "設置",
 			"desc": "所有功能皆可自定義使其符合您的需求",
+			"in-app-notifications": "",
+			"dark-mode-button": "暗色模式",
+			"devtools": "開發工具",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "數據已保存！",
 				"desc": "在下載目錄中可用"
