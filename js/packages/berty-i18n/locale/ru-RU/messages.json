@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Сервисы",
+				"network-button": "Список сетей",
 				"first-button": "Push-уведомления",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -95,6 +95,12 @@
 			"title": "Настройка завершена!",
 			"desc": "Теперь вы можете использовать приложение, начните добавлять контакты и общайтесь с ними свободно и приватно",
 			"button": "НАЧАТЬ ИСПОЛЬЗОВАТЬ BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Отменить",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -176,7 +182,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Чек-лист {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Изменить свой аватар",
 					"desc": ""
@@ -210,21 +216,10 @@
 					"desc": "Используйте функцию 'Поблизости' и отправьте сообщение без сотовой сети или подключения к Интернету!"
 				}
 			},
-			"header-left-button": "Помощь",
-			"header-center-button": "Инструменты для разработчиков",
-			"header-right-button": "Настройки",
-			"network-button": "Список сетей",
 			"edit-profile": "Редактировать профиль",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Уведомления",
-				"tag-enabled": "Включены",
-				"tag-disabled": "Отключены"
-			},
-			"dark-mode-button": "Тёмная тема",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Создать новый аккаунт"
 		},
 		"network-map": {
 			"title": "Список сетей",
@@ -233,6 +228,10 @@
 		"mode": {
 			"title": "Настройки",
 			"desc": "Просигнализируйте всё, чтобы приложение подходило под ваши нужды",
+			"in-app-notifications": "",
+			"dark-mode-button": "Тёмная тема",
+			"devtools": "Инструменты для разработчиков",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Данные сохранены!",
 				"desc": "Доступно в каталоге загрузок"
@@ -549,6 +548,7 @@
 		},
 		"files": {
 			"gallery": "Галерея",
+			"no-images": "",
 			"camera": "Камера",
 			"files": "Файлы",
 			"microphone": "Микрофон",
