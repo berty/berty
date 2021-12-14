@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Linking, View, TouchableOpacity } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
 import { Icon, Text } from '@ui-kitten/components'
@@ -18,6 +18,7 @@ import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clien
 import { useNavigation } from '@berty-tech/navigation'
 
 import { timeFormat } from '../../helpers'
+import { useTranslation } from 'react-i18next'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
@@ -80,11 +81,8 @@ export const HyperlinkUserMessage: React.FC<{
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const [{ margin, padding, column, border }, { scaleSize }] = useStyles()
-	const [isReadMore, setReadMore] = useState(false)
-
-	useEffect(() => {
-		message && setReadMore(message.length > READ_MORE_MESSAGE_LENGTH)
-	}, [message])
+	const [isReadMore, setReadMore] = useState<boolean>(true)
+	const { t } = useTranslation()
 
 	return (
 		<View
@@ -134,21 +132,27 @@ export const HyperlinkUserMessage: React.FC<{
 						},
 					]}
 				>
-					{isReadMore ? message?.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message || ''}
+					{message && message.length > READ_MORE_MESSAGE_LENGTH
+						? isReadMore
+							? message?.substring(0, READ_MORE_SUBSTR_LENGTH).concat('...')
+							: message
+						: message || ''}
 				</Text>
 
-				{isReadMore && (
-					<TouchableOpacity onPress={() => setReadMore(false)}>
+				{message && message.length > READ_MORE_MESSAGE_LENGTH ? (
+					<TouchableOpacity onPress={() => setReadMore(!isReadMore)}>
 						<Text
 							style={[
 								{ color: colors['secondary-text'], fontSize: 12, alignSelf: 'center' },
 								margin.top.tiny,
 							]}
 						>
-							Read more
+							<>
+								{isReadMore ? t('chat.user-message.read-more') : t('chat.user-message.show-less')}
+							</>
 						</Text>
 					</TouchableOpacity>
-				)}
+				) : null}
 			</Hyperlink>
 		</View>
 	)
