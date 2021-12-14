@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	Image,
-	Linking,
 	SafeAreaView,
 	ScrollView,
 	StatusBar,
@@ -10,9 +9,11 @@ import {
 	TextInput,
 	TouchableOpacity,
 	View,
+	Platform,
 } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { Icon } from '@ui-kitten/components'
+import { RESULTS, PERMISSIONS, check } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
@@ -235,12 +236,31 @@ const ConfigPart: React.FC<{
 const Proximity: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
 	newConfig: beapi.account.INetworkConfig | null
-}> = ({ setNewConfig, newConfig }: any) => {
+}> = ({ setNewConfig, newConfig }) => {
 	const ctx = useMessengerContext()
 	const { navigate } = useNavigation()
 	const colors = useThemeColor()
 	const { selectedAccount } = ctx
 	const { t } = useTranslation()
+
+	const setNewConfigProximityTransport = React.useCallback(() => {
+		setNewConfig({
+			...newConfig,
+			bluetoothLe:
+				newConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
+					? beapi.account.NetworkConfig.Flag.Disabled
+					: beapi.account.NetworkConfig.Flag.Enabled,
+			appleMultipeerConnectivity:
+				newConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
+					? beapi.account.NetworkConfig.Flag.Disabled
+					: beapi.account.NetworkConfig.Flag.Enabled,
+			androidNearby:
+				newConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
+					? beapi.account.NetworkConfig.Flag.Disabled
+					: beapi.account.NetworkConfig.Flag.Enabled,
+		})
+	}, [setNewConfig, newConfig])
+
 	return (
 		<View>
 			<ButtonSetting
@@ -253,44 +273,22 @@ const Proximity: React.FC<{
 				backgroundColor={colors['alt-secondary-background-header']}
 				toggled
 				toggleStatus='secondary'
-				varToggle={newConfig.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
+				varToggle={newConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
 				actionToggle={
 					selectedAccount
 						? async () => {
-								const bluetoothPermissions = await rnutil.checkPermissions('p2p', navigate, {
-									isToNavigate: false,
-								})
-								switch (bluetoothPermissions) {
-									case 'granted':
-										console.log('heeeere')
-										setNewConfig({
-											...newConfig,
-											bluetoothLe:
-												newConfig.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
-													? beapi.account.NetworkConfig.Flag.Disabled
-													: beapi.account.NetworkConfig.Flag.Enabled,
-											appleMultipeerConnectivity:
-												newConfig.appleMultipeerConnectivity ===
-												beapi.account.NetworkConfig.Flag.Enabled
-													? beapi.account.NetworkConfig.Flag.Disabled
-													: beapi.account.NetworkConfig.Flag.Enabled,
-											androidNearby:
-												newConfig.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
-													? beapi.account.NetworkConfig.Flag.Disabled
-													: beapi.account.NetworkConfig.Flag.Enabled,
-										})
-										break
-									case 'unavailable':
-										await rnutil.checkPermissions('p2p', navigate, {
-											isToNavigate: true,
-										})
-										break
-									case 'blocked':
-										await rnutil.checkPermissions('p2p', navigate, {
-											isToNavigate: true,
-										})
-										await Linking.openSettings()
-										break
+								const status = await check(
+									Platform.OS === 'ios'
+										? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
+										: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+								)
+								if (status === RESULTS.GRANTED) {
+									setNewConfigProximityTransport()
+								} else {
+									await rnutil.checkPermissions('p2p', navigate, {
+										isToNavigate: true,
+										onComplete: async () => setNewConfigProximityTransport(),
+									})
 								}
 						  }
 						: () => {}
@@ -306,14 +304,14 @@ const Proximity: React.FC<{
 				backgroundColor={colors['alt-secondary-background-header']}
 				toggled
 				toggleStatus='secondary'
-				varToggle={newConfig.mdns === beapi.account.NetworkConfig.Flag.Enabled}
+				varToggle={newConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
 				actionToggle={
 					selectedAccount
 						? async () => {
 								setNewConfig({
 									...newConfig,
 									mdns:
-										newConfig.mdns === beapi.account.NetworkConfig.Flag.Enabled
+										newConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled
 											? beapi.account.NetworkConfig.Flag.Disabled
 											: beapi.account.NetworkConfig.Flag.Enabled,
 								})

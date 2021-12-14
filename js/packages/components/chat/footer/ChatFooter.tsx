@@ -157,9 +157,10 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		)
 
 		const handlePressCamera = React.useCallback(async () => {
-			const permissionStatus = await rnutil.checkPermissions('camera', navigate)
+			const permissionStatus = await rnutil.checkPermissions('camera', navigate, {
+				isToNavigate: true,
+			})
 			if (permissionStatus !== RESULTS.GRANTED) {
-				console.warn('camera permission:', permissionStatus)
 				return
 			}
 

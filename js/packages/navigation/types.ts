@@ -1,4 +1,5 @@
 import React from 'react'
+import { PermissionStatus } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -19,9 +20,8 @@ export type ScreensParams = {
 	'Main.Scan': undefined
 	'Main.Permissions': {
 		permissionType: 'p2p' | 'audio' | 'notification' | 'camera'
-		permissionStatus: 'blocked' | 'denied'
+		permissionStatus: PermissionStatus
 		navigateNext: keyof ScreensParams
-		createNewAccount: boolean
 		onComplete?: () => Promise<void>
 	}
 
