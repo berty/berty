@@ -35,7 +35,6 @@
 			"advanced": "AVANZADO",
 			"import-account": "",
 			"link-device": "ENLAZAR DISPOSITIVO",
-			"expert-setup": "",
 			"more": "MÁS INFO",
 			"good-to-know": {
 				"title": "",
@@ -43,16 +42,16 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
-			"title": "Modo experto",
+		"advanced-settings": {
+			"title": "",
 			"desc": "",
 			"more-about": {
-				"title": "Bienvenido al modo experto",
+				"title": "",
 				"first-paragraph": "",
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
-			"read-more": "Leer más sobre el modo experto",
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "Aprender más",
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Servicios",
+				"network-button": "Lista de redes",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": "Introducir dirección del servidor"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "APLICAR CAMBIOS",
 			"skip": "Omitir y hacer esto más tarde"
@@ -217,21 +216,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "Ayuda",
-			"header-center-button": "Herramientas de desarrollo",
-			"header-right-button": "Ajustes",
-			"network-button": "Lista de redes",
 			"edit-profile": "Editar perfil",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Notificaciones",
-				"tag-enabled": "Activado",
-				"tag-disabled": "Desactivado"
-			},
-			"dark-mode-button": "Modo oscuro",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Crear una nueva cuenta"
 		},
 		"network-map": {
 			"title": "Lista de redes",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "Ajustes",
 			"desc": "Personaliza todo para obtener la aplicación que se ajuste a tus necesidades",
+			"in-app-notifications": "",
+			"dark-mode-button": "Modo oscuro",
+			"devtools": "Herramientas de desarrollo",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
