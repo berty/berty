@@ -14,7 +14,7 @@ import (
 )
 
 func peersCommand() *ffcli.Command {
-	var refreshEveryFlag time.Duration = time.Second
+	refreshEveryFlag := time.Second
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("peers", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")

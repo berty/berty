@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	lazyCodec        = NewLazyCodec()
-	streamids uint64 = 0
+	lazyCodec = NewLazyCodec()
+	streamids uint64
 )
 
 type LazyClient struct {

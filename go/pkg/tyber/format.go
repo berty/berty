@@ -49,7 +49,7 @@ const (
 	SubscribeType LogType = "subcribe"
 )
 
-var KnownLogTypes []LogType = []LogType{TraceType, StepType, EventType, SubscribeType}
+var KnownLogTypes = []LogType{TraceType, StepType, EventType, SubscribeType}
 
 func (lt LogType) IsKnown() bool {
 	for _, vlt := range KnownLogTypes {

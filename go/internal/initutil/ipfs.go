@@ -167,7 +167,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
-	var dhtmode p2p_dht.ModeOpt = 0
+	var dhtmode p2p_dht.ModeOpt
 	switch m.Node.Protocol.DHT {
 	case FlagValueP2PDHTClient:
 		dhtmode = p2p_dht.ModeClient

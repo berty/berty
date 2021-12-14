@@ -457,7 +457,7 @@ func (svc *service) subscribeToMessages(tctx context.Context, gpkb []byte) error
 	return nil
 }
 
-var monitorCounter uint64 = 0
+var monitorCounter uint64
 
 func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
 	cl, err := svc.protocolClient.MonitorGroup(svc.ctx, &protocoltypes.MonitorGroup_Request{

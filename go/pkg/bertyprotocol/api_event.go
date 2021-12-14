@@ -36,8 +36,8 @@ func checkParametersConsistency(sinceID, untilID []byte, sinceNow, untilNow, rev
 func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request, sub protocoltypes.ProtocolService_GroupMetadataListServer) error {
 	var (
 		newEvents            <-chan events.Event
-		sentEvents                = map[string]bool{}
-		firstReplicatedFound bool = true
+		sentEvents           = map[string]bool{}
+		firstReplicatedFound = true
 	)
 
 	// Get group context / check if the group is opened
@@ -131,8 +131,8 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, sub protocoltypes.ProtocolService_GroupMessageListServer) error {
 	var (
 		newEvents            <-chan events.Event
-		sentEvents                = map[string]bool{}
-		firstReplicatedFound bool = true
+		sentEvents           = map[string]bool{}
+		firstReplicatedFound = true
 	)
 
 	// Get group context / check if the group is opened
