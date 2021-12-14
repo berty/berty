@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "サービス",
+				"network-button": "ネットワーク一覧",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -217,21 +216,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "ヘルプ",
-			"header-center-button": "",
-			"header-right-button": "設定",
-			"network-button": "ネットワーク一覧",
 			"edit-profile": "プロフィールを編集",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "通知",
-				"tag-enabled": "",
-				"tag-disabled": ""
-			},
-			"dark-mode-button": "ダークモード",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "新しいアカウントを作成"
 		},
 		"network-map": {
 			"title": "ネットワーク一覧",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "設定",
 			"desc": "",
+			"in-app-notifications": "",
+			"dark-mode-button": "ダークモード",
+			"devtools": "",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
