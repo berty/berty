@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Tjenester",
+				"network-button": "Liste over nettverk",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -95,6 +95,12 @@
 			"title": "Oppsett fullført!",
 			"desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
 			"button": "BEGYNN Å BRUKE BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -210,21 +216,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "Hjelp",
-			"header-center-button": "Verktøy for utviklere",
-			"header-right-button": "Innstillinger",
-			"network-button": "Liste over nettverk",
 			"edit-profile": "Rediger profil",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Varsler",
-				"tag-enabled": "Aktivert",
-				"tag-disabled": "Deaktivert"
-			},
-			"dark-mode-button": "Mørk-modus",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": ""
 		},
 		"network-map": {
 			"title": "Liste over nettverk",
@@ -233,6 +228,10 @@
 		"mode": {
 			"title": "Innstillinger",
 			"desc": "Tilpass alt for å få appen som passer dine behov",
+			"in-app-notifications": "",
+			"dark-mode-button": "Mørk-modus",
+			"devtools": "Verktøy for utviklere",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -549,6 +548,7 @@
 		},
 		"files": {
 			"gallery": "Galleri",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
