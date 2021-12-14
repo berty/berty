@@ -596,7 +596,7 @@
 		},
 		"camera": {
 			"title": "Camera",
-			"desc": "To scan QR code and add contacts with your camera, Berty app need your permission. Camera cannot be use for anything else."
+			"desc": "Do you want to authorize camera to take picture or scan QR code?"
 		},
 		"audio": {
 			"title": "Audio messages",
