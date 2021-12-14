@@ -35,7 +35,6 @@
 			"advanced": "AVANCÉ",
 			"import-account": "IMPORTER UN COMPTE",
 			"link-device": "LIER UN APPAREIL",
-			"expert-setup": "INSTALLATION EXPERT",
 			"more": "PLUS D'INFOS",
 			"good-to-know": {
 				"title": "Bon à savoir :",
@@ -43,15 +42,16 @@
 				"second-point": "Le pseudo est facultatif et peut être modifié"
 			}
 		},
-		"expert-setup": {
-			"title": "Mode expert",
+		"advanced-settings": {
+			"title": "",
 			"desc": "Trouvez de la documentation et créez votre propre configuration.",
 			"more-about": {
-				"title": "Bienvenue dans le mode Expert",
+				"title": "",
 				"first-paragraph": "",
 				"second-paragraph": "Nous vous présenterons toutes les options pour vous permettre de comprendre ce qui se passe sous le capot.",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "Configurations personnalisées",
 			"config-desc": "",
 			"learn-more": "En savoir plus",
@@ -67,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Services",
+				"network-button": "Réseaux",
 				"first-button": "Notifications push",
 				"second-button": {
 					"title": "Configurez votre propre nœud",
 					"placeholder": "Entrez l'adresse du serveur"
 				},
-				"third-button": "Sélectionner un nœud certifié",
-				"connect": ""
+				"third-button": "Sélectionner un nœud certifié"
 			},
 			"apply-changes": "APPLIQUER LES CHANGEMENTS",
 			"skip": "Ignorer pour le moment"
@@ -95,6 +95,12 @@
 			"title": "Configuration terminée !",
 			"desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
 			"button": "LANCER BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Annuler",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -176,7 +182,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Liste des tâches {{tasksDone}} sur {{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Changer votre avatar",
 					"desc": "Configurer une image de profil !"
@@ -210,21 +216,10 @@
 					"desc": "Utilisez la fonction Proximité et envoyez un message sans réseau cellulaire, ni connexion internet !"
 				}
 			},
-			"header-left-button": "Aide",
-			"header-center-button": "Devtools",
-			"header-right-button": "Paramètres",
-			"network-button": "Liste de réseaux",
 			"edit-profile": "Modifier mon profil",
-			"expert-setup": "Configuration expert",
-			"notifications-button": {
-				"title": "Notifications",
-				"tag-enabled": "Activé",
-				"tag-disabled": "Désactivé"
-			},
-			"dark-mode-button": "Mode foncé",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Créer un nouveau compte"
 		},
 		"network-map": {
 			"title": "Réseaux",
@@ -233,6 +228,10 @@
 		"mode": {
 			"title": "Paramètres",
 			"desc": "Personnalisez l'app pour qu'elle corresponde à vos besoins",
+			"in-app-notifications": "",
+			"dark-mode-button": "Mode foncé",
+			"devtools": "Devtools",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Données sauvegardées !",
 				"desc": "Disponible dans le répertoire des téléchargements"
@@ -549,7 +548,7 @@
 		},
 		"files": {
 			"gallery": "Galerie",
-			"no-images": "Pas d'images",
+			"no-images": "",
 			"camera": "Caméra",
 			"files": "Fichiers",
 			"microphone": "Microphone",
