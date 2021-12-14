@@ -35,7 +35,6 @@
 			"advanced": "AVANCERAT",
 			"import-account": "IMPORTERA KONTO",
 			"link-device": "LÄNKA ENHET",
-			"expert-setup": "EXPERT SETUP",
 			"more": "MER INFO",
 			"good-to-know": {
 				"title": "Bra att veta:",
@@ -43,15 +42,16 @@
 				"second-point": "Smeknamn är valfritt och kan ändras"
 			}
 		},
-		"expert-setup": {
-			"title": "Expert-läge",
+		"advanced-settings": {
+			"title": "",
 			"desc": "Hitta dokumentation och skapa din egen konfiguration.",
 			"more-about": {
-				"title": "Välkommen till expertläget",
+				"title": "",
 				"first-paragraph": "Här kommer du att kunna skapa din egen anpassade konfiguration för att passa dina behov.",
 				"second-paragraph": "Vi kommer att presentera alla alternativ för att låta dig förstå vad som händer bakom huven.",
 				"third-paragraph": "Du hittar också resurslänkar för att hacka den. Detta avsnitt är endast för experter!"
 			},
+			"read-more": "",
 			"config-title": "Anpassade konfigurationer",
 			"config-desc": "3 steg i appkonfigurationen. Anpassa allt nu!",
 			"learn-more": "Läs mer",
@@ -67,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Tjänster",
-				"first-button": "Push-notiser",
+				"network-button": "Lista över nätverk",
+				"first-button": "Push-aviseringar",
 				"second-button": {
 					"title": "Konfigurera din egen nod",
 					"placeholder": "Ange serveradress"
 				},
-				"third-button": "Välj en certifierad nod",
-				"connect": "ANSLUT DIN BOOSTER NODE"
+				"third-button": "Välj en certifierad nod"
 			},
 			"apply-changes": "SPARA ÄNDRINGAR",
 			"skip": "Hoppa över och gör detta senare"
@@ -95,6 +95,12 @@
 			"title": "Genomgång slutförd!",
 			"desc": "Du kan nu använda appen, börja lägga till kontakter och prata fritt med dem utan övervakning",
 			"button": "BÖRJA ANVÄNDA BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -176,7 +182,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Checklista {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Ändra din profilbild",
 					"desc": "Låt oss ställa in en profilbild för detta konto!"
@@ -210,21 +216,10 @@
 					"desc": "Använd närhetsfunktionen och skicka ett meddelande utan mobilnätverk eller internetanslutning!"
 				}
 			},
-			"header-left-button": "Hjälp",
-			"header-center-button": "Utvecklingsverktyg",
-			"header-right-button": "Inställningar",
-			"network-button": "Lista över nätverk",
 			"edit-profile": "Redigera profil",
-			"expert-setup": "Expertinställningar",
-			"notifications-button": {
-				"title": "Aviseringar",
-				"tag-enabled": "Aktiv",
-				"tag-disabled": "Inaktiv"
-			},
-			"dark-mode-button": "Mörkt tema",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Skapa nytt konto"
 		},
 		"network-map": {
 			"title": "Lista över nätverk",
@@ -233,6 +228,10 @@
 		"mode": {
 			"title": "Inställningar",
 			"desc": "Anpassa allt för att få appen som passar just dina behov",
+			"in-app-notifications": "",
+			"dark-mode-button": "Mörkt tema",
+			"devtools": "Utvecklingsverktyg",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Data sparad!",
 				"desc": "Tillgänglig i din nedladdningsmapp"
@@ -549,6 +548,7 @@
 		},
 		"files": {
 			"gallery": "Galleri",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
