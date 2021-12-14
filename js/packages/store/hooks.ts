@@ -6,6 +6,7 @@ import colors from '@berty-tech/styles/colors.json'
 import darkTheme from '@berty-tech/styles/darktheme-default.json'
 import { useAppSelector } from '@berty-tech/redux/react-redux'
 import { selectChecklistSeen } from '@berty-tech/redux/reducers/checklist.reducer'
+import { useStyles } from '@berty-tech/styles'
 
 import { MessengerContext, useMessengerContext } from './context'
 import {
@@ -38,6 +39,53 @@ export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
 		return undefined
 	}
 	return conversations[contact.conversationPublicKey as string]
+}
+
+export const useStylesBertyId = ({
+	iconIdSize = 45,
+	iconShareSize = 26,
+	titleSize = 26,
+	contentScaleFactor = 0.66,
+	avatarSize = 90,
+}: {
+	iconIdSize?: number
+	iconShareSize?: number
+	titleSize?: number
+	contentScaleFactor?: number
+	avatarSize?: number
+}) => {
+	const _iconIdSize = iconIdSize
+	const _iconShareSize = iconShareSize
+	const _titleSize = titleSize
+	const bertyIdContentScaleFactor = contentScaleFactor
+	const requestAvatarSize = avatarSize
+
+	const [, { fontScale, scaleSize, windowHeight, windowWidth, isGteIpadSize }] = useStyles()
+	const _bertyIdButtonSize = 60 * scaleSize
+
+	// Make sure we can always see the whole QR code on the screen, even if need to scroll
+
+	const qrCodeSize = isGteIpadSize
+		? Math.min(windowHeight, windowWidth) * 0.3
+		: Math.min(windowHeight * bertyIdContentScaleFactor, windowWidth * bertyIdContentScaleFactor) -
+		  1.25 * _titleSize
+
+	return {
+		qrCodeSize,
+		bertyIdContentScaleFactor,
+		iconShareSize: _iconShareSize * scaleSize,
+		iconIdSize: _iconIdSize * scaleSize,
+		titleSize: _titleSize * fontScale,
+		requestAvatarSize,
+		styleBertyIdButton: {
+			width: _bertyIdButtonSize,
+			height: _bertyIdButtonSize,
+			borderRadius: _bertyIdButtonSize / 2,
+			marginRight: _bertyIdButtonSize,
+			bottom: _bertyIdButtonSize / 2,
+		},
+		styleBertyIdContent: { paddingBottom: _bertyIdButtonSize / 2 + 10 },
+	}
 }
 
 export const useAccount = () => {

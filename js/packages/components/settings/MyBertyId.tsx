@@ -5,7 +5,7 @@ import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useThemeColor } from '@berty-tech/store'
+import { useAccount, useStylesBertyId, useThemeColor } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
 
 import { TabBar } from '../shared-components/TabBar'
@@ -17,32 +17,12 @@ import { AccountAvatar } from '../avatars'
 // Settings My Berty ID Vue
 //
 
-// Styles
-
-const useStylesBertyId = () => {
-	const _iconIdSize = 45
-	const _iconShareSize = 26
-	const _titleSize = 26
-	const bertyIdContentScaleFactor = 0.66
-	const requestAvatarSize = 90
-
-	const [, { fontScale, scaleSize }] = useStyles()
-	const _bertyIdButtonSize = 60 * scaleSize
-	return {
-		bertyIdContentScaleFactor,
-		iconShareSize: _iconShareSize * scaleSize,
-		iconIdSize: _iconIdSize * scaleSize,
-		titleSize: _titleSize * fontScale,
-		requestAvatarSize,
-		styleBertyIdButton: {
-			width: _bertyIdButtonSize,
-			height: _bertyIdButtonSize,
-			borderRadius: _bertyIdButtonSize / 2,
-			marginRight: _bertyIdButtonSize,
-			bottom: _bertyIdButtonSize / 2,
-		},
-		styleBertyIdContent: { paddingBottom: _bertyIdButtonSize / 2 + 10 },
-	}
+const styleBertyIdOptions = {
+	iconIdSize: 45,
+	iconShareSize: 26,
+	titleSize: 26,
+	contentScaleFactor: 0.66,
+	avatarSize: 90,
 }
 
 const BertyIdContent: React.FC<{}> = ({ children }) => {
@@ -57,20 +37,13 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 
 const ContactRequestQR = () => {
 	const account = useAccount()
-	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
+	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
-	const { titleSize, bertyIdContentScaleFactor } = useStylesBertyId()
+	const { qrCodeSize } = useStylesBertyId(styleBertyIdOptions)
 
 	if (!account?.link) {
 		return <Text>Internal error</Text>
 	}
-
-	// Make sure we can always see the whole QR code on the screen, even if need to scroll
-	const qrCodeSize = isGteIpadSize
-		? Math.min(windowHeight, windowWidth) * 0.35
-		: Math.min(windowHeight * bertyIdContentScaleFactor, windowWidth * bertyIdContentScaleFactor) -
-		  1.25 * titleSize
-
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
 		<View style={[padding.top.big]}>
@@ -89,7 +62,7 @@ const ContactRequestQR = () => {
 const Fingerprint: React.FC = () => {
 	const account = useAccount()
 	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
-	const { bertyIdContentScaleFactor } = useStylesBertyId()
+	const { bertyIdContentScaleFactor } = useStylesBertyId(styleBertyIdOptions)
 
 	if (!account) {
 		return <Text>Client not initialized</Text>
@@ -126,7 +99,7 @@ const BertIdBody: React.FC = () => {
 	const [{ border, margin, padding, opacity }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
-	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId()
+	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId(styleBertyIdOptions)
 	const [selectedContent, setSelectedContent] = useState('qr')
 	const { t } = useTranslation()
 
@@ -178,7 +151,7 @@ const BertIdBody: React.FC = () => {
 const BertyIdShare: React.FC = () => {
 	const [{ row, border, flex }] = useStyles()
 	const colors = useThemeColor()
-	const { styleBertyIdButton, iconShareSize } = useStylesBertyId()
+	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
 	const account = useAccount()
 	const url = account?.link
 	if (!url) {
