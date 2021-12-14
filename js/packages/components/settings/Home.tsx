@@ -85,9 +85,27 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 	const _styles = useStylesHome()
 	const [{ row, border, padding }, { windowWidth, windowHeight, scaleHeight, scaleSize }] =
 		useStyles()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
+	const [link, setLink] = React.useState<string>('')
+
+	React.useEffect(() => {
+		const getAccountLink = async () => {
+			if (account?.displayName) {
+				const ret = await ctx.client?.instanceShareableBertyID({
+					reset: false,
+					displayName: account.displayName,
+				})
+				if (ret?.internalUrl) {
+					setLink(ret?.internalUrl)
+				}
+			}
+		}
+		getAccountLink().then()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<View style={[row.center, padding.top.small]}>
@@ -108,10 +126,10 @@ const HomeHeaderAvatar: React.FC<{ navigation: ComponentProps<typeof Home>['navi
 						{account?.displayName || ''}
 					</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
-						{(account?.link && (
+						{(link && (
 							<QRCode
 								size={qrCodeSize}
-								value={account.link}
+								value={link}
 								logo={logo}
 								color={colors['background-header']}
 								mode='circle'
