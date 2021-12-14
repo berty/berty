@@ -35,7 +35,6 @@
 			"advanced": "GEAVANCEERD",
 			"import-account": "IMPORTEER ACCOUNT",
 			"link-device": "LINK APPARAAT",
-			"expert-setup": "EXPERT SETUP",
 			"more": "MEER INFO",
 			"good-to-know": {
 				"title": "Goed om te weten:",
@@ -43,11 +42,11 @@
 				"second-point": "Bijnaam is optioneel en kan worden bewerkt"
 			}
 		},
-		"expert-setup": {
-			"title": "Expert modus",
+		"advanced-settings": {
+			"title": "",
 			"desc": "Vind documentatie en creëer uw eigen configuratie.",
 			"more-about": {
-				"title": "Welkom in de expert modus",
+				"title": "",
 				"first-paragraph": "Hier kunt u uw eigen aangepaste configuratie maken om aan uw behoeften te voldoen.",
 				"second-paragraph": "We zullen je alle opties presenteren om je te laten begrijpen wat er achter de schermen gebeurt.",
 				"third-paragraph": "Je vindt ook een ressources link om deze te hacken. Deze sectie is alleen voor experten!"
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Diensten",
+				"network-button": "Netwerk Lijst",
 				"first-button": "Pushmeldingen",
 				"second-button": {
 					"title": "Uw eigen node instellen",
 					"placeholder": "Voer serveradres in"
 				},
-				"third-button": "Selecteer een gecertificeerd knooppunt",
-				"connect": "VERBINDING UW BOOSTER NODE"
+				"third-button": "Selecteer een gecertificeerd knooppunt"
 			},
 			"apply-changes": "VERANDEREN TOEPASSEN",
 			"skip": "Sla dit over en doe dit later"
@@ -217,21 +216,10 @@
 					"desc": "Gebruik de nabijheidsfunctie en stuur een bericht zonder mobiel netwerk of internetverbinding!"
 				}
 			},
-			"header-left-button": "Help",
-			"header-center-button": "Ontwikkelaars tools",
-			"header-right-button": "Instellingen",
-			"network-button": "Netwerk Lijst",
 			"edit-profile": "Mijn profiel bewerken",
-			"expert-setup": "Expert configuratie",
-			"notifications-button": {
-				"title": "Notificaties",
-				"tag-enabled": "Ingeschakeld",
-				"tag-disabled": "Uitgeschakeld"
-			},
-			"dark-mode-button": "Donkere modus",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Nieuw account aanmaken"
 		},
 		"network-map": {
 			"title": "Netwerk Lijst",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "Instellingen",
 			"desc": "Pas alles aan om de app te krijgen die aan je behoeften voldoet",
+			"in-app-notifications": "",
+			"dark-mode-button": "Donkere modus",
+			"devtools": "Ontwikkelaars tools",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Gegevens opgeslagen!",
 				"desc": "Beschikbaar in de downloads map"
