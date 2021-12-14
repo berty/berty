@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "Szolgáltatások",
+				"network-button": "Hálózati Lista",
 				"first-button": "Push értesítések",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -95,6 +95,12 @@
 			"title": "A beállítás befejeződött!",
 			"desc": "Mostantól használhatja az alkalmazást, elkezdheti hozzáadni a névjegyeket, majd szabadon és privát módon beszélgethet velük",
 			"button": "BERTY HASZNÁLATÁNAK KEZDÉSE"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Mégse",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -210,21 +216,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "Súgó",
-			"header-center-button": "Fejlesztői eszközök",
-			"header-right-button": "Beállítások",
-			"network-button": "Hálózati Lista",
 			"edit-profile": "Fiók szerkesztése",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Értesítések",
-				"tag-enabled": "Engedélyezve",
-				"tag-disabled": "Letiltva"
-			},
-			"dark-mode-button": "Sötét mód",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Új fiók létrehozása"
 		},
 		"network-map": {
 			"title": "Hálózati Lista",
@@ -233,6 +228,10 @@
 		"mode": {
 			"title": "Beállítások",
 			"desc": "Szabja testre az alkalmazást igényeihez igazítva",
+			"in-app-notifications": "",
+			"dark-mode-button": "Sötét mód",
+			"devtools": "Fejlesztői eszközök",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Adatok elmentve!",
 				"desc": "Elérhető a letöltések mappában"
@@ -549,6 +548,7 @@
 		},
 		"files": {
 			"gallery": "Galéria",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Fájlok",
 			"microphone": "Mikrofon",
