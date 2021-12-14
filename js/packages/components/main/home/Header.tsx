@@ -1,10 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Platform, ScrollView, TextInput, TouchableOpacity, View, ViewProps } from 'react-native'
+import {
+	Platform,
+	ScrollView,
+	TextInput,
+	TouchableOpacity,
+	View,
+	ViewProps,
+	Text,
+} from 'react-native'
 import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
+import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import { useProfileNotification, useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 
@@ -86,13 +94,34 @@ export const HomeHeader: React.FC<
 									animate.current.play()
 									scrollRef.current?.scrollTo({ y: 0, animated: true })
 								}}
+								style={{ flexDirection: 'row' }}
 							>
 								<LottieView
 									ref={animate}
-									style={{ width: 40 }}
+									style={{ width: 40, marginRight: -10 }}
 									source={require('../berty_logo_animated.json')}
 									loop={false}
 								/>
+								<View
+									style={[
+										border.radius.medium,
+										padding.horizontal.tiny,
+										{
+											backgroundColor: defaultStylesDeclaration.colors.default.blue,
+											alignSelf: 'flex-start',
+										},
+									]}
+								>
+									<Text
+										style={{
+											color: defaultStylesDeclaration.colors.default.white,
+											justifyContent: 'center',
+											fontSize: 8,
+										}}
+									>
+										v1
+									</Text>
+								</View>
 							</TouchableOpacity>
 						</View>
 						<TouchableOpacity
