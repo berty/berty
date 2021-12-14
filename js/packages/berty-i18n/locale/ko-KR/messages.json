@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "서비스",
+				"network-button": "",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -217,21 +216,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "지원",
-			"header-center-button": "",
-			"header-right-button": "설정",
-			"network-button": "",
 			"edit-profile": "프로필 수정",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "알림",
-				"tag-enabled": "켜짐",
-				"tag-disabled": "꺼짐"
-			},
-			"dark-mode-button": "다크모드",
-			"bluetooth-button": {
-				"title": "블루투스"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "새 계정 만들기"
 		},
 		"network-map": {
 			"title": "",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "설정",
 			"desc": "",
+			"in-app-notifications": "",
+			"dark-mode-button": "다크모드",
+			"devtools": "",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
