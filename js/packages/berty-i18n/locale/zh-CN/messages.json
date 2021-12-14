@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "导入账户",
 			"link-device": "连接设备",
-			"expert-setup": "专业设置",
 			"more": "更多信息",
 			"good-to-know": {
 				"title": "知道：",
@@ -43,11 +42,11 @@
 				"second-point": "昵称是可选的，可以编辑"
 			}
 		},
-		"expert-setup": {
-			"title": "专业模式",
+		"advanced-settings": {
+			"title": "",
 			"desc": "查找文档并创建您自己的配置。",
 			"more-about": {
-				"title": "欢迎使用 专业模式",
+				"title": "",
 				"first-paragraph": "在这里，您将能够创建自己的自定义配置以满足您的需求。",
 				"second-paragraph": "我们会给您提供每个选项以允许您了解场地后面发生的事情。",
 				"third-paragraph": "您还可以找到资源链接来破解它。 此部分仅供专业使用！"
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "服务",
+				"network-button": "网络列表",
 				"first-button": "推送通知",
 				"second-button": {
 					"title": "设置您自己的节点",
 					"placeholder": "输入服务器地址"
 				},
-				"third-button": "选择认证节点",
-				"connect": "连接您的助推器节点"
+				"third-button": "选择认证节点"
 			},
 			"apply-changes": "应用更改",
 			"skip": "跳过并稍后执行此操作"
@@ -217,21 +216,10 @@
 					"desc": "使用附近功能，在没有任何蜂窝网络或互联网连接的情况下发送消息！"
 				}
 			},
-			"header-left-button": "帮助",
-			"header-center-button": "开发工具",
-			"header-right-button": "设置",
-			"network-button": "网络列表",
 			"edit-profile": "编辑个人信息",
-			"expert-setup": "专业配置",
-			"notifications-button": {
-				"title": "消息通知",
-				"tag-enabled": "已启用",
-				"tag-disabled": "已禁用"
-			},
-			"dark-mode-button": "暗色模式",
-			"bluetooth-button": {
-				"title": "蓝牙"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "创建新账号"
 		},
 		"network-map": {
 			"title": "网络列表",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "设置",
 			"desc": "所有功能皆可自定义",
+			"in-app-notifications": "",
+			"dark-mode-button": "暗色模式",
+			"devtools": "开发工具",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "数据已保存！",
 				"desc": "在下载目录中可用"
