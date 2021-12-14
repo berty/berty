@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -68,13 +67,13 @@
 			},
 			"third-part": {
 				"title": "الخدمات",
+				"network-button": "قائمة الشبكات",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
 			"apply-changes": "",
 			"skip": ""
@@ -217,21 +216,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "مساعدة",
-			"header-center-button": "أدوات التطوير",
-			"header-right-button": "الإعدادات",
-			"network-button": "قائمة الشبكات",
 			"edit-profile": "تعديل الملف الشخصي",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "الإشعارات",
-				"tag-enabled": "مفعّل",
-				"tag-disabled": "معطّل"
-			},
-			"dark-mode-button": "",
-			"bluetooth-button": {
-				"title": "البلوتوث"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "إنشاء حساب جديد"
 		},
 		"network-map": {
 			"title": "قائمة الشبكات",
@@ -240,6 +228,10 @@
 		"mode": {
 			"title": "الإعدادات",
 			"desc": "تخصيص كل شيء للحصول على التطبيق الذي يلائم احتياجاتك",
+			"in-app-notifications": "",
+			"dark-mode-button": "",
+			"devtools": "أدوات التطوير",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
