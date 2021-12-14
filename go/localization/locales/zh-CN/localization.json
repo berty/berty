@@ -2,29 +2,29 @@
   "push": {
     "message": {},
     "error": {
-      "title": ""
+      "title": "解密推送失败"
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了语音消息",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v 语音消息"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了 gif",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v gif"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了照片",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v 照片"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了媒体",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v 媒体"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v 与 %[2]v 回应您的消息"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "邀请您加入 '%[1]v' 群组"
     },
     "memberNameChanged": {},
     "memberDetailsChanged": {},
