@@ -571,6 +571,10 @@
 			"response-to": "Svar till",
 			"replying-to": "Du svarar till",
 			"replied-to": "Svarat till"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": "Gå till inställningar"
 		},
 		"skip": "HOPPA ÖVER",
+		"cancel": "AVBRYT",
 		"settings-text": "Du kan aktivera {{title}} behörighet från inställningar."
 	},
 	"notification": {
