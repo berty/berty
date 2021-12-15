@@ -8,14 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "CountDownLatch_darwin.h"
+
 #import "BleInterface_darwin.h"
+#import "BertyDevice_darwin.h"
+#import "PeerManager.h"
+#import "CountDownLatch_darwin.h"
 #import "WriteDataCache.h"
 
-#ifndef BleManager_h
-#define BleManager_h
+#define LOCAL_DOMAIN "tech.berty.bty"
 
-@class BertyDevice;
+NS_ASSUME_NONNULL_BEGIN
 
 @interface BleManager : NSObject <CBPeripheralManagerDelegate, CBCentralManagerDelegate>
 
@@ -25,6 +27,8 @@
 + (NSString *__nonnull)NSDataToHex:(NSData *__nonnull)data;
 + (void) printLongLog:(NSString *__nonnull)message;
 
+@property (nonatomic, strong, nullable) Logger *logger;
+@property (nonatomic, strong, nonnull) PeerManager *peerManager;
 @property (readwrite) BOOL pmEnable;
 @property (readwrite) BOOL cmEnable;
 @property (readwrite) int psm;
@@ -48,7 +52,7 @@
 @property (nonatomic, strong, nullable) CountDownLatch *writerLactch;
 @property (readwrite) BOOL writeStatus;
 
-- (instancetype __nonnull) initScannerAndAdvertiser;
+- (instancetype __nonnull) initDriver:(BOOL)useExternalLogger;
 - (void)addService;
 - (void)startScanning;
 - (void)toggleScanner:(NSTimer *__nonnull)timer;
@@ -63,4 +67,4 @@
 
 @end
 
-#endif
+NS_ASSUME_NONNULL_END

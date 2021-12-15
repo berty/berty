@@ -8,10 +8,12 @@ package ble
 #cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
 #include <stdlib.h>
 #import "BleInterface_darwin.h"
+#import "Logger.h"
 */
 import "C"
 
 import (
+	"fmt"
 	"unsafe"
 
 	"go.uber.org/zap"
@@ -20,6 +22,8 @@ import (
 )
 
 const Supported = true
+
+var gLogger *zap.Logger
 
 type Driver struct {
 	protocolCode int
@@ -33,9 +37,12 @@ var _ proximity.ProximityDriver = (*Driver)(nil)
 func NewDriver(logger *zap.Logger) proximity.ProximityDriver {
 	if logger == nil {
 		logger = zap.NewNop()
+	} else {
+		logger = logger.Named("BLE")
+		logger.Debug("NewDriver()")
+		C.BLEUseExternalLogger()
 	}
-	logger = logger.Named("BLE")
-	logger.Debug("NewDriver()")
+	gLogger = logger
 
 	return &Driver{
 		protocolCode: ProtocolCode,
@@ -79,6 +86,26 @@ func BLEReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int)
 		return
 	}
 	t.(proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
+}
+
+//export BLELog
+func BLELog(level C.enum_level, message *C.char) { //nolint:golint
+	if gLogger == nil {
+		fmt.Println("logger not found")
+		return
+	}
+
+	goMessage := C.GoString(message)
+	switch level {
+	case C.Debug:
+		gLogger.Debug(goMessage)
+	case C.Info:
+		gLogger.Info(goMessage)
+	case C.Warn:
+		gLogger.Warn(goMessage)
+	case C.Error:
+		gLogger.Error(goMessage)
+	}
 }
 
 func (d *Driver) Start(localPID string) {

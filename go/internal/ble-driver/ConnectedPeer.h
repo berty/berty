@@ -7,9 +7,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "BertyDevice_darwin.h"
-
 NS_ASSUME_NONNULL_BEGIN
+
+@class BertyDevice;
 
 @interface ConnectedPeer : NSObject
 

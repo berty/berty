@@ -7,53 +7,53 @@
 //
 
 #import "PeerManager.h"
+#import "BleInterface_darwin.h"
 
 @implementation PeerManager
 
-static NSMutableDictionary *connectedPeers = nil;
+- (instancetype __nonnull)initWithLogger:(Logger *__nonnull)logger {
+    self = [super init];
+    
+    if (self) {
+        _logger = logger;
+        _connectedPeers = [[NSMutableDictionary alloc] init];
+    }
+    
+    return self;
+}
 
 - (void)dealloc {
-    [connectedPeers release];
-    connectedPeers = nil;
+    [_connectedPeers release];
+    [_logger release];
     
     [super dealloc];
 }
 
-+ (NSMutableDictionary *__nonnull)connectedPeers {
-    
-    @synchronized (connectedPeers) {
-        if (connectedPeers == nil) {
-            connectedPeers = [[NSMutableDictionary alloc] init];
-        }
-        return connectedPeers;
-    }
-}
-
-+ (ConnectedPeer *__nonnull)getPeer:(NSString *__nonnull) peerID {
-    os_log_debug(OS_LOG_BLE, "getPeer called: peerID=%{public}@", peerID);
+- (ConnectedPeer *__nonnull)getPeer:(NSString *__nonnull) peerID {
+    [self.logger d:@"getPeer called: peerID=%@", [self.logger SensitiveNSObject:peerID]];
     
     ConnectedPeer *peer;
     
-    @synchronized (connectedPeers) {
-        if ((peer = [[PeerManager connectedPeers] objectForKey:peerID]) != nil) {
-            os_log_debug(OS_LOG_BLE, "getPeer: peerID=%{public}@ already created", peerID);
+    @synchronized (_connectedPeers) {
+        if ((peer = [self.connectedPeers objectForKey:peerID]) != nil) {
+            [self.logger d:@"getPeer: peerID=%@ alread created", [self.logger SensitiveNSObject:peerID]];
             return peer;
         }
         
-        os_log_debug(OS_LOG_BLE, "getPeer: peerID=%{public}@ created", peerID);
+        [self.logger d:@"getPeer: peerID=%@ created", [self.logger SensitiveNSObject:peerID]];
         peer = [[ConnectedPeer alloc] init];
-        [[PeerManager connectedPeers] setObject:peer forKey:peerID];
+        [self.connectedPeers setObject:peer forKey:peerID];
         [peer release];
         return peer;
     }
 }
 
-+ (ConnectedPeer *__nullable)registerDevice:(BertyDevice *__nonnull)device withPeerID:(NSString *__nonnull)peerID isClient:(BOOL)isClient {
-    os_log_debug(OS_LOG_BLE, "registerDevice called: identifier=%{public}@ peer=%{public}@ isClient=%d", [device getIdentifier], peerID, isClient);
+- (ConnectedPeer *__nullable)registerDevice:(BertyDevice *__nonnull)device withPeerID:(NSString *__nonnull)peerID isClient:(BOOL)isClient {
+    [self.logger d:@"registerDevice called: identifier=%@ peer=%@ isClient=%d", [self.logger SensitiveNSObject:[device getIdentifier]], [self.logger SensitiveNSObject:peerID], isClient];
     
     ConnectedPeer *peer;
     
-    @synchronized (connectedPeers) {
+    @synchronized (_connectedPeers) {
         peer = [self getPeer:peerID];
         if (isClient) {
             peer.client = device;
@@ -66,7 +66,7 @@ static NSMutableDictionary *connectedPeers = nil;
         peer.connected = TRUE;
         
         if (!BLEBridgeHandleFoundPeer(peerID)) {
-            os_log_error(OS_LOG_BLE, "registerDevice failed: identifier=%{public}@ HandleFoundPeer failed: peer=%{public}@", [device getIdentifier], peerID);
+            [self.logger e:@"registerDevice error: device=%@ peer=%@: HandleFoundPeer failed", [self.logger SensitiveNSObject:[device getIdentifier]], [self.logger SensitiveNSObject:peerID]];
             return NULL;
         }
         
@@ -76,40 +76,40 @@ static NSMutableDictionary *connectedPeers = nil;
     return peer;
 }
 
-+ (void)unregisterDevice:(BertyDevice *)device {
-    os_log_debug(OS_LOG_BLE, "unregisterDevice called: identifier=%{public}@ peerID=%{public}@", [device getIdentifier], device.remotePeerID);
+- (void)unregisterDevice:(BertyDevice *)device {
+    [self.logger d:@"unregisterDevice called: device=%@ peerID=%@", [self.logger SensitiveNSObject:[device getIdentifier]], [self.logger SensitiveNSObject:device.remotePeerID]];
                  
     ConnectedPeer *peer;
     
-    @synchronized (connectedPeers) {
-        if ((peer = [[PeerManager connectedPeers] objectForKey:device.remotePeerID]) == nil) {
-            os_log_error(OS_LOG_BLE, "unregisterDevice failed: peerID=%{public}@ not found", device.remotePeerID);
+    @synchronized (_connectedPeers) {
+        if ((peer = [self.connectedPeers objectForKey:device.remotePeerID]) == nil) {
+            [self.logger e:@"unregisterDevice called: device=%@ peerID=%@: peerID not found", [self.logger SensitiveNSObject:[device getIdentifier]], [self.logger SensitiveNSObject:device.remotePeerID]];
             return ;
         }
         
         if ([peer isConnected]) {
-            os_log_debug(OS_LOG_BLE, "unregisterDevice: peerID=%{public}@: calling HandleLostPeer", device.remotePeerID);
+            [self.logger d:@"unregisterDevice called: device=%{public}@ peerID=%{public}@: calling HandleLostPeer", [self.logger SensitiveNSObject:[device getIdentifier]], [self.logger SensitiveNSObject:device.remotePeerID]];
             BLEBridgeHandleLostPeer(device.remotePeerID);
             peer.connected = FALSE;
         }
         
-        [PeerManager removePeer:device.remotePeerID];
+        [self removePeer:device.remotePeerID];
     }
 }
 
-+ (void)removePeer:(NSString *__nonnull) peerID {
-    os_log_debug(OS_LOG_BLE, "removePeer called: peerID=%{public}@", peerID);
+- (void)removePeer:(NSString *__nonnull) peerID {
+    [self.logger d:@"removePeer called: peerID=%{public}@", [self.logger SensitiveNSObject:peerID]];
     
-    @synchronized (connectedPeers) {
-            [[PeerManager connectedPeers] removeObjectForKey:peerID];
+    @synchronized (_connectedPeers) {
+            [self.connectedPeers removeObjectForKey:peerID];
     }
 }
 
-+ (void)removeAllPeers {
-    os_log_debug(OS_LOG_BLE, "removeAllPeers called");
+- (void)removeAllPeers {
+    [self.logger d:@"removeAllPeers called"];
     
-    @synchronized (connectedPeers) {
-            [[PeerManager connectedPeers] removeAllObjects];
+    @synchronized (_connectedPeers) {
+            [self.connectedPeers removeAllObjects];
     }
 }
 

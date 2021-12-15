@@ -9,14 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-#import "BleManager_darwin.h"
+#import "ConnectedPeer.h"
 #import "CircularQueue.h"
 #import "BleQueue.h"
+#import "Logger.h"
+#import "CountDownLatch_darwin.h"
 
-#ifndef BertyDevice_h
-#define BertyDevice_h
-@class BertyDevice;
-@class ConnectedPeer;
+NS_ASSUME_NONNULL_BEGIN
+
+@class BleManager;
 
 typedef void (^BertyDeviceConnectCallbackBlockType)(BertyDevice * __nullable, NSError * __nullable);
 typedef void (^BertyDeviceServiceCallbackBlockType)(NSArray * __nullable, NSError * __nullable);
@@ -26,6 +27,7 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 
 @interface BertyDevice : NSObject <CBPeripheralDelegate, NSStreamDelegate>
 
+@property (nonatomic, strong, nonnull) Logger *logger;
 @property (nonatomic, strong, nonnull) NSString *name;
 @property (nonatomic, strong, nonnull) NSDictionary *serviceDict;
 @property (nonatomic, strong, nullable) CBPeripheral *peripheral;
@@ -48,8 +50,8 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 @property (nonatomic, strong, nonnull) CircularQueue *dataCache;
 @property (readwrite) BOOL isDisconnecting;
 
-- (instancetype __nullable)initWithIdentifier:(NSString *__nonnull)identifier central:(BleManager *__nonnull)manager asClient:(BOOL)client;
-- (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral central:(BleManager *__nonnull)manager withName:(NSString *__nonnull)name;
+- (instancetype __nullable)initWithIdentifier:(NSString *__nonnull)identifier logger:(Logger *__nonnull)logger central:(BleManager *__nonnull)manager asClient:(BOOL)client;
+- (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral logger:(Logger *__nonnull)logger central:(BleManager *__nonnull)manager withName:(NSString *__nonnull)name;
 - (void)closeBertyDevice;
 - (BOOL)writeToCharacteristic:(NSData *__nonnull)data forCharacteristic:(CBCharacteristic *__nonnull)characteristic withEOD:(BOOL)eod;
 - (void)handshake;
@@ -80,4 +82,4 @@ API_AVAILABLE(ios(11.0))
 - (BOOL)l2capWrite:(NSData *__nonnull)data;
 
 @end
-#endif
+NS_ASSUME_NONNULL_END
