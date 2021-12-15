@@ -75,6 +75,9 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 	if n.RendezvousRotationBase.Nanoseconds() <= 0 {
 		n.RendezvousRotationBase = rendezvous.DefaultRotationInterval
 	}
+
+	// FIXME: add this setting back
+	n.DirectChannelFactory = nil
 }
 
 type BertyOrbitDB struct {
