@@ -144,6 +144,7 @@ const MultiMemberSettingsBody: React.FC<{
 					bgColor: colors['positive-asset'],
 				}}
 				style={[margin.top.medium]}
+				isDropdown
 			>
 				<View
 					style={{
