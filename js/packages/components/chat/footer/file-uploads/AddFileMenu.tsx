@@ -20,7 +20,9 @@ import { SecurityAccess } from './SecurityAccess'
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
 
-export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = ({ onClose }) => {
+export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]) => void }> = ({
+	onClose,
+}) => {
 	const [{ border, padding }] = useStyles()
 	const { t }: { t: any } = useTranslation()
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
@@ -159,8 +161,16 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 					return reply?.cid
 				})
 			).filter(cid => !!cid)
-
-			onClose(mediaCids)
+			onClose(
+				res.map(
+					(doc, i): beapi.messenger.IMedia => ({
+						cid: mediaCids[i],
+						filename: doc.filename,
+						mimeType: doc.mimeType,
+						displayName: doc.displayName || doc.filename || 'document',
+					}),
+				),
+			)
 		} catch (err) {}
 		setLoading(false)
 	}

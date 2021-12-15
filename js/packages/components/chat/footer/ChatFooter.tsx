@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
+import Long from 'long'
 
 import {
 	Maybe,
@@ -53,6 +54,10 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const ctx = useMessengerContext()
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
+		const addedMedias = React.useMemo(
+			() => mediaCids.map(cid => ctx.medias[cid]),
+			[ctx.medias, mediaCids],
+		)
 
 		// local
 		const [sending, setSending] = React.useState<boolean>(false)
@@ -67,20 +72,36 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 
 		// callbacks
 		const sendMessageBouncy = React.useCallback(
-			async (additionalMedia: string[] = []) => {
+			async (additionalMedia: beapi.messenger.IMedia[] = []) => {
 				try {
 					if (!messengerClient) {
 						throw new Error('no messenger client')
 					}
 					const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: message }).finish()
-					const media = [...mediaCids, ...additionalMedia]
-					console.log('media', media)
-					await messengerClient.interact({
+					const medias = [...addedMedias, ...additionalMedia].filter(
+						m => m?.cid,
+					) as beapi.messenger.IMedia[]
+					console.log('media', medias)
+					const reply = await messengerClient.interact({
 						conversationPublicKey: convPK,
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						payload: buf,
-						mediaCids: media,
+						mediaCids: medias.map(media => media.cid) as string[],
 						targetCid: activeReplyInte?.cid,
+					})
+					const optimisticInteraction: beapi.messenger.IInteraction = {
+						medias,
+						cid: reply.cid,
+						conversationPublicKey: convPK,
+						isMine: true,
+						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+						payload: buf,
+						targetCid: activeReplyInte?.cid,
+						sentDate: Long.fromNumber(Date.now()),
+					}
+					ctx.dispatch({
+						type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+						payload: { interaction: optimisticInteraction },
 					})
 					dispatch(resetChatInput(convPK))
 					ctx.playSound('messageSent')
@@ -98,7 +119,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				setActiveReplyInte,
 				dispatch,
 				messengerClient,
-				mediaCids,
+				addedMedias,
 			],
 		)
 
@@ -112,7 +133,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		}, [setSending, sendMessageBouncy, sending])
 
 		const handleCloseFileMenu = React.useCallback(
-			async (newMedias: string[] | undefined) => {
+			async (newMedias: beapi.messenger.IMedia[] | undefined) => {
 				if (newMedias) {
 					await sendMessageBouncy(newMedias)
 				}
@@ -131,23 +152,27 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					if (!messengerClient) {
 						throw new Error('no messenger client')
 					}
-					const mediaCids = (
-						await amap(res, async doc => {
-							const stream = await messengerClient.mediaPrepare({})
-							await stream?.emit({
-								info: {
-									filename: doc.filename,
-									mimeType: doc.mimeType,
-									displayName: doc.displayName || doc.filename || 'document',
-								},
-								uri: doc.uri,
-							})
-							const reply = await stream?.stopAndRecv()
-							return reply?.cid
+					const medias = await amap(res, async doc => {
+						const stream = await messengerClient.mediaPrepare({})
+						await stream.emit({
+							info: {
+								filename: doc.filename,
+								mimeType: doc.mimeType,
+								displayName: doc.displayName || doc.filename || 'document',
+							},
+							uri: doc.uri,
 						})
-					).filter(cid => !!cid)
+						const reply = await stream.stopAndRecv()
+						const optimisticMedia: beapi.messenger.IMedia = {
+							cid: reply.cid,
+							filename: doc.filename,
+							mimeType: doc.mimeType,
+							displayName: doc.displayName || doc.filename || 'document',
+						}
+						return optimisticMedia
+					})
 
-					await handleCloseFileMenu(mediaCids)
+					await handleCloseFileMenu(medias)
 				} catch (err) {
 					console.warn('failed to prepare media and send message:', err)
 				}

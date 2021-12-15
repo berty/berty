@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
 import { RESULTS } from 'react-native-permissions'
+import Long from 'long'
 
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useStyles } from '@berty-tech/styles'
@@ -52,24 +53,37 @@ const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
 const sendMessage = async (
 	client: WelshMessengerServiceClient,
 	convPk: string,
+	dispatch: ReturnType<typeof useMessengerContext>['dispatch'],
 	opts: {
 		body?: string
-		medias?: string[]
+		medias?: beapi.messenger.IMedia[]
 	},
 ) => {
-	client
-		?.interact({
+	try {
+		const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: opts.body || '' }).finish()
+		const reply = await client.interact({
 			conversationPublicKey: convPk,
 			type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-			payload: beapi.messenger.AppMessage.UserMessage.encode({ body: opts.body || '' }).finish(),
-			mediaCids: opts.medias,
+			payload: buf,
+			mediaCids: opts.medias?.filter(media => media.cid).map(media => media.cid) as string[],
 		})
-		.then(() => {
-			playSound('messageSent')
+		const optimisticInteraction: beapi.messenger.IInteraction = {
+			cid: reply.cid,
+			conversationPublicKey: convPk,
+			isMine: true,
+			type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+			payload: buf,
+			medias: opts.medias,
+			sentDate: Long.fromNumber(Date.now()),
+		}
+		dispatch({
+			type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+			payload: { interaction: optimisticInteraction },
 		})
-		.catch(e => {
-			console.warn('e sending message:', e)
-		})
+		playSound('messageSent')
+	} catch (e) {
+		console.warn('error sending message:', e)
+	}
 }
 
 interface Attachment extends beapi.messenger.IMedia {
@@ -87,7 +101,7 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 						beapi.messenger.MediaMetadata.decode(doc.metadataBytes!).items[0].payload!,
 					),
 				)
-				await stream?.emit({
+				await stream.emit({
 					info: {
 						filename: doc.filename,
 						mimeType: doc.mimeType,
@@ -96,11 +110,18 @@ const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment
 					},
 					uri: doc.uri,
 				})
-				const reply = await stream?.stopAndRecv()
-				return reply?.cid
+				const reply = await stream.stopAndRecv()
+				const optimisticMedia: beapi.messenger.IMedia = {
+					cid: reply?.cid,
+					filename: doc.filename,
+					mimeType: doc.mimeType,
+					displayName: doc.displayName || doc.filename || 'document',
+					metadataBytes: doc.metadataBytes,
+				}
+				return optimisticMedia
 			}),
 		)
-	).filter(cid => !!cid)
+	).filter(media => !!media?.cid)
 
 const audioMessageDisplayName = (startDate: Date): string =>
 	`audiorec_${startDate.getFullYear()}:${startDate.getMonth()}:${startDate.getDate()}:${startDate.getHours()}:${startDate.getMinutes()}:${startDate.getSeconds()}`
@@ -133,12 +154,12 @@ export const RecordComponent: React.FC<{
 	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
 	/*const setRecordingState = React.useCallback(
-		(state: RecordingState, msg?: string) => {
-			console.log('setRecordingState', msg, RecordingState[state])
-			_setRecordingState(state)
-		},
-		[_setRecordingState],
-	)*/
+			(state: RecordingState, msg?: string) => {
+				console.log('setRecordingState', msg, RecordingState[state])
+				_setRecordingState(state)
+			},
+			[_setRecordingState],
+		)*/
 	const [recordingStart, setRecordingStart] = useState(Date.now())
 	const [clearRecordingInterval, setClearRecordingInterval] = useState<ReturnType<
 		typeof setInterval
@@ -218,43 +239,48 @@ export const RecordComponent: React.FC<{
 	}, [addMeteredValue, clearRecordingInterval])
 
 	const sendComplete = useCallback(
-		({ duration, start }: { duration: number; start: number }) => {
-			Vibration.vibrate(400)
-			const startDate = new Date(start)
-			const displayName = audioMessageDisplayName(startDate)
-			attachMedias(ctx.client!, [
-				{
-					displayName,
-					filename: displayName + '.aac',
-					mimeType: 'audio/aac',
-					uri: recorderFilePath,
-					metadataBytes: beapi.messenger.MediaMetadata.encode({
-						items: [
-							{
-								metadataType: beapi.messenger.MediaMetadataType.MetadataAudioPreview,
-								payload: beapi.messenger.AudioPreview.encode({
-									bitrate: voiceMemoBitrate,
-									format: voiceMemoFormat,
-									samplingRate: voiceMemoSampleRate,
-									volumeIntensities: limitIntensities(
-										meteredValuesRef.current.map(v =>
-											Math.round((v - volumeValueLowest) * volumeValuePrecision),
+		async ({ duration, start }: { duration: number; start: number }) => {
+			try {
+				Vibration.vibrate(400)
+				if (!ctx.client) {
+					return
+				}
+				const startDate = new Date(start)
+				const displayName = audioMessageDisplayName(startDate)
+				const medias = await attachMedias(ctx.client, [
+					{
+						displayName,
+						filename: displayName + '.aac',
+						mimeType: 'audio/aac',
+						uri: recorderFilePath,
+						metadataBytes: beapi.messenger.MediaMetadata.encode({
+							items: [
+								{
+									metadataType: beapi.messenger.MediaMetadataType.MetadataAudioPreview,
+									payload: beapi.messenger.AudioPreview.encode({
+										bitrate: voiceMemoBitrate,
+										format: voiceMemoFormat,
+										samplingRate: voiceMemoSampleRate,
+										volumeIntensities: limitIntensities(
+											meteredValuesRef.current.map(v =>
+												Math.round((v - volumeValueLowest) * volumeValuePrecision),
+											),
+											volumeValuesAttached,
 										),
-										volumeValuesAttached,
-									),
-									durationMs: duration,
-								}).finish(),
-							},
-						],
-					}).finish(),
-				},
-			])
-				.then(cids => {
-					return sendMessage(ctx.client!, convPk, { medias: cids })
-				})
-				.catch(e => console.warn(e))
+										durationMs: duration,
+									}).finish(),
+								},
+							],
+						}).finish(),
+					},
+				])
+
+				await sendMessage(ctx.client!, convPk, ctx.dispatch, { medias })
+			} catch (e) {
+				console.warn(e)
+			}
 		},
-		[convPk, ctx.client, recorderFilePath],
+		[convPk, ctx.client, recorderFilePath, ctx.dispatch],
 	)
 
 	useEffect(() => {
