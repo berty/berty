@@ -1,12 +1,13 @@
-# Berty BetaBot
+# Berty Welcome Bot
 
-`BetaBot` is a Berty bot with the aim of onboarding people to discover the features of the app before having real friends also on the app.
+`Welcome Bot` is a Berty bot with the aim of onboarding people to discover the features of the app before having real friends also on the app.
 
 ## Usage
 
 1. add the bot as contact
 
-[embedmd]:# (../../../config/.tmp/qr-betabot.txt txt)
+[embedmd]: # '../../../config/.tmp/qr-welcome-bot.txt txt'
+
 ```txt
 █████████████████████████████████████████████████████
 █████████████████████████████████████████████████████
@@ -35,11 +36,11 @@
 ████▄▄▄▄▄▄▄█▄█▄▄██▄█▄▄▄▄▄▄▄▄▄██▄▄██▄▄████▄█▄███▄▄████
 █████████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=BetaBot
+https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=Welcome-Bot
 ```
 
 2. follow what the bot is saying
 
 ## Deployment
 
-See [../../../tool/deployments/betabot/](../../../tool/deployments/betabot/)
+See [../../../tool/deployments/welcome-bot/](../../../tool/deployments/welcome-bot/)

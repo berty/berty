@@ -1,20 +1,12 @@
 {
   "berty": {
     "contacts": {
-      "betabot": {
-        "link": "https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=BetaBot",
-        "name": "BetaBot",
-        "description": "Official BetaBot",
-        "kind": "Bot",
-        "suggestion": true,
-        "icon": "berty_bot_pink_bg"
-      },
       "betabot-dev": {
         "link": "https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=BetaBot-Dev",
         "name": "BetaBot Dev",
         "description": "BetaBot-Dev",
         "kind": "Bot",
-        "suggestion": true,
+        "suggestion": false,
         "icon": "berty_dev_green_bg"
       },
       "testbot": {
@@ -32,6 +24,14 @@
         "kind": "Bot",
         "suggestion": false,
         "icon": ""
+      },
+      "welcome-bot": {
+        "link": "https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=Welcome-Bot",
+        "name": "Welcome Bot",
+        "description": "Official Welcome Bot",
+        "kind": "Bot",
+        "suggestion": true,
+        "icon": "berty_bot_pink_bg"
       }
     },
     "conversations": {

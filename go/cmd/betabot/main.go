@@ -561,7 +561,7 @@ For the moment i can't send a group invitation so i share the link of the conver
 
 	if conversation.Type == messengertypes.Conversation_ContactType && sr.GetEvent().GetIsNew() {
 		time.Sleep(2 * time.Second)
-		body := `Hey! 🙌 Welcome to the Berty beta version! 🎊
+		body := `Hey! 🙌 Welcome to Berty v1! 🎊
 I’m here to help you with the onboarding process.
 Let's test out some features together!
 Just type 'yes' to let me know you copy that.`
@@ -668,19 +668,19 @@ func safeDefaultDisplayName() string {
 	if name == "" {
 		name = "Anonymous4242"
 	}
-	return fmt.Sprintf("%s (betabot)", name)
+	return fmt.Sprintf("%s (Welcome Bot)", name)
 }
 
 func defaultReplyOption() []*messengertypes.ReplyOption {
 	return []*messengertypes.ReplyOption{
-		{Payload: "/help", Display: "Display betabot commands"},
+		{Payload: "/help", Display: "Display Welcome Bot commands"},
 		{Payload: "/demo version", Display: "What is the demo version?"},
 	}
 }
 
 func getRandomReply() string {
 	available := []string{
-		"Welcome to the beta!",
+		"Welcome to Berty v1!",
 		"Hello! Welcome to Berty!",
 		"Hey, I hope you're feeling well here!",
 		"Hi, I'm here for you at anytime for tests!",
