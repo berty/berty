@@ -571,6 +571,10 @@
 			"response-to": "答复：",
 			"replying-to": "你正在回复",
 			"replied-to": "回复至"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": "转到设置"
 		},
 		"skip": "跳过",
+		"cancel": "取消",
 		"settings-text": "您可以在设置中启用 {{title}} 权限。"
 	},
 	"notification": {
