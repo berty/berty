@@ -571,6 +571,10 @@
 			"response-to": "Reactie op",
 			"replying-to": "Je reageert op",
 			"replied-to": "Gereageerd op"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": "Ga naar Instellingen"
 		},
 		"skip": "OVERSLAAN",
+		"cancel": "ANNULEREN",
 		"settings-text": "Je kunt {{title}} rechten inschakelen via de Instellingen."
 	},
 	"notification": {
