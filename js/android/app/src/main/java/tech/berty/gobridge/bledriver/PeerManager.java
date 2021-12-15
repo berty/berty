@@ -1,32 +1,35 @@
 package tech.berty.gobridge.bledriver;
 
-import android.util.Log;
-
 import java.util.HashMap;
 
 public class PeerManager {
     private static final String TAG = "bty.ble.PeerManager";
+    private final Logger mLogger;
 
-    private static final HashMap<String, Peer> mPeers = new HashMap<>();
+    private final HashMap<String, Peer> mPeers = new HashMap<>();
+    
+    public PeerManager(Logger logger) {
+        mLogger = logger;
+    }
 
-    public static synchronized Peer getPeer(String peerID) {
+    public synchronized Peer getPeer(String peerID) {
         Peer peer;
 
         if ((peer = mPeers.get(peerID)) == null) {
-            Log.v(TAG, "addPeer: peer unknown");
-            peer = new Peer(peerID);
+            mLogger.v(TAG, "addPeer: peer unknown");
+            peer = new Peer(mLogger, peerID);
             mPeers.put(peerID, peer);
         } else {
-            Log.v(TAG, "addPeer: peer already known");
+            mLogger.v(TAG, "addPeer: peer already known");
         }
         return peer;
     }
 
-    public static synchronized Peer registerDevice(String peerID, PeerDevice peerDevice, boolean isClient) {
-        Log.i(TAG, String.format("registerDevice called: device=%s peerID=%s client=%b", peerDevice.getMACAddress(), peerID, isClient));
+    public synchronized Peer registerDevice(String peerID, PeerDevice peerDevice, boolean isClient) {
+        mLogger.i(TAG, String.format("registerDevice called: device=%s peerID=%s client=%b", mLogger.sensitiveObject(peerDevice.getMACAddress()), mLogger.sensitiveObject(peerID), isClient));
 
         if (!BleInterface.BLEHandleFoundPeer(peerID)) {
-            Log.e(TAG, String.format("registerDevice: device=%s peerID=%s: HandleFoundPeer failed", peerDevice.getMACAddress(), peerID));
+            mLogger.e(TAG, String.format("registerDevice: device=%s peerID=%s: HandleFoundPeer failed", mLogger.sensitiveObject(peerDevice.getMACAddress()), mLogger.sensitiveObject(peerID)));
             return null;
         }
 
@@ -42,17 +45,17 @@ public class PeerManager {
         return peer;
     }
 
-    public static synchronized void unregisterDevices(String peerID) {
-        Log.v(TAG, String.format("unregisterDevices called: peerID=%s", peerID));
+    public synchronized void unregisterDevices(String peerID) {
+        mLogger.v(TAG, String.format("unregisterDevices called: peerID=%s", mLogger.sensitiveObject(peerID)));
         Peer peer;
 
         if ((peer = mPeers.get(peerID)) == null) {
-            Log.i(TAG, String.format("unregisterDevices error: Peer not found: peer=%s", peerID));
+            mLogger.i(TAG, String.format("unregisterDevices error: Peer not found: peer=%s", mLogger.sensitiveObject(peerID)));
             return;
         }
 
         if (peer.isHandshakeSuccessful()) {
-            Log.i(TAG, String.format("unregisterDevices: call HandleLostPeer for peer: peer=%s", peerID));
+            mLogger.i(TAG, String.format("unregisterDevices: call HandleLostPeer for peer: peer=%s", mLogger.sensitiveObject(peerID)));
             BleDriver.mCallbacksHandler.post(() -> {
                 BleInterface.BLEHandleLostPeer(peerID);
             });
@@ -62,7 +65,7 @@ public class PeerManager {
         mPeers.remove(peerID);
     }
 
-    public static synchronized Peer get(String peerID) {
+    public synchronized Peer get(String peerID) {
         return mPeers.get(peerID);
     }
 }

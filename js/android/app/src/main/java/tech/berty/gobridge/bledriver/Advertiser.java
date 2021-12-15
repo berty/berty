@@ -5,7 +5,6 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
-import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
@@ -17,13 +16,15 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Advertiser extends AdvertiseCallback {
     private static final String TAG = "bty.ble.Advertiser";
     private final BluetoothAdapter mBluetoothAdapter;
+    private final Logger mLogger;
     private final Lock mLock = new ReentrantLock();
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
     private boolean mInit;
     private boolean mAdvertising;
     private CountDownLatch mStartedLock;
 
-    public Advertiser(BluetoothAdapter bluetoothAdapter) {
+    public Advertiser(Logger logger, BluetoothAdapter bluetoothAdapter) {
+        mLogger = logger;
         mBluetoothAdapter = bluetoothAdapter;
         setInit(init());
     }
@@ -32,11 +33,11 @@ public class Advertiser extends AdvertiseCallback {
     private boolean init() {
 
         if ((mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser()) == null) {
-            Log.e(TAG, "init: hardware advertising initialization failed");
+            mLogger.e(TAG, "init: hardware advertising initialization failed");
             return false;
         }
 
-        Log.i(TAG, "init: hardware advertising initialization done");
+        mLogger.i(TAG, "init: hardware advertising initialization done");
         return true;
     }
 
@@ -68,17 +69,17 @@ public class Advertiser extends AdvertiseCallback {
     // enable scanning
     public boolean start(String id) {
         if (!isInit()) {
-            Log.e(TAG, "start: driver not init");
+            mLogger.e(TAG, "start: driver not init");
             return false;
         }
 
         if (isAdvertising()) {
-            Log.i(TAG, "start: advertiser already running");
+            mLogger.i(TAG, "start: advertiser already running");
             mBluetoothLeAdvertiser.stopAdvertising(this);
             setAdvertisingState(false);
         }
 
-        Log.i(TAG, String.format("starting advertising, id=%s", id));
+        mLogger.i(TAG, String.format("starting advertising, id=%s", mLogger.sensitiveObject(id)));
 
         AdvertiseSettings mAdvertiseSettings = buildAdvertiseSettings();
         AdvertiseData mAdvertiseData = buildAdvertiseData(id);
@@ -89,11 +90,11 @@ public class Advertiser extends AdvertiseCallback {
         try {
             // Need to set a max time because AVD hangs without that
             if (!mStartedLock.await(1000, TimeUnit.MILLISECONDS)) {
-                Log.e(TAG, "starting advertising error: timeout");
+                mLogger.e(TAG, "starting advertising error: timeout");
                 return false;
             }
         } catch (InterruptedException e) {
-            Log.e(TAG, "starting advertising: interrupted exception", e);
+            mLogger.e(TAG, "starting advertising: interrupted exception", e);
         }
         // advertising status is updated by callback
         return isAdvertising();
@@ -102,17 +103,17 @@ public class Advertiser extends AdvertiseCallback {
     // disable scanning
     public void stop() {
         if (!isInit()) {
-            Log.e(TAG, "stop: driver not init");
+            mLogger.e(TAG, "stop: driver not init");
             return;
         }
 
         if (isAdvertising()) {
             if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-                Log.i(TAG, "stopping advertising");
+                mLogger.i(TAG, "stopping advertising");
                 mBluetoothLeAdvertiser.stopAdvertising(this);
                 setAdvertisingState(false);
             } else {
-                Log.e(TAG, "stop advertiser error: BT adapter not running");
+                mLogger.e(TAG, "stop advertiser error: BT adapter not running");
             }
         }
     }
@@ -141,7 +142,7 @@ public class Advertiser extends AdvertiseCallback {
     public void onStartFailure(int errorCode) {
         super.onStartFailure(errorCode);
 
-        Log.d(TAG, "onStartFailure called");
+        mLogger.d(TAG, "onStartFailure called");
         String errorString;
         boolean state = false;
 
@@ -171,7 +172,7 @@ public class Advertiser extends AdvertiseCallback {
                 errorString = "UNKNOWN ADVERTISE FAILURE (" + errorCode + ")";
                 break;
         }
-        Log.e(TAG, "onStartFailure: " + errorString);
+        mLogger.e(TAG, "onStartFailure: " + errorString);
         setAdvertisingState(state);
         mStartedLock.countDown();
     }
@@ -179,7 +180,7 @@ public class Advertiser extends AdvertiseCallback {
     @Override
     public void onStartSuccess(AdvertiseSettings settingsInEffect) {
         super.onStartSuccess(settingsInEffect);
-        Log.d(TAG, "onStartSuccess called");
+        mLogger.d(TAG, "onStartSuccess called");
 
         setAdvertisingState(true);
         mStartedLock.countDown();

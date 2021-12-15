@@ -9,7 +9,6 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
@@ -21,13 +20,11 @@ import android.content.Context;
 import android.os.Build;
 import android.os.ParcelUuid;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -46,7 +43,8 @@ public class GattServer {
     private final UUID CCC_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
     static final ParcelUuid P_SERVICE_UUID = new ParcelUuid(SERVICE_UUID);
     private final String TAG = "bty.ble.GattServer";
-
+    private final Logger mLogger;
+    private final BleDriver mBleDriver;
 
     // GATT service objects
     private BluetoothGattService mService;
@@ -63,8 +61,10 @@ public class GattServer {
     private final Lock mLock = new ReentrantLock();
     private BluetoothGattCharacteristic mWriterCharacteristic;
 
-    public GattServer(Context context, BluetoothManager bluetoothManager) {
+    public GattServer(Context context, BleDriver bleDriver, Logger logger, BluetoothManager bluetoothManager) {
         mContext = context;
+        mBleDriver = bleDriver;
+        mLogger = logger;
         mBluetoothManager = bluetoothManager;
     }
 
@@ -73,7 +73,7 @@ public class GattServer {
     }
 
     private boolean initGattService() {
-        Log.i(TAG, "initGattService called");
+        mLogger.i(TAG, "initGattService called");
 
         mService = new BluetoothGattService(SERVICE_UUID, SERVICE_TYPE_PRIMARY);
         BluetoothGattCharacteristic mPIDCharacteristic = new BluetoothGattCharacteristic(PID_UUID, PROPERTY_READ | PROPERTY_WRITE, PERMISSION_READ | PERMISSION_WRITE);
@@ -83,17 +83,17 @@ public class GattServer {
         mWriterCharacteristic.addDescriptor(descriptor);
 
         if (!mPIDCharacteristic.setValue("") || !mWriterCharacteristic.setValue("")) {
-            Log.e(TAG, "setupService failed: setValue error");
+            mLogger.e(TAG, "setupService failed: setValue error");
             return false;
         }
 
         if (!mService.addCharacteristic(mPIDCharacteristic) || !mService.addCharacteristic(mWriterCharacteristic)) {
-            Log.e(TAG, "setupService failed: can't add characteristics to service");
+            mLogger.e(TAG, "setupService failed: can't add characteristics to service");
             return false;
         }
 
         mDoneSignal = new CountDownLatch(1);
-        mGattServerCallback = new GattServerCallback(mContext, this, mDoneSignal);
+        mGattServerCallback = new GattServerCallback(mContext, mBleDriver, mLogger, this, mDoneSignal);
 
         mInit = true;
         return true;
@@ -103,14 +103,14 @@ public class GattServer {
     // BluetoothGattServerCallback#onServiceAdded. It's only after this callback that the server
     // will be ready.
     public boolean start(final String peerID) {
-        Log.i(TAG, "start called");
+        mLogger.i(TAG, "start called");
 
         if (!mInit && !initGattService()) {
-            Log.e(TAG, "start: GATT service not init");
+            mLogger.e(TAG, "start: GATT service not init");
             return false;
         }
         if (isStarted()) {
-            Log.i(TAG, "start: GATT service already started");
+            mLogger.i(TAG, "start: GATT service already started");
             return true;
         }
 
@@ -118,7 +118,7 @@ public class GattServer {
 
         mBluetoothGattServer = mBluetoothManager.openGattServer(mContext, mGattServerCallback);
         if (mBluetoothGattServer == null) {
-            Log.e(TAG, "start: GATT server cannot be get");
+            mLogger.e(TAG, "start: GATT server cannot be get");
             return false;
         }
 
@@ -127,9 +127,9 @@ public class GattServer {
             try {
                 mBluetoothServerSocket = mBluetoothManager.getAdapter().listenUsingInsecureL2capChannel();
                 PSM = mBluetoothServerSocket.getPsm();
-                Log.d(TAG, String.format("start: listenUsingL2capChannel: PSM=%d", PSM));
+                mLogger.d(TAG, String.format("start: listenUsingL2capChannel: PSM=%d", PSM));
             } catch (IOException e) {
-                Log.e(TAG, "start error: listenUsingL2capChannel: ", e);
+                mLogger.e(TAG, "start error: listenUsingL2capChannel: ", e);
                 mBluetoothServerSocket = null;
             }
 
@@ -142,16 +142,16 @@ public class GattServer {
                             try {
                                 bluetoothSocket = mBluetoothServerSocket.accept();
                             } catch (IOException e) {
-                                Log.w(TAG, "L2CAP accept(): exception catch: ", e);
+                                mLogger.e(TAG, "L2CAP accept(): exception catch: ", e);
                                 return;
                             }
 
                             PeerDevice peerDevice;
-                            if ((peerDevice = DeviceManager.get(bluetoothSocket.getRemoteDevice().getAddress())) == null) {
-                                Log.e(TAG, String.format("L2CAP accept(): device=%s not found", bluetoothSocket.getRemoteDevice().getAddress()));
+                            if ((peerDevice = mBleDriver.deviceManager().get(bluetoothSocket.getRemoteDevice().getAddress())) == null) {
+                                mLogger.e(TAG, String.format("L2CAP accept(): device=%s not found", mLogger.sensitiveObject(bluetoothSocket.getRemoteDevice().getAddress())));
                                 continue;
                             } else {
-                                Log.d(TAG, String.format("L2CAP accept(): accepted incoming connection from known device=%s", bluetoothSocket.getRemoteDevice().getAddress()));
+                                mLogger.d(TAG, String.format("L2CAP accept(): accepted incoming connection from known device=%s", mLogger.sensitiveObject(bluetoothSocket.getRemoteDevice().getAddress())));
                             }
 
                             peerDevice.setBluetoothSocket(bluetoothSocket);
@@ -165,7 +165,7 @@ public class GattServer {
                                 });
                                 readThread.start();
                             } catch (IOException e) {
-                                Log.e(TAG, String.format("L2CAP accept() error: l2cap cannot get stream: device=%s", peerDevice.getMACAddress()), e);
+                                mLogger.e(TAG, String.format("L2CAP accept() error: l2cap cannot get stream: device=%s", mLogger.sensitiveObject(peerDevice.getMACAddress())), e);
                                 try {
                                     bluetoothSocket.close();
                                 } catch (IOException ioException) {
@@ -177,7 +177,7 @@ public class GattServer {
                                 }
                             }
                         } else {
-                            Log.e(TAG, "L2CAP accept(): BluetoothServerSocket is null");
+                            mLogger.e(TAG, "L2CAP accept(): BluetoothServerSocket is null");
                             return;
                         }
                     }
@@ -187,7 +187,7 @@ public class GattServer {
         }
 
         if (!mBluetoothGattServer.addService(mService)) {
-            Log.e(TAG, "setupGattServer error: cannot add a new service");
+            mLogger.e(TAG, "setupGattServer error: cannot add a new service");
             mBluetoothGattServer.close();
             mBluetoothGattServer = null;
             return false;
@@ -197,7 +197,7 @@ public class GattServer {
         try {
             mDoneSignal.await();
         } catch (InterruptedException e) {
-            Log.e(TAG, "start: interrupted exception:", e);
+            mLogger.e(TAG, "start: interrupted exception:", e);
         }
 
         // mStarted is updated by GattServerCallback
@@ -240,15 +240,15 @@ public class GattServer {
     }
 
     public void stop() {
-        Log.i(TAG, "stop() called");
+        mLogger.i(TAG, "stop() called");
         if (isStarted()) {
             setStarted(false);
             if (mBluetoothServerSocket != null) {
                 try {
-                    Log.d(TAG, "stop BluetoothServerSocket (L2cap)");
+                    mLogger.d(TAG, "stop BluetoothServerSocket (L2cap)");
                     mBluetoothServerSocket.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "stop error: cannot close BluetoothServerSocket (L2cap)");
+                    mLogger.e(TAG, "stop error: cannot close BluetoothServerSocket (L2cap)");
                 } finally {
                     mBluetoothServerSocket = null;
                 }
@@ -265,10 +265,14 @@ public class GattServer {
     }
 
     private boolean _writeAndNotify(PeerDevice device, byte[] payload) {
-        Log.v(TAG, String.format("writeAndNotify: writing chunk of data: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+        if (mLogger.showSensitiveData()) {
+            mLogger.v(TAG, String.format("_writeAndNotify: writing chunk of data: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+        } else {
+            mLogger.v(TAG, "_writeAndNotify called");
+        }
 
         if (!mWriterCharacteristic.setValue(payload)) {
-            Log.e(TAG, "writeAndNotify: set characteristic failed");
+            mLogger.e(TAG, "_writeAndNotify: set characteristic failed");
             return false;
         }
 
@@ -276,13 +280,13 @@ public class GattServer {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         BleQueue.Callback callback = new BleQueue.Callback();
         callback.setTask(() -> {
-            Log.d(TAG, "writeAndNotify: callback called");
+            mLogger.d(TAG, "_writeAndNotify: callback called");
             success[0] = callback.getStatus() == GATT_SUCCESS;
             countDownLatch.countDown();
         });
 
         Runnable cancel = () -> {
-            Log.w(TAG, "writeAndNotify error: release latch and disconnect");
+            mLogger.w(TAG, "_writeAndNotify error: release latch and disconnect");
             success[0] = callback.getStatus() == GATT_FAILURE;
             countDownLatch.countDown();
             device.disconnect();
@@ -290,26 +294,26 @@ public class GattServer {
 
         success[0] = device.getBleQueue().add(() -> {
             if (!device.isServerConnected()) {
-                Log.e(TAG, "writeAndNotify: server is disconnected");
+                mLogger.e(TAG, "_writeAndNotify: server is disconnected");
                 device.getBleQueue().completedCommand(device.STATUS_ERROR);
                 return;
             }
 
             if (!mBluetoothGattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mWriterCharacteristic, true)) {
-                Log.e(TAG, String.format("writeAndNotify: notifyCharacteristicChanged failed for device=%s", device.getMACAddress()));
+                mLogger.e(TAG, String.format("_writeAndNotify: notifyCharacteristicChanged failed for device=%s", mLogger.sensitiveObject(device.getMACAddress())));
                 device.getBleQueue().completedCommand(device.STATUS_ERROR);
             }
         }, callback, 0, cancel);
 
         if (success[0] == false) {
-            Log.e(TAG, String.format("writeAndNotify error: device=%s: unable to put code in queue", device.getMACAddress()));
+            mLogger.e(TAG, String.format("_writeAndNotify error: device=%s: unable to put code in queue", mLogger.sensitiveObject(device.getMACAddress())));
             return false;
         }
 
         try {
             countDownLatch.await(OP_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            Log.e(TAG, String.format("writeAndNotify: device=%s: await failed", device.getMACAddress()));
+            mLogger.e(TAG, String.format("_writeAndNotify: device=%s: await failed", mLogger.sensitiveObject(device.getMACAddress())));
             return false;
         }
 
@@ -317,15 +321,19 @@ public class GattServer {
     }
 
     public boolean writeAndNotify(PeerDevice device, byte[] payload) {
-        Log.v(TAG, String.format("writeAndNotify: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+        if (mLogger.showSensitiveData()) {
+            mLogger.v(TAG, String.format("writeAndNotify: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+        } else {
+            mLogger.v(TAG, "writeAndNotify called");
+        }
 
         if (mBluetoothGattServer == null) {
-            Log.e(TAG, "writeAndNotify: GATT server is not running");
+            mLogger.e(TAG, "writeAndNotify: GATT server is not running");
             return false;
         }
 
         if (mWriterCharacteristic == null) {
-            Log.e(TAG, "writeAndNotify: writer characteristic is null");
+            mLogger.e(TAG, "writeAndNotify: writer characteristic is null");
             return false;
         }
 
@@ -336,7 +344,7 @@ public class GattServer {
         // Send data to fit with MTU value
         while (minOffset < payload.length) {
             if (!device.isServerConnected()) {
-                Log.e(TAG, "writeAndNotify: server is disconnected");
+                mLogger.e(TAG, "writeAndNotify: server is disconnected");
                 return false;
             }
             maxOffset = minOffset + device.getMtu() - ATT_HEADER_SIZE > payload.length ? payload.length : minOffset + device.getMtu() - ATT_HEADER_SIZE;

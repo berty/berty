@@ -11,8 +11,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Base64;
-import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
 
@@ -20,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 // see https://medium.com/@kevalpatel2106/how-to-make-the-perfect-singleton-de6b951dfdb0
 public class BleDriver {
     private static final String TAG = "bty.ble.BleDriver";
+    private final Logger mLogger;
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
     public static Handler mainHandler = new Handler(Looper.getMainLooper());
     public static Handler mHandshakeHandler;
@@ -35,6 +34,8 @@ public class BleDriver {
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private GattServer mGattServer;
+    private DeviceManager mDeviceManager;
+    private PeerManager mPeerManager;
 
     private Advertiser mAdvertiser;
     private Scanner mScanner;
@@ -51,42 +52,45 @@ public class BleDriver {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 switch (state) {
                     case BluetoothAdapter.STATE_OFF:
-                        Log.d(TAG, "mBroadcastReceiver: STATE_OFF");
+                        mLogger.d(TAG, "mBroadcastReceiver: STATE_OFF");
                         mAdapterState = BluetoothAdapter.STATE_OFF;
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
-                        Log.d(TAG, "mBroadcastReceiver: STATE_TURNING_OFF");
+                        mLogger.d(TAG, "mBroadcastReceiver: STATE_TURNING_OFF");
                         mAdapterState = BluetoothAdapter.STATE_TURNING_OFF;
                         new Thread(() -> stopBleDriver()).start();
                         break;
                     case BluetoothAdapter.STATE_ON:
-                        Log.d(TAG, "mBroadcastReceiver: STATE_ON");
+                        mLogger.d(TAG, "mBroadcastReceiver: STATE_ON");
                         mAdapterState = BluetoothAdapter.STATE_ON;
                         new Thread(() -> startBleDriver()).start();
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
-                        Log.d(TAG, "mBroadcastReceiver: STATE_TURNING_ON");
+                        mLogger.d(TAG, "mBroadcastReceiver: STATE_TURNING_ON");
                         mAdapterState = BluetoothAdapter.STATE_TURNING_ON;
                         break;
                     default:
-                        Log.e(TAG, "mBroadcastReceiver: default case");
+                        mLogger.e(TAG, "mBroadcastReceiver: default case");
                 }
             }
         }
     };
     private boolean mBroadcastReceiverRegistered = false;
 
-    private BleDriver(Context context) {
+    private BleDriver(Context context, Logger logger) {
         if (mBleDriver != null) {
             throw new RuntimeException("Use getInstance() method to get the singleton instance of this class");
         }
         mAppContext = context;
+        mLogger = logger;
+        mDeviceManager = new DeviceManager(logger);
+        mPeerManager = new PeerManager(logger);
     }
 
     // Singleton method
-    public static synchronized BleDriver getInstance(Context appContext) {
+    public static synchronized BleDriver getInstance(Context appContext, Logger logger) {
         if (mBleDriver == null) {
-            mBleDriver = new BleDriver(appContext);
+            mBleDriver = new BleDriver(appContext, logger);
         }
         return mBleDriver;
     }
@@ -103,59 +107,59 @@ public class BleDriver {
 
     // Init BluetoothAdapter object and test if bluetooth is enabled.
     private synchronized boolean initSystemBle() {
-        Log.i(TAG, "initBluetoothAdapter(): init system bluetooth requirements");
+        mLogger.i(TAG, "initBluetoothAdapter(): init system bluetooth requirements");
         if (!mAppContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Log.e(TAG, "initSystemBle: BLE is not supported by this device");
+            mLogger.e(TAG, "initSystemBle: BLE is not supported by this device");
             return false;
         }
 
         // Check BLE permissions
         if (mAppContext.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "initSystemBle: BLE permissions not granted");
+            mLogger.e(TAG, "initSystemBle: BLE permissions not granted");
             return false;
         }
 
         // Initializes Bluetooth adapter.
         mBluetoothManager = (BluetoothManager) mAppContext.getSystemService(Context.BLUETOOTH_SERVICE);
         if ((mBluetoothAdapter = mBluetoothManager.getAdapter()) == null) {
-            Log.e(TAG, "initBluetoothAdapter(): bluetooth adapter not available");
+            mLogger.e(TAG, "initBluetoothAdapter(): bluetooth adapter not available");
             return false;
         }
 
         mAdapterState = mBluetoothAdapter.getState();
         if (!mBluetoothAdapter.isEnabled()) {
-            Log.e(TAG, "initBluetoothAdapter(): bluetooth not enabled");
+            mLogger.e(TAG, "initBluetoothAdapter(): bluetooth not enabled");
             return false;
         }
 
-        Log.i(TAG, "initBluetoothAdapter(): bluetooth is supported on this hardware platform and enabled");
+        mLogger.i(TAG, "initBluetoothAdapter(): bluetooth is supported on this hardware platform and enabled");
         return true;
     }
 
     // main initialization method
     private synchronized boolean initDriver() {
         if (!initSystemBle()) {
-            Log.e(TAG, "initDriver: initSystemBle failed");
+            mLogger.e(TAG, "initDriver: initSystemBle failed");
             return false;
         }
 
-        mAdvertiser = new Advertiser(mBluetoothAdapter);
+        mAdvertiser = new Advertiser(mLogger, mBluetoothAdapter);
         if (!mAdvertiser.isInit()) {
-            Log.e(TAG, "initDriver: Advertiser init failed");
+            mLogger.e(TAG, "initDriver: Advertiser init failed");
             mScanner = null;
             return false;
         }
 
-        mScanner = new Scanner(mAppContext, mBluetoothAdapter);
+        mScanner = new Scanner(mAppContext, mBleDriver, mLogger, mBluetoothAdapter);
         if (!mScanner.isInit()) {
-            Log.e(TAG, "initDriver: Scanner init failed");
+            mLogger.e(TAG, "initDriver: Scanner init failed");
             mScanner = null;
             mAdvertiser = null;
             return false;
         }
 
         // Setup context dependant objects
-        mGattServer = new GattServer(mAppContext, mBluetoothManager);
+        mGattServer = new GattServer(mAppContext, mBleDriver, mLogger, mBluetoothManager);
         setInit(true);
         return true;
     }
@@ -178,22 +182,22 @@ public class BleDriver {
 
     private synchronized void startBleDriver() {
         if (!isInit() && !initDriver()) {
-            Log.e(TAG, "startBleDriver: driver not init");
+            mLogger.e(TAG, "startBleDriver: driver not init");
             return;
         }
 
         if (isStarted()) {
-            Log.i(TAG, "startBleDriver(): BLE driver is already on, one instance is allow");
+            mLogger.i(TAG, "startBleDriver(): BLE driver is already on, one instance is allow");
             return;
         }
 
         if (mAdapterState != BluetoothAdapter.STATE_ON) {
-            Log.w(TAG, "startBleDriver: Bluetooth adapter is not started");
+            mLogger.w(TAG, "startBleDriver: Bluetooth adapter is not started");
             return;
         }
 
         if (mLocalPid == null) {
-            Log.e(TAG, "startBleDriver: internal error: mLocalPid is not set");
+            mLogger.e(TAG, "startBleDriver: internal error: mLocalPid is not set");
             return;
         }
         // Start the BLE thread
@@ -229,31 +233,31 @@ public class BleDriver {
         });
         mThread4.start();
 
-        Log.d(TAG, "startBleDriver: mThread started");
+        mLogger.d(TAG, "startBleDriver: mThread started");
 
         if (!mGattServer.start(mLocalPid)) {
-            Log.e(TAG, "startBleDriver: mGattServer failed to start");
+            mLogger.e(TAG, "startBleDriver: mGattServer failed to start");
             return;
         }
 
         if (!mAdvertiser.start(idFromPid(mLocalPid))) {
-            Log.e(TAG, "startBleDriver: failed to start advertising");
+            mLogger.e(TAG, "startBleDriver: failed to start advertising");
             stopBleDriver();
             return;
         }
 
         if (!mScanner.start(mLocalPid)) {
-            Log.e(TAG, "startBleDriver: failed to start scanning");
+            mLogger.e(TAG, "startBleDriver: failed to start scanning");
             stopBleDriver();
             return;
         }
 
         setStarted(true);
-        Log.i(TAG, "startBleDriver: initDriver completed");
+        mLogger.i(TAG, "startBleDriver: initDriver completed");
     }
 
     public synchronized void StartBleDriver(String localPeerID) {
-        Log.d(TAG, "StartBleDriver() called");
+        mLogger.d(TAG, "StartBleDriver() called");
 
         mLocalPid = localPeerID;
 
@@ -269,18 +273,18 @@ public class BleDriver {
 
     private synchronized void stopBleDriver() {
         if (!isInit()) {
-            Log.e(TAG, "StopBleDriver: driver not init");
+            mLogger.e(TAG, "StopBleDriver: driver not init");
             return;
         }
 
         if (!isStarted()) {
-            Log.d(TAG, "driver is not started");
+            mLogger.d(TAG, "driver is not started");
             return;
         }
 
         mAdvertiser.stop();
         mScanner.stop();
-        DeviceManager.closeAllDeviceConnections();
+        mDeviceManager.closeAllDeviceConnections();
         mGattServer.stop();
         setStarted(false);
         mHandshakeLooper.quit();
@@ -302,19 +306,19 @@ public class BleDriver {
         PeerDevice peerDevice;
         BluetoothGattCharacteristic writer;
 
-        if ((peer = PeerManager.get(remotePID)) == null) {
-            Log.e(TAG, "SendToPeer error: remote peer not found");
+        if ((peer = mPeerManager.get(remotePID)) == null) {
+            mLogger.e(TAG, "SendToPeer error: remote peer not found");
             return false;
         }
 
         if ((peerDevice = peer.getDevice()) == null) {
-            Log.e(TAG, "SendToPeer error: peerDevice not found");
+            mLogger.e(TAG, "SendToPeer error: peerDevice not found");
             return false;
         }
 
         if (peerDevice.canUseL2cap() && peerDevice.getBluetoothSocket() != null && peerDevice.getBluetoothSocket().isConnected()) {
             if (!peerDevice.l2capWrite(payload)) {
-                Log.e(TAG, String.format("SendToPeer error: l2capWrite failed: device=%s", peerDevice.getMACAddress()));
+                mLogger.e(TAG, String.format("SendToPeer error: l2capWrite failed: device=%s", mLogger.sensitiveObject(peerDevice.getMACAddress())));
                 return false;
             }
 
@@ -322,7 +326,7 @@ public class BleDriver {
         } else {
             if (peerDevice.isClientConnected()) {
                 if ((writer = peerDevice.getWriterCharacteristic()) == null) {
-                    Log.e(TAG, "SendToPeer error: WriterCharacteristic is null");
+                    mLogger.e(TAG, "SendToPeer error: WriterCharacteristic is null");
                     return false;
                 }
 
@@ -330,7 +334,7 @@ public class BleDriver {
             } else if (peerDevice.isServerConnected()) {
                 return mGattServer.writeAndNotify(peerDevice, payload);
             } else {
-                Log.e(TAG, "SendToPeer error: remote device is disconnected");
+                mLogger.e(TAG, "SendToPeer error: remote device is disconnected");
                 return false;
             }
         }
@@ -339,5 +343,13 @@ public class BleDriver {
     public static String idFromPid(String pid) {
         int pidLen = pid.length();
         return pid.substring(pidLen - 4, pidLen);
+    }
+
+    public PeerManager peerManager() {
+        return mPeerManager;
+    }
+
+    public DeviceManager deviceManager() {
+        return mDeviceManager;
     }
 }

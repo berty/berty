@@ -9,19 +9,19 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
 
 public class GattServerCallback extends BluetoothGattServerCallback {
     private static final String TAG = "bty.ble.GattSrvCallback";
+    private final Logger mLogger;
+    private final BleDriver mBleDriver;
 
     // Size in bytes of the ATT MTU headers
     // see Bluetooth Core Specification 5.1: 4.8 Characteristic Value Read (p.2380)
@@ -32,8 +32,10 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     private final CountDownLatch mDoneSignal;
     private String mLocalPID;
 
-    public GattServerCallback(Context context, GattServer gattServer, CountDownLatch doneSignal) {
+    public GattServerCallback(Context context, BleDriver bleDriver, Logger logger, GattServer gattServer, CountDownLatch doneSignal) {
         mContext = context;
+        mBleDriver = bleDriver;
+        mLogger = logger;
         mGattServer = gattServer;
         mDoneSignal = doneSignal;
     }
@@ -51,10 +53,10 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     // We can enable scanner and advertiser.
     @Override
     public void onServiceAdded(int status, BluetoothGattService service) {
-        Log.i(TAG, "onServiceAdded() called");
+        mLogger.d(TAG, "onServiceAdded() called");
         super.onServiceAdded(status, service);
         if (status != BluetoothGatt.GATT_SUCCESS) {
-            Log.e(TAG, "onServiceAdded error: failed to add service " + service);
+            mLogger.e(TAG, "onServiceAdded error: failed to add service " + service);
         } else {
             mGattServer.setStarted(true);
         }
@@ -65,28 +67,28 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
         super.onConnectionStateChange(device, status, newState);
 
-        Log.v(TAG, String.format("onConnectionStateChange: device=%s status=%d newState=%d", device, status, newState));
-        PeerDevice peerDevice = DeviceManager.get(device.getAddress());
+        mLogger.v(TAG, String.format("onConnectionStateChange: device=%s status=%d newState=%d", mLogger.sensitiveObject(device), status, newState));
+        PeerDevice peerDevice = mBleDriver.deviceManager().get(device.getAddress());
 
         if (status == GATT_SUCCESS) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.i(TAG, String.format("onConnectionStateChange: device=%s connected", device.getAddress()));
+                mLogger.i(TAG, String.format("onConnectionStateChange: device=%s connected", mLogger.sensitiveObject(device.getAddress())));
 
                 if (peerDevice == null) {
-                    Log.d(TAG, String.format("onConnectionStateChange(): new device=%s", device.getAddress()));
-                    peerDevice = new PeerDevice(mContext, device, getLocalPID(), false);
-                    DeviceManager.put(peerDevice.getMACAddress(), peerDevice);
+                    mLogger.d(TAG, String.format("onConnectionStateChange(): new device=%s", mLogger.sensitiveObject(device.getAddress())));
+                    peerDevice = new PeerDevice(mContext, mBleDriver, mLogger, device, getLocalPID(), false);
+                    mBleDriver.deviceManager().put(peerDevice.getMACAddress(), peerDevice);
                 }
 
                 peerDevice.setGattServer(mGattServer);
 
                 synchronized (peerDevice.mLockServer) {
                     if (!peerDevice.checkAndSetServerState(PeerDevice.CONNECTION_STATE.DISCONNECTED, PeerDevice.CONNECTION_STATE.CONNECTED)) {
-                        Log.d(TAG, String.format("onConnectionStateChange: a server connection already exists: device=%s", device.getAddress()));
+                        mLogger.d(TAG, String.format("onConnectionStateChange: a server connection already exists: device=%s", mLogger.sensitiveObject(device.getAddress())));
                     }
                 }
             } else {
-                Log.i(TAG, String.format("onConnectionStateChange: disconnected: device=%s", device.getAddress()));
+                mLogger.i(TAG, String.format("onConnectionStateChange: disconnected: device=%s", mLogger.sensitiveObject(device.getAddress())));
                 if (peerDevice != null) {
                     synchronized (peerDevice.mLockServer) {
                         peerDevice.setServerState(PeerDevice.CONNECTION_STATE.DISCONNECTED);
@@ -95,7 +97,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                 }
             }
         } else {
-            Log.e(TAG, String.format("onConnectionStateChange error=%d", status));
+            mLogger.e(TAG, String.format("onConnectionStateChange error=%d", status));
         }
     }
 
@@ -103,7 +105,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
         super.onDescriptorReadRequest(device, requestId, offset, descriptor);
 
-        Log.d(TAG, String.format("onDescriptorReadRequest: device=%s", device.getAddress()));
+        mLogger.d(TAG, String.format("onDescriptorReadRequest: device=%s", mLogger.sensitiveObject(device.getAddress())));
 
         mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
     }
@@ -112,16 +114,16 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
         super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
 
-        Log.d(TAG, String.format("onDescriptorWriteRequest: device=%s", device.getAddress()));
+        mLogger.d(TAG, String.format("onDescriptorWriteRequest: device=%s", mLogger.sensitiveObject(device.getAddress())));
 
         if (!BleDriver.mCallbacksHandler.post(() -> {
             boolean status = false;
             PeerDevice peerDevice;
 
-            if ((peerDevice = DeviceManager.get(device.getAddress())) == null) {
-                Log.e(TAG, String.format("onDescriptorWriteRequest: device=%s not found", device.getAddress()));
+            if ((peerDevice = mBleDriver.deviceManager().get(device.getAddress())) == null) {
+                mLogger.e(TAG, String.format("onDescriptorWriteRequest: device=%s not found", mLogger.sensitiveObject(device.getAddress())));
             } else if (peerDevice.getServerState() != PeerDevice.CONNECTION_STATE.CONNECTED) {
-                Log.w(TAG, String.format("onDescriptorWriteRequest: device=%s not connected", device.getAddress()));
+                mLogger.w(TAG, String.format("onDescriptorWriteRequest: device=%s not connected", mLogger.sensitiveObject(device.getAddress())));
             } else {
                 status = true;
             }
@@ -134,10 +136,10 @@ public class GattServerCallback extends BluetoothGattServerCallback {
             }
 
             if (status) {
-                Peer peer = PeerManager.registerDevice(peerDevice.getRemotePID(), peerDevice, false);
+                Peer peer = mBleDriver.peerManager().registerDevice(peerDevice.getRemotePID(), peerDevice, false);
                 peerDevice.setPeer(peer);
                 if (peer == null) {
-                    Log.e(TAG, String.format("onDescriptorWriteRequest error: device=%s: registerDevice failed", peerDevice.getMACAddress()));
+                    mLogger.e(TAG, String.format("onDescriptorWriteRequest error: device=%s: registerDevice failed", mLogger.sensitiveObject(peerDevice.getMACAddress())));
                     status = false;
                 }
             }
@@ -150,7 +152,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                 }
             }
         })) {
-            Log.e(TAG, String.format("onDescriptorWriteRequest error: failed to enqueue: device=%s ", device.getAddress()));
+            mLogger.e(TAG, String.format("onDescriptorWriteRequest error: failed to enqueue: device=%s ", mLogger.sensitiveObject(device.getAddress())));
         }
     }
 
@@ -161,27 +163,27 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                                             int offset,
                                             BluetoothGattCharacteristic characteristic) {
         super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
-        Log.v(TAG, String.format("onCharacteristicReadRequest called: device=%s requestId=%d offset=%d", device.getAddress(), requestId, offset));
+        mLogger.v(TAG, String.format("onCharacteristicReadRequest called: device=%s requestId=%d offset=%d", mLogger.sensitiveObject(device.getAddress()), requestId, offset));
 
         if (!BleDriver.mCallbacksHandler.post(() -> {
             PeerDevice peerDevice;
 
-            if ((peerDevice = DeviceManager.get(device.getAddress())) == null) {
-                Log.e(TAG, String.format("onCharacteristicReadRequest(): device=%s not found", device.getAddress()));
+            if ((peerDevice = mBleDriver.deviceManager().get(device.getAddress())) == null) {
+                mLogger.e(TAG, String.format("onCharacteristicReadRequest(): device=%s not found", mLogger.sensitiveObject(device.getAddress())));
                 mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE,
                     offset, null);
                 return;
             }
 
             if (peerDevice.getServerState() != PeerDevice.CONNECTION_STATE.CONNECTED) {
-                Log.e(TAG, String.format("onCharacteristicReadRequest() error: device=%s not connected", device.getAddress()));
+                mLogger.e(TAG, String.format("onCharacteristicReadRequest() error: device=%s not connected", mLogger.sensitiveObject(device.getAddress())));
                 mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE,
                     offset, null);
                 return;
             }
 
             if (peerDevice.getPeer() != null) {
-                Log.e(TAG, String.format("onCharacteristicReadRequest() error: device=%s handshake already completed", device.getAddress()));
+                mLogger.e(TAG, String.format("onCharacteristicReadRequest() error: device=%s handshake already completed", mLogger.sensitiveObject(device.getAddress())));
                 mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE,
                         offset, null);
                 return;
@@ -189,14 +191,14 @@ public class GattServerCallback extends BluetoothGattServerCallback {
 
             synchronized (peerDevice.mLockServer) {
                 if (peerDevice.getServerState() != PeerDevice.CONNECTION_STATE.CONNECTED) {
-                    Log.e(TAG, String.format("onCharacteristicReadRequest: device=%s not connected", device.getAddress()));
+                    mLogger.e(TAG, String.format("onCharacteristicReadRequest: device=%s not connected", mLogger.sensitiveObject(device.getAddress())));
                     mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE,
                         offset, null);
                     return;
                 }
 
                 if (peerDevice.getRemotePID() == null) {
-                    Log.e(TAG, String.format("onCharacteristicReadRequest error: device=%s: remotePID not received", peerDevice.getMACAddress()));
+                    mLogger.e(TAG, String.format("onCharacteristicReadRequest error: device=%s: remotePID not received", mLogger.sensitiveObject(peerDevice.getMACAddress())));
                     mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE,
                             offset, null);
                     return;
@@ -208,13 +210,13 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     DataOutputStream dos = new DataOutputStream(bos);
                     try {
-                        Log.v(TAG, String.format("onCharacteristicReadRequest: PSM=%d pid=%s", mGattServer.getL2capPSM(), getLocalPID()));
+                        mLogger.v(TAG, String.format("onCharacteristicReadRequest: PSM=%d pid=%s", mGattServer.getL2capPSM(), mLogger.sensitiveObject(getLocalPID())));
                         dos.writeInt(mGattServer.getL2capPSM());
                         dos.write(getLocalPID().getBytes());
                         dos.flush();
                         payload = bos.toByteArray();
                     } catch (IOException e) {
-                        Log.e(TAG, String.format("onCharacteristicReadRequest error: ByteArrayOutputStream failed for device=%s", device.getAddress()));
+                        mLogger.e(TAG, String.format("onCharacteristicReadRequest error: ByteArrayOutputStream failed for device=%s", mLogger.sensitiveObject(device.getAddress())));
                         mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE,
                             offset, null);
                         return;
@@ -227,23 +229,25 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                     }
 
                     if ((payload.length - offset) <= (peerDevice.getMtu() - ATT_HEADER_READ_SIZE)) {
-                        Log.d(TAG, String.format("onCharacteristicReadRequest: MTU is big enough: MTU=%d dataLength=%d", peerDevice.getMtu(), payload.length - offset));
+                        mLogger.d(TAG, String.format("onCharacteristicReadRequest: MTU is big enough: MTU=%d dataLength=%d", peerDevice.getMtu(), payload.length - offset));
                     } else {
-                        Log.d(TAG, String.format("onCharacteristicReadRequest: MTU is too small: MTU=%d dataLength=%d", peerDevice.getMtu(), payload.length - offset));
+                        mLogger.d(TAG, String.format("onCharacteristicReadRequest: MTU is too small: MTU=%d dataLength=%d", peerDevice.getMtu(), payload.length - offset));
                     }
 
                     final byte[] toWrite = Arrays.copyOfRange(payload, offset, payload.length);
 
-                    Log.v(TAG, String.format("onCharacteristicReadRequest: writing data: device=%s base64=%s value=%s length=%d offset=%d", peerDevice.getMACAddress(), Base64.encodeToString(toWrite, Base64.DEFAULT), BleDriver.bytesToHex(toWrite), toWrite.length, offset));
+                    if (mLogger.showSensitiveData()) {
+                        mLogger.v(TAG, String.format("onCharacteristicReadRequest: writing data: device=%s base64=%s value=%s length=%d offset=%d", peerDevice.getMACAddress(), Base64.encodeToString(toWrite, Base64.DEFAULT), BleDriver.bytesToHex(toWrite), toWrite.length, offset));
+                    }
                     mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, toWrite);
                 } else {
-                    Log.e(TAG, String.format("onCharacteristicReadRequest error: try to read to a wrong characteristic with device=%s ", device.getAddress()));
+                    mLogger.e(TAG, String.format("onCharacteristicReadRequest error: try to read to a wrong characteristic with device=%s ", mLogger.sensitiveObject(device.getAddress())));
                     mGattServer.getGattServer().sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE,
                         offset, null);
                 }
             }
         })) {
-            Log.e(TAG, String.format("onCharacteristicReadRequest error: failed to enqueue: device=%s ", device.getAddress()));
+            mLogger.e(TAG, String.format("onCharacteristicReadRequest error: failed to enqueue: device=%s ", mLogger.sensitiveObject(device.getAddress())));
         }
     }
 
@@ -263,20 +267,22 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                                              byte[] value) {
         super.onCharacteristicWriteRequest(device, requestId, characteristic, prepareWrite,
             responseNeeded, offset, value);
-        Log.v(TAG, String.format("onCharacteristicWriteRequest called: device=%s characteristic=%s requestId=%d preparedWrite=%b needResponse=%b", device.getAddress(), characteristic.getUuid(), requestId, prepareWrite, responseNeeded));
+        mLogger.v(TAG, String.format("onCharacteristicWriteRequest called: device=%s characteristic=%s requestId=%d preparedWrite=%b needResponse=%b", mLogger.sensitiveObject(device.getAddress()), characteristic.getUuid(), requestId, prepareWrite, responseNeeded));
 
         PeerDevice peerDevice;
         boolean status = false;
 
-        if ((peerDevice = DeviceManager.get(device.getAddress())) == null) {
-            Log.e(TAG, String.format("onCharacteristicWriteRequest: device %s not found", device.getAddress()));
+        if ((peerDevice = mBleDriver.deviceManager().get(device.getAddress())) == null) {
+            mLogger.e(TAG, String.format("onCharacteristicWriteRequest: device %s not found", mLogger.sensitiveObject(device.getAddress())));
         } else if (peerDevice.getServerState() != PeerDevice.CONNECTION_STATE.CONNECTED) {
-            Log.w(TAG, String.format("onCharacteristicWriteRequest: device=%s not connected", device.getAddress()));
+            mLogger.w(TAG, String.format("onCharacteristicWriteRequest: device=%s not connected", mLogger.sensitiveObject(device.getAddress())));
         } else {
-            Log.d(TAG, String.format("onCharacteristicWriteRequest: device=%s base64=%s value=%s length=%d offset=%d", device.getAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length, offset));
+            if (mLogger.showSensitiveData()) {
+                mLogger.d(TAG, String.format("onCharacteristicWriteRequest: device=%s base64=%s value=%s length=%d offset=%d", device.getAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length, offset));
+            }
 
             if (prepareWrite) {
-                Log.d(TAG, "onCharacteristicWriteRequest: chunk data length is bigger than MTU");
+                mLogger.d(TAG, "onCharacteristicWriteRequest: chunk data length is bigger than MTU");
                 peerDevice.putInDataBuffer(value);
                 status = true;
             } else {
@@ -285,7 +291,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
                 } else if (characteristic.getUuid().equals(GattServer.PID_UUID)) {
                     status = peerDevice.handleServerPIDReceived(value);
                 } else {
-                    Log.e(TAG, String.format("onCharacteristicWriteRequest: try to write to a wrong characteristic: device=%s", device.getAddress()));
+                    mLogger.e(TAG, String.format("onCharacteristicWriteRequest: try to write to a wrong characteristic: device=%s", mLogger.sensitiveObject(device.getAddress())));
                 }
             }
         }
@@ -305,22 +311,24 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     @Override
     public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
         super.onExecuteWrite(device, requestId, execute);
-        Log.v(TAG, String.format("onExecuteWrite called: device=%s requestId=%d execute=%s", device.getAddress(), requestId, execute));
+        mLogger.v(TAG, String.format("onExecuteWrite called: device=%s requestId=%d execute=%s", mLogger.sensitiveObject(device.getAddress()), requestId, execute));
 
         boolean status = false;
 
         if (execute) {
             PeerDevice peerDevice;
-            if ((peerDevice = DeviceManager.get(device.getAddress())) == null) {
-                Log.e(TAG, String.format("onExecuteWrite() error: device=%s not found", device.getAddress()));
+            if ((peerDevice = mBleDriver.deviceManager().get(device.getAddress())) == null) {
+                mLogger.e(TAG, String.format("onExecuteWrite() error: device=%s not found", mLogger.sensitiveObject(device.getAddress())));
             } else {
                 if (peerDevice.getServerState() != PeerDevice.CONNECTION_STATE.CONNECTED) {
-                    Log.e(TAG, String.format("onCharacteristicWriteRequest: device=%s not connected", device.getAddress()));
+                    mLogger.e(TAG, String.format("onCharacteristicWriteRequest: device=%s not connected", mLogger.sensitiveObject(device.getAddress())));
                 } else {
                     if (peerDevice.getInDataBuffer() == null) {
-                        Log.e(TAG, String.format("onExecuteWrite() error: device=%s: buffer is null", device.getAddress()));
+                        mLogger.e(TAG, String.format("onExecuteWrite() error: device=%s: buffer is null", mLogger.sensitiveObject(device.getAddress())));
                     } else {
-                        Log.d(TAG, String.format("onExecuteWrite: device=%s base64=%s value=%s length=%d", device.getAddress(), Base64.encodeToString(peerDevice.getInDataBuffer(), Base64.DEFAULT), BleDriver.bytesToHex(peerDevice.getInDataBuffer()), peerDevice.getInDataBuffer().length));
+                        if (mLogger.showSensitiveData()) {
+                            mLogger.d(TAG, String.format("onExecuteWrite: device=%s base64=%s value=%s length=%d", device.getAddress(), Base64.encodeToString(peerDevice.getInDataBuffer(), Base64.DEFAULT), BleDriver.bytesToHex(peerDevice.getInDataBuffer()), peerDevice.getInDataBuffer().length));
+                        }
                         status = peerDevice.handleDataReceived(peerDevice.flushInDataBuffer());
                     }
                 }
@@ -339,16 +347,16 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     @Override
     public void onMtuChanged(BluetoothDevice device, int mtu) {
         super.onMtuChanged(device, mtu);
-        Log.v(TAG, String.format("onMtuChanged called for device %s and mtu=%d", device.getAddress(), mtu));
+        mLogger.v(TAG, String.format("onMtuChanged called for device %s and mtu=%d", mLogger.sensitiveObject(device.getAddress()), mtu));
         PeerDevice peerDevice;
 
-        if ((peerDevice = DeviceManager.get(device.getAddress())) == null) {
-            Log.e(TAG, String.format("onMtuChanged() error: device=%s not found", device.getAddress()));
+        if ((peerDevice = mBleDriver.deviceManager().get(device.getAddress())) == null) {
+            mLogger.e(TAG, String.format("onMtuChanged() error: device=%s not found", mLogger.sensitiveObject(device.getAddress())));
             return;
         }
 
         if (peerDevice.getServerState() != PeerDevice.CONNECTION_STATE.CONNECTED) {
-            Log.e(TAG, String.format("onMtuChanged() error: device=%s not connected", device.getAddress()));
+            mLogger.e(TAG, String.format("onMtuChanged() error: device=%s not connected", mLogger.sensitiveObject(device.getAddress())));
             return;
         }
 
@@ -358,15 +366,15 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     @Override
     public void onNotificationSent(BluetoothDevice device, int status) {
         super.onNotificationSent(device, status);
-        Log.v(TAG, String.format("onNotificationSent called: device=%s", device.getAddress()));
+        mLogger.v(TAG, String.format("onNotificationSent called: device=%s", mLogger.sensitiveObject(device.getAddress())));
 
         if (status != GATT_SUCCESS) {
-            Log.e(TAG, String.format("onNotificationSent status error=%d device=%s", status, device));
+            mLogger.e(TAG, String.format("onNotificationSent status error=%d device=%s", status, mLogger.sensitiveObject(device)));
         }
 
-        PeerDevice peerDevice = DeviceManager.get(device.getAddress());
+        PeerDevice peerDevice = mBleDriver.deviceManager().get(device.getAddress());
         if (peerDevice == null) {
-            Log.e(TAG, String.format("onNotificationSent error: device=%s is unknown", device.getAddress()));
+            mLogger.e(TAG, String.format("onNotificationSent error: device=%s is unknown", mLogger.sensitiveObject(device.getAddress())));
             return;
         }
 

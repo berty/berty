@@ -137,7 +137,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       config.setAndroidCacheDir(tempDir.getAbsolutePath());
 
       // set ble driver
-      BleInterface bleDriver = new BleInterface(reactContext);
+      BleInterface bleDriver = new BleInterface(reactContext, true);
       config.setBleDriver(bleDriver);
 
       // set NearBy driver
