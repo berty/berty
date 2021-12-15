@@ -86,7 +86,9 @@ func (l *Listener) Close() error {
 	l.transport.lock.Unlock()
 
 	// Unregister this transport
-	TransportMap.Delete(l.transport.driver.ProtocolName())
+	TransportMapMutex.Lock()
+	delete(TransportMap, l.transport.driver.ProtocolName())
+	TransportMapMutex.Unlock()
 
 	return nil
 }

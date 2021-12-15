@@ -55,11 +55,13 @@ func NewDriver(logger *zap.Logger) proximity.ProximityDriver {
 func BLEHandleFoundPeer(remotePID *C.char) int { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 
-	t, ok := proximity.TransportMap.Load(ProtocolName)
+	proximity.TransportMapMutex.RLock()
+	t, ok := proximity.TransportMap[ProtocolName]
+	proximity.TransportMapMutex.RUnlock()
 	if !ok {
 		return 0
 	}
-	if t.(proximity.ProximityTransport).HandleFoundPeer(goPID) {
+	if t.HandleFoundPeer(goPID) {
 		return 1
 	}
 	return 0
@@ -69,11 +71,13 @@ func BLEHandleFoundPeer(remotePID *C.char) int { // nolint:golint // Need to pre
 func BLEHandleLostPeer(remotePID *C.char) { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 
-	t, ok := proximity.TransportMap.Load(ProtocolName)
+	proximity.TransportMapMutex.RLock()
+	t, ok := proximity.TransportMap[ProtocolName]
+	proximity.TransportMapMutex.RUnlock()
 	if !ok {
 		return
 	}
-	t.(proximity.ProximityTransport).HandleLostPeer(goPID)
+	t.HandleLostPeer(goPID)
 }
 
 //export BLEReceiveFromPeer
@@ -81,11 +85,13 @@ func BLEReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int)
 	goPID := C.GoString(remotePID)
 	goPayload := C.GoBytes(payload, length)
 
-	t, ok := proximity.TransportMap.Load(ProtocolName)
+	proximity.TransportMapMutex.RLock()
+	t, ok := proximity.TransportMap[ProtocolName]
+	proximity.TransportMapMutex.RUnlock()
 	if !ok {
 		return
 	}
-	t.(proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
+	t.ReceiveFromPeer(goPID, goPayload)
 }
 
 //export BLELog

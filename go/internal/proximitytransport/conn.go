@@ -64,7 +64,9 @@ func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr,
 	}
 
 	// Stores the conn in connMap, will be deleted during conn.Close()
-	t.connMap.Store(maconn.RemoteAddr().String(), maconn)
+	t.connMapMutex.Lock()
+	t.connMap[maconn.RemoteAddr().String()] = maconn
+	t.connMapMutex.Unlock()
 
 	// Configure mplex and run it
 	maconn.mp.addInputCache(t.cache)
@@ -136,7 +138,9 @@ func (c *Conn) Close() error {
 	c.readOut.Close()
 
 	// Removes conn from connmgr's connMap
-	c.transport.connMap.Delete(c.RemoteAddr().String())
+	c.transport.connMapMutex.Lock()
+	delete(c.transport.connMap, c.RemoteAddr().String())
+	c.transport.connMapMutex.Unlock()
 
 	// Disconnect the driver
 	c.transport.driver.CloseConnWithPeer(c.RemoteAddr().String())
