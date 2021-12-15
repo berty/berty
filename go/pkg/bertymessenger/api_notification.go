@@ -22,8 +22,12 @@ func (s *service) NotificationSetEnabled(ctx context.Context, req *messengertype
 		return nil, err
 	}
 
-	if err := s.dh.AccountUpdated(accountUpdate, false); err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+	if accountUpdate != nil {
+		s.dispatcher.SetShouldNotify(accountUpdate.ShouldNotify)
+
+		if err := s.dh.AccountUpdated(accountUpdate, false); err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
 	}
 
 	return &messengertypes.NotificationSetEnabled_Reply{}, nil

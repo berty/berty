@@ -128,7 +128,7 @@ const HomeHeaderAvatar: React.FC = React.memo(() => {
 						{account?.displayName || ''}
 					</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
-						{link && (
+						{!!link && (
 							<QRCode
 								size={qrCodeSize}
 								value={link}

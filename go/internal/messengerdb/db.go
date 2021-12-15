@@ -194,7 +194,6 @@ func (d *DBWrapper) TX(ctx context.Context, txFunc func(*DBWrapper) error) (err 
 	})
 }
 
-// atomic
 func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation public key specified"))
@@ -212,7 +211,6 @@ func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messe
 		Link:             "", // empty on account conversations
 		CreatedDate:      messengerutil.TimestampMs(time.Now()),
 	}
-	var finalConv *messengertypes.Conversation
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
 		// Check if a conversation already exists for this contact with another pk (or for this conversation pk and another contact)
 		{
@@ -231,27 +229,22 @@ func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messe
 			}
 		}
 
-		if err := tx.db.
+		return tx.db.
 			Clauses(clause.OnConflict{DoNothing: true}).
 			Create(&conversation).
-			Error; err != nil {
-			return err
-		}
-
-		var err error
-		if finalConv, err = tx.GetConversationByPK(groupPK); err != nil {
-			return err
-		}
-
-		return nil
+			Error
 	}); err != nil {
+		return nil, err
+	}
+
+	finalConv, err := d.GetConversationByPK(groupPK)
+	if err != nil {
 		return nil, err
 	}
 	d.logStep("Maybed added conversation to db", tyber.WithJSONDetail("ConversationToSave", conversation), tyber.WithJSONDetail("FinalConversation", finalConv))
 	return finalConv, nil
 }
 
-// atomic
 func (d *DBWrapper) AddConversation(groupPK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
@@ -271,74 +264,72 @@ func (d *DBWrapper) AddConversation(groupPK string) (*messengertypes.Conversatio
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
-	d.logStep("Added conversation to db", tyber.WithJSONDetail("Conversation", conversation))
-	return conversation, nil
+	finalConv, err := d.GetConversationByPK(groupPK)
+	if err != nil {
+		return nil, err
+	}
+
+	d.logStep("Added conversation to db", tyber.WithJSONDetail("ConversationToCreate", conversation), tyber.WithJSONDetail("FinalConversation", finalConv))
+	return finalConv, nil
 }
 
-// atomic
-func (d *DBWrapper) UpsertConversation(c messengertypes.Conversation) (bool, error) {
+func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, error) {
 	if c.PublicKey == "" {
 		return false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	isNew := false
-	err := d.TX(d.ctx, func(d *DBWrapper) error {
-		count := int64(0)
-		if err := d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: c.GetPublicKey()}).Count(&count).Error; err == gorm.ErrRecordNotFound || err == nil && count == 0 {
-			isNew = true
-		}
+	count := int64(0)
+	if err := d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: c.GetPublicKey()}).Count(&count).Error; err == gorm.ErrRecordNotFound || err == nil && count == 0 {
+		isNew = true
+	}
 
-		columns := []string(nil)
-		if c.Link != "" {
-			columns = append(columns, "link")
-		}
-		if c.DisplayName != "" {
-			columns = append(columns, "display_name")
-		}
-		if c.LocalDevicePublicKey != "" {
-			columns = append(columns, "local_device_public_key")
-		}
-		if c.AccountMemberPublicKey != "" {
-			columns = append(columns, "account_member_public_key")
-		}
-		if c.SharedPushTokenIdentifier != "" {
-			columns = append(columns, "shared_push_token_identifier")
-		}
-		if c.AvatarCID != "" {
-			columns = append(columns, "avatar_cid")
-		}
-		if c.InfoDate != 0 {
-			columns = append(columns, "info_date")
-		}
+	columns := []string(nil)
+	if c.Link != "" {
+		columns = append(columns, "link")
+	}
+	if c.DisplayName != "" {
+		columns = append(columns, "display_name")
+	}
+	if c.LocalDevicePublicKey != "" {
+		columns = append(columns, "local_device_public_key")
+	}
+	if c.AccountMemberPublicKey != "" {
+		columns = append(columns, "account_member_public_key")
+	}
+	if c.SharedPushTokenIdentifier != "" {
+		columns = append(columns, "shared_push_token_identifier")
+	}
+	if c.AvatarCID != "" {
+		columns = append(columns, "avatar_cid")
+	}
+	if c.InfoDate != 0 {
+		columns = append(columns, "info_date")
+	}
 
-		db := d.db
+	db := d.db
 
-		if len(columns) > 0 {
-			db = db.Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "public_key"}},
-				DoUpdates: clause.AssignmentColumns(columns),
-			})
-		} else if !isNew { // no update needed
-			return nil
-		}
+	if len(columns) > 0 {
+		db = db.Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "public_key"}},
+			DoUpdates: clause.AssignmentColumns(columns),
+		})
+	} else if !isNew { // no update needed
+		return false, nil
+	}
 
-		if err := db.Create(&c).Error; err != nil {
-			return errcode.ErrInternal.Wrap(err)
-		}
+	if err := db.Create(&c).Error; err != nil {
+		return isNew, errcode.ErrInternal.Wrap(err)
+	}
 
-		text := "Added conversation to db"
-		if !isNew {
-			text = "Updated conversation in db"
-		}
-		d.logStep(text, tyber.WithJSONDetail("Conversation", c), tyber.WithJSONDetail("Columns", columns))
-
-		return nil
-	})
-
-	return isNew, err
+	text := "Added conversation to db"
+	if !isNew {
+		text = "Updated conversation in db"
+	}
+	d.logStep(text, tyber.WithJSONDetail("Conversation", c), tyber.WithJSONDetail("Columns", columns))
+	return isNew, nil
 }
 
-// not atomic
 func (d *DBWrapper) UpdateConversationReadState(pk string, newUnread bool, eventDate time.Time) error {
 	if pk == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
@@ -375,7 +366,6 @@ func (d *DBWrapper) UpdateConversationReadState(pk string, newUnread bool, event
 	return nil
 }
 
-// atomic
 func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 	if pk == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
@@ -385,7 +375,7 @@ func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 		Model(&messengertypes.Account{}).
 		FirstOrCreate(
 			&messengertypes.Account{},
-			&messengertypes.Account{PublicKey: pk, Link: link, ShouldNotify: true},
+			&messengertypes.Account{PublicKey: pk, Link: link},
 		).
 		Error; err != nil && !isSQLiteError(err, sqlite3.ErrConstraint) {
 		return err
@@ -394,7 +384,6 @@ func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 	return nil
 }
 
-// atomic
 func (d *DBWrapper) UpdateAccount(pk, url, displayName, avatarCID string) (*messengertypes.Account, error) {
 	if pk == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
@@ -438,7 +427,6 @@ func (d *DBWrapper) GetAccount() (*messengertypes.Account, error) {
 	return &accounts[0], nil
 }
 
-// atomic
 func (d *DBWrapper) GetDeviceByPK(publicKey string) (*messengertypes.Device, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
@@ -468,7 +456,6 @@ func (d *DBWrapper) GetContactByPK(publicKey string) (*messengertypes.Contact, e
 	return contact, nil
 }
 
-// atomic
 func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conversation, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
@@ -484,13 +471,12 @@ func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conve
 			&messengertypes.Conversation{PublicKey: publicKey},
 		).
 		Error; err != nil {
-		return nil, err
+		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
 	return conversation, nil
 }
 
-// atomic
 func (d *DBWrapper) GetMemberByPK(publicKey string, convPK string) (*messengertypes.Member, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
@@ -508,42 +494,36 @@ func (d *DBWrapper) GetMemberByPK(publicKey string, convPK string) (*messengerty
 	return member, nil
 }
 
-// atomic
 func (d *DBWrapper) GetAllConversations() ([]*messengertypes.Conversation, error) {
 	convs := []*messengertypes.Conversation(nil)
 
 	return convs, d.db.Joins("ReplyOptions", d.db.Select("cid").Where("cid = conversations.reply_options_cid").Model(&messengertypes.Interaction{})).Preload("ReplicationInfo").Find(&convs).Error
 }
 
-// atomic
 func (d *DBWrapper) GetAllMembers() ([]*messengertypes.Member, error) {
 	members := []*messengertypes.Member(nil)
 
 	return members, d.db.Find(&members).Error
 }
 
-// atomic
 func (d *DBWrapper) GetAllContacts() ([]*messengertypes.Contact, error) {
 	contacts := []*messengertypes.Contact(nil)
 
 	return contacts, d.db.Find(&contacts).Error
 }
 
-// atomic
 func (d *DBWrapper) GetContactsByState(state messengertypes.Contact_State) ([]*messengertypes.Contact, error) {
 	contacts := []*messengertypes.Contact(nil)
 
 	return contacts, d.db.Where(&messengertypes.Contact{State: state}).Find(&contacts).Error
 }
 
-// atomic
 func (d *DBWrapper) GetAllInteractions() ([]*messengertypes.Interaction, error) {
 	interactions := []*messengertypes.Interaction(nil)
 
 	return interactions, d.db.Preload(clause.Associations).Find(&interactions).Error
 }
 
-// not atomic
 func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInteractionsOptions) ([]*messengertypes.Interaction, []*messengertypes.Media, error) {
 	if opts == nil {
 		opts = &messengertypes.PaginatedInteractionsOptions{}
@@ -644,7 +624,6 @@ func (d *DBWrapper) GetInteractionByCID(cid string) (*messengertypes.Interaction
 	return interaction, d.db.Preload(clause.Associations).First(&interaction, &messengertypes.Interaction{CID: cid}).Error
 }
 
-// not atomic
 func (d *DBWrapper) AddContactRequestOutgoingEnqueued(contactPK, displayName, convPK string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
@@ -872,7 +851,6 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	return infos, errs
 }
 
-// atomic
 func (d *DBWrapper) AddDevice(devicePK string, memberPK string) (*messengertypes.Device, error) {
 	if devicePK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
@@ -881,8 +859,6 @@ func (d *DBWrapper) AddDevice(devicePK string, memberPK string) (*messengertypes
 	if memberPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
 	}
-
-	var finalDevice *messengertypes.Device
 
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
 		// Check if this device already exists for another member
@@ -902,20 +878,19 @@ func (d *DBWrapper) AddDevice(devicePK string, memberPK string) (*messengertypes
 			}
 		}
 
-		if err := tx.db.
+		return tx.db.
 			Clauses(clause.OnConflict{DoNothing: true}).
 			Create(&messengertypes.Device{
 				PublicKey:       devicePK,
 				MemberPublicKey: memberPK,
 			}).
-			Error; err != nil {
-			return err
-		}
-
-		var err error
-		finalDevice, err = tx.GetDeviceByPK(devicePK)
-		return err
+			Error
 	}); err != nil {
+		return nil, err
+	}
+
+	finalDevice, err := d.GetDeviceByPK(devicePK)
+	if err != nil {
 		return nil, err
 	}
 
@@ -1180,56 +1155,39 @@ func (d *DBWrapper) SetConversationIsOpenStatus(conversationPK string, status bo
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
-	var (
-		conversation *messengertypes.Conversation
-		updated      bool
-	)
-
-	if err := d.TX(d.ctx, func(d *DBWrapper) error {
-		var err error
-		conversation, err = d.GetConversationByPK(conversationPK)
-		if err != nil {
-			return err
-		}
-
-		if conversation.IsOpen == status {
-			return nil
-		}
-
-		values := make(map[string]interface{})
-
-		conversation.IsOpen = status
-		values["is_open"] = status
-
-		if status && conversation.UnreadCount != 0 {
-			conversation.UnreadCount = 0
-			values["unread_count"] = 0
-		}
-
-		if err := d.db.
-			Model(&messengertypes.Conversation{}).
-			Where(&messengertypes.Conversation{PublicKey: conversationPK}).
-			Updates(values).
-			Error; err != nil {
-			return err
-		}
-
-		updated = true
-
-		return nil
-	}); err != nil {
+	conversation, err := d.GetConversationByPK(conversationPK)
+	if err != nil {
 		return nil, false, err
 	}
 
-	if updated {
-		prefix := "Opened"
-		if !status {
-			prefix = "Closed"
-		}
-		d.logStep(prefix+" conversation in db", tyber.WithJSONDetail("Conversation", conversation))
+	if conversation.IsOpen == status {
+		return conversation, false, nil
 	}
 
-	return conversation, updated, nil
+	conversation.IsOpen = status
+	values := map[string]interface{}{
+		"is_open": status,
+	}
+
+	if status {
+		conversation.UnreadCount = 0
+		values["unread_count"] = 0
+	}
+
+	if err := d.db.
+		Model(&messengertypes.Conversation{}).
+		Where(&messengertypes.Conversation{PublicKey: conversationPK}).
+		Updates(values).
+		Error; err != nil {
+		return nil, false, err
+	}
+
+	prefix := "Opened"
+	if !status {
+		prefix = "Closed"
+	}
+	d.logStep(prefix+" conversation in db", tyber.WithJSONDetail("Conversation", conversation))
+	return conversation, true, err
 }
 
 func (d *DBWrapper) IsConversationOpened(conversationPK string) (bool, error) {
@@ -1340,7 +1298,6 @@ func (d *DBWrapper) SaveConversationReplicationInfo(c messengertypes.Conversatio
 	return nil
 }
 
-// atomic
 func (d *DBWrapper) AddMedias(medias []*messengertypes.Media) ([]bool, error) {
 	if len(medias) == 0 {
 		return []bool{}, nil
@@ -1357,39 +1314,30 @@ func (d *DBWrapper) AddMedias(medias []*messengertypes.Media) ([]bool, error) {
 	for i, m := range medias {
 		cids[i] = m.GetCID()
 	}
-
-	added := make([]bool, len(medias))
-
-	if err := d.TX(d.ctx, func(d *DBWrapper) error {
-		if err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error; err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-
-		for i, m := range medias {
-			found := false
-			for _, n := range dbMedias {
-				if m.GetCID() == n.GetCID() {
-					found = true
-					break
-				}
-			}
-			if !found {
-				added[i] = true
-			}
-		}
-
-		if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(medias).Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
-		}
-
-		return nil
-	}); err != nil {
-		return nil, err
+	if err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
-	d.logStep(fmt.Sprintf("Added %d/%d medias to db", len(added), len(medias)), tyber.WithJSONDetail("InputMedias", medias), tyber.WithJSONDetail("Added", added))
+	willAdd := make([]bool, len(medias))
+	for i, m := range medias {
+		found := false
+		for _, n := range dbMedias {
+			if m.GetCID() == n.GetCID() {
+				found = true
+				break
+			}
+		}
+		if !found {
+			willAdd[i] = true
+		}
+	}
 
-	return added, nil
+	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(medias).Error; err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	d.logStep(fmt.Sprintf("Maybe added %d/%d medias to db", len(willAdd), len(medias)), tyber.WithJSONDetail("InputMedias", medias), tyber.WithJSONDetail("Added", willAdd))
+	return willAdd, nil
 }
 
 // atomic
@@ -1397,7 +1345,6 @@ func (d *DBWrapper) GetMedias(cids []string) ([]*messengertypes.Media, error) {
 	if len(cids) == 0 {
 		return nil, nil
 	}
-
 	for _, c := range cids {
 		if err := messengerutil.EnsureValidBase64CID(c); err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -1410,13 +1357,14 @@ func (d *DBWrapper) GetMedias(cids []string) ([]*messengertypes.Media, error) {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
-	dbMediasByCID := make(map[string]*messengertypes.Media)
-	for _, dbMedia := range dbMedias {
-		dbMediasByCID[dbMedia.GetCID()] = dbMedia
-	}
 	medias := make([]*messengertypes.Media, len(cids))
 	for i, cid := range cids {
-		medias[i] = dbMediasByCID[cid]
+		medias[i] = &messengertypes.Media{CID: cid}
+		for _, dbMedia := range dbMedias {
+			if dbMedia.GetCID() == cid {
+				medias[i] = dbMedia
+			}
+		}
 	}
 	return medias, nil
 }
@@ -1630,7 +1578,6 @@ func (d *DBWrapper) GetAugmentedInteraction(cid string) (*messengertypes.Interac
 	return inte, nil
 }
 
-// atomic
 func (d *DBWrapper) BuildReactionsView(cid string) ([]*messengertypes.Interaction_ReactionView, error) {
 	views := ([]*messengertypes.Interaction_ReactionView)(nil)
 	if err := d.db.Raw(

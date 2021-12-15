@@ -418,8 +418,6 @@ func (svc *service) streamEverything(sub messengertypes.MessengerService_EventSt
 }
 
 func (svc *service) streamShallow(sub messengertypes.MessengerService_EventStreamServer, includeInteractionsAndMedias int32) error {
-	// @n0izn0iz: shouldn't we use a db tx here?
-
 	// send account
 	{
 		svc.logger.Debug("sending account")
@@ -633,11 +631,10 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 		Type:                   messengertypes.Conversation_MultiMemberType,
 		LocalDevicePublicKey:   messengerutil.B64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            messengerutil.TimestampMs(time.Now()),
-		ShouldNotify:           true,
 	}
 
 	// Update database
-	isNew, err := svc.db.UpsertConversation(*conv)
+	isNew, err := svc.db.UpdateConversation(*conv)
 	if err != nil {
 		return nil, err
 	}
@@ -750,11 +747,10 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 		Type:                   messengertypes.Conversation_MultiMemberType,
 		LocalDevicePublicKey:   messengerutil.B64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            messengerutil.TimestampMs(time.Now()),
-		ShouldNotify:           true,
 	}
 
 	// update db
-	isNew, err := svc.db.UpsertConversation(conv)
+	isNew, err := svc.db.UpdateConversation(conv)
 	if err != nil {
 		return nil, err
 	}
@@ -780,6 +776,9 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 func (svc *service) AccountUpdate(ctx context.Context, req *messengertypes.AccountUpdate_Request) (_ *messengertypes.AccountUpdate_Reply, err error) {
 	ctx, _, endSection := tyber.Section(ctx, svc.logger, "Updating account")
 	defer func() { endSection(err, "") }()
+
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
 
 	avatarCID := req.GetAvatarCID()
 	if avatarCID != "" {
@@ -1286,7 +1285,6 @@ func (svc *service) MediaPrepare(srv messengertypes.MessengerService_MediaPrepar
 		return errcode.ErrInvalidInput.Wrap(errors.New("nil info"))
 	}
 
-	// open source stream
 	var file io.ReadCloser
 	if header.GetUri() != "" {
 		// open uri file
@@ -1315,56 +1313,67 @@ func (svc *service) MediaPrepare(srv messengertypes.MessengerService_MediaPrepar
 	}
 	cid := messengerutil.B64EncodeBytes(cidBytes)
 
-	var added []bool
-	var media messengertypes.Media
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
 
-	// add to db
-	media = *header.Info
-	media.CID = cid
-	media.State = messengertypes.Media_StatePrepared
-	added, err = svc.db.AddMedias([]*messengertypes.Media{&media})
-	if err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
-	}
-
-	// reply
-	if err := srv.SendAndClose(&messengertypes.MediaPrepare_Reply{Cid: cid}); err != nil {
-		return errcode.ErrStreamSendAndClose.Wrap(err)
-	}
-
-	// dispatch event if new
-	if len(added) > 0 && added[0] {
-		if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeMediaUpdated, &messengertypes.StreamEvent_MediaUpdated{Media: &media}, true); err != nil {
-			svc.logger.Error("unable to dispatch notification for media", logutil.PrivateString("cid", media.CID), zap.Error(err))
+	return svc.db.TX(ctx, func(tx *messengerdb.DBWrapper) error {
+		// add to db
+		media := *header.Info
+		media.CID = cid
+		media.State = messengertypes.Media_StatePrepared
+		added, err := tx.AddMedias([]*messengertypes.Media{&media})
+		if err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
 		}
-	}
 
-	return nil
+		// dispatch event if new
+		if added[0] {
+			if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeMediaUpdated, &messengertypes.StreamEvent_MediaUpdated{Media: &media}, true); err != nil {
+				svc.logger.Error("unable to dispatch notification for media", logutil.PrivateString("cid", media.CID), zap.Error(err))
+			}
+		}
+
+		// reply
+		if err := srv.SendAndClose(&messengertypes.MediaPrepare_Reply{Cid: cid}); err != nil {
+			return errcode.ErrStreamSendAndClose.Wrap(err)
+		}
+
+		// success
+		return nil
+	})
 }
 
 func (svc *service) MediaRetrieve(req *messengertypes.MediaRetrieve_Request, srv messengertypes.MessengerService_MediaRetrieveServer) (err error) {
 	ctx, _, endSection := tyber.Section(srv.Context(), svc.logger, "Retrieving media")
 	defer func() { endSection(err, "") }()
 
-	// prepare header
-	medias, err := svc.db.GetMedias([]string{req.GetCid()})
-	if err != nil {
-		return errcode.ErrInvalidInput.Wrap(err)
-	}
-	if len(medias) == 0 {
-		return errcode.ErrInternal.Wrap(err)
-	}
-	media := medias[0]
+	var attachment *io.PipeReader
+	if err := func() error {
+		svc.handlerMutex.Lock()
+		defer svc.handlerMutex.Unlock()
 
-	// send header
-	if err := srv.Send(&messengertypes.MediaRetrieve_Reply{Info: media}); err != nil {
-		return errcode.ErrStreamHeaderWrite.Wrap(err)
-	}
+		// prepare header
+		medias, err := svc.db.GetMedias([]string{req.GetCid()})
+		if err != nil {
+			return errcode.ErrInvalidInput.Wrap(err)
+		}
+		if len(medias) == 0 {
+			return errcode.ErrInternal.Wrap(err)
+		}
+		media := medias[0]
 
-	// open download
-	attachment, err := svc.attachmentRetrieve(ctx, req.GetCid())
-	if err != nil {
-		return errcode.ErrAttachmentRetrieve.Wrap(err)
+		// send header
+		if err := srv.Send(&messengertypes.MediaRetrieve_Reply{Info: media}); err != nil {
+			return errcode.ErrStreamHeaderWrite.Wrap(err)
+		}
+
+		// open download
+		if attachment, err = svc.attachmentRetrieve(ctx, req.GetCid()); err != nil {
+			return errcode.ErrAttachmentRetrieve.Wrap(err)
+		}
+		return nil
+	}(); err != nil {
+		return err
 	}
 	defer attachment.Close()
 
@@ -1384,41 +1393,26 @@ func (svc *service) ConversationLoad(ctx context.Context, request *messengertype
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation pk or ref cid specified"))
 	}
 
-	var (
-		ais          []*messengertypes.Interaction
-		interactions []*messengertypes.Interaction
-		medias       []*messengertypes.Media
-	)
-
-	if err := svc.db.TX(ctx, func(d *messengerdb.DBWrapper) error {
-		var err error
-		interactions, medias, err = d.GetPaginatedInteractions(request.Options)
-		if err != nil {
-			return err
-		}
-
-		if len(interactions) == 0 {
-			return errcode.ErrNotFound.Wrap(fmt.Errorf("nothing to return"))
-		}
-
-		if !request.Options.NoBulk {
-			if medias == nil {
-				medias = []*messengertypes.Media{}
-			}
-			ais = make([]*messengertypes.Interaction, len(interactions))
-			for i, inte := range interactions {
-				if ais[i], err = d.GetAugmentedInteraction(inte.CID); err != nil {
-					return errcode.ErrDBRead.Wrap(err)
-				}
-			}
-		}
-
-		return nil
-	}); err != nil {
+	interactions, medias, err := svc.db.GetPaginatedInteractions(request.Options)
+	if err != nil {
 		return nil, err
 	}
 
+	if len(interactions) == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("nothing to return"))
+	}
+
 	if !request.Options.NoBulk {
+		if medias == nil {
+			medias = []*messengertypes.Media{}
+		}
+		ais := make([]*messengertypes.Interaction, len(interactions))
+		for i, inte := range interactions {
+			if ais[i], err = svc.db.GetAugmentedInteraction(inte.CID); err != nil {
+				return nil, errcode.ErrDBRead.Wrap(err)
+			}
+		}
+
 		if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationPartialLoad, &messengertypes.StreamEvent_ConversationPartialLoad{
 			ConversationPK: interactions[0].ConversationPublicKey,
 			Interactions:   ais,
@@ -1449,7 +1443,7 @@ func (svc *service) ConversationLoad(ctx context.Context, request *messengertype
 func (svc *service) ConversationGet(ctx context.Context, request *messengertypes.ConversationGet_Request) (*messengertypes.ConversationGet_Reply, error) {
 	conv, err := svc.db.GetConversationByPK(request.GetGroupPK())
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, err
 	}
 	return &messengertypes.ConversationGet_Reply{Conversation: conv}, nil
 }

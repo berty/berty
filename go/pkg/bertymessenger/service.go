@@ -782,7 +782,7 @@ func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conve
 			return err
 		}
 
-		if _, err := svc.db.UpsertConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier, ShouldNotify: true}); err != nil {
+		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier, ShouldNotify: true}); err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
 		}
 	}

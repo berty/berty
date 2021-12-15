@@ -887,18 +887,18 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
-	_, err := db.UpsertConversation(messengertypes.Conversation{})
+	_, err := db.UpdateConversation(messengertypes.Conversation{})
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Error(t, err)
 
-	isNew, err := db.UpsertConversation(messengertypes.Conversation{PublicKey: "conv_1"})
+	isNew, err := db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1"})
 	require.NoError(t, err)
 	require.True(t, isNew)
 
 	c := &messengertypes.Conversation{}
 	require.NoError(t, db.db.Where(&messengertypes.Conversation{PublicKey: "conv_1"}).First(&c).Error)
 
-	isNew, err = db.UpsertConversation(messengertypes.Conversation{PublicKey: "conv_1", DisplayName: "DisplayName1"})
+	isNew, err = db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1", DisplayName: "DisplayName1"})
 	require.NoError(t, err)
 	require.False(t, isNew)
 
@@ -906,7 +906,7 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	require.NoError(t, db.db.Where(&messengertypes.Conversation{PublicKey: "conv_1"}).First(&c).Error)
 	require.Equal(t, "DisplayName1", c.DisplayName)
 
-	isNew, err = db.UpsertConversation(messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link1/"})
+	isNew, err = db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link1/"})
 	require.NoError(t, err)
 	require.False(t, isNew)
 
@@ -915,7 +915,7 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	require.Equal(t, "DisplayName1", c.DisplayName)
 	require.Equal(t, "https://link1/", c.Link)
 
-	isNew, err = db.UpsertConversation(messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link2/", DisplayName: "DisplayName2"})
+	isNew, err = db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link2/", DisplayName: "DisplayName2"})
 	require.NoError(t, err)
 	require.False(t, isNew)
 

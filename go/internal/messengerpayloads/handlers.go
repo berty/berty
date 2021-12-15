@@ -1226,7 +1226,7 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 		}
 		c.InfoDate = i.GetSentDate()
 
-		_, err = tx.UpsertConversation(mt.Conversation{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
+		_, err = tx.UpdateConversation(mt.Conversation{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
 		if err != nil {
 			return nil, false, err
 		}
