@@ -284,6 +284,7 @@ type FactionButtonSettingProps = {
 	}
 	style?: StyleProp<any>
 	disabled?: boolean
+	isDropdown?: boolean
 }
 
 // Styles
@@ -297,10 +298,12 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	state = {},
 	style = null,
 	disabled = false,
+	isDropdown = false,
 }) => {
 	const _styles = useStylesSettingButton()
 	const [{ border, padding, flex, height, row, opacity, margin, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
+	const [isCollapse, setIsCollapse] = React.useState<boolean>(true)
 
 	if (!iconColor) {
 		iconColor = colors['background-header']
@@ -318,69 +321,88 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 			]}
 		>
 			{name && icon && iconSize && iconColor && (
-				<View style={[height(60), flex.tiny]}>
-					<View style={[row.left, flex.tiny, { alignItems: 'center' }]}>
-						{icon && iconSize && iconColor && (
-							<View>
-								<Icon
-									name={icon}
-									pack={iconPack}
-									width={iconSize * scaleSize}
-									height={iconSize * scaleSize}
-									fill={iconColor}
-								/>
-							</View>
-						)}
-						<View>
-							<Text style={[padding.left.small, text.size.medium]}>{name}</Text>
-						</View>
-						{state && state.value && state.color && state.bgColor && state.iconSize && (
-							<View
-								style={[
-									margin.right.medium,
-									flex.tiny,
-									{ flexDirection: 'row-reverse', alignItems: 'center' },
-								]}
-							>
-								{state && state.icon && (
+				<TouchableOpacity
+					style={[height(60), flex.tiny]}
+					onPress={isDropdown ? () => setIsCollapse(!isCollapse) : () => {}}
+				>
+					<View
+						style={[row.left, flex.tiny, { alignItems: 'center', justifyContent: 'space-between' }]}
+					>
+						<View style={[row.left, flex.tiny, { alignItems: 'center' }]}>
+							{icon && iconSize && iconColor && (
+								<View>
 									<Icon
-										style={[margin.right.small]}
-										name={state.icon}
-										width={state.iconSize * scaleSize}
-										height={state.iconSize * scaleSize}
-										fill={state.iconColor}
+										name={icon}
+										pack={iconPack}
+										width={iconSize * scaleSize}
+										height={iconSize * scaleSize}
+										fill={iconColor}
 									/>
-								)}
+								</View>
+							)}
+							<View>
+								<Text style={[padding.left.small, text.size.medium]}>{name}</Text>
+							</View>
+						</View>
+						<View>
+							{state && state.value && state.color && state.bgColor && state.iconSize && (
 								<View
 									style={[
-										row.center,
-										border.radius.medium,
-										{ backgroundColor: state.bgColor, alignItems: 'center' },
-										_styles.statePaddingBox,
+										margin.right.medium,
+										flex.tiny,
+										{ flexDirection: 'row-reverse', alignItems: 'center' },
 									]}
 								>
-									{state.stateIcon && (
+									{state && state.icon && (
 										<Icon
-											style={[row.item.justify, margin.right.scale(5)]}
-											name={state.stateIcon}
-											width={13 * scaleSize}
-											height={13 * scaleSize}
-											fill={state.stateIconColor}
+											style={[margin.right.small]}
+											name={state.icon}
+											width={state.iconSize * scaleSize}
+											height={state.iconSize * scaleSize}
+											fill={state.iconColor}
 										/>
 									)}
-									<Text
+									<View
 										style={[
-											row.item.justify,
-											text.size.tiny,
-											text.bold.medium,
-											{ color: state.color },
+											row.center,
+											border.radius.medium,
+											{ backgroundColor: state.bgColor, alignItems: 'center' },
+											_styles.statePaddingBox,
 										]}
 									>
-										{state.value}
-									</Text>
+										{state.stateIcon && (
+											<Icon
+												style={[row.item.justify, margin.right.scale(5)]}
+												name={state.stateIcon}
+												width={13 * scaleSize}
+												height={13 * scaleSize}
+												fill={state.stateIconColor}
+											/>
+										)}
+										<Text
+											style={[
+												row.item.justify,
+												text.size.tiny,
+												text.bold.medium,
+												{ color: state.color },
+											]}
+										>
+											{state.value}
+										</Text>
+									</View>
 								</View>
-							</View>
-						)}
+							)}
+							{isDropdown ? (
+								<View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+									<Icon
+										name={isCollapse ? 'arrow-ios-downward' : 'arrow-ios-upward'}
+										width={25}
+										height={25}
+										fill={colors['main-text']}
+									/>
+								</View>
+							) : null}
+						</View>
 					</View>
 					<View
 						style={[
@@ -390,26 +412,58 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 							{ borderColor: colors['secondary-text'] },
 						]}
 					/>
-				</View>
+				</TouchableOpacity>
 			)}
-			{children && Array.isArray(children) ? (
-				children.map((child, key) => (
-					<View key={key}>
-						{child}
-						{key + 1 < children.length && (
-							<View
-								style={[
-									border.medium,
-									opacity(0.2),
-									margin.horizontal.small,
-									{ borderColor: colors['secondary-text'] },
-								]}
-							/>
-						)}
-					</View>
-				))
+			{isDropdown ? (
+				<>
+					{!isCollapse ? (
+						<>
+							{children && Array.isArray(children) ? (
+								children.map((child, key) => (
+									<View key={key}>
+										{child}
+										{key + 1 < children.length && (
+											<View
+												style={[
+													border.medium,
+													opacity(0.2),
+													margin.horizontal.small,
+													{ borderColor: colors['secondary-text'] },
+												]}
+											/>
+										)}
+									</View>
+								))
+							) : (
+								<View>{children}</View>
+							)}
+						</>
+					) : (
+						<></>
+					)}
+				</>
 			) : (
-				<View>{children}</View>
+				<>
+					{children && Array.isArray(children) ? (
+						children.map((child, key) => (
+							<View key={key}>
+								{child}
+								{key + 1 < children.length && (
+									<View
+										style={[
+											border.medium,
+											opacity(0.2),
+											margin.horizontal.small,
+											{ borderColor: colors['secondary-text'] },
+										]}
+									/>
+								)}
+							</View>
+						))
+					) : (
+						<View>{children}</View>
+					)}
+				</>
 			)}
 		</View>
 	)
