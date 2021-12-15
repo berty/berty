@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "PROTEJA SUA PRIVACIDADE",
+			"desc": "mensagem peer-to-peer gratuita e segura",
+			"button": "DESCUBRA"
 		},
 		"select-mode": {
 			"title": "Escolha uma predefinição",
@@ -30,45 +30,45 @@
 			"title": "Criar sua conta",
 			"desc": "O nome é a única informação obrigatória",
 			"required": "Obrigatório",
-			"placeholder": "",
+			"placeholder": "Escolha seu apelido",
 			"button": "CRIAR UMA CONTA",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
+			"advanced": "AVANÇADO",
+			"import-account": "IMPORTAR CONTA",
+			"link-device": "VINCULAR DISPOSITIVO",
+			"more": "MAIS INFORMAÇÕES",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "É bom saber:",
+				"first-point": "Sua conta é criada localmente",
+				"second-point": "O apelido é opcional e pode ser editado"
 			}
 		},
 		"advanced-settings": {
-			"title": "",
-			"desc": "",
+			"title": "Configurações avançadas",
+			"desc": "Encontre a documentação e crie sua própria configuração.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Boas vindas às configurações avançadas",
+				"first-paragraph": "Aqui você poderá criar sua própria configuração personalizada para atender às suas necessidades.",
+				"second-paragraph": "Apresentaremos todas as opções para permitir que você entenda o que está acontecendo por trás dos panos.",
+				"third-paragraph": "Você também encontrará o link para os recursos para ajustá-los às suas necessidades. Esta seção é apenas para especialistas!"
 			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"read-more": "Leia mais sobre configurações avançadas",
+			"config-title": "Configurações personalizadas",
+			"config-desc": "3 passos da configuração do app. Personalize tudo agora!",
+			"learn-more": "Saiba mais",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Proximidade",
+				"first-button": "Bluetooth de Baixa Energia",
 				"second-button": "DNS Multicast"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Ponto-a-Ponto",
+				"first-button": "Tabela Hash Distribuída",
+				"second-button": "Habilitar TOR"
 			},
 			"third-part": {
 				"title": "Serviços",
 				"network-button": "Lista de Redes",
-				"first-button": "",
+				"first-button": "Notificações Push",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
@@ -571,6 +571,10 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": "Respondeu para"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": ""
 		},
 		"skip": "PULAR",
+		"cancel": "CANCELAR",
 		"settings-text": ""
 	},
 	"notification": {
