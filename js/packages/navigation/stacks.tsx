@@ -539,6 +539,15 @@ export const Navigation: React.FC = React.memo(() => {
 					headerShown: false,
 				}}
 			/>
+			<NavigationStack.Screen
+				name={'Modals.EditProfile'}
+				component={Components.Modals.EditProfile}
+				options={{
+					presentation: 'transparentModal',
+					headerShown: false,
+					animation: 'fade_from_bottom',
+				}}
+			/>
 		</NavigationStack.Navigator>
 	)
 })

@@ -101,9 +101,7 @@ const TaskItem: React.FC<{ itemKey: ChecklistItemKey; value?: ChecklistItem }> =
 	)
 }
 
-const CheckItems: React.FC<{
-	openEditProfile: () => void
-}> = ({ openEditProfile }) => {
+const CheckItems: React.FC = () => {
 	const tasks = useAppSelector(selectChecklistItems)
 	const expanded = useAppSelector(selectChecklistExpanded)
 	const { navigate } = useNavigation()
@@ -113,7 +111,7 @@ const CheckItems: React.FC<{
 			switch (key) {
 				case 'avatar':
 					if (!value.done) {
-						openEditProfile()
+						navigate('Modals.EditProfile')
 					}
 					return
 				case 'relay':
@@ -135,7 +133,7 @@ const CheckItems: React.FC<{
 					return
 			}
 		},
-		[openEditProfile, navigate],
+		[navigate],
 	)
 	return (
 		<View>
@@ -155,9 +153,7 @@ const CheckItems: React.FC<{
 	)
 }
 
-export const WelcomeChecklist: React.FC<{
-	openEditProfile: () => void
-}> = ({ openEditProfile }) => {
+export const WelcomeChecklist: React.FC = () => {
 	const colors = useThemeColor()
 	const [{ text, padding, margin, border }, { scaleSize }] = useStyles()
 	const { t }: any = useTranslation()
@@ -233,7 +229,7 @@ export const WelcomeChecklist: React.FC<{
 					)}
 				</View>
 			</View>
-			<CheckItems openEditProfile={openEditProfile} />
+			<CheckItems />
 		</TouchableOpacity>
 	)
 }

@@ -8,15 +8,16 @@ import {
 	View,
 	KeyboardAvoidingView,
 } from 'react-native'
-import { BlurView } from '@react-native-community/blur'
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
-import { useStyles } from '@berty-tech/styles'
+import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import { useAccount, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { StackActions } from '@react-navigation/native'
 
 import { AccountAvatar } from '../avatars'
 
@@ -80,11 +81,12 @@ const initialState: State = {
 	saving: false,
 }
 
-const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
+const EditMyProfile: React.FC = () => {
 	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 	const dispatch = useAppDispatch()
+	const navigation = useNavigation()
 
 	const account = useAccount()
 
@@ -170,7 +172,7 @@ const EditMyProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => 
 				}
 			}
 
-			closeModal()
+			navigation.dispatch(StackActions.pop(1))
 		} catch (err) {
 			console.warn(err)
 			localDispatch({ type: 'SET_ERROR', err })
@@ -372,15 +374,22 @@ const Header: React.FC = () => {
 	)
 }
 
-export const EditProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
+export const EditProfile: ScreenFC<'Modals.EditProfile'> = () => {
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
+	const navigation = useNavigation()
+
 	return (
 		<Pressable
-			onPress={() => closeModal()}
-			style={[StyleSheet.absoluteFill, { justifyContent: 'flex-end' }]}
+			onPress={() => navigation.dispatch(StackActions.pop(1))}
+			style={[
+				StyleSheet.absoluteFill,
+				{
+					justifyContent: 'flex-end',
+					backgroundColor: `${defaultStylesDeclaration.colors.default.black}80`,
+				},
+			]}
 		>
-			<BlurView style={[StyleSheet.absoluteFill]} blurType='dark' />
 			<KeyboardAvoidingView behavior='padding'>
 				<View
 					style={[
@@ -393,7 +402,7 @@ export const EditProfile: React.FC<{ closeModal: () => void }> = ({ closeModal }
 					]}
 				>
 					<Header />
-					<EditMyProfile closeModal={closeModal} />
+					<EditMyProfile />
 				</View>
 			</KeyboardAvoidingView>
 		</Pressable>

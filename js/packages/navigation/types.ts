@@ -75,6 +75,7 @@ export type ScreensParams = {
 		images: (beapi.messenger.IMedia & { uri?: string })[]
 		previewOnly?: boolean
 	}
+	'Modals.EditProfile': undefined
 }
 
 export type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>
