@@ -75,8 +75,7 @@
 				},
 				"third-button": "Select a certified node"
 			},
-			"apply-changes": "APPLY CHANGES",
-			"skip": "Skip and do this later"
+			"apply-changes": "APPLY CHANGES"
 		},
 		"services-auth": {
 			"header": "Authenticate to services",

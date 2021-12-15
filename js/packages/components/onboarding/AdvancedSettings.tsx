@@ -610,49 +610,39 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 	withInAppNotification(({ showNotification, newConfig }: any) => {
 		const [{ padding, border, text, margin }] = useStyles()
 		const colors = useThemeColor()
-		const { goBack } = useNavigation()
 		const { t } = useTranslation()
 		const ctx = useMessengerContext()
 
 		return (
-			<View style={[padding.big, margin.horizontal.large]}>
-				<TouchableOpacity
-					onPress={async () => {
-						await accountService.networkConfigSet({
-							accountId: ctx.selectedAccount,
-							config: newConfig,
-						})
-						await ctx.setNetworkConfig(newConfig)
-						showNeedRestartNotification(showNotification, ctx, t)
-					}}
-					style={[
-						padding.medium,
-						border.radius.medium,
-						{ backgroundColor: '#3F49EA', alignItems: 'center' },
-					]}
-				>
-					<Text
+			<View
+				style={[{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: '#1B1C2B' }]}
+			>
+				<View style={[padding.medium, margin.horizontal.large]}>
+					<TouchableOpacity
+						onPress={async () => {
+							await accountService.networkConfigSet({
+								accountId: ctx.selectedAccount,
+								config: newConfig,
+							})
+							await ctx.setNetworkConfig(newConfig)
+							showNeedRestartNotification(showNotification, ctx, t)
+						}}
 						style={[
-							text.size.large,
-							{ fontFamily: 'Open Sans', fontWeight: '700', color: colors['reverted-main-text'] },
+							padding.medium,
+							border.radius.medium,
+							{ backgroundColor: '#3F49EA', alignItems: 'center' },
 						]}
 					>
-						{t('onboarding.advanced-settings.apply-changes')}
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => goBack()}
-					style={[margin.top.small, { alignItems: 'center' }]}
-				>
-					<Text
-						style={[
-							text.size.medium,
-							{ fontFamily: 'Open Sans', color: colors['negative-asset'], fontStyle: 'italic' },
-						]}
-					>
-						{t('onboarding.advanced-settings.skip')}
-					</Text>
-				</TouchableOpacity>
+						<Text
+							style={[
+								text.size.large,
+								{ fontFamily: 'Open Sans', fontWeight: '700', color: colors['reverted-main-text'] },
+							]}
+						>
+							{t('onboarding.advanced-settings.apply-changes')}
+						</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 		)
 	})
@@ -690,7 +680,11 @@ export const AdvancedSettings: ScreenFC<'Onboarding.AdvancedSettings'> = ({
 	return (
 		<SafeAreaView style={{ backgroundColor: '#1B1C2B', flex: 1 }}>
 			<StatusBar barStyle='light-content' />
-			<ScrollView bounces={false} contentContainerStyle={[padding.medium, padding.bottom.big]}>
+			<ScrollView
+				bounces={false}
+				contentContainerStyle={[padding.medium, isNew !== 'isNew' && padding.bottom.scale(170)]}
+				showsVerticalScrollIndicator={false}
+			>
 				<AdvancedSettingsBackground top={0} />
 				<AdvancedSettingsBackground top={650} />
 				<AdvancedSettingsBackground top={1300} />
@@ -725,16 +719,15 @@ export const AdvancedSettings: ScreenFC<'Onboarding.AdvancedSettings'> = ({
 					/>
 				</View>
 				<CustomConfig setNewConfig={setNewConfig} newConfig={newConfig} />
-				{ctx.selectedAccount && isNew !== 'isNew' ? (
-					<ApplyChanges newConfig={newConfig} />
-				) : (
+				{isNew === 'isNew' ? (
 					<View>
 						{defaultName ? (
 							<CreateAccountBox newConfig={newConfig} defaultName={defaultName} />
 						) : null}
 					</View>
-				)}
+				) : null}
 			</ScrollView>
+			{ctx.selectedAccount && isNew !== 'isNew' ? <ApplyChanges newConfig={newConfig} /> : null}
 		</SafeAreaView>
 	)
 }
