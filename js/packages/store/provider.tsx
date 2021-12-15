@@ -24,7 +24,6 @@ import {
 	switchAccount,
 	deleteAccount,
 	restart,
-	setReaction,
 } from './providerCallbacks'
 import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
@@ -181,24 +180,6 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 		[state.persistentOptions],
 	)
 
-	const callbackAddReaction = useCallback(
-		(convPK: string, targetCID: string, emoji: string) => {
-			if (state.client) {
-				return setReaction(convPK, targetCID, emoji, true, state.client)
-			}
-		},
-		[state.client],
-	)
-
-	const callbackRemoveReaction = useCallback(
-		(convPK: string, targetCID: string, emoji: string) => {
-			if (state.client) {
-				return setReaction(convPK, targetCID, emoji, false, state.client)
-			}
-		},
-		[state.client],
-	)
-
 	useEffect(() => {
 		if (state.selectedAccount === null) {
 			console.log('no account id supplied')
@@ -238,8 +219,6 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 				debugMode: debugMode,
 				playSound: callbackPlaySound,
 				setDebugMode: callbackSetDebugMode,
-				addReaction: callbackAddReaction,
-				removeReaction: callbackRemoveReaction,
 				networkConfig: networkConfig,
 				setNetworkConfig: setNetworkConfig,
 				handledLink,

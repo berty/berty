@@ -5,30 +5,45 @@ import { Text } from '@ui-kitten/components'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor, useMessengerContext } from '@berty-tech/store'
+import Long from 'long'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
 	option: beapi.messenger.IReplyOption
 }> = ({ convPk, option }) => {
-	const ctx: any = useMessengerContext()
+	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const [{ padding, border, margin }] = useStyles()
 
 	return (
 		<TouchableOpacity
-			onPress={() => {
-				const usermsg = { body: option.payload, sentDate: Date.now() }
-				const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
-
-				ctx.client
-					?.interact({
+			onPress={async () => {
+				try {
+					if (!ctx.client) {
+						return
+					}
+					const usermsg: beapi.messenger.AppMessage.IUserMessage = { body: option.payload }
+					const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
+					const reply = await ctx.client.interact({
 						conversationPublicKey: convPk,
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						payload: buf,
 					})
-					.catch((e: any) => {
-						console.warn('e sending message:', e)
+					const optimisticInteraction: beapi.messenger.IInteraction = {
+						cid: reply.cid,
+						isMine: true,
+						conversationPublicKey: convPk,
+						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+						payload: buf,
+						sentDate: Long.fromNumber(Date.now()),
+					}
+					ctx.dispatch({
+						type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+						payload: { interaction: optimisticInteraction },
 					})
+				} catch (e: any) {
+					console.warn('error sending message:', e)
+				}
 			}}
 		>
 			<View

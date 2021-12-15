@@ -1,5 +1,4 @@
 import beapi from '@berty-tech/api'
-import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
 import { storageKeyForAccount } from './utils'
@@ -197,17 +196,3 @@ export const setPersistentOption = async (
 		return
 	}
 }
-
-export const setReaction = (
-	convPK: string,
-	targetCID: string,
-	emoji: string,
-	state: boolean,
-	messengerClient: WelshMessengerServiceClient,
-) =>
-	messengerClient.interact({
-		type: beapi.messenger.AppMessage.Type.TypeUserReaction,
-		conversationPublicKey: convPK,
-		targetCid: targetCID,
-		payload: beapi.messenger.AppMessage.UserReaction.encode({ emoji, state }).finish(),
-	})
