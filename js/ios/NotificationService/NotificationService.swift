@@ -69,7 +69,7 @@ class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        if decrypted == nil {
+        if decrypted == nil || decrypted.noNotification {
             return
         }
 

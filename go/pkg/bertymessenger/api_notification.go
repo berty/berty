@@ -50,8 +50,10 @@ func (s *service) NotificationConversationSetEnabled(ctx context.Context, req *m
 		return nil, err
 	}
 
-	if err := s.dh.ConversationUpdated(convUpdate, false); err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+	if convUpdate != nil {
+		if err := s.dh.ConversationUpdated(convUpdate, false); err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
 	}
 
 	return &messengertypes.NotificationConversationSetEnabled_Reply{}, nil

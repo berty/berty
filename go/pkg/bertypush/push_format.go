@@ -23,6 +23,12 @@ func (p formatedPayload) get(key string, value *string) error {
 }
 
 func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Printer) *pushtypes.FormatedPush {
+	if decrypted == nil {
+		return &pushtypes.FormatedPush{
+			NoNotification: true,
+		}
+	}
+
 	fmtpush := &pushtypes.FormatedPush{
 		PushType: decrypted.PushType,
 		DeepLink: decrypted.DeepLink,

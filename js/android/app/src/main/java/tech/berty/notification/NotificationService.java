@@ -66,7 +66,7 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     private void createPushNotification(FormatedPush fpush) {
-        if (fpush == null) {
+        if (fpush == null || fpush.getNoNotification()) {
             return;
         }
 

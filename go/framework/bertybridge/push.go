@@ -82,10 +82,5 @@ func (b *Bridge) PushDecrypt(inputB64 string) (*FormatedPush, error) {
 		return nil, err
 	}
 
-	formatpush := res.GetPush()
-	if formatpush == nil {
-		return nil, nil
-	}
-
-	return (*FormatedPush)(formatpush), nil
+	return (*FormatedPush)(res.GetPush()), nil
 }
