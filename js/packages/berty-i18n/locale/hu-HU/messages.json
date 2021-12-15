@@ -571,6 +571,10 @@
 			"response-to": "Válasz neki",
 			"replying-to": "Válasz neki:",
 			"replied-to": "Válaszolt neki"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": "Ugorj a beállításokhoz"
 		},
 		"skip": "TOVÁBB",
+		"cancel": "MÉGSE",
 		"settings-text": "A Beállítások menüből engedélyezheti a {{title}}."
 	},
 	"notification": {
