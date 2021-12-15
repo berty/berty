@@ -1,10 +1,11 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
-import WebView from 'react-native-webview'
 
 import { useThemeColor } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
+
+import { WebViews } from '../shared-components'
 
 export const Roadmap: ScreenFC<'Settings.Roadmap'> = () => {
 	const colors = useThemeColor()
@@ -15,7 +16,7 @@ export const Roadmap: ScreenFC<'Settings.Roadmap'> = () => {
 				backgroundColor={colors['alt-secondary-background-header']}
 				barStyle='light-content'
 			/>
-			<WebView source={{ uri: 'https://webviews.berty.tech/roadmap' }} />
+			<WebViews url='https://guide.berty.tech/roadmap' />
 		</Layout>
 	)
 }
