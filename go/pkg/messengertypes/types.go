@@ -53,10 +53,11 @@ func mediaSliceFilterForNetwork(dbMedias []*Media) []*Media {
 	networkMedias := make([]*Media, len(dbMedias))
 	for i, dbMedia := range dbMedias {
 		networkMedias[i] = &Media{
-			CID:         dbMedia.GetCID(),
-			MimeType:    dbMedia.GetMimeType(),
-			Filename:    dbMedia.GetFilename(),
-			DisplayName: dbMedia.GetDisplayName(),
+			CID:           dbMedia.GetCID(),
+			MimeType:      dbMedia.GetMimeType(),
+			Filename:      dbMedia.GetFilename(),
+			DisplayName:   dbMedia.GetDisplayName(),
+			MetadataBytes: dbMedia.GetMetadataBytes(),
 		}
 	}
 	return networkMedias
