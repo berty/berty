@@ -1143,20 +1143,21 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 
 		client, err := initManager.GetMessengerClient()
 		if err == nil && client != nil {
-			shouldNotify := true
+			noNotif := false
 			acc, err := client.AccountGet(ctx, &messengertypes.AccountGet_Request{})
 			if err == nil && acc.GetAccount() != nil {
-				shouldNotify = acc.Account.ShouldNotify
+				noNotif = acc.Account.NoNotification
 			}
-			if !shouldNotify {
+			if noNotif {
 				return &accounttypes.PushReceive_Reply{}, nil
 			}
 			rep, err := client.PushReceive(ctx, &messengertypes.PushReceive_Request{Payload: payload})
 			if err == nil {
 				conv, err := client.ConversationGet(ctx, &messengertypes.ConversationGet_Request{GroupPK: rep.GetData().GetInteraction().GetConversationPublicKey()})
-				if err == nil && conv.GetConversation() != nil && !conv.Conversation.ShouldNotify {
+				if err == nil && conv.GetConversation().GetNoNotification() {
 					return &accounttypes.PushReceive_Reply{}, nil
 				}
+
 				pushData, err := bertypush.PushEnrich(rep.Data, accData, s.logger)
 				formated := bertypush.FormatDecryptedPush(pushData, printer)
 				if err == nil {

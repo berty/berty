@@ -243,7 +243,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			dbw := messengerdb.NewDBWrapper(db, opts.Logger)
 
 			dbAccount, err := dbw.GetAccount()
-			if err == nil && !dbAccount.GetShouldNotify() {
+			if err == nil && dbAccount.GetNoNotification() {
 				return nil, nil
 			}
 
@@ -266,7 +266,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			}
 
 			conv, err := dbw.GetConversationByPK(reply.Data.Interaction.ConversationPublicKey)
-			if err == nil && !conv.GetShouldNotify() {
+			if err == nil && conv.GetNoNotification() {
 				return nil, nil
 			}
 

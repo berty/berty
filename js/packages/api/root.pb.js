@@ -1088,6 +1088,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   deepLink: {
                     type: "string",
                     id: 5
+                  },
+                  noNotification: {
+                    type: "bool",
+                    id: 6
                   }
                 }
               }
@@ -5362,12 +5366,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "bytes",
                     id: 10
                   },
-                  shouldNotify: {
+                  noNotification: {
                     type: "bool",
-                    id: 11,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:default:true"
-                    }
+                    id: 11
                   }
                 }
               },
@@ -5760,12 +5761,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 19
                   },
-                  shouldNotify: {
+                  noNotification: {
                     type: "bool",
-                    id: 20,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:default:true"
-                    }
+                    id: 20
                   }
                 },
                 nested: {

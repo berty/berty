@@ -15,44 +15,16 @@ func (d *DBWrapper) NotificationSetEnabled(value bool) (*messengertypes.Account,
 			return errcode.ErrDBRead.Wrap(err)
 		}
 
-		if acc.ShouldNotify == value {
+		if acc.NoNotification == !value {
 			return nil
 		}
 
-		if err := d.db.Model(&acc).Update("should_notify", value).Error; err != nil {
+		if err := d.db.Model(&acc).Update("no_notification", !value).Error; err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
 		}
 
 		update = acc
-		update.ShouldNotify = value
-		return nil
-	})
-
-	return update, err
-}
-
-// atomic
-func (d *DBWrapper) NotificationSetPushEnabled(value bool) (*messengertypes.Account, error) {
-	var update *messengertypes.Account
-
-	err := d.TX(d.ctx, func(d *DBWrapper) error {
-		acc, err := d.GetAccount()
-		if err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-
-		/*
-			if acc.ShouldPushNotify == value {
-				return nil
-			}
-		*/
-
-		if err := d.db.Model(&acc).Update("should_push_notify", value).Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
-		}
-
-		update = acc
-		// update.ShouldPushNotify = value
+		update.NoNotification = !value
 		return nil
 	})
 
@@ -69,16 +41,16 @@ func (d *DBWrapper) NotificationConversationSetEnabled(convPK string, value bool
 			return errcode.ErrDBRead.Wrap(err)
 		}
 
-		if conv.ShouldNotify == value {
+		if conv.NoNotification == !value {
 			return nil
 		}
 
-		if err := d.db.Model(&conv).Update("should_notify", value).Error; err != nil {
+		if err := d.db.Model(&conv).Update("no_notification", !value).Error; err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
 		}
 
 		update = conv
-		update.ShouldNotify = value
+		update.NoNotification = !value
 		return nil
 	})
 

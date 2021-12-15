@@ -460,7 +460,7 @@ func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 		if err != nil {
 			return err
 		}
-		if !conv.ShouldNotify {
+		if conv.GetNoNotification() {
 			return nil
 		}
 		return h.dispatcher.Notify(
@@ -545,18 +545,17 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		return err
 	}
 
-	if conversation != nil {
-		if err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conversation}, true); err != nil {
-			return err
-		}
+	if err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conversation}, true); err != nil {
+		return err
 	}
 
-	if err := h.dispatcher.Notify(
+	err = h.dispatcher.Notify(
 		mt.StreamEvent_Notified_TypeContactRequestReceived,
 		"Contact request received",
 		"From: "+contact.GetDisplayName(),
 		&mt.StreamEvent_Notified_ContactRequestReceived{Contact: contact},
-	); err != nil {
+	)
+	if err != nil {
 		h.logger.Warn("failed to notify", zap.Error(err))
 	}
 
@@ -900,7 +899,7 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 		Contact:      contact,
 	}
 
-	if i.Conversation.GetShouldNotify() {
+	if !i.GetConversation().GetNoNotification() {
 		err = h.dispatcher.Notify(mt.StreamEvent_Notified_TypeMessageReceived, title, body, &msgRecvd)
 		if err != nil {
 			h.logger.Error("failed to notify", zap.Error(err))

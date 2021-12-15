@@ -25,7 +25,7 @@ const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => 
 	const navigation = useNavigation()
 	const client = useMessengerClient()
 	const account = useAccount()
-	const shouldNotify = !!account?.shouldNotify
+	const shouldNotify = !account?.noNotification
 
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>

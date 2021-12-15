@@ -23,7 +23,7 @@ func (s *service) NotificationSetEnabled(ctx context.Context, req *messengertype
 	}
 
 	if accountUpdate != nil {
-		s.dispatcher.SetShouldNotify(accountUpdate.ShouldNotify)
+		s.dispatcher.SetShouldNotify(!accountUpdate.NoNotification)
 
 		if err := s.dh.AccountUpdated(accountUpdate, false); err != nil {
 			return nil, errcode.ErrInternal.Wrap(err)

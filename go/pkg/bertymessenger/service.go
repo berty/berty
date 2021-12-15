@@ -252,7 +252,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			tyber.LogStep(tyberCtx, opts.Logger, "Found account", tyber.WithDetail("PublicKey", pkStr))
 		}
 		if acc != nil {
-			svc.dispatcher.SetShouldNotify(acc.ShouldNotify)
+			svc.dispatcher.SetShouldNotify(!acc.GetNoNotification())
 		}
 	}
 
@@ -782,7 +782,7 @@ func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conve
 			return err
 		}
 
-		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier, ShouldNotify: true}); err != nil {
+		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
 		}
 	}

@@ -1669,7 +1669,7 @@
           "type": "string",
           "format": "byte"
         },
-        "should_notify": {
+        "no_notification": {
           "type": "boolean"
         }
       }
@@ -2132,7 +2132,7 @@
         "shared_push_token_identifier": {
           "type": "string"
         },
-        "should_notify": {
+        "no_notification": {
           "type": "boolean"
         }
       }

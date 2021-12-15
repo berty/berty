@@ -75,7 +75,7 @@ const GatedNotificationBody: React.FC<{
 
 	const justOpened = props.isOpen && !prevProps?.isOpen
 	const notif = props.additionalProps
-	const isValid = !!(notif && props.isOpen && ctx.account?.shouldNotify)
+	const isValid = !!(notif && props.isOpen && !ctx.account?.noNotification)
 	const notifType = notif?.type || 0
 	const inhibit = isValid
 		? ctx.notificationsInhibitors.reduce<ReturnType<NotificationsInhibitor>>((r, inh) => {

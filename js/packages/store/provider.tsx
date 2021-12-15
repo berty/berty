@@ -171,7 +171,7 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 
 	const callbackSetDebugMode = useCallback((value: boolean) => setDebugMode(value), [])
 
-	const shouldNotify = !!state.account?.shouldNotify
+	const shouldNotify = !state.account?.noNotification
 
 	const callbackPlaySound = useCallback(
 		(sound: SoundKey) => {

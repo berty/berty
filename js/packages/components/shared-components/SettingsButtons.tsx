@@ -271,7 +271,7 @@ export const ConversationNotificationToggle: React.FC<{ publicKey: string }> = (
 			name={t('chat.multi-member-settings.notifications-button')}
 			icon='bell-outline'
 			toggled
-			varToggle={conv ? !!conv.shouldNotify : true}
+			varToggle={!conv?.noNotification}
 			disabled={!conv}
 			actionToggle={() => {
 				if (!client || !conv) {
@@ -279,7 +279,7 @@ export const ConversationNotificationToggle: React.FC<{ publicKey: string }> = (
 				}
 				client.notificationConversationSetEnabled({
 					conversationPublicKey: publicKey,
-					value: !conv.shouldNotify,
+					value: !!conv?.noNotification,
 				})
 			}}
 		/>

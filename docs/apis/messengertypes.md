@@ -204,7 +204,7 @@
 | auto_share_push_token_flag | [bool](#bool) |  |  |
 | device_push_token | [bytes](#bytes) |  |  |
 | device_push_server | [bytes](#bytes) |  |  |
-| should_notify | [bool](#bool) |  |  |
+| no_notification | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -497,7 +497,7 @@ to test more false-positive guesses.
 | avatar_cid | [string](#string) |  |  |
 | info_date | [int64](#int64) |  | info_date is used when SetGroupInfo is called |
 | shared_push_token_identifier | [string](#string) |  |  |
-| should_notify | [bool](#bool) |  |  |
+| no_notification | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 

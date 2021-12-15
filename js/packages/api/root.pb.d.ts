@@ -1746,6 +1746,7 @@ export namespace berty {
                 subtitle?: (string|null);
                 body?: (string|null);
                 deepLink?: (string|null);
+                noNotification?: (boolean|null);
             }
 
             class FormatedPush implements IFormatedPush {
@@ -1755,6 +1756,7 @@ export namespace berty {
                 public subtitle: string;
                 public body: string;
                 public deepLink: string;
+                public noNotification: boolean;
                 public static create(properties?: berty.push.v1.IFormatedPush): berty.push.v1.FormatedPush;
                 public static encode(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8019,7 +8021,7 @@ export namespace berty {
                 autoSharePushTokenFlag?: (boolean|null);
                 devicePushToken?: (Uint8Array|null);
                 devicePushServer?: (Uint8Array|null);
-                shouldNotify?: (boolean|null);
+                noNotification?: (boolean|null);
             }
 
             class Account implements IAccount {
@@ -8033,7 +8035,7 @@ export namespace berty {
                 public autoSharePushTokenFlag: boolean;
                 public devicePushToken: Uint8Array;
                 public devicePushServer: Uint8Array;
-                public shouldNotify: boolean;
+                public noNotification: boolean;
                 public static create(properties?: berty.messenger.v1.IAccount): berty.messenger.v1.Account;
                 public static encode(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8277,7 +8279,7 @@ export namespace berty {
                 avatarCid?: (string|null);
                 infoDate?: (Long|null);
                 sharedPushTokenIdentifier?: (string|null);
-                shouldNotify?: (boolean|null);
+                noNotification?: (boolean|null);
             }
 
             class Conversation implements IConversation {
@@ -8301,7 +8303,7 @@ export namespace berty {
                 public avatarCid: string;
                 public infoDate: Long;
                 public sharedPushTokenIdentifier: string;
-                public shouldNotify: boolean;
+                public noNotification: boolean;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;

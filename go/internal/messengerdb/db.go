@@ -211,6 +211,7 @@ func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messe
 		Link:             "", // empty on account conversations
 		CreatedDate:      messengerutil.TimestampMs(time.Now()),
 	}
+	var finalConv *messengertypes.Conversation
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
 		// Check if a conversation already exists for this contact with another pk (or for this conversation pk and another contact)
 		{
@@ -229,18 +230,20 @@ func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messe
 			}
 		}
 
-		return tx.db.
+		if err := tx.db.
 			Clauses(clause.OnConflict{DoNothing: true}).
 			Create(&conversation).
-			Error
+			Error; err != nil {
+			return err
+		}
+
+		var err error
+		finalConv, err = tx.GetConversationByPK(groupPK)
+		return err
 	}); err != nil {
 		return nil, err
 	}
 
-	finalConv, err := d.GetConversationByPK(groupPK)
-	if err != nil {
-		return nil, err
-	}
 	d.logStep("Maybed added conversation to db", tyber.WithJSONDetail("ConversationToSave", conversation), tyber.WithJSONDetail("FinalConversation", finalConv))
 	return finalConv, nil
 }

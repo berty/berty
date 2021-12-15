@@ -423,7 +423,7 @@ message Account {
   bool auto_share_push_token_flag = 8 [(gogoproto.moretags) = "gorm:\"default:true\""];
   bytes device_push_token = 9;
   bytes device_push_server = 10;
-  bool should_notify = 11 [(gogoproto.moretags) = "gorm:\"default:true\""];
+  bool no_notification = 11;
 }
 
 message ServiceToken {
@@ -545,7 +545,7 @@ message Conversation {
   // info_date is used when SetGroupInfo is called
   int64 info_date = 18;
   string shared_push_token_identifier = 19;
-  bool should_notify = 20 [(gogoproto.moretags) = "gorm:\"default:true\""];
+  bool no_notification = 20;
 }
 
 message ConversationReplicationInfo {
