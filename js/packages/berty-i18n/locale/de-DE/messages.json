@@ -571,6 +571,10 @@
 			"response-to": "Antwort an",
 			"replying-to": "Du antwortest an",
 			"replied-to": "Antwort auf"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": "Gehe zu den Einstellungen"
 		},
 		"skip": "Überspringen",
+		"cancel": "Abbrechen",
 		"settings-text": "Sie können {{title}} Berechtigungen in den Einstellungen aktivieren."
 	},
 	"notification": {
