@@ -69,6 +69,10 @@ class NotificationService: UNNotificationServiceExtension {
             return
         }
 
+        if decrypted == nil {
+            return
+        }
+
         os_log("successfully decrypt push", log: oslogger)
 
         self.bestAttemptContent!.title = decrypted.title

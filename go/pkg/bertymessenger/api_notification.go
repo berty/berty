@@ -17,19 +17,13 @@ func (s *service) NotificationSetEnabled(ctx context.Context, req *messengertype
 		return nil, errcode.ErrInvalidInput.Wrap(errors.New("nil request"))
 	}
 
-	s.handlerMutex.Lock()
-	defer s.handlerMutex.Unlock()
-
-	updated, err := s.db.NotificationSetEnabled(req.Value)
+	accountUpdate, err := s.db.NotificationSetEnabled(req.Value)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, err
 	}
 
-	if updated {
-		s.dispatcher.SetShouldNotify(req.Value)
-		if err := s.dispatchDBAccount(false); err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
-		}
+	if err := s.dh.AccountUpdated(accountUpdate, false); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
 	return &messengertypes.NotificationSetEnabled_Reply{}, nil
@@ -47,18 +41,13 @@ func (s *service) NotificationConversationSetEnabled(ctx context.Context, req *m
 		return nil, errcode.ErrInvalidInput.Wrap(errors.New("empty conversation public key"))
 	}
 
-	s.handlerMutex.Lock()
-	defer s.handlerMutex.Unlock()
-
-	updated, err := s.db.NotificationConversationSetEnabled(req.ConversationPublicKey, req.Value)
+	convUpdate, err := s.db.NotificationConversationSetEnabled(req.ConversationPublicKey, req.Value)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, err
 	}
 
-	if updated {
-		if err := s.dispatchDBConversation(req.ConversationPublicKey, false); err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
-		}
+	if err := s.dh.ConversationUpdated(convUpdate, false); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
 	return &messengertypes.NotificationConversationSetEnabled_Reply{}, nil

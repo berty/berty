@@ -1,22 +1,26 @@
 package bertymessenger
 
 import (
-	"berty.tech/berty/v2/go/pkg/errcode"
+	"errors"
+
+	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
-func (s *service) dispatchDBConversation(convPK string, isNew bool) error {
-	conv, err := s.db.GetConversationByPK(convPK)
-	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
-	}
-	return s.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationUpdated, &messengertypes.StreamEvent_ConversationUpdated{Conversation: conv}, isNew)
+type DispatcherHelper struct {
+	messengerutil.Dispatcher
 }
 
-func (s *service) dispatchDBAccount(isNew bool) error {
-	account, err := s.db.GetAccount()
-	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+func (dh *DispatcherHelper) AccountUpdated(account *messengertypes.Account, isNew bool) error {
+	if account == nil {
+		return errors.New("nil account")
 	}
-	return s.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeAccountUpdated, &messengertypes.StreamEvent_AccountUpdated{Account: account}, isNew)
+	return dh.StreamEvent(messengertypes.StreamEvent_TypeAccountUpdated, &messengertypes.StreamEvent_AccountUpdated{Account: account}, isNew)
+}
+
+func (dh *DispatcherHelper) ConversationUpdated(conv *messengertypes.Conversation, isNew bool) error {
+	if conv == nil {
+		return errors.New("nil conversation")
+	}
+	return dh.StreamEvent(messengertypes.StreamEvent_TypeConversationUpdated, &messengertypes.StreamEvent_ConversationUpdated{Conversation: conv}, isNew)
 }

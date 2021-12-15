@@ -58,6 +58,7 @@ service MessengerService {
   rpc ConversationOpen(ConversationOpen.Request) returns (ConversationOpen.Reply);
   rpc ConversationClose(ConversationClose.Request) returns (ConversationClose.Reply);
   rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
+  rpc ConversationGet(ConversationGet.Request) returns (ConversationGet.Reply);
 
   // ServicesTokenList Retrieves the list of service server tokens
   rpc ServicesTokenList(protocol.v1.ServicesTokenList.Request) returns (stream protocol.v1.ServicesTokenList.Reply);
@@ -143,6 +144,15 @@ message ConversationLoad {
     PaginatedInteractionsOptions options = 1;
   }
   message Reply {}
+}
+
+message ConversationGet {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply {
+    Conversation conversation = 1;
+  }
 }
 
 message EchoTest {

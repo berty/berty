@@ -241,6 +241,13 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useConversationGet: () => {
+		error: any
+		call: (req?: beapi.messenger.ConversationGet.IRequest) => void
+		reply: beapi.messenger.ConversationGet.IReply | null
+		done: boolean
+		called: boolean
+	}
 	useReplicationServiceRegisterGroup: () => {
 		error: any
 		call: (req?: beapi.messenger.ReplicationServiceRegisterGroup.IRequest) => void

@@ -123,6 +123,7 @@ export interface WelshMessengerServiceClient {
 	conversationOpen: UnaryType<beapi.messenger.MessengerService['conversationOpen']>
 	conversationClose: UnaryType<beapi.messenger.MessengerService['conversationClose']>
 	conversationLoad: UnaryType<beapi.messenger.MessengerService['conversationLoad']>
+	conversationGet: UnaryType<beapi.messenger.MessengerService['conversationGet']>
 	servicesTokenList: ResponseStreamType<beapi.messenger.MessengerService['servicesTokenList']>
 	replicationServiceRegisterGroup: UnaryType<
 		beapi.messenger.MessengerService['replicationServiceRegisterGroup']

@@ -56,18 +56,16 @@ func (d *Dispatcher) StreamEvent(typ messengertypes.StreamEvent_Type, msg proto.
 	}
 
 	// can be parallelized if needed
-	var errs error
+	err = nil
 	d.mutex.RLock()
+	defer d.mutex.RUnlock()
 	if event.Type == messengertypes.StreamEvent_TypeNotified && !d.shouldDispatchNotifications {
 		return nil
 	}
 	for n := range d.notifiees {
-		if err := n.StreamEvent(event); err != nil {
-			errs = multierr.Append(errs, err)
-		}
+		err = multierr.Append(err, n.StreamEvent(event))
 	}
-	d.mutex.RUnlock()
-	return errs
+	return err
 }
 
 func (d *Dispatcher) Notify(typ messengertypes.StreamEvent_Notified_Type, title, body string, msg proto.Message) error {

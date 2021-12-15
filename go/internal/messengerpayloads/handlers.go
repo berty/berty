@@ -545,13 +545,12 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		return err
 	}
 
-	if err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conversation}, true); err != nil {
-		return err
+	if conversation != nil {
+		if err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conversation}, true); err != nil {
+			return err
+		}
 	}
 
-	if !conversation.ShouldNotify {
-		return nil
-	}
 	if err := h.dispatcher.Notify(
 		mt.StreamEvent_Notified_TypeContactRequestReceived,
 		"Contact request received",

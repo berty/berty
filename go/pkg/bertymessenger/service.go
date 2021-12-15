@@ -55,6 +55,7 @@ type service struct {
 	startedAt             time.Time
 	db                    *messengerdb.DBWrapper
 	dispatcher            *Dispatcher
+	dh                    *DispatcherHelper
 	cancelFn              func()
 	optsCleanup           func()
 	ctx                   context.Context
@@ -203,6 +204,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 
 	opts.Logger = opts.Logger.With(logutil.PrivateString("a", shortPkStr))
 
+	dispatcher := NewDispatcher()
+
 	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
 		protocolClient:        client,
@@ -212,7 +215,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		db:                    db,
 		notifmanager:          opts.NotificationManager,
 		lcmanager:             opts.LifeCycleManager,
-		dispatcher:            NewDispatcher(),
+		dispatcher:            dispatcher,
+		dh:                    &DispatcherHelper{dispatcher},
 		cancelFn:              cancel,
 		optsCleanup:           optsCleanup,
 		ctx:                   ctx,
@@ -616,7 +620,7 @@ func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (er
 		if medias, err = svc.db.GetMedias([]string{acc.GetAvatarCID()}); err != nil {
 			return errcode.ErrDBRead.Wrap(err)
 		}
-		if len(medias) < 1 {
+		if len(medias) < 1 || medias[0] == nil {
 			return errcode.ErrInternal
 		}
 		medias[0].CID = avatarCID

@@ -44,6 +44,9 @@
     - [ConversationCreate](#berty.messenger.v1.ConversationCreate)
     - [ConversationCreate.Reply](#berty.messenger.v1.ConversationCreate.Reply)
     - [ConversationCreate.Request](#berty.messenger.v1.ConversationCreate.Request)
+    - [ConversationGet](#berty.messenger.v1.ConversationGet)
+    - [ConversationGet.Reply](#berty.messenger.v1.ConversationGet.Reply)
+    - [ConversationGet.Request](#berty.messenger.v1.ConversationGet.Request)
     - [ConversationJoin](#berty.messenger.v1.ConversationJoin)
     - [ConversationJoin.Reply](#berty.messenger.v1.ConversationJoin.Reply)
     - [ConversationJoin.Request](#berty.messenger.v1.ConversationJoin.Request)
@@ -532,6 +535,26 @@ to test more false-positive guesses.
 | ----- | ---- | ----- | ----------- |
 | display_name | [string](#string) |  |  |
 | contacts_to_invite | [string](#string) | repeated | public keys |
+
+<a name="berty.messenger.v1.ConversationGet"></a>
+
+### ConversationGet
+
+<a name="berty.messenger.v1.ConversationGet.Reply"></a>
+
+### ConversationGet.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
+
+<a name="berty.messenger.v1.ConversationGet.Request"></a>
+
+### ConversationGet.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ConversationJoin"></a>
 
@@ -1602,6 +1625,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ConversationOpen | [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request) | [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply) |  |
 | ConversationClose | [ConversationClose.Request](#berty.messenger.v1.ConversationClose.Request) | [ConversationClose.Reply](#berty.messenger.v1.ConversationClose.Reply) |  |
 | ConversationLoad | [ConversationLoad.Request](#berty.messenger.v1.ConversationLoad.Request) | [ConversationLoad.Reply](#berty.messenger.v1.ConversationLoad.Reply) |  |
+| ConversationGet | [ConversationGet.Request](#berty.messenger.v1.ConversationGet.Request) | [ConversationGet.Reply](#berty.messenger.v1.ConversationGet.Reply) |  |
 | ServicesTokenList | [.berty.protocol.v1.ServicesTokenList.Request](#berty.protocol.v1.ServicesTokenList.Request) | [.berty.protocol.v1.ServicesTokenList.Reply](#berty.protocol.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request) | [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |

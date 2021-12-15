@@ -66,6 +66,10 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     private void createPushNotification(FormatedPush fpush) {
+        if (fpush == null) {
+            return;
+        }
+
         Log.d(TAG, "handle background push");
         NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
 

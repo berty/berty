@@ -240,6 +240,13 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			}
 			defer dbCleanup()
 
+			dbw := messengerdb.NewDBWrapper(db, opts.Logger)
+
+			/*dbAccount, err := dbw.GetAccount()
+			if err == nil && !dbAccount.GetShouldNotify() {
+				return nil, nil
+			}*/
+
 			pushHandler, err := NewPushHandler(&PushHandlerOpts{
 				Logger:        opts.Logger,
 				RootDatastore: rootDS,
@@ -249,7 +256,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to initialize push handler: %w", err))
 			}
 
-			evtHandler := messengerpayloads.NewEventHandler(ctx, messengerdb.NewDBWrapper(db, opts.Logger), nil, messengertypes.NewPostActionsServiceNoop(), opts.Logger, nil, false)
+			evtHandler := messengerpayloads.NewEventHandler(ctx, dbw, nil, messengertypes.NewPostActionsServiceNoop(), opts.Logger, nil, false)
 			pushReceiver := NewPushReceiver(pushHandler, evtHandler, opts.Logger)
 
 			reply, err = pushReceiver.PushReceive(ctx, input)
@@ -258,15 +265,18 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				return nil, err
 			}
 
+			/*conv, err := dbw.GetConversationByPK(reply.Data.Interaction.ConversationPublicKey)
+			if err == nil && !conv.GetShouldNotify() {
+				return nil, nil
+			}*/
+
 			return reply.Data, nil
 		}()
 		if err != nil {
 			errs = append(errs, err)
 			continue
 		}
-		if data != nil {
-			return data, account, nil
-		}
+		return data, account, nil
 	}
 
 	if len(errs) == 0 {

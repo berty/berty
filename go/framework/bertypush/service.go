@@ -79,6 +79,10 @@ func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, ks NativeKeyst
 		return nil, err
 	}
 
+	if decrypted == nil {
+		return nil, nil
+	}
+
 	formated := bertypush.FormatDecryptedPush(decrypted, s.printer)
 	return (*FormatedPush)(formated), err
 }

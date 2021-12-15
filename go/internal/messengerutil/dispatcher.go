@@ -50,7 +50,6 @@ func (*NoopDispatcher) IsEnabled() bool {
 }
 
 func (*NoopDispatcher) SetShouldNotify(val bool) {
-
 }
 
 var _ Dispatcher = (*NoopDispatcher)(nil)

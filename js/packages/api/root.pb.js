@@ -4480,6 +4480,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ConversationLoad.Request",
                     responseType: "ConversationLoad.Reply"
                   },
+                  ConversationGet: {
+                    requestType: "ConversationGet.Request",
+                    responseType: "ConversationGet.Reply"
+                  },
                   ServicesTokenList: {
                     requestType: "protocol.v1.ServicesTokenList.Request",
                     responseType: "protocol.v1.ServicesTokenList.Reply",
@@ -4632,6 +4636,30 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              ConversationGet: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      conversation: {
+                        type: "Conversation",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },

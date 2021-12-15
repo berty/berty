@@ -236,6 +236,38 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/ConversationGet": {
+      "post": {
+        "operationId": "MessengerService_ConversationGet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConversationGetReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationGetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ConversationJoin": {
       "post": {
         "operationId": "MessengerService_ConversationJoin",
@@ -2135,6 +2167,22 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "v1ConversationGetReply": {
+      "type": "object",
+      "properties": {
+        "conversation": {
+          "$ref": "#/definitions/v1Conversation"
+        }
+      }
+    },
+    "v1ConversationGetRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string"
         }
       }
     },
