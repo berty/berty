@@ -571,6 +571,10 @@
 			"response-to": "Ответить",
 			"replying-to": "Вы отвечаете",
 			"replied-to": "В ответ"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": "Перейти в настройки"
 		},
 		"skip": "ПРОПУСТИТЬ",
+		"cancel": "ОТМЕНА",
 		"settings-text": "Вы можете включить разрешение {{title}} в настройках."
 	},
 	"notification": {
