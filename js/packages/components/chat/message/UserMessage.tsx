@@ -29,6 +29,8 @@ import PopoverView from './Popover'
 import { getEmojiByName, getMediaTypeFromMedias } from '../../utils'
 
 const pal = palette('tol-rainbow', 256)
+const AVATAR_SIZE = 30
+const AVATAR_SPACE_RIGHT = 5
 
 const getPositionStyleForReactionView = (
 	messageWidth: number,
@@ -234,7 +236,7 @@ export const UserMessage: React.FC<{
 			{!inte.isMine && isGroup && !isFollowedMessage && (
 				<View
 					style={{
-						paddingRight: 5 * scaleSize,
+						paddingRight: AVATAR_SPACE_RIGHT * scaleSize,
 						paddingBottom: 5 * scaleSize,
 						justifyContent: 'center',
 						alignItems: 'center',
@@ -244,7 +246,7 @@ export const UserMessage: React.FC<{
 					<MemberAvatar
 						publicKey={inte.memberPublicKey}
 						conversationPublicKey={inte.conversationPublicKey}
-						size={30 * scaleSize}
+						size={AVATAR_SIZE * scaleSize}
 						pressable
 					/>
 				</View>
@@ -275,7 +277,7 @@ export const UserMessage: React.FC<{
 									alignItems: inte?.isMine ? 'flex-end' : 'flex-start',
 									marginTop: 7,
 								},
-								isFollowedMessage && { marginLeft: 35 * scaleSize },
+								isFollowedMessage && { marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize },
 							]}
 						>
 							<View
@@ -447,7 +449,9 @@ export const UserMessage: React.FC<{
 												{!!inte.medias?.length && (
 													<View
 														style={[
-															isFollowedMessage && margin.left.scale(40),
+															isFollowedMessage && {
+																marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize,
+															},
 															previousMessage?.medias?.[0]?.mimeType
 																? margin.top.tiny
 																: margin.top.small,
