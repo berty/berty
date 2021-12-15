@@ -571,6 +571,10 @@
 			"response-to": "Yanıtla",
 			"replying-to": "Yanıtlıyorsun",
 			"replied-to": "Yanıtlandı"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +611,7 @@
 			"settings": ""
 		},
 		"skip": "ATLA",
+		"cancel": "İPTAL ET",
 		"settings-text": ""
 	},
 	"notification": {
