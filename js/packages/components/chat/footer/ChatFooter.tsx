@@ -103,13 +103,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		)
 
 		const handlePressSend = React.useCallback(async () => {
-			if (sending) {
+			if (sending || !message.trim().length) {
 				return
 			}
 			setSending(true)
 			await sendMessageBouncy()
 			setSending(false)
-		}, [setSending, sendMessageBouncy, sending])
+		}, [setSending, sendMessageBouncy, sending, message])
 
 		const handleCloseFileMenu = React.useCallback(
 			async (newMedias: string[] | undefined) => {
