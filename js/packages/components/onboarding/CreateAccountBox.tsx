@@ -15,6 +15,7 @@ import {
 import { useStyles } from '@berty-tech/styles'
 
 import SwiperCard from './SwiperCard'
+import { RESULTS } from 'react-native-permissions'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string
@@ -56,10 +57,8 @@ export const CreateAccountBox: React.FC<{
 					button={{
 						text: t('onboarding.create-account.button'),
 						onPress: async () => {
-							const status = await rnutil.checkPermissions('notification', navigate, {
-								isToNavigate: false,
-							})
-							if (status === 'unavailable' || status === 'denied') {
+							const status = await rnutil.checkPermissions('notification', navigate)
+							if (status === RESULTS.DENIED || status === RESULTS.BLOCKED) {
 								await rnutil.checkPermissions('notification', navigate, {
 									isToNavigate: true,
 									onComplete: async () => onPress(),

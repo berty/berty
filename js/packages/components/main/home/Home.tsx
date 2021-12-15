@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 
 import { ScreenFC } from '@berty-tech/navigation'
 import {
@@ -95,6 +96,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 		displayName: '',
 		isVisible: false,
 	})
+	const { dispatch } = useNavigation()
 
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
@@ -317,7 +319,12 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 						await rnutil.checkPermissions('camera', navigate, {
 							navigateNext: 'Main.Scan',
 							isToNavigate: true,
-							createNewAccount: false,
+							onComplete: async () =>
+								dispatch(
+									CommonActions.reset({
+										routes: [{ name: 'Main.Home' }, { name: 'Main.Scan' }],
+									}),
+								),
 						})
 					}}
 				/>

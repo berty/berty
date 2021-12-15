@@ -611,6 +611,7 @@
 			"settings": "Go to Settings"
 		},
 		"skip": "SKIP",
+		"cancel": "CANCEL",
 		"settings-text": "You can enable {{title}} permission from Settings."
 	},
 	"notification": {

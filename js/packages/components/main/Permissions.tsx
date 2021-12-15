@@ -37,20 +37,10 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
-	const { persistentOptions, setPersistentOption, createNewAccount, selectedAccount } =
-		useMessengerContext()
-	const {
-		permissionType,
-		permissionStatus,
-		navigateNext,
-		createNewAccount: isToCreateNewAccount,
-		onComplete,
-	} = params
+	const { persistentOptions, setPersistentOption, selectedAccount } = useMessengerContext()
+	const { permissionType, permissionStatus, navigateNext, onComplete } = params
 
 	const handleOnComplete = useCallback(async () => {
-		if (isToCreateNewAccount) {
-			await createNewAccount()
-		}
 		if (typeof onComplete === 'function') {
 			await onComplete()
 		}
@@ -59,7 +49,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		} else {
 			navigation.goBack()
 		}
-	}, [isToCreateNewAccount, createNewAccount, navigateNext, navigation, onComplete])
+	}, [navigateNext, navigation, onComplete])
 
 	const handleAppStateChange = useCallback(
 		async (nextAppState: string) => {
@@ -231,7 +221,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					}}
 				>
 					<TouchableOpacity
-						onPress={requestPermission}
+						onPress={() => requestPermission()}
 						style={{
 							backgroundColor: colors['background-header'],
 							paddingVertical: 16,
@@ -259,7 +249,18 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						</Text>
 					</TouchableOpacity>
 				</View>
-				<TouchableOpacity onPress={handleOnComplete}>
+				<TouchableOpacity
+					onPress={async () => {
+						if (
+							permissionType === 'notification' &&
+							!selectedAccount &&
+							typeof onComplete === 'function'
+						) {
+							await onComplete()
+						}
+						navigation.goBack()
+					}}
+				>
 					<Text
 						style={{
 							marginTop: 16,
@@ -268,7 +269,9 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 							textAlign: 'center',
 						}}
 					>
-						{t('permission.skip')}
+						{permissionType === 'notification' && !selectedAccount
+							? t('permission.skip')
+							: t('permission.cancel')}
 					</Text>
 				</TouchableOpacity>
 			</View>
