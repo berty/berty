@@ -295,20 +295,25 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		if err != nil {
 			return nil, fmt.Errorf("error while fetching conversations from db: %w", err)
 		}
+
 		for _, cv := range convs {
 			gpkb, err := messengerutil.B64DecodeBytes(cv.GetPublicKey())
 			if err != nil {
 				return nil, errcode.ErrDeserialization.Wrap(err)
 			}
 
-			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
-			if err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating group: %w", err))
-			}
+			go func() {
+				_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+				if err != nil {
+					opts.Logger.Error("error while activating group", zap.Error(err))
+					return
+				}
 
-			if err := svc.subscribeToGroup(tyberSubsCtx, gpkb); err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to group metadata: %w", err))
-			}
+				if err := svc.subscribeToGroup(tyberSubsCtx, gpkb); err != nil {
+					opts.Logger.Error("error while subscribing to group metadata", zap.Error(err))
+					return
+				}
+			}()
 		}
 	}
 
@@ -324,14 +329,18 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 				return nil, errcode.ErrDeserialization.Wrap(err)
 			}
 
-			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
-			if err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating contact group: %w", err))
-			}
+			go func() {
+				_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+				if err != nil {
+					opts.Logger.Error("error while activating contact group", zap.Error(err))
+					return
+				}
 
-			if err := svc.subscribeToMetadata(tyberSubsCtx, gpkb); err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to contact group metadata: %w", err))
-			}
+				if err := svc.subscribeToMetadata(tyberSubsCtx, gpkb); err != nil {
+					opts.Logger.Error("error while subscribing to contact group metadata", zap.Error(err))
+					return
+				}
+			}()
 		}
 	}
 
