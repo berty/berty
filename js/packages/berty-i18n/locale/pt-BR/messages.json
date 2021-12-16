@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "Autenticar-se em serviços",
@@ -629,7 +628,7 @@
 		"wtf-screen": {
 			"title": "",
 			"desc": "O aplicativo simplesmente travou.",
-			"desc-report": "Agite o seu telefone para relatar o erro e clique no botão para sair e reiniciar o aplicativo."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "",
