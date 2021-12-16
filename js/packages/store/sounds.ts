@@ -12,14 +12,18 @@ export const playSoundFile = (encodedFile: string) => {
 	return p
 }
 
+// https://github.com/react-native-audio-toolkit/react-native-audio-toolkit/blob/master/docs/API.md
+const PlaybackCategories = {
+	Playback: 1,
+	Ambient: 2,
+	SoloAmbient: 3,
+}
+
 const preloadedSounds = mapValues(soundsMap, fileName => {
 	const p = new Player(fileName, {
 		autoDestroy: false,
 		mixWithOthers: true,
-		// https://github.com/react-native-audio-toolkit/react-native-audio-toolkit/blob/master/docs/API.md
-		// https://developer.apple.com/documentation/avfaudio/avaudiosession/category
-		// 3 is the SoloAmbient PlaybackCategories
-		category: 3,
+		category: PlaybackCategories.Ambient,
 	})
 	p.prepare()
 	return p
