@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "Autenticazione ai servizi",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Cosa è fallito?",
 			"desc": "L'applicazione è appena crashata.",
-			"desc-report": "Scuoti il telefono per segnalare il bug e fai clic sul pulsante per uscire e riavviare l'app."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Ci dispiace per questo bug!",
 			"desc": "È colpa di Francis, sviluppatore stagista a Berty, che deve aver commesso un errore. Che idiota questo Francis!",
 			"desc-em": "*Beh, ok, non c'è alcun Francis nel team di Berty.",
-			"desc-report": "Scuoti il tuo telefono e via di nuovo!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
