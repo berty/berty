@@ -23,6 +23,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
+var ErrNilPayload = errcode.ErrInvalidInput.Wrap(errors.New("nil payload"))
+
 type MetaFetcher interface {
 	GroupPKForContact(ctx context.Context, pk []byte) ([]byte, error)
 	OwnMemberAndDevicePKForConversation(ctx context.Context, pk []byte) (member []byte, device []byte, err error)
@@ -826,6 +828,10 @@ func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
+	if i.Payload == nil {
+		return nil, false, ErrNilPayload
+	}
+
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
 		return nil, isNew, err
@@ -839,6 +845,14 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 }
 
 func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if i.Payload == nil {
+		defaultPayload, err := proto.Marshal(&mt.AppMessage_UserMessage{})
+		if err != nil {
+			return nil, false, err
+		}
+		i.Payload = defaultPayload
+	}
+
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
 		return nil, isNew, err
@@ -900,6 +914,10 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if i.Payload == nil {
+		return nil, false, ErrNilPayload
+	}
+
 	payload := amPayload.(*mt.AppMessage_SetUserInfo)
 
 	if i.GetConversation().GetType() == mt.Conversation_ContactType {
@@ -981,6 +999,10 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageUserReaction(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if i.Payload == nil {
+		return nil, false, ErrNilPayload
+	}
+
 	return i, false, h.handleReaction(tx, i, amPayload)
 }
 
@@ -1159,6 +1181,10 @@ func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatc
 }
 
 func (h *EventHandler) handleAppMessageReplyOptions(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
+	if i.Payload == nil {
+		return nil, false, ErrNilPayload
+	}
+
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
 		return nil, isNew, err
@@ -1193,6 +1219,10 @@ func indexMessage(tx *messengerdb.DBWrapper, id string, am *mt.AppMessage) error
 }
 
 func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if i.Payload == nil {
+		return nil, false, ErrNilPayload
+	}
+
 	payload := amPayload.(*mt.AppMessage_SetGroupInfo)
 
 	if i.GetConversation().GetType() == mt.Conversation_MultiMemberType {
