@@ -628,13 +628,13 @@
 		"wtf-screen": {
 			"title": "What's the Fail?",
 			"desc": "Application just crashed.",
-			"desc-report": "Shake your phone to report the bug and click on the button to quit and restart the app."
+			"desc-report": "Click on the button to quit and restart the app."
 		},
 		"sorry-screen": {
 			"title": "Sorry for this bug!",
 			"desc": "It's the fault of Francis, intern developer at Berty, who must have made a mistake. What a jerk this Francis!",
 			"desc-em": "*Well, okay, there's no Francis at Berty's team.",
-			"desc-report": "Shake your phone and here we go again!"
+			"desc-report": "Click on the button to quit and restart the app."
 		}
 	},
 	"debug": {
