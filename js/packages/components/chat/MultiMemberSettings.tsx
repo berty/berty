@@ -3,10 +3,11 @@ import { View, ScrollView, Share, StatusBar, TouchableOpacity } from 'react-nati
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
+import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { Maybe, useConversation, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import {
@@ -14,14 +15,18 @@ import {
 	FactionButtonSetting,
 	ButtonDropDown,
 } from '../shared-components/SettingsButtons'
+import logo from '../main/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
 	const ctx = useMessengerContext()
 	const [picture, setPicture] = useState<ImageOrVideo | undefined>(undefined)
-	const [{ text, margin, row }] = useStyles()
+	const [{ text, padding, border, row }, { scaleSize, scaleHeight, windowWidth, windowHeight }] =
+		useStyles()
 	const colors = useThemeColor()
+	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
+	const { navigate } = useNavigation()
 
 	const handleSave = React.useCallback(async () => {
 		try {
@@ -68,40 +73,59 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 		return () => {}
 	}, [picture, handleSave])
 	return (
-		<View>
+		<View style={[row.center, padding.top.scale(30)]}>
 			<TouchableOpacity
-				style={[row.center]}
+				style={[
+					border.radius.medium,
+					padding.scale(20),
+					padding.top.scale(55),
+					{ backgroundColor: colors['main-background'] },
+				]}
 				onPress={async () => {
-					try {
-						const pic = await ImagePicker.openPicker({
-							width: 400,
-							height: 400,
-							cropping: true,
-							cropperCircleOverlay: true,
-							mediaType: 'photo',
-						})
-						if (pic) {
-							setPicture(pic)
-						}
-					} catch (err) {
-						console.log(err)
+					if (publicKey) {
+						navigate('Chat.MultiMemberQR', { convId: publicKey })
 					}
 				}}
 			>
-				<MultiMemberAvatar publicKey={publicKey} size={80} />
+				<View style={[{ alignItems: 'center' }]}>
+					<TouchableOpacity
+						style={{ position: 'absolute', top: -(90 * scaleSize) }}
+						onPress={async () => {
+							try {
+								const pic = await ImagePicker.openPicker({
+									width: 400,
+									height: 400,
+									cropping: true,
+									cropperCircleOverlay: true,
+									mediaType: 'photo',
+								})
+								if (pic) {
+									setPicture(pic)
+								}
+							} catch (err) {
+								console.log(err)
+							}
+						}}
+					>
+						<MultiMemberAvatar publicKey={publicKey} size={80} />
+					</TouchableOpacity>
+					<Text style={[text.size.scale(13), { color: colors['main-text'] }]}>
+						{conv?.displayName || ''}
+					</Text>
+					<View style={[padding.top.scale(18 * scaleHeight)]}>
+						{conv?.link ? (
+							<QRCode
+								size={qrCodeSize}
+								value={conv?.link && conv?.link}
+								logo={logo}
+								color={colors['background-header']}
+								mode='circle'
+								backgroundColor={colors['main-background']}
+							/>
+						) : null}
+					</View>
+				</View>
 			</TouchableOpacity>
-			<Text
-				numberOfLines={1}
-				ellipsizeMode='tail'
-				style={[
-					text.align.center,
-					margin.top.small,
-					text.bold.medium,
-					{ color: colors['reverted-main-text'] },
-				]}
-			>
-				{conv?.displayName || ''}
-			</Text>
 		</View>
 	)
 }
@@ -215,16 +239,6 @@ const MultiMemberSettingsBody: React.FC<{
 						: undefined
 				}
 				disabled={!link || undefined}
-			/>
-			<ButtonSetting
-				name={'Share QR'}
-				icon='qr'
-				iconPack='custom'
-				iconSize={30}
-				actionIcon='arrow-ios-forward'
-				onPress={
-					link ? () => navigation.navigate('Chat.MultiMemberQR', { convId: publicKey }) : undefined
-				}
 			/>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.save-button')}
