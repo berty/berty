@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "認證服務",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "失敗的原因是什麼？What's the Fail?",
 			"desc": "應用程序剛剛崩潰了。",
-			"desc-report": "搖動你的手機以報告錯誤，然後單擊按鈕退出並重新啟動應用程序。"
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "很抱歉發生了這個錯誤！",
 			"desc": "這是Berty的實習生Francis的錯，他一定犯了個錯誤。Francis真是個急躁的人！",
 			"desc-em": "*好吧，Berty的團隊裡沒有 Francis這個人。",
-			"desc-report": "搖一搖你的手機，然後我們繼續！"
+			"desc-report": ""
 		}
 	},
 	"debug": {
