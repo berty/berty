@@ -96,7 +96,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 }
 
 const BertIdBody: React.FC = () => {
-	const [{ border, margin, padding, opacity }, { scaleSize }] = useStyles()
+	const [{ border, margin, padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId(styleBertyIdOptions)
@@ -114,7 +114,7 @@ const BertIdBody: React.FC = () => {
 			]}
 		>
 			<View
-				style={{ flex: 1, alignItems: 'center', justifyContent: 'center', bottom: 40 * scaleSize }}
+				style={{ flex: 1, alignItems: 'center', justifyContent: 'center', bottom: 80 * scaleSize }}
 			>
 				<AccountAvatar size={requestAvatarSize} />
 			</View>
@@ -127,15 +127,6 @@ const BertIdBody: React.FC = () => {
 							name: t('settings.my-berty-ID.fingerprint'),
 							icon: 'fingerprint',
 							iconPack: 'custom',
-						},
-						{
-							key: 'devices',
-							name: t('settings.my-berty-ID.devices'),
-							icon: 'smartphone',
-							iconPack: 'feather',
-							iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
-							buttonDisabled: true,
-							style: opacity(0.3),
 						},
 					]}
 					onTabChange={setSelectedContent}
