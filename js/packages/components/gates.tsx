@@ -22,7 +22,7 @@ const expandSelfAndCenterContent: any = {
 	width: '100%',
 }
 
-const LoaderDots: React.FC = () => {
+export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
 
 	return (
