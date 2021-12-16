@@ -26,8 +26,6 @@ import tech.berty.rootdir.RootDirPackage;
 
 import com.wix.interactable.Interactable; // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
 
-import com.shakebugs.shake.Shake;
-
 public class MainApplication extends Application implements ReactApplication, LifecycleObserver {
     private static final String TAG = "MainApplication";
 
@@ -97,16 +95,6 @@ public class MainApplication extends Application implements ReactApplication, Li
 
         // register for lifecycle events
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-
-        // init shake
-        if (BuildConfig.DEBUG) {
-            Shake.getReportConfiguration().setShowFloatingReportButton(true);
-            Shake.getReportConfiguration().setInvokeShakeOnShakeDeviceEvent(false);
-        } else {
-            Shake.getReportConfiguration().setShowFloatingReportButton(false);
-            Shake.getReportConfiguration().setInvokeShakeOnShakeDeviceEvent(true);
-        }
-        Shake.start(this);
     }
 
     /**

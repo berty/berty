@@ -8,8 +8,6 @@ import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 
-import com.shakebugs.shake.Shake;
-
 import android.util.Log;
 import android.view.MotionEvent;
 import androidx.lifecycle.Lifecycle;
@@ -35,18 +33,12 @@ public class MainActivity extends ReactActivity implements LifecycleObserver {
         return "Berty";
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        Shake.handleTouchEvent(ev, this);
-        return super.dispatchTouchEvent(ev);
-      }
-
-      protected ReactActivityDelegate createReactActivityDelegate() {
+    protected ReactActivityDelegate createReactActivityDelegate() {
         return new ReactActivityDelegate(this, getMainComponentName()) {
-          @Override
-          protected ReactRootView createRootView() {
+            @Override
+            protected ReactRootView createRootView() {
             return new RNGestureHandlerEnabledRootView(MainActivity.this);
-          }
+            }
         };
     }
 
