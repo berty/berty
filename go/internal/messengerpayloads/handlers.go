@@ -828,7 +828,7 @@ func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
-	if i.Payload == nil {
+	if len(i.GetPayload()) == 0 {
 		return nil, false, ErrNilPayload
 	}
 
@@ -845,12 +845,8 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 }
 
 func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	if i.Payload == nil {
-		defaultPayload, err := proto.Marshal(&mt.AppMessage_UserMessage{})
-		if err != nil {
-			return nil, false, err
-		}
-		i.Payload = defaultPayload
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
 	}
 
 	i, isNew, err := tx.AddInteraction(*i)
@@ -914,7 +910,7 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	if i.Payload == nil {
+	if len(i.GetPayload()) == 0 {
 		return nil, false, ErrNilPayload
 	}
 
@@ -999,7 +995,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageUserReaction(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	if i.Payload == nil {
+	if len(i.GetPayload()) == 0 {
 		return nil, false, ErrNilPayload
 	}
 
@@ -1181,7 +1177,7 @@ func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatc
 }
 
 func (h *EventHandler) handleAppMessageReplyOptions(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
-	if i.Payload == nil {
+	if len(i.GetPayload()) == 0 {
 		return nil, false, ErrNilPayload
 	}
 
@@ -1219,7 +1215,7 @@ func indexMessage(tx *messengerdb.DBWrapper, id string, am *mt.AppMessage) error
 }
 
 func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	if i.Payload == nil {
+	if len(i.GetPayload()) == 0 {
 		return nil, false, ErrNilPayload
 	}
 

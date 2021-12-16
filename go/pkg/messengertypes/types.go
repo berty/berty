@@ -231,9 +231,5 @@ func (am *AppMessage) TextRepresentation() (string, error) {
 }
 
 func (m *AppMessage_UserMessage) TextRepresentation() (string, error) {
-	return m.Body, nil
-}
-
-func (m *AppMessage_UserMessage) TextStrippedPayload() (proto.Message, error) {
-	return &AppMessage_UserMessage{}, nil
+	return m.GetBody(), nil
 }
