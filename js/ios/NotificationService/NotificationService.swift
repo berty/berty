@@ -17,7 +17,7 @@ class LoggerDriver: NSObject, BertypushLoggerDriverProtocol {
     }
 
     @objc func print(_ msg: String?) {
-        os_log("golog: %{public}@", log: self.logger, msg!)
+      os_log("golog: %{public}@", log: self.logger, msg!)
     }
 }
 
@@ -32,7 +32,9 @@ class NotificationService: UNNotificationServiceExtension {
         let config = BertypushNewConfig()!
         let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
         config.setPreferredLanguages(preferredLanguages)
+        #if !CFG_APPSTORE
         config.setLoggerDriver(LoggerDriver(oslogger))
+        #endif
         pushStandalone = BertypushNewPushStandalone(config)!
         super.init()
     }
