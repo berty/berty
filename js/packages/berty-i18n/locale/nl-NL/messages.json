@@ -75,8 +75,7 @@
 				},
 				"third-button": "Selecteer een gecertificeerd knooppunt"
 			},
-			"apply-changes": "VERANDEREN TOEPASSEN",
-			"skip": "Sla dit over en doe dit later"
+			"apply-changes": "VERANDEREN TOEPASSEN"
 		},
 		"services-auth": {
 			"header": "Verifieer bij diensten",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Wat is het fout?",
 			"desc": "Applicatie is net gecrasht.",
-			"desc-report": "Schud de telefoon om de bug te melden en klik op de knop om de app te herstarten."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Sorry voor deze bug!",
 			"desc": "Het is de fout van Franciscus, de interne ontwikkelaar bij Berty. Wat een rotzak, die Francis!",
 			"desc-em": "*Nou, goed, er werkt geen Francis het Berty team.",
-			"desc-report": "Schud je telefoon nog een keer!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
