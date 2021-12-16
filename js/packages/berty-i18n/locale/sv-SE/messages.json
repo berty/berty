@@ -403,7 +403,7 @@
 				"test": "Test, ",
 				"tried": "✔ Försökte skicka till {{length}} kontakter"
 			},
-			"trigger-crashlytics-button": "Utlös crashlytics krasch",
+			
 			"tyber-attach": "Tyber anknyt till {{host}}",
 			"tyber-host-button": {
 				"name": "Tyber",

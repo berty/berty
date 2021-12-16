@@ -403,7 +403,7 @@
 				"test": "Test, ",
 				"tried": "✔ Próbowano wysłać do {{length}} kontaktów"
 			},
-			"trigger-crashlytics-button": "",
+			
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",

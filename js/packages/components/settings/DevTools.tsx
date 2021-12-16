@@ -4,7 +4,6 @@ import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { Player } from '@react-native-community/audio-toolkit'
 import Long from 'long'
-import crashlytics from '@react-native-firebase/crashlytics'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
 import {
@@ -625,14 +624,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon='arrow-ios-forward'
 				onPress={() => ctx.setDebugMode(true)}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.trigger-crashlytics-button')}
-				icon='umbrella-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				actionIcon='arrow-ios-forward'
-				onPress={() => crashlytics().crash()}
 			/>
 			<ButtonSettingRow
 				state={[

@@ -403,7 +403,7 @@
 				"test": "測試， ",
 				"tried": "✔ 正在嘗試向 {{length}} 聯繫人發送"
 			},
-			"trigger-crashlytics-button": "觸發崩潰問題",
+			
 			"tyber-attach": "Tyber 附加到 {{host}}",
 			"tyber-host-button": {
 				"name": "Tyber",

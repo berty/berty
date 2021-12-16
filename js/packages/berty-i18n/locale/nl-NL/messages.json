@@ -403,7 +403,7 @@
 				"test": "Test, ",
 				"tried": "✔ Geprobeerd om te verzenden naar {{length}} contacten"
 			},
-			"trigger-crashlytics-button": "Trigger crashlytics crash",
+			
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",

@@ -401,7 +401,7 @@
 				"test": "Test, ",
 				"tried": "✔ Tried sending to {{length}} contacts"
 			},
-			"trigger-crashlytics-button": "Trigger crashlytics crash",
+			
 			"tyber-attach": "Tyber attach to {{host}}",
 			"tyber-host-button": {
 				"name": "Tyber",

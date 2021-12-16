@@ -403,7 +403,7 @@
 				"test": "Test, ",
 				"tried": "✔{{length}} kişiye gönderme denendi"
 			},
-			"trigger-crashlytics-button": "",
+			
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",

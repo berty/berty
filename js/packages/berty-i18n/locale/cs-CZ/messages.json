@@ -403,7 +403,7 @@
 				"test": "Test, ",
 				"tried": "✔ Proběhl pokus o odeslání {{length}} kontaktů"
 			},
-			"trigger-crashlytics-button": "",
+			
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",

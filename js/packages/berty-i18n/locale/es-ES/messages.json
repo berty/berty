@@ -403,7 +403,7 @@
 				"test": "Prueba, ",
 				"tried": "✔ Se intentó enviar a los {{length}} contactos"
 			},
-			"trigger-crashlytics-button": "Desencadenar fallo (crash) crashlytics",
+			
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
