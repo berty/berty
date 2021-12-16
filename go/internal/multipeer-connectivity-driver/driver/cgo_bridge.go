@@ -23,11 +23,13 @@ var ProtocolName string
 func HandleFoundPeer(remotePID *C.char) int {
 	goPID := C.GoString(remotePID)
 
-	t, ok := proximity.TransportMap.Load(ProtocolName)
+	proximity.TransportMapMutex.RLock()
+	t, ok := proximity.TransportMap[ProtocolName]
+	proximity.TransportMapMutex.RUnlock()
 	if !ok {
 		return 0
 	}
-	if t.(proximity.ProximityTransport).HandleFoundPeer(goPID) {
+	if t.HandleFoundPeer(goPID) {
 		return 1
 	}
 	return 0
@@ -37,11 +39,13 @@ func HandleFoundPeer(remotePID *C.char) int {
 func HandleLostPeer(remotePID *C.char) {
 	goPID := C.GoString(remotePID)
 
-	t, ok := proximity.TransportMap.Load(ProtocolName)
+	proximity.TransportMapMutex.RLock()
+	t, ok := proximity.TransportMap[ProtocolName]
+	proximity.TransportMapMutex.RUnlock()
 	if !ok {
 		return
 	}
-	t.(proximity.ProximityTransport).HandleLostPeer(goPID)
+	t.HandleLostPeer(goPID)
 }
 
 //export ReceiveFromPeer
@@ -49,11 +53,13 @@ func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
 	goPID := C.GoString(remotePID)
 	goPayload := C.GoBytes(payload, length)
 
-	t, ok := proximity.TransportMap.Load(ProtocolName)
+	proximity.TransportMapMutex.RLock()
+	t, ok := proximity.TransportMap[ProtocolName]
+	proximity.TransportMapMutex.RUnlock()
 	if !ok {
 		return
 	}
-	t.(proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
+	t.ReceiveFromPeer(goPID, goPayload)
 }
 
 func Start(localPID string) {

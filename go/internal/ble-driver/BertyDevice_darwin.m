@@ -7,20 +7,15 @@
 //  Copyright © 2019 berty. All rights reserved.
 //
 
-#import <os/log.h>
-
-#import "BleInterface_darwin.h"
 #import "BertyDevice_darwin.h"
-#import "CircularQueue.h"
-#import "PeerManager.h"
-#import "ConnectedPeer.h"
-#import "CountDownLatch_darwin.h"
+#import "BleManager_darwin.h"
 
 extern unsigned short handlePeerFound(char *, char *);
 extern void receiveFromDevice(char *, void *, int);
 
 static NSString* const __nonnull EOD = @"EOD";
-static const int L2CAP_BUFFER = 1024;
+static const int L2CAP_BUFFER = 4096;
+static const int L2CAP_HANDSHAKE_DATA = 1024;
 
 CBService *getService(NSArray *services, NSString *uuid) {
     CBService *result = nil;
@@ -35,19 +30,19 @@ CBService *getService(NSArray *services, NSString *uuid) {
 
 @implementation BertyDevice
 
-- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral
+- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral logger:(Logger *__nonnull)logger
                            central:(BleManager *)manager withName:(NSString *__nonnull)name {
-    self = [self initWithIdentifier:[peripheral.identifier UUIDString] asClient:TRUE];
+    self = [self initWithIdentifier:[peripheral.identifier UUIDString] logger:logger central:manager asClient:TRUE];
     
     if (self) {
-        [self setPeripheral:peripheral central:manager];
+        _peripheral = [peripheral retain];
         _name = name;
     }
     
     return self;
 }
 
-- (instancetype)initWithIdentifier:(NSString *)identifier asClient:(BOOL)client{
+- (instancetype)initWithIdentifier:(NSString *)identifier logger:(Logger *__nonnull)logger central:(BleManager *)manager asClient:(BOOL)client{
     self = [super init];
     
     if (self) {
@@ -57,13 +52,15 @@ CBService *getService(NSArray *services, NSString *uuid) {
             _serverSideIdentifier = [identifier retain];
         }
         
+        _logger = logger;
         _peripheral = nil;
-        _manager = nil;
+        _manager = manager;
         _remotePeerID = nil;
         _psm = 0;
         
-        _queue = [[BleQueue alloc] init: dispatch_get_main_queue()];
-        _writeQ = [[BleQueue alloc] init: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
+        _connectionQ = [[BleQueue alloc] init: dispatch_get_main_queue() logger:logger];
+        _writeQ = [[BleQueue alloc] init: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) logger:logger];
+        _readQ = [[BleQueue alloc] init: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) logger:logger];
         
         BOOL (^peerIDHandler)(NSData *data) = ^BOOL(NSData *data) {
             return [self handlePeerID:data];
@@ -85,29 +82,29 @@ CBService *getService(NSArray *services, NSString *uuid) {
         
         // put inside incoming message arrived before handsake is completed
         _dataCache = [[CircularQueue alloc] initWithCapacity:10];
+        
+        _writerLatch = [[NSObject alloc] init];
     }
     
     return self;
 }
 
 - (void)dealloc {
+    [_logger release];
     [_clientSideIdentifier release];
     [_serverSideIdentifier release];
     [_peripheral release];
     _manager = nil;
     [_remotePeerID release];
-    [_queue release];
+    [_connectionQ release];
     [_writeQ release];
+    [_readQ release];
     [_characteristicHandlers release];
     [_characteristicData release];
     [_dataCache release];
+    [_writerLatch release];
     
     [super dealloc];
-}
-
-- (void)setPeripheral:(CBPeripheral *)peripheral central:(BleManager *)manager {
-    self.peripheral = peripheral;
-    self.manager = manager;
 }
 
 - (NSString *__nonnull)getIdentifier {
@@ -118,9 +115,47 @@ CBService *getService(NSArray *services, NSString *uuid) {
     return self.serverSideIdentifier;
 }
 
+- (void)closeL2cap {
+    [self.logger d:@"closeL2cap: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    
+    if (self.l2capChannel != nil) {
+        [self.l2capChannel.inputStream close];
+        [self.l2capChannel.outputStream close];
+
+        if (self.l2capThread != nil) {
+            [self.l2capThread cancel];
+            [self.l2capThread release];
+            self.l2capThread = nil;
+        }
+    }
+}
+
+- (void)closeBertyDevice {
+    @synchronized (self) {
+        [self.logger d:@"closeBertyDevice: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        
+        if (!self.isDisconnecting) {
+            self.isDisconnecting = TRUE;
+            
+            [self.connectionQ clear];
+            [self.writeQ clear];
+            [self.readQ clear];
+            
+            [self closeL2cap];
+            if (self.peer != nil) {
+                [self.manager.peerManager unregisterDevice:self];
+                self.peer = nil;
+            }
+        } else {
+            [self.logger d:@"closeBertyDevice: device=%@ is already disconnecting", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        }
+        self.isDisconnecting = FALSE;
+    }
+}
+
 - (BOOL)handlePeerID:(NSData *__nonnull)peerIDData {
     if (self.peer != nil && [self.peer isConnected]) {
-        os_log_error(OS_LOG_BLE, "handlePeerID: device=%{public}@: peer already connected", [self getIdentifier]);
+        [self.logger e:@"handlePeerID: device=%@: peer already connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
         return FALSE;
     }
     
@@ -136,56 +171,128 @@ CBService *getService(NSArray *services, NSString *uuid) {
         NSString *remotePeerID = [NSString stringWithUTF8String:[tmpData bytes]];
         // reset tmpData
         [tmpData setLength:0];
-        os_log_debug(OS_LOG_BLE, "handlePeerID: device=%{public}@: current peerID=%{public}@, new peerID=%{public}@", [self getIdentifier], self.remotePeerID, remotePeerID);
+        [self.logger d:@"handlePeerID: device=%@: current peerID=%@, new peerID=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [self.logger SensitiveNSObject:self.remotePeerID], [self.logger SensitiveNSObject:remotePeerID]];
         self.remotePeerID = remotePeerID;
     } else {
         @synchronized (tmpData) {
-            os_log_debug(OS_LOG_BLE, "handlePeerID: device=%{public}@: add to buffer data=%{public}@", [self getIdentifier], peerIDData);
+            [self.logger d:@"handlePeerID: device=%@: add to buffer data=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [self.logger SensitiveNSObject:peerIDData]];
             [tmpData appendData:peerIDData];
         }
     }
     return TRUE;
 }
 
-- (BOOL)handleIncomingData:(NSData *__nonnull)data {
-    if (!self.peer) {
-        os_log_error(OS_LOG_BLE, "handleIncomingData: device=%{public}@: peer not existing", [self getIdentifier]);
+- (BOOL)putIncomingDataInCache:(NSData *__nonnull)data {
+    @try {
+        [self.dataCache offer:data];
+    }
+    @catch (NSException *e) {
+        [self.logger e:@"putIncomingDataInCache error: device=%@: cannot add data in cache", [self.logger SensitiveNSObject:[self getIdentifier]]];
         return FALSE;
     }
-    
-    if (![self.peer isConnected]) {
-        os_log(OS_LOG_BLE, "handleIncomingData: device=%{public}@: peer not connected, put data in cache", [self getIdentifier]);
-        @try {
-            [self.dataCache offer:data];
-        }
-        @catch (NSException *e) {
-            os_log_error(OS_LOG_BLE, "handleIncomingData: device=%{public}@: cannot add data in cache", [self getIdentifier]);
-            return FALSE;
-        }
-        return TRUE;
+    return TRUE;
+}
+
+- (BOOL)handleIncomingData:(NSData *__nonnull)data {
+    [self.logger d:@"handleIncomingData called: identifier=%@ len=%lu base64=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [data length], [self.logger SensitiveNSObject:[data base64EncodedStringWithOptions:0]]];
+    if ([self.logger showSensitiveData]) {
+        [BleManager printLongLog:[BleManager NSDataToHex:data]];
     }
     
-    os_log_debug(OS_LOG_BLE, "handleIncomingData: device=%{public}@ base64=%{public}@ data=%{public}@", [self getIdentifier], [data base64EncodedStringWithOptions:0], [BleManager NSDataToHex:data]);
-    
-    BLEBridgeReceiveFromPeer(self.remotePeerID, data);
+    if (self.l2capClientHandshakeRunning) {
+        [self.l2capHandshakeRecvData appendBytes:data length:[data length]];
+        if ([self.l2capHandshakeRecvData length] < L2CAP_HANDSHAKE_DATA) {
+            [self.logger d:@"handleIncomingData: device=%@: client handshake received incompleted payload: length=%lu", [self.logger SensitiveNSObject:[self getIdentifier]], [self.l2capHandshakeRecvData length]];
+        } else if ([self.l2capHandshakeRecvData length] == L2CAP_HANDSHAKE_DATA) {
+            if ([data isEqualToData:self.l2capHandshakeData]) {
+                [self.logger d:@"handleIncomingData: device=%@: client handshake received payload", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                self.l2capHandshakeStepStatus = TRUE;
+                dispatch_block_cancel(self.l2capHandshakeBlock);
+                [self.l2capHandshakeLatch countDown];
+            } else {
+                [self.logger e:@"handleIncomingData: device=%@: client handshake received wrong payload", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                dispatch_block_cancel(self.l2capHandshakeBlock);
+                [self.l2capHandshakeLatch countDown];
+                [self.manager disconnect:self];
+            }
+        } else {
+            [self.logger e:@"handleIncomingData: device=%@: client handshake received bigger payload than expected: length=%lu", [self.logger SensitiveNSObject:[self getIdentifier]], [self.l2capHandshakeRecvData length]];;
+        }
+    } else if (self.l2capServerHandshakeRunning) {
+        if (!self.l2capHandshakeStepStatus) {
+            [self.logger d:@"handleIncomingData: device=%@: server handshake received payload, going to write it back", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            
+            // the server side needs to know when it receives all 1st step data, so it must count data len
+            self.l2capHandshakeRecvDataLen += [data length];
+            if (self.l2capHandshakeRecvDataLen == L2CAP_HANDSHAKE_DATA) {
+                self.l2capHandshakeStepStatus = TRUE;
+                self.l2capHandshakeRecvDataLen = 0;
+            }
+            
+            if (![self l2capWrite:data]) {
+                [self.logger e:@"handleIncomingData: device=%@: server handshake write error", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                self.l2capServerHandshakeRunning = FALSE;
+                self.l2capHandshakeStepStatus = FALSE;
+            }
+        } else if ([data isEqualToData:[self.manager.localPID dataUsingEncoding:NSUTF8StringEncoding]]) {
+            [self.logger d:@"handleIncomingData: device=%@: server handshake received second payload", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            self.l2capServerHandshakeRunning = FALSE;
+            self.useL2cap = TRUE;
+        } else {
+            [self.logger e:@"handleIncomingData: device=%@: server handshake received wrong payload", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        }
+    } else {
+        if (!self.peer) {
+            [self.logger e:@"handleIncomingData: device=%@: peer not existing", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            return [self putIncomingDataInCache:data];
+        }
+        
+        if (![self.peer isConnected]) {
+            [self.logger d:@"handleIncomingData: device=%@: peer not connected, put data in cache", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            return [self putIncomingDataInCache:data];
+        }
+        
+        [self.readQ add:^{
+            BLEBridgeReceiveFromPeer(self.remotePeerID, data);
+            [self.readQ completedTask:nil];
+        } withCallback:nil withDelay:0];
+    }
     return TRUE;
 }
 
 // Need to copy blocks into the heap because writing is async and the handshake function's stack should not be available
 - (void)handshake {
-    [self writeToCharacteristic:[self.manager.localPID dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:self.peerIDCharacteristic withEOD:TRUE tryL2cap:FALSE];
+    if (![self writeToCharacteristic:[self.manager.localPID dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:self.peerIDCharacteristic withEOD:TRUE]) {
+        [self.manager disconnect:self];
+        return ;
+    }
     
-    os_log_debug(OS_LOG_BLE, "handshake: going to read remote peerID");
-    [self.writeQ add:^{
-        os_log_debug(OS_LOG_BLE, "handshake: read remote peerID");
-        [self.peripheral readValueForCharacteristic:self.peerIDCharacteristic];
-    } withCallback:nil withDelay:0];
+    if (![self readToCharacteristic:self.peerIDCharacteristic]) {
+        [self.manager disconnect:self];
+        return ;
+    }
     
-    os_log_debug(OS_LOG_BLE, "handshake: going to subscribe to writer notifications");
-    [self.writeQ add:^{
-        os_log_debug(OS_LOG_BLE, "handshake: subscribe to writer notifications");
-        [self.peripheral setNotifyValue:TRUE forCharacteristic:self.writerCharacteristic];
-    } withCallback:nil withDelay:0];
+    [self negotiateL2cap];
+    
+    if (![self setNotifyValue]) {
+        [self.manager disconnect:self];
+    }
+}
+
+- (BOOL)setNotifyValue {
+    if (self.peripheral != nil && self.peripheral.state == CBPeripheralStateConnected) {
+        [self.logger d:@"setNotifyValue: going to subscribe to writer notifications"];
+        [self.writeQ add:^{
+            if (self.peripheral != nil && self.peripheral.state == CBPeripheralStateConnected) {
+                [self.logger d:@"setNotifyValue: subscribing to writer notifications"];
+                [self.peripheral setNotifyValue:TRUE forCharacteristic:self.writerCharacteristic];
+            }
+        } withCallback:nil withDelay:0];
+        
+        return TRUE;
+    }
+    
+    return FALSE;
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didModifyServices:(NSArray<CBService *> *)invalidatedServices {
@@ -193,28 +300,28 @@ CBService *getService(NSArray *services, NSString *uuid) {
     if (service == nil) {
         return;
     }
-    os_log_debug(OS_LOG_BLE, "🟢 didModifyServices() with invalidated %{public}@", invalidatedServices);
+    [self.logger d:@"didModifyServices: devive=%@ service=%@", [self.logger SensitiveNSObject:[self getIdentifier]], invalidatedServices];
     
-    [self.manager cancelPeripheralConnection:peripheral];
+    [self.manager disconnect:self];
 }
 
 - (void)handleConnect:(NSError *)error {
-    [self.queue completedTask:error];
+    [self.connectionQ completedTask:error];
     
     if (error) {
-        os_log_debug(OS_LOG_BLE, "🔴 handleConnect() device %{public}@ connection failed %{public}@", [self getIdentifier], error);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"handleConnect error: device=%@ error=%@", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+        [self.manager disconnect:self];
         return;
     }
     
-    os_log_debug(OS_LOG_BLE, "🟢 handleConnect() device %{public}@ connection succeed", [self getIdentifier]);
+    [self.logger i:@"handleConnect: device=%@: connection successed", [self.logger SensitiveNSObject:[self getIdentifier]]];
     [self discoverServices:@[self.manager.serviceUUID]];
 }
 
 - (void)connectWithOptions:(NSDictionary *)options {
-    os_log_debug(OS_LOG_BLE, "connectWithOptions called: identifier=%{public}@", [self getIdentifier]);
-    [self.queue add:^{
-        os_log_debug(OS_LOG_BLE, "connectWithOptions: processing in queue: identifier=%{public}@", [self getIdentifier]);
+    [self.logger d:@"connectWithOptions called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    [self.connectionQ add:^{
+        [self.logger d:@"connectWithOptions: device=%@: in queue for connecting", [self.logger SensitiveNSObject:[self getIdentifier]]];
         [self.manager.cManager connectPeripheral:self.peripheral options:nil];
     } withCallback:nil withDelay:0];
 }
@@ -222,11 +329,11 @@ CBService *getService(NSArray *services, NSString *uuid) {
 #pragma mark - write functions
 
 - (void)flushCache {
-    os_log_debug(OS_LOG_BLE, "flushCache called: identifier=%{public}@", [self getIdentifier]);
+    [self.logger d:@"flushCache called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
     
     while ([self.dataCache element] != [NSNull null]) {
         NSData *data = [[self.dataCache poll] retain];
-        os_log_debug(OS_LOG_BLE, "flushCache: identifier=%{public}@ base64=%{public}@ data=%{public}@", [self getIdentifier], [data base64EncodedStringWithOptions:0], [BleManager NSDataToHex:data]);
+        [self.logger d:@"flushCache: device=%@ base64=%@ data=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [self.logger SensitiveNSObject:[data base64EncodedStringWithOptions:0]], [self.logger SensitiveNSObject:[BleManager NSDataToHex:data]]];
         BLEBridgeReceiveFromPeer(self.remotePeerID, data);
         [data release];
     }
@@ -254,74 +361,64 @@ CBService *getService(NSArray *services, NSString *uuid) {
     return result;
 }
 
-//TODO: return write status to caller
-- (BOOL)writeToCharacteristic:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic withEOD:(BOOL)eod tryL2cap:(BOOL)tryL2cap {
-    __block BOOL success = FALSE;
-    if (self.peripheral != nil) {
-        os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ base64=%{public}@ data=%{public}@", [self getIdentifier], [data base64EncodedStringWithOptions:0], [BleManager NSDataToHex:data]);
-        
-        // try L2cap
-        if (tryL2cap) {
-            ConnectedPeer *peer = [PeerManager getPeer:self.remotePeerID];
-            if (peer != nil) {
-                if (peer.channel != nil) {
-                    os_log_debug(OS_LOG_BLE, "writeToCharacteristic() identifier=%{public}@ using L2cap", [self getIdentifier]);
-                    uint8_t *payload = (uint8_t *)[data bytes];
-                    NSUInteger writeBytes = 0;
-                    uint8_t buf[L2CAP_BUFFER];
-                    NSUInteger dataLen = [data length];
-                    NSOutputStream *output = peer.channel.outputStream;
-                    while (writeBytes < dataLen) {
-                        NSUInteger len = ((dataLen - writeBytes >= L2CAP_BUFFER) ? L2CAP_BUFFER : ([data length] - writeBytes));
-                        memcpy(buf, payload, len);
-                        os_log_debug(OS_LOG_BLE, "writeToCharacteristic() identifier=%{public}@ L2cap: data offset=%lu len=%lu payload=%p buffer=%{public}@", [self getIdentifier], writeBytes, len, payload, [NSData dataWithBytes:buf length:len]);
-                        [output write:(const uint8_t *)buf maxLength:len];
-                        payload += (unsigned long int)len;
-                        writeBytes += len;
-                    }
-                    return TRUE;
-                }
-            }
+- (BOOL)writeToCharacteristic:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic withEOD:(BOOL)eod {
+    @synchronized (self.writerLatch) {
+        [self.logger d:@"writeToCharacteristic called: device=%@ base64=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [self.logger SensitiveNSObject:[data base64EncodedStringWithOptions:0]]];
+        if ([self.logger showSensitiveData]) {
+            [BleManager printLongLog:[BleManager NSDataToHex:data]];
         }
         
+        __block BOOL success = FALSE;
         NSData *toSend = nil;
         self.remainingData = data;
-        CountDownLatch *countDownLatch = [[CountDownLatch alloc] initCount:0];
         
         while (self.remainingData.length > 0) {
-            toSend = [[self getDataToSend] retain];
-            [countDownLatch incrementCount];
-            
-            os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ going to write payload=%{public}@", [self getIdentifier], toSend);
-            [self.writeQ add:^{
-                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ writing base64=%{public}@ data=%{public}@", [self getIdentifier], [toSend base64EncodedStringWithOptions:0], [BleManager NSDataToHex:toSend]);
-                [self.peripheral writeValue:toSend forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
-            } withCallback:^(NSError *error){
-                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ callback for payload=%{public}@ status=%{public}@", [self getIdentifier], toSend, error);
-                success = error == nil ? TRUE : FALSE;
-                [countDownLatch countDown];
-            } withDelay:0];
-            
-            [toSend release];
-        }
-        
-        [countDownLatch await];
-        
-        // don't write EOD is error occured
-        if (!success) {
-            os_log_error(OS_LOG_BLE, "writeToCharacteristic error: identifier=%{public}@: cancel", [self getIdentifier]);
-            return FALSE;
+            if (self.peripheral != nil && self.peripheral.state == CBPeripheralStateConnected) {
+                toSend = [[self getDataToSend] retain];
+                CountDownLatch *countDownLatch = [[CountDownLatch alloc] initCount:1];
+                
+                [self.logger d:@"writeToCharacteristic: device=%@: going to write payload=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [self.logger SensitiveNSObject:[toSend base64EncodedStringWithOptions:0]]];
+                [self.writeQ add:^{
+                    if (self.peripheral == nil || self.peripheral.state != CBPeripheralStateConnected) {
+                        [self.logger e:@"writeToCharacteristic error: device=%@ not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                        success = FALSE;
+                        [countDownLatch countDown];
+                        return ;
+                    }
+                    
+                    [self.logger d:@"writeToCharacteristic: device=%@: writing base64=%@ data=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [self.logger SensitiveNSObject:[toSend base64EncodedStringWithOptions:0]], [self.logger SensitiveNSObject:[BleManager NSDataToHex:toSend]]];
+                    [self.peripheral writeValue:toSend forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+                } withCallback:^(NSError *error){
+                    [self.logger d:@"writeToCharacteristic: device=%@: callback called for payload=%@ status=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [self.logger SensitiveNSObject:[toSend base64EncodedStringWithOptions:0]], error];
+                    success = error == nil ? TRUE : FALSE;
+                    [countDownLatch countDown];
+                } withDelay:0];
+                
+                [countDownLatch await];
+                [countDownLatch release];
+                
+                [toSend release];
+                
+                // don't write EOD is error occured
+                if (!success) {
+                    [self.logger e:@"writeToCharacteristic error: device=%@: cancellation of the following writes", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                    return FALSE;
+                }
+            } else {
+                [self.logger e:@"writeToCharacteristic error: device=%@ not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                return FALSE;
+            }
         }
         
         if (eod) {
             dispatch_semaphore_t sema = dispatch_semaphore_create(0);
             
-            os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ going to write payload=EOD", [self getIdentifier]);
+            [self.logger d:@"writeToCharacteristic: device=%@ going to write EOD", [self.logger SensitiveNSObject:[self getIdentifier]]];
             [self.writeQ add:^{
-                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ writing payload=EOD", [self getIdentifier]);
+                [self.logger d:@"writeToCharacteristic: device=%@ writing EOD", [self.logger SensitiveNSObject:[self getIdentifier]]];
                 [self.peripheral writeValue:[@"EOD" dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
             } withCallback:^(NSError *error){
-                os_log_debug(OS_LOG_BLE, "writeToCharacteristic: identifier=%{public}@ callback for payload=EOD", [self getIdentifier]);
+                [self.logger d:@"writeToCharacteristic: device=%@: callback called for EOD", [self.logger SensitiveNSObject:[self getIdentifier]]];
                 success = error == nil ? 1 : 0;
                 dispatch_semaphore_signal(sema);
             } withDelay:0];
@@ -329,78 +426,75 @@ CBService *getService(NSArray *services, NSString *uuid) {
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
             dispatch_release(sema);
         }
-    } else {
-        os_log_debug(OS_LOG_BLE, "🟢 writeToCharacteristic() NULLABLE identifier=%{public}@ data: %{public}@", [self getIdentifier], data);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        
+        return success;
     }
+}
+
+- (BOOL)readToCharacteristic:(CBCharacteristic *) characteristic {
+    [self.logger d:@"readToCharacteristic called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    
+    if (self.peripheral == nil || self.peripheral.state != CBPeripheralStateConnected) {
+        [self.logger e:@"readToCharacteristic error: device=%@ is not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        return FALSE;
+    }
+    
+    __block BOOL success = FALSE;
+    CountDownLatch *countDownLatch = [[CountDownLatch alloc] initCount:1];
+    
+    [self.writeQ add:^{
+        [self.logger d:@"readToCharacteristic: device=%@: in queue", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        
+        if (self.peripheral == nil || self.peripheral.state != CBPeripheralStateConnected) {
+            [self.logger e:@"readToCharacteristic: device=%@ is not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            success = FALSE;
+            [countDownLatch countDown];
+            return ;
+        }
+        
+        [self.peripheral readValueForCharacteristic:characteristic];
+    } withCallback:^(NSError *error){
+        if (error == nil) {
+            [self.logger d:@"readToCharacteristic: device=%@: callback called with success", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            success = TRUE;
+        } else {
+            [self.logger e:@"readToCharacteristic error: device=%@ error=%@ in callback", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+            success = FALSE;
+        }
+        [countDownLatch countDown];
+    } withDelay:0];
+    
+    [countDownLatch await];
+    [countDownLatch release];
     
     return success;
-}
-
-- (void)l2capRead:(ConnectedPeer *__nonnull)peer {
-    os_log_debug(OS_LOG_BLE, "l2capRead: device=%{public}@ started", [self getIdentifier]);
-    
-    NSInputStream *input = peer.channel.inputStream;
-    NSInteger result;
-    uint8_t buffer[L2CAP_BUFFER];
-    while((result = [input read:buffer maxLength:L2CAP_BUFFER]) > 0) {
-        NSData *received = [NSData dataWithBytes:buffer length:result];
-        os_log_debug(OS_LOG_BLE, "l2capRead: device=%{public}@ read value=%{public}@", [self getIdentifier], received);
-        BLEBridgeReceiveFromPeer(self.remotePeerID, received);
-    }
-    
-    if (result == -1) {
-        os_log_error(OS_LOG_BLE, "🔴 l2capRead error: device=%{public}@ read error", [self getIdentifier]);
-    }
-    
-    os_log_debug(OS_LOG_BLE, "l2capRead: device=%{public}@ leaving", [self getIdentifier]);
-}
-
-- (void)peripheral:(CBPeripheral *)peripheral didOpenL2CAPChannel:(CBL2CAPChannel *)channel error:(NSError *)error {
-    os_log_debug(OS_LOG_BLE, "🟢 didOpenL2CAPChannel called: device=%{public}@", [self getIdentifier]);
-    [self.l2capLatch countDown];
-    if (error != nil) {
-        os_log_error(OS_LOG_BLE, "🔴 didOpenL2CAPChannel error=%{public}@ device=%{public}@", error, [self getIdentifier]);
-        return ;
-    }
-    
-    ConnectedPeer *peer = [PeerManager getPeer:self.remotePeerID];
-    if (peer == nil) {
-        os_log_error(OS_LOG_BLE, "🔴 didOpenL2CAPChannel error: device=%{public}@ peer not found", [self getIdentifier]);
-        return ;
-    }
-    
-    [peer setChannel:channel];
-    [channel.inputStream open];
-    [channel.outputStream open];
-    
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self l2capRead:peer];
-    });
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     [self.writeQ completedTask:error];
     
     if (error) {
-        os_log_error(OS_LOG_BLE, "didUpdateNotificationStateForCharacteristic error: device=%{public}@ characteristic=%{public}@ status=%{public}@", [self getIdentifier], [characteristic.UUID UUIDString], error);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didUpdateNotificationStateForCharacteristic error: device=%@ characteristic=%@ error=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [characteristic.UUID UUIDString], error];
+        [self.manager disconnect:self];
         return;
     }
     
-    self.peer = [PeerManager registerDevice:self withPeerID:self.remotePeerID isClient:TRUE];
+    self.peer = [self.manager.peerManager registerDevice:self withPeerID:self.remotePeerID isClient:TRUE];
     if (self.peer == nil) {
-        os_log_error(OS_LOG_BLE, "didReceiveReadRequests: identifier=%{public}@ registerDevice failed", [self getIdentifier]);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didUpdateNotificationStateForCharacteristic error: device=%@: registerDevice failed", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        [self.manager disconnect:self];
     } else {
-        os_log_debug(OS_LOG_BLE, "didReceiveReadRequests: identifier=%{public}@ registerDevice successed", [self getIdentifier]);
+        [self.logger d:@"didUpdateNotificationStateForCharacteristic: device=%@: registerDevice successed", [self.logger SensitiveNSObject:[self getIdentifier]]];
     }
 }
 
+// Called when the value of the characteristic changed, whether by readValueForCharacteristic: or by a notification after a subscription
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
+    [self.logger d:@"didUpdateValueForCharacteristic called: device=%@ characteristic=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [characteristic.UUID UUIDString]];
+    
     if (error) {
-        os_log_error(OS_LOG_BLE, "didUpdateValueForCharacteristic() device %{public}@ read failed characteristic=%{public}@ status=%{public}@", [self getIdentifier], [characteristic.UUID UUIDString], error);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didUpdateValueForCharacteristic error: device=%@ error=%@", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+        [self.manager disconnect:self];
         [self.writeQ completedTask:error];
         return;
     }
@@ -412,102 +506,70 @@ CBService *getService(NSArray *services, NSString *uuid) {
             self.psm = NSSwapBigIntToHost(psm);
             NSString* remotePeerID = [NSString stringWithUTF8String: [[characteristic.value subdataWithRange:NSMakeRange(4, characteristic.value.length - 4)] bytes]];
             
-            os_log_debug(OS_LOG_BLE, "didUpdateValueForCharacteristic: identifier=%{public}@ PSM=%d remotePID=%{public}@", [[peripheral identifier] UUIDString], self.psm, remotePeerID);
+            [self.logger d:@"didUpdateValueForCharacteristic: device=%@ PSM=%d remotePID=%@", [self.logger SensitiveNSObject:[self getIdentifier]], self.psm, [self.logger SensitiveNSObject:remotePeerID]];
             
             self.remotePeerID = remotePeerID;
             
-            ////        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
-            //        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            //            ConnectedPeer *peer = [PeerManager getPeer:remotePeerID];
-            //            if (peer) {
-            //                os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: peerID known in connectedPeers");
-            //                if ([peer channel] == nil && self.manager.psm != 0) {
-            //                    @synchronized ([peer channel]) {
-            //                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ opening l2cap channel", [[peripheral identifier] UUIDString]);
-            //                        self.l2capLatch = [[CountDownLatch alloc] init:1];
-            //                        [peripheral openL2CAPChannel:self.psm];
-            //                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ before wait", [[peripheral identifier] UUIDString]);
-            //                        [self.l2capLatch await];
-            //                        os_log_debug(OS_LOG_BLE, "🟢 didUpdateValueForCharacteristic: identifier=%{public}@ after wait", [[peripheral identifier] UUIDString]);
-            //                        [self.l2capLatch release];
-            //                        self.l2capLatch = nil;
-            //
-            //                        [peer setClient:self];
-            //                        [peer setClientReady:TRUE];
-            //                        if (![self checkAndHandleFoundPeer]) {
-            //                            [self.manager cancelPeripheralConnection:self.peripheral];
-            //                        }
-            //                    }
-            //                } else {
-            //                    [peer setClient:self];
-            //                    [peer setClientReady:TRUE];
-            //                    if (![self checkAndHandleFoundPeer]) {
-            //                        [self.manager cancelPeripheralConnection:self.peripheral];
-            //                    }
-            //                }
-            //            } else {
-            //                os_log_debug(OS_LOG_BLE, "🟡 didUpdateValueForCharacteristic: peerID unknown in connectedPeers");
-            //                ConnectedPeer *peer = [[ConnectedPeer alloc] init];
-            //                [peer setClient:self];
-            //                [peer setClientReady:TRUE];
-            //                [PeerManager addPeer:peer forPeerID:remotePeerID];
-            //            }
-            //        });
-            
             [self.writeQ completedTask:nil];
         } else {
-            os_log_debug(OS_LOG_BLE, "didUpdateValueForCharacteristic: peerID characteristic error: %@", error);
+            [self.logger e:@"didUpdateValueForCharacteristic error: device=%@: characteristic doesn't have any value", [self.logger SensitiveNSObject:[self getIdentifier]]];
             [self.writeQ completedTask:[NSError errorWithDomain:@LOCAL_DOMAIN code:200 userInfo:@{@"Error reason": @"Empty value"}]];
         }
     } else if ([characteristic.UUID isEqual:self.manager.writerUUID]) {
         [self handleIncomingData:characteristic.value];
     } else {
-        os_log_debug(OS_LOG_BLE, "didUpdateValueForCharacteristic: bad characteristic");
+        [self.logger e:@"didUpdateValueForCharacteristic error: device=%@: bad characteristic requested", [self.logger SensitiveNSObject:[self getIdentifier]]];
     }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    os_log_debug(OS_LOG_BLE, "didWriteValueForCharacteristic called: device=%{public}@", [self getIdentifier]);
+    [self.logger d:@"didWriteValueForCharacteristic called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    
     if (error) {
-        os_log_debug(OS_LOG_BLE, "🔴 didWriteValueForCharacteristic() device %{public}@ write failed characteristic=%{public}@ status=%{public}@", [self getIdentifier], [characteristic.UUID UUIDString], error);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didWriteValueForCharacteristic error: device=%@ characteristic=%@ error=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [characteristic.UUID UUIDString], error];
     }
     
-    [self.writeQ completedTask:nil];
+    [self.writeQ completedTask:error];
 }
 
 #pragma mark - Characteristic Discovery
 
 - (void)discoverCharacteristics:(nullable NSArray *)characteristics forService:(CBService *)service {
-    [self.queue add:^{
+    if (self.peripheral == nil || self.peripheral.state != CBPeripheralStateConnected) {
+        [self.logger e:@"discoverCharacteristics error: device=%@ is not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        [self.manager disconnect:self];
+        return ;
+    }
+    
+    [self.connectionQ add:^{
         [self.peripheral discoverCharacteristics:characteristics forService:service];
     } withCallback:nil withDelay:0];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
-    [self.queue completedTask:error];
+    [self.logger d:@"didDiscoverCharacteristicsForService called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    
+    [self.connectionQ completedTask:error];
     
     if (error) {
-        os_log_debug(OS_LOG_BLE, "🔴 didDiscoverCharacteristicsForService() device %{public}@ discover characteristic failed: %{public}@", [self getIdentifier], error);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didDiscoverCharacteristicsForService error: device=%@ error=%@", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+        [self.manager disconnect:self];
         return;
     }
-    
-    os_log_debug(OS_LOG_BLE, "🟢 didDiscoverCharacteristicsForService() device %{public}@ discover characteristic succeed", [self getIdentifier]);
     
     for (CBCharacteristic *chr in service.characteristics) {
         if ([chr.UUID isEqual:self.manager.peerUUID]) {
             self.peerIDCharacteristic = chr;
-            os_log_debug(OS_LOG_BLE, "🟢 didDiscoverCharacteristicsForService() peerID characteristic found");
+            [self.logger d:@"didDiscoverCharacteristicsForService: device=%@: peerID characteristic found", [self.logger SensitiveNSObject:[self getIdentifier]]];
         } else if ([chr.UUID isEqual:self.manager.writerUUID]) {
             self.writerCharacteristic = chr;
-            os_log_debug(OS_LOG_BLE, "🟢 didDiscoverCharacteristicsForService() writer characteristic found");
+            [self.logger d:@"didDiscoverCharacteristicsForService: device=%@: writer characteristic found", [self.logger SensitiveNSObject:[self getIdentifier]]];
         }
     }
     
     if (self.peerIDCharacteristic == nil || self.writerCharacteristic == nil) {
-        os_log_debug(OS_LOG_BLE, "🔴 didDiscoverCharacteristicsForService() characteristic not found");
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didDiscoverCharacteristicsForService error: device=%@: not all characteristics found", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        [self.manager disconnect:self];
         return ;
     }
     
@@ -519,29 +581,352 @@ CBService *getService(NSArray *services, NSString *uuid) {
 #pragma mark - Services Discovery
 
 - (void)discoverServices:(NSArray *)serviceUUIDs {
+    if (self.peripheral == nil || self.peripheral.state != CBPeripheralStateConnected) {
+        [self.logger e:@"discoverServices error: device=%@ is not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        [self.manager disconnect:self];
+        return ;
+    }
+    
     self.peripheral.delegate = self;
-    [self.queue add:^{
+    [self.connectionQ add:^{
         [self.peripheral discoverServices:serviceUUIDs];
     } withCallback:nil withDelay:0];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
-    [self.queue completedTask:error];
+    [self.logger d:@"didDiscoverServices called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    
+    [self.connectionQ completedTask:error];
     
     if (error) {
-        os_log_debug(OS_LOG_BLE, "🔴 didDiscoverServices() device %{public}@ discover service failed: %{public}@", [self getIdentifier], error);
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didDiscoverServices error: device=%@ error=%@", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+        [self.manager disconnect:self];
         return;
     }
-    os_log_debug(OS_LOG_BLE, "🟢 didDiscoverServices() device %{public}@ service discover succeed", [self getIdentifier]);
+
     CBService *service = getService(self.peripheral.services, [self.manager.serviceUUID UUIDString]);
-    
     if (service == nil) {
-        os_log_debug(OS_LOG_BLE, "🔴 didDiscoverServices() service not found");
-        [self.manager cancelPeripheralConnection:self.peripheral];
+        [self.logger e:@"didDiscoverServices error: device=%@: service not found", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        [self.manager disconnect:self];
         return;
     }
     [self discoverCharacteristics:@[self.manager.peerUUID, self.manager.writerUUID,] forService:service];
+}
+
+#pragma mark - L2cap
+
+- (BOOL) negotiateL2cap {
+    [self.logger d:@"negotiateL2cap called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    
+    if (self.peripheral == nil || self.peripheral.state != CBPeripheralStateConnected) {
+        [self.logger e:@"negotiateL2cap error: device=%@ is not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        return FALSE;
+    }
+    
+    __block BOOL success = FALSE;
+    CountDownLatch *countDownLatch = [[CountDownLatch alloc] initCount:1];
+    
+    if (@available(iOS 11.0, *)) {
+        if (self.psm != 0) {
+            [self.connectionQ add:^{
+                [self.logger d:@"negotiateL2cap: device=%@: opening L2cap channel", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                [self.peripheral openL2CAPChannel:self.psm];
+            } withCallback:^(NSError *error){
+                if (error == nil) {
+                    [self.logger d:@"negotiateL2cap: device=%@: callback called with success", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                    success = TRUE;
+                } else {
+                    [self.logger e:@"negotiateL2cap error: device=%@ error=%@ in callback", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+                    success = FALSE;
+                }
+                [countDownLatch countDown];
+            } withDelay:0];
+            
+            [countDownLatch await];
+            [countDownLatch release];
+        } else {
+            [self.logger d:@"negotiateL2cap: device=%@: central peripheral doesn't support L2CAP, aborting negotation", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            success = TRUE; // return TRUE to continue connection without L2cap
+        }
+    } else {
+        [self.logger d:@"negotiateL2cap: device=%@: iOS 11+ is required", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        success = TRUE; // return TRUE to continue connection without L2cap
+    }
+    
+    return success;
+}
+
+- (BOOL)l2capWrite:(NSData *__nonnull)data {
+    __block BOOL success = FALSE;
+    
+    if (self.l2capChannel != nil) {
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        
+        [self.writeQ add:^{
+            @synchronized (self.writerLatch) {
+                [self.logger d:@"l2capWrite: device=%@ len=%lu base64=%@", [self.logger SensitiveNSObject:[self getIdentifier]], [data length], [self.logger SensitiveNSObject:[data base64EncodedStringWithOptions:0]]];
+                if ([self.logger showSensitiveData]) {
+                    [BleManager printLongLog:[BleManager NSDataToHex:data]];
+                }
+                
+                self.l2capWriteIndex = 0;
+                self.l2capWriteData = data;
+                if ([self.l2capChannel.outputStream hasSpaceAvailable]) {
+                    uint8_t *readBytes = (uint8_t *)[self.l2capWriteData bytes];
+                    NSUInteger data_len = [data length];
+                    NSUInteger len = (data_len >= L2CAP_BUFFER) ? L2CAP_BUFFER : (data_len);
+                    uint8_t buf[len];
+                    
+                    (void)memcpy(buf, readBytes, len);
+                    
+                    self.l2capWriteIndex = [self.l2capChannel.outputStream write:(const uint8_t *)buf maxLength:len];
+                    [self.logger d:@"l2capWrite: device=%@: wrote len=%zd", [self.logger SensitiveNSObject:[self getIdentifier]], self.l2capWriteIndex];
+                    
+                    if (self.l2capWriteIndex == -1) {
+                        [self.logger e:@"l2capWrite error: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]], self.l2capWriteIndex];
+                        
+                        self.l2capWriteData = nil;
+                        [self.writeQ completedTask:[NSError errorWithDomain:@LOCAL_DOMAIN code:200 userInfo:@{@"Error reason": @"write error"}]];
+                        return ;
+                    }
+                    
+                    if (self.l2capWriteIndex < data_len) { // write next data chunk when callback stream handleEvent: NSStreamEventHasSpaceAvailable is called
+                        [self.logger d:@"l2capWrite: device=%@: write completed but need more write space to send all data, waiting...", [self.logger SensitiveNSObject:[self getIdentifier]], self.l2capWriteIndex];
+                    } else {
+                        [self.logger d:@"l2capWrite: device=%@: write completed and all data send", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                        
+                        self.l2capWriteData = nil;
+                        [self.writeQ completedTask:nil];
+                    }
+                } else {
+                    [self.logger d:@"l2capWrite: device=%@: need some space available, waiting...", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                }
+            }
+        } withCallback:^(NSError *error) {
+            if (error == nil) {
+                [self.logger d:@"l2capWrite: device=%@: callback called with success", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                success = TRUE;
+            } else {
+                [self.logger e:@"l2capWrite error: device=%@ error=%@ in callback", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+                success = FALSE;
+            }
+            dispatch_semaphore_signal(sema);
+        } withDelay:0];
+        
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        dispatch_release(sema);
+        
+        return success;
+    } else {
+        [self.logger e:@"l2capWrite error: device=%@: channel not set", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        return FALSE;
+    }
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral didOpenL2CAPChannel:(CBL2CAPChannel *)channel error:(NSError *)error API_AVAILABLE(ios(11.0)) {
+    [self.logger d:@"didOpenL2CAPChannel called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    if (error != nil) {
+        [self.logger e:@"didOpenL2CAPChannel Error: device=%@ error=%@", [self.logger SensitiveNSObject:[self getIdentifier]], error];
+        [self.connectionQ completedTask:error];
+        return ;
+    }
+    
+    self.l2capChannel = channel;
+    
+    self.l2capThread = [[NSThread alloc] initWithTarget:self selector:@selector(setupL2capStreams) object:nil];
+    [self.l2capThread start];
+
+    self.l2capClientHandshakeRunning = TRUE;
+    self.useL2cap = [self testL2cap];
+    self.l2capClientHandshakeRunning = FALSE;
+    
+    // wait that server complete L2CAP tests
+    [NSThread sleepForTimeInterval:2.0f];
+    
+    [self.connectionQ completedTask:nil];
+}
+
+- (void)setupL2capStreams {
+    [self.logger d:@"setupL2capStreams called: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    
+    self.l2capChannel.inputStream.delegate = self;
+    [self.l2capChannel.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.l2capChannel.inputStream open];
+    self.l2capChannel.outputStream.delegate = self;
+    [self.l2capChannel.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.l2capChannel.outputStream open];
+    
+    @autoreleasepool {
+        do {
+            [[NSRunLoop currentRunLoop] run];
+        } while (self.peer != nil && [self.peer isConnected]);
+    }
+}
+
+- (NSMutableData *__nonnull)createRandomNSData:(int) capacity
+{
+    NSMutableData* theData = [NSMutableData dataWithCapacity:capacity];
+    
+    for (unsigned int i = 0 ; i < capacity / 4 ; ++i ) {
+        u_int32_t randomBits = arc4random();
+        [theData appendBytes:(void *)&randomBits length:4];
+    }
+    return theData;
+}
+
+// Test contains 2 steps:
+// 1) client sends local PID and waits for receiving remote PID
+// 2) client sends remote PID in response of 1) to the server
+- (BOOL)testL2cap {
+    self.l2capHandshakeStepStatus = FALSE;
+    self.l2capHandshakeRecvData = [NSMutableData dataWithCapacity:L2CAP_HANDSHAKE_DATA];
+    self.l2capHandshakeLatch = [[CountDownLatch alloc] initCount:1];
+    
+    self.l2capHandshakeBlock = dispatch_block_create(DISPATCH_BLOCK_INHERIT_QOS_CLASS, ^{
+        [self.logger e:@"testL2cap: device=%@: timout hired", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        [self.l2capHandshakeLatch countDown];
+    });
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), self.l2capHandshakeBlock);
+    
+    // step 1
+    [self.logger d:@"testL2cap: device=%@: client going to write the 1st payload", [self.logger SensitiveNSObject:[self getIdentifier]]];
+    self.l2capHandshakeData = [self createRandomNSData:L2CAP_HANDSHAKE_DATA];
+    if (![self l2capWrite:self.l2capHandshakeData]) {
+        [self.logger e:@"testL2cap error: device=%@: client write error", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        dispatch_block_cancel(self.l2capHandshakeBlock);
+        self.l2capHandshakeData = nil;
+        self.l2capHandshakeRecvData = nil;
+        return FALSE;
+    }
+    
+    // waiting for receiving remote PID
+    [self.l2capHandshakeLatch await];
+    self.l2capHandshakeData = nil;
+    self.l2capHandshakeRecvData = nil;
+    
+    // step 2
+    if (self.l2capHandshakeStepStatus) {
+        [self.logger d:@"testL2cap: device=%@: client going to write the 2nd payload", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        if (![self l2capWrite:[self.remotePeerID dataUsingEncoding:NSUTF8StringEncoding]]) {
+            [self.logger e:@"testL2cap error: device=%@: client write error", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            return FALSE;
+        }
+        
+        [self.logger d:@"testL2cap: device=%@: client handshake completed", [self.logger SensitiveNSObject:[self getIdentifier]]];
+        return TRUE;
+    }
+    
+    return FALSE;
+}
+
+- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode {
+    switch(eventCode) {
+        case NSStreamEventNone: {
+            [self.logger d:@"stream handleEvent: NSStreamEventNone: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            break;
+        }
+        case NSStreamEventOpenCompleted: {
+            [self.logger d:@"stream handleEvent: NSStreamEventOpenCompleted: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            break;
+        }
+        case NSStreamEventHasBytesAvailable: {
+            [self.logger d:@"stream handleEvent: NSStreamEventHasBytesAvailable: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+
+            uint8_t buf[L2CAP_BUFFER];
+
+            NSInteger len = 0;
+
+            len = [(NSInputStream *)stream read:buf maxLength:L2CAP_BUFFER];
+
+            if(len > 0) {
+                NSData *received = [NSData dataWithBytes:buf length:len];
+                [self.logger d:@"stream handleEvent: NSStreamEventHasBytesAvailable: device=%@ read length=%lu value=%@", [self.logger SensitiveNSObject:[self getIdentifier]], len, [self.logger SensitiveNSObject:received]];
+                [self handleIncomingData:received];
+            } else {
+                [self.logger e:@"stream handleEvent error: NSStreamEventHasBytesAvailable: device=%@: nothing to read", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            }
+            
+            break;
+        }
+        case NSStreamEventHasSpaceAvailable: {
+            [self.logger d:@"stream handleEvent: NSStreamEventHasSpaceAvailable: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            
+            if ((self.peer != nil && [self.peer isConnected]) || self.l2capServerHandshakeRunning || self.l2capClientHandshakeRunning) {
+                @synchronized (self.writerLatch) {
+                    if (self.l2capWriteData != nil) {
+                        uint8_t *readBytes = (uint8_t *)[self.l2capWriteData bytes];
+                        readBytes += self.l2capWriteIndex;
+                        NSUInteger data_len = [self.l2capWriteData length];
+                        NSUInteger len = ((data_len - self.l2capWriteIndex >= L2CAP_BUFFER) ? L2CAP_BUFFER : (data_len - self.l2capWriteIndex));
+                        uint8_t buf[len];
+
+                        (void)memcpy(buf, readBytes, len);
+
+                        if ([self.logger showSensitiveData]) {
+                            [self.logger d:@"stream handleEvent: NSStreamEventHasSpaceAvailable: device=%@ offset=%lu len=%lu base64=%@ data=%@", [self getIdentifier], self.l2capWriteIndex, len, [[NSData dataWithBytes:buf length:len] base64EncodedStringWithOptions:0], [BleManager NSDataToHex:[NSData dataWithBytes:buf length:len]]];
+                        }
+                        NSInteger wroteLen = [(NSOutputStream *)stream write:(const uint8_t *)buf maxLength:len];
+                        [self.logger d:@"stream handleEvent: NSStreamEventHasSpaceAvailable: device=%@ wrote data offset=%lu len=%zd", [self.logger SensitiveNSObject:[self getIdentifier]], self.l2capWriteIndex, wroteLen];
+                        
+                        if (wroteLen == -1) {
+                            [self.logger e:@"stream handleEvent error: NSStreamEventHasSpaceAvailable: device=%@ write: error", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                            self.l2capWriteData = nil;
+                            [self.writeQ completedTask:[NSError errorWithDomain:@LOCAL_DOMAIN code:200 userInfo:@{@"Error reason": @"write error"}]];
+                            
+                            break;
+                        }
+                        
+                        self.l2capWriteIndex += wroteLen;
+                        if ([self.l2capWriteData length] == self.l2capWriteIndex) {
+                            [self.logger d:@"stream handleEvent: NSStreamEventHasSpaceAvailable: device=%@: write completed", [self.logger SensitiveNSObject:[self getIdentifier]]];
+
+                            self.l2capWriteData = nil;
+                            [self.writeQ completedTask:nil];
+                        }
+                    } else {
+                        [self.logger d:@"stream handleEvent: NSStreamEventHasSpaceAvailable: device=%@: no data to write", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                    }
+                }
+            } else {
+                [self.logger e:@"stream handleEvent error: NSStreamEventHasSpaceAvailable: device=%@: device is not connected", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            }
+            
+            break;
+        }
+        case NSStreamEventErrorOccurred: {
+            [self.logger d:@"stream handleEvent: NSStreamEventErrorOccurred: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+            
+            [self.manager disconnect:self];
+            break;
+        }
+        case NSStreamEventEndEncountered: { // (d4ryl00): not sure how to handle this case
+            [self.logger d:@"stream handleEvent: NSStreamEventEndEncountered: device=%@", [self.logger SensitiveNSObject:[self getIdentifier]]];
+
+            if (self.l2capChannel.outputStream == stream) {
+                NSData *newData = [stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+
+                if (!newData) {
+                    [self.logger d:@"stream handleEvent: NSStreamEventEndEncountered: device=%@: no more data", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                } else {
+                    [self.logger d:@"stream handleEvent: NSStreamEventEndEncountered: device=%@: data to process", [self.logger SensitiveNSObject:[self getIdentifier]]];
+                    [self handleIncomingData:newData];
+                }
+            }
+
+            stream.delegate = nil;
+            [stream close];
+            [stream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            if (self.l2capThread != nil) {
+                [self.l2capThread cancel];
+                [self.l2capThread release];
+                self.l2capThread = nil;
+            }
+
+            [self.manager disconnect:self];
+            
+            break;
+        }
+    }
 }
 
 @end

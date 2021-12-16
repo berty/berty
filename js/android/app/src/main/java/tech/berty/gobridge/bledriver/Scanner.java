@@ -9,7 +9,6 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.ParcelUuid;
-import android.util.Log;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Scanner extends ScanCallback {
     private static final String TAG = "bty.ble.Scanner";
-
+    private final Logger mLogger;
+    private final BleDriver mBleDriver;
     private static final int SCANNER_STATE_DISABLED = 0;
     private static final int SCANNER_STATE_ENABLED = 1;
     private static final int SCANNER_STATE_PAUSED = 2;
@@ -43,8 +43,10 @@ public class Scanner extends ScanCallback {
     private Timer mTimer;
     private TimerTask mTask;
 
-    public Scanner(Context context, BluetoothAdapter bluetoothAdapter) {
+    public Scanner(Context context, BleDriver bleDriver, Logger logger, BluetoothAdapter bluetoothAdapter) {
         mContext = context;
+        mBleDriver = bleDriver;
+        mLogger = logger;
         mBluetoothAdapter = bluetoothAdapter;
         setInit(init());
     }
@@ -53,12 +55,12 @@ public class Scanner extends ScanCallback {
     private synchronized boolean init() {
 
         if ((mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner()) == null) {
-            Log.e(TAG, "init: hardware scanning initialization failed");
+            mLogger.e(TAG, "init: hardware scanning initialization failed");
             return false;
         }
         mScanFilter = buildScanFilter();
         mScanSettings = BuildScanSettings();
-        Log.i(TAG, "init: hardware scanning initialization done");
+        mLogger.i(TAG, "init: hardware scanning initialization done");
         return true;
     }
 
@@ -105,7 +107,7 @@ public class Scanner extends ScanCallback {
         try {
             countDown.await(30, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            Log.e(TAG, "processResult: interrupted exception", e);
+            mLogger.e(TAG, "processResult: interrupted exception", e);
         }
         foundMap.clear();
         setProcessingResult(false);
@@ -114,16 +116,16 @@ public class Scanner extends ScanCallback {
     // enable scanning
     public boolean start(String localPID) {
         if (!isInit()) {
-            Log.e(TAG, "start: driver not init");
+            mLogger.e(TAG, "start: driver not init");
             return false;
         }
         if (getScannerState() == SCANNER_STATE_ENABLED) {
-            Log.i(TAG, "start: scanner already running");
+            mLogger.i(TAG, "start: scanner already running");
             mBluetoothLeScanner.stopScan(this);
             setScannerState(SCANNER_STATE_DISABLED);
         }
 
-        Log.i(TAG, "start scanning");
+        mLogger.i(TAG, "start scanning");
         mLocalPID = localPID;
         mId = localPID.substring(localPID.length() - 4);
         mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, this);
@@ -137,11 +139,11 @@ public class Scanner extends ScanCallback {
             public void run() {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     if (getScannerState() == SCANNER_STATE_ENABLED) {
-                        Log.d(TAG, "stop scanning");
+                        mLogger.d(TAG, "stop scanning");
                         if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
                             mBluetoothLeScanner.stopScan(callback);
                         } else {
-                            Log.e(TAG, "stop scanner in timer error: BT adapter not running");
+                            mLogger.e(TAG, "stop scanner in timer error: BT adapter not running");
                         }
                         setScannerState(SCANNER_STATE_PAUSED);
 
@@ -149,11 +151,11 @@ public class Scanner extends ScanCallback {
                         processResult();
                     } else {
                         if (!isProcessingResult()) {
-                            Log.d(TAG, "start scanning");
+                            mLogger.d(TAG, "start scanning");
                             if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
                                 mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, callback);
                             } else {
-                                Log.e(TAG, "start scanner in timer error: BT adapter not running");
+                                mLogger.e(TAG, "start scanner in timer error: BT adapter not running");
                             }
                             setScannerState(SCANNER_STATE_ENABLED);
                         }
@@ -170,21 +172,21 @@ public class Scanner extends ScanCallback {
     // disable scanning
     public void stop() {
         if (!isInit()) {
-            Log.e(TAG, "stop: driver not init");
+            mLogger.e(TAG, "stop: driver not init");
             return;
         }
 
         if (getScannerState() == SCANNER_STATE_DISABLED) {
-            Log.i(TAG, "stop: scanner not running");
+            mLogger.i(TAG, "stop: scanner not running");
             return;
         }
 
-        Log.i(TAG, "stop scanning");
+        mLogger.i(TAG, "stop scanning");
         if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
             mBluetoothLeScanner.stopScan(this);
             setScannerState(SCANNER_STATE_DISABLED);
         } else {
-            Log.e(TAG, "stop scanner error: BT adapter not running");
+            mLogger.e(TAG, "stop scanner error: BT adapter not running");
         }
         mTask.cancel();
         mTimer.purge();
@@ -231,20 +233,22 @@ public class Scanner extends ScanCallback {
                 errorString = "UNKNOWN SCAN FAILURE (" + errorCode + ")";
                 break;
         }
-        Log.e(TAG, "onScanFailed: " + errorString);
+        mLogger.e(TAG, "onScanFailed: " + errorString);
         setScannerState(state);
     }
 
     @Override
     public void onScanResult(int callbackType, ScanResult result) {
-        Log.v(TAG, "onScanResult called with result: " + result);
+//        mLogger.v(TAG, "onScanResult called with result: " + result);
         foundMap.put(result.getDevice().getAddress(), result);
         super.onScanResult(callbackType, result);
     }
 
     @Override
     public void onBatchScanResults(List<ScanResult> results) {
-        Log.v(TAG, "onBatchScanResult() called with results: " + results);
+        if (mLogger.showSensitiveData()) {
+            mLogger.v(TAG, "onBatchScanResult() called with results: " + results);
+        }
 
         for (ScanResult result : results) {
             foundMap.put(result.getDevice().getAddress(), result);
@@ -257,7 +261,8 @@ public class Scanner extends ScanCallback {
 
         List<ParcelUuid> services;
         if ((services = result.getScanRecord().getServiceUuids()) == null || !services.contains(GattServer.P_SERVICE_UUID)) {
-            Log.v(TAG, "parseResult: service not found, device=" + device.getAddress());
+            // very verbose log
+//            mLogger.v(TAG, "parseResult: service not found, device=" + device.getAddress());
             countDown.countDown();
             return;
         }
@@ -270,56 +275,49 @@ public class Scanner extends ScanCallback {
             // for android
             id = new String(result.getScanRecord().getServiceData(GattServer.P_SERVICE_UUID));
         } else {
-            Log.e(TAG, "parseResult error: failed to get ID for device=" + device.getAddress());
+            mLogger.e(TAG, "parseResult error: failed to get ID for device=" + mLogger.sensitiveObject(device.getAddress()));
             countDown.countDown();
             return;
         }
 
         // only lower id can be client
         if (mId.compareTo(id) >= 0) {
-            Log.v(TAG, String.format("parseResult: device=%s id=%s: greater ID, cancel client connection", device.getAddress(), id));
+            mLogger.v(TAG, String.format("parseResult: device=%s id=%s: greater ID, cancel client connection", mLogger.sensitiveObject(device.getAddress()), mLogger.sensitiveObject(id)));
             countDown.countDown();
             return;
         }
 
-        PeerDevice peerDevice = DeviceManager.get(device.getAddress());
+        PeerDevice peerDevice = mBleDriver.deviceManager().get(device.getAddress());
         if (peerDevice != null) {
             if (!peerDevice.isClientDisconnected()) {
-                Log.v(TAG, String.format("parseResult: client is already connected, device=%s id=%s", device.getAddress(), id));
+                mLogger.v(TAG, String.format("parseResult: client is already connected, device=%s id=%s", mLogger.sensitiveObject(device.getAddress()), mLogger.sensitiveObject(id)));
                 countDown.countDown();
                 return;
             } else {
-                PeerDevice tmpDevice = DeviceManager.getById(id);
+                PeerDevice tmpDevice = mBleDriver.deviceManager().getById(id);
                 if (tmpDevice != null && !tmpDevice.isClientDisconnected()) {
-                    Log.v(TAG, String.format("parseResult: client is already connected with another device object, result device=%s, other device=%s, id=%s", result.getDevice().getAddress(), tmpDevice.getMACAddress(), id));
+                    mLogger.v(TAG, String.format("parseResult: client is already connected with another device object, result device=%s, other device=%s, id=%s", mLogger.sensitiveObject(result.getDevice().getAddress()), mLogger.sensitiveObject(tmpDevice.getMACAddress()), mLogger.sensitiveObject(id)));
                     countDown.countDown();
                     return;
                 }
             }
         } else {
-            peerDevice = DeviceManager.getById(id);
+            peerDevice = mBleDriver.deviceManager().getById(id);
             if (peerDevice != null && !peerDevice.isClientDisconnected()) {
-                Log.v(TAG, String.format("parseResult: client is already connected with another device object, result device=%s, other device=%s, id=%s", result.getDevice().getAddress(), peerDevice.getMACAddress(), id));
+                mLogger.v(TAG, String.format("parseResult: client is already connected with another device object, result device=%s, other device=%s, id=%s", mLogger.sensitiveObject(result.getDevice().getAddress()), mLogger.sensitiveObject(peerDevice.getMACAddress()), mLogger.sensitiveObject(id)));
                 countDown.countDown();
                 return;
             } else {
-                Log.i(TAG, String.format("parseResult: scanned a new device=%s id=%s", device.getAddress(), id));
-                peerDevice = new PeerDevice(mContext, device, mLocalPID);
-                DeviceManager.put(peerDevice.getMACAddress(), peerDevice);
+                mLogger.i(TAG, String.format("parseResult: scanned a new device=%s id=%s", mLogger.sensitiveObject(device.getAddress()), mLogger.sensitiveObject(id)));
+                peerDevice = new PeerDevice(mContext, mBleDriver, mLogger, device, mLocalPID, true);
+                mBleDriver.deviceManager().put(peerDevice.getMACAddress(), peerDevice);
             }
         }
 
         peerDevice.setId(id);
 
-        Log.i(TAG, String.format("parseResult: proceed connection to device=%s id=%s", device.getAddress(), id));
+        mLogger.i(TAG, String.format("parseResult: proceed connection to device=%s id=%s", mLogger.sensitiveObject(device.getAddress()), mLogger.sensitiveObject(id)));
         // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
         peerDevice.connectToDevice(false, countDown);
-        /*stop();
-        BleDriver.mainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                start(mPeerID);
-            }
-        }, 10000);*/
     }
 }

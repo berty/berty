@@ -1,7 +1,6 @@
 package tech.berty.gobridge.bledriver;
 
 import android.content.Context;
-import android.util.Log;
 
 import bertybridge.Bertybridge;
 import bertybridge.ProximityDriver;
@@ -17,9 +16,11 @@ public class BleInterface implements ProximityDriver {
     private static ProximityTransport mTransport;
     private final Context mContext;
     private BleDriver mBleDriver;
+    private Logger mLogger;
 
-    public BleInterface(Context context) {
+    public BleInterface(Context context, boolean useExternalLogger) {
         mContext = context;
+        mLogger = new Logger(false, useExternalLogger);
     }
 
     public static boolean BLEHandleFoundPeer(String remotePID) {
@@ -41,17 +42,23 @@ public class BleInterface implements ProximityDriver {
         }
     }
 
+    public static void BLELog(Logger.Level level, String message) {
+        if (mTransport != null) {
+            mTransport.log(level.getValue(), message);
+        }
+    }
+
     public void start(String localPID) {
-        Log.d(TAG, "start driver");
+        mLogger.d(TAG, "start driver");
 
         mTransport = Bertybridge.getProximityTransport(ProtocolName);
         if (mTransport == null) {
-            Log.e(TAG, "proximityTransporter not found");
+            mLogger.e(TAG, "proximityTransporter not found");
             return;
         }
 
-        if ((this.mBleDriver = BleDriver.getInstance(mContext)) == null) {
-            Log.e(TAG, "can't get BleDriver instance");
+        if ((this.mBleDriver = BleDriver.getInstance(mContext, mLogger)) == null) {
+            mLogger.e(TAG, "can't get BleDriver instance");
             return;
         }
         this.mBleDriver.StartBleDriver(localPID);
@@ -66,7 +73,7 @@ public class BleInterface implements ProximityDriver {
     }
 
     public boolean dialPeer(String remotePID) {
-        return PeerManager.get(remotePID) != null;
+        return mBleDriver.peerManager().get(remotePID) != null;
     }
 
     public boolean sendToPeer(String remotePID, byte[] payload) {
@@ -77,7 +84,7 @@ public class BleInterface implements ProximityDriver {
     }
 
     public void closeConnWithPeer(String remotePID) {
-        DeviceManager.closeDeviceConnection(remotePID);
+        mBleDriver.deviceManager().closeDeviceConnection(remotePID);
     }
 
     public long protocolCode() {

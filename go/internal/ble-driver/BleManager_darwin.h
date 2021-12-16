@@ -8,14 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "CountDownLatch_darwin.h"
+
 #import "BleInterface_darwin.h"
+#import "BertyDevice_darwin.h"
+#import "PeerManager.h"
+#import "CountDownLatch_darwin.h"
 #import "WriteDataCache.h"
 
-#ifndef BleManager_h
-#define BleManager_h
+#define LOCAL_DOMAIN "tech.berty.bty"
 
-@class BertyDevice;
+NS_ASSUME_NONNULL_BEGIN
 
 @interface BleManager : NSObject <CBPeripheralManagerDelegate, CBCentralManagerDelegate>
 
@@ -23,7 +25,10 @@
 + (CBUUID *__nonnull)peerUUID;
 + (CBUUID *__nonnull)writerUUID;
 + (NSString *__nonnull)NSDataToHex:(NSData *__nonnull)data;
++ (void) printLongLog:(NSString *__nonnull)message;
 
+@property (nonatomic, strong, nullable) Logger *logger;
+@property (nonatomic, strong, nonnull) PeerManager *peerManager;
 @property (readwrite) BOOL pmEnable;
 @property (readwrite) BOOL cmEnable;
 @property (readwrite) int psm;
@@ -47,19 +52,19 @@
 @property (nonatomic, strong, nullable) CountDownLatch *writerLactch;
 @property (readwrite) BOOL writeStatus;
 
-- (instancetype __nonnull) initScannerAndAdvertiser;
+- (instancetype __nonnull) initDriver:(BOOL)useExternalLogger;
 - (void)addService;
 - (void)startScanning;
 - (void)toggleScanner:(NSTimer *__nonnull)timer;
 - (void)stopScanning;
 - (void)startAdvertising;
 - (void)stopAdvertising;
-- (void)cancelPeripheralConnection:(CBPeripheral *__nullable)peripheral;
-- (void)cancelAllPeripheralConnections;
+- (void)disconnect:(BertyDevice *__nonnull)device;
+- (void)closeAllConnections;
 - (BertyDevice *__nullable)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier;
 - (BertyDevice *__nullable)findPeripheralFromPID:(NSString *__nonnull)peerID;
 - (BOOL)writeAndNotify:(BertyDevice *__nonnull)device data:(NSData *__nonnull)data;
 
 @end
 
-#endif
+NS_ASSUME_NONNULL_END

@@ -7,20 +7,18 @@
 
 #import <Foundation/Foundation.h>
 
-#import "BertyDevice_darwin.h"
-
 NS_ASSUME_NONNULL_BEGIN
+
+@class BertyDevice;
 
 @interface ConnectedPeer : NSObject
 
 @property (nonatomic, assign, nullable) BertyDevice *client;
 @property (nonatomic, assign, nullable) BertyDevice *server;
 @property (readwrite, getter=isConnected) BOOL connected;
-@property (strong, nullable) CBL2CAPChannel *channel;
 
 - (BOOL)isClientReady;
 - (BOOL)isServerReady;
-- (BOOL)isReady;
 
 @end
 

@@ -98,3 +98,18 @@ func (rbm *RingBufferMap) Flush(peerID string) <-chan []byte {
 
 	return c
 }
+
+// Delete cache entry
+func (rbm *RingBufferMap) Delete(peerID string) {
+	rbm.logger.Debug("RingBufferMap: Delete called", logutil.PrivateString("peerID", peerID))
+
+	rbm.Lock()
+	_, ok := rbm.cache[peerID]
+	if ok {
+		rbm.logger.Debug("RingBufferMap: Delete: cache found", logutil.PrivateString("peerID", peerID))
+
+		delete(rbm.cache, peerID)
+		rbm.Unlock()
+	}
+	rbm.Unlock()
+}

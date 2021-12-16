@@ -11,12 +11,11 @@
 #import <os/log.h>
 #import <signal.h>
 
+#import "BleManager_darwin.h"
+#import "Logger.h"
+
 #ifndef BleInterface_h
 #define BleInterface_h
-@class BleManager;
-
-#define LOCAL_DOMAIN "tech.berty.bty.BLE"
-extern os_log_t OS_LOG_BLE;
 
 void BLEStart(char *localPID);
 void BLEStop(void);
@@ -26,5 +25,7 @@ void BLECloseConnWithPeer(char *remotePID);
 int BLEBridgeHandleFoundPeer(NSString *remotePID);
 void BLEBridgeHandleLostPeer(NSString *remotePID);
 void BLEBridgeReceiveFromPeer(NSString *remotePID, NSData *payload);
+void BLEBridgeLog(enum level level, NSString *message);
+void BLEUseExternalLogger(void);
 
 #endif /* BleInterface_h */
