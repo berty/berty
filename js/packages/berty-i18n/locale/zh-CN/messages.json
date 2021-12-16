@@ -75,8 +75,7 @@
 				},
 				"third-button": "选择认证节点"
 			},
-			"apply-changes": "应用更改",
-			"skip": "跳过并稍后执行此操作"
+			"apply-changes": "应用更改"
 		},
 		"services-auth": {
 			"header": "认证服务",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "失败的原因是什么？",
 			"desc": "应用程序崩溃。",
-			"desc-report": "摇动手机报告错误，然后单击按钮退出并重新启动应用程序。"
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "对不起，这是个BUG",
 			"desc": "这是Berty的实习生Francis的错，他一定犯了个错误。Francis真是个混蛋！",
 			"desc-em": "*好吧，伯蒂的团队里没有 Francis",
-			"desc-report": "摇一摇你的手机，我们又来了！"
+			"desc-report": ""
 		}
 	},
 	"debug": {
