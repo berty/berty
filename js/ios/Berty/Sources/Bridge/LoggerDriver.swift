@@ -7,7 +7,6 @@
 
 import os
 import Bertybridge
-import Firebase
 
 public enum LoggerError: Error {
   case emptyMessage
@@ -81,8 +80,6 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
     } else {
         NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + "." + subsytem, out)
     }
-
-    Crashlytics.crashlytics().log(format: "[%@] [%@]: %@", arguments: getVaList([level.rawValue, self.subsytem + "." + subsytem, out]))
   }
 
   public func format(_ format: NSString, level: Level = Level.info, _ args: CVarArg...) {

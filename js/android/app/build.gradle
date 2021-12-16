@@ -2,7 +2,6 @@ apply plugin: "com.android.application"
 
 // TODO: remove this after closed beta
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
 
 import com.android.build.OutputFile
 
@@ -271,6 +270,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     // firebase fcm
+    implementation platform('com.google.firebase:firebase-bom:28.1.0')
     implementation 'com.google.firebase:firebase-messaging'
 
     // Add v8-android - prebuilt libv8android.so into APK
@@ -285,10 +285,6 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     implementation project(':react-native-share')
-
-    // crashlytics
-    implementation platform('com.google.firebase:firebase-bom:28.1.0')
-    implementation 'com.google.firebase:firebase-crashlytics'
 
     // Add Android Nearby
     implementation "com.google.android.gms:play-services-nearby:16.0.0"
