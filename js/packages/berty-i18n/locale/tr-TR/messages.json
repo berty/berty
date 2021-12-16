@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "Hizmetlere izin ver",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Hata nedir?",
 			"desc": "Uygulama az önce çöktü.",
-			"desc-report": "Hatayı bildirmek için telefonunuzu sallayın ve uygulamayı kapatıp yeniden başlatmak için düğmeye basın."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Bu hata için üzgünüm!",
 			"desc": "Bu Francis'in hatası, Berty'de geliştirici stajyer bir hata yapmış olması gereken. Bu Francis ne kadar aptal!",
 			"desc-em": "Pekala, tamam, Berty takımında Francis yok.",
-			"desc-report": "Telefonunuzu sallayın ve işte yine başlıyoruz!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
