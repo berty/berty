@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { View, TextInput, Button, Vibration, Text as TextNative, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
@@ -9,6 +9,7 @@ import { useStyles } from '@berty-tech/styles'
 
 import ScanTarget from './scan_target.svg'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useFocusEffect } from '@react-navigation/core'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -28,7 +29,7 @@ const useStylesScan = () => {
 	}
 }
 
-const ScanBody: React.FC = () => {
+const ScanBody: React.FC<{ visible: boolean }> = ({ visible = true }) => {
 	const navigation = useNavigation()
 	const [
 		{ background, margin, flex, column, border },
@@ -57,18 +58,21 @@ const ScanBody: React.FC = () => {
 				},
 			]}
 		>
-			<QRCodeScanner
-				onRead={({ data, type }) => {
-					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
-						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-						navigation.navigate('Modals.ManageDeepLink', { type: 'qr', value: data })
-						Vibration.vibrate(1000)
-					}
-				}}
-				cameraProps={{ captureAudio: false }}
-				containerStyle={[borderRadius, { width: '100%', height: '100%', overflow: 'hidden' }]}
-				cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
-			/>
+			{visible && (
+				<QRCodeScanner
+					onRead={({ data, type }) => {
+						if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
+							// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
+							navigation.navigate('Modals.ManageDeepLink', { type: 'qr', value: data })
+							Vibration.vibrate(1000)
+						}
+					}}
+					cameraProps={{ captureAudio: false }}
+					containerStyle={[borderRadius, { width: '100%', height: '100%', overflow: 'hidden' }]}
+					cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
+				/>
+			)}
+
 			<ScanTarget height='75%' width='75%' style={{ position: 'absolute' }} />
 		</View>
 	)
@@ -129,6 +133,16 @@ const DevReferenceInput: React.FC = () => {
 export const Scan: ScreenFC<'Main.Scan'> = () => {
 	const [{ flex, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
+	const [isScannerVisible, setIsScannerVisible] = useState<boolean>(true)
+
+	useFocusEffect(
+		useCallback(() => {
+			setIsScannerVisible(true)
+			return () => {
+				setIsScannerVisible(false)
+			}
+		}, []),
+	)
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
@@ -144,7 +158,7 @@ export const Scan: ScreenFC<'Main.Scan'> = () => {
 					},
 				]}
 			>
-				<ScanBody />
+				<ScanBody visible={isScannerVisible} />
 				<View style={[margin.top.medium, padding.medium]}>
 					<ScanInfosText textProps='Scanning a QR code sends a contact request' />
 					<ScanInfosText textProps='You need to wait for the request to be accepted in order to chat with the contact' />
