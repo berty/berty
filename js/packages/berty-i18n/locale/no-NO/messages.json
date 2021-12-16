@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Avbryt"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Din Berty ID (QR-kode) vil bli oppdatert",
 			"ocr-wont-update": "Dine pågående kontaktforespørsler vil ikke bli oppdatert",
 			"save": "Lagre endringer",
-			"cancel": "Avbryt",
 			"name-input-placeholder": "Navn...",
 			"name-input-label": "Navn"
 		},
@@ -316,7 +318,6 @@
 			"title": "Slett konto!",
 			"first-desc": "Er du sikker på at du vil slette din konto?",
 			"desc": "Vennligst skriv \"slett\" for å bekrefte",
-			"cancel-button": "AVBRYT",
 			"delete-button": "SLETT"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "AVBRYT",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "",
 				"permission-denied": ""
 			},
-			"slide-to-cancel": "",
-			"cancel-button": "Avbryt"
+			"slide-to-cancel": ""
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "",
-					"action-cancel": "Avbryt"
+					"success-feedback": ""
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "",
 			"confirm-alert": {
-				"button-confirm": "",
-				"button-cancel": "Avbryt"
+				"button-confirm": ""
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Modal, Platform, TouchableOpacity } from 'react-native'
+import { View, Modal, Platform, TouchableOpacity, ActivityIndicator, Text } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
 import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
@@ -23,8 +23,8 @@ const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C)
 export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]) => void }> = ({
 	onClose,
 }) => {
-	const [{ border, padding }] = useStyles()
-	const { t }: { t: any } = useTranslation()
+	const [{ margin, border }, { scaleSize }] = useStyles()
+	const { t } = useTranslation()
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
 	const [isLoading, setLoading] = useState(false)
@@ -140,27 +140,74 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]
 		},
 	]
 
+	const streams = React.useRef<{ streams: { [key: string]: any }; cancel: boolean }>({
+		streams: {},
+		cancel: false,
+	})
+	const handleCancel = React.useCallback(async () => {
+		if (streams.current.cancel) {
+			return
+		}
+		streams.current.cancel = true
+		for (const stream of Object.values(streams.current.streams)) {
+			try {
+				await stream.stop()
+			} catch (err) {
+				if (`${err}`.indexOf('client stream not started or has been closed') === -1) {
+					console.warn('failed to cancel stream:', err)
+				}
+			}
+		}
+		streams.current.streams = {}
+		streams.current.cancel = false
+		setLoading(false)
+	}, [])
+
 	const prepareMediaAndSend = async (res: (beapi.messenger.IMedia & { uri?: string })[]) => {
 		if (isLoading) {
 			return
 		}
 		setLoading(true)
 		try {
-			const mediaCids = (
-				await amap(res, async doc => {
-					const stream = await client?.mediaPrepare({})
-					await stream?.emit({
-						info: {
-							filename: doc.filename,
-							mimeType: doc.mimeType,
-							displayName: doc.displayName || doc.filename || 'document',
-						},
-						uri: doc.uri,
-					})
-					const reply = await stream?.stopAndRecv()
-					return reply?.cid
+			const cids = await amap(res, async doc => {
+				if (streams.current.cancel) {
+					return
+				}
+				const uri = doc?.uri
+				if (!uri || streams.current.streams[uri]) {
+					return
+				}
+				const stream = await client?.mediaPrepare({})
+				if (!stream) {
+					throw new Error('no stream')
+				}
+				if (streams.current.cancel) {
+					await stream.stop()
+					return
+				}
+				streams.current.streams[uri] = stream
+				await stream?.emit({
+					info: {
+						filename: doc.filename,
+						mimeType: doc.mimeType,
+						displayName: doc.displayName || doc.filename || 'document',
+					},
+					uri: doc.uri,
 				})
-			).filter(cid => !!cid)
+				if (streams.current.cancel) {
+					return
+				}
+				const reply = await stream?.stopAndRecv()
+				if (streams.current.cancel) {
+					return
+				}
+				delete streams.current.streams[uri]
+				return reply?.cid
+			})
+			if (streams.current.cancel) {
+				return
+			}
+			const mediaCids = cids.filter(cid => !!cid)
 			onClose(
 				res.map(
 					(doc, i): beapi.messenger.IMedia => ({
@@ -171,7 +218,9 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]
 					}),
 				),
 			)
-		} catch (err) {}
+		} catch (err) {
+			console.warn('error preparing media:', err)
+		}
 		setLoading(false)
 	}
 
@@ -191,7 +240,9 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]
 					flex: 1,
 				}}
 				onPress={() => {
-					onClose()
+					if (!isLoading) {
+						onClose()
+					}
 				}}
 			/>
 			<View
@@ -214,25 +265,48 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]
 						style={[
 							border.radius.top.large,
 							border.shadow.big,
-							padding.bottom.large,
 							{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 						]}
 					>
 						<View
 							style={{
-								flexDirection: 'row',
-								flexWrap: 'wrap',
 								alignItems: 'center',
 								justifyContent: 'center',
 							}}
 						>
-							{LIST_CONFIG.map(listItem => (
-								<MenuListItem {...listItem} key={listItem.title} />
-							))}
+							<View
+								style={{
+									height: 160 * scaleSize,
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								{activeTab !== TabItems.Gallery && isLoading ? (
+									<>
+										<ActivityIndicator size='large' color={colors['main-text']} />
+										<TouchableOpacity onPress={handleCancel} style={margin.top.medium}>
+											<Text style={{ color: colors['main-text'] }}>{t('generic.cancel')}</Text>
+										</TouchableOpacity>
+									</>
+								) : (
+									<View
+										style={{
+											flexDirection: 'row',
+											flexWrap: 'wrap',
+											alignItems: 'center',
+											justifyContent: 'center',
+										}}
+									>
+										{LIST_CONFIG.map(listItem => (
+											<MenuListItem {...listItem} key={listItem.title} />
+										))}
+									</View>
+								)}
+							</View>
+							{activeTab === TabItems.Gallery && (
+								<GallerySection prepareMediaAndSend={prepareMediaAndSend} isLoading={isLoading} />
+							)}
 						</View>
-						{activeTab === TabItems.Gallery && (
-							<GallerySection prepareMediaAndSend={prepareMediaAndSend} isLoading={isLoading} />
-						)}
 					</View>
 				</View>
 			</View>

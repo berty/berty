@@ -116,7 +116,7 @@ export const RecordingComponent: React.FC<{
 								padding: 5,
 							}}
 						>
-							{t('audio.record.cancel-button')}
+							{t('generic.cancel')}
 						</Text>
 					)}
 				</TouchableOpacity>

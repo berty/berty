@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "취소"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "",
 			"ocr-wont-update": "",
 			"save": "변경사항 저장",
-			"cancel": "취소",
 			"name-input-placeholder": "이름...",
 			"name-input-label": "이름"
 		},
@@ -316,7 +318,6 @@
 			"title": "계정 삭제!",
 			"first-desc": "정말로 계정을 삭제해도 괜찮을까요?",
 			"desc": "삭제하려면 delete를 입력하세요",
-			"cancel-button": "취소하기",
 			"delete-button": "삭제하기"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "취소하기",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "",
 				"permission-denied": ""
 			},
-			"slide-to-cancel": "",
-			"cancel-button": "취소"
+			"slide-to-cancel": ""
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "",
-					"action-cancel": "취소하기"
+					"success-feedback": ""
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "",
 			"confirm-alert": {
-				"button-confirm": "",
-				"button-cancel": "취소"
+				"button-confirm": ""
 			}
 		}
 	}

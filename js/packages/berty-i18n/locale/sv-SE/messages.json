@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Avbryt"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "SKYDDA DIN INTEGRITET",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Ditt Berty ID (QR-kod) kommer att uppdateras",
 			"ocr-wont-update": "Dina pågående kontaktförfrågningar kommer inte att uppdateras",
 			"save": "Spara ändringar",
-			"cancel": "Avbryt",
 			"name-input-placeholder": "Namn...",
 			"name-input-label": "Namn"
 		},
@@ -316,7 +318,6 @@
 			"title": "Radera konto!",
 			"first-desc": "Är du säker på att du vill radera ditt konto?",
 			"desc": "Vänligen skriv \"delete\" för att bekräfta",
-			"cancel-button": "AVBRYT",
 			"delete-button": "RADERA KONTO"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "Sparar temat",
 			"desc": "Vänligen välj ett namn för ditt tema!",
 			"placeholder": "Temats namn...",
-			"cancel": "AVBRYT",
 			"add": "LÄGG TILL!"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Ljudmeddelandet har inte skickats",
 				"permission-denied": "Appen saknar behörighet att spela in ljud"
 			},
-			"slide-to-cancel": "<< Svep för att avbryta",
-			"cancel-button": "Avbryt"
+			"slide-to-cancel": "<< Svep för att avbryta"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Bekräfta tvingad borttagning av konto",
 					"error-close": "Fel vid stängning av konto",
 					"error-delete": "Fel vid borttagning av konto",
-					"success-feedback": "Konto borttaget",
-					"action-cancel": "Avbryt"
+					"success-feedback": "Konto borttaget"
 				},
 				"status": {
 					"datastore-found": "Datalagring hittades",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Uppdatera",
 			"confirm-alert": {
-				"button-confirm": "Bekräfta",
-				"button-cancel": "Avbryt"
+				"button-confirm": "Bekräfta"
 			}
 		}
 	}

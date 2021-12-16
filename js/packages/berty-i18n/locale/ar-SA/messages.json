@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "لالغاء"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "",
 			"ocr-wont-update": "",
 			"save": "",
-			"cancel": "",
 			"name-input-placeholder": "",
 			"name-input-label": "الاسم"
 		},
@@ -316,7 +318,6 @@
 			"title": "حذف الحساب!",
 			"first-desc": "هل أنت متأكد من أنك تريد حذف حسابك؟",
 			"desc": "الرجاء كتابة \"حذف\" للتأكيد",
-			"cancel-button": "لالغاء",
 			"delete-button": "إزالة"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "لالغاء",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "",
 				"permission-denied": ""
 			},
-			"slide-to-cancel": "",
-			"cancel-button": ""
+			"slide-to-cancel": ""
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "",
-					"action-cancel": ""
+					"success-feedback": ""
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "",
 			"confirm-alert": {
-				"button-confirm": "",
-				"button-cancel": ""
+				"button-confirm": ""
 			}
 		}
 	}

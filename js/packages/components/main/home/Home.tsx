@@ -207,13 +207,16 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 		[requests.length, searchText, colors],
 	)
 
+	// FIXME: replace by proper check
+	const isDarkTheme = colors['main-background'] !== '#FFFFFF'
+
 	return (
 		<SafeAreaView style={[styleBackground, { flex: 1 }]}>
 			<StatusBar
 				backgroundColor={
 					requests.length && !isOnTop ? colors['background-header'] : colors['main-background']
 				}
-				barStyle={requests.length && !isOnTop ? 'light-content' : 'dark-content'}
+				barStyle={(requests.length && !isOnTop) || isDarkTheme ? 'light-content' : 'dark-content'}
 			/>
 			<ScrollView
 				ref={scrollRef}

@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Anuluj"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Twój identyfikator Berty (kod QR) zostanie zaktualizowany",
 			"ocr-wont-update": "Twoje oczekujące prośby o kontakt nie zostaną zaktualizowane",
 			"save": "Zapisz zmiany",
-			"cancel": "Anuluj",
 			"name-input-placeholder": "Nazwa...",
 			"name-input-label": "Nazwa"
 		},
@@ -316,7 +318,6 @@
 			"title": "Usuń konto!",
 			"first-desc": "Czy na pewno chcesz usunąć swoje konto?",
 			"desc": "Proszę wpisać usuń, aby potwierdzić",
-			"cancel-button": "ANULUJ",
 			"delete-button": "USUŃ"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "ANULUJ",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Wiadomość audio nie została wysłana",
 				"permission-denied": "Aplikacja nie może nagrywać dźwięku"
 			},
-			"slide-to-cancel": "<< Przesuń aby anulować",
-			"cancel-button": "Anuluj"
+			"slide-to-cancel": "<< Przesuń aby anulować"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Potwierdź wymuszenie usunięcia konta",
 					"error-close": "Błąd podczas zamykania konta",
 					"error-delete": "Błąd podczas usuwania konta",
-					"success-feedback": "Konto usunięte",
-					"action-cancel": "Anuluj"
+					"success-feedback": "Konto usunięte"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Odśwież",
 			"confirm-alert": {
-				"button-confirm": "Potwierdź",
-				"button-cancel": "Anuluj"
+				"button-confirm": "Potwierdź"
 			}
 		}
 	}

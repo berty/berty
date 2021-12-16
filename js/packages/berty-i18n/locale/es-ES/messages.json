@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Cancelar"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Su Berty ID (código QR) será actualizado",
 			"ocr-wont-update": "Sus solicitudes de contacto pendientes no se actualizarán",
 			"save": "Guardar cambios",
-			"cancel": "Cancelar",
 			"name-input-placeholder": "Nombre...",
 			"name-input-label": "Nombre"
 		},
@@ -316,7 +318,6 @@
 			"title": "¡Eliminar cuenta!",
 			"first-desc": "¿Está seguro que desea eliminar su cuenta?",
 			"desc": "Por favor, escriba borrar para confirmar",
-			"cancel-button": "CANCELAR",
 			"delete-button": "ELIMINAR"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "CANCELAR",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "El mensaje de audio no ha sido enviado",
 				"permission-denied": "La aplicación no tiene permitido grabar sonido"
 			},
-			"slide-to-cancel": "<< Desliza para cancelar",
-			"cancel-button": "Cancelar"
+			"slide-to-cancel": "<< Desliza para cancelar"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Confirmar la eliminación forzada de la cuenta",
 					"error-close": "Error al cerrar la cuenta",
 					"error-delete": "Error al eliminar la cuenta",
-					"success-feedback": "Cuenta eliminada",
-					"action-cancel": "Cancelar"
+					"success-feedback": "Cuenta eliminada"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Actualizar",
 			"confirm-alert": {
-				"button-confirm": "Confirmar",
-				"button-cancel": "Cancelar"
+				"button-confirm": "Confirmar"
 			}
 		}
 	}

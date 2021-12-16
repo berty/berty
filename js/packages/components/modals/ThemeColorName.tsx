@@ -144,10 +144,14 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 								row.item.justify,
 								text.size.scale(16),
 								text.bold.medium,
-								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
+								{
+									fontFamily: 'Open Sans',
+									color: colors['negative-asset'],
+									textTransform: 'uppercase',
+								},
 							]}
 						>
-							{t('modals.save-theme.cancel')}
+							{t('generic.cancel')}
 						</TextNative>
 					</TouchableOpacity>
 					<TouchableOpacity

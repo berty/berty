@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty-tech/store'
 
 export const MenuListItem: React.FC<{
 	title: string
@@ -15,15 +16,19 @@ export const MenuListItem: React.FC<{
 		pack?: string
 	}
 }> = ({ title, iconProps, onPress }) => {
-	const [{ padding, text, margin }] = useStyles()
+	const [{ text, margin }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
 
 	return (
-		<TouchableOpacity
-			onPress={onPress}
-			style={[padding.vertical.medium, margin.horizontal.big, { alignItems: 'center' }]}
-		>
-			<Icon {...iconProps} height={iconProps.height || 50} width={iconProps.width || 50} />
-			<Text style={[text.align.center, margin.top.small]}>{title}</Text>
+		<TouchableOpacity onPress={onPress} style={[margin.horizontal.big, { alignItems: 'center' }]}>
+			<Icon
+				{...iconProps}
+				height={iconProps.height || 50 * scaleSize}
+				width={iconProps.width || 50 * scaleSize}
+			/>
+			<Text style={[text.align.center, margin.top.small, { color: colors['main-text'] }]}>
+				{title}
+			</Text>
 		</TouchableOpacity>
 	)
 }

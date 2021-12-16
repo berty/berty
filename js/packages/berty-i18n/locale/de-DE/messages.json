@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Abbrechen"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Ihre Berty ID (QR-Code) wird aktualisiert",
 			"ocr-wont-update": "Ihre ausstehenden Kontaktanfragen werden nicht aktualisiert",
 			"save": "Änderungen speichern",
-			"cancel": "Abbrechen",
 			"name-input-placeholder": "Name...",
 			"name-input-label": "Name"
 		},
@@ -316,7 +318,6 @@
 			"title": "Mein Konto löschen!",
 			"first-desc": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
 			"desc": "Bitte löschen zum Bestätigen eingeben",
-			"cancel-button": "Abbrechen",
 			"delete-button": "Löschen"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "Theme speichern",
 			"desc": "Bitte wählen Sie einen Namen für Ihr Theme!",
 			"placeholder": "Theme-Name...",
-			"cancel": "Abbrechen",
 			"add": "HINZUFÜGEN!"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Audionachricht wurde nicht gesendet",
 				"permission-denied": "App ist nicht berechtigt, Ton aufzuzeichnen"
 			},
-			"slide-to-cancel": "Streichen um abbzubrechen",
-			"cancel-button": "Abbrechen"
+			"slide-to-cancel": "Streichen um abbzubrechen"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Löschung des Kontos nochmals bestätigen",
 					"error-close": "Fehler beim Schliessen des Kontos",
 					"error-delete": "Fehler beim Löschen des Kontos",
-					"success-feedback": "Konto gelöscht",
-					"action-cancel": "Abbrechen"
+					"success-feedback": "Konto gelöscht"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Aktualisieren",
 			"confirm-alert": {
-				"button-confirm": "Bestätigen",
-				"button-cancel": "Abbrechen"
+				"button-confirm": "Bestätigen"
 			}
 		}
 	}

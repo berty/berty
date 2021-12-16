@@ -95,7 +95,10 @@ const logError = (name, title, err) => {
 		console.log(`[${name}] ${title}: ${err}`)
 		return
 	}
-	if (title.indexOf('EventStream') !== -1 && `${err}`.indexOf('Canceled') !== -1) {
+	if (
+		(title.indexOf('EventStream') !== -1 || title.indexOf('MediaPrepare') !== -1) &&
+		`${err}`.indexOf('Canceled') !== -1
+	) {
 		console.log(`[${name}] ${title}: ${err}`)
 		return
 	}

@@ -253,7 +253,6 @@
 			"qr-will-update": "",
 			"ocr-wont-update": "",
 			"save": "",
-			"cancel": "",
 			"name-input-placeholder": "",
 			"name-input-label": "Nimi"
 		},
@@ -316,7 +315,6 @@
 			"title": "",
 			"first-desc": "",
 			"desc": "",
-			"cancel-button": "",
 			"delete-button": ""
 		},
 		"help": {
@@ -475,7 +473,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "",
 			"add": ""
 		}
 	},
@@ -580,8 +577,7 @@
 				"not-sent": "",
 				"permission-denied": ""
 			},
-			"slide-to-cancel": "",
-			"cancel-button": ""
+			"slide-to-cancel": ""
 		}
 	},
 	"permission": {
@@ -654,8 +650,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "",
-					"action-cancel": ""
+					"success-feedback": ""
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +682,7 @@
 			},
 			"refresh": "",
 			"confirm-alert": {
-				"button-confirm": "",
-				"button-cancel": ""
+				"button-confirm": ""
 			}
 		}
 	}

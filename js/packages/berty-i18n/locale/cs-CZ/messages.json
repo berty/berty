@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Zrušit"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Vaše Berty ID (QR kód) bude aktualizováno",
 			"ocr-wont-update": "Vaše nevyřízené žádosti o kontakty nebudou aktualizovány",
 			"save": "Uložit změny",
-			"cancel": "Zrušit",
 			"name-input-placeholder": "Jméno...",
 			"name-input-label": "Jméno"
 		},
@@ -316,7 +318,6 @@
 			"title": "Smazat účet!",
 			"first-desc": "Opravdu chcete smazat svůj účet?",
 			"desc": "",
-			"cancel-button": "ZRUŠIT",
 			"delete-button": "ODSTRANIT"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "ZRUŠIT",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "",
 				"permission-denied": ""
 			},
-			"slide-to-cancel": "",
-			"cancel-button": "Zrušit"
+			"slide-to-cancel": ""
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "",
-					"action-cancel": "Zrušit"
+					"success-feedback": ""
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "",
 			"confirm-alert": {
-				"button-confirm": "",
-				"button-cancel": "Zrušit"
+				"button-confirm": ""
 			}
 		}
 	}

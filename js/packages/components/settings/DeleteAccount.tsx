@@ -169,10 +169,10 @@ const DeleteAccountContent: React.FC<{}> = () => {
 								padding.left.small,
 								row.item.justify,
 								_styles.dismissText,
-								{ color: colors['secondary-text'] },
+								{ color: colors['secondary-text'], textTransform: 'uppercase' },
 							]}
 						>
-							{t('settings.delete-account.cancel-button')}
+							{t('generic.cancel')}
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity

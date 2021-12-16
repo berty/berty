@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Cancelar"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Seu ID Berty (código QR) será atualizado",
 			"ocr-wont-update": "As suas solicitações de contato pendentes não serão atualizadas",
 			"save": "Salvar alterações",
-			"cancel": "Cancelar",
 			"name-input-placeholder": "Nome...",
 			"name-input-label": "Nome"
 		},
@@ -316,7 +318,6 @@
 			"title": "Apagar conta!",
 			"first-desc": "Você tem certeza que deseja apagar sua conta?",
 			"desc": "Por favor, digite \"apagar\" para confirmar",
-			"cancel-button": "CANCELAR",
 			"delete-button": "APAGAR"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "Nome do tema...",
-			"cancel": "CANCELAR",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "A mensagem de áudio não foi enviada",
 				"permission-denied": "O app não tem permissão para gravar som"
 			},
-			"slide-to-cancel": "<< Deslize para cancelar",
-			"cancel-button": "Cancelar"
+			"slide-to-cancel": "<< Deslize para cancelar"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "Conta excluída",
-					"action-cancel": "Cancelar"
+					"success-feedback": "Conta excluída"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Atualizar",
 			"confirm-alert": {
-				"button-confirm": "Confirmar",
-				"button-cancel": "Cancelar"
+				"button-confirm": "Confirmar"
 			}
 		}
 	}

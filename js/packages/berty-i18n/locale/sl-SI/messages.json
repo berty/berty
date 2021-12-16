@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Prekini"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "",
 			"ocr-wont-update": "",
 			"save": "Shrani spremembe",
-			"cancel": "Prekini",
 			"name-input-placeholder": "Ime...",
 			"name-input-label": "Ime"
 		},
@@ -316,7 +318,6 @@
 			"title": "Izbriši račun!",
 			"first-desc": "",
 			"desc": "",
-			"cancel-button": "",
 			"delete-button": "IZBRIS"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "",
 				"permission-denied": ""
 			},
-			"slide-to-cancel": "",
-			"cancel-button": "Prekini"
+			"slide-to-cancel": ""
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "",
-					"action-cancel": "Prekini"
+					"success-feedback": ""
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "",
 			"confirm-alert": {
-				"button-confirm": "",
-				"button-cancel": "Prekini"
+				"button-confirm": ""
 			}
 		}
 	}

@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "取消"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "您的 Berty ID (QR 代码) 将被更新",
 			"ocr-wont-update": "您的待处理联系人请求将不会被更新",
 			"save": "保存修改",
-			"cancel": "取消",
 			"name-input-placeholder": "名",
 			"name-input-label": "名称"
 		},
@@ -316,7 +318,6 @@
 			"title": "删除帐户！",
 			"first-desc": "您确定要删除您的帐户吗？",
 			"desc": "请输入delete以确认",
-			"cancel-button": "取消",
 			"delete-button": "删除"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "正在保存主题",
 			"desc": "请为您的主题选择一个名称！",
 			"placeholder": "主题名称...",
-			"cancel": "取消",
 			"add": "添加！"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "音频消息未发送",
 				"permission-denied": "不允许应用程序录制声音"
 			},
-			"slide-to-cancel": "<< 滑动取消",
-			"cancel-button": "取消"
+			"slide-to-cancel": "<< 滑动取消"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "确认强制删除帐户",
 					"error-close": "关闭帐户时出错",
 					"error-delete": "删除帐户时出错",
-					"success-feedback": "帐户已删除",
-					"action-cancel": "取消"
+					"success-feedback": "帐户已删除"
 				},
 				"status": {
 					"datastore-found": "找到数据存储",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "刷新",
 			"confirm-alert": {
-				"button-confirm": "确认",
-				"button-cancel": "取消"
+				"button-confirm": "确认"
 			}
 		}
 	}

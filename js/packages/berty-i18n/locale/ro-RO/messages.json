@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Anulează"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "ID-ul Berty (cod QR) va fi actualizat",
 			"ocr-wont-update": "Cererile tale de contact în așteptare nu vor fi actualizate",
 			"save": "Salvează modificările",
-			"cancel": "Anulează",
 			"name-input-placeholder": "Nume...",
 			"name-input-label": "Nume"
 		},
@@ -316,7 +318,6 @@
 			"title": "Șterge contul meu!",
 			"first-desc": "Ești sigur că vrei să ștergi contul?",
 			"desc": "",
-			"cancel-button": "Anulează",
 			"delete-button": "Şterge"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "Anulează",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "",
 				"permission-denied": ""
 			},
-			"slide-to-cancel": "",
-			"cancel-button": "Anulează"
+			"slide-to-cancel": ""
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "",
-					"action-cancel": "Anulează"
+					"success-feedback": ""
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "",
 			"confirm-alert": {
-				"button-confirm": "",
-				"button-cancel": "Anulează"
+				"button-confirm": ""
 			}
 		}
 	}

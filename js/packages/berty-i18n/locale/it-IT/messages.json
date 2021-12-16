@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Annulla"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Il tuo ID Berty (codice QR) verrà aggiornato",
 			"ocr-wont-update": "Le richieste di contatto in sospeso non verranno aggiornate",
 			"save": "Salva le modifiche",
-			"cancel": "Annulla",
 			"name-input-placeholder": "Nome...",
 			"name-input-label": "Nome"
 		},
@@ -316,7 +318,6 @@
 			"title": "Elimina account!",
 			"first-desc": "Sei sicuro di voler eliminare il tuo account?",
 			"desc": "Digita \"delete\" per confermare",
-			"cancel-button": "ANNULLA",
 			"delete-button": "ELIMINA"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "Salvataggio tema",
 			"desc": "Scegli un nome per il tuo tema!",
 			"placeholder": "Nome tema...",
-			"cancel": "ANNULLA",
 			"add": "AGGIUNGI!"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Messaggio audio non è stato inviato",
 				"permission-denied": "L'app non è autorizzata a registrare l'audio"
 			},
-			"slide-to-cancel": "<< Scorri per annullare",
-			"cancel-button": "Annulla"
+			"slide-to-cancel": "<< Scorri per annullare"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Conferma l'eliminazione forzata dell'account",
 					"error-close": "Errore nella chiusura dell'account",
 					"error-delete": "Errore durante l'eliminazione dell'account",
-					"success-feedback": "Account eliminato",
-					"action-cancel": "Annulla"
+					"success-feedback": "Account eliminato"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Aggiorna",
 			"confirm-alert": {
-				"button-confirm": "Conferma",
-				"button-cancel": "Annulla"
+				"button-confirm": "Conferma"
 			}
 		}
 	}

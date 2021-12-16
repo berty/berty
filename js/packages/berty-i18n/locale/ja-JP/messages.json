@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "キャンセル"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "",
 			"ocr-wont-update": "",
 			"save": "変更を保存",
-			"cancel": "キャンセル",
 			"name-input-placeholder": "名前...",
 			"name-input-label": "名前"
 		},
@@ -316,7 +318,6 @@
 			"title": "アカウントを削除します!",
 			"first-desc": "本当にアカウントを削除しますか？",
 			"desc": "",
-			"cancel-button": "キャンセル",
 			"delete-button": "削除"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "キャンセル",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "音声メッセージは送信されていません",
 				"permission-denied": "アプリは音声の録音が許可されていません"
 			},
-			"slide-to-cancel": "スライドして中止",
-			"cancel-button": "キャンセル"
+			"slide-to-cancel": "スライドして中止"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "",
 					"error-close": "",
 					"error-delete": "",
-					"success-feedback": "アカウントが削除されました",
-					"action-cancel": "キャンセル"
+					"success-feedback": "アカウントが削除されました"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "更新",
 			"confirm-alert": {
-				"button-confirm": "確認",
-				"button-cancel": "キャンセル"
+				"button-confirm": "確認"
 			}
 		}
 	}

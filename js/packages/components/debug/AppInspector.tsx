@@ -86,7 +86,7 @@ const confirmActionWrapper = (title: string, action: () => void, t: any) => () =
 			style: 'destructive',
 		},
 		{
-			text: t('debug.inspector.confirm-alert.button-cancel'),
+			text: t('generic.cancel'),
 			onPress: () => {},
 			style: 'cancel',
 		},
@@ -231,7 +231,7 @@ const accountAction = async (
 			style: 'destructive',
 		},
 		{
-			text: t('debug.inspector.accounts.action-delete.action-cancel'),
+			text: t('generic.cancel'),
 			onPress: () => {},
 			style: 'cancel',
 		},

@@ -201,7 +201,8 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 
 				await prepareMediaAndSend([
 					{
-						filename: '',
+						filename: image.filename,
+						displayName: image.filename || 'picture',
 						uri: image.path || image.sourceURL || '',
 						mimeType: image.mime,
 					},

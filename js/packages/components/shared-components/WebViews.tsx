@@ -127,7 +127,7 @@ export const ModalWebviewBody: React.FC<{
 								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
 							]}
 						>
-							{t('onboarding.web-views.first-button')}
+							{t('generic.cancel')}
 						</TextNative>
 					</TouchableOpacity>
 					<TouchableOpacity

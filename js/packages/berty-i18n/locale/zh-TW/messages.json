@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "取消"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "您的 Berty ID (二維碼) 將會被更新",
 			"ocr-wont-update": "您的待處理聯繫人請求將不會被更新",
 			"save": "保存修改",
-			"cancel": "取消",
 			"name-input-placeholder": "名...",
 			"name-input-label": "名稱"
 		},
@@ -316,7 +318,6 @@
 			"title": "刪除帳戶！",
 			"first-desc": "您確定要刪除您的帳戶嗎？",
 			"desc": "請輸入delete以確認",
-			"cancel-button": "取消",
 			"delete-button": "刪除"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "正在保存主題",
 			"desc": "請為您的主題選擇一個名稱！",
 			"placeholder": "主題名稱...",
-			"cancel": "取消",
 			"add": "添加！"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "音頻消息未發送",
 				"permission-denied": "應用程序未被允許錄製聲音"
 			},
-			"slide-to-cancel": "<< 滑動以取消",
-			"cancel-button": "取消"
+			"slide-to-cancel": "<< 滑動以取消"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "確認強制刪除帳戶",
 					"error-close": "關閉帳戶時出錯",
 					"error-delete": "刪除帳戶時出錯",
-					"success-feedback": "帳戶已刪除",
-					"action-cancel": "取消"
+					"success-feedback": "帳戶已刪除"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "刷新",
 			"confirm-alert": {
-				"button-confirm": "確認",
-				"button-cancel": "取消"
+				"button-confirm": "確認"
 			}
 		}
 	}

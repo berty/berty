@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "İptal"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Berty ID'niz (QR kodu) güncellenecek",
 			"ocr-wont-update": "Bekleyen iletişim istekleriniz güncellenmeyecek",
 			"save": "Değişiklikleri kaydet",
-			"cancel": "İptal",
 			"name-input-placeholder": "İsim...",
 			"name-input-label": "İsim"
 		},
@@ -316,7 +318,6 @@
 			"title": "Hesabı sil!",
 			"first-desc": "Hesabınızı silmek istediğinizden emin misiniz?",
 			"desc": "Lütfen onaylamak için delete yazın",
-			"cancel-button": "İPTAL ET",
 			"delete-button": "SİL"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "İPTAL ET",
 			"add": ""
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Sesli mesaj gönderilemedi",
 				"permission-denied": "Uygulamanın ses kaydetme yetkisi yok"
 			},
-			"slide-to-cancel": "<< İptal için kaydırın",
-			"cancel-button": "İptal"
+			"slide-to-cancel": "<< İptal için kaydırın"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Hesabın zorla silinmesini onayla",
 					"error-close": "Hesabı kapatırken hata",
 					"error-delete": "Hesabı silerken hata",
-					"success-feedback": "Hesap silindi",
-					"action-cancel": "İptal"
+					"success-feedback": "Hesap silindi"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Yenile",
 			"confirm-alert": {
-				"button-confirm": "Onayla",
-				"button-cancel": "İptal"
+				"button-confirm": "Onayla"
 			}
 		}
 	}

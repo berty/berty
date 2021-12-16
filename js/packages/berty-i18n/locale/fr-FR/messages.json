@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Annuler"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "PROTÉGEZ VOTRE VIE PRIVÉE",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Votre Berty ID (code QR) sera mis à jour",
 			"ocr-wont-update": "Vos demandes de contact en attente ne seront pas mises à jour",
 			"save": "Enregistrer les modifications",
-			"cancel": "Annuler",
 			"name-input-placeholder": "Nom...",
 			"name-input-label": "Nom"
 		},
@@ -316,7 +318,6 @@
 			"title": "Supprimer le compte !",
 			"first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
 			"desc": "Veuillez saisir \"delete\" pour confirmer",
-			"cancel-button": "ANNULER",
 			"delete-button": "SUPPRIMER"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "Sauvegarde du thème",
 			"desc": "Veuillez choisir un nom pour votre thème !",
 			"placeholder": "Nom du thème...",
-			"cancel": "ANNULER",
 			"add": "AJOUTER!"
 		}
 	},
@@ -581,8 +581,7 @@
 				"not-sent": "Le message audio n’a pas été envoyé",
 				"permission-denied": "L'application n'est pas autorisée à enregistrer du son"
 			},
-			"slide-to-cancel": "<< Glisser pour annuler",
-			"cancel-button": "Annuler"
+			"slide-to-cancel": "<< Glisser pour annuler"
 		}
 	},
 	"permission": {
@@ -655,8 +654,7 @@
 					"action-force-delete-confirm": "Confirmer la suppression forcée du compte",
 					"error-close": "Erreur lors de la fermeture du compte",
 					"error-delete": "Erreur lors de la suppression du compte",
-					"success-feedback": "Le compte a été supprimé",
-					"action-cancel": "Annuler"
+					"success-feedback": "Le compte a été supprimé"
 				},
 				"status": {
 					"datastore-found": "Le datastore a été trouvé",
@@ -688,8 +686,7 @@
 			},
 			"refresh": "Actualiser",
 			"confirm-alert": {
-				"button-confirm": "Confirmer",
-				"button-cancel": "Annuler"
+				"button-confirm": "Confirmer"
 			}
 		}
 	}

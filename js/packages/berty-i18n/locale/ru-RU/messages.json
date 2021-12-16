@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Отменить"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Ваш Berty ID (QR-код) будет обновлен",
 			"ocr-wont-update": "Ваши ожидающие запросы в контакты не будут обновляться",
 			"save": "Сохранить изменения",
-			"cancel": "Отменить",
 			"name-input-placeholder": "Имя...",
 			"name-input-label": "Имя"
 		},
@@ -316,7 +318,6 @@
 			"title": "Удалить аккаунт!",
 			"first-desc": "Вы уверены, что хотите удалить свой аккаунт?",
 			"desc": "Пожалуйста, напишите \"удалить\", чтобы подтвердить",
-			"cancel-button": "ОТМЕНА",
 			"delete-button": "УДАЛИТЬ"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "Сохранение темы",
 			"desc": "Пожалуйста, выберите имя для вашей темы!",
 			"placeholder": "Название темы...",
-			"cancel": "ОТМЕНА",
 			"add": "ДОБАВИТЬ!"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Аудиосообщение не отправлено",
 				"permission-denied": "Приложению не разрешено записывать звук"
 			},
-			"slide-to-cancel": "<< Свайп для отмены",
-			"cancel-button": "Отменить"
+			"slide-to-cancel": "<< Свайп для отмены"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Подтвердите принудительное удаление аккаунта",
 					"error-close": "Ошибка при закрытии аккаунта",
 					"error-delete": "Ошибка при удалении аккаунта",
-					"success-feedback": "Аккаунт удалён",
-					"action-cancel": "Отменить"
+					"success-feedback": "Аккаунт удалён"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Обновить",
 			"confirm-alert": {
-				"button-confirm": "Подтвердить",
-				"button-cancel": "Отменить"
+				"button-confirm": "Подтвердить"
 			}
 		}
 	}

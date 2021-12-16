@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Mégse"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Az Ön Berty azonosítója (QR kód) frissítve lett",
 			"ocr-wont-update": "Függőben lévő kapcsolattartási kérelmei nem frissültek",
 			"save": "Változtatások mentése",
-			"cancel": "Mégse",
 			"name-input-placeholder": "Név...",
 			"name-input-label": "Név"
 		},
@@ -316,7 +318,6 @@
 			"title": "Fiók törlése!",
 			"first-desc": "Biztosan törölné a fiókját?",
 			"desc": "A megerősítéshez írja be hogy \"delete\"",
-			"cancel-button": "MÉGSE",
 			"delete-button": "TÖRLÉS"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "Téma mentése",
 			"desc": "Kérjük adjon a témának nevet!",
 			"placeholder": "A téma neve...",
-			"cancel": "MÉGSE",
 			"add": "Hozzáadás!"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Hangüzenet nem lett elküldve",
 				"permission-denied": "Az alkalmazásnak nem engedélyezett a hangfelvétel"
 			},
-			"slide-to-cancel": "<< Csúsztatás a megszakításhoz",
-			"cancel-button": "Mégse"
+			"slide-to-cancel": "<< Csúsztatás a megszakításhoz"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "A fiók kényszerített törlésének megerősítése",
 					"error-close": "Hiba a fiók lezárásakor",
 					"error-delete": "Hiba a fiók törlésekor",
-					"success-feedback": "Fiók törölve",
-					"action-cancel": "Mégse"
+					"success-feedback": "Fiók törölve"
 				},
 				"status": {
 					"datastore-found": "",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Frissítés",
 			"confirm-alert": {
-				"button-confirm": "Megerősítés",
-				"button-cancel": "Mégse"
+				"button-confirm": "Megerősítés"
 			}
 		}
 	}

@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Cancel"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "PROTECT YOUR PRIVACY",
@@ -98,7 +101,6 @@
 		"web-views": {
 			"title": "WebViews",
 			"desc": "We are getting ready to load webviews on the network. Do you still want to open it ?",
-			"first-button": "Cancel",
 			"second-button": "Yes"
 		}
 	},
@@ -251,7 +253,6 @@
 			"qr-will-update": "Your Berty ID (QR code) will be updated",
 			"ocr-wont-update": "Your pending contact requests won’t be updated",
 			"save": "Save changes",
-			"cancel": "Cancel",
 			"name-input-placeholder": "Name...",
 			"name-input-label": "Name"
 		},
@@ -314,7 +315,6 @@
 			"title": "Delete account!",
 			"first-desc": "Are you sure you want to delete your account?",
 			"desc": "Please type delete to confirm",
-			"cancel-button": "CANCEL",
 			"delete-button": "DELETE"
 		},
 		"help": {
@@ -473,7 +473,6 @@
 			"title": "Saving theme",
 			"desc": "Please choose a name for your theme!",
 			"placeholder": "Theme name...",
-			"cancel": "CANCEL",
 			"add": "ADD!"
 		}
 	},
@@ -583,8 +582,7 @@
 				"not-sent": "Audio message has not been sent",
 				"permission-denied": "App is not allowed to record sound"
 			},
-			"slide-to-cancel": "<< Slide to cancel",
-			"cancel-button": "Cancel"
+			"slide-to-cancel": "<< Slide to cancel"
 		}
 	},
 	"permission": {
@@ -610,7 +608,6 @@
 			"settings": "Go to Settings"
 		},
 		"skip": "SKIP",
-		"cancel": "CANCEL",
 		"settings-text": "You can enable {{title}} permission from Settings."
 	},
 	"notification": {
@@ -658,8 +655,7 @@
 					"action-force-delete-confirm": "Confirm force deletion of account",
 					"error-close": "Error while closing account",
 					"error-delete": "Error while deleting account",
-					"success-feedback": "Account deleted",
-					"action-cancel": "Cancel"
+					"success-feedback": "Account deleted"
 				},
 				"status": {
 					"datastore-found": "Datastore found",
@@ -691,8 +687,7 @@
 			},
 			"refresh": "Refresh",
 			"confirm-alert": {
-				"button-confirm": "Confirm",
-				"button-cancel": "Cancel"
+				"button-confirm": "Confirm"
 			}
 		}
 	}

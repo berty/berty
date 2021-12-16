@@ -332,7 +332,7 @@ const EditMyProfile: React.FC = () => {
 						>
 							{(state.name && state.name !== account?.displayName) || state.pic
 								? t('settings.edit-profile.save')
-								: (t('settings.edit-profile.cancel') as any)}
+								: (t('generic.cancel') as any)}
 						</Text>
 					)}
 				</View>

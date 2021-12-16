@@ -1,4 +1,7 @@
 {
+	"generic": {
+		"cancel": "Annuleren"
+	},
 	"onboarding": {
 		"getstarted": {
 			"title": "",
@@ -253,7 +256,6 @@
 			"qr-will-update": "Je Berty ID (QR-code) zal worden bijgewerkt",
 			"ocr-wont-update": "Je openstaande contactverzoeken worden niet bijgewerkt",
 			"save": "Wijzigingen opslaan",
-			"cancel": "Annuleren",
 			"name-input-placeholder": "Naam...",
 			"name-input-label": "Naam"
 		},
@@ -316,7 +318,6 @@
 			"title": "Account verwijderen!",
 			"first-desc": "Weet je zeker dat je je account wilt verwijderen?",
 			"desc": "Typ verwijder om te bevestigen",
-			"cancel-button": "ANNULEREN",
 			"delete-button": "VERWIJDEREN"
 		},
 		"help": {
@@ -475,7 +476,6 @@
 			"title": "Thema opslaan",
 			"desc": "Kies een naam voor je thema!",
 			"placeholder": "Thema naam...",
-			"cancel": "ANNULEREN",
 			"add": "TOEVOEGEN!"
 		}
 	},
@@ -580,8 +580,7 @@
 				"not-sent": "Audiobericht is niet verzonden",
 				"permission-denied": "App mag geen geluid opnemen"
 			},
-			"slide-to-cancel": "<< Veeg om te annuleren",
-			"cancel-button": "Annuleren"
+			"slide-to-cancel": "<< Veeg om te annuleren"
 		}
 	},
 	"permission": {
@@ -654,8 +653,7 @@
 					"action-force-delete-confirm": "Bevestig geforceerde verwijdering van account",
 					"error-close": "Fout tijdens het sluiten van account",
 					"error-delete": "Fout tijdens het verwijderen van account",
-					"success-feedback": "Account verwijderd",
-					"action-cancel": "Annuleren"
+					"success-feedback": "Account verwijderd"
 				},
 				"status": {
 					"datastore-found": "Dataopslag gevonden",
@@ -687,8 +685,7 @@
 			},
 			"refresh": "Vernieuwen",
 			"confirm-alert": {
-				"button-confirm": "Bevestigen",
-				"button-cancel": "Annuleren"
+				"button-confirm": "Bevestigen"
 			}
 		}
 	}

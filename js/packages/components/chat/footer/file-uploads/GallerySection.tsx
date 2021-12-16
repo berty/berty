@@ -36,7 +36,7 @@ export const GallerySection: React.FC<{
 		null,
 	)
 
-	const [loading, setLoading] = useState(true)
+	const [loadingGallery, setLoadingGallery] = useState(true)
 
 	const [galleryContents, setGalleryContents] = useState<
 		(beapi.messenger.IMedia & { uri: string })[]
@@ -48,7 +48,7 @@ export const GallerySection: React.FC<{
 				first: GALLERY_IMAGE_PER_PAGE,
 			})
 
-			setLoading(false)
+			setLoadingGallery(false)
 
 			setGalleryContents(
 				photos.edges.map(
@@ -144,7 +144,7 @@ export const GallerySection: React.FC<{
 					}
 				}}
 				scrollEventThrottle={400}
-				style={[{ maxHeight: 150 }, padding.medium]}
+				style={[{ maxHeight: 150 }, padding.medium, { paddingTop: 0 }]}
 				contentContainerStyle={{
 					flexDirection: 'row',
 					flexWrap: 'wrap',
@@ -153,7 +153,7 @@ export const GallerySection: React.FC<{
 					backgroundColor: colors['main-background'],
 				}}
 			>
-				{loading ? (
+				{loadingGallery ? (
 					<ActivityIndicator />
 				) : (
 					galleryContents.length <= 0 && <Text>{t('chat.files.no-images')}</Text>
@@ -169,6 +169,9 @@ export const GallerySection: React.FC<{
 							margin.bottom.tiny,
 						]}
 						onPress={() => {
+							if (isLoading) {
+								return
+							}
 							setSelectedImages(prevImages => {
 								if (prevImages.find(prevImage => prevImage.uri === content.uri)) {
 									return prevImages.filter(image => image.uri !== content.uri)
@@ -205,10 +208,12 @@ export const GallerySection: React.FC<{
 							backgroundColor: colors['main-background'],
 							alignItems: 'center',
 							justifyContent: 'space-between',
+							width: '100%',
 						},
 						padding.small,
+						padding.horizontal.large,
 						border.radius.small,
-						margin.large,
+						margin.medium,
 					]}
 				>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -223,7 +228,6 @@ export const GallerySection: React.FC<{
 						))}
 						{selectedImages.length > 2 && <ImageCounter count={selectedImages.length - 2} />}
 					</View>
-
 					<TouchableOpacity onPress={handleSend}>
 						{isLoading ? (
 							<ActivityIndicator />

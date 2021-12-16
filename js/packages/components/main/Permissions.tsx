@@ -271,7 +271,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					>
 						{permissionType === 'notification' && !selectedAccount
 							? t('permission.skip')
-							: t('permission.cancel')}
+							: t('generic.cancel')}
 					</Text>
 				</TouchableOpacity>
 			</View>

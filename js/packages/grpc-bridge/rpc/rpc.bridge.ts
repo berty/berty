@@ -60,17 +60,12 @@ const makeStreamClient = <M extends pbjs.Method>(
 			}
 		},
 		async stop() {
-			if (!this.started) {
-				throw ErrStreamClientAlreadyStarted
-			}
-
 			const response = await bridgeClient.clientStreamClose({ streamId: streamid })
 			const grpcerr = new GRPCError(response.error)
 			if (!grpcerr.OK) {
 				this._publish(null, grpcerr)
 				return
 			}
-
 			return
 		},
 		async stopAndRecv() {
