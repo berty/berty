@@ -135,6 +135,7 @@ replace (
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20211013085524-09965cd64781 // use berty fork of go-libp2p-rendezvous with sqlcipher support
 	github.com/libp2p/go-libp2p-swarm => github.com/libp2p/go-libp2p-swarm v0.5.3
 	github.com/libp2p/go-libp2p-tls => github.com/libp2p/go-libp2p-tls v0.2.0
+	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20211216125258-3a3b96642196 // tmp, required for Android SDK30
 
 	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.0.0-20211104165006-2c524b646cf0
 
