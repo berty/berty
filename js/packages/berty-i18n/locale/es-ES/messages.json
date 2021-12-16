@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "APLICAR CAMBIOS",
-			"skip": "Omitir y hacer esto más tarde"
+			"apply-changes": "APLICAR CAMBIOS"
 		},
 		"services-auth": {
 			"header": "Autenticar a los servicios",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "¿Cuál es el fallo?",
 			"desc": "La aplicación ha fallado.",
-			"desc-report": "Agita tu teléfono para reportar el error y haz clic en el botón para salir y reiniciar la aplicación."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "¡Perdón por este error!",
 			"desc": "Es culpa de Francisco, desarrollador interno de Berty, quien debió haber cometido un error. ¡Qué tonto este Francisco!",
 			"desc-em": "*Bueno, está bien, no hay un Francisco en el equipo de Berty.",
-			"desc-report": "Agíta tu teléfono y aquí vamos de nuevo!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
