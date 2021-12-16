@@ -12,7 +12,7 @@ ps pull down:
 
 stats:
 	# Conversations
-	@cat data/betabot/betabot.store | jq '.Convs[].ConversationPublicKey' | wc -l
+	@cat data/welcomebot/welcomebot.store | jq '.Convs[].ConversationPublicKey' | wc -l
 
 restorecleandb: _backup-and-clean
 	# this command trashes the runtime db and restores a clean db that only has the same private key
@@ -23,7 +23,7 @@ _backup-and-clean: down
 	rm -rf data/bkp-current
 	mkdir -p data/bkp-current data/bkps
 	mv data/daemon/run data/bkp-current/daemon || true
-	mv data/betabot data/bkp-current/betabot || true
+	mv data/welcomebot data/bkp-current/welcomebot || true
 	mv data/bkp-current data/bkps/`date +%s` || true
 
 initdb:
@@ -52,4 +52,4 @@ print-qr:
 	docker-compose run daemon share-invite \
 	  -store.dir=/store/run \
 	  -log.filters=none \
-	  -name=BetaBot
+	  -name=Welcomebot

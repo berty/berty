@@ -105,8 +105,8 @@ services:
       "
 
   # replication:
-  # betabot:
-  # betabot_daemon:
+  # welcomebot:
+  # welcomebot_daemon:
 
 volumes:
   shared:

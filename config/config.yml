@@ -1,6 +1,6 @@
 berty:
   contacts:
-    welcome-bot:
+    welcomebot:
       name: 'Welcome Bot'
       link: 'https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=Welcome-Bot'
       description: 'Official Welcome Bot'
@@ -13,10 +13,10 @@ berty:
       description: 'Official TestBot'
       kind: 'Bot'
       suggestion: false
-    betabot-dev:
-      name: 'BetaBot Dev'
-      link: 'https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=BetaBot-Dev'
-      description: 'BetaBot-Dev'
+    welcomebot-dev:
+      name: 'Welcome Dev'
+      link: 'https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=Welcomebot-Dev'
+      description: 'Welcome Bot - Dev'
       kind: 'Bot'
       suggestion: false
       icon: 'berty_dev_green_bg'
