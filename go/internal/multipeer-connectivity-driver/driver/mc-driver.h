@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <os/log.h>
 
-extern os_log_t OS_LOG_MC;
+#import "Logger.h"
 
 void StartMCDriver(char *localPId);
 void StopMCDriver(void);
@@ -19,3 +19,5 @@ void CloseConnWithPeer(char *remotePID);
 int BridgeHandleFoundPeer(NSString *remotePID);
 void BridgeHandleLostPeer(NSString *remotePID);
 void BridgeReceiveFromPeer(NSString *remotePID, NSData *payload);
+void MCBridgeLog(enum level level, NSString *message);
+void MCUseExternalLogger(void);

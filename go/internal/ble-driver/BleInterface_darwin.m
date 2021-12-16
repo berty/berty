@@ -16,7 +16,7 @@ extern void BLEReceiveFromPeer(char *, void *, unsigned long);
 extern void BLELog(enum level level, const char *message);
 
 static BleManager *manager = nil;
-BOOL useExternalLogger = FALSE;
+BOOL gBLEUseExternalLogger = FALSE;
 
 void handleException(NSException* exception) {
     NSLog(@"Unhandled exception %@", exception);
@@ -27,7 +27,7 @@ BleManager* getManager(void) {
     {
         if(!manager) {
             NSLog(@"BleManager: initialization");
-            manager = [[BleManager alloc] initDriver:useExternalLogger];
+            manager = [[BleManager alloc] initDriver:gBLEUseExternalLogger];
         }
     }
     return manager;
@@ -121,7 +121,7 @@ void BLECloseConnWithPeer(char *remotePID) {
 
 // Use BLEBridgeLog to write logs to the external logger
 void BLEUseExternalLogger(void) {
-    useExternalLogger = TRUE;
+    gBLEUseExternalLogger = TRUE;
 }
 
 #pragma mark - outgoing API functions

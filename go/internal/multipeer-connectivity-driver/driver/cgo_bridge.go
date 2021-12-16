@@ -12,15 +12,18 @@ package driver
 import "C"
 
 import (
+	"fmt"
 	"unsafe"
 
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	"go.uber.org/zap"
 )
 
+var Logger *zap.Logger
 var ProtocolName string
 
-//export HandleFoundPeer
-func HandleFoundPeer(remotePID *C.char) int {
+//export MCHandleFoundPeer
+func MCHandleFoundPeer(remotePID *C.char) int {
 	goPID := C.GoString(remotePID)
 
 	proximity.TransportMapMutex.RLock()
@@ -35,8 +38,8 @@ func HandleFoundPeer(remotePID *C.char) int {
 	return 0
 }
 
-//export HandleLostPeer
-func HandleLostPeer(remotePID *C.char) {
+//export MCHandleLostPeer
+func MCHandleLostPeer(remotePID *C.char) {
 	goPID := C.GoString(remotePID)
 
 	proximity.TransportMapMutex.RLock()
@@ -48,8 +51,8 @@ func HandleLostPeer(remotePID *C.char) {
 	t.HandleLostPeer(goPID)
 }
 
-//export ReceiveFromPeer
-func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
+//export MCReceiveFromPeer
+func MCReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
 	goPID := C.GoString(remotePID)
 	goPayload := C.GoBytes(payload, length)
 
@@ -60,6 +63,26 @@ func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
 		return
 	}
 	t.ReceiveFromPeer(goPID, goPayload)
+}
+
+//export MCLog
+func MCLog(level C.enum_level, message *C.char) { //nolint:golint
+	if Logger == nil {
+		fmt.Println("logger not found")
+		return
+	}
+
+	goMessage := C.GoString(message)
+	switch level {
+	case C.Debug:
+		Logger.Debug(goMessage)
+	case C.Info:
+		Logger.Info(goMessage)
+	case C.Warn:
+		Logger.Warn(goMessage)
+	case C.Error:
+		Logger.Error(goMessage)
+	}
 }
 
 func Start(localPID string) {
@@ -94,4 +117,8 @@ func CloseConnWithPeer(remotePID string) {
 	defer C.free(unsafe.Pointer(cPID))
 
 	C.CloseConnWithPeer(cPID)
+}
+
+func MCUseExternalLogger() {
+	C.MCUseExternalLogger()
 }
