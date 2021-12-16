@@ -2,7 +2,6 @@ import React from 'react'
 import { Image, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
 import palette from 'google-palette'
 import { SHA3 } from 'sha3'
-import { Buffer } from 'buffer'
 import { withBadge } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
@@ -204,7 +203,7 @@ export const NameAvatar: React.FC<{
 }> = React.memo(({ colorSeed, size, style, nameSeed }) => {
 	const colors = useThemeColor()
 
-	const h = new SHA3(256).update(Buffer.from(colorSeed || '', 'base64')).digest()
+	const h = new SHA3(256).update(colorSeed || '').digest()
 	const color = '#' + pal[h[0]]
 
 	return (
