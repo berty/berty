@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "",
@@ -629,7 +628,7 @@
 		"wtf-screen": {
 			"title": "",
 			"desc": "アプリケーションがクラッシュしました。",
-			"desc-report": "スマホを振ってバグを報告し、ボタンをクリックしてアプリを再起動してください。"
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "バグを謝罪します!",
