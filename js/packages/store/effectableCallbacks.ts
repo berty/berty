@@ -3,7 +3,6 @@ import rnutil from '@berty-tech/rnutil'
 import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/redux/react-redux'
 
-import { updateShakeAttachments } from './utils'
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'
 
@@ -105,8 +104,6 @@ export const refreshAccountList = async (
 	try {
 		if (embedded) {
 			const resp = await accountService.listAccounts({})
-
-			await updateShakeAttachments()
 
 			if (!resp.accounts) {
 				return []

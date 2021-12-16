@@ -1977,11 +1977,6 @@
     redux-thunk "^2.3.0"
     reselect "^4.0.0"
 
-"@shakebugs/react-native-shake@^14.1.3":
-  version "14.1.3"
-  resolved "https://registry.yarnpkg.com/@shakebugs/react-native-shake/-/react-native-shake-14.1.3.tgz#5f2cf8f92050813a2e964eadd8f0313780c8ce5a"
-  integrity sha512-ZthvHAxCll1CvfenM6db8u+JAqIg6Q19g6seIllxUYrnuHIXqazJhK05+xNxQEVauGrQ8q4vfo7ap8jOxnMVPQ==
-
 "@sideway/address@^4.1.0":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.2.tgz#811b84333a335739d3969cfc434736268170cad1"

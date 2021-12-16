@@ -3,7 +3,6 @@ import { IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
-import Shake from '@shakebugs/react-native-shake'
 import RNBootSplash from 'react-native-bootsplash'
 import { Provider as ReduxProvider } from 'react-redux'
 import { View } from 'react-native'
@@ -38,8 +37,6 @@ const Background: React.FC = ({ children }) => {
 
 export const App: React.FC = () => {
 	useMountEffect(() => {
-		// @ts-ignore
-		Shake.start()
 		return () => {
 			isReadyRef.current = false
 		}
