@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "Hitelesítés a szolgáltatásokhoz",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Mi a probléma?",
 			"desc": "Az app éppen összeomlott.",
-			"desc-report": "Hiba jelentéséhez rázza meg telefonját, kattintson a gombra az alkalmazás újraindításához."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Elnézést a hibáért!",
 			"desc": "Ez biztos Francis hibája, a Berty gyakornok fejlesztőjének, aki bizonyosan hibázott. Micsoda bunkó ez a Francis!",
 			"desc-em": "* Hát, oké, Francis nincs a Berty-nél.",
-			"desc-report": "Rázza meg a telefonját és essünk neki újra!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
