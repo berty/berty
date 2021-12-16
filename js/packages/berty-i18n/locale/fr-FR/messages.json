@@ -75,8 +75,7 @@
 				},
 				"third-button": "Sélectionner un nœud certifié"
 			},
-			"apply-changes": "APPLIQUER LES CHANGEMENTS",
-			"skip": "Ignorer pour le moment"
+			"apply-changes": "APPLIQUER LES CHANGEMENTS"
 		},
 		"services-auth": {
 			"header": "S'authentifier aux services",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Quelle est l'erreur ?",
 			"desc": "L'application vient de planter.",
-			"desc-report": "Secouez votre téléphone pour signaler le bug et cliquez sur le bouton pour quitter et redémarrer l'application."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Désolé pour ce bug !",
 			"desc": "C'est la faute de Francis, le développeur stagiaire de Berty, qui a dû faire une erreur, quel idiot ce Francis !",
 			"desc-em": "*Bon, ok, il n'y a pas de Francis dans l'équipe de Berty.",
-			"desc-report": "Secouez votre téléphone et c'est reparti !"
+			"desc-report": ""
 		}
 	},
 	"debug": {
