@@ -112,12 +112,10 @@ const MultiMemberSettingsBody: React.FC<{
 	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
 }> = ({ publicKey, link, navigation }) => {
 	const [{ padding, margin }, { scaleSize }] = useStyles()
-	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
-	const memberLength = Object.values(members).length
-	const memberText = memberLength < 2 ? 'member' : 'members'
+	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
 	const accountMember = Object.values(members).find(m => m?.isMe)
 
@@ -135,14 +133,9 @@ const MultiMemberSettingsBody: React.FC<{
 				disabled
 			/>
 			<FactionButtonSetting
-				name={t('chat.multi-member-settings.members-button.title')}
+				name={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
 				icon='users'
 				iconPack='custom'
-				state={{
-					value: `${memberLength} ${memberText}`,
-					color: colors['background-header'],
-					bgColor: colors['positive-asset'],
-				}}
 				style={[margin.top.medium]}
 				isDropdown
 			>
