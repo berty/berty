@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "Authentifizieren bei Diensten",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Was ist das Problem?",
 			"desc": "Die Anwendung ist soeben abgestürzt.",
-			"desc-report": "Schütteln Sie Ihr Telefon um den Fehler zu melden und klicken Sie auf den Button, um die App zu beenden und neu zu starten."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Entschuldigen Sie diesen Fehler!",
 			"desc": "Francis ist schuld, unser Praktikant. Er hat wohl einen Fehler gemacht. Ach dieser Francis!",
 			"desc-em": "*Okay, es gibt keinen Francis im Team Berty.",
-			"desc-report": "Schütteln Sie Ihr Telefon und es geht weiter!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
