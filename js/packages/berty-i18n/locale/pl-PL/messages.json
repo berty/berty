@@ -75,8 +75,7 @@
 				},
 				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"services-auth": {
 			"header": "Uwierzytelnianie do usług",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Jaki jest błąd?",
 			"desc": "Aplikacja właśnie uległa awarii.",
-			"desc-report": "Potrząśnij telefonem, aby zgłosić błąd i kliknij przycisk, aby wyjść i uruchomić ponownie aplikację."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Przepraszamy za ten błąd!",
 			"desc": "Jest to wina Francisa, twórcy wewnętrznego Berty, który musiał popełnić błąd. Co za szaleństwo tego Francisa!",
 			"desc-em": "*No dobra, w zespole Berty nie ma Francisa.",
-			"desc-report": "Potrząśnij swoim telefonem i wracamy tu znowu!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
