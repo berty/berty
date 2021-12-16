@@ -7,10 +7,10 @@ import (
 )
 
 func TestGenWorks(t *testing.T) {
-	// we have at least betabot and testbot, and each contact has a link
+	// we have at least welcomebot and testbot, and each contact has a link
 	require.NotNil(t, Config.Berty.Contacts)
 	require.True(t, len(Config.Berty.Contacts) >= 1)
-	for _, contact := range []string{"betabot", "testbot"} {
+	for _, contact := range []string{"welcomebot", "testbot"} {
 		require.NotNil(t, Config.Berty.Contacts[contact])
 	}
 	for idx := range Config.Berty.Contacts {

@@ -38,12 +38,12 @@ var (
 	nodeAddr      = flag.String("addr", "127.0.0.1:9091", "remote 'berty daemon' address")
 	displayName   = flag.String("display-name", safeDefaultDisplayName(), "bot's display name")
 	staffConvLink = flag.String("staff-conversation-link", "", "link of the staff's conversation to join")
-	storePath     = flag.String("store", "./betabot.store", "store file path")
+	storePath     = flag.String("store", "./welcomebot.store", "store file path")
 	logFormat     = flag.String("log-format", "console", strings.Join(zapconfig.AvailablePresets, ", "))
 )
 
 func main() {
-	if err := betabot(); err != nil {
+	if err := welcomebot(); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
 		os.Exit(1)
 	}
@@ -98,7 +98,7 @@ Done:
 	}
 }
 
-func betabot() error {
+func welcomebot() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -400,7 +400,7 @@ I’m cool, but humans are sometimes cooler than me… 🤖 ❤️`
 			return false, fmt.Errorf("interact user message failed: %w", err)
 		}
 
-		// TODO create with real staff group (in this group, betabot auto-reply will be disable)
+		// TODO create with real staff group (in this group, welcomebot auto-reply will be disable)
 		time.Sleep(1 * time.Second)
 		{
 			// create staff conversation
@@ -540,20 +540,20 @@ For the moment i can't send a group invitation so i share the link of the conver
 
 		// time.Sleep(2 * time.Second)
 		// {
-		// 	groupInvitation, err := proto.Marshal(&messengertypes.AppMessage_GroupInvitation{
-		// 		Link: conversation.GetLink(),
-		// 	})
-		// 	if err != nil {
-		// 		return err
-		// 	}
-		// 	_, err = bot.client.Interact(ctx, &messengertypes.Interact_Request{
-		// 		Type:                  messengertypes.AppMessage_TypeGroupInvitation,
-		// 		Payload:               groupInvitation,
-		// 		ConversationPublicKey: staffConvPk,
-		// 	})
-		// 	if err != nil {
-		// 		return err
-		// 	}
+		//	groupInvitation, err := proto.Marshal(&messengertypes.AppMessage_GroupInvitation{
+		//		Link: conversation.GetLink(),
+		//	})
+		//	if err != nil {
+		//		return err
+		//	}
+		//	_, err = bot.client.Interact(ctx, &messengertypes.Interact_Request{
+		//		Type:                  messengertypes.AppMessage_TypeGroupInvitation,
+		//		Payload:               groupInvitation,
+		//		ConversationPublicKey: staffConvPk,
+		//	})
+		//	if err != nil {
+		//		return err
+		//	}
 		// }
 
 		return nil
@@ -561,7 +561,7 @@ For the moment i can't send a group invitation so i share the link of the conver
 
 	if conversation.Type == messengertypes.Conversation_ContactType && sr.GetEvent().GetIsNew() {
 		time.Sleep(2 * time.Second)
-		body := `Hey! 🙌 Welcome to the Berty beta version! 🎊
+		body := `Hey! 🙌 Welcome to Berty v1! 🎊
 I’m here to help you with the onboarding process.
 Let's test out some features together!
 Just type 'yes' to let me know you copy that.`
@@ -668,19 +668,19 @@ func safeDefaultDisplayName() string {
 	if name == "" {
 		name = "Anonymous4242"
 	}
-	return fmt.Sprintf("%s (betabot)", name)
+	return fmt.Sprintf("%s (Welcome Bot)", name)
 }
 
 func defaultReplyOption() []*messengertypes.ReplyOption {
 	return []*messengertypes.ReplyOption{
-		{Payload: "/help", Display: "Display betabot commands"},
+		{Payload: "/help", Display: "Display Welcome Bot commands"},
 		{Payload: "/demo version", Display: "What is the demo version?"},
 	}
 }
 
 func getRandomReply() string {
 	available := []string{
-		"Welcome to the beta!",
+		"Welcome to Berty v1!",
 		"Hello! Welcome to Berty!",
 		"Hey, I hope you're feeling well here!",
 		"Hi, I'm here for you at anytime for tests!",

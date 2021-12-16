@@ -23,11 +23,11 @@ tool/deployments/*/data
 go/cmd/berty/berty
 go/cmd/berty-doctor/berty-doctor
 go/cmd/berty-integration/berty-integration
-go/cmd/betabot/betabot
+go/cmd/welcomebot/welcomebot
 go/cmd/rdvp/rdvp
 
 # Various berty outputs
-betabot.store
+welcomebot.store
 benchmark_result.json
 
 # Delve's binaries
