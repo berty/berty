@@ -75,8 +75,7 @@
 				},
 				"third-button": "Välj en certifierad nod"
 			},
-			"apply-changes": "SPARA ÄNDRINGAR",
-			"skip": "Hoppa över och gör detta senare"
+			"apply-changes": "SPARA ÄNDRINGAR"
 		},
 		"services-auth": {
 			"header": "Autentisera till tjänster",
@@ -629,13 +628,13 @@
 		"wtf-screen": {
 			"title": "Vad är felet?",
 			"desc": "Applikationen kraschade.",
-			"desc-report": "Skaka telefonen för att rapportera felet och klicka på knappen för att avsluta och starta om appen."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Ledsen för detta fel!",
 			"desc": "Det är Francis fel, intern utvecklare hos Berty, som måste ha gjort ett misstag. Inte klok, denna Francis!",
 			"desc-em": "*Nja, okej, det finns ingen Francis på Bertys avdelning.",
-			"desc-report": "Skaka din telefon så testar vi på nytt!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
