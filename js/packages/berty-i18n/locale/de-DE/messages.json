@@ -478,6 +478,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Als bestätigt markieren",
 			"block-button": "Kontakt blockieren",
