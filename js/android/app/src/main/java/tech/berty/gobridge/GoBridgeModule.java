@@ -141,8 +141,8 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       config.setBleDriver(bleDriver);
 
       // set NearBy driver
-      BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
-      config.setNBDriver(NBDriver);
+      // BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
+      // config.setNBDriver(NBDriver);
 
       // set native keystore driver
       config.setKeystoreDriver(this.keystoreDriver);
