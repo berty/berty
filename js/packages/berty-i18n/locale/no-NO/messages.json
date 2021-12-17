@@ -478,6 +478,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Marker som verifisert",
 			"block-button": "Blokker kontakt",
