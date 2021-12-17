@@ -90,7 +90,8 @@ export const RecordButton: React.FC<{
 export const MoreButton: React.FC<{
 	n?: number
 	onPress?: TouchableOpacityProps['onPress']
-}> = React.memo(({ n, onPress }) => {
+	disabled?: boolean
+}> = React.memo(({ n, onPress, disabled }) => {
 	const colors = useThemeColor()
 	const [{ padding, border }, { scaleSize }] = useStyles()
 	return (
@@ -107,6 +108,7 @@ export const MoreButton: React.FC<{
 				border.radius.small,
 			]}
 			onPress={onPress}
+			disabled={disabled}
 		>
 			{!!n && <Text>{n}</Text>}
 			<Icon

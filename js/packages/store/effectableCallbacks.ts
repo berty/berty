@@ -129,7 +129,8 @@ export const getNetworkConfigurationFromPreset = async (
 	preset: beapi.account.NetworkConfigPreset | null | undefined,
 ): Promise<beapi.account.INetworkConfig> => {
 	const hasBluetoothPermission =
-		(await rnutil.checkPermissions('p2p', null, { isToNavigate: false })) === 'granted'
+		(await rnutil.checkPermissions('p2p', null, { navigateToPermScreenOnProblem: false })) ===
+		'granted'
 
 	const configForPreset = await accountService.networkConfigGetPreset({
 		preset: preset || beapi.account.NetworkConfigPreset.Undefined,

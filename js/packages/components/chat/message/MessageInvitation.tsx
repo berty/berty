@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text as TextNative, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Text as TextNative, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
@@ -25,6 +25,7 @@ export const MessageInvitationButton: React.FC<{
 	title: any
 	styleOpacity?: any
 	disabled?: boolean
+	loading?: boolean
 }> = ({
 	onPress,
 	activeOpacity,
@@ -34,6 +35,7 @@ export const MessageInvitationButton: React.FC<{
 	title,
 	styleOpacity,
 	disabled = false,
+	loading,
 }) => {
 	const [{ flex, padding, border, width, row, text, opacity }] = useStyles()
 	return (
@@ -55,7 +57,11 @@ export const MessageInvitationButton: React.FC<{
 					{ backgroundColor },
 				]}
 			>
-				<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
+				{loading ? (
+					<ActivityIndicator />
+				) : (
+					<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
+				)}
 				<TextNative
 					style={[
 						text.align.center,

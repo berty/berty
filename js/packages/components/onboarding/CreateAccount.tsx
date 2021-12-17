@@ -165,7 +165,7 @@ const CreateAccountBody = () => {
 					onAnimationFinish={async () => {
 						Vibration.vibrate(500)
 						await rnutil.checkPermissions('p2p', navigate, {
-							isToNavigate: false,
+							navigateToPermScreenOnProblem: false,
 						})
 					}}
 					style={{ position: 'absolute', width: '100%' }}

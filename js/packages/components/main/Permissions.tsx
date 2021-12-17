@@ -55,7 +55,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		async (nextAppState: string) => {
 			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
 				const status = await rnutil.checkPermissions(permissionType, navigation.navigate, {
-					isToNavigate: false,
+					navigateToPermScreenOnProblem: false,
 				})
 
 				if (status === RESULTS.GRANTED) {

@@ -167,7 +167,8 @@ export const TimestampStatusUserMessage: React.FC<{
 	const sentDate = pbDateToNum(inte.sentDate)
 	const [{ row, margin, padding, flex }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const _styles = useStylesMessage()
+	const styles = useStylesMessage()
+	const { t } = useTranslation()
 
 	return (
 		<View
@@ -179,7 +180,7 @@ export const TimestampStatusUserMessage: React.FC<{
 				inte.isMine && row.item.bottom,
 			]}
 		>
-			<Text style={[_styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
+			<Text style={[styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
 				{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}
 			</Text>
 			{!cmd && lastInte?.cid?.toString() === inte.cid?.toString() && (
@@ -194,8 +195,8 @@ export const TimestampStatusUserMessage: React.FC<{
 						/>
 					)}
 					{inte.isMine && (
-						<Text style={[_styles.stateMessageValueMe]}>
-							{inte.acknowledged ? 'sent' : 'sending...'}
+						<Text style={styles.stateMessageValueMe}>
+							{t(inte.acknowledged ? 'chat.sent' : 'chat.sending').toLowerCase()}
 						</Text>
 					)}
 				</>

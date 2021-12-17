@@ -23,8 +23,7 @@ const GALLERY_IMAGE_PER_PAGE = 30
 
 export const GallerySection: React.FC<{
 	prepareMediaAndSend: (media: beapi.messenger.IMedia[]) => void
-	isLoading: boolean
-}> = ({ prepareMediaAndSend, isLoading }) => {
+}> = ({ prepareMediaAndSend }) => {
 	const [{ border, padding, margin }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
@@ -225,11 +224,7 @@ export const GallerySection: React.FC<{
 					</View>
 
 					<TouchableOpacity onPress={handleSend}>
-						{isLoading ? (
-							<ActivityIndicator />
-						) : (
-							<Icon name='paper-plane-outline' width={26} height={26} fill={colors['main-text']} />
-						)}
+						<Icon name='paper-plane-outline' width={26} height={26} fill={colors['main-text']} />
 					</TouchableOpacity>
 				</View>
 			)}
