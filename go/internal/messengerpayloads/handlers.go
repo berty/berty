@@ -845,9 +845,7 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 }
 
 func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	if len(i.GetPayload()) == 0 {
-		return nil, false, ErrNilPayload
-	}
+	// NOTE: it's ok to have an empty payload here since a user message can be only medias
 
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
