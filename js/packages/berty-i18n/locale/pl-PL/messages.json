@@ -478,6 +478,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Zaznacz jako zweryfikowane",
 			"block-button": "Zablokuj kontakt",
