@@ -2,8 +2,10 @@ package bertybridge
 
 import (
 	"net"
+	"runtime"
 	"strings"
 
+	"berty.tech/berty/v2/go/pkg/osversion"
 	"go.uber.org/zap"
 )
 
@@ -17,6 +19,10 @@ type inetAddrs struct {
 }
 
 func (ia *inetAddrs) InterfaceAddrs() ([]net.Addr, error) {
+	if runtime.GOOS != "android" || osversion.GetVersion().Major() < 30 {
+		return net.InterfaceAddrs()
+	}
+
 	na, err := ia.netaddrs.InterfaceAddrs()
 	if err != nil {
 		return nil, err
