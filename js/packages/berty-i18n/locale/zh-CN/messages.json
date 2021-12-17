@@ -478,6 +478,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "标记为已验证",
 			"block-button": "屏蔽联系人",
