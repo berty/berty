@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
+#import "Logger.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MCManager : NSObject <MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate>
@@ -17,9 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) MCNearbyServiceAdvertiser *mServiceAdvertiser;
 @property (nonatomic, strong, nullable) MCNearbyServiceBrowser *mServiceBrowser;
 @property (nonatomic, strong) MCPeerID *mPeerID;
+@property (nonatomic, strong, nullable) Logger *logger;
 
 - (MCPeerID *)getMCPeerID:(NSString *)peerID;
-- (id)init:(NSString *)peerID;
+- (id)init:(NSString *)peerID useExternalLogger:(BOOL)useExternalLogger;
 - (int)startServiceAdvertiser;
 - (int)startServiceBrowser;
 - (void)stopServiceAdvertiser;

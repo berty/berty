@@ -20,7 +20,7 @@ typedef NS_ENUM(uint8_t, level) {
     Error,
 };
 
-@interface BLE_Logger : NSObject
+@interface MC_Logger : NSObject
 
 @property (nonatomic, strong, nonnull) os_log_t logger;
 @property (readwrite) BOOL showSensitiveData;
@@ -39,6 +39,6 @@ typedef NS_ENUM(uint8_t, level) {
 
 @end
 
-@compatibility_alias Logger BLE_Logger;
+@compatibility_alias Logger MC_Logger;
 
 NS_ASSUME_NONNULL_END
