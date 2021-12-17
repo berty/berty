@@ -69,10 +69,12 @@ func NewBridge(config *Config) (*Bridge, error) {
 	}
 
 	// setup logger
+	var disableLogging bool
 	{
 		if nativeLogger := config.dLogger; nativeLogger != nil {
 			b.logger = newLogger(nativeLogger)
 		} else {
+			disableLogging = true
 			b.logger = zap.NewNop()
 		}
 
@@ -154,6 +156,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,
 			Logger:                b.logger,
+			DisableLogging:        disableLogging,
 			LifecycleManager:      b.lifecycleManager,
 			BleDriver:             b.bleDriver,
 			NBDriver:              b.nbDriver,
