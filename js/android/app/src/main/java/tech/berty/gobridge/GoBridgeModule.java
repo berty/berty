@@ -126,7 +126,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       config.setNetDriver(inet);
 
       // set mdns locker driver
-      MDNSLockerDriver imdnslocker = new MDNSLockerDriver();
+      MDNSLockerDriver imdnslocker = new MDNSLockerDriver(reactContext);
       config.setMDNSLocker(imdnslocker);
 
       // load and set user preferred language
