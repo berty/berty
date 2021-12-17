@@ -100,7 +100,6 @@ type Manager struct {
 			DHT               string `json:"DHT,omitempty"`
 			DHTRandomWalk     bool   `json:"DHTRandomWalk,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
-			MDNS              bool   `json:"LocalDiscovery,omitempty"`
 			TinderDiscover    bool   `json:"TinderDiscover,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
@@ -108,14 +107,18 @@ type Manager struct {
 			StaticRelays      string `json:"StaticRelays,omitempty"`
 			LowWatermark      int    `json:"LowWatermark,omitempty"`
 			HighWatermark     int    `json:"HighWatermark,omitempty"`
-			Ble               struct {
-				Enable bool                      `json:"Enable,omitempty"`
-				Driver proximity.ProximityDriver `json:"Driver,omitempty"`
-			}
+			MDNS              struct {
+				Enable       bool `json:"Enable,omitempty"`
+				DriverLocker sync.Locker
+			} `json:"MDNS,omitempty"`
+			Ble struct {
+				Enable bool `json:"Enable,omitempty"`
+				Driver proximity.ProximityDriver
+			} `json:"ble,omitempty"`
 			Nearby struct {
-				Enable bool                      `json:"Enable,omitempty"`
-				Driver proximity.ProximityDriver `json:"Driver,omitempty"`
-			}
+				Enable bool `json:"Enable,omitempty"`
+				Driver proximity.ProximityDriver
+			} `json:"nerby,omitempty"`
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`

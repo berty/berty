@@ -394,6 +394,7 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 	manager.SetDevicePushKeyPath(s.devicePushKeyPath)
 	manager.SetBleDriver(s.bleDriver)
 	manager.SetNBDriver(s.nbDriver)
+	manager.SetMDNSLocker(s.mdnslocker)
 
 	return manager, nil
 }

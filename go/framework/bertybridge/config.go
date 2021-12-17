@@ -26,6 +26,7 @@ func NewConfig() *Config {
 
 func (c *Config) SetLoggerDriver(dLogger NativeLoggerDriver)      { c.dLogger = dLogger }
 func (c *Config) SetNotificationDriver(driver NotificationDriver) { c.notifdriver = driver }
+func (c *Config) SetMDNSLocker(driver NativeMDNSLockerDriver)     { c.mdnsLockerDriver = driver }
 func (c *Config) SetBleDriver(driver ProximityDriver)             { c.bleDriver = driver }
 func (c *Config) SetNetDriver(driver NativeNetDriver)             { c.netDriver = driver }
 func (c *Config) SetNBDriver(driver ProximityDriver)              { c.nbDriver = driver }

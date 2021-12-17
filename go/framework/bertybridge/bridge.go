@@ -18,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
@@ -42,6 +43,7 @@ type Bridge struct {
 	workers        run.Group
 	bleDriver      proximity.ProximityDriver
 	nbDriver       proximity.ProximityDriver
+	mdnsLocker     sync.Locker
 	logger         *zap.Logger
 	langtags       []language.Tag
 
@@ -128,6 +130,14 @@ func NewBridge(config *Config) (*Bridge, error) {
 		b.nbDriver = config.nbDriver
 	}
 
+	{
+		if config.mdnsLockerDriver != nil {
+			b.mdnsLocker = config.mdnsLockerDriver
+		} else {
+			b.mdnsLocker = &noopNativeMDNSLockerDriver{}
+		}
+	}
+
 	// setup native bridge client
 	{
 		opts := &bridge_svc.Options{
@@ -161,6 +171,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 		opts := account_svc.Options{
 			RootDirectory: config.RootDirPath,
 
+			MDNSLocker:            b.mdnsLocker,
 			Languages:             b.langtags,
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,
