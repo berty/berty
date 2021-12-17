@@ -478,6 +478,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Отметить как подтверждённый",
 			"block-button": "Заблокировать контакт",
