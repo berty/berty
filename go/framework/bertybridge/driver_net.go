@@ -1,6 +1,11 @@
 package bertybridge
 
-import "net"
+import (
+	"net"
+	"strings"
+
+	"go.uber.org/zap"
+)
 
 type NativeNetDriver interface {
 	InterfaceAddrs() (*NetAddrs, error)
@@ -8,23 +13,45 @@ type NativeNetDriver interface {
 
 type inetAddrs struct {
 	netaddrs NativeNetDriver
+	logger   *zap.Logger
 }
 
-func (i *inetAddrs) InterfaceAddrs() ([]net.Addr, error) {
-	na, err := i.netaddrs.InterfaceAddrs()
+func (ia *inetAddrs) InterfaceAddrs() ([]net.Addr, error) {
+	na, err := ia.netaddrs.InterfaceAddrs()
 	if err != nil {
 		return nil, err
 	}
 
-	addrs := make([]net.Addr, len(na.addrs))
-	for i, ip := range na.addrs {
+	addrs := []net.Addr{}
+	for _, addr := range na.addrs {
+		if addr == "" {
+			continue
+		}
+
+		// skip interface name
+		ips := strings.Split(addr, "%")
+		if len(ips) == 0 {
+			ia.logger.Debug("empty addr while parsing interface addrs")
+			continue
+		}
+		ip := ips[0]
+
+		// resolve ip
 		v, err := net.ResolveIPAddr("ip", ip)
 		if err != nil {
-			return nil, err
+			ia.logger.Warn("unable to resolve addr", zap.String("addr", ip))
+			continue
 		}
-		addrs[i] = v
+
+		addrs = append(addrs, v)
 	}
 
+	fields := make([]string, len(addrs))
+	for i, addr := range addrs {
+		fields[i] = addr.String()
+	}
+
+	ia.logger.Debug("driver interface resolved addrs", zap.Strings("addrs", fields))
 	return addrs, nil
 }
 

@@ -88,7 +88,10 @@ func NewBridge(config *Config) (*Bridge, error) {
 	// setup netdriver
 	{
 		if config.netDriver != nil {
-			inet := &inetAddrs{config.netDriver}
+			inet := &inetAddrs{
+				netaddrs: config.netDriver,
+				logger:   b.logger,
+			}
 			manet.SetNetInterface(inet)
 		}
 	}
