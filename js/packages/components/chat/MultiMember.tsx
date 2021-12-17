@@ -1,5 +1,13 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, Platform, TextInput, StyleSheet, Text } from 'react-native'
+import {
+	TouchableOpacity,
+	View,
+	Platform,
+	TextInput,
+	StyleSheet,
+	Text,
+	Keyboard,
+} from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -56,6 +64,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 
 	const [editValue, setEditValue] = useState(conv?.displayName || '')
 	const [isEdit, setIsEdit] = useState(false)
+	const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
 	const editDisplayName = async () => {
 		const buf = beapi.messenger.AppMessage.SetGroupInfo.encode({ displayName: editValue }).finish()
 		await ctx.client?.interact({
@@ -76,6 +85,15 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 		React.useCallback(() => {
 			AndroidKeyboardAdjust?.setAdjustResize()
 			return () => AndroidKeyboardAdjust?.setAdjustPan()
+		}, []),
+	)
+
+	useFocusEffect(
+		React.useCallback(() => {
+			Keyboard.dismiss()
+			setTimeout(() => {
+				setKeyboardIsHidden(true)
+			}, 50)
 		}, []),
 	)
 
@@ -157,6 +175,10 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 	})
 
 	const headerHeight = useHeaderHeight()
+
+	if (!keyboardIsHidden) {
+		return null
+	}
 
 	return (
 		<IOSOnlyKeyboardAvoidingView

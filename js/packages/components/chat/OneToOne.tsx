@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -66,13 +66,22 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 
 		const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 		const [showStickyDate, setShowStickyDate] = useState(false)
-
+		const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
 		const headerHeight = useHeaderHeight()
 
 		useFocusEffect(
 			React.useCallback(() => {
 				AndroidKeyboardAdjust?.setAdjustResize()
 				return () => AndroidKeyboardAdjust?.setAdjustPan()
+			}, []),
+		)
+
+		useFocusEffect(
+			React.useCallback(() => {
+				Keyboard.dismiss()
+				setTimeout(() => {
+					setKeyboardIsHidden(true)
+				}, 50)
 			}, []),
 		)
 
@@ -91,6 +100,10 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 				),
 			})
 		})
+
+		if (!keyboardIsHidden) {
+			return null
+		}
 
 		return (
 			<IOSOnlyKeyboardAvoidingView
