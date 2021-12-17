@@ -8,6 +8,7 @@ import {
 	PERMISSIONS,
 	RESULTS,
 	openSettings,
+	PermissionStatus,
 } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
@@ -40,16 +41,23 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 	const { persistentOptions, setPersistentOption, selectedAccount } = useMessengerContext()
 	const { permissionType, permissionStatus, navigateNext, onComplete } = params
 
-	const handleOnComplete = useCallback(async () => {
-		if (typeof onComplete === 'function') {
-			await onComplete()
-		}
-		if (navigateNext) {
-			navigation.navigate(navigateNext)
-		} else {
-			navigation.goBack()
-		}
-	}, [navigateNext, navigation, onComplete])
+	const handleOnComplete = useCallback(
+		async (status: PermissionStatus | undefined) => {
+			if (status !== RESULTS.GRANTED) {
+				navigation.goBack()
+				return
+			}
+			if (typeof onComplete === 'function') {
+				await onComplete()
+			}
+			if (navigateNext) {
+				navigation.navigate(navigateNext)
+			} else {
+				navigation.goBack()
+			}
+		},
+		[navigateNext, navigation, onComplete],
+	)
 
 	const handleAppStateChange = useCallback(
 		async (nextAppState: string) => {
@@ -59,7 +67,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				})
 
 				if (status === RESULTS.GRANTED) {
-					await handleOnComplete()
+					await handleOnComplete(status)
 				}
 			}
 		},
@@ -67,6 +75,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 	)
 
 	const requestPermission = useCallback(async () => {
+		let retStatus
 		try {
 			if (permissionStatus === RESULTS.BLOCKED) {
 				return openSettings()
@@ -74,6 +83,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 			if (permissionType === 'notification') {
 				try {
 					const { status } = await requestNotifications(['alert', 'sound'])
+					retStatus = status
 					await setPersistentOption({
 						type: PersistentOptionsKeys.Configurations,
 						payload: {
@@ -93,6 +103,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
 						: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
 				)
+				retStatus = status
 
 				if (selectedAccount) {
 					const currentConfig = await accountService.networkConfigGet({
@@ -121,18 +132,18 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					})
 				}
 			} else if (permissionType === 'camera') {
-				await request(
+				retStatus = await request(
 					Platform.OS === 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA,
 				)
 			} else if (permissionType === 'audio') {
-				await request(
+				retStatus = await request(
 					Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
 				)
 			}
 		} catch (err) {
 			console.warn('request permission err:', err)
 		}
-		await handleOnComplete()
+		await handleOnComplete(retStatus)
 	}, [
 		handleOnComplete,
 		permissionStatus,
