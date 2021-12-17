@@ -151,18 +151,18 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 		interactions && interactions.length > 0 ? interactions[interactions.length - 1] : null
 
 	let name: string
-	let inte: beapi.messenger.IInteraction | ParsedInteraction | null
+	let inte: ParsedInteraction | undefined
 	let avatar: JSX.Element
 	switch (kind) {
 		case SearchResultKind.Contact:
 			avatar = <ContactAvatar publicKey={contactPk} size={_resultAvatarSize} />
 			name = data.displayName || ''
-			inte = lastInteraction || null
+			inte = lastInteraction || undefined
 			break
 		case SearchResultKind.Conversation:
 			avatar = <ConversationAvatar publicKey={convPk} size={_resultAvatarSize} />
 			name = data.displayName || ''
-			inte = lastInteraction || null
+			inte = lastInteraction || undefined
 			break
 		case SearchResultKind.Interaction:
 			if (conv?.type === beapi.messenger.Conversation.Type.ContactType) {
@@ -172,15 +172,13 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				name = conv?.displayName || ''
 				avatar = <ConversationAvatar publicKey={convPk} size={_resultAvatarSize} />
 			}
-			inte = data || null
-			if (inte !== null) {
+			if (data !== null) {
 				try {
-					inte = parseInteraction(inte as beapi.messenger.Interaction)
+					inte = parseInteraction(data)
 				} catch (e) {
 					console.warn(e)
 				}
 			}
-
 			console.log(data)
 			break
 		default:
@@ -204,17 +202,24 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 						content = '📫 Outgoing request sent'
 						break
 					default:
-						content = (inte?.payload as any)?.body
+						if (inte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
+							content = inte.payload?.body
+						}
 				}
 				break
 			case SearchResultKind.Conversation:
-				content = (inte?.payload as any)?.body
+				if (inte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
+					content = inte.payload?.body
+				}
 				break
 			case SearchResultKind.Interaction:
+				const message =
+					(inte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage && inte.payload?.body) ||
+					''
 				content = (
 					<MessageSearchResult
 						searchText={searchText}
-						message={(inte?.payload as any)?.body}
+						message={message}
 						style={plainMessageText}
 						highlightStyle={searchResultHighlightText}
 					/>
@@ -225,7 +230,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 		}
 		return (
 			<Text numberOfLines={1} style={plainMessageText}>
-				{content}
+				<>{content}</>
 			</Text>
 		)
 	}

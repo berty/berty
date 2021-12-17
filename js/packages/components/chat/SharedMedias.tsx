@@ -99,7 +99,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 			.filter(
 				inte =>
 					inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
-					linkify.test(inte.payload.body),
+					linkify.test(inte.payload?.body || ''),
 			)
 			.reduce((arr, current) => {
 				if (current?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage) {
@@ -107,7 +107,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 				}
 				return [
 					...arr,
-					...(linkify.match(current.payload.body) as { url: string }[]).map(item => ({
+					...(linkify.match(current.payload?.body || '') as { url: string }[]).map(item => ({
 						url: item.url,
 						sentDate: pbDateToNum(current.sentDate),
 					})),

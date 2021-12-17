@@ -24,7 +24,7 @@ import { UserMessage } from './UserMessage'
 export const Message: React.FC<{
 	inte?: ParsedInteraction
 	convKind: beapi.messenger.Conversation.Type
-	members?: { [key: string]: any }
+	members?: { [key: string]: beapi.messenger.IMember | undefined }
 	convPK: string
 	previousMessage?: ParsedInteraction
 	nextMessage?: ParsedInteraction

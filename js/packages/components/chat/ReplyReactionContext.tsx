@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react'
 
 import { InteractionUserMessage } from '@berty-tech/store/types.gen'
 
-interface Interaction extends InteractionUserMessage {
+interface ReplyTargetInteraction extends InteractionUserMessage {
 	backgroundColor: string
 	textColor: string
 }
@@ -13,8 +13,8 @@ export const ReplyReactionContext = createContext<{
 	setActivePopoverCid: (cid: CID) => void
 	activeEmojiKeyboardCid: CID
 	setActiveEmojiKeyboardCid: (cid: CID) => void
-	activeReplyInte: Interaction | undefined
-	setActiveReplyInte: (inte?: Interaction) => void
+	activeReplyInte: ReplyTargetInteraction | undefined
+	setActiveReplyInte: (inte?: ReplyTargetInteraction) => void
 	highlightCid: CID
 	setHighlightCid: (cid: CID) => void
 }>({
@@ -32,7 +32,7 @@ export const ReplyReactionProvider: React.FC = React.memo(({ children }) => {
 	const [activePopoverCid, setActivePopoverCid] = useState<CID>()
 	const [highlightCid, setHighlight] = useState<CID>()
 	const [activeEmojiKeyboardCid, setActiveEmojiKeyboardCid] = useState<CID>()
-	const [activeReplyInte, setActiveReplyInte] = useState<Interaction | undefined>()
+	const [activeReplyInte, setActiveReplyInte] = useState<ReplyTargetInteraction | undefined>()
 
 	const value = {
 		activePopoverCid,

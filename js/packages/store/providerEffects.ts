@@ -319,50 +319,54 @@ export const openingClients = async (
 			}
 			cancel = () => stream.stop()
 			stream.onMessage((msg, err) => {
-				if (err) {
-					if (
-						err?.EOF ||
-						err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
-						err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE
-					) {
+				try {
+					if (err) {
+						if (
+							err?.EOF ||
+							err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
+							err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE
+						) {
+							return
+						}
+						console.warn('events stream onMessage error:', err)
+						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
+					}
+					const evt = msg?.event
+					if (!evt || evt.type === null || evt.type === undefined) {
+						console.warn('received empty event')
 						return
 					}
-					console.warn('events stream onMessage error:', err)
-					dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
-				}
-				const evt = msg?.event
-				if (!evt || evt.type === null || evt.type === undefined) {
-					console.warn('received empty event')
-					return
-				}
-				const action = streamEventToAction(evt)
-				if (!action) {
-					return
-				}
-				if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
-					const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
-						name =>
-							(beapi.messenger.StreamEvent.Notified.Type as any)[name] === action.payload.type,
-					)
-					if (!enumName) {
-						console.warn('failed to get event type name')
+					const action = streamEventToAction(evt)
+					if (!action) {
 						return
 					}
+					if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
+						const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
+							name =>
+								(beapi.messenger.StreamEvent.Notified.Type as any)[name] === action.payload.type,
+						)
+						if (!enumName) {
+							console.warn('failed to get event type name')
+							return
+						}
 
-					const payloadName = enumName.substr('Type'.length)
-					const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
-					if (!pbobj) {
-						console.warn('failed to find a protobuf object matching the notification type')
-						return
+						const payloadName = enumName.substr('Type'.length)
+						const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
+						if (!pbobj) {
+							console.warn('failed to find a protobuf object matching the notification type')
+							return
+						}
+						action.payload.payload = pbobj.decode(action.payload.payload)
+						eventEmitter.emit('notification', {
+							type: action.payload.type,
+							name: payloadName,
+							payload: action.payload,
+						})
+					} else {
+						dispatch(action)
 					}
-					action.payload.payload = pbobj.decode(action.payload.payload)
-					eventEmitter.emit('notification', {
-						type: action.payload.type,
-						name: payloadName,
-						payload: action.payload,
-					})
-				} else {
-					dispatch(action)
+				} catch (err) {
+					console.warn('failed to handle stream event:', err)
 				}
 			})
 			await stream.start()
