@@ -46,7 +46,7 @@ const sortInteractions = (interactions: ParsedInteraction[]) =>
 	interactions.sort((a, b) => pbDateToNum(b.sentDate) - pbDateToNum(a.sentDate))
 
 const parseInteractions = (rawInteractions: beapi.messenger.Interaction[]) =>
-	rawInteractions.map(parseInteraction).filter((i: ParsedInteraction) => i.payload !== undefined)
+	rawInteractions.map(parseInteraction)
 
 const newestMeaningfulInteraction = (interactions: ParsedInteraction[]) =>
 	interactions.find(i => i.type === beapi.messenger.AppMessage.Type.TypeUserMessage)

@@ -33,30 +33,35 @@ export const streamEventToAction: (evt: beapi.messenger.IStreamEvent) => reducer
 		return {
 			type: evt.type,
 			name: payloadName,
-			payload: eventPayload,
+			payload: eventPayload || {},
 		}
 	}
 
 type TypeNameDict = { [key: string]: beapi.messenger.AppMessage.Type | undefined }
 
 export const parseInteraction = (i: beapi.messenger.Interaction): ParsedInteraction => {
-	const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(name => {
-		return (beapi.messenger.AppMessage.Type as unknown as TypeNameDict)[name] === i.type
-	})
-	const name = typeName?.substr('Type'.length)
-	const pbobj = (beapi.messenger.AppMessage as any)[name as any]
+	try {
+		const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(name => {
+			return (beapi.messenger.AppMessage.Type as unknown as TypeNameDict)[name] === i.type
+		})
+		const name = typeName?.substr('Type'.length)
+		const pbobj = (beapi.messenger.AppMessage as any)[name as any]
 
-	if (!pbobj) {
+		if (!pbobj) {
+			return {
+				...i,
+				type: beapi.messenger.AppMessage.Type.Undefined,
+				payload: undefined,
+			}
+		}
+
 		return {
 			...i,
-			type: beapi.messenger.AppMessage.Type.Undefined,
-			payload: undefined,
+			payload: i.payload && pbobj.decode(i.payload),
 		}
-	}
-
-	return {
-		...i,
-		payload: pbobj.decode(i.payload),
+	} catch (err) {
+		console.log('failed to parse interaction:', err)
+		return { ...i, payload: undefined }
 	}
 }
 

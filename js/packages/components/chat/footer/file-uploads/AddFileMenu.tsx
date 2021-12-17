@@ -85,7 +85,9 @@ export const AddFileMenu: React.FC<{
 				}
 				try {
 					await ImagePicker.clean()
-				} catch (err) {}
+				} catch (err) {
+					console.warn('failed to clean image picker:', err)
+				}
 				try {
 					const image = await ImagePicker.openCamera({
 						cropping: false,

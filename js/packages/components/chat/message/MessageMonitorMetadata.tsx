@@ -19,7 +19,7 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 	const colors = useThemeColor()
 	const sentDate = pbDateToNum(inte?.sentDate)
 
-	const me = inte.payload.event
+	const me = inte.payload?.event
 
 	let monitorPayloadTitle: string
 	let monitorPayloadSubtitle: string[] | undefined

@@ -10,6 +10,7 @@ import {
 	useLastConvInteraction,
 	useThemeColor,
 	useMessengerContext,
+	ParsedInteraction,
 } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 import { useAppSelector } from '@berty-tech/redux/react-redux'
@@ -31,11 +32,11 @@ type ConversationsItemProps = any
 
 // Functions
 
-const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean; sending?: boolean }> = ({
-	interaction,
-	isAccepted,
-	sending,
-}) => {
+const MessageStatus: React.FC<{
+	interaction: ParsedInteraction
+	isAccepted: boolean
+	sending?: boolean
+}> = ({ interaction, isAccepted, sending }) => {
 	const colors = useThemeColor()
 	if (interaction?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage && isAccepted) {
 		return null
@@ -57,7 +58,7 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean; sending?:
 	)
 }
 
-const interactionsFilter = (inte: any) =>
+const interactionsFilter = (inte: ParsedInteraction) =>
 	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage
 
 const ConversationsItem: React.FC<ConversationsItemProps> = props => {
@@ -91,7 +92,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 
 	let description
 	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
-		description = (lastInte.payload as any)?.body
+		description = lastInte.payload?.body
 	} else {
 		if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
 			description = t('main.home.conversations.request-sent')

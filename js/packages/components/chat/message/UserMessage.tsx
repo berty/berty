@@ -59,15 +59,15 @@ const useStylesMessage = () => {
 	}
 }
 
-const interactionsFilter = (inte: any) =>
+const interactionsFilter = (inte: ParsedInteraction) =>
 	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage && inte.isMine
 
 const getUserMessageState = (
-	inte: any,
-	members: { [key: string]: any } | undefined,
+	inte: ParsedInteraction,
+	members: { [key: string]: beapi.messenger.IMember | undefined } | undefined,
 	convKind: any,
-	previousMessage: any,
-	nextMessage: any,
+	previousMessage: ParsedInteraction | undefined,
+	nextMessage: ParsedInteraction | undefined,
 	colors: any,
 ) => {
 	const sentDate = pbDateToNum(inte?.sentDate)
@@ -109,7 +109,7 @@ const getUserMessageState = (
 	} else {
 		// State for MultiMember conversation
 		if (inte.memberPublicKey && members && members[inte.memberPublicKey]) {
-			name = members[inte.memberPublicKey].displayName
+			name = members[inte.memberPublicKey]?.displayName || ''
 		}
 		isFollowupMessage =
 			previousMessage && !inte.isMine && inte.memberPublicKey === previousMessage.memberPublicKey
@@ -159,7 +159,7 @@ const getUserMessageState = (
 
 export const UserMessage: React.FC<{
 	inte: InteractionUserMessage
-	members?: { [key: string]: any }
+	members?: { [key: string]: beapi.messenger.IMember | undefined }
 	convPK: string
 	convKind: any
 	previousMessage?: ParsedInteraction
@@ -204,7 +204,9 @@ export const UserMessage: React.FC<{
 	} = getUserMessageState(inte, members, convKind, previousMessage, nextMessage, colors)
 
 	let repliedToColors =
-		repliedTo && getUserMessageState(replyOf, members, convKind, undefined, undefined, colors)
+		repliedTo &&
+		replyOf &&
+		getUserMessageState(replyOf, members, convKind, undefined, undefined, colors)
 
 	const togglePopover = () => {
 		if (inte.isMine) {
@@ -324,7 +326,7 @@ export const UserMessage: React.FC<{
 									style={{ color: repliedToColors?.msgTextColor, fontSize: 10, lineHeight: 17 }}
 								>
 									{(replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
-										replyOf.payload.body) ||
+										replyOf?.payload?.body) ||
 										`${t('chat.reply.response-to')} ${t(
 											`medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
 										)}`}
@@ -490,7 +492,7 @@ export const UserMessage: React.FC<{
 														})()}
 													</View>
 												)}
-												{!!inte.payload.body && (
+												{!!(!inte.medias?.length || inte.payload?.body) && (
 													<HyperlinkUserMessage
 														inte={inte}
 														msgBorderColor={msgBorderColor}
@@ -588,6 +590,7 @@ export const UserMessage: React.FC<{
 							cmd={cmd}
 						/>
 					)}
+					{/*<Text>wtf</Text>*/}
 				</View>
 			</View>
 		</View>
