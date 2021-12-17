@@ -60,7 +60,7 @@ export const CreateAccountBox: React.FC<{
 							const status = await rnutil.checkPermissions('notification', navigate)
 							if (status === RESULTS.DENIED || status === RESULTS.BLOCKED) {
 								await rnutil.checkPermissions('notification', navigate, {
-									isToNavigate: true,
+									navigateToPermScreenOnProblem: true,
 									onComplete: async () => onPress(),
 								})
 							} else {

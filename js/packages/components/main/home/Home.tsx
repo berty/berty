@@ -318,7 +318,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 					onPress={async () => {
 						await rnutil.checkPermissions('camera', navigate, {
 							navigateNext: 'Main.Scan',
-							isToNavigate: true,
+							navigateToPermScreenOnProblem: true,
 							onComplete: async () =>
 								dispatch(
 									CommonActions.reset({

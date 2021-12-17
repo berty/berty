@@ -6,6 +6,7 @@ import newGroupRootReducer, { sliceName as newGroupSliceName } from './reducers/
 import chatInputsRootReducer, {
 	sliceName as chatInputsSliceName,
 } from './reducers/chatInputs.reducer'
+import chatInputsVolatileRootReducer from './reducers/chatInputsVolatile.reducer'
 import checklistRootReducer, { sliceName as checklistSliceName } from './reducers/checklist.reducer'
 import accountSettingsRootReducer, {
 	sliceName as accountSettingsSliceName,
@@ -20,6 +21,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
 	...newGroupRootReducer,
 	...chatInputsRootReducer,
+	...chatInputsVolatileRootReducer,
 	...checklistRootReducer,
 	...accountSettingsRootReducer,
 })

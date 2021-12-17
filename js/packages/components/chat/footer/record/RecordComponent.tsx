@@ -42,7 +42,9 @@ const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
 const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await rnutil.checkPermissions('audio', navigate)
+	const permissionStatus = await rnutil.checkPermissions('audio', navigate, {
+		navigateToPermScreenOnProblem: true,
+	})
 	if (permissionStatus === RESULTS.GRANTED) {
 		return MicPermStatus.GRANTED
 	}
@@ -134,6 +136,8 @@ export const RecordComponent: React.FC<{
 	minAudioDuration?: number
 	disableLockMode?: boolean
 	disabled?: boolean
+	sending?: boolean
+	setSending: (val: boolean) => void
 }> = ({
 	children,
 	component,
@@ -143,6 +147,8 @@ export const RecordComponent: React.FC<{
 	minAudioDuration = 2000,
 	convPk,
 	disabled,
+	sending,
+	setSending,
 }) => {
 	const ctx = useMessengerContext()
 	const recorder = React.useRef<Recorder | undefined>(undefined)
@@ -153,13 +159,16 @@ export const RecordComponent: React.FC<{
 	const [{ border, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
-	/*const setRecordingState = React.useCallback(
-			(state: RecordingState, msg?: string) => {
-				console.log('setRecordingState', msg, RecordingState[state])
-				_setRecordingState(state)
-			},
-			[_setRecordingState],
-		)*/
+	/*
+	// use this to debug recording state
+	const setRecordingState = React.useCallback(
+		(state: RecordingState, msg?: string) => {
+			console.log('setRecordingState', msg, RecordingState[state])
+			_setRecordingState(state)
+		},
+		[_setRecordingState],
+	)
+	*/
 	const [recordingStart, setRecordingStart] = useState(Date.now())
 	const [clearRecordingInterval, setClearRecordingInterval] = useState<ReturnType<
 		typeof setInterval
@@ -241,6 +250,10 @@ export const RecordComponent: React.FC<{
 	const sendComplete = useCallback(
 		async ({ duration, start }: { duration: number; start: number }) => {
 			try {
+				if (sending) {
+					return
+				}
+				setSending(true)
 				Vibration.vibrate(400)
 				if (!ctx.client) {
 					return
@@ -279,8 +292,9 @@ export const RecordComponent: React.FC<{
 			} catch (e) {
 				console.warn(e)
 			}
+			setSending(false)
 		},
-		[convPk, ctx.client, recorderFilePath, ctx.dispatch],
+		[convPk, ctx.client, recorderFilePath, ctx.dispatch, sending, setSending],
 	)
 
 	useEffect(() => {
@@ -407,17 +421,8 @@ export const RecordComponent: React.FC<{
 				console.log('start')
 				if (recordingState === RecordingState.NOT_RECORDING) {
 					const permState = await acquireMicPerm(navigate)
-					if (permState === MicPermStatus.NEWLY_GRANTED) {
-						setHelpMessageValue({
-							message: t('audio.record.tooltip.usage'),
-						})
-
-						return
-					} else if (permState === MicPermStatus.DENIED || permState === MicPermStatus.UNDEFINED) {
+					if (permState !== MicPermStatus.GRANTED) {
 						setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
-						await rnutil.checkPermissions('audio', navigate, {
-							isToNavigate: true,
-						})
 						return
 					}
 
@@ -459,14 +464,17 @@ export const RecordComponent: React.FC<{
 			}
 
 			// Released
-			if (e.nativeEvent.state === State.END) {
+			if (recordingState !== RecordingState.NOT_RECORDING && e.nativeEvent.state === State.END) {
 				console.log('end')
 				setRecordingState(RecordingState.COMPLETE)
 
 				return
 			}
 
-			if (e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED) {
+			if (
+				recordingState !== RecordingState.NOT_RECORDING &&
+				(e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED)
+			) {
 				console.log('state cancel', e.nativeEvent.state)
 				setRecordingState(RecordingState.PENDING_CANCEL)
 				return

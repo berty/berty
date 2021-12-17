@@ -286,7 +286,7 @@ const Proximity: React.FC<{
 									setNewConfigProximityTransport()
 								} else {
 									await rnutil.checkPermissions('p2p', navigate, {
-										isToNavigate: true,
+										navigateToPermScreenOnProblem: true,
 										onComplete: async () => setNewConfigProximityTransport(),
 									})
 								}

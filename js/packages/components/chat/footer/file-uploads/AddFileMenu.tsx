@@ -20,14 +20,15 @@ import { SecurityAccess } from './SecurityAccess'
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
 
-export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]) => void }> = ({
-	onClose,
-}) => {
+export const AddFileMenu: React.FC<{
+	onClose: (medias?: beapi.messenger.IMedia[]) => void
+	sending?: boolean
+	setSending: (val: boolean) => void
+}> = ({ onClose, sending, setSending }) => {
 	const [{ border, padding }] = useStyles()
 	const { t }: { t: any } = useTranslation()
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
-	const [isLoading, setLoading] = useState(false)
 	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const navigate = useNavigation()
@@ -141,11 +142,11 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]
 	]
 
 	const prepareMediaAndSend = async (res: (beapi.messenger.IMedia & { uri?: string })[]) => {
-		if (isLoading) {
-			return
-		}
-		setLoading(true)
 		try {
+			if (sending) {
+				return
+			}
+			setSending(true)
 			const mediaCids = (
 				await amap(res, async doc => {
 					const stream = await client?.mediaPrepare({})
@@ -171,8 +172,10 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]
 					}),
 				),
 			)
-		} catch (err) {}
-		setLoading(false)
+		} catch (err) {
+			console.warn('error while preparing files:', err)
+		}
+		setSending(false)
 	}
 
 	return (
@@ -231,7 +234,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: beapi.messenger.IMedia[]
 							))}
 						</View>
 						{activeTab === TabItems.Gallery && (
-							<GallerySection prepareMediaAndSend={prepareMediaAndSend} isLoading={isLoading} />
+							<GallerySection prepareMediaAndSend={prepareMediaAndSend} />
 						)}
 					</View>
 				</View>
