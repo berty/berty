@@ -1,5 +1,6 @@
 package tech.berty.gobridge.bledriver;
 
+import tech.berty.android.BuildConfig;
 import android.util.Log;
 
 public class Logger {
@@ -29,6 +30,10 @@ public class Logger {
     }
 
     public void log(Level level, String tag, String message) {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
+
         if (mUseExternalLogger) {
             BleInterface.BLELog(level, tag + ": " + message);
         } else {
