@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
@@ -80,6 +81,14 @@ func NewBridge(config *Config) (*Bridge, error) {
 
 		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
 		initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
+	}
+
+	// setup netdriver
+	{
+		if config.netDriver != nil {
+			inet := &inetAddrs{config.netDriver}
+			manet.SetNetInterface(inet)
+		}
 	}
 
 	// parse language
