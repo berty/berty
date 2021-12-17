@@ -27,13 +27,13 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	return (
 		<View style={{ flex: 1 }}>
 			<SwiperCard
-				header={t('onboarding.services-auth.header')}
-				title={t('onboarding.services-auth.title')}
+				title={t('settings.berty-services.title')}
+				desc={t('settings.berty-services.desc')}
 				button={
 					accountServices.length > 0
 						? undefined
 						: {
-								text: t('onboarding.services-auth.button'),
+								text: t('settings.berty-services.button'),
 								onPress: async () => {
 									try {
 										await servicesAuthViaDefault(ctx)
@@ -47,7 +47,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 												},
 											},
 										})
-										dispatch(setChecklistItemDone({ key: 'relay' }))
+										dispatch(setChecklistItemDone({ key: 'berty-services' }))
 										goBack()
 									} catch (e) {
 										console.log(e)
@@ -56,7 +56,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 						  }
 				}
 				skip={{
-					text: t('onboarding.services-auth.skip'),
+					text: t('settings.berty-services.skip'),
 					onPress: async () => {
 						await next()
 					},
@@ -66,9 +66,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	)
 }
 
-export const ReplicationServices: ScreenFC<'Settings.ReplicationServices'> = ({
-	navigation: { goBack },
-}) => {
+export const BertyServices: ScreenFC<'Settings.BertyServices'> = ({ navigation: { goBack } }) => {
 	useNotificationsInhibitor(() => true)
 	const { persistentOptions, setPersistentOption } = useMessengerContext()
 	const colors = useThemeColor()
@@ -97,4 +95,4 @@ export const ReplicationServices: ScreenFC<'Settings.ReplicationServices'> = ({
 	)
 }
 
-export default ReplicationServices
+export default BertyServices

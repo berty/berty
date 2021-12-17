@@ -63,7 +63,7 @@ export type ScreensParams = {
 	'Settings.DeleteAccount': undefined
 	'Settings.Roadmap': undefined
 	'Settings.Faq': undefined
-	'Settings.ReplicationServices': undefined
+	'Settings.BertyServices': undefined
 
 	// Modals
 

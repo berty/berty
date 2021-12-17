@@ -79,8 +79,6 @@ const getReplicationStatusIcon = (status: replicationServerStatus): string => {
 		case replicationServerStatus.UnknownServerEnabled:
 			return 'question-mark-circle-outline'
 	}
-
-	return ''
 }
 
 const getReplicationStatusColor = (status: replicationServerStatus): string => {
@@ -92,8 +90,6 @@ const getReplicationStatusColor = (status: replicationServerStatus): string => {
 		case replicationServerStatus.UnknownServerEnabled:
 			return 'green'
 	}
-
-	return ''
 }
 
 const ReplicateGroupContent: React.FC<{
@@ -154,7 +150,7 @@ const ReplicateGroupContent: React.FC<{
 				iconSize={30}
 				iconColor={colors['background-header']}
 				alone={true}
-				onPress={() => navigation.navigate('Settings.ReplicationServices')}
+				onPress={() => navigation.navigate('Settings.BertyServices')}
 			/>
 		</View>
 	)
