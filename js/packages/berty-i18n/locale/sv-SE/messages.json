@@ -12,7 +12,7 @@
 				"title": "Prestanda",
 				"desc": "Lätt att använda - alla funktioner",
 				"push-notif": "Ta emot push-aviseringar",
-				"offline-message": "Offline kommunikation via Bluetooth",
+				"offline-message": "Offlinekommunikation via Bluetooth",
 				"add-contact": "Lägg enkelt till kontakter",
 				"fast-message": "Snabbast möjliga leverans av meddelanden"
 			},
@@ -43,15 +43,15 @@
 			}
 		},
 		"advanced-settings": {
-			"title": "",
+			"title": "Avancerade inställningar",
 			"desc": "Hitta dokumentation och skapa din egen konfiguration.",
 			"more-about": {
-				"title": "",
+				"title": "Välkommen i de avancerade inställningarna",
 				"first-paragraph": "Här kommer du att kunna skapa din egen anpassade konfiguration för att passa dina behov.",
 				"second-paragraph": "Vi kommer att presentera alla alternativ för att låta dig förstå vad som händer bakom huven.",
 				"third-paragraph": "Du hittar också resurslänkar för att hacka den. Detta avsnitt är endast för experter!"
 			},
-			"read-more": "",
+			"read-more": "Läs mer om avancerade inställningar",
 			"config-title": "Anpassade konfigurationer",
 			"config-desc": "3 steg i appkonfigurationen. Anpassa allt nu!",
 			"learn-more": "Läs mer",
@@ -96,10 +96,10 @@
 			"button": "BÖRJA ANVÄNDA BERTY"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "WebViews",
+			"desc": "Vi förbereder fortfarande för att ladda webviews på nätverket. Vill du fortfarande öppna det?",
 			"first-button": "Avbryt",
-			"second-button": ""
+			"second-button": "Ja"
 		}
 	},
 	"main": {
@@ -181,7 +181,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "",
+				"title": "Välkomstchecklista {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Ändra din profilbild",
 					"desc": "Låt oss ställa in en profilbild för detta konto!"
@@ -216,8 +216,8 @@
 				}
 			},
 			"edit-profile": "Redigera profil",
-			"share-link": "",
-			"create-group": "",
+			"share-link": "Dela länk",
+			"create-group": "Skapa grupp",
 			"create-new-account": "Skapa nytt konto"
 		},
 		"network-map": {
@@ -227,10 +227,10 @@
 		"mode": {
 			"title": "Inställningar",
 			"desc": "Anpassa allt för att få appen som passar just dina behov",
-			"in-app-notifications": "",
+			"in-app-notifications": "Notiser i appen",
 			"dark-mode-button": "Mörkt tema",
 			"devtools": "Utvecklingsverktyg",
-			"network-config": "",
+			"network-config": "Nätverkskonfiguration",
 			"notification-file-saved": {
 				"title": "Data sparad!",
 				"desc": "Tillgänglig i din nedladdningsmapp"
@@ -478,8 +478,8 @@
 		}
 	},
 	"chat": {
-		"sending": "",
-		"sent": "",
+		"sending": "Skickar..",
+		"sent": "Skickat",
 		"contact-settings": {
 			"mark-button": "Markera som verifierad",
 			"block-button": "Blockera kontakt",
@@ -549,7 +549,7 @@
 		},
 		"files": {
 			"gallery": "Galleri",
-			"no-images": "",
+			"no-images": "Inga bilder",
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
@@ -574,8 +574,8 @@
 			"replied-to": "Svarat till"
 		},
 		"user-message": {
-			"read-more": "",
-			"show-less": ""
+			"read-more": "Läs mer",
+			"show-less": "Visa mindre"
 		}
 	},
 	"audio": {
@@ -630,13 +630,13 @@
 		"wtf-screen": {
 			"title": "Vad är felet?",
 			"desc": "Applikationen kraschade.",
-			"desc-report": ""
+			"desc-report": "Klicka på knappen för att avsluta och starta om appen."
 		},
 		"sorry-screen": {
 			"title": "Ledsen för detta fel!",
 			"desc": "Det är Francis fel, intern utvecklare hos Berty, som måste ha gjort ett misstag. Inte klok, denna Francis!",
 			"desc-em": "*Nja, okej, det finns ingen Francis på Bertys avdelning.",
-			"desc-report": ""
+			"desc-report": "Klicka på knappen för att avsluta och starta om appen."
 		}
 	},
 	"debug": {
