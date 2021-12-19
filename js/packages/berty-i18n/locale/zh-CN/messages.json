@@ -32,7 +32,7 @@
 			"required": "必需的",
 			"placeholder": "选择您的昵称",
 			"button": "创建我的帐户",
-			"advanced": "",
+			"advanced": "高级选项",
 			"import-account": "导入账户",
 			"link-device": "连接设备",
 			"more": "更多信息",
@@ -43,15 +43,15 @@
 			}
 		},
 		"advanced-settings": {
-			"title": "",
+			"title": "高级设置",
 			"desc": "查找文档并创建您自己的配置。",
 			"more-about": {
-				"title": "",
+				"title": "欢迎使用高级设置",
 				"first-paragraph": "在这里，您将能够创建自己的自定义配置以满足您的需求。",
 				"second-paragraph": "我们会给您提供每个选项以允许您了解场地后面发生的事情。",
 				"third-paragraph": "您还可以找到资源链接来破解它。 此部分仅供专业使用！"
 			},
-			"read-more": "",
+			"read-more": "阅读更多关于高级设置的信息",
 			"config-title": "自定义配置",
 			"config-desc": "应用程序配置的 3 个步骤。 现在自定义一切！",
 			"learn-more": "了解更多",
@@ -96,10 +96,10 @@
 			"button": "开始使用 Berty"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "WebViews",
+			"desc": "我们准备好加载WebView。你还想打开它吗？",
 			"first-button": "取消",
-			"second-button": ""
+			"second-button": "是"
 		}
 	},
 	"main": {
@@ -181,7 +181,7 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "",
+				"title": "欢迎检查清单 {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "更改您的头像",
 					"desc": "让我们为此帐户设置个人资料图片！"
@@ -216,8 +216,8 @@
 				}
 			},
 			"edit-profile": "编辑个人信息",
-			"share-link": "",
-			"create-group": "",
+			"share-link": "分享链接",
+			"create-group": "创建群組",
 			"create-new-account": "创建新账号"
 		},
 		"network-map": {
@@ -227,10 +227,10 @@
 		"mode": {
 			"title": "设置",
 			"desc": "所有功能皆可自定义",
-			"in-app-notifications": "",
+			"in-app-notifications": "应用内部通知",
 			"dark-mode-button": "暗色模式",
 			"devtools": "开发工具",
-			"network-config": "",
+			"network-config": "网络配置",
 			"notification-file-saved": {
 				"title": "数据已保存！",
 				"desc": "在下载目录中可用"
@@ -478,8 +478,8 @@
 		}
 	},
 	"chat": {
-		"sending": "",
-		"sent": "",
+		"sending": "发送中...",
+		"sent": "已发送",
 		"contact-settings": {
 			"mark-button": "标记为已验证",
 			"block-button": "屏蔽联系人",
@@ -549,7 +549,7 @@
 		},
 		"files": {
 			"gallery": "相册",
-			"no-images": "",
+			"no-images": "无图像",
 			"camera": "摄像头",
 			"files": "文件",
 			"microphone": "麦克风",
@@ -574,8 +574,8 @@
 			"replied-to": "回复至"
 		},
 		"user-message": {
-			"read-more": "",
-			"show-less": ""
+			"read-more": "查看更多",
+			"show-less": "显示剩余"
 		}
 	},
 	"audio": {
@@ -630,13 +630,13 @@
 		"wtf-screen": {
 			"title": "失败的原因是什么？",
 			"desc": "应用程序崩溃。",
-			"desc-report": ""
+			"desc-report": "单击按钮退出并重新启动应用程序。"
 		},
 		"sorry-screen": {
 			"title": "对不起，这是个BUG",
 			"desc": "这是Berty的实习生Francis的错，他一定犯了个错误。Francis真是个混蛋！",
 			"desc-em": "*好吧，伯蒂的团队里没有 Francis",
-			"desc-report": ""
+			"desc-report": "单击按钮退出并重新启动应用程序。"
 		}
 	},
 	"debug": {
