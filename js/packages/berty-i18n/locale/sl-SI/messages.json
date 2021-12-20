@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "",
-			"title": "Storitve",
-			"recommended": "Priporočeno",
-			"desc": "",
-			"button": "",
-			"skip": "PRESKOČI IN NAREDI KASNEJE"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
+		"berty-services": {
+			"header": "",
 			"title": "",
-			"operated-services-button": "",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": "Dodaj"
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": "Neznana storitev"
-			}
+			"recommended": "Priporočeno",
+			"desc": "",
+			"button": "",
+			"skip": "PRESKOČI IN NAREDI KASNEJE"
 		},
 		"delete-account": {
 			"title": "Izbriši račun!",
