@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Verifiser til tjenester",
-			"title": "Tjenester",
-			"recommended": "Anbefalt",
-			"desc": "Dette vil automatisk gjenskape dine samtaler på en server",
-			"button": "Bruk Berty-opererte tjenester",
-			"skip": "HOPP OVER OG GJØR DETTE SENERE"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Starter Berty-noden…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Eksterne tjenester",
-			"operated-services-button": "Bruk Berty-opererte tjenester",
-			"register-service-button": {
-				"title": "Registrer en egendefinert tjenesteleverandør",
-				"input-placeholder": "Tjeneste URL",
-				"action": "Legg til"
-			},
-			"registered-services-button": {
-				"title": "Gjeldende registrerte tjenester",
-				"sample-no-services": "Ingen tjenester registrert",
-				"sample-unknown-service": "Ukjent tjeneste"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Anbefalt",
+			"desc": "",
+			"button": "",
+			"skip": "HOPP OVER OG GJØR DETTE SENERE"
 		},
 		"delete-account": {
 			"title": "Slett konto!",
