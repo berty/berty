@@ -77,14 +77,6 @@
 			},
 			"apply-changes": "VERANDEREN TOEPASSEN"
 		},
-		"services-auth": {
-			"header": "Verifieer bij diensten",
-			"title": "Diensten",
-			"recommended": "Aangeraden",
-			"desc": "Dit zal automatisch je gesprekken kopiëren naar een server",
-			"button": "Gebruik diensten van Berty",
-			"skip": "OVERSLAAN EN LATER UITVOEREN"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "De Berty node wordt gestart…",
@@ -186,9 +178,9 @@
 					"title": "Wijzig je avatar",
 					"desc": "Stel een profielfoto in voor dit account!"
 				},
-				"relay": {
-					"title": "Configureer relay",
-					"desc": "Verbeter je netwerkprestaties door het gebruik van een relay van een Berty Tech non-profit."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Synchroniseer met een contact",
@@ -201,14 +193,6 @@
 				"message": {
 					"title": "Verstuur bericht",
 					"desc": "Zeg 'Hallo wereld' tegen een contact!"
-				},
-				"theme": {
-					"title": "Thema aanpassen",
-					"desc": "Maak je eigen versie van de app en deel deze met de community!"
-				},
-				"hidden-account": {
-					"title": "Verborgen account aanmaken",
-					"desc": "Maak een onzichtbaar account met een specifiek wachtwoord aan om in te loggen. Zo ben je veilig op het vliegveld!"
 				},
 				"ble-message": {
 					"title": "Stuur bericht zonder internet",
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Activeer Android Nearby"
 		},
-		"services-auth": {
-			"title": "Externe diensten",
-			"operated-services-button": "Gebruik diensten van Berty",
-			"register-service-button": {
-				"title": "Registreer een aangepaste dienst",
-				"input-placeholder": "Diensten URL",
-				"action": "Toevoegen"
-			},
-			"registered-services-button": {
-				"title": "Momenteel geregistreerde diensten",
-				"sample-no-services": "Geen diensten geregistreerd",
-				"sample-unknown-service": "Onbekende dienst"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Aangeraden",
+			"desc": "",
+			"button": "",
+			"skip": "OVERSLAAN EN LATER UITVOEREN"
 		},
 		"delete-account": {
 			"title": "Account verwijderen!",
