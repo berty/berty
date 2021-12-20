@@ -77,14 +77,6 @@
 			},
 			"apply-changes": "APPLIQUER LES CHANGEMENTS"
 		},
-		"services-auth": {
-			"header": "S'authentifier aux services",
-			"title": "Services",
-			"recommended": "Recommandé",
-			"desc": "Cela répliquera automatiquement vos conversations sur un serveur",
-			"button": "Utiliser les services opérés par Berty",
-			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Démarrage du nœud Berty…",
@@ -186,9 +178,9 @@
 					"title": "Changer votre avatar",
 					"desc": "Configurer une image de profil !"
 				},
-				"relay": {
-					"title": "Configurer le relais",
-					"desc": "Améliorez les performances de votre réseau en utilisant un relais propulsé par Berty Tech organisation à but non lucrative."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Synchroniser avec un contact",
@@ -201,14 +193,6 @@
 				"message": {
 					"title": "Envoyer le message",
 					"desc": "Dites « Bonjour » à un contact !"
-				},
-				"theme": {
-					"title": "Personnaliser le thème",
-					"desc": "Créé et partage ta version de l’application avec la communauté !"
-				},
-				"hidden-account": {
-					"title": "Créer un compte masqué",
-					"desc": "Créer un compte fantôme avec un mot de passe dédié pour être en sécurité sur un réseau public."
 				},
 				"ble-message": {
 					"title": "Envoyer un message sans internet",
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Activer Android Nearby"
 		},
-		"services-auth": {
-			"title": "Services externes",
-			"operated-services-button": "Utiliser les services opérés par Berty",
-			"register-service-button": {
-				"title": "Enregistrer un fournisseur de service personnalisé",
-				"input-placeholder": "URL du service",
-				"action": "Ajouter"
-			},
-			"registered-services-button": {
-				"title": "Services actuellement enregistrés",
-				"sample-no-services": "Aucun service enregistré",
-				"sample-unknown-service": "Service inconnu"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Recommandé",
+			"desc": "",
+			"button": "",
+			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
 		},
 		"delete-account": {
 			"title": "Supprimer le compte !",
