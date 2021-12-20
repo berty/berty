@@ -12,10 +12,7 @@ export const Roadmap: ScreenFC<'Settings.Roadmap'> = () => {
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<StatusBar
-				backgroundColor={colors['alt-secondary-background-header']}
-				barStyle='light-content'
-			/>
+			<StatusBar barStyle='light-content' />
 			<WebViews url='https://guide.berty.tech/roadmap' />
 		</Layout>
 	)
