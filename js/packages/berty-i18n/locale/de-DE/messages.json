@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Authentifizieren bei Diensten",
-			"title": "Dienste",
-			"recommended": "Empfohlen",
-			"desc": "Dadurch werden deine Unterhaltungen automatisch auf einen Server kopiert",
-			"button": "Von Berty betriebene Dienste nutzen",
-			"skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Starte den Berty Knotenpunkt…",
@@ -186,9 +178,9 @@
 					"title": "Ändere dein Avatar",
 					"desc": ""
 				},
-				"relay": {
-					"title": "Relay konfigurieren",
-					"desc": "Verbessern Sie Ihre Netzwerkleistung durch die Nutzung eines von Berty Tech zur Verfügung gestellten Relais."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Mit einem Kontakt synchronisieren",
@@ -201,14 +193,6 @@
 				"message": {
 					"title": "Nachricht senden",
 					"desc": "Sag \"Hallo Welt\" zu einem Kontakt!"
-				},
-				"theme": {
-					"title": "Thema anpassen",
-					"desc": "Lass und deine eigene Version der App erstellen und es mit der Community teilen!"
-				},
-				"hidden-account": {
-					"title": "Erstelle ein versteckten Account",
-					"desc": "Erstelle ein unsichtabren Account mit einem bestimmten Passwort zum einloggen und bleib sicher am Flughafen!"
 				},
 				"ble-message": {
 					"title": "Nachricht ohne Internet senden",
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "\"Android in der Nähe\" aktivieren"
 		},
-		"services-auth": {
-			"title": "Externe Dienste",
-			"operated-services-button": "Von Berty betriebene Dienste verwenden",
-			"register-service-button": {
-				"title": "Einen externen Dienst registrieren",
-				"input-placeholder": "Dienst-URL",
-				"action": "Hinzufügen"
-			},
-			"registered-services-button": {
-				"title": "Momentan registrierte Dienste",
-				"sample-no-services": "Keine Dienste registriert",
-				"sample-unknown-service": "Unbekannter Dienst"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Empfohlen",
+			"desc": "",
+			"button": "",
+			"skip": "ÜBERSPRINGEN UND DIES SPÄTER ERLEDIGEN"
 		},
 		"delete-account": {
 			"title": "Mein Konto löschen!",
