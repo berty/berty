@@ -18,7 +18,6 @@ import (
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
-
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"

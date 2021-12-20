@@ -114,11 +114,11 @@ type Manager struct {
 			Ble struct {
 				Enable bool `json:"Enable,omitempty"`
 				Driver proximity.ProximityDriver
-			} `json:"ble,omitempty"`
+			} `json:"Ble,omitempty"`
 			Nearby struct {
 				Enable bool `json:"Enable,omitempty"`
 				Driver proximity.ProximityDriver
-			} `json:"nerby,omitempty"`
+			} `json:"Nearby,omitempty"`
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`

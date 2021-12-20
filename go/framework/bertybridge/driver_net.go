@@ -5,8 +5,9 @@ import (
 	"runtime"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/osversion"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/osversion"
 )
 
 type NativeNetDriver interface {
