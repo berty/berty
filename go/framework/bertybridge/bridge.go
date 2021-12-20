@@ -3,6 +3,7 @@ package bertybridge
 import (
 	"context"
 	"fmt"
+	"runtime"
 	"sync"
 	"time"
 
@@ -24,6 +25,7 @@ import (
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/osversion"
 )
 
 const bufListenerSize = 256 * 1024
@@ -133,7 +135,8 @@ func NewBridge(config *Config) (*Bridge, error) {
 	}
 
 	{
-		if config.mdnsLockerDriver != nil {
+		if runtime.GOOS == "android" && osversion.GetVersion().Major() >= 30 &&
+			config.mdnsLockerDriver != nil {
 			b.mdnsLocker = config.mdnsLockerDriver
 		} else {
 			b.mdnsLocker = &noopNativeMDNSLockerDriver{}
