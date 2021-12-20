@@ -77,14 +77,6 @@
 			},
 			"apply-changes": "应用更改"
 		},
-		"services-auth": {
-			"header": "认证服务",
-			"title": "服务",
-			"recommended": "推荐",
-			"desc": "这将自动复制您的会话到服务器",
-			"button": "使用 Berty 运营的服务",
-			"skip": "跳过并稍后再做"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "正在启动 Berty 节点…",
@@ -186,9 +178,9 @@
 					"title": "更改您的头像",
 					"desc": "让我们为此帐户设置个人资料图片！"
 				},
-				"relay": {
-					"title": "配置中继",
-					"desc": "通过使用由 Berty Tech 非营利机构提供的中继，提高您的网络性能。"
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "同步联系人",
@@ -201,14 +193,6 @@
 				"message": {
 					"title": "发送信息",
 					"desc": "对联系人说“你好，世界”！"
-				},
-				"theme": {
-					"title": "自定义主题",
-					"desc": "让我们创建您自己的应用程序版本，然后与社区分享！"
-				},
-				"hidden-account": {
-					"title": "创建隐藏账户",
-					"desc": "创建一个隐形的帐户，并使用特定密码登录，在机场更安全！"
 				},
 				"ble-message": {
 					"title": "在没有互联网的情况下发送消息",
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "激活附近的 Android 设备"
 		},
-		"services-auth": {
-			"title": "外部服务",
-			"operated-services-button": "使用 Berty 运营的服务",
-			"register-service-button": {
-				"title": "注册自定义的服务提供商",
-				"input-placeholder": "服务 URL",
-				"action": "添加"
-			},
-			"registered-services-button": {
-				"title": "当前注册的服务",
-				"sample-no-services": "未注册服务",
-				"sample-unknown-service": "未知服务"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "推荐的",
+			"desc": "",
+			"button": "",
+			"skip": "跳过并稍后再做"
 		},
 		"delete-account": {
 			"title": "删除帐户！",
