@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Přihlášení ke službám",
-			"title": "Služby",
-			"recommended": "Doporučené",
-			"desc": "Tímto se vaše konverzace automaticky zkopírují na server",
-			"button": "Použít služby provozované Berty",
-			"skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Spouštění Berty uzlu…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Externí služby",
-			"operated-services-button": "Použít služby provozované Berty",
-			"register-service-button": {
-				"title": "Registrovat vlastní poskytovatele služeb",
-				"input-placeholder": "URL služby",
-				"action": "Přidat"
-			},
-			"registered-services-button": {
-				"title": "Aktuálně registrované služby",
-				"sample-no-services": "Žádné registrované služby",
-				"sample-unknown-service": "Neznámá služba"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Doporučené",
+			"desc": "",
+			"button": "",
+			"skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
 		},
 		"delete-account": {
 			"title": "Smazat účet!",
