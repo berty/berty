@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Autentificare la servicii",
-			"title": "Servicii",
-			"recommended": "Recomandate",
-			"desc": "Acest lucru va reproduce automat conversațiile tale pe un server",
-			"button": "Utilizează servicii gestionate de Berty",
-			"skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Se pornește nodul Berty…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Servicii externe",
-			"operated-services-button": "Utilizează servicii gestionate de Berty",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "URL-ul serviciului",
-				"action": "Adaugă"
-			},
-			"registered-services-button": {
-				"title": "Servicii înregistrate în prezent",
-				"sample-no-services": "Niciun serviciu înregistrat",
-				"sample-unknown-service": "Serviciu necunoscut"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Recomandate",
+			"desc": "",
+			"button": "",
+			"skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
 		},
 		"delete-account": {
 			"title": "Șterge contul meu!",
