@@ -77,14 +77,6 @@
 			},
 			"apply-changes": "SPARA ÄNDRINGAR"
 		},
-		"services-auth": {
-			"header": "Autentisera till tjänster",
-			"title": "Tjänster",
-			"recommended": "Rekommenderat",
-			"desc": "Detta kommer automatiskt att kopiera dina konversationer på en server",
-			"button": "Använd Berty-drivna tjänster",
-			"skip": "HOPPA ÖVER OCH GÖR SENARE"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Startar Berty-noden…",
@@ -186,9 +178,9 @@
 					"title": "Ändra din profilbild",
 					"desc": "Låt oss ställa in en profilbild för detta konto!"
 				},
-				"relay": {
-					"title": "Konfigurera relä",
-					"desc": "Förbättra nätverksprestandan med hjälp av en relä som drivs av Berty Techs ideella organisation."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Synkronisera med en kontakt",
@@ -201,14 +193,6 @@
 				"message": {
 					"title": "Skicka meddelande",
 					"desc": "Säg 'Hej världen' till en kontakt!"
-				},
-				"theme": {
-					"title": "Skräddarsy tema",
-					"desc": "Skapa din egen version av appen och dela den med gemenskapen!"
-				},
-				"hidden-account": {
-					"title": "Skapa ett dolt konto",
-					"desc": "Skapa ett osynligt konto med ett specifikt lösenord för att logga in, så du kan känna dig säkrare på flygplatsen!"
 				},
 				"ble-message": {
 					"title": "Skicka meddelande utan internet",
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Aktivera Android Nearby"
 		},
-		"services-auth": {
-			"title": "Externa tjänster",
-			"operated-services-button": "Använd Berty-drivna tjänster",
-			"register-service-button": {
-				"title": "Registrera en annan tjänsteleverantör",
-				"input-placeholder": "Tjänstens webbadress",
-				"action": "Lägg till"
-			},
-			"registered-services-button": {
-				"title": "Befintliga leverantörer",
-				"sample-no-services": "Inga tjänster registrerade",
-				"sample-unknown-service": "Okänd tjänst"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Rekommenderat",
+			"desc": "",
+			"button": "",
+			"skip": "HOPPA ÖVER OCH GÖR SENARE"
 		},
 		"delete-account": {
 			"title": "Radera konto!",
