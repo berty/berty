@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Autenticar-se nos serviços",
-			"title": "Serviços",
-			"recommended": "Recomendado",
-			"desc": "Isto irá replicar as tuas conversas num servidor",
-			"button": "Usar os serviços operados pelo Berty",
-			"skip": "SALTAR E FAZER MAIS TARDE"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "A iniciar o nó do Berty…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
+		"berty-services": {
+			"header": "",
 			"title": "",
-			"operated-services-button": "Usar os serviços operados pelo Berty",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": "Adicionar"
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": ""
-			}
+			"recommended": "Recomendado",
+			"desc": "",
+			"button": "",
+			"skip": "SALTAR E FAZER MAIS TARDE"
 		},
 		"delete-account": {
 			"title": "",
