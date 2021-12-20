@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Uwierzytelnianie do usług",
-			"title": "Usługi",
-			"recommended": "Zalecane",
-			"desc": "To spowoduje automatyczne tworzenie kopii twoich rozmów na serwerze",
-			"button": "Używanie usług świadczonych przez Berty",
-			"skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Uruchamianie węzła Berty…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Aktywuj Android Nearby"
 		},
-		"services-auth": {
-			"title": "Zewnętrzne usługi",
-			"operated-services-button": "Używanie usług świadczonych przez Berty",
-			"register-service-button": {
-				"title": "Zarejestruj niestandardowego dostawce usług",
-				"input-placeholder": "URL usługi",
-				"action": "Dodaj"
-			},
-			"registered-services-button": {
-				"title": "Aktualnie zarejestrowane usługi",
-				"sample-no-services": "Brak zarejestrowanych usług",
-				"sample-unknown-service": "Nieznana usługa"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Zalecane",
+			"desc": "",
+			"button": "",
+			"skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
 		},
 		"delete-account": {
 			"title": "Usuń konto!",
