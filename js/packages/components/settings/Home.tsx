@@ -166,7 +166,7 @@ const HomeBodySettings: React.FC = () => {
 				onPress={async () => {
 					if (url) {
 						try {
-							await Share.share({ url })
+							await Share.share({ url, message: url })
 						} catch (e) {
 							console.error(e)
 						}
