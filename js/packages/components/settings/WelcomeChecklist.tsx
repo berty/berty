@@ -114,9 +114,9 @@ const CheckItems: React.FC = () => {
 						navigate('Modals.EditProfile')
 					}
 					return
-				case 'relay':
+				case 'berty-services':
 					if (!value.done) {
-						navigate('Settings.ReplicationServices')
+						navigate('Settings.BertyServices')
 					}
 					return
 				case 'contact':
