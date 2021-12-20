@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Hizmetlere izin ver",
-			"title": "Hizmetler",
-			"recommended": "Önerilen",
-			"desc": "Bu seçenek konuşmalarınızı bir sunucuya kopyalar",
-			"button": "Berty hizmetlerini kullanın",
-			"skip": "ATLA VE DAHA SONRA YAP"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Berty düğümü(node) başlatılıyor…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Yakındaki Android'i Etkinleştir"
 		},
-		"services-auth": {
-			"title": "Dış hizmetler",
-			"operated-services-button": "Berty servislerini kullan",
-			"register-service-button": {
-				"title": "Özel bir servis sağlayıcısı kaydet",
-				"input-placeholder": "Servis URL'si",
-				"action": "Ekle"
-			},
-			"registered-services-button": {
-				"title": "Mevcut olarak kayıtlı servisler",
-				"sample-no-services": "Herhangi bir servis kaydedilmedi",
-				"sample-unknown-service": "Bilinmeyen servis"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Önerilen",
+			"desc": "",
+			"button": "",
+			"skip": "ATLA VE DAHA SONRA YAP"
 		},
 		"delete-account": {
 			"title": "Hesabı sil!",
