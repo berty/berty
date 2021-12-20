@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "認證服務",
-			"title": "服務",
-			"recommended": "推薦",
-			"desc": "這將自動複製您的會話到服務器",
-			"button": "使用 Berty 運營的服務",
-			"skip": "跳過並稍後再做"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "正在啟動 Berty 節點…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "激活 Android Nearby"
 		},
-		"services-auth": {
-			"title": "外部服務",
-			"operated-services-button": "使用 Berty 運營的服務",
-			"register-service-button": {
-				"title": "註冊自定義的服務提供商",
-				"input-placeholder": "服務 URL",
-				"action": "添加"
-			},
-			"registered-services-button": {
-				"title": "當前註冊的服務",
-				"sample-no-services": "未註冊服務",
-				"sample-unknown-service": "未知服務"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "推薦",
+			"desc": "",
+			"button": "",
+			"skip": "跳過並稍後再做"
 		},
 		"delete-account": {
 			"title": "刪除帳戶！",
