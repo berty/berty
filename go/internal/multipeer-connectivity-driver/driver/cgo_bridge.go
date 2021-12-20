@@ -15,12 +15,15 @@ import (
 	"fmt"
 	"unsafe"
 
-	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"go.uber.org/zap"
+
+	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 )
 
-var Logger *zap.Logger
-var ProtocolName string
+var (
+	Logger       *zap.Logger
+	ProtocolName string
+)
 
 //export MCHandleFoundPeer
 func MCHandleFoundPeer(remotePID *C.char) int {
