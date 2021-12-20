@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Удостоверяване на услуги",
-			"title": "Услуги",
-			"recommended": "Препоръчано",
-			"desc": "Това автоматично ще репликира вашите разговори на сървър",
-			"button": "Използвай услуги управлявани от Berty",
-			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Стартиране на Berty node…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Външни услуги",
-			"operated-services-button": "Използвай услуги управлявани от Berty",
-			"register-service-button": {
-				"title": "Регистрирайте доставчик на персонализирани услуги",
-				"input-placeholder": "Service URL",
-				"action": "Добави"
-			},
-			"registered-services-button": {
-				"title": "Текущо регистрирани услуги",
-				"sample-no-services": "Няма регистрирани услуги",
-				"sample-unknown-service": "Непозната услуга"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Препоръчително",
+			"desc": "",
+			"button": "",
+			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
 		},
 		"delete-account": {
 			"title": "Изтрии акаунт!",
