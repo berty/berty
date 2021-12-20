@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "المصادقة على الخدمات",
-			"title": "الخدمات",
-			"recommended": "موصى",
-			"desc": "سيؤدي هذا تلقائياً إلى تكرار محادثاتك على خادم",
-			"button": "استخدام الخدمات التي تشغلها برتي",
-			"skip": "اختراع و هذه الأشرطة"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "بدء تشغيل عقدة برتي…",
@@ -186,7 +178,7 @@
 					"title": "غيّر الصورة الشخصية",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "الخدمات الخارجية",
-			"operated-services-button": "استخدام الخدمات التي تشغلها برتي",
-			"register-service-button": {
-				"title": "تسجيل موفر خدمة مخصص",
-				"input-placeholder": "رابط الخدمة",
-				"action": "إضافة"
-			},
-			"registered-services-button": {
-				"title": "الخدمات المسجلة حاليا",
-				"sample-no-services": "لا توجد خدمات مسجلة",
-				"sample-unknown-service": "خدمة غير معروفة"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "موصى",
+			"desc": "",
+			"button": "",
+			"skip": "اختراع و هذه الأشرطة"
 		},
 		"delete-account": {
 			"title": "حذف الحساب!",
