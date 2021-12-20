@@ -77,14 +77,6 @@
 			},
 			"apply-changes": "APPLY CHANGES"
 		},
-		"services-auth": {
-			"header": "Authenticate to services",
-			"title": "Services",
-			"recommended": "Recommended",
-			"desc": "This will automatically replicate your conversations on a server",
-			"button": "Use Berty operated services",
-			"skip": "SKIP AND DO THIS LATER"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Starting the Berty node…",
@@ -186,9 +178,9 @@
 					"title": "Change your avatar",
 					"desc": "Let's setup a profile picture for this account!"
 				},
-				"relay": {
-					"title": "Configure relay",
-					"desc": "Improve your network performance by using a relay powered by Berty Tech non-profit."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Sync with a contact",
@@ -201,14 +193,6 @@
 				"message": {
 					"title": "Send message",
 					"desc": "Say 'Hello world' to a contact!"
-				},
-				"theme": {
-					"title": "Customize theme",
-					"desc": "Let's create your own version of the app, and share it with community!"
-				},
-				"hidden-account": {
-					"title": "Create hidden account",
-					"desc": "Create an invisible account with a specific password to login, and be safe at the airport!"
 				},
 				"ble-message": {
 					"title": "Send message without internet",
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Activate Android Nearby"
 		},
-		"services-auth": {
-			"title": "External services",
-			"operated-services-button": "Use Berty operated services",
-			"register-service-button": {
-				"title": "Register a custom service provider",
-				"input-placeholder": "Service URL",
-				"action": "Add"
-			},
-			"registered-services-button": {
-				"title": "Currently registered services",
-				"sample-no-services": "No services registered",
-				"sample-unknown-service": "Unknown service"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "",
+			"desc": "",
+			"button": "",
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Delete account!",
