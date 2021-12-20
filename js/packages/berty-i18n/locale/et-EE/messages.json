@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Teenustega autentimine",
-			"title": "Teenused",
-			"recommended": "Soovituslikud",
-			"desc": "See samm kopeerib sinu vestlused serverisse",
-			"button": "Kasuta Berty poolt hallatud teenuseid",
-			"skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Käivitan Berty sõlme…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
+		"berty-services": {
+			"header": "",
 			"title": "",
-			"operated-services-button": "Kasuta Berty poolt hallatud teenuseid",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": ""
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": ""
-			}
+			"recommended": "Soovituslikud",
+			"desc": "",
+			"button": "",
+			"skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
 		},
 		"delete-account": {
 			"title": "",
