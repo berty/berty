@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -395,6 +394,7 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 	manager.SetDevicePushKeyPath(s.devicePushKeyPath)
 	manager.SetBleDriver(s.bleDriver)
 	manager.SetNBDriver(s.nbDriver)
+	manager.SetMDNSLocker(s.mdnslocker)
 
 	return manager, nil
 }
@@ -1001,8 +1001,7 @@ func AddArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string) []s
 	args = addFlagValueArgs(args, initutil.FlagNameP2PBLE, ble.Supported, defaultConfig.BluetoothLE, m.BluetoothLE)
 	args = addFlagValueArgs(args, initutil.FlagNameP2PMultipeerConnectivity, mc.Supported, defaultConfig.AppleMultipeerConnectivity, m.AppleMultipeerConnectivity)
 	args = addFlagValueArgs(args, initutil.FlagNameP2PNearby, nb.Supported, defaultConfig.AndroidNearby, m.AndroidNearby)
-	// TODO: implement a fix to re-enable mDNS on Android
-	args = addFlagValueArgs(args, initutil.FlagNameP2PMDNS, runtime.GOOS != "android", defaultConfig.MDNS, m.MDNS)
+	args = addFlagValueArgs(args, initutil.FlagNameP2PMDNS, true, defaultConfig.MDNS, m.MDNS)
 
 	args = AddDHTArgsUsingNetworkConfig(m, args, defaultConfig)
 	args = AddRDVPArgsUsingNetworkConfig(m, args, defaultConfig)
