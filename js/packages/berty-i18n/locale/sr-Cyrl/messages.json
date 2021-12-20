@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Повежи се(сигурносно) са сервисима",
-			"title": "Сервиси",
-			"recommended": "Препоручено",
-			"desc": "Ово ће аутоматски дуплирати твоје конверзације на сервер",
-			"button": "",
-			"skip": ""
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
+		"berty-services": {
+			"header": "",
 			"title": "",
-			"operated-services-button": "",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": ""
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": ""
-			}
+			"recommended": "Препоручено",
+			"desc": "",
+			"button": "",
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "",
