@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Autenticazione ai servizi",
-			"title": "Servizi",
-			"recommended": "Consigliato",
-			"desc": "Questo replicherà automaticamente le tue conversazioni su un server",
-			"button": "Usa servizi gestiti da Berty",
-			"skip": "SALTA E FALLO DOPO"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Avvio del nodo Berty…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Attiva Android Nelle Vicinanze"
 		},
-		"services-auth": {
-			"title": "Servizi esterni",
-			"operated-services-button": "Usa servizi gestiti da Berty",
-			"register-service-button": {
-				"title": "Registra un provider di servizi personalizzato",
-				"input-placeholder": "Url Servizio",
-				"action": "Aggiungi"
-			},
-			"registered-services-button": {
-				"title": "Servizi attualmente registrati",
-				"sample-no-services": "Nessun servizio registrato",
-				"sample-unknown-service": "Servizio sconosciuto"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Consigliato",
+			"desc": "",
+			"button": "",
+			"skip": "SALTA E FALLO DOPO"
 		},
 		"delete-account": {
 			"title": "Elimina account!",
