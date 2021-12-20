@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Hitelesítés a szolgáltatásokhoz",
-			"title": "Szolgáltatások",
-			"recommended": "Ajánlott",
-			"desc": "Ez automatikusan másolni fogja a beszélgetéseit egy szerverre",
-			"button": "Használja a Berty szolgáltatásait",
-			"skip": "TOVÁBB, BEFEJEZÉS KÉSŐBB"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Berty node indítása…",
@@ -186,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Android Nearby aktiválása"
 		},
-		"services-auth": {
-			"title": "Külső szolgáltatások",
-			"operated-services-button": "Használja a Berty általi szolgáltatásokat",
-			"register-service-button": {
-				"title": "Egyéni szolgáltató regisztrálása",
-				"input-placeholder": "Szolgáltató URL címe",
-				"action": "Hozzáadás"
-			},
-			"registered-services-button": {
-				"title": "Jelenleg regisztrált szolgáltatók",
-				"sample-no-services": "Nincs regisztrált szolgáltatás",
-				"sample-unknown-service": "Ismeretlen szolgáltatás"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Ajánlott",
+			"desc": "",
+			"button": "",
+			"skip": "KIHAGYJA ÉS KÉSŐBB CSINÁLJA MEG"
 		},
 		"delete-account": {
 			"title": "Fiók törlése!",
