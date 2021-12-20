@@ -77,14 +77,6 @@
 			},
 			"apply-changes": ""
 		},
-		"services-auth": {
-			"header": "Ταυτοποίηση στις υπηρεσίες",
-			"title": "Υπηρεσίες",
-			"recommended": "Προτεινόμενο",
-			"desc": "Αυτό θα αναπαράγει αυτόματα τις συνομιλίες σας σε ένα διακομιστή",
-			"button": "Χρήση υπηρεσιών που λειτουργούν με Berty",
-			"skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
-		},
 		"exper-setup": {},
 		"generate-key": {
 			"title": "Έναρξη του κόμβου Berty…",
@@ -186,7 +178,7 @@
 					"title": "Αλλαγή avatar",
 					"desc": "Ας ρυθμίσουμε μια εικόνα προφίλ για αυτόν τον λογαριασμό!"
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -199,14 +191,6 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
 					"title": "",
 					"desc": ""
 				},
@@ -296,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
+		"berty-services": {
+			"header": "",
 			"title": "",
-			"operated-services-button": "Χρήση υπηρεσιών που λειτουργούν με Berty",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": "Προσθήκη"
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": ""
-			}
+			"recommended": "Προτεινόμενο",
+			"desc": "",
+			"button": "",
+			"skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
 		},
 		"delete-account": {
 			"title": "",
