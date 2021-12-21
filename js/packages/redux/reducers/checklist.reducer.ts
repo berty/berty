@@ -16,7 +16,7 @@ const makeRoot = <T>(val: T) => ({
 // This is the source of truth for valid checklist items keys
 export const checklistItems = {
 	avatar: {},
-	relay: {},
+	'berty-services': {},
 	contact: {},
 	group: {},
 	message: {},

@@ -499,8 +499,8 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.ReplicationServices'}
-				component={Components.Settings.ReplicationServices}
+				name={'Settings.BertyServices'}
+				component={Components.Settings.BertyServices}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			<NavigationStack.Screen

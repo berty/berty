@@ -3,9 +3,11 @@ package bertybridge
 import (
 	"context"
 	"fmt"
+	"runtime"
 	"sync"
 	"time"
 
+	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
@@ -23,6 +25,7 @@ import (
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/osversion"
 )
 
 const bufListenerSize = 256 * 1024
@@ -41,6 +44,7 @@ type Bridge struct {
 	workers        run.Group
 	bleDriver      proximity.ProximityDriver
 	nbDriver       proximity.ProximityDriver
+	mdnsLocker     sync.Locker
 	logger         *zap.Logger
 	langtags       []language.Tag
 
@@ -82,6 +86,17 @@ func NewBridge(config *Config) (*Bridge, error) {
 		initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
 	}
 
+	// setup netdriver
+	{
+		if config.netDriver != nil {
+			inet := &inetAddrs{
+				netaddrs: config.netDriver,
+				logger:   b.logger,
+			}
+			manet.SetNetInterface(inet)
+		}
+	}
+
 	// parse language
 	{
 		fields := []string{}
@@ -119,6 +134,15 @@ func NewBridge(config *Config) (*Bridge, error) {
 		b.nbDriver = config.nbDriver
 	}
 
+	{
+		if runtime.GOOS == "android" && osversion.GetVersion().Major() >= 30 &&
+			config.mdnsLockerDriver != nil {
+			b.mdnsLocker = config.mdnsLockerDriver
+		} else {
+			b.mdnsLocker = &noopNativeMDNSLockerDriver{}
+		}
+	}
+
 	// setup native bridge client
 	{
 		opts := &bridge_svc.Options{
@@ -152,6 +176,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 		opts := account_svc.Options{
 			RootDirectory: config.RootDirPath,
 
+			MDNSLocker:            b.mdnsLocker,
 			Languages:             b.langtags,
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,
