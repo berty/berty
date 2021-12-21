@@ -2,7 +2,7 @@ berty:
   contacts:
     welcomebot:
       name: 'Welcome Bot'
-      link: 'https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=Welcome-Bot'
+      link: 'https://berty.tech/id#contact/oZBLFukkeefDcXibkvxHyd1kZpqUUm4mKsE3tgcDakWx6Pa5Ak3VghVyxLZ8vns71EDLWkLbCZ5QcGADnehvxyq3B7LFh14/name=WelcomeBot'
       description: 'Official Welcome Bot'
       kind: 'Bot'
       suggestion: true
@@ -15,7 +15,7 @@ berty:
       suggestion: false
     welcomebot-dev:
       name: 'Welcome Dev'
-      link: 'https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=Welcomebot-Dev'
+      link: 'https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=WelcomeBot-Dev'
       description: 'Welcome Bot - Dev'
       kind: 'Bot'
       suggestion: false
