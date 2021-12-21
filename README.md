@@ -72,7 +72,7 @@ The two main command line utilities are:
 
 Berty is currently developed by **[Berty Technologies](https://berty.tech/about)**, a French nonprofit organization.
 
-**Note: this project is led by a small team made of humans, who makes mistakes. Please do not hesitate to point out bugs or missing features.** _See the [contribute section](#contribute) below._
+**Note: this project is led by a small team made of humans, who make mistakes. Please do not hesitate to point out bugs or missing features.** _See the [contribute section](#contribute) below._
 
 > We cannot promise we will offer you the best application, but we dedicate ourselves to doing our best to create a great one.
 
