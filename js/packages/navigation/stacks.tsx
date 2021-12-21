@@ -1,16 +1,18 @@
-import * as RawComponents from '@berty-tech/components'
-import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Linking } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import {
 	createNativeStackNavigator,
 	NativeStackNavigationOptions,
 } from '@react-navigation/native-stack'
+import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Linking } from 'react-native'
+
+import * as RawComponents from '@berty-tech/components'
+import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+
 import { dispatch } from './rootRef'
 import { ScreensParams } from './types'
 
@@ -89,7 +91,7 @@ function useLinking(): [string | null, unknown] {
 	const [url, setUrl] = useState<string | null>(null)
 	const [error, setError] = useState<unknown>()
 
-	async function initialUrl() {
+	const initialUrl = useCallback(async () => {
 		try {
 			const linkingUrl = await Linking.getInitialURL()
 			if (linkingUrl) {
@@ -98,10 +100,10 @@ function useLinking(): [string | null, unknown] {
 		} catch (ex) {
 			setError(ex)
 		}
-	}
+	}, [])
 
 	useEffect(() => {
-		function handleOpenUrl(ev: any) {
+		const handleOpenUrl = (ev: any) => {
 			console.log('handleOpenUrl:', ev.url)
 			setUrl(null)
 			setUrl(ev.url)
@@ -113,7 +115,7 @@ function useLinking(): [string | null, unknown] {
 		})
 
 		return () => Linking.removeEventListener('url', handleOpenUrl)
-	}, [])
+	}, [initialUrl])
 
 	return [url, error]
 }
@@ -128,7 +130,7 @@ const DeepLinkBridge: React.FC = React.memo(() => {
 			ctx.setHandledLink(true)
 			navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 		}
-	}, [url, error, navigation, ctx])
+	}, [ctx, error, navigation, url])
 
 	return null
 })
