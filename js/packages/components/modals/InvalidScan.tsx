@@ -150,10 +150,12 @@ const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) =>
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+	const { navigate } = useNavigation()
 
 	const isContactAlreadyAdded = error?.error?.errorDetails?.codes?.includes(
 		beapi.errcode.ErrCode.ErrContactRequestContactAlreadyAdded,
 	)
+	console.log({ isContactAlreadyAdded })
 	let errorMessage = error.toString()
 	let title = ''
 	if (type === 'link') {
@@ -161,8 +163,7 @@ const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) =>
 	} else if (type === 'qr') {
 		title = t('modals.manage-deep-link.invalid-qr')
 		if (isContactAlreadyAdded) {
-			title = t('modals.manage-deep-link.contact-already-added')
-			errorMessage = t('modals.manage-deep-link.contact-already-added-message')
+			navigate('Main.Home')
 		}
 	} else {
 		title = t('modals.manage-deep-link.error')
