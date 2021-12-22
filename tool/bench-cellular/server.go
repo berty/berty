@@ -10,8 +10,8 @@ import (
 	"strconv"
 
 	"github.com/libp2p/go-libp2p"
+	routing "github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	routing "github.com/libp2p/go-libp2p-routing"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
@@ -132,7 +132,7 @@ func createServerHost(ctx context.Context, gOpts *globalOpts, sOpts *serverOpts)
 		opts = append(opts, libp2p.StaticRelays(staticRelays))
 	}
 
-	return libp2p.New(ctx, opts...) // Create host
+	return libp2p.New(opts...) // Create host
 }
 
 func printHint(h host.Host, gOpts *globalOpts, sOpts *serverOpts) {
