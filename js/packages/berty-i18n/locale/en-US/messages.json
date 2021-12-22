@@ -456,7 +456,7 @@
 		}
 	},
 	"chat": {
-		"sending": "Sending..",
+		"sending": "Sending...",
 		"sent": "Sent",
 		"contact-settings": {
 			"mark-button": "Mark as verified",
