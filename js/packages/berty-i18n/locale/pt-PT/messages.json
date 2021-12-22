@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Serviços",
+				"network-button": "Lista de redes",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Autenticar-se nos serviços",
-			"title": "Serviços",
-			"recommended": "Recomendado",
-			"desc": "Isto irá replicar as tuas conversas num servidor",
-			"button": "Usar os serviços operados pelo Berty",
-			"skip": "SALTAR E FAZER MAIS TARDE"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Configuração finalizada!",
 			"desc": "A app está pronta a ser usada, adicione contactos e converse livremente e em privado com eles",
 			"button": "COMECE A USAR O BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Cancelar",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "Ajuda",
-			"header-center-button": "Ferramentas de Programador",
-			"header-right-button": "Definições",
-			"network-button": "Lista de redes",
 			"edit-profile": "Editar perfil",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Notificações",
-				"tag-enabled": "Ativado",
-				"tag-disabled": "Desativado"
-			},
-			"dark-mode-button": "",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": ""
 		},
 		"network-map": {
 			"title": "Lista de redes",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Definições",
 			"desc": "",
+			"in-app-notifications": "",
+			"dark-mode-button": "",
+			"devtools": "Ferramentas de Programador",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
+		"berty-services": {
+			"header": "",
 			"title": "",
-			"operated-services-button": "Usar os serviços operados pelo Berty",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": "Adicionar"
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": ""
-			}
+			"recommended": "Recomendado",
+			"desc": "",
+			"button": "",
+			"skip": "SALTAR E FAZER MAIS TARDE"
 		},
 		"delete-account": {
 			"title": "",
@@ -480,6 +456,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "",
 			"block-button": "",
@@ -549,6 +527,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "",
 			"files": "",
 			"microphone": "",
@@ -571,6 +550,10 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +590,7 @@
 			"settings": ""
 		},
 		"skip": "",
+		"cancel": "",
 		"settings-text": ""
 	},
 	"notification": {
