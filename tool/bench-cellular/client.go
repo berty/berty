@@ -74,7 +74,7 @@ func addDestToPeerstore(h host.Host, dest string) (peer.ID, error) {
 		}
 	}
 
-	peerid, err := peer.IDFromString(pid)
+	peerid, err := peer.Decode(pid)
 	if err != nil {
 		return "", err
 	}
