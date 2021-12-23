@@ -228,11 +228,27 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 			// protect this peer to avoid to be pruned
 			s.ProtectPeer(peer.ID)
 
-			s.logger.Debug("found a peer",
+			s.logger.Debug("TINDER FOUND A PEER, trying to connect...",
 				zap.String("driver", driver.Name),
 				logutil.PrivateString("peer", filterpeer.ID.String()),
 				logutil.PrivateString("ns", topic),
 				zap.Any("addrs", filterpeer.Addrs))
+
+			if err := s.host.Connect(ctx, filterpeer); err != nil {
+				s.logger.Warn("TINDER UNABLE TO CONNECT TO PEER",
+					zap.String("driver", driver.Name),
+					logutil.PrivateString("peer", filterpeer.ID.String()),
+					logutil.PrivateString("ns", topic),
+					zap.Any("addrs", filterpeer.Addrs),
+					zap.Error(err))
+			} else {
+				s.logger.Info("TINDER CONNECT SUCCESS",
+					zap.String("driver", driver.Name),
+					logutil.PrivateString("peer", filterpeer.ID.String()),
+					logutil.PrivateString("ns", topic),
+					zap.Any("addrs", filterpeer.Addrs))
+
+			}
 
 			// forward the peer
 			out <- filterpeer
