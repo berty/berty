@@ -14,14 +14,14 @@
     },
     "photo": {
       "bodyWithNumberOfMedia_one": "A envoyé une photo",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' photos"
     },
     "media": {
       "bodyWithNumberOfMedia_one": "A envoyé un média",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' médias"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v a réagi avec %[2]v à votre message"
     },
     "groupInvitation": {
       "bodyWithGroupName": "Invitation au groupe '%[1]v'"
