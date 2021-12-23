@@ -47,13 +47,13 @@
 			"desc": "Trouvez de la documentation et créez votre propre configuration.",
 			"more-about": {
 				"title": "Bienvenue dans les paramètres avancés",
-				"first-paragraph": "",
+				"first-paragraph": "Ici vous pourrez créer votre propre configuration personnalisée correspondant à vos besoins.",
 				"second-paragraph": "Nous vous présenterons toutes les options pour vous permettre de comprendre ce qui se passe sous le capot.",
-				"third-paragraph": ""
+				"third-paragraph": "Vous trouverez aussi un lien vers les ressources pour le bidouiller. Cette section est réservée aux experts !"
 			},
-			"read-more": "",
+			"read-more": "En savoir plus sur les paramètres avancés",
 			"config-title": "Configurations personnalisées",
-			"config-desc": "",
+			"config-desc": "3 étapes de configuration de l'application. Personnalisez tout maintenant !",
 			"learn-more": "En savoir plus",
 			"first-part": {
 				"title": "Proximité",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "",
+			"desc": "Nous nous préparons à charger les webviews sur le réseau. Voulez vous toujours l'ouvrir ?",
 			"first-button": "Annuler",
 			"second-button": "Oui"
 		}
@@ -173,14 +173,14 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "",
+				"title": "Liste des tâches de bienvenue {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Changer votre avatar",
 					"desc": "Configurer une image de profil !"
 				},
 				"berty-services": {
-					"title": "",
-					"desc": ""
+					"title": "Activer les services Berty",
+					"desc": "Améliorez vos performances réseau en utilisant les services de Berty Tech organisation à but non lucrative."
 				},
 				"contact": {
 					"title": "Synchroniser avec un contact",
@@ -281,10 +281,10 @@
 			"activate-button": "Activer Android Nearby"
 		},
 		"berty-services": {
-			"header": "",
+			"header": "Activer les services Berty",
 			"title": "Services Berty",
 			"recommended": "Recommandé",
-			"desc": "",
+			"desc": " L'activation des services Berty vous permettra de recevoir des notifications push via les serveurs Berty Technologies et vous donnera accès à ses nœuds pour la réplication des conversations.",
 			"button": "Utiliser les services de Berty",
 			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
 		},
@@ -527,7 +527,7 @@
 		},
 		"files": {
 			"gallery": "Galerie",
-			"no-images": "",
+			"no-images": "Pas d'images",
 			"camera": "Caméra",
 			"files": "Fichiers",
 			"microphone": "Microphone",
