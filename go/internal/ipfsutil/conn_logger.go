@@ -92,6 +92,7 @@ func (cl *connLogger) Disconnected(n network.Network, c network.Conn) {
 func (cl *connLogger) OpenedStream(n network.Network, s network.Stream) {
 	if tags := cl.getPeerTags(s.Conn().RemotePeer()); tags != nil {
 		cl.logger.Debug("Stream opened",
+			zap.String("protocol", string(s.Protocol())),
 			logutil.PrivateString("peer", s.Conn().RemotePeer().Pretty()),
 			logutil.PrivateString("to", s.Conn().LocalMultiaddr().String()),
 			logutil.PrivateString("from", s.Conn().RemoteMultiaddr().String()),
@@ -103,6 +104,7 @@ func (cl *connLogger) OpenedStream(n network.Network, s network.Stream) {
 func (cl *connLogger) ClosedStream(n network.Network, s network.Stream) {
 	if tags := cl.getPeerTags(s.Conn().RemotePeer()); tags != nil {
 		cl.logger.Debug("Stream closed",
+			zap.String("protocol", string(s.Protocol())),
 			logutil.PrivateString("peer", s.Conn().RemotePeer().Pretty()),
 			logutil.PrivateString("to", s.Conn().LocalMultiaddr().String()),
 			logutil.PrivateString("from", s.Conn().RemoteMultiaddr().String()),
