@@ -2,8 +2,8 @@
 	"onboarding": {
 		"getstarted": {
 			"title": "PROTEGE TU PRIVACIDAD",
-			"desc": "",
-			"button": ""
+			"desc": "mensajería peer-to-peer gratuita y segura",
+			"button": "DESCUBRA"
 		},
 		"select-mode": {
 			"title": "Elige un preajuste",
@@ -33,27 +33,27 @@
 			"placeholder": "Elige tu apodo",
 			"button": "CREAR MI CUENTA",
 			"advanced": "AVANZADO",
-			"import-account": "",
+			"import-account": "IMPORTAR CUENTA",
 			"link-device": "ENLAZAR DISPOSITIVO",
 			"more": "MÁS INFO",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Buen saber:",
+				"first-point": "Su cuenta fue creada localmente",
+				"second-point": "El apodo es opcional y editable"
 			}
 		},
 		"advanced-settings": {
-			"title": "",
-			"desc": "",
+			"title": "Configuración avanzada",
+			"desc": "Busque la documentación y cree su propia configuración.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Bienvenido a la configuración avanzada",
+				"first-paragraph": "Aquí podrá crear su propia configuración para adaptar a sus necesidades.",
+				"second-paragraph": "Le presentaremos todas las opciones para que pueda entender lo que ocurre bajo la capucha.",
+				"third-paragraph": "También puede encontrar el enlace de recursos para hackearlo. ¡Esta sección es sólo para expertos!"
 			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
+			"read-more": "Más información sobre la configuración avanzada",
+			"config-title": "Configuraciones personalizadas",
+			"config-desc": "3 pasos de configuración de la app. ¡Personaliza todo ahora!",
 			"learn-more": "Aprender más",
 			"first-part": {
 				"title": "Proximidad",
@@ -63,17 +63,17 @@
 			"second-part": {
 				"title": "Red entre iguales (P2P)",
 				"first-button": "Tabla Hash distribuida",
-				"second-button": ""
+				"second-button": "Activación de TOR"
 			},
 			"third-part": {
 				"title": "Servicios",
 				"network-button": "Lista de redes",
-				"first-button": "",
+				"first-button": "Notificaciones Push",
 				"second-button": {
-					"title": "",
+					"title": "Configure su propio nodo",
 					"placeholder": "Introducir dirección del servidor"
 				},
-				"third-button": ""
+				"third-button": "Seleccione un nodo certificado"
 			},
 			"apply-changes": "APLICAR CAMBIOS"
 		},
@@ -88,8 +88,8 @@
 			"button": "INICIAR USANDO BERTY"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "WebViews",
+			"desc": "Estamos preparando para subir las WebViews en la red. ¿Aún desea abrirlo?",
 			"first-button": "Cancelar",
 			"second-button": "Sí"
 		}
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "No se puede eliminar un miembro de este grupo"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "La solicitud ha sido enviada. Pendiendo...",
 				"draft": "Borrador: {{message}}"
 			}
 		},
@@ -143,8 +143,8 @@
 				"desc": "Clickee aquí para configurar notificaciones push"
 			},
 			"replicate": {
-				"display-name": "",
-				"desc": ""
+				"display-name": "Replicación del P2P",
+				"desc": "Configurar los servicios de replicación"
 			}
 		},
 		"network-options": {
@@ -173,14 +173,14 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "",
+				"title": "Lista de verificación de bienvenida {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Cambiar tu avatar",
-					"desc": ""
+					"desc": "¡Configuremos la foto de perfil de esta cuenta!"
 				},
 				"berty-services": {
-					"title": "",
-					"desc": ""
+					"title": "Activar servicios de Berty",
+					"desc": "Mejore el rendimiento de la red con los servicios de Berty Technologies, sin ánimo de lucro."
 				},
 				"contact": {
 					"title": "Sincronizar con un contacto",
@@ -188,20 +188,20 @@
 				},
 				"group": {
 					"title": "Unirse o crear grupo",
-					"desc": ""
+					"desc": "¡Vamos a crear o unirnos a tu primer grupo Berty!"
 				},
 				"message": {
 					"title": "Enviar mensaje",
-					"desc": ""
+					"desc": "¡Vamos a decir \"Hola mundo\" a un contacto!"
 				},
 				"ble-message": {
-					"title": "",
-					"desc": ""
+					"title": "Enviar mensaje sin conexión de internet",
+					"desc": "¡Utilice la función de Proximidad y envíe un mensaje sin necesidad de una red celular o de una conexión a Internet!"
 				}
 			},
 			"edit-profile": "Editar perfil",
-			"share-link": "",
-			"create-group": "",
+			"share-link": "Compartir enlace",
+			"create-group": "Crear grupo",
 			"create-new-account": "Crear una nueva cuenta"
 		},
 		"network-map": {
@@ -211,18 +211,18 @@
 		"mode": {
 			"title": "Ajustes",
 			"desc": "Personaliza todo para obtener la aplicación que se ajuste a tus necesidades",
-			"in-app-notifications": "",
+			"in-app-notifications": "Notificaciones en la aplicación",
 			"dark-mode-button": "Modo oscuro",
 			"devtools": "Herramientas de desarrollo",
-			"network-config": "",
+			"network-config": "Configuración de la red",
 			"notification-file-saved": {
-				"title": "",
-				"desc": ""
+				"title": "¡Dato guardado!",
+				"desc": "Disponible en el directorio de descargas"
 			},
 			"receive-contact-requests-button": "Recibir solicitudes de contacto",
 			"external-services-button": "Servicios externos",
 			"auto-replicate-button": "Auto replicar",
-			"auto-replicate-button-unavailable": "",
+			"auto-replicate-button-unavailable": "Primero debe registrar al menos un servidor de replicación",
 			"blocked-contacts-button": {
 				"title": "Contactos bloqueados",
 				"tag": "bloqueado"
@@ -271,7 +271,7 @@
 		},
 		"bluetooth": {
 			"title": "Bluetooth",
-			"desc": "",
+			"desc": "El Bluetooth le permite intercambiar mensajes con Berty sin acceso a Internet, conectando su dispositivo directamente con los \"peer\" cercanos",
 			"activate-button": "Activar Bluetooth"
 		},
 		"mc": {
@@ -281,11 +281,11 @@
 			"activate-button": "Activar Android Nearby"
 		},
 		"berty-services": {
-			"header": "",
-			"title": "",
+			"header": "Servicios activos de Berty",
+			"title": "Servicios de Berty",
 			"recommended": "Recomendado",
-			"desc": "",
-			"button": "",
+			"desc": " La activación de los servicios de Berty le permitirá recibir notificaciones \"push\" a través de los servidores de Berty Technologies y le dará acceso a sus nodos para la replicación de conversaciones.",
+			"button": "Usar servicios de Berty",
 			"skip": "SALTAR Y HACER MÁS TARDE"
 		},
 		"delete-account": {
@@ -328,17 +328,17 @@
 			"current-tag": "Actual"
 		},
 		"faq": {
-			"title": ""
+			"title": "PREGUNTAS FRECUENTES"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Guía"
 		},
 		"devtools": {
 			"title": "Herramientas de desarrollo",
 			"header-left-button": "Información del dispositivo",
 			"header-middle-button": "Generar datos falsos",
 			"header-right-button": "Reiniciar el servicio",
-			"theme-editor": "",
+			"theme-editor": "Editor de temas y apariencia",
 			"simulate-button": "Simular error de flujo",
 			"simulate-js-error-button": "Simular error de JavaScript",
 			"tor-button": "Tor {{option}}",
@@ -358,7 +358,7 @@
 			"add-dev-conversations-button": "Agregar conversaciones de desarrollo",
 			"share-button": {
 				"title": "Compartir ID en discord",
-				"alert-title": "",
+				"alert-title": "¿Quiere compartir su código de QR en \"#dev-logs\" en el servidor Discord de Berty?",
 				"alert-message": "Esto permitirá al resto del personal escanear su código QR o copiar su enlace de contacto.",
 				"alert-accept-button": "Sí 👍",
 				"alert-cancel-button": "Nop"
@@ -380,9 +380,9 @@
 				"tried": "✔ Se intentó enviar a los {{length}} contactos"
 			},
 			"trigger-crashlytics-button": "Desencadenar fallo (crash) crashlytics",
-			"tyber-attach": "",
+			"tyber-attach": "Adjuntar Tyber a {{host}}",
 			"tyber-host-button": {
-				"name": "",
+				"name": "Tyber",
 				"bullet-point": "Reinicia la aplicación luego de cambiar este campo"
 			},
 			"footer-left-button": "Información del dispositivo",
@@ -411,11 +411,11 @@
 		},
 		"theme-editor": {
 			"title": "Editor de temas",
-			"randomize": "",
-			"save": "",
-			"export": "",
-			"share": "",
-			"import": ""
+			"randomize": "Generar tema",
+			"save": "Guardar este tema",
+			"export": "Exportar el tema seleccionado como un archivo",
+			"share": "Compartir el tema seleccionado como archivo",
+			"import": "Importar un archivo de tema"
 		},
 		"my-berty-ID": {
 			"qr": "QR",
@@ -443,21 +443,21 @@
 			"fingerprint": "Huella digital",
 			"info": "Información",
 			"devices": "Dispositivos",
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "UNIR A ESTE GRUPO",
+			"password-label": "Introduzca la contraseña del grupo",
+			"password-placeholder": "Contraseña..."
 		},
 		"save-theme": {
-			"title": "",
-			"desc": "",
-			"placeholder": "",
+			"title": "Guardar tema",
+			"desc": "¡Por favor, elija un nombre para su tema!",
+			"placeholder": "Nombre del tema...",
 			"cancel": "CANCELAR",
-			"add": ""
+			"add": "¡AÑADIR!"
 		}
 	},
 	"chat": {
-		"sending": "",
-		"sent": "",
+		"sending": "Enviando..",
+		"sent": "Enviado",
 		"contact-settings": {
 			"mark-button": "Marcar como verificado",
 			"block-button": "Bloquear contacto",
@@ -527,7 +527,7 @@
 		},
 		"files": {
 			"gallery": "Galería",
-			"no-images": "",
+			"no-images": "Sin imágenes",
 			"camera": "Cámara",
 			"files": "Archivos",
 			"microphone": "Micrófono",
@@ -552,8 +552,8 @@
 			"replied-to": "Respondido a"
 		},
 		"user-message": {
-			"read-more": "",
-			"show-less": ""
+			"read-more": "Aprender más",
+			"show-less": "Mostrar menos"
 		}
 	},
 	"audio": {
@@ -569,7 +569,7 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "",
+			"title": "Notificaciones Push",
 			"desc": "Berty necesita tu permiso para enviarte notificaciones locales o push. Esto te permitirá ser informado cuando recibas un mensaje."
 		},
 		"p2p": {
@@ -608,13 +608,13 @@
 		"wtf-screen": {
 			"title": "¿Cuál es el fallo?",
 			"desc": "La aplicación ha fallado.",
-			"desc-report": ""
+			"desc-report": "Pulse el botón para salir y reiniciar la aplicación."
 		},
 		"sorry-screen": {
 			"title": "¡Perdón por este error!",
 			"desc": "Es culpa de Francisco, desarrollador interno de Berty, quien debió haber cometido un error. ¡Qué tonto este Francisco!",
 			"desc-em": "*Bueno, está bien, no hay un Francisco en el equipo de Berty.",
-			"desc-report": ""
+			"desc-report": "Pulse el botón para salir y reiniciar la aplicación."
 		}
 	},
 	"debug": {
@@ -642,10 +642,10 @@
 					"action-cancel": "Cancelar"
 				},
 				"status": {
-					"datastore-found": "",
-					"datastore-not-found": "",
-					"ipfs-repo-found": "",
-					"ipfs-repo-not-found": "",
+					"datastore-found": "Datastore encontrado",
+					"datastore-not-found": "Datastore no encontrado",
+					"ipfs-repo-found": "Repositorio de IPFS encontrado",
+					"ipfs-repo-not-found": "Repositorio de IPFS no encontrado",
 					"messenger-db-found": "La base de datos de mensajes fue encontrada",
 					"messenger-db-not-found": "La base de datos de mensajes no fue encontrada"
 				},
