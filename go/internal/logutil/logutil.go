@@ -150,6 +150,7 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 	)
 
 	if withIPFS {
+		ipfs_log.SetDebugLogging()
 		ipfs_log.SetPrimaryCore(tee.Core())
 	} else {
 		ipfs_log.SetPrimaryCore(zapcore.NewNopCore())
