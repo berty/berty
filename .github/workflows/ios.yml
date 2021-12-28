@@ -23,21 +23,39 @@ on:
       - '.github/workflows/ios.yml'
 
 jobs:
+  mac_runner_matrix_builder:
+    name: macOS matrix builder
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - id: set-matrix
+        run: |
+          # usage: node .github/workflows/mac-runner-matrix-builder.js STRATEGY
+          #
+          #  STRATEGY
+          #    random         pick a random runner configuration
+          #    dc4            pick the dc4 runner configuration
+          #    github         pick the github runner configuration
+          #    all            pick all the runner configurations (in parallel)
+          #    optimized      WIP
+          #
+          # TODO: use a github action secret to pass the builder strategy dynamically
+          node .github/workflows/mac-runner-matrix-builder.js random
+
   build:
+    needs: mac_runner_matrix_builder
     name: Build for iOS
-    runs-on: ${{ matrix.runner.labels }}
+    runs-on: ${{ matrix.runner }}
     strategy:
-      matrix:
-        runner: [
-          { name: "DC4 macOS 11", labels: ["self-hosted", "dc4"], selfhosted: true },
-          { name: "GitHub macOS 11", labels: ["macos-11"], selfhosted: false },
-        ]
-        golang: ['1.17.x']
-        xcode: ['13.x']
-        node: ['16.x']
+      fail-fast: false
+      matrix: ${{fromJson(needs.mac_runner_matrix_builder.outputs.matrix)}}
     steps:
       - name: Pre-checkout cleanup
-        if: ${{ matrix.runner.selfhosted }}
+        if: ${{ matrix.selfhosted }}
         run: |
           if [ -d js/ios/.gomobile-cache ]; then
             mv js/ios/.gomobile-cache $RUNNER_TEMP/.gomobile-cache
@@ -51,14 +69,14 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
       - name: Post-checkout cleanup
-        if: ${{ matrix.runner.selfhosted }}
+        if: ${{ matrix.selfhosted }}
         run: |
           if [ -d $RUNNER_TEMP/.gomobile-cache ]; then
             mv $RUNNER_TEMP/.gomobile-cache js/ios/.gomobile-cache
           fi
 
       - name: Setup XCode
-        if: ${{ !matrix.runner.selfhosted }}
+        if: ${{ !matrix.selfhosted }}
         # disabled on self-hosted because it requires authentication
         uses: maxim-lobanov/setup-xcode@v1.4.0
         with:
@@ -85,7 +103,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Setup Bundler
-        if: ${{ matrix.runner.selfhosted }}
+        if: ${{ matrix.selfhosted }}
         working-directory: ./js/ios
         run: |
           gem --version
