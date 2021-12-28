@@ -134,7 +134,31 @@ func DelayResponseRecipe(duration time.Duration) Recipe {
 // AutoAcceptIncomingContactRequestRecipe makes the bot "click" on the "accept" button automatically.
 // NOT YET IMPLEMENTED.
 func AutoAcceptIncomingGroupInviteRecipe() Recipe {
-	panic("not implemented.")
+	recipe := map[HandlerType][]Handler{}
+	recipe[GroupInvitationHandler] = []Handler{
+		func(ctx Context) {
+			if !ctx.IsNew {
+				return
+			}
+			if ctx.Interaction.GetType() != messengertypes.AppMessage_TypeGroupInvitation {
+				return
+			}
+			ctx.Logger.Info("auto-accepting group invitation", zap.Any("group", ctx.Conversation))
+			invit, err := ctx.Interaction.UnmarshalPayload()
+			if err != nil {
+				ctx.Logger.Error("failed to unmarshal group invitation")
+				return
+			}
+			req := &messengertypes.ConversationJoin_Request{
+				Link: invit.(*messengertypes.AppMessage_GroupInvitation).Link,
+			}
+			_, err = ctx.Client.ConversationJoin(ctx.Context, req)
+			if err != nil {
+				ctx.Logger.Error("conversation join failed", zap.Error(err))
+			}
+		},
+	}
+	return recipe
 }
 
 // SendErrorToClientRecipe will send internal errors to the related context (a contact or a conversation).

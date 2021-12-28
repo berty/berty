@@ -40,6 +40,7 @@ const (
 	NewConversationHandler
 	CommandHandler
 	CommandNotFoundHandler
+	GroupInvitationHandler
 )
 
 type Handler func(ctx Context)
@@ -105,6 +106,8 @@ func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent
 				}
 			}
 			b.callHandlers(context, UserMessageHandler)
+		case messengertypes.AppMessage_TypeGroupInvitation:
+			b.callHandlers(context, GroupInvitationHandler)
 		default:
 			return fmt.Errorf("unsupported interaction type: %q", context.Interaction.Type)
 		}
