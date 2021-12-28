@@ -415,7 +415,9 @@
 			"save": "Save this theme",
 			"export": "Export selected theme as file",
 			"share": "Share selected theme as file",
-			"import": "Import a file theme"
+			"import": "Import a file theme",
+			"bad-format-title": "Theme bad format",
+			"bad-format-desc": "Bad format for the theme file"
 		},
 		"my-berty-ID": {
 			"qr": "QR",
