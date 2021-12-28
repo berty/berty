@@ -15,7 +15,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import { useAccount, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch } from '@berty-tech/react-redux'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { StackActions } from '@react-navigation/native'
 

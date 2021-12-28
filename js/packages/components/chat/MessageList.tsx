@@ -12,12 +12,12 @@ import { useStyles } from '@berty-tech/styles'
 import {
 	fetchMore,
 	useConversation,
-	useConvInteractions,
-	useMessengerContext,
 	pbDateToNum,
 	ParsedInteraction,
+	useMessengerClient,
 } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
+import { useConversationInteractions, useConversationMembersDict } from '@berty-tech/react-redux'
 
 import { InfosChat } from '../InfosChat'
 import { Message } from './message'
@@ -59,8 +59,6 @@ const DateSeparator: React.FC<{
 
 const NoopComponent: React.FC = () => null
 
-const emptyObject = {}
-
 const keyExtractor = (item: ParsedInteraction, index: number) => item.cid || `${index}`
 
 export const MessageList: React.FC<{
@@ -71,9 +69,9 @@ export const MessageList: React.FC<{
 }> = React.memo(({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
 	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
-	const ctx = useMessengerContext()
-	const members = ctx.members[id]
-	const rawMessages = useConvInteractions(id)
+	const messengerClient = useMessengerClient()
+	const members = useConversationMembersDict(id)
+	const rawMessages = useConversationInteractions(id)
 	const messages = useMemo(
 		() =>
 			rawMessages.filter(
@@ -122,7 +120,7 @@ export const MessageList: React.FC<{
 					inte={item}
 					convKind={conversation?.type || beapi.messenger.Conversation.Type.Undefined}
 					convPK={id || ''}
-					members={members || emptyObject}
+					members={members}
 					previousMessage={index < messages.length - 1 ? messages[index + 1] : undefined}
 					nextMessage={index > 0 ? messages[index - 1] : undefined}
 					replyOf={messages.find(message => message.cid === item.targetCid)}
@@ -142,10 +140,10 @@ export const MessageList: React.FC<{
 			fetchingFrom,
 			fetchedFirst,
 			oldestMessage,
-			client: ctx.client,
+			client: messengerClient,
 			convPk: id,
 		}).then(() => setIsLoadingMore(false))
-	}, [fetchingFrom, fetchedFirst, oldestMessage, ctx.client, id])
+	}, [fetchingFrom, fetchedFirst, oldestMessage, messengerClient, id])
 	const updateStickyDateCB = useCallback(() => updateStickyDate(setStickyDate), [setStickyDate])
 
 	const handleScrollBeginDrag = useCallback(() => {
@@ -194,7 +192,7 @@ export const MessageList: React.FC<{
 			data={messages}
 			inverted
 			onEndReached={!isLoadingMore ? fetchMoreCB : null}
-			onEndReachedThreshold={0.8}
+			onEndReachedThreshold={1.5}
 			keyExtractor={keyExtractor}
 			refreshing={fetchingFrom !== null}
 			ListFooterComponent={listFooterComponent}
