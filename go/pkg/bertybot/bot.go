@@ -61,10 +61,26 @@ func New(opts ...NewOption) (*Bot, error) {
 	{
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		req := &messengertypes.InstanceShareableBertyID_Request{
+
+		{
+			acc, err := b.client.AccountGet(ctx, &messengertypes.AccountGet_Request{})
+			if err != nil {
+				return nil, fmt.Errorf("bot: cannot retrieve berty account: %w", err)
+			}
+
+			if acc.GetAccount().GetDisplayName() != b.displayName {
+				req := &messengertypes.AccountUpdate_Request{DisplayName: b.displayName}
+				_, err := b.client.AccountUpdate(ctx, req)
+				if err != nil {
+					return nil, fmt.Errorf("bot: cannot retrieve berty ID: %w", err)
+				}
+			}
+		}
+
+		req2 := &messengertypes.InstanceShareableBertyID_Request{
 			DisplayName: b.displayName,
 		}
-		ret, err := b.client.InstanceShareableBertyID(ctx, req)
+		ret, err := b.client.InstanceShareableBertyID(ctx, req2)
 		if err != nil {
 			return nil, fmt.Errorf("bot: cannot retrieve berty ID: %w", err)
 		}
