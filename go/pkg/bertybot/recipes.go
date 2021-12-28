@@ -116,6 +116,38 @@ func EchoRecipe(prefix string) Recipe {
 	return recipe
 }
 
+func ReplyRecipe(replier func(string) string) Recipe {
+	recipe := map[HandlerType][]Handler{}
+	recipe[UserMessageHandler] = []Handler{
+		func(ctx Context) {
+			// skip old events
+			if ctx.IsReplay {
+				return
+			}
+			// do not reply to myself
+			if ctx.IsMine {
+				return
+			}
+			// only reply once
+			if !ctx.IsNew {
+				return
+			}
+
+			reply := replier(ctx.UserMessage)
+			if reply == "" {
+				return
+			}
+
+			ctx.Logger.Info("replying", logutil.PrivateString("input", ctx.UserMessage), logutil.PrivateString("reply", reply), logutil.PrivateString("conversation", ctx.ConversationPK))
+			err := ctx.ReplyString(reply)
+			if err != nil {
+				ctx.Logger.Error("reply failed", zap.Error(err))
+			}
+		},
+	}
+	return recipe
+}
+
 // DelayResponseRecipe will wait for the specified duration before handling an event.
 func DelayResponseRecipe(duration time.Duration) Recipe {
 	recipe := map[HandlerType][]Handler{}
