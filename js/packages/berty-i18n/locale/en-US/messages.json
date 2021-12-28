@@ -418,6 +418,7 @@
 			"import": "Import a file theme"
 		},
 		"my-berty-ID": {
+			"title": "My Berty ID",
 			"qr": "QR",
 			"fingerprint": "Fingerprint",
 			"devices": "Devices"
