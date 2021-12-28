@@ -70,12 +70,12 @@
 				"network-button": "Lista de Redes",
 				"first-button": "Notificações Push",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "Configure o seu próprio nó",
+					"placeholder": "Insira o endereço do servidor"
 				},
-				"third-button": ""
+				"third-button": "Selecionar um nó certificado"
 			},
-			"apply-changes": ""
+			"apply-changes": "APLICAR MUDANÇAS"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -88,10 +88,10 @@
 			"button": "COMECE A USAR O BERTY"
 		},
 		"web-views": {
-			"title": "",
+			"title": "WebViews",
 			"desc": "",
 			"first-button": "Cancelar",
-			"second-button": ""
+			"second-button": "Sim"
 		}
 	},
 	"main": {
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": ""
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "A solicitação foi enviada. Pendente...",
 				"draft": ""
 			}
 		},
@@ -143,7 +143,7 @@
 				"desc": ""
 			},
 			"replicate": {
-				"display-name": "",
+				"display-name": "Replicação P2P",
 				"desc": ""
 			}
 		},
@@ -151,9 +151,9 @@
 			"welcome-title": "",
 			"full-anon-mode": "Modo de Anonimato Completo",
 			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
+			"allow-expert-mode": "Permitir Modo Expert",
 			"tor-compatible": {
-				"title": "",
+				"title": "Compatível com TOR",
 				"desc": ""
 			},
 			"full-anon": {
@@ -167,7 +167,7 @@
 			"skip": "PULAR E FAZER MAIS TARDE"
 		},
 		"scan": {
-			"title": ""
+			"title": "Escanear código QR"
 		}
 	},
 	"settings": {
