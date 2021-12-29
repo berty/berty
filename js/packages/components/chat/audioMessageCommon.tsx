@@ -83,7 +83,7 @@ export const WaveForm: React.FC<{
 	const [{ margin, text }] = useStyles()
 	const colors = useThemeColor()
 	if (color === undefined) {
-		color = colors['main-background']
+		color = colors['reverted-main-text']
 	}
 	return (
 		<View
