@@ -14,15 +14,7 @@ import {
 import { useStyles } from '@berty-tech/styles'
 import source from '@berty-tech/assets/loader_dots.gif'
 
-const expandSelfAndCenterContent: any = {
-	alignItems: 'center',
-	justifyContent: 'center',
-	paddingBottom: 30,
-	height: '100%',
-	width: '100%',
-}
-
-const LoaderDots: React.FC = () => {
+export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
 
 	return (
@@ -42,23 +34,37 @@ const LoaderDots: React.FC = () => {
 }
 
 const StreamInProgressCmp: React.FC<{}> = () => {
-	const [{ text }] = useStyles()
+	const [{ text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { streamInProgress: stream } = useMessengerContext()
 
 	return (
-		<View style={{ backgroundColor: colors['main-background'] }}>
+		<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+
 			<Text
 				style={[
 					text.bold.small,
 					text.align.center,
-					{ marginTop: 60, fontFamily: 'Open Sans', color: colors['main-text'] },
+					{
+						fontFamily: 'Open Sans',
+						color: colors['main-text'],
+						position: 'absolute',
+						top: 30 * scaleSize,
+						left: 0,
+						right: 0,
+					},
 				]}
 			>
-				{stream?.stream}
+				{stream?.stream || 'Test'}
 			</Text>
-			<View style={[expandSelfAndCenterContent]}>
+			<View
+				style={{
+					flex: 1,
+					alignItems: 'center',
+					justifyContent: 'center',
+				}}
+			>
 				<Text
 					style={[
 						text.bold.small,
@@ -66,7 +72,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
-					{stream?.msg.doing}
+					{stream?.msg.doing || 'Doing'}
 				</Text>
 				<Text
 					style={[
@@ -75,9 +81,9 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
-					{stream?.msg.completed} / {stream?.msg.total}
+					{stream?.msg.completed || '0'} / {stream?.msg.total || '6'}
 				</Text>
-				<Progress.Bar progress={stream?.msg.progress || 0} width={200} />
+				<Progress.Bar progress={stream?.msg.progress || 0} width={200} color='#3946E1' />
 			</View>
 		</View>
 	)
@@ -103,7 +109,18 @@ export const StreamGate: React.FC = ({ children }) => {
 
 	if (streamError && !streamInProgress) {
 		return (
-			<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
+			<View
+				style={[
+					{
+						padding: gutter,
+						alignItems: 'center',
+						justifyContent: 'center',
+						paddingBottom: 30,
+						height: '100%',
+						width: '100%',
+					},
+				]}
+			>
 				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 				<Text style={{ color: colors['warning-asset'] }}>{streamError.toString()}</Text>
 				<Text style={{ marginTop: gutter }}>
@@ -166,7 +183,18 @@ const DeleteProgressScreen = () => {
 	}
 
 	return (
-		<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
+		<View
+			style={[
+				{
+					padding: gutter,
+					alignItems: 'center',
+					justifyContent: 'center',
+					paddingBottom: 30,
+					height: '100%',
+					width: '100%',
+				},
+			]}
+		>
 			<Text>{text}</Text>
 			<ActivityIndicator style={{ marginTop: gutter }} size='large' />
 		</View>

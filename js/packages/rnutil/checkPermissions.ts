@@ -5,7 +5,7 @@ export const checkPermissions = async (
 	permissionType: 'p2p' | 'audio' | 'notification' | 'camera',
 	navigate: any,
 	options?: {
-		isToNavigate?: boolean
+		navigateToPermScreenOnProblem?: boolean
 		navigateNext?: string
 		onComplete?: () => Promise<void>
 	},
@@ -35,7 +35,10 @@ export const checkPermissions = async (
 	}
 
 	console.log('Permission status:', status, options)
-	if ((status === RESULTS.DENIED || status === RESULTS.BLOCKED) && options?.isToNavigate) {
+	if (
+		(status === RESULTS.DENIED || status === RESULTS.BLOCKED) &&
+		options?.navigateToPermScreenOnProblem
+	) {
 		navigate('Main.Permissions', {
 			permissionType,
 			permissionStatus: status,

@@ -86,7 +86,6 @@ const makeStreamClient = <M extends pbjs.Method>(
 			}
 
 			const payload = method.resolvedResponseType?.decode(response.payload)
-			this._publish(payload, null)
 			return payload
 		},
 	}

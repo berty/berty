@@ -1566,7 +1566,7 @@ func TestSendBlob(t *testing.T) {
 
 	b64CID := messengerutil.B64EncodeBytes(testCID)
 
-	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
 	require.NoError(t, err)
 	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
 		ConversationPublicKey: friendAsContact.GetConversationPublicKey(),
@@ -1647,7 +1647,7 @@ func TestSendMedia(t *testing.T) {
 
 	b64CID := reply.GetCid()
 
-	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
 	require.NoError(t, err)
 	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
 		ConversationPublicKey: friendAsContact.GetConversationPublicKey(),
@@ -1769,7 +1769,7 @@ func TestUserReaction(t *testing.T) {
 	// send message
 	convPK := friend.GetContact(t, userPK).GetConversationPublicKey()
 	require.NotNil(t, convPK)
-	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
 	require.NoError(t, err)
 	interactReply, err := user.client.Interact(ctx, &messengertypes.Interact_Request{
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
@@ -1881,7 +1881,7 @@ func TestReply(t *testing.T) {
 	require.NotNil(t, convPK)
 
 	// send message
-	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
 	require.NoError(t, err)
 	interactReply, err := user.client.Interact(ctx, &messengertypes.Interact_Request{
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
@@ -1935,7 +1935,7 @@ func TestAck(t *testing.T) {
 	require.NotNil(t, convPK)
 
 	// send message
-	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{})
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
 	require.NoError(t, err)
 
 	interactRes, err := user.client.Interact(ctx, &messengertypes.Interact_Request{

@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import {
-	View,
-	TouchableOpacity,
-	TextInput,
-	StyleSheet,
-	KeyboardAvoidingView,
-	ScrollView,
-} from 'react-native'
+import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -15,8 +8,8 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { selectInvitationListMembers } from '@berty-tech/redux/reducers/newGroup.reducer'
-import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
+import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
+import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'

@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
 import beapi from '@berty-tech/api'
-import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
+import { useAppDispatch, useAppSelector, useConversationsDict } from '@berty-tech/react-redux'
+import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
 
 import { MessengerContext, initialState } from './context'
 import {
@@ -30,9 +31,14 @@ import { reducer } from './reducer'
 import { playSound } from './sounds'
 import { MessengerAppState, PersistentOptionsKeys, SoundKey } from './types'
 import { accountService } from './accountService'
-import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
+import { useAccount } from './hooks'
 
-export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
+export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: boolean }> = ({
+	children,
+	daemonAddress,
+	embedded,
+}) => {
+	const reduxDispatch = useAppDispatch()
 	const [state, dispatch] = React.useReducer(reducer, {
 		...initialState,
 		daemonAddress,
@@ -48,62 +54,66 @@ export const MessengerProvider: React.FC<any> = ({ children, daemonAddress, embe
 	}, [state.appState])
 
 	useEffect(() => {
-		initialLaunch(dispatch, embedded).then()
+		initialLaunch(dispatch, embedded)
 	}, [embedded])
 
 	useEffect(() => {
-		openingDaemon(dispatch, state.appState, state.selectedAccount).then()
+		openingDaemon(dispatch, state.appState, state.selectedAccount)
 	}, [embedded, state.appState, state.selectedAccount])
 
 	useEffect(() => {
-		openingClients(dispatch, state.appState, eventEmitter, daemonAddress, embedded).then()
-	}, [daemonAddress, embedded, eventEmitter, state.appState, state.selectedAccount])
+		openingClients(dispatch, state.appState, eventEmitter, daemonAddress, embedded, reduxDispatch)
+	}, [daemonAddress, embedded, eventEmitter, state.appState, state.selectedAccount, reduxDispatch])
+
+	const initialListComplete = useAppSelector(state => state.messenger.initialListComplete)
 
 	useEffect(
-		() => openingListingEvents(state.appState, state.initialListComplete, dispatch),
-		[state.appState, state.initialListComplete],
+		() => openingListingEvents(state.appState, initialListComplete, dispatch),
+		[state.appState, initialListComplete],
 	)
 
 	useEffect(() => {
-		openingLocalSettings(dispatch, state.appState, state.selectedAccount).then()
+		openingLocalSettings(dispatch, state.appState, state.selectedAccount)
 	}, [state.appState, state.selectedAccount])
+
+	const conversations = useConversationsDict()
 
 	useEffect(() => {
 		openingCloseConvos(
 			state.appState,
 			state.client,
-			state.conversations,
+			conversations,
 			state.persistentOptions,
 			dispatch,
-		).then()
-	}, [state.appState, state.client, state.conversations, state.persistentOptions, embedded])
+		)
+	}, [state.appState, state.client, conversations, state.persistentOptions, embedded])
 
 	const accountLanguage = useAppSelector(selectAccountLanguage)
 	useEffect(() => {
 		syncAccountLanguage(accountLanguage)
 	}, [accountLanguage])
 
+	const account = useAccount()
+
 	useEffect(() => {
 		updateAccountsPreReady(
 			state.appState,
 			state.client,
 			state.selectedAccount,
-			state.account,
+			account,
 			state.protocolClient,
 			embedded,
 			dispatch,
-		).then()
+		)
 	}, [
 		state.appState,
 		state.client,
 		state.selectedAccount,
-		state.account,
+		account,
 		state.protocolClient,
 		embedded,
 		dispatch,
 	])
-
-	const reduxDispatch = useAppDispatch()
 
 	useEffect(
 		() => closingDaemon(state.appState, state.clearClients, dispatch, reduxDispatch),

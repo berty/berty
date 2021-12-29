@@ -206,6 +206,9 @@ export const NameAvatar: React.FC<{
 	const h = new SHA3(256).update(colorSeed || '').digest()
 	const color = '#' + pal[h[0]]
 
+	const codePoint = (nameSeed || '?').codePointAt(0)
+	const char = codePoint ? String.fromCodePoint(codePoint) : '?'
+
 	return (
 		<View
 			style={[
@@ -227,7 +230,7 @@ export const NameAvatar: React.FC<{
 					includeFontPadding: false,
 				}}
 			>
-				{(nameSeed || '?')[0].toUpperCase()}
+				{char}
 			</Text>
 		</View>
 	)

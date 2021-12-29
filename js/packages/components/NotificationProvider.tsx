@@ -7,12 +7,13 @@ import { useMessengerContext } from '@berty-tech/store/context'
 import { accountService } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
+import { useConversationsDict } from '@berty-tech/react-redux'
 
 import NotificationBody from './NotificationBody'
 
 export const PushNotificationBridge: React.FC = withInAppNotification(
 	({ showNotification }: any) => {
-		const ctx = useMessengerContext()
+		const conversations = useConversationsDict()
 		const { navigate, dispatch } = useNavigation()
 
 		React.useEffect(() => {
@@ -27,7 +28,7 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 				if (!push.pushData?.alreadyReceived) {
 					const convPK = push.pushData?.conversationPublicKey
 					if (convPK) {
-						const conv = ctx.conversations[convPK]
+						const conv = conversations[convPK]
 						showNotification({
 							title: push.push?.title,
 							message: push.push?.body,
@@ -72,7 +73,7 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 					console.warn('Push notif remove listener failed: ' + e)
 				}
 			}
-		}, [ctx.conversations, dispatch, navigate, showNotification])
+		}, [conversations, dispatch, navigate, showNotification])
 		return null
 	},
 )

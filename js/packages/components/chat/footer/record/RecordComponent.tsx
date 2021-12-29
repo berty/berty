@@ -19,6 +19,8 @@ import beapi from '@berty-tech/api'
 import { playSound } from '@berty-tech/store/sounds'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import rnutil from '@berty-tech/rnutil'
+import { AppDispatch } from '@berty-tech/redux/store'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 import {
 	limitIntensities,
@@ -42,7 +44,9 @@ const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
 const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await rnutil.checkPermissions('audio', navigate)
+	const permissionStatus = await rnutil.checkPermissions('audio', navigate, {
+		navigateToPermScreenOnProblem: true,
+	})
 	if (permissionStatus === RESULTS.GRANTED) {
 		return MicPermStatus.GRANTED
 	}
@@ -53,7 +57,7 @@ const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
 const sendMessage = async (
 	client: WelshMessengerServiceClient,
 	convPk: string,
-	dispatch: ReturnType<typeof useMessengerContext>['dispatch'],
+	dispatch: AppDispatch,
 	opts: {
 		body?: string
 		medias?: beapi.messenger.IMedia[]
@@ -74,10 +78,10 @@ const sendMessage = async (
 			type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 			payload: buf,
 			medias: opts.medias,
-			sentDate: Long.fromNumber(Date.now()),
+			sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 		}
 		dispatch({
-			type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+			type: 'messenger/InteractionUpdated',
 			payload: { interaction: optimisticInteraction },
 		})
 		playSound('messageSent')
@@ -134,6 +138,8 @@ export const RecordComponent: React.FC<{
 	minAudioDuration?: number
 	disableLockMode?: boolean
 	disabled?: boolean
+	sending?: boolean
+	setSending: (val: boolean) => void
 }> = ({
 	children,
 	component,
@@ -143,7 +149,10 @@ export const RecordComponent: React.FC<{
 	minAudioDuration = 2000,
 	convPk,
 	disabled,
+	sending,
+	setSending,
 }) => {
+	const dispatch = useAppDispatch()
 	const ctx = useMessengerContext()
 	const recorder = React.useRef<Recorder | undefined>(undefined)
 	const [recorderFilePath, setRecorderFilePath] = useState('')
@@ -153,13 +162,16 @@ export const RecordComponent: React.FC<{
 	const [{ border, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
-	/*const setRecordingState = React.useCallback(
-			(state: RecordingState, msg?: string) => {
-				console.log('setRecordingState', msg, RecordingState[state])
-				_setRecordingState(state)
-			},
-			[_setRecordingState],
-		)*/
+	/*
+	// use this to debug recording state
+	const setRecordingState = React.useCallback(
+		(state: RecordingState, msg?: string) => {
+			console.log('setRecordingState', msg, RecordingState[state])
+			_setRecordingState(state)
+		},
+		[_setRecordingState],
+	)
+	*/
 	const [recordingStart, setRecordingStart] = useState(Date.now())
 	const [clearRecordingInterval, setClearRecordingInterval] = useState<ReturnType<
 		typeof setInterval
@@ -241,6 +253,10 @@ export const RecordComponent: React.FC<{
 	const sendComplete = useCallback(
 		async ({ duration, start }: { duration: number; start: number }) => {
 			try {
+				if (sending) {
+					return
+				}
+				setSending(true)
 				Vibration.vibrate(400)
 				if (!ctx.client) {
 					return
@@ -275,12 +291,13 @@ export const RecordComponent: React.FC<{
 					},
 				])
 
-				await sendMessage(ctx.client!, convPk, ctx.dispatch, { medias })
+				await sendMessage(ctx.client!, convPk, dispatch, { medias })
 			} catch (e) {
 				console.warn(e)
 			}
+			setSending(false)
 		},
-		[convPk, ctx.client, recorderFilePath, ctx.dispatch],
+		[convPk, ctx.client, recorderFilePath, dispatch, sending, setSending],
 	)
 
 	useEffect(() => {
@@ -407,17 +424,8 @@ export const RecordComponent: React.FC<{
 				console.log('start')
 				if (recordingState === RecordingState.NOT_RECORDING) {
 					const permState = await acquireMicPerm(navigate)
-					if (permState === MicPermStatus.NEWLY_GRANTED) {
-						setHelpMessageValue({
-							message: t('audio.record.tooltip.usage'),
-						})
-
-						return
-					} else if (permState === MicPermStatus.DENIED || permState === MicPermStatus.UNDEFINED) {
+					if (permState !== MicPermStatus.GRANTED) {
 						setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
-						await rnutil.checkPermissions('audio', navigate, {
-							isToNavigate: true,
-						})
 						return
 					}
 
@@ -459,14 +467,17 @@ export const RecordComponent: React.FC<{
 			}
 
 			// Released
-			if (e.nativeEvent.state === State.END) {
+			if (recordingState !== RecordingState.NOT_RECORDING && e.nativeEvent.state === State.END) {
 				console.log('end')
 				setRecordingState(RecordingState.COMPLETE)
 
 				return
 			}
 
-			if (e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED) {
+			if (
+				recordingState !== RecordingState.NOT_RECORDING &&
+				(e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED)
+			) {
 				console.log('state cancel', e.nativeEvent.state)
 				setRecordingState(RecordingState.PENDING_CANCEL)
 				return

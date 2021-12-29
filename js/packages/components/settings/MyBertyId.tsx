@@ -96,7 +96,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 }
 
 const BertIdBody: React.FC = () => {
-	const [{ border, margin, padding, opacity }, { scaleSize }] = useStyles()
+	const [{ border, margin, padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId(styleBertyIdOptions)
@@ -104,47 +104,38 @@ const BertIdBody: React.FC = () => {
 	const { t } = useTranslation()
 
 	return (
-		<View
-			style={[
-				border.radius.scale(30),
-				margin.horizontal.medium,
-				padding.top.large,
-				{ backgroundColor: colors['main-background'] },
-				styleBertyIdContent,
-			]}
-		>
-			<View
-				style={{ flex: 1, alignItems: 'center', justifyContent: 'center', bottom: 40 * scaleSize }}
-			>
+		<>
+			<View style={{ alignItems: 'center', top: 35 * scaleSize, zIndex: 10 }}>
 				<AccountAvatar size={requestAvatarSize} />
 			</View>
-			<View style={[padding.horizontal.big]}>
-				<TabBar
-					tabs={[
-						{ key: 'qr', name: t('settings.my-berty-ID.qr'), icon: 'qr', iconPack: 'custom' },
-						{
-							key: 'fingerprint',
-							name: t('settings.my-berty-ID.fingerprint'),
-							icon: 'fingerprint',
-							iconPack: 'custom',
-						},
-						{
-							key: 'devices',
-							name: t('settings.my-berty-ID.devices'),
-							icon: 'smartphone',
-							iconPack: 'feather',
-							iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
-							buttonDisabled: true,
-							style: opacity(0.3),
-						},
-					]}
-					onTabChange={setSelectedContent}
-				/>
-				<BertyIdContent>
-					<SelectedContent contentName={selectedContent} />
-				</BertyIdContent>
+			<View
+				style={[
+					border.radius.scale(30),
+					margin.horizontal.medium,
+					padding.top.large,
+					{ backgroundColor: colors['main-background'] },
+					styleBertyIdContent,
+				]}
+			>
+				<View style={[padding.horizontal.big]}>
+					<TabBar
+						tabs={[
+							{ key: 'qr', name: t('settings.my-berty-ID.qr'), icon: 'qr', iconPack: 'custom' },
+							{
+								key: 'fingerprint',
+								name: t('settings.my-berty-ID.fingerprint'),
+								icon: 'fingerprint',
+								iconPack: 'custom',
+							},
+						]}
+						onTabChange={setSelectedContent}
+					/>
+					<BertyIdContent>
+						<SelectedContent contentName={selectedContent} />
+					</BertyIdContent>
+				</View>
 			</View>
-		</View>
+		</>
 	)
 }
 
@@ -167,7 +158,6 @@ const BertyIdShare: React.FC = () => {
 			]}
 			onPress={async () => {
 				try {
-					console.log('sharing', url)
 					await Share.share({ url, message: url })
 				} catch (e) {
 					console.error(e)
@@ -189,16 +179,11 @@ const BertyIdShare: React.FC = () => {
 }
 
 const MyBertyIdComponent: React.FC = () => {
-	const [{ padding }, { scaleSize }] = useStyles()
+	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
 
 	return (
-		<View
-			style={[
-				padding.medium,
-				{ backgroundColor: colors['background-header'], top: 55 * scaleSize },
-			]}
-		>
+		<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
 			<BertIdBody />
 			<BertyIdShare />
 		</View>

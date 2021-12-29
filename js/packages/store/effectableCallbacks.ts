@@ -1,7 +1,7 @@
 import beapi from '@berty-tech/api'
 import rnutil from '@berty-tech/rnutil'
 import { persistor, resetAccountStore } from '@berty-tech/redux/store'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'
@@ -129,7 +129,8 @@ export const getNetworkConfigurationFromPreset = async (
 	preset: beapi.account.NetworkConfigPreset | null | undefined,
 ): Promise<beapi.account.INetworkConfig> => {
 	const hasBluetoothPermission =
-		(await rnutil.checkPermissions('p2p', null, { isToNavigate: false })) === 'granted'
+		(await rnutil.checkPermissions('p2p', null, { navigateToPermScreenOnProblem: false })) ===
+		'granted'
 
 	const configForPreset = await accountService.networkConfigGetPreset({
 		preset: preset || beapi.account.NetworkConfigPreset.Undefined,

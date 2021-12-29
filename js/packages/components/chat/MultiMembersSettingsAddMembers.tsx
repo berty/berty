@@ -13,15 +13,14 @@ import {
 	useConversation,
 	useConvMemberList,
 	useMessengerClient,
-	useMessengerContext,
 	useThemeColor,
 } from '@berty-tech/store'
+import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
+import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'
 import { ContactPicker } from '../shared-components'
-import { useSelector } from 'react-redux'
-import { selectInvitationListMembers } from '@berty-tech/redux/reducers/newGroup.reducer'
 
 export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsAddMembers'> = ({
 	route,
@@ -29,15 +28,14 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsA
 }) => {
 	const [{ flex, margin }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMessengerContext()
 	const { t } = useTranslation()
 	const client = useMessengerClient()
 	const conv = useConversation(route.params.convPK)
 	const convMembers = useConvMemberList(route.params.convPK)
 	const initialMembers = convMembers.filter(member => !member.isMe)
 	const accountContacts = useContactList()
-	const members = useSelector(selectInvitationListMembers)
-	const messengerDispatch = ctx.dispatch
+	const members = useAppSelector(selectInvitationListMembers)
+	const dispatch = useAppDispatch()
 
 	const sendInvitations = React.useCallback(async () => {
 		try {
@@ -58,10 +56,10 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsA
 						conversationPublicKey: member.conversationPublicKey,
 						type: beapi.messenger.AppMessage.Type.TypeGroupInvitation,
 						payload: buf,
-						sentDate: Long.fromNumber(Date.now()),
+						sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 					}
-					messengerDispatch({
-						type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+					dispatch({
+						type: 'messenger/InteractionUpdated',
 						payload: { interaction: optimisticInteraction },
 					})
 				}),
@@ -69,7 +67,7 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsA
 		} catch (e) {
 			console.warn('failed to send invitations:', e)
 		}
-	}, [client, conv, members, messengerDispatch])
+	}, [client, conv, members, dispatch])
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({

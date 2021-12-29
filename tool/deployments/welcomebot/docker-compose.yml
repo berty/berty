@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   daemon:
-    container_name: betabot_daemon
+    container_name: welcomebot_daemon
     image: bertytech/berty:latest
     restart: always
     entrypoint: berty
@@ -36,35 +36,35 @@ services:
     labels:
       - 'com.centurylinklabs.watchtower.enable=true'
       - 'traefik.enable=true'
-      - "traefik.http.routers.betabot.rule=Host(`${DAEMON_DOMAIN_SANS}`)"
-      - 'traefik.http.routers.betabot.service=betabot'
-      - "traefik.http.routers.betabot.middlewares=bauth@docker"
-      - 'traefik.http.routers.betabot.entryPoints=https'
-      - 'traefik.http.routers.betabot.tls=true'
-      - 'traefik.http.routers.betabot.tls.certresolver=cf'
-      - "traefik.http.routers.betabot.tls.domains[0].main=${DAEMON_DOMAIN_MAIN}"
-      - "traefik.http.routers.betabot.tls.domains[0].sans=${DAEMON_DOMAIN_SANS}"
-      - 'traefik.http.services.betabot.loadbalancer.server.port=8888'
-      - 'com.datadoghq.ad.logs=[{"source": "go", "service": "betabot-daemon"}]'
+      - "traefik.http.routers.welcomebot.rule=Host(`${DAEMON_DOMAIN_SANS}`)"
+      - 'traefik.http.routers.welcomebot.service=welcomebot'
+      - "traefik.http.routers.welcomebot.middlewares=bauth@docker"
+      - 'traefik.http.routers.welcomebot.entryPoints=https'
+      - 'traefik.http.routers.welcomebot.tls=true'
+      - 'traefik.http.routers.welcomebot.tls.certresolver=cf'
+      - "traefik.http.routers.welcomebot.tls.domains[0].main=${DAEMON_DOMAIN_MAIN}"
+      - "traefik.http.routers.welcomebot.tls.domains[0].sans=${DAEMON_DOMAIN_SANS}"
+      - 'traefik.http.services.welcomebot.loadbalancer.server.port=8888'
+      - 'com.datadoghq.ad.logs=[{"source": "go", "service": "welcomebot-daemon"}]'
   bot:
-    container_name: betabot_bot
+    container_name: welcomebot_bot
     image: bertytech/berty:latest
     restart: always
-    entrypoint: betabot
+    entrypoint: welcomebot
     network_mode: bridge
     links:
       - daemon
     labels:
       - 'traefik.enable=false'
       - "com.centurylinklabs.watchtower.enable=true"
-      - 'com.datadoghq.ad.logs=[{"source": "go", "service": "betabot-bot"}]'
+      - 'com.datadoghq.ad.logs=[{"source": "go", "service": "welcomebot-bot"}]'
     command:
-      - -display-name=BetaBot
+      - -display-name=Welcomebot
       - -addr=daemon:9091
-      - "-staff-conversation-link=${BETABOT_STAFF_CONVERSATION_LINK}"
-      - -store=/data/betabot.store
+      - "-staff-conversation-link=${WELCOMEBOT_STAFF_CONVERSATION_LINK}"
+      - -store=/data/welcomebot.store
       - -log-format=json
     depends_on:
       - daemon
     volumes:
-      - ./data/betabot:/data
+      - ./data/welcomebot:/data

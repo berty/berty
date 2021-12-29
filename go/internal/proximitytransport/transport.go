@@ -288,7 +288,7 @@ func (t *proximityTransport) HandleFoundPeer(sRemotePID string) bool {
 // HandleLostPeer is called by the native driver when the connection with the peer is lost.
 // Closes connections with the peer.
 func (t *proximityTransport) HandleLostPeer(sRemotePID string) {
-	t.logger.Debug("HandleLostPeer", zap.String("remotePID", sRemotePID))
+	t.logger.Debug("HandleLostPeer", logutil.PrivateString("remotePID", sRemotePID))
 	remotePID, err := peer.Decode(sRemotePID)
 	if err != nil {
 		t.logger.Error("HandleLostPeer: wrong remote peerID")

@@ -78,7 +78,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 
 		React.useLayoutEffect(() => {
 			navigation.setOptions({
-				title: (conv as any).fake ? `FAKE - ${contact?.displayName}` : contact?.displayName || '',
+				title: (conv as any)?.fake ? `FAKE - ${contact?.displayName}` : contact?.displayName || '',
 				...CustomTitleStyle,
 				headerRight: () => (
 					<TouchableOpacity

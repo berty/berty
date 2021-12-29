@@ -39,9 +39,7 @@ class GoBridge: NSObject {
     deinit {
       do {
         if self.bridgeMessenger != nil {
-            NSLog("bflifecycle: calling try self.bridgeMessenger?.close()")
             try self.bridgeMessenger?.close()
-            NSLog("bflifecycle: done try self.bridgeMessenger?.close()")
             self.bridgeMessenger = nil
         }
       } catch let error as NSError {
@@ -62,6 +60,7 @@ class GoBridge: NSObject {
     }
 
     @objc func log(_ opts: NSDictionary) {
+        #if !CFG_APPSTORE
         if let message = opts["message"] as? String {
             let type = opts["level"] as? String ?? "info"
 
@@ -71,6 +70,7 @@ class GoBridge: NSObject {
             // log
             self.logger.print(message as NSString, level: level, category: "react-native")
         }
+        #endif
     }
 
     // //////// //
@@ -88,7 +88,11 @@ class GoBridge: NSObject {
                 throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
             }
 
+            #if CFG_APPSTORE
+            config.setLoggerDriver(nil)
+            #else
             config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
+            #endif
 
             // get user preferred languages
             let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
@@ -111,12 +115,9 @@ class GoBridge: NSObject {
             values.isExcludedFromBackup = true
             try url.setResourceValues(values)
 
-            NSLog("root dir: `%@`", self.rootDir)
             config.setRootDir(self.rootDir)
 
-            NSLog("bflifecycle: calling BridgeNewMessengerBridge")
             let bridgeMessenger = BertybridgeNewBridge(config, &err)
-            NSLog("bflifecycle: done BridgeNewMessengerBridge")
             if err != nil {
                 throw err!
             }
@@ -132,9 +133,7 @@ class GoBridge: NSObject {
     @objc func closeBridge(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
             if self.bridgeMessenger != nil {
-                NSLog("bflifecycle: calling try self.messengerProtocol?.close()")
                 try self.bridgeMessenger?.close()
-                NSLog("bflifecycle: done try self.bridgeMessenger?.close()")
                 self.bridgeMessenger = nil
             }
             resolve(true)

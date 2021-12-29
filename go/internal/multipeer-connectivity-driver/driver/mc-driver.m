@@ -1,36 +1,35 @@
 // +build darwin
 
-#import <os/log.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "mc-driver.h"
 #import "MCManager.h"
 
 // This functions are Go functions so they aren't defined here
-extern int HandleFoundPeer(char *);
-extern void HandleLostPeer(char *);
-extern void ReceiveFromPeer(char *, void *, unsigned long);
+extern int MCHandleFoundPeer(char *);
+extern void MCHandleLostPeer(char *);
+extern void MCReceiveFromPeer(char *, void *, unsigned long);
+extern void MCLog(enum level level, const char *message);
 
 int driverStarted = 0;
-os_log_t OS_LOG_MC = nil;
+BOOL gMCUseExternalLogger = FALSE;
 
 // MCManager must be unique
 static MCManager *gMCManager = nil;
 MCManager* getMCManager(NSString *peerID) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-		os_log_debug(OS_LOG_MC, "init MCManager");
-        gMCManager = [[MCManager alloc] init:peerID];
+		NSLog(@"init MCManager");
+        gMCManager = [[MCManager alloc] init:peerID useExternalLogger:gMCUseExternalLogger];
     });
     return gMCManager;
 }
 
 void StartMCDriver(char *localPID) {
     if (!driverStarted) {
-		OS_LOG_MC = os_log_create("tech.berty.bty.MC", "protocol");
-		os_log_debug(OS_LOG_MC, "StartMCDriver()");
+		NSLog(@"StartMCDriver()");
         NSString *cPID = [[NSString alloc] initWithUTF8String:localPID];
         if (!getMCManager(cPID)) {
-           os_log_debug(OS_LOG_MC, "StartMCDriver failed");
+           NSLog(@"StartMCDriver failed");
             return ;
         }
         [gMCManager startServiceAdvertiser];
@@ -41,7 +40,7 @@ void StartMCDriver(char *localPID) {
 
 void StopMCDriver() {
     if (driverStarted) {
-		os_log_debug(OS_LOG_MC, "StopMCDriver()");
+		NSLog(@"StopMCDriver()");
         [gMCManager stopServiceAdvertiser];
         [gMCManager stopServiceBrowser];
         [gMCManager closeSessions];
@@ -70,9 +69,14 @@ int DialPeer(char *remotePID) {
 void CloseConnWithPeer(char *peerID) {
 }
 
+// Use MCBridgeLog to write logs to the external logger
+void MCUseExternalLogger(void) {
+    gMCUseExternalLogger = TRUE;
+}
+
 int BridgeHandleFoundPeer(NSString *remotePID) {
     char *cPID = (char *)[remotePID UTF8String];
-    if (HandleFoundPeer(cPID)) {
+    if (MCHandleFoundPeer(cPID)) {
         return (1);
     }
     return (0);
@@ -80,12 +84,18 @@ int BridgeHandleFoundPeer(NSString *remotePID) {
 
 void BridgeHandleLostPeer(NSString *remotePID) {
     char *cPID = (char *)[remotePID UTF8String];
-    HandleLostPeer(cPID);
+    MCHandleLostPeer(cPID);
 }
 
 void BridgeReceiveFromPeer(NSString *remotePID, NSData *payload) {
     char *cPID = (char *)[remotePID UTF8String];
     char *cPayload = (char *)[payload bytes];
     int length = (int)[payload length];
-    ReceiveFromPeer(cPID, cPayload, length);
+    MCReceiveFromPeer(cPID, cPayload, length);
+}
+
+// Write logs to the external logger
+void MCBridgeLog(enum level level, NSString *message) {
+    char *cMessage = (char *)[message UTF8String];
+    MCLog(level, cMessage);
 }

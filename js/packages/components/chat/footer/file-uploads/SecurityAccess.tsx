@@ -28,7 +28,9 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 						if (status === RESULTS.GRANTED) {
 							close()
 						}
-					} catch (err) {}
+					} catch (err) {
+						console.warn('failed to check camera permission:', err)
+					}
 				} else if (activeTab === TabItems.Gallery && Platform.OS === 'ios') {
 					try {
 						const status = await check(PERMISSIONS.IOS.PHOTO_LIBRARY)

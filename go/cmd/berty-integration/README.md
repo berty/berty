@@ -36,62 +36,62 @@ By compiling and running the binary manually you can run the integration with va
 foo@bar:~$ make install
 foo@bar:~$ berty-integration -h
 Usage of integration:
-  -integration.betabot string
-    	betabot addr (default "https://berty.tech/id#key=CiBQHH6a84AHwdahXR6NQcOxTKjUHeqLdQfIAzxAYSoD1xIgT-tFTYrU-tD55bYgaXbBNTlqTHubq-_Qb8ksv2bSH9o&name=BetaBot%20Dev")
+  -integration.welcomebot string
+        welcomebot addr (default "https://berty.tech/id#key=CiBQHH6a84AHwdahXR6NQcOxTKjUHeqLdQfIAzxAYSoD1xIgT-tFTYrU-tD55bYgaXbBNTlqTHubq-_Qb8ksv2bSH9o&name=Welcomebot%20Dev")
   -integration.testbot string
-    	testbot addr (default "https://berty.tech/id#key=CiAxSP1RYrv4yi7PsQZtqFH9fepMiqDD1M7y1aIZAzMmghIg_fXVz1J-HfCd6gtRlUN0GsWiIlfgVPamj7lgFIUqfOA&name=TestBot%20Dev")
+        testbot addr (default "https://berty.tech/id#key=CiAxSP1RYrv4yi7PsQZtqFH9fepMiqDD1M7y1aIZAzMmghIg_fXVz1J-HfCd6gtRlUN0GsWiIlfgVPamj7lgFIUqfOA&name=TestBot%20Dev")
   -log.file string
-    	if specified, will log everything in JSON into a file and nothing on stderr
+        if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters string
-    	zapfilter configuration (default "warn:*,-ipfs.* error+:*")
+        zapfilter configuration (default "warn:*,-ipfs.* error+:*")
   -log.format string
-    	can be: json, console, color, light-console, light-color (default "light-color")
+        can be: json, console, color, light-console, light-color (default "light-color")
   -log.service string
-    	service name, used by the tracer (default "berty-integration")
+        service name, used by the tracer (default "berty-integration")
   -log.tracer string
-    	specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+        specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
   -node.display-name string
-    	display name (default "moul (cli)")
+        display name (default "moul (cli)")
   -node.listeners string
-    	gRPC API listeners
+        gRPC API listeners
   -node.no-notif
-    	disable desktop notifications
+        disable desktop notifications
   -node.rebuild-db
-    	reconstruct messenger DB from OrbitDB logs
+        reconstruct messenger DB from OrbitDB logs
   -node.restore-export-path string
-    	inits node from a specified export path
+        inits node from a specified export path
   -p2p.disable-ipfs-network
-    	disable as much networking feature as possible, useful during development
+        disable as much networking feature as possible, useful during development
   -p2p.swarm-announce string
-    	IPFS announce addrs
+        IPFS announce addrs
   -p2p.ipfs-api-listeners string
-    	IPFS API listeners
+        IPFS API listeners
   -p2p.swarm-no-announce string
-    	IPFS exclude announce addrs
+        IPFS exclude announce addrs
   -p2p.local-discovery
-    	if true local discovery will be enabled (default true)
+        if true local discovery will be enabled (default true)
   -p2p.max-backoff duration
-    	maximum p2p backoff duration (default 1m0s)
+        maximum p2p backoff duration (default 1m0s)
   -p2p.min-backoff duration
-    	minimum p2p backoff duration (default 1s)
+        minimum p2p backoff duration (default 1s)
   -p2p.multipeer-connectivity
-    	if true Multipeer Connectivity will be enabled (default true)
+        if true Multipeer Connectivity will be enabled (default true)
   -p2p.rdvp string
-    	list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp (default ":default:")
+        list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp (default ":default:")
   -p2p.swarm-listeners string
-    	IPFS swarm listeners (default ":default:")
+        IPFS swarm listeners (default ":default:")
   -p2p.webui-listener string
-    	IPFS WebUI listener
+        IPFS WebUI listener
   -preset string
-    	applies various default values, see ADVANCED section below
+        applies various default values, see ADVANCED section below
   -store.dir string
-    	root datastore directory (default "/tmp/berty-integration004419521")
+        root datastore directory (default "/tmp/berty-integration004419521")
   -store.inmem
-    	disable datastore persistence
+        disable datastore persistence
   -tor.binary-path string
-    	if set berty will use this external tor binary instead of his builtin one
+        if set berty will use this external tor binary instead of his builtin one
   -tor.mode string
-    	changes the behavior of libp2p regarding tor, see advanced help for more details (default "disabled")
+        changes the behavior of libp2p regarding tor, see advanced help for more details (default "disabled")
 ```
 
 ### Examples

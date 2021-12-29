@@ -54,6 +54,7 @@ type Service interface {
 type Options struct {
 	RootDirectory string
 
+	MDNSLocker            sync.Locker
 	Languages             []language.Tag
 	ServiceClientRegister bertybridge.ServiceClientRegister
 	LifecycleManager      *lifecycle.Manager
@@ -62,14 +63,17 @@ type Options struct {
 	NBDriver              proximity.ProximityDriver
 	Keystore              accountutils.NativeKeystore
 	Logger                *zap.Logger
+	DisableLogging        bool
 }
 
 type service struct {
 	rootCtx    context.Context
 	rootCancel context.CancelFunc
 
-	notifManager notification.Manager
-	logger       *zap.Logger
+	mdnslocker     sync.Locker
+	notifManager   notification.Manager
+	logger         *zap.Logger
+	disableLogging bool
 
 	rootdir           string
 	languages         []language.Tag
@@ -84,6 +88,79 @@ type service struct {
 	accountData       *accounttypes.AccountMetadata
 	nativeKeystore    accountutils.NativeKeystore
 	appStorage        datastore.Datastore
+}
+
+func (o *Options) applyDefault() {
+	if o.Logger == nil {
+		o.Logger = zap.NewNop()
+	}
+
+	if o.Languages == nil {
+		o.Languages = []language.Tag{}
+	}
+
+	if o.ServiceClientRegister == nil {
+		o.ServiceClientRegister = bertybridge.NewNoopServiceClientRegister()
+	}
+
+	if o.LifecycleManager == nil {
+		o.LifecycleManager = lifecycle.NewManager(lifecycle.State(0))
+	}
+
+	if o.NotificationManager == nil {
+		o.NotificationManager = notification.NewLoggerManager(o.Logger)
+	}
+}
+
+func NewService(opts *Options) (_ Service, err error) {
+	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
+
+	var s *service
+	endSection := tyber.SimpleSection(rootCtx, opts.Logger, "Initializing AccountService")
+	defer func() { endSection(err, tyber.WithDetail("RootDir", s.rootdir)) }()
+
+	opts.applyDefault()
+	s = &service{
+		mdnslocker:        opts.MDNSLocker,
+		languages:         opts.Languages,
+		rootdir:           opts.RootDirectory,
+		rootCtx:           rootCtx,
+		rootCancel:        rootCancelCtx,
+		logger:            opts.Logger,
+		disableLogging:    opts.DisableLogging,
+		lifecycleManager:  opts.LifecycleManager,
+		notifManager:      opts.NotificationManager,
+		sclients:          opts.ServiceClientRegister,
+		bleDriver:         opts.BleDriver,
+		nbDriver:          opts.NBDriver,
+		nativeKeystore:    opts.Keystore,
+		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
+	}
+
+	go s.handleLifecycle(rootCtx)
+
+	// override grpc logger before manager start to avoid race condition
+	initutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
+
+	// init app storage
+	dbPath := filepath.Join(s.rootdir, "app.sqlite")
+	if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	storageKey := ([]byte)(nil)
+	if s.nativeKeystore != nil {
+		storageKey, err = accountutils.GetOrCreateMasterStorageKey(s.nativeKeystore)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey)
+	if err != nil {
+		return nil, errcode.ErrDBOpen.Wrap(err)
+	}
+	s.appStorage = encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage"))
+
+	return s, nil
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
@@ -133,77 +210,6 @@ func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.
 			ShowDefaultServices:        accounttypes.NetworkConfig_Disabled,
 		},
 	}, nil
-}
-
-func (o *Options) applyDefault() {
-	if o.Logger == nil {
-		o.Logger = zap.NewNop()
-	}
-
-	if o.Languages == nil {
-		o.Languages = []language.Tag{}
-	}
-
-	if o.ServiceClientRegister == nil {
-		o.ServiceClientRegister = bertybridge.NewNoopServiceClientRegister()
-	}
-
-	if o.LifecycleManager == nil {
-		o.LifecycleManager = lifecycle.NewManager(lifecycle.State(0))
-	}
-
-	if o.NotificationManager == nil {
-		o.NotificationManager = notification.NewLoggerManager(o.Logger)
-	}
-}
-
-func NewService(opts *Options) (_ Service, err error) {
-	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
-
-	var s *service
-	endSection := tyber.SimpleSection(rootCtx, opts.Logger, "Initializing AccountService")
-	defer func() { endSection(err, tyber.WithDetail("RootDir", s.rootdir)) }()
-
-	opts.applyDefault()
-	s = &service{
-		languages:         opts.Languages,
-		rootdir:           opts.RootDirectory,
-		rootCtx:           rootCtx,
-		rootCancel:        rootCancelCtx,
-		logger:            opts.Logger,
-		lifecycleManager:  opts.LifecycleManager,
-		notifManager:      opts.NotificationManager,
-		sclients:          opts.ServiceClientRegister,
-		bleDriver:         opts.BleDriver,
-		nbDriver:          opts.NBDriver,
-		nativeKeystore:    opts.Keystore,
-		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
-	}
-
-	go s.handleLifecycle(rootCtx)
-
-	// override grpc logger before manager start to avoid race condition
-	initutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
-
-	// init app storage
-	dbPath := filepath.Join(s.rootdir, "app.sqlite")
-	if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	storageKey := ([]byte)(nil)
-	if s.nativeKeystore != nil {
-		storageKey, err = accountutils.GetOrCreateMasterStorageKey(s.nativeKeystore)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey)
-	if err != nil {
-		return nil, errcode.ErrDBOpen.Wrap(err)
-	}
-	s.appStorage = encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage"))
-
-	return s, nil
 }
 
 func (s *service) SetPreferredLanguages(tags ...language.Tag) {

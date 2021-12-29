@@ -73,9 +73,7 @@ export const HyperlinkUserMessage: React.FC<{
 	msgTextColor,
 	isHighlight,
 }) => {
-	const {
-		payload: { body: message },
-	} = inte
+	const message = inte.payload?.body
 
 	const client = useMessengerClient()
 	const colors = useThemeColor()
@@ -112,48 +110,53 @@ export const HyperlinkUserMessage: React.FC<{
 				},
 			]}
 		>
-			<Hyperlink
-				onPress={async url => {
-					if (client && (await isBertyDeepLink(client, url))) {
-						navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
-						return
-					}
-					Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))
-				}}
-				linkStyle={{ textDecorationLine: 'underline' }}
-				linkify={linkify_conf}
-			>
-				<Text
-					style={[
-						{
-							color: msgTextColor,
-							fontSize: 12,
-							lineHeight: 17,
-						},
-					]}
+			{message ? (
+				<Hyperlink
+					onPress={async url => {
+						if (client && (await isBertyDeepLink(client, url))) {
+							navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
+							return
+						}
+						Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))
+					}}
+					linkStyle={{ textDecorationLine: 'underline' }}
+					linkify={linkify_conf}
 				>
-					{message && message.length > READ_MORE_MESSAGE_LENGTH
-						? isReadMore
-							? message?.substring(0, READ_MORE_SUBSTR_LENGTH).concat('...')
-							: message
-						: message || ''}
-				</Text>
+					<Text
+						style={[
+							{
+								color: msgTextColor,
+								fontSize: 12,
+								lineHeight: 17,
+							},
+						]}
+					>
+						{message && message.length > READ_MORE_MESSAGE_LENGTH
+							? isReadMore
+								? message?.substring(0, READ_MORE_SUBSTR_LENGTH).concat('...')
+								: message
+							: message || ''}
+					</Text>
 
-				{message && message.length > READ_MORE_MESSAGE_LENGTH ? (
-					<TouchableOpacity onPress={() => setReadMore(!isReadMore)}>
-						<Text
-							style={[
-								{ color: colors['secondary-text'], fontSize: 12, alignSelf: 'center' },
-								margin.top.tiny,
-							]}
-						>
-							<>
-								{isReadMore ? t('chat.user-message.read-more') : t('chat.user-message.show-less')}
-							</>
-						</Text>
-					</TouchableOpacity>
-				) : null}
-			</Hyperlink>
+					{message && message.length > READ_MORE_MESSAGE_LENGTH ? (
+						<TouchableOpacity onPress={() => setReadMore(!isReadMore)}>
+							<Text
+								style={[
+									{ color: colors['secondary-text'], fontSize: 12, alignSelf: 'center' },
+									margin.top.tiny,
+								]}
+							>
+								<>
+									{isReadMore ? t('chat.user-message.read-more') : t('chat.user-message.show-less')}
+								</>
+							</Text>
+						</TouchableOpacity>
+					) : null}
+				</Hyperlink>
+			) : (
+				// using the previous jsx with an empty body crashes the render
+				<Text />
+			)}
 		</View>
 	)
 }
@@ -167,7 +170,8 @@ export const TimestampStatusUserMessage: React.FC<{
 	const sentDate = pbDateToNum(inte.sentDate)
 	const [{ row, margin, padding, flex }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const _styles = useStylesMessage()
+	const styles = useStylesMessage()
+	const { t } = useTranslation()
 
 	return (
 		<View
@@ -179,10 +183,10 @@ export const TimestampStatusUserMessage: React.FC<{
 				inte.isMine && row.item.bottom,
 			]}
 		>
-			<Text style={[_styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
+			<Text style={[styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
 				{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}
 			</Text>
-			{!cmd && lastInte?.cid?.toString() === inte.cid?.toString() && (
+			{!cmd && lastInte?.cid === inte.cid && (
 				<>
 					{inte.isMine && (
 						<Icon
@@ -194,8 +198,8 @@ export const TimestampStatusUserMessage: React.FC<{
 						/>
 					)}
 					{inte.isMine && (
-						<Text style={[_styles.stateMessageValueMe]}>
-							{inte.acknowledged ? 'sent' : 'sending...'}
+						<Text style={styles.stateMessageValueMe}>
+							{t(inte.acknowledged ? 'chat.sent' : 'chat.sending').toLowerCase()}
 						</Text>
 					)}
 				</>

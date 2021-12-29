@@ -1263,6 +1263,7 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | cid | [string](#string) |  |  |
+| conversation_public_key | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.StreamEvent.InteractionUpdated"></a>
 

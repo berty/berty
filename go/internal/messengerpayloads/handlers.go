@@ -23,6 +23,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
+var ErrNilPayload = errcode.ErrInvalidInput.Wrap(errors.New("nil payload"))
+
 type MetaFetcher interface {
 	GroupPKForContact(ctx context.Context, pk []byte) ([]byte, error)
 	OwnMemberAndDevicePKForConversation(ctx context.Context, pk []byte) (member []byte, device []byte, err error)
@@ -760,7 +762,7 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 					return err
 				}
 
-				if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: elem.GetCID()}, false); err != nil {
+				if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: elem.GetCID(), ConversationPublicKey: gpk}, false); err != nil {
 					return err
 				}
 
@@ -826,6 +828,10 @@ func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
 		return nil, isNew, err
@@ -839,6 +845,8 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 }
 
 func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	// NOTE: it's ok to have an empty payload here since a user message can be only medias
+
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
 		return nil, isNew, err
@@ -900,6 +908,10 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
 	payload := amPayload.(*mt.AppMessage_SetUserInfo)
 
 	if i.GetConversation().GetType() == mt.Conversation_ContactType {
@@ -981,6 +993,10 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageUserReaction(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
 	return i, false, h.handleReaction(tx, i, amPayload)
 }
 
@@ -1150,7 +1166,7 @@ func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatc
 
 	for _, c := range cids {
 		logger.Debug("found ack in backlog", logutil.PrivateString("target", c), logutil.PrivateString("cid", i.GetCID()))
-		if err := dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: c}, false); err != nil {
+		if err := dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: c, ConversationPublicKey: i.GetConversationPublicKey()}, false); err != nil {
 			return err
 		}
 	}
@@ -1159,6 +1175,10 @@ func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatc
 }
 
 func (h *EventHandler) handleAppMessageReplyOptions(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
 		return nil, isNew, err
@@ -1193,6 +1213,10 @@ func indexMessage(tx *messengerdb.DBWrapper, id string, am *mt.AppMessage) error
 }
 
 func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
 	payload := amPayload.(*mt.AppMessage_SetGroupInfo)
 
 	if i.GetConversation().GetType() == mt.Conversation_MultiMemberType {

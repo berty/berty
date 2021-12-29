@@ -1,13 +1,11 @@
 import { isExpectedAppStateChange } from '../context'
 import { MessengerAppState, MessengerState, reducerAction } from '../types'
-import { eventStreamReducerActions } from './eventStreamReducer'
 import { uiReducerActions } from './uiReducer'
 
 export const reducerActions: {
 	[key: string]: (oldState: MessengerState, action: reducerAction) => MessengerState
 } = {
 	...uiReducerActions,
-	...eventStreamReducerActions,
 }
 
 export const reducer = (oldState: MessengerState, action: reducerAction): MessengerState => {

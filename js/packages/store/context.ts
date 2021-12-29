@@ -170,11 +170,6 @@ export const initialState = {
 	appState: MessengerAppState.Init,
 	selectedAccount: null,
 	nextSelectedAccount: null,
-	conversations: {},
-	contacts: {},
-	interactions: {},
-	members: {},
-	medias: {},
 	client: null,
 	protocolClient: null,
 	streamError: null,
@@ -186,7 +181,6 @@ export const initialState = {
 
 	persistentOptions: defaultPersistentOptions(),
 	daemonAddress: '',
-	initialListComplete: false,
 	clearClients: null,
 
 	embedded: true,

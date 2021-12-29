@@ -1,6 +1,3 @@
-import pickBy from 'lodash/pickBy'
-import mapValues from 'lodash/mapValues'
-
 import { initialState, isExpectedAppStateChange } from '../context'
 import { MessengerAppState, MessengerActions, MessengerState, reducerAction } from '../types'
 
@@ -24,24 +21,24 @@ export const uiReducerActions: {
 
 		return {
 			...oldState,
-			conversations: { ...oldState.conversations, ...action.payload.conversations },
-			contacts: { ...oldState.contacts, ...action.payload.contacts },
-			interactions: { ...oldState.interactions, ...fakeInteractions },
-			members: { ...oldState.members, ...action.payload.members },
+			// conversations: { ...oldState.conversations, ...action.payload.conversations },
+			// contacts: { ...oldState.contacts, ...action.payload.contacts },
+			// interactions: { ...oldState.interactions, ...fakeInteractions },
+			// members: { ...oldState.members, ...action.payload.members },
 		}
 	},
 
 	[MessengerActions.DeleteFakeData]: (oldState, _) => ({
 		...oldState,
-		conversations: pickBy(oldState.conversations, conv => !(conv as any).fake),
-		contacts: pickBy(oldState.contacts, contact => !(contact as any).fake),
+		// conversations: pickBy(oldState.conversations, conv => !(conv as any).fake),
+		// contacts: pickBy(oldState.contacts, contact => !(contact as any).fake),
 		// TODO:
 		// interactions: mapValues(oldState.interactions, (intes) =>
 		// 	pickBy(intes, (inte) => !(inte as any).fake),
 		// ),
-		members: mapValues(oldState.members, members =>
+		/*members: mapValues(oldState.members, members =>
 			pickBy(members, member => !(member as any).fake),
-		),
+		),*/
 	}),
 
 	[MessengerActions.SetDaemonAddress]: (oldState, action) => ({

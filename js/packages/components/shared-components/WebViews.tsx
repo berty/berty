@@ -1,5 +1,13 @@
 import React from 'react'
-import { StyleSheet, View, TouchableOpacity, Text as TextNative } from 'react-native'
+import {
+	StyleSheet,
+	View,
+	TouchableOpacity,
+	Text as TextNative,
+	StatusBar,
+	Platform,
+	ActivityIndicator,
+} from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { WebView } from 'react-native-webview'
 import { BlurView } from '@react-native-community/blur'
@@ -193,7 +201,7 @@ const ModalWebview: React.FC<{
 				]}
 				onPress={() => closeModal(false)}
 			>
-				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
+				{Platform.OS === 'ios' && <BlurView style={[StyleSheet.absoluteFill]} blurType='light' />}
 			</TouchableOpacity>
 			<ModalWebviewBody closeModal={() => closeModal(false)} accept={() => accept(true)} />
 		</View>
@@ -203,7 +211,9 @@ const ModalWebview: React.FC<{
 export const WebViews: React.FC<{ url: string }> = ({ url }) => {
 	const [isModal, setIsModal] = React.useState<boolean>(true)
 	const [isAccept, setIsAccept] = React.useState<boolean>(false)
+	const [isLoading, setIsLoading] = React.useState<boolean>()
 	const { goBack } = useNavigation()
+	const colors = useThemeColor()
 
 	React.useEffect(() => {
 		if (!isAccept && !isModal) {
@@ -213,7 +223,17 @@ export const WebViews: React.FC<{ url: string }> = ({ url }) => {
 
 	return (
 		<>
-			{isAccept && !isModal ? <WebView source={{ uri: url }} /> : null}
+			<StatusBar barStyle='light-content' />
+			{isLoading === true && (
+				<ActivityIndicator size='large' style={{ flex: 1 }} color={colors['main-text']} />
+			)}
+			{isAccept && !isModal ? (
+				<WebView
+					onLoadStart={() => setIsLoading(true)}
+					onLoadEnd={() => setIsLoading(false)}
+					source={{ uri: url }}
+				/>
+			) : null}
 			{isModal ? <ModalWebview accept={setIsAccept} closeModal={setIsModal} /> : null}
 		</>
 	)

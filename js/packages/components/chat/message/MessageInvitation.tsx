@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
-import { Text as TextNative, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Text as TextNative, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
-import {
-	useMessengerClient,
-	useConversation,
-	useOneToOneContact,
-	useThemeColor,
-} from '@berty-tech/store'
+import { useMessengerClient, useConversation, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
+import { useOneToOneContact } from '@berty-tech/react-redux'
 
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'
@@ -25,6 +21,7 @@ export const MessageInvitationButton: React.FC<{
 	title: any
 	styleOpacity?: any
 	disabled?: boolean
+	loading?: boolean
 }> = ({
 	onPress,
 	activeOpacity,
@@ -34,6 +31,7 @@ export const MessageInvitationButton: React.FC<{
 	title,
 	styleOpacity,
 	disabled = false,
+	loading,
 }) => {
 	const [{ flex, padding, border, width, row, text, opacity }] = useStyles()
 	return (
@@ -55,7 +53,11 @@ export const MessageInvitationButton: React.FC<{
 					{ backgroundColor },
 				]}
 			>
-				<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
+				{loading ? (
+					<ActivityIndicator />
+				) : (
+					<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
+				)}
 				<TextNative
 					style={[
 						text.align.center,
@@ -74,7 +76,7 @@ export const MessageInvitationButton: React.FC<{
 
 const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {
 	const [{ text }] = useStyles()
-	const conversationContact = useOneToOneContact(message.conversationPublicKey)
+	const conversationContact = useOneToOneContact(message.conversationPublicKey || '')
 	return (
 		<Text style={[text.size.scale(14), text.align.center]}>
 			You invited {conversationContact?.displayName || 'this contact'} to a group! 💌

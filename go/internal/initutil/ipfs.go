@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
@@ -57,6 +58,11 @@ func (m *Manager) SetNBDriver(d proximity.ProximityDriver) {
 	m.Node.Protocol.Nearby.Driver = d
 }
 
+// Set mdns locker
+func (m *Manager) SetMDNSLocker(mlock sync.Locker) {
+	m.Node.Protocol.MDNS.DriverLocker = mlock
+}
+
 const (
 	FlagNameP2PBootstrap                  = "p2p.bootstrap"
 	FlagNameP2PDHT                        = "p2p.dht"
@@ -93,7 +99,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.DHT, FlagNameP2PDHT, FlagValueP2PDHTClient, "dht mode, can be: `none`, `client`, `server`, `auto`, `autoserver`")
 	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
-	fs.BoolVar(&m.Node.Protocol.MDNS, FlagNameP2PMDNS, true, "if true mdns will be enabled")
+	fs.BoolVar(&m.Node.Protocol.MDNS.Enable, FlagNameP2PMDNS, true, "if true mdns will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
@@ -202,6 +208,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
 			"pubsub": false,
 		},
+	}
+
+	if m.Node.Protocol.MDNS.Enable && m.Node.Protocol.MDNS.DriverLocker != nil {
+		m.Node.Protocol.MDNS.DriverLocker.Lock()
 	}
 
 	// init ipfs node
@@ -519,7 +529,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// localdisc driver
-	cfg.Discovery.MDNS.Enabled = m.Node.Protocol.MDNS
+	cfg.Discovery.MDNS.Enabled = m.Node.Protocol.MDNS.Enable
 
 	// enable autorelay
 	if m.Node.Protocol.AutoRelay {
@@ -633,6 +643,9 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	go func() {
 		<-m.getContext().Done()
 		m.Node.Protocol.discovery.Close()
+		if m.Node.Protocol.MDNS.Enable && m.Node.Protocol.MDNS.DriverLocker != nil {
+			m.Node.Protocol.MDNS.DriverLocker.Unlock()
+		}
 	}()
 
 	pt, err := ipfsutil.NewPubsubMonitor(logger, h)

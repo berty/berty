@@ -265,8 +265,8 @@ md.generate: install
 		(rdvp $$sub -h || true) 2>> .tmp/rdvp-usage.txt; \
 	done
 
-	echo 'foo@bar:~$$ betabot -h' > .tmp/betabot-usage.txt
-	(betabot -h || true) 2>> .tmp/betabot-usage.txt
+	echo 'foo@bar:~$$ welcomebot -h' > .tmp/welcomebot-usage.txt
+	(welcomebot -h || true) 2>> .tmp/welcomebot-usage.txt
 
 	# FIXME: generate output for berty mini
 
@@ -280,10 +280,10 @@ md.generate: install
 ##
 
 
-depaware.generate: ./cmd/berty/depaware.txt
+depaware.generate: ./cmd/*/depaware.txt
 .PHONY: depaware.generate
 
-depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot  ./cmd/berty-doctor ./cmd/berty-integration
+depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/welcomebot  ./cmd/berty-doctor ./cmd/berty-integration
 ./cmd/*/depaware.txt: ../go.sum
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --update $$pkg; done
 

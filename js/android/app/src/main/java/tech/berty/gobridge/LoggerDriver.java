@@ -5,8 +5,6 @@ import android.util.LogPrinter;
 
 import bertybridge.NativeLoggerDriver;
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-
 public class LoggerDriver implements NativeLoggerDriver {
     private final String subsystem;
     private final String category;
@@ -75,8 +73,6 @@ public class LoggerDriver implements NativeLoggerDriver {
         LogPrinter logPrinter = new LogPrinter(priority, namespace);
         String out = String.format("[%s] [%s]: %s", level, namespace, message);
         logPrinter.println(out);
-
-        FirebaseCrashlytics.getInstance().log(out);
     }
 
     public void format(String format, LoggerLevel loggerLevel, Object ... args) {

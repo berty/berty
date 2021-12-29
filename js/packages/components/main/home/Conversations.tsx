@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleProp, TouchableHighlight, View, ViewProps } from 'react-native'
+import { ActivityIndicator, StyleProp, TouchableHighlight, View, ViewProps } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -9,15 +9,16 @@ import {
 	pbDateToNum,
 	useLastConvInteraction,
 	useThemeColor,
-	useMessengerContext,
+	ParsedInteraction,
 } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
-import { useAppSelector } from '@berty-tech/redux/react-redux'
+import { useAppSelector, useOneToOneContact } from '@berty-tech/react-redux'
 import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reducer'
 
 import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
 import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
+import { selectChatInputSending } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 
 type ConversationsProps = ViewProps & {
 	items: Array<any>
@@ -30,16 +31,19 @@ type ConversationsItemProps = any
 
 // Functions
 
-const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
-	interaction,
-	isAccepted,
-}) => {
+const MessageStatus: React.FC<{
+	interaction: ParsedInteraction
+	isAccepted: boolean
+	sending?: boolean
+}> = ({ interaction, isAccepted, sending }) => {
 	const colors = useThemeColor()
 	if (interaction?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage && isAccepted) {
 		return null
 	}
 
-	return (
+	return sending ? (
+		<ActivityIndicator />
+	) : (
 		<Icon
 			name={
 				(interaction && !interaction.acknowledged) || !isAccepted
@@ -53,7 +57,7 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 	)
 }
 
-const interactionsFilter = (inte: any) =>
+const interactionsFilter = (inte: ParsedInteraction) =>
 	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage
 
 const ConversationsItem: React.FC<ConversationsItemProps> = props => {
@@ -68,14 +72,12 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		isLast,
 	} = props
 
-	const ctx = useMessengerContext()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)
 	const displayDate = lastUpdate || createdDate ? pbDateToNum(lastUpdate || createdDate) : null
 
-	const contact =
-		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
+	const contact = useOneToOneContact(publicKey)
 	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
@@ -83,10 +85,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const chatInputText = useAppSelector(state => selectChatInputText(state, publicKey))
+	const chatInputSending = useAppSelector(state => selectChatInputSending(state, publicKey))
 
 	let description
 	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
-		description = (lastInte.payload as any)?.body
+		description = lastInte.payload?.body
 	} else {
 		if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
 			description = t('main.home.conversations.request-sent')
@@ -116,7 +119,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		}
 	}
 
-	if (chatInputText) {
+	if (chatInputSending) {
+		description = t('chat.sending')
+	} else if (chatInputText) {
 		description = t('main.home.conversations.draft', {
 			message: chatInputText,
 		})
@@ -251,7 +256,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 									: { color: colors['secondary-text'] },
 							]}
 						>
-							{description}
+							{description || ''}
 						</Text>
 
 						{/* Message status */}
@@ -272,6 +277,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 									isAccepted={
 										isAccepted || type === beapi.messenger.Conversation.Type.MultiMemberType
 									}
+									sending={chatInputSending}
 								/>
 							)}
 						</View>

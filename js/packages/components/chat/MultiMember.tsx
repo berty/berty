@@ -140,7 +140,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 					</TouchableOpacity>
 				)
 			},
-			title: (conv as any).fake ? `FAKE - ${conv?.displayName}` : conv?.displayName || '',
+			title: (conv as any)?.fake ? `FAKE - ${conv?.displayName}` : conv?.displayName || '',
 			headerRight: () => (
 				<TouchableOpacity
 					activeOpacity={conv ? 0.2 : 0.5}

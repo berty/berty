@@ -67,12 +67,12 @@ The two main command line utilities are:
 - When you need to share sensitive information over untrusted networks, for instance while traveling
 - If you want to communicate anonymously
 - If you want full control over your data and thus don't want to rely on third-party servers
-- In countries that actively monitor and temper with their network, restricting its use and censoring some of its contents 
+- In countries that actively monitor and temper with their network, restricting its use and censoring some of its contents
 - In areas with weak or no connection at all
 
 Berty is currently developed by **[Berty Technologies](https://berty.tech/about)**, a French nonprofit organization.
 
-**Note: this project is led by a small team made of humans, who makes mistakes. Please do not hesitate to point out bugs or missing features.** _See the [contribute section](#contribute) below._
+**Note: this project is led by a small team made of humans, who make mistakes. Please do not hesitate to point out bugs or missing features.** _See the [contribute section](#contribute) below._
 
 > We cannot promise we will offer you the best application, but we dedicate ourselves to doing our best to create a great one.
 
@@ -88,13 +88,13 @@ More info on [berty/community](https://github.com/berty/community).
 
 ## Development Status
 
-The current Berty implementation is using the [Berty Protocol](https://berty.tech/docs/protocol/), which means the encryption technique is safe, and it works as a peer-to-peer app! 
+The current Berty implementation is using the [Berty Protocol](https://berty.tech/docs/protocol/), which means the encryption technique is safe, and it works as a peer-to-peer app!
 
-Alas, Berty has not yet been hardened, so please avoid using it on devices with weak sandboxes, such as unpatchable devices that use old Android versions.  
+Alas, Berty has not yet been hardened, so please avoid using it on devices with weak sandboxes, such as unpatchable devices that use old Android versions.
 
-The current Berty Protocol is _partially implemented_. 
+The current Berty Protocol is _partially implemented_.
 
-The API will continue to evolve in the near future. As such, we cannot yet guarantee none-breaking changes, or any kind of API stability. Be prepared for a rough ride if you start rolling the Berty Protocol in your application. 
+The API will continue to evolve in the near future. As such, we cannot yet guarantee none-breaking changes, or any kind of API stability. Be prepared for a rough ride if you start rolling the Berty Protocol in your application.
 
 _We will have an open beta for the different packages and applications soon, so anyone will be able to give it a try. [Subscribe](https://tech.us20.list-manage.com/subscribe/post?u=5ca3993c7f0b8f646dcda714b&id=4d7828715b) to our newsletter if you wish to be notified._
 
@@ -136,7 +136,7 @@ The Berty Messenger, or simply Berty, is a messaging application written in [Rea
     - `berty daemon`: Runs the whole Berty Protocol instance.
     - `berty mini`: Simple CLI messenger application using Berty Protocol.
   - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
-  - [./go/cmd/**betabot**](go/cmd/betabot): An onboarding bot used during the beta phase.
+  - [./go/cmd/**welcomebot**](go/cmd/welcomebot): An onboarding bot used during the early phase.
   - [./go/cmd/**testbot**](go/cmd/testbot): A bot used by integration tests and developers.
 - [./js](js): Where all the Javascript/Typescript code lies:
   - The **Berty Messenger** application, written in React Native.
@@ -146,7 +146,7 @@ The Berty Messenger, or simply Berty, is a messaging application written in [Rea
 
 ![Contribute to Berty](https://assets.berty.tech/files/contribute-contribute_v2--Contribute-berty-ultra-light.gif)
 
-We welcome contributions! Your input is deeply appreciated and extremely valuable to us. We thank you in advance for it. 
+We welcome contributions! Your input is deeply appreciated and extremely valuable to us. We thank you in advance for it.
 
 There is no small feat: everyone is encouraged to do what they can to help, based on their ability and interest.
 

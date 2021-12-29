@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
+import { useTranslation } from 'react-i18next'
 
 import {
 	Maybe,
@@ -19,10 +20,14 @@ import {
 	selectChatInputText,
 	setChatInputText,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
+import {
+	selectChatInputSending,
+	setChatInputSending,
+} from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
-import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
+import { useAppDispatch, useAppSelector, useMedias } from '@berty-tech/react-redux'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { useReplyReaction } from '../ReplyReactionContext'
@@ -43,7 +48,13 @@ const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C)
 export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 	({ placeholder, convPK, disabled }) => {
 		// external
+		const { t } = useTranslation()
 		const dispatch = useAppDispatch()
+		const sending = useAppSelector(state => selectChatInputSending(state, convPK))
+		const setSending = React.useCallback(
+			(value: boolean) => dispatch(setChatInputSending({ convPK, value })),
+			[dispatch, convPK],
+		)
 		const message = useAppSelector(state => selectChatInputText(state, convPK))
 		const mediaCids = useAppSelector(state => selectChatInputMediaList(state, convPK))
 		const colors = useThemeColor()
@@ -54,13 +65,9 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const ctx = useMessengerContext()
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
-		const addedMedias = React.useMemo(
-			() => mediaCids.map(cid => ctx.medias[cid]),
-			[ctx.medias, mediaCids],
-		)
+		const addedMedias = useMedias(mediaCids)
 
 		// local
-		const [sending, setSending] = React.useState<boolean>(false)
 		const [isFocused, setIsFocused] = React.useState<boolean>(false)
 		const [showAddFileMenu, setShowAddFileMenu] = React.useState(false)
 
@@ -68,7 +75,8 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const isFake = !!conversation?.fake
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
 		const horizontalGutter = 8 * scaleSize
-		const showQuickButtons = !sending && !message && !isFocused && mediaCids.length <= 0
+		const showQuickButtons =
+			!disabled && !sending && !message && !isFocused && mediaCids.length <= 0
 
 		// callbacks
 		const sendMessageBouncy = React.useCallback(
@@ -97,18 +105,19 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						payload: buf,
 						targetCid: activeReplyInte?.cid,
-						sentDate: Long.fromNumber(Date.now()),
+						sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 					}
-					ctx.dispatch({
-						type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+					dispatch({
+						type: 'messenger/InteractionUpdated',
 						payload: { interaction: optimisticInteraction },
 					})
-					dispatch(resetChatInput(convPK))
-					ctx.playSound('messageSent')
 					setActiveReplyInte()
 					dispatch(setChecklistItemDone({ key: 'message' }))
+					dispatch(resetChatInput(convPK))
+					ctx.playSound('messageSent')
 				} catch (e) {
 					console.warn('e sending message:', e)
+					setSending(false)
 				}
 			},
 			[
@@ -120,6 +129,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				dispatch,
 				messengerClient,
 				addedMedias,
+				setSending,
 			],
 		)
 
@@ -129,7 +139,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			}
 			setSending(true)
 			await sendMessageBouncy()
-			setSending(false)
 		}, [setSending, sendMessageBouncy, sending])
 
 		const handleCloseFileMenu = React.useCallback(
@@ -178,12 +187,12 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				}
 				setSending(false)
 			},
-			[messengerClient, handleCloseFileMenu, sending],
+			[messengerClient, handleCloseFileMenu, sending, setSending],
 		)
 
 		const handlePressCamera = React.useCallback(async () => {
 			const permissionStatus = await rnutil.checkPermissions('camera', navigate, {
-				isToNavigate: true,
+				navigateToPermScreenOnProblem: true,
 			})
 			if (permissionStatus !== RESULTS.GRANTED) {
 				return
@@ -241,12 +250,25 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						minHeight: 65 * scaleSize,
 					}}
 				>
-					{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
+					{showAddFileMenu && (
+						<AddFileMenu
+							onClose={handleCloseFileMenu}
+							setSending={val => {
+								setSending(val)
+								if (val) {
+									setShowAddFileMenu(false)
+								}
+							}}
+							sending={sending}
+						/>
+					)}
 					<RecordComponent
 						component={recordIcon}
 						convPk={convPK}
 						disableLockMode={false}
 						disabled={!showQuickButtons}
+						setSending={setSending}
+						sending={sending}
 					>
 						<View
 							style={{
@@ -256,12 +278,16 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 							}}
 						>
 							<View style={{ marginRight: horizontalGutter }}>
-								<MoreButton n={mediaCids.length} onPress={handlePressMore} />
+								<MoreButton
+									n={mediaCids.length}
+									onPress={handlePressMore}
+									disabled={disabled || sending}
+								/>
 							</View>
 							<ChatTextInput
-								disabled={disabled}
+								disabled={(!isFocused && sending) || disabled}
 								handleTabletSubmit={handlePressSend}
-								placeholder={placeholder}
+								placeholder={sending ? t('chat.sending') : placeholder}
 								onFocusChange={setIsFocused}
 								onChangeText={handleTextChange}
 								value={message}

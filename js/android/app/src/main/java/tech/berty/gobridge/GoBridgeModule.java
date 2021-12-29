@@ -17,6 +17,7 @@ import com.facebook.react.bridge.ReadableArray;
 import java.io.File;
 import java.util.Locale;
 
+import tech.berty.android.BuildConfig;
 import tech.berty.rootdir.RootDirModule;
 
 // go packages
@@ -42,9 +43,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     this.reactContext = reactContext;
     this.keystoreDriver = new KeystoreDriver(reactContext);
     rootDir = new File(new RootDirModule(reactContext).getRootDir());
-    System.out.println("root dir: " + rootDir.getAbsolutePath());
     tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/berty");
-    System.out.println("temp dir: " + tempDir.getAbsolutePath());
   }
 
   public static Bridge getBridgeMessenger() {
@@ -77,6 +76,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void log(ReadableMap opts) {
+    if (!BuildConfig.DEBUG) {
+        return;
+    }
+
     if (opts.hasKey("message")) {
       String message = opts.getString("message");
       String type = opts.hasKey("level") ? opts.getString("level") : "info";
@@ -95,7 +98,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   }
 
   //////////////
-  // Protocol //
+ // Protocol //
   //////////////
 
   @ReactMethod
@@ -112,8 +115,19 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       }
 
       // init logger
-      LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
-      config.setLoggerDriver(logger);
+
+      if (BuildConfig.DEBUG) {
+          LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
+          config.setLoggerDriver(logger);
+      }
+
+      // set net driver
+      NetDriver inet = new NetDriver();
+      config.setNetDriver(inet);
+
+      // set mdns locker driver
+      MDNSLockerDriver imdnslocker = new MDNSLockerDriver(reactContext);
+      config.setMDNSLocker(imdnslocker);
 
       // load and set user preferred language
       String tags = null;
@@ -125,7 +139,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       config.setPreferredLanguages(tags);
 
       // set root dir
-      Log.i(TAG, "root dir: " + rootDir.getAbsolutePath());
       config.setRootDir(rootDir.getAbsolutePath());
 
       // set temp dir
@@ -141,15 +154,13 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       config.setBleDriver(bleDriver);
 
       // set NearBy driver
-      BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
-      config.setNBDriver(NBDriver);
+      // BertyNearbyDriver NBDriver = new BertyNearbyDriver(reactContext);
+      // config.setNBDriver(NBDriver);
 
       // set native keystore driver
       config.setKeystoreDriver(this.keystoreDriver);
 
-      System.out.println("bflifecycle: calling Bertybridge.newBridge");
       this.bridgeMessenger = Bertybridge.newBridge(config);
-      System.out.println("bflifecycle: done Bertybridge.newBridge");
       promise.resolve(true);
     } catch (Exception err) {
       promise.reject(err);
@@ -160,9 +171,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   public void closeBridge(Promise promise) {
     try {
       if (bridgeMessenger != null) {
-        System.out.println("bflifecycle: calling bridgeMessenger.close()");
         bridgeMessenger.close();
-        System.out.println("bflifecycle: done bridgeMessenger.close()");
         bridgeMessenger = null;
       }
       promise.resolve(true);

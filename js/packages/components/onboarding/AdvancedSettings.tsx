@@ -286,7 +286,7 @@ const Proximity: React.FC<{
 									setNewConfigProximityTransport()
 								} else {
 									await rnutil.checkPermissions('p2p', navigate, {
-										isToNavigate: true,
+										navigateToPermScreenOnProblem: true,
 										onComplete: async () => setNewConfigProximityTransport(),
 									})
 								}
@@ -418,7 +418,7 @@ const CustomReplicationNode: React.FC<{
 						<TextInput
 							placeholderTextColor={`${colors['main-text']}50`}
 							placeholder={t('onboarding.advanced-settings.third-part.second-button.placeholder')}
-							style={[text.size.medium, { fontFamily: 'Open Sans', fontWeight: '600', flex: 1 }]}
+							style={[text.size.medium, { fontFamily: 'Open Sans', fontWeight: '600', padding: 0 }]}
 							onChangeText={(text: string) => {
 								setNewConfig({
 									...newConfig,

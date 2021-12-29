@@ -20,12 +20,13 @@ import {
 	closeAccountWithProgress,
 	useThemeColor,
 } from '@berty-tech/store'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { AccountAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
 import { WelcomeChecklist } from './WelcomeChecklist'
+import { LoaderDots } from '../gates'
 
 const _verticalOffset = 30
 
@@ -124,7 +125,7 @@ const HomeHeaderAvatar: React.FC = () => {
 						{account?.displayName || ''}
 					</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
-						{(link && (
+						{link ? (
 							<QRCode
 								size={qrCodeSize}
 								value={link}
@@ -133,8 +134,11 @@ const HomeHeaderAvatar: React.FC = () => {
 								mode='circle'
 								backgroundColor={colors['main-background']}
 							/>
-						)) ||
-							null}
+						) : (
+							<View style={{ width: qrCodeSize, height: qrCodeSize, justifyContent: 'center' }}>
+								<LoaderDots />
+							</View>
+						)}
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -162,7 +166,7 @@ const HomeBodySettings: React.FC = () => {
 				onPress={async () => {
 					if (url) {
 						try {
-							await Share.share({ url })
+							await Share.share({ url, message: url })
 						} catch (e) {
 							console.error(e)
 						}

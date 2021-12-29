@@ -2,22 +2,6 @@
 export const globals = {
   "berty": {
     "contacts": {
-      "betabot": {
-        "link": "https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy8t9tDjhiikcJrCMxRDPBFmLNQ44xi5SJJTKckjvFFrjPu/name=BetaBot",
-        "name": "BetaBot",
-        "description": "Official BetaBot",
-        "kind": "Bot",
-        "suggestion": true,
-        "icon": "berty_bot_pink_bg"
-      },
-      "betabot-dev": {
-        "link": "https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=BetaBot-Dev",
-        "name": "BetaBot Dev",
-        "description": "BetaBot-Dev",
-        "kind": "Bot",
-        "suggestion": true,
-        "icon": "berty_dev_green_bg"
-      },
       "testbot": {
         "link": "https://berty.tech/id#contact/oZBLExQaU8TTubcawgfs8AVcH9FbFV5J1kdEVqgueBaFCMWsADV341pCv26zcHMv3GaTL6UHPzVoHzLoereFQLmBGAh2QKb/name=TestBot",
         "name": "TestBot",
@@ -33,6 +17,22 @@ export const globals = {
         "kind": "Bot",
         "suggestion": false,
         "icon": ""
+      },
+      "welcomebot": {
+        "link": "https://berty.tech/id#contact/oZBLFukkeefDcXibkvxHyd1kZpqUUm4mKsE3tgcDakWx6Pa5Ak3VghVyxLZ8vns71EDLWkLbCZ5QcGADnehvxyq3B7LFh14/name=WelcomeBot",
+        "name": "Welcome Bot",
+        "description": "Official Welcome Bot",
+        "kind": "Bot",
+        "suggestion": true,
+        "icon": "berty_bot_pink_bg"
+      },
+      "welcomebot-dev": {
+        "link": "https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=WelcomeBot-Dev",
+        "name": "Welcome Dev",
+        "description": "Welcome Bot - Dev",
+        "kind": "Bot",
+        "suggestion": false,
+        "icon": "berty_dev_green_bg"
       }
     },
     "conversations": {

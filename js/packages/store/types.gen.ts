@@ -76,39 +76,39 @@ export type MonitorGroupPayloadType<T> =
 
 export type InteractionUndefined = {
 	type: beapi.messenger.AppMessage.Type.Undefined
-	payload: undefined
+	payload?: undefined
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionUserMessage = {
 	type: beapi.messenger.AppMessage.Type.TypeUserMessage
-	payload: beapi.messenger.AppMessage.IUserMessage
+	payload?: beapi.messenger.AppMessage.IUserMessage
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionUserReaction = {
 	type: beapi.messenger.AppMessage.Type.TypeUserReaction
-	payload: beapi.messenger.AppMessage.IUserReaction
+	payload?: beapi.messenger.AppMessage.IUserReaction
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionGroupInvitation = {
 	type: beapi.messenger.AppMessage.Type.TypeGroupInvitation
-	payload: beapi.messenger.AppMessage.IGroupInvitation
+	payload?: beapi.messenger.AppMessage.IGroupInvitation
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionSetGroupInfo = {
 	type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo
-	payload: beapi.messenger.AppMessage.ISetGroupInfo
+	payload?: beapi.messenger.AppMessage.ISetGroupInfo
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionSetUserInfo = {
 	type: beapi.messenger.AppMessage.Type.TypeSetUserInfo
-	payload: beapi.messenger.AppMessage.ISetUserInfo
+	payload?: beapi.messenger.AppMessage.ISetUserInfo
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionAcknowledge = {
 	type: beapi.messenger.AppMessage.Type.TypeAcknowledge
-	payload: beapi.messenger.AppMessage.IAcknowledge
+	payload?: beapi.messenger.AppMessage.IAcknowledge
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionReplyOptions = {
 	type: beapi.messenger.AppMessage.Type.TypeReplyOptions
-	payload: beapi.messenger.AppMessage.IReplyOptions
+	payload?: beapi.messenger.AppMessage.IReplyOptions
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionMonitorMetadata = {
 	type: beapi.messenger.AppMessage.Type.TypeMonitorMetadata
-	payload: beapi.messenger.AppMessage.IMonitorMetadata
+	payload?: beapi.messenger.AppMessage.IMonitorMetadata
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 
 export type ParsedInteraction =

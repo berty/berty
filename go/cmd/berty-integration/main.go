@@ -33,7 +33,7 @@ func main() {
 	i.checkErr(i.init(), "init")
 	i.checkErr(i.testbotAdd(), "testbot.add")
 	// i.checkErr(i.testbotFoo(), "testbot.echo")
-	// i.checkErr(i.betabotAdd(), "betabot.add")
+	// i.checkErr(i.welcomebotAdd(), "welcomebot.add")
 	// i.checkErr(i.testbotBar(), "testbot.bar")
 	// i.checkErr(i.testbotBar(), "services.register")
 	// i.checkErr(i.testbotBar(), "services.use")
@@ -57,9 +57,9 @@ type integration struct {
 	ctx          context.Context
 	client       messengertypes.MessengerServiceClient
 	opts         struct {
-		betabotAddr string
-		testbotAddr string
-		benchmark   bool
+		welcomebotAddr string
+		testbotAddr    string
+		benchmark      bool
 	}
 	benchmarks []benchmark
 }
@@ -76,7 +76,7 @@ func (i *integration) init() error {
 	i.manager.Logging.StderrFormat = "light-color"
 	i.manager.Logging.StderrFilters = "warn:*,-ipfs.* error+:*" // (level==warn for everything except ipfs.*) || (levels >= error)
 	fs := flag.NewFlagSet("integration", flag.ExitOnError)
-	fs.StringVar(&i.opts.betabotAddr, "integration.betabot", config.Config.Berty.Contacts["betabot-dev"].Link, "betabot addr")
+	fs.StringVar(&i.opts.welcomebotAddr, "integration.welcomebot", config.Config.Berty.Contacts["welcomebot-dev"].Link, "welcomebot addr")
 	fs.StringVar(&i.opts.testbotAddr, "integration.testbot", config.Config.Berty.Contacts["testbot-dev"].Link, "testbot addr")
 	fs.BoolVar(&i.opts.benchmark, "integration.benchmark", false, "print benchmark result in JSON")
 	i.manager.SetupLoggingFlags(fs)

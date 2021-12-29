@@ -61,6 +61,8 @@ type Manager struct {
 		ID string `json:"ID,omitempty"`
 	} `json:"Session,omitempty"`
 	Logging struct {
+		DisableLogging bool
+
 		DefaultLoggerStreams []logutil.Stream
 		StderrFormat         string `json:"StderrFormat,omitempty"`
 		StderrFilters        string `json:"StderrFilters,omitempty"`
@@ -98,7 +100,6 @@ type Manager struct {
 			DHT               string `json:"DHT,omitempty"`
 			DHTRandomWalk     bool   `json:"DHTRandomWalk,omitempty"`
 			NoAnnounce        string `json:"NoAnnounce,omitempty"`
-			MDNS              bool   `json:"LocalDiscovery,omitempty"`
 			TinderDiscover    bool   `json:"TinderDiscover,omitempty"`
 			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
 			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
@@ -106,14 +107,18 @@ type Manager struct {
 			StaticRelays      string `json:"StaticRelays,omitempty"`
 			LowWatermark      int    `json:"LowWatermark,omitempty"`
 			HighWatermark     int    `json:"HighWatermark,omitempty"`
-			Ble               struct {
-				Enable bool                      `json:"Enable,omitempty"`
-				Driver proximity.ProximityDriver `json:"Driver,omitempty"`
-			}
+			MDNS              struct {
+				Enable       bool `json:"Enable,omitempty"`
+				DriverLocker sync.Locker
+			} `json:"MDNS,omitempty"`
+			Ble struct {
+				Enable bool `json:"Enable,omitempty"`
+				Driver proximity.ProximityDriver
+			} `json:"Ble,omitempty"`
 			Nearby struct {
-				Enable bool                      `json:"Enable,omitempty"`
-				Driver proximity.ProximityDriver `json:"Driver,omitempty"`
-			}
+				Enable bool `json:"Enable,omitempty"`
+				Driver proximity.ProximityDriver
+			} `json:"Nearby,omitempty"`
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`
@@ -198,6 +203,7 @@ type Manager struct {
 
 type ManagerOpts struct {
 	DoNotSetDefaultDir   bool
+	DisableLogging       bool
 	DefaultLoggerStreams []logutil.Stream
 	NativeKeystore       accountutils.NativeKeystore
 	AccountID            string
@@ -215,6 +221,9 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	if m.accountID == "" {
 		m.accountID = "0"
 	}
+
+	// explicitly disable logging
+	m.Logging.DisableLogging = opts.DisableLogging
 
 	// special default values:
 	// this is not the good place to put all the default values.

@@ -25,6 +25,7 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
 import rnutil from '@berty-tech/rnutil'
+import { useContactsDict, useConversationsDict } from '@berty-tech/react-redux'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'
@@ -76,14 +77,14 @@ const FooterButton: React.FC<{
 export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor((_ctx, notif) =>
 		[T.TypeMessageReceived, T.TypeContactRequestReceived, T.TypeContactRequestSent].includes(
-			notif.type as any,
+			notif.type || T.Unknown,
 		)
 			? 'sound-only'
 			: false,
 	)
 	// TODO: do something to animate the requests
 	const requests: any[] = useIncomingContactRequests()
-	const conversations: any[] = useSortedConversationList()
+	const conversations = useSortedConversationList()
 	const isConversation: number = useConversationsCount()
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()
@@ -125,22 +126,26 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	const hasSuggestion: number = suggestions.length
 	const hasConfigurations: number = configurations.length
 
+	const conversationsDict = useConversationsDict()
+
 	const searchConversations = React.useMemo(
 		() =>
 			searching
 				? pickBy(
-						ctx.conversations,
-						(val: any) =>
-							val.type === beapi.messenger.Conversation.Type.MultiMemberType &&
-							searchCheck(val.displayName),
+						conversationsDict,
+						val =>
+							val?.type === beapi.messenger.Conversation.Type.MultiMemberType &&
+							searchCheck(val?.displayName),
 				  )
 				: {},
-		[ctx.conversations, searchCheck, searching],
+		[conversationsDict, searchCheck, searching],
 	)
 
+	const contacts = useContactsDict()
+
 	const searchContacts = React.useMemo(
-		() => (searching ? pickBy(ctx.contacts, (val: any) => searchCheck(val.displayName)) : {}),
-		[ctx.contacts, searchCheck, searching],
+		() => (searching ? pickBy(contacts, (val: any) => searchCheck(val.displayName)) : {}),
+		[contacts, searchCheck, searching],
 	)
 
 	const searchInteractions = React.useRef<beapi.messenger.IInteraction[]>([])
@@ -318,7 +323,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 					onPress={async () => {
 						await rnutil.checkPermissions('camera', navigate, {
 							navigateNext: 'Main.Scan',
-							isToNavigate: true,
+							navigateToPermScreenOnProblem: true,
 							onComplete: async () =>
 								dispatch(
 									CommonActions.reset({

@@ -47,11 +47,11 @@ Object.entries(pb.lookup('berty.messenger.v1.AppMessage.Type').values).forEach((
 	if (val === 0) {
 		console.log(`export type Interaction${key} =`)
 		console.log(`{ type: beapi.messenger.AppMessage.Type.${key},`)
-		console.log(`payload: undefined,`)
+		console.log(`payload?: undefined,`)
 	} else {
 		console.log(`export type Interaction${key.substr('Type'.length)} =`)
 		console.log(`{ type: beapi.messenger.AppMessage.Type.${key},`)
-		console.log(`payload: beapi.messenger.AppMessage.I${key.substr('Type'.length)},`)
+		console.log(`payload?: beapi.messenger.AppMessage.I${key.substr('Type'.length)},`)
 	}
 	console.log("} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>")
 })

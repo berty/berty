@@ -23,13 +23,13 @@ import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useMessengerContext,
-	useConvInteractions,
 	useMessengerClient,
 	useThemeColor,
 	pbDateToNum,
 	retrieveMediaBytes,
 	Maybe,
 } from '@berty-tech/store'
+import { useConversationInteractions } from '@berty-tech/react-redux'
 
 import { getSource } from '../utils'
 import { timeFormat } from '../helpers'
@@ -64,7 +64,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const [images, setImages] = useState<any[]>([])
 	const client = useMessengerClient()
 
-	const messages = useConvInteractions(convPk).filter(
+	const messages = useConversationInteractions(convPk).filter(
 		msg =>
 			msg.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
 			msg.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation ||
@@ -99,7 +99,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 			.filter(
 				inte =>
 					inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
-					linkify.test(inte.payload.body),
+					linkify.test(inte.payload?.body || ''),
 			)
 			.reduce((arr, current) => {
 				if (current?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage) {
@@ -107,7 +107,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 				}
 				return [
 					...arr,
-					...(linkify.match(current.payload.body) as { url: string }[]).map(item => ({
+					...(linkify.match(current.payload?.body || '') as { url: string }[]).map(item => ({
 						url: item.url,
 						sentDate: pbDateToNum(current.sentDate),
 					})),

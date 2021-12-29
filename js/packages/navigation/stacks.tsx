@@ -1,26 +1,25 @@
-import * as RawComponents from '@berty-tech/components'
-import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Linking } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import {
 	createNativeStackNavigator,
 	NativeStackNavigationOptions,
 } from '@react-navigation/native-stack'
+import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Linking } from 'react-native'
+
+import * as RawComponents from '@berty-tech/components'
+import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+
 import { dispatch } from './rootRef'
 import { ScreensParams } from './types'
 
 export const CustomTitleStyle: () => any = () => {
-	const [, { scaleSize }] = useStyles()
 	return {
 		headerTitleStyle: {
 			fontFamily: 'Open Sans',
-			fontWeight: '700',
-			fontSize: 25 * scaleSize,
 		},
 	}
 }
@@ -89,7 +88,7 @@ function useLinking(): [string | null, unknown] {
 	const [url, setUrl] = useState<string | null>(null)
 	const [error, setError] = useState<unknown>()
 
-	async function initialUrl() {
+	const initialUrl = useCallback(async () => {
 		try {
 			const linkingUrl = await Linking.getInitialURL()
 			if (linkingUrl) {
@@ -98,10 +97,10 @@ function useLinking(): [string | null, unknown] {
 		} catch (ex) {
 			setError(ex)
 		}
-	}
+	}, [])
 
 	useEffect(() => {
-		function handleOpenUrl(ev: any) {
+		const handleOpenUrl = (ev: any) => {
 			console.log('handleOpenUrl:', ev.url)
 			setUrl(null)
 			setUrl(ev.url)
@@ -113,7 +112,7 @@ function useLinking(): [string | null, unknown] {
 		})
 
 		return () => Linking.removeEventListener('url', handleOpenUrl)
-	}, [])
+	}, [initialUrl])
 
 	return [url, error]
 }
@@ -128,7 +127,7 @@ const DeepLinkBridge: React.FC = React.memo(() => {
 			ctx.setHandledLink(true)
 			navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 		}
-	}, [url, error, navigation, ctx])
+	}, [ctx, error, navigation, url])
 
 	return null
 })
@@ -282,12 +281,16 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Chat.OneToOne'}
 				component={Components.Chat.OneToOne}
-				options={ChatScreenOptions()}
+				options={ChatScreenOptions({
+					...CustomTitleStyle(),
+				})}
 			/>
 			<NavigationStack.Screen
 				name={'Chat.Group'}
 				component={Components.Chat.MultiMember}
-				options={ChatScreenOptions()}
+				options={ChatScreenOptions({
+					...ChatScreenOptions(),
+				})}
 			/>
 			<NavigationStack.Screen
 				name={'Chat.OneToOneSettings'}
@@ -361,24 +364,7 @@ export const Navigation: React.FC = React.memo(() => {
 				name={'Settings.MyBertyId'}
 				component={Components.Settings.MyBertyId}
 				options={BackgroundHeaderScreenOptions({
-					title: 'My Berty ID',
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.AppUpdates'}
-				component={Components.Settings.AppUpdates}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.updates.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Help'}
-				component={Components.Settings.Help}
-				options={SecondaryBackgroundHeaderScreenOptions({
-					title: t('settings.help.title'),
+					title: t('settings.my-berty-ID.title'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
@@ -459,7 +445,6 @@ export const Navigation: React.FC = React.memo(() => {
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.theme-editor.title'),
 					...CustomTitleStyle(),
-					presentation: 'formSheet',
 				})}
 			/>
 			<NavigationStack.Screen
@@ -494,13 +479,12 @@ export const Navigation: React.FC = React.memo(() => {
 				component={Components.Settings.DevText}
 				options={AltBackgroundHeaderScreenOptions({
 					title: '',
-					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.ReplicationServices'}
-				component={Components.Settings.ReplicationServices}
+				name={'Settings.BertyServices'}
+				component={Components.Settings.BertyServices}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			<NavigationStack.Screen

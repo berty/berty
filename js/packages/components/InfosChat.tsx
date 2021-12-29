@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Text as TextNative, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
@@ -11,6 +11,7 @@ import {
 	useThemeColor,
 	useMessengerContext,
 } from '@berty-tech/store'
+import { useOneToOneContact } from '@berty-tech/react-redux'
 
 import { timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'
@@ -55,7 +56,7 @@ const InfosContactState: React.FC<{ state: any }> = ({ state }) => {
 	)
 }
 
-const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
+const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepted: boolean }> = ({
 	contact,
 	isAccepted,
 }) => {
@@ -64,17 +65,12 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 
-	const [acceptDisabled, setAcceptDisabled] = useState<boolean>(false)
+	const [accepting, setAccepting] = useState(false)
 	const { playSound } = useMessengerContext()
 
 	const client = useMessengerClient()
-	const decline: any = () => {}
-
-	useEffect(() => {
-		if (isAccepted) {
-			setAcceptDisabled(true)
-		}
-	}, [isAccepted])
+	const decline = () => {}
+	const acceptDisabled = isAccepted || accepting
 
 	return (
 		<View>
@@ -116,15 +112,19 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 					disabled
 				/>
 				<MessageInvitationButton
-					onPress={() =>
-						client &&
-						client
-							.contactAccept({ publicKey })
-							.then(() => {
-								playSound('contactRequestAccepted')
-							})
-							.catch((err: any) => console.warn('Failed to accept contact request:', err))
-					}
+					onPress={async () => {
+						try {
+							if (!client || accepting) {
+								return
+							}
+							setAccepting(true)
+							await client.contactAccept({ publicKey })
+							playSound('contactRequestAccepted')
+						} catch (err: any) {
+							console.warn('Failed to accept contact request:', err)
+						}
+						setAccepting(false)
+					}}
 					activeOpacity={!acceptDisabled ? 0.2 : 1}
 					icon='checkmark-outline'
 					color={!acceptDisabled ? colors['background-header'] : colors['secondary-text']}
@@ -136,6 +136,7 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 					backgroundColor={!acceptDisabled ? colors['positive-asset'] : colors['secondary-text']}
 					styleOpacity={acceptDisabled ? 0.6 : undefined}
 					disabled={acceptDisabled}
+					loading={accepting}
 				/>
 			</View>
 		</View>
@@ -152,9 +153,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
-	const ctx = useMessengerContext()
-	const contact =
-		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
+	const contact = useOneToOneContact(publicKey || '')
 
 	const isAccepted = contact?.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest

@@ -7,7 +7,6 @@
 
 import os
 import Bertybridge
-import Firebase
 
 public enum LoggerError: Error {
   case emptyMessage
@@ -40,7 +39,12 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   public init(_ subsytem: String = "logger", _ category: String = "log") {
     self.subsytem = subsytem
     self.category = category
+    #if CFG_APPSTORE
+    self.scope = Visibility.hidden
+    #else
     self.scope = Visibility.visible
+    #endif
+
     self.isEnabled = true
   }
 
@@ -76,13 +80,11 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
 
         switch self.scope {
         case Visibility.visible: os_log("[%{public}@] %{public}@", log: logger, type: type, ulevel, out)
-        case Visibility.hidden: os_log("[%{private}@] %{private}@", log: logger, type: type, ulevel, out)
+        case Visibility.hidden: os_log("[%{public}@] %{private}@", log: logger, type: type, ulevel, out)
         }
     } else {
         NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + "." + subsytem, out)
     }
-
-    Crashlytics.crashlytics().log(format: "[%@] [%@]: %@", arguments: getVaList([level.rawValue, self.subsytem + "." + subsytem, out]))
   }
 
   public func format(_ format: NSString, level: Level = Level.info, _ args: CVarArg...) {

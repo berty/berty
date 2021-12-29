@@ -46,8 +46,6 @@ export type ScreensParams = {
 
 	'Settings.Home': undefined
 	'Settings.MyBertyId': undefined
-	'Settings.AppUpdates': undefined
-	'Settings.Help': undefined
 	'Settings.Mode': undefined
 	'Settings.ServicesAuth': undefined
 	'Settings.AboutBerty': undefined
@@ -63,7 +61,7 @@ export type ScreensParams = {
 	'Settings.DeleteAccount': undefined
 	'Settings.Roadmap': undefined
 	'Settings.Faq': undefined
-	'Settings.ReplicationServices': undefined
+	'Settings.BertyServices': undefined
 
 	// Modals
 

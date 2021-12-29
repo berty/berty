@@ -22,9 +22,14 @@ type Driver struct {
 var _ proximity.ProximityDriver = (*Driver)(nil)
 
 func NewDriver(logger *zap.Logger) proximity.ProximityDriver {
-	logger = logger.Named("MC")
-	logger.Debug("NewDriver()")
-
+	if logger == nil {
+		logger = zap.NewNop()
+	} else {
+		logger = logger.Named("MC")
+		logger.Debug("NewDriver()")
+		native.MCUseExternalLogger()
+	}
+	native.Logger = logger
 	native.ProtocolName = ProtocolName
 
 	return &Driver{
