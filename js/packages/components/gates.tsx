@@ -1,7 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, Button, Text, TextInput, View, Image, StatusBar } from 'react-native'
 import * as Progress from 'react-native-progress'
-import LottieView from 'lottie-react-native'
 
 import {
 	MessengerAppState,
@@ -14,7 +13,6 @@ import {
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import source from '@berty-tech/assets/loader_dots.gif'
-import launch from '@berty-tech/assets/berty_startup.json'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -44,17 +42,6 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 		<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 
-			<LottieView
-				source={launch}
-				autoPlay
-				loop
-				style={{
-					position: 'absolute',
-					width: '100%',
-					height: '100%',
-					bottom: 20 * scaleSize,
-				}}
-			/>
 			<Text
 				style={[
 					text.bold.small,
@@ -73,10 +60,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 			</Text>
 			<View
 				style={{
-					position: 'absolute',
-					bottom: 120 * scaleSize,
-					left: 0,
-					right: 0,
+					flex: 1,
 					alignItems: 'center',
 					justifyContent: 'center',
 				}}
