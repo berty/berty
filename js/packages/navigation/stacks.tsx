@@ -461,7 +461,6 @@ export const Navigation: React.FC = React.memo(() => {
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.theme-editor.title'),
 					...CustomTitleStyle(),
-					presentation: 'formSheet',
 				})}
 			/>
 			<NavigationStack.Screen

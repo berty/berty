@@ -40,7 +40,7 @@ const openThemeColorFile = async () => {
 
 const importColorThemeFileToStorage = async (uri: string) => {
 	const file = Platform.OS === 'android' ? getPath(uri) : uri.replace(/^file:\/\//, '')
-	const theme = await RNFS.readFile(file)
+	const theme = await RNFS.readFile(file, 'utf8')
 	return theme
 }
 
@@ -75,25 +75,33 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={async () => {
-					const document = await openThemeColorFile()
-					if (!document) {
-						return
-					}
-					const themeColors = await importColorThemeFileToStorage(document.uri)
-					const themeName = document.name.split('.')[0]
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.ThemeColor,
-						payload: {
-							selected: themeName,
-							collection: {
-								...ctx.persistentOptions.themeColor.collection,
-								[themeName]: {
-									colors: JSON.parse(themeColors),
+					try {
+						const document = await openThemeColorFile()
+						if (!document) {
+							return
+						}
+						const themeColors = await importColorThemeFileToStorage(document.uri)
+						const themeName = document.name.split('.')[0]
+						await ctx.setPersistentOption({
+							type: PersistentOptionsKeys.ThemeColor,
+							payload: {
+								selected: themeName,
+								collection: {
+									...ctx.persistentOptions.themeColor.collection,
+									[themeName]: {
+										colors: JSON.parse(themeColors),
+									},
 								},
+								isDark: false,
 							},
-							isDark: false,
-						},
-					})
+						})
+					} catch (err) {
+						showNotification({
+							title: t('settings.theme-editor.bad-format-title'),
+							message: t('settings.theme-editor.bad-format-desc'),
+							additionalProps: { type: 'message' },
+						})
+					}
 				}}
 			/>
 			<ButtonSetting
