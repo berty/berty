@@ -17,12 +17,9 @@ import { dispatch } from './rootRef'
 import { ScreensParams } from './types'
 
 export const CustomTitleStyle: () => any = () => {
-	const [, { scaleSize }] = useStyles()
 	return {
 		headerTitleStyle: {
 			fontFamily: 'Open Sans',
-			fontWeight: '700',
-			fontSize: 25 * scaleSize,
 		},
 	}
 }
@@ -284,12 +281,16 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Chat.OneToOne'}
 				component={Components.Chat.OneToOne}
-				options={ChatScreenOptions()}
+				options={ChatScreenOptions({
+					...CustomTitleStyle(),
+				})}
 			/>
 			<NavigationStack.Screen
 				name={'Chat.Group'}
 				component={Components.Chat.MultiMember}
-				options={ChatScreenOptions()}
+				options={ChatScreenOptions({
+					...ChatScreenOptions(),
+				})}
 			/>
 			<NavigationStack.Screen
 				name={'Chat.OneToOneSettings'}
@@ -363,24 +364,7 @@ export const Navigation: React.FC = React.memo(() => {
 				name={'Settings.MyBertyId'}
 				component={Components.Settings.MyBertyId}
 				options={BackgroundHeaderScreenOptions({
-					title: 'My Berty ID',
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.AppUpdates'}
-				component={Components.Settings.AppUpdates}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.updates.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Help'}
-				component={Components.Settings.Help}
-				options={SecondaryBackgroundHeaderScreenOptions({
-					title: t('settings.help.title'),
+					title: t('settings.my-berty-ID.title'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
@@ -495,7 +479,6 @@ export const Navigation: React.FC = React.memo(() => {
 				component={Components.Settings.DevText}
 				options={AltBackgroundHeaderScreenOptions({
 					title: '',
-					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
 			/>

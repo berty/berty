@@ -1,7 +1,5 @@
 export { Home } from './Home'
 export { MyBertyId } from './MyBertyId'
-export { AppUpdates } from './AppUpdates'
-export { Help } from './Help'
 export { Mode } from './Mode'
 export { ServicesAuth } from './ServicesAuth'
 export { AboutBerty } from './AboutBerty'

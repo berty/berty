@@ -420,6 +420,7 @@
 			"bad-format-desc": "Bad format for the theme file"
 		},
 		"my-berty-ID": {
+			"title": "My Berty ID",
 			"qr": "QR",
 			"fingerprint": "Fingerprint",
 			"devices": "Devices"
