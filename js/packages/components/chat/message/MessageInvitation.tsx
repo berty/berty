@@ -3,14 +3,10 @@ import { ActivityIndicator, Text as TextNative, TouchableOpacity, View } from 'r
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
-import {
-	useMessengerClient,
-	useConversation,
-	useOneToOneContact,
-	useThemeColor,
-} from '@berty-tech/store'
+import { useMessengerClient, useConversation, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
+import { useOneToOneContact } from '@berty-tech/react-redux'
 
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'
@@ -80,7 +76,7 @@ export const MessageInvitationButton: React.FC<{
 
 const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {
 	const [{ text }] = useStyles()
-	const conversationContact = useOneToOneContact(message.conversationPublicKey)
+	const conversationContact = useOneToOneContact(message.conversationPublicKey || '')
 	return (
 		<Text style={[text.size.scale(14), text.align.center]}>
 			You invited {conversationContact?.displayName || 'this contact'} to a group! 💌

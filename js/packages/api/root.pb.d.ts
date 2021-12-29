@@ -8446,11 +8446,13 @@ export namespace berty {
 
                 interface IInteractionDeleted {
                     cid?: (string|null);
+                    conversationPublicKey?: (string|null);
                 }
 
                 class InteractionDeleted implements IInteractionDeleted {
 
                     public cid: string;
+                    public conversationPublicKey: string;
                     public static create(properties?: berty.messenger.v1.StreamEvent.IInteractionDeleted): berty.messenger.v1.StreamEvent.InteractionDeleted;
                     public static encode(message: berty.messenger.v1.StreamEvent.IInteractionDeleted, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IInteractionDeleted, writer?: $protobuf.Writer): $protobuf.Writer;

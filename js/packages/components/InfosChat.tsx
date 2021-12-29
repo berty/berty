@@ -11,6 +11,7 @@ import {
 	useThemeColor,
 	useMessengerContext,
 } from '@berty-tech/store'
+import { useOneToOneContact } from '@berty-tech/react-redux'
 
 import { timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'
@@ -55,7 +56,7 @@ const InfosContactState: React.FC<{ state: any }> = ({ state }) => {
 	)
 }
 
-const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
+const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepted: boolean }> = ({
 	contact,
 	isAccepted,
 }) => {
@@ -152,9 +153,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
-	const ctx = useMessengerContext()
-	const contact =
-		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
+	const contact = useOneToOneContact(publicKey || '')
 
 	const isAccepted = contact?.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest

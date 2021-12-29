@@ -9,6 +9,7 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { Maybe, useConversation, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useConversationMembersDict } from '@berty-tech/react-redux'
 
 import {
 	ButtonSetting,
@@ -136,9 +137,7 @@ const MultiMemberSettingsBody: React.FC<{
 	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
 }> = ({ publicKey, link, navigation }) => {
 	const [{ padding, margin }, { scaleSize }] = useStyles()
-	const ctx = useMessengerContext()
-	const pk = publicKey
-	const members = ctx.members[pk] || {}
+	const members = useConversationMembersDict(publicKey)
 	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
 	const accountMember = Object.values(members).find(m => m?.isMe)

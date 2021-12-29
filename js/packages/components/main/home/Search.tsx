@@ -10,12 +10,12 @@ import { useStyles } from '@berty-tech/styles'
 import {
 	useConversation,
 	useContact,
-	useConvInteractions,
 	useThemeColor,
 	parseInteraction,
 	pbDateToNum,
 	ParsedInteraction,
 } from '@berty-tech/store'
+import { useConversationInteractions } from '@berty-tech/react-redux'
 
 import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'
@@ -144,7 +144,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	}
 	const contact = useContact(contactPk)
 
-	const interactions = useConvInteractions(conv?.publicKey).filter(
+	const interactions = useConversationInteractions(conv?.publicKey || '').filter(
 		inte => inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage,
 	)
 	const lastInteraction =

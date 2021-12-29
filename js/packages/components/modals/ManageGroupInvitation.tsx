@@ -10,7 +10,7 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useThemeColor } from '@berty-tech/store'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'

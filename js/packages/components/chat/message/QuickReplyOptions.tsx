@@ -1,11 +1,12 @@
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
+import Long from 'long'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor, useMessengerContext } from '@berty-tech/store'
-import Long from 'long'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
@@ -14,6 +15,7 @@ const QuickReplyOption: React.FC<{
 	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const [{ padding, border, margin }] = useStyles()
+	const dispatch = useAppDispatch()
 
 	return (
 		<TouchableOpacity
@@ -35,10 +37,10 @@ const QuickReplyOption: React.FC<{
 						conversationPublicKey: convPk,
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						payload: buf,
-						sentDate: Long.fromNumber(Date.now()),
+						sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 					}
-					ctx.dispatch({
-						type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+					dispatch({
+						type: 'messenger/InteractionUpdated',
 						payload: { interaction: optimisticInteraction },
 					})
 				} catch (e: any) {

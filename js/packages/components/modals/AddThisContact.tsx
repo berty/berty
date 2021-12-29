@@ -10,7 +10,7 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useNavigation } from '@berty-tech/navigation'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch } from '@berty-tech/react-redux'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { ContactAvatar } from '../avatars'

@@ -591,6 +591,7 @@ message StreamEvent {
   }
   message InteractionDeleted {
     string cid = 1  [(gogoproto.customname) = "CID"];
+    string conversation_public_key = 2;
   }
   message ContactUpdated {
     Contact contact = 1;

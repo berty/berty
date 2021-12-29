@@ -9,11 +9,10 @@ import {
 	pbDateToNum,
 	useLastConvInteraction,
 	useThemeColor,
-	useMessengerContext,
 	ParsedInteraction,
 } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
-import { useAppSelector } from '@berty-tech/redux/react-redux'
+import { useAppSelector, useOneToOneContact } from '@berty-tech/react-redux'
 import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reducer'
 
 import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
@@ -73,14 +72,12 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		isLast,
 	} = props
 
-	const ctx = useMessengerContext()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)
 	const displayDate = lastUpdate || createdDate ? pbDateToNum(lastUpdate || createdDate) : null
 
-	const contact =
-		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
+	const contact = useOneToOneContact(publicKey)
 	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
@@ -259,7 +256,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 									: { color: colors['secondary-text'] },
 							]}
 						>
-							{description}
+							{description || ''}
 						</Text>
 
 						{/* Message status */}

@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
 	removeMemberFromInvitationListById,
 	selectInvitationListMembers,
-} from '@berty-tech/redux/reducers/newGroup.reducer'
+} from '@berty-tech/redux/reducers/groupCreationForm.reducer'
 import { AppDispatch } from '@berty-tech/redux/store'
 import { berty } from '@berty-tech/api/root.pb'
 

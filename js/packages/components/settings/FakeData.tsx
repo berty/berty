@@ -9,7 +9,7 @@ import {
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,
 	useDeleteFakeData,
-	useGenerateFakeMessages,
+	// useGenerateFakeMessages,
 	useThemeColor,
 } from '@berty-tech/store'
 
@@ -23,7 +23,7 @@ const BodyFakeData = () => {
 	const generateFakeContacts = useGenerateFakeContacts()
 	const generateFakeMM = useGenerateFakeMultiMembers()
 	const deleteFake = useDeleteFakeData()
-	const convGenMsg = useGenerateFakeMessages()
+	// const convGenMsg = useGenerateFakeMessages()
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
@@ -49,7 +49,7 @@ const BodyFakeData = () => {
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
-				onPress={() => convGenMsg(3)}
+				/*onPress={() => convGenMsg(3)}*/
 			/>
 			<ButtonSetting
 				name={t('settings.fake-data.delete-button')}

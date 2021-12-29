@@ -2,7 +2,9 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer, PersistorOptions } from 'redux-persist'
 import persistStorage from './persistStorage'
 
-import newGroupRootReducer, { sliceName as newGroupSliceName } from './reducers/newGroup.reducer'
+import newGroupRootReducer, {
+	sliceName as newGroupSliceName,
+} from './reducers/groupCreationForm.reducer'
 import chatInputsRootReducer, {
 	sliceName as chatInputsSliceName,
 } from './reducers/chatInputs.reducer'
@@ -11,6 +13,7 @@ import checklistRootReducer, { sliceName as checklistSliceName } from './reducer
 import accountSettingsRootReducer, {
 	sliceName as accountSettingsSliceName,
 } from './reducers/accountSettings.reducer'
+import messengerRootReduceer from './reducers/messenger.reducer'
 
 const persistConfig = {
 	key: 'persistStore',
@@ -24,6 +27,7 @@ const rootReducer = combineReducers({
 	...chatInputsVolatileRootReducer,
 	...checklistRootReducer,
 	...accountSettingsRootReducer,
+	...messengerRootReduceer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

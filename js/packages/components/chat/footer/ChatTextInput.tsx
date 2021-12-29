@@ -2,13 +2,14 @@ import React, { ComponentProps } from 'react'
 import { NativeModules, TextInput, View, Text, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { Maybe, useContact, useThemeColor } from '@berty-tech/store'
+import { Maybe, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { getMediaTypeFromMedias } from '@berty-tech/components/utils'
+import { useInteractionAuthor } from '@berty-tech/react-redux'
 
 import { useReplyReaction } from '../ReplyReactionContext'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { getMediaTypeFromMedias } from '../../utils'
 
 const {
 	PlatformConstants: { interfaceIdiom: deviceType },
@@ -19,14 +20,13 @@ const isTablet = deviceType === 'pad'
 export const ReplyMessageBar: React.FC = () => {
 	const [{ border }] = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	const { activeReplyInte, setActiveReplyInte } = useReplyReaction()
-
-	const replyTargetContact = useContact(activeReplyInte?.conversation?.contactPublicKey)
-	const replyTargetMember = React.useMemo(() => {
-		return replyTargetContact || activeReplyInte?.member
-	}, [replyTargetContact, activeReplyInte?.member])
+	const replyTargetAuthor = useInteractionAuthor(
+		activeReplyInte?.conversationPublicKey || '',
+		activeReplyInte?.cid || '',
+	)
 
 	if (!activeReplyInte) {
 		return null
@@ -62,7 +62,7 @@ export const ReplyMessageBar: React.FC = () => {
 				}}
 			>
 				<Text numberOfLines={1} style={{ color: colors['background-header'], fontSize: 10 }}>
-					{t('chat.reply.replying-to')} {replyTargetMember?.displayName || ''}
+					{t('chat.reply.replying-to')} {replyTargetAuthor?.displayName || ''}
 				</Text>
 			</View>
 

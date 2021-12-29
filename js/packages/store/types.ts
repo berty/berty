@@ -3,8 +3,6 @@ import { Dispatch } from 'react'
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import { ParsedInteraction } from './types.gen'
-
 export enum MessengerAppState {
 	Init = 0,
 	Closed,
@@ -40,18 +38,6 @@ export type MessengerState = {
 	streamInProgress: StreamInProgress | null
 
 	appState: MessengerAppState
-	account?: beapi.messenger.IAccount | null
-	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
-	contacts: { [key: string]: beapi.messenger.IContact | undefined }
-	interactions: {
-		[key: string]: ParsedInteraction[]
-	}
-	members: {
-		[key: string]: { [key: string]: beapi.messenger.IMember | undefined } | undefined
-	}
-	medias: {
-		[key: string]: beapi.messenger.IMedia | undefined
-	}
 	client: ServiceClientType<beapi.messenger.MessengerService> | null
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
 	streamError: any
@@ -62,12 +48,11 @@ export type MessengerState = {
 
 	persistentOptions: PersistentOptions
 	accounts: beapi.account.IAccountMetadata[]
-	initialListComplete: boolean
 	clearClients: (() => Promise<void>) | null
 
 	embedded: boolean
 	dispatch: Dispatch<{
-		type: beapi.messenger.StreamEvent.Type | MessengerActions
+		type: MessengerActions
 		payload?: any
 	}>
 
@@ -280,7 +265,7 @@ export enum MessengerActions {
 }
 
 export declare type reducerAction = {
-	type: beapi.messenger.StreamEvent.Type | MessengerActions
+	type: MessengerActions
 	payload?: any
 	name?: string
 }

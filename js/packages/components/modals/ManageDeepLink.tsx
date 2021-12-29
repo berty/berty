@@ -7,9 +7,10 @@ import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { useThemeColor, useMessengerContext } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useConversationsDict } from '@berty-tech/react-redux'
 
 import { ManageGroupInvitation } from './ManageGroupInvitation'
 import AddThisContact from './AddThisContact'
@@ -21,8 +22,8 @@ export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { par
 	const [{ border }] = useStyles()
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
 	const [content, setContent] = React.useState<JSX.Element | null>()
-	const ctx = useMessengerContext()
 	const { dispatch } = useNavigation()
+	const conversations = useConversationsDict()
 
 	const { type, value: link } = params
 
@@ -93,7 +94,7 @@ export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { par
 				)
 			}
 		} else if (pdlReply?.link?.kind === beapi.messenger.BertyLink.Kind.MessageV1Kind) {
-			const conv = ctx.conversations[pdlReply?.link?.bertyMessageRef?.groupPk as string]
+			const conv = conversations[pdlReply?.link?.bertyMessageRef?.groupPk as string]
 			if (conv?.publicKey) {
 				dispatch(
 					CommonActions.reset({
@@ -114,7 +115,7 @@ export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { par
 			}
 		}
 		return retContent || null
-	}, [ctx.conversations, dispatch, done, error, link, pdlReply, type])
+	}, [conversations, dispatch, done, error, link, pdlReply, type])
 
 	React.useEffect(() => {
 		if (done) {

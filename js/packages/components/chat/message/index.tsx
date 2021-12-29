@@ -1,6 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
+import { Dictionary } from '@reduxjs/toolkit'
 
 import beapi from '@berty-tech/api'
 import {
@@ -24,7 +25,7 @@ import { UserMessage } from './UserMessage'
 export const Message: React.FC<{
 	inte?: ParsedInteraction
 	convKind: beapi.messenger.Conversation.Type
-	members?: { [key: string]: beapi.messenger.IMember | undefined }
+	members?: Dictionary<beapi.messenger.IMember>
 	convPK: string
 	previousMessage?: ParsedInteraction
 	nextMessage?: ParsedInteraction
