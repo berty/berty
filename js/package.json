@@ -35,7 +35,7 @@
     "i18next": "^21.6.4",
     "linkify-it": "^3.0.3",
     "lottie-react-native": "^4.1.3",
-    "mem": "^8.0.0",
+    "mem": "^9.0.1",
     "moment": "^2.29.1",
     "node-libs-react-native": "^1.2.1",
     "patch-package": "^6.4.7",
