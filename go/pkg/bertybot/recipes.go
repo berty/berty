@@ -116,7 +116,7 @@ func EchoRecipe(prefix string) Recipe {
 	return recipe
 }
 
-func ReplyRecipe(replier func(string) string) Recipe {
+func ReplyRecipe(replier func(ctx Context) string) Recipe {
 	recipe := map[HandlerType][]Handler{}
 	recipe[UserMessageHandler] = []Handler{
 		func(ctx Context) {
@@ -133,7 +133,7 @@ func ReplyRecipe(replier func(string) string) Recipe {
 				return
 			}
 
-			reply := replier(ctx.UserMessage)
+			reply := replier(ctx)
 			if reply == "" {
 				return
 			}
