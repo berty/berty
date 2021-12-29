@@ -1,16 +1,14 @@
-import React, { useEffect, useMemo } from 'react'
-import { View, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import React, { useMemo } from 'react'
+import { View, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { EndError, PlayerItemMetadata, useMusicPlayer } from '@berty-tech/music-player'
+import { useMusicPlayer } from '@berty-tech/components/music-player'
 import beapi from '@berty-tech/api'
-import { playSoundAsync } from '@berty-tech/store/sounds'
 import { useMessengerContext } from '@berty-tech/store'
 
-import { normalizeVolumeIntensities, voiceMemoFilename, WaveForm } from '../audioMessageCommon'
-import { getSource } from '../../utils'
+import { normalizeVolumeIntensities, WaveForm } from '../audioMessageCommon'
 
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia
@@ -43,7 +41,11 @@ const AudioPreview: React.FC<{
 	if (normalizedIntensities === null) {
 		return (
 			<View style={[{ flex: 1 }, padding.horizontal.small, margin.right.small]}>
-				<Text style={{ color: colors['main-background'] }} numberOfLines={1} ellipsizeMode='tail'>
+				<Text
+					style={{ color: colors['reverted-main-text'] }}
+					numberOfLines={1}
+					ellipsizeMode='tail'
+				>
 					{media.displayName || media.filename || 'audio'}
 				</Text>
 			</View>
@@ -62,52 +64,22 @@ export const AudioMessage: React.FC<{
 	isMine: boolean
 }> = ({ medias, onLongPress, isHighlight, isMine }) => {
 	const colors = useThemeColor()
-	const { protocolClient, client } = useMessengerContext()
+	const { protocolClient } = useMessengerContext()
 	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
-	const { player: globalPlayer, load: globalPlayerLoad, handlePlayPause } = useMusicPlayer()
+	const {
+		player: globalPlayer,
+		load: globalPlayerLoad,
+		handlePlayPause,
+		loading: globalPlayerLoading,
+		playing: globalPlayerPlaying,
+		currentTime,
+	} = useMusicPlayer()
 	const mediaCID = useMemo(() => medias[0].cid, [medias])
 	const mimeType = (medias.length > 0 && medias[0].mimeType) || 'blob'
 
-	const isPlaying = useMemo(
-		() => globalPlayer.metadata?.id === mediaCID && globalPlayer.player?.isPlaying === true,
-		[globalPlayer.metadata?.id, globalPlayer.player?.isPlaying, mediaCID],
-	)
-
-	useEffect(() => {
-		if (!isPlaying) {
-			return
-		}
-
-		return () => {
-			if (!mimeType.startsWith('audio') || globalPlayer.player?.isStopped === false) {
-				return
-			}
-
-			globalPlayerLoad(
-				(async (): Promise<[string, PlayerItemMetadata]> => {
-					const next = await client?.mediaGetRelated({
-						cid: mediaCID,
-						fileNames: [voiceMemoFilename],
-					})
-
-					if (!next || next.end) {
-						throw new EndError()
-					}
-
-					const srcP = getSource(protocolClient!, next.media?.cid!)
-					await playSoundAsync('contactRequestAccepted')
-					const src = await srcP
-
-					return [
-						`data:${mimeType};base64,${src}`,
-						{
-							id: next.media?.cid!,
-						},
-					]
-				})(),
-			)
-		}
-	}, [mediaCID, isPlaying, globalPlayer.player, globalPlayerLoad, client, protocolClient, mimeType])
+	const isCurrent = globalPlayer.metadata?.id === mediaCID
+	const isPlaying = isCurrent && globalPlayerPlaying
+	const loading = isCurrent && globalPlayerLoading === true
 
 	return (
 		<View style={{ position: 'relative', zIndex: 2 }}>
@@ -176,23 +148,17 @@ export const AudioMessage: React.FC<{
 					]}
 				>
 					<TouchableOpacity
-						onPress={async () => {
+						onPress={() => {
 							if (
 								globalPlayer.metadata?.id === medias[0].cid &&
 								globalPlayer.player?.currentTime !== -1
 							) {
 								handlePlayPause()
 							} else if (protocolClient && mediaCID) {
-								globalPlayerLoad(
-									getSource(protocolClient, mediaCID).then(src => [
-										`data:${mimeType};base64,${src}`,
-										{
-											id: mediaCID,
-										},
-									]),
-								)
+								globalPlayerLoad(mediaCID, mimeType)
 							}
 						}}
+						disabled={loading}
 						style={[
 							padding.left.scale(10),
 							border.radius.small,
@@ -208,25 +174,32 @@ export const AudioMessage: React.FC<{
 						<View
 							style={[
 								padding.scale(7),
-								border.radius.scale(12),
+								isCurrent ? border.radius.scale(10) : border.radius.scale(12),
 								{
 									backgroundColor: `${colors['main-background']}80`,
+									borderWidth: 1,
+									borderColor: '#0000',
+								},
+
+								isCurrent && {
+									borderColor: `${colors['reverted-main-text']}50`,
 								},
 							]}
 						>
-							<Icon
-								name={isPlaying ? 'pause' : 'play'}
-								fill={colors['main-background']}
-								height={16 * scaleSize}
-								width={16 * scaleSize}
-								pack='custom'
-							/>
+							{loading ? (
+								<ActivityIndicator color={colors['reverted-main-text']} size={16 * scaleSize} />
+							) : (
+								<Icon
+									name={isPlaying ? 'pause' : 'play'}
+									fill={colors['reverted-main-text']}
+									height={16 * scaleSize}
+									width={16 * scaleSize}
+									pack='custom'
+								/>
+							)}
 						</View>
 					</TouchableOpacity>
-					<AudioPreview
-						media={medias[0]}
-						currentTime={isPlaying ? globalPlayer.player?.currentTime : 0}
-					/>
+					<AudioPreview media={medias[0]} currentTime={isCurrent ? currentTime : 0} />
 				</View>
 			</TouchableWithoutFeedback>
 		</View>
