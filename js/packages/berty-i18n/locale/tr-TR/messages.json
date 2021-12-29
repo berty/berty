@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "GİZLİLİĞİNİZİ KORUYUN",
+			"desc": "ücretsiz & güvenli eşler arası mesajlaşma",
+			"button": "KEŞFET"
 		},
 		"select-mode": {
 			"title": "Bir ön ayar seçin",
@@ -30,29 +30,29 @@
 			"title": "Hesabınızı oluşturun",
 			"desc": "Bir isim gerekli olan tek bilgidir",
 			"required": "Gerekli",
-			"placeholder": "",
+			"placeholder": "Takma adınızı seçin",
 			"button": "HESABIMI OLUŞTUR",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
+			"advanced": "GELİŞMİŞ",
+			"import-account": "HESAP AKTAR",
+			"link-device": "CİHAZ EŞLE",
+			"more": "DAHA FAZLA BİLGİ",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Bilmeniz gerekenler:",
+				"first-point": "Hesabınız yerel olarak oluşturuldu",
+				"second-point": "Takma adlar isteğe bağlı ve düzenlenebilirdir"
 			}
 		},
 		"advanced-settings": {
-			"title": "",
-			"desc": "",
+			"title": "Gelişmiş ayarlar",
+			"desc": "Dokümantasyonu bulun ve kendi yapılandırmanızı oluşturun.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
+				"title": "Gelişmiş ayarlara hoşgeldiniz",
+				"first-paragraph": "Burada ihtiyacınıza göre kendinize özel yapılandırmanızı yaratabilirsiniz.",
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
 			"read-more": "",
-			"config-title": "",
+			"config-title": "Özel yapılandırmalar",
 			"config-desc": "",
 			"learn-more": "",
 			"first-part": {
@@ -61,7 +61,7 @@
 				"second-button": "Çok yönlü yayın DNS"
 			},
 			"second-part": {
-				"title": "",
+				"title": "Eşler Arası",
 				"first-button": "",
 				"second-button": ""
 			},
@@ -272,7 +272,7 @@
 		"bluetooth": {
 			"title": "Bluetooth",
 			"desc": "",
-			"activate-button": ""
+			"activate-button": "Bluetooth'u etkinleştir"
 		},
 		"mc": {
 			"activate-button": "Çok eşli bağlantıyı etkinleştir"
@@ -281,8 +281,8 @@
 			"activate-button": "Yakındaki Android'i Etkinleştir"
 		},
 		"berty-services": {
-			"header": "",
-			"title": "",
+			"header": "Aktif Berty servisleri",
+			"title": "Berty servisleri",
 			"recommended": "Önerilen",
 			"desc": "",
 			"button": "",
@@ -328,7 +328,7 @@
 			"current-tag": "Şuanki"
 		},
 		"faq": {
-			"title": ""
+			"title": "SSS"
 		},
 		"roadmap": {
 			"title": ""
@@ -410,9 +410,9 @@
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "",
-			"randomize": "",
-			"save": "",
+			"title": "Tema düzenleyicisi",
+			"randomize": "Tema oluştur",
+			"save": "Bu temayı kaydet",
 			"export": "",
 			"share": "",
 			"import": ""
@@ -443,21 +443,21 @@
 			"fingerprint": "Parmak izi",
 			"info": "Bilgiler",
 			"devices": "Aygıtlar",
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "BU GRUBA KATIL",
+			"password-label": "Grup parolasını girin",
+			"password-placeholder": "Parola..."
 		},
 		"save-theme": {
 			"title": "",
-			"desc": "",
-			"placeholder": "",
+			"desc": "Lütfen temanız için bir isim seçin!",
+			"placeholder": "Tema adı...",
 			"cancel": "İPTAL ET",
-			"add": ""
+			"add": "EKLE!"
 		}
 	},
 	"chat": {
-		"sending": "",
-		"sent": "",
+		"sending": "Gönderiliyor..",
+		"sent": "Gönderildi",
 		"contact-settings": {
 			"mark-button": "Doğrulanmış olarak işaretle",
 			"block-button": "Kişiyi engelle",
@@ -487,8 +487,8 @@
 		},
 		"add-members": {
 			"members": "Üyeler",
-			"contacts": "",
-			"add": ""
+			"contacts": "Kişiler",
+			"add": "Ekle!"
 		},
 		"multi-member-qr": {
 			"title": "QR Grubu"
@@ -553,7 +553,7 @@
 		},
 		"user-message": {
 			"read-more": "",
-			"show-less": ""
+			"show-less": "Daha az göster"
 		}
 	},
 	"audio": {
@@ -582,12 +582,12 @@
 			"desc": ""
 		},
 		"audio": {
-			"title": "",
-			"desc": ""
+			"title": "Sesli mesajlar",
+			"desc": "Kişilerinize sesli mesaj göndermek için Berty uygulamasına mikrofona erişimi izni tanımalısınız."
 		},
 		"button-labels": {
-			"allow": "",
-			"settings": ""
+			"allow": "İzin ver",
+			"settings": "Ayarlara Git"
 		},
 		"skip": "ATLA",
 		"cancel": "İPTAL ET",
@@ -608,13 +608,13 @@
 		"wtf-screen": {
 			"title": "Hata nedir?",
 			"desc": "Uygulama az önce çöktü.",
-			"desc-report": ""
+			"desc-report": "Uygulamadan çıkıp yeniden başlatmak için düğmeye basın."
 		},
 		"sorry-screen": {
 			"title": "Bu hata için üzgünüm!",
 			"desc": "Bu Francis'in hatası, Berty'de geliştirici stajyer bir hata yapmış olması gereken. Bu Francis ne kadar aptal!",
 			"desc-em": "Pekala, tamam, Berty takımında Francis yok.",
-			"desc-report": ""
+			"desc-report": "Uygulamadan çıkıp yeniden başlatmak için düğmeye basın."
 		}
 	},
 	"debug": {
