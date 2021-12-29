@@ -8623,7 +8623,8 @@ export namespace berty {
                         TypeBasic = 1,
                         TypeMessageReceived = 2,
                         TypeContactRequestSent = 3,
-                        TypeContactRequestReceived = 4
+                        TypeContactRequestReceived = 4,
+                        TypeGroupInvitation = 5
                     }
 
                     interface IBasic {
@@ -8697,6 +8698,26 @@ export namespace berty {
                         public static verify(message: { [k: string]: any }): (string|null);
                         public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived;
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    interface IGroupInvitation {
+                        conversation?: (berty.messenger.v1.IConversation|null);
+                        contact?: (berty.messenger.v1.IContact|null);
+                    }
+
+                    class GroupInvitation implements IGroupInvitation {
+
+                        public conversation?: (berty.messenger.v1.IConversation|null);
+                        public contact?: (berty.messenger.v1.IContact|null);
+                        public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IGroupInvitation): berty.messenger.v1.StreamEvent.Notified.GroupInvitation;
+                        public static encode(message: berty.messenger.v1.StreamEvent.Notified.IGroupInvitation, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.messenger.v1.StreamEvent.Notified.IGroupInvitation, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.Notified.GroupInvitation;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.Notified.GroupInvitation;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.GroupInvitation;
+                        public static toObject(message: berty.messenger.v1.StreamEvent.Notified.GroupInvitation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
                     }
                 }

@@ -98,7 +98,7 @@ func (h *EventHandler) bindHandlers() {
 		isVisibleEvent bool
 	}{
 		mt.AppMessage_TypeAcknowledge:     {h.handleAppMessageAcknowledge, false},
-		mt.AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, false},
+		mt.AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, true},
 		mt.AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		mt.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
 		mt.AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, false},
@@ -840,6 +840,22 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 	if err := messengerutil.StreamInteraction(h.dispatcher, tx, i.CID, isNew); err != nil {
 		return nil, isNew, err
 	}
+
+	// fetch contact from db
+	var contact *mt.Contact
+	if i.Conversation.Type == mt.Conversation_ContactType {
+		if contact, err = tx.GetContactByPK(i.Conversation.ContactPublicKey); err != nil {
+			h.logger.Warn("1to1 message contact not found", logutil.PrivateString("public-key", i.Conversation.ContactPublicKey), zap.Error(err))
+		}
+		if !i.IsMine && isNew {
+			err = h.dispatcher.Notify(mt.StreamEvent_Notified_TypeGroupInvitation, "Group invitation", "From: "+contact.GetDisplayName(), &mt.StreamEvent_Notified_GroupInvitation{Contact: contact})
+			if err != nil {
+				h.logger.Error("failed to notify", zap.Error(err))
+			}
+		}
+	}
+
+	// TODO: Notify for multimember conversation when it will be possible in UI
 
 	return i, isNew, err
 }

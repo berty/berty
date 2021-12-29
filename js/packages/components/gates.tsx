@@ -50,7 +50,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 						fontFamily: 'Open Sans',
 						color: colors['main-text'],
 						position: 'absolute',
-						top: 30 * scaleSize,
+						top: 60 * scaleSize,
 						left: 0,
 						right: 0,
 					},

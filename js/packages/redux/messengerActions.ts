@@ -20,7 +20,7 @@ export const streamEventToAction: (
 		return
 	}
 
-	const payloadName = enumName.substr('Type'.length)
+	const payloadName = enumName.substring('Type'.length)
 	const pbobj = (beapi.messenger.StreamEvent as any)[payloadName]
 	if (!pbobj) {
 		console.warn('failed to find a protobuf object matching the event type', payloadName)

@@ -58,7 +58,8 @@ const MessageStatus: React.FC<{
 })
 
 const interactionsFilter = (inte: ParsedInteraction) =>
-	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage
+	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
+	inte.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation
 
 const ConversationsItem: React.FC<
 	beapi.messenger.IConversation & { fake?: boolean; isLast: boolean }
@@ -93,6 +94,10 @@ const ConversationsItem: React.FC<
 	let description
 	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
 		description = lastInte.payload?.body
+	} else if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation) {
+		description = lastInte.isMine
+			? 'You sent group invitation!'
+			: 'You received new group invitation!'
 	} else {
 		if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
 			description = t('main.home.conversations.request-sent')
@@ -251,7 +256,11 @@ const ConversationsItem: React.FC<
 								{
 									flexGrow: 2,
 									flexShrink: 1,
-									fontStyle: chatInputText ? 'italic' : 'normal',
+									fontStyle:
+										chatInputText ||
+										lastInte?.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation
+											? 'italic'
+											: 'normal',
 								},
 								text.size.small,
 								unreadCount

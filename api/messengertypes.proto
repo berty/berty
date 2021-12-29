@@ -625,6 +625,7 @@ message StreamEvent {
       TypeMessageReceived = 2;
       TypeContactRequestSent = 3;
       TypeContactRequestReceived = 4;
+      TypeGroupInvitation = 5;
     }
     message Basic {}
     message MessageReceived {
@@ -636,6 +637,10 @@ message StreamEvent {
       Contact contact = 3;
     }
     message ContactRequestReceived {
+      Contact contact = 3;
+    }
+    message GroupInvitation {
+      Conversation conversation = 2;
       Contact contact = 3;
     }
   }

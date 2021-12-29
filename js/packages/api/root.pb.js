@@ -6002,7 +6002,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                           TypeBasic: 1,
                           TypeMessageReceived: 2,
                           TypeContactRequestSent: 3,
-                          TypeContactRequestReceived: 4
+                          TypeContactRequestReceived: 4,
+                          TypeGroupInvitation: 5
                         }
                       },
                       Basic: {
@@ -6034,6 +6035,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       ContactRequestReceived: {
                         fields: {
+                          contact: {
+                            type: "Contact",
+                            id: 3
+                          }
+                        }
+                      },
+                      GroupInvitation: {
+                        fields: {
+                          conversation: {
+                            type: "Conversation",
+                            id: 2
+                          },
                           contact: {
                             type: "Contact",
                             id: 3

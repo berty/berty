@@ -17,9 +17,13 @@ import { dispatch } from './rootRef'
 import { ScreensParams } from './types'
 
 export const CustomTitleStyle: () => any = () => {
+	const [{}, { scaleSize }] = useStyles()
+
 	return {
 		headerTitleStyle: {
 			fontFamily: 'Open Sans',
+			fontWeight: '700',
+			fontSize: 20 * scaleSize,
 		},
 	}
 }
