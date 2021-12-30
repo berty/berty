@@ -106,7 +106,6 @@ service MessengerService {
 
 message OpenProtocol {
   message Request {
-    NetworkConfig network_config = 4;
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -923,5 +922,47 @@ message PushReceive {
   }
   message Reply {
     PushReceivedData data = 1;
+  }
+}
+
+message NetworkConfig {
+  repeated string bootstrap = 1;
+  repeated string rendezvous = 2;
+  repeated string static_relay = 3;
+  DHTFlag dht = 4 [(gogoproto.customname) = "DHT"];
+  Flag bluetooth_le = 5 [(gogoproto.customname) = "BluetoothLE"];
+  Flag apple_multipeer_connectivity = 6;
+  Flag android_nearby = 7;
+  TorFlag tor = 8;
+  Flag mdns = 9 [(gogoproto.customname) = "MDNS"];
+  Flag show_default_services = 10;
+  // maybe we should add a `Flag selected_preset` to auto-fill new flags automatically on updates?
+
+  enum Flag {
+    Undefined = 0;
+    Disabled = 1;
+    Enabled = 2;
+  }
+
+  enum TorFlag {
+    TorUndefined = 0;
+    TorDisabled = 1;
+    TorOptional = 2;
+    TorRequired = 3;
+  }
+
+  enum DHTFlag {
+    DHTUndefined = 0;
+    DHTDisabled = 1;
+    DHTClient = 2;
+    DHTServer = 3;
+    DHTAuto = 4;
+    DHTAutoServer = 5;
+  }
+
+  enum Preset {
+    PresetUndefined = 0 [(gogoproto.enumvalue_customname) = "NetPresetUndefined"];
+    PresetPerformance = 1 [(gogoproto.enumvalue_customname) = "NetPresetPerformance"];
+    PresetFullAnonymity = 2 [(gogoproto.enumvalue_customname) = "NetPresetFullAnonymity"];
   }
 }

@@ -16,6 +16,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 
+	messengertypes "berty.tech/berty/v2/go/pkg/messengertypes"
 	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
 	pushtypes "berty.tech/berty/v2/go/pkg/pushtypes"
 )
@@ -32,130 +33,6 @@ var (
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
-
-type NetworkConfigPreset int32
-
-const (
-	NetworkConfigPreset_NetPresetUndefined     NetworkConfigPreset = 0
-	NetworkConfigPreset_NetPresetPerformance   NetworkConfigPreset = 1
-	NetworkConfigPreset_NetPresetFullAnonymity NetworkConfigPreset = 2
-)
-
-var NetworkConfigPreset_name = map[int32]string{
-	0: "Undefined",
-	1: "Performance",
-	2: "FullAnonymity",
-}
-
-var NetworkConfigPreset_value = map[string]int32{
-	"Undefined":     0,
-	"Performance":   1,
-	"FullAnonymity": 2,
-}
-
-func (x NetworkConfigPreset) String() string {
-	return proto.EnumName(NetworkConfigPreset_name, int32(x))
-}
-
-func (NetworkConfigPreset) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{0}
-}
-
-type NetworkConfig_Flag int32
-
-const (
-	NetworkConfig_Undefined NetworkConfig_Flag = 0
-	NetworkConfig_Disabled  NetworkConfig_Flag = 1
-	NetworkConfig_Enabled   NetworkConfig_Flag = 2
-)
-
-var NetworkConfig_Flag_name = map[int32]string{
-	0: "Undefined",
-	1: "Disabled",
-	2: "Enabled",
-}
-
-var NetworkConfig_Flag_value = map[string]int32{
-	"Undefined": 0,
-	"Disabled":  1,
-	"Enabled":   2,
-}
-
-func (x NetworkConfig_Flag) String() string {
-	return proto.EnumName(NetworkConfig_Flag_name, int32(x))
-}
-
-func (NetworkConfig_Flag) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{16, 0}
-}
-
-type NetworkConfig_TorFlag int32
-
-const (
-	NetworkConfig_TorUndefined NetworkConfig_TorFlag = 0
-	NetworkConfig_TorDisabled  NetworkConfig_TorFlag = 1
-	NetworkConfig_TorOptional  NetworkConfig_TorFlag = 2
-	NetworkConfig_TorRequired  NetworkConfig_TorFlag = 3
-)
-
-var NetworkConfig_TorFlag_name = map[int32]string{
-	0: "TorUndefined",
-	1: "TorDisabled",
-	2: "TorOptional",
-	3: "TorRequired",
-}
-
-var NetworkConfig_TorFlag_value = map[string]int32{
-	"TorUndefined": 0,
-	"TorDisabled":  1,
-	"TorOptional":  2,
-	"TorRequired":  3,
-}
-
-func (x NetworkConfig_TorFlag) String() string {
-	return proto.EnumName(NetworkConfig_TorFlag_name, int32(x))
-}
-
-func (NetworkConfig_TorFlag) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{16, 1}
-}
-
-type NetworkConfig_DHTFlag int32
-
-const (
-	NetworkConfig_DHTUndefined  NetworkConfig_DHTFlag = 0
-	NetworkConfig_DHTDisabled   NetworkConfig_DHTFlag = 1
-	NetworkConfig_DHTClient     NetworkConfig_DHTFlag = 2
-	NetworkConfig_DHTServer     NetworkConfig_DHTFlag = 3
-	NetworkConfig_DHTAuto       NetworkConfig_DHTFlag = 4
-	NetworkConfig_DHTAutoServer NetworkConfig_DHTFlag = 5
-)
-
-var NetworkConfig_DHTFlag_name = map[int32]string{
-	0: "DHTUndefined",
-	1: "DHTDisabled",
-	2: "DHTClient",
-	3: "DHTServer",
-	4: "DHTAuto",
-	5: "DHTAutoServer",
-}
-
-var NetworkConfig_DHTFlag_value = map[string]int32{
-	"DHTUndefined":  0,
-	"DHTDisabled":   1,
-	"DHTClient":     2,
-	"DHTServer":     3,
-	"DHTAuto":       4,
-	"DHTAutoServer": 5,
-}
-
-func (x NetworkConfig_DHTFlag) String() string {
-	return proto.EnumName(NetworkConfig_DHTFlag_name, int32(x))
-}
-
-func (NetworkConfig_DHTFlag) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{16, 2}
-}
 
 type AppStoragePut struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -921,294 +798,6 @@ func (m *CloseAccount_Reply) GetProgress() *protocoltypes.Progress {
 	return nil
 }
 
-type OpenProtocol struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *OpenProtocol) Reset()         { *m = OpenProtocol{} }
-func (m *OpenProtocol) String() string { return proto.CompactTextString(m) }
-func (*OpenProtocol) ProtoMessage()    {}
-func (*OpenProtocol) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{5}
-}
-
-func (m *OpenProtocol) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *OpenProtocol) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_OpenProtocol.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-
-func (m *OpenProtocol) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OpenProtocol.Merge(m, src)
-}
-
-func (m *OpenProtocol) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *OpenProtocol) XXX_DiscardUnknown() {
-	xxx_messageInfo_OpenProtocol.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_OpenProtocol proto.InternalMessageInfo
-
-type OpenProtocol_Request struct {
-	NetworkConfig        *NetworkConfig `protobuf:"bytes,4,opt,name=network_config,json=networkConfig,proto3" json:"network_config,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
-}
-
-func (m *OpenProtocol_Request) Reset()         { *m = OpenProtocol_Request{} }
-func (m *OpenProtocol_Request) String() string { return proto.CompactTextString(m) }
-func (*OpenProtocol_Request) ProtoMessage()    {}
-func (*OpenProtocol_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{5, 0}
-}
-
-func (m *OpenProtocol_Request) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *OpenProtocol_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_OpenProtocol_Request.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-
-func (m *OpenProtocol_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OpenProtocol_Request.Merge(m, src)
-}
-
-func (m *OpenProtocol_Request) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *OpenProtocol_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_OpenProtocol_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_OpenProtocol_Request proto.InternalMessageInfo
-
-func (m *OpenProtocol_Request) GetNetworkConfig() *NetworkConfig {
-	if m != nil {
-		return m.NetworkConfig
-	}
-	return nil
-}
-
-type OpenProtocol_Reply struct {
-	Progress             *protocoltypes.Progress `protobuf:"bytes,1,opt,name=progress,proto3" json:"progress,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *OpenProtocol_Reply) Reset()         { *m = OpenProtocol_Reply{} }
-func (m *OpenProtocol_Reply) String() string { return proto.CompactTextString(m) }
-func (*OpenProtocol_Reply) ProtoMessage()    {}
-func (*OpenProtocol_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{5, 1}
-}
-
-func (m *OpenProtocol_Reply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *OpenProtocol_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_OpenProtocol_Reply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-
-func (m *OpenProtocol_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OpenProtocol_Reply.Merge(m, src)
-}
-
-func (m *OpenProtocol_Reply) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *OpenProtocol_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_OpenProtocol_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_OpenProtocol_Reply proto.InternalMessageInfo
-
-func (m *OpenProtocol_Reply) GetProgress() *protocoltypes.Progress {
-	if m != nil {
-		return m.Progress
-	}
-	return nil
-}
-
-type CloseProtocol struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CloseProtocol) Reset()         { *m = CloseProtocol{} }
-func (m *CloseProtocol) String() string { return proto.CompactTextString(m) }
-func (*CloseProtocol) ProtoMessage()    {}
-func (*CloseProtocol) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{6}
-}
-
-func (m *CloseProtocol) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *CloseProtocol) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CloseProtocol.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-
-func (m *CloseProtocol) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CloseProtocol.Merge(m, src)
-}
-
-func (m *CloseProtocol) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *CloseProtocol) XXX_DiscardUnknown() {
-	xxx_messageInfo_CloseProtocol.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CloseProtocol proto.InternalMessageInfo
-
-type CloseProtocol_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CloseProtocol_Request) Reset()         { *m = CloseProtocol_Request{} }
-func (m *CloseProtocol_Request) String() string { return proto.CompactTextString(m) }
-func (*CloseProtocol_Request) ProtoMessage()    {}
-func (*CloseProtocol_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{6, 0}
-}
-
-func (m *CloseProtocol_Request) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *CloseProtocol_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CloseProtocol_Request.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-
-func (m *CloseProtocol_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CloseProtocol_Request.Merge(m, src)
-}
-
-func (m *CloseProtocol_Request) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *CloseProtocol_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_CloseProtocol_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CloseProtocol_Request proto.InternalMessageInfo
-
-type CloseProtocol_Reply struct {
-	Progress             *protocoltypes.Progress `protobuf:"bytes,1,opt,name=progress,proto3" json:"progress,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *CloseProtocol_Reply) Reset()         { *m = CloseProtocol_Reply{} }
-func (m *CloseProtocol_Reply) String() string { return proto.CompactTextString(m) }
-func (*CloseProtocol_Reply) ProtoMessage()    {}
-func (*CloseProtocol_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{6, 1}
-}
-
-func (m *CloseProtocol_Reply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *CloseProtocol_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CloseProtocol_Reply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-
-func (m *CloseProtocol_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CloseProtocol_Reply.Merge(m, src)
-}
-
-func (m *CloseProtocol_Reply) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *CloseProtocol_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_CloseProtocol_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CloseProtocol_Reply proto.InternalMessageInfo
-
-func (m *CloseProtocol_Reply) GetProgress() *protocoltypes.Progress {
-	if m != nil {
-		return m.Progress
-	}
-	return nil
-}
-
 type AccountMetadata struct {
 	AccountID            string   `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -1226,7 +815,7 @@ func (m *AccountMetadata) Reset()         { *m = AccountMetadata{} }
 func (m *AccountMetadata) String() string { return proto.CompactTextString(m) }
 func (*AccountMetadata) ProtoMessage()    {}
 func (*AccountMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{7}
+	return fileDescriptor_5d43f30c8e455603, []int{5}
 }
 
 func (m *AccountMetadata) XXX_Unmarshal(b []byte) error {
@@ -1319,7 +908,7 @@ func (m *ListAccounts) Reset()         { *m = ListAccounts{} }
 func (m *ListAccounts) String() string { return proto.CompactTextString(m) }
 func (*ListAccounts) ProtoMessage()    {}
 func (*ListAccounts) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{8}
+	return fileDescriptor_5d43f30c8e455603, []int{6}
 }
 
 func (m *ListAccounts) XXX_Unmarshal(b []byte) error {
@@ -1363,7 +952,7 @@ func (m *ListAccounts_Request) Reset()         { *m = ListAccounts_Request{} }
 func (m *ListAccounts_Request) String() string { return proto.CompactTextString(m) }
 func (*ListAccounts_Request) ProtoMessage()    {}
 func (*ListAccounts_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{8, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{6, 0}
 }
 
 func (m *ListAccounts_Request) XXX_Unmarshal(b []byte) error {
@@ -1408,7 +997,7 @@ func (m *ListAccounts_Reply) Reset()         { *m = ListAccounts_Reply{} }
 func (m *ListAccounts_Reply) String() string { return proto.CompactTextString(m) }
 func (*ListAccounts_Reply) ProtoMessage()    {}
 func (*ListAccounts_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{8, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{6, 1}
 }
 
 func (m *ListAccounts_Reply) XXX_Unmarshal(b []byte) error {
@@ -1459,7 +1048,7 @@ func (m *DeleteAccount) Reset()         { *m = DeleteAccount{} }
 func (m *DeleteAccount) String() string { return proto.CompactTextString(m) }
 func (*DeleteAccount) ProtoMessage()    {}
 func (*DeleteAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{9}
+	return fileDescriptor_5d43f30c8e455603, []int{7}
 }
 
 func (m *DeleteAccount) XXX_Unmarshal(b []byte) error {
@@ -1504,7 +1093,7 @@ func (m *DeleteAccount_Request) Reset()         { *m = DeleteAccount_Request{} }
 func (m *DeleteAccount_Request) String() string { return proto.CompactTextString(m) }
 func (*DeleteAccount_Request) ProtoMessage()    {}
 func (*DeleteAccount_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{9, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{7, 0}
 }
 
 func (m *DeleteAccount_Request) XXX_Unmarshal(b []byte) error {
@@ -1555,7 +1144,7 @@ func (m *DeleteAccount_Reply) Reset()         { *m = DeleteAccount_Reply{} }
 func (m *DeleteAccount_Reply) String() string { return proto.CompactTextString(m) }
 func (*DeleteAccount_Reply) ProtoMessage()    {}
 func (*DeleteAccount_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{9, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{7, 1}
 }
 
 func (m *DeleteAccount_Reply) XXX_Unmarshal(b []byte) error {
@@ -1599,7 +1188,7 @@ func (m *ImportAccount) Reset()         { *m = ImportAccount{} }
 func (m *ImportAccount) String() string { return proto.CompactTextString(m) }
 func (*ImportAccount) ProtoMessage()    {}
 func (*ImportAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{10}
+	return fileDescriptor_5d43f30c8e455603, []int{8}
 }
 
 func (m *ImportAccount) XXX_Unmarshal(b []byte) error {
@@ -1648,7 +1237,7 @@ func (m *ImportAccount_Request) Reset()         { *m = ImportAccount_Request{} }
 func (m *ImportAccount_Request) String() string { return proto.CompactTextString(m) }
 func (*ImportAccount_Request) ProtoMessage()    {}
 func (*ImportAccount_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{10, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{8, 0}
 }
 
 func (m *ImportAccount_Request) XXX_Unmarshal(b []byte) error {
@@ -1729,7 +1318,7 @@ func (m *ImportAccount_Reply) Reset()         { *m = ImportAccount_Reply{} }
 func (m *ImportAccount_Reply) String() string { return proto.CompactTextString(m) }
 func (*ImportAccount_Reply) ProtoMessage()    {}
 func (*ImportAccount_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{10, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{8, 1}
 }
 
 func (m *ImportAccount_Reply) XXX_Unmarshal(b []byte) error {
@@ -1787,7 +1376,7 @@ func (m *CreateAccount) Reset()         { *m = CreateAccount{} }
 func (m *CreateAccount) String() string { return proto.CompactTextString(m) }
 func (*CreateAccount) ProtoMessage()    {}
 func (*CreateAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{11}
+	return fileDescriptor_5d43f30c8e455603, []int{9}
 }
 
 func (m *CreateAccount) XXX_Unmarshal(b []byte) error {
@@ -1835,7 +1424,7 @@ func (m *CreateAccount_Request) Reset()         { *m = CreateAccount_Request{} }
 func (m *CreateAccount_Request) String() string { return proto.CompactTextString(m) }
 func (*CreateAccount_Request) ProtoMessage()    {}
 func (*CreateAccount_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{11, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{9, 0}
 }
 
 func (m *CreateAccount_Request) XXX_Unmarshal(b []byte) error {
@@ -1908,7 +1497,7 @@ func (m *CreateAccount_Reply) Reset()         { *m = CreateAccount_Reply{} }
 func (m *CreateAccount_Reply) String() string { return proto.CompactTextString(m) }
 func (*CreateAccount_Reply) ProtoMessage()    {}
 func (*CreateAccount_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{11, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{9, 1}
 }
 
 func (m *CreateAccount_Reply) XXX_Unmarshal(b []byte) error {
@@ -1959,7 +1548,7 @@ func (m *UpdateAccount) Reset()         { *m = UpdateAccount{} }
 func (m *UpdateAccount) String() string { return proto.CompactTextString(m) }
 func (*UpdateAccount) ProtoMessage()    {}
 func (*UpdateAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{12}
+	return fileDescriptor_5d43f30c8e455603, []int{10}
 }
 
 func (m *UpdateAccount) XXX_Unmarshal(b []byte) error {
@@ -2007,7 +1596,7 @@ func (m *UpdateAccount_Request) Reset()         { *m = UpdateAccount_Request{} }
 func (m *UpdateAccount_Request) String() string { return proto.CompactTextString(m) }
 func (*UpdateAccount_Request) ProtoMessage()    {}
 func (*UpdateAccount_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{12, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{10, 0}
 }
 
 func (m *UpdateAccount_Request) XXX_Unmarshal(b []byte) error {
@@ -2080,7 +1669,7 @@ func (m *UpdateAccount_Reply) Reset()         { *m = UpdateAccount_Reply{} }
 func (m *UpdateAccount_Reply) String() string { return proto.CompactTextString(m) }
 func (*UpdateAccount_Reply) ProtoMessage()    {}
 func (*UpdateAccount_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{12, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{10, 1}
 }
 
 func (m *UpdateAccount_Reply) XXX_Unmarshal(b []byte) error {
@@ -2131,7 +1720,7 @@ func (m *GetGRPCListenerAddrs) Reset()         { *m = GetGRPCListenerAddrs{} }
 func (m *GetGRPCListenerAddrs) String() string { return proto.CompactTextString(m) }
 func (*GetGRPCListenerAddrs) ProtoMessage()    {}
 func (*GetGRPCListenerAddrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{13}
+	return fileDescriptor_5d43f30c8e455603, []int{11}
 }
 
 func (m *GetGRPCListenerAddrs) XXX_Unmarshal(b []byte) error {
@@ -2175,7 +1764,7 @@ func (m *GetGRPCListenerAddrs_Request) Reset()         { *m = GetGRPCListenerAdd
 func (m *GetGRPCListenerAddrs_Request) String() string { return proto.CompactTextString(m) }
 func (*GetGRPCListenerAddrs_Request) ProtoMessage()    {}
 func (*GetGRPCListenerAddrs_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{13, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{11, 0}
 }
 
 func (m *GetGRPCListenerAddrs_Request) XXX_Unmarshal(b []byte) error {
@@ -2220,7 +1809,7 @@ func (m *GetGRPCListenerAddrs_Reply) Reset()         { *m = GetGRPCListenerAddrs
 func (m *GetGRPCListenerAddrs_Reply) String() string { return proto.CompactTextString(m) }
 func (*GetGRPCListenerAddrs_Reply) ProtoMessage()    {}
 func (*GetGRPCListenerAddrs_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{13, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{11, 1}
 }
 
 func (m *GetGRPCListenerAddrs_Reply) XXX_Unmarshal(b []byte) error {
@@ -2273,7 +1862,7 @@ func (m *GetGRPCListenerAddrs_Reply_Entry) Reset()         { *m = GetGRPCListene
 func (m *GetGRPCListenerAddrs_Reply_Entry) String() string { return proto.CompactTextString(m) }
 func (*GetGRPCListenerAddrs_Reply_Entry) ProtoMessage()    {}
 func (*GetGRPCListenerAddrs_Reply_Entry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{13, 1, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{11, 1, 0}
 }
 
 func (m *GetGRPCListenerAddrs_Reply_Entry) XXX_Unmarshal(b []byte) error {
@@ -2331,7 +1920,7 @@ func (m *LogfileList) Reset()         { *m = LogfileList{} }
 func (m *LogfileList) String() string { return proto.CompactTextString(m) }
 func (*LogfileList) ProtoMessage()    {}
 func (*LogfileList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{14}
+	return fileDescriptor_5d43f30c8e455603, []int{12}
 }
 
 func (m *LogfileList) XXX_Unmarshal(b []byte) error {
@@ -2375,7 +1964,7 @@ func (m *LogfileList_Request) Reset()         { *m = LogfileList_Request{} }
 func (m *LogfileList_Request) String() string { return proto.CompactTextString(m) }
 func (*LogfileList_Request) ProtoMessage()    {}
 func (*LogfileList_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{14, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{12, 0}
 }
 
 func (m *LogfileList_Request) XXX_Unmarshal(b []byte) error {
@@ -2420,7 +2009,7 @@ func (m *LogfileList_Reply) Reset()         { *m = LogfileList_Reply{} }
 func (m *LogfileList_Reply) String() string { return proto.CompactTextString(m) }
 func (*LogfileList_Reply) ProtoMessage()    {}
 func (*LogfileList_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{14, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{12, 1}
 }
 
 func (m *LogfileList_Reply) XXX_Unmarshal(b []byte) error {
@@ -2479,7 +2068,7 @@ func (m *LogfileList_Reply_Logfile) Reset()         { *m = LogfileList_Reply_Log
 func (m *LogfileList_Reply_Logfile) String() string { return proto.CompactTextString(m) }
 func (*LogfileList_Reply_Logfile) ProtoMessage()    {}
 func (*LogfileList_Reply_Logfile) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{14, 1, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{12, 1, 0}
 }
 
 func (m *LogfileList_Reply_Logfile) XXX_Unmarshal(b []byte) error {
@@ -2579,7 +2168,7 @@ func (m *GetUsername) Reset()         { *m = GetUsername{} }
 func (m *GetUsername) String() string { return proto.CompactTextString(m) }
 func (*GetUsername) ProtoMessage()    {}
 func (*GetUsername) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{15}
+	return fileDescriptor_5d43f30c8e455603, []int{13}
 }
 
 func (m *GetUsername) XXX_Unmarshal(b []byte) error {
@@ -2623,7 +2212,7 @@ func (m *GetUsername_Request) Reset()         { *m = GetUsername_Request{} }
 func (m *GetUsername_Request) String() string { return proto.CompactTextString(m) }
 func (*GetUsername_Request) ProtoMessage()    {}
 func (*GetUsername_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{15, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{13, 0}
 }
 
 func (m *GetUsername_Request) XXX_Unmarshal(b []byte) error {
@@ -2668,7 +2257,7 @@ func (m *GetUsername_Reply) Reset()         { *m = GetUsername_Reply{} }
 func (m *GetUsername_Reply) String() string { return proto.CompactTextString(m) }
 func (*GetUsername_Reply) ProtoMessage()    {}
 func (*GetUsername_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{15, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{13, 1}
 }
 
 func (m *GetUsername_Reply) XXX_Unmarshal(b []byte) error {
@@ -2709,130 +2298,6 @@ func (m *GetUsername_Reply) GetUsername() string {
 	return ""
 }
 
-type NetworkConfig struct {
-	Bootstrap                  []string              `protobuf:"bytes,1,rep,name=bootstrap,proto3" json:"bootstrap,omitempty"`
-	Rendezvous                 []string              `protobuf:"bytes,2,rep,name=rendezvous,proto3" json:"rendezvous,omitempty"`
-	StaticRelay                []string              `protobuf:"bytes,3,rep,name=static_relay,json=staticRelay,proto3" json:"static_relay,omitempty"`
-	DHT                        NetworkConfig_DHTFlag `protobuf:"varint,4,opt,name=dht,proto3,enum=berty.account.v1.NetworkConfig_DHTFlag" json:"dht,omitempty"`
-	BluetoothLE                NetworkConfig_Flag    `protobuf:"varint,5,opt,name=bluetooth_le,json=bluetoothLe,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"bluetooth_le,omitempty"`
-	AppleMultipeerConnectivity NetworkConfig_Flag    `protobuf:"varint,6,opt,name=apple_multipeer_connectivity,json=appleMultipeerConnectivity,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"apple_multipeer_connectivity,omitempty"`
-	AndroidNearby              NetworkConfig_Flag    `protobuf:"varint,7,opt,name=android_nearby,json=androidNearby,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"android_nearby,omitempty"`
-	Tor                        NetworkConfig_TorFlag `protobuf:"varint,8,opt,name=tor,proto3,enum=berty.account.v1.NetworkConfig_TorFlag" json:"tor,omitempty"`
-	MDNS                       NetworkConfig_Flag    `protobuf:"varint,9,opt,name=mdns,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"mdns,omitempty"`
-	ShowDefaultServices        NetworkConfig_Flag    `protobuf:"varint,10,opt,name=show_default_services,json=showDefaultServices,proto3,enum=berty.account.v1.NetworkConfig_Flag" json:"show_default_services,omitempty"`
-	XXX_NoUnkeyedLiteral       struct{}              `json:"-"`
-	XXX_unrecognized           []byte                `json:"-"`
-	XXX_sizecache              int32                 `json:"-"`
-}
-
-func (m *NetworkConfig) Reset()         { *m = NetworkConfig{} }
-func (m *NetworkConfig) String() string { return proto.CompactTextString(m) }
-func (*NetworkConfig) ProtoMessage()    {}
-func (*NetworkConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{16}
-}
-
-func (m *NetworkConfig) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *NetworkConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_NetworkConfig.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-
-func (m *NetworkConfig) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NetworkConfig.Merge(m, src)
-}
-
-func (m *NetworkConfig) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *NetworkConfig) XXX_DiscardUnknown() {
-	xxx_messageInfo_NetworkConfig.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_NetworkConfig proto.InternalMessageInfo
-
-func (m *NetworkConfig) GetBootstrap() []string {
-	if m != nil {
-		return m.Bootstrap
-	}
-	return nil
-}
-
-func (m *NetworkConfig) GetRendezvous() []string {
-	if m != nil {
-		return m.Rendezvous
-	}
-	return nil
-}
-
-func (m *NetworkConfig) GetStaticRelay() []string {
-	if m != nil {
-		return m.StaticRelay
-	}
-	return nil
-}
-
-func (m *NetworkConfig) GetDHT() NetworkConfig_DHTFlag {
-	if m != nil {
-		return m.DHT
-	}
-	return NetworkConfig_DHTUndefined
-}
-
-func (m *NetworkConfig) GetBluetoothLE() NetworkConfig_Flag {
-	if m != nil {
-		return m.BluetoothLE
-	}
-	return NetworkConfig_Undefined
-}
-
-func (m *NetworkConfig) GetAppleMultipeerConnectivity() NetworkConfig_Flag {
-	if m != nil {
-		return m.AppleMultipeerConnectivity
-	}
-	return NetworkConfig_Undefined
-}
-
-func (m *NetworkConfig) GetAndroidNearby() NetworkConfig_Flag {
-	if m != nil {
-		return m.AndroidNearby
-	}
-	return NetworkConfig_Undefined
-}
-
-func (m *NetworkConfig) GetTor() NetworkConfig_TorFlag {
-	if m != nil {
-		return m.Tor
-	}
-	return NetworkConfig_TorUndefined
-}
-
-func (m *NetworkConfig) GetMDNS() NetworkConfig_Flag {
-	if m != nil {
-		return m.MDNS
-	}
-	return NetworkConfig_Undefined
-}
-
-func (m *NetworkConfig) GetShowDefaultServices() NetworkConfig_Flag {
-	if m != nil {
-		return m.ShowDefaultServices
-	}
-	return NetworkConfig_Undefined
-}
-
 type NetworkConfigSet struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -2843,7 +2308,7 @@ func (m *NetworkConfigSet) Reset()         { *m = NetworkConfigSet{} }
 func (m *NetworkConfigSet) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigSet) ProtoMessage()    {}
 func (*NetworkConfigSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{17}
+	return fileDescriptor_5d43f30c8e455603, []int{14}
 }
 
 func (m *NetworkConfigSet) XXX_Unmarshal(b []byte) error {
@@ -2878,18 +2343,18 @@ func (m *NetworkConfigSet) XXX_DiscardUnknown() {
 var xxx_messageInfo_NetworkConfigSet proto.InternalMessageInfo
 
 type NetworkConfigSet_Request struct {
-	AccountID            string         `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	Config               *NetworkConfig `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	AccountID            string                        `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	Config               *messengertypes.NetworkConfig `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                      `json:"-"`
+	XXX_unrecognized     []byte                        `json:"-"`
+	XXX_sizecache        int32                         `json:"-"`
 }
 
 func (m *NetworkConfigSet_Request) Reset()         { *m = NetworkConfigSet_Request{} }
 func (m *NetworkConfigSet_Request) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigSet_Request) ProtoMessage()    {}
 func (*NetworkConfigSet_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{17, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{14, 0}
 }
 
 func (m *NetworkConfigSet_Request) XXX_Unmarshal(b []byte) error {
@@ -2930,7 +2395,7 @@ func (m *NetworkConfigSet_Request) GetAccountID() string {
 	return ""
 }
 
-func (m *NetworkConfigSet_Request) GetConfig() *NetworkConfig {
+func (m *NetworkConfigSet_Request) GetConfig() *messengertypes.NetworkConfig {
 	if m != nil {
 		return m.Config
 	}
@@ -2947,7 +2412,7 @@ func (m *NetworkConfigSet_Reply) Reset()         { *m = NetworkConfigSet_Reply{}
 func (m *NetworkConfigSet_Reply) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigSet_Reply) ProtoMessage()    {}
 func (*NetworkConfigSet_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{17, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{14, 1}
 }
 
 func (m *NetworkConfigSet_Reply) XXX_Unmarshal(b []byte) error {
@@ -2991,7 +2456,7 @@ func (m *NetworkConfigGet) Reset()         { *m = NetworkConfigGet{} }
 func (m *NetworkConfigGet) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigGet) ProtoMessage()    {}
 func (*NetworkConfigGet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{18}
+	return fileDescriptor_5d43f30c8e455603, []int{15}
 }
 
 func (m *NetworkConfigGet) XXX_Unmarshal(b []byte) error {
@@ -3036,7 +2501,7 @@ func (m *NetworkConfigGet_Request) Reset()         { *m = NetworkConfigGet_Reque
 func (m *NetworkConfigGet_Request) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigGet_Request) ProtoMessage()    {}
 func (*NetworkConfigGet_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{18, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{15, 0}
 }
 
 func (m *NetworkConfigGet_Request) XXX_Unmarshal(b []byte) error {
@@ -3078,22 +2543,22 @@ func (m *NetworkConfigGet_Request) GetAccountID() string {
 }
 
 type NetworkConfigGet_Reply struct {
-	DefaultConfig        *NetworkConfig `protobuf:"bytes,1,opt,name=default_config,json=defaultConfig,proto3" json:"default_config,omitempty"`
-	CurrentConfig        *NetworkConfig `protobuf:"bytes,2,opt,name=current_config,json=currentConfig,proto3" json:"current_config,omitempty"`
-	CustomConfigExists   bool           `protobuf:"varint,3,opt,name=custom_config_exists,json=customConfigExists,proto3" json:"custom_config_exists,omitempty"`
-	DefaultBootstrap     []string       `protobuf:"bytes,4,rep,name=default_bootstrap,json=defaultBootstrap,proto3" json:"default_bootstrap,omitempty"`
-	DefaultRendezvous    []string       `protobuf:"bytes,5,rep,name=default_rendezvous,json=defaultRendezvous,proto3" json:"default_rendezvous,omitempty"`
-	DefaultStaticRelay   []string       `protobuf:"bytes,6,rep,name=default_static_relay,json=defaultStaticRelay,proto3" json:"default_static_relay,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	DefaultConfig        *messengertypes.NetworkConfig `protobuf:"bytes,1,opt,name=default_config,json=defaultConfig,proto3" json:"default_config,omitempty"`
+	CurrentConfig        *messengertypes.NetworkConfig `protobuf:"bytes,2,opt,name=current_config,json=currentConfig,proto3" json:"current_config,omitempty"`
+	CustomConfigExists   bool                          `protobuf:"varint,3,opt,name=custom_config_exists,json=customConfigExists,proto3" json:"custom_config_exists,omitempty"`
+	DefaultBootstrap     []string                      `protobuf:"bytes,4,rep,name=default_bootstrap,json=defaultBootstrap,proto3" json:"default_bootstrap,omitempty"`
+	DefaultRendezvous    []string                      `protobuf:"bytes,5,rep,name=default_rendezvous,json=defaultRendezvous,proto3" json:"default_rendezvous,omitempty"`
+	DefaultStaticRelay   []string                      `protobuf:"bytes,6,rep,name=default_static_relay,json=defaultStaticRelay,proto3" json:"default_static_relay,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                      `json:"-"`
+	XXX_unrecognized     []byte                        `json:"-"`
+	XXX_sizecache        int32                         `json:"-"`
 }
 
 func (m *NetworkConfigGet_Reply) Reset()         { *m = NetworkConfigGet_Reply{} }
 func (m *NetworkConfigGet_Reply) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigGet_Reply) ProtoMessage()    {}
 func (*NetworkConfigGet_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{18, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{15, 1}
 }
 
 func (m *NetworkConfigGet_Reply) XXX_Unmarshal(b []byte) error {
@@ -3127,14 +2592,14 @@ func (m *NetworkConfigGet_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NetworkConfigGet_Reply proto.InternalMessageInfo
 
-func (m *NetworkConfigGet_Reply) GetDefaultConfig() *NetworkConfig {
+func (m *NetworkConfigGet_Reply) GetDefaultConfig() *messengertypes.NetworkConfig {
 	if m != nil {
 		return m.DefaultConfig
 	}
 	return nil
 }
 
-func (m *NetworkConfigGet_Reply) GetCurrentConfig() *NetworkConfig {
+func (m *NetworkConfigGet_Reply) GetCurrentConfig() *messengertypes.NetworkConfig {
 	if m != nil {
 		return m.CurrentConfig
 	}
@@ -3179,7 +2644,7 @@ func (m *NetworkConfigGetPreset) Reset()         { *m = NetworkConfigGetPreset{}
 func (m *NetworkConfigGetPreset) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigGetPreset) ProtoMessage()    {}
 func (*NetworkConfigGetPreset) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{19}
+	return fileDescriptor_5d43f30c8e455603, []int{16}
 }
 
 func (m *NetworkConfigGetPreset) XXX_Unmarshal(b []byte) error {
@@ -3214,18 +2679,18 @@ func (m *NetworkConfigGetPreset) XXX_DiscardUnknown() {
 var xxx_messageInfo_NetworkConfigGetPreset proto.InternalMessageInfo
 
 type NetworkConfigGetPreset_Request struct {
-	Preset                 NetworkConfigPreset `protobuf:"varint,1,opt,name=preset,proto3,enum=berty.account.v1.NetworkConfigPreset" json:"preset,omitempty"`
-	HasBluetoothPermission bool                `protobuf:"varint,2,opt,name=has_bluetooth_permission,json=hasBluetoothPermission,proto3" json:"has_bluetooth_permission,omitempty"`
-	XXX_NoUnkeyedLiteral   struct{}            `json:"-"`
-	XXX_unrecognized       []byte              `json:"-"`
-	XXX_sizecache          int32               `json:"-"`
+	Preset                 messengertypes.NetworkConfig_Preset `protobuf:"varint,1,opt,name=preset,proto3,enum=berty.messenger.v1.NetworkConfig_Preset" json:"preset,omitempty"`
+	HasBluetoothPermission bool                                `protobuf:"varint,2,opt,name=has_bluetooth_permission,json=hasBluetoothPermission,proto3" json:"has_bluetooth_permission,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                            `json:"-"`
+	XXX_unrecognized       []byte                              `json:"-"`
+	XXX_sizecache          int32                               `json:"-"`
 }
 
 func (m *NetworkConfigGetPreset_Request) Reset()         { *m = NetworkConfigGetPreset_Request{} }
 func (m *NetworkConfigGetPreset_Request) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigGetPreset_Request) ProtoMessage()    {}
 func (*NetworkConfigGetPreset_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{19, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{16, 0}
 }
 
 func (m *NetworkConfigGetPreset_Request) XXX_Unmarshal(b []byte) error {
@@ -3259,11 +2724,11 @@ func (m *NetworkConfigGetPreset_Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NetworkConfigGetPreset_Request proto.InternalMessageInfo
 
-func (m *NetworkConfigGetPreset_Request) GetPreset() NetworkConfigPreset {
+func (m *NetworkConfigGetPreset_Request) GetPreset() messengertypes.NetworkConfig_Preset {
 	if m != nil {
 		return m.Preset
 	}
-	return NetworkConfigPreset_NetPresetUndefined
+	return messengertypes.NetworkConfig_NetPresetUndefined
 }
 
 func (m *NetworkConfigGetPreset_Request) GetHasBluetoothPermission() bool {
@@ -3274,17 +2739,17 @@ func (m *NetworkConfigGetPreset_Request) GetHasBluetoothPermission() bool {
 }
 
 type NetworkConfigGetPreset_Reply struct {
-	Config               *NetworkConfig `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	Config               *messengertypes.NetworkConfig `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                      `json:"-"`
+	XXX_unrecognized     []byte                        `json:"-"`
+	XXX_sizecache        int32                         `json:"-"`
 }
 
 func (m *NetworkConfigGetPreset_Reply) Reset()         { *m = NetworkConfigGetPreset_Reply{} }
 func (m *NetworkConfigGetPreset_Reply) String() string { return proto.CompactTextString(m) }
 func (*NetworkConfigGetPreset_Reply) ProtoMessage()    {}
 func (*NetworkConfigGetPreset_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{19, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{16, 1}
 }
 
 func (m *NetworkConfigGetPreset_Reply) XXX_Unmarshal(b []byte) error {
@@ -3318,7 +2783,7 @@ func (m *NetworkConfigGetPreset_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NetworkConfigGetPreset_Reply proto.InternalMessageInfo
 
-func (m *NetworkConfigGetPreset_Reply) GetConfig() *NetworkConfig {
+func (m *NetworkConfigGetPreset_Reply) GetConfig() *messengertypes.NetworkConfig {
 	if m != nil {
 		return m.Config
 	}
@@ -3335,7 +2800,7 @@ func (m *PushReceive) Reset()         { *m = PushReceive{} }
 func (m *PushReceive) String() string { return proto.CompactTextString(m) }
 func (*PushReceive) ProtoMessage()    {}
 func (*PushReceive) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{20}
+	return fileDescriptor_5d43f30c8e455603, []int{17}
 }
 
 func (m *PushReceive) XXX_Unmarshal(b []byte) error {
@@ -3381,7 +2846,7 @@ func (m *PushReceive_Request) Reset()         { *m = PushReceive_Request{} }
 func (m *PushReceive_Request) String() string { return proto.CompactTextString(m) }
 func (*PushReceive_Request) ProtoMessage()    {}
 func (*PushReceive_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{20, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{17, 0}
 }
 
 func (m *PushReceive_Request) XXX_Unmarshal(b []byte) error {
@@ -3441,7 +2906,7 @@ func (m *PushReceive_Reply) Reset()         { *m = PushReceive_Reply{} }
 func (m *PushReceive_Reply) String() string { return proto.CompactTextString(m) }
 func (*PushReceive_Reply) ProtoMessage()    {}
 func (*PushReceive_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{20, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{17, 1}
 }
 
 func (m *PushReceive_Reply) XXX_Unmarshal(b []byte) error {
@@ -3499,7 +2964,7 @@ func (m *PushPlatformTokenRegister) Reset()         { *m = PushPlatformTokenRegi
 func (m *PushPlatformTokenRegister) String() string { return proto.CompactTextString(m) }
 func (*PushPlatformTokenRegister) ProtoMessage()    {}
 func (*PushPlatformTokenRegister) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{21}
+	return fileDescriptor_5d43f30c8e455603, []int{18}
 }
 
 func (m *PushPlatformTokenRegister) XXX_Unmarshal(b []byte) error {
@@ -3544,7 +3009,7 @@ func (m *PushPlatformTokenRegister_Request) Reset()         { *m = PushPlatformT
 func (m *PushPlatformTokenRegister_Request) String() string { return proto.CompactTextString(m) }
 func (*PushPlatformTokenRegister_Request) ProtoMessage()    {}
 func (*PushPlatformTokenRegister_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{21, 0}
+	return fileDescriptor_5d43f30c8e455603, []int{18, 0}
 }
 
 func (m *PushPlatformTokenRegister_Request) XXX_Unmarshal(b []byte) error {
@@ -3595,7 +3060,7 @@ func (m *PushPlatformTokenRegister_Reply) Reset()         { *m = PushPlatformTok
 func (m *PushPlatformTokenRegister_Reply) String() string { return proto.CompactTextString(m) }
 func (*PushPlatformTokenRegister_Reply) ProtoMessage()    {}
 func (*PushPlatformTokenRegister_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5d43f30c8e455603, []int{21, 1}
+	return fileDescriptor_5d43f30c8e455603, []int{18, 1}
 }
 
 func (m *PushPlatformTokenRegister_Reply) XXX_Unmarshal(b []byte) error {
@@ -3630,10 +3095,6 @@ func (m *PushPlatformTokenRegister_Reply) XXX_DiscardUnknown() {
 var xxx_messageInfo_PushPlatformTokenRegister_Reply proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterEnum("berty.account.v1.NetworkConfigPreset", NetworkConfigPreset_name, NetworkConfigPreset_value)
-	proto.RegisterEnum("berty.account.v1.NetworkConfig_Flag", NetworkConfig_Flag_name, NetworkConfig_Flag_value)
-	proto.RegisterEnum("berty.account.v1.NetworkConfig_TorFlag", NetworkConfig_TorFlag_name, NetworkConfig_TorFlag_value)
-	proto.RegisterEnum("berty.account.v1.NetworkConfig_DHTFlag", NetworkConfig_DHTFlag_name, NetworkConfig_DHTFlag_value)
 	proto.RegisterType((*AppStoragePut)(nil), "berty.account.v1.AppStoragePut")
 	proto.RegisterType((*AppStoragePut_Request)(nil), "berty.account.v1.AppStoragePut.Request")
 	proto.RegisterType((*AppStoragePut_Reply)(nil), "berty.account.v1.AppStoragePut.Reply")
@@ -3649,12 +3110,6 @@ func init() {
 	proto.RegisterType((*CloseAccount)(nil), "berty.account.v1.CloseAccount")
 	proto.RegisterType((*CloseAccount_Request)(nil), "berty.account.v1.CloseAccount.Request")
 	proto.RegisterType((*CloseAccount_Reply)(nil), "berty.account.v1.CloseAccount.Reply")
-	proto.RegisterType((*OpenProtocol)(nil), "berty.account.v1.OpenProtocol")
-	proto.RegisterType((*OpenProtocol_Request)(nil), "berty.account.v1.OpenProtocol.Request")
-	proto.RegisterType((*OpenProtocol_Reply)(nil), "berty.account.v1.OpenProtocol.Reply")
-	proto.RegisterType((*CloseProtocol)(nil), "berty.account.v1.CloseProtocol")
-	proto.RegisterType((*CloseProtocol_Request)(nil), "berty.account.v1.CloseProtocol.Request")
-	proto.RegisterType((*CloseProtocol_Reply)(nil), "berty.account.v1.CloseProtocol.Reply")
 	proto.RegisterType((*AccountMetadata)(nil), "berty.account.v1.AccountMetadata")
 	proto.RegisterType((*ListAccounts)(nil), "berty.account.v1.ListAccounts")
 	proto.RegisterType((*ListAccounts_Request)(nil), "berty.account.v1.ListAccounts.Request")
@@ -3682,7 +3137,6 @@ func init() {
 	proto.RegisterType((*GetUsername)(nil), "berty.account.v1.GetUsername")
 	proto.RegisterType((*GetUsername_Request)(nil), "berty.account.v1.GetUsername.Request")
 	proto.RegisterType((*GetUsername_Reply)(nil), "berty.account.v1.GetUsername.Reply")
-	proto.RegisterType((*NetworkConfig)(nil), "berty.account.v1.NetworkConfig")
 	proto.RegisterType((*NetworkConfigSet)(nil), "berty.account.v1.NetworkConfigSet")
 	proto.RegisterType((*NetworkConfigSet_Request)(nil), "berty.account.v1.NetworkConfigSet.Request")
 	proto.RegisterType((*NetworkConfigSet_Reply)(nil), "berty.account.v1.NetworkConfigSet.Reply")
@@ -3703,137 +3157,108 @@ func init() {
 func init() { proto.RegisterFile("accounttypes.proto", fileDescriptor_5d43f30c8e455603) }
 
 var fileDescriptor_5d43f30c8e455603 = []byte{
-	// 2075 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x59, 0x4f, 0x6f, 0xdb, 0xc8,
-	0x15, 0x2f, 0x25, 0xd9, 0x92, 0x9e, 0x2c, 0x59, 0x3b, 0x71, 0x03, 0x95, 0x9b, 0x8d, 0xbd, 0x4a,
-	0xb2, 0x75, 0xf7, 0x8f, 0x9c, 0x38, 0x87, 0x74, 0x0f, 0x01, 0x1a, 0x5b, 0xb1, 0x1d, 0x6c, 0xe2,
-	0x68, 0x69, 0x05, 0xd8, 0x76, 0x17, 0x25, 0xc6, 0xe2, 0x58, 0x62, 0x4d, 0x71, 0xd8, 0xe1, 0xc8,
-	0x5b, 0xe5, 0xd8, 0xde, 0x0c, 0xb4, 0xe8, 0xa5, 0x45, 0x51, 0x20, 0xa7, 0xa2, 0xe8, 0xad, 0x97,
-	0x02, 0xfd, 0x02, 0x3d, 0xb4, 0xc7, 0xde, 0x8a, 0x5e, 0xd2, 0xc2, 0xd7, 0x7e, 0x85, 0xa2, 0x28,
-	0x66, 0x38, 0xa4, 0x48, 0x9a, 0x2b, 0xc9, 0x5e, 0xe7, 0xe4, 0x99, 0x37, 0xbf, 0xf7, 0x7b, 0x6f,
-	0xde, 0xbc, 0x79, 0x7c, 0x23, 0x03, 0xc2, 0xbd, 0x1e, 0x1d, 0xb9, 0x9c, 0x8f, 0x3d, 0xe2, 0xb7,
-	0x3c, 0x46, 0x39, 0x45, 0xf5, 0x43, 0xc2, 0xf8, 0xb8, 0xa5, 0x56, 0x5a, 0x27, 0xf7, 0xf4, 0x95,
-	0x3e, 0xed, 0x53, 0xb9, 0xb8, 0x21, 0x46, 0x01, 0x4e, 0x5f, 0xf6, 0x46, 0xfe, 0x20, 0xa6, 0xa8,
-	0x5f, 0x93, 0x7f, 0x7a, 0xd4, 0x89, 0x09, 0x9b, 0x3d, 0xa8, 0x3e, 0xf2, 0xbc, 0x03, 0x4e, 0x19,
-	0xee, 0x93, 0xce, 0x88, 0xeb, 0x4f, 0xa0, 0x68, 0x90, 0x1f, 0x8f, 0x88, 0xcf, 0x51, 0x1d, 0xf2,
-	0xc7, 0x64, 0xdc, 0xd0, 0xd6, 0xb4, 0xf5, 0xb2, 0x21, 0x86, 0x68, 0x05, 0x16, 0x4e, 0xb0, 0x33,
-	0x22, 0x8d, 0xdc, 0x9a, 0xb6, 0xbe, 0x64, 0x04, 0x13, 0x74, 0x1d, 0x16, 0xfb, 0x0e, 0x3d, 0xc4,
-	0x4e, 0x23, 0xbf, 0xa6, 0xad, 0x97, 0x0c, 0x35, 0xd3, 0x8b, 0xb0, 0x60, 0x10, 0xcf, 0x19, 0x27,
-	0x8d, 0xec, 0x12, 0xae, 0xdf, 0x9f, 0x66, 0x64, 0x42, 0x97, 0x4b, 0xd0, 0xbd, 0xa3, 0xe8, 0xb2,
-	0xbd, 0x68, 0x76, 0xa0, 0x3e, 0x31, 0x62, 0x90, 0x21, 0x3d, 0x21, 0x97, 0xb3, 0x13, 0xb9, 0xfd,
-	0x17, 0x0d, 0x2a, 0xcf, 0x3d, 0xe2, 0x3e, 0x0a, 0x42, 0xad, 0xb3, 0x09, 0x1b, 0x82, 0x02, 0x66,
-	0x7d, 0xbf, 0xa1, 0xad, 0xe5, 0xd7, 0xcb, 0x86, 0x1c, 0xa3, 0x0f, 0x01, 0xd4, 0xa1, 0x98, 0xb6,
-	0x25, 0x39, 0xcb, 0x5b, 0xd5, 0xb3, 0xd7, 0xab, 0x65, 0xa5, 0xff, 0xa4, 0x6d, 0x94, 0x15, 0xe0,
-	0x89, 0x85, 0xee, 0x40, 0xcd, 0xa1, 0xfd, 0x3e, 0x61, 0xe6, 0x91, 0xed, 0x70, 0xc2, 0x7c, 0x19,
-	0xbc, 0xb2, 0x51, 0x0d, 0xa4, 0x3b, 0x81, 0x50, 0xff, 0x5e, 0xb8, 0xe9, 0x07, 0x50, 0xf2, 0x18,
-	0xed, 0x33, 0xe2, 0xfb, 0x72, 0x13, 0x95, 0xcd, 0xb7, 0x5b, 0x41, 0x26, 0x84, 0xc7, 0xda, 0x3a,
-	0xb9, 0xd7, 0xea, 0x28, 0x88, 0x11, 0x81, 0x9b, 0x9f, 0xc3, 0xd2, 0xb6, 0x43, 0x7d, 0x12, 0xee,
-	0xa2, 0x1c, 0xed, 0xe2, 0x0a, 0xc8, 0x7f, 0xa7, 0xc1, 0x92, 0x08, 0x51, 0x47, 0xc1, 0xf4, 0x4f,
-	0x27, 0x31, 0xda, 0x81, 0x9a, 0x4b, 0xf8, 0x97, 0x94, 0x1d, 0x9b, 0x3d, 0xea, 0x1e, 0xd9, 0xfd,
-	0x46, 0x41, 0x52, 0xaf, 0xb6, 0xd2, 0x19, 0xdc, 0xda, 0x0f, 0x70, 0xdb, 0x12, 0x66, 0x54, 0xdd,
-	0xf8, 0xf4, 0x0a, 0xbc, 0xfc, 0x02, 0xaa, 0x32, 0x04, 0x91, 0x97, 0x57, 0x1a, 0x83, 0xff, 0x6a,
-	0xb0, 0xac, 0x82, 0xfb, 0x8c, 0x70, 0x6c, 0x61, 0x8e, 0x53, 0xb9, 0xa0, 0xcd, 0xc8, 0x05, 0x04,
-	0x05, 0x17, 0x0f, 0x83, 0x7c, 0x2e, 0x1b, 0x72, 0x2c, 0x19, 0x4e, 0x30, 0xc7, 0xcc, 0xec, 0xd9,
-	0x56, 0x90, 0x1b, 0x8a, 0x41, 0x4a, 0xb7, 0x25, 0x43, 0x30, 0xb4, 0x2d, 0xf4, 0x0e, 0x80, 0x37,
-	0x3a, 0x74, 0xec, 0x9e, 0x29, 0x92, 0xbc, 0x20, 0x79, 0xca, 0x81, 0xe4, 0x13, 0x32, 0x46, 0xab,
-	0x50, 0x71, 0xb0, 0xcf, 0x4d, 0xea, 0x11, 0x97, 0x58, 0x8d, 0x85, 0x35, 0x6d, 0x3d, 0x6f, 0x80,
-	0x10, 0x3d, 0x97, 0x12, 0x74, 0x0b, 0xaa, 0x3d, 0x46, 0x30, 0xb7, 0xa9, 0x6b, 0x5a, 0x98, 0x93,
-	0xc6, 0xa2, 0x84, 0x2c, 0x85, 0xc2, 0x36, 0xe6, 0x44, 0xdc, 0x3b, 0xc2, 0x18, 0x65, 0x8d, 0xa2,
-	0xe4, 0x0f, 0x26, 0x4d, 0x0c, 0x4b, 0x4f, 0x6d, 0x9f, 0xab, 0x8d, 0xf9, 0xf1, 0xd8, 0xee, 0x84,
-	0xb1, 0x7d, 0x08, 0x25, 0xb5, 0xdb, 0xe0, 0xca, 0x54, 0x36, 0xdf, 0x3d, 0x9f, 0x04, 0xa9, 0x18,
-	0x1a, 0x91, 0x4a, 0xf3, 0x53, 0xa8, 0xb6, 0x89, 0x43, 0x78, 0x94, 0xc3, 0x0f, 0x26, 0x59, 0x76,
-	0xa1, 0x48, 0x4f, 0xee, 0xf6, 0x3f, 0x73, 0x50, 0x7d, 0x32, 0xf4, 0x28, 0x0b, 0x1d, 0xd7, 0xff,
-	0xac, 0x5d, 0x92, 0x14, 0xbd, 0x0b, 0x4b, 0x21, 0x3a, 0x76, 0x8c, 0x15, 0x25, 0xdb, 0x17, 0xa7,
-	0xb9, 0x0a, 0x95, 0x43, 0xdc, 0x3b, 0x1e, 0x79, 0xa6, 0x87, 0xf9, 0x40, 0x5d, 0x75, 0x08, 0x44,
-	0x1d, 0xcc, 0x07, 0x51, 0x41, 0x29, 0xc4, 0x0a, 0xca, 0xf9, 0x12, 0xb1, 0x90, 0x55, 0x22, 0x7e,
-	0xa1, 0x7d, 0xdd, 0x14, 0x46, 0x4f, 0xa1, 0x1e, 0xee, 0x60, 0xa8, 0xc2, 0x2f, 0x77, 0x31, 0xd7,
-	0x39, 0x2d, 0xe3, 0xa4, 0xa0, 0xf9, 0x3f, 0x0d, 0xaa, 0xdb, 0x22, 0x71, 0xa2, 0xf3, 0xfa, 0xd5,
-	0x9b, 0x8c, 0x6d, 0x18, 0xba, 0xfc, 0xd4, 0xd0, 0x15, 0xb2, 0x42, 0xf7, 0x22, 0x8c, 0x5c, 0x56,
-	0x00, 0xb4, 0x4b, 0x07, 0xe0, 0x97, 0x39, 0xa8, 0xbe, 0xf0, 0xac, 0x58, 0x00, 0xfe, 0xf0, 0x26,
-	0x03, 0x70, 0x95, 0xa5, 0xe2, 0x4d, 0x85, 0xe4, 0x8f, 0x1a, 0xac, 0xec, 0x12, 0xbe, 0x6b, 0x74,
-	0xb6, 0x45, 0xb5, 0x20, 0x2e, 0x61, 0x8f, 0x2c, 0x8b, 0x25, 0xca, 0xc5, 0xa9, 0x36, 0xb1, 0x5d,
-	0x24, 0x2e, 0x67, 0x36, 0x09, 0xcb, 0xc5, 0xe6, 0x79, 0x93, 0x59, 0x6c, 0x2d, 0xa9, 0xde, 0x7a,
-	0xec, 0x72, 0x36, 0x36, 0x42, 0x0a, 0xfd, 0x3e, 0x2c, 0x48, 0x89, 0x28, 0x60, 0xf2, 0x22, 0xa8,
-	0x2e, 0x20, 0x98, 0x08, 0xe9, 0x10, 0x5b, 0x16, 0x53, 0xa1, 0x0d, 0x26, 0xcd, 0x3f, 0xe5, 0xa0,
-	0xf2, 0x94, 0xf6, 0x8f, 0x6c, 0x87, 0x08, 0x13, 0x71, 0x3f, 0x7f, 0x93, 0x0b, 0xfd, 0x7c, 0x9c,
-	0xf6, 0xf3, 0x83, 0xf3, 0x7e, 0xc6, 0x48, 0x94, 0x7b, 0x4a, 0x32, 0x71, 0xf0, 0xaf, 0x1a, 0x14,
-	0x95, 0xf0, 0x0a, 0xbe, 0x1c, 0x08, 0x0a, 0xb1, 0x22, 0x23, 0xc7, 0x42, 0xe6, 0xdb, 0x2f, 0x89,
-	0x3c, 0xee, 0xbc, 0x21, 0xc7, 0x42, 0x76, 0x6c, 0xbb, 0x96, 0x2a, 0x2a, 0x72, 0x2c, 0x64, 0xdc,
-	0x1e, 0x86, 0xe5, 0x5f, 0x8e, 0x45, 0x9f, 0xe4, 0x60, 0x4e, 0x7c, 0x2e, 0xeb, 0x7e, 0xc9, 0x50,
-	0x33, 0x81, 0x25, 0x8c, 0xf9, 0x8d, 0x52, 0xa0, 0x2f, 0xc6, 0xcd, 0x87, 0x50, 0xd9, 0x25, 0xfc,
-	0x85, 0x4f, 0x98, 0x70, 0x25, 0x1e, 0xb4, 0x5b, 0x61, 0xcc, 0x74, 0x28, 0x8d, 0xd4, 0xba, 0x3a,
-	0x87, 0x68, 0xde, 0x3c, 0x2d, 0x42, 0x35, 0xd1, 0x0b, 0xa0, 0x1b, 0x50, 0x3e, 0xa4, 0x94, 0xfb,
-	0x9c, 0x61, 0x4f, 0x75, 0x5b, 0x13, 0x01, 0xba, 0x09, 0xc0, 0x88, 0x6b, 0x91, 0x97, 0x27, 0x74,
-	0xe4, 0x37, 0x72, 0x72, 0x39, 0x26, 0x11, 0x97, 0xc7, 0xe7, 0x98, 0xdb, 0x3d, 0x93, 0x11, 0x07,
-	0x8f, 0x55, 0x89, 0xa8, 0x04, 0x32, 0x43, 0x88, 0xd0, 0x16, 0xe4, 0xad, 0x01, 0x97, 0x81, 0xa9,
-	0x6d, 0x7e, 0x7b, 0x46, 0x6b, 0xd2, 0x6a, 0xef, 0x75, 0x77, 0x1c, 0xdc, 0xdf, 0x2a, 0x9e, 0xbd,
-	0x5e, 0xcd, 0xb7, 0xf7, 0xba, 0x86, 0x50, 0x46, 0x9f, 0xc1, 0xd2, 0xa1, 0x33, 0x22, 0x9c, 0x52,
-	0x3e, 0x30, 0x1d, 0x22, 0x23, 0x5a, 0xdb, 0xbc, 0x3d, 0x8b, 0x4c, 0x32, 0x2d, 0x9f, 0xbd, 0x5e,
-	0xad, 0x6c, 0x85, 0xda, 0x4f, 0x1f, 0x1b, 0x95, 0x88, 0xea, 0x29, 0x41, 0x47, 0x70, 0x03, 0x7b,
-	0x9e, 0x43, 0xcc, 0xe1, 0xc8, 0xe1, 0xb6, 0x47, 0x08, 0x13, 0xbd, 0x94, 0x4b, 0x7a, 0xdc, 0x3e,
-	0xb1, 0xf9, 0x58, 0x9e, 0xd3, 0x9c, 0x96, 0x0c, 0x5d, 0x32, 0x3d, 0x0b, 0x89, 0xb6, 0x63, 0x3c,
-	0xe8, 0x13, 0xa8, 0x61, 0xd7, 0x62, 0xd4, 0xb6, 0x4c, 0x97, 0x60, 0x76, 0x38, 0x96, 0x67, 0x3d,
-	0x2f, 0x73, 0x55, 0xe9, 0xee, 0x4b, 0x55, 0xf4, 0x31, 0xe4, 0x39, 0x65, 0x32, 0x2f, 0xe6, 0x08,
-	0x69, 0x97, 0x32, 0x49, 0x22, 0x74, 0xd0, 0x16, 0x14, 0x86, 0x96, 0xeb, 0x37, 0xca, 0x17, 0x88,
-	0x60, 0xe9, 0xec, 0xf5, 0x6a, 0xe1, 0x59, 0x7b, 0xff, 0xc0, 0x90, 0xba, 0xe8, 0x33, 0xf8, 0xa6,
-	0x3f, 0xa0, 0x5f, 0x9a, 0x16, 0x39, 0xc2, 0x23, 0x87, 0x9b, 0x3e, 0x61, 0x27, 0x76, 0x8f, 0xf8,
-	0x0d, 0xb8, 0xc0, 0x96, 0xae, 0x09, 0x8a, 0x76, 0xc0, 0x70, 0xa0, 0x08, 0x9a, 0x77, 0xa1, 0x20,
-	0x16, 0x51, 0x15, 0xca, 0x2f, 0x5c, 0x8b, 0x1c, 0xd9, 0x2e, 0xb1, 0xea, 0xdf, 0x40, 0x4b, 0x50,
-	0x6a, 0xdb, 0x3e, 0x3e, 0x74, 0x88, 0x55, 0xd7, 0x50, 0x05, 0x8a, 0x8f, 0xdd, 0x60, 0x92, 0x6b,
-	0xee, 0x43, 0x51, 0xed, 0x0f, 0xd5, 0x61, 0xa9, 0x4b, 0x59, 0x5c, 0x6f, 0x19, 0x2a, 0x5d, 0xca,
-	0x62, 0xaa, 0x81, 0xe0, 0xb9, 0x27, 0x3a, 0x2e, 0xec, 0xd4, 0x73, 0x4a, 0x20, 0xae, 0x90, 0xcd,
-	0x88, 0x55, 0xcf, 0x37, 0x7f, 0x04, 0x45, 0x95, 0x82, 0x82, 0xaf, 0xbd, 0xd7, 0x4d, 0xf1, 0xb5,
-	0xf7, 0xba, 0x31, 0xbe, 0x2a, 0x94, 0xdb, 0x7b, 0xdd, 0x6d, 0xc7, 0x26, 0x2e, 0xaf, 0xe7, 0xd4,
-	0x54, 0xec, 0x86, 0xb0, 0x7a, 0x5e, 0x38, 0xda, 0xde, 0xeb, 0x3e, 0x1a, 0x71, 0x5a, 0x2f, 0xa0,
-	0xb7, 0xa0, 0xaa, 0x26, 0x6a, 0x7d, 0xa1, 0xf9, 0x73, 0x0d, 0xea, 0x89, 0xc8, 0x1c, 0x10, 0xae,
-	0x7b, 0x97, 0xfd, 0x8e, 0x3d, 0x80, 0x45, 0xf5, 0x0a, 0xc8, 0xcd, 0xf7, 0x0a, 0x50, 0xf0, 0x49,
-	0xcb, 0xf6, 0xfb, 0x7c, 0xca, 0x1f, 0xf1, 0x92, 0xbc, 0x74, 0x27, 0xf8, 0x8f, 0xa8, 0x88, 0xef,
-	0x40, 0x2d, 0x4c, 0x15, 0xe5, 0xa1, 0x36, 0xe7, 0x3b, 0x45, 0xa9, 0xa9, 0x52, 0xb5, 0x03, 0xb5,
-	0xde, 0x88, 0x31, 0xe2, 0x46, 0x3c, 0x73, 0xee, 0xb4, 0xaa, 0xd4, 0x14, 0xcf, 0x5d, 0x58, 0xe9,
-	0x8d, 0x7c, 0x4e, 0x87, 0x8a, 0xc6, 0x24, 0x3f, 0xb1, 0x7d, 0xee, 0xab, 0xc7, 0x35, 0x0a, 0xd6,
-	0x02, 0xec, 0x63, 0xb9, 0x82, 0x3e, 0x80, 0xb7, 0xc2, 0x1d, 0x4c, 0x8a, 0x65, 0xd0, 0x49, 0xd6,
-	0xd5, 0xc2, 0x56, 0x54, 0x33, 0x3f, 0x02, 0x14, 0x82, 0x63, 0xb5, 0x73, 0x41, 0xa2, 0x43, 0x1a,
-	0x63, 0x52, 0x42, 0xef, 0xc2, 0x4a, 0x74, 0x91, 0xe2, 0xa5, 0x74, 0x51, 0x2a, 0x84, 0x54, 0x07,
-	0x93, 0x8a, 0xda, 0xfc, 0x97, 0x06, 0xd7, 0xd3, 0xe7, 0xd4, 0x61, 0xc4, 0x27, 0x5c, 0xff, 0x69,
-	0xac, 0x0d, 0x7a, 0x08, 0x8b, 0x9e, 0x94, 0xca, 0x70, 0xd7, 0x36, 0xef, 0xcc, 0x08, 0x53, 0x40,
-	0x61, 0x28, 0x25, 0xf4, 0x5d, 0x68, 0x0c, 0xb0, 0x6f, 0x4e, 0xea, 0xae, 0x47, 0xd8, 0xd0, 0xf6,
-	0x7d, 0x9b, 0xba, 0xea, 0x3d, 0x7f, 0x7d, 0x80, 0xfd, 0xa8, 0xb0, 0x76, 0xa2, 0xd5, 0xf8, 0x8b,
-	0x6f, 0xf1, 0x62, 0x07, 0xae, 0xe0, 0xcd, 0xff, 0x68, 0x50, 0xe9, 0x8c, 0xfc, 0x81, 0x41, 0x7a,
-	0xc4, 0x3e, 0x21, 0x7a, 0x7f, 0xb2, 0xab, 0x06, 0x14, 0x3d, 0x3c, 0x76, 0x28, 0x56, 0x19, 0x68,
-	0x84, 0x53, 0xb4, 0x05, 0xc0, 0xe9, 0x31, 0x71, 0x4d, 0x3e, 0xf6, 0x82, 0x0f, 0x76, 0x6d, 0xf3,
-	0x56, 0xd8, 0x9e, 0x8f, 0xfc, 0x81, 0x6c, 0xcd, 0x47, 0xfe, 0x40, 0x55, 0x9b, 0xae, 0xc0, 0x76,
-	0xc7, 0x1e, 0x31, 0xca, 0x3c, 0x1c, 0xea, 0x7e, 0xe8, 0xfa, 0xc7, 0x50, 0x16, 0x3a, 0x66, 0xac,
-	0x2b, 0xbb, 0x91, 0xe2, 0x6a, 0x93, 0x1e, 0x1b, 0x7b, 0x9c, 0x58, 0xd2, 0xd3, 0x92, 0x10, 0xb7,
-	0xc5, 0xd3, 0x74, 0x03, 0x0a, 0x62, 0xac, 0x92, 0xf3, 0xed, 0x94, 0xd6, 0x0e, 0x65, 0x43, 0x1c,
-	0x2a, 0x49, 0x60, 0xd3, 0x87, 0x6f, 0x89, 0x59, 0xc7, 0xc1, 0xfc, 0x88, 0xb2, 0xa1, 0x74, 0xcc,
-	0x20, 0x7d, 0xd1, 0x77, 0x31, 0xfd, 0xd9, 0x64, 0xeb, 0x5b, 0x50, 0x62, 0x41, 0x40, 0x98, 0x72,
-	0xe9, 0xbd, 0xac, 0xd7, 0xc7, 0x64, 0x8b, 0x2a, 0x7c, 0xcc, 0x88, 0xf4, 0xa2, 0xcb, 0xfe, 0xfe,
-	0xaf, 0x35, 0xb8, 0x96, 0x71, 0xfc, 0xe8, 0x4e, 0xa2, 0xf4, 0xea, 0xd7, 0x4f, 0x5f, 0xad, 0xa1,
-	0xfd, 0x30, 0xbf, 0xa2, 0x15, 0xf4, 0x1d, 0xa8, 0x74, 0x08, 0x13, 0xee, 0x62, 0xb7, 0x47, 0xea,
-	0x9a, 0xde, 0x38, 0x7d, 0xb5, 0xb6, 0x12, 0x01, 0x63, 0x6b, 0xe8, 0x23, 0xa8, 0xee, 0x8c, 0x1c,
-	0xe7, 0x91, 0x4b, 0xdd, 0xf1, 0xd0, 0xe6, 0xe3, 0x7a, 0x4e, 0xd7, 0x4f, 0x5f, 0xad, 0x5d, 0x8f,
-	0xc0, 0x89, 0xd5, 0xcd, 0xdf, 0x2e, 0x43, 0x4d, 0x15, 0x14, 0xb5, 0x0d, 0xf4, 0x79, 0xe2, 0x67,
-	0x22, 0x94, 0x91, 0xc8, 0xb1, 0xe5, 0x56, 0xd4, 0x10, 0xcd, 0x82, 0x79, 0xce, 0xf8, 0xae, 0x86,
-	0x7e, 0x98, 0xfc, 0xf9, 0x06, 0xbd, 0x77, 0x5e, 0x2d, 0xbe, 0x1e, 0xd1, 0xdf, 0x9e, 0x89, 0x8b,
-	0xf8, 0xe3, 0x3f, 0xe0, 0x64, 0xf1, 0xc7, 0xd7, 0xa7, 0xf1, 0xa7, 0x70, 0x01, 0xff, 0x17, 0xc9,
-	0x9f, 0x07, 0xb2, 0xf8, 0xe3, 0xeb, 0xd3, 0xf8, 0x53, 0x38, 0x71, 0x0f, 0xcc, 0xd4, 0x2f, 0x03,
-	0x28, 0xa3, 0xdd, 0x48, 0x00, 0x22, 0xfe, 0x3b, 0xb3, 0x81, 0xc2, 0x00, 0x4e, 0xfd, 0x4c, 0x90,
-	0x65, 0x20, 0x01, 0x98, 0x66, 0x20, 0x0d, 0x0c, 0x22, 0x64, 0xa6, 0x5e, 0xcb, 0x59, 0x26, 0x12,
-	0x80, 0x69, 0x26, 0xd2, 0x40, 0x15, 0xa4, 0xc4, 0x6b, 0x34, 0xcb, 0x40, 0x02, 0x30, 0xcd, 0x40,
-	0x1a, 0x28, 0x0c, 0xf0, 0xec, 0xb7, 0x1d, 0x6a, 0xcd, 0xfd, 0x6a, 0x0b, 0xcc, 0x7d, 0x78, 0x91,
-	0x57, 0x1e, 0xfa, 0x7e, 0xe2, 0x81, 0x96, 0x75, 0xed, 0x92, 0x4f, 0xaf, 0xaf, 0xbc, 0x76, 0xe7,
-	0x5e, 0x68, 0x82, 0x3a, 0xf6, 0x8c, 0xc9, 0xa2, 0x8e, 0x2d, 0x4f, 0xa3, 0x4e, 0xc2, 0x04, 0xf5,
-	0xe0, 0x7c, 0x53, 0x85, 0xde, 0x9f, 0xf1, 0xe1, 0x39, 0x20, 0x13, 0xff, 0xd7, 0xe7, 0xc2, 0x66,
-	0x59, 0xda, 0x9d, 0xc3, 0xd2, 0xee, 0x05, 0x2c, 0xed, 0x46, 0x96, 0x5e, 0x7e, 0xd5, 0x07, 0x1f,
-	0xdd, 0x9d, 0xcd, 0x11, 0x20, 0x23, 0xab, 0xad, 0x0b, 0x68, 0xa8, 0xa3, 0x8a, 0x7d, 0x8a, 0xb3,
-	0x8e, 0x2a, 0xb6, 0x3c, 0xed, 0xa8, 0x92, 0x30, 0x41, 0xfd, 0x33, 0x6d, 0xca, 0x97, 0x0f, 0xdd,
-	0xcf, 0xa6, 0xc8, 0x04, 0x47, 0x76, 0xef, 0x5d, 0x4c, 0x49, 0xdd, 0xde, 0xc4, 0x7f, 0x68, 0xb2,
-	0x6e, 0x6f, 0x02, 0x30, 0xed, 0xf6, 0xa6, 0x81, 0xe7, 0x0c, 0x88, 0x24, 0x99, 0x6a, 0x20, 0x9e,
-	0x21, 0x77, 0x66, 0x03, 0x55, 0x22, 0xa6, 0xff, 0x33, 0x93, 0x95, 0x88, 0x69, 0xcc, 0xb4, 0x44,
-	0xcc, 0xc0, 0x7a, 0xce, 0x78, 0x6b, 0xf3, 0x6f, 0x67, 0x37, 0xb5, 0xbf, 0x9f, 0xdd, 0xd4, 0xfe,
-	0x7d, 0x76, 0x53, 0xfb, 0xc1, 0xed, 0x40, 0x8d, 0x93, 0xde, 0x60, 0x43, 0x0e, 0x37, 0xfa, 0x74,
-	0xc3, 0x3b, 0xee, 0x6f, 0xc4, 0xff, 0xab, 0x76, 0xb8, 0x28, 0xbb, 0x93, 0xfb, 0xff, 0x0f, 0x00,
-	0x00, 0xff, 0xff, 0x6b, 0x34, 0x29, 0x49, 0x6c, 0x1b, 0x00, 0x00,
+	// 1603 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x58, 0xcd, 0x6f, 0x1c, 0x45,
+	0x16, 0x57, 0xfb, 0x73, 0xa6, 0xc6, 0xe3, 0x78, 0x6b, 0xad, 0x68, 0xb6, 0xb3, 0x49, 0x9c, 0x49,
+	0x9c, 0xb5, 0x36, 0xd9, 0x71, 0x62, 0x1f, 0xb2, 0x7b, 0x88, 0x94, 0xd8, 0x4e, 0xbc, 0x16, 0xf9,
+	0x18, 0xda, 0xc9, 0x01, 0x82, 0x68, 0x95, 0xbb, 0x9f, 0x67, 0x5a, 0xee, 0xe9, 0x6a, 0xaa, 0xaa,
+	0x07, 0x26, 0x57, 0xc4, 0x85, 0x03, 0x70, 0x41, 0xe2, 0x3f, 0x40, 0x5c, 0xb8, 0x20, 0x71, 0xe0,
+	0xca, 0x01, 0x8e, 0x5c, 0x11, 0x12, 0x42, 0x16, 0x37, 0xfe, 0x05, 0x84, 0x50, 0x55, 0x57, 0xf7,
+	0x74, 0xf7, 0x74, 0xc6, 0x1f, 0x24, 0xa7, 0xa9, 0x7a, 0xf5, 0x7b, 0xbf, 0xf7, 0xea, 0xbd, 0x57,
+	0x55, 0x6f, 0x1a, 0x61, 0xe2, 0x38, 0x34, 0x0a, 0x84, 0x18, 0x84, 0xc0, 0x5b, 0x21, 0xa3, 0x82,
+	0xe2, 0x85, 0x3d, 0x60, 0x62, 0xd0, 0xd2, 0x2b, 0xad, 0xfe, 0x4d, 0x73, 0xb1, 0x43, 0x3b, 0x54,
+	0x2d, 0xae, 0xca, 0x51, 0x8c, 0x33, 0xcf, 0x84, 0x11, 0xef, 0x66, 0x14, 0xcd, 0xbf, 0xab, 0x1f,
+	0x87, 0xfa, 0x59, 0xe1, 0x62, 0x0f, 0x38, 0x87, 0xa0, 0x23, 0x39, 0x53, 0x69, 0xd3, 0x41, 0xf5,
+	0xbb, 0x61, 0xb8, 0x2b, 0x28, 0x23, 0x1d, 0x68, 0x47, 0xc2, 0xdc, 0x41, 0xb3, 0x16, 0xbc, 0x13,
+	0x01, 0x17, 0x78, 0x01, 0x4d, 0x1e, 0xc0, 0xa0, 0x61, 0x2c, 0x19, 0x2b, 0x55, 0x4b, 0x0e, 0xf1,
+	0x22, 0x9a, 0xee, 0x13, 0x3f, 0x82, 0xc6, 0xc4, 0x92, 0xb1, 0x32, 0x67, 0xc5, 0x13, 0x7c, 0x16,
+	0xcd, 0x74, 0x7c, 0xba, 0x47, 0xfc, 0xc6, 0xe4, 0x92, 0xb1, 0x52, 0xb1, 0xf4, 0xcc, 0x9c, 0x45,
+	0xd3, 0x16, 0x84, 0xfe, 0x20, 0x6f, 0x64, 0x1b, 0x84, 0xb9, 0x3e, 0xce, 0xc8, 0x90, 0x6e, 0x22,
+	0x47, 0x77, 0x5e, 0xd3, 0x95, 0x7b, 0xd1, 0x6c, 0xa3, 0x85, 0xa1, 0x11, 0x0b, 0x7a, 0xb4, 0x0f,
+	0xa7, 0xb3, 0x93, 0xba, 0xfd, 0xad, 0x81, 0x6a, 0x8f, 0x43, 0x08, 0xee, 0xc6, 0x09, 0x30, 0xd9,
+	0x90, 0x0d, 0xa3, 0x29, 0xc2, 0x3a, 0xbc, 0x61, 0x2c, 0x4d, 0xae, 0x54, 0x2d, 0x35, 0xc6, 0xd7,
+	0x11, 0xd2, 0xa9, 0xb2, 0x3d, 0x57, 0x71, 0x56, 0x37, 0xea, 0x87, 0x3f, 0x5f, 0xac, 0x6a, 0xfd,
+	0x9d, 0x2d, 0xab, 0xaa, 0x01, 0x3b, 0x2e, 0x5e, 0x46, 0xf3, 0x3e, 0xed, 0x74, 0x80, 0xd9, 0xfb,
+	0x9e, 0x2f, 0x80, 0x71, 0x15, 0xbc, 0xaa, 0x55, 0x8f, 0xa5, 0xf7, 0x63, 0xa1, 0x79, 0x27, 0xd9,
+	0xf4, 0x2d, 0x54, 0x09, 0x19, 0xed, 0x30, 0xe0, 0x5c, 0x6d, 0xa2, 0xb6, 0x76, 0xae, 0x15, 0xd7,
+	0x47, 0x92, 0xec, 0x56, 0xff, 0x66, 0xab, 0xad, 0x21, 0x56, 0x0a, 0x6e, 0x3e, 0x43, 0x73, 0x9b,
+	0x3e, 0xe5, 0x90, 0xec, 0xa2, 0x9a, 0xee, 0xe2, 0x25, 0x90, 0xff, 0x6e, 0xa0, 0x33, 0x9a, 0xf8,
+	0x21, 0x08, 0xe2, 0x12, 0x41, 0x0a, 0x71, 0x30, 0x8e, 0x88, 0x03, 0x46, 0x53, 0x01, 0xe9, 0xc5,
+	0xb9, 0xac, 0x5a, 0x6a, 0xac, 0x18, 0xfa, 0x44, 0x10, 0x66, 0x3b, 0x9e, 0x1b, 0xc7, 0x45, 0x33,
+	0x28, 0xe9, 0xa6, 0x62, 0x88, 0x87, 0x9e, 0x8b, 0xcf, 0x23, 0x14, 0x46, 0x7b, 0xbe, 0xe7, 0xd8,
+	0x32, 0xc1, 0x53, 0x8a, 0xa7, 0x1a, 0x4b, 0x5e, 0x83, 0x01, 0xbe, 0x88, 0x6a, 0x3e, 0xe1, 0xc2,
+	0xa6, 0x21, 0x04, 0xe0, 0x36, 0xa6, 0x97, 0x8c, 0x95, 0x49, 0x0b, 0x49, 0xd1, 0x63, 0x25, 0xc1,
+	0x97, 0x51, 0xdd, 0x61, 0x40, 0x84, 0x47, 0x03, 0xdb, 0x25, 0x02, 0x1a, 0x33, 0x0a, 0x32, 0x97,
+	0x08, 0xb7, 0x88, 0x00, 0x59, 0x73, 0xc0, 0x18, 0x65, 0x8d, 0x59, 0xc5, 0x1f, 0x4f, 0x9a, 0x04,
+	0xcd, 0x3d, 0xf0, 0xb8, 0xd0, 0x1b, 0xe3, 0xd9, 0xd8, 0xde, 0x4f, 0x62, 0x7b, 0x1b, 0x55, 0xf4,
+	0x6e, 0xe3, 0x72, 0xa9, 0xad, 0x5d, 0x6a, 0x15, 0x0f, 0x76, 0xab, 0x10, 0x43, 0x2b, 0x55, 0x69,
+	0xbe, 0x8e, 0xea, 0x5b, 0xe0, 0x83, 0x48, 0xf3, 0x77, 0x6b, 0x58, 0x85, 0x27, 0x8a, 0xf4, 0xb0,
+	0xae, 0x7f, 0x9c, 0x40, 0xf5, 0x9d, 0x5e, 0x48, 0x59, 0xe2, 0xb8, 0xf9, 0xb5, 0x71, 0x4a, 0x52,
+	0x7c, 0x09, 0xcd, 0x25, 0xe8, 0x4c, 0x1a, 0x6b, 0x5a, 0xf6, 0x48, 0x66, 0xf3, 0x22, 0xaa, 0xed,
+	0x11, 0xe7, 0x20, 0x0a, 0xed, 0x90, 0x88, 0xae, 0x2e, 0x73, 0x14, 0x8b, 0xda, 0x44, 0x74, 0xd3,
+	0xc3, 0x34, 0x95, 0x39, 0x4c, 0xa3, 0xc7, 0x63, 0xba, 0xec, 0x78, 0x7c, 0x64, 0xfc, 0xd5, 0x12,
+	0xc6, 0x0f, 0xd0, 0x42, 0xb2, 0x83, 0x9e, 0x0e, 0xbf, 0xda, 0xc5, 0xb1, 0xf2, 0x74, 0x86, 0xe4,
+	0x05, 0xcd, 0x3f, 0x0c, 0x54, 0xdf, 0x94, 0x85, 0x93, 0xe6, 0xeb, 0xd3, 0x57, 0x19, 0xdb, 0x24,
+	0x74, 0x93, 0x63, 0x43, 0x37, 0x55, 0x16, 0xba, 0xa7, 0x49, 0xe4, 0xca, 0x02, 0x60, 0x9c, 0x3a,
+	0x00, 0x9f, 0x4c, 0xa0, 0xfa, 0xd3, 0xd0, 0xcd, 0x04, 0xe0, 0xf3, 0x57, 0x19, 0x80, 0x97, 0x79,
+	0x55, 0xbc, 0xaa, 0x90, 0x7c, 0x69, 0xa0, 0xc5, 0x6d, 0x10, 0xdb, 0x56, 0x7b, 0x53, 0xde, 0x16,
+	0x10, 0x00, 0xbb, 0xeb, 0xba, 0x2c, 0x77, 0x5d, 0x7c, 0x68, 0x0c, 0x6d, 0xcf, 0x42, 0x20, 0x98,
+	0x07, 0xc9, 0x75, 0xb1, 0x36, 0x6a, 0xb2, 0x8c, 0xad, 0xa5, 0xd4, 0x5b, 0xf7, 0x02, 0xc1, 0x06,
+	0x56, 0x42, 0x61, 0xae, 0xa3, 0x69, 0x25, 0x91, 0x17, 0x98, 0x3a, 0x08, 0xfa, 0x05, 0x8c, 0x27,
+	0x52, 0xda, 0x23, 0xae, 0xcb, 0x74, 0x68, 0xe3, 0x49, 0xf3, 0xab, 0x09, 0x54, 0x7b, 0x40, 0x3b,
+	0xfb, 0x9e, 0x0f, 0xd2, 0x44, 0xd6, 0xcf, 0xcf, 0x26, 0x12, 0x3f, 0xef, 0x15, 0xfd, 0xbc, 0x36,
+	0xea, 0x67, 0x86, 0x44, 0xbb, 0xa7, 0x25, 0x43, 0x07, 0xbf, 0x33, 0xd0, 0xac, 0x16, 0xbe, 0x84,
+	0x97, 0x03, 0xa3, 0xa9, 0xcc, 0x25, 0xa3, 0xc6, 0x52, 0xc6, 0xbd, 0xe7, 0xa0, 0xd2, 0x3d, 0x69,
+	0xa9, 0xb1, 0x94, 0x1d, 0x78, 0x81, 0xab, 0x2f, 0x15, 0x35, 0x96, 0x32, 0xe1, 0xf5, 0x92, 0xeb,
+	0x5f, 0x8d, 0x65, 0x8f, 0xe0, 0x13, 0x01, 0x5c, 0xa8, 0x7b, 0xbf, 0x62, 0xe9, 0x99, 0xc4, 0x02,
+	0x63, 0xbc, 0x51, 0x89, 0xf5, 0xe5, 0xb8, 0x79, 0x1b, 0xd5, 0xb6, 0x41, 0x3c, 0xe5, 0xc0, 0xa4,
+	0x2b, 0xd9, 0xa0, 0x5d, 0x4e, 0x62, 0x66, 0xa2, 0x4a, 0xa4, 0xd7, 0x75, 0x1e, 0xd2, 0x79, 0xf3,
+	0x63, 0x03, 0x2d, 0x3c, 0x02, 0xf1, 0x2e, 0x65, 0x07, 0x9b, 0x34, 0xd8, 0xf7, 0x3a, 0xbb, 0x90,
+	0x6b, 0x39, 0x4e, 0x16, 0x9c, 0xff, 0xa1, 0x19, 0x47, 0xb1, 0x14, 0xee, 0xb2, 0xb4, 0x09, 0x94,
+	0xe9, 0xc9, 0x99, 0xb3, 0xb4, 0xc2, 0xf0, 0x9d, 0xf8, 0x62, 0xb2, 0xe0, 0x91, 0x6c, 0xdd, 0x4e,
+	0xfd, 0xfc, 0xfc, 0x94, 0x56, 0xce, 0xff, 0xd1, 0xbc, 0x0b, 0xfb, 0x24, 0xf2, 0x85, 0xad, 0x7d,
+	0x34, 0x8e, 0xeb, 0x63, 0x5d, 0x2b, 0xc6, 0x53, 0xc9, 0xe4, 0x44, 0x8c, 0x41, 0x90, 0x32, 0x1d,
+	0x7b, 0xb7, 0x75, 0xad, 0xa8, 0x99, 0x6e, 0xa0, 0x45, 0x27, 0xe2, 0x82, 0xf6, 0x34, 0x91, 0x0d,
+	0xef, 0x79, 0x5c, 0x70, 0xdd, 0xd1, 0xe2, 0x78, 0x2d, 0xc6, 0xde, 0x53, 0x2b, 0xf8, 0x1a, 0xfa,
+	0x5b, 0xb2, 0x8b, 0x3d, 0x4a, 0x05, 0x17, 0x8c, 0x84, 0xfa, 0x09, 0x5b, 0xd0, 0x0b, 0x1b, 0x89,
+	0x1c, 0xff, 0x07, 0xe1, 0x04, 0xcc, 0x20, 0x70, 0xe1, 0x79, 0x9f, 0x46, 0xf2, 0x49, 0x93, 0xe8,
+	0x84, 0xc6, 0x4a, 0x17, 0xa4, 0x37, 0x09, 0x9c, 0x0b, 0x22, 0x3c, 0xc7, 0x66, 0xe0, 0x93, 0x41,
+	0x63, 0x46, 0x29, 0x24, 0x54, 0xbb, 0x6a, 0xc9, 0x92, 0x2b, 0xcd, 0x5f, 0x0d, 0x74, 0xb6, 0x98,
+	0xab, 0x36, 0x03, 0x0e, 0xc2, 0xfc, 0x20, 0x73, 0xff, 0xde, 0x41, 0x33, 0xa1, 0x92, 0xaa, 0x90,
+	0xcf, 0xaf, 0xad, 0x1c, 0x19, 0xa8, 0x56, 0xcc, 0x62, 0x69, 0x3d, 0xfc, 0x5f, 0xd4, 0xe8, 0x12,
+	0x6e, 0xef, 0xf9, 0x11, 0x08, 0x4a, 0x45, 0xd7, 0x0e, 0x81, 0xf5, 0x3c, 0xce, 0x3d, 0x1a, 0xe8,
+	0x3e, 0xfa, 0x6c, 0x97, 0xf0, 0x8d, 0x64, 0xb9, 0x9d, 0xae, 0x9a, 0x1b, 0x49, 0xfe, 0x87, 0xb5,
+	0x69, 0x9c, 0xb0, 0x36, 0x9b, 0xbf, 0x19, 0xa8, 0xd6, 0x8e, 0x78, 0xd7, 0x02, 0x07, 0xbc, 0x3e,
+	0x98, 0x9d, 0xe1, 0xd6, 0x1a, 0x68, 0x36, 0x24, 0x03, 0x9f, 0x12, 0x5d, 0x8a, 0x56, 0x32, 0xc5,
+	0x1b, 0x08, 0x09, 0x7a, 0x00, 0x81, 0x2d, 0xff, 0xf8, 0x28, 0x27, 0xe7, 0xd7, 0x2e, 0x27, 0xcd,
+	0x41, 0xc4, 0xbb, 0xaa, 0x31, 0x88, 0x78, 0x77, 0x17, 0x58, 0xdf, 0x73, 0xe0, 0x89, 0xc4, 0x3e,
+	0x19, 0x84, 0x60, 0x55, 0x45, 0x32, 0x34, 0xf9, 0xd0, 0xf9, 0xaa, 0xd4, 0xb1, 0x33, 0x6f, 0xc2,
+	0x3f, 0x0b, 0x5c, 0x5b, 0xe0, 0xb0, 0x41, 0x28, 0xc0, 0x55, 0x9e, 0x56, 0xa4, 0x78, 0x4b, 0x36,
+	0xc6, 0xab, 0x68, 0x4a, 0x8e, 0x75, 0x8d, 0x9e, 0x2b, 0x68, 0xdd, 0xa7, 0xac, 0x47, 0x12, 0x25,
+	0x05, 0x6c, 0x72, 0xf4, 0x0f, 0x39, 0x6b, 0xfb, 0x44, 0xec, 0x53, 0xd6, 0x53, 0x8e, 0x59, 0xd0,
+	0x91, 0xb7, 0x3e, 0x33, 0x1f, 0x0e, 0xb7, 0xbe, 0x81, 0x2a, 0x2c, 0x0e, 0x08, 0xd3, 0x2e, 0x5d,
+	0x2d, 0xeb, 0x7d, 0x86, 0x5b, 0xd4, 0xe1, 0x63, 0x56, 0xaa, 0x97, 0x9e, 0xfa, 0xb5, 0x6f, 0xe6,
+	0xd1, 0xbc, 0x3e, 0xc0, 0x1a, 0x8d, 0x9f, 0xe5, 0xfe, 0x07, 0xe1, 0xe5, 0xd1, 0x8b, 0x3e, 0xb3,
+	0xdc, 0x4a, 0x6f, 0xbd, 0xa3, 0x60, 0xa1, 0x3f, 0xb8, 0x61, 0xe0, 0xb7, 0xf3, 0xff, 0x4f, 0xf0,
+	0xd5, 0x51, 0xb5, 0xec, 0x7a, 0x4a, 0x7f, 0xe5, 0x48, 0x5c, 0xcc, 0xff, 0x56, 0xbe, 0x47, 0x2f,
+	0xe3, 0xcf, 0xae, 0x8f, 0xe3, 0x2f, 0xe0, 0x64, 0x39, 0xd8, 0x85, 0xf6, 0x1c, 0xff, 0x6b, 0x54,
+	0x2d, 0x07, 0x48, 0xf9, 0x97, 0x8f, 0x06, 0x4a, 0x03, 0xa4, 0xd0, 0xab, 0x97, 0x19, 0xc8, 0x01,
+	0xc6, 0x19, 0x28, 0x02, 0xe3, 0x08, 0xd9, 0x85, 0x96, 0xb5, 0xcc, 0x44, 0x0e, 0x30, 0xce, 0x44,
+	0x11, 0xa8, 0x83, 0x94, 0x6b, 0x09, 0xcb, 0x0c, 0xe4, 0x00, 0xe3, 0x0c, 0x14, 0x81, 0xd2, 0x80,
+	0x28, 0x6f, 0xb0, 0x70, 0xeb, 0xd8, 0xad, 0x53, 0x6c, 0xee, 0xfa, 0x49, 0x5a, 0x2d, 0xfc, 0x46,
+	0xae, 0x4b, 0x2a, 0x3b, 0x16, 0xf9, 0xfe, 0xe7, 0x85, 0xc7, 0x62, 0xa4, 0x4d, 0x92, 0xd4, 0x99,
+	0x5e, 0xa2, 0x8c, 0x3a, 0xb3, 0x3c, 0x8e, 0x3a, 0x0f, 0x93, 0xd4, 0xdd, 0xd1, 0x36, 0x03, 0xff,
+	0x7b, 0x54, 0xb1, 0x88, 0x49, 0x8d, 0xac, 0x1c, 0x0b, 0x5b, 0x66, 0x69, 0xfb, 0x18, 0x96, 0xb6,
+	0x4f, 0x60, 0x69, 0x3b, 0xb5, 0xf4, 0xfc, 0x45, 0x8f, 0x1f, 0xbe, 0x71, 0x34, 0x47, 0x8c, 0x4c,
+	0xad, 0xb6, 0x4e, 0xa0, 0xa1, 0x53, 0x95, 0x79, 0x91, 0xca, 0x52, 0x95, 0x59, 0x1e, 0x97, 0xaa,
+	0x3c, 0x4c, 0x52, 0xbf, 0x6f, 0x8c, 0x79, 0x00, 0xf0, 0x7a, 0x39, 0x45, 0x29, 0x38, 0xb5, 0x7b,
+	0xf3, 0x64, 0x4a, 0xfa, 0xf4, 0xe6, 0x3e, 0x11, 0x96, 0x9d, 0xde, 0x1c, 0x60, 0xdc, 0xe9, 0x2d,
+	0x02, 0x47, 0x0c, 0xc8, 0x22, 0x19, 0x6b, 0x20, 0x5b, 0x21, 0xcb, 0x47, 0x03, 0x75, 0x21, 0x16,
+	0x3f, 0x0d, 0x96, 0x15, 0x62, 0x11, 0x33, 0xae, 0x10, 0x4b, 0xb0, 0xa1, 0x3f, 0xd8, 0x58, 0xfb,
+	0xfe, 0xf0, 0x82, 0xf1, 0xc3, 0xe1, 0x05, 0xe3, 0x97, 0xc3, 0x0b, 0xc6, 0x9b, 0x57, 0x62, 0x35,
+	0x01, 0x4e, 0x77, 0x55, 0x0d, 0x57, 0x3b, 0x74, 0x35, 0x3c, 0xe8, 0xac, 0x66, 0x3f, 0xf6, 0xee,
+	0xcd, 0xa8, 0x47, 0x7a, 0xfd, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xa9, 0x1c, 0x5e, 0x3b, 0x03,
+	0x16, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -3854,8 +3279,6 @@ type AccountServiceClient interface {
 	OpenAccount(ctx context.Context, in *OpenAccount_Request, opts ...grpc.CallOption) (AccountService_OpenAccountClient, error)
 	// CloseAccount closes the currently opened account.
 	CloseAccount(ctx context.Context, in *CloseAccount_Request, opts ...grpc.CallOption) (AccountService_CloseAccountClient, error)
-	// OpenProtocol inits the underlying Berty Protocol of an opened Berty Messenger account if OpenAccount* was called with no_init_protocol=true.
-	OpenProtocol(ctx context.Context, in *OpenProtocol_Request, opts ...grpc.CallOption) (AccountService_OpenProtocolClient, error)
 	// ListAccounts retrieves a list of local accounts.
 	ListAccounts(ctx context.Context, in *ListAccounts_Request, opts ...grpc.CallOption) (*ListAccounts_Reply, error)
 	// DeleteAccount deletes an account.
@@ -3962,38 +3385,6 @@ func (x *accountServiceCloseAccountClient) Recv() (*CloseAccount_Reply, error) {
 	return m, nil
 }
 
-func (c *accountServiceClient) OpenProtocol(ctx context.Context, in *OpenProtocol_Request, opts ...grpc.CallOption) (AccountService_OpenProtocolClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_AccountService_serviceDesc.Streams[2], "/berty.account.v1.AccountService/OpenProtocol", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &accountServiceOpenProtocolClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type AccountService_OpenProtocolClient interface {
-	Recv() (*OpenProtocol_Reply, error)
-	grpc.ClientStream
-}
-
-type accountServiceOpenProtocolClient struct {
-	grpc.ClientStream
-}
-
-func (x *accountServiceOpenProtocolClient) Recv() (*OpenProtocol_Reply, error) {
-	m := new(OpenProtocol_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func (c *accountServiceClient) ListAccounts(ctx context.Context, in *ListAccounts_Request, opts ...grpc.CallOption) (*ListAccounts_Reply, error) {
 	out := new(ListAccounts_Reply)
 	err := c.cc.Invoke(ctx, "/berty.account.v1.AccountService/ListAccounts", in, out, opts...)
@@ -4013,7 +3404,7 @@ func (c *accountServiceClient) DeleteAccount(ctx context.Context, in *DeleteAcco
 }
 
 func (c *accountServiceClient) ImportAccount(ctx context.Context, in *ImportAccount_Request, opts ...grpc.CallOption) (AccountService_ImportAccountClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_AccountService_serviceDesc.Streams[3], "/berty.account.v1.AccountService/ImportAccount", opts...)
+	stream, err := c.cc.NewStream(ctx, &_AccountService_serviceDesc.Streams[2], "/berty.account.v1.AccountService/ImportAccount", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4167,8 +3558,6 @@ type AccountServiceServer interface {
 	OpenAccount(*OpenAccount_Request, AccountService_OpenAccountServer) error
 	// CloseAccount closes the currently opened account.
 	CloseAccount(*CloseAccount_Request, AccountService_CloseAccountServer) error
-	// OpenProtocol inits the underlying Berty Protocol of an opened Berty Messenger account if OpenAccount* was called with no_init_protocol=true.
-	OpenProtocol(*OpenProtocol_Request, AccountService_OpenProtocolServer) error
 	// ListAccounts retrieves a list of local accounts.
 	ListAccounts(context.Context, *ListAccounts_Request) (*ListAccounts_Reply, error)
 	// DeleteAccount deletes an account.
@@ -4212,10 +3601,6 @@ func (*UnimplementedAccountServiceServer) OpenAccount(req *OpenAccount_Request, 
 
 func (*UnimplementedAccountServiceServer) CloseAccount(req *CloseAccount_Request, srv AccountService_CloseAccountServer) error {
 	return status.Errorf(codes.Unimplemented, "method CloseAccount not implemented")
-}
-
-func (*UnimplementedAccountServiceServer) OpenProtocol(req *OpenProtocol_Request, srv AccountService_OpenProtocolServer) error {
-	return status.Errorf(codes.Unimplemented, "method OpenProtocol not implemented")
 }
 
 func (*UnimplementedAccountServiceServer) ListAccounts(ctx context.Context, req *ListAccounts_Request) (*ListAccounts_Reply, error) {
@@ -4325,27 +3710,6 @@ type accountServiceCloseAccountServer struct {
 }
 
 func (x *accountServiceCloseAccountServer) Send(m *CloseAccount_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _AccountService_OpenProtocol_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(OpenProtocol_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(AccountServiceServer).OpenProtocol(m, &accountServiceOpenProtocolServer{stream})
-}
-
-type AccountService_OpenProtocolServer interface {
-	Send(*OpenProtocol_Reply) error
-	grpc.ServerStream
-}
-
-type accountServiceOpenProtocolServer struct {
-	grpc.ServerStream
-}
-
-func (x *accountServiceOpenProtocolServer) Send(m *OpenProtocol_Reply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -4714,11 +4078,6 @@ var _AccountService_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "CloseAccount",
 			Handler:       _AccountService_CloseAccount_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "OpenProtocol",
-			Handler:       _AccountService_OpenProtocol_Handler,
 			ServerStreams: true,
 		},
 		{
@@ -5224,204 +4583,6 @@ func (m *CloseAccount_Reply) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *CloseAccount_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	if m.Progress != nil {
-		{
-			size, err := m.Progress.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAccounttypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *OpenProtocol) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *OpenProtocol) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *OpenProtocol) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *OpenProtocol_Request) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *OpenProtocol_Request) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *OpenProtocol_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	if m.NetworkConfig != nil {
-		{
-			size, err := m.NetworkConfig.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAccounttypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x22
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *OpenProtocol_Reply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *OpenProtocol_Reply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *OpenProtocol_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	if m.Progress != nil {
-		{
-			size, err := m.Progress.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAccounttypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *CloseProtocol) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *CloseProtocol) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *CloseProtocol) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *CloseProtocol_Request) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *CloseProtocol_Request) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *CloseProtocol_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *CloseProtocol_Reply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *CloseProtocol_Reply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *CloseProtocol_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -6487,95 +5648,6 @@ func (m *GetUsername_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *NetworkConfig) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *NetworkConfig) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *NetworkConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	if m.ShowDefaultServices != 0 {
-		i = encodeVarintAccounttypes(dAtA, i, uint64(m.ShowDefaultServices))
-		i--
-		dAtA[i] = 0x50
-	}
-	if m.MDNS != 0 {
-		i = encodeVarintAccounttypes(dAtA, i, uint64(m.MDNS))
-		i--
-		dAtA[i] = 0x48
-	}
-	if m.Tor != 0 {
-		i = encodeVarintAccounttypes(dAtA, i, uint64(m.Tor))
-		i--
-		dAtA[i] = 0x40
-	}
-	if m.AndroidNearby != 0 {
-		i = encodeVarintAccounttypes(dAtA, i, uint64(m.AndroidNearby))
-		i--
-		dAtA[i] = 0x38
-	}
-	if m.AppleMultipeerConnectivity != 0 {
-		i = encodeVarintAccounttypes(dAtA, i, uint64(m.AppleMultipeerConnectivity))
-		i--
-		dAtA[i] = 0x30
-	}
-	if m.BluetoothLE != 0 {
-		i = encodeVarintAccounttypes(dAtA, i, uint64(m.BluetoothLE))
-		i--
-		dAtA[i] = 0x28
-	}
-	if m.DHT != 0 {
-		i = encodeVarintAccounttypes(dAtA, i, uint64(m.DHT))
-		i--
-		dAtA[i] = 0x20
-	}
-	if len(m.StaticRelay) > 0 {
-		for iNdEx := len(m.StaticRelay) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.StaticRelay[iNdEx])
-			copy(dAtA[i:], m.StaticRelay[iNdEx])
-			i = encodeVarintAccounttypes(dAtA, i, uint64(len(m.StaticRelay[iNdEx])))
-			i--
-			dAtA[i] = 0x1a
-		}
-	}
-	if len(m.Rendezvous) > 0 {
-		for iNdEx := len(m.Rendezvous) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Rendezvous[iNdEx])
-			copy(dAtA[i:], m.Rendezvous[iNdEx])
-			i = encodeVarintAccounttypes(dAtA, i, uint64(len(m.Rendezvous[iNdEx])))
-			i--
-			dAtA[i] = 0x12
-		}
-	}
-	if len(m.Bootstrap) > 0 {
-		for iNdEx := len(m.Bootstrap) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Bootstrap[iNdEx])
-			copy(dAtA[i:], m.Bootstrap[iNdEx])
-			i = encodeVarintAccounttypes(dAtA, i, uint64(len(m.Bootstrap[iNdEx])))
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *NetworkConfigSet) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -7386,90 +6458,6 @@ func (m *CloseAccount_Reply) Size() (n int) {
 	return n
 }
 
-func (m *OpenProtocol) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *OpenProtocol_Request) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.NetworkConfig != nil {
-		l = m.NetworkConfig.Size()
-		n += 1 + l + sovAccounttypes(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *OpenProtocol_Reply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Progress != nil {
-		l = m.Progress.Size()
-		n += 1 + l + sovAccounttypes(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *CloseProtocol) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *CloseProtocol_Request) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *CloseProtocol_Reply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Progress != nil {
-		l = m.Progress.Size()
-		n += 1 + l + sovAccounttypes(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
 func (m *AccountMetadata) Size() (n int) {
 	if m == nil {
 		return 0
@@ -7948,57 +6936,6 @@ func (m *GetUsername_Reply) Size() (n int) {
 	l = len(m.Username)
 	if l > 0 {
 		n += 1 + l + sovAccounttypes(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *NetworkConfig) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if len(m.Bootstrap) > 0 {
-		for _, s := range m.Bootstrap {
-			l = len(s)
-			n += 1 + l + sovAccounttypes(uint64(l))
-		}
-	}
-	if len(m.Rendezvous) > 0 {
-		for _, s := range m.Rendezvous {
-			l = len(s)
-			n += 1 + l + sovAccounttypes(uint64(l))
-		}
-	}
-	if len(m.StaticRelay) > 0 {
-		for _, s := range m.StaticRelay {
-			l = len(s)
-			n += 1 + l + sovAccounttypes(uint64(l))
-		}
-	}
-	if m.DHT != 0 {
-		n += 1 + sovAccounttypes(uint64(m.DHT))
-	}
-	if m.BluetoothLE != 0 {
-		n += 1 + sovAccounttypes(uint64(m.BluetoothLE))
-	}
-	if m.AppleMultipeerConnectivity != 0 {
-		n += 1 + sovAccounttypes(uint64(m.AppleMultipeerConnectivity))
-	}
-	if m.AndroidNearby != 0 {
-		n += 1 + sovAccounttypes(uint64(m.AndroidNearby))
-	}
-	if m.Tor != 0 {
-		n += 1 + sovAccounttypes(uint64(m.Tor))
-	}
-	if m.MDNS != 0 {
-		n += 1 + sovAccounttypes(uint64(m.MDNS))
-	}
-	if m.ShowDefaultServices != 0 {
-		n += 1 + sovAccounttypes(uint64(m.ShowDefaultServices))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -9349,426 +8286,6 @@ func (m *CloseAccount_Request) Unmarshal(dAtA []byte) error {
 }
 
 func (m *CloseAccount_Reply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounttypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Progress", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Progress == nil {
-				m.Progress = &protocoltypes.Progress{}
-			}
-			if err := m.Progress.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounttypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-
-func (m *OpenProtocol) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounttypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: OpenProtocol: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: OpenProtocol: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounttypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-
-func (m *OpenProtocol_Request) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounttypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Request: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NetworkConfig", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.NetworkConfig == nil {
-				m.NetworkConfig = &NetworkConfig{}
-			}
-			if err := m.NetworkConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounttypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-
-func (m *OpenProtocol_Reply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounttypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Progress", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Progress == nil {
-				m.Progress = &protocoltypes.Progress{}
-			}
-			if err := m.Progress.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounttypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-
-func (m *CloseProtocol) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounttypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: CloseProtocol: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CloseProtocol: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounttypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-
-func (m *CloseProtocol_Request) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounttypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Request: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounttypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-
-func (m *CloseProtocol_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -12466,287 +10983,6 @@ func (m *GetUsername_Reply) Unmarshal(dAtA []byte) error {
 	return nil
 }
 
-func (m *NetworkConfig) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounttypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: NetworkConfig: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: NetworkConfig: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Bootstrap", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Bootstrap = append(m.Bootstrap, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Rendezvous", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Rendezvous = append(m.Rendezvous, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StaticRelay", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.StaticRelay = append(m.StaticRelay, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DHT", wireType)
-			}
-			m.DHT = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.DHT |= NetworkConfig_DHTFlag(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BluetoothLE", wireType)
-			}
-			m.BluetoothLE = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.BluetoothLE |= NetworkConfig_Flag(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AppleMultipeerConnectivity", wireType)
-			}
-			m.AppleMultipeerConnectivity = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.AppleMultipeerConnectivity |= NetworkConfig_Flag(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AndroidNearby", wireType)
-			}
-			m.AndroidNearby = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.AndroidNearby |= NetworkConfig_Flag(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Tor", wireType)
-			}
-			m.Tor = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Tor |= NetworkConfig_TorFlag(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MDNS", wireType)
-			}
-			m.MDNS = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MDNS |= NetworkConfig_Flag(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 10:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ShowDefaultServices", wireType)
-			}
-			m.ShowDefaultServices = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounttypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ShowDefaultServices |= NetworkConfig_Flag(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounttypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccounttypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-
 func (m *NetworkConfigSet) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -12890,7 +11126,7 @@ func (m *NetworkConfigSet_Request) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Config == nil {
-				m.Config = &NetworkConfig{}
+				m.Config = &messengertypes.NetworkConfig{}
 			}
 			if err := m.Config.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -13166,7 +11402,7 @@ func (m *NetworkConfigGet_Reply) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.DefaultConfig == nil {
-				m.DefaultConfig = &NetworkConfig{}
+				m.DefaultConfig = &messengertypes.NetworkConfig{}
 			}
 			if err := m.DefaultConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -13202,7 +11438,7 @@ func (m *NetworkConfigGet_Reply) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.CurrentConfig == nil {
-				m.CurrentConfig = &NetworkConfig{}
+				m.CurrentConfig = &messengertypes.NetworkConfig{}
 			}
 			if err := m.CurrentConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -13442,7 +11678,7 @@ func (m *NetworkConfigGetPreset_Request) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Preset |= NetworkConfigPreset(b&0x7F) << shift
+				m.Preset |= messengertypes.NetworkConfig_Preset(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -13549,7 +11785,7 @@ func (m *NetworkConfigGetPreset_Reply) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Config == nil {
-				m.Config = &NetworkConfig{}
+				m.Config = &messengertypes.NetworkConfig{}
 			}
 			if err := m.Config.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

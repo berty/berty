@@ -3,8 +3,10 @@ syntax = "proto3";
 package berty.account.v1;
 
 import "gogoproto/gogo.proto";
+
 import "pushtypes.proto";
 import "protocoltypes.proto";
+import "messengertypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/accounttypes";
 
@@ -214,51 +216,12 @@ message GetUsername {
   }
 }
 
-message NetworkConfig {
-  enum Flag {
-    Undefined = 0;
-    Disabled = 1;
-    Enabled = 2;
-  }
 
-  enum TorFlag {
-    TorUndefined = 0;
-    TorDisabled = 1;
-    TorOptional = 2;
-    TorRequired = 3;
-  }
-
-  enum DHTFlag {
-    DHTUndefined = 0;
-    DHTDisabled = 1;
-    DHTClient = 2;
-    DHTServer = 3;
-    DHTAuto = 4;
-    DHTAutoServer = 5;
-  }
-
-  repeated string bootstrap = 1;
-  repeated string rendezvous = 2;
-  repeated string static_relay = 3;
-  DHTFlag dht = 4 [(gogoproto.customname) = "DHT"];
-  Flag bluetooth_le = 5 [(gogoproto.customname) = "BluetoothLE"];
-  Flag apple_multipeer_connectivity = 6;
-  Flag android_nearby = 7;
-  TorFlag tor = 8;
-  Flag mdns = 9 [(gogoproto.customname) = "MDNS"];
-  Flag show_default_services = 10;
-}
-
-enum NetworkConfigPreset {
-  Undefined = 0 [(gogoproto.enumvalue_customname) = "NetPresetUndefined"];
-  Performance = 1 [(gogoproto.enumvalue_customname) = "NetPresetPerformance"];
-  FullAnonymity = 2 [(gogoproto.enumvalue_customname) = "NetPresetFullAnonymity"];
-}
 
 message NetworkConfigSet {
   message Request {
     string account_id = 1 [(gogoproto.customname) = "AccountID"];
-    NetworkConfig config = 2;
+    berty.messenger.v1.NetworkConfig config = 2;
   }
   message Reply {}
 }
@@ -268,8 +231,8 @@ message NetworkConfigGet {
     string account_id = 1 [(gogoproto.customname) = "AccountID"];
   }
   message Reply {
-    NetworkConfig default_config = 1;
-    NetworkConfig current_config = 2;
+    berty.messenger.v1.NetworkConfig default_config = 1;
+    berty.messenger.v1.NetworkConfig current_config = 2;
     bool custom_config_exists = 3;
     repeated string default_bootstrap = 4;
     repeated string default_rendezvous = 5;
@@ -279,11 +242,11 @@ message NetworkConfigGet {
 
 message NetworkConfigGetPreset {
   message Request {
-    NetworkConfigPreset preset = 1;
+    berty.messenger.v1.NetworkConfig.Preset preset = 1;
     bool has_bluetooth_permission = 2;
   }
   message Reply {
-    NetworkConfig config = 1;
+    berty.messenger.v1.NetworkConfig config = 1;
   }
 }
 
@@ -300,7 +263,7 @@ message PushReceive {
 
 message PushPlatformTokenRegister {
   message Request {
-    protocol.v1.PushServiceReceiver receiver = 1;
+    berty.protocol.v1.PushServiceReceiver receiver = 1;
   }
   message Reply {}
 }

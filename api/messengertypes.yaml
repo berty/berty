@@ -108,3 +108,9 @@ http:
  - selector: berty.messenger.v1.MessengerService.PushReceive
    post: /berty.messenger.v1/MessengerService/PushReceive
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.OpenProtocol
+   post: /berty.messenger.v1/MessengerService/OpenProtocol
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.CloseProtocol
+   post: /berty.messenger.v1/MessengerService/CloseProtocol
+   body: "*"

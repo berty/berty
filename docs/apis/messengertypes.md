@@ -29,6 +29,9 @@
     - [BertyLink](#berty.messenger.v1.BertyLink)
     - [BertyLink.BertyMessageRef](#berty.messenger.v1.BertyLink.BertyMessageRef)
     - [BertyLink.Encrypted](#berty.messenger.v1.BertyLink.Encrypted)
+    - [CloseProtocol](#berty.messenger.v1.CloseProtocol)
+    - [CloseProtocol.Reply](#berty.messenger.v1.CloseProtocol.Reply)
+    - [CloseProtocol.Request](#berty.messenger.v1.CloseProtocol.Request)
     - [Contact](#berty.messenger.v1.Contact)
     - [ContactAccept](#berty.messenger.v1.ContactAccept)
     - [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply)
@@ -104,6 +107,10 @@
     - [MessageSearch.Reply](#berty.messenger.v1.MessageSearch.Reply)
     - [MessageSearch.Request](#berty.messenger.v1.MessageSearch.Request)
     - [MetadataEvent](#berty.messenger.v1.MetadataEvent)
+    - [NetworkConfig](#berty.messenger.v1.NetworkConfig)
+    - [OpenProtocol](#berty.messenger.v1.OpenProtocol)
+    - [OpenProtocol.Reply](#berty.messenger.v1.OpenProtocol.Reply)
+    - [OpenProtocol.Request](#berty.messenger.v1.OpenProtocol.Request)
     - [PaginatedInteractionsOptions](#berty.messenger.v1.PaginatedInteractionsOptions)
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
@@ -168,6 +175,10 @@
     - [Conversation.Type](#berty.messenger.v1.Conversation.Type)
     - [Media.State](#berty.messenger.v1.Media.State)
     - [MediaMetadataType](#berty.messenger.v1.MediaMetadataType)
+    - [NetworkConfig.DHTFlag](#berty.messenger.v1.NetworkConfig.DHTFlag)
+    - [NetworkConfig.Flag](#berty.messenger.v1.NetworkConfig.Flag)
+    - [NetworkConfig.Preset](#berty.messenger.v1.NetworkConfig.Preset)
+    - [NetworkConfig.TorFlag](#berty.messenger.v1.NetworkConfig.TorFlag)
     - [StreamEvent.Notified.Type](#berty.messenger.v1.StreamEvent.Notified.Type)
     - [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type)
   
@@ -403,6 +414,22 @@ to test more false-positive guesses.
 | group_type | [berty.protocol.v1.GroupType](#berty.protocol.v1.GroupType) |  | clear |
 | group_sign_pub | [bytes](#bytes) |  |  |
 | group_link_key_sig | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.v1.CloseProtocol"></a>
+
+### CloseProtocol
+
+<a name="berty.messenger.v1.CloseProtocol.Reply"></a>
+
+### CloseProtocol.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| progress | [berty.protocol.v1.Progress](#berty.protocol.v1.Progress) |  |  |
+
+<a name="berty.messenger.v1.CloseProtocol.Request"></a>
+
+### CloseProtocol.Request
 
 <a name="berty.messenger.v1.Contact"></a>
 
@@ -991,6 +1018,39 @@ Composite primary key
 | metadata_event_type | [berty.protocol.v1.EventType](#berty.protocol.v1.EventType) |  |  |
 | payload | [bytes](#bytes) |  |  |
 
+<a name="berty.messenger.v1.NetworkConfig"></a>
+
+### NetworkConfig
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| bootstrap | [string](#string) | repeated |  |
+| rendezvous | [string](#string) | repeated |  |
+| static_relay | [string](#string) | repeated |  |
+| dht | [NetworkConfig.DHTFlag](#berty.messenger.v1.NetworkConfig.DHTFlag) |  |  |
+| bluetooth_le | [NetworkConfig.Flag](#berty.messenger.v1.NetworkConfig.Flag) |  |  |
+| apple_multipeer_connectivity | [NetworkConfig.Flag](#berty.messenger.v1.NetworkConfig.Flag) |  |  |
+| android_nearby | [NetworkConfig.Flag](#berty.messenger.v1.NetworkConfig.Flag) |  |  |
+| tor | [NetworkConfig.TorFlag](#berty.messenger.v1.NetworkConfig.TorFlag) |  |  |
+| mdns | [NetworkConfig.Flag](#berty.messenger.v1.NetworkConfig.Flag) |  |  |
+| show_default_services | [NetworkConfig.Flag](#berty.messenger.v1.NetworkConfig.Flag) |  | maybe we should add a `Flag selected_preset` to auto-fill new flags automatically on updates? |
+
+<a name="berty.messenger.v1.OpenProtocol"></a>
+
+### OpenProtocol
+
+<a name="berty.messenger.v1.OpenProtocol.Reply"></a>
+
+### OpenProtocol.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| progress | [berty.protocol.v1.Progress](#berty.protocol.v1.Progress) |  |  |
+
+<a name="berty.messenger.v1.OpenProtocol.Request"></a>
+
+### OpenProtocol.Request
+
 <a name="berty.messenger.v1.PaginatedInteractionsOptions"></a>
 
 ### PaginatedInteractionsOptions
@@ -1496,6 +1556,50 @@ Composite primary key
 | MetadataKeyValue | 1 |  |
 | MetadataAudioPreview | 2 |  |
 
+<a name="berty.messenger.v1.NetworkConfig.DHTFlag"></a>
+
+### NetworkConfig.DHTFlag
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| DHTUndefined | 0 |  |
+| DHTDisabled | 1 |  |
+| DHTClient | 2 |  |
+| DHTServer | 3 |  |
+| DHTAuto | 4 |  |
+| DHTAutoServer | 5 |  |
+
+<a name="berty.messenger.v1.NetworkConfig.Flag"></a>
+
+### NetworkConfig.Flag
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| Undefined | 0 |  |
+| Disabled | 1 |  |
+| Enabled | 2 |  |
+
+<a name="berty.messenger.v1.NetworkConfig.Preset"></a>
+
+### NetworkConfig.Preset
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| PresetUndefined | 0 |  |
+| PresetPerformance | 1 |  |
+| PresetFullAnonymity | 2 |  |
+
+<a name="berty.messenger.v1.NetworkConfig.TorFlag"></a>
+
+### NetworkConfig.TorFlag
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| TorUndefined | 0 |  |
+| TorDisabled | 1 |  |
+| TorOptional | 2 |  |
+| TorRequired | 3 |  |
+
 <a name="berty.messenger.v1.StreamEvent.Notified.Type"></a>
 
 ### StreamEvent.Notified.Type
@@ -1575,6 +1679,8 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | TyberHostAttach | [TyberHostAttach.Request](#berty.messenger.v1.TyberHostAttach.Request) | [TyberHostAttach.Reply](#berty.messenger.v1.TyberHostAttach.Reply) | TyberHostAttach |
 | PushSetAutoShare | [PushSetAutoShare.Request](#berty.messenger.v1.PushSetAutoShare.Request) | [PushSetAutoShare.Reply](#berty.messenger.v1.PushSetAutoShare.Reply) | PushSetAutoShare Sets whether new groups should receive our push token automatically or not |
 | PushReceive | [PushReceive.Request](#berty.messenger.v1.PushReceive.Request) | [PushReceive.Reply](#berty.messenger.v1.PushReceive.Reply) | PushReceive handles a push payload, decrypts it if possible, adds it to the local store |
+| OpenProtocol | [OpenProtocol.Request](#berty.messenger.v1.OpenProtocol.Request) | [OpenProtocol.Reply](#berty.messenger.v1.OpenProtocol.Reply) stream | OpenProtocol initializes the underlying Berty Protocol instance. |
+| CloseProtocol | [CloseProtocol.Request](#berty.messenger.v1.CloseProtocol.Request) | [CloseProtocol.Reply](#berty.messenger.v1.CloseProtocol.Reply) stream | CloseProtocol closes the underlying Berty Protocol instance. |
 
  
 

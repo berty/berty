@@ -73,7 +73,6 @@ export interface WelshProtocolServiceClient {
 export interface WelshAccountServiceClient {
 	openAccount: ResponseStreamType<beapi.account.AccountService['openAccount']>
 	closeAccount: ResponseStreamType<beapi.account.AccountService['closeAccount']>
-	openProtocol: ResponseStreamType<beapi.account.AccountService['openProtocol']>
 	listAccounts: UnaryType<beapi.account.AccountService['listAccounts']>
 	deleteAccount: UnaryType<beapi.account.AccountService['deleteAccount']>
 	importAccount: ResponseStreamType<beapi.account.AccountService['importAccount']>
@@ -130,6 +129,8 @@ export interface WelshMessengerServiceClient {
 	tyberHostAttach: UnaryType<beapi.messenger.MessengerService['tyberHostAttach']>
 	pushSetAutoShare: UnaryType<beapi.messenger.MessengerService['pushSetAutoShare']>
 	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
+	openProtocol: ResponseStreamType<beapi.messenger.MessengerService['openProtocol']>
+	closeProtocol: ResponseStreamType<beapi.messenger.MessengerService['closeProtocol']>
 }
 
 export interface WelshBridgeServiceClient {
