@@ -21,9 +21,6 @@ service AccountService {
   // CloseAccount closes the currently opened account.
   rpc CloseAccount (CloseAccount.Request) returns (stream CloseAccount.Reply);
 
-  // OpenProtocol inits the underlying Berty Protocol of an opened Berty Messenger account if OpenAccount* was called with no_init_protocol=true.
-  rpc OpenProtocol (OpenProtocol.Request) returns (stream OpenProtocol.Reply);
-
   // ListAccounts retrieves a list of local accounts.
   rpc ListAccounts (ListAccounts.Request) returns (ListAccounts.Reply);
 
@@ -112,22 +109,6 @@ message OpenAccount {
 }
 
 message CloseAccount {
-  message Request {}
-  message Reply {
-    berty.protocol.v1.Progress progress = 1;
-  }
-}
-
-message OpenProtocol {
-  message Request {
-    NetworkConfig network_config = 4;
-  }
-  message Reply {
-    berty.protocol.v1.Progress progress = 1;
-  }
-}
-
-message CloseProtocol {
   message Request {}
   message Reply {
     berty.protocol.v1.Progress progress = 1;

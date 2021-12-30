@@ -96,6 +96,28 @@ service MessengerService {
 
   // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
+
+  // OpenProtocol initializes the underlying Berty Protocol instance.
+  rpc OpenProtocol(OpenProtocol.Request) returns (stream OpenProtocol.Reply);
+
+  // CloseProtocol closes the underlying Berty Protocol instance.
+  rpc CloseProtocol(CloseProtocol.Request) returns (stream CloseProtocol.Reply);
+}
+
+message OpenProtocol {
+  message Request {
+    NetworkConfig network_config = 4;
+  }
+  message Reply {
+    berty.protocol.v1.Progress progress = 1;
+  }
+}
+
+message CloseProtocol {
+  message Request {}
+  message Reply {
+    berty.protocol.v1.Progress progress = 1;
+  }
 }
 
 message PaginatedInteractionsOptions {
