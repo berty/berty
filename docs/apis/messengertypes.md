@@ -775,6 +775,7 @@ to test more false-positive guesses.
 | conversation_public_key | [string](#string) |  |  |
 | media_cids | [string](#string) | repeated |  |
 | target_cid | [string](#string) |  |  |
+| metadata | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.Interaction"></a>
 

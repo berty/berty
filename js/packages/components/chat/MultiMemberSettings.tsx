@@ -60,6 +60,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 					type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
 					payload: buf,
 					mediaCids: [reply.cid],
+					metadata: true,
 				})
 			}
 		} catch (err) {
