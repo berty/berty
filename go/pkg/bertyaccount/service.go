@@ -164,50 +164,50 @@ func NewService(opts *Options) (_ Service, err error) {
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
-	if req.Preset == accounttypes.NetworkConfigPreset_NetPresetPerformance || req.Preset == accounttypes.NetworkConfigPreset_NetPresetUndefined {
-		bluetoothLE := accounttypes.NetworkConfig_Disabled
+	if req.Preset == messengertypes.NetworkConfig_NetPresetPerformance || req.Preset == messengertypes.NetworkConfig_NetPresetUndefined {
+		bluetoothLE := messengertypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission {
-			bluetoothLE = accounttypes.NetworkConfig_Enabled
+			bluetoothLE = messengertypes.NetworkConfig_Enabled
 		}
 
-		androidNearby := accounttypes.NetworkConfig_Disabled
+		androidNearby := messengertypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission && androidnearby.Supported {
-			androidNearby = accounttypes.NetworkConfig_Enabled
+			androidNearby = messengertypes.NetworkConfig_Enabled
 		}
 
-		appleMC := accounttypes.NetworkConfig_Disabled
+		appleMC := messengertypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission && mc.Supported {
-			appleMC = accounttypes.NetworkConfig_Enabled
+			appleMC = messengertypes.NetworkConfig_Enabled
 		}
 
 		return &accounttypes.NetworkConfigGetPreset_Reply{
-			Config: &accounttypes.NetworkConfig{
+			Config: &messengertypes.NetworkConfig{
 				Bootstrap:                  []string{initutil.KeywordDefault},
 				AndroidNearby:              androidNearby,
-				DHT:                        accounttypes.NetworkConfig_DHTClient,
+				DHT:                        messengertypes.NetworkConfig_DHTClient,
 				AppleMultipeerConnectivity: appleMC,
 				BluetoothLE:                bluetoothLE,
-				MDNS:                       accounttypes.NetworkConfig_Enabled,
+				MDNS:                       messengertypes.NetworkConfig_Enabled,
 				Rendezvous:                 []string{initutil.KeywordDefault},
-				Tor:                        accounttypes.NetworkConfig_TorOptional,
+				Tor:                        messengertypes.NetworkConfig_TorOptional,
 				StaticRelay:                []string{initutil.KeywordDefault},
-				ShowDefaultServices:        accounttypes.NetworkConfig_Enabled,
+				ShowDefaultServices:        messengertypes.NetworkConfig_Enabled,
 			},
 		}, nil
 	}
 
 	return &accounttypes.NetworkConfigGetPreset_Reply{
-		Config: &accounttypes.NetworkConfig{
+		Config: &messengertypes.NetworkConfig{
 			Bootstrap:                  []string{initutil.KeywordNone},
-			AndroidNearby:              accounttypes.NetworkConfig_Disabled,
-			DHT:                        accounttypes.NetworkConfig_DHTDisabled,
-			AppleMultipeerConnectivity: accounttypes.NetworkConfig_Disabled,
-			BluetoothLE:                accounttypes.NetworkConfig_Disabled,
-			MDNS:                       accounttypes.NetworkConfig_Disabled,
+			AndroidNearby:              messengertypes.NetworkConfig_Disabled,
+			DHT:                        messengertypes.NetworkConfig_DHTDisabled,
+			AppleMultipeerConnectivity: messengertypes.NetworkConfig_Disabled,
+			BluetoothLE:                messengertypes.NetworkConfig_Disabled,
+			MDNS:                       messengertypes.NetworkConfig_Disabled,
 			Rendezvous:                 []string{initutil.KeywordNone},
-			Tor:                        accounttypes.NetworkConfig_TorDisabled,
+			Tor:                        messengertypes.NetworkConfig_TorDisabled,
 			StaticRelay:                []string{initutil.KeywordNone},
-			ShowDefaultServices:        accounttypes.NetworkConfig_Disabled,
+			ShowDefaultServices:        messengertypes.NetworkConfig_Disabled,
 		},
 	}, nil
 }

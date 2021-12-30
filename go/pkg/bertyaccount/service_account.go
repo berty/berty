@@ -261,32 +261,7 @@ func (s *service) OpenAccount(req *accounttypes.OpenAccount_Request, server acco
 	return nil
 }
 
-func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccount_Request) (_ *accounttypes.CloseAccount_Reply, err error) {
-	s.muService.Lock()
-	defer s.muService.Unlock()
-
-	endSection := tyber.SimpleSection(ctx, s.logger, "Closing account (AccountService)")
-	defer func() { endSection(err) }()
-
-	if s.initManager == nil {
-		return &accounttypes.CloseAccount_Reply{}, nil
-	}
-
-	if l, err := s.initManager.GetLogger(); err == nil {
-		_ = l.Sync() // cleanup logger
-	}
-
-	if err := s.initManager.Close(nil); err != nil {
-		s.logger.Warn("unable to close account", zap.Error(err))
-		return nil, errcode.ErrBertyAccountManagerClose.Wrap(err)
-	}
-	s.initManager = nil
-	s.accountData = nil
-
-	return &accounttypes.CloseAccount_Reply{}, nil
-}
-
-func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithProgress_Request, server accounttypes.AccountService_CloseAccountWithProgressServer) (err error) {
+func (s *service) CloseAccount(req *accounttypes.CloseAccount_Request, server accounttypes.AccountService_CloseAccountServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -306,7 +281,7 @@ func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithPro
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&accounttypes.CloseAccountWithProgress_Reply{
+			err := server.Send(&accounttypes.CloseAccount_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
@@ -524,7 +499,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*account
 	return meta, nil
 }
 
-func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithProgress_Request, server accounttypes.AccountService_ImportAccountWithProgressServer) (err error) {
+func (s *service) ImportAccount(req *accounttypes.ImportAccount_Request, server accounttypes.AccountService_ImportAccountServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -547,7 +522,7 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&accounttypes.ImportAccountWithProgress_Reply{
+			err := server.Send(&accounttypes.ImportAccount_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
@@ -565,15 +540,7 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 		done <- true
 	}()
 
-	typed := accounttypes.ImportAccount_Request{
-		AccountName:   req.GetAccountName(),
-		BackupPath:    req.GetBackupPath(),
-		Args:          req.GetArgs(),
-		AccountID:     req.GetAccountID(),
-		LoggerFilters: req.GetLoggerFilters(),
-		NetworkConfig: req.GetNetworkConfig(),
-	}
-	ret, err := s.importAccount(server.Context(), &typed, prog)
+	ret, err := s.importAccount(server.Context(), req, prog)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -583,7 +550,7 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 
 	// send reply
 	{
-		err = server.Send(&accounttypes.ImportAccountWithProgress_Reply{
+		err = server.Send(&accounttypes.ImportAccount_Reply{
 			AccountMetadata: ret.AccountMetadata,
 		})
 		if err != nil {
@@ -592,27 +559,6 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 	}
 
 	return nil
-}
-
-func (s *service) ImportAccount(ctx context.Context, req *accounttypes.ImportAccount_Request) (_ *accounttypes.ImportAccount_Reply, err error) {
-	s.muService.Lock()
-	defer s.muService.Unlock()
-
-	endSection := tyber.SimpleSection(
-		ctx,
-		s.logger,
-		fmt.Sprintf("Importing account %q with id %q (AccountService)",
-			req.AccountName, req.AccountID,
-		),
-	)
-	defer func() { endSection(err) }()
-
-	ret, err := s.importAccount(ctx, req, nil)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	return ret, nil
 }
 
 func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAccount_Request, prog *progress.Progress) (_ *accounttypes.ImportAccount_Reply, err error) {
@@ -813,40 +759,40 @@ func (s *service) generateNewAccountID() (string, error) {
 	}
 }
 
-func NetworkConfigGetDefault() *accounttypes.NetworkConfig {
+func NetworkConfigGetDefault() *messengertypes.NetworkConfig {
 	defaultRDVPeerMaddrs := make([]string, len(config.Config.P2P.RDVP))
 	for i := range config.Config.P2P.RDVP {
 		defaultRDVPeerMaddrs[i] = config.Config.P2P.RDVP[i].Maddr
 	}
 
-	return &accounttypes.NetworkConfig{
+	return &messengertypes.NetworkConfig{
 		Bootstrap:                  []string{initutil.KeywordDefault},
 		Rendezvous:                 []string{initutil.KeywordDefault},
 		StaticRelay:                []string{initutil.KeywordDefault},
-		DHT:                        accounttypes.NetworkConfig_DHTClient,
-		BluetoothLE:                accounttypes.NetworkConfig_Disabled,
-		AndroidNearby:              accounttypes.NetworkConfig_Disabled,
-		AppleMultipeerConnectivity: accounttypes.NetworkConfig_Disabled,
-		MDNS:                       accounttypes.NetworkConfig_Enabled,
-		Tor:                        accounttypes.NetworkConfig_TorDisabled,
+		DHT:                        messengertypes.NetworkConfig_DHTClient,
+		BluetoothLE:                messengertypes.NetworkConfig_Disabled,
+		AndroidNearby:              messengertypes.NetworkConfig_Disabled,
+		AppleMultipeerConnectivity: messengertypes.NetworkConfig_Disabled,
+		MDNS:                       messengertypes.NetworkConfig_Enabled,
+		Tor:                        messengertypes.NetworkConfig_TorDisabled,
 	}
 }
 
-func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
-	return &accounttypes.NetworkConfig{
+func NetworkConfigGetBlank() *messengertypes.NetworkConfig {
+	return &messengertypes.NetworkConfig{
 		Bootstrap:                  []string{initutil.KeywordDefault},
 		Rendezvous:                 []string{initutil.KeywordDefault},
 		StaticRelay:                []string{initutil.KeywordDefault},
-		DHT:                        accounttypes.NetworkConfig_DHTUndefined,
-		BluetoothLE:                accounttypes.NetworkConfig_Undefined,
-		AndroidNearby:              accounttypes.NetworkConfig_Undefined,
-		AppleMultipeerConnectivity: accounttypes.NetworkConfig_Undefined,
-		MDNS:                       accounttypes.NetworkConfig_Undefined,
-		Tor:                        accounttypes.NetworkConfig_TorUndefined,
+		DHT:                        messengertypes.NetworkConfig_DHTUndefined,
+		BluetoothLE:                messengertypes.NetworkConfig_Undefined,
+		AndroidNearby:              messengertypes.NetworkConfig_Undefined,
+		AppleMultipeerConnectivity: messengertypes.NetworkConfig_Undefined,
+		MDNS:                       messengertypes.NetworkConfig_Undefined,
+		Tor:                        messengertypes.NetworkConfig_TorUndefined,
 	}
 }
 
-func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.NetworkConfig, bool) {
+func (s *service) NetworkConfigForAccount(accountID string) (*messengertypes.NetworkConfig, bool) {
 	var storageKey []byte
 	if s.nativeKeystore != nil {
 		var err error
@@ -874,7 +820,7 @@ func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.Netwo
 		s.logger.Warn("unable to close datastore after reading network configuration for account", zap.Error(err), logutil.PrivateString("account-id", accountID))
 	}
 
-	ret := &accounttypes.NetworkConfig{}
+	ret := &messengertypes.NetworkConfig{}
 	if err := ret.Unmarshal(netConfBytes); err != nil {
 		s.logger.Warn("unable to parse network configuration for account", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false
@@ -916,15 +862,15 @@ func SanitizeCheckMultiAddr(addrs []string) error {
 	return nil
 }
 
-func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *accounttypes.NetworkConfig) error {
+func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *messengertypes.NetworkConfig) error {
 	if networkConfig == nil {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
 	}
 
 	// TODO: allow Tor when available
-	if networkConfig.Tor != accounttypes.NetworkConfig_TorUndefined && networkConfig.Tor != accounttypes.NetworkConfig_TorDisabled {
+	if networkConfig.Tor != messengertypes.NetworkConfig_TorUndefined && networkConfig.Tor != messengertypes.NetworkConfig_TorDisabled {
 		s.logger.Warn("tor is set to required, downgrading to disabled as not yet supported")
-		networkConfig.Tor = accounttypes.NetworkConfig_TorDisabled
+		networkConfig.Tor = messengertypes.NetworkConfig_TorDisabled
 	}
 
 	// Sanitize check network config multi addrs
@@ -960,20 +906,20 @@ func (s *service) NetworkConfigSet(ctx context.Context, request *accounttypes.Ne
 	return &accounttypes.NetworkConfigSet_Reply{}, nil
 }
 
-func AddArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string) []string {
+func AddArgsUsingNetworkConfig(m *messengertypes.NetworkConfig, args []string) []string {
 	defaultConfig := NetworkConfigGetDefault()
 
 	if !ArgsHasWithPrefix(args, initutil.FlagNameTorMode) {
 		torFlag := m.Tor
-		if torFlag == accounttypes.NetworkConfig_TorUndefined {
+		if torFlag == messengertypes.NetworkConfig_TorUndefined {
 			torFlag = defaultConfig.Tor
 		}
 
-		if torValue, ok := map[accounttypes.NetworkConfig_TorFlag]string{
-			accounttypes.NetworkConfig_TorUndefined: "disabled",
-			accounttypes.NetworkConfig_TorDisabled:  "disabled",
-			accounttypes.NetworkConfig_TorOptional:  "optional",
-			accounttypes.NetworkConfig_TorRequired:  "required",
+		if torValue, ok := map[messengertypes.NetworkConfig_TorFlag]string{
+			messengertypes.NetworkConfig_TorUndefined: "disabled",
+			messengertypes.NetworkConfig_TorDisabled:  "disabled",
+			messengertypes.NetworkConfig_TorOptional:  "optional",
+			messengertypes.NetworkConfig_TorRequired:  "required",
 		}[torFlag]; ok {
 			args = append(args, ArgSet(initutil.FlagNameTorMode, torValue))
 		}
@@ -1006,24 +952,24 @@ func addListValueArgs(args []string, flagName string, defaultValue, currentValue
 	return args
 }
 
-func addFlagValueArgs(args []string, flagName string, platformSupported bool, defaultValue, currentValue accounttypes.NetworkConfig_Flag) []string {
+func addFlagValueArgs(args []string, flagName string, platformSupported bool, defaultValue, currentValue messengertypes.NetworkConfig_Flag) []string {
 	if hasFlag := ArgsHasWithPrefix(args, flagName); hasFlag {
 		return args
 	}
 
-	if currentValue == accounttypes.NetworkConfig_Undefined {
+	if currentValue == messengertypes.NetworkConfig_Undefined {
 		currentValue = defaultValue
 	}
 
 	flagVal := "false"
-	if platformSupported && currentValue == accounttypes.NetworkConfig_Enabled {
+	if platformSupported && currentValue == messengertypes.NetworkConfig_Enabled {
 		flagVal = "true"
 	}
 
 	return append(args, ArgSet(flagName, flagVal))
 }
 
-func AddRDVPArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string, defaultConfig *accounttypes.NetworkConfig) []string {
+func AddRDVPArgsUsingNetworkConfig(m *messengertypes.NetworkConfig, args []string, defaultConfig *messengertypes.NetworkConfig) []string {
 	if !ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderRDVPDriver) && !ArgsHasWithPrefix(args, initutil.FlagNameP2PRDVP) {
 		rdvpDisabled := false
 		rdvpHosts := m.Rendezvous
@@ -1052,24 +998,24 @@ func AddRDVPArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string,
 	return args
 }
 
-func AddDHTArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string, defaultConfig *accounttypes.NetworkConfig) []string {
+func AddDHTArgsUsingNetworkConfig(m *messengertypes.NetworkConfig, args []string, defaultConfig *messengertypes.NetworkConfig) []string {
 	hasTinderDHTDriverFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PTinderDHTDriver)
 	hasDHTFlag := ArgsHasWithPrefix(args, initutil.FlagNameP2PDHT)
 
 	dhtDisabled := false
 	if !hasDHTFlag {
 		dhtFlag := m.DHT
-		if dhtFlag == accounttypes.NetworkConfig_DHTUndefined {
+		if dhtFlag == messengertypes.NetworkConfig_DHTUndefined {
 			dhtFlag = defaultConfig.DHT
 		}
 
-		if dhtValue, ok := map[accounttypes.NetworkConfig_DHTFlag]string{
-			accounttypes.NetworkConfig_DHTClient:     initutil.FlagValueP2PDHTClient,
-			accounttypes.NetworkConfig_DHTServer:     initutil.FlagValueP2PDHTServer,
-			accounttypes.NetworkConfig_DHTAuto:       initutil.FlagValueP2PDHTAuto,
-			accounttypes.NetworkConfig_DHTAutoServer: initutil.FlagValueP2PDHTAutoServer,
-			accounttypes.NetworkConfig_DHTDisabled:   initutil.FlagValueP2PDHTDisabled,
-			accounttypes.NetworkConfig_DHTUndefined:  initutil.FlagValueP2PDHTDisabled,
+		if dhtValue, ok := map[messengertypes.NetworkConfig_DHTFlag]string{
+			messengertypes.NetworkConfig_DHTClient:     initutil.FlagValueP2PDHTClient,
+			messengertypes.NetworkConfig_DHTServer:     initutil.FlagValueP2PDHTServer,
+			messengertypes.NetworkConfig_DHTAuto:       initutil.FlagValueP2PDHTAuto,
+			messengertypes.NetworkConfig_DHTAutoServer: initutil.FlagValueP2PDHTAutoServer,
+			messengertypes.NetworkConfig_DHTDisabled:   initutil.FlagValueP2PDHTDisabled,
+			messengertypes.NetworkConfig_DHTUndefined:  initutil.FlagValueP2PDHTDisabled,
 		}[dhtFlag]; ok {
 			args = append(args, ArgSet(initutil.FlagNameP2PDHT, dhtValue))
 
