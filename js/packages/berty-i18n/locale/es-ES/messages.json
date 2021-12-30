@@ -415,9 +415,12 @@
 			"save": "Guardar este tema",
 			"export": "Exportar el tema seleccionado como un archivo",
 			"share": "Compartir el tema seleccionado como archivo",
-			"import": "Importar un archivo de tema"
+			"import": "Importar un archivo de tema",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Huella digital",
 			"devices": "Dispositivos"
