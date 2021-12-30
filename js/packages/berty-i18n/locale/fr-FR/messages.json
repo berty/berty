@@ -415,9 +415,12 @@
 			"save": "Enregistrez ce thème",
 			"export": "Exporter le thème sélectionné sous forme de fichier",
 			"share": "Partager le thème sélectionné sous forme de fichier",
-			"import": "Importer un fichier de thème"
+			"import": "Importer un fichier de thème",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Empreinte numérique",
 			"devices": "Appareils"
