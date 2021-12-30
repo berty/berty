@@ -415,9 +415,12 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Fingeravtrykk",
 			"devices": "Enheter"
