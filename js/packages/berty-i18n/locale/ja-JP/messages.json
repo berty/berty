@@ -415,9 +415,12 @@
 			"save": "このテーマを保存する",
 			"export": "選択されたテーマをファイルとしてエクスポート",
 			"share": "選択されたテーマをファイルとして共有",
-			"import": "テーマのファイルをインポート"
+			"import": "テーマのファイルをインポート",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR コード",
 			"fingerprint": "識別情報（フィンガープリント）",
 			"devices": "デバイス"
