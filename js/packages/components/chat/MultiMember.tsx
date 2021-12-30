@@ -62,6 +62,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 			conversationPublicKey: conv?.publicKey,
 			type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
 			payload: buf,
+			metadata: true,
 		})
 		setIsEdit(false)
 	}

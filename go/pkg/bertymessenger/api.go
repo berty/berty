@@ -989,12 +989,23 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 		}
 	}
 
-	reply, err := svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp, AttachmentCIDs: cids})
-	if err != nil {
-		return nil, errcode.ErrProtocolSend.Wrap(err)
+	var cidBytes []byte
+
+	if req.GetMetadata() {
+		reply, err := svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: gpkb, Payload: fp, AttachmentCIDs: cids})
+		if err != nil {
+			return nil, errcode.ErrProtocolSend.Wrap(err)
+		}
+		cidBytes = reply.GetCID()
+	} else {
+		reply, err := svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp, AttachmentCIDs: cids})
+		if err != nil {
+			return nil, errcode.ErrProtocolSend.Wrap(err)
+		}
+		cidBytes = reply.GetCID()
 	}
 
-	cid, err := ipfscid.Cast(reply.GetCID())
+	cid, err := ipfscid.Cast(cidBytes)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}

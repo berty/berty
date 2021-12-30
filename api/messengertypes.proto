@@ -708,6 +708,7 @@ message Interact {
     string conversation_public_key = 3;
     repeated string media_cids = 4;
     string target_cid = 5 [(gogoproto.customname) = "TargetCID"];
+    bool metadata = 6;
   }
   message Reply {
     string cid = 1 [(gogoproto.customname) = "CID"];

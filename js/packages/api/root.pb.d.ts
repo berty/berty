@@ -9111,6 +9111,7 @@ export namespace berty {
                     conversationPublicKey?: (string|null);
                     mediaCids?: (string[]|null);
                     targetCid?: (string|null);
+                    metadata?: (boolean|null);
                 }
 
                 class Request implements IRequest {
@@ -9120,6 +9121,7 @@ export namespace berty {
                     public conversationPublicKey: string;
                     public mediaCids: string[];
                     public targetCid: string;
+                    public metadata: boolean;
                     public static create(properties?: berty.messenger.v1.Interact.IRequest): berty.messenger.v1.Interact.Request;
                     public static encode(message: berty.messenger.v1.Interact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.Interact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
