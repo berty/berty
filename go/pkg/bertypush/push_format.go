@@ -31,6 +31,11 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 	var payload formatedPayload = make(map[string]string)
 	_ = json.Unmarshal([]byte(decrypted.PayloadAttrsJSON), &payload)
 
+	fmtpush.Title = decrypted.ConversationDisplayName
+	if decrypted.ConversationDisplayName != decrypted.MemberDisplayName {
+		fmtpush.Subtitle = decrypted.MemberDisplayName
+	}
+
 	var err error
 	switch decrypted.PushType {
 	case pushtypes.DecryptedPush_Message:
@@ -39,8 +44,6 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 			break
 		}
 
-		fmtpush.Title = decrypted.MemberDisplayName
-		fmtpush.Subtitle = ""
 		fmtpush.Body = msg
 
 	case pushtypes.DecryptedPush_Reaction:
@@ -49,11 +52,16 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 			emoji = ":)"
 		}
 
-		fmtpush.Title = decrypted.MemberDisplayName
-		fmtpush.Subtitle = ""
 		fmtpush.Body = printer.Sprintf("push.reaction.bodyWithDisplayNameAndEmoji", decrypted.MemberDisplayName, emoji)
 
-	case pushtypes.DecryptedPush_VoiceMessage:
+	case pushtypes.DecryptedPush_Photo, pushtypes.DecryptedPush_Gif, pushtypes.DecryptedPush_VoiceMessage, pushtypes.DecryptedPush_Media:
+		formatKeys := map[pushtypes.DecryptedPush_PushType]string{
+			pushtypes.DecryptedPush_Photo:        "push.photo.bodyWithNumberOfMedia",
+			pushtypes.DecryptedPush_Gif:          "push.gif.bodyWithNumberOfMedia",
+			pushtypes.DecryptedPush_VoiceMessage: "push.voiceMessage.bodyWithNumberOfMedia",
+			pushtypes.DecryptedPush_Media:        "push.media.bodyWithNumberOfMedia",
+		}
+
 		var mediasCount string
 		_ = payload.get("medias-count", &mediasCount)
 
@@ -62,35 +70,7 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 			c = 1
 		}
 
-		fmtpush.Title = decrypted.MemberDisplayName
-		fmtpush.Subtitle = ""
-		fmtpush.Body = printer.Sprintf("push.voiceMessage.bodyWithNumberOfMedia", c)
-
-	case pushtypes.DecryptedPush_Photo:
-		var mediasCount string
-		_ = payload.get("medias-count", &mediasCount)
-
-		var c int
-		if c, err = strconv.Atoi(mediasCount); err != nil {
-			c = 1
-		}
-
-		fmtpush.Title = decrypted.MemberDisplayName
-		fmtpush.Subtitle = ""
-		fmtpush.Body = printer.Sprintf("push.photo.bodyWithNumberOfMedia", c)
-
-	case pushtypes.DecryptedPush_Gif:
-		var mediasCount string
-		_ = payload.get("medias-count", &mediasCount)
-
-		var c int
-		if c, err = strconv.Atoi(mediasCount); err != nil {
-			c = 1
-		}
-
-		fmtpush.Title = decrypted.MemberDisplayName
-		fmtpush.Subtitle = ""
-		fmtpush.Body = printer.Sprintf("push.gif.bodyWithNumberOfMedia", c)
+		fmtpush.Body = printer.Sprintf(formatKeys[decrypted.PushType], c)
 
 	case pushtypes.DecryptedPush_GroupInvitation:
 		var groupName string
@@ -98,16 +78,28 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 			break
 		}
 
-		fmtpush.Title = decrypted.MemberDisplayName
-		fmtpush.Subtitle = ""
 		fmtpush.Body = printer.Sprintf("push.groupInvitation.bodyWithGroupName", groupName)
 
-	// @FIXME(gfanton): not handled (yet)
-	// case pushtypes.DecryptedPush_MemberDetailsChanged:
-	// case pushtypes.DecryptedPush_MemberNameChanged:
-	// case pushtypes.DecryptedPush_MemberPictureChanged:
+	case
+		pushtypes.DecryptedPush_Unknown,
+		pushtypes.DecryptedPush_ConversationNameChanged,
+		pushtypes.DecryptedPush_MemberNameChanged,
+		pushtypes.DecryptedPush_MemberPictureChanged,
+		pushtypes.DecryptedPush_MemberDetailsChanged,
+		pushtypes.DecryptedPush_ReplyOptions:
+		placeHolderMessages := map[pushtypes.DecryptedPush_PushType]string{
+			pushtypes.DecryptedPush_Unknown:                 "push.unknown.body",
+			pushtypes.DecryptedPush_ConversationNameChanged: "push.conversationNameChanged.body",
+			pushtypes.DecryptedPush_MemberNameChanged:       "push.memberNameChanged.body",
+			pushtypes.DecryptedPush_MemberPictureChanged:    "push.memberPictureChanged.body",
+			pushtypes.DecryptedPush_MemberDetailsChanged:    "push.memberDetailsChanged.body",
+			pushtypes.DecryptedPush_ReplyOptions:            "push.replyOptionsOffered.body",
+		}
+
+		fmtpush.Body = printer.Sprintf(placeHolderMessages[decrypted.PushType])
+
 	default:
-		err = fmt.Errorf("unknown push type")
+		err = fmt.Errorf(printer.Sprintf("push.unknown.body"))
 	}
 
 	if err != nil {

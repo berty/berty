@@ -2,7 +2,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "échec du déchiffrement push"
+      "title": "Échec du déchiffrement push"
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Envoyé un message vocal",
@@ -26,8 +26,23 @@
     "groupInvitation": {
       "bodyWithGroupName": "Invitation au groupe '%[1]v'"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": "Quelque chose de nouveau a été reçu"
+    },
+    "conversationNameChanged": {
+      "body": "Le nom de la conversation a été mis à jour"
+    },
+    "memberNameChanged": {
+      "body": "Le surnom a été modifié"
+    },
+    "memberPictureChanged": {
+      "body": "La photo de profil a été modifiée"
+    },
+    "memberDetailsChanged": {
+      "body": "Les informations du membre ont été modifiées"
+    },
+    "replyOptionsOffered": {
+      "body": "Des options de réponse sont disponibles"
+    }
   }
 }

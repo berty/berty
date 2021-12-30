@@ -85,10 +85,10 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 			case strings.HasSuffix(rawPushData.Interaction.Medias[0].MimeType, "gif"):
 				d.PushType = pushtypes.DecryptedPush_Gif
 
-			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "image/"):
+			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "image/") || rawPushData.Interaction.Medias[0].MimeType == "image":
 				d.PushType = pushtypes.DecryptedPush_Photo
 
-			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "audio/"):
+			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "audio/") || rawPushData.Interaction.Medias[0].MimeType == "audio":
 				d.PushType = pushtypes.DecryptedPush_VoiceMessage
 
 			default:
