@@ -10,20 +10,16 @@ export namespace berty {
                 public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): AccountService;
                 public openAccount(request: berty.account.v1.OpenAccount.IRequest, callback: berty.account.v1.AccountService.OpenAccountCallback): void;
                 public openAccount(request: berty.account.v1.OpenAccount.IRequest): Promise<berty.account.v1.OpenAccount.Reply>;
-                public openAccountWithProgress(request: berty.account.v1.OpenAccountWithProgress.IRequest, callback: berty.account.v1.AccountService.OpenAccountWithProgressCallback): void;
-                public openAccountWithProgress(request: berty.account.v1.OpenAccountWithProgress.IRequest): Promise<berty.account.v1.OpenAccountWithProgress.Reply>;
                 public closeAccount(request: berty.account.v1.CloseAccount.IRequest, callback: berty.account.v1.AccountService.CloseAccountCallback): void;
                 public closeAccount(request: berty.account.v1.CloseAccount.IRequest): Promise<berty.account.v1.CloseAccount.Reply>;
-                public closeAccountWithProgress(request: berty.account.v1.CloseAccountWithProgress.IRequest, callback: berty.account.v1.AccountService.CloseAccountWithProgressCallback): void;
-                public closeAccountWithProgress(request: berty.account.v1.CloseAccountWithProgress.IRequest): Promise<berty.account.v1.CloseAccountWithProgress.Reply>;
+                public openProtocol(request: berty.account.v1.OpenProtocol.IRequest, callback: berty.account.v1.AccountService.OpenProtocolCallback): void;
+                public openProtocol(request: berty.account.v1.OpenProtocol.IRequest): Promise<berty.account.v1.OpenProtocol.Reply>;
                 public listAccounts(request: berty.account.v1.ListAccounts.IRequest, callback: berty.account.v1.AccountService.ListAccountsCallback): void;
                 public listAccounts(request: berty.account.v1.ListAccounts.IRequest): Promise<berty.account.v1.ListAccounts.Reply>;
                 public deleteAccount(request: berty.account.v1.DeleteAccount.IRequest, callback: berty.account.v1.AccountService.DeleteAccountCallback): void;
                 public deleteAccount(request: berty.account.v1.DeleteAccount.IRequest): Promise<berty.account.v1.DeleteAccount.Reply>;
                 public importAccount(request: berty.account.v1.ImportAccount.IRequest, callback: berty.account.v1.AccountService.ImportAccountCallback): void;
                 public importAccount(request: berty.account.v1.ImportAccount.IRequest): Promise<berty.account.v1.ImportAccount.Reply>;
-                public importAccountWithProgress(request: berty.account.v1.ImportAccountWithProgress.IRequest, callback: berty.account.v1.AccountService.ImportAccountWithProgressCallback): void;
-                public importAccountWithProgress(request: berty.account.v1.ImportAccountWithProgress.IRequest): Promise<berty.account.v1.ImportAccountWithProgress.Reply>;
                 public createAccount(request: berty.account.v1.CreateAccount.IRequest, callback: berty.account.v1.AccountService.CreateAccountCallback): void;
                 public createAccount(request: berty.account.v1.CreateAccount.IRequest): Promise<berty.account.v1.CreateAccount.Reply>;
                 public updateAccount(request: berty.account.v1.UpdateAccount.IRequest, callback: berty.account.v1.AccountService.UpdateAccountCallback): void;
@@ -56,19 +52,15 @@ export namespace berty {
 
                 type OpenAccountCallback = (error: (Error|null), response?: berty.account.v1.OpenAccount.Reply) => void;
 
-                type OpenAccountWithProgressCallback = (error: (Error|null), response?: berty.account.v1.OpenAccountWithProgress.Reply) => void;
-
                 type CloseAccountCallback = (error: (Error|null), response?: berty.account.v1.CloseAccount.Reply) => void;
 
-                type CloseAccountWithProgressCallback = (error: (Error|null), response?: berty.account.v1.CloseAccountWithProgress.Reply) => void;
+                type OpenProtocolCallback = (error: (Error|null), response?: berty.account.v1.OpenProtocol.Reply) => void;
 
                 type ListAccountsCallback = (error: (Error|null), response?: berty.account.v1.ListAccounts.Reply) => void;
 
                 type DeleteAccountCallback = (error: (Error|null), response?: berty.account.v1.DeleteAccount.Reply) => void;
 
                 type ImportAccountCallback = (error: (Error|null), response?: berty.account.v1.ImportAccount.Reply) => void;
-
-                type ImportAccountWithProgressCallback = (error: (Error|null), response?: berty.account.v1.ImportAccountWithProgress.Reply) => void;
 
                 type CreateAccountCallback = (error: (Error|null), response?: berty.account.v1.CreateAccount.Reply) => void;
 
@@ -288,7 +280,6 @@ export namespace berty {
                     args?: (string[]|null);
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
-                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
@@ -296,7 +287,6 @@ export namespace berty {
                     public args: string[];
                     public accountId: string;
                     public loggerFilters: string;
-                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -309,10 +299,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
                 }
 
                 class Reply implements IReply {
 
+                    public progress?: (berty.protocol.v1.IProgress|null);
                     public static create(properties?: berty.account.v1.OpenAccount.IReply): berty.account.v1.OpenAccount.Reply;
                     public static encode(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -321,65 +313,6 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccount.Reply;
                     public static toObject(message: berty.account.v1.OpenAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IOpenAccountWithProgress {
-            }
-
-            class OpenAccountWithProgress implements IOpenAccountWithProgress {
-
-                public static create(properties?: berty.account.v1.IOpenAccountWithProgress): berty.account.v1.OpenAccountWithProgress;
-                public static encode(message: berty.account.v1.IOpenAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.account.v1.IOpenAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.OpenAccountWithProgress;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.OpenAccountWithProgress;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccountWithProgress;
-                public static toObject(message: berty.account.v1.OpenAccountWithProgress, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace OpenAccountWithProgress {
-
-                interface IRequest {
-                    args?: (string[]|null);
-                    accountId?: (string|null);
-                    loggerFilters?: (string|null);
-                }
-
-                class Request implements IRequest {
-
-                    public args: string[];
-                    public accountId: string;
-                    public loggerFilters: string;
-                    public static create(properties?: berty.account.v1.OpenAccountWithProgress.IRequest): berty.account.v1.OpenAccountWithProgress.Request;
-                    public static encode(message: berty.account.v1.OpenAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.OpenAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.OpenAccountWithProgress.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.OpenAccountWithProgress.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccountWithProgress.Request;
-                    public static toObject(message: berty.account.v1.OpenAccountWithProgress.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    progress?: (berty.protocol.v1.IProgress|null);
-                }
-
-                class Reply implements IReply {
-
-                    public progress?: (berty.protocol.v1.IProgress|null);
-                    public static create(properties?: berty.account.v1.OpenAccountWithProgress.IReply): berty.account.v1.OpenAccountWithProgress.Reply;
-                    public static encode(message: berty.account.v1.OpenAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.OpenAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.OpenAccountWithProgress.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.OpenAccountWithProgress.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccountWithProgress.Reply;
-                    public static toObject(message: berty.account.v1.OpenAccountWithProgress.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -419,10 +352,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
                 }
 
                 class Reply implements IReply {
 
+                    public progress?: (berty.protocol.v1.IProgress|null);
                     public static create(properties?: berty.account.v1.CloseAccount.IReply): berty.account.v1.CloseAccount.Reply;
                     public static encode(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -435,37 +370,39 @@ export namespace berty {
                 }
             }
 
-            interface ICloseAccountWithProgress {
+            interface IOpenProtocol {
             }
 
-            class CloseAccountWithProgress implements ICloseAccountWithProgress {
+            class OpenProtocol implements IOpenProtocol {
 
-                public static create(properties?: berty.account.v1.ICloseAccountWithProgress): berty.account.v1.CloseAccountWithProgress;
-                public static encode(message: berty.account.v1.ICloseAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.account.v1.ICloseAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CloseAccountWithProgress;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CloseAccountWithProgress;
+                public static create(properties?: berty.account.v1.IOpenProtocol): berty.account.v1.OpenProtocol;
+                public static encode(message: berty.account.v1.IOpenProtocol, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IOpenProtocol, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.OpenProtocol;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.OpenProtocol;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccountWithProgress;
-                public static toObject(message: berty.account.v1.CloseAccountWithProgress, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenProtocol;
+                public static toObject(message: berty.account.v1.OpenProtocol, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            namespace CloseAccountWithProgress {
+            namespace OpenProtocol {
 
                 interface IRequest {
+                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.account.v1.CloseAccountWithProgress.IRequest): berty.account.v1.CloseAccountWithProgress.Request;
-                    public static encode(message: berty.account.v1.CloseAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.CloseAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CloseAccountWithProgress.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CloseAccountWithProgress.Request;
+                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    public static create(properties?: berty.account.v1.OpenProtocol.IRequest): berty.account.v1.OpenProtocol.Request;
+                    public static encode(message: berty.account.v1.OpenProtocol.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.OpenProtocol.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.OpenProtocol.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.OpenProtocol.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccountWithProgress.Request;
-                    public static toObject(message: berty.account.v1.CloseAccountWithProgress.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenProtocol.Request;
+                    public static toObject(message: berty.account.v1.OpenProtocol.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -476,14 +413,67 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public progress?: (berty.protocol.v1.IProgress|null);
-                    public static create(properties?: berty.account.v1.CloseAccountWithProgress.IReply): berty.account.v1.CloseAccountWithProgress.Reply;
-                    public static encode(message: berty.account.v1.CloseAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.CloseAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CloseAccountWithProgress.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CloseAccountWithProgress.Reply;
+                    public static create(properties?: berty.account.v1.OpenProtocol.IReply): berty.account.v1.OpenProtocol.Reply;
+                    public static encode(message: berty.account.v1.OpenProtocol.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.OpenProtocol.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.OpenProtocol.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.OpenProtocol.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccountWithProgress.Reply;
-                    public static toObject(message: berty.account.v1.CloseAccountWithProgress.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenProtocol.Reply;
+                    public static toObject(message: berty.account.v1.OpenProtocol.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface ICloseProtocol {
+            }
+
+            class CloseProtocol implements ICloseProtocol {
+
+                public static create(properties?: berty.account.v1.ICloseProtocol): berty.account.v1.CloseProtocol;
+                public static encode(message: berty.account.v1.ICloseProtocol, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.ICloseProtocol, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CloseProtocol;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CloseProtocol;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseProtocol;
+                public static toObject(message: berty.account.v1.CloseProtocol, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace CloseProtocol {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.account.v1.CloseProtocol.IRequest): berty.account.v1.CloseProtocol.Request;
+                    public static encode(message: berty.account.v1.CloseProtocol.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.CloseProtocol.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CloseProtocol.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CloseProtocol.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseProtocol.Request;
+                    public static toObject(message: berty.account.v1.CloseProtocol.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
+                }
+
+                class Reply implements IReply {
+
+                    public progress?: (berty.protocol.v1.IProgress|null);
+                    public static create(properties?: berty.account.v1.CloseProtocol.IReply): berty.account.v1.CloseProtocol.Reply;
+                    public static encode(message: berty.account.v1.CloseProtocol.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.CloseProtocol.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CloseProtocol.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CloseProtocol.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseProtocol.Reply;
+                    public static toObject(message: berty.account.v1.CloseProtocol.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -648,7 +638,6 @@ export namespace berty {
                     backupPath?: (string|null);
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
-                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
@@ -658,7 +647,6 @@ export namespace berty {
                     public backupPath: string;
                     public args: string[];
                     public loggerFilters: string;
-                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
                     public static create(properties?: berty.account.v1.ImportAccount.IRequest): berty.account.v1.ImportAccount.Request;
                     public static encode(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -671,11 +659,13 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
                     accountMetadata?: (berty.account.v1.IAccountMetadata|null);
                 }
 
                 class Reply implements IReply {
 
+                    public progress?: (berty.protocol.v1.IProgress|null);
                     public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
                     public static create(properties?: berty.account.v1.ImportAccount.IReply): berty.account.v1.ImportAccount.Reply;
                     public static encode(message: berty.account.v1.ImportAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -685,73 +675,6 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount.Reply;
                     public static toObject(message: berty.account.v1.ImportAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IImportAccountWithProgress {
-            }
-
-            class ImportAccountWithProgress implements IImportAccountWithProgress {
-
-                public static create(properties?: berty.account.v1.IImportAccountWithProgress): berty.account.v1.ImportAccountWithProgress;
-                public static encode(message: berty.account.v1.IImportAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.account.v1.IImportAccountWithProgress, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccountWithProgress;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccountWithProgress;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress;
-                public static toObject(message: berty.account.v1.ImportAccountWithProgress, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace ImportAccountWithProgress {
-
-                interface IRequest {
-                    accountId?: (string|null);
-                    accountName?: (string|null);
-                    backupPath?: (string|null);
-                    args?: (string[]|null);
-                    loggerFilters?: (string|null);
-                    networkConfig?: (berty.account.v1.INetworkConfig|null);
-                }
-
-                class Request implements IRequest {
-
-                    public accountId: string;
-                    public accountName: string;
-                    public backupPath: string;
-                    public args: string[];
-                    public loggerFilters: string;
-                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
-                    public static create(properties?: berty.account.v1.ImportAccountWithProgress.IRequest): berty.account.v1.ImportAccountWithProgress.Request;
-                    public static encode(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccountWithProgress.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccountWithProgress.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress.Request;
-                    public static toObject(message: berty.account.v1.ImportAccountWithProgress.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    progress?: (berty.protocol.v1.IProgress|null);
-                    accountMetadata?: (berty.account.v1.IAccountMetadata|null);
-                }
-
-                class Reply implements IReply {
-
-                    public progress?: (berty.protocol.v1.IProgress|null);
-                    public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
-                    public static create(properties?: berty.account.v1.ImportAccountWithProgress.IReply): berty.account.v1.ImportAccountWithProgress.Reply;
-                    public static encode(message: berty.account.v1.ImportAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.account.v1.ImportAccountWithProgress.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccountWithProgress.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccountWithProgress.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress.Reply;
-                    public static toObject(message: berty.account.v1.ImportAccountWithProgress.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -779,7 +702,6 @@ export namespace berty {
                     accountName?: (string|null);
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
-                    networkConfig?: (berty.account.v1.INetworkConfig|null);
                 }
 
                 class Request implements IRequest {
@@ -788,7 +710,6 @@ export namespace berty {
                     public accountName: string;
                     public args: string[];
                     public loggerFilters: string;
-                    public networkConfig?: (berty.account.v1.INetworkConfig|null);
                     public static create(properties?: berty.account.v1.CreateAccount.IRequest): berty.account.v1.CreateAccount.Request;
                     public static encode(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

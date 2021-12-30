@@ -71,20 +71,12 @@ export interface WelshProtocolServiceClient {
 }
 
 export interface WelshAccountServiceClient {
-	openAccount: UnaryType<beapi.account.AccountService['openAccount']>
-	openAccountWithProgress: ResponseStreamType<
-		beapi.account.AccountService['openAccountWithProgress']
-	>
-	closeAccount: UnaryType<beapi.account.AccountService['closeAccount']>
-	closeAccountWithProgress: ResponseStreamType<
-		beapi.account.AccountService['closeAccountWithProgress']
-	>
+	openAccount: ResponseStreamType<beapi.account.AccountService['openAccount']>
+	closeAccount: ResponseStreamType<beapi.account.AccountService['closeAccount']>
+	openProtocol: ResponseStreamType<beapi.account.AccountService['openProtocol']>
 	listAccounts: UnaryType<beapi.account.AccountService['listAccounts']>
 	deleteAccount: UnaryType<beapi.account.AccountService['deleteAccount']>
-	importAccount: UnaryType<beapi.account.AccountService['importAccount']>
-	importAccountWithProgress: ResponseStreamType<
-		beapi.account.AccountService['importAccountWithProgress']
-	>
+	importAccount: ResponseStreamType<beapi.account.AccountService['importAccount']>
 	createAccount: UnaryType<beapi.account.AccountService['createAccount']>
 	updateAccount: UnaryType<beapi.account.AccountService['updateAccount']>
 	getGRPCListenerAddrs: UnaryType<beapi.account.AccountService['getGRPCListenerAddrs']>
