@@ -19,20 +19,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 methods: {
                   OpenAccount: {
                     requestType: "OpenAccount.Request",
-                    responseType: "OpenAccount.Reply"
-                  },
-                  OpenAccountWithProgress: {
-                    requestType: "OpenAccountWithProgress.Request",
-                    responseType: "OpenAccountWithProgress.Reply",
+                    responseType: "OpenAccount.Reply",
                     responseStream: true
                   },
                   CloseAccount: {
                     requestType: "CloseAccount.Request",
-                    responseType: "CloseAccount.Reply"
+                    responseType: "CloseAccount.Reply",
+                    responseStream: true
                   },
-                  CloseAccountWithProgress: {
-                    requestType: "CloseAccountWithProgress.Request",
-                    responseType: "CloseAccountWithProgress.Reply",
+                  OpenProtocol: {
+                    requestType: "OpenProtocol.Request",
+                    responseType: "OpenProtocol.Reply",
                     responseStream: true
                   },
                   ListAccounts: {
@@ -45,11 +42,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   ImportAccount: {
                     requestType: "ImportAccount.Request",
-                    responseType: "ImportAccount.Reply"
-                  },
-                  ImportAccountWithProgress: {
-                    requestType: "ImportAccountWithProgress.Request",
-                    responseType: "ImportAccountWithProgress.Reply",
+                    responseType: "ImportAccount.Reply",
                     responseStream: true
                   },
                   CreateAccount: {
@@ -195,38 +188,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 3
-                      },
-                      networkConfig: {
-                        type: "NetworkConfig",
-                        id: 4
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
-              OpenAccountWithProgress: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      args: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 1
-                      },
-                      accountId: {
-                        type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
-                      },
-                      loggerFilters: {
-                        type: "string",
-                        id: 3
                       }
                     }
                   },
@@ -247,11 +208,37 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {}
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      progress: {
+                        type: "berty.protocol.v1.Progress",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
-              CloseAccountWithProgress: {
+              OpenProtocol: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      networkConfig: {
+                        type: "NetworkConfig",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      progress: {
+                        type: "berty.protocol.v1.Progress",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              CloseProtocol: {
                 fields: {},
                 nested: {
                   Request: {
@@ -369,55 +356,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 5
-                      },
-                      networkConfig: {
-                        type: "NetworkConfig",
-                        id: 6
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      accountMetadata: {
-                        type: "AccountMetadata",
-                        id: 1
-                      }
-                    }
-                  }
-                }
-              },
-              ImportAccountWithProgress: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      accountId: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
-                      },
-                      accountName: {
-                        type: "string",
-                        id: 2
-                      },
-                      backupPath: {
-                        type: "string",
-                        id: 3
-                      },
-                      args: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 4
-                      },
-                      loggerFilters: {
-                        type: "string",
-                        id: 5
-                      },
-                      networkConfig: {
-                        type: "NetworkConfig",
-                        id: 6
                       }
                     }
                   },
@@ -459,10 +397,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 4
-                      },
-                      networkConfig: {
-                        type: "NetworkConfig",
-                        id: 5
                       }
                     }
                   },
