@@ -415,9 +415,12 @@
 			"save": "保存主題",
 			"export": "將選定主題導出為文件",
 			"share": "將選定主題作為文件分享",
-			"import": "導入主題文件"
+			"import": "導入主題文件",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "二維碼",
 			"fingerprint": "指紋",
 			"devices": "設備"
