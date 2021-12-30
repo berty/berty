@@ -415,9 +415,12 @@
 			"save": "Salva questo tema",
 			"export": "Esporta il tema selezionato come file",
 			"share": "Condividi il tema selezionato come file",
-			"import": "Importa un file tema"
+			"import": "Importa un file tema",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Impronta",
 			"devices": "Dispositivi"
