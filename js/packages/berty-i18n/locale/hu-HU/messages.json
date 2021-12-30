@@ -415,9 +415,12 @@
 			"save": "Téma mentése",
 			"export": "Téma mentése mint fájl (exportálásra)",
 			"share": "Téma megosztása mint fájl",
-			"import": "Téma fájl importálása"
+			"import": "Téma fájl importálása",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Ujjlenyomat",
 			"devices": "Eszközök"
