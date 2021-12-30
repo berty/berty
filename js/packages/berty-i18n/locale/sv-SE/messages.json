@@ -415,9 +415,12 @@
 			"save": "Spara temat",
 			"export": "Exportera valt tema till fil",
 			"share": "Dela valt tema som fil",
-			"import": "Importera en tema fil"
+			"import": "Importera en tema fil",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Fingeravtryck",
 			"devices": "Enheter"
