@@ -206,23 +206,8 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	return meta, nil
 }
 
-// OpenAccount starts a Berty node.
-func (s *service) OpenAccount(ctx context.Context, req *accounttypes.OpenAccount_Request) (_ *accounttypes.OpenAccount_Reply, err error) {
-	s.muService.Lock()
-	defer s.muService.Unlock()
-
-	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
-	defer func() { endSection(err) }()
-
-	if _, err := s.openAccount(req, nil); err != nil {
-		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
-	}
-
-	return &accounttypes.OpenAccount_Reply{}, nil
-}
-
-// OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
-func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgress_Request, server accounttypes.AccountService_OpenAccountWithProgressServer) (err error) {
+// OpenAccount opens a messenger instance, but does not start the protocol yet.
+func (s *service) OpenAccount(req *accounttypes.OpenAccount_Request, server accounttypes.AccountService_OpenAccountServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -242,7 +227,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&accounttypes.OpenAccountWithProgress_Reply{
+			err := server.Send(&accounttypes.OpenAccount_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
