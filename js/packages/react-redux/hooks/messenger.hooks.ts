@@ -1,4 +1,8 @@
+import { useMemo } from 'react'
+
 import * as m from '@berty-tech/redux/reducers/messenger.reducer'
+import beapi from '@berty-tech/api'
+import { ParsedInteraction } from '@berty-tech/store'
 
 import { useAppSelector } from '../core'
 
@@ -8,10 +12,6 @@ export const useAccount = () => {
 
 export const useConversationInteractions = (convPk: string) => {
 	return useAppSelector(state => m.selectConversationInteractions(state, convPk))
-}
-
-export const useAllInteractions = () => {
-	return useAppSelector(m.selectAllInteractions)
 }
 
 export const useConversationMembersDict = (convPk: string) => {
@@ -56,6 +56,28 @@ export const useMedia = (cid: string) => {
 
 export const useInteractionAuthor = (convPk: string, cid: string) => {
 	return useAppSelector(state => m.selectInteractionAuthor(state, convPk, cid))
+}
+
+export const useIncomingContactRequests = () => {
+	const contacts = useAllContacts()
+	return useMemo(
+		() => contacts.filter(c => c.state === beapi.messenger.Contact.State.IncomingRequest),
+		[contacts],
+	)
+}
+
+const emptyList: never[] = []
+
+export const useAllInteractions = () => {
+	const buckets = useAppSelector(m.selectAllInteractionsBuckets)
+	return useMemo(
+		() =>
+			buckets.reduce(
+				(all, bucket) => [...all, ...m.interactionsSelector.selectAll(bucket.interactions)],
+				emptyList as ParsedInteraction[],
+			),
+		[buckets],
+	)
 }
 
 /*
