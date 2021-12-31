@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { selectInvitationListMembers } from '@berty-tech/redux/reducers/newGroup.reducer'
-import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
+import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
+import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
+import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()
@@ -59,21 +59,16 @@ const _stylesCreateGroup = StyleSheet.create({
 	},
 })
 
-type GroupInfoProps = { onGroupNameChange: (name: string) => void; layout: number }
+type GroupInfoProps = { onGroupNameChange: (name: string) => void }
 
-const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
-	const [
-		{ row, column, margin, flex, height, border, padding, text },
-		{ scaleSize, windowHeight },
-	] = useStyles()
+const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
+	const [{ row, column, margin, flex, border, padding, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const _styles = useStylesCreateGroup()
-	const insets = useSafeAreaInsets()
-	const restScreen = windowHeight - layout - 380 * scaleSize - insets.bottom // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
 
 	return (
-		<View style={[height(300 + restScreen), padding.horizontal.large]}>
+		<View style={[padding.horizontal.large]}>
 			<View style={[row.center]}>
 				<View
 					style={[
@@ -194,11 +189,9 @@ export const CreateGroupFinalize: React.FC = () => {
 		() => call({ displayName: groupName, contactsToInvite: members.map(m => m.publicKey) as any }),
 		[groupName, members, call],
 	)
-	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
-	const insets = useSafeAreaInsets()
 	const { t }: { t: any } = useTranslation()
 
 	React.useEffect(() => {
@@ -226,29 +219,31 @@ export const CreateGroupFinalize: React.FC = () => {
 	}, [done, error, reset, reply, dispatch])
 	return (
 		<Layout style={[flex.tiny]}>
-			<View style={{ backgroundColor: colors['background-header'] }}>
-				<View onLayout={e => setLayout(e.nativeEvent.layout.height)}>
-					<MemberList />
-					<Header
-						title={t('main.home.create-group.add-members')}
-						onPress={() => goBack()}
-						style={[padding.bottom.small]}
-						first
-					/>
-				</View>
-				<View style={[{ top: -5, paddingBottom: insets.bottom }]}>
-					<Header title={t('main.home.create-group.group-info')}>
-						<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
-					</Header>
-				</View>
-			</View>
-			<FooterCreateGroup
-				title={t('main.home.create-group.create-group')}
-				action={() => {
-					createGroup()
-					ctx.playSound('groupCreated')
-				}}
-			/>
+			<IOSOnlyKeyboardAvoidingView behavior='position'>
+				<ScrollView>
+					<View style={{ backgroundColor: colors['background-header'] }}>
+						<View>
+							<MemberList />
+							<Header
+								title={t('main.home.create-group.add-members')}
+								onPress={() => goBack()}
+								style={[padding.bottom.small]}
+								first
+							/>
+						</View>
+						<Header title={t('main.home.create-group.group-info')}>
+							<GroupInfo onGroupNameChange={setGroupName} />
+							<FooterCreateGroup
+								title={t('main.home.create-group.create-group')}
+								action={() => {
+									createGroup()
+									ctx.playSound('groupCreated')
+								}}
+							/>
+						</Header>
+					</View>
+				</ScrollView>
+			</IOSOnlyKeyboardAvoidingView>
 		</Layout>
 	)
 }

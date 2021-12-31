@@ -7,10 +7,10 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useMessengerContext, useSortedConversationList, useThemeColor } from '@berty-tech/store'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useNavigation } from '@berty-tech/navigation'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch } from '@berty-tech/react-redux'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { ContactAvatar } from '../avatars'
@@ -71,6 +71,11 @@ const AddThisContact: React.FC<{
 	const { t } = useTranslation()
 	const ctx = useMessengerContext()
 	const dispatch = useAppDispatch()
+	const { dispatch: navigationDispatch } = useNavigation()
+	const conversations = useSortedConversationList()
+	const convId = conversations?.find(
+		({ contactPublicKey }) => contactPublicKey === publicKey,
+	)?.publicKey
 
 	const [password, setPassword] = useState('')
 
@@ -86,7 +91,21 @@ const AddThisContact: React.FC<{
 			)
 		}
 	}, [ctx, done, error, dispatch])
-
+	if (convId) {
+		navigationDispatch(
+			CommonActions.reset({
+				routes: [
+					{ name: 'Main.Home' },
+					{
+						name: 'Chat.OneToOne',
+						params: {
+							convId,
+						},
+					},
+				],
+			}),
+		)
+	}
 	if (error) {
 		return <InvalidScan type={type} error={error} />
 	}

@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
+import { useTranslation } from 'react-i18next'
 
 import {
 	Maybe,
@@ -26,7 +27,7 @@ import {
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
-import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
+import { useAppDispatch, useAppSelector, useMedias } from '@berty-tech/react-redux'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { useReplyReaction } from '../ReplyReactionContext'
@@ -34,7 +35,6 @@ import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooter
 import { ChatTextInput } from './ChatTextInput'
 import { RecordComponent } from './record/RecordComponent'
 import { AddFileMenu } from './file-uploads/AddFileMenu'
-import { useTranslation } from 'react-i18next'
 
 export type ChatFooterProps = {
 	convPK: string
@@ -65,10 +65,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const ctx = useMessengerContext()
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
-		const addedMedias = React.useMemo(
-			() => mediaCids.map(cid => ctx.medias[cid]),
-			[ctx.medias, mediaCids],
-		)
+		const addedMedias = useMedias(mediaCids)
 
 		// local
 		const [isFocused, setIsFocused] = React.useState<boolean>(false)
@@ -108,18 +105,19 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						payload: buf,
 						targetCid: activeReplyInte?.cid,
-						sentDate: Long.fromNumber(Date.now()),
+						sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 					}
-					ctx.dispatch({
-						type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+					dispatch({
+						type: 'messenger/InteractionUpdated',
 						payload: { interaction: optimisticInteraction },
 					})
-					dispatch(resetChatInput(convPK))
-					ctx.playSound('messageSent')
 					setActiveReplyInte()
 					dispatch(setChecklistItemDone({ key: 'message' }))
+					dispatch(resetChatInput(convPK))
+					ctx.playSound('messageSent')
 				} catch (e) {
 					console.warn('e sending message:', e)
+					setSending(false)
 				}
 			},
 			[
@@ -131,6 +129,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				dispatch,
 				messengerClient,
 				addedMedias,
+				setSending,
 			],
 		)
 
@@ -140,7 +139,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			}
 			setSending(true)
 			await sendMessageBouncy()
-			setSending(false)
 		}, [setSending, sendMessageBouncy, sending])
 
 		const handleCloseFileMenu = React.useCallback(

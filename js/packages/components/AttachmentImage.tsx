@@ -3,16 +3,18 @@ import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 're
 
 import { useMessengerContext } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
+import { useMedia } from '@berty-tech/react-redux'
 
 import { getSource } from './utils'
 
 const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<ImageProps, 'source'>> =
 	React.memo(props => {
 		const { navigate } = useNavigation()
-		const { protocolClient, medias } = useMessengerContext()
+		const { protocolClient } = useMessengerContext()
 		const [source, setSource] = useState('')
 		const { cid, ...imageProps } = props
-		const mimeType = medias[cid]?.mimeType || 'image/jpeg'
+		const media = useMedia(cid)
+		const mimeType = media?.mimeType || 'image/jpeg'
 
 		useEffect(() => {
 			if (!protocolClient) {

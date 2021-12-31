@@ -29,7 +29,14 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
 import i18n from '@berty-tech/berty-i18n'
 import { setAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import {
+	useAllConversations,
+	useAllInteractions,
+	useAppDispatch,
+	useAppSelector,
+	useContactsDict,
+	useConversationsDict,
+} from '@berty-tech/react-redux'
 
 import {
 	ButtonSetting,
@@ -221,34 +228,35 @@ const DumpAccount: React.FC = () => {
 }
 
 const DumpContacts: React.FC = () => {
-	const ctx = useMessengerContext()
-	const text = JSON.stringify(ctx.contacts, null, 2)
+	const contacts = useContactsDict()
+	const text = JSON.stringify(contacts, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-contacts-button')} text={text} />
 }
 
 const DumpConversations: React.FC = () => {
-	const ctx = useMessengerContext()
-	const text = JSON.stringify(ctx.conversations, null, 2)
+	const conversations = useConversationsDict()
+	const text = JSON.stringify(conversations, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-conversations-button')} text={text} />
 }
 
 const DumpInteractions: React.FC = () => {
-	const ctx = useMessengerContext()
-	const text = JSON.stringify(ctx.interactions, null, 2)
+	const interactions = useAllInteractions()
+	const text = JSON.stringify(interactions, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-interactions-button')} text={text} />
 }
 
-const SendToAll: React.FC = () => {
+const SendToAllContacts: React.FC = () => {
 	const [disabled, setDisabled] = useState(false)
 	const { t } = useTranslation()
 	const [name, setName] = useState<any>(t('settings.devtools.send-to-all-button.title'))
 	const ctx = useMessengerContext()
 	const colors = useThemeColor()
-	const convs: any[] = Object.values(ctx.conversations).filter(
-		(conv: any) => conv.type === beapi.messenger.Conversation.Type.ContactType && !conv.fake,
+	const conversations = useAllConversations()
+	const filteredConvs = conversations.filter(
+		conv => conv.type === beapi.messenger.Conversation.Type.ContactType && !(conv as any)?.fake,
 	)
 	const body = `${t('settings.devtools.send-to-all-button.test')}${new Date(
 		Date.now(),
@@ -257,7 +265,7 @@ const SendToAll: React.FC = () => {
 	const handleSendToAll = React.useCallback(async () => {
 		setDisabled(true)
 		setName(t('settings.devtools.send-to-all-button.sending'))
-		for (const conv of convs) {
+		for (const conv of filteredConvs) {
 			try {
 				await ctx.client?.interact({
 					conversationPublicKey: conv.publicKey,
@@ -269,9 +277,9 @@ const SendToAll: React.FC = () => {
 			}
 		}
 		setDisabled(false)
-		setName(`${t('settings.devtools.send-to-all-button.tried', { length: convs.length })}`)
+		setName(`${t('settings.devtools.send-to-all-button.tried', { length: filteredConvs.length })}`)
 		setTimeout(() => setName(t('settings.devtools.send-to-all-button.title')), 1000)
-	}, [buf, convs, ctx.client, t])
+	}, [buf, filteredConvs, ctx.client, t])
 	return (
 		<ButtonSetting
 			name={name}
@@ -288,8 +296,8 @@ const SendToAll: React.FC = () => {
 }
 
 const DumpMembers: React.FC = () => {
-	const ctx = useMessengerContext()
-	const text = JSON.stringify(ctx.members, null, 2)
+	const members = useAppSelector(state => state.messenger.membersBuckets)
+	const text = JSON.stringify(members, null, 2)
 	const { t } = useTranslation()
 	return <DumpButton name={t('settings.devtools.dump-members-button')} text={text} />
 }
@@ -610,7 +618,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				actionIcon='arrow-ios-forward'
 				onPress={() => navigate('Settings.IpfsWebUI')}
 			/>
-			<SendToAll />
+			<SendToAllContacts />
 			<PlaySound />
 			<DropDownPicker
 				items={items}

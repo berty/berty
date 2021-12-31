@@ -2362,6 +2362,9 @@
         },
         "target_cid": {
           "type": "string"
+        },
+        "metadata": {
+          "type": "boolean"
         }
       }
     },

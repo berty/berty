@@ -20,7 +20,7 @@ import {
 	closeAccountWithProgress,
 	useThemeColor,
 } from '@berty-tech/store'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { AccountAvatar } from '../avatars'
@@ -166,7 +166,7 @@ const HomeBodySettings: React.FC = () => {
 				onPress={async () => {
 					if (url) {
 						try {
-							await Share.share({ url })
+							await Share.share({ url, message: url })
 						} catch (e) {
 							console.error(e)
 						}

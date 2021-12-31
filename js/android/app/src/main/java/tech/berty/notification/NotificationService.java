@@ -56,7 +56,7 @@ public class NotificationService extends FirebaseMessagingService {
         config.setPreferredLanguages(tags);
         config.setDriverLogger(logger);
         this.push = new PushStandalone(config);
-        Log.d(TAG, "handle background push");
+        Log.d(TAG, "NotificationService created");
     }
 
 
@@ -66,7 +66,7 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     private void createPushNotification(FormatedPush fpush) {
-        Log.d(TAG, "handle background push");
+        Log.d(TAG, "createPushNotification called");
         NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
 
         // Create deepLink on click interaction
@@ -86,6 +86,7 @@ public class NotificationService extends FirebaseMessagingService {
             .setContentTitle(fpush.getTitle())
             .setContentText(fpush.getBody())
             .setSmallIcon(android.R.drawable.stat_notify_chat)
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent);
 
         String subtitle = fpush.getSubtitle();

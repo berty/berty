@@ -16,7 +16,7 @@ import { Navigation } from '@berty-tech/navigation/stacks'
 import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/NotificationProvider'
 // import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
-import { MusicPlayerProvider } from '@berty-tech/music-player'
+import { MusicPlayerProvider } from '@berty-tech/components/music-player'
 import { ErrorScreen } from '@berty-tech/components/error'
 import reduxStore from '@berty-tech/redux/store'
 

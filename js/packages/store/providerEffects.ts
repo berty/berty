@@ -11,12 +11,12 @@ import { Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { persistor } from '@berty-tech/redux/store'
-import { useAppDispatch } from '@berty-tech/redux/react-redux'
+import { AppDispatch, persistor } from '@berty-tech/redux/store'
+import { useAppDispatch } from '@berty-tech/react-redux'
+import { streamEventToAction as streamEventToReduxAction } from '@berty-tech/redux/messengerActions'
 
 import { accountService, storageGet, storageRemove } from './accountService'
 import { defaultPersistentOptions, defaultThemeColor } from './context'
-import { streamEventToAction } from './convert'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
 import { setPersistentOption, updateAccount } from './providerCallbacks'
@@ -257,6 +257,7 @@ export const openingClients = async (
 	eventEmitter: EventEmitter,
 	daemonAddress: string,
 	embedded: boolean,
+	reduxDispatch: AppDispatch,
 ): Promise<void> => {
 	if (appState !== MessengerAppState.OpeningWaitingForClients) {
 		return
@@ -311,7 +312,7 @@ export const openingClients = async (
 		precancel = true
 	}
 	messengerClient
-		.eventStream({ shallowAmount: 1 })
+		.eventStream({ shallowAmount: 20 })
 		.then(async stream => {
 			if (precancel) {
 				await stream.stop()
@@ -331,20 +332,19 @@ export const openingClients = async (
 						console.warn('events stream onMessage error:', err)
 						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 					}
+
 					const evt = msg?.event
 					if (!evt || evt.type === null || evt.type === undefined) {
-						console.warn('received empty event')
+						console.warn('received empty or undefined event')
 						return
 					}
-					const action = streamEventToAction(evt)
-					if (!action) {
-						return
-					}
-					if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
-						const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
-							name =>
-								(beapi.messenger.StreamEvent.Notified.Type as any)[name] === action.payload.type,
-						)
+
+					const action = streamEventToReduxAction(evt)
+					if (action?.type === 'messenger/Notified') {
+						const enumName =
+							beapi.messenger.StreamEvent.Notified.Type[
+								action.payload.type || beapi.messenger.StreamEvent.Notified.Type.Unknown
+							]
 						if (!enumName) {
 							console.warn('failed to get event type name')
 							return
@@ -362,8 +362,9 @@ export const openingClients = async (
 							name: payloadName,
 							payload: action.payload,
 						})
-					} else {
-						dispatch(action)
+					}
+					if (action) {
+						reduxDispatch(action)
 					}
 				} catch (err) {
 					console.warn('failed to handle stream event:', err)

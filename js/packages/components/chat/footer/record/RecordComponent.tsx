@@ -19,6 +19,8 @@ import beapi from '@berty-tech/api'
 import { playSound } from '@berty-tech/store/sounds'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import rnutil from '@berty-tech/rnutil'
+import { AppDispatch } from '@berty-tech/redux/store'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 import {
 	limitIntensities,
@@ -55,7 +57,7 @@ const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
 const sendMessage = async (
 	client: WelshMessengerServiceClient,
 	convPk: string,
-	dispatch: ReturnType<typeof useMessengerContext>['dispatch'],
+	dispatch: AppDispatch,
 	opts: {
 		body?: string
 		medias?: beapi.messenger.IMedia[]
@@ -76,10 +78,10 @@ const sendMessage = async (
 			type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 			payload: buf,
 			medias: opts.medias,
-			sentDate: Long.fromNumber(Date.now()),
+			sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 		}
 		dispatch({
-			type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
+			type: 'messenger/InteractionUpdated',
 			payload: { interaction: optimisticInteraction },
 		})
 		playSound('messageSent')
@@ -150,6 +152,7 @@ export const RecordComponent: React.FC<{
 	sending,
 	setSending,
 }) => {
+	const dispatch = useAppDispatch()
 	const ctx = useMessengerContext()
 	const recorder = React.useRef<Recorder | undefined>(undefined)
 	const [recorderFilePath, setRecorderFilePath] = useState('')
@@ -288,13 +291,13 @@ export const RecordComponent: React.FC<{
 					},
 				])
 
-				await sendMessage(ctx.client!, convPk, ctx.dispatch, { medias })
+				await sendMessage(ctx.client!, convPk, dispatch, { medias })
 			} catch (e) {
 				console.warn(e)
 			}
 			setSending(false)
 		},
-		[convPk, ctx.client, recorderFilePath, ctx.dispatch, sending, setSending],
+		[convPk, ctx.client, recorderFilePath, dispatch, sending, setSending],
 	)
 
 	useEffect(() => {

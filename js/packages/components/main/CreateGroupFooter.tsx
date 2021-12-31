@@ -25,64 +25,49 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 	const _styles = useStylesCreateGroup()
 
 	return (
-		<>
-			<View
+		<View style={[padding.horizontal.huge, padding.vertical.large]}>
+			<TouchableOpacity
+				onPress={() => {
+					if (typeof action !== 'function') {
+						console.warn('action is not a function:', action)
+						return
+					}
+					action()
+				}}
 				style={[
+					padding.horizontal.medium,
+					padding.vertical.small,
 					{
-						position: 'absolute',
-						bottom: 25 * scaleSize,
-						left: 60 * scaleSize,
-						right: 60 * scaleSize,
+						flexDirection: 'row',
+						justifyContent: 'center',
+						backgroundColor: colors['positive-asset'],
 					},
+					_styles.footerCreateGroupButton,
 				]}
 			>
-				<TouchableOpacity
-					onPress={() => {
-						if (typeof action !== 'function') {
-							console.warn('action is not a function:', action)
-							return
-						}
-						action()
-					}}
-				>
-					<View
+				<View style={[row.item.justify, { flex: 1 }]}>
+					<Text
 						style={[
-							padding.horizontal.medium,
-							padding.vertical.small,
-							{
-								flexDirection: 'row',
-								justifyContent: 'center',
-								backgroundColor: colors['positive-asset'],
-								flex: 1,
-							},
-							_styles.footerCreateGroupButton,
+							text.bold.medium,
+							text.align.center,
+							_styles.footerCreateGroupText,
+							{ color: colors['background-header'] },
 						]}
 					>
-						<View style={[row.item.justify, { flex: 1 }]}>
-							<Text
-								style={[
-									text.bold.medium,
-									text.align.center,
-									_styles.footerCreateGroupText,
-									{ color: colors['background-header'] },
-								]}
-							>
-								{title}
-							</Text>
-						</View>
-						{icon && (
-							<View style={[row.item.justify, { position: 'absolute', right: 70 * scaleSize }]}>
-								<Icon
-									name='arrow-forward-outline'
-									width={25 * scaleSize}
-									height={25 * scaleSize}
-									fill={colors['background-header']}
-								/>
-							</View>
-						)}
+						{title}
+					</Text>
+				</View>
+				{icon && (
+					<View style={[row.item.justify, { position: 'absolute', right: 70 * scaleSize }]}>
+						<Icon
+							name='arrow-forward-outline'
+							width={25 * scaleSize}
+							height={25 * scaleSize}
+							fill={colors['background-header']}
+						/>
 					</View>
-				</TouchableOpacity>
-			</View>
-		</>
+				)}
+			</TouchableOpacity>
+		</View>
 	)
 }

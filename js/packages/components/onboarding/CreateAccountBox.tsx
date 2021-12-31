@@ -9,6 +9,7 @@ import rnutil from '@berty-tech/rnutil'
 import {
 	GlobalPersistentOptionsKeys,
 	storageSet,
+	useAccount,
 	useMessengerContext,
 	useThemeColor,
 } from '@berty-tech/store'
@@ -29,6 +30,7 @@ export const CreateAccountBox: React.FC<{
 	const { t } = useTranslation()
 	const [isPressed, setIsPressed] = useState(false)
 	const { navigate } = useNavigation()
+	const account = useAccount()
 
 	const handlePersistentOptions = React.useCallback(async () => {
 		setIsPressed(true)
@@ -39,7 +41,7 @@ export const CreateAccountBox: React.FC<{
 	}, [ctx, setIsFinished, newConfig])
 
 	const onPress = React.useCallback(async () => {
-		const displayName = name || `anon#${ctx?.account?.publicKey?.substr(0, 4)}`
+		const displayName = name || `anon#${account?.publicKey?.substr(0, 4)}`
 		await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
 
 		handlePersistentOptions()
@@ -47,7 +49,7 @@ export const CreateAccountBox: React.FC<{
 			.catch(err => {
 				console.log(err)
 			})
-	}, [ctx, name, handlePersistentOptions])
+	}, [name, account?.publicKey, handlePersistentOptions])
 
 	return (
 		<View>

@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next'
 import beapi from '@berty-tech/api'
 import {
 	useLastConvInteraction,
-	useContact,
 	useMessengerContext,
 	useThemeColor,
 	InteractionUserMessage,
@@ -18,6 +17,8 @@ import {
 	pbDateToNum,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+import { useAppSelector, useInteractionAuthor } from '@berty-tech/react-redux'
+import { selectInteraction } from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
@@ -166,18 +167,18 @@ export const UserMessage: React.FC<{
 	nextMessage?: ParsedInteraction
 	replyOf?: ParsedInteraction
 	scrollToCid: (cid: string) => void
-}> = ({ inte, members, convPK, convKind, previousMessage, nextMessage, replyOf, scrollToCid }) => {
+}> = ({ inte, members, convPK, convKind, previousMessage, nextMessage, scrollToCid }) => {
 	const isGroup = convKind === beapi.messenger.Conversation.Type.MultiMemberType
 	const lastInte = useLastConvInteraction(convPK, interactionsFilter)
-	const repliedTo =
-		useContact(isGroup ? replyOf?.memberPublicKey : replyOf?.conversation?.contactPublicKey) ||
-		replyOf?.member
-
+	const replyOf = useAppSelector(state =>
+		selectInteraction(state, inte.conversationPublicKey || '', inte.targetCid || ''),
+	)
+	const repliedTo = useInteractionAuthor(replyOf?.conversationPublicKey || '', replyOf?.cid || '')
 	const _styles = useStylesMessage()
 	const ctx = useMessengerContext()
 	const [{ row, margin, padding, column, text, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
 	const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
 	const [reactionLayoutWidth, setReactionLayoutWidth] = useState(0)
@@ -298,7 +299,9 @@ export const UserMessage: React.FC<{
 									numberOfLines={1}
 									style={{ color: colors['background-header'], fontSize: 10 }}
 								>
-									{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
+									<>
+										{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
+									</>
 								</Text>
 							</View>
 

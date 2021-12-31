@@ -18,7 +18,7 @@ export type GroupCreationState = {
  *
  */
 
-export const sliceName = 'newGroup'
+export const sliceName = 'groupCreationForm'
 
 const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
@@ -38,7 +38,7 @@ type LocalRootState = typeof rootInitialState
  */
 
 const slice = createSlice({
-	name: 'newGroup',
+	name: sliceName,
 	initialState,
 	reducers: {
 		addMemberToInvitationList(

@@ -46,8 +46,6 @@ export type ScreensParams = {
 
 	'Settings.Home': undefined
 	'Settings.MyBertyId': undefined
-	'Settings.AppUpdates': undefined
-	'Settings.Help': undefined
 	'Settings.Mode': undefined
 	'Settings.ServicesAuth': undefined
 	'Settings.AboutBerty': undefined

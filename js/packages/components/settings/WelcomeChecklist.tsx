@@ -15,7 +15,7 @@ import {
 	selectChecklistSeen,
 	checklistItems,
 } from '@berty-tech/redux/reducers/checklist.reducer'
-import { useAppDispatch, useAppSelector } from '@berty-tech/redux/react-redux'
+import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 
 import { UnreadCount } from '../main/home/UnreadCount'
 

@@ -54,8 +54,6 @@ func attachmentNewCipher(sk libp2pcrypto.PrivKey) (*attachmentCipher, error) {
 		nonce: big.NewInt(attachmentNonceIV),
 	}
 
-	bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
-
 	return &ac, nil
 }
 
@@ -73,10 +71,11 @@ func AttachmentSealer(plaintext io.Reader, l *zap.Logger) (libp2pcrypto.PrivKey,
 	}
 
 	return sk, streamutil.FuncBlockTransformer(make([]byte, attachmentCipherblockSize-ac.aead.Overhead()), plaintext, l, func(pt []byte) ([]byte, error) {
+		bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
+
 		ct := ac.aead.Seal([]byte(nil), ac.nonceBuf[:], pt, []byte(nil))
 
 		ac.nonce.Add(ac.nonce, bigOne)
-		bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
 
 		return ct, nil
 	}), nil
@@ -89,13 +88,14 @@ func AttachmentOpener(ciphertext io.Reader, sk libp2pcrypto.PrivKey, l *zap.Logg
 	}
 
 	return streamutil.FuncBlockTransformer(make([]byte, attachmentCipherblockSize), ciphertext, l, func(ct []byte) ([]byte, error) {
+		bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
+
 		pt, err := ac.aead.Open([]byte(nil), ac.nonceBuf[:], ct, []byte(nil))
 		if err != nil {
 			return nil, errcode.ErrCryptoDecrypt.Wrap(err)
 		}
 
 		ac.nonce.Add(ac.nonce, bigOne)
-		bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
 
 		return pt, nil
 	}), nil

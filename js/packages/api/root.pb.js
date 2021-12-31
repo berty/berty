@@ -5905,6 +5905,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "CID"
                         }
+                      },
+                      conversationPublicKey: {
+                        type: "string",
+                        id: 2
                       }
                     }
                   },
@@ -6216,6 +6220,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "TargetCID"
                         }
+                      },
+                      metadata: {
+                        type: "bool",
+                        id: 6
                       }
                     }
                   },

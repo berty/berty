@@ -14,7 +14,7 @@ import {
 	removeMemberFromInvitationListById,
 	resetInvitationList,
 	selectInvitationListMembers,
-} from '@berty-tech/redux/reducers/newGroup.reducer'
+} from '@berty-tech/redux/reducers/groupCreationForm.reducer'
 import { berty } from '@berty-tech/api/root.pb'
 
 // Styles
