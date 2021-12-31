@@ -1,4 +1,4 @@
-import React, { EffectCallback, useEffect, useMemo } from 'react'
+import React, { EffectCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
@@ -81,28 +81,6 @@ export const useStylesBertyId = ({
 export const useMessengerClient = () => {
 	const ctx = useMessengerContext()
 	return ctx.client
-}
-
-const ContactState = beapi.messenger.Contact.State
-
-export const useIncomingContactRequests = () => {
-	const contacts = useAllContacts()
-	return useMemo(() => contacts.filter(c => c.state === ContactState.IncomingRequest), [contacts])
-}
-
-export const useOutgoingContactRequests = () => {
-	const contacts = useAllContacts()
-	return useMemo(
-		() =>
-			contacts.filter(
-				c =>
-					c.state &&
-					[ContactState.OutgoingRequestEnqueued, ContactState.OutgoingRequestSent].includes(
-						c.state,
-					),
-			),
-		[contacts],
-	)
 }
 
 export const useAccountContactSearchResults = (searchText: Maybe<string>) => {

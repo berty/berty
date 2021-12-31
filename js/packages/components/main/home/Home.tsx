@@ -15,7 +15,6 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useConversationsCount,
-	useIncomingContactRequests,
 	useMessengerContext,
 	useNotificationsInhibitor,
 	useSortedConversationList,
@@ -25,7 +24,11 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
 import rnutil from '@berty-tech/rnutil'
-import { useContactsDict, useConversationsDict } from '@berty-tech/react-redux'
+import {
+	useContactsDict,
+	useConversationsDict,
+	useIncomingContactRequests,
+} from '@berty-tech/react-redux'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'
@@ -83,7 +86,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 			: false,
 	)
 	// TODO: do something to animate the requests
-	const requests: any[] = useIncomingContactRequests()
+	const requests = useIncomingContactRequests()
 	const conversations = useSortedConversationList()
 	const isConversation: number = useConversationsCount()
 	const [layoutRequests, onLayoutRequests] = useLayout()
