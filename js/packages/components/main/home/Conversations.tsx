@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, StyleProp, TouchableHighlight, View, ViewProps } from 'react-native'
+import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -10,6 +10,8 @@ import {
 	useLastConvInteraction,
 	useThemeColor,
 	ParsedInteraction,
+	Suggestion,
+	Configuration,
 } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 import { useAppSelector, useOneToOneContact } from '@berty-tech/react-redux'
@@ -20,14 +22,13 @@ import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 import { selectChatInputSending } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 
-type ConversationsProps = ViewProps & {
-	items: Array<any>
-	suggestions: Array<any>
-	configurations: Array<any>
-	addBot: any
-}
-
-type ConversationsItemProps = any
+type AddBotCallback = React.Dispatch<
+	React.SetStateAction<{
+		link: string
+		displayName: string
+		isVisible: boolean
+	}>
+>
 
 // Functions
 
@@ -35,7 +36,7 @@ const MessageStatus: React.FC<{
 	interaction: ParsedInteraction
 	isAccepted: boolean
 	sending?: boolean
-}> = ({ interaction, isAccepted, sending }) => {
+}> = React.memo(({ interaction, isAccepted, sending }) => {
 	const colors = useThemeColor()
 	if (interaction?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage && isAccepted) {
 		return null
@@ -55,15 +56,15 @@ const MessageStatus: React.FC<{
 			fill={colors['background-header']}
 		/>
 	)
-}
+})
 
 const interactionsFilter = (inte: ParsedInteraction) =>
 	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage
 
-const ConversationsItem: React.FC<ConversationsItemProps> = props => {
+const ConversationsItem: React.FC<
+	beapi.messenger.IConversation & { fake?: boolean; isLast: boolean }
+> = React.memo(props => {
 	const {
-		publicKey = '',
-		displayName = '',
 		fake = false,
 		type = beapi.messenger.Conversation.Type.ContactType,
 		unreadCount,
@@ -71,6 +72,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 		lastUpdate,
 		isLast,
 	} = props
+
+	const publicKey = props.publicKey || ''
+	const displayName = props.displayName || ''
 
 	const { t } = useTranslation()
 
@@ -207,7 +211,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 							]}
 						>
 							<>
-								<UnreadCount value={unreadCount} isConvBadge />
+								<UnreadCount value={unreadCount || 0} isConvBadge />
 								{displayDate && (
 									<Text
 										style={[
@@ -286,17 +290,17 @@ const ConversationsItem: React.FC<ConversationsItemProps> = props => {
 			</View>
 		</TouchableHighlight>
 	) : null
-}
+})
 
 const SuggestionsItem: React.FC<{
 	displayName: string
 	desc: string
 	link: string
-	addBot: any
-	icon: HardcodedAvatarKey
+	addBot: AddBotCallback
+	icon: string
 	isLast?: boolean
-	style?: StyleProp<any>
-}> = ({ displayName, desc, link, addBot, icon, style, isLast = false }) => {
+	style?: ViewStyle
+}> = React.memo(({ displayName, desc, link, addBot, icon, style, isLast = false }) => {
 	const [{ row, border, flex, padding, text, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
@@ -328,7 +332,7 @@ const SuggestionsItem: React.FC<{
 							},
 						]}
 					>
-						<HardcodedAvatar size={40 * scaleSize} name={icon} />
+						<HardcodedAvatar size={40 * scaleSize} name={icon as HardcodedAvatarKey} />
 					</View>
 					<View
 						style={[
@@ -397,17 +401,18 @@ const SuggestionsItem: React.FC<{
 			</TouchableHighlight>
 		</>
 	)
-}
+})
 
-export const Conversations: React.FC<ConversationsProps> = ({
-	items,
-	suggestions,
-	configurations,
-	addBot,
-	onLayout,
-}) => {
+export const Conversations: React.FC<
+	ViewProps & {
+		items: beapi.messenger.IConversation[]
+		suggestions: Suggestion[]
+		configurations: Configuration[]
+		addBot: AddBotCallback
+	}
+> = React.memo(({ items, suggestions, configurations, addBot, onLayout }) => {
 	const [{ padding }] = useStyles()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const colors = useThemeColor()
 
 	return items.length || suggestions.length || configurations.length ? (
@@ -422,22 +427,22 @@ export const Conversations: React.FC<ConversationsProps> = ({
 			]}
 		>
 			{/* TODO configurations conv ? */}
-			{items.map((i, key) => (
+			{items.map((conv, index) => (
 				<ConversationsItem
-					key={i.publicKey}
-					{...i}
-					isLast={!suggestions.length && key === items.length - 1}
+					key={conv.publicKey}
+					{...conv}
+					isLast={!suggestions.length && index === items.length - 1}
 				/>
 			))}
-			{suggestions.map((i: any, key: any) => (
+			{suggestions.map((suggestion, index) => (
 				<SuggestionsItem
-					key={key}
-					isLast={key === suggestions.length - 1}
-					{...i}
-					desc={`${t('main.suggestion-display-name-initial')} ${i.displayName}`}
+					key={`__suggestion_${index}`}
+					isLast={index === suggestions.length - 1}
+					{...suggestion}
+					desc={`${t('main.suggestion-display-name-initial')} ${suggestion.displayName}`}
 					addBot={addBot}
 				/>
 			))}
 		</View>
 	) : null
-}
+})
