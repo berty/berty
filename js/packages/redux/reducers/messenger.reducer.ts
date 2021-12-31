@@ -148,6 +148,7 @@ const slice = createSlice({
 				conversationsAdapter.upsertOne(state.conversations, {
 					...payload.conversation,
 					isOpen: !!payload.conversation.isOpen,
+					unreadCount: payload.conversation.unreadCount || 0,
 				})
 
 				const convPk = payload.conversation.publicKey
