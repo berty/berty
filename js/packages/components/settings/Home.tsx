@@ -14,13 +14,12 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import {
-	useAccount,
 	MessengerActions,
 	useMessengerContext,
 	closeAccountWithProgress,
 	useThemeColor,
 } from '@berty-tech/store'
-import { useAppDispatch } from '@berty-tech/react-redux'
+import { useAppDispatch, useAccount } from '@berty-tech/react-redux'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { AccountAvatar } from '../avatars'
@@ -92,7 +91,7 @@ const HomeHeaderAvatar: React.FC = () => {
 
 	React.useEffect(() => {
 		const getAccountLink = async () => {
-			if (account?.displayName) {
+			if (account.displayName) {
 				const ret = await ctx.client?.instanceShareableBertyID({
 					reset: false,
 					displayName: account.displayName,
@@ -122,7 +121,7 @@ const HomeHeaderAvatar: React.FC = () => {
 						<AccountAvatar size={80 * scaleSize} />
 					</View>
 					<Text style={[_styles.headerNameText, { color: colors['main-text'] }]}>
-						{account?.displayName || ''}
+						{account.displayName || ''}
 					</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
 						{link ? (
@@ -153,7 +152,7 @@ const HomeBodySettings: React.FC = () => {
 	const reduxDispatch = useAppDispatch()
 	const { dispatch } = useMessengerContext()
 	const account = useAccount()
-	const url = account?.link
+	const url = account.link
 	const { navigate } = useNavigation()
 
 	return (

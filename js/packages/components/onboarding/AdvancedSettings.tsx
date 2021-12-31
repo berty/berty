@@ -26,11 +26,11 @@ import {
 	useMessengerContext,
 	useMountEffect,
 	useThemeColor,
-	useAccount,
 	serviceTypes,
 	useAccountServices,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+import { useAccount } from '@berty-tech/react-redux'
 
 import { showNeedRestartNotification } from '../helpers'
 import { ButtonSetting } from '../shared-components'
@@ -460,7 +460,7 @@ const Services: React.FC<{
 		const colors = useThemeColor()
 		const { t } = useTranslation()
 		const navigation = useNavigation()
-		const account: beapi.messenger.IAccount | null | undefined = useAccount()
+		const account = useAccount()
 		const services = useAccountServices()
 		const [{ margin, text }, { scaleSize }] = useStyles()
 		const ctx = useMessengerContext()
@@ -502,7 +502,7 @@ const Services: React.FC<{
 					toggled
 					toggleStatus='secondary'
 					varToggle={
-						(replicationServices.length !== 0 && account?.replicateNewGroupsAutomatically) ||
+						(replicationServices.length !== 0 && account.replicateNewGroupsAutomatically) ||
 						undefined
 					}
 					actionToggle={async () => {
@@ -510,7 +510,7 @@ const Services: React.FC<{
 							return
 						}
 						await ctx.client?.replicationSetAutoEnable({
-							enabled: !account?.replicateNewGroupsAutomatically,
+							enabled: !account.replicateNewGroupsAutomatically,
 						})
 						showNeedRestartNotification(props.showNotification, ctx, t)
 					}}

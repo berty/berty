@@ -2,6 +2,10 @@ import * as m from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { useAppSelector } from '../core'
 
+export const useAccount = () => {
+	return useAppSelector(m.selectAccount)
+}
+
 export const useConversationInteractions = (convPk: string) => {
 	return useAppSelector(state => m.selectConversationInteractions(state, convPk))
 }

@@ -6,7 +6,6 @@ import { withBadge } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
 import {
-	useAccount,
 	useContact,
 	useMember,
 	useConversation,
@@ -20,6 +19,7 @@ import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
 import OrangeBotAvatar from '@berty-tech/assets/berty_bot_orange_bg.png'
 import BlueDevAvatar from '@berty-tech/assets/berty_dev_blue_bg.png'
+import { useAccount } from '@berty-tech/react-redux'
 
 import AttachmentImage from './AttachmentImage'
 import GroupAvatar from './main/Avatar_Group_Copy_19.png'
@@ -185,8 +185,8 @@ export const AccountAvatar: React.FC<{
 	const colors = useThemeColor()
 	return (
 		<GenericAvatar
-			nameSeed={account?.displayName}
-			cid={account?.avatarCid}
+			nameSeed={account.displayName}
+			cid={account.avatarCid}
 			size={size}
 			colorSeed={colors['main-text']}
 			style={style}

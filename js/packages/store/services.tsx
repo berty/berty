@@ -9,8 +9,8 @@ import { Service } from '@berty-tech/grpc-bridge'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { useAccount } from '@berty-tech/react-redux'
 
-import { useAccount } from './hooks'
 import { MessengerState } from './types'
 
 export enum serviceTypes {
@@ -25,7 +25,7 @@ export const bertyOperatedServer = 'https://services.berty.tech/'
 
 export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 	const account = useAccount()
-	if (!account?.serviceTokens) {
+	if (!account.serviceTokens) {
 		return []
 	}
 

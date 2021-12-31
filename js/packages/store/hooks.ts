@@ -81,10 +81,6 @@ export const useStylesBertyId = ({
 	}
 }
 
-export const useAccount = () => {
-	return useAppSelector(state => state.messenger.account)
-}
-
 export const useMessengerClient = () => {
 	const ctx = useMessengerContext()
 	return ctx.client
