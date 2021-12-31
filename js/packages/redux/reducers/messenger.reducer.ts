@@ -438,12 +438,15 @@ export const selectAccount = (state: LocalRootState) => {
 
 export const selectInteractionAuthor = (state: LocalRootState, convPk: string, cid: string) => {
 	const inte = selectInteraction(state, convPk, cid)
+	if (!inte) {
+		return
+	}
 	const conv = selectConversation(state, convPk)
 	switch (conv?.type) {
 		case beapi.messenger.Conversation.Type.MultiMemberType:
-			return selectMember(state, convPk, inte?.memberPublicKey || '')
+			return selectMember(state, convPk, inte.memberPublicKey || '')
 		case beapi.messenger.Conversation.Type.ContactType:
-			return inte?.isMine ? selectAccount(state) : selectContact(state, conv.contactPublicKey || '')
+			return inte.isMine ? selectAccount(state) : selectContact(state, conv.contactPublicKey || '')
 	}
 }
 
