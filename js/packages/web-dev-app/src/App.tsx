@@ -4,7 +4,7 @@ import {
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
 	useContactList,
-	useConversationList,
+	useAllConversations,
 	useMountEffect,
 	MsgrProvider,
 	MessengerContext,
@@ -178,7 +178,7 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 		},
 		[ctx.client],
 	)
-	const conversations = useConversationList()
+	const conversations = useAllConversations()
 
 	if (value.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
 		const payload = value.payload

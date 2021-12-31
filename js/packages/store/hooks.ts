@@ -12,11 +12,7 @@ import {
 } from '@berty-tech/react-redux'
 import { selectChecklistSeen } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useStyles } from '@berty-tech/styles'
-import {
-	selectAllConversations,
-	selectConversation,
-	selectMember,
-} from '@berty-tech/redux/reducers/messenger.reducer'
+import { selectConversation, selectMember } from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { useMessengerContext } from './context'
 import {
@@ -93,14 +89,6 @@ export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
 	)
 }
 
-export const useConversationList = () => {
-	return useAppSelector(state => selectAllConversations(state))
-}
-
-export const useSortedConversationList = () => {
-	return useConversationList()
-}
-
 export const useConversation = (
 	publicKey: Maybe<string>,
 ): (beapi.messenger.IConversation & { fake?: Maybe<boolean> }) | undefined => {
@@ -110,7 +98,7 @@ export const useConversation = (
 const emptyObject = {}
 
 export const useConversationsCount = () => {
-	return useConversationList().length
+	return useAllConversations().length
 }
 
 export const useMember = <
@@ -204,7 +192,7 @@ export const useGenerateFakeMultiMembers = () => {
 export const useGenerateFakeMessages = () => {
 	return
 	/*const ctx = useMessengerContext()
-	const fakeConversationList = useConversationList().filter(c => (c as any).fake === true)
+	const fakeConversationList = useAllConversations().filter(c => (c as any).fake === true)
 	const fakeMembersListList = fakeConversationList.map(conv =>
 		Object.values(ctx.members[conv.publicKey || ''] || {}).filter((member: any) => member.fake),
 	)

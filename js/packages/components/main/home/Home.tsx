@@ -17,7 +17,6 @@ import {
 	useConversationsCount,
 	useMessengerContext,
 	useNotificationsInhibitor,
-	useSortedConversationList,
 	useThemeColor,
 } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
@@ -28,6 +27,7 @@ import {
 	useContactsDict,
 	useConversationsDict,
 	useIncomingContactRequests,
+	useAllConversations,
 } from '@berty-tech/react-redux'
 
 import { useLayout } from '../../hooks'
@@ -87,7 +87,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	)
 	// TODO: do something to animate the requests
 	const requests = useIncomingContactRequests()
-	const conversations = useSortedConversationList()
+	const conversations = useAllConversations()
 	const isConversation: number = useConversationsCount()
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()
