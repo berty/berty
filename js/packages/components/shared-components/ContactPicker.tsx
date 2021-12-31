@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useAccountContactSearchResults, useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty-tech/store/hooks'
 
 import { ContactAvatar } from '../avatars'
-import { useDispatch, useSelector } from 'react-redux'
 import {
 	addMemberToInvitationList,
 	removeMemberFromInvitationListById,
@@ -16,6 +15,7 @@ import {
 	selectInvitationListMembers,
 } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
 import { berty } from '@berty-tech/api/root.pb'
+import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty-tech/react-redux'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -42,7 +42,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 	const [{ row, margin, padding }, { scaleSize }] = useStyles()
 	const _styles = useStylesCreateGroup()
 	const colors = useThemeColor()
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 
 	return (
 		<View>
@@ -91,10 +91,10 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts })
 	const [{ padding, row, margin, border }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const [searchText, setSearchText] = useState('')
-	const searchContacts = useAccountContactSearchResults(searchText)
+	const searchContacts = useContactSearchResults(searchText)
 	const { t }: { t: any } = useTranslation()
-	const members = useSelector(selectInvitationListMembers)
-	const dispatch = useDispatch()
+	const members = useAppSelector(selectInvitationListMembers)
+	const dispatch = useAppDispatch()
 	let contacts = searchText.length ? searchContacts : accountContacts
 	contacts = contacts.filter(
 		(contact: any) => contact.state === beapi.messenger.Contact.State.Accepted,

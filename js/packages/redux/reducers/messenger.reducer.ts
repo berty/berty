@@ -30,7 +30,7 @@ const interactionsAdapter = createEntityAdapter<ParsedInteraction>({
 	sortComparer: (a, b) => pbDateToNum(b.sentDate) - pbDateToNum(a.sentDate),
 })
 
-export const interactionsSelector = interactionsAdapter.getSelectors()
+export const interactionsSelectors = interactionsAdapter.getSelectors()
 
 type InteractionsBucket = {
 	conversationPublicKey: string
@@ -158,7 +158,7 @@ const slice = createSlice({
 					if (bucket) {
 						const newestInteractions =
 							bucket &&
-							interactionsSelector
+							interactionsSelectors
 								.selectAll(bucket.interactions)
 								.filter(
 									i =>
@@ -341,7 +341,7 @@ export const selectConversationInteractions = (state: LocalRootState, convPk: st
 	if (!bucket) {
 		return emptyList
 	}
-	return interactionsSelector.selectAll(bucket.interactions)
+	return interactionsSelectors.selectAll(bucket.interactions)
 }
 
 export const selectAllInteractionsBuckets = (state: LocalRootState) => {
@@ -429,7 +429,7 @@ export const selectInteraction = (state: LocalRootState, convPk: string, cid: st
 	if (!bucket) {
 		return
 	}
-	return interactionsSelector.selectById(bucket.interactions, cid)
+	return interactionsSelectors.selectById(bucket.interactions, cid)
 }
 
 export const selectAccount = (state: LocalRootState) => {

@@ -13,12 +13,7 @@ import { Icon } from '@ui-kitten/components'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 
 import { ScreenFC } from '@berty-tech/navigation'
-import {
-	useConversationsCount,
-	useMessengerContext,
-	useNotificationsInhibitor,
-	useThemeColor,
-} from '@berty-tech/store'
+import { useMessengerContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
@@ -88,7 +83,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	// TODO: do something to animate the requests
 	const requests = useIncomingContactRequests()
 	const conversations = useAllConversations()
-	const isConversation: number = useConversationsCount()
+	const hasConversations = conversations.length > 0
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()
 	const [layoutConvs, onLayoutConvs] = useLayout()
@@ -289,7 +284,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 								}}
 							/>
 						) : null}
-						{!isConversation && !hasSuggestion && !hasConfigurations ? (
+						{!hasConversations && !hasSuggestion && !hasConfigurations ? (
 							<View style={{ backgroundColor: colors['main-background'] }}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>

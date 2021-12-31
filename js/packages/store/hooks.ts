@@ -7,13 +7,11 @@ import darkTheme from '@berty-tech/styles/darktheme-default.json'
 import {
 	useAllConversations,
 	useAppSelector,
-	useConversationInteractions,
 	useAllContacts,
 	useConversation,
 } from '@berty-tech/react-redux'
 import { selectChecklistSeen } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useStyles } from '@berty-tech/styles'
-import { selectMember } from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { useMessengerContext } from './context'
 import {
@@ -80,31 +78,7 @@ export const useMessengerClient = () => {
 	return ctx.client
 }
 
-export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
-	const contacts = useAllContacts()
-	if (!searchText) {
-		return []
-	}
-	return contacts.filter(contact =>
-		contact.displayName?.toLowerCase().includes(searchText.toLowerCase()),
-	)
-}
-
 const emptyObject = {}
-
-export const useConversationsCount = () => {
-	return useAllConversations().length
-}
-
-export const useMember = <
-	T extends { publicKey: Maybe<string>; conversationPublicKey: Maybe<string> },
->(
-	props: T,
-) => {
-	return useAppSelector(state =>
-		selectMember(state, props.conversationPublicKey || '', props.publicKey || ''),
-	)
-}
 
 export const usePersistentOptions = () => {
 	const ctx = useMessengerContext()
@@ -221,27 +195,6 @@ export const useDeleteFakeData = () => {
 		ctx.dispatch({
 			type: MessengerActions.DeleteFakeData,
 		})
-}
-
-export type SortedConvsFilter = Parameters<
-	ReturnType<typeof useConversationInteractions>['find']
->[0]
-
-export const useLastConvInteraction = (
-	convPublicKey: Maybe<string>,
-	filterFunc?: Maybe<SortedConvsFilter>,
-) => {
-	let intes = useConversationInteractions(convPublicKey || '')
-
-	if (intes.length <= 0) {
-		return null
-	}
-
-	if (!filterFunc) {
-		return intes[0]
-	}
-
-	return intes.find(filterFunc) || null
 }
 
 const useDispatch = () => {

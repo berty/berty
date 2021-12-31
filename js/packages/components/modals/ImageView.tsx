@@ -7,7 +7,7 @@ import Share from 'react-native-share'
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 import { useStyles } from '@berty-tech/styles'
-import { useConversationsCount, useThemeColor } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
 import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
@@ -20,7 +20,6 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 	const [{ border, padding }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
-	const hasConversation = useConversationsCount()
 	const { goBack } = useNavigation()
 
 	const [currentIndex, setCurrentIndex] = useState(0)
@@ -66,17 +65,13 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 					})
 			},
 		},
-		...(hasConversation
-			? [
-					{
-						title: t('chat.files.forward-berty'),
-						onPress() {
-							setForwardModalVisibility(true)
-							setModalVisibility(false)
-						},
-					},
-			  ]
-			: []),
+		{
+			title: t('chat.files.forward-berty'),
+			onPress() {
+				setForwardModalVisibility(true)
+				setModalVisibility(false)
+			},
+		},
 	]
 
 	return (

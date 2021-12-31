@@ -62,6 +62,15 @@ export const useInteractionAuthor = (convPk: string, cid: string) => {
 	return useAppSelector(state => m.selectInteractionAuthor(state, convPk, cid))
 }
 
+export const useMember = (
+	conversationPublicKey: string | null | undefined,
+	publicKey: string | null | undefined,
+) => {
+	return useAppSelector(state =>
+		m.selectMember(state, conversationPublicKey || '', publicKey || ''),
+	)
+}
+
 export const useIncomingContactRequests = () => {
 	const contacts = useAllContacts()
 	return useMemo(
@@ -77,11 +86,43 @@ export const useAllInteractions = () => {
 	return useMemo(
 		() =>
 			buckets.reduce(
-				(all, bucket) => [...all, ...m.interactionsSelector.selectAll(bucket.interactions)],
+				(all, bucket) => [...all, ...m.interactionsSelectors.selectAll(bucket.interactions)],
 				emptyList as ParsedInteraction[],
 			),
 		[buckets],
 	)
+}
+
+export const useContactSearchResults = (searchText: string | null | undefined) => {
+	const contacts = useAllContacts()
+	return useMemo(() => {
+		if (!searchText) {
+			return emptyList
+		}
+		return contacts.filter(contact =>
+			contact.displayName?.toLowerCase().includes(searchText.toLowerCase()),
+		)
+	}, [searchText, contacts])
+}
+
+export type InteractionFilter = Parameters<
+	ReturnType<typeof useConversationInteractions>['find']
+>[0]
+
+export const useLastConvInteraction = (
+	convPublicKey: string | null | undefined,
+	filterFunc?: InteractionFilter | null | undefined,
+) => {
+	const intes = useConversationInteractions(convPublicKey || '')
+	return useMemo(() => {
+		if (intes.length <= 0) {
+			return
+		}
+		if (typeof filterFunc !== 'function') {
+			return intes[0]
+		}
+		return intes.find(filterFunc)
+	}, [intes, filterFunc])
 }
 
 /*
