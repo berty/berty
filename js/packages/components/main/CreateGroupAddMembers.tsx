@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useContactList, useThemeColor } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 
 import { ContactPicker } from '../shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'
@@ -24,6 +24,7 @@ import {
 } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
 import { AppDispatch } from '@berty-tech/redux/store'
 import { berty } from '@berty-tech/api/root.pb'
+import { useAllContacts } from '@berty-tech/react-redux'
 
 export const Header: React.FC<{
 	title: string
@@ -106,8 +107,7 @@ export const Header: React.FC<{
 
 const MemberItem: React.FC<{
 	member: berty.messenger.v1.IContact
-	canRemove: boolean | undefined
-}> = ({ member, canRemove }) => {
+}> = ({ member }) => {
 	const [{ padding, column, text, row, maxWidth, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const dispatch = useDispatch<AppDispatch>()
@@ -129,41 +129,36 @@ const MemberItem: React.FC<{
 					{member.displayName}
 				</TextNative>
 			</View>
-			{canRemove === undefined ||
-				(canRemove === true && (
-					<TouchableOpacity
-						style={[
-							border.shadow.medium,
-							border.radius.medium,
-							column.justify,
-							{
-								height: 25 * scaleSize,
-								width: 25 * scaleSize,
-								position: 'absolute',
-								top: 5 * scaleSize,
-								right: 9 * scaleSize,
-								backgroundColor: colors['main-background'],
-								shadowColor: colors.shadow,
-							},
-						]}
-						onPress={() => dispatch(removeMemberFromInvitationListById(member.publicKey!))}
-					>
-						<Icon
-							name='close-outline'
-							width={20 * scaleSize}
-							height={20 * scaleSize}
-							fill={colors['warning-asset']}
-							style={row.item.justify}
-						/>
-					</TouchableOpacity>
-				))}
+			<TouchableOpacity
+				style={[
+					border.shadow.medium,
+					border.radius.medium,
+					column.justify,
+					{
+						height: 25 * scaleSize,
+						width: 25 * scaleSize,
+						position: 'absolute',
+						top: 5 * scaleSize,
+						right: 9 * scaleSize,
+						backgroundColor: colors['main-background'],
+						shadowColor: colors.shadow,
+					},
+				]}
+				onPress={() => dispatch(removeMemberFromInvitationListById(member.publicKey!))}
+			>
+				<Icon
+					name='close-outline'
+					width={20 * scaleSize}
+					height={20 * scaleSize}
+					fill={colors['warning-asset']}
+					style={row.item.justify}
+				/>
+			</TouchableOpacity>
 		</View>
 	)
 }
 
-export const MemberList: React.FC<{
-	initialMembers?: any[]
-}> = ({ initialMembers = [] }) => {
+export const MemberList = () => {
 	const [{ padding }] = useStyles()
 	const members = useSelector(selectInvitationListMembers)
 
@@ -175,17 +170,7 @@ export const MemberList: React.FC<{
 				contentContainerStyle={[padding.left.medium]}
 			>
 				{members.map(member => (
-					<MemberItem
-						key={member.publicKey}
-						member={member}
-						canRemove={
-							initialMembers
-								? !initialMembers.find(
-										initialMember => initialMember.publicKey === member.publicKey,
-								  )
-								: undefined
-						}
-					/>
+					<MemberItem key={member.publicKey} member={member} />
 				))}
 			</ScrollView>
 		</View>
@@ -196,8 +181,8 @@ export const CreateGroupAddMembers: React.FC = () => {
 	const [{ flex, margin }, { scaleHeight }] = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
-	const { t }: { t: any } = useTranslation()
-	const accountContacts = useContactList()
+	const { t } = useTranslation()
+	const accountContacts = useAllContacts()
 
 	return (
 		<Layout style={[flex.tiny]}>

@@ -15,7 +15,6 @@ import { useStyles } from '@berty-tech/styles'
 import {
 	selectAllConversations,
 	selectConversation,
-	selectConversationMembers,
 	selectMember,
 } from '@berty-tech/redux/reducers/messenger.reducer'
 
@@ -84,19 +83,15 @@ export const useMessengerClient = () => {
 	return ctx.client
 }
 
-export const useContactList = () => {
-	return useAllContacts()
-}
-
 const ContactState = beapi.messenger.Contact.State
 
 export const useIncomingContactRequests = () => {
-	const contacts = useContactList()
+	const contacts = useAllContacts()
 	return useMemo(() => contacts.filter(c => c.state === ContactState.IncomingRequest), [contacts])
 }
 
 export const useOutgoingContactRequests = () => {
-	const contacts = useContactList()
+	const contacts = useAllContacts()
 	return useMemo(
 		() =>
 			contacts.filter(
@@ -111,7 +106,7 @@ export const useOutgoingContactRequests = () => {
 }
 
 export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
-	const contacts = useContactList()
+	const contacts = useAllContacts()
 	if (!searchText) {
 		return []
 	}
@@ -148,10 +143,6 @@ export const useMember = <
 	return useAppSelector(state =>
 		selectMember(state, props.conversationPublicKey || '', props.publicKey || ''),
 	)
-}
-
-export const useConvMemberList = (publicKey: Maybe<string>) => {
-	return useAppSelector(state => selectConversationMembers(state, publicKey || ''))
 }
 
 export const usePersistentOptions = () => {
