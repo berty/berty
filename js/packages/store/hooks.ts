@@ -8,7 +8,6 @@ import {
 	useAllConversations,
 	useAppSelector,
 	useConversationInteractions,
-	useContactsDict,
 	useAllContacts,
 } from '@berty-tech/react-redux'
 import { selectChecklistSeen } from '@berty-tech/redux/reducers/checklist.reducer'
@@ -83,10 +82,6 @@ export const useStylesBertyId = ({
 export const useMessengerClient = () => {
 	const ctx = useMessengerContext()
 	return ctx.client
-}
-
-export const useContacts = () => {
-	return useContactsDict()
 }
 
 export const useContactList = () => {
