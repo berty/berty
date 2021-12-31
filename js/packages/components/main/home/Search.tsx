@@ -7,14 +7,8 @@ import { useTranslation } from 'react-i18next'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import {
-	useConversation,
-	useThemeColor,
-	parseInteraction,
-	pbDateToNum,
-	ParsedInteraction,
-} from '@berty-tech/store'
-import { useContact, useConversationInteractions } from '@berty-tech/react-redux'
+import { useThemeColor, parseInteraction, pbDateToNum, ParsedInteraction } from '@berty-tech/store'
+import { useContact, useConversationInteractions, useConversation } from '@berty-tech/react-redux'
 
 import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'

@@ -3,10 +3,10 @@ import { ActivityIndicator, Text as TextNative, TouchableOpacity, View } from 'r
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
-import { useMessengerClient, useConversation, useThemeColor } from '@berty-tech/store'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
-import { useOneToOneContact } from '@berty-tech/react-redux'
+import { useOneToOneContact, useConversation } from '@berty-tech/react-redux'
 
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'

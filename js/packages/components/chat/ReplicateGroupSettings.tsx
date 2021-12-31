@@ -6,7 +6,6 @@ import { Layout } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import {
-	useConversation,
 	useMessengerContext,
 	Maybe,
 	useThemeColor,
@@ -16,6 +15,7 @@ import {
 	replicateGroup,
 } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
+import { useConversation } from '@berty-tech/react-redux'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 

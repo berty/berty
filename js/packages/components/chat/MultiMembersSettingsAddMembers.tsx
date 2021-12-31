@@ -8,9 +8,14 @@ import Long from 'long'
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import { useConversation, useMessengerClient, useThemeColor } from '@berty-tech/store'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
-import { useAllContacts, useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
+import {
+	useAllContacts,
+	useAppDispatch,
+	useAppSelector,
+	useConversation,
+} from '@berty-tech/react-redux'
 
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'

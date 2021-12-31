@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
-import { useConversation, useThemeColor } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useContact } from '@berty-tech/react-redux'
+import { useContact, useConversation } from '@berty-tech/react-redux'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'

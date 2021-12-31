@@ -5,20 +5,14 @@ import { SHA3 } from 'sha3'
 import { withBadge } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	useMember,
-	useConversation,
-	Maybe,
-	useMessengerContext,
-	useThemeColor,
-} from '@berty-tech/store'
+import { useMember, Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { navigate } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
 import OrangeBotAvatar from '@berty-tech/assets/berty_bot_orange_bg.png'
 import BlueDevAvatar from '@berty-tech/assets/berty_dev_blue_bg.png'
-import { useAccount, useContact } from '@berty-tech/react-redux'
+import { useAccount, useContact, useConversation } from '@berty-tech/react-redux'
 
 import AttachmentImage from './AttachmentImage'
 import GroupAvatar from './main/Avatar_Group_Copy_19.png'

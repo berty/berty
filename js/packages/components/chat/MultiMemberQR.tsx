@@ -5,9 +5,9 @@ import { Icon, Layout } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
-import { useConversation, useStylesBertyId, useThemeColor } from '@berty-tech/store'
+import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useAccount } from '@berty-tech/react-redux'
+import { useAccount, useConversation } from '@berty-tech/react-redux'
 
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'

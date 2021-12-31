@@ -12,7 +12,6 @@ import { ScreenFC } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import {
 	useMessengerContext,
-	useConversation,
 	useReadEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
@@ -20,7 +19,7 @@ import {
 } from '@berty-tech/store'
 import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
-import { useContact } from '@berty-tech/react-redux'
+import { useContact, useConversation } from '@berty-tech/react-redux'
 
 import { ContactAvatar } from '../avatars'
 import { ChatDate } from './common'

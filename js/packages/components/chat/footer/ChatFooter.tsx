@@ -6,13 +6,7 @@ import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
 
-import {
-	Maybe,
-	useConversation,
-	useMessengerClient,
-	useMessengerContext,
-	useThemeColor,
-} from '@berty-tech/store'
+import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
 	resetChatInput,
@@ -27,7 +21,7 @@ import {
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
-import { useAppDispatch, useAppSelector, useMedias } from '@berty-tech/react-redux'
+import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty-tech/react-redux'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { useReplyReaction } from '../ReplyReactionContext'
@@ -72,7 +66,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const [showAddFileMenu, setShowAddFileMenu] = React.useState(false)
 
 		// computed
-		const isFake = !!conversation?.fake
+		const isFake = !!(conversation as any)?.fake
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
 		const horizontalGutter = 8 * scaleSize
 		const showQuickButtons =

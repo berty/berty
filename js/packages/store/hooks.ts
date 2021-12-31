@@ -9,10 +9,11 @@ import {
 	useAppSelector,
 	useConversationInteractions,
 	useAllContacts,
+	useConversation,
 } from '@berty-tech/react-redux'
 import { selectChecklistSeen } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useStyles } from '@berty-tech/styles'
-import { selectConversation, selectMember } from '@berty-tech/redux/reducers/messenger.reducer'
+import { selectMember } from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { useMessengerContext } from './context'
 import {
@@ -87,12 +88,6 @@ export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
 	return contacts.filter(contact =>
 		contact.displayName?.toLowerCase().includes(searchText.toLowerCase()),
 	)
-}
-
-export const useConversation = (
-	publicKey: Maybe<string>,
-): (beapi.messenger.IConversation & { fake?: Maybe<boolean> }) | undefined => {
-	return useAppSelector(state => selectConversation(state, publicKey || ''))
 }
 
 const emptyObject = {}

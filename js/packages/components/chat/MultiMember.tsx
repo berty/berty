@@ -11,7 +11,6 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import {
-	useConversation,
 	useLastConvInteraction,
 	useReadEffect,
 	useNotificationsInhibitor,
@@ -21,6 +20,7 @@ import {
 } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
+import { useConversation } from '@berty-tech/react-redux'
 
 import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'

@@ -26,6 +26,10 @@ export const useAllConversations = () => {
 	return useAppSelector(m.selectAllConversations)
 }
 
+export const useConversation = (publicKey: string | null | undefined) => {
+	return useAppSelector(state => m.selectConversation(state, publicKey || ''))
+}
+
 export const useOneToOneContact = (convPk: string) => {
 	return useAppSelector(state => m.selectConversationContact(state, convPk))
 }

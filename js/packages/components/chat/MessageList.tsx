@@ -9,15 +9,13 @@ import {
 import moment from 'moment'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	fetchMore,
-	useConversation,
-	pbDateToNum,
-	ParsedInteraction,
-	useMessengerClient,
-} from '@berty-tech/store'
+import { fetchMore, pbDateToNum, ParsedInteraction, useMessengerClient } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
-import { useConversationInteractions, useConversationMembersDict } from '@berty-tech/react-redux'
+import {
+	useConversationInteractions,
+	useConversationMembersDict,
+	useConversation,
+} from '@berty-tech/react-redux'
 
 import { InfosChat } from '../InfosChat'
 import { Message } from './message'
