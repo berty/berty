@@ -233,3 +233,19 @@ func (am *AppMessage) TextRepresentation() (string, error) {
 func (m *AppMessage_UserMessage) TextRepresentation() (string, error) {
 	return m.GetBody(), nil
 }
+
+func (m *Member) Equals(other *Member) bool {
+	if m == nil && other == nil {
+		return true
+	}
+	if !(m != nil && other != nil) {
+		return false
+	}
+	return m.PublicKey == other.PublicKey &&
+		m.DisplayName == other.DisplayName &&
+		m.AvatarCID == other.AvatarCID &&
+		m.ConversationPublicKey == other.ConversationPublicKey &&
+		m.IsMe == other.IsMe &&
+		m.IsCreator == other.IsCreator &&
+		m.InfoDate == other.InfoDate
+}

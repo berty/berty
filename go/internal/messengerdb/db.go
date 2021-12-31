@@ -1089,7 +1089,7 @@ func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, 
 		}
 		member.DisplayName = displayName
 
-		return tx.db.Create(&member).Error
+		return tx.db.Create(member).Error
 	}); errors.Is(err, errcode.ErrDBEntryAlreadyExists) {
 		return member, err
 	} else if err != nil {
@@ -1139,6 +1139,9 @@ func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m messengertypes.Memb
 	um, err := d.GetMemberByPK(memberPK, groupPK)
 	if err != nil {
 		return nil, false, errcode.ErrDBRead.Wrap(err)
+	}
+	if um.Equals(em) {
+		um = nil
 	}
 
 	commonDetails := []tyber.StepMutator{tyber.WithJSONDetail("FinalMember", um)}
@@ -1741,16 +1744,19 @@ func (d *DBWrapper) CreateOrUpdateReaction(reaction *messengertypes.Reaction) (b
 	return updated, nil
 }
 
-func (d *DBWrapper) MarkMemberAsConversationCreator(memberPK, conversationPK string) error {
+func (d *DBWrapper) MarkMemberAsConversationCreator(memberPK, conversationPK string) (*messengertypes.Member, error) {
 	member, err := d.GetMemberByPK(memberPK, conversationPK)
 	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
-	member.IsCreator = true
-	if err := d.db.Save(member).Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+	if !member.IsCreator {
+		member.IsCreator = true
+		if err := d.db.Save(member).Error; err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(err)
+		}
+		return member, nil
 	}
 
-	return nil
+	return nil, nil
 }
