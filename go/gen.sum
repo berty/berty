@@ -1,11 +1,11 @@
-4f8681f508de64b9feeec4276cdc53d2c8a7adbe  ../api/accounttypes.proto
+5205a7b4cc12d3958cc5fd2ef9d8c58f5b17444e  ../api/accounttypes.proto
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
 762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
-dc4214fea2dd48bb6e4c2dfba0cb39db9705de42  ../api/messengertypes.proto
+d6e0f1014c2721231d044f013071be0cc3f56d1a  ../api/messengertypes.proto
 f51dcb8b9bfb1f4f8d9a809cf8eaab1349ca6814  ../api/protocoltypes.proto
 50992f4b6a9afb23b8dc3ee482bd10b48a445f45  ../api/pushtypes.proto
 3686d885867ef2510162de07d79ea4e6d13e5bd9  Makefile

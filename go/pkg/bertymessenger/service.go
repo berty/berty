@@ -35,7 +35,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -354,11 +353,11 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	return &svc, nil
 }
 
-func (svc *service) OpenProtocol(req *messengertypes.OpenProtocol_Request, server messengertypes.MessengerService_OpenProtocolServer) error {
+func (svc *service) OpenProtocol(req *mt.OpenProtocol_Request, server mt.MessengerService_OpenProtocolServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (svc *service) CloseProtocol(req *messengertypes.CloseProtocol_Request, server messengertypes.MessengerService_CloseProtocolServer) error {
+func (svc *service) CloseProtocol(req *mt.CloseProtocol_Request, server mt.MessengerService_CloseProtocolServer) error {
 	return errcode.ErrNotImplemented
 }
 

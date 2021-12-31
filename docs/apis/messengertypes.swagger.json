@@ -1429,6 +1429,37 @@
         }
       }
     },
+    "NetworkConfigDHTFlag": {
+      "type": "string",
+      "enum": [
+        "DHTUndefined",
+        "DHTDisabled",
+        "DHTClient",
+        "DHTServer",
+        "DHTAuto",
+        "DHTAutoServer"
+      ],
+      "default": "DHTUndefined"
+    },
+    "NetworkConfigFlag": {
+      "type": "string",
+      "enum": [
+        "Undefined",
+        "Disabled",
+        "Enabled"
+      ],
+      "default": "Undefined"
+    },
+    "NetworkConfigTorFlag": {
+      "type": "string",
+      "enum": [
+        "TorUndefined",
+        "TorDisabled",
+        "TorOptional",
+        "TorRequired"
+      ],
+      "default": "TorUndefined"
+    },
     "OrbitDBReplicationStatus": {
       "type": "object",
       "properties": {
@@ -2709,6 +2740,50 @@
         }
       }
     },
+    "v1NetworkConfig": {
+      "type": "object",
+      "properties": {
+        "bootstrap": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rendezvous": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "static_relay": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dht": {
+          "$ref": "#/definitions/NetworkConfigDHTFlag"
+        },
+        "bluetooth_le": {
+          "$ref": "#/definitions/NetworkConfigFlag"
+        },
+        "apple_multipeer_connectivity": {
+          "$ref": "#/definitions/NetworkConfigFlag"
+        },
+        "android_nearby": {
+          "$ref": "#/definitions/NetworkConfigFlag"
+        },
+        "tor": {
+          "$ref": "#/definitions/NetworkConfigTorFlag"
+        },
+        "mdns": {
+          "$ref": "#/definitions/NetworkConfigFlag"
+        },
+        "show_default_services": {
+          "$ref": "#/definitions/NetworkConfigFlag"
+        }
+      }
+    },
     "v1OpenProtocolReply": {
       "type": "object",
       "properties": {
@@ -2718,7 +2793,12 @@
       }
     },
     "v1OpenProtocolRequest": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "network_config": {
+          "$ref": "#/definitions/v1NetworkConfig"
+        }
+      }
     },
     "v1OutOfStoreMessage": {
       "type": "object",

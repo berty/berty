@@ -1051,6 +1051,10 @@ Composite primary key
 
 ### OpenProtocol.Request
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| network_config | [NetworkConfig](#berty.messenger.v1.NetworkConfig) |  |  |
+
 <a name="berty.messenger.v1.PaginatedInteractionsOptions"></a>
 
 ### PaginatedInteractionsOptions

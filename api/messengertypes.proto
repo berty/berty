@@ -109,6 +109,7 @@ service MessengerService {
 
 message OpenProtocol {
   message Request {
+    NetworkConfig network_config = 1;
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;

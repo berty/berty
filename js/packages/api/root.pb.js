@@ -183,6 +183,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 3
+                      },
+                      networkConfig: {
+                        type: "berty.messenger.v1.NetworkConfig",
+                        id: 4
                       }
                     }
                   },
@@ -314,6 +318,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 5
+                      },
+                      networkConfig: {
+                        type: "berty.messenger.v1.NetworkConfig",
+                        id: 6
                       }
                     }
                   },
@@ -355,6 +363,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 4
+                      },
+                      networkConfig: {
+                        type: "berty.messenger.v1.NetworkConfig",
+                        id: 5
                       }
                     }
                   },
@@ -3862,7 +3874,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {},
                 nested: {
                   Request: {
-                    fields: {}
+                    fields: {
+                      networkConfig: {
+                        type: "NetworkConfig",
+                        id: 1
+                      }
+                    }
                   },
                   Reply: {
                     fields: {
