@@ -7,7 +7,6 @@ import darkTheme from '@berty-tech/styles/darktheme-default.json'
 import {
 	useAllConversations,
 	useAppSelector,
-	useContactConversation,
 	useConversationInteractions,
 	useContact as useReduxContact,
 	useContactsDict,
@@ -34,10 +33,6 @@ import { fakeContacts, fakeMultiMemberConversations } from './faker'
 import { ParsedInteraction } from './types.gen'
 
 export type Maybe<T> = T | null | undefined
-
-export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
-	return useContactConversation(contactPk || '')
-}
 
 export const useStylesBertyId = ({
 	iconIdSize = 45,
