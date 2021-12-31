@@ -241,7 +241,7 @@ export const useDeleteFakeData = () => {
 }
 
 export type SortedConvsFilter = Parameters<
-	ReturnType<typeof useConversationInteractions>['filter']
+	ReturnType<typeof useConversationInteractions>['find']
 >[0]
 
 export const useLastConvInteraction = (
