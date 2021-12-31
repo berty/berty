@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
-import { useContact, useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
+import { useContact } from '@berty-tech/react-redux'
 
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'

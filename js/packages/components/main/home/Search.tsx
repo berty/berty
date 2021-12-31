@@ -9,13 +9,12 @@ import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import {
 	useConversation,
-	useContact,
 	useThemeColor,
 	parseInteraction,
 	pbDateToNum,
 	ParsedInteraction,
 } from '@berty-tech/store'
-import { useConversationInteractions } from '@berty-tech/react-redux'
+import { useContact, useConversationInteractions } from '@berty-tech/react-redux'
 
 import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'

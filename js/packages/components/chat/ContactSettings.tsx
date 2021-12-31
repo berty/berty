@@ -4,8 +4,9 @@ import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useContacts, useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useContact } from '@berty-tech/react-redux'
 
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
@@ -90,7 +91,7 @@ export const ContactSettings: ScreenFC<'Chat.ContactSettings'> = ({
 }) => {
 	const { contactId } = route.params
 	const colors = useThemeColor()
-	const contact: any = (useContacts() as any)[contactId] || null
+	const contact = useContact(contactId)
 	const [{ padding }] = useStyles()
 	if (!contact) {
 		goBack()

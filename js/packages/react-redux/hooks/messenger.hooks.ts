@@ -34,8 +34,8 @@ export const useContactConversation = (contactPk: string) => {
 	return useAppSelector(state => m.selectContactConversation(state, contactPk))
 }
 
-export const useContact = (contactPk: string) => {
-	return useAppSelector(state => m.selectContact(state, contactPk))
+export const useContact = (contactPk: string | null | undefined) => {
+	return useAppSelector(state => m.selectContact(state, contactPk || ''))
 }
 
 export const useContactsDict = () => {

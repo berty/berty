@@ -6,7 +6,6 @@ import { withBadge } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
 import {
-	useContact,
 	useMember,
 	useConversation,
 	Maybe,
@@ -19,7 +18,7 @@ import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
 import OrangeBotAvatar from '@berty-tech/assets/berty_bot_orange_bg.png'
 import BlueDevAvatar from '@berty-tech/assets/berty_dev_blue_bg.png'
-import { useAccount } from '@berty-tech/react-redux'
+import { useAccount, useContact } from '@berty-tech/react-redux'
 
 import AttachmentImage from './AttachmentImage'
 import GroupAvatar from './main/Avatar_Group_Copy_19.png'

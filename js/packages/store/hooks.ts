@@ -8,7 +8,6 @@ import {
 	useAllConversations,
 	useAppSelector,
 	useConversationInteractions,
-	useContact as useReduxContact,
 	useContactsDict,
 	useAllContacts,
 } from '@berty-tech/react-redux'
@@ -84,10 +83,6 @@ export const useStylesBertyId = ({
 export const useMessengerClient = () => {
 	const ctx = useMessengerContext()
 	return ctx.client
-}
-
-export const useContact = (contactPk: Maybe<string>) => {
-	return useReduxContact(contactPk || '')
 }
 
 export const useContacts = () => {
