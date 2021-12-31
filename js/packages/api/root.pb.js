@@ -3687,7 +3687,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               go_package: "berty.tech/berty/go/pkg/messengertypes",
               "(gogoproto.goproto_unkeyed_all)": false,
               "(gogoproto.goproto_unrecognized_all)": false,
-              "(gogoproto.goproto_sizecache_all)": false
+              "(gogoproto.goproto_sizecache_all)": false,
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
             },
             nested: {
               MessengerService: {
