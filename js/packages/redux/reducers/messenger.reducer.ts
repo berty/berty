@@ -148,6 +148,7 @@ const slice = createSlice({
 				conversationsAdapter.upsertOne(state.conversations, {
 					...payload.conversation,
 					isOpen: !!payload.conversation.isOpen,
+					unreadCount: payload.conversation.unreadCount || 0,
 				})
 
 				const convPk = payload.conversation.publicKey
@@ -271,7 +272,12 @@ const slice = createSlice({
 				const inte = parseInteraction(payload.interaction)
 				interactionsBucketsAdapter.updateOne(state.interactionsBuckets, {
 					id: bucket.conversationPublicKey,
-					changes: { interactions: interactionsAdapter.upsertOne(bucket.interactions, inte) },
+					changes: {
+						interactions: interactionsAdapter.upsertOne(bucket.interactions, {
+							...inte,
+							outOfStoreMessage: !!inte.outOfStoreMessage,
+						}),
+					},
 				})
 			},
 		)
