@@ -6,6 +6,7 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -286,8 +287,17 @@ func TestPushDecryptStandalone(t *testing.T) {
 		time.Sleep(time.Millisecond * 100)
 	}
 
-	_, err = svc1.CloseAccount(ctx, &accounttypes.CloseAccount_Request{})
-	require.NoError(t, err)
+	// close account
+	{
+		stream := svc1.CloseAccount(&accounttypes.CloseAccount_Request{})
+		for {
+			_, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			require.NoError(t, err)
+		}
+	}
 
 	um1 := &messengertypes.AppMessage_UserMessage{Body: "hey1"}
 	um1B, err := proto.Marshal(um1)
@@ -349,8 +359,18 @@ func TestPushDecryptStandalone(t *testing.T) {
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
 
-	_, err = svc1.OpenAccount(ctx, &accounttypes.OpenAccount_Request{AccountID: svc1Account1})
-	require.NoError(t, err)
+	// open account
+	{
+		stream, err := svc1.OpenAccount(ctx, &accounttypes.OpenAccount_Request{AccountID: svc1Account1})
+		require.NoError(t, err)
+		for {
+			_, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			require.NoError(t, err)
+		}
+	}
 
 	// Account service with current account
 	decryptedUsingAccountSvc, err = svc1.PushReceive(ctx, &accounttypes.PushReceive_Request{Payload: pushContents})
@@ -364,6 +384,15 @@ func TestPushDecryptStandalone(t *testing.T) {
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
 
-	_, err = svc1.CloseAccount(ctx, &accounttypes.CloseAccount_Request{})
-	require.NoError(t, err)
+	// close account
+	{
+		stream := svc1.CloseAccount(ctx, &accounttypes.CloseAccount_Request{})
+		for {
+			_, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			require.NoError(t, err)
+		}
+	}
 }
