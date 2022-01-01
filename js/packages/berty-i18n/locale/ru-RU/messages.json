@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "Защити свою конфедециальность",
+			"desc": "Бесплатное и защищённое сквозное общение",
+			"button": "ВЗГЛЯНИ"
 		},
 		"select-mode": {
 			"title": "Выберите шаблон",
@@ -30,23 +30,23 @@
 			"title": "Создайте свой аккаунт",
 			"desc": "Необходимо указать только имя",
 			"required": "Обязательно",
-			"placeholder": "",
+			"placeholder": "Выбери себе никнейм",
 			"button": "СОЗДАТЬ МОЙ АККАУНТ",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
+			"advanced": "Дополнительно",
+			"import-account": "Импортировать аккаунт",
+			"link-device": "Подключить устройство",
+			"more": "Больше информации",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Хорошо знать:",
+				"first-point": "Твой аккаунт создан локально",
+				"second-point": "Никнейм необязателен и может быть в дальнейшем изменён"
 			}
 		},
 		"advanced-settings": {
-			"title": "",
-			"desc": "",
+			"title": "Другие настройки",
+			"desc": "Посмотри документацию и задай свои собственные настройки.",
 			"more-about": {
-				"title": "",
+				"title": "Добро пожаловать в другие настройки",
 				"first-paragraph": "",
 				"second-paragraph": "",
 				"third-paragraph": ""
