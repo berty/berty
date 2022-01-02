@@ -223,6 +223,7 @@ enum ErrCode {
   ErrBertyAccountCreationFailed = 5016;
   ErrBertyAccountUpdateFailed = 5017;
   ErrAppStorageNotSupported = 5018;
+  ErrBertyAccountMessengerClosed = 5019;
 
   ErrPush = 6000;
   ErrPushWrongAccount = 6001;
