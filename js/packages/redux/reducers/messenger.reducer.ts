@@ -30,7 +30,7 @@ const interactionsAdapter = createEntityAdapter<ParsedInteraction>({
 	sortComparer: (a, b) => pbDateToNum(b.sentDate) - pbDateToNum(a.sentDate),
 })
 
-const interactionsSelector = interactionsAdapter.getSelectors()
+export const interactionsSelectors = interactionsAdapter.getSelectors()
 
 type InteractionsBucket = {
 	conversationPublicKey: string
@@ -158,7 +158,7 @@ const slice = createSlice({
 					if (bucket) {
 						const newestInteractions =
 							bucket &&
-							interactionsSelector
+							interactionsSelectors
 								.selectAll(bucket.interactions)
 								.filter(
 									i =>
@@ -341,16 +341,12 @@ export const selectConversationInteractions = (state: LocalRootState, convPk: st
 	if (!bucket) {
 		return emptyList
 	}
-	return interactionsSelector.selectAll(bucket.interactions)
+	return interactionsSelectors.selectAll(bucket.interactions)
 }
 
-export const selectAllInteractions = (state: LocalRootState) => {
+export const selectAllInteractionsBuckets = (state: LocalRootState) => {
 	const slice = selectSlice(state)
-	const buckets = interactionsBucketsSelectors.selectAll(slice.interactionsBuckets)
-	return buckets.reduce(
-		(all, bucket) => [...all, ...interactionsSelector.selectAll(bucket.interactions)],
-		emptyList as ParsedInteraction[],
-	)
+	return interactionsBucketsSelectors.selectAll(slice.interactionsBuckets)
 }
 
 const initialMembers = membersAdapter.getInitialState()
@@ -433,7 +429,7 @@ export const selectInteraction = (state: LocalRootState, convPk: string, cid: st
 	if (!bucket) {
 		return
 	}
-	return interactionsSelector.selectById(bucket.interactions, cid)
+	return interactionsSelectors.selectById(bucket.interactions, cid)
 }
 
 export const selectAccount = (state: LocalRootState) => {
@@ -442,12 +438,15 @@ export const selectAccount = (state: LocalRootState) => {
 
 export const selectInteractionAuthor = (state: LocalRootState, convPk: string, cid: string) => {
 	const inte = selectInteraction(state, convPk, cid)
+	if (!inte) {
+		return
+	}
 	const conv = selectConversation(state, convPk)
 	switch (conv?.type) {
 		case beapi.messenger.Conversation.Type.MultiMemberType:
-			return selectMember(state, convPk, inte?.memberPublicKey || '')
+			return selectMember(state, convPk, inte.memberPublicKey || '')
 		case beapi.messenger.Conversation.Type.ContactType:
-			return inte?.isMine ? selectAccount(state) : selectContact(state, conv.contactPublicKey || '')
+			return inte.isMine ? selectAccount(state) : selectContact(state, conv.contactPublicKey || '')
 	}
 }
 

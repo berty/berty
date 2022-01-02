@@ -13,9 +13,9 @@ import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
-import { useAccount, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { useAppDispatch } from '@berty-tech/react-redux'
+import { useAppDispatch, useAccount } from '@berty-tech/react-redux'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { StackActions } from '@react-navigation/native'
 
@@ -92,7 +92,7 @@ const EditMyProfile: React.FC = () => {
 
 	const [state, localDispatch] = useReducer(reducer, {
 		...initialState,
-		name: account?.displayName || undefined,
+		name: account.displayName || undefined,
 	})
 
 	const handlePicturePressed = async () => {
@@ -153,7 +153,7 @@ const EditMyProfile: React.FC = () => {
 				updated = true
 			}
 
-			if (state.name && state.name !== account?.displayName) {
+			if (state.name && state.name !== account.displayName) {
 				update.displayName = state.name
 				updated = true
 			}
@@ -330,7 +330,7 @@ const EditMyProfile: React.FC = () => {
 								},
 							]}
 						>
-							{(state.name && state.name !== account?.displayName) || state.pic
+							{(state.name && state.name !== account.displayName) || state.pic
 								? t('settings.edit-profile.save')
 								: (t('settings.edit-profile.cancel') as any)}
 						</Text>

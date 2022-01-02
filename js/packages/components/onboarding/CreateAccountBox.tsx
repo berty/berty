@@ -2,6 +2,7 @@ import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, TextInput, View } from 'react-native'
+import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
@@ -9,14 +10,13 @@ import rnutil from '@berty-tech/rnutil'
 import {
 	GlobalPersistentOptionsKeys,
 	storageSet,
-	useAccount,
 	useMessengerContext,
 	useThemeColor,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+import { useAccount } from '@berty-tech/react-redux'
 
 import SwiperCard from './SwiperCard'
-import { RESULTS } from 'react-native-permissions'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string
@@ -41,7 +41,7 @@ export const CreateAccountBox: React.FC<{
 	}, [ctx, setIsFinished, newConfig])
 
 	const onPress = React.useCallback(async () => {
-		const displayName = name || `anon#${account?.publicKey?.substr(0, 4)}`
+		const displayName = name || `anon#${account.publicKey?.substring(0, 4)}`
 		await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
 
 		handlePersistentOptions()
@@ -49,7 +49,7 @@ export const CreateAccountBox: React.FC<{
 			.catch(err => {
 				console.log(err)
 			})
-	}, [name, account?.publicKey, handlePersistentOptions])
+	}, [name, account.publicKey, handlePersistentOptions])
 
 	return (
 		<View>

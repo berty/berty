@@ -5,8 +5,9 @@ import { Icon, Layout } from '@ui-kitten/components'
 
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
-import { useAccount, useConversation, useStylesBertyId, useThemeColor } from '@berty-tech/store'
+import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+import { useAccount, useConversation } from '@berty-tech/react-redux'
 
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
@@ -84,7 +85,7 @@ const BertyIdShare: React.FC = () => {
 	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
 	const account = useAccount()
-	const url = account?.link
+	const url = account.link
 	if (!url) {
 		return null
 	}

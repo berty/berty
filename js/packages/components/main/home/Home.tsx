@@ -13,19 +13,17 @@ import { Icon } from '@ui-kitten/components'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 
 import { ScreenFC } from '@berty-tech/navigation'
-import {
-	useConversationsCount,
-	useIncomingContactRequests,
-	useMessengerContext,
-	useNotificationsInhibitor,
-	useSortedConversationList,
-	useThemeColor,
-} from '@berty-tech/store'
+import { useMessengerContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
 import rnutil from '@berty-tech/rnutil'
-import { useContactsDict, useConversationsDict } from '@berty-tech/react-redux'
+import {
+	useContactsDict,
+	useConversationsDict,
+	useIncomingContactRequests,
+	useAllConversations,
+} from '@berty-tech/react-redux'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'
@@ -83,9 +81,9 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 			: false,
 	)
 	// TODO: do something to animate the requests
-	const requests: any[] = useIncomingContactRequests()
-	const conversations = useSortedConversationList()
-	const isConversation: number = useConversationsCount()
+	const requests = useIncomingContactRequests()
+	const conversations = useAllConversations()
+	const hasConversations = conversations.length > 0
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()
 	const [layoutConvs, onLayoutConvs] = useLayout()
@@ -286,7 +284,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 								}}
 							/>
 						) : null}
-						{!isConversation && !hasSuggestion && !hasConfigurations ? (
+						{!hasConversations && !hasSuggestion && !hasConfigurations ? (
 							<View style={{ backgroundColor: colors['main-background'] }}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>

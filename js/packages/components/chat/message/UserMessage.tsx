@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import {
-	useLastConvInteraction,
 	useMessengerContext,
 	useThemeColor,
 	InteractionUserMessage,
@@ -17,7 +16,11 @@ import {
 	pbDateToNum,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useAppSelector, useInteractionAuthor } from '@berty-tech/react-redux'
+import {
+	useAppSelector,
+	useInteractionAuthor,
+	useLastConvInteraction,
+} from '@berty-tech/react-redux'
 import { selectInteraction } from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { MemberAvatar } from '../../avatars'

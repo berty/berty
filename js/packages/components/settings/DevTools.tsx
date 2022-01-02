@@ -14,7 +14,6 @@ import {
 	PersistentOptionsKeys,
 	storageGet,
 	storageSet,
-	useAccount,
 	useMessengerContext,
 	useThemeColor,
 } from '@berty-tech/store'
@@ -36,6 +35,7 @@ import {
 	useAppSelector,
 	useContactsDict,
 	useConversationsDict,
+	useAccount,
 } from '@berty-tech/react-redux'
 
 import {
@@ -184,7 +184,7 @@ const DiscordShareButton: React.FC = () => {
 					text: t('settings.devtools.share-button.alert-accept-button'),
 					onPress: () => {
 						call({
-							displayName: account?.displayName,
+							displayName: account.displayName,
 						})
 					},
 					style: 'default',

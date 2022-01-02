@@ -1,4 +1,4 @@
-import React, { EffectCallback, useEffect, useMemo } from 'react'
+import React, { EffectCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
@@ -7,20 +7,11 @@ import darkTheme from '@berty-tech/styles/darktheme-default.json'
 import {
 	useAllConversations,
 	useAppSelector,
-	useContactConversation,
-	useConversationInteractions,
-	useContact as useReduxContact,
-	useContactsDict,
 	useAllContacts,
+	useConversation,
 } from '@berty-tech/react-redux'
 import { selectChecklistSeen } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useStyles } from '@berty-tech/styles'
-import {
-	selectAllConversations,
-	selectConversation,
-	selectConversationMembers,
-	selectMember,
-} from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { useMessengerContext } from './context'
 import {
@@ -34,10 +25,6 @@ import { fakeContacts, fakeMultiMemberConversations } from './faker'
 import { ParsedInteraction } from './types.gen'
 
 export type Maybe<T> = T | null | undefined
-
-export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
-	return useContactConversation(contactPk || '')
-}
 
 export const useStylesBertyId = ({
 	iconIdSize = 45,
@@ -86,92 +73,12 @@ export const useStylesBertyId = ({
 	}
 }
 
-export const useAccount = () => {
-	return useAppSelector(state => state.messenger.account)
-}
-
 export const useMessengerClient = () => {
 	const ctx = useMessengerContext()
 	return ctx.client
 }
 
-export const useContact = (contactPk: Maybe<string>) => {
-	return useReduxContact(contactPk || '')
-}
-
-export const useContacts = () => {
-	return useContactsDict()
-}
-
-export const useContactList = () => {
-	return useAllContacts()
-}
-
-const ContactState = beapi.messenger.Contact.State
-
-export const useIncomingContactRequests = () => {
-	const contacts = useContactList()
-	return useMemo(() => contacts.filter(c => c.state === ContactState.IncomingRequest), [contacts])
-}
-
-export const useOutgoingContactRequests = () => {
-	const contacts = useContactList()
-	return useMemo(
-		() =>
-			contacts.filter(
-				c =>
-					c.state &&
-					[ContactState.OutgoingRequestEnqueued, ContactState.OutgoingRequestSent].includes(
-						c.state,
-					),
-			),
-		[contacts],
-	)
-}
-
-export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
-	const contacts = useContactList()
-	if (!searchText) {
-		return []
-	}
-	return contacts.filter(contact =>
-		contact.displayName?.toLowerCase().includes(searchText.toLowerCase()),
-	)
-}
-
-export const useConversationList = () => {
-	return useAppSelector(state => selectAllConversations(state))
-}
-
-export const useSortedConversationList = () => {
-	return useConversationList()
-}
-
-export const useConversation = (
-	publicKey: Maybe<string>,
-): (beapi.messenger.IConversation & { fake?: Maybe<boolean> }) | undefined => {
-	return useAppSelector(state => selectConversation(state, publicKey || ''))
-}
-
 const emptyObject = {}
-
-export const useConversationsCount = () => {
-	return useConversationList().length
-}
-
-export const useMember = <
-	T extends { publicKey: Maybe<string>; conversationPublicKey: Maybe<string> },
->(
-	props: T,
-) => {
-	return useAppSelector(state =>
-		selectMember(state, props.conversationPublicKey || '', props.publicKey || ''),
-	)
-}
-
-export const useConvMemberList = (publicKey: Maybe<string>) => {
-	return useAppSelector(state => selectConversationMembers(state, publicKey || ''))
-}
 
 export const usePersistentOptions = () => {
 	const ctx = useMessengerContext()
@@ -254,7 +161,7 @@ export const useGenerateFakeMultiMembers = () => {
 export const useGenerateFakeMessages = () => {
 	return
 	/*const ctx = useMessengerContext()
-	const fakeConversationList = useConversationList().filter(c => (c as any).fake === true)
+	const fakeConversationList = useAllConversations().filter(c => (c as any).fake === true)
 	const fakeMembersListList = fakeConversationList.map(conv =>
 		Object.values(ctx.members[conv.publicKey || ''] || {}).filter((member: any) => member.fake),
 	)
@@ -288,27 +195,6 @@ export const useDeleteFakeData = () => {
 		ctx.dispatch({
 			type: MessengerActions.DeleteFakeData,
 		})
-}
-
-export type SortedConvsFilter = Parameters<
-	ReturnType<typeof useConversationInteractions>['filter']
->[0]
-
-export const useLastConvInteraction = (
-	convPublicKey: Maybe<string>,
-	filterFunc?: Maybe<SortedConvsFilter>,
-) => {
-	let intes = useConversationInteractions(convPublicKey || '')
-
-	if (intes.length <= 0) {
-		return null
-	}
-
-	if (!filterFunc) {
-		return intes[0]
-	}
-
-	return intes.find(filterFunc) || null
 }
 
 const useDispatch = () => {

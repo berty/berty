@@ -8,15 +8,14 @@ import Long from 'long'
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import {
-	useContactList,
-	useConversation,
-	useConvMemberList,
-	useMessengerClient,
-	useThemeColor,
-} from '@berty-tech/store'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
-import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
+import {
+	useAllContacts,
+	useAppDispatch,
+	useAppSelector,
+	useConversation,
+} from '@berty-tech/react-redux'
 
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'
@@ -31,9 +30,7 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsA
 	const { t } = useTranslation()
 	const client = useMessengerClient()
 	const conv = useConversation(route.params.convPK)
-	const convMembers = useConvMemberList(route.params.convPK)
-	const initialMembers = convMembers.filter(member => !member.isMe)
-	const accountContacts = useContactList()
+	const accountContacts = useAllContacts()
 	const members = useAppSelector(selectInvitationListMembers)
 	const dispatch = useAppDispatch()
 
@@ -87,7 +84,7 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsA
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
-				<MemberList initialMembers={initialMembers} />
+				<MemberList />
 			</SafeAreaView>
 			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 				<View style={{ top: -30 * scaleHeight, flex: 1 }}>

@@ -1,13 +1,17 @@
+import { useMemo } from 'react'
+
 import * as m from '@berty-tech/redux/reducers/messenger.reducer'
+import beapi from '@berty-tech/api'
+import { ParsedInteraction } from '@berty-tech/store'
 
 import { useAppSelector } from '../core'
 
-export const useConversationInteractions = (convPk: string) => {
-	return useAppSelector(state => m.selectConversationInteractions(state, convPk))
+export const useAccount = () => {
+	return useAppSelector(m.selectAccount)
 }
 
-export const useAllInteractions = () => {
-	return useAppSelector(m.selectAllInteractions)
+export const useConversationInteractions = (convPk: string) => {
+	return useAppSelector(state => m.selectConversationInteractions(state, convPk))
 }
 
 export const useConversationMembersDict = (convPk: string) => {
@@ -22,6 +26,10 @@ export const useAllConversations = () => {
 	return useAppSelector(m.selectAllConversations)
 }
 
+export const useConversation = (publicKey: string | null | undefined) => {
+	return useAppSelector(state => m.selectConversation(state, publicKey || ''))
+}
+
 export const useOneToOneContact = (convPk: string) => {
 	return useAppSelector(state => m.selectConversationContact(state, convPk))
 }
@@ -30,8 +38,8 @@ export const useContactConversation = (contactPk: string) => {
 	return useAppSelector(state => m.selectContactConversation(state, contactPk))
 }
 
-export const useContact = (contactPk: string) => {
-	return useAppSelector(state => m.selectContact(state, contactPk))
+export const useContact = (contactPk: string | null | undefined) => {
+	return useAppSelector(state => m.selectContact(state, contactPk || ''))
 }
 
 export const useContactsDict = () => {
@@ -52,6 +60,69 @@ export const useMedia = (cid: string) => {
 
 export const useInteractionAuthor = (convPk: string, cid: string) => {
 	return useAppSelector(state => m.selectInteractionAuthor(state, convPk, cid))
+}
+
+export const useMember = (
+	conversationPublicKey: string | null | undefined,
+	publicKey: string | null | undefined,
+) => {
+	return useAppSelector(state =>
+		m.selectMember(state, conversationPublicKey || '', publicKey || ''),
+	)
+}
+
+export const useIncomingContactRequests = () => {
+	const contacts = useAllContacts()
+	return useMemo(
+		() => contacts.filter(c => c.state === beapi.messenger.Contact.State.IncomingRequest),
+		[contacts],
+	)
+}
+
+const emptyList: never[] = []
+
+export const useAllInteractions = () => {
+	const buckets = useAppSelector(m.selectAllInteractionsBuckets)
+	return useMemo(
+		() =>
+			buckets.reduce(
+				(all, bucket) => [...all, ...m.interactionsSelectors.selectAll(bucket.interactions)],
+				emptyList as ParsedInteraction[],
+			),
+		[buckets],
+	)
+}
+
+export const useContactSearchResults = (searchText: string | null | undefined) => {
+	const contacts = useAllContacts()
+	return useMemo(() => {
+		if (!searchText) {
+			return emptyList
+		}
+		return contacts.filter(contact =>
+			contact.displayName?.toLowerCase().includes(searchText.toLowerCase()),
+		)
+	}, [searchText, contacts])
+}
+
+export type InteractionFilter = Parameters<
+	ReturnType<typeof useConversationInteractions>['find']
+>[0]
+
+export const useLastConvInteraction = (
+	convPublicKey: string | null | undefined,
+	filterFunc?: InteractionFilter | null | undefined,
+) => {
+	const intes = useConversationInteractions(convPublicKey || '')
+	return useMemo(() => {
+		if (intes.length <= 0) {
+			return
+		}
+		if (typeof filterFunc !== 'function') {
+			return intes[0]
+		}
+		return intes.find(filterFunc)
+	}, [intes, filterFunc])
 }
 
 /*

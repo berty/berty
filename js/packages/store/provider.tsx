@@ -2,7 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
 import beapi from '@berty-tech/api'
-import { useAppDispatch, useAppSelector, useConversationsDict } from '@berty-tech/react-redux'
+import {
+	useAppDispatch,
+	useAppSelector,
+	useAccount,
+	useConversationsDict,
+} from '@berty-tech/react-redux'
 import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
 
 import { MessengerContext, initialState } from './context'
@@ -31,7 +36,6 @@ import { reducer } from './reducer'
 import { playSound } from './sounds'
 import { MessengerAppState, PersistentOptionsKeys, SoundKey } from './types'
 import { accountService } from './accountService'
-import { useAccount } from './hooks'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: boolean }> = ({
 	children,

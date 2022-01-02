@@ -5,8 +5,9 @@ import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useStylesBertyId, useThemeColor } from '@berty-tech/store'
+import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useAccount } from '@berty-tech/react-redux'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -41,7 +42,7 @@ const ContactRequestQR = () => {
 	const colors = useThemeColor()
 	const { qrCodeSize } = useStylesBertyId(styleBertyIdOptions)
 
-	if (!account?.link) {
+	if (!account.link) {
 		return <Text>Internal error</Text>
 	}
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
@@ -144,7 +145,7 @@ const BertyIdShare: React.FC = () => {
 	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
 	const account = useAccount()
-	const url = account?.link
+	const url = account.link
 	if (!url) {
 		return null
 	}

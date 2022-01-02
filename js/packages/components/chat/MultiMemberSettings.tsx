@@ -8,8 +8,8 @@ import QRCode from 'react-native-qrcode-svg'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { Maybe, useConversation, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useConversationMembersDict } from '@berty-tech/react-redux'
+import { Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useConversationMembersDict, useConversation } from '@berty-tech/react-redux'
 
 import {
 	ButtonSetting,

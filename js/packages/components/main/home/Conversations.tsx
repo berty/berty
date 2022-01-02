@@ -7,14 +7,13 @@ import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import {
 	pbDateToNum,
-	useLastConvInteraction,
 	useThemeColor,
 	ParsedInteraction,
 	Suggestion,
 	Configuration,
 } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
-import { useAppSelector, useOneToOneContact } from '@berty-tech/react-redux'
+import { useAppSelector, useOneToOneContact, useLastConvInteraction } from '@berty-tech/react-redux'
 import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reducer'
 
 import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
