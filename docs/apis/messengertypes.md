@@ -1053,7 +1053,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| network_config | [NetworkConfig](#berty.messenger.v1.NetworkConfig) |  |  |
+| network_config | [NetworkConfig](#berty.messenger.v1.NetworkConfig) |  | string logger_filters = 2; // FIXME: allow overriding logger_filters here |
 
 <a name="berty.messenger.v1.PaginatedInteractionsOptions"></a>
 

@@ -277,6 +277,7 @@ export namespace berty {
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.messenger.v1.INetworkConfig|null);
+                    skipMessengerInit?: (boolean|null);
                 }
 
                 class Request implements IRequest {
@@ -285,6 +286,7 @@ export namespace berty {
                     public accountId: string;
                     public loggerFilters: string;
                     public networkConfig?: (berty.messenger.v1.INetworkConfig|null);
+                    public skipMessengerInit: boolean;
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

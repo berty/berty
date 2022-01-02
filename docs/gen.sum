@@ -1,9 +1,9 @@
-5205a7b4cc12d3958cc5fd2ef9d8c58f5b17444e  ../api/accounttypes.proto
+51a3115f8a53afa9e90cb54da3facb34facfb561  ../api/accounttypes.proto
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
 762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 905a4386f317f51d3965a531d39a783c25ad8d0b  ../api/bertyreplication.yaml
 9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
-d6e0f1014c2721231d044f013071be0cc3f56d1a  ../api/messengertypes.proto
+a31661ea6e46c6a415c07c6ab601a17cc26d05ff  ../api/messengertypes.proto
 aa91a2cec5c49ed7dcc033fac3b178069a4b64a7  ../api/messengertypes.yaml
 f51dcb8b9bfb1f4f8d9a809cf8eaab1349ca6814  ../api/protocoltypes.proto
 da5bd1312cf80e89c0d78f67aeaede38c53c9a75  ../api/protocoltypes.yaml

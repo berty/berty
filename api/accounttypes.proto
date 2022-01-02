@@ -102,7 +102,15 @@ message OpenAccount {
     repeated string args = 1;
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
-    berty.messenger.v1.NetworkConfig network_config = 4; // FIXME: move this to OpenProtocol
+
+    // -------
+    // FIXME:
+    // - make skip_messenger_init the default behavior with no way to init messenger automatically
+    // - remove skip_messenger_init
+    // - move network_config to OpenProtocol
+    berty.messenger.v1.NetworkConfig network_config = 4;
+    bool skip_messenger_init = 5;
+    // -------
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;

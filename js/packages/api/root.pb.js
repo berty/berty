@@ -187,6 +187,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "berty.messenger.v1.NetworkConfig",
                         id: 4
+                      },
+                      skipMessengerInit: {
+                        type: "bool",
+                        id: 5
                       }
                     }
                   },

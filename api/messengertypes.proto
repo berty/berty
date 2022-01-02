@@ -110,6 +110,7 @@ service MessengerService {
 message OpenProtocol {
   message Request {
     NetworkConfig network_config = 1;
+    // string logger_filters = 2; // FIXME: allow overriding logger_filters here
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
