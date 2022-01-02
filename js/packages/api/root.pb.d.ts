@@ -277,7 +277,7 @@ export namespace berty {
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.messenger.v1.INetworkConfig|null);
-                    skipMessengerInit?: (boolean|null);
+                    skipProtocolInit?: (boolean|null);
                 }
 
                 class Request implements IRequest {
@@ -286,7 +286,7 @@ export namespace berty {
                     public accountId: string;
                     public loggerFilters: string;
                     public networkConfig?: (berty.messenger.v1.INetworkConfig|null);
-                    public skipMessengerInit: boolean;
+                    public skipProtocolInit: boolean;
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -531,6 +531,7 @@ export namespace berty {
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.messenger.v1.INetworkConfig|null);
+                    skipProtocolInit?: (boolean|null);
                 }
 
                 class Request implements IRequest {
@@ -541,6 +542,7 @@ export namespace berty {
                     public args: string[];
                     public loggerFilters: string;
                     public networkConfig?: (berty.messenger.v1.INetworkConfig|null);
+                    public skipProtocolInit: boolean;
                     public static create(properties?: berty.account.v1.ImportAccount.IRequest): berty.account.v1.ImportAccount.Request;
                     public static encode(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -597,6 +599,7 @@ export namespace berty {
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.messenger.v1.INetworkConfig|null);
+                    skipProtocolInit?: (boolean|null);
                 }
 
                 class Request implements IRequest {
@@ -606,6 +609,7 @@ export namespace berty {
                     public args: string[];
                     public loggerFilters: string;
                     public networkConfig?: (berty.messenger.v1.INetworkConfig|null);
+                    public skipProtocolInit: boolean;
                     public static create(properties?: berty.account.v1.CreateAccount.IRequest): berty.account.v1.CreateAccount.Request;
                     public static encode(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -9874,6 +9878,7 @@ export namespace berty {
             ErrMessengerDeepLinkInvalidPassphrase = 2002,
             ErrMessengerStreamEvent = 2003,
             ErrMessengerContactMetadataUnmarshal = 2004,
+            ErrMessengerProtocolNotReady = 2005,
             ErrDBEntryAlreadyExists = 2100,
             ErrDBAddConversation = 2101,
             ErrDBAddContactRequestOutgoingSent = 2102,
@@ -9925,6 +9930,8 @@ export namespace berty {
             ErrBertyAccountCreationFailed = 5016,
             ErrBertyAccountUpdateFailed = 5017,
             ErrAppStorageNotSupported = 5018,
+            ErrBertyAccountManagerNotReady = 5019,
+            ErrBertyAccountMessengerNotReady = 5020,
             ErrPush = 6000,
             ErrPushWrongAccount = 6001,
             ErrPushUnableToDecrypt = 6002,

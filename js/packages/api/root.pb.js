@@ -188,7 +188,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "berty.messenger.v1.NetworkConfig",
                         id: 4
                       },
-                      skipMessengerInit: {
+                      skipProtocolInit: {
                         type: "bool",
                         id: 5
                       }
@@ -326,6 +326,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "berty.messenger.v1.NetworkConfig",
                         id: 6
+                      },
+                      skipProtocolInit: {
+                        type: "bool",
+                        id: 7
                       }
                     }
                   },
@@ -371,6 +375,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "berty.messenger.v1.NetworkConfig",
                         id: 5
+                      },
+                      skipProtocolInit: {
+                        type: "bool",
+                        id: 6
                       }
                     }
                   },
@@ -6605,6 +6613,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrMessengerDeepLinkInvalidPassphrase: 2002,
               ErrMessengerStreamEvent: 2003,
               ErrMessengerContactMetadataUnmarshal: 2004,
+              ErrMessengerProtocolNotReady: 2005,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
               ErrDBAddContactRequestOutgoingSent: 2102,
@@ -6656,6 +6665,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBertyAccountCreationFailed: 5016,
               ErrBertyAccountUpdateFailed: 5017,
               ErrAppStorageNotSupported: 5018,
+              ErrBertyAccountManagerNotReady: 5019,
+              ErrBertyAccountMessengerNotReady: 5020,
               ErrPush: 6000,
               ErrPushWrongAccount: 6001,
               ErrPushUnableToDecrypt: 6002,

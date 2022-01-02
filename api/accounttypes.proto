@@ -105,11 +105,11 @@ message OpenAccount {
 
     // -------
     // FIXME:
-    // - make skip_messenger_init the default behavior with no way to init messenger automatically
-    // - remove skip_messenger_init
+    // - make skip_protocol_init the default behavior with no way to init messenger automatically
+    // - remove skip_protocol_init
     // - move network_config to OpenProtocol
     berty.messenger.v1.NetworkConfig network_config = 4;
-    bool skip_messenger_init = 5;
+    bool skip_protocol_init = 5;
     // -------
   }
   message Reply {
@@ -156,7 +156,15 @@ message ImportAccount {
     string backup_path = 3;
     repeated string args = 4;
     string logger_filters = 5;
-    berty.messenger.v1.NetworkConfig network_config = 6; // FIXME: move this to OpenProtocol
+
+    // -------
+    // FIXME:
+    // - make skip_protocol_init the default behavior with no way to init messenger automatically
+    // - remove skip_protocol_init
+    // - move network_config to OpenProtocol
+    berty.messenger.v1.NetworkConfig network_config = 6;
+    bool skip_protocol_init = 7;
+    // -------
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -170,7 +178,15 @@ message CreateAccount {
     string account_name = 2;
     repeated string args = 3;
     string logger_filters = 4;
-    berty.messenger.v1.NetworkConfig network_config = 5; // FIXME: move this to OpenProtocol
+
+    // -------
+    // FIXME:
+    // - make skip_protocol_init the default behavior with no way to init messenger automatically
+    // - remove skip_protocol_init
+    // - move network_config to OpenProtocol
+    berty.messenger.v1.NetworkConfig network_config = 5;
+    bool skip_protocol_init = 6;
+    // -------
   }
   message Reply {
     AccountMetadata account_metadata = 1;
