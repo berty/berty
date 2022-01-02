@@ -153,6 +153,7 @@ enum ErrCode {
   ErrMessengerDeepLinkInvalidPassphrase = 2002;
   ErrMessengerStreamEvent = 2003;
   ErrMessengerContactMetadataUnmarshal = 2004;
+  ErrMessengerProtocolNotReady = 2005;
 
   // DB errors
 
@@ -223,7 +224,8 @@ enum ErrCode {
   ErrBertyAccountCreationFailed = 5016;
   ErrBertyAccountUpdateFailed = 5017;
   ErrAppStorageNotSupported = 5018;
-  ErrBertyAccountMessengerClosed = 5019;
+  ErrBertyAccountManagerNotReady = 5019;
+  ErrBertyAccountMessengerNotReady = 5020;
 
   ErrPush = 6000;
   ErrPushWrongAccount = 6001;

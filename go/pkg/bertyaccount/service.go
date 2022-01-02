@@ -2,7 +2,6 @@ package bertyaccount
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -14,10 +13,8 @@ import (
 	"golang.org/x/text/language"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/androidnearby"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -112,10 +109,13 @@ func (o *Options) applyDefault() {
 	}
 }
 
-func NewService(opts *Options) (_ Service, err error) {
+func NewService(opts *Options) (Service, error) {
 	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
 
-	var s *service
+	var (
+		s   *service
+		err error
+	)
 	endSection := tyber.SimpleSection(rootCtx, opts.Logger, "Initializing AccountService")
 	defer func() { endSection(err, tyber.WithDetail("RootDir", s.rootdir)) }()
 
@@ -163,60 +163,12 @@ func NewService(opts *Options) (_ Service, err error) {
 	return s, nil
 }
 
-func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
-	if req.Preset == messengertypes.NetworkConfig_NetPresetPerformance || req.Preset == messengertypes.NetworkConfig_NetPresetUndefined {
-		bluetoothLE := messengertypes.NetworkConfig_Disabled
-		if req.HasBluetoothPermission {
-			bluetoothLE = messengertypes.NetworkConfig_Enabled
-		}
-
-		androidNearby := messengertypes.NetworkConfig_Disabled
-		if req.HasBluetoothPermission && androidnearby.Supported {
-			androidNearby = messengertypes.NetworkConfig_Enabled
-		}
-
-		appleMC := messengertypes.NetworkConfig_Disabled
-		if req.HasBluetoothPermission && mc.Supported {
-			appleMC = messengertypes.NetworkConfig_Enabled
-		}
-
-		return &accounttypes.NetworkConfigGetPreset_Reply{
-			Config: &messengertypes.NetworkConfig{
-				Bootstrap:                  []string{initutil.KeywordDefault},
-				AndroidNearby:              androidNearby,
-				DHT:                        messengertypes.NetworkConfig_DHTClient,
-				AppleMultipeerConnectivity: appleMC,
-				BluetoothLE:                bluetoothLE,
-				MDNS:                       messengertypes.NetworkConfig_Enabled,
-				Rendezvous:                 []string{initutil.KeywordDefault},
-				Tor:                        messengertypes.NetworkConfig_TorOptional,
-				StaticRelay:                []string{initutil.KeywordDefault},
-				ShowDefaultServices:        messengertypes.NetworkConfig_Enabled,
-			},
-		}, nil
-	}
-
-	return &accounttypes.NetworkConfigGetPreset_Reply{
-		Config: &messengertypes.NetworkConfig{
-			Bootstrap:                  []string{initutil.KeywordNone},
-			AndroidNearby:              messengertypes.NetworkConfig_Disabled,
-			DHT:                        messengertypes.NetworkConfig_DHTDisabled,
-			AppleMultipeerConnectivity: messengertypes.NetworkConfig_Disabled,
-			BluetoothLE:                messengertypes.NetworkConfig_Disabled,
-			MDNS:                       messengertypes.NetworkConfig_Disabled,
-			Rendezvous:                 []string{initutil.KeywordNone},
-			Tor:                        messengertypes.NetworkConfig_TorDisabled,
-			StaticRelay:                []string{initutil.KeywordNone},
-			ShowDefaultServices:        messengertypes.NetworkConfig_Disabled,
-		},
-	}, nil
-}
-
 func (s *service) SetPreferredLanguages(tags ...language.Tag) {
 	s.languages = tags
 }
 
-func (s *service) Close() (err error) {
+func (s *service) Close() error {
+	var err error
 	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.rootCtx), s.logger, "Closing AccountService")
 	defer func() { endSection(err) }()
 
@@ -233,11 +185,12 @@ func (s *service) Close() (err error) {
 	return err
 }
 
-func (s *service) getInitManager() (m *initutil.Manager, err error) {
+func (s *service) getInitManager() (*initutil.Manager, error) {
 	s.muService.RLock()
-	if m = s.initManager; m == nil {
-		err = fmt.Errorf("init manager not initialized")
+	defer s.muService.RUnlock()
+
+	if s.initManager == nil {
+		return nil, errcode.ErrBertyAccountManagerNotReady
 	}
-	s.muService.RUnlock()
-	return
+	return s.initManager, nil
 }

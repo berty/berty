@@ -11,10 +11,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tj/assert"
-	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
@@ -42,7 +39,7 @@ func TestFlow(t *testing.T) {
 	require.NoError(t, err)
 	defer svc.Close()
 
-	cl := createAccountClient(ctx, t, svc)
+	cl := bertyaccount.TestingAccountClient(ctx, t, svc)
 
 	// no account by default
 	{
@@ -363,7 +360,7 @@ func TestImportExportFlow(t *testing.T) {
 	require.NoError(t, err)
 	defer svc.Close()
 
-	cl := createAccountClient(ctx, t, svc)
+	cl := bertyaccount.TestingAccountClient(ctx, t, svc)
 
 	// no account by default
 	{
@@ -644,24 +641,4 @@ func TestImportExportFlow(t *testing.T) {
 		require.True(t, lastProgress.Delay > uint64(time.Duration(50*time.Millisecond).Microseconds()))
 		require.True(t, lastProgress.Delay < uint64(time.Duration(1*time.Minute).Microseconds()))
 	}
-}
-
-func createAccountClient(ctx context.Context, t *testing.T, s accounttypes.AccountServiceServer) accounttypes.AccountServiceClient {
-	t.Helper()
-
-	srv := grpc.NewServer()
-	accounttypes.RegisterAccountServiceServer(srv, s)
-
-	l := grpcutil.NewBufListener(ctx, 2048)
-
-	cc, err := l.NewClientConn()
-	assert.NoError(t, err)
-
-	cl := accounttypes.NewAccountServiceClient(cc)
-
-	go srv.Serve(l.Listener)
-
-	t.Cleanup(func() { l.Close() })
-
-	return cl
 }

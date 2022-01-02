@@ -44,12 +44,12 @@ func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *accounttypes.Ge
 func (s *service) GetMessengerClient() (messengertypes.MessengerServiceClient, error) {
 	m, err := s.getInitManager()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrBertyAccountMessengerNotReady.Wrap(err)
 	}
 
 	messenger, err := m.GetMessengerClient()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrBertyAccountMessengerNotReady.Wrap(err)
 	}
 
 	return messenger, err
@@ -59,12 +59,12 @@ func (s *service) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 func (s *service) GetProtocolClient() (protocoltypes.ProtocolServiceClient, error) {
 	m, err := s.getInitManager()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrMessengerProtocolNotReady.Wrap(err)
 	}
 
 	protocol, err := m.GetProtocolClient()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrMessengerProtocolNotReady.Wrap(err)
 	}
 
 	return protocol, err
