@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
-import { useThemeColor } from '@berty-tech/store'
+import { useSortedConversationList, useThemeColor } from '@berty-tech/store'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useAppDispatch } from '@berty-tech/react-redux'
 
@@ -69,6 +69,11 @@ export const ManageGroupInvitation: React.FC<{
 	const _styles = useStylesModal()
 	const { t }: any = useTranslation()
 	const dispatch = useAppDispatch()
+	const { dispatch: navigationDispatch } = useNavigation()
+	const conversations = useSortedConversationList()
+	const convId = conversations?.find(
+		({ publicKey: conversationPublicKey }) => conversationPublicKey === publicKey,
+	)?.publicKey
 
 	const [password, setPassword] = useState('')
 
@@ -84,7 +89,21 @@ export const ManageGroupInvitation: React.FC<{
 			)
 		}
 	}, [done, error, dispatch])
-
+	if (convId) {
+		navigationDispatch(
+			CommonActions.reset({
+				routes: [
+					{ name: 'Main.Home' },
+					{
+						name: 'Chat.Group',
+						params: {
+							convId,
+						},
+					},
+				],
+			}),
+		)
+	}
 	if (error) {
 		return <InvalidScan type={type} error={error} />
 	}
