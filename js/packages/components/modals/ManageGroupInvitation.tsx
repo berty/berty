@@ -8,9 +8,9 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
-import { useSortedConversationList, useThemeColor } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { useAppDispatch } from '@berty-tech/react-redux'
+import { useAppDispatch, useConversation } from '@berty-tech/react-redux'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -70,10 +70,7 @@ export const ManageGroupInvitation: React.FC<{
 	const { t }: any = useTranslation()
 	const dispatch = useAppDispatch()
 	const { dispatch: navigationDispatch } = useNavigation()
-	const conversations = useSortedConversationList()
-	const convId = conversations?.find(
-		({ publicKey: conversationPublicKey }) => conversationPublicKey === publicKey,
-	)?.publicKey
+	const convId = useConversation(publicKey)?.publicKey
 
 	const [password, setPassword] = useState('')
 
