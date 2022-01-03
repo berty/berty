@@ -71,11 +71,11 @@
 				"first-button": "",
 				"second-button": {
 					"title": "",
-					"placeholder": ""
+					"placeholder": "Sunucu adresi giriniz"
 				},
 				"third-button": ""
 			},
-			"apply-changes": ""
+			"apply-changes": "DEĞİŞİKLİKLERİ KABUL ET"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -91,7 +91,7 @@
 			"title": "",
 			"desc": "",
 			"first-button": "İptal",
-			"second-button": ""
+			"second-button": "Evet"
 		}
 	},
 	"main": {
@@ -119,16 +119,16 @@
 				"create-group": "YENİ BİR GRUP YARAT"
 			},
 			"create-group-finalize": {
-				"placeholder": "",
-				"about": "",
+				"placeholder": "Grup ismi",
+				"about": "Grup Hakkında",
 				"first-bullet-point": "",
 				"second-bullet-point": "",
-				"third-bullet-point": "",
-				"fourth-bullet-point": "",
-				"fifth-bullet-point": ""
+				"third-bullet-point": "Bu gruptan ayrılabilirsiniz",
+				"fourth-bullet-point": "Bu grubu silemezsiniz",
+				"fifth-bullet-point": "Bu gruptan bir üye silemezsiniz"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "İstek gonderildi. Bekliyor...",
 				"draft": ""
 			}
 		},
@@ -167,7 +167,7 @@
 			"skip": "ATLA VE DAHA SONRA YAP"
 		},
 		"scan": {
-			"title": ""
+			"title": "QR Kod Tarat"
 		}
 	},
 	"settings": {
@@ -175,11 +175,11 @@
 			"check-list": {
 				"title": "",
 				"avatar": {
-					"title": "",
-					"desc": ""
+					"title": "Avatar'ını değiştir",
+					"desc": "Bu hesap için bir profil resmi belirle!"
 				},
 				"berty-services": {
-					"title": "",
+					"title": "Berty Servislerini Aktif Et",
 					"desc": ""
 				},
 				"contact": {
@@ -187,11 +187,11 @@
 					"desc": ""
 				},
 				"group": {
-					"title": "",
+					"title": "Bir gruba katıl ya da grup yarat",
 					"desc": ""
 				},
 				"message": {
-					"title": "",
+					"title": "Mesaj gönder",
 					"desc": ""
 				},
 				"ble-message": {
@@ -200,8 +200,8 @@
 				}
 			},
 			"edit-profile": "Profili Düzenle",
-			"share-link": "",
-			"create-group": "",
+			"share-link": "Link paylaş",
+			"create-group": "Grup yarat",
 			"create-new-account": "Yeni hesap oluştur"
 		},
 		"network-map": {
@@ -214,9 +214,9 @@
 			"in-app-notifications": "",
 			"dark-mode-button": "Koyu tema",
 			"devtools": "Geliştirme araçları",
-			"network-config": "",
+			"network-config": "Ağ ayarı",
 			"notification-file-saved": {
-				"title": "",
+				"title": "Data kaydedildi!",
 				"desc": ""
 			},
 			"receive-contact-requests-button": "Bağlantı istekleri alın",
