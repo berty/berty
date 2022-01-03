@@ -6,17 +6,25 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	mrand "math/rand"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/event"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
+	routing "github.com/libp2p/go-libp2p-core/routing"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	quict "github.com/libp2p/go-libp2p-quic-transport"
 	tcpt "github.com/libp2p/go-tcp-transport"
-	ma "github.com/multiformats/go-multiaddr"
 
 	golog "github.com/ipfs/go-log"
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/peterbourgon/ff/v3/ffcli"
 )
 
@@ -27,13 +35,47 @@ const (
 
 type globalOpts struct {
 	tcp         bool
+	dht         bool
+	limit       int
 	insecure    bool
 	seed        int64
 	verbose     bool
 	veryVerbose bool
 }
 
-func globalOptsToLibp2pOpts(gOpts *globalOpts) ([]libp2p.Option, error) {
+func monitorConnsCount(h host.Host, limit int) {
+	getConnsCount := func() int {
+		activeConns := 0
+		for _, conn := range h.Network().Conns() {
+			if h.Network().Connectedness(conn.RemotePeer()) == network.Connected {
+				activeConns++
+			}
+		}
+		return activeConns
+	}
+
+	go func() {
+		eventReceiver, err := h.EventBus().Subscribe(new(event.EvtPeerConnectednessChanged))
+		if err != nil {
+			log.Fatalf("can't subscribe to local addresses updated events: %v", err)
+		}
+		defer eventReceiver.Close()
+
+		for range eventReceiver.Out() {
+			connsCount := getConnsCount()
+
+			if limit > 0 && connsCount > limit {
+				fmt.Printf("Connections before trim: %d/%d\n", connsCount, limit)
+				h.ConnManager().TrimOpenConns(context.Background())
+				fmt.Printf("Connections after trim: %d/%d\n", getConnsCount(), limit)
+			} else {
+				fmt.Println("Connections:", connsCount)
+			}
+		}
+	}()
+}
+
+func globalOptsToLibp2pOpts(ctx context.Context, gOpts *globalOpts) ([]libp2p.Option, error) {
 	var (
 		r    io.Reader
 		opts []libp2p.Option
@@ -59,6 +101,26 @@ func globalOptsToLibp2pOpts(gOpts *globalOpts) ([]libp2p.Option, error) {
 
 	if gOpts.insecure {
 		opts = append(opts, libp2p.NoSecurity)
+	}
+
+	if gOpts.dht {
+		opts = append(
+			opts,
+			libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+				return dht.New(ctx, h, dht.Mode(dht.ModeClient), dht.BootstrapPeers(dht.GetDefaultBootstrapPeerAddrInfos()...) /*, dht.DisableAutoRefresh() */)
+			}),
+		)
+	}
+
+	if gOpts.limit > 0 {
+		opts = append(
+			opts,
+			libp2p.ConnectionManager(connmgr.NewConnManager(
+				gOpts.limit,
+				gOpts.limit,
+				time.Millisecond,
+			)),
+		)
 	}
 
 	return opts, nil
@@ -173,6 +235,8 @@ func main() {
 	{
 		rootFs := flag.NewFlagSet("root", flag.ExitOnError)
 		rootFs.BoolVar(&gOpts.tcp, "tcp", false, "use TCP instead of QUIC")
+		rootFs.BoolVar(&gOpts.dht, "dht", false, "enable DHT routing")
+		rootFs.IntVar(&gOpts.limit, "limit", 0, "limit the number of connections")
 		rootFs.BoolVar(&gOpts.insecure, "insecure", false, "use an unencrypted connection")
 		rootFs.Int64Var(&gOpts.seed, "seed", 0, "set random seed for id generation")
 		rootFs.BoolVar(&gOpts.verbose, "v", false, "verbose mode: print debug level for relevant libp2p loggers")

@@ -10,8 +10,6 @@ import (
 	"strconv"
 
 	"github.com/libp2p/go-libp2p"
-	routing "github.com/libp2p/go-libp2p-core/routing"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
@@ -57,7 +55,11 @@ type serverOpts struct {
 }
 
 func createServerHost(ctx context.Context, gOpts *globalOpts, sOpts *serverOpts) (host.Host, error) {
-	opts, err := globalOptsToLibp2pOpts(gOpts) // Get identity and transport
+	if sOpts.relay == discoveryRelayMode || sOpts.relay == disabledRelayMode {
+		gOpts.dht = true
+	}
+
+	opts, err := globalOptsToLibp2pOpts(ctx, gOpts) // Get identity and transport
 	if err != nil {
 		return nil, err
 	}
@@ -84,16 +86,7 @@ func createServerHost(ctx context.Context, gOpts *globalOpts, sOpts *serverOpts)
 		opts = append(opts, libp2p.ForceReachabilityPrivate())
 	}
 
-	// Relay discovery needs DHT routing to discover relays
-	// NATPortMap (relay disabled) needs DHT routing to get host public IP
-	if sOpts.relay == discoveryRelayMode || sOpts.relay == disabledRelayMode {
-		opts = append(
-			opts,
-			libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-				return dht.New(ctx, h, dht.Mode(dht.ModeClient), dht.BootstrapPeers(dht.GetDefaultBootstrapPeerAddrInfos()...))
-			}),
-		)
-	} else { // Or setup Berty / IPFS static relays
+	if sOpts.relay != discoveryRelayMode && sOpts.relay != disabledRelayMode {
 		var (
 			maddrRelays  []string
 			staticRelays []peer.AddrInfo
@@ -132,7 +125,14 @@ func createServerHost(ctx context.Context, gOpts *globalOpts, sOpts *serverOpts)
 		opts = append(opts, libp2p.StaticRelays(staticRelays))
 	}
 
-	return libp2p.New(opts...) // Create host
+	h, err := libp2p.New(opts...) // Create host
+	if err != nil {
+		return nil, err
+	}
+
+	monitorConnsCount(h, gOpts.limit)
+
+	return h, nil
 }
 
 func printHint(h host.Host, gOpts *globalOpts, sOpts *serverOpts) {

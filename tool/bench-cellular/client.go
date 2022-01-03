@@ -32,8 +32,8 @@ type clientOpts struct {
 	size    int
 }
 
-func createClientHost(gOpts *globalOpts) (host.Host, error) {
-	opts, err := globalOptsToLibp2pOpts(gOpts) // Get identity and transport
+func createClientHost(ctx context.Context, gOpts *globalOpts) (host.Host, error) {
+	opts, err := globalOptsToLibp2pOpts(ctx, gOpts) // Get identity and transport
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,14 @@ func createClientHost(gOpts *globalOpts) (host.Host, error) {
 		libp2p.ListenAddrs(), // On client mode, set no listener
 	)
 
-	return libp2p.New(opts...) // Create host
+	h, err := libp2p.New(opts...) // Create host
+	if err != nil {
+		return nil, err
+	}
+
+	monitorConnsCount(h, gOpts.limit)
+
+	return h, nil
 }
 
 func addDestToPeerstore(h host.Host, dest string) (peer.ID, error) {
@@ -184,7 +191,7 @@ func download(ctx context.Context, h host.Host, peerid peer.ID, cOpts *clientOpt
 }
 
 func runClient(ctx context.Context, gOpts *globalOpts, cOpts *clientOpts) error {
-	h, err := createClientHost(gOpts)
+	h, err := createClientHost(ctx, gOpts)
 	if err != nil {
 		return fmt.Errorf("client host creation failed: %v", err)
 	}
