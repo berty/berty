@@ -92,7 +92,6 @@ export enum PersistentOptionsKeys {
 	Configurations = 'configurations',
 	LogFilters = 'logFilters',
 	TyberHost = 'tyberHost',
-	ThemeColor = 'themeColor',
 	OnBoardingFinished = 'onBoardingFinished',
 	ProfileNotification = 'profileNotification',
 }
@@ -163,12 +162,6 @@ export type PersistentOptionsTyberHost = {
 	address: string
 }
 
-export type PersistentOptionsThemeColor = {
-	selected: string
-	collection: { [key: string]: { colors: unknown } }
-	isDark: boolean
-}
-
 export type PersistentOptionsOnBoardingFinished = {
 	isFinished: boolean
 }
@@ -214,10 +207,6 @@ export type PersistentOptionsUpdate =
 			payload: PersistentOptionsTyberHost
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.ThemeColor
-			payload: PersistentOptionsThemeColor
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.OnBoardingFinished
 			payload: PersistentOptionsOnBoardingFinished
 	  }
@@ -234,7 +223,6 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
 	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
-	[PersistentOptionsKeys.ThemeColor]: PersistentOptionsThemeColor
 	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }

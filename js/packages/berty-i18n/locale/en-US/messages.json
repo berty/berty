@@ -416,6 +416,7 @@
 			"export": "Export selected theme as file",
 			"share": "Share selected theme as file",
 			"import": "Import a file theme",
+			"delete": "Delete all not default themes",
 			"bad-format-title": "Theme bad format",
 			"bad-format-desc": "Bad format for the theme file"
 		},

@@ -11,15 +11,15 @@ import { Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { AppDispatch, persistor } from '@berty-tech/redux/store'
+import store, { AppDispatch, persistor } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 import { streamEventToAction as streamEventToReduxAction } from '@berty-tech/redux/messengerActions'
 
 import { accountService, storageGet, storageRemove } from './accountService'
-import { defaultPersistentOptions, defaultThemeColor } from './context'
+import { defaultPersistentOptions } from './context'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
-import { setPersistentOption, updateAccount } from './providerCallbacks'
+import { updateAccount } from './providerCallbacks'
 import { bertyOperatedServer, servicesAuthViaURL } from './services'
 import {
 	GlobalPersistentOptionsKeys,
@@ -31,6 +31,7 @@ import {
 	StreamInProgress,
 } from './types'
 import { storageKeyForAccount } from './utils'
+import { resetTheme } from '@berty-tech/redux/reducers/theme.reducer'
 
 const { PushTokenRequester } = NativeModules
 
@@ -447,10 +448,7 @@ export const updateAccountsPreReady = async (
 			publicKey: account?.publicKey,
 		})
 	}
-	await setPersistentOption(dispatch, selectedAccount, {
-		type: PersistentOptionsKeys.ThemeColor,
-		payload: defaultThemeColor(),
-	})
+	store.dispatch(resetTheme())
 	const config = await accountService.networkConfigGet({ accountId: selectedAccount })
 	if (config.currentConfig?.staticRelay && config.currentConfig?.staticRelay[0] === ':default:') {
 		await servicesAuthViaURL(protocolClient, bertyOperatedServer)

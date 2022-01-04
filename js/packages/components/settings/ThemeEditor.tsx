@@ -8,21 +8,23 @@ import getPath from '@flyerhq/react-native-android-uri-path'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import DocumentPicker from 'react-native-document-picker'
 
-import { useStyles, randomizeThemeColor } from '@berty-tech/styles'
-import {
-	defaultThemeColor,
-	PersistentOptionsKeys,
-	useMessengerContext,
-	CurrentGeneratedTheme,
-	useThemeColor,
-	createAndSaveFile,
-	DefaultDarkTheme,
-} from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+import { useThemeColor, createAndSaveFile } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
 import ThemeColorName from '../modals/ThemeColorName'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+	deleteAddedThemes,
+	importTheme,
+	randomizeTheme,
+	selectCurrentTheme,
+	selectThemeCollectionAsItem,
+	selectThemeSelected,
+	setTheme,
+} from '@berty-tech/redux/reducers/theme.reducer'
 
 const openThemeColorFile = async () => {
 	try {
@@ -38,7 +40,7 @@ const openThemeColorFile = async () => {
 	}
 }
 
-const importColorThemeFileToStorage = async (uri: string) => {
+const importColorThemeFileFromStorage = async (uri: string): Promise<string> => {
 	const file = Platform.OS === 'android' ? getPath(uri) : uri.replace(/^file:\/\//, '')
 	const theme = await RNFS.readFile(file, 'utf8')
 	return theme
@@ -62,9 +64,10 @@ const exportColorThemeToFile = async (themeColor: any, fileName: string): Promis
 }
 
 const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
-	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
+	const selectedTheme = useSelector(selectThemeSelected)
+	const dispatch = useDispatch()
 
 	return (
 		<View>
@@ -80,21 +83,9 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 						if (!document) {
 							return
 						}
-						const themeColors = await importColorThemeFileToStorage(document.uri)
+						const themeColors = JSON.parse(await importColorThemeFileFromStorage(document.uri))
 						const themeName = document.name.split('.')[0]
-						await ctx.setPersistentOption({
-							type: PersistentOptionsKeys.ThemeColor,
-							payload: {
-								selected: themeName,
-								collection: {
-									...ctx.persistentOptions.themeColor.collection,
-									[themeName]: {
-										colors: JSON.parse(themeColors),
-									},
-								},
-								isDark: false,
-							},
-						})
+						dispatch(importTheme({ themeName, colors: themeColors }))
 					} catch (err) {
 						showNotification({
 							title: t('settings.theme-editor.bad-format-title'),
@@ -115,10 +106,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
 				onPress={async () => {
-					await exportColorThemeToFile(
-						JSON.stringify(colors),
-						ctx.persistentOptions?.themeColor.selected,
-					)
+					await exportColorThemeToFile(JSON.stringify(colors), selectedTheme)
 					if (Platform.OS === 'android') {
 						showNotification({
 							title: t('settings.mode.notification-file-saved.title'),
@@ -136,21 +124,18 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 					iconColor={colors['alt-secondary-background-header']}
 					actionIcon={null}
 					onPress={async () => {
-						await shareColorTheme(ctx.persistentOptions?.themeColor.selected)
+						await shareColorTheme(selectedTheme)
 					}}
 				/>
 			) : null}
 			<ButtonSetting
-				name={'Delete all not default themes'}
+				name={t('settings.theme-editor.delete')}
 				icon='color-palette-outline'
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
-				onPress={async () => {
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.ThemeColor,
-						payload: defaultThemeColor(),
-					})
+				onPress={() => {
+					dispatch(deleteAddedThemes())
 				}}
 			/>
 		</View>
@@ -158,17 +143,13 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 })
 
 const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => {
-	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 	const { t } = useTranslation()
+	const dispatch = useDispatch()
+	const items = useSelector(selectThemeCollectionAsItem)
+	const currentTheme = useSelector(selectCurrentTheme)
 
-	const items: any = Object.entries(ctx.persistentOptions.themeColor.collection).map((value, _) => {
-		return {
-			label: value[0],
-			value: value[1],
-		}
-	})
 	return (
 		<View style={[padding.medium, { flex: 1 }]}>
 			<ButtonSetting
@@ -177,21 +158,8 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon={null}
-				onPress={async () => {
-					const themeColor = randomizeThemeColor()
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.ThemeColor,
-						payload: {
-							selected: CurrentGeneratedTheme,
-							collection: {
-								...ctx.persistentOptions.themeColor.collection,
-								[CurrentGeneratedTheme]: {
-									colors: themeColor,
-								},
-							},
-							isDark: false,
-						},
-					})
+				onPress={() => {
+					dispatch(randomizeTheme())
 				}}
 			/>
 			<ButtonSetting
@@ -205,33 +173,9 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 			<DropDownPicker
 				items={items}
 				mode={'themeCollection'}
-				defaultValue={
-					ctx.persistentOptions.themeColor.isDark
-						? DefaultDarkTheme
-						: ctx.persistentOptions?.themeColor.selected
-				}
+				defaultValue={currentTheme}
 				onChangeItem={async (item: any) => {
-					if (item.label === DefaultDarkTheme) {
-						await ctx.setPersistentOption({
-							type: PersistentOptionsKeys.ThemeColor,
-							payload: {
-								...ctx.persistentOptions.themeColor,
-								isDark: true,
-							},
-						})
-						return
-					}
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.ThemeColor,
-						payload: {
-							selected: item.label,
-							collection: {
-								...ctx.persistentOptions.themeColor.collection,
-								[item.label]: item.value,
-							},
-							isDark: false,
-						},
-					})
+					dispatch(setTheme({ themeName: item.label }))
 				}}
 			/>
 			<BodyFileThemeEditor />
