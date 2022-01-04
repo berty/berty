@@ -582,7 +582,7 @@
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": "Ismerősök QR−kód bemásolással való hozzáadásához Berty-nek engedélyezni kell a kamera használatát. A kamera semmi másra nem alkalmazható."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Hangüzenetek",
