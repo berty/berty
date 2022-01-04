@@ -582,7 +582,7 @@
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": "För att skanna QR-koden och lägga till kontakter med din kamera behöver Berty appen din tillåtelse. Kameran kan inte användas för något annat."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Ljudmeddelanden",
