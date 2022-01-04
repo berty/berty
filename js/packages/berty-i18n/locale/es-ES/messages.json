@@ -582,7 +582,7 @@
 		},
 		"camera": {
 			"title": "Cámara",
-			"desc": "Para escanear codigos QR y añadir contactos con tu cámara, Berty app necesita tu permiso. La cámara no será usada para otra cosa."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Mensajes de audio",
