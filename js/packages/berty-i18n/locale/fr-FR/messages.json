@@ -582,7 +582,7 @@
 		},
 		"camera": {
 			"title": "Caméra",
-			"desc": "Pour scanner le code QR et ajouter des contacts avec votre caméra, l'application Berty a besoin de votre autorisation. La caméra ne peut pas être utilisée pour autre chose."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Messages audio",
