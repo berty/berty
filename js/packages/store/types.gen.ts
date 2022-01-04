@@ -39,6 +39,8 @@ export type StreamEventNotifiedPayloadType<T> =
 		? beapi.messenger.StreamEvent.Notified.IContactRequestSent
 		: T extends beapi.messenger.StreamEvent.Notified.Type.TypeContactRequestReceived
 		? beapi.messenger.StreamEvent.Notified.IContactRequestReceived
+		: T extends beapi.messenger.StreamEvent.Notified.Type.TypeGroupInvitation
+		? beapi.messenger.StreamEvent.Notified.IGroupInvitation
 		: never
 
 export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type.Undefined

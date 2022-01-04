@@ -350,13 +350,14 @@ export const openingClients = async (
 							return
 						}
 
-						const payloadName = enumName.substr('Type'.length)
+						const payloadName = enumName.substring('Type'.length)
 						const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
 						if (!pbobj) {
 							console.warn('failed to find a protobuf object matching the notification type')
 							return
 						}
-						action.payload.payload = pbobj.decode(action.payload.payload)
+						action.payload.payload =
+							action.payload.payload === undefined ? {} : pbobj.decode(action.payload.payload)
 						eventEmitter.emit('notification', {
 							type: action.payload.type,
 							name: payloadName,
@@ -367,7 +368,7 @@ export const openingClients = async (
 						reduxDispatch(action)
 					}
 				} catch (err) {
-					console.warn('failed to handle stream event:', err)
+					console.warn('failed to handle stream event (', msg?.event, '):', err)
 				}
 			})
 			await stream.start()

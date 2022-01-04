@@ -74,9 +74,12 @@ const FooterButton: React.FC<{
 
 export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor((_ctx, notif) =>
-		[T.TypeMessageReceived, T.TypeContactRequestReceived, T.TypeContactRequestSent].includes(
-			notif.type || T.Unknown,
-		)
+		[
+			T.TypeMessageReceived,
+			T.TypeContactRequestReceived,
+			T.TypeContactRequestSent,
+			T.TypeGroupInvitation,
+		].includes(notif.type || T.Unknown)
 			? 'sound-only'
 			: false,
 	)
