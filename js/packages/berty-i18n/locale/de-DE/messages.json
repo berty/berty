@@ -582,7 +582,7 @@
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": "Um QR-Codes zu scannen und Kontakte mit deiner hinzuzufügen braucht die Berty deine Berechtigung. Die Kamera wird für nichts anderes genutzt."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Audio-Nachrichten",
