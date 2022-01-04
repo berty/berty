@@ -582,7 +582,7 @@
 		},
 		"camera": {
 			"title": "Fotocamera",
-			"desc": "Per scansionare il codice QR e aggiungere contatti con la tua fotocamera, l'app Berty ha bisogno del tuo permesso. La fotocamera non può essere utilizzata per nient'altro."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Messaggi audio",
