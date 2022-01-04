@@ -582,7 +582,7 @@
 		},
 		"camera": {
 			"title": "Camera",
-			"desc": "Om een QR-code te scannen en contacten met je camera toe te voegen, heeft de Berty app jouw toestemming nodig. De camera kan anders niet worden gebruikt."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Audioberichten",
