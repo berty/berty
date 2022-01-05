@@ -78,7 +78,7 @@ jobs:
       - name: Setup XCode
         if: ${{ !matrix.selfhosted }}
         # disabled on self-hosted because it requires authentication
-        uses: maxim-lobanov/setup-xcode@v1.4.0
+        uses: maxim-lobanov/setup-xcode@v1.4.1
         with:
           xcode-version: ${{ matrix.xcode }}
 
