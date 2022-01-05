@@ -2,7 +2,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "descifrar mensajes push fallido"
+      "title": ""
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Un mensaje de voz enviado",
@@ -26,8 +26,23 @@
     "groupInvitation": {
       "bodyWithGroupName": "Invitado al grupo '%[1]v'"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
