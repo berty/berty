@@ -2,7 +2,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "decoderen van push mislukt"
+      "title": ""
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Stuurd een spraakbericht",
@@ -26,8 +26,23 @@
     "groupInvitation": {
       "bodyWithGroupName": "Nodigt je uit tot '%[1]v' groep"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
