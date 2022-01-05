@@ -2,7 +2,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "プッシュ通知の復号に失敗しました"
+      "title": ""
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "音声メッセージを送信しました",
@@ -26,8 +26,23 @@
     "groupInvitation": {
       "bodyWithGroupName": "「%[1]v」グループに招待されています"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
