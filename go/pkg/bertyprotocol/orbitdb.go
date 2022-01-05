@@ -328,11 +328,29 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
+	s.Logger().Info(fmt.Sprintf("Print metadata store entries: #GUILHUN#%s", groupID))
+	for _, entry := range metaImpl.BaseStore.OpLog().GetEntries().Slice() {
+		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", entry.GetHash().String(), groupID))
+	}
+	s.Logger().Info(fmt.Sprintf("Print metadata store heads: #GUILHUN#%s", groupID))
+	for _, head := range metaImpl.BaseStore.OpLog().RawHeads().Slice() {
+		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", head.GetHash().String(), groupID))
+	}
+
 	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	messagesImpl, err := s.groupMessageStore(ctx, g, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
+	}
+
+	s.Logger().Info(fmt.Sprintf("Print message store entries: #GUILHUN#%s", groupID))
+	for _, entry := range messagesImpl.BaseStore.OpLog().GetEntries().Slice() {
+		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", entry.GetHash().String(), groupID))
+	}
+	s.Logger().Info(fmt.Sprintf("Print message store heads: #GUILHUN#%s", groupID))
+	for _, head := range messagesImpl.BaseStore.OpLog().RawHeads().Slice() {
+		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", head.GetHash().String(), groupID))
 	}
 
 	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
