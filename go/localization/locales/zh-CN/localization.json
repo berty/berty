@@ -2,7 +2,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "解密推送失败"
+      "title": ""
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "发送了语音消息",
@@ -26,8 +26,23 @@
     "groupInvitation": {
       "bodyWithGroupName": "邀请您加入 '%[1]v' 群组"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
