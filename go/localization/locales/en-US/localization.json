@@ -2,7 +2,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "decrypt push failed"
+      "title": ""
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Sent a voice message",
@@ -26,8 +26,23 @@
     "groupInvitation": {
       "bodyWithGroupName": "Invited you to '%[1]v' group"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
