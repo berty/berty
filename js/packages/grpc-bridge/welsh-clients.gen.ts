@@ -134,9 +134,16 @@ export interface WelshMessengerServiceClient {
 	mediaRetrieve: ResponseStreamType<beapi.messenger.MessengerService['mediaRetrieve']>
 	mediaGetRelated: UnaryType<beapi.messenger.MessengerService['mediaGetRelated']>
 	messageSearch: UnaryType<beapi.messenger.MessengerService['messageSearch']>
+	listMemberDevices: ResponseStreamType<beapi.messenger.MessengerService['listMemberDevices']>
 	tyberHostSearch: ResponseStreamType<beapi.messenger.MessengerService['tyberHostSearch']>
 	tyberHostAttach: UnaryType<beapi.messenger.MessengerService['tyberHostAttach']>
 	pushSetAutoShare: UnaryType<beapi.messenger.MessengerService['pushSetAutoShare']>
+	pushShareTokenForConversation: UnaryType<
+		beapi.messenger.MessengerService['pushShareTokenForConversation']
+	>
+	pushTokenSharedForConversation: ResponseStreamType<
+		beapi.messenger.MessengerService['pushTokenSharedForConversation']
+	>
 	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
 }
 

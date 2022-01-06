@@ -321,6 +321,14 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
+				name={'Group.ChatSettingsMemberDetail'}
+				component={Components.Chat.ChatSettingsMemberDetail}
+				options={BackgroundHeaderScreenOptions({
+					title: '',
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
 				name={'Chat.MultiMemberQR'}
 				component={Components.Chat.MultiMemberQR}
 				options={BackgroundHeaderScreenOptions({

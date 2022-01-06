@@ -86,6 +86,9 @@ service MessengerService {
   // MessageSearch
   rpc MessageSearch (MessageSearch.Request) returns (MessageSearch.Reply);
 
+  // ListMemberDevices Lists devices for a member
+  rpc ListMemberDevices(ListMemberDevices.Request) returns (stream ListMemberDevices.Reply);
+
   // TyberHostSearch
   rpc TyberHostSearch (TyberHostSearch.Request) returns (stream TyberHostSearch.Reply);
   // TyberHostAttach
@@ -93,6 +96,12 @@ service MessengerService {
 
   // PushSetAutoShare Sets whether new groups should receive our push token automatically or not
   rpc PushSetAutoShare(PushSetAutoShare.Request) returns (PushSetAutoShare.Reply);
+
+  // PushShareTokenForConversation Share a push token for a conversation
+  rpc PushShareTokenForConversation(PushShareTokenForConversation.Request) returns (PushShareTokenForConversation.Reply);
+
+  // PushTokenSharedForConversation
+  rpc PushTokenSharedForConversation(PushTokenSharedForConversation.Request) returns (stream PushTokenSharedForConversation.Reply);
 
   // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
@@ -380,6 +389,7 @@ message SystemInfo {
     int64 reactions = 9;
     int64 metadata_events = 10;
     int64 medias = 11;
+    int64 shared_push_tokens = 12;
     // older, more recent
   }
 }
@@ -404,7 +414,7 @@ message Account {
   repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
   bool replicate_new_groups_automatically = 6 [(gogoproto.moretags) = "gorm:\"default:true\""];
   string avatar_cid = 7 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
-  bool auto_share_push_token_flag = 8 [(gogoproto.moretags) = "gorm:\"default:true\""];
+  bool auto_share_push_token_flag = 8;
   bytes device_push_token = 9;
   bytes device_push_server = 10;
 }
@@ -528,6 +538,7 @@ message Conversation {
   // info_date is used when SetGroupInfo is called
   int64 info_date = 18;
   string shared_push_token_identifier = 19;
+  string local_member_public_key = 20;
 }
 
 message ConversationReplicationInfo {
@@ -553,6 +564,13 @@ message Member { // Composite primary key
 message Device {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+}
+
+message SharedPushToken {
+  string device_public_key = 1 [(gogoproto.moretags) = "gorm:\"index\""];
+  string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
+  string token = 4 [(gogoproto.moretags) = "gorm:\"index\""];
 }
 
 message ContactMetadata {
@@ -907,5 +925,31 @@ message PushReceive {
   }
   message Reply {
     PushReceivedData data = 1;
+  }
+}
+
+message ListMemberDevices {
+  message Request {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+    string member_pk = 2 [(gogoproto.customname) = "MemberPK"];
+  }
+  message Reply {
+    Device device = 1;
+  }
+}
+
+message PushShareTokenForConversation {
+  message Request {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+  }
+  message Reply {}
+}
+
+message PushTokenSharedForConversation {
+  message Request {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+  }
+  message Reply {
+    SharedPushToken push_token = 1;
   }
 }

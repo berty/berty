@@ -22,6 +22,10 @@ ifeq ($(MACOS_VERSION),12.0)
 GO_TEST_ENV := MallocNanoZone=0 $(GO_TEST_ENV)
 endif
 
+ifeq ($(MACOS_VERSION),12.1)
+GO_TEST_ENV := MallocNanoZone=0 $(GO_TEST_ENV)
+endif
+
 ##
 ## General rules
 ##

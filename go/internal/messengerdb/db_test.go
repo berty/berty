@@ -25,21 +25,21 @@ func Test_dbWrapper_addConversation(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
-	convErr, err := db.AddConversation("")
+	convErr, err := db.AddConversation("", "mem_1", "dev_1")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, convErr)
 
-	conv1, err := db.AddConversation(groupPK1)
+	conv1, err := db.AddConversation(groupPK1, "mem_1", "dev_1")
 	require.NoError(t, err)
 	require.Equal(t, groupPK1, conv1.PublicKey)
 
-	conv2, err := db.AddConversation(groupPK1)
+	conv2, err := db.AddConversation(groupPK1, "mem_1", "dev_1")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
 	require.Empty(t, conv2)
 
-	conv3, err := db.AddConversation(groupPK2)
+	conv3, err := db.AddConversation(groupPK2, "mem_1", "dev_1")
 	require.NoError(t, err)
 	require.Equal(t, groupPK2, conv3.PublicKey)
 }
@@ -282,19 +282,19 @@ func Test_dbWrapper_addConversationForContact(t *testing.T) {
 	defer dispose()
 
 	// should raise an error when passing an empty conversation pk
-	conv, err := db.AddConversationForContact("", "contact_1")
+	conv, err := db.AddConversationForContact("", "mem_1", "dev_1", "contact_1")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, conv)
 
 	// should raise an error when passing an empty contact pk
-	conv, err = db.AddConversationForContact("convo_1", "")
+	conv, err = db.AddConversationForContact("convo_1", "mem_1", "dev_1", "")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, conv)
 
 	// should be ok
-	conv, err = db.AddConversationForContact("convo_1", "contact_1")
+	conv, err = db.AddConversationForContact("convo_1", "mem_1", "dev_1", "contact_1")
 	require.NoError(t, err)
 	require.Equal(t, "convo_1", conv.PublicKey)
 	require.Equal(t, "contact_1", conv.ContactPublicKey)
@@ -304,7 +304,7 @@ func Test_dbWrapper_addConversationForContact(t *testing.T) {
 	require.Equal(t, int64(1), count)
 
 	// should be idempotent
-	conv, err = db.AddConversationForContact("convo_1", "contact_1")
+	conv, err = db.AddConversationForContact("convo_1", "mem_1", "dev_1", "contact_1")
 	require.NoError(t, err)
 	require.Equal(t, "convo_1", conv.PublicKey)
 	require.Equal(t, "contact_1", conv.ContactPublicKey)
@@ -314,7 +314,7 @@ func Test_dbWrapper_addConversationForContact(t *testing.T) {
 	require.Equal(t, int64(1), count)
 
 	// should not create another conversation for the same contact
-	conv, err = db.AddConversationForContact("convo_2", "contact_1")
+	conv, err = db.AddConversationForContact("convo_2", "mem_1", "dev_1", "contact_1")
 	require.Error(t, err)
 	require.Nil(t, conv)
 
@@ -323,7 +323,7 @@ func Test_dbWrapper_addConversationForContact(t *testing.T) {
 	require.Equal(t, int64(1), count)
 
 	// should raise an error when reusing a conversation id for another contact
-	conv, err = db.AddConversationForContact("convo_1", "contact_2")
+	conv, err = db.AddConversationForContact("convo_1", "mem_1", "dev_1", "contact_2")
 	require.Error(t, err)
 	require.Nil(t, conv)
 
@@ -1034,6 +1034,15 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 		db.db.Create(&messengertypes.Media{CID: fmt.Sprintf("%d", i)})
 	}
 
+	for i := 0; i < 12; i++ {
+		db.db.Create(&messengertypes.SharedPushToken{
+			ConversationPublicKey: fmt.Sprintf("%d", i),
+			MemberPublicKey:       fmt.Sprintf("%d", i),
+			DevicePublicKey:       fmt.Sprintf("%d", i),
+			Token:                 fmt.Sprintf("%d", i),
+		})
+	}
+
 	info, err = db.GetDBInfo()
 	require.NoError(t, err)
 	require.Equal(t, int64(1), info.Accounts)
@@ -1047,12 +1056,13 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(9), info.Reactions)
 	require.Equal(t, int64(10), info.MetadataEvents)
 	require.Equal(t, int64(11), info.Medias)
+	require.Equal(t, int64(12), info.SharedPushTokens)
 
 	// Ensure all tables are in the debug data
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%_fts%'").Scan(&tables).Error
 	require.NoError(t, err)
-	expectedTablesCount := 11
+	expectedTablesCount := 12
 	require.Equal(t, expectedTablesCount, len(tables), fmt.Sprintf("expected %d tables in DB, got tables %s", expectedTablesCount, strings.Join(tables, ", ")))
 }
 
@@ -1880,4 +1890,97 @@ func Test_dbWrapper_addInteraction_fromPushLast(t *testing.T) {
 	require.Equal(t, testCID, i.CID)
 	require.Equal(t, []byte("payload1"), i.Payload)
 	require.False(t, isNew)
+}
+
+func Test_dbWrapper_GetDevicesForMember(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	require.NoError(t, db.db.Create(&messengertypes.Conversation{PublicKey: "Convo1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Conversation{PublicKey: "Convo2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Member{PublicKey: "Member1", ConversationPublicKey: "Convo1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Member{PublicKey: "Member2", ConversationPublicKey: "Convo1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Member{PublicKey: "Member1", ConversationPublicKey: "Convo2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Member{PublicKey: "Member3", ConversationPublicKey: "Convo2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device11", MemberPublicKey: "Member1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device12", MemberPublicKey: "Member1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device21", MemberPublicKey: "Member2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device22", MemberPublicKey: "Member2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device31", MemberPublicKey: "Member3"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device32", MemberPublicKey: "Member3"}).Error)
+
+	dev, err := db.GetDevicesForMember("bogus", "Member1")
+	require.NoError(t, err)
+	require.Len(t, dev, 0)
+
+	dev, err = db.GetDevicesForMember("Convo1", "bogus")
+	require.NoError(t, err)
+	require.Len(t, dev, 0)
+
+	dev, err = db.GetDevicesForMember("Convo1", "Member1")
+	require.NoError(t, err)
+	require.Len(t, dev, 2)
+}
+
+func Test_dbWrapper_UpdateDeviceSetPushToken(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	count := int64(0)
+
+	err := db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "token1")
+	require.NoError(t, err)
+
+	err = db.db.Model(&messengertypes.SharedPushToken{}).Where(&messengertypes.SharedPushToken{
+		DevicePublicKey:       "device1",
+		MemberPublicKey:       "member1",
+		ConversationPublicKey: "conv1",
+		Token:                 "token1",
+	}).Count(&count).Error
+
+	require.NoError(t, err)
+	require.Equal(t, int64(1), count)
+
+	err = db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "token2")
+	require.NoError(t, err)
+
+	err = db.db.Model(&messengertypes.SharedPushToken{}).Where(&messengertypes.SharedPushToken{
+		DevicePublicKey:       "device1",
+		MemberPublicKey:       "member1",
+		ConversationPublicKey: "conv1",
+		Token:                 "token2",
+	}).Count(&count).Error
+
+	require.NoError(t, err)
+	require.Equal(t, int64(1), count)
+
+	err = db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "")
+	require.NoError(t, err)
+
+	err = db.db.Model(&messengertypes.SharedPushToken{}).Where(&messengertypes.SharedPushToken{
+		DevicePublicKey:       "device1",
+		MemberPublicKey:       "member1",
+		ConversationPublicKey: "conv1",
+	}).Count(&count).Error
+
+	require.NoError(t, err)
+	require.Equal(t, int64(0), count)
+}
+
+func Test_dbWrapper_GetPushTokenSharedForConversation(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	err := db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "token1")
+	require.NoError(t, err)
+
+	err = db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv2", "token2")
+	require.NoError(t, err)
+
+	err = db.UpdateDeviceSetPushToken(context.Background(), "member2", "device2", "conv1", "token3")
+	require.NoError(t, err)
+
+	tokens, err := db.GetPushTokenSharedForConversation("conv1")
+	require.NoError(t, err)
+	require.Len(t, tokens, 2)
 }

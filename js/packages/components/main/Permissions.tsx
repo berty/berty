@@ -47,13 +47,14 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				navigation.goBack()
 				return
 			}
-			if (typeof onComplete === 'function') {
-				await onComplete()
-			}
 			if (navigateNext) {
 				navigation.navigate(navigateNext)
 			} else {
 				navigation.goBack()
+			}
+
+			if (typeof onComplete === 'function') {
+				await onComplete()
 			}
 		},
 		[navigateNext, navigation, onComplete],
@@ -262,6 +263,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				</View>
 				<TouchableOpacity
 					onPress={async () => {
+						navigation.goBack()
+
 						if (
 							permissionType === 'notification' &&
 							!selectedAccount &&
@@ -269,7 +272,6 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						) {
 							await onComplete()
 						}
-						navigation.goBack()
 					}}
 				>
 					<Text

@@ -292,6 +292,13 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	usePushShareTokenForConversation: () => {
+		error: any
+		call: (req?: beapi.messenger.PushShareTokenForConversation.IRequest) => void
+		reply: beapi.messenger.PushShareTokenForConversation.IReply | null
+		done: boolean
+		called: boolean
+	}
 	usePushReceive: () => {
 		error: any
 		call: (req?: beapi.messenger.PushReceive.IRequest) => void

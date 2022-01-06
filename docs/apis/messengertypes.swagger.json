@@ -681,6 +681,48 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/ListMemberDevices": {
+      "post": {
+        "summary": "ListMemberDevices Lists devices for a member",
+        "operationId": "MessengerService_ListMemberDevices",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1ListMemberDevicesReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1ListMemberDevicesReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ListMemberDevicesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/MediaGetRelated": {
       "post": {
         "summary": "MediaGetRelated Gets previous/next media to be played after current",
@@ -914,6 +956,81 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1PushSetAutoShareRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/PushShareTokenForConversation": {
+      "post": {
+        "summary": "PushShareTokenForConversation Share a push token for a conversation",
+        "operationId": "MessengerService_PushShareTokenForConversation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PushShareTokenForConversationReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PushShareTokenForConversationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/PushTokenSharedForConversation": {
+      "post": {
+        "summary": "PushTokenSharedForConversation",
+        "operationId": "MessengerService_PushTokenSharedForConversation",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1PushTokenSharedForConversationReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1PushTokenSharedForConversationReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PushTokenSharedForConversationRequest"
             }
           }
         ],
@@ -1410,6 +1527,10 @@
           "format": "int64"
         },
         "medias": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shared_push_tokens": {
           "type": "string",
           "format": "int64"
         }
@@ -2030,6 +2151,9 @@
         },
         "shared_push_token_identifier": {
           "type": "string"
+        },
+        "local_member_public_key": {
+          "type": "string"
         }
       }
     },
@@ -2426,6 +2550,25 @@
         }
       }
     },
+    "v1ListMemberDevicesReply": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/v1Device"
+        }
+      }
+    },
+    "v1ListMemberDevicesRequest": {
+      "type": "object",
+      "properties": {
+        "conversation_pk": {
+          "type": "string"
+        },
+        "member_pk": {
+          "type": "string"
+        }
+      }
+    },
     "v1Media": {
       "type": "object",
       "properties": {
@@ -2726,6 +2869,33 @@
         }
       }
     },
+    "v1PushShareTokenForConversationReply": {
+      "type": "object"
+    },
+    "v1PushShareTokenForConversationRequest": {
+      "type": "object",
+      "properties": {
+        "conversation_pk": {
+          "type": "string"
+        }
+      }
+    },
+    "v1PushTokenSharedForConversationReply": {
+      "type": "object",
+      "properties": {
+        "push_token": {
+          "$ref": "#/definitions/v1SharedPushToken"
+        }
+      }
+    },
+    "v1PushTokenSharedForConversationRequest": {
+      "type": "object",
+      "properties": {
+        "conversation_pk": {
+          "type": "string"
+        }
+      }
+    },
     "v1ReplicationSetAutoEnableReply": {
       "type": "object"
     },
@@ -2829,6 +2999,23 @@
           "format": "byte"
         },
         "group_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SharedPushToken": {
+      "type": "object",
+      "properties": {
+        "device_public_key": {
+          "type": "string"
+        },
+        "member_public_key": {
+          "type": "string"
+        },
+        "conversation_public_key": {
+          "type": "string"
+        },
+        "token": {
           "type": "string"
         }
       }

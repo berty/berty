@@ -91,7 +91,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 								key={`${a.tokenId}-${a.serviceType}`}
 								name={`${
 									(typeof a.serviceType === 'string' && serviceNames[a.serviceType]) ||
-									t('settings.services-auth.registered-services-button.sample-unknown-service')
+									a.serviceType
 								}\n${a.authenticationUrl}`}
 								disabled
 								alone={false}

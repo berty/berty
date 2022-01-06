@@ -1,7 +1,6 @@
-import base64 from 'base64-js'
 import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
-import { NativeModules, Platform } from 'react-native'
+import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
 import beapi from '@berty-tech/api'
@@ -20,7 +19,7 @@ import { defaultPersistentOptions } from './context'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
 import { updateAccount } from './providerCallbacks'
-import { bertyOperatedServer, servicesAuthViaURL } from './services'
+import { bertyOperatedServer, requestAndPersistPushToken, servicesAuthViaURL } from './services'
 import {
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
@@ -32,8 +31,6 @@ import {
 } from './types'
 import { storageKeyForAccount } from './utils'
 import { resetTheme } from '@berty-tech/redux/reducers/theme.reducer'
-
-const { PushTokenRequester } = NativeModules
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -282,30 +279,7 @@ export const openingClients = async (
 	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
 
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
-		PushTokenRequester.request()
-			.then((responseJSON: string) => {
-				let response = JSON.parse(responseJSON)
-				protocolClient
-					.pushSetDeviceToken({
-						receiver: beapi.protocol.PushServiceReceiver.create({
-							tokenType:
-								Platform.OS === 'ios'
-									? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
-									: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
-							bundleId: response.bundleId,
-							token: new Uint8Array(base64.toByteArray(response.token)),
-						}),
-					})
-					.then(() => {
-						console.info(`Push token registered: ${responseJSON}`)
-					})
-					.catch(err => {
-						console.warn(`Push token registration failed: ${err}`)
-					})
-			})
-			.catch((err: Error) => {
-				console.warn(`Push token request failed: ${err}`)
-			})
+		requestAndPersistPushToken(protocolClient).catch(e => console.warn(e))
 	}
 
 	let precancel = false
