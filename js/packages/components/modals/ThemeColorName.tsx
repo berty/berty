@@ -5,24 +5,20 @@ import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	useMessengerContext,
-	useThemeColor,
-	CurrentGeneratedTheme,
-	PersistentOptionsKeys,
-	DefaultDarkTheme,
-} from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'
+import { useDispatch } from 'react-redux'
+import { saveTheme } from '@berty-tech/redux/reducers/theme.reducer'
 
 export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
 	const [{ row, text, margin, padding, border, opacity }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesDefaultModal()
-	const ctx = useMessengerContext()
 	const { t } = useTranslation()
+	const dispatch = useDispatch()
 
 	return (
 		<View
@@ -161,21 +157,8 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 								backgroundColor: colors['positive-asset'],
 							},
 						]}
-						onPress={async () => {
-							await ctx.setPersistentOption({
-								type: PersistentOptionsKeys.ThemeColor,
-								payload: {
-									selected: themeName,
-									collection: {
-										...ctx.persistentOptions.themeColor.collection,
-										[themeName]: {
-											colors:
-												ctx.persistentOptions.themeColor.collection[CurrentGeneratedTheme].colors,
-										},
-									},
-									isDark: themeName === DefaultDarkTheme,
-								},
-							})
+						onPress={() => {
+							dispatch(saveTheme({ themeName }))
 							closeModal()
 						}}
 					>

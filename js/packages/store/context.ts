@@ -2,11 +2,6 @@ import { createContext, useContext } from 'react'
 import { Platform } from 'react-native'
 
 import { globals } from '@berty-tech/config'
-import { randomizeThemeColor } from '@berty-tech/styles'
-import defaultTheme from '@berty-tech/styles/colors.json'
-import pinkTheme from '@berty-tech/styles/pinktheme-default.json'
-import darkTheme from '@berty-tech/styles/darktheme-default.json'
-import darkLFTheme from '@berty-tech/styles/DarkLF-theme.json'
 
 import {
 	MessengerAppState,
@@ -102,26 +97,6 @@ export const isExpectedAppStateChange = (
 	return (expectedAppStateChanges[former] || []).indexOf(next) !== -1
 }
 
-export const DefaultBertyTheme = 'default-berty-theme'
-export const CurrentGeneratedTheme = 'current-generated'
-export const DefaultPinkTheme = 'pink-theme'
-export const DefaultDarkTheme = 'dark-theme'
-export const DarkLFTheme = 'dark-lf-theme'
-
-export const defaultThemeColor = () => {
-	return {
-		selected: DefaultBertyTheme,
-		collection: {
-			[DefaultBertyTheme]: { colors: defaultTheme },
-			[CurrentGeneratedTheme]: { colors: randomizeThemeColor() },
-			[DefaultPinkTheme]: { colors: pinkTheme },
-			[DefaultDarkTheme]: { colors: darkTheme },
-			[DarkLFTheme]: { colors: darkLFTheme },
-		},
-		isDark: false,
-	}
-}
-
 export const defaultPersistentOptions = (): PersistentOptions => {
 	let suggestions: PersistentOptionsSuggestions = {}
 	Object.values(globals.berty.contacts).forEach(async value => {
@@ -156,7 +131,6 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.TyberHost]: {
 			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
 		},
-		[PersistentOptionsKeys.ThemeColor]: defaultThemeColor(),
 		[PersistentOptionsKeys.OnBoardingFinished]: {
 			isFinished: false,
 		},

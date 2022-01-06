@@ -5,15 +5,12 @@ import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	useMessengerContext,
-	useThemeColor,
-	exportAccountToFile,
-	PersistentOptionsKeys,
-} from '@berty-tech/store'
+import { useMessengerContext, useThemeColor, exportAccountToFile } from '@berty-tech/store'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectThemeIsDark, toggleDarkTheme } from '@berty-tech/redux/reducers/theme.reducer'
 
 const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()
@@ -21,6 +18,8 @@ const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => 
 	const { t }: any = useTranslation()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
+	const dispatch = useDispatch()
+	const isDark = useSelector(selectThemeIsDark)
 
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
@@ -53,15 +52,9 @@ const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => 
 				icon='moon-outline'
 				iconColor={colors['background-header']}
 				toggled
-				varToggle={ctx.persistentOptions.themeColor.isDark}
+				varToggle={isDark}
 				actionToggle={async () => {
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.ThemeColor,
-						payload: {
-							...ctx.persistentOptions.themeColor,
-							isDark: !ctx.persistentOptions.themeColor.isDark,
-						},
-					})
+					dispatch(toggleDarkTheme())
 				}}
 			/>
 			<ButtonSetting

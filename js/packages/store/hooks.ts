@@ -23,6 +23,12 @@ import {
 } from './types'
 import { fakeContacts, fakeMultiMemberConversations } from './faker'
 import { ParsedInteraction } from './types.gen'
+import { useSelector } from 'react-redux'
+import {
+	selectThemeCollection,
+	selectThemeIsDark,
+	selectThemeSelected,
+} from '@berty-tech/redux/reducers/theme.reducer'
 
 export type Maybe<T> = T | null | undefined
 
@@ -78,8 +84,6 @@ export const useMessengerClient = () => {
 	return ctx.client
 }
 
-const emptyObject = {}
-
 export const usePersistentOptions = () => {
 	const ctx = useMessengerContext()
 	return ctx.persistentOptions || {}
@@ -87,32 +91,28 @@ export const usePersistentOptions = () => {
 
 export const useThemeColor = () => {
 	const ctx = useMessengerContext()
-	return React.useMemo(() => {
-		if (ctx.persistentOptions?.themeColor.isDark) {
-			return darkTheme
-		}
+	const themeIsDark = useSelector(selectThemeIsDark)
+	const themeSelected = useSelector(selectThemeSelected)
+	const themeCollection = useSelector(selectThemeCollection)
 
-		if (
-			!Object.entries(ctx.persistentOptions?.themeColor.collection).length ||
-			ctx.appState === MessengerAppState.GetStarted
-		) {
+	return React.useMemo(() => {
+		if (!Object.entries(themeCollection).length || ctx.appState === MessengerAppState.GetStarted) {
 			return colors
 		}
 
-		let collectionColors = emptyObject
-		for (const value of Object.entries(ctx.persistentOptions?.themeColor.collection)) {
-			if (value[0] === ctx.persistentOptions?.themeColor.selected) {
+		if (themeIsDark) {
+			return darkTheme
+		}
+
+		let collectionColors = {}
+		for (const value of Object.entries(themeCollection)) {
+			if (value[0] === themeSelected) {
 				collectionColors = (value[1] as any)?.colors
 				break
 			}
 		}
 		return collectionColors
-	}, [
-		ctx.appState,
-		ctx.persistentOptions?.themeColor.collection,
-		ctx.persistentOptions?.themeColor.isDark,
-		ctx.persistentOptions?.themeColor.selected,
-	])
+	}, [ctx.appState, themeCollection, themeIsDark, themeSelected])
 }
 
 export const useProfileNotification = () => {

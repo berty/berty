@@ -439,7 +439,10 @@
 			"save": "Enregistrez ce thème",
 			"export": "Exporter le thème sélectionné sous forme de fichier",
 			"share": "Partager le thème sélectionné sous forme de fichier",
-			"import": "Importer un fichier de thème"
+			"import": "Importer un fichier de thème",
+			"delete": "Réinitialiser les thèmes",
+			"bad-format-title": "Thème au mauvais format",
+			"bad-format-desc": "Ficher de thème au mauvais format"
 		},
 		"my-berty-ID": {
 			"qr": "QR",
