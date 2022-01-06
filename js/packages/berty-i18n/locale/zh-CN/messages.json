@@ -416,6 +416,7 @@
 			"export": "将选定主题导出为文件",
 			"share": "将选定主题作为文件分享",
 			"import": "导入主题文件",
+			"delete": "",
 			"bad-format-title": "",
 			"bad-format-desc": ""
 		},
