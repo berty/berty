@@ -416,6 +416,7 @@
 			"export": "Téma mentése mint fájl (exportálásra)",
 			"share": "Téma megosztása mint fájl",
 			"import": "Téma fájl importálása",
+			"delete": "",
 			"bad-format-title": "",
 			"bad-format-desc": ""
 		},
