@@ -416,6 +416,7 @@
 			"export": "選択されたテーマをファイルとしてエクスポート",
 			"share": "選択されたテーマをファイルとして共有",
 			"import": "テーマのファイルをインポート",
+			"delete": "",
 			"bad-format-title": "",
 			"bad-format-desc": ""
 		},
