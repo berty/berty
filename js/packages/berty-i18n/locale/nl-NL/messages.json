@@ -416,6 +416,7 @@
 			"export": "Exporteer geselecteerde thema als bestand",
 			"share": "Geselecteerde thema als bestand delen",
 			"import": "Een bestandsthema importeren",
+			"delete": "",
 			"bad-format-title": "",
 			"bad-format-desc": ""
 		},
