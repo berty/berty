@@ -416,6 +416,7 @@
 			"export": "Exportera valt tema till fil",
 			"share": "Dela valt tema som fil",
 			"import": "Importera en tema fil",
+			"delete": "",
 			"bad-format-title": "",
 			"bad-format-desc": ""
 		},
