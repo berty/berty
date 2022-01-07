@@ -229,7 +229,7 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 		metaImpl, messagesImpl orbitdb.Store
 	)
 
-	existingGC, err := s.getGroupContext(id)
+	existingGC, err := s.getGroupContext(id, "setHeadsForGroup")
 	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
 		return errcode.ErrInternal.Wrap(err)
 	}
@@ -288,7 +288,7 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 
 	id := g.GroupIDAsString()
 
-	existingGC, err := s.getGroupContext(id)
+	existingGC, err := s.getGroupContext(id, "OpenGroup")
 	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -328,29 +328,11 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	s.Logger().Info(fmt.Sprintf("Print metadata store entries: #GUILHUN#%s", groupID))
-	for _, entry := range metaImpl.BaseStore.OpLog().GetEntries().Slice() {
-		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", entry.GetHash().String(), groupID))
-	}
-	s.Logger().Info(fmt.Sprintf("Print metadata store heads: #GUILHUN#%s", groupID))
-	for _, head := range metaImpl.BaseStore.OpLog().RawHeads().Slice() {
-		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", head.GetHash().String(), groupID))
-	}
-
 	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	messagesImpl, err := s.groupMessageStore(ctx, g, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
-	}
-
-	s.Logger().Info(fmt.Sprintf("Print message store entries: #GUILHUN#%s", groupID))
-	for _, entry := range messagesImpl.BaseStore.OpLog().GetEntries().Slice() {
-		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", entry.GetHash().String(), groupID))
-	}
-	s.Logger().Info(fmt.Sprintf("Print message store heads: #GUILHUN#%s", groupID))
-	for _, head := range messagesImpl.BaseStore.OpLog().RawHeads().Slice() {
-		s.Logger().Info(fmt.Sprintf("%s #GUILHUN#%s", head.GetHash().String(), groupID))
 	}
 
 	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
@@ -373,7 +355,7 @@ func (s *BertyOrbitDB) OpenGroupReplication(ctx context.Context, g *protocoltype
 
 	groupID := g.GroupIDAsString()
 
-	gc, err := s.getGroupContext(groupID)
+	gc, err := s.getGroupContext(groupID, "OpenGroupReplication")
 	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
 		return nil, nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -401,13 +383,16 @@ func (s *BertyOrbitDB) OpenGroupReplication(ctx context.Context, g *protocoltype
 	return metadataStore, messageStore, nil
 }
 
-func (s *BertyOrbitDB) getGroupContext(id string) (*GroupContext, error) {
+func (s *BertyOrbitDB) getGroupContext(id, caller string) (*GroupContext, error) {
 	g, ok := s.groupContexts.Load(id)
 	if !ok {
 		return nil, errcode.ErrMissingMapKey
 	}
 
-	return g.(*GroupContext), nil
+	gc := g.(*GroupContext)
+	debugGroupContext(gc, caller)
+
+	return gc, nil
 }
 
 // SetGroupSigPubKey registers a new group signature pubkey, mainly used to

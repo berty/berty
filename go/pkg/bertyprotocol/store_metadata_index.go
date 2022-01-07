@@ -3,8 +3,12 @@ package bertyprotocol
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
+	mrand "math/rand"
+	"reflect"
 	"sync"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -14,7 +18,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	ipfslog "berty.tech/go-ipfs-log"
-	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 )
 
@@ -40,11 +43,11 @@ type metadataStoreIndex struct {
 	eventsContactAddAliasKey []*protocoltypes.ContactAddAliasKey
 	ownAliasKeySent          bool
 	otherAliasKey            []byte
+	store                    *MetadataStore
 	g                        *protocoltypes.Group
 	ownMemberDevice          *cryptoutil.MemberDevice
 	deviceKeystore           cryptoutil.DeviceKeystore
 	ctx                      context.Context
-	eventEmitter             events.EmitterInterface
 	lock                     sync.RWMutex
 	logger                   *zap.Logger
 }
@@ -881,8 +884,53 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 	return nil
 }
 
+func (m *metadataStoreIndex) debugIndex() error {
+	topic, ok := MatchOrbitdbTopic(m.store.Address().String())
+	if !ok {
+		topic = m.store.Address().String()
+	}
+
+	logger := m.logger.Named("gmon")
+	fields := []zap.Field{
+		zap.String("category", "metadataStoreIndex"),
+		zap.String("topic", topic),
+		zap.Int("runID", mrand.New(mrand.NewSource(time.Now().UnixNano())).Intn(1000000)),
+	}
+
+	printMap := func(mp interface{}, name string, b64 bool) {
+		v := reflect.ValueOf(mp)
+
+		if len(v.MapKeys()) > 0 {
+			keys := make([]string, 0, len(v.MapKeys()))
+			for _, keyVal := range v.MapKeys() {
+				key := keyVal.Interface().(string)
+				if b64 {
+					keys = append(keys, base64.StdEncoding.EncodeToString([]byte(key)))
+				} else {
+					keys = append(keys, key)
+				}
+			}
+
+			logger.Debug(
+				fmt.Sprintf("UpdateIndex prints %s", name),
+				append(fields, zap.Int("map len", len(v.MapKeys())), zap.Strings("map keys", keys))...,
+			)
+		}
+	}
+
+	printMap(m.members, "members", true)
+	printMap(m.devices, "devices", true)
+	printMap(m.sentSecrets, "sentSecrets", true)
+	printMap(m.contacts, "contacts", true)
+	printMap(m.groups, "groups", true)
+	printMap(m.serviceTokens, "serviceTokens", false)
+	printMap(m.membersPushTokens, "membersPushTokens", true)
+
+	return nil
+}
+
 // newMetadataIndex returns a new index to manage the list of the group members
-func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *protocoltypes.Group, md *cryptoutil.MemberDevice, devKS cryptoutil.DeviceKeystore) iface.IndexConstructor {
+func newMetadataIndex(ctx context.Context, store *MetadataStore, g *protocoltypes.Group, md *cryptoutil.MemberDevice, devKS cryptoutil.DeviceKeystore) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
 			members:                map[string][]*cryptoutil.MemberDevice{},
@@ -897,7 +945,7 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			contactRequestMetadata: map[string][]byte{},
 			membersPushTokens:      map[string]*protocoltypes.PushMemberTokenUpdate{},
 			g:                      g,
-			eventEmitter:           eventEmitter,
+			store:                  store,
 			ownMemberDevice:        md,
 			deviceKeystore:         devKS,
 			ctx:                    ctx,
@@ -931,6 +979,7 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 		}
 
 		m.postIndexActions = []func() error{
+			m.debugIndex,
 			m.postHandlerSentAliases,
 		}
 

@@ -24,7 +24,6 @@ import (
 	ipliface "berty.tech/go-ipfs-log/iface"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
-	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go-orbit-db/stores/basestore"
 	"berty.tech/go-orbit-db/stores/operation"
 )
@@ -284,15 +283,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 		chSub := store.Subscribe(ctx)
 		go func() {
 			for e := range chSub {
-				entry := ipfslog.Entry(nil)
-
-				switch evt := e.(type) {
-				case *stores.EventWrite:
-					entry = evt.Entry
-
-				case *stores.EventReplicateProgress:
-					entry = evt.Entry
-				}
+				entry := entryFromEvent(e, store.Address().String(), logger)
 
 				if entry == nil {
 					continue
