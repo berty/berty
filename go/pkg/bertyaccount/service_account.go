@@ -38,56 +38,57 @@ import (
 
 func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
 	args := req.GetArgs()
-
-	if req.NetworkConfig == nil {
-		req.NetworkConfig, _ = s.NetworkConfigForAccount(req.AccountID)
-	}
-
-	args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
-
-	s.logger.Info("opening account with args", logutil.PrivateStrings("args", args))
+	s.logger.Info("call openAccount", logutil.PrivateStrings("args", args))
 
 	if req.AccountID == "" {
 		return nil, errcode.ErrBertyAccountNoIDSpecified
 	}
+	errCleanup := func() { s.accountData = nil }
 
 	// close previous initManager
 	if s.initManager != nil {
 		return nil, errcode.ErrBertyAccountAlreadyOpened
 	}
 
-	if strings.ContainsAny(filepath.Clean(req.AccountID), "/\\") {
-		return nil, errcode.ErrBertyAccountInvalidIDFormat
+	// apply network config
+	{
+		if req.NetworkConfig == nil {
+			req.NetworkConfig, _ = s.NetworkConfigForAccount(req.AccountID)
+		}
+		args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
 	}
 
-	accountStorePath := accountutils.GetAccountDir(s.rootdir, req.GetAccountID())
-
-	if _, err := os.Stat(accountStorePath); err != nil {
-		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	// dynamically choose the account store path
+	{
+		if strings.ContainsAny(filepath.Clean(req.AccountID), "/\\") {
+			return nil, errcode.ErrBertyAccountInvalidIDFormat
+		}
+		accountStorePath := accountutils.GetAccountDir(s.rootdir, req.GetAccountID())
+		if _, err := os.Stat(accountStorePath); err != nil {
+			return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+		}
+		args = append(args, "--store.dir", accountStorePath)
 	}
 
-	if prog == nil {
-		prog = progress.New()
-		defer prog.Close()
+	// init progress
+	{
+		if prog == nil {
+			prog = progress.New()
+			defer prog.Close()
+		}
+		prog.AddStep("init")
+		prog.AddStep("setup-logger")
+		prog.AddStep("setup-manager")
+		prog.AddStep("setup-manager-logger")
+		prog.AddStep("setup-local-ipfs")
+		prog.AddStep("setup-grpc-server")
+		prog.AddStep("setup-local-messenger-server")
+		prog.AddStep("setup-notification-manager")
+		prog.AddStep("setup-grpc-client")
+		prog.AddStep("setup-grpc-services")
+		prog.AddStep("finishing")
+		prog.Get("init").Start()
 	}
-	prog.AddStep("init")
-	prog.AddStep("setup-logger")
-	prog.AddStep("setup-manager")
-	prog.AddStep("setup-manager-logger")
-	prog.AddStep("setup-local-ipfs")
-	prog.AddStep("setup-grpc-server")
-	prog.AddStep("setup-local-messenger-server")
-	prog.AddStep("setup-notification-manager")
-	prog.AddStep("setup-grpc-client")
-	prog.AddStep("setup-grpc-services")
-	prog.AddStep("finishing")
-	prog.Get("init").Start()
-
-	errCleanup := func() {
-		s.accountData = nil
-	}
-
-	args = append(args, "--store.dir", accountStorePath)
 
 	if s.pushPlatformToken != nil {
 		data, err := s.pushPlatformToken.Marshal()
@@ -105,37 +106,41 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	}
 
 	// setup manager logger
-	prog.Get("setup-logger").SetAsCurrent()
-	// TODO: deactivate logs privacy on dev, use a constant string across launches
-	// logutil.SetGlobal([]byte(XXX), true)
-
 	streams := []logutil.Stream(nil)
 	{
-		if req.LoggerFilters == "" {
-			req.LoggerFilters = "debug+:bty*,-*.grpc warn+:*.grpc error+:*"
-		}
+		prog.Get("setup-logger").SetAsCurrent()
+		// TODO: deactivate logs privacy on dev, use a constant string across launches
+		// logutil.SetGlobal([]byte(XXX), true)
 
-		nativeLoggerStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
-		streams = append(streams, nativeLoggerStream)
+		{
+			if req.LoggerFilters == "" {
+				req.LoggerFilters = "debug+:bty*,-*.grpc warn+:*.grpc error+:*"
+			}
+
+			nativeLoggerStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
+			streams = append(streams, nativeLoggerStream)
+		}
 	}
-	s.logger.Info("opening account", logutil.PrivateStrings("args", args), logutil.PrivateString("account-id", req.AccountID))
 
 	// setup manager
-	prog.Get("setup-manager").SetAsCurrent()
 	var initManager *initutil.Manager
 	{
+		prog.Get("setup-manager").SetAsCurrent()
 		var err error
+		s.logger.Info("opening account",
+			logutil.PrivateStrings("args", args),
+			logutil.PrivateString("account-id", req.AccountID),
+		)
 		if initManager, err = s.openManager(streams, args...); err != nil {
 			errCleanup()
 			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
+		errCleanup = u.CombineFuncs(errCleanup, func() { initManager.Close(nil) })
 	}
 
-	errCleanup = u.CombineFuncs(errCleanup, func() { initManager.Close(nil) })
-
 	// setup manager logger
-	prog.Get("setup-manager-logger").SetAsCurrent()
 	{
+		prog.Get("setup-manager-logger").SetAsCurrent()
 		if _, err = initManager.GetLogger(); err != nil {
 			errCleanup()
 			return nil, errcode.TODO.Wrap(err)
@@ -143,8 +148,8 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	}
 
 	// setup local IPFS
-	prog.Get("setup-local-ipfs").SetAsCurrent()
 	{
+		prog.Get("setup-local-ipfs").SetAsCurrent()
 		if _, _, err = initManager.GetLocalIPFS(); err != nil {
 			errCleanup()
 			return nil, errcode.TODO.Wrap(err)
@@ -152,9 +157,9 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	}
 
 	// setup gRPC server
-	prog.Get("setup-grpc-server").SetAsCurrent()
 	var srvServices *grpc.Server
 	{
+		prog.Get("setup-grpc-server").SetAsCurrent()
 		var err error
 		if srvServices, _, err = initManager.GetGRPCServer(); err != nil {
 			errCleanup()
@@ -163,8 +168,8 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	}
 
 	// setup local messenger server
-	prog.Get("setup-local-messenger-server").SetAsCurrent()
 	{
+		prog.Get("setup-local-messenger-server").SetAsCurrent()
 		if _, err = initManager.GetLocalMessengerServer(); err != nil {
 			errCleanup()
 			return nil, errcode.TODO.Wrap(err)
@@ -172,8 +177,8 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	}
 
 	// setup notification manager
-	prog.Get("setup-notification-manager").SetAsCurrent()
 	{
+		prog.Get("setup-notification-manager").SetAsCurrent()
 		if _, err = initManager.GetNotificationManager(); err != nil {
 			errCleanup()
 			return nil, errcode.TODO.Wrap(err)
@@ -181,9 +186,9 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	}
 
 	// setup gRPC client
-	prog.Get("setup-grpc-client").SetAsCurrent()
 	var ccServices *grpc.ClientConn
 	{
+		prog.Get("setup-grpc-client").SetAsCurrent()
 		if ccServices, err = initManager.GetGRPCClientConn(); err != nil {
 			errCleanup()
 			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
@@ -191,8 +196,8 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 	}
 
 	// register gRPC services
-	prog.Get("setup-grpc-services").SetAsCurrent()
 	{
+		prog.Get("setup-grpc-services").SetAsCurrent()
 		if s.sclients != nil {
 			for serviceName := range srvServices.GetServiceInfo() {
 				s.sclients.RegisterService(serviceName, ccServices)

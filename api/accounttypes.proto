@@ -103,14 +103,8 @@ message OpenAccount {
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
 
-    // -------
-    // FIXME:
-    // - make skip_protocol_init the default behavior with no way to init messenger automatically
-    // - remove skip_protocol_init
-    // - move network_config to OpenProtocol
+    // FIXME: move network_config to OpenProtocol
     berty.messenger.v1.NetworkConfig network_config = 4;
-    bool skip_protocol_init = 5;
-    // -------
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -157,14 +151,8 @@ message ImportAccount {
     repeated string args = 4;
     string logger_filters = 5;
 
-    // -------
-    // FIXME:
-    // - make skip_protocol_init the default behavior with no way to init messenger automatically
-    // - remove skip_protocol_init
-    // - move network_config to OpenProtocol
+    // FIXME: move network_config to OpenProtocol
     berty.messenger.v1.NetworkConfig network_config = 6;
-    bool skip_protocol_init = 7;
-    // -------
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -179,14 +167,8 @@ message CreateAccount {
     repeated string args = 3;
     string logger_filters = 4;
 
-    // -------
-    // FIXME:
-    // - make skip_protocol_init the default behavior with no way to init messenger automatically
-    // - remove skip_protocol_init
-    // - move network_config to OpenProtocol
+    // FIXME: move network_config to OpenProtocol
     berty.messenger.v1.NetworkConfig network_config = 5;
-    bool skip_protocol_init = 6;
-    // -------
   }
   message Reply {
     AccountMetadata account_metadata = 1;

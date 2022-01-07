@@ -77,6 +77,7 @@ const (
 	FlagNameP2PTinderDHTDriver            = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver           = "p2p.tinder-rdvp-driver"
 	FlagNameP2PDisableDiscoverAddrsFilter = "p2p.disc-disable-filter"
+	FlagNameP2PNoAutoProtocolInit         = "p2p.no-auto-protocol-init"
 
 	FlagValueP2PDHTDisabled   = "none"
 	FlagValueP2PDHTClient     = "client"
@@ -103,7 +104,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
-	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
+	fs.BoolVar(&m.Node.Protocol.disableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
@@ -117,6 +118,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.DurationVar(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", rendezvous.DefaultRotationInterval, "rendezvous rotation base for node")
+	fs.BoolVar(&m.Node.Protocol.NoAutoProtocolInit, FlagNameP2PNoAutoProtocolInit, false, "do not start the Berty protocol")
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
@@ -588,7 +590,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// rdvp driver
 	if m.Node.Protocol.TinderRDVPDriver {
 		rdvpfilter := tinder.PublicAddrsOnly
-		if m.Node.Protocol.DisableDiscoverFilterAddrs {
+		if m.Node.Protocol.disableDiscoverFilterAddrs {
 			rdvpfilter = tinder.NoFilter
 		}
 
@@ -608,7 +610,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// dht driver
 	if m.Node.Protocol.DHT != "none" && m.Node.Protocol.TinderDHTDriver {
 		dhtfilter := tinder.PublicAddrsOnly
-		if m.Node.Protocol.DisableDiscoverFilterAddrs {
+		if m.Node.Protocol.disableDiscoverFilterAddrs {
 			dhtfilter = tinder.NoFilter
 		}
 

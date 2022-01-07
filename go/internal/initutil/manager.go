@@ -135,10 +135,13 @@ type Manager struct {
 			DevicePushKeyPath      string        `json:"DevicePushKeyPath,omitempty"`
 			ServiceInsecureMode    bool          `json:"ServiceInsecureMode,omitempty"`
 			RendezvousRotationBase time.Duration `json:"RendezvousRotationBase,omitempty"`
+			NoAutoProtocolInit     bool          `json:"NoAutoProtocolInit"`
 
-			// internal
-			DisableDiscoverFilterAddrs bool
-			ServiceID                  string
+			// internal (exposed for JSON Marshaling)
+			ServiceID string
+
+			// internal (unexposed)
+			disableDiscoverFilterAddrs bool
 			needAuth                   bool
 			ipfsNode                   *core.IpfsNode
 			ipfsAPI                    ipfsutil.ExtendedCoreAPI
