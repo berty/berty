@@ -54,7 +54,7 @@ func miniCommand() *ffcli.Command {
 			}
 
 			// protocol client
-			protocolClient, err := manager.GetProtocolClient()
+			protocolClient, err := manager.GetProtocolServiceClient()
 			if err != nil {
 				return err
 			}

@@ -64,7 +64,7 @@ func guiCommand() (*ffcli.Command, func() error) {
 			}
 
 			// protocol client
-			protocolClient, err := manager.GetProtocolClient()
+			protocolClient, err := manager.GetProtocolServiceClient()
 			if err != nil {
 				return err
 			}

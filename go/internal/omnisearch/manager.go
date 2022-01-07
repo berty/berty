@@ -84,7 +84,7 @@ func (p provider) Make(t reflect.Type) (reflect.Value, error) {
 	case bertyprotocolBertyOrbitDB:
 		r, err = p.m.GetOrbitDB()
 	case protocoltypesProtocolServiceClient:
-		r, err = p.m.GetProtocolClient()
+		r, err = p.m.GetProtocolServiceClient()
 	default:
 		err = fmt.Errorf("type %s is not available", t.Name())
 	}

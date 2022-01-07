@@ -38,7 +38,7 @@ func peersCommand() *ffcli.Command {
 			}
 
 			// messenger client
-			protocol, err := manager.GetProtocolClient()
+			protocol, err := manager.GetProtocolServiceClient()
 			if err != nil {
 				return err
 			}

@@ -156,7 +156,7 @@ func Example_noflags() {
 	}
 
 	// build a client for the previously created protocol server
-	client, err := manager.GetProtocolClient()
+	client, err := manager.GetProtocolServiceClient()
 	if err != nil {
 		panic(err)
 	}
@@ -224,7 +224,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 
 	// start man2's client
 	{
-		client, err := man2.GetProtocolClient()
+		client, err := man2.GetProtocolServiceClient()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 
@@ -293,7 +293,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, server)
 
-	client, err := manager.GetProtocolClient()
+	client, err := manager.GetProtocolServiceClient()
 	require.NoError(t, err)
 	require.NotNil(t, client)
 

@@ -62,7 +62,7 @@ func (s *service) GetProtocolClient() (protocoltypes.ProtocolServiceClient, erro
 		return nil, errcode.ErrMessengerProtocolNotReady.Wrap(err)
 	}
 
-	protocol, err := m.GetProtocolClient()
+	protocol, err := m.GetProtocolServiceClient()
 	if err != nil {
 		return nil, errcode.ErrMessengerProtocolNotReady.Wrap(err)
 	}

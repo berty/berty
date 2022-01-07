@@ -133,7 +133,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	messenger1, err := svc1.GetMessengerClient()
 	require.NoError(t, err)
 
-	protocol1, err := svc1.GetProtocolClient()
+	protocol1, err := svc1.GetProtocolServiceClient()
 	require.NoError(t, err)
 
 	tokenIssuer, err := bertyauth.NewAuthTokenIssuer(authServerSecret[:], authServerSK)
@@ -167,7 +167,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	messenger2, err := svc2.GetMessengerClient()
 	require.NoError(t, err)
 
-	protocol2, err := svc2.GetProtocolClient()
+	protocol2, err := svc2.GetProtocolServiceClient()
 	require.NoError(t, err)
 
 	mess1Acc, err := messenger1.AccountGet(ctx, &messengertypes.AccountGet_Request{})

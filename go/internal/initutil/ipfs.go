@@ -77,7 +77,6 @@ const (
 	FlagNameP2PTinderDHTDriver            = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver           = "p2p.tinder-rdvp-driver"
 	FlagNameP2PDisableDiscoverAddrsFilter = "p2p.disc-disable-filter"
-	FlagNameP2PNoAutoProtocolInit         = "p2p.no-auto-protocol-init"
 
 	FlagValueP2PDHTDisabled   = "none"
 	FlagValueP2PDHTClient     = "client"
@@ -118,7 +117,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.DurationVar(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", rendezvous.DefaultRotationInterval, "rendezvous rotation base for node")
-	fs.BoolVar(&m.Node.Protocol.NoAutoProtocolInit, FlagNameP2PNoAutoProtocolInit, false, "do not start the Berty protocol")
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",

@@ -135,7 +135,6 @@ type Manager struct {
 			DevicePushKeyPath      string        `json:"DevicePushKeyPath,omitempty"`
 			ServiceInsecureMode    bool          `json:"ServiceInsecureMode,omitempty"`
 			RendezvousRotationBase time.Duration `json:"RendezvousRotationBase,omitempty"`
-			NoAutoProtocolInit     bool          `json:"NoAutoProtocolInit"`
 
 			// internal (exposed for JSON Marshaling)
 			ServiceID string
@@ -162,6 +161,7 @@ type Manager struct {
 			RebuildSqlite        bool   `json:"RebuildSqlite,omitempty"`
 			MessengerSqliteOpts  string `json:"MessengerSqliteOpts,omitempty"`
 			ExportPathToRestore  string `json:"ExportPathToRestore,omitempty"`
+			SkipProtocolInit     bool   `json:"SkipProtocolInit"`
 
 			// internal
 			protocolClient      bertyprotocol.Client

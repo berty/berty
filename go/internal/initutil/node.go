@@ -39,6 +39,8 @@ import (
 )
 
 const (
+	FlagNameNodeSkipProtocolInit = "node.skip-protocol-init"
+
 	PerformancePreset = "performance"
 	AnonymityPreset   = "anonymity"
 	VolatilePreset    = "volatile"
@@ -54,6 +56,7 @@ func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.ServiceInsecureMode, "node.service-insecure", false, "use insecure connection on services")
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
+	fs.BoolVar(&m.Node.Messenger.SkipProtocolInit, FlagNameNodeSkipProtocolInit, false, "do not start the Berty protocol")
 	// p2p.remote-ipfs
 }
 
@@ -370,13 +373,13 @@ func (m *Manager) getMessengerClient() (messengertypes.MessengerServiceClient, e
 	return m.Node.Messenger.client, nil
 }
 
-func (m *Manager) GetProtocolClient() (protocoltypes.ProtocolServiceClient, error) {
+func (m *Manager) GetProtocolServiceClient() (protocoltypes.ProtocolServiceClient, error) {
 	defer m.prepareForGetter()()
 
-	return m.getProtocolClient()
+	return m.getProtocolServiceClient()
 }
 
-func (m *Manager) getProtocolClient() (protocoltypes.ProtocolServiceClient, error) {
+func (m *Manager) getProtocolServiceClient() (protocoltypes.ProtocolServiceClient, error) {
 	if m.Node.Protocol.client != nil {
 		return m.Node.Protocol.client, nil
 	}
@@ -611,6 +614,27 @@ func (m *Manager) GetLocalMessengerServer() (messengertypes.MessengerServiceServ
 	return m.getLocalMessengerServer()
 }
 
+func (m *Manager) getProtocolClient() (bertyprotocol.Client, error) {
+	if m.Node.Messenger.protocolClient != nil {
+		return m.Node.Messenger.protocolClient, nil
+	}
+
+	// local protocol server
+	protocolServer, err := m.getLocalProtocolServer()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init local protocol server: %w", err))
+	}
+
+	// protocol client
+	protocolClient, err := bertyprotocol.NewClient(m.getContext(), protocolServer, nil, nil) // FIXME: setup tracing
+	if err != nil {
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init protocol client: %w", err))
+	}
+	m.Node.Messenger.protocolClient = protocolClient
+
+	return protocolClient, nil
+}
+
 func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServer, error) {
 	if m.Node.Messenger.server != nil {
 		return m.Node.Messenger.server, nil
@@ -645,18 +669,13 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init notification manager: %w", err))
 	}
 
-	// local protocol server
-	protocolServer, err := m.getLocalProtocolServer()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init local protocol server: %w", err))
+	var protocolClient bertyprotocol.Client
+	if !m.Node.Messenger.SkipProtocolInit {
+		protocolClient, err = m.getProtocolClient()
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
 	}
-
-	// protocol client
-	protocolClient, err := bertyprotocol.NewClient(m.getContext(), protocolServer, nil, nil) // FIXME: setup tracing
-	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init protocol client: %w", err))
-	}
-	m.Node.Messenger.protocolClient = protocolClient
 
 	lcmanager := m.getLifecycleManager()
 

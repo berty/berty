@@ -72,7 +72,7 @@ func daemonCommand() *ffcli.Command {
 
 			// connect to the local client
 			{
-				protocolClient, err := manager.GetProtocolClient()
+				protocolClient, err := manager.GetProtocolServiceClient()
 				if err != nil {
 					return err
 				}

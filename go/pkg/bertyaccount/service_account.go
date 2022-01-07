@@ -1144,7 +1144,7 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accoun
 		return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
 	}
 
-	client, err := s.initManager.GetProtocolClient()
+	client, err := s.initManager.GetProtocolServiceClient()
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}

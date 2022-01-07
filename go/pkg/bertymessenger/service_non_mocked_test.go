@@ -54,7 +54,7 @@ func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int)
 		assert.NoError(t, err)
 		closeFuncs = append(closeFuncs, func() { _ = ipfs.Close() })
 
-		protocolClient, err := man.GetProtocolClient()
+		protocolClient, err := man.GetProtocolServiceClient()
 		assert.NoError(t, err)
 
 		messengers[i], err = man.GetMessengerClient()
