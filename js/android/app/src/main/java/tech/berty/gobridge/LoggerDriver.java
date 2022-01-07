@@ -25,6 +25,10 @@ public class LoggerDriver implements NativeLoggerDriver {
     }
 
     public void log(String level, String namespace, String message) throws Exception {
+        this.logWithCategory("", level, namespace, message);
+    }
+
+    public void logWithCategory(String category, String level, String namespace, String message) throws Exception {
         LoggerLevel loggerLevel;
 
         try {
@@ -71,7 +75,12 @@ public class LoggerDriver implements NativeLoggerDriver {
                 priority = Log.INFO;
         }
         LogPrinter logPrinter = new LogPrinter(priority, namespace);
-        String out = String.format("[%s] [%s]: %s", level, namespace, message);
+        String out;
+        if (category != "") {
+            out = String.format("[%s] %s[%s]: %s", level, category, namespace, message);
+        } else {
+            out = String.format("[%s] [%s]: %s", level, namespace, message);
+        }
         logPrinter.println(out);
     }
 

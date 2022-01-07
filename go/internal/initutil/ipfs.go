@@ -608,6 +608,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		time.Second, 5.0, 0, serverRng)
 
 	tinderOpts := &tinder.Opts{
+		EnableDiscoveryMonitor: true,
 		Logger:                 logger,
 		AdvertiseResetInterval: time.Minute * 2,
 		FindPeerResetInterval:  time.Minute * 2,

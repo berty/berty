@@ -13,9 +13,7 @@ import (
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
-	peer "github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -55,6 +53,7 @@ type service struct {
 	accountGroup    *GroupContext
 	deviceKeystore  cryptoutil.DeviceKeystore
 	openedGroups    map[string]*GroupContext
+	groupMonitor    *groupMonitor
 	lock            sync.RWMutex
 	authSession     atomic.Value
 	close           func() error
@@ -266,6 +265,8 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		}
 	}
 
+	gm := newGroupMonitor(ctx, opts.Logger.Named("gmon"), opts.Host)
+
 	s := &service{
 		ctx:            ctx,
 		host:           opts.Host,
@@ -277,6 +278,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		accountGroup:   acc,
 		startedAt:      time.Now(),
 		groupDatastore: opts.GroupDatastore,
+		groupMonitor:   gm,
 		openedGroups: map[string]*GroupContext{
 			string(acc.Group().PublicKey): acc,
 		},
@@ -310,49 +312,17 @@ func (s *service) Close() error {
 }
 
 func (s *service) startTyberTinderMonitor() {
-	if s.host == nil {
-		return
-	}
-
-	sub, err := s.host.EventBus().Subscribe([]interface{}{
-		new(ipfsutil.EvtPubSubTopic),
-		new(tinder.EvtDriverMonitor),
-	})
-	if err != nil {
-		s.logger.Error("failed to create sub", zap.Error(errors.Wrap(err, "unable to subscribe pubsub topic event")))
-		return
-	}
-
-	// @FIXME(gfanton): cached found peers should be done inside driver monitor
-	cachedFoundPeers := make(map[peer.ID]ipfsutil.Multiaddrs)
-	ch := sub.Out()
+	sub, cancel := s.groupMonitor.Subscribe()
 	go func() {
+		defer cancel()
+
 		for {
 			select {
 			case <-s.ctx.Done():
 				return
-			case evt := <-ch:
-				var monitorEvent *protocoltypes.MonitorGroup_EventMonitor
-
-				switch e := evt.(type) {
-				case ipfsutil.EvtPubSubTopic:
-					// handle this event
-					monitorEvent = monitorHandlePubsubEvent(&e, s.host)
-				case tinder.EvtDriverMonitor:
-					// check if we already know this peer in case of found peer
-					newMS := ipfsutil.NewMultiaddrs(e.AddrInfo.Addrs)
-					if ms, ok := cachedFoundPeers[e.AddrInfo.ID]; ok {
-						if ipfsutil.MultiaddrIsEqual(ms, newMS) {
-							continue
-						}
-					}
-
-					cachedFoundPeers[e.AddrInfo.ID] = newMS
-					monitorEvent = monitorHandleDiscoveryEvent(&e, s.host)
-				default:
-					monitorEvent = &protocoltypes.MonitorGroup_EventMonitor{
-						Type: protocoltypes.TypeEventMonitorUndefined,
-					}
+			case monitorEvent := <-sub:
+				if monitorEvent == nil {
+					return
 				}
 
 				switch monitorEvent.Type {

@@ -39,6 +39,7 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   public init(_ subsytem: String = "logger", _ category: String = "log") {
     self.subsytem = subsytem
     self.category = category
+
     #if CFG_APPSTORE
     self.scope = Visibility.hidden
     #else
@@ -49,10 +50,15 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   }
 
   public func log(_ level: String?, namespace: String?, message: String?) throws {
+    try self.log(withCategory: self.category, level: level, namespace: namespace, message: message)
+  }
+
+  public func log(withCategory: String?, level: String?, namespace: String?, message: String?) throws {
     guard let ulevel = level, let level = Level(rawValue: ulevel) else {
       throw LoggerError.invalidLevel
     }
 
+    let cat = withCategory ?? self.category
     let out = message ?? ""
     var subsystem: String
     if let namespace = namespace, namespace != ""  {
@@ -62,7 +68,7 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
     }
 
     if #available(iOS 10.0, *) {
-        let logger = OSLog(subsystem: subsystem, category: self.category)
+        let logger = OSLog(subsystem: subsystem, category: cat)
 
         var type: OSLogType
         switch level {

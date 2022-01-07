@@ -2,13 +2,17 @@ package bertybridge
 
 import (
 	"os"
+	"strings"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
+const category_prefix_key = "category"
+
 type NativeLoggerDriver interface {
 	Log(level, namespace, message string) error
+	LogWithCategory(category, level, namespace, message string) error
 	LevelEnabler(level string) bool
 }
 
@@ -40,6 +44,12 @@ func (nc *nativeCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 		return err
 	}
 
+	// check for category key
+	for _, f := range fields {
+		if strings.HasPrefix(f.Key, category_prefix_key) && f.Type == zapcore.StringType {
+			return nc.logger.LogWithCategory(f.String, entry.Level.CapitalString(), entry.LoggerName, buff.String())
+		}
+	}
 	return nc.logger.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
