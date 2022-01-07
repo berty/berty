@@ -29,14 +29,6 @@ class NotificationService: UNNotificationServiceExtension {
     var bestAttemptContent: UNMutableNotificationContent?
 
     override init() {
-        // Sync languages settings with app
-        do {
-          let languages = try Common.userDefaults().object(forKey: "AppleLanguages")
-          UserDefaults.standard.setValue(languages, forKey: "AppleLanguages")
-        } catch {
-          os_log("language sync with app failed: %@", log: oslogger, type: .error, error.localizedDescription)
-        }
-
         let config = BertypushNewConfig()!
         let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
         config.setPreferredLanguages(preferredLanguages)
@@ -101,9 +93,37 @@ class NotificationService: UNNotificationServiceExtension {
         displayFallback()
     }
 
+    // getLocalizedBundle tries to load the localized Bundle corresponding to the app language.
+    //
+    // The notificationService app extension doesn't get automatically the app language from UserDefaults until it restarts. So the Berty app puts the correct language to the Common database (shared between Berty app and NotificationService) and getLocalizedBundle loads the corresponding bundle from this database.
+    // The language format from Common can be [languageCode]-[regionCode] (e.g: en-US), and the localized lproj directories have the format [languageCode] (e.g: en). So we have to remove the region code to find the correct bundle path.
+    func getLocalizedBundle() -> Bundle?{
+        var bundle: Bundle?
+
+        do {
+            var languages = (try Common.userDefaults().object(forKey: "AppleLanguages") as! [String]?) ?? []
+            languages.append("en") // force english as fallback language
+
+            for language in languages {
+                let codeLanguage = Locale(identifier: language).languageCode
+                let path = Bundle.main.path(forResource: codeLanguage, ofType: "lproj")
+                if (path != nil) {
+                    bundle = Bundle(path: path!)
+                    break
+                }
+            }
+        } catch {
+            os_log("language sync with app failed: %@", log: oslogger, type: .error, error.localizedDescription)
+        }
+
+        return bundle
+    }
+
     func displayFallback() {
-        let defaultPushMessage = NSLocalizedString("BertyPushMessage", comment: "default push title")
-        let defaultPushMessageError = NSLocalizedString("BertyPushMessageError", comment: "default push decryption error")
+        let bundle = getLocalizedBundle()
+
+        let defaultPushMessage = NSLocalizedString("BertyPushMessage", tableName: nil, bundle: bundle!, value: "", comment: "default push title")
+        let defaultPushMessageError = NSLocalizedString("BertyPushMessageError", tableName: nil, bundle: bundle!, value: "", comment: "default push decryption error")
 
         self.bestAttemptContent!.title = defaultPushMessage
         self.bestAttemptContent!.subtitle = ""
