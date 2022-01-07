@@ -90,7 +90,7 @@ func entryFromEvent(e events.Event, addr string, l *zap.Logger) ipfslog.Entry {
 
 		logger.Debug(
 			fmt.Sprintf("Event %s store", kind),
-			append(cFields, eFields...)...,
+			append(eFields, cFields...)...,
 		)
 	}
 
@@ -127,17 +127,20 @@ func entryFromEvent(e events.Event, addr string, l *zap.Logger) ipfslog.Entry {
 func debugGroupContext(gc *GroupContext, caller string) {
 	logger := gc.logger.Named("gmon")
 	fields := []zap.Field{
-		zap.String("category", "storeEntries"),
 		zap.Int("runID", mrand.New(mrand.NewSource(time.Now().UnixNano())).Intn(1000000)),
+		zap.Field{}, // Will be replaced in zap.Field
+		zap.String("category", "storeEntries"),
 	}
 
 	getFields := func(addr string) []zap.Field {
 		topic, ok := MatchOrbitdbTopic(addr)
 		if ok {
-			return append(fields, zap.String("topic", topic))
+			fields[1] = zap.String("topic", topic)
+		} else {
+			fields[1] = zap.String("topic", addr)
 		}
 
-		return append(fields, zap.String("topic", addr))
+		return fields
 	}
 
 	getFieldsWithParents := func(addr string, entry ipliface.IPFSLogEntry) []zap.Field {
@@ -147,7 +150,7 @@ func debugGroupContext(gc *GroupContext, caller string) {
 			parents = append(parents, parent.String())
 		}
 
-		return append(getFields(addr), zap.Strings("parents", parents))
+		return append(append([]zap.Field{}, zap.Strings("parents", parents)), getFields(addr)...)
 	}
 
 	logger.Debug(fmt.Sprintf("%s prints metadata store heads", caller), getFields(gc.MetadataStore().Address().String())...)

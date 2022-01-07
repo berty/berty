@@ -892,9 +892,9 @@ func (m *metadataStoreIndex) debugIndex() error {
 
 	logger := m.logger.Named("gmon")
 	fields := []zap.Field{
-		zap.String("category", "metadataStoreIndex"),
-		zap.String("topic", topic),
 		zap.Int("runID", mrand.New(mrand.NewSource(time.Now().UnixNano())).Intn(1000000)),
+		zap.String("topic", topic),
+		zap.String("category", "metadataStoreIndex"),
 	}
 
 	printMap := func(mp interface{}, name string, b64 bool) {
@@ -913,7 +913,7 @@ func (m *metadataStoreIndex) debugIndex() error {
 
 			logger.Debug(
 				fmt.Sprintf("UpdateIndex prints %s", name),
-				append(fields, zap.Int("map len", len(v.MapKeys())), zap.Strings("map keys", keys))...,
+				append(append([]zap.Field{}, zap.Int("map len", len(v.MapKeys())), zap.Strings("map keys", keys)), fields...)...,
 			)
 		}
 	}

@@ -118,7 +118,6 @@ func (g *groupMonitor) monitorGroups(ctx context.Context) {
 		new(ipfsutil.EvtPubSubTopic),
 		new(tinder.EvtDriverMonitor),
 	})
-
 	if err != nil {
 		g.logger.Error("failed to init group monitor", zap.Error(err))
 		return
@@ -209,10 +208,13 @@ func (g *groupMonitor) monitorHandlePubsubEvent(topic string, e *ipfsutil.EvtPub
 
 		if !m.PeerJoin.IsSelf {
 			if key, ok := MatchOrbitdbTopic(topic); ok {
-				g.logger.Debug("group peer joined", zap.String("category", "pubsub"),
-					zap.String("topic", key),
+				g.logger.Debug(
+					"group peer joined",
 					zap.String("peer", m.PeerJoin.PeerID),
-					zap.Strings("conns", m.PeerJoin.Maddrs))
+					zap.Strings("conns", m.PeerJoin.Maddrs),
+					zap.String("topic", key),
+					zap.String("category", "pubsub"),
+				)
 			}
 		}
 
@@ -226,9 +228,12 @@ func (g *groupMonitor) monitorHandlePubsubEvent(topic string, e *ipfsutil.EvtPub
 
 		if !m.PeerLeave.IsSelf {
 			if key, ok := MatchOrbitdbTopic(topic); ok {
-				g.logger.Debug("group peer leaved", zap.String("category", "pubsub"),
+				g.logger.Debug(
+					"group peer leaved",
+					zap.String("peer", m.PeerLeave.PeerID),
 					zap.String("topic", key),
-					zap.String("peer", m.PeerLeave.PeerID))
+					zap.String("category", "pubsub"),
+				)
 			}
 		}
 
@@ -256,11 +261,13 @@ func (g *groupMonitor) monitorHandleDiscoveryEvent(topic string, e *tinder.EvtDr
 		}
 
 		if key, ok := MatchOrbitdbTopic(topic); ok {
-			g.logger.Debug("group advertise", zap.String("category", "tinder"),
-				zap.String("topic", key),
+			g.logger.Debug(
+				"group advertise",
 				zap.String("peer", m.AdvertiseGroup.PeerID),
 				zap.String("driver", m.AdvertiseGroup.DriverName),
 				zap.Strings("addrs", m.AdvertiseGroup.Maddrs),
+				zap.String("topic", key),
+				zap.String("category", "tinder"),
 			)
 		}
 
@@ -278,11 +285,13 @@ func (g *groupMonitor) monitorHandleDiscoveryEvent(topic string, e *tinder.EvtDr
 
 		if isSelf := e.AddrInfo.ID == g.host.ID(); !isSelf {
 			if key, ok := MatchOrbitdbTopic(topic); ok {
-				g.logger.Debug("group peer found", zap.String("category", "tinder"),
-					zap.String("topic", key),
+				g.logger.Debug(
+					"group peer found",
 					zap.String("peer", m.PeerFound.PeerID),
 					zap.String("driver", m.PeerFound.DriverName),
 					zap.Strings("maddrs", m.PeerFound.Maddrs),
+					zap.String("topic", key),
+					zap.String("category", "tinder"),
 				)
 			}
 		}
