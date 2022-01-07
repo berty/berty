@@ -94,31 +94,73 @@ func entryFromEvent(e events.Event, addr string, l *zap.Logger) ipfslog.Entry {
 		)
 	}
 
+	getHeads := func(h []ipfslog.Entry) zap.Field {
+		heads := make([]string, 0, len(h))
+
+		for _, head := range h {
+			heads = append(heads, head.GetHash().String())
+		}
+
+		return zap.Strings("heads", heads)
+	}
+
 	entry := ipfslog.Entry(nil)
 
 	switch evt := e.(type) {
 	case *stores.EventWrite:
 		entry = evt.Entry
-		logEvent(zap.String("type", "EventWrite"))
+
+		ee := e.(*stores.EventWrite)
+		logEvent(
+			zap.String("type", "EventWrite"),
+			zap.String("entry", ee.Entry.GetHash().String()),
+			getHeads(ee.Heads),
+		)
 
 	case *stores.EventReplicateProgress:
 		entry = evt.Entry
-		logEvent(zap.String("type", "EventReplicateProgress"))
+
+		ee := e.(*stores.EventReplicateProgress)
+		logEvent(
+			zap.String("type", "EventReplicateProgress"),
+			zap.String("entry", ee.Entry.GetHash().String()),
+			zap.Int("status", ee.ReplicationStatus.GetProgress()),
+		)
 
 	case *stores.EventReplicate:
-		logEvent(zap.String("type", "EventReplicate"))
+		ee := e.(*stores.EventReplicate)
+		logEvent(
+			zap.String("type", "EventReplicate"),
+			zap.String("entry", ee.Hash.String()),
+		)
 
 	case *stores.EventReplicated:
-		logEvent(zap.String("type", "EventReplicated"))
+		ee := e.(*stores.EventReplicated)
+		logEvent(
+			zap.String("type", "EventReplicated"),
+			zap.Int("log length", ee.LogLength),
+		)
 
 	case *stores.EventLoad:
-		logEvent(zap.String("type", "EventLoad"))
+		ee := e.(*stores.EventLoad)
+		logEvent(
+			zap.String("type", "EventLoad"),
+			getHeads(ee.Heads),
+		)
 
 	case *stores.EventReady:
-		logEvent(zap.String("type", "EventReady"))
+		ee := e.(*stores.EventReady)
+		logEvent(
+			zap.String("type", "EventReady"),
+			getHeads(ee.Heads),
+		)
 
 	case *stores.EventNewPeer:
-		logEvent(zap.String("type", "EventNewPeer"))
+		ee := e.(*stores.EventNewPeer)
+		logEvent(
+			zap.String("type", "EventNewPeer"),
+			zap.String("peer", ee.Peer.Pretty()),
+		)
 	}
 
 	return entry
