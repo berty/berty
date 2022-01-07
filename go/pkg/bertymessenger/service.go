@@ -163,49 +163,31 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	tyberCtx, _, tyberEndSection := tyber.Section(context.Background(), opts.Logger, "Initializing MessengerService version "+bertyversion.Version)
 	defer func() { tyberEndSection(err, "") }()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	db := messengerdb.NewDBWrapper(opts.DB, opts.Logger)
+	// init database
+	var db *messengerdb.DBWrapper
+	{
+		ctx, cancel := context.WithCancel(context.Background())
+		db = messengerdb.NewDBWrapper(opts.DB, opts.Logger)
+		if opts.StateBackup != nil {
+			tyber.LogStep(tyberCtx, opts.Logger, "Restoring db state")
 
-	if opts.StateBackup != nil {
-		tyber.LogStep(tyberCtx, opts.Logger, "Restoring db state")
-
-		if err := db.RestoreFromBackup(opts.StateBackup, func() error {
-			return replayLogsToDB(ctx, client, db, opts.Logger)
-		}); err != nil {
+			if err := db.RestoreFromBackup(opts.StateBackup, func() error {
+				return replayLogsToDB(ctx, client, db, opts.Logger)
+			}); err != nil {
+				cancel()
+				return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore exported state: %w", err))
+			}
+		} else if err := db.InitDB(getEventsReplayerForDB(ctx, client, opts.Logger)); err != nil {
 			cancel()
-			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore exported state: %w", err))
+			return nil, errcode.TODO.Wrap(fmt.Errorf("error during db init: %w", err))
 		}
-	} else if err := db.InitDB(getEventsReplayerForDB(ctx, client, opts.Logger)); err != nil {
+		tyber.LogStep(tyberCtx, opts.Logger, "Database initialization succeeded")
 		cancel()
-		return nil, errcode.TODO.Wrap(fmt.Errorf("error during db init: %w", err))
 	}
 
-	tyber.LogStep(tyberCtx, opts.Logger, "Database initialization succeeded")
-
-	cancel()
-
-	ctx, cancel = context.WithCancel(context.Background())
-
-	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-	cancel()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
-	}
-
-	tyber.LogStep(tyberCtx, opts.Logger, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
-	pkStr := messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())
-
-	shortPkStr := pkStr
-	const shortLen = 6
-	if len(shortPkStr) > shortLen {
-		shortPkStr = shortPkStr[:shortLen]
-	}
-
-	opts.Logger = opts.Logger.With(logutil.PrivateString("a", shortPkStr))
-
-	ctx, cancel = context.WithCancel(context.Background())
+	// init service
+	ctx, cancel := context.WithCancel(context.Background())
 	svc := service{
-		protocolClient:        client,
 		logger:                opts.Logger,
 		isGroupMonitorEnabled: opts.EnableGroupMonitor,
 		startedAt:             time.Now(),
@@ -220,9 +202,27 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		ring:                  opts.Ring,
 		logFilePath:           opts.LogFilePath,
 	}
+	svc.eventHandler = messengerpayloads.NewEventHandler(
+		ctx,
+		db,
+		&MetaFetcherFromProtocolClient{client: client},
+		newPostActionsService(&svc),
+		opts.Logger,
+		svc.dispatcher,
+		false,
+	)
+	svc.pushReceiver = bertypush.NewPushReceiver(
+		bertypush.NewPushHandlerViaProtocol(ctx, client),
+		svc.eventHandler,
+		opts.Logger,
+	)
 
-	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
-	svc.pushReceiver = bertypush.NewPushReceiver(bertypush.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, opts.Logger)
+	// init protocol
+	if client != nil {
+		if err := svc.initProtocol(context.Background(), client); err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
 
 	// get or create account in DB
 	{
@@ -351,6 +351,27 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}
 
 	return &svc, nil
+}
+
+func (svc *service) initProtocol(ctx context.Context, client protocoltypes.ProtocolServiceClient) error {
+	ctx, cancel = context.WithCancel(ctx)
+	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	cancel()
+	if err != nil {
+		return errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
+	}
+	tyber.LogStep(tyberCtx, opts.Logger, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
+	pkStr := messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())
+
+	shortPkStr := pkStr
+	const shortLen = 6
+	if len(shortPkStr) > shortLen {
+		shortPkStr = shortPkStr[:shortLen]
+	}
+	opts.Logger = opts.Logger.With(logutil.PrivateString("a", shortPkStr))
+
+	svc.protocolClient = client
+	return nil
 }
 
 func (svc *service) OpenProtocol(req *mt.OpenProtocol_Request, server mt.MessengerService_OpenProtocolServer) error {
