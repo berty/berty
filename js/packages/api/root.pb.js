@@ -187,10 +187,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "berty.messenger.v1.NetworkConfig",
                         id: 4
-                      },
-                      skipProtocolInit: {
-                        type: "bool",
-                        id: 5
                       }
                     }
                   },
@@ -326,10 +322,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "berty.messenger.v1.NetworkConfig",
                         id: 6
-                      },
-                      skipProtocolInit: {
-                        type: "bool",
-                        id: 7
                       }
                     }
                   },
@@ -375,10 +367,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "berty.messenger.v1.NetworkConfig",
                         id: 5
-                      },
-                      skipProtocolInit: {
-                        type: "bool",
-                        id: 6
                       }
                     }
                   },
