@@ -13,7 +13,6 @@ import (
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
-
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
@@ -66,6 +65,7 @@ type service struct {
 	pushReceiver          bertypush.MessengerPushReceiver
 	tyberCleanup          func()
 	logFilePath           string
+	platformPushToken     *protocoltypes.PushServiceReceiver
 }
 
 type Opts struct {
@@ -201,6 +201,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		handlerMutex:          sync.Mutex{},
 		ring:                  opts.Ring,
 		logFilePath:           opts.LogFilePath,
+		platformPushToken:     opts.PlatformPushToken,
 	}
 	svc.eventHandler = messengerpayloads.NewEventHandler(
 		ctx,
@@ -221,31 +222,6 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	if client != nil {
 		if err := svc.initProtocol(context.Background(), client); err != nil {
 			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
-	// get or create account in DB
-	{
-		acc, err := svc.db.GetAccount()
-		switch {
-		case errcode.Is(err, errcode.ErrNotFound): // account not found, create a new one
-			tyber.LogStep(tyberCtx, opts.Logger, "Account not found, creating a new one", tyber.WithDetail("PublicKey", pkStr))
-			ret, err := svc.internalInstanceShareableBertyID(ctx, &mt.InstanceShareableBertyID_Request{})
-			if err != nil {
-				return nil, errcode.TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
-			}
-
-			if err = svc.db.FirstOrCreateAccount(pkStr, ret.GetWebURL()); err != nil {
-				return nil, err
-			}
-		case err != nil: // internal error
-			return nil, errcode.ErrInternal.Wrap(err)
-		case pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
-			// FIXME: use errcode
-			return nil, errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
-		default: // account exists, and public keys match
-			// noop
-			tyber.LogStep(tyberCtx, opts.Logger, "Found account", tyber.WithDetail("PublicKey", pkStr))
 		}
 	}
 
@@ -280,102 +256,153 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		return nil
 	}})
 
-	tyberSubsCtx, _, endSection := tyber.Section(context.TODO(), opts.Logger, "Subscribing to groups on MessengerService init")
+	return &svc, nil
+}
+
+func shortPkstr(pkstr string) string {
+	const shortLen = 6
+	if len(pkstr) > shortLen {
+		return pkstr[:shortLen]
+	}
+	return pkstr
+}
+
+func (svc *service) initProtocol(ctx context.Context, client protocoltypes.ProtocolServiceClient) (err error) {
+	tyberCtx, _, endSection := tyber.Section(ctx, svc.logger, "Subscribing to groups on MessengerService init")
 	defer func() { endSection(err, "") }()
 
-	// Subscribe to account group metadata
-	err = svc.subscribeToMetadata(tyberSubsCtx, icr.GetAccountGroupPK())
-	if err != nil {
-		return nil, fmt.Errorf("error while subscribing to account metadata: %w", err)
+	if client == nil {
+		return errcode.TODO.Wrap(fmt.Errorf("passed protocol instance is nil"))
+	}
+	if svc.protocolClient != nil {
+		return errcode.TODO.Wrap(fmt.Errorf("protocol already initialized"))
+	}
+	svc.protocolClient = client
+
+	// retrieve protocol configuration
+	var pkStr string
+	var icr *protocoltypes.InstanceGetConfiguration_Reply
+	{
+		var cancel func()
+		ctx, cancel = context.WithCancel(ctx)
+		icr, err = client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		cancel()
+		if err != nil {
+			return errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
+		}
+		tyber.LogStep(ctx, svc.logger, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
+		pkStr = messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())
+		svc.logger = svc.logger.With(logutil.PrivateString("a", shortPkstr(pkStr)))
+	}
+
+	// get or create account in DB
+	{
+		acc, err := svc.db.GetAccount()
+		switch {
+		case errcode.Is(err, errcode.ErrNotFound): // account not found, create a new one
+			tyber.LogStep(ctx, svc.logger, "Account not found, creating a new one", tyber.WithDetail("PublicKey", pkStr))
+			ret, err := svc.internalInstanceShareableBertyID(ctx, &mt.InstanceShareableBertyID_Request{})
+			if err != nil {
+				return errcode.TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
+			}
+
+			if err = svc.db.FirstOrCreateAccount(pkStr, ret.GetWebURL()); err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+		case err != nil: // internal error
+			return errcode.ErrInternal.Wrap(err)
+		case pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
+			// FIXME: use errcode
+			return errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
+		default: // account exists, and public keys match
+			// noop
+			tyber.LogStep(ctx, svc.logger, "Found account", tyber.WithDetail("PublicKey", pkStr))
+		}
 	}
 
 	// subscribe to groups
 	{
-		convs, err := svc.db.GetAllConversations()
+		// Subscribe to account group metadata
+		err = svc.subscribeToMetadata(tyberCtx, icr.GetAccountGroupPK())
 		if err != nil {
-			return nil, fmt.Errorf("error while fetching conversations from db: %w", err)
+			return fmt.Errorf("error while subscribing to account metadata: %w", err)
 		}
-		for _, cv := range convs {
-			gpkb, err := messengerutil.B64DecodeBytes(cv.GetPublicKey())
-			if err != nil {
-				return nil, errcode.ErrDeserialization.Wrap(err)
-			}
 
-			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+		// subscribe to groups
+		{
+			convs, err := svc.db.GetAllConversations()
 			if err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating group: %w", err))
+				return fmt.Errorf("error while fetching conversations from db: %w", err)
 			}
+			for _, cv := range convs {
+				gpkb, err := messengerutil.B64DecodeBytes(cv.GetPublicKey())
+				if err != nil {
+					return errcode.ErrDeserialization.Wrap(err)
+				}
 
-			if err := svc.subscribeToGroup(tyberSubsCtx, gpkb); err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to group metadata: %w", err))
+				_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+				if err != nil {
+					return errcode.ErrInternal.Wrap(fmt.Errorf("error while activating group: %w", err))
+				}
+
+				if err := svc.subscribeToGroup(tyberCtx, gpkb); err != nil {
+					return errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to group metadata: %w", err))
+				}
+			}
+		}
+
+		// subscribe to contact groups
+		{
+			contacts, err := svc.db.GetContactsByState(mt.Contact_OutgoingRequestSent)
+			if err != nil {
+				return errcode.ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
+			}
+			for _, c := range contacts {
+				gpkb, err := messengerutil.B64DecodeBytes(c.GetConversationPublicKey())
+				if err != nil {
+					return errcode.ErrDeserialization.Wrap(err)
+				}
+
+				_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+				if err != nil {
+					return errcode.ErrInternal.Wrap(fmt.Errorf("error while activating contact group: %w", err))
+				}
+
+				if err := svc.subscribeToMetadata(tyberCtx, gpkb); err != nil {
+					return errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to contact group metadata: %w", err))
+				}
 			}
 		}
 	}
 
-	// subscribe to contact groups
+	// setup push notifs
 	{
-		contacts, err := svc.db.GetContactsByState(mt.Contact_OutgoingRequestSent)
-		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
-		}
-		for _, c := range contacts {
-			gpkb, err := messengerutil.B64DecodeBytes(c.GetConversationPublicKey())
+		if svc.platformPushToken != nil {
+			// FIXME: should we share the result from the previous call of this method?
+			icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 			if err != nil {
-				return nil, errcode.ErrDeserialization.Wrap(err)
+				return err
 			}
 
-			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
-			if err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while activating contact group: %w", err))
-			}
-
-			if err := svc.subscribeToMetadata(tyberSubsCtx, gpkb); err != nil {
-				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("error while subscribing to contact group metadata: %w", err))
-			}
-		}
-	}
-
-	if opts.PlatformPushToken != nil {
-		icr, err = client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-		if err != nil {
-			return nil, err
-		}
-
-		if icr.DevicePushToken == nil || (icr.DevicePushToken.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(icr.DevicePushToken.Token, opts.PlatformPushToken.Token)) {
-			if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
-				Receiver: opts.PlatformPushToken,
-			}); err != nil {
-				return nil, errcode.ErrInternal.Wrap(err)
+			if icr.DevicePushToken == nil || (icr.DevicePushToken.TokenType == svc.platformPushToken.TokenType && !bytes.Equal(icr.DevicePushToken.Token, svc.platformPushToken.Token)) {
+				if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
+					Receiver: svc.platformPushToken,
+				}); err != nil {
+					return errcode.ErrInternal.Wrap(err)
+				}
 			}
 		}
 	}
 
-	return &svc, nil
-}
-
-func (svc *service) initProtocol(ctx context.Context, client protocoltypes.ProtocolServiceClient) error {
-	ctx, cancel = context.WithCancel(ctx)
-	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-	cancel()
-	if err != nil {
-		return errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
-	}
-	tyber.LogStep(tyberCtx, opts.Logger, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
-	pkStr := messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())
-
-	shortPkStr := pkStr
-	const shortLen = 6
-	if len(shortPkStr) > shortLen {
-		shortPkStr = shortPkStr[:shortLen]
-	}
-	opts.Logger = opts.Logger.With(logutil.PrivateString("a", shortPkStr))
-
-	svc.protocolClient = client
 	return nil
 }
 
-func (svc *service) OpenProtocol(req *mt.OpenProtocol_Request, server mt.MessengerService_OpenProtocolServer) error {
-	return errcode.ErrNotImplemented
+func (svc *service) OpenProtocol(req *mt.OpenProtocol_Request, server mt.MessengerService_OpenProtocolServer) (err error) {
+	// tyberCleanup
+	var client protocoltypes.ProtocolServiceClient
+	// FIXME: pass a protocol
+	err = svc.initProtocol(server.Context(), client)
+	return err
 }
 
 func (svc *service) CloseProtocol(req *mt.CloseProtocol_Request, server mt.MessengerService_CloseProtocolServer) error {
