@@ -39,6 +39,7 @@ void releaseManager(void) {
         if(manager) {
             NSLog(@"releaseManager");
             [manager release];
+            manager = nil;
         }
     }
 }

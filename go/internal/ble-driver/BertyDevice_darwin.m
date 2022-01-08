@@ -52,7 +52,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
             _serverSideIdentifier = [identifier retain];
         }
         
-        _logger = logger;
+        _logger = [logger retain];
         _peripheral = nil;
         _manager = manager;
         _remotePeerID = nil;

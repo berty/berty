@@ -15,7 +15,7 @@
     self = [super init];
     
     if (self) {
-        _logger = logger;
+        _logger = [logger retain];
         _connectedPeers = [[NSMutableDictionary alloc] init];
     }
     

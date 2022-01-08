@@ -54,4 +54,17 @@
     dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
 }
 
+- (void)await:(NSUInteger)timeout withCancelBlock:(void (^)(void))callback {
+    self.timeout = TRUE;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC));
+    dispatch_after(popTime, self.dispatch_queue, ^(void){
+        if (self.timeout) {
+            callback();
+            dispatch_semaphore_signal(self.semaphore);
+        }
+    });
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    self.timeout = FALSE;
+}
+
 @end
