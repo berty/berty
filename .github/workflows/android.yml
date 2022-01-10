@@ -91,7 +91,7 @@ jobs:
           mkdir -p $HOME/.android
           cp android/app/debug.keystore $HOME/.android
           wget \
-            https://github.com/google/bundletool/releases/download/1.2.0/bundletool-all-1.2.0.jar \
+            https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar \
             -O /tmp/bundletool.jar
           java -jar /tmp/bundletool.jar build-apks \
             --bundle=android/app/build/outputs/bundle/releaseYolo/app-releaseYolo.aab \
