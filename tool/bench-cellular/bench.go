@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p"
+	p2pcircuit "github.com/libp2p/go-libp2p-circuit"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/event"
@@ -21,6 +22,7 @@ import (
 	routing "github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	quict "github.com/libp2p/go-libp2p-quic-transport"
+	p2pping "github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	tcpt "github.com/libp2p/go-tcp-transport"
 
 	golog "github.com/ipfs/go-log"
@@ -89,7 +91,7 @@ func monitorConnsCount(h host.Host, limit int) {
 					toKill := true
 					for _, stream := range conn.GetStreams() {
 						proto := string(stream.Protocol())
-						if proto != "" && !strings.HasPrefix(proto, "/ipfs/kad") && !strings.HasPrefix(proto, "/ipfs/id") {
+						if proto != "" && (strings.HasPrefix(proto, p2pcircuit.ProtoID) || strings.HasPrefix(proto, p2pping.ID) || strings.HasPrefix(proto, benchDownloadPID) || strings.HasPrefix(proto, benchUploadPID)) {
 							fmt.Println("Saved stream with protocol:", proto)
 							toKill = false
 							break
