@@ -44,14 +44,28 @@ type globalOpts struct {
 }
 
 func monitorConnsCount(h host.Host, limit int) {
-	getConnsCount := func() int {
-		activeConns := 0
+	type connsState struct {
+		notconnected  int
+		connected     int
+		canConnect    int
+		cannotConnect int
+	}
+
+	getConnsCount := func() connsState {
+		conns := connsState{}
 		for _, conn := range h.Network().Conns() {
-			if h.Network().Connectedness(conn.RemotePeer()) == network.Connected {
-				activeConns++
+			switch h.Network().Connectedness(conn.RemotePeer()) {
+			case network.NotConnected:
+				conns.notconnected++
+			case network.Connected:
+				conns.connected++
+			case network.CanConnect:
+				conns.canConnect++
+			case network.CannotConnect:
+				conns.cannotConnect++
 			}
 		}
-		return activeConns
+		return conns
 	}
 
 	go func() {
@@ -63,13 +77,40 @@ func monitorConnsCount(h host.Host, limit int) {
 
 		for range eventReceiver.Out() {
 			connsCount := getConnsCount()
+			time.Sleep(300 * time.Millisecond)
 
-			if limit > 0 && connsCount > limit {
-				fmt.Printf("Connections before trim: %d/%d\n", connsCount, limit)
-				h.ConnManager().TrimOpenConns(context.Background())
-				fmt.Printf("Connections after trim: %d/%d\n", getConnsCount(), limit)
+			if limit > 0 && connsCount.connected > limit {
+				// Purge connections
+				for _, conn := range h.Network().Conns() {
+					if getConnsCount().connected <= limit {
+						break
+					}
+
+					toKill := true
+					for _, stream := range conn.GetStreams() {
+						proto := string(stream.Protocol())
+						if proto != "" && !strings.HasPrefix(proto, "/ipfs/kad") && !strings.HasPrefix(proto, "/ipfs/id") {
+							fmt.Println("Saved stream with protocol:", proto)
+							toKill = false
+							break
+						} else {
+							fmt.Println("Not saved stream with protocol:", proto)
+						}
+					}
+
+					if toKill {
+						conn.Close()
+					}
+				}
+
+				fmt.Println("Purge -> Connections:", getConnsCount())
 			} else {
-				fmt.Println("Connections:", connsCount)
+				fmt.Println(
+					"Connections: (notConnected)", connsCount.notconnected,
+					"/ (connected)", connsCount.connected,
+					"/ (canConnect)", connsCount.canConnect,
+					"/ (cannotConnect)", connsCount.cannotConnect,
+				)
 			}
 		}
 	}()
@@ -107,7 +148,7 @@ func globalOptsToLibp2pOpts(ctx context.Context, gOpts *globalOpts) ([]libp2p.Op
 		opts = append(
 			opts,
 			libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-				return dht.New(ctx, h, dht.Mode(dht.ModeClient), dht.BootstrapPeers(dht.GetDefaultBootstrapPeerAddrInfos()...) /*, dht.DisableAutoRefresh() */)
+				return dht.New(ctx, h, dht.Mode(dht.ModeClient), dht.BootstrapPeers(dht.GetDefaultBootstrapPeerAddrInfos()...) /*, dht.DisableAutoRefresh()*/)
 			}),
 		)
 	}
