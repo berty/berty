@@ -88,7 +88,7 @@ func monitorConnsCount(h host.Host, limit int) {
 						break
 					}
 
-					toKill := true
+					toKill := false
 					for _, stream := range conn.GetStreams() {
 						proto := string(stream.Protocol())
 						if proto != "" && (strings.HasPrefix(proto, p2pcircuit.ProtoID) || strings.HasPrefix(proto, p2pping.ID) || strings.HasPrefix(proto, benchDownloadPID) || strings.HasPrefix(proto, benchUploadPID)) {
@@ -97,10 +97,12 @@ func monitorConnsCount(h host.Host, limit int) {
 							break
 						} else {
 							fmt.Println("Not saved stream with protocol:", proto)
+							toKill = true
 						}
 					}
 
 					if toKill {
+						fmt.Println("PeerID connection closing: ", conn.RemotePeer())
 						conn.Close()
 					}
 				}
