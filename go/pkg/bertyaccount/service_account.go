@@ -36,11 +36,11 @@ import (
 	"berty.tech/berty/v2/go/pkg/username"
 )
 
-func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
+func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
 	args := req.GetArgs()
 
 	if req.NetworkConfig == nil {
-		req.NetworkConfig, _ = s.NetworkConfigForAccount(req.AccountID)
+		req.NetworkConfig, _ = s.NetworkConfigForAccount(ctx, req.AccountID)
 	}
 
 	args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
@@ -98,7 +98,7 @@ func (s *service) openAccount(req *accounttypes.OpenAccount_Request, prog *progr
 		args = append(args, "--node.default-push-token", base64.RawURLEncoding.EncodeToString(data))
 	}
 
-	meta, err := s.updateAccountMetadataLastOpened(req.AccountID)
+	meta, err := s.updateAccountMetadataLastOpened(ctx, req.AccountID)
 	if err != nil {
 		errCleanup()
 		return nil, errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
@@ -214,7 +214,7 @@ func (s *service) OpenAccount(ctx context.Context, req *accounttypes.OpenAccount
 	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
 	defer func() { endSection(err) }()
 
-	if _, err := s.openAccount(req, nil); err != nil {
+	if _, err := s.openAccount(ctx, req, nil); err != nil {
 		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
@@ -266,7 +266,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
 	}
-	if _, err := s.openAccount(&typed, prog); err != nil {
+	if _, err := s.openAccount(server.Context(), &typed, prog); err != nil {
 		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
@@ -399,11 +399,11 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 	return manager, nil
 }
 
-func (s *service) ListAccounts(_ context.Context, _ *accounttypes.ListAccounts_Request) (*accounttypes.ListAccounts_Reply, error) {
+func (s *service) ListAccounts(ctx context.Context, _ *accounttypes.ListAccounts_Request) (*accounttypes.ListAccounts_Reply, error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	accounts, err := accountutils.ListAccounts(s.rootdir, s.nativeKeystore, s.logger)
+	accounts, err := accountutils.ListAccounts(ctx, s.rootdir, s.nativeKeystore, s.logger)
 	if err != nil {
 		return nil, err
 	}
@@ -413,7 +413,7 @@ func (s *service) ListAccounts(_ context.Context, _ *accounttypes.ListAccounts_R
 	}, nil
 }
 
-func (s *service) getAccountMetaForName(accountID string) (*accounttypes.AccountMetadata, error) {
+func (s *service) getAccountMetaForName(ctx context.Context, accountID string) (*accounttypes.AccountMetadata, error) {
 	var storageKey []byte
 	if s.nativeKeystore != nil {
 		var err error
@@ -421,7 +421,7 @@ func (s *service) getAccountMetaForName(accountID string) (*accounttypes.Account
 			return nil, err
 		}
 	}
-	return accountutils.GetAccountMetaForName(s.rootdir, accountID, storageKey, s.logger)
+	return accountutils.GetAccountMetaForName(ctx, s.rootdir, accountID, storageKey, s.logger)
 }
 
 func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.DeleteAccount_Request) (_ *accounttypes.DeleteAccount_Reply, err error) {
@@ -443,7 +443,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 		return nil, errcode.ErrBertyAccountNoIDSpecified
 	}
 
-	if _, err := s.getAccountMetaForName(request.AccountID); err != nil {
+	if _, err := s.getAccountMetaForName(ctx, request.AccountID); err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
@@ -454,7 +454,7 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 	return &accounttypes.DeleteAccount_Reply{}, nil
 }
 
-func (s *service) putInAccountDatastore(accountID string, key string, value []byte) error {
+func (s *service) putInAccountDatastore(ctx context.Context, accountID string, key string, value []byte) error {
 	var storageKey []byte
 	if s.nativeKeystore != nil {
 		var err error
@@ -468,7 +468,7 @@ func (s *service) putInAccountDatastore(accountID string, key string, value []by
 		return err
 	}
 
-	if err := ds.Put(datastore.NewKey(key), value); err != nil {
+	if err := ds.Put(ctx, datastore.NewKey(key), value); err != nil {
 		return errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
@@ -479,8 +479,8 @@ func (s *service) putInAccountDatastore(accountID string, key string, value []by
 	return nil
 }
 
-func (s *service) updateAccountMetadataLastOpened(accountID string) (*accounttypes.AccountMetadata, error) {
-	meta, err := s.getAccountMetaForName(accountID)
+func (s *service) updateAccountMetadataLastOpened(ctx context.Context, accountID string) (*accounttypes.AccountMetadata, error) {
+	meta, err := s.getAccountMetaForName(ctx, accountID)
 	if err != nil {
 		return nil, err
 	}
@@ -492,7 +492,7 @@ func (s *service) updateAccountMetadataLastOpened(accountID string) (*accounttyp
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	if err := s.putInAccountDatastore(accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
+	if err := s.putInAccountDatastore(ctx, accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
 		return nil, err
 	}
 
@@ -502,8 +502,8 @@ func (s *service) updateAccountMetadataLastOpened(accountID string) (*accounttyp
 	return meta, nil
 }
 
-func (s *service) createAccountMetadata(accountID string, name string) (*accounttypes.AccountMetadata, error) {
-	if _, err := s.getAccountMetaForName(accountID); err == nil {
+func (s *service) createAccountMetadata(ctx context.Context, accountID string, name string) (*accounttypes.AccountMetadata, error) {
+	if _, err := s.getAccountMetaForName(ctx, accountID); err == nil {
 		return nil, errcode.ErrBertyAccountAlreadyExists
 	} else if !errcode.Is(err, errcode.ErrBertyAccountDataNotFound) {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
@@ -530,7 +530,7 @@ func (s *service) createAccountMetadata(accountID string, name string) (*account
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	if err := s.putInAccountDatastore(accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
+	if err := s.putInAccountDatastore(ctx, accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
 		return nil, err
 	}
 
@@ -649,7 +649,7 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 
 	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
 
-	meta, err := s.createAccount(&accounttypes.CreateAccount_Request{
+	meta, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
 		AccountID:     req.AccountID,
 		AccountName:   req.AccountName,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
@@ -670,7 +670,7 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 		return nil, err
 	}
 
-	meta, err = s.updateAccount(&accounttypes.UpdateAccount_Request{
+	meta, err = s.updateAccount(ctx, &accounttypes.UpdateAccount_Request{
 		AccountID:   meta.AccountID,
 		AccountName: a.Account.DisplayName,
 		PublicKey:   a.Account.PublicKey,
@@ -685,7 +685,7 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 	}, nil
 }
 
-func (s *service) createAccount(req *accounttypes.CreateAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
+func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
 	if prog == nil {
 		prog = progress.New()
 		defer prog.Close()
@@ -693,7 +693,7 @@ func (s *service) createAccount(req *accounttypes.CreateAccount_Request, prog *p
 	// FIXME: add create specific steps
 
 	if req.AccountID != "" {
-		if _, err := s.getAccountMetaForName(req.AccountID); err == nil {
+		if _, err := s.getAccountMetaForName(ctx, req.AccountID); err == nil {
 			return nil, errcode.ErrBertyAccountAlreadyExists
 		}
 	} else {
@@ -705,7 +705,7 @@ func (s *service) createAccount(req *accounttypes.CreateAccount_Request, prog *p
 		}
 	}
 
-	_, err := s.createAccountMetadata(req.AccountID, req.AccountName)
+	_, err := s.createAccountMetadata(ctx, req.AccountID, req.AccountName)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -714,11 +714,11 @@ func (s *service) createAccount(req *accounttypes.CreateAccount_Request, prog *p
 		req.NetworkConfig = NetworkConfigGetBlank()
 	}
 
-	if err := s.saveNetworkConfigForAccount(req.AccountID, req.NetworkConfig); err != nil {
+	if err := s.saveNetworkConfigForAccount(ctx, req.AccountID, req.NetworkConfig); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	meta, err := s.openAccount(&accounttypes.OpenAccount_Request{
+	meta, err := s.openAccount(ctx, &accounttypes.OpenAccount_Request{
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
@@ -743,7 +743,7 @@ func (s *service) CreateAccount(ctx context.Context, req *accounttypes.CreateAcc
 	)
 	defer func() { endSection(err) }()
 
-	meta, err := s.createAccount(req, nil)
+	meta, err := s.createAccount(ctx, req, nil)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountCreationFailed.Wrap(err)
 	}
@@ -753,8 +753,8 @@ func (s *service) CreateAccount(ctx context.Context, req *accounttypes.CreateAcc
 	}, nil
 }
 
-func (s *service) updateAccount(req *accounttypes.UpdateAccount_Request) (*accounttypes.AccountMetadata, error) {
-	meta, err := s.getAccountMetaForName(req.AccountID)
+func (s *service) updateAccount(ctx context.Context, req *accounttypes.UpdateAccount_Request) (*accounttypes.AccountMetadata, error) {
+	meta, err := s.getAccountMetaForName(ctx, req.AccountID)
 	if err != nil {
 		return nil, err
 	}
@@ -775,7 +775,7 @@ func (s *service) updateAccount(req *accounttypes.UpdateAccount_Request) (*accou
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	if err := s.putInAccountDatastore(req.AccountID, accountutils.AccountMetafileName, metaBytes); err != nil {
+	if err := s.putInAccountDatastore(ctx, req.AccountID, accountutils.AccountMetafileName, metaBytes); err != nil {
 		return nil, err
 	}
 
@@ -796,7 +796,7 @@ func (s *service) UpdateAccount(ctx context.Context, req *accounttypes.UpdateAcc
 	)
 	defer func() { endSection(err) }()
 
-	meta, err := s.updateAccount(req)
+	meta, err := s.updateAccount(ctx, req)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
 	}
@@ -861,7 +861,7 @@ func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 	}
 }
 
-func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.NetworkConfig, bool) {
+func (s *service) NetworkConfigForAccount(ctx context.Context, accountID string) (*accounttypes.NetworkConfig, bool) {
 	var storageKey []byte
 	if s.nativeKeystore != nil {
 		var err error
@@ -877,7 +877,7 @@ func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.Netwo
 		return NetworkConfigGetDefault(), false
 	}
 
-	netConfBytes, err := ds.Get(datastore.NewKey(accountutils.AccountNetConfFileName))
+	netConfBytes, err := ds.Get(ctx, datastore.NewKey(accountutils.AccountNetConfFileName))
 	if err == datastore.ErrNotFound {
 		return NetworkConfigGetDefault(), false
 	} else if err != nil {
@@ -900,7 +900,7 @@ func (s *service) NetworkConfigForAccount(accountID string) (*accounttypes.Netwo
 
 func (s *service) NetworkConfigGet(ctx context.Context, request *accounttypes.NetworkConfigGet_Request) (*accounttypes.NetworkConfigGet_Reply, error) {
 	defaultConfig := NetworkConfigGetDefault()
-	currentConfig, isCustomConfig := s.NetworkConfigForAccount(request.AccountID)
+	currentConfig, isCustomConfig := s.NetworkConfigForAccount(ctx, request.AccountID)
 
 	return &accounttypes.NetworkConfigGet_Reply{
 		DefaultConfig:      defaultConfig,
@@ -931,7 +931,7 @@ func SanitizeCheckMultiAddr(addrs []string) error {
 	return nil
 }
 
-func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *accounttypes.NetworkConfig) error {
+func (s *service) saveNetworkConfigForAccount(ctx context.Context, accountID string, networkConfig *accounttypes.NetworkConfig) error {
 	if networkConfig == nil {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
 	}
@@ -960,7 +960,7 @@ func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *a
 		return err
 	}
 
-	if err := s.putInAccountDatastore(accountID, accountutils.AccountNetConfFileName, data); err != nil {
+	if err := s.putInAccountDatastore(ctx, accountID, accountutils.AccountNetConfFileName, data); err != nil {
 		return err
 	}
 
@@ -968,7 +968,7 @@ func (s *service) saveNetworkConfigForAccount(accountID string, networkConfig *a
 }
 
 func (s *service) NetworkConfigSet(ctx context.Context, request *accounttypes.NetworkConfigSet_Request) (*accounttypes.NetworkConfigSet_Reply, error) {
-	if err := s.saveNetworkConfigForAccount(request.AccountID, request.Config); err != nil {
+	if err := s.saveNetworkConfigForAccount(ctx, request.AccountID, request.Config); err != nil {
 		return nil, err
 	}
 

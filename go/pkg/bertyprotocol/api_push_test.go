@@ -96,7 +96,7 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 	oosMsgEnv, err := bertyprotocol.SealOutOfStoreMessageEnvelope(cid.Undef, env, headers, g)
 	require.NoError(t, err)
 
-	openedOOSMessage, err := bertypush.DecryptOutOfStoreMessageEnv(tp.GroupDatastore, oosMsgEnv, gPK)
+	openedOOSMessage, err := bertypush.DecryptOutOfStoreMessageEnv(ctx, tp.GroupDatastore, oosMsgEnv, gPK)
 	require.NoError(t, err)
 
 	require.Equal(t, headers.Counter, openedOOSMessage.Counter)

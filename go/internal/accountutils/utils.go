@@ -1,6 +1,7 @@
 package accountutils
 
 import (
+	"context"
 	crand "crypto/rand"
 	"encoding/hex"
 	"fmt"
@@ -81,7 +82,7 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 	return &pkVal, &skVal, nil
 }
 
-func ListAccounts(rootDir string, ks NativeKeystore, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
+func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger *zap.Logger) ([]*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -115,7 +116,7 @@ func ListAccounts(rootDir string, ks NativeKeystore, logger *zap.Logger) ([]*acc
 			}
 		}
 
-		account, err := GetAccountMetaForName(rootDir, subitem.Name(), storageKey, logger)
+		account, err := GetAccountMetaForName(ctx, rootDir, subitem.Name(), storageKey, logger)
 		if err != nil {
 			accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
 		} else {
@@ -159,7 +160,7 @@ func GetOrCreateStorageKeyForAccount(ks NativeKeystore, accountID string) ([]byt
 	return getOrCreateStorageKey(ks, fmt.Sprintf("%s/%s", StorageKeyName, accountID))
 }
 
-func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
+func GetAccountMetaForName(ctx context.Context, rootDir string, accountID string, storageKey []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -169,7 +170,7 @@ func GetAccountMetaForName(rootDir string, accountID string, storageKey []byte, 
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	metaBytes, err := ds.Get(datastore.NewKey(AccountMetafileName))
+	metaBytes, err := ds.Get(ctx, datastore.NewKey(AccountMetafileName))
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrBertyAccountDataNotFound
 	} else if err != nil {

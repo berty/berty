@@ -1,6 +1,7 @@
 package bertyprotocol
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
 
@@ -55,7 +56,7 @@ func DefaultOrbitDBOptions(g *protocoltypes.Group, options *orbitdb.CreateDBOpti
 
 	options.Keystore = keystore
 	if groupOpenMode != GroupOpenModeReplicate {
-		options.Identity, err = defaultIdentityForGroup(g, keystore)
+		options.Identity, err = defaultIdentityForGroup(context.TODO(), g, keystore)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -103,7 +104,7 @@ func defaultACForGroup(g *protocoltypes.Group, storeType string) (accesscontroll
 	return param, nil
 }
 
-func defaultIdentityForGroup(g *protocoltypes.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
+func defaultIdentityForGroup(ctx context.Context, g *protocoltypes.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
 	sigPK, err := g.GetSigningPubKey()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -114,7 +115,7 @@ func defaultIdentityForGroup(g *protocoltypes.Group, ks *BertySignedKeyStore) (*
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	identity, err := ks.getIdentityProvider().createIdentity(&identityprovider.CreateIdentityOptions{
+	identity, err := ks.getIdentityProvider().createIdentity(ctx, &identityprovider.CreateIdentityOptions{
 		Type:     identityType,
 		Keystore: ks,
 		ID:       hex.EncodeToString(signingKeyBytes),

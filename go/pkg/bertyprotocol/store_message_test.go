@@ -41,11 +41,11 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	defer cleanup()
 
 	dPK0 := peers[0].GC.DevicePubKey()
-	ds0, err := peers[0].MKS.GetDeviceSecret(peers[0].GC.Group(), peers[0].DevKS)
+	ds0, err := peers[0].MKS.GetDeviceSecret(ctx, peers[0].GC.Group(), peers[0].DevKS)
 	require.NoError(t, err)
 	require.NotNil(t, ds0)
 
-	err = peers[1].MKS.RegisterChainKey(peers[0].GC.Group(), dPK0, ds0, false)
+	err = peers[1].MKS.RegisterChainKey(ctx, peers[0].GC.Group(), dPK0, ds0, false)
 	require.NoError(t, err)
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
@@ -128,7 +128,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	dPK0 := peers[0].GC.DevicePubKey()
 	dPK0Raw, err := dPK0.Raw()
 	require.NoError(t, err)
-	ds0, err := peers[0].MKS.GetDeviceSecret(peers[0].GC.Group(), peers[0].DevKS)
+	ds0, err := peers[0].MKS.GetDeviceSecret(ctx, peers[0].GC.Group(), peers[0].DevKS)
 	require.NoError(t, err)
 	require.NotNil(t, ds0)
 
@@ -156,7 +156,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 
 	require.Equal(t, entriesCount, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
 
-	err = peers[1].MKS.RegisterChainKey(peers[0].GC.Group(), dPK0, ds0, false)
+	err = peers[1].MKS.RegisterChainKey(ctx, peers[0].GC.Group(), dPK0, ds0, false)
 	require.NoError(t, err)
 
 	peers[1].GC.MessageStore().openMessageCacheForPK(ctx, dPK0Raw)

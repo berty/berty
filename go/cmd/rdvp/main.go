@@ -15,12 +15,10 @@ import (
 
 	// nolint:staticcheck
 	libp2p "github.com/libp2p/go-libp2p"
-	libp2p_cicuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	libp2p_host "github.com/libp2p/go-libp2p-core/host"
 	metrics "github.com/libp2p/go-libp2p-core/metrics"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
-	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
 	"github.com/libp2p/go-libp2p/config"
@@ -154,15 +152,14 @@ func main() {
 			reporter := metrics.NewBandwidthCounter()
 
 			// init p2p host
-			host, err := libp2p.New(ctx,
+			host, err := libp2p.New(
 				// default tpt + quic
 				libp2p.DefaultTransports,
-				libp2p.Transport(libp2p_quic.NewTransport),
 
 				// Nat & Relay service
 				libp2p.EnableNATService(),
 				libp2p.DefaultStaticRelays(),
-				libp2p.EnableRelay(libp2p_cicuit.OptHop),
+				libp2p.EnableRelay(),
 
 				// swarm listeners
 				libp2p.ListenAddrs(listeners...),
@@ -253,9 +250,7 @@ func main() {
 			}
 
 			// init p2p host
-			host, err := libp2p.New(ctx,
-				libp2p.Identity(priv),
-			)
+			host, err := libp2p.New(libp2p.Identity(priv))
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}

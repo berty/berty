@@ -110,7 +110,7 @@ func (s *service) ContactRequestAccept(ctx context.Context, req *protocoltypes.C
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	if err = s.groupDatastore.PutForContactPK(pk, s.deviceKeystore); err != nil {
+	if err = s.groupDatastore.PutForContactPK(ctx, pk, s.deviceKeystore); err != nil {
 		return nil, err
 	}
 

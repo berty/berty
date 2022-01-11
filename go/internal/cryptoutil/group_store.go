@@ -1,6 +1,7 @@
 package cryptoutil
 
 import (
+	"context"
 	"crypto/ed25519"
 	"crypto/sha256"
 	"encoding/base64"
@@ -24,30 +25,30 @@ type GroupDatastore struct {
 }
 
 type GroupDatastoreReadOnly interface {
-	Has(key crypto.PubKey) (bool, error)
-	Get(key crypto.PubKey) (*protocoltypes.Group, error)
+	Has(ctx context.Context, key crypto.PubKey) (bool, error)
+	Get(ctx context.Context, key crypto.PubKey) (*protocoltypes.Group, error)
 }
 
 func (gd *GroupDatastore) key(key []byte) datastore.Key {
 	return datastore.NewKey(base64.RawURLEncoding.EncodeToString(key))
 }
 
-func (gd *GroupDatastore) Has(key crypto.PubKey) (bool, error) {
+func (gd *GroupDatastore) Has(ctx context.Context, key crypto.PubKey) (bool, error) {
 	keyBytes, err := key.Raw()
 	if err != nil {
 		return false, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return gd.store.Has(gd.key(keyBytes))
+	return gd.store.Has(ctx, gd.key(keyBytes))
 }
 
-func (gd *GroupDatastore) Get(key crypto.PubKey) (*protocoltypes.Group, error) {
+func (gd *GroupDatastore) Get(ctx context.Context, key crypto.PubKey) (*protocoltypes.Group, error) {
 	keyBytes, err := key.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	data, err := gd.store.Get(gd.key(keyBytes))
+	data, err := gd.store.Get(ctx, gd.key(keyBytes))
 	if err != nil {
 		return nil, errcode.ErrMissingMapKey.Wrap(err)
 	}
@@ -60,13 +61,13 @@ func (gd *GroupDatastore) Get(key crypto.PubKey) (*protocoltypes.Group, error) {
 	return g, nil
 }
 
-func (gd *GroupDatastore) Put(g *protocoltypes.Group) error {
+func (gd *GroupDatastore) Put(ctx context.Context, g *protocoltypes.Group) error {
 	pk, err := g.GetPubKey()
 	if err != nil {
 		return errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	if ok, err := gd.Has(pk); err != nil {
+	if ok, err := gd.Has(ctx, pk); err != nil {
 		return errcode.ErrInvalidInput.Wrap(err)
 	} else if ok {
 		return nil
@@ -77,23 +78,23 @@ func (gd *GroupDatastore) Put(g *protocoltypes.Group) error {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	if err := gd.store.Put(gd.key(g.PublicKey), data); err != nil {
+	if err := gd.store.Put(ctx, gd.key(g.PublicKey), data); err != nil {
 		return errcode.ErrKeystorePut.Wrap(err)
 	}
 
 	return nil
 }
 
-func (gd *GroupDatastore) Delete(pk crypto.PubKey) error {
+func (gd *GroupDatastore) Delete(ctx context.Context, pk crypto.PubKey) error {
 	pkBytes, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	return gd.store.Delete(gd.key(pkBytes))
+	return gd.store.Delete(ctx, gd.key(pkBytes))
 }
 
-func (gd *GroupDatastore) PutForContactPK(pk crypto.PubKey, deviceKeystore DeviceKeystore) error {
+func (gd *GroupDatastore) PutForContactPK(ctx context.Context, pk crypto.PubKey, deviceKeystore DeviceKeystore) error {
 	if deviceKeystore == nil {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing device keystore"))
 	}
@@ -108,7 +109,7 @@ func (gd *GroupDatastore) PutForContactPK(pk crypto.PubKey, deviceKeystore Devic
 		return errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	if err := gd.Put(g); err != nil {
+	if err := gd.Put(ctx, g); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 

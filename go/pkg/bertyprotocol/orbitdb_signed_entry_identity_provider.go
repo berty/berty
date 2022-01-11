@@ -1,6 +1,8 @@
 package bertyprotocol
 
 import (
+	"context"
+
 	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -21,11 +23,11 @@ func (b *bertySignedIdentityProvider) UnmarshalPublicKey(data []byte) (crypto.Pu
 	return crypto.UnmarshalPublicKey(data)
 }
 
-func (b *bertySignedIdentityProvider) GetID(opts *identityprovider.CreateIdentityOptions) (string, error) {
+func (b *bertySignedIdentityProvider) GetID(ctx context.Context, opts *identityprovider.CreateIdentityOptions) (string, error) {
 	return opts.ID, nil
 }
 
-func (b *bertySignedIdentityProvider) SignIdentity(data []byte, id string) ([]byte, error) {
+func (b *bertySignedIdentityProvider) SignIdentity(ctx context.Context, data []byte, id string) ([]byte, error) {
 	return nil, nil
 }
 
@@ -37,8 +39,8 @@ func (b *bertySignedIdentityProvider) VerifyIdentity(identity *identityprovider.
 	return nil
 }
 
-func (b *bertySignedIdentityProvider) Sign(identity *identityprovider.Identity, bytes []byte) ([]byte, error) {
-	key, err := b.keyStore.GetKey(identity.ID)
+func (b *bertySignedIdentityProvider) Sign(ctx context.Context, identity *identityprovider.Identity, bytes []byte) ([]byte, error) {
+	key, err := b.keyStore.GetKey(ctx, identity.ID)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -51,8 +53,8 @@ func (b *bertySignedIdentityProvider) Sign(identity *identityprovider.Identity, 
 	return sig, nil
 }
 
-func (b *bertySignedIdentityProvider) signID(id string) (crypto.PubKey, []byte, error) {
-	privKey, err := b.keyStore.GetKey(id)
+func (b *bertySignedIdentityProvider) signID(ctx context.Context, id string) (crypto.PubKey, []byte, error) {
+	privKey, err := b.keyStore.GetKey(ctx, id)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -65,13 +67,13 @@ func (b *bertySignedIdentityProvider) signID(id string) (crypto.PubKey, []byte, 
 	return privKey.GetPublic(), idSignature, nil
 }
 
-func (b *bertySignedIdentityProvider) createIdentity(options *identityprovider.CreateIdentityOptions) (*identityprovider.Identity, error) {
-	id, err := b.GetID(options)
+func (b *bertySignedIdentityProvider) createIdentity(ctx context.Context, options *identityprovider.CreateIdentityOptions) (*identityprovider.Identity, error) {
+	id, err := b.GetID(ctx, options)
 	if err != nil {
 		return nil, err
 	}
 
-	publicKey, idSignature, err := b.signID(id)
+	publicKey, idSignature, err := b.signID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +88,7 @@ func (b *bertySignedIdentityProvider) createIdentity(options *identityprovider.C
 		return nil, err
 	}
 
-	pubKeyIDSignature, err := b.SignIdentity(append(publicKeyRaw, idSignature...), options.ID)
+	pubKeyIDSignature, err := b.SignIdentity(ctx, append(publicKeyRaw, idSignature...), options.ID)
 	if err != nil {
 		return nil, err
 	}

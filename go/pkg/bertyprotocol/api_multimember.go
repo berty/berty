@@ -26,11 +26,11 @@ func (s *service) MultiMemberGroupCreate(ctx context.Context, req *protocoltypes
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	if err := s.groupDatastore.Put(g); err != nil {
+	if err := s.groupDatastore.Put(ctx, g); err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	err = s.activateGroup(sk.GetPublic(), false)
+	err = s.activateGroup(ctx, sk.GetPublic(), false)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to activate group: %w", err))
 	}

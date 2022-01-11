@@ -1,6 +1,7 @@
 package initutil
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -104,7 +105,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
-	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
+	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", false, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
@@ -151,6 +152,8 @@ func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	m.applyDefaults()
+	ctx := m.getContext()
+
 	if err := m.applyPreset(); err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
@@ -168,7 +171,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
-	mrepo, err := m.setupIPFSRepo()
+	mrepo, err := m.setupIPFSRepo(ctx)
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
@@ -214,7 +217,6 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		m.Node.Protocol.MDNS.DriverLocker.Lock()
 	}
 
-	// init ipfs node
 	mnode, err := ipfsutil.NewIPFSMobile(m.getContext(), mrepo, &mopts)
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
@@ -302,7 +304,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }
 
-func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
+func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, error) {
 	var err error
 	var repo ipfs_repo.Repo
 
@@ -334,7 +336,7 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
 
-	repo, err = m.resetRepoIdentityIfExpired(repo, dbPath, storageKey)
+	repo, err = m.resetRepoIdentityIfExpired(ctx, repo, dbPath, storageKey)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
@@ -342,7 +344,7 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
 }
 
-func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string, storageKey []byte) (ipfs_repo.Repo, error) {
+func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo.Repo, dbPath string, storageKey []byte) (ipfs_repo.Repo, error) {
 	rootDS, err := m.getRootDatastore()
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
@@ -350,8 +352,7 @@ func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string,
 
 	lastUpdate := time.Now()
 	lastUpdateKey := datastore.NewKey(ipfsIdentityLastUpdateKey)
-
-	lastUpdateRaw, err := rootDS.Get(lastUpdateKey)
+	lastUpdateRaw, err := rootDS.Get(ctx, lastUpdateKey)
 	switch err {
 	case nil:
 		lastUpdate, err = time.Parse(time.RFC3339Nano, string(lastUpdateRaw))
@@ -378,7 +379,7 @@ func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string,
 		lastUpdate = time.Now()
 		lastUpdateRaw = []byte(lastUpdate.Format(time.RFC3339Nano))
 
-		if err := rootDS.Put(lastUpdateKey, lastUpdateRaw); err != nil {
+		if err := rootDS.Put(ctx, lastUpdateKey, lastUpdateRaw); err != nil {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}
 	}
@@ -531,7 +532,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// localdisc driver
 	cfg.Discovery.MDNS.Enabled = m.Node.Protocol.MDNS.Enable
 
-	// enable autorelay
+	// enable auto relay
 	if m.Node.Protocol.AutoRelay {
 		p2popts = append(p2popts, libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
 	}
