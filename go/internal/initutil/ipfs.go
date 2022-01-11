@@ -538,6 +538,8 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		tcp.DisableReuseport(),
 	))
 
+	cfg.Addresses.Swarm = []string{}
+
 	return p2popts, nil
 }
 
