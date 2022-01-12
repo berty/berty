@@ -2,11 +2,8 @@ import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, TextInput, View } from 'react-native'
-import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
-import { useNavigation } from '@berty-tech/navigation'
-import rnutil from '@berty-tech/rnutil'
 import {
 	GlobalPersistentOptionsKeys,
 	storageSet,
@@ -29,7 +26,6 @@ export const CreateAccountBox: React.FC<{
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [isPressed, setIsPressed] = useState(false)
-	const { navigate } = useNavigation()
 	const account = useAccount()
 
 	const handlePersistentOptions = React.useCallback(async () => {
@@ -58,17 +54,7 @@ export const CreateAccountBox: React.FC<{
 					title={t('onboarding.create-account.title')}
 					button={{
 						text: t('onboarding.create-account.button'),
-						onPress: async () => {
-							const status = await rnutil.checkPermissions('notification', navigate)
-							if (status === RESULTS.DENIED || status === RESULTS.BLOCKED) {
-								await rnutil.checkPermissions('notification', navigate, {
-									navigateToPermScreenOnProblem: true,
-									onComplete: async () => onPress(),
-								})
-							} else {
-								await onPress()
-							}
-						},
+						onPress: onPress,
 					}}
 				>
 					<View

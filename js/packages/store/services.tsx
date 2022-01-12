@@ -2,7 +2,7 @@ import base64 from 'base64-js'
 import { Buffer } from 'buffer'
 import { Alert, PermissionsAndroid, NativeModules, Platform } from 'react-native'
 import RNFS from 'react-native-fs'
-import InAppBrowser from 'react-native-inappbrowser-reborn'
+import InAppBrowser, { RedirectResult } from 'react-native-inappbrowser-reborn'
 import Share from 'react-native-share'
 
 import beapi from '@berty-tech/api'
@@ -95,7 +95,7 @@ export const servicesAuthViaURL = async (
 		throw new Error('no browser available')
 	}
 
-	const response: any = await InAppBrowser.openAuth(resp.url, 'berty://', {
+	const response = await InAppBrowser.openAuth(resp.url, 'berty://', {
 		dismissButtonStyle: 'cancel',
 		readerMode: false,
 		modalPresentationStyle: 'pageSheet',
@@ -106,11 +106,13 @@ export const servicesAuthViaURL = async (
 		// forceCloseOnRedirection: false,
 	})
 
-	if (!response.url) {
-		throw new Error('invalid response from auth server')
+	if ((response as RedirectResult).url) {
+		if (!(response as RedirectResult).url) {
+			throw new Error('invalid response from auth server')
+		}
 	}
 
-	const responseURL = response.url
+	const responseURL = (response as RedirectResult).url
 	await protocolClient?.authServiceCompleteFlow({
 		callbackUrl: responseURL,
 	})

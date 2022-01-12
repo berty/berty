@@ -10,13 +10,14 @@ import {
 	useMessengerContext,
 } from '@berty-tech/store'
 import { useTranslation } from 'react-i18next'
-import { checkNotifications, RESULTS } from 'react-native-permissions'
+import { checkNotifications, RESULTS, PermissionStatus } from 'react-native-permissions'
 import rnutil from '@berty-tech/rnutil'
 import { useNavigation } from '@berty-tech/navigation'
 import { berty } from '@berty-tech/api/root.pb'
 import { useConversation } from '@berty-tech/react-redux'
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
+import { GRPCError } from '@berty-tech/grpc-bridge'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string
@@ -28,14 +29,16 @@ const EnableNotificationsButton: React.FC<{
 	const conv = useConversation(conversationPk)
 	const [{ padding }] = useStyles()
 
-	const [notificationPermStatus, setNotificationPermStatus] = useState<any>(RESULTS.UNAVAILABLE)
+	const [notificationPermStatus, setNotificationPermStatus] = useState<PermissionStatus>(
+		RESULTS.UNAVAILABLE,
+	)
 	const [tokens, setTokens] = useState<berty.messenger.v1.ISharedPushToken[]>([])
 	const [refreshCounter, setRefresh] = useState(0)
 
 	useEffect(() => {
 		checkNotifications()
 			.then(status => {
-				setNotificationPermStatus(status)
+				setNotificationPermStatus(status.status)
 			})
 			.catch(console.warn)
 
@@ -58,16 +61,15 @@ const EnableNotificationsButton: React.FC<{
 					icon='bell-outline'
 					name={t('chat.push-notifications.enabled')}
 					actionIcon={
-						notificationPermStatus.status === RESULTS.BLOCKED ||
-						notificationPermStatus.status === RESULTS.DENIED
+						notificationPermStatus === RESULTS.BLOCKED || notificationPermStatus === RESULTS.DENIED
 							? 'alert-triangle-outline'
 							: 'checkmark-circle-2'
 					}
 					alone={true}
 					onPress={() => Alert.alert(t('chat.push-notifications.why-cant-disable'))}
 				/>
-				{(notificationPermStatus.status === RESULTS.BLOCKED ||
-					notificationPermStatus.status === RESULTS.DENIED) && (
+				{(notificationPermStatus === RESULTS.BLOCKED ||
+					notificationPermStatus === RESULTS.DENIED) && (
 					<Text style={[padding.left.small, padding.right.small, padding.top.small]}>
 						{t('chat.push-notifications.check-device-settings')}
 					</Text>
@@ -76,7 +78,7 @@ const EnableNotificationsButton: React.FC<{
 		)
 	}
 
-	if (notificationPermStatus.status === RESULTS.UNAVAILABLE) {
+	if (notificationPermStatus === RESULTS.UNAVAILABLE) {
 		return (
 			<ButtonSetting
 				icon='bell-outline'
@@ -97,17 +99,9 @@ const EnableNotificationsButton: React.FC<{
 			onPress={async () => {
 				try {
 					// Get or ask for permission
-					await new Promise<void>(resolve => {
-						rnutil.checkPermissions('notification', navigate).then(status => {
-							if (status === RESULTS.GRANTED || status === RESULTS.LIMITED) {
-								return resolve()
-							}
-
-							if (status !== RESULTS.DENIED && status !== RESULTS.BLOCKED) {
-								resolve()
-								return
-							}
-
+					const status = await rnutil.checkPermissions('notification', navigate)
+					if (status !== RESULTS.GRANTED && status !== RESULTS.LIMITED) {
+						await new Promise(resolve =>
 							rnutil.checkPermissions('notification', navigate, {
 								navigateToPermScreenOnProblem: true,
 								onComplete: () =>
@@ -115,9 +109,9 @@ const EnableNotificationsButton: React.FC<{
 										subResolve()
 										setTimeout(resolve, 800)
 									}),
-							})
-						})
-					})
+							}),
+						)
+					}
 
 					// Persist push token if needed
 					await requestAndPersistPushToken(ctx.protocolClient!)
@@ -127,7 +121,7 @@ const EnableNotificationsButton: React.FC<{
 						try {
 							await servicesAuthViaDefault(ctx)
 							await new Promise(r => setTimeout(r, 300))
-						} catch (e: any) {
+						} catch (e) {
 							console.warn('no push server known')
 							return
 						}
@@ -141,7 +135,7 @@ const EnableNotificationsButton: React.FC<{
 							[
 								{
 									text: t('chat.push-notifications.warning-disable.refuse'),
-									onPress: () => reject(Error('user cancelled action')),
+									onPress: () => reject(new Error('user cancelled action')),
 									style: 'cancel',
 								},
 								{
@@ -155,11 +149,11 @@ const EnableNotificationsButton: React.FC<{
 
 					// Share push token
 					await ctx.client!.pushShareTokenForConversation({ conversationPk: conversationPk })
-				} catch (e: any) {
-					if (e.Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
+				} catch (e) {
+					if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
 						Alert.alert('', t('chat.push-notifications.errors.no-token'))
 						throw new Error()
-					} else if (e.Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
+					} else if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
 						Alert.alert('', t('chat.push-notifications.errors.no-server'))
 						throw new Error()
 					} else {

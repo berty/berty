@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
-import { Text } from '@ui-kitten/components'
+import { View, ScrollView, ActivityIndicator, StatusBar, Text } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
@@ -19,7 +18,7 @@ const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 }
 
 const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const contact = useContact(contactPk)
 	const conv = useConversation(contact?.conversationPublicKey || '')
 	const [{ text, padding }] = useStyles()

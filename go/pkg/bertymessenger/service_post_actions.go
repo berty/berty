@@ -90,5 +90,13 @@ func (p *serviceEventHandlerPostActions) InteractionReceived(i *messengertypes.I
 }
 
 func (p *serviceEventHandlerPostActions) PushServerOrTokenRegistered(account *messengertypes.Account) error {
+	acc, err := p.svc.db.GetAccount()
+	if err != nil {
+		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	}
+	if !acc.AutoSharePushTokenFlag {
+		return nil
+	}
+
 	return p.svc.pushDeviceTokenBroadcast(account)
 }
