@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "BESCHERM UW PRIVACY",
+			"desc": "gratis & veilig peer-to-peer berichten",
+			"button": "ONTDEK"
 		},
 		"select-mode": {
 			"title": "Kies een voorinstelling",
@@ -30,61 +30,52 @@
 			"title": "Maak jouw account",
 			"desc": "Een naam is de enige informatie die vereist is",
 			"required": "Vereist",
-			"placeholder": "",
+			"placeholder": "Kies uw bijnaam",
 			"button": "MAAK MIJN ACCOUNT",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "GEAVANCEERD",
+			"import-account": "IMPORTEER ACCOUNT",
+			"link-device": "LINK APPARAAT",
+			"more": "MEER INFO",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Goed om te weten:",
+				"first-point": "Uw account is lokaal aangemaakt",
+				"second-point": "Bijnaam is optioneel en kan worden bewerkt"
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
-			"desc": "",
+			"desc": "Vind documentatie en creëer uw eigen configuratie.",
 			"more-about": {
 				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"first-paragraph": "Hier kunt u uw eigen aangepaste configuratie maken om aan uw behoeften te voldoen.",
+				"second-paragraph": "We zullen je alle opties presenteren om je te laten begrijpen wat er achter de schermen gebeurt.",
+				"third-paragraph": "Je vindt ook een ressources link om deze te hacken. Deze sectie is alleen voor experten!"
 			},
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"read-more": "",
+			"config-title": "Aangepaste configuraties",
+			"config-desc": "3 stappen van app configuratie. Pas nu alles aan!",
+			"learn-more": "Meer informatie",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Nabijheid",
+				"first-button": "Bluetooth Low Energy",
 				"second-button": "Multicast DNS"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Peer-naar-peer",
+				"first-button": "Gedistribueerde Hash Tabel",
+				"second-button": "TOR Activering"
 			},
 			"third-part": {
 				"title": "Diensten",
+				"network-button": "Netwerk Lijst",
 				"first-button": "Pushmeldingen",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "Uw eigen node instellen",
+					"placeholder": "Voer serveradres in"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": "Selecteer een gecertificeerd knooppunt"
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Verifieer bij diensten",
-			"title": "Diensten",
-			"recommended": "Aangeraden",
-			"desc": "Dit zal automatisch je gesprekken kopiëren naar een server",
-			"button": "Gebruik diensten van Berty",
-			"skip": "OVERSLAAN EN LATER UITVOEREN"
+			"apply-changes": "VERANDEREN TOEPASSEN"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Setup voltooid!",
 			"desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
 			"button": "GEBRUIK BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Annuleren",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -176,14 +173,14 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Bekijk lijst {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Wijzig je avatar",
 					"desc": "Stel een profielfoto in voor dit account!"
 				},
-				"relay": {
-					"title": "Configureer relay",
-					"desc": "Verbeter je netwerkprestaties door het gebruik van een relay van een Berty Tech non-profit."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Synchroniseer met een contact",
@@ -197,34 +194,15 @@
 					"title": "Verstuur bericht",
 					"desc": "Zeg 'Hallo wereld' tegen een contact!"
 				},
-				"theme": {
-					"title": "Thema aanpassen",
-					"desc": "Maak je eigen versie van de app en deel deze met de community!"
-				},
-				"hidden-account": {
-					"title": "Verborgen account aanmaken",
-					"desc": "Maak een onzichtbaar account met een specifiek wachtwoord aan om in te loggen. Zo ben je veilig op het vliegveld!"
-				},
 				"ble-message": {
 					"title": "Stuur bericht zonder internet",
 					"desc": "Gebruik de nabijheidsfunctie en stuur een bericht zonder mobiel netwerk of internetverbinding!"
 				}
 			},
-			"header-left-button": "Help",
-			"header-center-button": "Ontwikkelaars tools",
-			"header-right-button": "Instellingen",
-			"network-button": "Netwerk Lijst",
 			"edit-profile": "Mijn profiel bewerken",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Notificaties",
-				"tag-enabled": "Ingeschakeld",
-				"tag-disabled": "Uitgeschakeld"
-			},
-			"dark-mode-button": "Donkere modus",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Nieuw account aanmaken"
 		},
 		"network-map": {
 			"title": "Netwerk Lijst",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Instellingen",
 			"desc": "Pas alles aan om de app te krijgen die aan je behoeften voldoet",
+			"in-app-notifications": "",
+			"dark-mode-button": "Donkere modus",
+			"devtools": "Ontwikkelaars tools",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Gegevens opgeslagen!",
 				"desc": "Beschikbaar in de downloads map"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Activeer Android Nearby"
 		},
-		"services-auth": {
-			"title": "Externe diensten",
-			"operated-services-button": "Gebruik diensten van Berty",
-			"register-service-button": {
-				"title": "Registreer een aangepaste dienst",
-				"input-placeholder": "Diensten URL",
-				"action": "Toevoegen"
-			},
-			"registered-services-button": {
-				"title": "Momenteel geregistreerde diensten",
-				"sample-no-services": "Geen diensten geregistreerd",
-				"sample-unknown-service": "Onbekende dienst"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Aangeraden",
+			"desc": "",
+			"button": "",
+			"skip": "OVERSLAAN EN LATER UITVOEREN"
 		},
 		"delete-account": {
 			"title": "Account verwijderen!",
@@ -439,9 +415,13 @@
 			"save": "Sla dit thema op",
 			"export": "Exporteer geselecteerde thema als bestand",
 			"share": "Geselecteerde thema als bestand delen",
-			"import": "Een bestandsthema importeren"
+			"import": "Een bestandsthema importeren",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Vingerafdruk",
 			"devices": "Apparaten"
@@ -480,6 +460,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Markeren als geverifieerd",
 			"block-button": "Blokkeer contact",
@@ -549,6 +531,7 @@
 		},
 		"files": {
 			"gallery": "Galerij",
+			"no-images": "",
 			"camera": "Camera",
 			"files": "Bestanden",
 			"microphone": "Microfoon",
@@ -571,6 +554,10 @@
 			"response-to": "Reactie op",
 			"replying-to": "Je reageert op",
 			"replied-to": "Gereageerd op"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -596,7 +583,7 @@
 		},
 		"camera": {
 			"title": "Camera",
-			"desc": "Om een QR-code te scannen en contacten met je camera toe te voegen, heeft de Berty app jouw toestemming nodig. De camera kan anders niet worden gebruikt."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Audioberichten",
@@ -607,6 +594,7 @@
 			"settings": "Ga naar Instellingen"
 		},
 		"skip": "OVERSLAAN",
+		"cancel": "ANNULEREN",
 		"settings-text": "Je kunt {{title}} rechten inschakelen via de Instellingen."
 	},
 	"notification": {
@@ -624,13 +612,13 @@
 		"wtf-screen": {
 			"title": "Wat is het fout?",
 			"desc": "Applicatie is net gecrasht.",
-			"desc-report": "Schud de telefoon om de bug te melden en klik op de knop om de app te herstarten."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Sorry voor deze bug!",
 			"desc": "Het is de fout van Franciscus, de interne ontwikkelaar bij Berty. Wat een rotzak, die Francis!",
 			"desc-em": "*Nou, goed, er werkt geen Francis het Berty team.",
-			"desc-report": "Schud je telefoon nog een keer!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
