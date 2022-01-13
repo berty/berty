@@ -100,9 +100,9 @@ require (
 	github.com/tj/assert v0.0.3
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210713220151-be142a5ae1a8 // indirect
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
-	go.uber.org/goleak v1.1.11-0.20210813005559-691160354723
+	go.uber.org/goleak v1.1.11
 	go.uber.org/multierr v1.7.0
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.20.0
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
@@ -121,7 +121,7 @@ require (
 	moul.io/testman v1.5.0
 	moul.io/u v1.27.0
 	moul.io/zapconfig v1.4.0
-	moul.io/zapfilter v1.6.1
+	moul.io/zapfilter v1.7.0
 	moul.io/zapgorm2 v1.1.1
 	moul.io/zapring v1.3.3
 	mvdan.cc/gofumpt v0.1.1

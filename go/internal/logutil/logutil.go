@@ -22,6 +22,7 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 	cores := []zapcore.Core{}
 	cleanup := func() {}
 	withIPFS := false
+	withIPFSDebug := false
 
 	for _, opts := range streams {
 		if opts.filters == "" {
@@ -134,6 +135,9 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 
 		if !withIPFS && zapfilter.CheckAnyLevel(zap.New(filtered).Named("ipfs")) {
 			withIPFS = true
+			if zapfilter.CheckLevel(zap.New(filtered).Named("ipfs"), zap.DebugLevel) {
+				withIPFSDebug = true
+			}
 		}
 
 		cores = append(cores, filtered)
@@ -150,7 +154,9 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 	)
 
 	if withIPFS {
-		ipfs_log.SetDebugLogging()
+		if withIPFSDebug {
+			ipfs_log.SetDebugLogging()
+		}
 		ipfs_log.SetPrimaryCore(tee.Core())
 	} else {
 		ipfs_log.SetPrimaryCore(zapcore.NewNopCore())

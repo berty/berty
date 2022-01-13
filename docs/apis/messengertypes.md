@@ -149,6 +149,7 @@
     - [StreamEvent.Notified.Basic](#berty.messenger.v1.StreamEvent.Notified.Basic)
     - [StreamEvent.Notified.ContactRequestReceived](#berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived)
     - [StreamEvent.Notified.ContactRequestSent](#berty.messenger.v1.StreamEvent.Notified.ContactRequestSent)
+    - [StreamEvent.Notified.GroupInvitation](#berty.messenger.v1.StreamEvent.Notified.GroupInvitation)
     - [StreamEvent.Notified.MessageReceived](#berty.messenger.v1.StreamEvent.Notified.MessageReceived)
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
     - [SystemInfo.DB](#berty.messenger.v1.SystemInfo.DB)
@@ -1325,6 +1326,15 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | contact | [Contact](#berty.messenger.v1.Contact) |  |  |
 
+<a name="berty.messenger.v1.StreamEvent.Notified.GroupInvitation"></a>
+
+### StreamEvent.Notified.GroupInvitation
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
+| contact | [Contact](#berty.messenger.v1.Contact) |  |  |
+
 <a name="berty.messenger.v1.StreamEvent.Notified.MessageReceived"></a>
 
 ### StreamEvent.Notified.MessageReceived
@@ -1508,6 +1518,7 @@ Composite primary key
 | TypeMessageReceived | 2 |  |
 | TypeContactRequestSent | 3 |  |
 | TypeContactRequestReceived | 4 |  |
+| TypeGroupInvitation | 5 |  |
 
 <a name="berty.messenger.v1.StreamEvent.Type"></a>
 
