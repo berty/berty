@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "",
+				"network-button": "",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "",
-			"title": "",
-			"recommended": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "",
 			"desc": "",
 			"button": ""
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "",
-			"header-center-button": "",
-			"header-right-button": "",
-			"network-button": "",
 			"edit-profile": "",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "",
-				"tag-enabled": "",
-				"tag-disabled": ""
-			},
-			"dark-mode-button": "",
-			"bluetooth-button": {
-				"title": ""
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": ""
 		},
 		"network-map": {
 			"title": "",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "",
 			"desc": "",
+			"in-app-notifications": "",
+			"dark-mode-button": "",
+			"devtools": "",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
+		"berty-services": {
+			"header": "",
 			"title": "",
-			"operated-services-button": "",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": ""
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": ""
-			}
+			"recommended": "",
+			"desc": "",
+			"button": "",
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "",
 			"fingerprint": "",
 			"devices": ""
@@ -480,6 +460,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "",
 			"block-button": "",
@@ -549,6 +531,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "",
 			"files": "",
 			"microphone": "",
@@ -571,6 +554,10 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +594,7 @@
 			"settings": ""
 		},
 		"skip": "",
+		"cancel": "",
 		"settings-text": ""
 	},
 	"notification": {
