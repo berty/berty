@@ -20,7 +20,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "Échec du déchiffrement push"
+      "title": ""
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Envoyé un message vocal",
@@ -32,35 +32,35 @@
     },
     "photo": {
       "bodyWithNumberOfMedia_one": "A envoyé une photo",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' photos"
     },
     "media": {
       "bodyWithNumberOfMedia_one": "A envoyé un média",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' médias"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v a réagi avec %[2]v à votre message"
     },
     "groupInvitation": {
       "bodyWithGroupName": "Invitation au groupe '%[1]v'"
     },
     "unknown": {
-      "body": "Quelque chose de nouveau a été reçu"
+      "body": ""
     },
     "conversationNameChanged": {
-      "body": "Le nom de la conversation a été mis à jour"
+      "body": ""
     },
     "memberNameChanged": {
-      "body": "Le surnom a été modifié"
+      "body": ""
     },
     "memberPictureChanged": {
-      "body": "La photo de profil a été modifiée"
+      "body": ""
     },
     "memberDetailsChanged": {
-      "body": "Les informations du membre ont été modifiées"
+      "body": ""
     },
     "replyOptionsOffered": {
-      "body": "Des options de réponse sont disponibles"
+      "body": ""
     }
   }
 }
