@@ -156,6 +156,8 @@ targets:
 
     sources:
     - Berty
+    - NotificationService/Common.swift
+    - Localization
     - path: ./Configs/GoogleService
       group: Configs
       buildPhase: none # will be added by a script
@@ -254,6 +256,7 @@ targets:
           OTHER_SWIFT_FLAGS: "-D CFG_YOLO $(inherited)"
     sources:
         - NotificationService
+        - Localization
         - Berty/Sources/RootDir/RootDir.swift
         - Berty/Sources/Bridge/KeystoreDriver.swift
 

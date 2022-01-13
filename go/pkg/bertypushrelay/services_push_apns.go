@@ -92,7 +92,7 @@ func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *protocoltypes.PushS
 	pushPayload := payload.NewPayload()
 	pushPayload.Custom(pushtypes.ServicePushPayloadKey, base64.RawURLEncoding.EncodeToString(data))
 	pushPayload.MutableContent()
-	pushPayload.AlertTitle("New Message")
+	pushPayload.AlertLocKey("BertyPushMessage")
 	// @TODO(gfanton): maybe add a body message ?
 
 	notification := &apns2.Notification{}

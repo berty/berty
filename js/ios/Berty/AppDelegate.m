@@ -53,6 +53,15 @@ static void InitializeFlipper(UIApplication *application) {
                                                    moduleName:@"Berty"
                                             initialProperties:nil];
 
+  // Sync languages settings with app extension
+  id languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
+  NSUserDefaults *commonUserDefaults = [Common objcUserDefaults];
+  if (commonUserDefaults != nil) {
+    [commonUserDefaults setObject:languages forKey:@"AppleLanguages"];
+  } else {
+    NSLog(@"error: language sync with app extension failed");
+  }
+
   // Background Fetch
   if (@available(iOS 13.0, *)) {
     // [LocalNotificationManager requestPermission];
