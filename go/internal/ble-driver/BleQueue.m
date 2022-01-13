@@ -17,7 +17,7 @@
     if (self) {
         _tasks = [[NSMutableArray alloc] init];
         _queue = [queue retain];
-        _logger = logger;
+        _logger = [logger retain];
     }
     
     return self;
