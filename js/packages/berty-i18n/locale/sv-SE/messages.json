@@ -12,7 +12,7 @@
 				"title": "Prestanda",
 				"desc": "Lätt att använda - alla funktioner",
 				"push-notif": "Ta emot push-aviseringar",
-				"offline-message": "Offline kommunikation via Bluetooth",
+				"offline-message": "Offlinekommunikation via Bluetooth",
 				"add-contact": "Lägg enkelt till kontakter",
 				"fast-message": "Snabbast möjliga leverans av meddelanden"
 			},
@@ -35,7 +35,6 @@
 			"advanced": "AVANCERAT",
 			"import-account": "IMPORTERA KONTO",
 			"link-device": "LÄNKA ENHET",
-			"expert-setup": "EXPERT SETUP",
 			"more": "MER INFO",
 			"good-to-know": {
 				"title": "Bra att veta:",
@@ -43,15 +42,16 @@
 				"second-point": "Smeknamn är valfritt och kan ändras"
 			}
 		},
-		"expert-setup": {
-			"title": "Expert-läge",
+		"advanced-settings": {
+			"title": "Avancerade inställningar",
 			"desc": "Hitta dokumentation och skapa din egen konfiguration.",
 			"more-about": {
-				"title": "Välkommen till expertläget",
+				"title": "Välkommen i de avancerade inställningarna",
 				"first-paragraph": "Här kommer du att kunna skapa din egen anpassade konfiguration för att passa dina behov.",
 				"second-paragraph": "Vi kommer att presentera alla alternativ för att låta dig förstå vad som händer bakom huven.",
 				"third-paragraph": "Du hittar också resurslänkar för att hacka den. Detta avsnitt är endast för experter!"
 			},
+			"read-more": "Läs mer om avancerade inställningar",
 			"config-title": "Anpassade konfigurationer",
 			"config-desc": "3 steg i appkonfigurationen. Anpassa allt nu!",
 			"learn-more": "Läs mer",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Tjänster",
-				"first-button": "Push-notiser",
+				"network-button": "Lista över nätverk",
+				"first-button": "Push-aviseringar",
 				"second-button": {
 					"title": "Konfigurera din egen nod",
 					"placeholder": "Ange serveradress"
 				},
-				"third-button": "Välj en certifierad nod",
-				"connect": "ANSLUT DIN BOOSTER NODE"
+				"third-button": "Välj en certifierad nod"
 			},
-			"apply-changes": "SPARA ÄNDRINGAR",
-			"skip": "Hoppa över och gör detta senare"
-		},
-		"services-auth": {
-			"header": "Autentisera till tjänster",
-			"title": "Tjänster",
-			"recommended": "Rekommenderat",
-			"desc": "Detta kommer automatiskt att kopiera dina konversationer på en server",
-			"button": "Använd Berty-drivna tjänster",
-			"skip": "HOPPA ÖVER OCH GÖR SENARE"
+			"apply-changes": "SPARA ÄNDRINGAR"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Genomgång slutförd!",
 			"desc": "Du kan nu använda appen, börja lägga till kontakter och prata fritt med dem utan övervakning",
 			"button": "BÖRJA ANVÄNDA BERTY"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "Vi förbereder fortfarande för att ladda webviews på nätverket. Vill du fortfarande öppna det?",
+			"first-button": "Avbryt",
+			"second-button": "Ja"
 		}
 	},
 	"main": {
@@ -176,14 +173,14 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Checklista {{tasksDone}}/{{totalTasks}}",
+				"title": "Välkomstchecklista {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Ändra din profilbild",
 					"desc": "Låt oss ställa in en profilbild för detta konto!"
 				},
-				"relay": {
-					"title": "Konfigurera relä",
-					"desc": "Förbättra nätverksprestandan med hjälp av en relä som drivs av Berty Techs ideella organisation."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Synkronisera med en kontakt",
@@ -197,34 +194,15 @@
 					"title": "Skicka meddelande",
 					"desc": "Säg 'Hej världen' till en kontakt!"
 				},
-				"theme": {
-					"title": "Skräddarsy tema",
-					"desc": "Skapa din egen version av appen och dela den med gemenskapen!"
-				},
-				"hidden-account": {
-					"title": "Skapa ett dolt konto",
-					"desc": "Skapa ett osynligt konto med ett specifikt lösenord för att logga in, så du kan känna dig säkrare på flygplatsen!"
-				},
 				"ble-message": {
 					"title": "Skicka meddelande utan internet",
 					"desc": "Använd närhetsfunktionen och skicka ett meddelande utan mobilnätverk eller internetanslutning!"
 				}
 			},
-			"header-left-button": "Hjälp",
-			"header-center-button": "Utvecklingsverktyg",
-			"header-right-button": "Inställningar",
-			"network-button": "Lista över nätverk",
 			"edit-profile": "Redigera profil",
-			"expert-setup": "Expertinställningar",
-			"notifications-button": {
-				"title": "Aviseringar",
-				"tag-enabled": "Aktiv",
-				"tag-disabled": "Inaktiv"
-			},
-			"dark-mode-button": "Mörkt tema",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "Dela länk",
+			"create-group": "Skapa grupp",
+			"create-new-account": "Skapa nytt konto"
 		},
 		"network-map": {
 			"title": "Lista över nätverk",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Inställningar",
 			"desc": "Anpassa allt för att få appen som passar just dina behov",
+			"in-app-notifications": "Notiser i appen",
+			"dark-mode-button": "Mörkt tema",
+			"devtools": "Utvecklingsverktyg",
+			"network-config": "Nätverkskonfiguration",
 			"notification-file-saved": {
 				"title": "Data sparad!",
 				"desc": "Tillgänglig i din nedladdningsmapp"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Aktivera Android Nearby"
 		},
-		"services-auth": {
-			"title": "Externa tjänster",
-			"operated-services-button": "Använd Berty-drivna tjänster",
-			"register-service-button": {
-				"title": "Registrera en annan tjänsteleverantör",
-				"input-placeholder": "Tjänstens webbadress",
-				"action": "Lägg till"
-			},
-			"registered-services-button": {
-				"title": "Befintliga leverantörer",
-				"sample-no-services": "Inga tjänster registrerade",
-				"sample-unknown-service": "Okänd tjänst"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Rekommenderat",
+			"desc": "",
+			"button": "",
+			"skip": "HOPPA ÖVER OCH GÖR SENARE"
 		},
 		"delete-account": {
 			"title": "Radera konto!",
@@ -439,9 +415,13 @@
 			"save": "Spara temat",
 			"export": "Exportera valt tema till fil",
 			"share": "Dela valt tema som fil",
-			"import": "Importera en tema fil"
+			"import": "Importera en tema fil",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Fingeravtryck",
 			"devices": "Enheter"
@@ -480,6 +460,8 @@
 		}
 	},
 	"chat": {
+		"sending": "Skickar..",
+		"sent": "Skickat",
 		"contact-settings": {
 			"mark-button": "Markera som verifierad",
 			"block-button": "Blockera kontakt",
@@ -549,6 +531,7 @@
 		},
 		"files": {
 			"gallery": "Galleri",
+			"no-images": "Inga bilder",
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
@@ -571,6 +554,10 @@
 			"response-to": "Svar till",
 			"replying-to": "Du svarar till",
 			"replied-to": "Svarat till"
+		},
+		"user-message": {
+			"read-more": "Läs mer",
+			"show-less": "Visa mindre"
 		}
 	},
 	"audio": {
@@ -596,7 +583,7 @@
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": "För att skanna QR-koden och lägga till kontakter med din kamera behöver Berty appen din tillåtelse. Kameran kan inte användas för något annat."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Ljudmeddelanden",
@@ -607,6 +594,7 @@
 			"settings": "Gå till inställningar"
 		},
 		"skip": "HOPPA ÖVER",
+		"cancel": "AVBRYT",
 		"settings-text": "Du kan aktivera {{title}} behörighet från inställningar."
 	},
 	"notification": {
@@ -624,13 +612,13 @@
 		"wtf-screen": {
 			"title": "Vad är felet?",
 			"desc": "Applikationen kraschade.",
-			"desc-report": "Skaka telefonen för att rapportera felet och klicka på knappen för att avsluta och starta om appen."
+			"desc-report": "Klicka på knappen för att avsluta och starta om appen."
 		},
 		"sorry-screen": {
 			"title": "Ledsen för detta fel!",
 			"desc": "Det är Francis fel, intern utvecklare hos Berty, som måste ha gjort ett misstag. Inte klok, denna Francis!",
 			"desc-em": "*Nja, okej, det finns ingen Francis på Bertys avdelning.",
-			"desc-report": "Skaka din telefon så testar vi på nytt!"
+			"desc-report": "Klicka på knappen för att avsluta och starta om appen."
 		}
 	},
 	"debug": {
