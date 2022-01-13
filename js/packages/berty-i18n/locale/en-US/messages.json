@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "Sending..",
+		"sending": "Sending...",
 		"sent": "Sent",
 		"contact-settings": {
 			"mark-button": "Mark as verified",
@@ -608,7 +608,7 @@
 		},
 		"camera": {
 			"title": "Camera",
-			"desc": "Do you want to authorize camera to take picture or scan QR code?"
+			"desc": "Do you want to authorize the camera to take pictures or scan QR codes?"
 		},
 		"audio": {
 			"title": "Audio messages",
