@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Услуги",
+				"network-button": "Списък от мрежи",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Удостоверяване на услуги",
-			"title": "Услуги",
-			"recommended": "Препоръчано",
-			"desc": "Това автоматично ще репликира вашите разговори на сървър",
-			"button": "Използвай услуги управлявани от Berty",
-			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Настройката приключи!",
 			"desc": "Вече можете да използвате приложението, да започнете да добавяте контакти и да говорите свободно и насаме с тях",
 			"button": "ЗАПОЧНИ РАБОТА С BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Отказ",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "Помощ",
-			"header-center-button": "Инструмени за програмисти",
-			"header-right-button": "Настройки",
-			"network-button": "Списък от мрежи",
 			"edit-profile": "Редакция на профила",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Известия",
-				"tag-enabled": "Включено",
-				"tag-disabled": "Изключено"
-			},
-			"dark-mode-button": "Тъмен режим",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": ""
 		},
 		"network-map": {
 			"title": "Списък от мрежи",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Настройки",
 			"desc": "Персонализирайте всичко, за да получите приложението, което отговаря на вашите нужди",
+			"in-app-notifications": "",
+			"dark-mode-button": "Тъмен режим",
+			"devtools": "Инструмени за програмисти",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Външни услуги",
-			"operated-services-button": "Използвай услуги управлявани от Berty",
-			"register-service-button": {
-				"title": "Регистрирайте доставчик на персонализирани услуги",
-				"input-placeholder": "Service URL",
-				"action": "Добави"
-			},
-			"registered-services-button": {
-				"title": "Текущо регистрирани услуги",
-				"sample-no-services": "Няма регистрирани услуги",
-				"sample-unknown-service": "Непозната услуга"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Препоръчително",
+			"desc": "",
+			"button": "",
+			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
 		},
 		"delete-account": {
 			"title": "Изтрии акаунт!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Fingerprint",
 			"devices": "Устройства"
@@ -480,6 +460,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Маркирай като верифициран",
 			"block-button": "Блокирай контакт",
@@ -549,6 +531,7 @@
 		},
 		"files": {
 			"gallery": "Галерия",
+			"no-images": "",
 			"camera": "Камера",
 			"files": "Файлове",
 			"microphone": "Микрофон",
@@ -571,6 +554,10 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -607,6 +594,7 @@
 			"settings": ""
 		},
 		"skip": "ПРОПУСНИ",
+		"cancel": "ОТКАЗ",
 		"settings-text": ""
 	},
 	"notification": {
