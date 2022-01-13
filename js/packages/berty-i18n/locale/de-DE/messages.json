@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Dienste",
+				"network-button": "Netzwerke",
 				"first-button": "Push-Benachrichtigungen",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Authentifizieren bei Diensten",
-			"title": "Dienste",
-			"recommended": "Empfohlen",
-			"desc": "Dadurch werden deine Unterhaltungen automatisch auf einen Server kopiert",
-			"button": "Von Berty betriebene Dienste nutzen",
-			"skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Einrichtung abgeschlossen!",
 			"desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
 			"button": "Fertig - Berty benutzen"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Abbrechen",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -176,14 +173,14 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Checkliste {{tasksDone}}/{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "Ändere dein Avatar",
 					"desc": ""
 				},
-				"relay": {
-					"title": "Relay konfigurieren",
-					"desc": "Verbessern Sie Ihre Netzwerkleistung durch die Nutzung eines von Berty Tech zur Verfügung gestellten Relais."
+				"berty-services": {
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Mit einem Kontakt synchronisieren",
@@ -197,34 +194,15 @@
 					"title": "Nachricht senden",
 					"desc": "Sag \"Hallo Welt\" zu einem Kontakt!"
 				},
-				"theme": {
-					"title": "Thema anpassen",
-					"desc": "Lass und deine eigene Version der App erstellen und es mit der Community teilen!"
-				},
-				"hidden-account": {
-					"title": "Erstelle ein versteckten Account",
-					"desc": "Erstelle ein unsichtabren Account mit einem bestimmten Passwort zum einloggen und bleib sicher am Flughafen!"
-				},
 				"ble-message": {
 					"title": "Nachricht ohne Internet senden",
 					"desc": "Nutze das Proximity Feature und sende eine Nachricht ohne mobile Daten oder eine Internetverbindung!"
 				}
 			},
-			"header-left-button": "Hilfe",
-			"header-center-button": "Für Entwickler",
-			"header-right-button": "Einstellungen",
-			"network-button": "Netzwerke",
 			"edit-profile": "Profil bearbeiten",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Benachrichtigungen",
-				"tag-enabled": "Aktiviert",
-				"tag-disabled": "Deaktiviert"
-			},
-			"dark-mode-button": "Dunkler Modus",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Konto erstellen"
 		},
 		"network-map": {
 			"title": "Netzwerke",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Einstellungen",
 			"desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
+			"in-app-notifications": "",
+			"dark-mode-button": "Dunkler Modus",
+			"devtools": "Für Entwickler",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Daten gespeichert!",
 				"desc": "Im Download-Verzeichnis verfügbar"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "\"Android in der Nähe\" aktivieren"
 		},
-		"services-auth": {
-			"title": "Externe Dienste",
-			"operated-services-button": "Von Berty betriebene Dienste verwenden",
-			"register-service-button": {
-				"title": "Einen externen Dienst registrieren",
-				"input-placeholder": "Dienst-URL",
-				"action": "Hinzufügen"
-			},
-			"registered-services-button": {
-				"title": "Momentan registrierte Dienste",
-				"sample-no-services": "Keine Dienste registriert",
-				"sample-unknown-service": "Unbekannter Dienst"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Empfohlen",
+			"desc": "",
+			"button": "",
+			"skip": "ÜBERSPRINGEN UND DIES SPÄTER ERLEDIGEN"
 		},
 		"delete-account": {
 			"title": "Mein Konto löschen!",
@@ -439,9 +415,13 @@
 			"save": "Dieses Thema speichern",
 			"export": "Ausgewähltes Theme als Datei exportieren",
 			"share": "Ausgewähltes Theme als Datei teilen",
-			"import": "Importiere eine Thema-Datei"
+			"import": "Importiere eine Thema-Datei",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Fingerabdruck",
 			"devices": "Geräte"
@@ -480,6 +460,8 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Als bestätigt markieren",
 			"block-button": "Kontakt blockieren",
@@ -549,6 +531,7 @@
 		},
 		"files": {
 			"gallery": "Galerie",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Dateien",
 			"microphone": "Mikrofon",
@@ -571,6 +554,10 @@
 			"response-to": "Antwort an",
 			"replying-to": "Du antwortest an",
 			"replied-to": "Antwort auf"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
 		}
 	},
 	"audio": {
@@ -596,7 +583,7 @@
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": "Um QR-Codes zu scannen und Kontakte mit deiner hinzuzufügen braucht die Berty deine Berechtigung. Die Kamera wird für nichts anderes genutzt."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Audio-Nachrichten",
@@ -607,6 +594,7 @@
 			"settings": "Gehe zu den Einstellungen"
 		},
 		"skip": "Überspringen",
+		"cancel": "Abbrechen",
 		"settings-text": "Sie können {{title}} Berechtigungen in den Einstellungen aktivieren."
 	},
 	"notification": {
@@ -624,13 +612,13 @@
 		"wtf-screen": {
 			"title": "Was ist das Problem?",
 			"desc": "Die Anwendung ist soeben abgestürzt.",
-			"desc-report": "Schütteln Sie Ihr Telefon um den Fehler zu melden und klicken Sie auf den Button, um die App zu beenden und neu zu starten."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Entschuldigen Sie diesen Fehler!",
 			"desc": "Francis ist schuld, unser Praktikant. Er hat wohl einen Fehler gemacht. Ach dieser Francis!",
 			"desc-em": "*Okay, es gibt keinen Francis im Team Berty.",
-			"desc-report": "Schütteln Sie Ihr Telefon und es geht weiter!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
