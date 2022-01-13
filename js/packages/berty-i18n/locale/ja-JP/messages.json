@@ -1,12 +1,12 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "プライバシーを保護",
+			"desc": "無料で安全に P2P メッセージをやりとりする",
+			"button": "探索"
 		},
 		"select-mode": {
-			"title": "",
+			"title": "プリセットの選択",
 			"change-later": "あとで変更することができます！",
 			"performance": {
 				"title": "パフォーマンス",
@@ -14,77 +14,68 @@
 				"push-notif": "プッシュ通知の受信",
 				"offline-message": "Bluetooth によるオフラインメッセージ",
 				"add-contact": "連絡先を簡単に追加",
-				"fast-message": ""
+				"fast-message": "最速のメッセージ配信"
 			},
 			"high-level": {
 				"title": "完全な匿名性",
-				"desc": "",
+				"desc": "とても用心深いユーザー向け",
 				"disable-push-notif": "プッシュ通知は無効になっています",
-				"disable-local-peer-discovery": "",
+				"disable-local-peer-discovery": "ローカルのピア・ディスカバリーは無効です",
 				"disable-local-peer-discovery-desc": "マルチキャストDNS & Bluetooth",
-				"disable-contact-request": "",
-				"on-same-network": ""
+				"disable-contact-request": "連絡先の追加リクエストは無効になっています",
+				"on-same-network": "ローカル接続（同じネットワークに接続）"
 			}
 		},
 		"create-account": {
 			"title": "アカウントの作成",
-			"desc": "",
+			"desc": "必須項目は名前のみです",
 			"required": "必須",
-			"placeholder": "",
+			"placeholder": "ニックネームを選択",
 			"button": "アカウントの作成",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "詳細設定",
+			"import-account": "アカウントのインポート",
+			"link-device": "デバイスのリンク",
+			"more": "詳細情報",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "伝えておきたいこと:",
+				"first-point": "ローカルにアカウントが作成されました。",
+				"second-point": "ニックネームはオプションで、後から編集も可能です。"
 			}
 		},
-		"expert-setup": {
-			"title": "",
-			"desc": "",
+		"advanced-settings": {
+			"title": "詳細設定",
+			"desc": "ドキュメントを検索し、独自の設定を作成します。",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "詳細設定へようこそ",
+				"first-paragraph": "ここでは必要に応じた、より高度な設定が行えます。",
+				"second-paragraph": "裏で何が起きているかを理解するために必要な、あらゆるオプションを紹介します。",
+				"third-paragraph": "このセクションは専門知識を持つユーザーのみが対象です！機能追加や改造に必要な、情報リンクなども見つけることができます。"
 			},
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"read-more": "詳細設定について、さらに詳しい情報を読む",
+			"config-title": "カスタム設定",
+			"config-desc": "アプリ設定の基本 3 ステップです。今すぐ自分好みにカスタマイズしましょう！",
+			"learn-more": "さらに詳しく学ぶ",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "近接性（接近度）",
+				"first-button": "Bluetooth Low Energy",
 				"second-button": "マルチキャストDNS"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "P2P（ピア・ツー・ピア）接続",
+				"first-button": "分散ハッシュテーブル",
+				"second-button": "TORの有効化"
 			},
 			"third-part": {
 				"title": "サービス",
-				"first-button": "",
+				"network-button": "ネットワーク一覧",
+				"first-button": "プッシュ通知の表示",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "独自ノードのセットアップ",
+					"placeholder": "サーバーのアドレスを入力"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": "認証済みノードを選択"
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "",
-			"title": "サービス",
-			"recommended": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
+			"apply-changes": "変更を適用"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -93,8 +84,14 @@
 		},
 		"setup-finished": {
 			"title": "セットアップが完了しました!",
-			"desc": "",
+			"desc": "アプリが使えるようになりました。連絡先に相手を追加すると、自由かつプライベートに話せます。",
 			"button": "Bertyを使用開始"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "ネットワークにある WebView をロード中です。準備中ですが強制的に開きますか？",
+			"first-button": "キャンセル",
+			"second-button": "はい"
 		}
 	},
 	"main": {
@@ -122,109 +119,90 @@
 				"create-group": "グループを作成"
 			},
 			"create-group-finalize": {
-				"placeholder": "",
-				"about": "",
-				"first-bullet-point": "",
-				"second-bullet-point": "",
-				"third-bullet-point": "",
-				"fourth-bullet-point": "",
-				"fifth-bullet-point": ""
+				"placeholder": "グループ名",
+				"about": "グループについて",
+				"first-bullet-point": "グループ内の誰でも名前を変更したり、新しいメンバーを招待できます",
+				"second-bullet-point": "リンクでメンバーを招待できます",
+				"third-bullet-point": "このグループから離れることができます",
+				"fourth-bullet-point": "このグループを削除する権限がありません",
+				"fifth-bullet-point": "このグループからメンバーを削除する権限がありません"
 			},
 			"conversations": {
-				"request-sent": "",
-				"draft": ""
+				"request-sent": "リクエストが送信されました。承認待ちです...",
+				"draft": "下書き: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "",
+		"suggestion-display-name-initial": "追加するにはここをクリック",
 		"configurations": {
 			"network": {
 				"display-name": "ネットワークの設定",
-				"desc": ""
+				"desc": "ネットワーク設定を終了するにはここをクリック"
 			},
 			"notification": {
 				"display-name": "通知設定",
-				"desc": ""
+				"desc": "プッシュ通知の設定はここをクリック"
 			},
 			"replicate": {
-				"display-name": "",
-				"desc": ""
+				"display-name": "P2P 複製",
+				"desc": "複製サービスの設定"
 			}
 		},
 		"network-options": {
 			"welcome-title": "ネットワークオプションへようこそ",
-			"full-anon-mode": "",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
+			"full-anon-mode": "完全匿名モード",
+			"simple-tor-compatible": "Simple TOR 互換モード",
+			"allow-expert-mode": "エキスパートモードを許可する",
 			"tor-compatible": {
-				"title": "",
-				"desc": ""
+				"title": "TOR 互換モード",
+				"desc": "この設定は Tor ネットワークで接続して、完全匿名モードにならずとも他の完全匿名モードユーザーと話し合うことができます。"
 			},
 			"full-anon": {
-				"title": "",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
+				"title": "完全匿名モード",
+				"desc": "この設定は、先鋭的な設定のプリセットで、極めて注意が必要なネットワークのパラメーターです:",
+				"no-ip": "IP アドレスなし",
+				"no-mc": "Macアドレスなし",
 				"tor-only": "Torのみ"
 			},
 			"save": "保存",
-			"skip": ""
+			"skip": "スキップして後で実行する"
 		},
 		"scan": {
-			"title": ""
+			"title": "QR コードの読み取り"
 		}
 	},
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "",
+				"title": "Welcome チェックリスト {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
-					"title": "",
-					"desc": ""
+					"title": "アバターを変更する",
+					"desc": "このアカウントのプロフィール画像を設定しよう！"
 				},
-				"relay": {
-					"title": "",
-					"desc": ""
+				"berty-services": {
+					"title": "Berty サービスを有効にする",
+					"desc": "非営利団体 Berty Technologies のサービスを使用して、ネットワークパフォーマンスを向上させる。"
 				},
 				"contact": {
-					"title": "",
-					"desc": ""
+					"title": "連絡先と同期",
+					"desc": "QR コードをスキャンして最初の連絡先を連絡先リストに追加しよう！"
 				},
 				"group": {
-					"title": "",
-					"desc": ""
+					"title": "グループに参加または作成",
+					"desc": "初の Berty グループを作るか参加しよう！"
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
+					"title": "メッセージを送信する",
+					"desc": "連絡先に「Hello world」を言おう！"
 				},
 				"ble-message": {
-					"title": "",
-					"desc": ""
+					"title": "インターネットなしでメッセージを送信しよう！",
+					"desc": "Bluetooth 近接機能を使用して、携帯電話またはインターネットの接続なしでメッセージを送信しよう！"
 				}
 			},
-			"header-left-button": "ヘルプ",
-			"header-center-button": "",
-			"header-right-button": "設定",
-			"network-button": "ネットワーク一覧",
 			"edit-profile": "プロフィールを編集",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "通知",
-				"tag-enabled": "",
-				"tag-disabled": ""
-			},
-			"dark-mode-button": "ダークモード",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "リンクを共有",
+			"create-group": "新しいグループを作成",
+			"create-new-account": "新しいアカウントを作成"
 		},
 		"network-map": {
 			"title": "ネットワーク一覧",
@@ -232,15 +210,19 @@
 		},
 		"mode": {
 			"title": "設定",
-			"desc": "",
+			"desc": "設定を変更してアプリをあなた好みにカスタムできます。",
+			"in-app-notifications": "アプリ内通知",
+			"dark-mode-button": "ダークモード",
+			"devtools": "開発者向けツール",
+			"network-config": "ネットワークの設定",
 			"notification-file-saved": {
-				"title": "",
-				"desc": ""
+				"title": "データを保存しました！",
+				"desc": "ダウンロード・ディレクトリで利用可能"
 			},
-			"receive-contact-requests-button": "",
-			"external-services-button": "",
-			"auto-replicate-button": "",
-			"auto-replicate-button-unavailable": "",
+			"receive-contact-requests-button": "連絡先追加のリクエストを受け取る",
+			"external-services-button": "外部サービス",
+			"auto-replicate-button": "複製を自動化",
+			"auto-replicate-button-unavailable": "最初に少なくとも 1 つの複製サーバーを登録する必要があります",
 			"blocked-contacts-button": {
 				"title": "ブロック済みの連絡先",
 				"tag": "ブロック済み"
@@ -250,8 +232,8 @@
 		},
 		"edit-profile": {
 			"title": "プロフィールを編集",
-			"qr-will-update": "",
-			"ocr-wont-update": "",
+			"qr-will-update": "あなたの Berty ID (QR コード) を更新します",
+			"ocr-wont-update": "保留中の連絡先リクエストは更新されません",
 			"save": "変更を保存",
 			"cancel": "キャンセル",
 			"name-input-placeholder": "名前...",
@@ -260,62 +242,56 @@
 		"notifications": {
 			"title": "通知",
 			"enabled-desc": "通知を有効化しました",
-			"disabled-desc": "",
+			"disabled-desc": "このアプリの、アプリ通知が有効にされていません",
 			"activate-button": "通知の有効化",
 			"contact-request-button": {
 				"title": "連絡先リクエスト",
-				"desc": ""
+				"desc": "連絡先の追加リクエストを受け取るたびに通知する"
 			},
 			"messages-notifications-button": {
-				"title": "",
+				"title": "メッセージの通知",
 				"display-button": "通知を表示",
 				"preview-button": "メッセージのプレビュー",
 				"sound-button": "サウンド",
 				"exceptions-button": {
-					"title": "",
+					"title": "例外：",
 					"preview-value": "追加"
 				}
 			},
 			"group-notifications-button": {
-				"title": "",
+				"title": "グループの通知",
 				"display-button": "通知を表示",
 				"preview-button": "メッセージのプレビュー",
 				"sound-button": "サウンド",
 				"exceptions-button": {
-					"title": "",
-					"tag": ""
+					"title": "例外：",
+					"tag": "例外 {{count}} 件"
 				}
 			}
 		},
 		"bluetooth": {
 			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
+			"desc": "Bluetooth で近くのピアとデバイスを接続することで、インターネットに接続せずに Berty でメッセージを直接交換することができます",
+			"activate-button": "Bluetooth を有効にする"
 		},
 		"mc": {
-			"activate-button": ""
+			"activate-button": "マルチピア接続を有効にする"
 		},
 		"nearby": {
-			"activate-button": ""
+			"activate-button": "Android の Nearby 機能を有効にする"
 		},
-		"services-auth": {
-			"title": "",
-			"operated-services-button": "",
-			"register-service-button": {
-				"title": "カスタムサービスプロバイダを登録",
-				"input-placeholder": "",
-				"action": "追加"
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "",
-				"sample-unknown-service": ""
-			}
+		"berty-services": {
+			"header": "Berty サービスを有効にする",
+			"title": "Berty サービス一覧",
+			"recommended": "推奨",
+			"desc": " Berty サービスを有効にすると、プッシュ通知を Berty Technologies のサーバー経由で受信し、複製された通知にアクセスすることができます。",
+			"button": "Berty サービスを有効にする",
+			"skip": "スキップして後で実行する"
 		},
 		"delete-account": {
 			"title": "アカウントを削除します!",
 			"first-desc": "本当にアカウントを削除しますか？",
-			"desc": "",
+			"desc": "承認するには delete と入力してください",
 			"cancel-button": "キャンセル",
 			"delete-button": "削除"
 		},
@@ -323,24 +299,24 @@
 			"title": "ヘルプ",
 			"security-privacy-button": {
 				"title": "セキュリティとプライバシー",
-				"desc": ""
+				"desc": "自分のデータとプライバシーを守る"
 			},
 			"updates-button": "アップデート",
 			"about-button": "Bertyについて",
-			"account-button": "",
-			"contact-button": "",
+			"account-button": "アカウントと Berty ID",
+			"contact-button": "連絡先とリクエスト",
 			"message-button": "メッセージ",
 			"group-button": "グループ",
 			"settings-button": "設定",
-			"ask-button": "",
+			"ask-button": "質問する",
 			"report-button": "バグを報告"
 		},
 		"about": {
 			"title": "Bertyについて",
-			"top-left-button": "",
+			"top-left-button": "プライバシーと安全",
 			"top-right-button": "ピアツーピアネットワーク",
-			"bottom-left-button": "",
-			"bottom-right-button": "",
+			"bottom-left-button": "インターネットまたはデータは必要ありません",
+			"bottom-right-button": "ネットワークの信頼性は必要ありません",
 			"terms-button": "利用規約",
 			"privacy-button": "プライバシーポリシー",
 			"software-button": "ソフトウェアライセンス",
@@ -349,143 +325,149 @@
 		},
 		"updates": {
 			"title": "アプリのアップデート",
-			"current-tag": ""
+			"current-tag": "現在の設定"
 		},
 		"faq": {
-			"title": ""
+			"title": "よくある質問"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "ロードマップ"
 		},
 		"devtools": {
-			"title": "",
-			"header-left-button": "",
-			"header-middle-button": "",
-			"header-right-button": "",
-			"theme-editor": "",
-			"simulate-button": "",
-			"simulate-js-error-button": "",
-			"tor-button": "",
+			"title": "開発用ツール",
+			"header-left-button": "端末情報",
+			"header-middle-button": "偽装データを生成する",
+			"header-right-button": "サービス／デーモンを再起動する",
+			"theme-editor": "表示とテーマを編集する",
+			"simulate-button": "ストリームのエラーをシミュレーションする",
+			"simulate-js-error-button": "JavaScript のエラーをシミュレーションする",
+			"tor-button": "Tor {{option}}",
 			"tor-optional-option": "オプション",
 			"tor-required-option": "必須",
-			"tor-disabled-option": "",
-			"system-info-button": "",
+			"tor-disabled-option": "無効化されています",
+			"system-info-button": "システム情報",
 			"debug-button": "デバッグ",
 			"log-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "ログの形式",
+				"bullet-point": "このフィールドを変更した後、アプリを再起動します"
 			},
 			"log-filters-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "ログのフィルター一覧",
+				"bullet-point": "このフィールドを変更した後、アプリを再起動します"
 			},
-			"add-dev-conversations-button": "",
+			"add-dev-conversations-button": "開発者の会話を追加する",
 			"share-button": {
-				"title": "",
-				"alert-title": "",
-				"alert-message": "",
-				"alert-accept-button": "",
-				"alert-cancel-button": ""
+				"title": "Discord で ID を共有する",
+				"alert-title": "QR コードを Berty の Discord サーバーの「#dev-logs」で共有しますか？",
+				"alert-message": "これにより、他のメンバーが QR コードをスキャンしたり、連絡先リンクをコピーしたりできます。",
+				"alert-accept-button": "いいよん 👍",
+				"alert-cancel-button": "いいえ"
 			},
-			"native-bridge-button": "",
-			"dump-account-button": "",
-			"dump-contacts-button": "",
-			"dump-conversations-button": "",
-			"dump-interactions-button": "",
-			"dump-members-button": "",
-			"stop-node-button": "",
-			"local-grpc-button": "",
-			"console-logs-button": "",
-			"ipfs-webui-button": "",
+			"native-bridge-button": "Native Bridge をテスト",
+			"dump-account-button": "アカウントを書き出す",
+			"dump-contacts-button": "連絡先を書き出す",
+			"dump-conversations-button": "会話を書き出す",
+			"dump-interactions-button": "インタラクションを書き出す",
+			"dump-members-button": "メンバーを書き出す",
+			"stop-node-button": "ノードを停止する",
+			"local-grpc-button": "ローカル gRPC",
+			"console-logs-button": "コンソールログ",
+			"ipfs-webui-button": "IPFS WebUI",
 			"send-to-all-button": {
-				"title": "",
-				"sending": "",
-				"test": "",
-				"tried": ""
+				"title": "連絡先の全員にメッセージを送信する",
+				"sending": "送信しています...",
+				"test": "テスト送信 ",
+				"tried": "✔ {{length}} 件の連絡先に送信しようとしました"
 			},
-			"trigger-crashlytics-button": "",
-			"tyber-attach": "",
+			"trigger-crashlytics-button": "クラッシュ通知を発動させます",
+			"tyber-attach": "Tyber を {{host}} に割り当てる",
 			"tyber-host-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "Tyber",
+				"bullet-point": "このフィールドを変更した後、アプリを再起動します"
 			},
-			"footer-left-button": "",
-			"footer-middle-button": "",
-			"footer-right-button": ""
+			"footer-left-button": "端末情報",
+			"footer-middle-button": "イベントの一覧",
+			"footer-right-button": "サービス／デーモンを再起動する"
 		},
 		"system-info": {
-			"title": ""
+			"title": "システム情報"
 		},
 		"fake-data": {
-			"title": "",
-			"contacts-button": "",
-			"multi-members-button": "",
-			"messages-button": "",
-			"delete-button": ""
+			"title": "偽装データを生成する",
+			"contacts-button": "偽装連絡先を生成する",
+			"multi-members-button": "偽装メンバーを生成する",
+			"messages-button": "偽装メッセージを生成する",
+			"delete-button": "偽装データを削除する"
 		},
 		"add-dev-conversations": {
-			"title": "",
-			"add": "",
-			"tag-bot": "",
-			"tag-contact": "",
-			"tag-conversation": ""
+			"title": "開発者の会話を追加する",
+			"add": "{{name}} を追加",
+			"tag-bot": "Bot",
+			"tag-contact": "連絡先",
+			"tag-conversation": "グループ"
 		},
 		"ipfs-webui": {
-			"title": ""
+			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "",
-			"randomize": "",
-			"save": "",
-			"export": "",
-			"share": "",
-			"import": ""
+			"title": "テーマ・エディター",
+			"randomize": "テーマを生成する",
+			"save": "このテーマを保存する",
+			"export": "選択されたテーマをファイルとしてエクスポート",
+			"share": "選択されたテーマをファイルとして共有",
+			"import": "テーマのファイルをインポート",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
-			"qr": "",
-			"fingerprint": "",
+			"title": "",
+			"qr": "QR コード",
+			"fingerprint": "識別情報（フィンガープリント）",
 			"devices": "デバイス"
 		}
 	},
 	"modals": {
 		"manage-deep-link": {
-			"invalid-link": "",
-			"invalid-qr": "",
-			"error": "",
-			"contact-already-added": "",
-			"contact-already-added-message": ""
+			"invalid-link": "無効なリンクです！",
+			"invalid-qr": "無効な QR コードです！",
+			"error": "エラー！",
+			"contact-already-added": "連絡先はすでに追加されています",
+			"contact-already-added-message": "同じ連絡先を複数追加することはできません"
 		},
 		"invalid-scan": {
-			"dismiss-button": ""
+			"dismiss-button": "却下"
 		},
 		"add-this-contact": {
-			"fingerprint": "",
-			"info": "",
+			"fingerprint": "識別情報（フィンガープリント）",
+			"info": "各種情報",
 			"devices": "デバイス"
 		},
 		"group-invitation": {
-			"fingerprint": "",
-			"info": "",
+			"fingerprint": "識別情報（フィンガープリント）",
+			"info": "各種情報",
 			"devices": "デバイス",
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "このグループに参加する",
+			"password-label": "グループのパスワードを入力してください",
+			"password-placeholder": "パスワード..."
 		},
 		"save-theme": {
-			"title": "",
-			"desc": "",
-			"placeholder": "",
+			"title": "テーマを保存中...",
+			"desc": "テーマの名前を選択してください！",
+			"placeholder": "テーマ名...",
 			"cancel": "キャンセル",
-			"add": ""
+			"add": "追加！"
 		}
 	},
 	"chat": {
+		"sending": "送信しています...",
+		"sent": "送信しました",
 		"contact-settings": {
-			"mark-button": "",
-			"block-button": "",
+			"mark-button": "認証済みとしてマーク",
+			"block-button": "ブロック済みの連絡先",
 			"delete-button": "連絡先を削除",
-			"fingerprint": "",
-			"info": "",
+			"fingerprint": "識別情報（フィンガープリント）",
+			"info": "各種情報",
 			"devices": "デバイス"
 		},
 		"multi-member": {
@@ -493,84 +475,89 @@
 		},
 		"multi-member-settings": {
 			"header-left-button": "検索",
-			"header-middle-button": "",
+			"header-middle-button": "通話",
 			"header-right-button": "共有",
 			"media-button": "メディア、リンク & ドキュメント",
-			"notifications-button": "",
+			"notifications-button": "通知を受け取る",
 			"members-button": {
 				"title": "メンバー",
-				"unknown": ""
+				"unknown": "不明"
 			},
 			"add-member-button": "メンバーを追加",
 			"invite-button": "リンクから招待",
-			"save-button": "",
-			"erase-button": "",
+			"save-button": "会話をサーバーに保存",
+			"erase-button": "会話を消去する",
 			"leave-button": "グループから退出"
 		},
 		"add-members": {
 			"members": "メンバー",
-			"contacts": "",
-			"add": ""
+			"contacts": "連絡先",
+			"add": "追加！"
 		},
 		"multi-member-qr": {
-			"title": ""
+			"title": "グループの QR コード"
 		},
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "連絡先リクエスト",
 				"refuse-button": "拒否",
 				"accept-button": "承認",
-				"accepted-button": ""
+				"accepted-button": "承認済み"
 			},
 			"infos-chat": {
-				"connection-confirmed": "",
-				"request-sent": "",
-				"incoming": "",
-				"outgoing": ""
+				"connection-confirmed": "👋 Berty 接続が確認されました! 🎉",
+				"request-sent": "リクエスト送信済み ✈",
+				"incoming": "このリクエストを承認して返信！",
+				"outgoing": "連絡先からの承認待ちによる接続待機中..."
 			},
-			"incoming-input-placeholder": "",
+			"incoming-input-placeholder": "ここに書くためのリクエストを承認してください...",
 			"input-placeholder": "ここに入力..."
 		},
 		"one-to-one-settings": {
 			"header-left-button": "検索",
-			"header-middle-button": "",
+			"header-middle-button": "通話",
 			"header-right-button": "共有",
 			"media-button": "メディア、リンク & ドキュメント",
-			"notifications-button": "",
-			"mutual-button": "",
-			"save-button": "",
-			"erase-button": ""
+			"notifications-button": "通知を受け取る",
+			"mutual-button": "相互接続グループ",
+			"save-button": "会話をサーバーに保存",
+			"erase-button": "会話を消去する"
 		},
 		"replicate-group-settings": {
-			"title": "",
-			"no-registered-button": "",
-			"connect-button": "",
-			"manage-add-button": ""
+			"title": "会話をサーバーに登録する",
+			"no-registered-button": "会話の複製サービスが登録されていません",
+			"connect-button": "Berty が運営するサービスに接続する",
+			"manage-add-button": "サービスを管理または追加する"
 		},
 		"files": {
-			"gallery": "",
+			"gallery": "ギャラリー",
+			"no-images": "画像なし",
 			"camera": "カメラ",
 			"files": "ファイル",
 			"microphone": "マイク",
 			"search-gif": "gifを検索",
-			"security-access": "",
-			"security-access-desc": "",
-			"save-to-gallery": "",
+			"security-access": "セキュリティ設定",
+			"security-access-desc": "ここをタップしてセキュリティ設定を開きアクセスを許可：",
+			"save-to-gallery": "このファイルをギャラリーに保存する",
 			"share": "共有",
-			"forward-berty": "",
-			"forward": "",
-			"image-saved": ""
+			"forward-berty": "Berty の連絡先に転送する",
+			"forward": "転送",
+			"image-saved": "画像をギャラリーに保存しました"
 		},
 		"shared-medias": {
-			"title": "",
+			"title": "共有メディア",
 			"medias": "メディア",
 			"links": "リンク",
 			"documents": "ドキュメント"
 		},
 		"reply": {
-			"response-to": "",
-			"replying-to": "",
-			"replied-to": ""
+			"response-to": "返信先",
+			"replying-to": "以下に返信：",
+			"replied-to": "返信済み："
+		},
+		"user-message": {
+			"read-more": "もっと読む",
+			"show-less": "表示を隠す"
 		}
 	},
 	"audio": {
@@ -586,33 +573,34 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "",
-			"desc": ""
+			"title": "プッシュ通知",
+			"desc": "Berty アプリはローカル通知またはプッシュ通知の許可が必要です。これにより、メッセージを受信した際に通知することができます。"
 		},
 		"p2p": {
-			"title": "",
-			"android-desc": "",
-			"ios-desc": ""
+			"title": "Bluetooth 経由のメッセージ",
+			"android-desc": "オフラインで Bluetooth 経由のメッセージを送信・受信するには、アプリがバックグラウンドにある場合でも、Android API の「位置情報の許可」が必要です。しかし、いかなる場合でも位置情報データは使用することはありません。",
+			"ios-desc": "オフラインで Bluetooth 経由のメッセージを送信・受信するには、iOS API の許可が必要です。"
 		},
 		"camera": {
 			"title": "カメラ",
 			"desc": ""
 		},
 		"audio": {
-			"title": "",
-			"desc": ""
+			"title": "音声メッセージ",
+			"desc": "連絡先に音声メッセージを送信するには、Berty アプリに「マイクの権限」を許可する必要があります。"
 		},
 		"button-labels": {
-			"allow": "",
-			"settings": ""
+			"allow": "許可する",
+			"settings": "設定に移動"
 		},
-		"skip": "",
-		"settings-text": ""
+		"skip": "スキップする",
+		"cancel": "キャンセル",
+		"settings-text": "設定画面から {{title}} の権限を有効にできます。"
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
-			"desc": ""
+			"title": "アプリの再起動が必要です",
+			"desc": "この種の通知は、アプリを再起動してからでないとフィールドを保存できません！"
 		}
 	},
 	"error": {
@@ -622,68 +610,68 @@
 		},
 		"restart-app": "アプリを再起動",
 		"wtf-screen": {
-			"title": "",
+			"title": "失敗の原因は?",
 			"desc": "アプリケーションがクラッシュしました。",
-			"desc-report": "スマホを振ってバグを報告し、ボタンをクリックしてアプリを再起動してください。"
+			"desc-report": "アプリを終了して再起動するにはボタンをクリックします。"
 		},
 		"sorry-screen": {
 			"title": "バグを謝罪します!",
-			"desc": "",
-			"desc-em": "",
-			"desc-report": ""
+			"desc": "恐らく、それは Berty のインターン開発者フランシスのせいに間違いありません。フランシス、何て野郎だ！",
+			"desc-em": "ってか、Berty のチームにフランシスはいないんですが",
+			"desc-report": "アプリを終了して再起動するにはボタンをクリックします。"
 		}
 	},
 	"debug": {
 		"inspector": {
-			"show-button": "",
+			"show-button": "アプリケーション診断を表示",
 			"hide-button": "閉じる",
-			"title": "",
+			"title": "診断",
 			"accounts": {
 				"title": "アカウント",
-				"unsupported-remote-mode": "",
-				"data-not-found": "",
+				"unsupported-remote-mode": "アカウント診断は、リモート・モードに対応していません",
+				"data-not-found": "アカウントが一覧にありません",
 				"action-delete": {
-					"file-exists": "",
-					"account-exists": "",
-					"directory-exists-load-error": "",
-					"fs-read-error": "",
-					"actions-title": "",
-					"action-account-manager": "",
+					"file-exists": "アカウント {{accountId}} は存在しませんが、ファイルにはこの名前が付いています。",
+					"account-exists": "アカウント {{accountId}} は現在存在しています。",
+					"directory-exists-load-error": "アカウント {{accountId}} は存在しませんが、ディレクトリにはこの名前が付いています。",
+					"fs-read-error": "アカウントに関する FS 情報を取得中にエラーが発生しました",
+					"actions-title": "何をすべきですか?",
+					"action-account-manager": "アカウント管理で削除する",
 					"action-account-manager-confirm": "アカウントの削除を確認する",
-					"action-force-delete": "",
-					"action-force-delete-confirm": "",
-					"error-close": "",
-					"error-delete": "",
+					"action-force-delete": "強制的に削除する",
+					"action-force-delete-confirm": "アカウントの強制削除を許可する",
+					"error-close": "アカウントの終了処理中にエラーが発生しました",
+					"error-delete": "アカウントの削除中にエラーが発生しました",
 					"success-feedback": "アカウントが削除されました",
 					"action-cancel": "キャンセル"
 				},
 				"status": {
-					"datastore-found": "",
-					"datastore-not-found": "",
-					"ipfs-repo-found": "",
-					"ipfs-repo-not-found": "",
-					"messenger-db-found": "",
-					"messenger-db-not-found": ""
+					"datastore-found": "既存のデータが見つかりました",
+					"datastore-not-found": "既存のデータはありません",
+					"ipfs-repo-found": "IPFS のリポジトリが見つかりました",
+					"ipfs-repo-not-found": "IPFS リポジトリはありません",
+					"messenger-db-found": "Messenger の DB が見つかりました",
+					"messenger-db-not-found": "Messenger の DB はありません"
 				},
 				"infos": {
 					"aligned": {
-						"name": "",
-						"created": "",
-						"opened": "",
-						"error": ""
+						"name": "名前: {{name}}",
+						"created": "作成日: {{created}}",
+						"opened": "開封日:  {{opened}}",
+						"error": "エラー: {{error}}"
 					}
 				}
 			},
 			"errors": {
-				"title": "",
-				"header-reported": "",
-				"header-all-clear": "",
-				"listing-files-failed": "",
-				"listing-accounts-failed": "",
-				"listing-accounts-failed-grpc": ""
+				"title": "エラー：",
+				"header-reported": "報告済みエラー:",
+				"header-all-clear": "報告されたエラーはありません",
+				"listing-files-failed": "ディレクトリの内容一覧を表示中にエラーが発生しました",
+				"listing-accounts-failed": "アカウント一覧を表示中にエラーが発生しました",
+				"listing-accounts-failed-grpc": "アカウント表示中に gRPC のエラーが発生しました"
 			},
 			"dump": {
-				"button": ""
+				"button": "アプリの状態情報を書き出す"
 			},
 			"refresh": "更新",
 			"confirm-alert": {
