@@ -23,7 +23,6 @@ import { bertyOperatedServer, requestAndPersistPushToken, servicesAuthViaURL } f
 import {
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
-	MessengerAppState,
 	PersistentOptions,
 	PersistentOptionsKeys,
 	reducerAction,
@@ -31,6 +30,21 @@ import {
 } from './types'
 import { storageKeyForAccount } from './utils'
 import { resetTheme } from '@berty-tech/redux/reducers/theme.reducer'
+import {
+	bridgeClosed,
+	MESSENGER_APP_STATE,
+	setNextAccount,
+	setStateClosed,
+	setStateOnBoardingReady,
+	setStateOpeningClients,
+	setStateOpeningGettingLocalSettings,
+	setStateOpeningListingEvents,
+	setStateOpeningMarkConversationsClosed,
+	setStatePreReady,
+	setStateReady,
+	setStateStreamDone,
+	setStateStreamInProgress,
+} from '@berty-tech/redux/reducers/ui.reducer'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -48,16 +62,12 @@ export const openAccountWithProgress = async (
 				if (err?.EOF) {
 					console.log('activating persist with account:', selectedAccount?.toString())
 					persistor.persist()
-					dispatch({
-						type: MessengerActions.SetStateStreamDone,
-					})
+					store.dispatch(setStateStreamDone())
 					return
 				}
 				if (err && !err.OK) {
 					console.warn('open account error:', err)
-					dispatch({
-						type: MessengerActions.SetStateStreamDone,
-					})
+					store.dispatch(setStateStreamDone())
 					return
 				}
 				if (msg?.progress?.state !== 'done') {
@@ -67,16 +77,13 @@ export const openAccountWithProgress = async (
 							msg: progress,
 							stream: 'Open account',
 						}
-						dispatch({
-							type: MessengerActions.SetStateStreamInProgress,
-							payload,
-						})
+						store.dispatch(setStateStreamInProgress(payload))
 					}
 				}
 			})
 			await stream.start()
 			console.log('node is opened')
-			dispatch({ type: MessengerActions.SetStateOpeningClients })
+			store.dispatch(setStateOpeningClients())
 		})
 		.catch(err => {
 			dispatch({
@@ -158,29 +165,29 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 				.catch(() => {
 					console.log('File berty backup does not exist') // here
 				})
-			dispatch({ type: MessengerActions.SetNextAccount, payload: accountSelected.accountId })
+			store.dispatch(setNextAccount(accountSelected.accountId))
 			return
 		} else {
-			dispatch({ type: MessengerActions.SetStateOnBoardingReady })
+			store.dispatch(setStateOnBoardingReady())
 		}
 	}
 
 	f().catch(e => console.warn(e))
 }
 
-// handle state MessengerAppState.OpeningGettingLocalSettings
+// handle state openingGettingLocalSettings
 export const openingLocalSettings = async (
 	dispatch: (arg0: reducerAction) => void,
-	appState: MessengerAppState,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	selectedAccount: string | null,
 ) => {
-	if (appState !== MessengerAppState.OpeningGettingLocalSettings) {
+	if (appState !== MESSENGER_APP_STATE.OPENING_GETTING_LOCAL_SETTINGS) {
 		return
 	}
 
 	try {
 		await getPersistentOptions(dispatch, selectedAccount)
-		dispatch({ type: MessengerActions.SetStateOpeningMarkConversationsClosed })
+		store.dispatch(setStateOpeningMarkConversationsClosed())
 	} catch (e) {
 		console.warn('unable to get persistent options', e)
 	}
@@ -189,10 +196,10 @@ export const openingLocalSettings = async (
 // handle state OpeningWaitingForDaemon
 export const openingDaemon = async (
 	dispatch: (arg0: reducerAction) => void,
-	appState: MessengerAppState,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	selectedAccount: string | null,
 ) => {
-	if (appState !== MessengerAppState.OpeningWaitingForDaemon) {
+	if (appState !== MESSENGER_APP_STATE.OPENING_WAITING_FOR_DAEMON) {
 		return
 	}
 
@@ -240,7 +247,7 @@ export const openingDaemon = async (
 		.getGRPCListenerAddrs({})
 		.then(() => {
 			// account already open
-			dispatch({ type: MessengerActions.SetStateOpeningClients })
+			store.dispatch(setStateOpeningClients())
 		})
 		.catch(async () => {
 			// account not open
@@ -251,13 +258,13 @@ export const openingDaemon = async (
 // handle state OpeningWaitingForClients
 export const openingClients = async (
 	dispatch: (arg0: reducerAction) => void,
-	appState: MessengerAppState,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	eventEmitter: EventEmitter,
 	daemonAddress: string,
 	embedded: boolean,
 	reduxDispatch: AppDispatch,
 ): Promise<void> => {
-	if (appState !== MessengerAppState.OpeningWaitingForClients) {
+	if (appState !== MESSENGER_APP_STATE.OPENING_WAITING_FOR_CLIENTS) {
 		return
 	}
 
@@ -351,28 +358,26 @@ export const openingClients = async (
 		.catch(err => {
 			if (err?.EOF) {
 				console.info('end of the events stream')
-				dispatch({ type: MessengerActions.SetStateClosed })
+				store.dispatch(setStateClosed())
 			} else {
 				console.warn('events stream error:', err)
 				dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 			}
 		})
 
-	dispatch({
-		type: MessengerActions.SetStateOpeningListingEvents,
-		payload: { messengerClient, protocolClient, clearClients: () => cancel() },
-	})
+	reduxDispatch(
+		setStateOpeningListingEvents({ messengerClient, protocolClient, clearClients: () => cancel() }),
+	)
 }
 
 // handle state OpeningMarkConversationsAsClosed
 export const openingCloseConvos = async (
-	appState: MessengerAppState,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined },
 	persistentOptions: PersistentOptions,
-	dispatch: (arg0: reducerAction) => void,
 ) => {
-	if (appState !== MessengerAppState.OpeningMarkConversationsAsClosed) {
+	if (appState !== MESSENGER_APP_STATE.OPENING_MARK_CONVERSATIONS_AS_CLOSED) {
 		return
 	}
 
@@ -387,8 +392,8 @@ export const openingCloseConvos = async (
 		})
 	}
 	persistentOptions.onBoardingFinished.isFinished
-		? dispatch({ type: MessengerActions.SetStateReady })
-		: dispatch({ type: MessengerActions.SetStatePreReady })
+		? store.dispatch(setStateReady())
+		: store.dispatch(setStatePreReady())
 }
 
 export const syncAccountLanguage = async (accountLanguage: string | undefined) => {
@@ -397,7 +402,7 @@ export const syncAccountLanguage = async (accountLanguage: string | undefined) =
 
 // handle state PreReady
 export const updateAccountsPreReady = async (
-	appState: MessengerAppState,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	selectedAccount: string | null,
 	account: beapi.messenger.IAccount | null | undefined,
@@ -405,7 +410,7 @@ export const updateAccountsPreReady = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
-	if (appState !== MessengerAppState.PreReady) {
+	if (appState !== MESSENGER_APP_STATE.PRE_READY) {
 		return
 	}
 	const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
@@ -432,14 +437,14 @@ export const updateAccountsPreReady = async (
 
 // handle states DeletingClosingDaemon, ClosingDaemon
 export const closingDaemon = (
-	appState: MessengerAppState,
-	clearClients: (() => Promise<void>) | null,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
+	clearClients: (() => Promise<void>) | (() => void) | null,
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (
-		appState !== MessengerAppState.ClosingDaemon &&
-		appState !== MessengerAppState.DeletingClosingDaemon
+		appState !== MESSENGER_APP_STATE.CLOSING_DAEMON &&
+		appState !== MESSENGER_APP_STATE.DELETING_CLOSING_DAEMON
 	) {
 		return
 	}
@@ -453,7 +458,7 @@ export const closingDaemon = (
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}
-			dispatch({ type: MessengerActions.BridgeClosed })
+			reduxDispatch(bridgeClosed())
 		}
 
 		f().catch(e => {
@@ -464,12 +469,12 @@ export const closingDaemon = (
 
 // handle state DeletingClearingStorage
 export const deletingStorage = (
-	appState: MessengerAppState,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	dispatch: (arg0: reducerAction) => void,
 	embedded: boolean,
 	selectedAccount: string | null,
 ) => {
-	if (appState !== MessengerAppState.DeletingClearingStorage) {
+	if (appState !== MESSENGER_APP_STATE.DELETING_CLEARING_STORAGE) {
 		return
 	}
 
@@ -482,18 +487,17 @@ export const deletingStorage = (
 			console.warn('state.selectedAccount is null and this should not occur')
 		}
 
-		dispatch({ type: MessengerActions.SetStateClosed })
+		store.dispatch(setStateClosed())
 	}
 
 	f().catch(e => console.error(e))
 }
 
 export const openingListingEvents = (
-	appState: MessengerAppState,
+	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	initialListComplete: boolean,
-	dispatch: (arg0: reducerAction) => void,
 ) => {
-	if (appState !== MessengerAppState.OpeningListingEvents) {
+	if (appState !== MESSENGER_APP_STATE.OPENING_LISTING_EVENTS) {
 		return
 	}
 
@@ -502,5 +506,5 @@ export const openingListingEvents = (
 		return
 	}
 
-	dispatch({ type: MessengerActions.SetStateOpeningGettingLocalSettings })
+	store.dispatch(setStateOpeningGettingLocalSettings())
 }

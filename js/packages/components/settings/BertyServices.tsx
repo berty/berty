@@ -16,6 +16,8 @@ import { useAppDispatch } from '@berty-tech/react-redux'
 
 import SwiperCard from '../onboarding/SwiperCard'
 import OnboardingWrapper from '../onboarding/OnboardingWrapper'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const ctx = useMessengerContext()
@@ -23,6 +25,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const { t }: any = useTranslation()
 	const { goBack } = useNavigation()
 	const dispatch = useAppDispatch()
+	const protocolClient = useSelector(selectProtocolClient)
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -36,7 +39,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 								text: t('settings.berty-services.button'),
 								onPress: async () => {
 									try {
-										await servicesAuthViaDefault(ctx)
+										await servicesAuthViaDefault(protocolClient)
 										await ctx.setPersistentOption({
 											type: PersistentOptionsKeys.Configurations,
 											payload: {

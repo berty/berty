@@ -28,6 +28,7 @@ import {
 	useThemeColor,
 	serviceTypes,
 	useAccountServices,
+	useMessengerClient,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { useAccount } from '@berty-tech/react-redux'
@@ -36,6 +37,8 @@ import { showNeedRestartNotification } from '../helpers'
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { CreateAccountBox } from './CreateAccountBox'
+import { useSelector } from 'react-redux'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 
 const TitleBox: React.FC<{
 	title: string
@@ -237,10 +240,9 @@ const Proximity: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
 	newConfig: beapi.account.INetworkConfig | null
 }> = ({ setNewConfig, newConfig }) => {
-	const ctx = useMessengerContext()
 	const { navigate } = useNavigation()
 	const colors = useThemeColor()
-	const { selectedAccount } = ctx
+	const selectedAccount = useSelector(selectSelectedAccount)
 	const { t } = useTranslation()
 
 	const setNewConfigProximityTransport = React.useCallback(() => {
@@ -464,6 +466,7 @@ const Services: React.FC<{
 		const services = useAccountServices()
 		const [{ margin, text }, { scaleSize }] = useStyles()
 		const ctx = useMessengerContext()
+		const client = useMessengerClient()
 
 		const replicationServices = services.filter(
 			(s: any) => s.serviceType === serviceTypes.Replication,
@@ -509,7 +512,7 @@ const Services: React.FC<{
 						if (replicationServices.length === 0) {
 							return
 						}
-						await ctx.client?.replicationSetAutoEnable({
+						await client?.replicationSetAutoEnable({
 							enabled: !account.replicateNewGroupsAutomatically,
 						})
 						showNeedRestartNotification(props.showNotification, ctx, t)
@@ -612,6 +615,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 		const colors = useThemeColor()
 		const { t } = useTranslation()
 		const ctx = useMessengerContext()
+		const selectedAccount = useSelector(selectSelectedAccount)
 
 		return (
 			<View
@@ -621,7 +625,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 					<TouchableOpacity
 						onPress={async () => {
 							await accountService.networkConfigSet({
-								accountId: ctx.selectedAccount,
+								accountId: selectedAccount,
 								config: newConfig,
 							})
 							await ctx.setNetworkConfig(newConfig)
@@ -660,6 +664,7 @@ export const AdvancedSettings: ScreenFC<'Onboarding.AdvancedSettings'> = ({
 	)
 	const [isNew, setIsNew] = React.useState<string | null>(null)
 	const { navigate } = useNavigation()
+	const selectedAccount = useSelector(selectSelectedAccount)
 
 	useMountEffect(() => {
 		ctx
@@ -727,7 +732,7 @@ export const AdvancedSettings: ScreenFC<'Onboarding.AdvancedSettings'> = ({
 					</View>
 				) : null}
 			</ScrollView>
-			{ctx.selectedAccount && isNew !== 'isNew' ? <ApplyChanges newConfig={newConfig} /> : null}
+			{selectedAccount && isNew !== 'isNew' ? <ApplyChanges newConfig={newConfig} /> : null}
 		</SafeAreaView>
 	)
 }

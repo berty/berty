@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Player } from '@react-native-community/audio-toolkit'
 
-import { useMessengerContext } from '@berty-tech/store'
-
 import { getSource } from './utils'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 type PlayerType = Player | undefined
 
@@ -58,7 +58,7 @@ export const MusicPlayerContext = createContext<{
 
 export const MusicPlayerProvider: React.FC = ({ children }) => {
 	const [player, setPlayer] = useState<PlayerState>(INITIAL_PLAYER_VALUE)
-	const { protocolClient } = useMessengerContext()
+	const protocolClient = useSelector(selectProtocolClient)
 	const [loading, setLoading] = useState(false)
 	const [playing, setPlaying] = useState(false)
 

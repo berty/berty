@@ -32,6 +32,8 @@ import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
+import { useSelector } from 'react-redux'
+import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -102,7 +104,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
-	const { client } = useMessengerContext()
+	const client = useSelector(selectClient)
 
 	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight, windowHeight }] = useStyles()
 	const colors = useThemeColor()

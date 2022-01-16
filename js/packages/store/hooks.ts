@@ -16,7 +16,6 @@ import { useStyles } from '@berty-tech/styles'
 import { useMessengerContext } from './context'
 import {
 	MessengerActions,
-	MessengerAppState,
 	NotificationsInhibitor,
 	PersistentOptionsKeys,
 	UpdatesProfileNotification,
@@ -29,6 +28,11 @@ import {
 	selectThemeIsDark,
 	selectThemeSelected,
 } from '@berty-tech/redux/reducers/theme.reducer'
+import {
+	MESSENGER_APP_STATE,
+	selectAppState,
+	selectClient,
+} from '@berty-tech/redux/reducers/ui.reducer'
 
 export type Maybe<T> = T | null | undefined
 
@@ -80,8 +84,7 @@ export const useStylesBertyId = ({
 }
 
 export const useMessengerClient = () => {
-	const ctx = useMessengerContext()
-	return ctx.client
+	return useSelector(selectClient)
 }
 
 export const usePersistentOptions = () => {
@@ -90,13 +93,13 @@ export const usePersistentOptions = () => {
 }
 
 export const useThemeColor = () => {
-	const ctx = useMessengerContext()
+	const appState = useSelector(selectAppState)
 	const themeIsDark = useSelector(selectThemeIsDark)
 	const themeSelected = useSelector(selectThemeSelected)
 	const themeCollection = useSelector(selectThemeCollection)
 
 	return React.useMemo(() => {
-		if (!Object.entries(themeCollection).length || ctx.appState === MessengerAppState.GetStarted) {
+		if (!Object.entries(themeCollection).length || appState === MESSENGER_APP_STATE.GET_STARTED) {
 			return colors
 		}
 
@@ -112,7 +115,7 @@ export const useThemeColor = () => {
 			}
 		}
 		return collectionColors
-	}, [ctx.appState, themeCollection, themeIsDark, themeSelected])
+	}, [appState, themeCollection, themeIsDark, themeSelected])
 }
 
 export const useProfileNotification = () => {
@@ -232,7 +235,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
 	const navigation = useNavigation()
 
-	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 
 	const conv = useConversation(publicKey)
 	const fake = (conv && (conv as any).fake) || false
@@ -250,7 +253,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 				}
 				timeoutID = setTimeout(() => {
 					timeoutID = null
-					ctx.client?.conversationOpen({ groupPk: publicKey }).catch((err: unknown) => {
+					client?.conversationOpen({ groupPk: publicKey }).catch((err: unknown) => {
 						console.warn('failed to open conversation,', err)
 					})
 				}, t)
@@ -275,7 +278,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 				}
 			}
 
-			ctx.client?.conversationClose({ groupPk: publicKey }).catch((err: unknown) => {
+			client?.conversationClose({ groupPk: publicKey }).catch((err: unknown) => {
 				console.warn('failed to close conversation,', err)
 			})
 		}
@@ -285,7 +288,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 			unsubscribeBlur()
 			handleStop()
 		}
-	}, [ctx.client, fake, navigation, publicKey, timeout])
+	}, [client, fake, navigation, publicKey, timeout])
 }
 
 // eslint-disable-next-line react-hooks/exhaustive-deps

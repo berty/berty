@@ -2,17 +2,19 @@ import React from 'react'
 import { ActivityIndicator, Button, Text, TextInput, View, Image, StatusBar } from 'react-native'
 import * as Progress from 'react-native-progress'
 
-import {
-	MessengerAppState,
-	useMessengerContext,
-	useThemeColor,
-	isClosing,
-	isDeletingState,
-	isReadyingBasics,
-	MessengerActions,
-} from '@berty-tech/store'
+import { useMessengerContext, useThemeColor, MessengerActions } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import source from '@berty-tech/assets/loader_dots.gif'
+import { useSelector } from 'react-redux'
+import {
+	MESSENGER_APP_STATE,
+	selectAppState,
+	selectEmbedded,
+	selectMessengerisClosing,
+	selectMessengerIsDeletingState,
+	selectMessengerIsReadyingBasics,
+	selectStreamInProgress,
+} from '@berty-tech/redux/reducers/ui.reducer'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -36,7 +38,7 @@ export const LoaderDots: React.FC = () => {
 const StreamInProgressCmp: React.FC<{}> = () => {
 	const [{ text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { streamInProgress: stream } = useMessengerContext()
+	const stream = useSelector(selectStreamInProgress)
 
 	return (
 		<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
@@ -92,15 +94,10 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const {
-		streamError,
-		daemonAddress,
-		embedded,
-		dispatch,
-		streamInProgress,
-		deleteAccount,
-		restart,
-	} = useMessengerContext()
+	const { streamError, daemonAddress, dispatch, deleteAccount, restart } = useMessengerContext()
+	const streamInProgress = useSelector(selectStreamInProgress)
+	const embedded = useSelector(selectEmbedded)
+
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()
 	const changeAddress = React.useCallback(() => {
@@ -156,10 +153,11 @@ export const StreamGate: React.FC = ({ children }) => {
 }
 
 export const ListGate: React.FC = ({ children }) => {
-	const ctx = useMessengerContext()
 	const colors = useThemeColor()
+	const isClosing = useSelector(selectMessengerisClosing)
+	const isReadyingBasics = useSelector(selectMessengerIsReadyingBasics)
 
-	if (!isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
+	if (!isClosing && !isReadyingBasics) {
 		return (
 			<>
 				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
@@ -171,13 +169,13 @@ export const ListGate: React.FC = ({ children }) => {
 }
 
 const DeleteProgressScreen = () => {
-	const ctx = useMessengerContext()
+	const appState = useSelector(selectAppState)
 	let text = 'Unknown state'
-	switch (ctx.appState) {
-		case MessengerAppState.DeletingClosingDaemon:
+	switch (appState) {
+		case MESSENGER_APP_STATE.DELETING_CLOSING_DAEMON:
 			text = 'Stopping node..'
 			break
-		case MessengerAppState.DeletingClearingStorage:
+		case MESSENGER_APP_STATE.DELETING_CLEARING_STORAGE:
 			text = 'Clearing storage..'
 			break
 	}
@@ -202,9 +200,9 @@ const DeleteProgressScreen = () => {
 }
 
 export const DeleteGate: React.FC = ({ children }) => {
-	const ctx = useMessengerContext()
+	const isDeletingState = useSelector(selectMessengerIsDeletingState)
 
-	if (ctx && isDeletingState(ctx.appState)) {
+	if (isDeletingState) {
 		return <DeleteProgressScreen />
 	} else {
 		return <>{children}</>

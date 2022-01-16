@@ -14,6 +14,7 @@ import {
 	PersistentOptionsKeys,
 	storageGet,
 	storageSet,
+	useMessengerClient,
 	useMessengerContext,
 	useThemeColor,
 } from '@berty-tech/store'
@@ -46,6 +47,8 @@ import {
 } from '../shared-components/SettingsButtons'
 import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
+import { useSelector } from 'react-redux'
+import { selectEmbedded, selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 
 //
 // DevTools
@@ -252,7 +255,7 @@ const SendToAllContacts: React.FC = () => {
 	const [disabled, setDisabled] = useState(false)
 	const { t } = useTranslation()
 	const [name, setName] = useState<any>(t('settings.devtools.send-to-all-button.title'))
-	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const conversations = useAllConversations()
 	const filteredConvs = conversations.filter(
@@ -267,7 +270,7 @@ const SendToAllContacts: React.FC = () => {
 		setName(t('settings.devtools.send-to-all-button.sending'))
 		for (const conv of filteredConvs) {
 			try {
-				await ctx.client?.interact({
+				await client?.interact({
 					conversationPublicKey: conv.publicKey,
 					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
@@ -279,7 +282,7 @@ const SendToAllContacts: React.FC = () => {
 		setDisabled(false)
 		setName(`${t('settings.devtools.send-to-all-button.tried', { length: filteredConvs.length })}`)
 		setTimeout(() => setName(t('settings.devtools.send-to-all-button.title')), 1000)
-	}, [buf, filteredConvs, ctx.client, t])
+	}, [buf, filteredConvs, client, t])
 	return (
 		<ButtonSetting
 			name={name}
@@ -339,6 +342,9 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const [, setRerender] = useState(0)
 	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
+	const embedded = useSelector(selectEmbedded)
+	const selectedAccount = useSelector(selectSelectedAccount)
+	const client = useMessengerClient()
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -361,7 +367,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	useEffect(() => {
 		let subStream: any = null
 
-		ctx.client?.tyberHostSearch({}).then(async stream => {
+		client?.tyberHostSearch({}).then(async stream => {
 			stream.onMessage((msg, err) => {
 				if (err) {
 					return
@@ -387,7 +393,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				subStream.stop()
 			}
 		}
-	}, [addTyberHost, ctx.client])
+	}, [addTyberHost, client])
 
 	const torOptions =
 		t('settings.devtools.tor-button', {
@@ -488,7 +494,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					}
 
 					await accountService.networkConfigSet({
-						accountId: ctx.selectedAccount,
+						accountId: selectedAccount,
 						config: newConfig,
 					})
 
@@ -541,7 +547,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					iconColor={colors['alt-secondary-background-header']}
 					onPress={async () => {
 						try {
-							await ctx.client?.tyberHostAttach({
+							await client?.tyberHostAttach({
 								addresses: ipAddresses,
 							})
 						} catch (e) {
@@ -579,7 +585,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => GoBridge.closeBridge()}
 			/>
-			{!ctx.embedded && ctx.daemonAddress !== 'http://localhost:1338' && (
+			{!embedded && ctx.daemonAddress !== 'http://localhost:1338' && (
 				<ButtonSetting
 					name='Switch to 1338 node'
 					icon='folder-outline'

@@ -5,14 +5,14 @@ import Long from 'long'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, useMessengerContext } from '@berty-tech/store'
+import { useThemeColor, useMessengerClient } from '@berty-tech/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
 	option: beapi.messenger.IReplyOption
 }> = ({ convPk, option }) => {
-	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const [{ padding, border, margin }] = useStyles()
 	const dispatch = useAppDispatch()
@@ -21,12 +21,12 @@ const QuickReplyOption: React.FC<{
 		<TouchableOpacity
 			onPress={async () => {
 				try {
-					if (!ctx.client) {
+					if (!client) {
 						return
 					}
 					const usermsg: beapi.messenger.AppMessage.IUserMessage = { body: option.payload }
 					const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
-					const reply = await ctx.client.interact({
+					const reply = await client.interact({
 						conversationPublicKey: convPk,
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						payload: buf,

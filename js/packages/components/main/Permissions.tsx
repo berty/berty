@@ -25,6 +25,8 @@ import p2pLottie from '@berty-tech/assets/p2p-lottie.json'
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
+import { useSelector } from 'react-redux'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 
 const animations = {
 	audio: audioLottie,
@@ -38,7 +40,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
-	const { persistentOptions, setPersistentOption, selectedAccount } = useMessengerContext()
+	const { persistentOptions, setPersistentOption } = useMessengerContext()
+	const selectedAccount = useSelector(selectSelectedAccount)
 	const { permissionType, permissionStatus, navigateNext, onComplete } = params
 
 	const handleOnComplete = useCallback(

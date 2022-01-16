@@ -8,7 +8,7 @@ import QRCode from 'react-native-qrcode-svg'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { Maybe, useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { useConversationMembersDict, useConversation } from '@berty-tech/react-redux'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
@@ -18,18 +18,18 @@ import EnableNotificationsButton from '@berty-tech/components/chat/EnableNotific
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
-	const ctx = useMessengerContext()
 	const [picture, setPicture] = useState<ImageOrVideo | undefined>(undefined)
 	const [{ text, padding, border, row }, { scaleSize, scaleHeight, windowWidth, windowHeight }] =
 		useStyles()
 	const colors = useThemeColor()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
 	const { navigate } = useNavigation()
+	const client = useMessengerClient()
 
 	const handleSave = React.useCallback(async () => {
 		try {
 			if (picture) {
-				const stream = await ctx.client?.mediaPrepare({})
+				const stream = await client?.mediaPrepare({})
 				if (!stream) {
 					throw new Error('failed to open prepareAttachment stream')
 				}
@@ -52,7 +52,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 				const buf = beapi.messenger.AppMessage.SetGroupInfo.encode({
 					avatarCid: reply.cid,
 				}).finish()
-				await ctx.client?.interact({
+				await client?.interact({
 					conversationPublicKey: conv?.publicKey,
 					type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
 					payload: buf,
@@ -63,7 +63,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 		} catch (err) {
 			console.warn(err)
 		}
-	}, [conv?.publicKey, ctx.client, picture])
+	}, [conv?.publicKey, client, picture])
 
 	React.useEffect(() => {
 		if (picture !== undefined) {

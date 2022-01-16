@@ -9,6 +9,8 @@ import { useStyles } from '@berty-tech/styles'
 import { useThemeColor, useMessengerContext } from '@berty-tech/store'
 
 import AppInspector from './debug/AppInspector'
+import { useSelector } from 'react-redux'
+import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 	const [{ padding, border }] = useStyles()
@@ -268,7 +270,8 @@ export const ErrorScreen: React.FC = ({ children }) => {
 
 	const [error, setError] = React.useState<Error | null>(null)
 
-	const { debugMode, embedded } = useMessengerContext()
+	const { debugMode } = useMessengerContext()
+	const embedded = useSelector(selectEmbedded)
 
 	const errorHandler = (err: Error) => {
 		setError(err)

@@ -1,5 +1,4 @@
-import { initialState, isExpectedAppStateChange } from '../context'
-import { MessengerAppState, MessengerActions, MessengerState, reducerAction } from '../types'
+import { MessengerActions, MessengerState, reducerAction } from '../types'
 
 export const uiReducerActions: {
 	[key: string]: (oldState: MessengerState, action: reducerAction) => MessengerState
@@ -50,101 +49,10 @@ export const uiReducerActions: {
 		...oldState,
 		persistentOptions: action.payload,
 	}),
-
-	[MessengerActions.SetStateOpeningListingEvents]: (oldState, action) => ({
-		...oldState,
-		client: action.payload.messengerClient || oldState.client,
-		protocolClient: action.payload.protocolClient || oldState.protocolClient,
-		clearClients: action.payload.clearClients || oldState.clearClients,
-		appState: MessengerAppState.OpeningListingEvents,
-	}),
-
-	[MessengerActions.SetStateClosed]: (oldState, _) => {
-		const ret = {
-			...initialState,
-			accounts: oldState.accounts,
-			embedded: oldState.embedded,
-			daemonAddress: oldState.daemonAddress,
-			appState: MessengerAppState.Closed,
-			nextSelectedAccount: oldState.embedded ? oldState.nextSelectedAccount : '0',
-		}
-
-		if (ret.nextSelectedAccount !== null) {
-			return uiReducer(ret, { type: MessengerActions.SetStateOpening })
-		}
-
-		return ret
-	},
-
-	[MessengerActions.SetNextAccount]: (oldState, action) => {
-		if (action.payload === null || action.payload === undefined || !oldState.embedded) {
-			return oldState
-		}
-
-		const ret = {
-			...oldState,
-			nextSelectedAccount: action.payload,
-		}
-
-		return uiReducer(ret, { type: MessengerActions.SetStateClosed })
-	},
-
-	[MessengerActions.SetStateOpening]: (oldState, _action) => {
-		if (oldState.nextSelectedAccount === null) {
-			return oldState
-		}
-		return {
-			...oldState,
-			selectedAccount: oldState.nextSelectedAccount,
-			nextSelectedAccount: null,
-			appState: oldState.embedded
-				? MessengerAppState.OpeningWaitingForDaemon
-				: MessengerAppState.OpeningWaitingForClients,
-		}
-	},
-
-	[MessengerActions.SetStateOpeningClients]: (oldState, _action) => ({
-		...oldState,
-		appState: MessengerAppState.OpeningWaitingForClients,
-	}),
-
-	[MessengerActions.SetStateOpeningGettingLocalSettings]: (oldState, _action) => ({
-		...oldState,
-		appState: MessengerAppState.OpeningGettingLocalSettings,
-	}),
-
-	[MessengerActions.SetStateOpeningMarkConversationsClosed]: (oldState, _) => ({
-		...oldState,
-		appState: MessengerAppState.OpeningMarkConversationsAsClosed,
-	}),
-
-	[MessengerActions.SetStatePreReady]: (oldState, _) => ({
-		...oldState,
-		appState: MessengerAppState.PreReady,
-	}),
-
-	[MessengerActions.SetStateReady]: (oldState, _) => {
-		return {
-			...oldState,
-			appState: MessengerAppState.Ready,
-		}
-	},
-
 	[MessengerActions.SetAccounts]: (oldState, action) => ({
 		...oldState,
 		accounts: action.payload,
 	}),
-
-	[MessengerActions.BridgeClosed]: (oldState, _) => {
-		if (oldState.appState === MessengerAppState.DeletingClosingDaemon) {
-			return {
-				...oldState,
-				appState: MessengerAppState.DeletingClearingStorage,
-			}
-		}
-		return uiReducer(oldState, { type: MessengerActions.SetStateClosed })
-	},
-
 	[MessengerActions.AddNotificationInhibitor]: (oldState, action) => {
 		if (oldState.notificationsInhibitors.includes(action.payload.inhibitor)) {
 			return oldState
@@ -166,45 +74,4 @@ export const uiReducerActions: {
 			),
 		}
 	},
-
-	[MessengerActions.SetCreatedAccount]: (oldState, action) => {
-		return uiReducer(
-			{
-				...oldState,
-				nextSelectedAccount: action?.payload?.accountId,
-				appState: MessengerAppState.OpeningWaitingForClients,
-			},
-			{ type: MessengerActions.SetStateClosed },
-		)
-	},
-
-	[MessengerActions.SetStateStreamInProgress]: (oldState, action) => ({
-		...oldState,
-		streamInProgress: action.payload,
-	}),
-
-	[MessengerActions.SetStateStreamDone]: (oldState, _) => ({
-		...oldState,
-		appState: MessengerAppState.StreamDone,
-		streamInProgress: null,
-	}),
-	[MessengerActions.SetStateOnBoardingReady]: (oldState, _) => ({
-		...oldState,
-		appState: MessengerAppState.GetStarted,
-	}),
-}
-
-export const uiReducer = (oldState: MessengerState, action: reducerAction): MessengerState => {
-	if (uiReducerActions[action.type]) {
-		const newState = uiReducerActions[action.type](oldState, action)
-
-		if (!isExpectedAppStateChange(oldState.appState, newState.appState)) {
-			console.warn(`unexpected app state change from ${oldState.appState} to ${newState.appState}`)
-		}
-
-		return newState
-	}
-
-	console.warn('Unknown action type', action.type)
-	return oldState
 }

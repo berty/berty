@@ -5,21 +5,22 @@ import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMessengerContext, useThemeColor, exportAccountToFile } from '@berty-tech/store'
+import { useThemeColor, exportAccountToFile } from '@berty-tech/store'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectThemeIsDark, toggleDarkTheme } from '@berty-tech/redux/reducers/theme.reducer'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 
 const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()
-	const ctx = useMessengerContext()
 	const { t }: any = useTranslation()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const dispatch = useDispatch()
 	const isDark = useSelector(selectThemeIsDark)
+	const selectedAccount = useSelector(selectSelectedAccount)
 
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
@@ -71,7 +72,7 @@ const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => 
 				iconColor={colors['background-header']}
 				actionIcon='arrow-ios-forward'
 				onPress={async () => {
-					await exportAccountToFile(ctx.selectedAccount)
+					await exportAccountToFile(selectedAccount)
 					if (Platform.OS === 'android') {
 						showNotification({
 							title: t('settings.mode.notification-file-saved.title'),

@@ -14,7 +14,8 @@ import accountSettingsRootReducer, {
 	sliceName as accountSettingsSliceName,
 } from './reducers/accountSettings.reducer'
 import themeReducer, { sliceName as themeSliceName } from './reducers/theme.reducer'
-import messengerRootReduceer from './reducers/messenger.reducer'
+import uiReducer from './reducers/ui.reducer'
+import messengerRootReducer from './reducers/messenger.reducer'
 
 const persistConfig = {
 	key: 'persistStore',
@@ -34,8 +35,9 @@ const rootReducer = combineReducers({
 	...chatInputsVolatileRootReducer,
 	...checklistRootReducer,
 	...accountSettingsRootReducer,
-	...messengerRootReduceer,
+	...messengerRootReducer,
 	...themeReducer,
+	...uiReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

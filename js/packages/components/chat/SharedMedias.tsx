@@ -22,7 +22,6 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import {
-	useMessengerContext,
 	useMessengerClient,
 	useThemeColor,
 	pbDateToNum,
@@ -34,6 +33,8 @@ import { useConversationInteractions } from '@berty-tech/react-redux'
 import { getSource } from '../utils'
 import { timeFormat } from '../helpers'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)
@@ -60,7 +61,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const [activeIndex, setActiveIndex] = useState(0)
-	const { protocolClient } = useMessengerContext()
+	const protocolClient = useSelector(selectProtocolClient)
 	const [images, setImages] = useState<any[]>([])
 	const client = useMessengerClient()
 

@@ -9,10 +9,12 @@ import beapi from '@berty-tech/api'
 import { Service } from '@berty-tech/grpc-bridge'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import {
+	ServiceClientType,
+	WelshMessengerServiceClient,
+} from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useAccount } from '@berty-tech/react-redux'
 
-import { MessengerState } from './types'
 import { berty } from '@berty-tech/api/root.pb'
 const { PushTokenRequester } = NativeModules
 
@@ -45,8 +47,10 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 	)
 }
 
-export const servicesAuthViaDefault = async (ctx: MessengerState): Promise<void> => {
-	return servicesAuthViaURL(ctx.protocolClient, bertyOperatedServer)
+export const servicesAuthViaDefault = async (
+	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
+): Promise<void> => {
+	return servicesAuthViaURL(protocolClient, bertyOperatedServer)
 }
 
 export const servicesAuthViaURL = async (
@@ -119,9 +123,9 @@ export const servicesAuthViaURL = async (
 }
 
 export const replicateGroup = async (
-	ctx: MessengerState,
 	conversationPublicKey: string,
 	tokenID: string,
+	client: WelshMessengerServiceClient | null,
 ): Promise<void> => {
 	if (
 		!(await new Promise(resolve => {
@@ -143,12 +147,12 @@ export const replicateGroup = async (
 		return
 	}
 
-	if (!ctx.client) {
+	if (!client) {
 		return
 	}
 
 	try {
-		await ctx.client?.replicationServiceRegisterGroup({
+		await client?.replicationServiceRegisterGroup({
 			tokenId: tokenID,
 			conversationPublicKey: conversationPublicKey,
 		})

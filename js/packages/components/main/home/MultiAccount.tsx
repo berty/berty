@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import {
-	MessengerActions,
 	useMessengerContext,
 	closeAccountWithProgress,
 	useThemeColor,
@@ -17,6 +16,11 @@ import { useAppDispatch } from '@berty-tech/react-redux'
 import beapi from '@berty-tech/api'
 
 import { GenericAvatar } from '../../avatars'
+import {
+	selectSelectedAccount,
+	setStateOnBoardingReady,
+} from '@berty-tech/redux/reducers/ui.reducer'
+import { useSelector } from 'react-redux'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -82,6 +86,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 	const { dispatch } = useMessengerContext()
 	const { t } = useTranslation()
 	const reduxDispatch = useAppDispatch()
+	const selectedAccount = useSelector(selectSelectedAccount)
 
 	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
 	const handlePress = async (account: beapi.account.IAccountMetadata) => {
@@ -89,9 +94,9 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 			return
 		}
 		setIsHandlingPress(true)
-		if (ctx.selectedAccount !== account.accountId) {
+		if (selectedAccount !== account.accountId) {
 			return ctx.switchAccount(account.accountId || '')
-		} else if (ctx.selectedAccount === account.accountId && !account.error) {
+		} else if (selectedAccount === account.accountId && !account.error) {
 			return onPress()
 		}
 	}
@@ -129,7 +134,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 										nameSeed={account?.name}
 									/>
 								}
-								selected={ctx.selectedAccount === account.accountId}
+								selected={selectedAccount === account.accountId}
 								incompatible={account?.error}
 							/>
 						)
@@ -138,7 +143,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
 						await closeAccountWithProgress(dispatch, reduxDispatch)
-						await dispatch({ type: MessengerActions.SetStateOnBoardingReady })
+						await reduxDispatch(setStateOnBoardingReady())
 					}}
 					avatar={
 						<View

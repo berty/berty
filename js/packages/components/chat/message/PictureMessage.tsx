@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 
 import { getSource } from '../../utils'
 import { ImageCounter } from '../ImageCounter'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const PictureMessage: React.FC<{
 	medias: any
@@ -15,7 +17,7 @@ export const PictureMessage: React.FC<{
 }> = ({ medias, onLongPress, isHighlight }) => {
 	const [{ border }] = useStyles()
 	const colors = useThemeColor()
-	const { protocolClient } = useMessengerContext()
+	const protocolClient = useSelector(selectProtocolClient)
 	const [images, setImages] = useState<any[]>([])
 	const navigation = useNavigation()
 	useEffect(() => {

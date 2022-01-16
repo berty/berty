@@ -11,6 +11,7 @@ import {
 import { defaultPersistentOptions } from './context'
 import { accountService, storageRemove, storageGet, storageSet } from './accountService'
 import { MessengerActions, PersistentOptionsUpdate, reducerAction } from './types'
+import { setNextAccount, setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const importAccount = async (
 	embedded: boolean,
@@ -27,7 +28,7 @@ export const importAccount = async (
 
 	try {
 		await closeAccountWithProgress(dispatch, reduxDispatch)
-		resp = await importAccountWithProgress(path, dispatch)
+		resp = await importAccountWithProgress(path, dispatch, reduxDispatch)
 	} catch (e) {
 		console.warn('unable to import account', e)
 		return
@@ -43,10 +44,7 @@ export const importAccount = async (
 
 	await refreshAccountList(embedded, dispatch)
 
-	dispatch({
-		type: MessengerActions.SetNextAccount,
-		payload: resp.accountMetadata.accountId,
-	})
+	reduxDispatch(setNextAccount(resp.accountMetadata.accountId))
 }
 
 export const updateAccount = async (
@@ -96,7 +94,7 @@ export const switchAccount = async (
 		console.warn('unable to close account', e)
 		return
 	}
-	dispatch({ type: MessengerActions.SetNextAccount, payload: accountID })
+	reduxDispatch(setNextAccount(accountID))
 }
 
 export const deleteAccount = async (
@@ -122,7 +120,7 @@ export const deleteAccount = async (
 
 	if (!Object.values(accounts).length) {
 		// reset to OnBoarding
-		dispatch({ type: MessengerActions.SetStateOnBoardingReady })
+		reduxDispatch(setStateOnBoardingReady())
 	} else {
 		// open the last opened if an other account exist
 		let accountSelected: beapi.account.IAccountMetadata | null = null
@@ -138,7 +136,7 @@ export const deleteAccount = async (
 				accountSelected = account
 			}
 		}
-		dispatch({ type: MessengerActions.SetNextAccount, payload: accountSelected?.accountId })
+		reduxDispatch(setNextAccount(accountSelected?.accountId))
 	}
 }
 
@@ -158,7 +156,7 @@ export const restart = async (
 		console.warn('unable to close account')
 		return
 	}
-	dispatch({ type: MessengerActions.SetNextAccount, payload: accountID })
+	reduxDispatch(setNextAccount(accountID))
 }
 
 export const setPersistentOption = async (
