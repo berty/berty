@@ -11,6 +11,7 @@ import { useContact, useConversation } from '@berty-tech/react-redux'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'
+import EnableNotificationsButton from '@berty-tech/components/chat/EnableNotificationsButton'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const [{ text, padding, flex }, { scaleSize }] = useStyles()
@@ -49,12 +50,7 @@ const OneToOneBody: React.FC<{
 				icon='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
-			<ButtonSetting
-				name={t('chat.one-to-one-settings.notifications-button')}
-				icon='bell-outline'
-				toggled
-				disabled
-			/>
+			<EnableNotificationsButton conversationPk={publicKey} />
 			{!isIncoming && (
 				<ButtonSetting
 					name={t('chat.one-to-one-settings.save-button')}

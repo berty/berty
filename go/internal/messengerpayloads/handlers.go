@@ -3,6 +3,8 @@ package messengerpayloads
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"strconv"
@@ -92,6 +94,7 @@ func (h *EventHandler) bindHandlers() {
 		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
 		protocoltypes.EventTypePushDeviceTokenRegistered:              h.pushDeviceTokenRegistered,
 		protocoltypes.EventTypePushDeviceServerRegistered:             h.pushDeviceServerRegistered,
+		protocoltypes.EventTypePushMemberTokenUpdate:                  h.pushMemberTokenUpdate,
 	}
 	h.appMessageHandlers = map[mt.AppMessage_Type]struct {
 		handler        func(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error)
@@ -318,7 +321,12 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 	gpkb := ev.GetGroup().GetPublicKey()
 	groupPK := messengerutil.B64EncodeBytes(gpkb)
 
-	conversation, err := h.db.AddConversation(groupPK)
+	memPK, devPK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gpkb)
+	if err != nil {
+		return err
+	}
+
+	conversation, err := h.db.AddConversation(groupPK, messengerutil.B64EncodeBytes(memPK), messengerutil.B64EncodeBytes(devPK))
 	switch {
 	case errcode.Is(err, errcode.ErrDBEntryAlreadyExists):
 		h.logger.Info("conversation already in db")
@@ -371,6 +379,11 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 
 	gpk := messengerutil.B64EncodeBytes(gpkB)
 
+	memPK, devPK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gpkB)
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
 	// create new contact conversation
 	var (
 		contact      *mt.Contact
@@ -389,7 +402,7 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 		}
 
 		// create new conversation
-		if conversation, err = tx.AddConversationForContact(gpk, contact.PublicKey); err != nil {
+		if conversation, err = tx.AddConversationForContact(gpk, messengerutil.B64EncodeBytes(memPK), messengerutil.B64EncodeBytes(devPK), contact.PublicKey); err != nil {
 			return errcode.ErrDBAddConversation.Wrap(err)
 		}
 
@@ -522,7 +535,7 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		}
 
 		// create new conversation
-		if conversation, err = tx.AddConversationForContact(groupPKBytes, contactPK); err != nil {
+		if conversation, err = tx.AddConversationForContact(groupPKBytes, messengerutil.B64EncodeBytes(ownMemberPK), messengerutil.B64EncodeBytes(ownDevicePK), contactPK); err != nil {
 			return err
 		}
 
@@ -1359,6 +1372,28 @@ func (h *EventHandler) pushDeviceTokenRegistered(gme *protocoltypes.GroupMetadat
 	}
 
 	if err := h.postHandlerActions.PushServerOrTokenRegistered(account); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (h *EventHandler) pushMemberTokenUpdate(gme *protocoltypes.GroupMetadataEvent) error {
+	var ev protocoltypes.PushMemberTokenUpdate
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	tokenHash := sha256.New()
+	tokenHash.Write(ev.Token)
+	tokenSum := tokenHash.Sum(nil)
+
+	memberPKB, _, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
+	if err != nil {
+		return err
+	}
+
+	if err := h.db.UpdateDeviceSetPushToken(h.ctx, messengerutil.B64EncodeBytes(memberPKB), messengerutil.B64EncodeBytes(ev.DevicePK), messengerutil.B64EncodeBytes(gme.EventContext.GroupPK), hex.EncodeToString(tokenSum)); err != nil {
 		return err
 	}
 

@@ -117,6 +117,7 @@ func getDBModels() []interface{} {
 		&messengertypes.Media{},
 		&messengertypes.Reaction{},
 		&messengertypes.MetadataEvent{},
+		&messengertypes.SharedPushToken{},
 	}
 }
 
@@ -194,7 +195,7 @@ func (d *DBWrapper) TX(ctx context.Context, txFunc func(*DBWrapper) error) (err 
 	})
 }
 
-func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messengertypes.Conversation, error) {
+func (d *DBWrapper) AddConversationForContact(groupPK, ownMemberPK, ownDevicePK, contactPK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation public key specified"))
 	}
@@ -204,12 +205,14 @@ func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messe
 	}
 
 	conversation := &messengertypes.Conversation{
-		PublicKey:        groupPK,
-		ContactPublicKey: contactPK,
-		Type:             messengertypes.Conversation_ContactType,
-		DisplayName:      "", // empty on account conversations
-		Link:             "", // empty on account conversations
-		CreatedDate:      messengerutil.TimestampMs(time.Now()),
+		PublicKey:            groupPK,
+		ContactPublicKey:     contactPK,
+		Type:                 messengertypes.Conversation_ContactType,
+		DisplayName:          "", // empty on account conversations
+		Link:                 "", // empty on account conversations
+		CreatedDate:          messengerutil.TimestampMs(time.Now()),
+		LocalDevicePublicKey: ownDevicePK,
+		LocalMemberPublicKey: ownMemberPK,
 	}
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
 		// Check if a conversation already exists for this contact with another pk (or for this conversation pk and another contact)
@@ -245,15 +248,25 @@ func (d *DBWrapper) AddConversationForContact(groupPK, contactPK string) (*messe
 	return finalConv, nil
 }
 
-func (d *DBWrapper) AddConversation(groupPK string) (*messengertypes.Conversation, error) {
+func (d *DBWrapper) AddConversation(groupPK, ownMemberPK, ownDevicePK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
+	if ownDevicePK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
+	}
+
+	if ownMemberPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
+	}
+
 	conversation := &messengertypes.Conversation{
-		PublicKey:   groupPK,
-		Type:        messengertypes.Conversation_MultiMemberType,
-		CreatedDate: messengerutil.TimestampMs(time.Now()),
+		PublicKey:            groupPK,
+		Type:                 messengertypes.Conversation_MultiMemberType,
+		CreatedDate:          messengerutil.TimestampMs(time.Now()),
+		LocalDevicePublicKey: ownDevicePK,
+		LocalMemberPublicKey: ownMemberPK,
 	}
 
 	if err := d.db.Create(&conversation).Error; err != nil {
@@ -293,6 +306,9 @@ func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, err
 	}
 	if c.LocalDevicePublicKey != "" {
 		columns = append(columns, "local_device_public_key")
+	}
+	if c.LocalMemberPublicKey != "" {
+		columns = append(columns, "local_member_public_key")
 	}
 	if c.AccountMemberPublicKey != "" {
 		columns = append(columns, "account_member_public_key")
@@ -846,6 +862,9 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	errs = multierr.Append(errs, err)
 
 	infos.Medias, err = d.dbModelRowsCount(messengertypes.Media{})
+	errs = multierr.Append(errs, err)
+
+	infos.SharedPushTokens, err = d.dbModelRowsCount(messengertypes.SharedPushToken{})
 	errs = multierr.Append(errs, err)
 
 	return infos, errs
@@ -1753,4 +1772,58 @@ func (d *DBWrapper) MarkMemberAsConversationCreator(memberPK, conversationPK str
 	}
 
 	return nil
+}
+
+func (d *DBWrapper) UpdateDeviceSetPushToken(ctx context.Context, memberPK string, devicePK string, conversationPK string, token string) error {
+	if err := d.TX(ctx, func(d *DBWrapper) error {
+		if err := d.db.Where(&messengertypes.SharedPushToken{
+			MemberPublicKey:       memberPK,
+			DevicePublicKey:       devicePK,
+			ConversationPublicKey: conversationPK,
+		}).Delete(&messengertypes.SharedPushToken{}).Error; err != nil {
+			return err
+		}
+
+		if token != "" {
+			if err := d.db.Create(&messengertypes.SharedPushToken{
+				MemberPublicKey:       memberPK,
+				DevicePublicKey:       devicePK,
+				ConversationPublicKey: conversationPK,
+				Token:                 token,
+			}).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return nil
+}
+
+func (d *DBWrapper) GetDevicesForMember(conversationPK string, memberPK string) ([]*messengertypes.Device, error) {
+	var devices []*messengertypes.Device
+
+	if err := d.db.
+		Model(&messengertypes.Device{}).
+		Joins("JOIN members ON members.public_key = devices.member_public_key").
+		Where("devices.member_public_key = ? AND members.conversation_public_key = ?", memberPK, conversationPK).
+		Find(&devices).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return devices, nil
+}
+
+func (d *DBWrapper) GetPushTokenSharedForConversation(pk string) ([]*messengertypes.SharedPushToken, error) {
+	var tokens []*messengertypes.SharedPushToken
+
+	if err := d.db.Model(&messengertypes.SharedPushToken{}).Find(&tokens, "conversation_public_key = ?", pk).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	return tokens, nil
 }

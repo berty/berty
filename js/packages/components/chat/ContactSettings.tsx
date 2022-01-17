@@ -1,20 +1,41 @@
 import React, { useState } from 'react'
-import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
-import { Text } from '@ui-kitten/components'
+import { View, ScrollView, ActivityIndicator, StatusBar, Text } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
-import { useContact } from '@berty-tech/react-redux'
+import { useContact, useConversation } from '@berty-tech/react-redux'
 
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
 import { ContactAvatar } from '../avatars'
+import UserDevicesList from '@berty-tech/components/chat/DeviceList'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
 	return <View style={[margin.top.big]}>{children}</View>
+}
+
+const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
+	const { t } = useTranslation()
+	const contact = useContact(contactPk)
+	const conv = useConversation(contact?.conversationPublicKey || '')
+	const [{ text, padding }] = useStyles()
+
+	return (
+		<>
+			<Text style={[text.bold.small, padding.left.small]}>{contact?.displayName || ''}</Text>
+			<UserDevicesList conversationPk={contact?.conversationPublicKey || ''} memberPk={contactPk} />
+			<Text style={[text.bold.small, padding.left.small]}>
+				{t('chat.contact-settings.my-devices')}
+			</Text>
+			<UserDevicesList
+				conversationPk={contact?.conversationPublicKey || ''}
+				memberPk={conv?.localMemberPublicKey || ''}
+			/>
+		</>
+	)
 }
 
 const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
@@ -24,6 +45,8 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 	switch (contentName) {
 		case 'fingerprint':
 			return <FingerprintContent seed={publicKey} isEncrypted={false} />
+		case 'info':
+			return <InfoTab contactPk={publicKey} />
 		default:
 			return <Text>Error: Unknown content name "{contentName}"</Text>
 	}
@@ -71,7 +94,6 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 								key: 'info',
 								name: t('chat.contact-settings.info'),
 								icon: 'info-outline',
-								buttonDisabled: true,
 							},
 						]}
 						onTabChange={setSelectedContent}

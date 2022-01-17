@@ -630,6 +630,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 		Link:                   webURL,
 		Type:                   messengertypes.Conversation_MultiMemberType,
 		LocalDevicePublicKey:   messengerutil.B64EncodeBytes(gir.GetDevicePK()),
+		LocalMemberPublicKey:   messengerutil.B64EncodeBytes(gir.GetMemberPK()),
 		CreatedDate:            messengerutil.TimestampMs(time.Now()),
 	}
 
@@ -1699,4 +1700,47 @@ func (svc *service) PushReceive(ctx context.Context, request *messengertypes.Pus
 	defer svc.handlerMutex.Unlock()
 
 	return svc.pushReceiver.PushReceive(ctx, request.Payload)
+}
+
+func (svc *service) ListMemberDevices(request *messengertypes.ListMemberDevices_Request, server messengertypes.MessengerService_ListMemberDevicesServer) error {
+	devices, err := svc.db.GetDevicesForMember(request.ConversationPK, request.MemberPK)
+	if err != nil {
+		return nil
+	}
+
+	for _, dev := range devices {
+		if err := server.Send(&messengertypes.ListMemberDevices_Reply{Device: dev}); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (svc *service) PushShareTokenForConversation(ctx context.Context, request *messengertypes.PushShareTokenForConversation_Request) (*messengertypes.PushShareTokenForConversation_Reply, error) {
+	conv, err := svc.db.GetConversationByPK(request.ConversationPK)
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if err := svc.sharePushTokenForConversation(conv); err != nil {
+		return nil, err
+	}
+
+	return &messengertypes.PushShareTokenForConversation_Reply{}, nil
+}
+
+func (svc *service) PushTokenSharedForConversation(request *messengertypes.PushTokenSharedForConversation_Request, server messengertypes.MessengerService_PushTokenSharedForConversationServer) error {
+	tokens, err := svc.db.GetPushTokenSharedForConversation(request.ConversationPK)
+	if err != nil {
+		return errcode.ErrDBRead.Wrap(err)
+	}
+
+	for _, token := range tokens {
+		if err := server.Send(&messengertypes.PushTokenSharedForConversation_Reply{PushToken: token}); err != nil {
+			return errcode.ErrStreamWrite.Wrap(err)
+		}
+	}
+
+	return nil
 }

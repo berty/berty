@@ -38,6 +38,7 @@ export type ScreensParams = {
 	'Chat.ContactSettings': { contactId: string }
 	'Group.MultiMemberSettings': { convId: string }
 	'Group.MultiMemberSettingsAddMembers': { convPK: string }
+	'Group.ChatSettingsMemberDetail': { convId: string; memberPk: string; displayName: string }
 	'Chat.MultiMemberQR': { convId: string }
 	'Chat.ReplicateGroupSettings': { convId: string }
 	'Chat.SharedMedias': { convPk: string }

@@ -31,6 +31,8 @@ class PushTokenRequester: NSObject {
       default:
         let error = NSError(domain: "push", code: 1, userInfo: [NSLocalizedDescriptionKey: "notification permission not granted"])
         reject("token_request_failed", error.localizedDescription, error)
+        PushTokenRequester.resolve = nil
+        PushTokenRequester.reject = nil
       }
     }
   }
@@ -43,12 +45,16 @@ class PushTokenRequester: NSObject {
           "bundleId": bundleID,
         ], options: []) {
           resolve(String(data: jsonData, encoding: .ascii))
+          PushTokenRequester.resolve = nil
+          PushTokenRequester.reject = nil
           return
         }
 
         let error = NSError(domain: "push", code: 1, userInfo: [NSLocalizedDescriptionKey: "can't serialize token request response"])
         if let reject = PushTokenRequester.reject {
           reject("token_request_failed", error.localizedDescription, error)
+          PushTokenRequester.resolve = nil
+          PushTokenRequester.reject = nil
         } else {
           NSLog("PushTokenRequester error (onRequestSucceeded): %@", error.localizedDescription)
         }
@@ -61,6 +67,8 @@ class PushTokenRequester: NSObject {
   @objc func onRequestFailed(_ requestError: NSError) {
     if let reject = PushTokenRequester.reject {
       reject("token_request_failed", requestError.localizedDescription, requestError)
+      PushTokenRequester.resolve = nil
+      PushTokenRequester.reject = nil
     } else {
       NSLog("PushTokenRequester error (onRequestFailed): reject is nil")
     }

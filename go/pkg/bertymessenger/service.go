@@ -720,12 +720,12 @@ func (svc *service) sharePushTokenForConversation(conversation *mt.Conversation)
 
 	if account.DevicePushToken == nil {
 		svc.logger.Warn("no push token known, won't share it")
-		return nil
+		return errcode.ErrPushUnknownDestination.Wrap(fmt.Errorf("no push token known, won't share it"))
 	}
 
 	if account.DevicePushServer == nil {
 		svc.logger.Warn("no push server known, won't share push token")
-		return nil
+		return errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("no push server known, won't share push token"))
 	}
 
 	pushServer := &protocoltypes.PushServer{}

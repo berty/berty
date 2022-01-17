@@ -1,7 +1,8 @@
+import base64 from 'base64-js'
 import { Buffer } from 'buffer'
-import { Alert, PermissionsAndroid, Platform } from 'react-native'
+import { Alert, PermissionsAndroid, NativeModules, Platform } from 'react-native'
 import RNFS from 'react-native-fs'
-import InAppBrowser from 'react-native-inappbrowser-reborn'
+import InAppBrowser, { RedirectResult } from 'react-native-inappbrowser-reborn'
 import Share from 'react-native-share'
 
 import beapi from '@berty-tech/api'
@@ -12,13 +13,17 @@ import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useAccount } from '@berty-tech/react-redux'
 
 import { MessengerState } from './types'
+import { berty } from '@berty-tech/api/root.pb'
+const { PushTokenRequester } = NativeModules
 
 export enum serviceTypes {
 	Replication = 'rpl',
+	Push = 'psh',
 }
 
 export const serviceNames: { [key: string]: string } = {
 	[serviceTypes.Replication]: 'Replication service', // TODO: i18n
+	[serviceTypes.Push]: 'Push notifications', // TODO: i18n
 }
 
 export const bertyOperatedServer = 'https://services.berty.tech/'
@@ -31,7 +36,10 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 
 	return Object.values(
 		account.serviceTokens.reduce(
-			(tokens, t) => ({ ...tokens, [`${t.authenticationUrl}-${t.serviceType}`]: t }),
+			(tokens, t) => ({
+				...tokens,
+				[`${t.authenticationUrl}-${t.serviceType}`]: t,
+			}),
 			{},
 		),
 	)
@@ -46,71 +54,68 @@ export const servicesAuthViaURL = async (
 	url: string,
 ): Promise<void> => {
 	if (!protocolClient) {
-		return
+		throw new Error('missing protocol client')
 	}
 
-	let authURL = ''
-	try {
-		// PKCE OAuth flow
-		const resp = await protocolClient?.authServiceInitFlow({
+	// PKCE OAuth flow
+	const resp = await protocolClient
+		?.authServiceInitFlow({
 			authUrl: url,
 		})
+		.catch(e => {
+			Alert.alert('The provided URL is not supported')
+			throw e
+		})
 
-		authURL = resp.url
-
-		if (!resp.secureUrl) {
-			let allowNonSecure = false
-			await new Promise<void>(resolve => {
-				Alert.alert(
-					'Security warning',
-					'The provided URL is using a non secure connection, do you want to continue?',
-					[
-						{
-							text: 'Access page',
-							onPress: () => {
-								allowNonSecure = true
-								resolve()
-							},
+	if (!resp.secureUrl) {
+		let allowNonSecure = false
+		await new Promise<void>(resolve => {
+			Alert.alert(
+				'Security warning',
+				'The provided URL is using a non secure connection, do you want to continue?',
+				[
+					{
+						text: 'Access page',
+						onPress: () => {
+							allowNonSecure = true
+							resolve()
 						},
-						{ text: 'Go back', onPress: () => resolve() },
-					],
-				)
-			})
+					},
+					{ text: 'Go back', onPress: () => resolve() },
+				],
+			)
+		})
 
-			if (!allowNonSecure) {
-				return
-			}
-		}
-	} catch {
-		Alert.alert('The provided URL is not supported')
-		return
-	}
-
-	if (await InAppBrowser.isAvailable()) {
-		try {
-			const response: any = await InAppBrowser.openAuth(authURL, 'berty://', {
-				dismissButtonStyle: 'cancel',
-				readerMode: false,
-				modalPresentationStyle: 'pageSheet',
-				modalEnabled: true,
-				showTitle: true,
-				enableDefaultShare: false,
-				ephemeralWebSession: true,
-				// forceCloseOnRedirection: false,
-			})
-
-			if (!response.url) {
-				return
-			}
-
-			const responseURL = response.url
-			await protocolClient?.authServiceCompleteFlow({
-				callbackUrl: responseURL,
-			})
-		} catch (e) {
-			console.warn(e)
+		if (!allowNonSecure) {
+			throw new Error('missing protocol client')
 		}
 	}
+
+	if (!(await InAppBrowser.isAvailable())) {
+		throw new Error('no browser available')
+	}
+
+	const response = await InAppBrowser.openAuth(resp.url, 'berty://', {
+		dismissButtonStyle: 'cancel',
+		readerMode: false,
+		modalPresentationStyle: 'pageSheet',
+		modalEnabled: true,
+		showTitle: true,
+		enableDefaultShare: false,
+		ephemeralWebSession: true,
+		// forceCloseOnRedirection: false,
+	})
+
+	if ((response as RedirectResult).url) {
+		if (!(response as RedirectResult).url) {
+			throw new Error('invalid response from auth server')
+		}
+	}
+
+	const responseURL = (response as RedirectResult).url
+	await protocolClient?.authServiceCompleteFlow({
+		callbackUrl: responseURL,
+	})
 }
 
 export const replicateGroup = async (
@@ -235,3 +240,121 @@ export const exportAccountToFile = async (accountId: string | null) => {
 			}
 		})
 }
+
+export const getDevicesForConversationAndMember = (
+	client: ServiceClientType<beapi.messenger.MessengerService>,
+	conversationPk: string | undefined | null,
+	memberPk: string | undefined | null,
+) => {
+	if (!conversationPk || !memberPk) {
+		return new Promise<berty.messenger.v1.IDevice[]>(resolve => {
+			resolve([])
+		})
+	}
+
+	return new Promise<berty.messenger.v1.IDevice[]>(resolve => {
+		let devices = [] as berty.messenger.v1.IDevice[]
+		let subStream: { stop: () => void } | null
+
+		client
+			?.listMemberDevices({ memberPk: memberPk, conversationPk: conversationPk })
+			.then(async stream => {
+				stream.onMessage((msg, err) => {
+					if (err) {
+						return
+					}
+
+					if (!msg) {
+						return
+					}
+
+					devices.push(msg.device!)
+				})
+
+				await stream.start()
+			})
+			.then(() => resolve(devices))
+
+		return () => {
+			if (subStream !== null) {
+				subStream.stop()
+			}
+		}
+	})
+}
+
+export const getSharedPushTokensForConversation = (
+	client: ServiceClientType<beapi.messenger.MessengerService>,
+	conversationPk: string | undefined | null,
+) => {
+	if (!conversationPk) {
+		return new Promise<berty.messenger.v1.ISharedPushToken[]>(resolve => {
+			resolve([])
+		})
+	}
+
+	return new Promise<berty.messenger.v1.ISharedPushToken[]>(resolve => {
+		let tokens = [] as berty.messenger.v1.ISharedPushToken[]
+		let subStream: { stop: () => void } | null
+
+		client
+			?.pushTokenSharedForConversation({ conversationPk: conversationPk })
+			.then(async stream => {
+				stream.onMessage((msg, err) => {
+					if (err) {
+						return
+					}
+
+					if (!msg || !msg.pushToken) {
+						return
+					}
+
+					tokens.push(msg.pushToken)
+				})
+
+				await stream.start()
+			})
+			.then(() => {
+				resolve(tokens)
+			})
+
+		return () => {
+			if (subStream !== null) {
+				subStream.stop()
+			}
+		}
+	})
+}
+
+export const requestAndPersistPushToken = (
+	protocolClient: ServiceClientType<beapi.protocol.ProtocolService>,
+) =>
+	new Promise((resolve, reject) => {
+		PushTokenRequester.request()
+			.then((responseJSON: string) => {
+				let response = JSON.parse(responseJSON)
+				protocolClient
+					.pushSetDeviceToken({
+						receiver: beapi.protocol.PushServiceReceiver.create({
+							tokenType:
+								Platform.OS === 'ios'
+									? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
+									: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+							bundleId: response.bundleId,
+							token: new Uint8Array(base64.toByteArray(response.token)),
+						}),
+					})
+					.then(() => {
+						console.info(`Push token registered: ${responseJSON}`)
+						resolve(responseJSON)
+					})
+					.catch(err => {
+						console.warn(`Push token registration failed: ${err}`)
+						reject(err)
+					})
+			})
+			.catch((err: Error) => {
+				console.warn(`Push token request failed: ${err}`)
+				reject(err)
+			})
+	})

@@ -4520,6 +4520,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "MessageSearch.Request",
                     responseType: "MessageSearch.Reply"
                   },
+                  ListMemberDevices: {
+                    requestType: "ListMemberDevices.Request",
+                    responseType: "ListMemberDevices.Reply",
+                    responseStream: true
+                  },
                   TyberHostSearch: {
                     requestType: "TyberHostSearch.Request",
                     responseType: "TyberHostSearch.Reply",
@@ -4532,6 +4537,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushSetAutoShare: {
                     requestType: "PushSetAutoShare.Request",
                     responseType: "PushSetAutoShare.Reply"
+                  },
+                  PushShareTokenForConversation: {
+                    requestType: "PushShareTokenForConversation.Request",
+                    responseType: "PushShareTokenForConversation.Reply"
+                  },
+                  PushTokenSharedForConversation: {
+                    requestType: "PushTokenSharedForConversation.Request",
+                    responseType: "PushTokenSharedForConversation.Reply",
+                    responseStream: true
                   },
                   PushReceive: {
                     requestType: "PushReceive.Request",
@@ -5246,6 +5260,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       medias: {
                         type: "int64",
                         id: 11
+                      },
+                      sharedPushTokens: {
+                        type: "int64",
+                        id: 12
                       }
                     }
                   }
@@ -5313,10 +5331,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   autoSharePushTokenFlag: {
                     type: "bool",
-                    id: 8,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:default:true"
-                    }
+                    id: 8
                   },
                   devicePushToken: {
                     type: "bytes",
@@ -5716,6 +5731,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   sharedPushTokenIdentifier: {
                     type: "string",
                     id: 19
+                  },
+                  localMemberPublicKey: {
+                    type: "string",
+                    id: 20
                   }
                 },
                 nested: {
@@ -5826,6 +5845,38 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   memberPublicKey: {
                     type: "string",
                     id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index"
+                    }
+                  }
+                }
+              },
+              SharedPushToken: {
+                fields: {
+                  devicePublicKey: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index"
+                    }
+                  },
+                  memberPublicKey: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index"
+                    }
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index"
+                    }
+                  },
+                  token: {
+                    type: "string",
+                    id: 4,
                     options: {
                       "(gogoproto.moretags)": "gorm:index"
                     }
@@ -6729,6 +6780,80 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       data: {
                         type: "PushReceivedData",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ListMemberDevices: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      conversationPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ConversationPK"
+                        }
+                      },
+                      memberPk: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "MemberPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      device: {
+                        type: "Device",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              PushShareTokenForConversation: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      conversationPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ConversationPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushTokenSharedForConversation: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      conversationPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ConversationPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      pushToken: {
+                        type: "SharedPushToken",
                         id: 1
                       }
                     }

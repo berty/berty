@@ -11,13 +11,10 @@ import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useConversationMembersDict, useConversation } from '@berty-tech/react-redux'
 
-import {
-	ButtonSetting,
-	FactionButtonSetting,
-	ButtonDropDown,
-} from '../shared-components/SettingsButtons'
+import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import logo from '../main/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
+import EnableNotificationsButton from '@berty-tech/components/chat/EnableNotificationsButton'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
@@ -150,12 +147,7 @@ const MultiMemberSettingsBody: React.FC<{
 				icon='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
-			<ButtonSetting
-				name={t('chat.multi-member-settings.notifications-button')}
-				icon='bell-outline'
-				toggled
-				disabled
-			/>
+			<EnableNotificationsButton conversationPk={publicKey} />
 			<FactionButtonSetting
 				name={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
 				icon='users'
@@ -180,37 +172,44 @@ const MultiMemberSettingsBody: React.FC<{
 						name={accountMember?.displayName || ''}
 						alone={false}
 						actionIcon={null}
+						onPress={() => {
+							navigation.navigate('Group.ChatSettingsMemberDetail', {
+								convId: publicKey,
+								memberPk: accountMember?.publicKey!,
+								displayName: accountMember?.displayName || '',
+							})
+						}}
 					/>
 				</View>
 				{Object.entries(members)
 					.filter(([, m]) => m && !m.isMe)
-					.map(([k, m], key) => {
+					.map(([k], key) => {
 						return (
 							<View
-								key={key}
 								style={{
 									flexDirection: 'row',
 									alignItems: 'center',
 								}}
+								key={key}
 							>
-								<View
-									style={[
-										padding.top.small,
-										{
-											alignSelf: 'flex-start',
-										},
-									]}
-								>
-									<MemberAvatar
-										publicKey={members[k]?.publicKey}
-										conversationPublicKey={publicKey}
-										size={30 * scaleSize}
-									/>
-								</View>
-
-								<ButtonDropDown
-									title={m?.displayName || t('chat.multi-member-settings.members-button.unknown')}
-									body={m?.publicKey || ''}
+								<MemberAvatar
+									publicKey={members[k]?.publicKey}
+									conversationPublicKey={publicKey}
+									size={30 * scaleSize}
+								/>
+								<ButtonSetting
+									style={[padding.horizontal.small]}
+									textSize={15}
+									name={members[k]?.displayName || ''}
+									alone={false}
+									actionIcon={null}
+									onPress={() => {
+										navigation.navigate('Group.ChatSettingsMemberDetail', {
+											convId: publicKey,
+											memberPk: members[k]?.publicKey!,
+											displayName: members[k]?.displayName || '',
+										})
+									}}
 								/>
 							</View>
 						)

@@ -96,6 +96,9 @@ http:
  - selector: berty.messenger.v1.MessengerService.MessageSearch
    post: /berty.messenger.v1/MessengerService/MessageSearch
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.ListMemberDevices
+   post: /berty.messenger.v1/MessengerService/ListMemberDevices
+   body: "*"
  - selector: berty.messenger.v1.MessengerService.TyberHostSearch
    post: /berty.messenger.v1/MessengerService/TyberHostSearch
    body: "*"
@@ -104,6 +107,12 @@ http:
    body: "*"
  - selector: berty.messenger.v1.MessengerService.PushSetAutoShare
    post: /berty.messenger.v1/MessengerService/PushSetAutoShare
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.PushShareTokenForConversation
+   post: /berty.messenger.v1/MessengerService/PushShareTokenForConversation
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.PushTokenSharedForConversation
+   post: /berty.messenger.v1/MessengerService/PushTokenSharedForConversation
    body: "*"
  - selector: berty.messenger.v1.MessengerService.PushReceive
    post: /berty.messenger.v1/MessengerService/PushReceive
