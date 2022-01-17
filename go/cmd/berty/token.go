@@ -49,12 +49,13 @@ import (
 //
 func tokenServerCommand() *ffcli.Command {
 	var (
-		secretFlag    = ""
-		authSKFlag    = ""
-		listenerFlag  = "127.0.0.1:8080"
-		supportedFlag = ""
-		generate      = false
-		noClick       = false
+		secretFlag       = ""
+		authSKFlag       = ""
+		listenerFlag     = "127.0.0.1:8080"
+		supportedFlag    = ""
+		privacyPolicyURL = ""
+		generate         = false
+		noClick          = false
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("token issuer server p", flag.ExitOnError)
@@ -65,6 +66,7 @@ func tokenServerCommand() *ffcli.Command {
 		fs.StringVar(&listenerFlag, "http.listener", listenerFlag, "http listener")
 		fs.StringVar(&supportedFlag, "svc", supportedFlag, "comma separated list of supported services as name@ip:port")
 		fs.BoolVar(&generate, "generate", false, "generate a single token and output it on stdout")
+		fs.StringVar(&privacyPolicyURL, "privacy-policy-url", "", "url of privacy policies")
 		fs.BoolVar(&noClick, "no-click", false, "disable the login screen and redirect to the next token step directly")
 		return fs, nil
 	}
@@ -129,8 +131,9 @@ func tokenServerCommand() *ffcli.Command {
 			}
 
 			server, err := bertyauth.NewAuthTokenServer(secret, sk, services, &bertyauth.AuthTokenOptions{
-				Logger:  logger,
-				NoClick: noClick,
+				Logger:           logger,
+				NoClick:          noClick,
+				PrivacyPolicyURL: privacyPolicyURL,
 			})
 			if err != nil {
 				return err

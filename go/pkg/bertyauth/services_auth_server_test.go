@@ -24,7 +24,8 @@ func mustReadAllBytes(t *testing.T, reader io.ReadCloser) []byte {
 
 func TestNewAuthTokenServer(t *testing.T) {
 	services := map[string]string{
-		"service": "servicehost:1234",
+		"rpl": "servicehost:1234",
+		"psh": "servicehost:1234",
 	}
 	secret, _, sk := HelperGenerateTokenIssuerSecrets(t)
 
@@ -108,9 +109,14 @@ func TestNewAuthTokenServer(t *testing.T) {
 	res, err = server.Client().Get(authorizeURL.String())
 	require.NoError(t, err)
 	require.Equal(t, 200, res.StatusCode)
-	require.Equal(t, templateAuthTokenServerAuthorizeButton, string(mustReadAllBytes(t, res.Body)))
+	body := string(mustReadAllBytes(t, res.Body))
+	require.Contains(t, body, "psh_selected")
+	require.Contains(t, body, "rpl_selected")
 
-	res, err = server.Client().Post(authorizeURL.String(), "multipart/form-data", bytes.NewBuffer([]byte("")))
+	res, err = server.Client().PostForm(authorizeURL.String(), url.Values{
+		"psh_selected": {"1"},
+		"rpl_selected": {"1"},
+	})
 	require.NoError(t, err)
 	require.Equal(t, 200, res.StatusCode)
 	require.Contains(t, string(mustReadAllBytes(t, res.Body)), "?code=eyJ")

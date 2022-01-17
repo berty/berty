@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "Réplication",
+        "description": "Ce service répliquera automatiquement vos conversations pour fournir une meilleure disponibilité.",
+        "benefitBadge": "Performance"
+      },
+      "psh": {
+        "name": "Notifications push",
+        "description": "Ce service permet à votre appareil de recevoir des notifications push pour les messages qui vous sont destinés.",
+        "benefitBadge": "Performance"
+      }
+    },
+    "pageTitle": "Services Berty",
+    "connectButton_one": "Utiliser le service",
+    "connectButton_other": "Utiliser les services sélectionnés",
+    "privacyPolicyLabel": "Politique de confidentialité"
+  },
   "push": {
     "message": {},
     "error": {

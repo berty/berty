@@ -28,10 +28,10 @@ var templateAuthTokenServerRedirect = template.Must(template.New("redirect").Par
 
 // nolint:gosec
 var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html>
-<html lang="en-GB">
+<html lang="{{.HTMLLang}}">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CONNECT & REPLICATE</title>
+    <title>{{.PageTitle}}</title>
     <style>
       body {
         margin: 0;
@@ -46,10 +46,20 @@ var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html>
         align-items: center;
       }
       p {
+        text-align: left;
         color: #898ba3;
       }
-      .title {
+      h1 {
         color: #3f49ea;
+      }
+      .title {
+        text-align: left;
+        color: #3f49ea;
+        font-size: 1rem;
+      }
+      input[type="checkbox"] {
+        width : 1.25rem;
+        height : 1.25rem;
       }
       .block {
         width: 300px;
@@ -64,7 +74,7 @@ var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html>
         padding: 25px;
       }
       .badge-wrapper {
-        text-align: right;
+        float: right;
       }
       .badge {
         color: #20d6b5;
@@ -96,23 +106,41 @@ var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html>
         color: #fff;
         background-color: #3f49ea;
       }
+      a.privacy-policy-link {
+        color: #898ba3;
+        margin-top: 20px;
+        font-size: 80%;
+        text-decoration: none;
+        display: block;
+      }
     </style>
   </head>
   <body>
     <main>
       <div class="block">
-        <div class="badge-wrapper">
-          <div class="badge">Performance</div>
-        </div>
-        <h2 class="title">Berty Replication Service</h2>
-        <p>
-          This will automatically replicate your conversations on our server, to
-          provide your device the most efficient network performance.
-        </p>
-        <p>This feature is optional.</p>
         <form method="POST">
-          <button class="btn" type="submit">CONNECT & REPLICATE</button>
+          <h1>{{ .PageTitle }}</h1>
+          {{ $singleService := len .Services }}
+          {{ range $key, $service := .Services }}
+           <label class="title">
+              <h2>
+              {{ if eq $singleService 1 }}
+                <input type="hidden" name="{{ $key }}}_selected" value="1">
+              {{ else }}
+                <input type="checkbox" name="{{ $key }}_selected" value="1" checked>
+              {{ end }}
+              {{ .name }}
+              </h2>
+            </label>
+            <p>
+              {{ .description }}
+            </p>
+          {{end}}
+          <button class="btn" type="submit">{{.ConnectButton}}</button>
         </form>
+        {{ if .PrivacyPolicyURL }}
+          <a class="privacy-policy-link" href="{{ .PrivacyPolicyURL }}" target="_blank">{{ .PrivacyPolicyURLLabel }}</a>
+        {{ end }}
       </div>
     </main>
   </body>
