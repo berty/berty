@@ -468,10 +468,35 @@
 			"delete-button": "刪除聯繫人",
 			"fingerprint": "指紋",
 			"info": "信息",
-			"devices": "設備"
+			"devices": "設備",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "在此輸入..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "設備",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "搜索",
