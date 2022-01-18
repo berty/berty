@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Производителност"
+      },
+      "psh": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Производителност"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Политика за поверителонст"
+  },
   "push": {
     "message": {},
     "error": {
