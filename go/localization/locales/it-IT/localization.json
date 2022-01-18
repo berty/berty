@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Prestazioni"
+      },
+      "psh": {
+        "name": "Notifiche gruppi",
+        "description": "",
+        "benefitBadge": "Prestazioni"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Informativa sulla privacy"
+  },
   "push": {
     "message": {},
     "error": {
