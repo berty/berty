@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Leistung"
+      },
+      "psh": {
+        "name": "Push-Benachrichtigungen",
+        "description": "",
+        "benefitBadge": "Leistung"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Datenschutzerklärung"
+  },
   "push": {
     "message": {},
     "error": {
