@@ -468,10 +468,35 @@
 			"delete-button": "Elimina contatto",
 			"fingerprint": "Impronta",
 			"info": "Informazioni",
-			"devices": "Dispositivi"
+			"devices": "Dispositivi",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "Scrivi qui..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Dispositivi",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Cerca",
