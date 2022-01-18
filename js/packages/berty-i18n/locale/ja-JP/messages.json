@@ -468,10 +468,35 @@
 			"delete-button": "連絡先を削除",
 			"fingerprint": "識別情報（フィンガープリント）",
 			"info": "各種情報",
-			"devices": "デバイス"
+			"devices": "デバイス",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "ここに入力..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "デバイス",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "検索",
