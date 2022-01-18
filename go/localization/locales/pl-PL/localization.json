@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Wydajność"
+      },
+      "psh": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Wydajność"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Polityka prywatności"
+  },
   "push": {
     "message": {},
     "error": {
