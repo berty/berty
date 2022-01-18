@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "パフォーマンス"
+      },
+      "psh": {
+        "name": "プッシュ通知",
+        "description": "",
+        "benefitBadge": "パフォーマンス"
+      }
+    },
+    "pageTitle": "Berty サービス一覧",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "プライバシーポリシー"
+  },
   "push": {
     "message": {},
     "error": {
