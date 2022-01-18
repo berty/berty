@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Ytelse"
+      },
+      "psh": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Ytelse"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Retningslinjer for personvern"
+  },
   "push": {
     "message": {},
     "error": {
