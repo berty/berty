@@ -468,10 +468,35 @@
 			"delete-button": "Odstranit kontakt",
 			"fingerprint": "Otisk",
 			"info": "Informace",
-			"devices": "Zařízení"
+			"devices": "Zařízení",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Zařízení",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Vyhledat",
