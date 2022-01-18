@@ -120,6 +120,10 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	}
 	s.logger.Info("opening account", logutil.PrivateStrings("args", args), logutil.PrivateString("account-id", req.AccountID))
 
+	if s.serviceListeners != "" {
+		addListValueArgs(args, initutil.FlagNameNodeListeners, []string{initutil.FlagValueNodeListeners}, []string{s.serviceListeners})
+	}
+
 	// setup manager
 	prog.Get("setup-manager").SetAsCurrent()
 	var initManager *initutil.Manager

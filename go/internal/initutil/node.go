@@ -1,36 +1,24 @@
 package initutil
 
 import (
-	"context"
-	"crypto/ed25519"
 	"encoding/base64"
 	"flag"
 	"fmt"
 	"os"
 	"os/user"
-	"strings"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
+	"berty.tech/berty/v2/go/internal/grpcserver"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
-	"berty.tech/berty/v2/go/pkg/authtypes"
-	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -39,6 +27,11 @@ import (
 )
 
 const (
+	FlagNameNodeListeners         = "node.listeners"
+	FlagNameNodeAccountListeners  = "node.account.listeners"
+	FlagValueNodeListeners        = "/ip4/127.0.0.1/tcp/9091/grpc"
+	FlagValueNodeAccountListeners = "/ip4/127.0.0.1/tcp/9092/grpc"
+
 	PerformancePreset = "performance"
 	AnonymityPreset   = "anonymity"
 	VolatilePreset    = "volatile"
@@ -63,11 +56,15 @@ func (m *Manager) SetupProtocolAuth(fs *flag.FlagSet) {
 }
 
 func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "", "gRPC API listeners")
+	fs.StringVar(&m.Node.GRPC.Listeners, FlagNameNodeListeners, "", "gRPC API listeners")
 }
 
 func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
+	fs.StringVar(&m.Node.GRPC.Listeners, FlagNameNodeListeners, FlagValueNodeListeners, "gRPC API listeners")
+}
+
+func (m *Manager) SetupDefaultGRPCAccountListenersFlags(fs *flag.FlagSet) {
+	fs.StringVar(&m.Node.GRPC.AccountListeners, FlagNameNodeAccountListeners, FlagValueNodeAccountListeners, "gRPC acocunt API listeners")
 }
 
 func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
@@ -405,93 +402,22 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 		return nil, nil, err
 	}
 
-	grpcLogger := logger.Named("grpc")
-	// Define customfunc to handle panic
-	panicHandler := func(p interface{}) (err error) {
-		return status.Errorf(codes.Unknown, "panic recover: %v", p)
-	}
-
-	// Shared options for the logger, with a custom gRPC code to log level function.
-	recoverOpts := []grpc_recovery.Option{
-		grpc_recovery.WithRecoveryHandler(panicHandler),
-	}
-
-	zapOpts := []grpc_zap.Option{}
-
-	// override grpc logger
-	ReplaceGRPCLogger(grpcLogger)
-
-	// noop auth func
-	authFunc := func(ctx context.Context) (context.Context, error) { return ctx, nil }
-
-	if m.Node.Protocol.AuthSecret != "" || m.Node.Protocol.AuthPublicKey != "" {
-		man, err := getAuthTokenVerifier(m.Node.Protocol.AuthSecret, m.Node.Protocol.AuthPublicKey)
-		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
-		}
-
-		serviceID := m.Node.Protocol.ServiceID
-		switch serviceID {
-		case authtypes.ServiceReplicationID:
-			authFunc = man.GRPCAuthInterceptor(serviceID)
-		case "":
-			logger.Warn("GRPCAuth: Internal field ServiceID should not be empty", logutil.PrivateString("serviceID", serviceID))
-		default:
-		}
-	}
-
-	grpcOpts := []grpc.ServerOption{
-		grpc_middleware.WithUnaryServerChain(
-			grpc_recovery.UnaryServerInterceptor(recoverOpts...),
-			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
-			grpc_auth.UnaryServerInterceptor(authFunc),
-		),
-		grpc_middleware.WithStreamServerChain(
-			grpc_recovery.StreamServerInterceptor(recoverOpts...),
-			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
-			grpc_auth.StreamServerInterceptor(authFunc),
-		),
-	}
-
-	grpcServer := grpc.NewServer(grpcOpts...)
-	grpcGatewayMux := grpcgw.NewServeMux()
-
-	if m.Node.GRPC.Listeners != "" {
-		addrs := strings.Split(m.Node.GRPC.Listeners, ",")
-		maddrs, err := ipfsutil.ParseAddrs(addrs...)
-		if err != nil {
-			return nil, nil, err
-		}
-		m.Node.GRPC.listeners = make([]grpcutil.Listener, len(maddrs))
-
-		server := grpcutil.Server{
-			GRPCServer: grpcServer,
-			GatewayMux: grpcGatewayMux,
-		}
-
-		for idx, maddr := range maddrs {
-			maddrStr := maddr.String()
-			l, err := grpcutil.Listen(maddr)
-			if err != nil {
-				return nil, nil, errcode.TODO.Wrap(err)
-			}
-			m.Node.GRPC.listeners[idx] = l
-
-			m.workers.Add(func() error {
-				m.initLogger.Info("serving", logutil.PrivateString("maddr", maddrStr))
-				return server.Serve(l)
-			}, func(error) {
-				l.Close()
-				m.initLogger.Debug("closing done", logutil.PrivateString("maddr", maddrStr))
-			})
-		}
+	grpcServer, grpcGatewayMux, listeners, err := grpcserver.InitGRPCServer(&m.workers, &grpcserver.GRPCOpts{
+		Logger:        logger,
+		AuthPublicKey: m.Node.Protocol.AuthPublicKey,
+		AuthSecret:    m.Node.Protocol.AuthSecret,
+		Listeners:     m.Node.GRPC.Listeners,
+		ServiceID:     m.Node.Protocol.ServiceID,
+	})
+	if err != nil {
+		return nil, nil, err
 	}
 
 	m.initLogger.Debug("gRPC server initialized and cached")
 	m.Node.GRPC.server = grpcServer
 	m.Node.GRPC.gatewayMux = grpcGatewayMux
+	m.Node.GRPC.listeners = listeners
+
 	return m.Node.GRPC.server, m.Node.GRPC.gatewayMux, nil
 }
 
@@ -697,24 +623,6 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 	m.Node.Messenger.server = messengerServer
 	m.initLogger.Debug("messenger server initialized and cached")
 	return m.Node.Messenger.server, nil
-}
-
-func getAuthTokenVerifier(secret, pk string) (*bertyauth.AuthTokenVerifier, error) {
-	rawSecret, err := base64.RawStdEncoding.DecodeString(secret)
-	if err != nil {
-		return nil, err
-	}
-
-	rawPK, err := base64.RawStdEncoding.DecodeString(pk)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(rawPK) != ed25519.PublicKeySize {
-		return nil, fmt.Errorf("empty or invalid pk size")
-	}
-
-	return bertyauth.NewAuthTokenVerifier(rawSecret, rawPK)
 }
 
 func safeDefaultDisplayName() string {

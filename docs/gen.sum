@@ -1,4 +1,5 @@
 f9aab22f394c2e8926f16c837cb8d7ac4aae7896  ../api/accounttypes.proto
+432822dc16ac725d118570563df457ec44bb43f5  ../api/accounttypes.yaml
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
 762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 905a4386f317f51d3965a531d39a783c25ad8d0b  ../api/bertyreplication.yaml

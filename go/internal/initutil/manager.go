@@ -175,8 +175,9 @@ type Manager struct {
 			dbCleanup func()
 		}
 		GRPC struct {
-			RemoteAddr string `json:"RemoteAddr,omitempty"`
-			Listeners  string `json:"Listeners,omitempty"`
+			RemoteAddr       string `json:"RemoteAddr,omitempty"`
+			Listeners        string `json:"Listeners,omitempty"`
+			AccountListeners string `json:"AccountListeners,omitempty"`
 
 			// internal
 			clientConn        *grpc.ClientConn

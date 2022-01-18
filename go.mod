@@ -52,6 +52,7 @@ require (
 	github.com/ipfs/interface-go-ipfs-core v0.5.2
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
+	github.com/jeandeaual/go-locale v0.0.0-20211215124046-23669fb7cbc8
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kr/pretty v0.3.0
 	github.com/libp2p/go-libp2p v0.17.0
