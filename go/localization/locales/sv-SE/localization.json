@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Prestanda"
+      },
+      "psh": {
+        "name": "Push-aviseringar",
+        "description": "",
+        "benefitBadge": "Prestanda"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Integritetspolicy"
+  },
   "push": {
     "message": {},
     "error": {
