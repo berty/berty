@@ -468,10 +468,35 @@
 			"delete-button": "",
 			"fingerprint": "Prstni odtis",
 			"info": "Informacije",
-			"devices": "Naprave"
+			"devices": "Naprave",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Naprave",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Iskanje",
