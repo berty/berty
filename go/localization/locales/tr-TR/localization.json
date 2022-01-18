@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Performans"
+      },
+      "psh": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Performans"
+      }
+    },
+    "pageTitle": "Berty servisleri",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Gizlilik politikası"
+  },
   "push": {
     "message": {},
     "error": {
