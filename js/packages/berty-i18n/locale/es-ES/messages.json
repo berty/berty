@@ -468,10 +468,35 @@
 			"delete-button": "Eliminar contacto",
 			"fingerprint": "Huella digital",
 			"info": "Información",
-			"devices": "Dispositivos"
+			"devices": "Dispositivos",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "Escribe aquí..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Dispositivos",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Buscar",
