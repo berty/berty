@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Rendimiento"
+      },
+      "psh": {
+        "name": "Notificaciones Push",
+        "description": "",
+        "benefitBadge": "Rendimiento"
+      }
+    },
+    "pageTitle": "Servicios de Berty",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Política de privacidad"
+  },
   "push": {
     "message": {},
     "error": {
