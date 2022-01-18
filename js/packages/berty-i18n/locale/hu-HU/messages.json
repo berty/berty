@@ -468,10 +468,35 @@
 			"delete-button": "Kontakt törlése",
 			"fingerprint": "Ujjlenyomat",
 			"info": "Infók",
-			"devices": "Eszközök"
+			"devices": "Eszközök",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "Írjon ide..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Eszközök",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Keresés",
