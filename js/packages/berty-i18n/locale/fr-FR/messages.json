@@ -468,10 +468,35 @@
 			"delete-button": "Supprimer le contact",
 			"fingerprint": "Empreinte digitale",
 			"info": "Infos",
-			"devices": "Appareils"
+			"devices": "Appareils",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "Écrivez ici..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Appareils",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Rechercher",
