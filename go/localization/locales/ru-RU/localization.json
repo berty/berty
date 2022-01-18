@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Скорость"
+      },
+      "psh": {
+        "name": "Push-уведомления",
+        "description": "",
+        "benefitBadge": "Скорость"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Политика конфиденциальности"
+  },
   "push": {
     "message": {},
     "error": {
