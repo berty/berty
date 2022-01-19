@@ -51,7 +51,7 @@ require (
 	github.com/ipfs/go-ipfs-files v0.0.9
 	github.com/ipfs/go-ipfs-keystore v0.0.2
 	github.com/ipfs/go-ipld-cbor v0.0.5
-	github.com/ipfs/go-log/v2 v2.3.1-0.20210928212129-b7a50af7847a
+	github.com/ipfs/go-log/v2 v2.5.0
 	github.com/ipfs/go-merkledag v0.4.1 // indirect
 	github.com/ipfs/interface-go-ipfs-core v0.5.2
 	github.com/ipld/go-ipld-prime v0.12.3 // indirect
@@ -61,11 +61,11 @@ require (
 	github.com/kr/pretty v0.3.0
 	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-circuit v0.4.0
-	github.com/libp2p/go-libp2p-core v0.11.0
+	github.com/libp2p/go-libp2p-core v0.14.0
 	github.com/libp2p/go-libp2p-discovery v0.5.1
 	github.com/libp2p/go-libp2p-kad-dht v0.14.0
 	github.com/libp2p/go-libp2p-pubsub v0.5.6
-	github.com/libp2p/go-libp2p-quic-transport v0.12.0
+	github.com/libp2p/go-libp2p-quic-transport v0.16.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
 	github.com/libp2p/go-libp2p-transport-upgrader v0.4.6
