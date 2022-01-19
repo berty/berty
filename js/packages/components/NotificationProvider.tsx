@@ -4,7 +4,6 @@ import { InAppNotificationProvider, withInAppNotification } from 'react-native-i
 import { CommonActions } from '@react-navigation/native'
 
 import { useMessengerContext } from '@berty-tech/store/context'
-import { accountService } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import { useConversationsDict } from '@berty-tech/react-redux'
@@ -15,10 +14,11 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 	({ showNotification }: any) => {
 		const conversations = useConversationsDict()
 		const { navigate, dispatch } = useNavigation()
+		const { accountClient } = useMessengerContext()
 
 		React.useEffect(() => {
 			const pushNotifListener = async (data: any) => {
-				const push = await accountService.pushReceive({
+				const push = await accountClient.pushReceive({
 					payload: data,
 					tokenType:
 						Platform.OS === 'ios'
@@ -73,7 +73,7 @@ export const PushNotificationBridge: React.FC = withInAppNotification(
 					console.warn('Push notif remove listener failed: ' + e)
 				}
 			}
-		}, [conversations, dispatch, navigate, showNotification])
+		}, [accountClient, conversations, dispatch, navigate, showNotification])
 		return null
 	},
 )

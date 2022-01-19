@@ -39,6 +39,7 @@ export type MessengerState = {
 
 	appState: MessengerAppState
 	client: ServiceClientType<beapi.messenger.MessengerService> | null
+	accountClient: ServiceClientType<beapi.account.AccountService>
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
 	streamError: any
 
@@ -232,6 +233,7 @@ export enum MessengerActions {
 	AddFakeData = 'ADD_FAKE_DATA',
 	DeleteFakeData = 'DELETE_FAKE_DATA',
 	SetDaemonAddress = 'SET_DAEMON_ADDRESS',
+	SetNextAccountClient = 'SET_NEXT_ACCOUNT_CLIENT',
 	SetPersistentOption = 'SET_PERSISTENT_OPTION',
 	SetNextAccount = 'SET_NEXT_ACCOUNT',
 	SetStateClosed = 'SET_STATE_CLOSED',

@@ -1,5 +1,15 @@
 import React from 'react'
-import { ActivityIndicator, Button, Text, TextInput, View, Image, StatusBar } from 'react-native'
+import {
+	Platform,
+	ActivityIndicator,
+	Button,
+	Text,
+	TextInput,
+	View,
+	Image,
+	StatusBar,
+	Alert,
+} from 'react-native'
 import * as Progress from 'react-native-progress'
 
 import {
@@ -13,6 +23,12 @@ import {
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import source from '@berty-tech/assets/loader_dots.gif'
+import { Service } from '@berty-tech/grpc-bridge'
+import beapi from '@berty-tech/api'
+import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
+import { logger } from '@berty-tech/grpc-bridge/middleware'
+import ExternalTransport from '@berty-tech/store/externalTransport'
+import { grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -92,20 +108,36 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const {
-		streamError,
-		daemonAddress,
-		embedded,
-		dispatch,
-		streamInProgress,
-		deleteAccount,
-		restart,
-	} = useMessengerContext()
+	const { streamError, daemonAddress, dispatch, streamInProgress, deleteAccount, restart } =
+		useMessengerContext()
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()
+	const embedded = Platform.OS !== 'web'
+
 	const changeAddress = React.useCallback(() => {
-		dispatch({ type: MessengerActions.SetDaemonAddress, payload: { value: newAddress } })
-	}, [dispatch, newAddress])
+		let bridge: unknown = rpcBridge
+
+		if (newAddress !== '') {
+			const opts = {
+				transport: ExternalTransport(),
+				host: newAddress,
+			}
+			bridge = rpcWeb(opts)
+		} else if (!embedded && newAddress === '') {
+			Alert.alert('An invalid address has been used')
+			return
+		}
+
+		const accountClient = Service(beapi.account.AccountService, bridge, logger.create('ACCOUNT'))
+
+		dispatch({
+			type: MessengerActions.SetNextAccountClient,
+			payload: {
+				accountClient: accountClient,
+				daemonAddress: newAddress,
+			},
+		})
+	}, [dispatch, embedded, newAddress])
 
 	if (streamError && !streamInProgress) {
 		return (

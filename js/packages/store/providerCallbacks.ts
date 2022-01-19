@@ -9,10 +9,12 @@ import {
 	importAccountWithProgress,
 } from './effectableCallbacks'
 import { defaultPersistentOptions } from './context'
-import { accountService, storageRemove, storageGet, storageSet } from './accountService'
+import { storageRemove, storageGet, storageSet } from './accountService'
 import { MessengerActions, PersistentOptionsUpdate, reducerAction } from './types'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 export const importAccount = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	path: string,
@@ -26,8 +28,8 @@ export const importAccount = async (
 	let resp: beapi.account.ImportAccountWithProgress.Reply | null
 
 	try {
-		await closeAccountWithProgress(dispatch, reduxDispatch)
-		resp = await importAccountWithProgress(path, dispatch)
+		await closeAccountWithProgress(accountClient, dispatch, reduxDispatch)
+		resp = await importAccountWithProgress(accountClient, path, dispatch)
 	} catch (e) {
 		console.warn('unable to import account', e)
 		return
@@ -41,7 +43,7 @@ export const importAccount = async (
 		throw new Error('no account id returned')
 	}
 
-	await refreshAccountList(embedded, dispatch)
+	await refreshAccountList(accountClient, embedded, dispatch)
 
 	dispatch({
 		type: MessengerActions.SetNextAccount,
@@ -50,6 +52,7 @@ export const importAccount = async (
 }
 
 export const updateAccount = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	payload: any,
@@ -71,16 +74,17 @@ export const updateAccount = async (
 		if (payload.avatarCid) {
 			obj.avatarCid = payload.avatarCid
 		}
-		await accountService.updateAccount(obj)
+		await accountClient.updateAccount(obj)
 	} catch (e) {
 		console.warn('unable to update account', e)
 		return
 	}
 
-	await refreshAccountList(embedded, dispatch)
+	await refreshAccountList(accountClient, embedded, dispatch)
 }
 
 export const switchAccount = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	accountID: string,
@@ -91,7 +95,7 @@ export const switchAccount = async (
 	}
 
 	try {
-		await closeAccountWithProgress(dispatch, reduxDispatch)
+		await closeAccountWithProgress(accountClient, dispatch, reduxDispatch)
 	} catch (e) {
 		console.warn('unable to close account', e)
 		return
@@ -100,6 +104,7 @@ export const switchAccount = async (
 }
 
 export const deleteAccount = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	selectedAccount: string | null,
@@ -109,13 +114,13 @@ export const deleteAccount = async (
 		return
 	}
 	// close current account service
-	await closeAccountWithProgress(dispatch, reduxDispatch)
+	await closeAccountWithProgress(accountClient, dispatch, reduxDispatch)
 	let accounts: beapi.account.IAccountMetadata[] = []
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
-		await accountService.deleteAccount({ accountId: selectedAccount })
-		await storageRemove(storageKeyForAccount(selectedAccount))
-		accounts = await refreshAccountList(embedded, dispatch)
+		await accountClient.deleteAccount({ accountId: selectedAccount })
+		await storageRemove(accountClient, storageKeyForAccount(selectedAccount))
+		accounts = await refreshAccountList(accountClient, embedded, dispatch)
 	} else {
 		console.warn('state.selectedAccount is null and this should not occur')
 	}
@@ -143,6 +148,7 @@ export const deleteAccount = async (
 }
 
 export const restart = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	accountID: Maybe<string>,
@@ -153,7 +159,7 @@ export const restart = async (
 	}
 
 	try {
-		await closeAccountWithProgress(dispatch, reduxDispatch)
+		await closeAccountWithProgress(accountClient, dispatch, reduxDispatch)
 	} catch (e) {
 		console.warn('unable to close account')
 		return
@@ -162,6 +168,7 @@ export const restart = async (
 }
 
 export const setPersistentOption = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	dispatch: (arg0: reducerAction) => void,
 	selectedAccount: string | null,
 	action: PersistentOptionsUpdate,
@@ -173,7 +180,7 @@ export const setPersistentOption = async (
 
 	try {
 		let opts = {}
-		let persistOpts = await storageGet(storageKeyForAccount(selectedAccount))
+		let persistOpts = await storageGet(accountClient, storageKeyForAccount(selectedAccount))
 
 		if (persistOpts) {
 			opts = JSON.parse(persistOpts)
@@ -185,7 +192,11 @@ export const setPersistentOption = async (
 			[action.type]: action.payload,
 		}
 
-		await storageSet(storageKeyForAccount(selectedAccount), JSON.stringify(updatedPersistOpts))
+		await storageSet(
+			accountClient,
+			storageKeyForAccount(selectedAccount),
+			JSON.stringify(updatedPersistOpts),
+		)
 
 		dispatch({
 			type: MessengerActions.SetPersistentOption,

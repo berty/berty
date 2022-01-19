@@ -41,9 +41,10 @@ export const uiReducerActions: {
 		),*/
 	}),
 
-	[MessengerActions.SetDaemonAddress]: (oldState, action) => ({
+	[MessengerActions.SetNextAccountClient]: (oldState, action) => ({
 		...oldState,
-		daemonAddress: action.payload.value,
+		accountClient: action.payload.accountClient,
+		daemonAddress: action.payload.daemonAddress,
 	}),
 
 	[MessengerActions.SetPersistentOption]: (oldState, action) => ({

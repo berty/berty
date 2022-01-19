@@ -1,18 +1,28 @@
 import { Buffer } from 'buffer'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import beapi from '@berty-tech/api'
 
-import { accountService } from '@berty-tech/store/accountService'
-
-const setItem = async (key: string, value: string) => {
-	await accountService.appStoragePut({ key, value: Buffer.from(value, 'utf-8') })
+const setItem = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
+	key: string,
+	value: string,
+) => {
+	await accountClient.appStoragePut({ key, value: Buffer.from(value, 'utf-8') })
 }
 
-const removeItem = async (key: string) => {
-	await accountService.appStorageRemove({ key })
+const removeItem = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
+	key: string,
+) => {
+	await accountClient.appStorageRemove({ key })
 }
 
-const getItem = async (key: string) => {
+const getItem = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
+	key: string,
+) => {
 	try {
-		const reply = await accountService.appStorageGet({ key })
+		const reply = await accountClient.appStorageGet({ key })
 		return Buffer.from(reply.value).toString('utf-8')
 	} catch (e) {
 		if ((e as Error).message.includes('datastore: key not found')) {

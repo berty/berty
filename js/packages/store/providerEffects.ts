@@ -14,7 +14,7 @@ import store, { AppDispatch, persistor } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 import { streamEventToAction as streamEventToReduxAction } from '@berty-tech/redux/messengerActions'
 
-import { accountService, storageGet, storageRemove } from './accountService'
+import { storageGet, storageRemove } from './accountService'
 import { defaultPersistentOptions } from './context'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
@@ -33,12 +33,13 @@ import { storageKeyForAccount } from './utils'
 import { resetTheme } from '@berty-tech/redux/reducers/theme.reducer'
 
 export const openAccountWithProgress = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	dispatch: (arg0: reducerAction) => void,
 	bridgeOpts: GoBridgeOpts,
 	selectedAccount: string | null,
 ) => {
 	console.log('Opening account', selectedAccount)
-	await accountService
+	await accountClient
 		.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
@@ -87,6 +88,7 @@ export const openAccountWithProgress = async (
 }
 
 const getPersistentOptions = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	dispatch: (arg0: reducerAction) => void,
 	selectedAccount: string | null,
 ) => {
@@ -98,7 +100,7 @@ const getPersistentOptions = async (
 	try {
 		let opts = defaultPersistentOptions()
 		console.log('begin to get persistent data')
-		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
+		let storedOpts = await storageGet(accountClient, storageKeyForAccount(selectedAccount))
 		console.log('end to get persistent data')
 
 		if (storedOpts) {
@@ -133,10 +135,14 @@ export const initBridge = async () => {
 	}
 }
 
-export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
+export const initialLaunch = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
+	dispatch: (arg0: reducerAction) => void,
+	embedded: boolean,
+) => {
 	await initBridge()
 	const f = async () => {
-		const accounts = await refreshAccountList(embedded, dispatch)
+		const accounts = await refreshAccountList(accountClient, embedded, dispatch)
 
 		if (Object.keys(accounts).length > 0) {
 			let accountSelected: any = null
@@ -170,6 +176,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 
 // handle state MessengerAppState.OpeningGettingLocalSettings
 export const openingLocalSettings = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
 	selectedAccount: string | null,
@@ -179,7 +186,7 @@ export const openingLocalSettings = async (
 	}
 
 	try {
-		await getPersistentOptions(dispatch, selectedAccount)
+		await getPersistentOptions(accountClient, dispatch, selectedAccount)
 		dispatch({ type: MessengerActions.SetStateOpeningMarkConversationsClosed })
 	} catch (e) {
 		console.warn('unable to get persistent options', e)
@@ -188,6 +195,7 @@ export const openingLocalSettings = async (
 
 // handle state OpeningWaitingForDaemon
 export const openingDaemon = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
 	selectedAccount: string | null,
@@ -203,7 +211,7 @@ export const openingDaemon = async (
 
 	let tyberHost = ''
 	try {
-		tyberHost = (await storageGet(GlobalPersistentOptionsKeys.TyberHost)) || ''
+		tyberHost = (await storageGet(accountClient, GlobalPersistentOptionsKeys.TyberHost)) || ''
 		if (tyberHost !== '') {
 			console.warn(`connecting to ${tyberHost}`)
 		}
@@ -215,7 +223,7 @@ export const openingDaemon = async (
 	let bridgeOpts: GoBridgeOpts
 	try {
 		let opts: PersistentOptions | undefined
-		let store = await storageGet(storageKeyForAccount(selectedAccount.toString()))
+		let store = await storageGet(accountClient, storageKeyForAccount(selectedAccount.toString()))
 		if (store) {
 			opts = JSON.parse(store)
 		}
@@ -236,7 +244,7 @@ export const openingDaemon = async (
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
-	accountService
+	accountClient
 		.getGRPCListenerAddrs({})
 		.then(() => {
 			// account already open
@@ -244,12 +252,13 @@ export const openingDaemon = async (
 		})
 		.catch(async () => {
 			// account not open
-			await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
+			await openAccountWithProgress(accountClient, dispatch, bridgeOpts, selectedAccount)
 		})
 }
 
 // handle state OpeningWaitingForClients
 export const openingClients = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
 	eventEmitter: EventEmitter,
@@ -260,6 +269,8 @@ export const openingClients = async (
 	if (appState !== MessengerAppState.OpeningWaitingForClients) {
 		return
 	}
+
+	await accountClient.getGRPCListenerAddrs({}).then(c => console.warn(c))
 
 	console.log('starting stream')
 
@@ -397,6 +408,7 @@ export const syncAccountLanguage = async (accountLanguage: string | undefined) =
 
 // handle state PreReady
 export const updateAccountsPreReady = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	appState: MessengerAppState,
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	selectedAccount: string | null,
@@ -408,23 +420,23 @@ export const updateAccountsPreReady = async (
 	if (appState !== MessengerAppState.PreReady) {
 		return
 	}
-	const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
-	await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
-	await storageRemove(GlobalPersistentOptionsKeys.IsNewAccount)
+	const displayName = await storageGet(accountClient, GlobalPersistentOptionsKeys.DisplayName)
+	await storageRemove(accountClient, GlobalPersistentOptionsKeys.DisplayName)
+	await storageRemove(accountClient, GlobalPersistentOptionsKeys.IsNewAccount)
 	if (displayName) {
 		await client
 			?.accountUpdate({ displayName })
 			.then(async () => {})
 			.catch(err => console.error(err))
-		// update account in bertyaccount
-		await updateAccount(embedded, dispatch, {
+		// update account in bertyAccount
+		await updateAccount(accountClient, embedded, dispatch, {
 			accountName: displayName,
 			accountId: selectedAccount,
 			publicKey: account?.publicKey,
 		})
 	}
 	store.dispatch(resetTheme())
-	const config = await accountService.networkConfigGet({ accountId: selectedAccount })
+	const config = await accountClient.networkConfigGet({ accountId: selectedAccount })
 	if (config.currentConfig?.staticRelay && config.currentConfig?.staticRelay[0] === ':default:') {
 		await servicesAuthViaURL(protocolClient, bertyOperatedServer)
 	}
@@ -432,6 +444,7 @@ export const updateAccountsPreReady = async (
 
 // handle states DeletingClosingDaemon, ClosingDaemon
 export const closingDaemon = (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	appState: MessengerAppState,
 	clearClients: (() => Promise<void>) | null,
 	dispatch: (arg0: reducerAction) => void,
@@ -449,7 +462,7 @@ export const closingDaemon = (
 				if (clearClients) {
 					await clearClients()
 				}
-				await closeAccountWithProgress(dispatch, reduxDispatch)
+				await closeAccountWithProgress(accountClient, dispatch, reduxDispatch)
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}
@@ -464,6 +477,7 @@ export const closingDaemon = (
 
 // handle state DeletingClearingStorage
 export const deletingStorage = (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	appState: MessengerAppState,
 	dispatch: (arg0: reducerAction) => void,
 	embedded: boolean,
@@ -475,9 +489,9 @@ export const deletingStorage = (
 
 	const f = async () => {
 		if (selectedAccount !== null) {
-			await accountService.deleteAccount({ accountId: selectedAccount })
-			await storageRemove(storageKeyForAccount(selectedAccount))
-			await refreshAccountList(embedded, dispatch)
+			await accountClient.deleteAccount({ accountId: selectedAccount })
+			await storageRemove(accountClient, storageKeyForAccount(selectedAccount))
+			await refreshAccountList(accountClient, embedded, dispatch)
 		} else {
 			console.warn('state.selectedAccount is null and this should not occur')
 		}

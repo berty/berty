@@ -7,7 +7,6 @@ import Long from 'long'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
 import {
-	accountService,
 	defaultPersistentOptions,
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
@@ -487,7 +486,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 						tor: newValue,
 					}
 
-					await accountService.networkConfigSet({
+					await ctx.accountClient.networkConfigSet({
 						accountId: ctx.selectedAccount,
 						config: newConfig,
 					})
@@ -524,11 +523,11 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				name={t('settings.devtools.tyber-host-button.name')}
 				bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
 				getOptionValue={async () =>
-					(await storageGet(GlobalPersistentOptionsKeys.TyberHost)) ||
+					(await storageGet(ctx.accountClient, GlobalPersistentOptionsKeys.TyberHost)) ||
 					defaultPersistentOptions().tyberHost.address
 				}
 				setOptionValue={async val => {
-					await storageSet(GlobalPersistentOptionsKeys.TyberHost, val)
+					await storageSet(ctx.accountClient, GlobalPersistentOptionsKeys.TyberHost, val)
 					showNeedRestartNotification(showNotification, ctx, t)
 				}}
 			/>

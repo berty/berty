@@ -11,6 +11,10 @@ import {
 	PersistentOptionsSuggestions,
 	UpdatesProfileNotification,
 } from './types'
+import { Service } from '@berty-tech/grpc-bridge'
+import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
+import { logger } from '@berty-tech/grpc-bridge/middleware'
+import beapi from '@berty-tech/api'
 
 export const isDeletingState = (state: MessengerAppState): boolean =>
 	state === MessengerAppState.DeletingClearingStorage ||
@@ -146,6 +150,7 @@ export const initialState = {
 	nextSelectedAccount: null,
 	client: null,
 	protocolClient: null,
+	accountClient: Service(beapi.account.AccountService, rpcBridge, logger.create('ACCOUNT')),
 	streamError: null,
 	streamInProgress: null,
 

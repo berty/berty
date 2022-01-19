@@ -20,7 +20,6 @@ import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
 import {
-	accountService,
 	GlobalPersistentOptionsKeys,
 	storageGet,
 	useMessengerContext,
@@ -620,7 +619,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 				<View style={[padding.medium, margin.horizontal.large]}>
 					<TouchableOpacity
 						onPress={async () => {
-							await accountService.networkConfigSet({
+							await ctx.accountClient.networkConfigSet({
 								accountId: ctx.selectedAccount,
 								config: newConfig,
 							})
@@ -670,12 +669,15 @@ export const AdvancedSettings: ScreenFC<'Onboarding.AdvancedSettings'> = ({
 
 	useEffect(() => {
 		const getPersistentOptionIsNew = async () => {
-			const isNewStorage = await storageGet(GlobalPersistentOptionsKeys.IsNewAccount)
+			const isNewStorage = await storageGet(
+				ctx.accountClient,
+				GlobalPersistentOptionsKeys.IsNewAccount,
+			)
 			setIsNew(isNewStorage)
 		}
 
 		getPersistentOptionIsNew().then()
-	}, [])
+	}, [ctx.accountClient])
 
 	return (
 		<SafeAreaView style={{ backgroundColor: '#1B1C2B', flex: 1 }}>

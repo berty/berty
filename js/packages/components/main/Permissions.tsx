@@ -12,12 +12,7 @@ import {
 } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	accountService,
-	PersistentOptionsKeys,
-	useMessengerContext,
-	useThemeColor,
-} from '@berty-tech/store'
+import { PersistentOptionsKeys, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
 import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
@@ -40,6 +35,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 	const { t }: { t: any } = useTranslation()
 	const { persistentOptions, setPersistentOption, selectedAccount } = useMessengerContext()
 	const { permissionType, permissionStatus, navigateNext, onComplete } = params
+	const { accountClient } = useMessengerContext()
 
 	const handleOnComplete = useCallback(
 		async (status: PermissionStatus | undefined) => {
@@ -107,7 +103,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				retStatus = status
 
 				if (selectedAccount) {
-					const currentConfig = await accountService.networkConfigGet({
+					const currentConfig = await accountClient.networkConfigGet({
 						accountId: selectedAccount,
 					})
 
@@ -127,7 +123,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 								: beapi.account.NetworkConfig.Flag.Disabled,
 					}
 
-					await accountService.networkConfigSet({
+					await accountClient.networkConfigSet({
 						accountId: selectedAccount,
 						config: newConfig,
 					})
@@ -146,6 +142,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		}
 		await handleOnComplete(retStatus)
 	}, [
+		accountClient,
 		handleOnComplete,
 		permissionStatus,
 		permissionType,

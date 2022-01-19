@@ -4,13 +4,14 @@ import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
-import { accountService } from './accountService'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 export const closeAccountWithProgress = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
-	await accountService
+	await accountClient
 		.closeAccountWithProgress({})
 		.then(async stream => {
 			stream.onMessage((msg, err) => {
@@ -55,12 +56,13 @@ export const closeAccountWithProgress = async (
 }
 
 export const importAccountWithProgress = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	path: string,
 	dispatch: (arg0: reducerAction) => void,
 ) =>
 	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(resolve => {
 		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
-		accountService
+		accountClient
 			.importAccountWithProgress({ backupPath: path })
 			.then(async stream => {
 				stream.onMessage(async (msg, _) => {
@@ -98,12 +100,13 @@ export const importAccountWithProgress = async (
 	})
 
 export const refreshAccountList = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 ): Promise<beapi.account.IAccountMetadata[]> => {
 	try {
 		if (embedded) {
-			const resp = await accountService.listAccounts({})
+			const resp = await accountClient.listAccounts({})
 
 			if (!resp.accounts) {
 				return []
@@ -126,13 +129,14 @@ export const refreshAccountList = async (
 }
 
 export const getNetworkConfigurationFromPreset = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	preset: beapi.account.NetworkConfigPreset | null | undefined,
 ): Promise<beapi.account.INetworkConfig> => {
 	const hasBluetoothPermission =
 		(await rnutil.checkPermissions('p2p', null, { navigateToPermScreenOnProblem: false })) ===
 		'granted'
 
-	const configForPreset = await accountService.networkConfigGetPreset({
+	const configForPreset = await accountClient.networkConfigGetPreset({
 		preset: preset || beapi.account.NetworkConfigPreset.Undefined,
 		hasBluetoothPermission: hasBluetoothPermission,
 	})
@@ -145,6 +149,7 @@ export const getNetworkConfigurationFromPreset = async (
 }
 
 export const createAccount = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	newConfig?: beapi.account.INetworkConfig,
@@ -152,10 +157,11 @@ export const createAccount = async (
 	let resp: beapi.account.CreateAccount.Reply
 	try {
 		const netConf: beapi.account.INetworkConfig = await getNetworkConfigurationFromPreset(
+			accountClient,
 			beapi.account.NetworkConfigPreset.Performance,
 		)
 
-		resp = await accountService.createAccount({
+		resp = await accountClient.createAccount({
 			networkConfig: newConfig || { ...netConf, staticRelay: [] },
 		})
 		persistor.persist()
@@ -167,7 +173,7 @@ export const createAccount = async (
 		throw new Error('no account id returned')
 	}
 
-	await refreshAccountList(embedded, dispatch)
+	await refreshAccountList(accountClient, embedded, dispatch)
 	dispatch({
 		type: MessengerActions.SetCreatedAccount,
 		payload: {
@@ -177,6 +183,7 @@ export const createAccount = async (
 }
 
 export const createNewAccount = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	newConfig?: beapi.account.INetworkConfig,
@@ -186,14 +193,16 @@ export const createNewAccount = async (
 	}
 
 	try {
-		await createAccount(embedded, dispatch, newConfig)
+		await createAccount(accountClient, embedded, dispatch, newConfig)
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return
 	}
 }
 
-export const getUsername = async () => {
-	const username = await accountService.getUsername({})
+export const getUsername = async (
+	accountClient: ServiceClientType<beapi.account.AccountService>,
+) => {
+	const username = await accountClient.getUsername({})
 	return username || null
 }
