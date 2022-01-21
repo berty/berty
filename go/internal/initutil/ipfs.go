@@ -15,6 +15,7 @@ import (
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	datastore "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
+	ipfs_util "github.com/ipfs/go-ipfs/cmd/ipfs/util"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
@@ -196,6 +197,19 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		m.Node.Protocol.MDNS.DriverLocker.Lock()
 	}
 
+	// @FIXME(gfanton): this should be done on gomobile-ipfs
+	changed, newlimit, err := ipfs_util.ManageFdLimit()
+	if err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
+	if changed {
+		logger.Info("setting fd limit", zap.Uint64("newlimit", newlimit))
+	} else {
+		logger.Error("failed to set fd limit", zap.Error(err))
+	}
+
+	// init ipfs
 	mnode, err := ipfsutil.NewIPFSMobile(m.getContext(), mrepo, &mopts)
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
