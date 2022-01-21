@@ -23,20 +23,20 @@
       "title": ""
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "音声メッセージを送信しました",
-      "bodyWithNumberOfMedia_other": "%[1] 件の音声メッセージを送信しました"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": "%[1]v 件の音声メッセージを送信しました"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "Gif 画像を送信しました",
-      "bodyWithNumberOfMedia_other": "%[1] 件の gif 画像を送信しました"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": "%[1]v 件の gif 画像を送信しました"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "写真を送信しました",
-      "bodyWithNumberOfMedia_other": "%[1] 件の写真を送信しました"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": "%[1]v 件の写真を送信しました"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "メディアを送信しました",
-      "bodyWithNumberOfMedia_other": "%[1] 件のメディアを送信しました"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": "%[1]v 件のメディアを送信しました"
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v が %[2]v でメッセージに反応しました"

@@ -23,19 +23,19 @@
       "title": ""
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "发送了语音消息",
+      "bodyWithNumberOfMedia_one": "",
       "bodyWithNumberOfMedia_other": "已发送 %[1]v 语音消息"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "发送了 gif",
+      "bodyWithNumberOfMedia_one": "",
       "bodyWithNumberOfMedia_other": "已发送 %[1]v gif"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "发送了照片",
+      "bodyWithNumberOfMedia_one": "",
       "bodyWithNumberOfMedia_other": "已发送 %[1]v 照片"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "发送了媒体",
+      "bodyWithNumberOfMedia_one": "",
       "bodyWithNumberOfMedia_other": "已发送 %[1]v 媒体"
     },
     "reaction": {
