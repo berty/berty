@@ -17,12 +17,12 @@ services:
       rm -rf /store/run;
       cp -rf /store/clean /store/run;
       env;
-      berty daemon 
+      berty daemon
         -config=/app/config1.txt
         -store.dir=/store/run
         -node.no-notif
         -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
-        -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6002,/ip4/0.0.0.0/udp/6002/quic
+        -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6002
         -log.filters=*,-ipfs.*
         -log.format=json
         -node.disable-group-monitor

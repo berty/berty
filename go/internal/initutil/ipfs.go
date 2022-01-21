@@ -26,6 +26,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/libp2p/go-tcp-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"go.uber.org/zap"
@@ -175,7 +176,8 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	var routing ipfs_p2p.RoutingOption
 	if dhtmode > 0 && !m.Node.Protocol.DisableIPFSNetwork {
-		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
+		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(5)}
+
 		if m.Node.Protocol.DHTRandomWalk {
 			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
 		}
@@ -509,9 +511,18 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	for _, p := range rdvpeers {
 		cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 	}
-
 	// disable main ipfs pubsub
 	cfg.Pubsub.Enabled = ipfs_cfg.False
+
+	// @NOTE(gfanton): disable quic transport until find a fix on lte
+	cfg.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+
+	// @NOTE(gfanton): disable tcp transport so we can init a custom transport
+	// with reusport disable
+	cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
+	p2popts = append(p2popts, libp2p.Transport(tcp.NewTCPTransport,
+		tcp.DisableReuseport(),
+	))
 
 	return p2popts, nil
 }
