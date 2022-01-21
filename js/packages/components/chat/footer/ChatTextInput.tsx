@@ -121,12 +121,21 @@ export const ReplyMessageBar: React.FC = () => {
 export const ChatTextInput: React.FC<{
 	value?: string | undefined
 	onChangeText?: ComponentProps<typeof TextInput>['onChangeText']
+	onSelectionChange?: ComponentProps<typeof TextInput>['onSelectionChange']
 	disabled?: Maybe<boolean>
 	handleTabletSubmit?: Maybe<() => void>
 	placeholder?: Maybe<string>
 	onFocusChange?: Maybe<(val: boolean) => void>
 }> = React.memo(
-	({ disabled, handleTabletSubmit, placeholder, onFocusChange, value, onChangeText }) => {
+	({
+		disabled,
+		handleTabletSubmit,
+		placeholder,
+		onFocusChange,
+		value,
+		onChangeText,
+		onSelectionChange,
+	}) => {
 		const [{ text }, { scaleSize }] = useStyles()
 		const colors = useThemeColor()
 		const [isFocused, setIsFocused] = React.useState<boolean>(false)
@@ -179,6 +188,7 @@ export const ChatTextInput: React.FC<{
 							handleTabletSubmit()
 						}
 					}}
+					onSelectionChange={onSelectionChange}
 				/>
 			</View>
 		)

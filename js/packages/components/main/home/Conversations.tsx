@@ -19,7 +19,7 @@ import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reduc
 import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
 import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
-import { selectChatInputSending } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+import { selectChatInputIsSending } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 
 type AddBotCallback = React.Dispatch<
 	React.SetStateAction<{
@@ -89,7 +89,7 @@ const ConversationsItem: React.FC<
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const chatInputText = useAppSelector(state => selectChatInputText(state, publicKey))
-	const chatInputSending = useAppSelector(state => selectChatInputSending(state, publicKey))
+	const chatInputIsSending = useAppSelector(state => selectChatInputIsSending(state, publicKey))
 
 	let description
 	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
@@ -127,7 +127,7 @@ const ConversationsItem: React.FC<
 		}
 	}
 
-	if (chatInputSending) {
+	if (chatInputIsSending) {
 		description = t('chat.sending')
 	} else if (chatInputText) {
 		description = t('main.home.conversations.draft', {
@@ -289,7 +289,7 @@ const ConversationsItem: React.FC<
 									isAccepted={
 										isAccepted || type === beapi.messenger.Conversation.Type.MultiMemberType
 									}
-									sending={chatInputSending}
+									sending={chatInputIsSending}
 								/>
 							)}
 						</View>
@@ -418,14 +418,13 @@ export const Conversations: React.FC<
 		configurations: Configuration[]
 		addBot: AddBotCallback
 	}
-> = React.memo(({ items, suggestions, configurations, addBot, onLayout }) => {
+> = React.memo(({ items, suggestions, configurations, addBot }) => {
 	const [{ padding }] = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
 
 	return items.length || suggestions.length || configurations.length ? (
 		<View
-			onLayout={onLayout}
 			style={[
 				padding.bottom.medium,
 				{

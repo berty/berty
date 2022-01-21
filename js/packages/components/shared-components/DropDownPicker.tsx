@@ -11,7 +11,7 @@ export type Item = {
 
 export const DropDownPicker: React.FC<{
 	items: Item[]
-	defaultValue: string | null
+	defaultValue: string | number | symbol | null
 	onChangeItem: (item: Item) => void
 	icon?: string
 	pack?: string

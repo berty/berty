@@ -577,6 +577,9 @@
 			"response-to": "Répondre à",
 			"replying-to": "Vous répondez à",
 			"replied-to": "Répondu à"
+		},
+		"emojis": {
+			"matching": "Emojis correspondants"
 		}
 	},
 	"audio": {
