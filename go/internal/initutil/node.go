@@ -594,7 +594,8 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 
 	m.Node.Messenger.localDBState = &messengertypes.LocalDatabaseState{}
 
-	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
+	ctx := m.getContext()
+	if err := bertymessenger.RestoreFromAccountExport(ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 

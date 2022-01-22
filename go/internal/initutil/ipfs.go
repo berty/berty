@@ -367,6 +367,8 @@ func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo
 func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error) {
 	p2popts := []libp2p.Option{}
 
+	ctx := m.getContext()
+
 	logger, err := m.getLogger()
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
@@ -432,10 +434,10 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		switch {
 		// Java embedded driver (android)
 		case m.Node.Protocol.Ble.Driver != nil:
-			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Ble.Driver))
+			bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, m.Node.Protocol.Ble.Driver))
 		// Go embedded driver (ios)
 		case ble.Supported:
-			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
+			bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, ble.NewDriver(logger)))
 		default:
 			logger.Warn("cannot enable BLE on an unsupported platform")
 		}
@@ -448,7 +450,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		if m.Node.Protocol.Nearby.Driver != nil {
 			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, m.Node.Protocol.Nearby.Driver.DefaultAddr())
 			p2popts = append(p2popts,
-				libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Nearby.Driver)))
+				libp2p.Transport(proximity.NewTransport(ctx, logger, m.Node.Protocol.Nearby.Driver)))
 		} else {
 			logger.Warn("cannot enable Android Nearby on an unsupported platform")
 		}
@@ -459,7 +461,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		if mc.Supported {
 			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, mc.DefaultAddr)
 			p2popts = append(p2popts,
-				libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
+				libp2p.Transport(proximity.NewTransport(ctx, logger, mc.NewDriver(logger))),
 			)
 		} else {
 			logger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
