@@ -100,7 +100,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
-	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", false, "enable autorelay, force private reachability")
+	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
@@ -473,7 +473,9 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 
 	// enable auto relay
 	if m.Node.Protocol.AutoRelay {
-		p2popts = append(p2popts, libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.True
+	} else {
+		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
 	}
 
 	pis, err := m.getStaticRelays()

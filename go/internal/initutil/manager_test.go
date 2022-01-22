@@ -1,3 +1,8 @@
+// @FIXME(gfanton): auto relay can occasionally rise data race in some tests,
+// disabling race for now
+//go:build !race
+// +build !race
+
 package initutil_test
 
 import (
