@@ -174,7 +174,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	}
 
 	var routing ipfs_p2p.RoutingOption
-	if dhtmode > 0 {
+	if dhtmode > 0 && !m.Node.Protocol.DisableIPFSNetwork {
 		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
 		if m.Node.Protocol.DHTRandomWalk {
 			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
@@ -188,10 +188,6 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		IpfsConfigPatch:   m.setupIPFSConfig,
 		RoutingConfigFunc: m.configIPFSRouting,
 		RoutingOption:     routing,
-		ExtraOpts: map[string]bool{
-			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
-			"pubsub": false,
-		},
 	}
 
 	if m.Node.Protocol.MDNS.Enable && m.Node.Protocol.MDNS.DriverLocker != nil {
@@ -410,6 +406,15 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
 		cfg.Swarm.Transports.Network.Websocket = ipfs_cfg.False
 
+		// disable bootstrap
+		cfg.Bootstrap = []string{}
+
+		// disable most services
+		cfg.AutoNAT.ServiceMode = ipfs_cfg.AutoNATServiceDisabled
+		cfg.Pubsub.Enabled = ipfs_cfg.False
+		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
+		cfg.Swarm.RelayService.Enabled = ipfs_cfg.False
+
 		// Disable MDNS
 		cfg.Discovery.MDNS.Enabled = false
 
@@ -487,6 +492,9 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	for _, p := range rdvpeers {
 		cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 	}
+
+	// disable main ipfs pubsub
+	cfg.Pubsub.Enabled = ipfs_cfg.False
 
 	return p2popts, nil
 }
