@@ -113,10 +113,6 @@ func (m *Manager) applyPreset() error {
 	case PerformancePreset:
 		// will do later
 	case AnonymityPreset:
-		// Force tor in this mode
-		m.Node.Protocol.Tor.Mode = TorRequired
-		// FIXME: raise an error if tor is not available on the node
-
 		// Disable proximity communications
 		m.Node.Protocol.MDNS.Enable = false
 		m.Node.Protocol.MultipeerConnectivity = false

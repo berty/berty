@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	mrand "math/rand"
 	"net"
 	"net/http"
@@ -43,9 +42,6 @@ import (
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/tempdir"
-	tor "berty.tech/go-libp2p-tor-transport"
-	torcfg "berty.tech/go-libp2p-tor-transport/config"
 	ipfswebui "berty.tech/ipfs-webui-packed"
 )
 
@@ -73,7 +69,6 @@ const (
 	FlagNameP2PBLE                        = "p2p.ble"
 	FlagNameP2PNearby                     = "p2p.nearby"
 	FlagNameP2PMultipeerConnectivity      = "p2p.multipeer-connectivity"
-	FlagNameTorMode                       = "tor.mode"
 	FlagNameP2PTinderDiscover             = "p2p.tinder-discover"
 	FlagNameP2PTinderDHTDriver            = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver           = "p2p.tinder-rdvp-driver"
@@ -114,8 +109,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, FlagNameP2PBLE, false, "if true Bluetooth Low Energy will be enabled")
 	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, FlagNameP2PNearby, false, "if true Android Nearby will be enabled")
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, FlagNameP2PMultipeerConnectivity, false, "if true Multipeer Connectivity will be enabled")
-	fs.StringVar(&m.Node.Protocol.Tor.Mode, FlagNameTorMode, defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
-	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.DurationVar(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", rendezvous.DefaultRotationInterval, "rendezvous rotation base for node")
 
@@ -130,18 +123,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	m.longHelp = append(m.longHelp, [2]string{
 		"",
 		"-> full list available at https://github.com/berty/berty/tree/master/config)",
-	})
-	m.longHelp = append(m.longHelp, [2]string{
-		"-tor.mode=" + TorDisabled,
-		"tor is completely disabled",
-	})
-	m.longHelp = append(m.longHelp, [2]string{
-		"-tor.mode=" + TorOptional,
-		"tor is added to the list of existing transports and can be used to contact other tor-ready nodes",
-	})
-	m.longHelp = append(m.longHelp, [2]string{
-		"-tor.mode=" + TorRequired,
-		"tor is the only available transport; you can only communicate with other tor-ready nodes",
 	})
 }
 
@@ -438,55 +419,6 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		return p2popts, nil
 	}
 
-	// tor is enabled (optional or required)
-	if m.torIsEnabled() {
-		torOpts := torcfg.Merge(
-			torcfg.SetTemporaryDirectory(tempdir.TempDir()),
-			// FIXME: Write an io.Writer to zap logger mapper.
-			torcfg.SetNodeDebug(ioutil.Discard),
-		)
-		if m.Node.Protocol.Tor.BinaryPath == "" {
-			torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
-		} else {
-			torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
-		}
-
-		if !hasTorMaddr(cfg.Addresses.Swarm) {
-			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, tor.NopMaddr3Str)
-		}
-
-		if m.Node.Protocol.Tor.Mode == TorRequired {
-			torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
-		}
-
-		torBuilder, err := tor.NewBuilder(torOpts)
-		if err != nil {
-			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
-		}
-
-		p2popts = append(p2popts, libp2p.Transport(torBuilder))
-	}
-
-	// -tor.mode==required: disable everything except tor
-	if m.Node.Protocol.Tor.Mode == TorRequired {
-		// Patch the IPFS config to make it complient with an anonymous node.
-		// Disable IP transports
-		cfg.Swarm.Transports.Network.QUIC = ipfs_cfg.False
-		cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
-		cfg.Swarm.Transports.Network.Websocket = ipfs_cfg.False
-
-		// Disable MDNS
-		cfg.Discovery.MDNS.Enabled = false
-
-		// Only keep tor listeners
-		cfg.Addresses.Swarm = []string{}
-		for _, maddr := range cfg.Addresses.Swarm {
-			if isTorMaddr(maddr) {
-				cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, maddr)
-			}
-		}
-	}
-
 	// Setup BLE
 	if m.Node.Protocol.Ble.Enable {
 		var bleOpt libp2p.Option
@@ -767,43 +699,6 @@ func (m *Manager) getSwarmAddrs() []string {
 		}
 	}
 	return swarmAddrs
-}
-
-func isTorMaddr(maddr string) bool {
-	parsed, err := ma.NewMultiaddr(maddr)
-	if err != nil {
-		// This error is not our business and will be dealt later.
-		return false
-	}
-
-	protos := parsed.Protocols()
-	if len(protos) == 0 {
-		return false
-	}
-
-	proto := protos[0].Code
-	if proto == ma.P_ONION3 || proto == ma.P_ONION {
-		return true
-	}
-	return false
-}
-
-func hasTorMaddr(maddrs []string) bool {
-	// Scan all maddrs to see if an `/onion{,3}/*` were set, if don't auto add the `tor.NopMaddr3Str`.
-	for _, maddr := range maddrs {
-		if isTorMaddr(maddr) {
-			return true
-		}
-	}
-	return false
-}
-
-func (m *Manager) torIsEnabled() bool {
-	switch m.Node.Protocol.Tor.Mode {
-	case TorOptional, TorRequired:
-		return true
-	}
-	return false
 }
 
 func (m *Manager) GetRendezvousRotationBase() (time.Duration, error) {

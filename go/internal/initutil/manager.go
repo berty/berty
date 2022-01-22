@@ -119,18 +119,14 @@ type Manager struct {
 				Enable bool `json:"Enable,omitempty"`
 				Driver proximity.ProximityDriver
 			} `json:"Nearby,omitempty"`
-			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
-			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
-			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`
-			DisableIPFSNetwork    bool          `json:"DisableIPFSNetwork,omitempty"`
-			RdvpMaddrs            string        `json:"RdvpMaddrs,omitempty"`
-			AuthSecret            string        `json:"AuthSecret,omitempty"`
-			AuthPublicKey         string        `json:"AuthPublicKey,omitempty"`
-			PollInterval          time.Duration `json:"PollInterval,omitempty"`
-			Tor                   struct {
-				Mode       string `json:"Mode,omitempty"`
-				BinaryPath string `json:"BinaryPath,omitempty"`
-			} `json:"Tor,omitempty"`
+			MultipeerConnectivity  bool          `json:"MultipeerConnectivity,omitempty"`
+			MinBackoff             time.Duration `json:"MinBackoff,omitempty"`
+			MaxBackoff             time.Duration `json:"MaxBackoff,omitempty"`
+			DisableIPFSNetwork     bool          `json:"DisableIPFSNetwork,omitempty"`
+			RdvpMaddrs             string        `json:"RdvpMaddrs,omitempty"`
+			AuthSecret             string        `json:"AuthSecret,omitempty"`
+			AuthPublicKey          string        `json:"AuthPublicKey,omitempty"`
+			PollInterval           time.Duration `json:"PollInterval,omitempty"`
 			PushPlatformToken      string        `json:"PushPlatformToken,omitempty"`
 			DevicePushKeyPath      string        `json:"DevicePushKeyPath,omitempty"`
 			ServiceInsecureMode    bool          `json:"ServiceInsecureMode,omitempty"`

@@ -978,21 +978,22 @@ func (s *service) NetworkConfigSet(ctx context.Context, request *accounttypes.Ne
 func AddArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string) []string {
 	defaultConfig := NetworkConfigGetDefault()
 
-	if !ArgsHasWithPrefix(args, initutil.FlagNameTorMode) {
-		torFlag := m.Tor
-		if torFlag == accounttypes.NetworkConfig_TorUndefined {
-			torFlag = defaultConfig.Tor
-		}
+	// @FIXME(gfanton): disable tor for now
+	// if !ArgsHasWithPrefix(args, initutil.FlagNameTorMode) {
+	// 	torFlag := m.Tor
+	// 	if torFlag == accounttypes.NetworkConfig_TorUndefined {
+	// 		torFlag = defaultConfig.Tor
+	// 	}
 
-		if torValue, ok := map[accounttypes.NetworkConfig_TorFlag]string{
-			accounttypes.NetworkConfig_TorUndefined: "disabled",
-			accounttypes.NetworkConfig_TorDisabled:  "disabled",
-			accounttypes.NetworkConfig_TorOptional:  "optional",
-			accounttypes.NetworkConfig_TorRequired:  "required",
-		}[torFlag]; ok {
-			args = append(args, ArgSet(initutil.FlagNameTorMode, torValue))
-		}
-	}
+	// 	if torValue, ok := map[accounttypes.NetworkConfig_TorFlag]string{
+	// 		accounttypes.NetworkConfig_TorUndefined: "disabled",
+	// 		accounttypes.NetworkConfig_TorDisabled:  "disabled",
+	// 		accounttypes.NetworkConfig_TorOptional:  "optional",
+	// 		accounttypes.NetworkConfig_TorRequired:  "required",
+	// 	}[torFlag]; ok {
+	// 		args = append(args, ArgSet(initutil.FlagNameTorMode, torValue))
+	// 	}
+	// }
 
 	args = addListValueArgs(args, initutil.FlagNameP2PBootstrap, []string{initutil.KeywordNone}, m.Bootstrap)
 	args = addListValueArgs(args, initutil.FlagNameP2PStaticRelays, []string{initutil.KeywordNone}, m.StaticRelay)
