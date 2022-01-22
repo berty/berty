@@ -157,9 +157,11 @@ func main() {
 				libp2p.DefaultTransports,
 
 				// Nat & Relay service
-				libp2p.EnableNATService(),
 				libp2p.DefaultStaticRelays(),
-				libp2p.EnableRelay(),
+
+				// @NOTE(gfanton): use more specific option
+				libp2p.EnableRelayService(),
+				libp2p.EnableNATService(),
 
 				// swarm listeners
 				libp2p.ListenAddrs(listeners...),
