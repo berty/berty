@@ -192,7 +192,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		manager.SetupLoggingFlags(fs)
 		manager.SetupLocalProtocolServerFlags(fs)
 		manager.SetupEmptyGRPCListenersFlags(fs)
-		err = fs.Parse([]string{"-node.listeners", "/ip4/0.0.0.0/tcp/9097", "-store.inmem", "-log.filters=", "-log.ring-filters="})
+		err = fs.Parse([]string{"-node.listeners", "/ip4/127.0.0.1/tcp/9097", "-store.inmem", "-log.filters=", "-log.ring-filters="})
 		require.NoError(t, err)
 		man1 = manager
 	}
