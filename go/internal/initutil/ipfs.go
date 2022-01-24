@@ -179,7 +179,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if dhtmode > 0 && !m.Node.Protocol.DisableIPFSNetwork {
 		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(5)}
 
-		if m.Node.Protocol.DHTRandomWalk {
+		if !m.Node.Protocol.DHTRandomWalk {
 			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
 		}
 		routing = ipfsutil.CustomRoutingOption(dhtmode, dhtopts...)
