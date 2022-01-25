@@ -16,6 +16,7 @@ import {
 	useNotificationsInhibitor,
 	useThemeColor,
 	pbDateToNum,
+	useMessengerClient,
 } from '@berty-tech/store'
 import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
@@ -55,6 +56,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 		const conv = useConversation(params?.convId)
 		const contact = useContact(conv?.contactPublicKey)
 		const ctx = useMessengerContext()
+		const client = useMessengerClient()
 		const { navigate } = navigation
 
 		const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
@@ -152,7 +154,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 										<EmojiBoard
 											showBoard={true}
 											onClick={(emoji: { name: string }) => {
-												ctx.client
+												client
 													?.interact({
 														conversationPublicKey: conv?.publicKey,
 														type: beapi.messenger.AppMessage.Type.TypeUserReaction,
@@ -167,7 +169,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 														setActivePopoverCid(null)
 														setActiveEmojiKeyboardCid(null)
 													})
-													.catch(e => {
+													.catch((e: unknown) => {
 														console.warn('e sending message:', e)
 													})
 											}}

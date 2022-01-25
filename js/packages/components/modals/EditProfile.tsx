@@ -13,13 +13,15 @@ import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useAppDispatch, useAccount } from '@berty-tech/react-redux'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { StackActions } from '@react-navigation/native'
 
 import { AccountAvatar } from '../avatars'
+import { useSelector } from 'react-redux'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 
 //
 // Edit Profile
@@ -87,6 +89,8 @@ const EditMyProfile: React.FC = () => {
 	const { t }: any = useTranslation()
 	const dispatch = useAppDispatch()
 	const navigation = useNavigation()
+	const client = useMessengerClient()
+	const selectedAccount = useSelector(selectSelectedAccount)
 
 	const account = useAccount()
 
@@ -125,7 +129,7 @@ const EditMyProfile: React.FC = () => {
 
 			if (state.pic) {
 				console.log('opening stream', state.pic)
-				const stream = await ctx.client?.mediaPrepare({})
+				const stream = await client?.mediaPrepare({})
 				if (!stream) {
 					throw new Error('failed to open prepareAttachment stream')
 				}
@@ -160,10 +164,10 @@ const EditMyProfile: React.FC = () => {
 
 			if (updated) {
 				// update account in bertymessenger
-				await ctx.client?.accountUpdate(update)
+				await client?.accountUpdate(update)
 				// update account in bertyaccount
 				await ctx.updateAccount({
-					accountId: ctx.selectedAccount,
+					accountId: selectedAccount,
 					avatarCid: update.avatarCid,
 				})
 

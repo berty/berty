@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { getSource } from '../../utils'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const FileMessage: React.FC<{
 	medias: any
@@ -13,7 +15,8 @@ export const FileMessage: React.FC<{
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
 	const colors = useThemeColor()
-	const { protocolClient } = useMessengerContext()
+	const protocolClient = useSelector(selectProtocolClient)
+
 	const [, setSource] = useState('')
 	const [isLoading, setLoading] = useState(false)
 	const [isDownloaded] = useState(false)

@@ -3,8 +3,9 @@ import { useReducer, useCallback } from 'react'
 import beapi from '@berty-tech/api'
 
 import { MessengerMethodsHooks, ProtocolMethodsHooks } from './types.gen'
-import { useMessengerContext } from './context'
-import { MessengerState } from './types'
+import { useSelector } from 'react-redux'
+import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 const initialState: MethodState<any> = { error: null, reply: null, done: false, called: false }
 
@@ -38,10 +39,9 @@ const callAction = () => ({ type: 'CALL' })
 // TODO: UnknownMethod class
 
 const makeMethodHook =
-	<R>(getClient: (ctx: any) => any, key: string) =>
+	<R>(key: string) =>
 	() => {
-		const ctx = useMessengerContext()
-		const client = getClient(ctx)
+		const client = useSelector(selectClient)
 
 		const [state, dispatch] = useReducer<(state: MethodState<R>, action: any) => MethodState<R>>(
 			methodReducer,
@@ -55,17 +55,17 @@ const makeMethodHook =
 					return
 				}
 
-				const clientKey = uncap(key)
+				const clientKey: keyof WelshMessengerServiceClient = uncap(key)
 				if (!Object.keys(client).includes(clientKey)) {
 					dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))
 					return
 				}
 				dispatch(callAction())
 				client[clientKey](payload)
-					.then((reply: R) => {
+					.then(reply => {
 						dispatch(doneAction(reply))
 					})
-					.catch((err: any) => {
+					.catch((err: unknown) => {
 						dispatch(errorAction(err))
 					})
 			},
@@ -91,20 +91,18 @@ const getServiceMethods = (service: any) => {
 	}
 }
 
-const makeServiceHooks = <S>(service: S, getClient: (ctx: MessengerState) => any) =>
+const makeServiceHooks = <S>(service: S) =>
 	Object.keys(getServiceMethods(service)).reduce(
-		(r, key) => ({ ...r, ['use' + key]: makeMethodHook(getClient, key) }),
+		(r, key) => ({ ...r, ['use' + key]: makeMethodHook(key) }),
 		{},
 	)
 
 export const messengerMethodsHooks: MessengerMethodsHooks = makeServiceHooks(
 	beapi.messenger.MessengerService,
-	ctx => ctx.client,
 ) as any
 
 export const protocolMethodsHooks: ProtocolMethodsHooks = makeServiceHooks(
 	beapi.protocol.ProtocolService,
-	ctx => ctx.protocolClient,
 ) as any
 
 export default { ...protocolMethodsHooks, ...messengerMethodsHooks }

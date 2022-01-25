@@ -6,18 +6,20 @@ import { Layout } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import {
-	useMessengerContext,
 	Maybe,
 	useThemeColor,
 	servicesAuthViaDefault,
 	useAccountServices,
 	serviceTypes,
 	replicateGroup,
+	useMessengerClient,
 } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useConversation } from '@berty-tech/react-redux'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 enum replicationServerStatus {
 	KnownServerEnabled,
@@ -96,12 +98,13 @@ const ReplicateGroupContent: React.FC<{
 	conversationPublicKey?: Maybe<string>
 	navigation: ComponentProps<typeof ReplicateGroupSettings>['navigation']
 }> = ({ conversationPublicKey, navigation }) => {
-	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 	const conversation = useConversation(conversationPublicKey)
 	const services = useAccountServices()
 	const [{ margin, flex, padding }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
+	const protocolClient = useSelector(selectProtocolClient)
 
 	const replicationStatus = getAllReplicationStatusForConversation(conversation, services)
 
@@ -121,7 +124,7 @@ const ReplicateGroupContent: React.FC<{
 									return
 								}
 
-								return replicateGroup(ctx, conversationPublicKey || '', t.service.tokenId || '')
+								return replicateGroup(conversationPublicKey || '', t.service.tokenId || '', client)
 							}}
 						/>
 					))}
@@ -141,7 +144,7 @@ const ReplicateGroupContent: React.FC<{
 				iconColor={colors['background-header']}
 				alone={true}
 				onPress={async () => {
-					await servicesAuthViaDefault(ctx)
+					await servicesAuthViaDefault(protocolClient)
 				}}
 			/>
 			<ButtonSetting

@@ -7,7 +7,6 @@ import {
 	servicesAuthViaDefault,
 	serviceTypes,
 	useAccountServices,
-	useMessengerContext,
 } from '@berty-tech/store'
 import { useTranslation } from 'react-i18next'
 import { checkNotifications, RESULTS, PermissionStatus } from 'react-native-permissions'
@@ -18,16 +17,19 @@ import { useConversation } from '@berty-tech/react-redux'
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { GRPCError } from '@berty-tech/grpc-bridge'
+import { useSelector } from 'react-redux'
+import { selectClient, selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string
 }> = ({ conversationPk }) => {
-	const ctx = useMessengerContext()
 	const services = useAccountServices()
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const conv = useConversation(conversationPk)
 	const [{ padding }] = useStyles()
+	const client = useSelector(selectClient)
+	const protocolClient = useSelector(selectProtocolClient)
 
 	const [notificationPermStatus, setNotificationPermStatus] = useState<PermissionStatus>(
 		RESULTS.UNAVAILABLE,
@@ -42,14 +44,12 @@ const EnableNotificationsButton: React.FC<{
 			})
 			.catch(console.warn)
 
-		if (!ctx.client) {
+		if (!client) {
 			return
 		}
 
-		getSharedPushTokensForConversation(ctx.client, conversationPk)
-			.then(setTokens)
-			.catch(console.warn)
-	}, [setNotificationPermStatus, conversationPk, ctx.client, setTokens, refreshCounter])
+		getSharedPushTokensForConversation(client, conversationPk).then(setTokens).catch(console.warn)
+	}, [setNotificationPermStatus, conversationPk, client, setTokens, refreshCounter])
 
 	const pushEnabledDevice = tokens.find(d => d.devicePublicKey === conv?.localDevicePublicKey)
 	const hasKnownPushServer = services.some(t => t.serviceType === serviceTypes.Push)
@@ -114,12 +114,12 @@ const EnableNotificationsButton: React.FC<{
 					}
 
 					// Persist push token if needed
-					await requestAndPersistPushToken(ctx.protocolClient!)
+					await requestAndPersistPushToken(protocolClient!)
 
 					// Register push server secrets if needed
 					if (!hasKnownPushServer) {
 						try {
-							await servicesAuthViaDefault(ctx)
+							await servicesAuthViaDefault(protocolClient)
 							await new Promise(r => setTimeout(r, 300))
 						} catch (e) {
 							console.warn('no push server known')
@@ -148,7 +148,7 @@ const EnableNotificationsButton: React.FC<{
 					})
 
 					// Share push token
-					await ctx.client!.pushShareTokenForConversation({ conversationPk: conversationPk })
+					await client!.pushShareTokenForConversation({ conversationPk: conversationPk })
 				} catch (e) {
 					if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
 						Alert.alert('', t('chat.push-notifications.errors.no-token'))

@@ -17,7 +17,7 @@ import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clien
 import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { playSound } from '@berty-tech/store/sounds'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import rnutil from '@berty-tech/rnutil'
 import { AppDispatch } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
@@ -153,7 +153,6 @@ export const RecordComponent: React.FC<{
 	setSending,
 }) => {
 	const dispatch = useAppDispatch()
-	const ctx = useMessengerContext()
 	const recorder = React.useRef<Recorder | undefined>(undefined)
 	const [recorderFilePath, setRecorderFilePath] = useState('')
 	const { t } = useTranslation()
@@ -185,6 +184,7 @@ export const RecordComponent: React.FC<{
 	const recordingColorVal = React.useRef(new Animated.Value(0)).current
 	const meteredValuesRef = useRef<number[]>([])
 	const [recordDuration, setRecordDuration] = useState<number | null>(null)
+	const client = useMessengerClient()
 
 	const isRecording =
 		recordingState === RecordingState.RECORDING ||
@@ -258,12 +258,12 @@ export const RecordComponent: React.FC<{
 				}
 				setSending(true)
 				Vibration.vibrate(400)
-				if (!ctx.client) {
+				if (!client) {
 					return
 				}
 				const startDate = new Date(start)
 				const displayName = audioMessageDisplayName(startDate)
-				const medias = await attachMedias(ctx.client, [
+				const medias = await attachMedias(client, [
 					{
 						displayName,
 						filename: displayName + '.aac',
@@ -291,13 +291,13 @@ export const RecordComponent: React.FC<{
 					},
 				])
 
-				await sendMessage(ctx.client!, convPk, dispatch, { medias })
+				await sendMessage(client!, convPk, dispatch, { medias })
 			} catch (e) {
 				console.warn(e)
 			}
 			setSending(false)
 		},
-		[convPk, ctx.client, recorderFilePath, dispatch, sending, setSending],
+		[convPk, client, recorderFilePath, dispatch, sending, setSending],
 	)
 
 	useEffect(() => {
@@ -351,7 +351,7 @@ export const RecordComponent: React.FC<{
 		clearRecording,
 		minAudioDuration,
 		setHelpMessageValue,
-		ctx.client,
+		client,
 		recorderFilePath,
 		convPk,
 		t,

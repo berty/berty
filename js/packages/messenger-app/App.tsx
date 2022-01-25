@@ -46,7 +46,7 @@ export const App: React.FC = () => {
 		<SafeAreaProvider>
 			<StyleProvider>
 				<ReduxProvider store={reduxStore}>
-					<MessengerProvider embedded daemonAddress='http://localhost:1337'>
+					<MessengerProvider daemonAddress='http://localhost:1337'>
 						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 						<ThemeProvider>
 							<Background>

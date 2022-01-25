@@ -10,11 +10,13 @@ import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
 
 import * as RawComponents from '@berty-tech/components'
-import { MessengerAppState, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { dispatch } from './rootRef'
 import { ScreensParams } from './types'
+import { useSelector } from 'react-redux'
+import { MESSENGER_APP_STATE, selectAppState } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const CustomTitleStyle: () => any = () => {
 	const [{}, { scaleSize }] = useStyles()
@@ -155,22 +157,22 @@ Components = mapValues(RawComponents, SubComponents =>
 const NavigationStack = createNativeStackNavigator<ScreensParams>()
 
 export const Navigation: React.FC = React.memo(() => {
-	const context = useMessengerContext()
+	const appState = useSelector(selectAppState)
 	const colors = useThemeColor()
 	const [, { scaleSize }] = useStyles()
 	const { t }: any = useTranslation()
 
 	useEffect(() => {
-		console.log('context app State', context.appState)
-		switch (context.appState) {
-			case MessengerAppState.Ready:
+		console.log('context app State', appState)
+		switch (appState) {
+			case MESSENGER_APP_STATE.READY:
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: 'Main.Home' }],
 					}),
 				)
 				return
-			case MessengerAppState.PreReady:
+			case MESSENGER_APP_STATE.PRE_READY:
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: 'Onboarding.SetupFinished' }],
@@ -178,12 +180,12 @@ export const Navigation: React.FC = React.memo(() => {
 				)
 				return
 		}
-	}, [context.appState])
+	}, [appState])
 
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				context.appState === MessengerAppState.GetStarted ? 'Onboarding.GetStarted' : 'Main.Home'
+				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Main.Home'
 			}
 		>
 			{/* OnBoarding */}

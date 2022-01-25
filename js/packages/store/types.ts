@@ -1,24 +1,6 @@
 import { Dispatch } from 'react'
 
 import beapi from '@berty-tech/api'
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-
-export enum MessengerAppState {
-	Init = 0,
-	Closed,
-	OpeningWaitingForDaemon,
-	OpeningWaitingForClients,
-	OpeningListingEvents,
-	OpeningGettingLocalSettings,
-	OpeningMarkConversationsAsClosed,
-	GetStarted,
-	Ready,
-	ClosingDaemon,
-	DeletingClosingDaemon,
-	DeletingClearingStorage,
-	StreamDone,
-	PreReady,
-}
 
 // returns true if the notification should be inhibited
 export type NotificationsInhibitor = (
@@ -32,30 +14,17 @@ export type StreamInProgress = {
 }
 
 export type MessengerState = {
-	selectedAccount: string | null
-	nextSelectedAccount: string | null
 	daemonAddress: string
-	streamInProgress: StreamInProgress | null
-
-	appState: MessengerAppState
-	client: ServiceClientType<beapi.messenger.MessengerService> | null
-	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
 	streamError: any
-
 	addNotificationListener: (cb: (evt: any) => void) => void
 	removeNotificationListener: (cb: (...args: any[]) => void) => void
 	notificationsInhibitors: NotificationsInhibitor[]
-
 	persistentOptions: PersistentOptions
 	accounts: beapi.account.IAccountMetadata[]
-	clearClients: (() => Promise<void>) | null
-
-	embedded: boolean
 	dispatch: Dispatch<{
 		type: MessengerActions
 		payload?: any
 	}>
-
 	setPersistentOption: (arg0: PersistentOptionsUpdate) => Promise<void>
 	createNewAccount: (arg0?: beapi.account.INetworkConfig) => Promise<void>
 	importAccount: (arg0: string) => Promise<void>
@@ -75,7 +44,6 @@ export type MessengerState = {
 		targetCID: string,
 		emoji: string,
 	) => Promise<beapi.messenger.Interact.Reply> | undefined
-
 	debugMode: boolean
 	setDebugMode: (value: boolean) => void
 	networkConfig: beapi.account.INetworkConfig

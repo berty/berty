@@ -14,6 +14,7 @@ import {
 	InteractionUserMessage,
 	ParsedInteraction,
 	pbDateToNum,
+	useMessengerClient,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -179,6 +180,7 @@ export const UserMessage: React.FC<{
 	const repliedTo = useInteractionAuthor(replyOf?.conversationPublicKey || '', replyOf?.cid || '')
 	const _styles = useStylesMessage()
 	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 	const [{ row, margin, padding, column, text, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
@@ -528,7 +530,7 @@ export const UserMessage: React.FC<{
 											setActiveEmojiKeyboardCid(inte.cid)
 										}}
 										onSelectEmoji={emoji => {
-											ctx.client
+											client
 												?.interact({
 													conversationPublicKey: convPK,
 													type: beapi.messenger.AppMessage.Type.TypeUserReaction,
@@ -543,7 +545,7 @@ export const UserMessage: React.FC<{
 													setActivePopoverCid(null)
 													setActiveEmojiKeyboardCid(null)
 												})
-												.catch(e => {
+												.catch((e: unknown) => {
 													console.warn('e sending message:', e)
 												})
 										}}

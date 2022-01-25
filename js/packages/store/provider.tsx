@@ -34,63 +34,70 @@ import {
 import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
-import { MessengerAppState, PersistentOptionsKeys, SoundKey } from './types'
+import { PersistentOptionsKeys, SoundKey } from './types'
 import { accountService } from './accountService'
+import { useSelector } from 'react-redux'
+import {
+	selectAppState,
+	selectClearClients,
+	selectClient,
+	selectEmbedded,
+	selectProtocolClient,
+	selectSelectedAccount,
+} from '@berty-tech/redux/reducers/ui.reducer'
 
-export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: boolean }> = ({
+export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	children,
 	daemonAddress,
-	embedded,
 }) => {
 	const reduxDispatch = useAppDispatch()
 	const [state, dispatch] = React.useReducer(reducer, {
 		...initialState,
 		daemonAddress,
-		embedded,
 	})
 	const [eventEmitter] = React.useState(new EventEmitter())
 	const [debugMode, setDebugMode] = React.useState(false)
 	const [networkConfig, setNetworkConfig] = useState<beapi.account.INetworkConfig>({})
 	const [handledLink, setHandledLink] = useState<boolean>(false)
+	const appState = useSelector(selectAppState)
+	const clearClients = useSelector(selectClearClients)
+	const protocolClient = useSelector(selectProtocolClient)
+	const client = useSelector(selectClient)
+	const embedded = useSelector(selectEmbedded)
+	const selectedAccount = useSelector(selectSelectedAccount)
 
 	useEffect(() => {
-		console.log('State change:', MessengerAppState[state.appState] + '\n')
-	}, [state.appState])
+		console.log(`State change: ${appState}\n`)
+	}, [appState])
 
 	useEffect(() => {
 		initialLaunch(dispatch, embedded)
 	}, [embedded])
 
 	useEffect(() => {
-		openingDaemon(dispatch, state.appState, state.selectedAccount)
-	}, [embedded, state.appState, state.selectedAccount])
+		openingDaemon(dispatch, appState, selectedAccount)
+	}, [embedded, appState, selectedAccount])
 
 	useEffect(() => {
-		openingClients(dispatch, state.appState, eventEmitter, daemonAddress, embedded, reduxDispatch)
-	}, [daemonAddress, embedded, eventEmitter, state.appState, state.selectedAccount, reduxDispatch])
+		openingClients(dispatch, appState, eventEmitter, daemonAddress, embedded, reduxDispatch)
+	}, [daemonAddress, embedded, eventEmitter, appState, selectedAccount, reduxDispatch])
 
 	const initialListComplete = useAppSelector(state => state.messenger.initialListComplete)
 
 	useEffect(
-		() => openingListingEvents(state.appState, initialListComplete, dispatch),
-		[state.appState, initialListComplete],
+		() => openingListingEvents(appState, initialListComplete),
+		[appState, initialListComplete],
 	)
 
 	useEffect(() => {
-		openingLocalSettings(dispatch, state.appState, state.selectedAccount)
-	}, [state.appState, state.selectedAccount])
+		openingLocalSettings(dispatch, appState, selectedAccount)
+	}, [appState, selectedAccount])
 
 	const conversations = useConversationsDict()
 
 	useEffect(() => {
-		openingCloseConvos(
-			state.appState,
-			state.client,
-			conversations,
-			state.persistentOptions,
-			dispatch,
-		)
-	}, [state.appState, state.client, conversations, state.persistentOptions, embedded])
+		openingCloseConvos(appState, client, conversations, state.persistentOptions)
+	}, [appState, client, conversations, state.persistentOptions, embedded])
 
 	const accountLanguage = useAppSelector(selectAccountLanguage)
 	useEffect(() => {
@@ -101,32 +108,24 @@ export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: bool
 
 	useEffect(() => {
 		updateAccountsPreReady(
-			state.appState,
-			state.client,
-			state.selectedAccount,
+			appState,
+			client,
+			selectedAccount,
 			account,
-			state.protocolClient,
+			protocolClient,
 			embedded,
 			dispatch,
 		)
-	}, [
-		state.appState,
-		state.client,
-		state.selectedAccount,
-		account,
-		state.protocolClient,
-		embedded,
-		dispatch,
-	])
+	}, [appState, client, selectedAccount, account, protocolClient, embedded, dispatch])
 
 	useEffect(
-		() => closingDaemon(state.appState, state.clearClients, dispatch, reduxDispatch),
-		[state.clearClients, state.appState, reduxDispatch],
+		() => closingDaemon(appState, clearClients, dispatch, reduxDispatch),
+		[clearClients, appState, reduxDispatch],
 	)
 
 	useEffect(
-		() => deletingStorage(state.appState, dispatch, embedded, state.selectedAccount),
-		[state.appState, state.selectedAccount, embedded],
+		() => deletingStorage(appState, dispatch, embedded, selectedAccount),
+		[appState, selectedAccount, embedded],
 	)
 
 	const callbackImportAccount = useCallback(
@@ -135,13 +134,13 @@ export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: bool
 	)
 
 	const callbackRestart = useCallback(
-		() => restart(embedded, dispatch, state.selectedAccount, reduxDispatch),
-		[state.selectedAccount, embedded, reduxDispatch],
+		() => restart(embedded, dispatch, selectedAccount, reduxDispatch),
+		[selectedAccount, embedded, reduxDispatch],
 	)
 
 	const callbackDeleteAccount = useCallback(
-		() => deleteAccount(embedded, dispatch, state.selectedAccount, reduxDispatch),
-		[embedded, state.selectedAccount, reduxDispatch],
+		() => deleteAccount(embedded, dispatch, selectedAccount, reduxDispatch),
+		[embedded, selectedAccount, reduxDispatch],
 	)
 
 	const callbackSwitchAccount = useCallback(
@@ -150,8 +149,9 @@ export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: bool
 	)
 
 	const callbackCreateNewAccount = useCallback(
-		(newConfig?: beapi.account.INetworkConfig) => createNewAccount(embedded, dispatch, newConfig),
-		[embedded],
+		(newConfig?: beapi.account.INetworkConfig) =>
+			createNewAccount(embedded, dispatch, reduxDispatch, newConfig),
+		[embedded, reduxDispatch],
 	)
 
 	const callbackUpdateAccount = useCallback(
@@ -164,8 +164,8 @@ export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: bool
 	}, [])
 
 	const callbackSetPersistentOption = useCallback(
-		action => setPersistentOption(dispatch, state.selectedAccount, action),
-		[state.selectedAccount],
+		action => setPersistentOption(dispatch, selectedAccount, action),
+		[selectedAccount],
 	)
 
 	const callbackAddNotificationListener = useCallback(
@@ -195,7 +195,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: bool
 	)
 
 	useEffect(() => {
-		if (state.selectedAccount === null) {
+		if (selectedAccount === null) {
 			console.log('no account id supplied')
 			setNetworkConfig({})
 			return
@@ -203,7 +203,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: bool
 
 		const f = async () => {
 			const netConf = await accountService.networkConfigGet({
-				accountId: state.selectedAccount,
+				accountId: selectedAccount,
 			})
 			if (!netConf.currentConfig) {
 				return
@@ -213,7 +213,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string; embedded: bool
 		}
 
 		f().catch(e => console.warn(e))
-	}, [state.selectedAccount])
+	}, [selectedAccount])
 
 	return (
 		<MessengerContext.Provider

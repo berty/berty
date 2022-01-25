@@ -6,9 +6,10 @@ import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { useMusicPlayer } from '@berty-tech/components/music-player'
 import beapi from '@berty-tech/api'
-import { useMessengerContext } from '@berty-tech/store'
 
 import { normalizeVolumeIntensities, WaveForm } from '../audioMessageCommon'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia
@@ -64,7 +65,7 @@ export const AudioMessage: React.FC<{
 	isMine: boolean
 }> = ({ medias, onLongPress, isHighlight, isMine }) => {
 	const colors = useThemeColor()
-	const { protocolClient } = useMessengerContext()
+	const protocolClient = useSelector(selectProtocolClient)
 	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
 	const {
 		player: globalPlayer,

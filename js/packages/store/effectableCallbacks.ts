@@ -5,6 +5,11 @@ import { useAppDispatch } from '@berty-tech/react-redux'
 
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'
+import {
+	setCreatedAccount,
+	setStateStreamDone,
+	setStateStreamInProgress,
+} from '@berty-tech/redux/reducers/ui.reducer'
 
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -21,9 +26,7 @@ export const closeAccountWithProgress = async (
 						console.warn('Error while closing node:', err)
 					}
 					reduxDispatch(resetAccountStore())
-					dispatch({
-						type: MessengerActions.SetStateStreamDone,
-					})
+					reduxDispatch(setStateStreamDone())
 					return
 				}
 				if (msg?.progress?.state !== 'done') {
@@ -33,10 +36,7 @@ export const closeAccountWithProgress = async (
 							msg: progress,
 							stream: 'Close account',
 						}
-						dispatch({
-							type: MessengerActions.SetStateStreamInProgress,
-							payload,
-						})
+						reduxDispatch(setStateStreamInProgress(payload))
 					}
 				}
 			})
@@ -57,6 +57,7 @@ export const closeAccountWithProgress = async (
 export const importAccountWithProgress = async (
 	path: string,
 	dispatch: (arg0: reducerAction) => void,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) =>
 	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(resolve => {
 		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
@@ -71,15 +72,10 @@ export const importAccountWithProgress = async (
 								msg: progress,
 								stream: 'Import account',
 							}
-							dispatch({
-								type: MessengerActions.SetStateStreamInProgress,
-								payload,
-							})
+							reduxDispatch(setStateStreamInProgress(payload))
 						}
 					} else {
-						dispatch({
-							type: MessengerActions.SetStateStreamDone,
-						})
+						reduxDispatch(setStateStreamDone)
 						resolve(metaMsg)
 					}
 					if (msg?.accountMetadata) {
@@ -147,6 +143,7 @@ export const getNetworkConfigurationFromPreset = async (
 export const createAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 	newConfig?: beapi.account.INetworkConfig,
 ) => {
 	let resp: beapi.account.CreateAccount.Reply
@@ -168,17 +165,17 @@ export const createAccount = async (
 	}
 
 	await refreshAccountList(embedded, dispatch)
-	dispatch({
-		type: MessengerActions.SetCreatedAccount,
-		payload: {
+	reduxDispatch(
+		setCreatedAccount({
 			accountId: resp.accountMetadata.accountId,
-		},
-	})
+		}),
+	)
 }
 
 export const createNewAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
+	reduxDispatch: ReturnType<typeof useAppDispatch>,
 	newConfig?: beapi.account.INetworkConfig,
 ) => {
 	if (!embedded) {
@@ -186,7 +183,7 @@ export const createNewAccount = async (
 	}
 
 	try {
-		await createAccount(embedded, dispatch, newConfig)
+		await createAccount(embedded, dispatch, reduxDispatch, newConfig)
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

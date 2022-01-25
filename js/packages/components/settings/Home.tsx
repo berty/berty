@@ -14,10 +14,10 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import {
-	MessengerActions,
 	useMessengerContext,
 	closeAccountWithProgress,
 	useThemeColor,
+	useMessengerClient,
 } from '@berty-tech/store'
 import { useAppDispatch, useAccount } from '@berty-tech/react-redux'
 
@@ -26,6 +26,7 @@ import { AccountAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
 import { WelcomeChecklist } from './WelcomeChecklist'
 import { LoaderDots } from '../gates'
+import { setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
 
 const _verticalOffset = 30
 
@@ -83,7 +84,7 @@ const HomeHeaderAvatar: React.FC = () => {
 	const { navigate } = useNavigation()
 	const [{ row, border, padding }, { windowWidth, windowHeight, scaleHeight, scaleSize }] =
 		useStyles()
-	const ctx = useMessengerContext()
+	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
@@ -92,7 +93,7 @@ const HomeHeaderAvatar: React.FC = () => {
 	React.useEffect(() => {
 		const getAccountLink = async () => {
 			if (account.displayName) {
-				const ret = await ctx.client?.instanceShareableBertyID({
+				const ret = await client?.instanceShareableBertyID({
 					reset: false,
 					displayName: account.displayName,
 				})
@@ -187,7 +188,7 @@ const HomeBodySettings: React.FC = () => {
 				iconColor={colors['background-header']}
 				onPress={async () => {
 					await closeAccountWithProgress(dispatch, reduxDispatch)
-					await dispatch({ type: MessengerActions.SetStateOnBoardingReady })
+					await reduxDispatch(setStateOnBoardingReady())
 				}}
 			/>
 		</View>

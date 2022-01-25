@@ -24,6 +24,7 @@ import {
 	useMessengerContext,
 	useThemeColor,
 	pbDateToNum,
+	useMessengerClient,
 } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
@@ -60,13 +61,14 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 	const { t } = useTranslation()
 	const ctx = useMessengerContext()
 	const insets = useSafeAreaInsets()
+	const client = useMessengerClient()
 
 	const [editValue, setEditValue] = useState(conv?.displayName || '')
 	const [isEdit, setIsEdit] = useState(false)
 	const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
 	const editDisplayName = async () => {
 		const buf = beapi.messenger.AppMessage.SetGroupInfo.encode({ displayName: editValue }).finish()
-		await ctx.client?.interact({
+		await client?.interact({
 			conversationPublicKey: conv?.publicKey,
 			type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
 			payload: buf,
@@ -245,7 +247,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 									<EmojiBoard
 										showBoard={true}
 										onClick={(emoji: any) => {
-											ctx.client
+											client
 												?.interact({
 													conversationPublicKey: conv?.publicKey,
 													type: beapi.messenger.AppMessage.Type.TypeUserReaction,
@@ -260,7 +262,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 													setActivePopoverCid(null)
 													setActiveEmojiKeyboardCid(null)
 												})
-												.catch(e => {
+												.catch((e: unknown) => {
 													console.warn('e sending message:', e)
 												})
 										}}

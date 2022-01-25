@@ -17,12 +17,14 @@ import {
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'
+import { useSelector } from 'react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-
+	const protocolClient = useSelector(selectProtocolClient)
 	const [url, setURL] = useState('')
 	const ctx = useMessengerContext()
 	const accountServices = useAccountServices()
@@ -36,7 +38,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 				iconColor={colors['background-header']}
 				alone={true}
 				onPress={async () => {
-					await servicesAuthViaDefault(ctx)
+					await servicesAuthViaDefault(protocolClient)
 				}}
 			/>
 			<FactionButtonSetting
@@ -63,7 +65,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 					alone={false}
 					onPress={async () => {
 						try {
-							await servicesAuthViaURL(ctx.protocolClient, url)
+							await servicesAuthViaURL(protocolClient, url)
 							showNeedRestartNotification(showNotification, ctx, t)
 						} catch (e) {
 							// ignoring

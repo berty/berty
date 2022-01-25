@@ -7,8 +7,9 @@ import { useStyles } from '@berty-tech/styles'
 import {
 	getDevicesForConversationAndMember,
 	getSharedPushTokensForConversation,
-	useMessengerContext,
 } from '@berty-tech/store'
+import { useSelector } from 'react-redux'
+import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = ({
 	memberPk,
@@ -17,27 +18,25 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 	const cutoff = 16
 	const [{ padding }] = useStyles()
 	const { t } = useTranslation()
-	const ctx = useMessengerContext()
 	const [tokens, setTokens] = useState<berty.messenger.v1.ISharedPushToken[]>([])
 	const [devices, setDevices] = useState<berty.messenger.v1.IDevice[]>([])
+	const client = useSelector(selectClient)
 
 	useEffect(() => {
-		if (!ctx.client) {
+		if (!client) {
 			return
 		}
 
-		getSharedPushTokensForConversation(ctx.client, conversationPk)
-			.then(setTokens)
-			.catch(console.warn)
-	}, [conversationPk, ctx.client, setTokens])
+		getSharedPushTokensForConversation(client, conversationPk).then(setTokens).catch(console.warn)
+	}, [conversationPk, client, setTokens])
 
 	useEffect(() => {
-		if (!ctx.client) {
+		if (!client) {
 			return
 		}
 
-		getDevicesForConversationAndMember(ctx.client, conversationPk, memberPk).then(setDevices)
-	}, [conversationPk, ctx.client, memberPk, setDevices])
+		getDevicesForConversationAndMember(client, conversationPk, memberPk).then(setDevices)
+	}, [conversationPk, client, memberPk, setDevices])
 
 	const tokensMap = Object.fromEntries(tokens.map(t => [t.devicePublicKey, t.token]))
 
