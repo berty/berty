@@ -9,7 +9,7 @@ import {
 	RESULTS,
 	openSettings,
 	PermissionStatus,
-} from 'react-native-permissions'
+} from '../../rnutil/react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
 import {

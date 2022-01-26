@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Player } from '@react-native-community/audio-toolkit'
+import { Player } from './player'
 
 import { useMessengerContext } from '@berty-tech/store'
 

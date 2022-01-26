@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, Modal, Platform, TouchableOpacity } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
-import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
+import { request, check, RESULTS, PERMISSIONS } from '../../../../rnutil/react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
 import getPath from '@flyerhq/react-native-android-uri-path'
 

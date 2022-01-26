@@ -13,7 +13,7 @@ import {
 } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { Icon } from '@ui-kitten/components'
-import { RESULTS, PERMISSIONS, check } from 'react-native-permissions'
+import { RESULTS, PERMISSIONS, check } from '../../rnutil/react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import NetworkOptionsBg from '@berty-tech/assets/network_options_bg.png'

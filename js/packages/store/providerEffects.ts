@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
-import RNFS from 'react-native-fs'
+import RNFS from '../rnutil/rnfs'
 
 import beapi from '@berty-tech/api'
 import i18n, { osLanguage } from '@berty-tech/berty-i18n'

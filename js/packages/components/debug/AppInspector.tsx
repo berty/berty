@@ -9,7 +9,7 @@ import {
 	StyleSheet,
 	StatusBar,
 } from 'react-native'
-import RNFS from 'react-native-fs'
+import RNFS from '../../rnutil/rnfs'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 

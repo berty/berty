@@ -3,7 +3,7 @@ import { View, Modal, TouchableOpacity, Image } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import CameraRoll from '@react-native-community/cameraroll'
-import Share from 'react-native-share'
+import Share from '../../rnutil/react-native-share'
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 import { useStyles } from '@berty-tech/styles'

@@ -10,7 +10,7 @@ import {
 	useMessengerContext,
 } from '@berty-tech/store'
 import { useTranslation } from 'react-i18next'
-import { checkNotifications, RESULTS, PermissionStatus } from 'react-native-permissions'
+import { checkNotifications, RESULTS, PermissionStatus } from '../../rnutil/react-native-permissions'
 import rnutil from '@berty-tech/rnutil'
 import { useNavigation } from '@berty-tech/navigation'
 import { berty } from '@berty-tech/api/root.pb'

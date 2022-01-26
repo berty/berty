@@ -10,7 +10,9 @@ export const osLanguage = (() => {
 	const locale: string | undefined =
 		Platform.OS === 'ios'
 			? NativeModules?.SettingsManager?.settings?.AppleLanguages[0] // iOS 13
-			: NativeModules?.I18nManager?.localeIdentifier
+			: Platform.OS === 'android'
+			? NativeModules?.I18nManager?.localeIdentifier
+			: 'en-US'
 	let lang = locale?.replace('_', '-')
 	// the "en-" check is for weird locales like en-FR
 	if (lang?.startsWith('en-') && !languages.hasOwnProperty(lang)) {

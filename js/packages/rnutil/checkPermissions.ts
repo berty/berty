@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import { check, checkNotifications, PERMISSIONS, RESULTS } from 'react-native-permissions'
+import { check, checkNotifications, PERMISSIONS, RESULTS } from './react-native-permissions'
 
 export const checkPermissions = async (
 	permissionType: 'p2p' | 'audio' | 'notification' | 'camera',

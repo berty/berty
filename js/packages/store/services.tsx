@@ -1,9 +1,9 @@
 import base64 from 'base64-js'
 import { Buffer } from 'buffer'
 import { Alert, PermissionsAndroid, NativeModules, Platform } from 'react-native'
-import RNFS from 'react-native-fs'
-import InAppBrowser, { RedirectResult } from 'react-native-inappbrowser-reborn'
-import Share from 'react-native-share'
+import RNFS from '../rnutil/rnfs'
+import InAppBrowser, { RedirectResult } from '../rnutil/react-native-inappbrowser-reborn'
+import Share from '../rnutil/react-native-share'
 
 import beapi from '@berty-tech/api'
 import { Service } from '@berty-tech/grpc-bridge'

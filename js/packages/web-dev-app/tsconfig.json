@@ -1,12 +1,41 @@
 {
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "outDir": "./dist/",
-    "noImplicitAny": true,
-    "module": "es6",
     "target": "es5",
-    "jsx": "react",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "noImplicitAny": true
   },
+  "include": [
+    "src",
+    "../react-redux",
+    "../store",
+    "../api",
+    "../grpc-bridge",
+    "../go-bridge",
+    "../config",
+    "../rnutil",
+    "../berty-i18n",
+    "../styles",
+    "../redux",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,5 +1,5 @@
 import mapValues from 'lodash/mapValues'
-import { Player } from '@react-native-community/audio-toolkit'
+import { Player } from '../components/player'
 
 import { SoundKey, soundsMap } from './types'
 

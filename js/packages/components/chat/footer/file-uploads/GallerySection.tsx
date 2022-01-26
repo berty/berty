@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import CameraRoll from '@react-native-community/cameraroll'
-import RNFS from 'react-native-fs'
+import RNFS from '../../../../rnutil/rnfs'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'

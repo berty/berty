@@ -10,7 +10,7 @@ import { Recorder } from '@react-native-community/audio-toolkit'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
-import { RESULTS } from 'react-native-permissions'
+import { RESULTS } from '../../../../rnutil/react-native-permissions'
 import Long from 'long'
 
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'

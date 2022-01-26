@@ -1,5 +1,5 @@
 import React from 'react'
-import { PermissionStatus } from 'react-native-permissions'
+import { PermissionStatus } from '../rnutil/react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import { StackScreenProps } from '@react-navigation/stack'

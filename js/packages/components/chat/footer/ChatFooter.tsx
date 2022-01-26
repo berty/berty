@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
-import { RESULTS } from 'react-native-permissions'
+import { RESULTS } from '../../../rnutil/react-native-permissions'
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
 

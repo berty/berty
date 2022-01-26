@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@berty-tech/react-redux/*": ["../react-redux/*"],
+      "@berty-tech/store/*": ["../store/*"],
+      "@berty-tech/api/*": ["../api/*"],
+      "@berty-tech/grpc-bridge/*": ["../grpc-bridge/*"],
+      "@berty-tech/go-bridge/*": ["../go-bridge/*"],
+      "@berty-tech/config/*": ["../config/*"],
+      "@berty-tech/rnutil/*": ["../rnutil/*"],
+      "@berty-tech/berty-i18n/*": ["../berty-i18n/*"],
+      "@berty-tech/styles/*": ["../styles/*"],
+      "@berty-tech/redux/*": ["../redux/*"],
+      "@berty-tech/components/*": ["../components/*"],
+      "@react-native-community/audio-toolkit/typings/*": ["../../node_modules/react-native-community/audio-toolkit/typings/*"]
+    }
+  }
+}

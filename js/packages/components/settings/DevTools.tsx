@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { Player } from '@react-native-community/audio-toolkit'
+import { Player } from '../player'
 import Long from 'long'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
