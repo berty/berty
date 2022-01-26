@@ -17,6 +17,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
@@ -89,10 +90,11 @@ func NewBridge(config *Config) (*Bridge, error) {
 	// setup netdriver
 	{
 		if config.netDriver != nil {
-			inet := &inetAddrs{
-				netaddrs: config.netDriver,
-				logger:   b.logger,
+			inet := &inet{
+				net:    config.netDriver,
+				logger: b.logger,
 			}
+			ipfsutil.SetNetDriver(inet)
 			manet.SetNetInterface(inet)
 		}
 	}

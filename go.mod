@@ -63,6 +63,7 @@ require (
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-00010101000000-000000000000
 	github.com/libp2p/go-libp2p-transport-upgrader v0.6.0
 	github.com/libp2p/go-tcp-transport v0.4.0
+	github.com/libp2p/zeroconf/v2 v2.1.1
 	github.com/markbates/pkger v0.17.1
 	github.com/mdomke/git-semver/v5 v5.0.0
 	github.com/mdp/qrterminal v1.0.1
@@ -121,11 +122,11 @@ require (
 
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
-
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20211013085524-09965cd64781 // use berty fork of go-libp2p-rendezvous with sqlcipher support
-	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20211217161528-bfc4488c5ae9 // tmp, required for Android SDK30
+
+	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 // tmp, required for Android SDK30
 	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.0.0-20211104165006-2c524b646cf0
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 	golang.org/x/mobile => github.com/aeddi/mobile v0.0.3-silicon // temporary, see https://github.com/golang/mobile/pull/58

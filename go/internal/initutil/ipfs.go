@@ -200,6 +200,19 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	}
 	m.Node.Protocol.ipfsNode = mnode.IpfsNode
 
+	// setup mdns
+	if m.Node.Protocol.MDNS.Enable && !m.Node.Protocol.DisableIPFSNetwork {
+		h := mnode.PeerHost()
+		dh := ipfsutil.DiscoveryHandler(ctx, logger, h)
+		mdnsService := ipfsutil.NewMdnsService(logger, h, ipfsutil.MDNSServiceName, dh)
+		logger.Named("mdns").Info("starting mdns")
+		if err := mdnsService.Start(); err != nil {
+			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		}
+
+		m.Node.Protocol.mdnsService = mdnsService
+	}
+
 	// init extended api
 	m.Node.Protocol.ipfsAPI, err = ipfsutil.NewExtendedCoreAPIFromNode(mnode.IpfsNode)
 	if err != nil {
@@ -468,8 +481,8 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		}
 	}
 
-	// localdisc driver
-	cfg.Discovery.MDNS.Enabled = m.Node.Protocol.MDNS.Enable
+	// enable mdns
+	cfg.Discovery.MDNS.Enabled = false
 
 	// enable auto relay
 	if m.Node.Protocol.AutoRelay {
@@ -622,7 +635,6 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)
-
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
