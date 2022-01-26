@@ -188,9 +188,16 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 			style={[{ flex: 1, backgroundColor: colors['main-background'] }]}
 		>
 			<ReplyReactionProvider>
-				{({ activeEmojiKeyboardCid, setActiveEmojiKeyboardCid, setActivePopoverCid }: any) => {
+				{({
+					activeEmojiKeyboardCid,
+					setActiveEmojiKeyboardCid,
+					setActivePopoverCid,
+					isActivePopoverOnKeyboardClose,
+				}: any) => {
 					const onRemoveEmojiBoard = () => {
-						setActivePopoverCid(activeEmojiKeyboardCid)
+						if (isActivePopoverOnKeyboardClose) {
+							setActivePopoverCid(activeEmojiKeyboardCid)
+						}
 						setActiveEmojiKeyboardCid(null)
 					}
 					return (
