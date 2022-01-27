@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func (s *service) GroupInfo(_ context.Context, req *protocoltypes.GroupInfo_Request) (*protocoltypes.GroupInfo_Reply, error) {
+func (s *service) GroupInfo(ctx context.Context, req *protocoltypes.GroupInfo_Request) (*protocoltypes.GroupInfo_Reply, error) {
 	var (
 		g   *protocoltypes.Group
 		err error
@@ -29,7 +29,7 @@ func (s *service) GroupInfo(_ context.Context, req *protocoltypes.GroupInfo_Requ
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
-		g, err = s.getGroupForPK(pk)
+		g, err = s.getGroupForPK(ctx, pk)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -75,7 +75,7 @@ func (s *service) ActivateGroup(ctx context.Context, req *protocoltypes.Activate
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	err = s.activateGroup(pk, req.LocalOnly)
+	err = s.activateGroup(ctx, pk, req.LocalOnly)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}

@@ -106,8 +106,7 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 	c.Addresses.Swarm = DefaultSwarmListeners
 
 	// Swarm
-	c.Swarm.EnableAutoRelay = true
-	c.Swarm.EnableRelayHop = false
+	c.Swarm.RelayClient.Enabled = ipfs_cfg.True
 	c.Swarm.ConnMgr = ipfs_cfg.ConnMgr{
 		LowWater:    defaultConnMgrLowWater,
 		HighWater:   defaultConnMgrHighWater,

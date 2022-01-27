@@ -113,10 +113,6 @@ func (m *Manager) applyPreset() error {
 	case PerformancePreset:
 		// will do later
 	case AnonymityPreset:
-		// Force tor in this mode
-		m.Node.Protocol.Tor.Mode = TorRequired
-		// FIXME: raise an error if tor is not available on the node
-
 		// Disable proximity communications
 		m.Node.Protocol.MDNS.Enable = false
 		m.Node.Protocol.MultipeerConnectivity = false
@@ -598,7 +594,8 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 
 	m.Node.Messenger.localDBState = &messengertypes.LocalDatabaseState{}
 
-	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
+	ctx := m.getContext()
+	if err := bertymessenger.RestoreFromAccountExport(ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 

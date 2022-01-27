@@ -190,7 +190,7 @@ func (m *MetadataStore) SendSecret(ctx context.Context, memberPK crypto.PubKey) 
 		m.logger.Warn("sending secret to an unknown group member")
 	}
 
-	ds, err := m.mks.GetDeviceSecret(m.g, m.devKS)
+	ds, err := m.mks.GetDeviceSecret(ctx, m.g, m.devKS)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}

@@ -250,7 +250,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 	}
 
-	if err := opts.GroupDatastore.Put(acc.Group()); err != nil {
+	if err := opts.GroupDatastore.Put(ctx, acc.Group()); err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to add account group to group datastore, err: %w", err))
 	}
 

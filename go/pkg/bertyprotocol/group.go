@@ -134,7 +134,7 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *GroupContext) <-
 				continue
 			}
 
-			if err = gc.MessageKeystore().RegisterChainKey(gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
+			if err = gc.MessageKeystore().RegisterChainKey(ctx, gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
 				gc.logger.Error("unable to register chain key", zap.Error(err))
 				continue
 			}
@@ -159,7 +159,7 @@ func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *GroupContex
 
 	go func() {
 		for pk, sec := range publishedSecrets {
-			if err := gc.MessageKeystore().RegisterChainKey(gc.Group(), pk, sec, gc.DevicePubKey().Equals(pk)); err != nil {
+			if err := gc.MessageKeystore().RegisterChainKey(ctx, gc.Group(), pk, sec, gc.DevicePubKey().Equals(pk)); err != nil {
 				gc.logger.Error("unable to register chain key", zap.Error(err))
 			} else {
 				ch <- pk

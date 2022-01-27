@@ -1,6 +1,8 @@
 package bertyprotocol
 
 import (
+	"context"
+
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
 
@@ -22,7 +24,7 @@ func (d *datastoreCache) Close() error {
 }
 
 func (d *datastoreCache) Destroy(directory string, dbAddress address.Address) error {
-	keys, err := datastoreutil.NewNamespacedDatastore(d.ds, datastore.NewKey(dbAddress.String())).Query(query.Query{KeysOnly: true})
+	keys, err := datastoreutil.NewNamespacedDatastore(d.ds, datastore.NewKey(dbAddress.String())).Query(context.TODO(), query.Query{KeysOnly: true})
 	if err != nil {
 		return nil
 	}
@@ -33,7 +35,7 @@ func (d *datastoreCache) Destroy(directory string, dbAddress address.Address) er
 			return nil
 		}
 
-		if err := d.ds.Delete(datastore.NewKey(val.Key)); err != nil {
+		if err := d.ds.Delete(context.TODO(), datastore.NewKey(val.Key)); err != nil {
 			return err
 		}
 	}

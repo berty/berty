@@ -30,7 +30,7 @@ type DecryptInfo struct {
 	Cid            cid.Cid
 }
 
-func (m *MessageKeystore) GetDeviceChainKey(groupPK, pk crypto.PubKey) (*protocoltypes.DeviceSecret, error) {
+func (m *MessageKeystore) GetDeviceChainKey(ctx context.Context, groupPK, pk crypto.PubKey) (*protocoltypes.DeviceSecret, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -47,7 +47,7 @@ func (m *MessageKeystore) GetDeviceChainKey(groupPK, pk crypto.PubKey) (*protoco
 
 	key := idForCurrentCK(groupRaw, pkB)
 
-	dsBytes, err := m.store.Get(key)
+	dsBytes, err := m.store.Get(ctx, key)
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrMissingInput.Wrap(err)
 	} else if err != nil {
@@ -62,7 +62,7 @@ func (m *MessageKeystore) GetDeviceChainKey(groupPK, pk crypto.PubKey) (*protoco
 	return ds, nil
 }
 
-func (m *MessageKeystore) delPrecomputedKey(groupPK, device crypto.PubKey, counter uint64) error {
+func (m *MessageKeystore) delPrecomputedKey(ctx context.Context, groupPK, device crypto.PubKey, counter uint64) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -78,14 +78,14 @@ func (m *MessageKeystore) delPrecomputedKey(groupPK, device crypto.PubKey, count
 	}
 
 	id := idForCachedKey(groupRaw, deviceRaw, counter)
-	if err := m.store.Delete(id); err != nil {
+	if err := m.store.Delete(ctx, id); err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil
 }
 
-func (m *MessageKeystore) PostDecryptActions(di *DecryptInfo, g *protocoltypes.Group, ownPK crypto.PubKey, headers *protocoltypes.MessageHeaders) error {
+func (m *MessageKeystore) PostDecryptActions(ctx context.Context, di *DecryptInfo, g *protocoltypes.Group, ownPK crypto.PubKey, headers *protocoltypes.MessageHeaders) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -111,26 +111,26 @@ func (m *MessageKeystore) PostDecryptActions(di *DecryptInfo, g *protocoltypes.G
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if err = m.putKeyForCID(di.Cid, di.MK); err != nil {
+	if err = m.putKeyForCID(ctx, di.Cid, di.MK); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
-	if err = m.delPrecomputedKey(groupPK, pk, headers.Counter); err != nil {
+	if err = m.delPrecomputedKey(ctx, groupPK, pk, headers.Counter); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
-	if ds, err = m.GetDeviceChainKey(groupPK, pk); err != nil {
+	if ds, err = m.GetDeviceChainKey(ctx, groupPK, pk); err != nil {
 		return errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	if ds, err = m.preComputeKeys(pk, groupPK, ds); err != nil {
+	if ds, err = m.preComputeKeys(ctx, pk, groupPK, ds); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
 	// If the message was not emitted by the current Device we might need
 	// to update the current chain key
 	if ownPK == nil || !ownPK.Equals(pk) {
-		if err = m.updateCurrentKey(groupPK, pk, ds); err != nil {
+		if err = m.updateCurrentKey(ctx, groupPK, pk, ds); err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}
 	}
@@ -138,7 +138,7 @@ func (m *MessageKeystore) PostDecryptActions(di *DecryptInfo, g *protocoltypes.G
 	return nil
 }
 
-func (m *MessageKeystore) GetDeviceSecret(g *protocoltypes.Group, acc DeviceKeystore) (*protocoltypes.DeviceSecret, error) {
+func (m *MessageKeystore) GetDeviceSecret(ctx context.Context, g *protocoltypes.Group, acc DeviceKeystore) (*protocoltypes.DeviceSecret, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -153,7 +153,7 @@ func (m *MessageKeystore) GetDeviceSecret(g *protocoltypes.Group, acc DeviceKeys
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	ds, err := m.GetDeviceChainKey(groupPK, md.device.GetPublic())
+	ds, err := m.GetDeviceChainKey(ctx, groupPK, md.device.GetPublic())
 	if errcode.Is(err, errcode.ErrMissingInput) {
 		// If secret does not exist, create it
 		ds, err := NewDeviceSecret()
@@ -161,7 +161,7 @@ func (m *MessageKeystore) GetDeviceSecret(g *protocoltypes.Group, acc DeviceKeys
 			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
-		if err = m.registerChainKey(g, md.device.GetPublic(), ds, true); err != nil {
+		if err = m.registerChainKey(ctx, g, md.device.GetPublic(), ds, true); err != nil {
 			return nil, errcode.ErrMessageKeyPersistencePut.Wrap(err)
 		}
 
@@ -174,15 +174,15 @@ func (m *MessageKeystore) GetDeviceSecret(g *protocoltypes.Group, acc DeviceKeys
 	return ds, nil
 }
 
-func (m *MessageKeystore) RegisterChainKey(g *protocoltypes.Group, devicePK crypto.PubKey, ds *protocoltypes.DeviceSecret, isOwnPK bool) error {
+func (m *MessageKeystore) RegisterChainKey(ctx context.Context, g *protocoltypes.Group, devicePK crypto.PubKey, ds *protocoltypes.DeviceSecret, isOwnPK bool) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
 
-	return m.registerChainKey(g, devicePK, ds, isOwnPK)
+	return m.registerChainKey(ctx, g, devicePK, ds, isOwnPK)
 }
 
-func (m *MessageKeystore) registerChainKey(g *protocoltypes.Group, devicePK crypto.PubKey, ds *protocoltypes.DeviceSecret, isOwnPK bool) error {
+func (m *MessageKeystore) registerChainKey(ctx context.Context, g *protocoltypes.Group, devicePK crypto.PubKey, ds *protocoltypes.DeviceSecret, isOwnPK bool) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -192,31 +192,31 @@ func (m *MessageKeystore) registerChainKey(g *protocoltypes.Group, devicePK cryp
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := m.GetDeviceChainKey(groupPK, devicePK); err == nil {
+	if _, err := m.GetDeviceChainKey(ctx, groupPK, devicePK); err == nil {
 		// Device is already registered, ignore it
 		return nil
 	}
 
 	// If own Device store key as is, no need to precompute future keys
 	if isOwnPK {
-		if err := m.putDeviceChainKey(groupPK, devicePK, ds); err != nil {
+		if err := m.putDeviceChainKey(ctx, groupPK, devicePK, ds); err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}
 
 		return nil
 	}
 
-	if ds, err = m.preComputeKeys(devicePK, groupPK, ds); err != nil {
+	if ds, err = m.preComputeKeys(ctx, devicePK, groupPK, ds); err != nil {
 		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	if err := m.putDeviceChainKey(groupPK, devicePK, ds); err != nil {
+	if err := m.putDeviceChainKey(ctx, groupPK, devicePK, ds); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
 	devicePKBytes, err := devicePK.Raw()
 	if err == nil {
-		if err := m.UpdatePushGroupReferences(devicePKBytes, ds.Counter, g); err != nil {
+		if err := m.UpdatePushGroupReferences(ctx, devicePKBytes, ds.Counter, g); err != nil {
 			// TODO: log
 			_ = err
 		}
@@ -225,7 +225,7 @@ func (m *MessageKeystore) registerChainKey(g *protocoltypes.Group, devicePK cryp
 	return nil
 }
 
-func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, groupPK crypto.PubKey, ds *protocoltypes.DeviceSecret) (*protocoltypes.DeviceSecret, error) {
+func (m *MessageKeystore) preComputeKeys(ctx context.Context, device crypto.PubKey, groupPK crypto.PubKey, ds *protocoltypes.DeviceSecret) (*protocoltypes.DeviceSecret, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -238,7 +238,7 @@ func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, groupPK crypto.Pu
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	knownCK, err := m.GetDeviceChainKey(groupPK, device)
+	knownCK, err := m.GetDeviceChainKey(ctx, groupPK, device)
 	if err != nil && !errcode.Is(err, errcode.ErrMissingInput) {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -247,7 +247,7 @@ func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, groupPK crypto.Pu
 	for i := 0; i < m.GetPrecomputedKeyExpectedCount(); i++ {
 		counter++
 
-		knownMK, err := m.getPrecomputedKey(groupPK, device, counter)
+		knownMK, err := m.getPrecomputedKey(ctx, groupPK, device, counter)
 		if err != nil && !errcode.Is(err, errcode.ErrMissingInput) {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}
@@ -269,7 +269,7 @@ func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, groupPK crypto.Pu
 		preComputedKeys = append(preComputedKeys, computedKey{counter, &mk})
 	}
 
-	err = m.putPrecomputedKeys(groupPK, device, preComputedKeys...)
+	err = m.putPrecomputedKeys(ctx, groupPK, device, preComputedKeys...)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -280,7 +280,7 @@ func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, groupPK crypto.Pu
 	}, nil
 }
 
-func (m *MessageKeystore) getPrecomputedKey(groupPK, device crypto.PubKey, counter uint64) (*[32]byte, error) {
+func (m *MessageKeystore) getPrecomputedKey(ctx context.Context, groupPK, device crypto.PubKey, counter uint64) (*[32]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -297,7 +297,7 @@ func (m *MessageKeystore) getPrecomputedKey(groupPK, device crypto.PubKey, count
 
 	id := idForCachedKey(groupRaw, deviceRaw, counter)
 
-	key, err := m.store.Get(id)
+	key, err := m.store.Get(ctx, id)
 
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrMissingInput.Wrap(fmt.Errorf("key for message does not exist in datastore"))
@@ -319,7 +319,7 @@ type computedKey struct {
 	mk      *[32]byte
 }
 
-func (m *MessageKeystore) putPrecomputedKeys(groupPK, device crypto.PubKey, preComputedKeys ...computedKey) error {
+func (m *MessageKeystore) putPrecomputedKeys(ctx context.Context, groupPK, device crypto.PubKey, preComputedKeys ...computedKey) error {
 	if m == nil || len(preComputedKeys) == 0 {
 		return errcode.ErrInvalidInput
 	}
@@ -334,12 +334,12 @@ func (m *MessageKeystore) putPrecomputedKeys(groupPK, device crypto.PubKey, preC
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	batch, err := m.store.Batch()
+	batch, err := m.store.Batch(ctx)
 	if err == datastore.ErrBatchUnsupported {
 		for _, preComputedKey := range preComputedKeys {
 			id := idForCachedKey(groupRaw, deviceRaw, preComputedKey.counter)
 
-			if err := m.store.Put(id, preComputedKey.mk[:]); err != nil {
+			if err := m.store.Put(ctx, id, preComputedKey.mk[:]); err != nil {
 				return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 			}
 		}
@@ -352,19 +352,19 @@ func (m *MessageKeystore) putPrecomputedKeys(groupPK, device crypto.PubKey, preC
 	for _, preComputedKey := range preComputedKeys {
 		id := idForCachedKey(groupRaw, deviceRaw, preComputedKey.counter)
 
-		if err := batch.Put(id, preComputedKey.mk[:]); err != nil {
+		if err := batch.Put(ctx, id, preComputedKey.mk[:]); err != nil {
 			return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 		}
 	}
 
-	if err := batch.Commit(); err != nil {
+	if err := batch.Commit(ctx); err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil
 }
 
-func (m *MessageKeystore) putKeyForCID(id cid.Cid, key *[32]byte) error {
+func (m *MessageKeystore) putKeyForCID(ctx context.Context, id cid.Cid, key *[32]byte) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -373,7 +373,7 @@ func (m *MessageKeystore) putKeyForCID(id cid.Cid, key *[32]byte) error {
 		return nil
 	}
 
-	err := m.store.Put(idForCID(id), key[:])
+	err := m.store.Put(ctx, idForCID(id), key[:])
 	if err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
@@ -396,12 +396,12 @@ func (m *MessageKeystore) OpenEnvelope(ctx context.Context, g *protocoltypes.Gro
 		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	msgBytes, decryptInfo, err := m.OpenPayload(id, gPK, env.Message, headers)
+	msgBytes, decryptInfo, err := m.OpenPayload(ctx, id, gPK, env.Message, headers)
 	if err != nil {
 		return headers, nil, nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
 	}
 
-	if err := m.PostDecryptActions(decryptInfo, g, ownPK, headers); err != nil {
+	if err := m.PostDecryptActions(ctx, decryptInfo, g, ownPK, headers); err != nil {
 		return nil, nil, nil, errcode.TODO.Wrap(err)
 	}
 
@@ -419,7 +419,7 @@ func (m *MessageKeystore) OpenEnvelope(ctx context.Context, g *protocoltypes.Gro
 	return headers, &msg, attachmentsCIDs, nil
 }
 
-func (m *MessageKeystore) OpenPayload(id cid.Cid, groupPK crypto.PubKey, payload []byte, headers *protocoltypes.MessageHeaders) ([]byte, *DecryptInfo, error) {
+func (m *MessageKeystore) OpenPayload(ctx context.Context, id cid.Cid, groupPK crypto.PubKey, payload []byte, headers *protocoltypes.MessageHeaders) ([]byte, *DecryptInfo, error) {
 	if m == nil {
 		return nil, nil, errcode.ErrInvalidInput
 	}
@@ -433,7 +433,7 @@ func (m *MessageKeystore) OpenPayload(id cid.Cid, groupPK crypto.PubKey, payload
 		pk crypto.PubKey
 	)
 
-	if di.MK, err = m.GetKeyForCID(id); err == nil {
+	if di.MK, err = m.GetKeyForCID(ctx, id); err == nil {
 		di.NewlyDecrypted = false
 	} else {
 		pk, err = crypto.UnmarshalEd25519PublicKey(headers.DevicePK)
@@ -441,7 +441,7 @@ func (m *MessageKeystore) OpenPayload(id cid.Cid, groupPK crypto.PubKey, payload
 			return nil, nil, errcode.ErrDeserialization.Wrap(err)
 		}
 
-		di.MK, err = m.getPrecomputedKey(groupPK, pk, headers.Counter)
+		di.MK, err = m.getPrecomputedKey(ctx, groupPK, pk, headers.Counter)
 		if err != nil {
 			return nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 		}
@@ -469,7 +469,7 @@ func (m *MessageKeystore) openPayload(di *DecryptInfo, pk crypto.PubKey, payload
 	return msg, di, nil
 }
 
-func (m *MessageKeystore) GetKeyForCID(id cid.Cid) (*[32]byte, error) {
+func (m *MessageKeystore) GetKeyForCID(ctx context.Context, id cid.Cid) (*[32]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -478,7 +478,7 @@ func (m *MessageKeystore) GetKeyForCID(id cid.Cid) (*[32]byte, error) {
 		return nil, errcode.ErrInvalidInput
 	}
 
-	key, err := m.store.Get(idForCID(id))
+	key, err := m.store.Get(ctx, idForCID(id))
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -499,7 +499,7 @@ func (m *MessageKeystore) GetPrecomputedKeyExpectedCount() int {
 	return m.preComputedKeysCount
 }
 
-func (m *MessageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *protocoltypes.DeviceSecret) error {
+func (m *MessageKeystore) putDeviceChainKey(ctx context.Context, groupPK, device crypto.PubKey, ds *protocoltypes.DeviceSecret) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -521,7 +521,7 @@ func (m *MessageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *p
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	err = m.store.Put(key, data)
+	err = m.store.Put(ctx, key, data)
 	if err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
@@ -529,7 +529,7 @@ func (m *MessageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *p
 	return nil
 }
 
-func (m *MessageKeystore) SealEnvelope(g *protocoltypes.Group, deviceSK crypto.PrivKey, payload []byte, attachmentsCIDs [][]byte) ([]byte, error) {
+func (m *MessageKeystore) SealEnvelope(ctx context.Context, g *protocoltypes.Group, deviceSK crypto.PrivKey, payload []byte, attachmentsCIDs [][]byte) ([]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -546,7 +546,7 @@ func (m *MessageKeystore) SealEnvelope(g *protocoltypes.Group, deviceSK crypto.P
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	ds, err := m.GetDeviceChainKey(groupPK, deviceSK.GetPublic())
+	ds, err := m.GetDeviceChainKey(ctx, groupPK, deviceSK.GetPublic())
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to get device chainkey: %w", err))
 	}
@@ -556,14 +556,14 @@ func (m *MessageKeystore) SealEnvelope(g *protocoltypes.Group, deviceSK crypto.P
 		return nil, errcode.ErrCryptoEncrypt.Wrap(fmt.Errorf("unable to seal envelope: %w", err))
 	}
 
-	if err := m.DeriveDeviceSecret(g, deviceSK); err != nil {
+	if err := m.DeriveDeviceSecret(ctx, g, deviceSK); err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return env, nil
 }
 
-func (m *MessageKeystore) DeriveDeviceSecret(g *protocoltypes.Group, deviceSK crypto.PrivKey) error {
+func (m *MessageKeystore) DeriveDeviceSecret(ctx context.Context, g *protocoltypes.Group, deviceSK crypto.PrivKey) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -577,7 +577,7 @@ func (m *MessageKeystore) DeriveDeviceSecret(g *protocoltypes.Group, deviceSK cr
 		return errcode.ErrInvalidInput
 	}
 
-	ds, err := m.GetDeviceChainKey(groupPK, deviceSK.GetPublic())
+	ds, err := m.GetDeviceChainKey(ctx, groupPK, deviceSK.GetPublic())
 	if err != nil {
 		return errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -587,26 +587,26 @@ func (m *MessageKeystore) DeriveDeviceSecret(g *protocoltypes.Group, deviceSK cr
 		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	if err = m.putDeviceChainKey(groupPK, deviceSK.GetPublic(), &protocoltypes.DeviceSecret{
+	if err = m.putDeviceChainKey(ctx, groupPK, deviceSK.GetPublic(), &protocoltypes.DeviceSecret{
 		ChainKey: ck,
 		Counter:  ds.Counter + 1,
 	}); err != nil {
 		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	if err = m.putPrecomputedKeys(groupPK, deviceSK.GetPublic(), computedKey{ds.Counter + 1, &mk}); err != nil {
+	if err = m.putPrecomputedKeys(ctx, groupPK, deviceSK.GetPublic(), computedKey{ds.Counter + 1, &mk}); err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil
 }
 
-func (m *MessageKeystore) updateCurrentKey(groupPK, pk crypto.PubKey, ds *protocoltypes.DeviceSecret) error {
+func (m *MessageKeystore) updateCurrentKey(ctx context.Context, groupPK, pk crypto.PubKey, ds *protocoltypes.DeviceSecret) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
 
-	currentCK, err := m.GetDeviceChainKey(groupPK, pk)
+	currentCK, err := m.GetDeviceChainKey(ctx, groupPK, pk)
 	if err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
@@ -615,7 +615,7 @@ func (m *MessageKeystore) updateCurrentKey(groupPK, pk crypto.PubKey, ds *protoc
 		return nil
 	}
 
-	if err = m.putDeviceChainKey(groupPK, pk, ds); err != nil {
+	if err = m.putDeviceChainKey(ctx, groupPK, pk, ds); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
@@ -637,7 +637,7 @@ func NewInMemMessageKeystore() (*MessageKeystore, func()) {
 	return NewMessageKeystore(ds), func() { _ = ds.Close() }
 }
 
-func (m *MessageKeystore) OpenOutOfStoreMessage(envelope *protocoltypes.OutOfStoreMessage, groupPublicKey []byte) ([]byte, bool, error) {
+func (m *MessageKeystore) OpenOutOfStoreMessage(ctx context.Context, envelope *protocoltypes.OutOfStoreMessage, groupPublicKey []byte) ([]byte, bool, error) {
 	if m == nil || envelope == nil || len(groupPublicKey) == 0 {
 		return nil, false, errcode.ErrInvalidInput
 	}
@@ -661,10 +661,10 @@ func (m *MessageKeystore) OpenOutOfStoreMessage(envelope *protocoltypes.OutOfSto
 	}
 
 	di := &DecryptInfo{NewlyDecrypted: true}
-	if di.MK, err = m.GetKeyForCID(c); err == nil {
+	if di.MK, err = m.GetKeyForCID(ctx, c); err == nil {
 		di.NewlyDecrypted = false
 	} else {
-		di.MK, err = m.getPrecomputedKey(gPK, dPK, envelope.Counter)
+		di.MK, err = m.getPrecomputedKey(ctx, gPK, dPK, envelope.Counter)
 		if err != nil {
 			return nil, false, errcode.ErrCryptoDecrypt.Wrap(err)
 		}
@@ -685,12 +685,12 @@ func (m *MessageKeystore) OpenOutOfStoreMessage(envelope *protocoltypes.OutOfSto
 		return nil, false, errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
-	ds, err := m.GetDeviceChainKey(gPK, dPK)
+	ds, err := m.GetDeviceChainKey(ctx, gPK, dPK)
 	if err != nil {
 		return nil, false, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	if _, err = m.preComputeKeys(dPK, gPK, ds); err != nil {
+	if _, err = m.preComputeKeys(ctx, dPK, gPK, ds); err != nil {
 		return nil, false, errcode.ErrInternal.Wrap(err)
 	}
 
@@ -711,11 +711,11 @@ func (m *MessageKeystore) refFirstLastKey(groupPK, devicePK []byte) datastore.Ke
 	})
 }
 
-func (m *MessageKeystore) GetByPushGroupReference(ref []byte) ([]byte, error) {
-	return m.store.Get(m.refKey(ref))
+func (m *MessageKeystore) GetByPushGroupReference(ctx context.Context, ref []byte) ([]byte, error) {
+	return m.store.Get(ctx, m.refKey(ref))
 }
 
-func (m *MessageKeystore) UpdatePushGroupReferences(devicePK []byte, first uint64, group GroupWithSecret) error {
+func (m *MessageKeystore) UpdatePushGroupReferences(ctx context.Context, devicePK []byte, first uint64, group GroupWithSecret) error {
 	refsExisting := []uint64(nil)
 	refsToCreate := []uint64(nil)
 
@@ -724,7 +724,7 @@ func (m *MessageKeystore) UpdatePushGroupReferences(devicePK []byte, first uint6
 		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	currentFirst, currentLast, err := m.firstLastCachedGroupRefsForMember(devicePK, group)
+	currentFirst, currentLast, err := m.firstLastCachedGroupRefsForMember(ctx, devicePK, group)
 	if err == nil {
 		for i := currentFirst; i != currentLast; i++ {
 			refsExisting = append(refsExisting, i)
@@ -760,7 +760,7 @@ func (m *MessageKeystore) UpdatePushGroupReferences(devicePK []byte, first uint6
 			continue
 		}
 
-		if err := m.store.Delete(m.refKey(ref)); err != nil {
+		if err := m.store.Delete(ctx, m.refKey(ref)); err != nil {
 			// TODO: log
 			continue
 		}
@@ -774,7 +774,7 @@ func (m *MessageKeystore) UpdatePushGroupReferences(devicePK []byte, first uint6
 			continue
 		}
 
-		if err := m.store.Put(m.refKey(ref), group.GetPublicKey()); err != nil {
+		if err := m.store.Put(ctx, m.refKey(ref), group.GetPublicKey()); err != nil {
 			// TODO: log
 			continue
 		}
@@ -783,9 +783,9 @@ func (m *MessageKeystore) UpdatePushGroupReferences(devicePK []byte, first uint6
 	return nil
 }
 
-func (m *MessageKeystore) firstLastCachedGroupRefsForMember(devicePK []byte, group GroupWithSecret) (uint64, uint64, error) {
+func (m *MessageKeystore) firstLastCachedGroupRefsForMember(ctx context.Context, devicePK []byte, group GroupWithSecret) (uint64, uint64, error) {
 	key := m.refFirstLastKey(group.GetPublicKey(), devicePK)
-	bytes, err := m.store.Get(key)
+	bytes, err := m.store.Get(ctx, key)
 	if err != nil {
 		return 0, 0, err
 	}

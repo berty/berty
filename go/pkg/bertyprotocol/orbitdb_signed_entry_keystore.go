@@ -1,6 +1,7 @@
 package bertyprotocol
 
 import (
+	"context"
 	"encoding/hex"
 	"sync"
 
@@ -27,17 +28,17 @@ func (s *BertySignedKeyStore) SetKey(pk crypto.PrivKey) error {
 	return nil
 }
 
-func (s *BertySignedKeyStore) HasKey(id string) (bool, error) {
+func (s *BertySignedKeyStore) HasKey(ctx context.Context, id string) (bool, error) {
 	_, ok := s.Load(id)
 
 	return ok, nil
 }
 
-func (s *BertySignedKeyStore) CreateKey(id string) (crypto.PrivKey, error) {
-	return s.GetKey(id)
+func (s *BertySignedKeyStore) CreateKey(ctx context.Context, id string) (crypto.PrivKey, error) {
+	return s.GetKey(ctx, id)
 }
 
-func (s *BertySignedKeyStore) GetKey(id string) (crypto.PrivKey, error) {
+func (s *BertySignedKeyStore) GetKey(ctx context.Context, id string) (crypto.PrivKey, error) {
 	if privKey, ok := s.Load(id); ok {
 		if pk, ok := privKey.(crypto.PrivKey); ok {
 			return pk, nil

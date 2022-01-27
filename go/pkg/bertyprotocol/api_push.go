@@ -83,7 +83,7 @@ func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error
 }
 
 func (s *service) PushReceive(ctx context.Context, request *protocoltypes.PushReceive_Request) (*protocoltypes.PushReceive_Reply, error) {
-	return s.pushHandler.PushReceive(request.Payload)
+	return s.pushHandler.PushReceive(ctx, request.Payload)
 }
 
 func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_Request) (*protocoltypes.PushSend_Reply, error) {
@@ -276,7 +276,7 @@ func (s *service) PushSetServer(ctx context.Context, request *protocoltypes.Push
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if err := s.pushHandler.UpdatePushServer(request.Server); err != nil {
+	if err := s.pushHandler.UpdatePushServer(ctx, request.Server); err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 

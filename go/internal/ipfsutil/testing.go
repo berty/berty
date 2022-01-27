@@ -45,10 +45,10 @@ type CoreAPIMock interface {
 	Close()
 }
 
-func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) p2p_ci.PrivKey {
+func getOrCreatePrivateKeyFromDatastore(t testing.TB, ctx context.Context, datastore ds.Datastore) p2p_ci.PrivKey {
 	const datastoreKeyForPrivateKey = "p2p_private_key"
 
-	privkeyb, err := datastore.Get(ds.NewKey("private_key"))
+	privkeyb, err := datastore.Get(ctx, ds.NewKey("private_key"))
 	if err == ds.ErrNotFound {
 		priv, _, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.RSA, 2048, crand.Reader)
 		if err != nil {
@@ -60,7 +60,7 @@ func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) p2
 			t.Fatalf("failed to get raw priv key: %v", err)
 		}
 
-		if err := datastore.Put(ds.NewKey(datastoreKeyForPrivateKey), privkeyb); err != nil {
+		if err := datastore.Put(ctx, ds.NewKey(datastoreKeyForPrivateKey), privkeyb); err != nil {
 			t.Fatalf("failed to save priv key: %v", err)
 		}
 
@@ -77,11 +77,11 @@ func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) p2
 	return priv
 }
 
-func TestingRepo(t testing.TB, datastore ds.Datastore) ipfs_repo.Repo {
+func TestingRepo(t testing.TB, ctx context.Context, datastore ds.Datastore) ipfs_repo.Repo {
 	t.Helper()
 
 	c := ipfs_cfg.Config{}
-	priv := getOrCreatePrivateKeyFromDatastore(t, datastore)
+	priv := getOrCreatePrivateKeyFromDatastore(t, ctx, datastore)
 
 	pid, err := p2p_peer.IDFromPublicKey(priv.GetPublic())
 	if err != nil {
@@ -127,7 +127,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 		datastore = dsync.MutexWrap(ds.NewMapDatastore())
 	}
 
-	repo := TestingRepo(t, datastore)
+	repo := TestingRepo(t, ctx, datastore)
 
 	var ps *pubsub.PubSub
 	var disc tinder.Service

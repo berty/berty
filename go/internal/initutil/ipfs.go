@@ -1,9 +1,9 @@
 package initutil
 
 import (
+	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	mrand "math/rand"
 	"net"
 	"net/http"
@@ -42,9 +42,6 @@ import (
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/tempdir"
-	tor "berty.tech/go-libp2p-tor-transport"
-	torcfg "berty.tech/go-libp2p-tor-transport/config"
 	ipfswebui "berty.tech/ipfs-webui-packed"
 )
 
@@ -72,7 +69,6 @@ const (
 	FlagNameP2PBLE                        = "p2p.ble"
 	FlagNameP2PNearby                     = "p2p.nearby"
 	FlagNameP2PMultipeerConnectivity      = "p2p.multipeer-connectivity"
-	FlagNameTorMode                       = "tor.mode"
 	FlagNameP2PTinderDiscover             = "p2p.tinder-discover"
 	FlagNameP2PTinderDHTDriver            = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver           = "p2p.tinder-rdvp-driver"
@@ -113,8 +109,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, FlagNameP2PBLE, false, "if true Bluetooth Low Energy will be enabled")
 	fs.BoolVar(&m.Node.Protocol.Nearby.Enable, FlagNameP2PNearby, false, "if true Android Nearby will be enabled")
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, FlagNameP2PMultipeerConnectivity, false, "if true Multipeer Connectivity will be enabled")
-	fs.StringVar(&m.Node.Protocol.Tor.Mode, FlagNameTorMode, defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
-	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.DurationVar(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", rendezvous.DefaultRotationInterval, "rendezvous rotation base for node")
 
@@ -130,18 +124,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 		"",
 		"-> full list available at https://github.com/berty/berty/tree/master/config)",
 	})
-	m.longHelp = append(m.longHelp, [2]string{
-		"-tor.mode=" + TorDisabled,
-		"tor is completely disabled",
-	})
-	m.longHelp = append(m.longHelp, [2]string{
-		"-tor.mode=" + TorOptional,
-		"tor is added to the list of existing transports and can be used to contact other tor-ready nodes",
-	})
-	m.longHelp = append(m.longHelp, [2]string{
-		"-tor.mode=" + TorRequired,
-		"tor is the only available transport; you can only communicate with other tor-ready nodes",
-	})
 }
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
@@ -151,6 +133,8 @@ func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	m.applyDefaults()
+	ctx := m.getContext()
+
 	if err := m.applyPreset(); err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
@@ -168,7 +152,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
-	mrepo, err := m.setupIPFSRepo()
+	mrepo, err := m.setupIPFSRepo(ctx)
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
@@ -190,7 +174,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	}
 
 	var routing ipfs_p2p.RoutingOption
-	if dhtmode > 0 {
+	if dhtmode > 0 && !m.Node.Protocol.DisableIPFSNetwork {
 		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(2)}
 		if m.Node.Protocol.DHTRandomWalk {
 			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
@@ -204,22 +188,30 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		IpfsConfigPatch:   m.setupIPFSConfig,
 		RoutingConfigFunc: m.configIPFSRouting,
 		RoutingOption:     routing,
-		ExtraOpts: map[string]bool{
-			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
-			"pubsub": false,
-		},
 	}
 
 	if m.Node.Protocol.MDNS.Enable && m.Node.Protocol.MDNS.DriverLocker != nil {
 		m.Node.Protocol.MDNS.DriverLocker.Lock()
 	}
 
-	// init ipfs node
 	mnode, err := ipfsutil.NewIPFSMobile(m.getContext(), mrepo, &mopts)
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 	m.Node.Protocol.ipfsNode = mnode.IpfsNode
+
+	// setup mdns
+	if m.Node.Protocol.MDNS.Enable && !m.Node.Protocol.DisableIPFSNetwork {
+		h := mnode.PeerHost()
+		dh := ipfsutil.DiscoveryHandler(ctx, logger, h)
+		mdnsService := ipfsutil.NewMdnsService(logger, h, ipfsutil.MDNSServiceName, dh)
+		logger.Named("mdns").Info("starting mdns")
+		if err := mdnsService.Start(); err != nil {
+			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		}
+
+		m.Node.Protocol.mdnsService = mdnsService
+	}
 
 	// init extended api
 	m.Node.Protocol.ipfsAPI, err = ipfsutil.NewExtendedCoreAPIFromNode(mnode.IpfsNode)
@@ -302,7 +294,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }
 
-func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
+func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, error) {
 	var err error
 	var repo ipfs_repo.Repo
 
@@ -334,7 +326,7 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
 
-	repo, err = m.resetRepoIdentityIfExpired(repo, dbPath, storageKey)
+	repo, err = m.resetRepoIdentityIfExpired(ctx, repo, dbPath, storageKey)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
@@ -342,7 +334,7 @@ func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
 	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
 }
 
-func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string, storageKey []byte) (ipfs_repo.Repo, error) {
+func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo.Repo, dbPath string, storageKey []byte) (ipfs_repo.Repo, error) {
 	rootDS, err := m.getRootDatastore()
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
@@ -350,8 +342,7 @@ func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string,
 
 	lastUpdate := time.Now()
 	lastUpdateKey := datastore.NewKey(ipfsIdentityLastUpdateKey)
-
-	lastUpdateRaw, err := rootDS.Get(lastUpdateKey)
+	lastUpdateRaw, err := rootDS.Get(ctx, lastUpdateKey)
 	switch err {
 	case nil:
 		lastUpdate, err = time.Parse(time.RFC3339Nano, string(lastUpdateRaw))
@@ -378,7 +369,7 @@ func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string,
 		lastUpdate = time.Now()
 		lastUpdateRaw = []byte(lastUpdate.Format(time.RFC3339Nano))
 
-		if err := rootDS.Put(lastUpdateKey, lastUpdateRaw); err != nil {
+		if err := rootDS.Put(ctx, lastUpdateKey, lastUpdateRaw); err != nil {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}
 	}
@@ -388,6 +379,8 @@ func (m *Manager) resetRepoIdentityIfExpired(repo ipfs_repo.Repo, dbPath string,
 
 func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error) {
 	p2popts := []libp2p.Option{}
+
+	ctx := m.getContext()
 
 	logger, err := m.getLogger()
 	if err != nil {
@@ -428,6 +421,15 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
 		cfg.Swarm.Transports.Network.Websocket = ipfs_cfg.False
 
+		// disable bootstrap
+		cfg.Bootstrap = []string{}
+
+		// disable most services
+		cfg.AutoNAT.ServiceMode = ipfs_cfg.AutoNATServiceDisabled
+		cfg.Pubsub.Enabled = ipfs_cfg.False
+		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
+		cfg.Swarm.RelayService.Enabled = ipfs_cfg.False
+
 		// Disable MDNS
 		cfg.Discovery.MDNS.Enabled = false
 
@@ -435,55 +437,6 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		cfg.Addresses.Swarm = []string{}
 
 		return p2popts, nil
-	}
-
-	// tor is enabled (optional or required)
-	if m.torIsEnabled() {
-		torOpts := torcfg.Merge(
-			torcfg.SetTemporaryDirectory(tempdir.TempDir()),
-			// FIXME: Write an io.Writer to zap logger mapper.
-			torcfg.SetNodeDebug(ioutil.Discard),
-		)
-		if m.Node.Protocol.Tor.BinaryPath == "" {
-			torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
-		} else {
-			torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
-		}
-
-		if !hasTorMaddr(cfg.Addresses.Swarm) {
-			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, tor.NopMaddr3Str)
-		}
-
-		if m.Node.Protocol.Tor.Mode == TorRequired {
-			torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
-		}
-
-		torBuilder, err := tor.NewBuilder(torOpts)
-		if err != nil {
-			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
-		}
-
-		p2popts = append(p2popts, libp2p.Transport(torBuilder))
-	}
-
-	// -tor.mode==required: disable everything except tor
-	if m.Node.Protocol.Tor.Mode == TorRequired {
-		// Patch the IPFS config to make it complient with an anonymous node.
-		// Disable IP transports
-		cfg.Swarm.Transports.Network.QUIC = ipfs_cfg.False
-		cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
-		cfg.Swarm.Transports.Network.Websocket = ipfs_cfg.False
-
-		// Disable MDNS
-		cfg.Discovery.MDNS.Enabled = false
-
-		// Only keep tor listeners
-		cfg.Addresses.Swarm = []string{}
-		for _, maddr := range cfg.Addresses.Swarm {
-			if isTorMaddr(maddr) {
-				cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, maddr)
-			}
-		}
 	}
 
 	// Setup BLE
@@ -494,10 +447,10 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		switch {
 		// Java embedded driver (android)
 		case m.Node.Protocol.Ble.Driver != nil:
-			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Ble.Driver))
+			bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, m.Node.Protocol.Ble.Driver))
 		// Go embedded driver (ios)
 		case ble.Supported:
-			bleOpt = libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
+			bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, ble.NewDriver(logger)))
 		default:
 			logger.Warn("cannot enable BLE on an unsupported platform")
 		}
@@ -510,7 +463,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		if m.Node.Protocol.Nearby.Driver != nil {
 			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, m.Node.Protocol.Nearby.Driver.DefaultAddr())
 			p2popts = append(p2popts,
-				libp2p.Transport(proximity.NewTransport(m.ctx, logger, m.Node.Protocol.Nearby.Driver)))
+				libp2p.Transport(proximity.NewTransport(ctx, logger, m.Node.Protocol.Nearby.Driver)))
 		} else {
 			logger.Warn("cannot enable Android Nearby on an unsupported platform")
 		}
@@ -521,19 +474,21 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		if mc.Supported {
 			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, mc.DefaultAddr)
 			p2popts = append(p2popts,
-				libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
+				libp2p.Transport(proximity.NewTransport(ctx, logger, mc.NewDriver(logger))),
 			)
 		} else {
 			logger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
 		}
 	}
 
-	// localdisc driver
-	cfg.Discovery.MDNS.Enabled = m.Node.Protocol.MDNS.Enable
+	// enable mdns
+	cfg.Discovery.MDNS.Enabled = false
 
-	// enable autorelay
+	// enable auto relay
 	if m.Node.Protocol.AutoRelay {
-		p2popts = append(p2popts, libp2p.EnableAutoRelay(), libp2p.ForceReachabilityPrivate())
+		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.True
+	} else {
+		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
 	}
 
 	pis, err := m.getStaticRelays()
@@ -554,6 +509,9 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	for _, p := range rdvpeers {
 		cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 	}
+
+	// disable main ipfs pubsub
+	cfg.Pubsub.Enabled = ipfs_cfg.False
 
 	return p2popts, nil
 }
@@ -677,7 +635,6 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)
-
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
@@ -766,43 +723,6 @@ func (m *Manager) getSwarmAddrs() []string {
 		}
 	}
 	return swarmAddrs
-}
-
-func isTorMaddr(maddr string) bool {
-	parsed, err := ma.NewMultiaddr(maddr)
-	if err != nil {
-		// This error is not our business and will be dealt later.
-		return false
-	}
-
-	protos := parsed.Protocols()
-	if len(protos) == 0 {
-		return false
-	}
-
-	proto := protos[0].Code
-	if proto == ma.P_ONION3 || proto == ma.P_ONION {
-		return true
-	}
-	return false
-}
-
-func hasTorMaddr(maddrs []string) bool {
-	// Scan all maddrs to see if an `/onion{,3}/*` were set, if don't auto add the `tor.NopMaddr3Str`.
-	for _, maddr := range maddrs {
-		if isTorMaddr(maddr) {
-			return true
-		}
-	}
-	return false
-}
-
-func (m *Manager) torIsEnabled() bool {
-	switch m.Node.Protocol.Tor.Mode {
-	case TorOptional, TorRequired:
-		return true
-	}
-	return false
 }
 
 func (m *Manager) GetRendezvousRotationBase() (time.Duration, error) {
