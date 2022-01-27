@@ -82,8 +82,6 @@ func LoadRepoFromPath(path string, key []byte) (ipfs_repo.Repo, error) {
 var DefaultSwarmListeners = []string{
 	"/ip4/0.0.0.0/tcp/0",
 	"/ip6/::/tcp/0",
-	"/ip4/0.0.0.0/udp/0/quic",
-	"/ip6/::/udp/0/quic",
 }
 
 func createBaseConfig() (*ipfs_cfg.Config, error) {
