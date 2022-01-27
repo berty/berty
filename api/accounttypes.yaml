@@ -66,3 +66,6 @@ http:
  - selector: berty.account.v1.AccountService.AppStorageRemove
    post: /berty.account.v1/AccountService/AppStorageRemove
    body: "*"
+ - selector: berty.account.v1.AccountService.GetOpenedAccount
+   post: /berty.account.v1/AccountService/GetOpenedAccount
+   body: "*"

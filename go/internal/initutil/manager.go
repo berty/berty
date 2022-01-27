@@ -349,6 +349,9 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("stop-grpc-server").SetAsCurrent()
 	if m.Node.GRPC.server != nil {
 		m.Node.GRPC.server.Stop()
+		for _, l := range m.Node.GRPC.listeners {
+			l.Close()
+		}
 	}
 
 	prog.Get("close-messenger-server").SetAsCurrent()

@@ -460,3 +460,13 @@ node_modules: package.json
 	$(call check-program, yarn)
 	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
+
+### Electron
+
+.PHONY: electron.mac
+electron.mac:
+	cd ../go && $(MAKE) install
+	rm -rf ./electron-app/resources/mac/berty
+	ln `$(GO) env GOPATH`/bin/berty ./electron-app/resources/mac/berty
+	cd ./electron-app && yarn install
+	cd ./electron-app && yarn run dist:mac

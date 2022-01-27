@@ -91,6 +91,7 @@ type service struct {
 	nativeKeystore    accountutils.NativeKeystore
 	appStorage        datastore.Datastore
 	serviceListeners  string
+	openedAccountID   string
 }
 
 func (o *Options) applyDefault() {

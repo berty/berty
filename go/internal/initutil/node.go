@@ -15,7 +15,6 @@ import (
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
-	"berty.tech/berty/v2/go/internal/grpcserver"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
@@ -64,7 +63,7 @@ func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) SetupDefaultGRPCAccountListenersFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Node.GRPC.AccountListeners, FlagNameNodeAccountListeners, FlagValueNodeAccountListeners, "gRPC acocunt API listeners")
+	fs.StringVar(&m.Node.GRPC.AccountListeners, FlagNameNodeAccountListeners, FlagValueNodeAccountListeners, "gRPC account API listeners")
 }
 
 func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
@@ -402,7 +401,7 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 		return nil, nil, err
 	}
 
-	grpcServer, grpcGatewayMux, listeners, err := grpcserver.InitGRPCServer(&m.workers, &grpcserver.GRPCOpts{
+	grpcServer, grpcGatewayMux, listeners, err := grpcutil.InitGRPCServer(&m.workers, &grpcutil.GRPCOpts{
 		Logger:        logger,
 		AuthPublicKey: m.Node.Protocol.AuthPublicKey,
 		AuthSecret:    m.Node.Protocol.AuthSecret,

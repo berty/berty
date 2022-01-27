@@ -1,4 +1,4 @@
-package grpcserver
+package grpcutil
 
 import (
 	"context"
@@ -16,7 +16,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/authtypes"
@@ -32,7 +31,7 @@ type GRPCOpts struct {
 	ServiceID     string
 }
 
-func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.ServeMux, []grpcutil.Listener, error) {
+func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.ServeMux, []Listener, error) {
 	if opts == nil {
 		opts = &GRPCOpts{}
 	}
@@ -95,23 +94,23 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 	grpcServer := grpc.NewServer(grpcOpts...)
 	grpcGatewayMux := grpcgw.NewServeMux()
 
-	listeners := []grpcutil.Listener(nil)
+	listeners := []Listener(nil)
 	if opts.Listeners != "" {
 		addrs := strings.Split(opts.Listeners, ",")
 		maddrs, err := ipfsutil.ParseAddrs(addrs...)
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		listeners = make([]grpcutil.Listener, len(maddrs))
+		listeners = make([]Listener, len(maddrs))
 
-		server := grpcutil.Server{
+		server := Server{
 			GRPCServer: grpcServer,
 			GatewayMux: grpcGatewayMux,
 		}
 
 		for idx, maddr := range maddrs {
 			maddrStr := maddr.String()
-			l, err := grpcutil.Listen(maddr)
+			l, err := Listen(maddr)
 			if err != nil {
 				return nil, nil, nil, errcode.TODO.Wrap(err)
 			}
