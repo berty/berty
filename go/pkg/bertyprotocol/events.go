@@ -64,7 +64,7 @@ func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
 		return []cid.Cid{}
 	}
 
-	parent, ok := log.GetEntries().Get(c.String())
+	parent, ok := log.Get(c)
 
 	// Can't fetch parent entry
 	if !ok {
