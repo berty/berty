@@ -366,6 +366,7 @@ func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithPro
 	}
 	s.initManager = nil
 	s.accountData = nil
+	s.openedAccountID = ""
 
 	// wait
 	<-done

@@ -1,6 +1,6 @@
 import React from 'react'
-import { ScrollView, TouchableOpacity, View, Text, Platform } from 'react-native'
-import { Icon } from '@ui-kitten/components'
+import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
+import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { useDispatch, useSelector } from 'react-redux'

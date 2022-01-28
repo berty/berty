@@ -54,6 +54,9 @@ export const checkPermissions = async (
 		onSuccess?: (() => Promise<void>) | (() => void)
 	},
 ): Promise<PermissionStatus | undefined> => {
+	if (Platform.OS === 'web') {
+		return RESULTS.DENIED
+	}
 	let status
 	try {
 		status = await getPermissionStatus(permissionType)

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Linking } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import {
 	createNativeStackNavigator,
@@ -149,7 +149,7 @@ Components = mapValues(RawComponents, SubComponents =>
 		(Component: React.FC): React.FC =>
 			React.memo(props => (
 				<>
-					<DeepLinkBridge />
+					{Platform.OS !== 'web' ? <DeepLinkBridge /> : null}
 					<Component {...props} />
 				</>
 			)),
@@ -168,6 +168,7 @@ export const Navigation: React.FC = React.memo(() => {
 		console.log('context app State', appState)
 		switch (appState) {
 			case MESSENGER_APP_STATE.READY:
+				console.log('APP STATE READY BEFORE DISPATCH')
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: 'Main.Home' }],
@@ -285,6 +286,7 @@ export const Navigation: React.FC = React.memo(() => {
 							fill={colors['reverted-main-text']}
 						/>
 					),
+					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
 			/>
@@ -320,8 +322,8 @@ export const Navigation: React.FC = React.memo(() => {
 							fill={colors['reverted-main-text']}
 						/>
 					),
-					...CustomTitleStyle(),
 					presentation: 'formSheet',
+					...CustomTitleStyle(),
 				})}
 			/>
 			<NavigationStack.Screen

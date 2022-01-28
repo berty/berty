@@ -2,10 +2,12 @@
 	"include": [
 		"global.d.ts",
 		"index.ts",
-		"packages"
+		"packages",
 	],
 	"exclude": [
-		"packages/web-dev-app"
+		"packages/web-dev-app",
+		"web",
+		"electron-app"
 	],
 	"compilerOptions": {
 		/* Basic Options */

@@ -3,7 +3,6 @@ import { TouchableOpacity, View, Platform, TextInput, Text, Keyboard } from 'rea
 import { Icon } from '@ui-kitten/components'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 import { useHeaderHeight } from '@react-navigation/elements'
 
 import { useStyles } from '@berty-tech/styles'
@@ -18,6 +17,7 @@ import {
 import beapi from '@berty-tech/api'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import { useConversation, useLastConvInteraction } from '@berty-tech/react-redux'
+import AndroidKeyboardAdjust from '@berty-tech/polyfill/react-native-android-keyboard-adjust'
 
 import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
@@ -70,17 +70,21 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 
 	useFocusEffect(
 		React.useCallback(() => {
-			AndroidKeyboardAdjust?.setAdjustResize()
-			return () => AndroidKeyboardAdjust?.setAdjustPan()
+			if (Platform.OS === 'android') {
+				AndroidKeyboardAdjust?.setAdjustResize()
+				return () => AndroidKeyboardAdjust?.setAdjustPan()
+			}
 		}, []),
 	)
 
 	useFocusEffect(
 		React.useCallback(() => {
-			Keyboard.dismiss()
-			setTimeout(() => {
-				setKeyboardIsHidden(true)
-			}, 50)
+			if (Platform.OS === 'android') {
+				Keyboard.dismiss()
+				setTimeout(() => {
+					setKeyboardIsHidden(true)
+				}, 50)
+			}
 		}, []),
 	)
 
@@ -163,7 +167,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 
 	const headerHeight = useHeaderHeight()
 
-	if (!keyboardIsHidden) {
+	if (Platform.OS === 'android' && !keyboardIsHidden) {
 		return null
 	}
 

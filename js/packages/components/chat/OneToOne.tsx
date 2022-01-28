@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { Keyboard, TouchableOpacity, View } from 'react-native'
+import { Keyboard, TouchableOpacity, View, Platform } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 import { useHeaderHeight } from '@react-navigation/elements'
 
 import { useStyles } from '@berty-tech/styles'
@@ -17,6 +16,7 @@ import {
 import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import { useContact, useConversation } from '@berty-tech/react-redux'
+import AndroidKeyboardAdjust from '@berty-tech/polyfill/react-native-android-keyboard-adjust'
 
 import { ContactAvatar } from '../avatars'
 import { ChatDate } from './common'
@@ -64,17 +64,21 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 
 		useFocusEffect(
 			React.useCallback(() => {
-				AndroidKeyboardAdjust?.setAdjustResize()
-				return () => AndroidKeyboardAdjust?.setAdjustPan()
+				if (Platform.OS === 'android') {
+					AndroidKeyboardAdjust?.setAdjustResize()
+					return () => AndroidKeyboardAdjust?.setAdjustPan()
+				}
 			}, []),
 		)
 
 		useFocusEffect(
 			React.useCallback(() => {
-				Keyboard.dismiss()
-				setTimeout(() => {
-					setKeyboardIsHidden(true)
-				}, 50)
+				if (Platform.OS === 'android') {
+					Keyboard.dismiss()
+					setTimeout(() => {
+						setKeyboardIsHidden(true)
+					}, 50)
+				}
 			}, []),
 		)
 
@@ -94,7 +98,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 			})
 		})
 
-		if (!keyboardIsHidden) {
+		if (Platform.OS === 'android' && !keyboardIsHidden) {
 			return null
 		}
 

@@ -1,34 +1,41 @@
 import beapi from '@berty-tech/api'
 import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
-
-import { reducerAction, MessengerActions, StreamInProgress } from './types'
-import { accountService } from './accountService'
 import {
 	setCreatedAccount,
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
 
+import { reducerAction, MessengerActions, StreamInProgress } from './types'
+import { accountService } from './accountService'
+
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
+	let done = false
+
 	await accountService
 		.closeAccountWithProgress({})
 		.then(async stream => {
 			stream.onMessage((msg, err) => {
 				if (err) {
-					if (err.EOF) {
-						console.log('Node is closed')
-					} else {
-						console.warn('Error while closing node:', err)
+					if (err?.EOF) {
+						if (!done) {
+							done = true
+							reduxDispatch(setStateStreamDone())
+						}
+						return
 					}
-					reduxDispatch(resetAccountStore())
-					reduxDispatch(setStateStreamDone())
+					console.warn('Error while closing node:', err)
+					if (!done) {
+						done = true
+						reduxDispatch(resetAccountStore())
+					}
 					return
 				}
-				if (msg?.progress?.state !== 'done') {
+				if (msg?.progress?.state !== 'done' && !done) {
 					const progress = msg?.progress
 					if (progress) {
 						const payload: StreamInProgress = {
@@ -42,6 +49,7 @@ export const closeAccountWithProgress = async (
 			await persistor.flush()
 			persistor.pause()
 			await stream.start()
+			console.log('SUCCESS TO CLOSE ACCOUNT')
 		})
 		.catch(err => {
 			console.warn('Failed to close node:', err)
@@ -55,8 +63,7 @@ export const closeAccountWithProgress = async (
 
 export const importAccountWithProgress = async (
 	path: string,
-	dispatch: (arg0: reducerAction) => void,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: ReturnType<typeof useAppDispatch>,
 ) =>
 	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(resolve => {
 		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
@@ -71,10 +78,10 @@ export const importAccountWithProgress = async (
 								msg: progress,
 								stream: 'Import account',
 							}
-							reduxDispatch(setStateStreamInProgress(payload))
+							dispatch(setStateStreamInProgress(payload))
 						}
 					} else {
-						reduxDispatch(setStateStreamDone)
+						dispatch(setStateStreamDone())
 						resolve(metaMsg)
 					}
 					if (msg?.accountMetadata) {

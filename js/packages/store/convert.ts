@@ -12,11 +12,14 @@ export const parseInteraction = (
 		if (typeof (i as any).toJSON === 'function') {
 			i = (i as any).toJSON()
 		}
-		// console.log("parse", i)
 		const typeName =
 			beapi.messenger.AppMessage.Type[i.type || beapi.messenger.AppMessage.Type.Undefined]
-		// console.log("typeName for", i, typeName)
-		const name = typeName.substr('Type'.length)
+
+		if (!typeName) {
+			console.warn('failed to get AppMessage type name', i.type)
+			return { ...i, type: beapi.messenger.AppMessage.Type.Undefined, payload: undefined }
+		}
+		const name = typeName.substring('Type'.length)
 		const pbobj = (beapi.messenger.AppMessage as any)[name as any]
 
 		if (!pbobj) {

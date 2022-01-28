@@ -1,11 +1,12 @@
 import LottieView from 'lottie-react-native'
-import React from 'react'
+import React, { useState } from 'react'
+import { Platform, Vibration } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { StatusBar, Text, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { ScreenFC } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import {
 	useMessengerContext,
 	useMountEffect,
@@ -17,15 +18,17 @@ import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding
 
 import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'
+import rnutil from '@berty-tech/rnutil'
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
-	const [{ padding, margin, border }, { scaleSize }] = useStyles()
+	const [{ padding, margin, border }] = useStyles()
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
 	const { t } = useTranslation()
 	const headerHeight = useHeaderHeight()
 	const insets = useSafeAreaInsets()
+	const { navigate } = useNavigation()
 
 	useMountEffect(() => {
 		ctx
@@ -47,7 +50,13 @@ const CreateAccountBody = () => {
 					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
 					autoPlay
 					loop={false}
-					style={{ position: 'absolute', top: -(25 * scaleSize), width: '100%' }}
+					onAnimationFinish={async () => {
+						Vibration.vibrate(500)
+						Platform.OS === 'web'
+							? navigate('Onboarding.SetupFinished')
+							: await rnutil.checkPermissions('proximity')
+					}}
+					style={{ position: 'absolute', width: '100%' }}
 				/>
 			</View>
 

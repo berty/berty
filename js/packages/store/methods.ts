@@ -57,7 +57,7 @@ const makeMethodHook =
 		const call = useCallback(
 			payload => {
 				if (client === null) {
-					console.warn('client is null')
+					console.warn('client is null', client)
 					return
 				}
 

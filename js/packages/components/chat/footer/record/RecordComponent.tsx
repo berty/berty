@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Text, TouchableOpacity, Vibration, View } from 'react-native'
+import { Animated, Platform, Text, TouchableOpacity, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
 	LongPressGestureHandlerGestureEvent,
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
-import { Recorder } from '@react-native-community/audio-toolkit'
+import { Recorder } from '@berty-tech/polyfill/react-native-community-audio-toolkit-recorder'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
-import { RESULTS } from 'react-native-permissions'
+import { RESULTS } from '@berty-tech/polyfill/react-native-permissions'
 import Long from 'long'
 
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
@@ -226,12 +226,12 @@ export const RecordComponent: React.FC<{
 				Animated.timing(recordingColorVal, {
 					toValue: 1,
 					duration: 250,
-					useNativeDriver: true,
+					useNativeDriver: Platform.OS !== 'web',
 				}),
 				Animated.timing(recordingColorVal, {
 					toValue: 0,
 					duration: 750,
-					useNativeDriver: true,
+					useNativeDriver: Platform.OS !== 'web',
 				}),
 			]),
 		)

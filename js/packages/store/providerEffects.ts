@@ -1,20 +1,25 @@
 import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
-import RNFS from 'react-native-fs'
+import { grpc } from '@improbable-eng/grpc-web'
 
 import beapi from '@berty-tech/api'
 import i18n, { osLanguage } from '@berty-tech/berty-i18n'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
-import { Service } from '@berty-tech/grpc-bridge'
+import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import store, { AppDispatch, persistor } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 import { streamEventToAction as streamEventToReduxAction } from '@berty-tech/redux/messengerActions'
+import RNFS from '@berty-tech/polyfill/rnfs'
+import {
+	WelshMessengerServiceClient,
+	WelshProtocolServiceClient,
+} from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import { accountService, storageGet, storageRemove } from './accountService'
+import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
 import { defaultPersistentOptions } from './context'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
@@ -45,6 +50,7 @@ import {
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import { deserializeFromBase64 } from '@berty-tech/grpc-bridge/rpc/utils'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -52,22 +58,35 @@ export const openAccountWithProgress = async (
 	selectedAccount: string | null,
 ) => {
 	console.log('Opening account', selectedAccount)
+	let done = false
+
 	await accountService
 		.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
+			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})
 		.then(async stream => {
 			stream.onMessage((msg, err) => {
 				if (err?.EOF) {
 					console.log('activating persist with account:', selectedAccount?.toString())
 					persistor.persist()
-					store.dispatch(setStateStreamDone())
+					console.log('opening account: stream closed')
+					if (!done) {
+						done = true
+						store.dispatch(setStateOpeningClients())
+					}
 					return
 				}
 				if (err && !err.OK) {
 					console.warn('open account error:', err)
-					store.dispatch(setStateStreamDone())
+					if (!done) {
+						done = true
+						dispatch({
+							type: MessengerActions.SetStreamError,
+							payload: { error: new Error(`Failed to start node: ${err}`) },
+						})
+					}
 					return
 				}
 				if (msg?.progress?.state !== 'done') {
@@ -79,11 +98,16 @@ export const openAccountWithProgress = async (
 						}
 						store.dispatch(setStateStreamInProgress(payload))
 					}
+				} else if (msg?.progress?.state === 'done') {
+					if (!done) {
+						done = true
+						store.dispatch(setStateStreamDone())
+						store.dispatch(setStateOpeningClients())
+					}
 				}
 			})
 			await stream.start()
 			console.log('node is opened')
-			store.dispatch(setStateOpeningClients())
 		})
 		.catch(err => {
 			dispatch({
@@ -245,11 +269,27 @@ export const openingDaemon = async (
 
 	accountService
 		.getGRPCListenerAddrs({})
-		.then(() => {
+		.then(async rep => {
 			// account already open
-			store.dispatch(setStateOpeningClients())
+			if (Platform.OS === 'web') {
+				const openedAccount = await accountService.getOpenedAccount({})
+				if (openedAccount.accountId === '' || (openedAccount.listeners || []).length === 0) {
+					throw new Error('account not opened (web)')
+				}
+
+				console.log('service has grpc listeners for messenger/protocol services')
+				store.dispatch(setStateOpeningClients())
+			} else {
+				if (rep.entries?.length > 0) {
+					console.log('service has grpc listeners')
+					store.dispatch(setStateOpeningClients())
+				} else {
+					throw Error('account not opened')
+				}
+			}
 		})
-		.catch(async () => {
+		.catch(async e => {
+			console.log(`account seems to be unopened yet ${e}`)
 			// account not open
 			await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
 		})
@@ -281,9 +321,35 @@ export const openingClients = async (
 		rpc = rpcWeb(opts)
 	}
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
+	let messengerClient, protocolClient
 
-	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
+	if (Platform.OS === 'web') {
+		const openedAccount = await accountService?.getOpenedAccount({})
+		const url = convertMAddr(openedAccount?.listeners || [])
+
+		if (url === null) {
+			console.error('unable to find service address')
+			return
+		}
+
+		const opts = {
+			transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
+			host: url,
+		}
+
+		protocolClient = Service(
+			beapi.protocol.ProtocolService,
+			rpcWeb(opts),
+		) as unknown as WelshProtocolServiceClient
+
+		messengerClient = Service(
+			beapi.messenger.MessengerService,
+			rpcWeb(opts),
+		) as unknown as WelshMessengerServiceClient
+	} else {
+		messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
+		protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
+	}
 
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
 		requestAndPersistPushToken(protocolClient).catch(e => console.warn(e))
@@ -306,12 +372,14 @@ export const openingClients = async (
 					if (err) {
 						if (
 							err?.EOF ||
-							err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
-							err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE
+							err instanceof GRPCError &&
+							(
+								err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
+								err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE)
 						) {
 							return
 						}
-						console.warn('events stream onMessage error:', err)
+						console.warn('events stream onMessage error:', JSON.stringify(err))
 						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 					}
 
@@ -337,6 +405,9 @@ export const openingClients = async (
 						if (!pbobj) {
 							console.warn('failed to find a protobuf object matching the notification type')
 							return
+						}
+						if (typeof action.payload.payload === 'string') {
+							action.payload.payload = deserializeFromBase64(action.payload.payload)
 						}
 						action.payload.payload =
 							action.payload.payload === undefined ? {} : pbobj.decode(action.payload.payload)

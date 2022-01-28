@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Text, Alert } from 'react-native'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { RESULTS, PermissionStatus, checkNotifications } from 'react-native-permissions'
 
 import { ButtonSetting } from '@berty-tech/components/shared-components'
 import {
@@ -12,6 +11,11 @@ import {
 	serviceTypes,
 	useAccountServices,
 } from '@berty-tech/store'
+import {
+	checkNotifications,
+	RESULTS,
+	PermissionStatus,
+} from '@berty-tech/polyfill/react-native-permissions'
 import rnutil from '@berty-tech/rnutil'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'

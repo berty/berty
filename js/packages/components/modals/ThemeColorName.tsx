@@ -1,16 +1,16 @@
 import React from 'react'
 import { View, TouchableOpacity, Text as TextNative, StyleSheet, TextInput } from 'react-native'
 import { Icon } from '@ui-kitten/components'
-import { BlurView } from '@react-native-community/blur'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store'
+import { saveTheme } from '@berty-tech/redux/reducers/theme.reducer'
+import { BlurView } from '@berty-tech/polyfill/react-native-community-blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'
-import { useDispatch } from 'react-redux'
-import { saveTheme } from '@berty-tech/redux/reducers/theme.reducer'
 
 export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')

@@ -2,11 +2,11 @@ import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
-import { readFile } from 'react-native-fs'
 
 import { playSoundFile } from '@berty-tech/store/sounds'
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { readFile } from '@berty-tech/polyfill/rnfs'
 
 import {
 	limitIntensities,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, Share, StatusBar } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import QRCode from 'react-native-qrcode-svg'
+import QRCode from '@berty-tech/polyfill/react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'

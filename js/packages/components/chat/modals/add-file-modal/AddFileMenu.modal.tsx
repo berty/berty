@@ -143,6 +143,28 @@ export const AddFileMenu: React.FC<{
 					console.warn('camera permission:', status)
 					return
 				}
+				try {
+					await ImagePicker.clean()
+				} catch (err) {
+					console.warn('failed to clean image picker:', err)
+				}
+				try {
+					const image = await ImagePicker.openCamera({
+						cropping: false,
+					})
+
+					if (image) {
+						prepareMediaAndSend([
+							{
+								filename: '',
+								uri: image.path || image.sourceURL || '',
+								mimeType: image.mime,
+							},
+						])
+					}
+				} catch (err) {
+					console.log(err)
+				}
 			},
 		},
 		{

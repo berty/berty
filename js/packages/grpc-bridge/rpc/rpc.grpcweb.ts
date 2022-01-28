@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web'
 import { getServiceName } from './utils'
 import * as pb from 'protobufjs'
-import { newGRPCError } from '../error'
+import { newGRPCError, EOF } from '../error'
 
 class LazyMessage extends pb.Message implements grpc.ProtobufMessage {
 	buf: Uint8Array
@@ -84,9 +84,15 @@ const stream =
 					client.onMessage((message: grpc.ProtobufMessage): void => {
 						callback(message.serializeBinary(), null)
 					})
-					client.onEnd((code: grpc.Code, message: string /*, metadata: grpc.Metadata*/) => {
-						const error = newGRPCError(code, message)
-						callback(null, error)
+					client.onEnd((code: grpc.Code, message: string, metadata: grpc.Metadata) => {
+						// TODO: dig why Internal Error is throw on grpcWeb
+						console.log('client.onEnd', code, message, JSON.stringify(metadata))
+						const messageToCheck = 'Response closed without grpc-status (Trailers provided)'
+						if (code === grpc.Code.Internal && message === messageToCheck) {
+							callback(null, EOF)
+						} else {
+							callback(null, code === grpc.Code.OK ? EOF : newGRPCError(code, message))
+						}
 					})
 				},
 				emit: async (request: Uint8Array) => {

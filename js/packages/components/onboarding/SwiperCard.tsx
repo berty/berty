@@ -17,7 +17,7 @@ const SwiperCard: React.FC<{
 	}
 	skip?: { text: string; onPress: () => void }
 }> = ({ children, desc, header, title, button, skip, secondButton }) => {
-	const [{ text, padding, margin, border }] = useStyles()
+	const [{ text, padding, margin }] = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -25,12 +25,7 @@ const SwiperCard: React.FC<{
 			<Text style={[text.size.large, text.align.center, { color: colors['reverted-main-text'] }]}>
 				{header}
 			</Text>
-			<Card
-				style={[
-					border.shadow.large,
-					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
-				]}
-			>
+			<Card style={[{ backgroundColor: colors['main-background'], shadowColor: colors.shadow }]}>
 				<View style={[padding.medium]}>
 					<Text
 						style={[

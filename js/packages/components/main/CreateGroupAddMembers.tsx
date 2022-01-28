@@ -9,15 +9,11 @@ import {
 } from 'react-native'
 import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store'
-
-import { ContactPicker } from '../shared-components'
-import { FooterCreateGroup } from './CreateGroupFooter'
-import { ContactAvatar } from '../avatars'
-import { useDispatch, useSelector } from 'react-redux'
 import {
 	removeMemberFromInvitationListById,
 	selectInvitationListMembers,
@@ -25,6 +21,10 @@ import {
 import { AppDispatch } from '@berty-tech/redux/store'
 import { berty } from '@berty-tech/api/root.pb'
 import { useAllContacts } from '@berty-tech/react-redux'
+
+import { ContactPicker } from '../shared-components'
+import { FooterCreateGroup } from './CreateGroupFooter'
+import { ContactAvatar } from '../avatars'
 
 export const Header: React.FC<{
 	title: string

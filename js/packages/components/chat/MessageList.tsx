@@ -5,6 +5,7 @@ import {
 	FlatList,
 	ListRenderItem,
 	View,
+	Platform,
 } from 'react-native'
 import moment from 'moment'
 
@@ -118,21 +119,24 @@ export const MessageList: React.FC<{
 	)
 
 	const renderItem: ListRenderItem<ParsedInteraction> = useCallback(
-		({ item, index }) => (
-			<>
-				{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
-				<Message
-					inte={item}
-					convKind={conversation?.type || beapi.messenger.Conversation.Type.Undefined}
-					convPK={id || ''}
-					members={members}
-					previousMessage={index < messages.length - 1 ? messages[index + 1] : undefined}
-					nextMessage={index > 0 ? messages[index - 1] : undefined}
-					replyOf={messages.find(message => message.cid === item.targetCid)}
-					scrollToCid={handleScrollToCid}
-				/>
-			</>
-		),
+		({ item, index }) => {
+			console.log('item', item)
+			return (
+				<>
+					{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
+					<Message
+						inte={item}
+						convKind={conversation?.type || beapi.messenger.Conversation.Type.Undefined}
+						convPK={id || ''}
+						members={members}
+						previousMessage={index < messages.length - 1 ? messages[index + 1] : undefined}
+						nextMessage={index > 0 ? messages[index - 1] : undefined}
+						replyOf={messages.find(message => message.cid === item.targetCid)}
+						scrollToCid={handleScrollToCid}
+					/>
+				</>
+			)
+		},
 		[id, conversation?.type, members, messages, handleScrollToCid],
 	)
 
@@ -218,6 +222,7 @@ export const MessageList: React.FC<{
 				initialNumToRender={20}
 				onScrollBeginDrag={handleScrollBeginDrag}
 				onScrollEndDrag={handleScrollEndDrag}
+				disableVirtualization={Platform.OS === 'web'}
 			/>
 		</View>
 	)

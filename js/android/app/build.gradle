@@ -279,7 +279,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
 
     // Add v8-android - prebuilt libv8android.so into APK
-    implementation 'org.chromium:v8-android:9.88.+'
+    implementation 'org.chromium:v8-android:9.93.+'
 
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 

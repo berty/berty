@@ -28,7 +28,7 @@ export const importAccount = async (
 
 	try {
 		await closeAccountWithProgress(dispatch, reduxDispatch)
-		resp = await importAccountWithProgress(path, dispatch, reduxDispatch)
+		resp = await importAccountWithProgress(path, reduxDispatch)
 	} catch (e) {
 		console.warn('unable to import account', e)
 		return

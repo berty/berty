@@ -9,13 +9,13 @@ import {
 	Text,
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
-import CameraRoll from '@react-native-community/cameraroll'
-import RNFS from 'react-native-fs'
+import CameraRoll from '@berty-tech/polyfill/react-native-community-cameraroll'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
+import RNFS from '@berty-tech/polyfill/rnfs'
 
 import { ImageCounter } from '../../ImageCounter'
 

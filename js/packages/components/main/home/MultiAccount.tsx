@@ -19,6 +19,7 @@ import { GenericAvatar } from '../../avatars'
 import {
 	selectSelectedAccount,
 	setStateOnBoardingReady,
+	setStateStreamDone,
 } from '@berty-tech/redux/reducers/ui.reducer'
 import { useSelector } from 'react-redux'
 
@@ -142,8 +143,14 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 				<AccountButton
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
+<<<<<<< HEAD
 						await closeAccountWithProgress(dispatch, reduxDispatch)
 						reduxDispatch(setStateOnBoardingReady())
+=======
+						await closeAccountWithProgress(dispatch, reduxDispatch).then(() => {
+							reduxDispatch(setStateOnBoardingReady())
+						})
+>>>>>>> 0c9530372 (chore: add react native web)
 					}}
 					avatar={
 						<View

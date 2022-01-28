@@ -82,10 +82,9 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 
 	const initialListComplete = useAppSelector(state => state.messenger.initialListComplete)
 
-	useEffect(
-		() => openingListingEvents(appState, initialListComplete),
-		[appState, initialListComplete],
-	)
+	useEffect(() => {
+		return openingListingEvents(appState, initialListComplete)
+	}, [appState, initialListComplete])
 
 	useEffect(() => {
 		openingLocalSettings(dispatch, appState, selectedAccount)
@@ -95,7 +94,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 
 	useEffect(() => {
 		openingCloseConvos(appState, client, conversations, state.persistentOptions)
-	}, [appState, client, conversations, state.persistentOptions, embedded])
+	}, [appState, client, conversations, state.persistentOptions])
 
 	const accountLanguage = useAppSelector(selectAccountLanguage)
 	useEffect(() => {
@@ -116,15 +115,13 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		)
 	}, [appState, client, selectedAccount, account, protocolClient, embedded, dispatch])
 
-	useEffect(
-		() => closingDaemon(appState, clearClients, dispatch, reduxDispatch),
-		[clearClients, appState, reduxDispatch],
-	)
+	useEffect(() => {
+		return closingDaemon(appState, clearClients, dispatch, reduxDispatch)
+	}, [clearClients, appState, reduxDispatch])
 
-	useEffect(
-		() => deletingStorage(appState, dispatch, embedded, selectedAccount),
-		[appState, selectedAccount, embedded],
-	)
+	useEffect(() => {
+		return deletingStorage(appState, dispatch, embedded, selectedAccount)
+	}, [appState, selectedAccount, embedded])
 
 	const callbackImportAccount = useCallback(
 		(path: string) => importAccount(embedded, dispatch, path, reduxDispatch),
@@ -148,7 +145,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 
 	const callbackCreateNewAccount = useCallback(
 		(newConfig?: beapi.account.INetworkConfig) =>
-			createNewAccount(embedded, dispatch, reduxDispatch, newConfig),
+			createNewAccount(embedded, reduxDispatch, newConfig),
 		[embedded, reduxDispatch],
 	)
 
@@ -192,6 +189,32 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		[state.persistentOptions],
 	)
 
+<<<<<<< HEAD
+=======
+	useEffect(() => {
+		if (selectedAccount === null) {
+			console.log('no account id supplied')
+			setNetworkConfig({})
+			return
+		}
+
+		const f = async () => {
+			console.log('networkConfigSet')
+			const netConf = await accountService.networkConfigGet({
+				accountId: selectedAccount,
+			})
+			if (!netConf.currentConfig) {
+				return
+			}
+
+			setNetworkConfig(netConf.currentConfig)
+			console.log('networkConfigSetted')
+		}
+
+		f().catch(e => console.warn(e))
+	}, [selectedAccount])
+
+>>>>>>> 0c9530372 (chore: add react native web)
 	return (
 		<MessengerContext.Provider
 			value={{

@@ -1,11 +1,11 @@
 import React, { ComponentProps, useState } from 'react'
-import { View, ScrollView, Share, StatusBar, TouchableOpacity } from 'react-native'
+import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
-import QRCode from 'react-native-qrcode-svg'
+import Clipboard from '@react-native-community/clipboard'
 
 import beapi from '@berty-tech/api'
+import QRCode from '@berty-tech/polyfill/react-native-qrcode-svg'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { Maybe, useMessengerClient, useThemeColor } from '@berty-tech/store'
@@ -15,6 +15,7 @@ import { ButtonSetting, FactionButtonSetting } from '../shared-components/Settin
 import logo from '../main/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty-tech/components/chat/EnableNotificationsButton'
+import ImagePicker, { ImageOrVideo } from '@berty-tech/polyfill/react-native-image-crop-picker'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
@@ -91,7 +92,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 						style={{ position: 'absolute', top: -(90 * scaleSize) }}
 						onPress={async () => {
 							try {
-								const pic = await ImagePicker.openPicker({
+								const pic = await ImagePicker?.openPicker({
 									width: 400,
 									height: 400,
 									cropping: true,
@@ -230,7 +231,11 @@ const MultiMemberSettingsBody: React.FC<{
 					link
 						? async () => {
 								try {
-									await Share.share({ url: link, message: link })
+									if (Platform.OS === 'web') {
+										Clipboard.setString(link)
+									} else {
+										await Share.share({ url: link })
+									}
 								} catch (e) {
 									console.error(e)
 								}

@@ -2,9 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { Player } from '@react-native-community/audio-toolkit'
 import Long from 'long'
-import { withInAppNotification } from 'react-native-in-app-notification'
 
 import {
 	defaultPersistentOptions,
@@ -37,6 +35,7 @@ import {
 	useConversationsDict,
 	useAccount,
 } from '@berty-tech/react-redux'
+import { Player } from '@berty-tech/polyfill/player'
 
 import {
 	ButtonSetting,
@@ -48,6 +47,7 @@ import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
 import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
+import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
 
 //
 // DevTools

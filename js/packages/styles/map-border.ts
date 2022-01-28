@@ -121,7 +121,11 @@ export const mapBorder = (
 		),
 		...mapBorderRadiusSides(decl, { scaleSize }),
 	},
-	shadow: Platform.select({ ios: mapBorderShadowIOS(decl), android: mapBorderShadowAndroid() }),
+	shadow: Platform.select({
+		ios: mapBorderShadowIOS(decl),
+		android: mapBorderShadowAndroid(),
+		web: mapBorderShadowIOS(decl),
+	}),
 	size: StyleSheet.create({}),
 	color: mapColorsDeclaration(decl.colors, v => ({ borderColor: v })),
 })
