@@ -30,13 +30,13 @@ type pushHandler struct {
 	accountCache    ds.Datastore
 }
 
-func (s *pushHandler) UpdatePushServer(server *protocoltypes.PushServer) error {
+func (s *pushHandler) UpdatePushServer(ctx context.Context, server *protocoltypes.PushServer) error {
 	cachePayload, err := server.Marshal()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(fmt.Errorf("unable to marshal PushServer: %w", err))
 	}
 
-	err = s.accountCache.Put(ds.NewKey(datastoreutil.AccountCacheDatastorePushServerPK), cachePayload)
+	err = s.accountCache.Put(ctx, ds.NewKey(datastoreutil.AccountCacheDatastorePushServerPK), cachePayload)
 	if err != nil {
 		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to cache push server info: %s", err))
 	}
@@ -54,9 +54,9 @@ func (s *pushHandler) SetPushSK(key *[cryptoutil.KeySize]byte) {
 }
 
 type PushHandler interface {
-	PushReceive(payload []byte) (*protocoltypes.PushReceive_Reply, error)
+	PushReceive(ctx context.Context, payload []byte) (*protocoltypes.PushReceive_Reply, error)
 	PushPK() *[cryptoutil.KeySize]byte
-	UpdatePushServer(server *protocoltypes.PushServer) error
+	UpdatePushServer(ctx context.Context, server *protocoltypes.PushServer) error
 }
 
 var _ PushHandler = (*pushHandler)(nil)
@@ -126,8 +126,8 @@ func NewPushHandler(opts *PushHandlerOpts) (PushHandler, error) {
 	return h, nil
 }
 
-func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Reply, error) {
-	pushServerPK, err := s.getServerPushPubKey()
+func (s *pushHandler) PushReceive(ctx context.Context, payload []byte) (*protocoltypes.PushReceive_Reply, error) {
+	pushServerPK, err := s.getServerPushPubKey(ctx)
 	if err != nil {
 		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
@@ -142,7 +142,7 @@ func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Re
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	gPKBytes, err := s.messageKeystore.GetByPushGroupReference(oosMessageEnv.GroupReference)
+	gPKBytes, err := s.messageKeystore.GetByPushGroupReference(ctx, oosMessageEnv.GroupReference)
 	if err != nil {
 		return nil, errcode.ErrNotFound.Wrap(err)
 	}
@@ -152,19 +152,19 @@ func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Re
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	oosMessage, err := DecryptOutOfStoreMessageEnv(s.groupDatastore, oosMessageEnv, gPK)
+	oosMessage, err := DecryptOutOfStoreMessageEnv(ctx, s.groupDatastore, oosMessageEnv, gPK)
 	if err != nil {
 		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	clear, newlyDecrypted, err := s.messageKeystore.OpenOutOfStoreMessage(oosMessage, gPKBytes)
+	clear, newlyDecrypted, err := s.messageKeystore.OpenOutOfStoreMessage(ctx, oosMessage, gPKBytes)
 	if err != nil {
 		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	g, err := s.groupDatastore.Get(gPK)
+	g, err := s.groupDatastore.Get(ctx, gPK)
 	if err == nil {
-		if err := s.messageKeystore.UpdatePushGroupReferences(oosMessage.DevicePK, oosMessage.Counter, g); err != nil {
+		if err := s.messageKeystore.UpdatePushGroupReferences(ctx, oosMessage.DevicePK, oosMessage.Counter, g); err != nil {
 			s.logger.Error("unable to update push group references", zap.Error(err))
 		}
 	}
@@ -177,13 +177,13 @@ func (s *pushHandler) PushReceive(payload []byte) (*protocoltypes.PushReceive_Re
 	}, nil
 }
 
-func DecryptOutOfStoreMessageEnv(gd cryptoutil.GroupDatastoreReadOnly, env *pushtypes.OutOfStoreMessageEnvelope, groupPK crypto.PubKey) (*protocoltypes.OutOfStoreMessage, error) {
+func DecryptOutOfStoreMessageEnv(ctx context.Context, gd cryptoutil.GroupDatastoreReadOnly, env *pushtypes.OutOfStoreMessageEnvelope, groupPK crypto.PubKey) (*protocoltypes.OutOfStoreMessage, error) {
 	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	g, err := gd.Get(groupPK)
+	g, err := gd.Get(ctx, groupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find group, err: %w", err))
 	}
@@ -203,8 +203,8 @@ func DecryptOutOfStoreMessageEnv(gd cryptoutil.GroupDatastoreReadOnly, env *push
 	return outOfStoreMessage, nil
 }
 
-func (s *pushHandler) getServerPushPubKey() (*[cryptoutil.KeySize]byte, error) {
-	serverBytes, err := s.accountCache.Get(ds.NewKey(datastoreutil.AccountCacheDatastorePushServerPK))
+func (s *pushHandler) getServerPushPubKey(ctx context.Context) (*[cryptoutil.KeySize]byte, error) {
+	serverBytes, err := s.accountCache.Get(ctx, ds.NewKey(datastoreutil.AccountCacheDatastorePushServerPK))
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("missing push server data: %w", err))
 	}
@@ -232,11 +232,10 @@ func (s *pushHandler) getServerPushPubKey() (*[cryptoutil.KeySize]byte, error) {
 
 type pushHandlerClient struct {
 	serviceClient protocoltypes.ProtocolServiceClient
-	ctx           context.Context
 }
 
-func (p *pushHandlerClient) PushReceive(payload []byte) (*protocoltypes.PushReceive_Reply, error) {
-	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
+func (p *pushHandlerClient) PushReceive(ctx context.Context, payload []byte) (*protocoltypes.PushReceive_Reply, error) {
+	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
 	return p.serviceClient.PushReceive(ctx, &protocoltypes.PushReceive_Request{Payload: payload})
@@ -251,8 +250,8 @@ func (p *pushHandlerClient) SetPushSK(i *[32]byte) {
 	// TODO: not supported in client mode
 }
 
-func (p *pushHandlerClient) UpdatePushServer(server *protocoltypes.PushServer) error {
-	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
+func (p *pushHandlerClient) UpdatePushServer(ctx context.Context, server *protocoltypes.PushServer) error {
+	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
 	_, err := p.serviceClient.PushSetServer(ctx, &protocoltypes.PushSetServer_Request{Server: server})
@@ -261,10 +260,7 @@ func (p *pushHandlerClient) UpdatePushServer(server *protocoltypes.PushServer) e
 }
 
 func NewPushHandlerViaProtocol(ctx context.Context, serviceClient protocoltypes.ProtocolServiceClient) PushHandler {
-	return &pushHandlerClient{
-		serviceClient: serviceClient,
-		ctx:           ctx,
-	}
+	return &pushHandlerClient{serviceClient: serviceClient}
 }
 
 func DecryptPushDataFromServer(data []byte, serverPK, ownSK *[32]byte) ([]byte, error) {

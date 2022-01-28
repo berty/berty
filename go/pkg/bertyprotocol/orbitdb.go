@@ -317,7 +317,7 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 	s.Logger().Debug("Got member device", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "DevicePublicKey", Description: base64.RawURLEncoding.EncodeToString(mpkb)}})...)
 
 	// Force secret generation if missing
-	if _, err := s.messageKeystore.GetDeviceSecret(g, s.deviceKeystore); err != nil {
+	if _, err := s.messageKeystore.GetDeviceSecret(ctx, g, s.deviceKeystore); err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 

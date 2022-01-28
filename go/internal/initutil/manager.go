@@ -14,6 +14,7 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	p2p_mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/shibukawa/configdir"
@@ -110,6 +111,7 @@ type Manager struct {
 			MDNS              struct {
 				Enable       bool `json:"Enable,omitempty"`
 				DriverLocker sync.Locker
+				NetAddrs     ipfsutil.NetAddrs
 			} `json:"MDNS,omitempty"`
 			Ble struct {
 				Enable bool `json:"Enable,omitempty"`
@@ -119,18 +121,14 @@ type Manager struct {
 				Enable bool `json:"Enable,omitempty"`
 				Driver proximity.ProximityDriver
 			} `json:"Nearby,omitempty"`
-			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
-			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
-			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`
-			DisableIPFSNetwork    bool          `json:"DisableIPFSNetwork,omitempty"`
-			RdvpMaddrs            string        `json:"RdvpMaddrs,omitempty"`
-			AuthSecret            string        `json:"AuthSecret,omitempty"`
-			AuthPublicKey         string        `json:"AuthPublicKey,omitempty"`
-			PollInterval          time.Duration `json:"PollInterval,omitempty"`
-			Tor                   struct {
-				Mode       string `json:"Mode,omitempty"`
-				BinaryPath string `json:"BinaryPath,omitempty"`
-			} `json:"Tor,omitempty"`
+			MultipeerConnectivity  bool          `json:"MultipeerConnectivity,omitempty"`
+			MinBackoff             time.Duration `json:"MinBackoff,omitempty"`
+			MaxBackoff             time.Duration `json:"MaxBackoff,omitempty"`
+			DisableIPFSNetwork     bool          `json:"DisableIPFSNetwork,omitempty"`
+			RdvpMaddrs             string        `json:"RdvpMaddrs,omitempty"`
+			AuthSecret             string        `json:"AuthSecret,omitempty"`
+			AuthPublicKey          string        `json:"AuthPublicKey,omitempty"`
+			PollInterval           time.Duration `json:"PollInterval,omitempty"`
 			PushPlatformToken      string        `json:"PushPlatformToken,omitempty"`
 			DevicePushKeyPath      string        `json:"DevicePushKeyPath,omitempty"`
 			ServiceInsecureMode    bool          `json:"ServiceInsecureMode,omitempty"`
@@ -142,6 +140,7 @@ type Manager struct {
 			needAuth                   bool
 			ipfsNode                   *core.IpfsNode
 			ipfsAPI                    ipfsutil.ExtendedCoreAPI
+			mdnsService                p2p_mdns.Service
 			pubsub                     *pubsub.PubSub
 			discovery                  tinder.Service
 			server                     bertyprotocol.Service
@@ -319,6 +318,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("cleanup-replication-db")
 	prog.AddStep("close-protocol-server")
 	prog.AddStep("close-tinder-service")
+	prog.AddStep("close-mdns-service")
 	prog.AddStep("close-ipfs-node")
 	prog.AddStep("close-datastore")
 	prog.AddStep("close-ring")
@@ -378,6 +378,11 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("close-tinder-service").SetAsCurrent()
 	if m.Node.Protocol.server != nil {
 		m.Node.Protocol.discovery.Close()
+	}
+
+	prog.Get("close-mdns-service").SetAsCurrent()
+	if m.Node.Protocol.mdnsService != nil {
+		m.Node.Protocol.mdnsService.Close()
 	}
 
 	prog.Get("close-ipfs-node").SetAsCurrent()

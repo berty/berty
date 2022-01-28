@@ -122,8 +122,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       }
 
       // set net driver
-      NetDriver inet = new NetDriver();
-      config.setNetDriver(inet);
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+          NetDriver inet = new NetDriver();
+          config.setNetDriver(inet);
+      }
 
       // set mdns locker driver
       MDNSLockerDriver imdnslocker = new MDNSLockerDriver(reactContext);

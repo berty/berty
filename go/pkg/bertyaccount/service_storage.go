@@ -43,7 +43,7 @@ func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorag
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
 	}
 
-	value, err := storage.Get(datastore.NewKey(req.GetKey()))
+	value, err := storage.Get(ctx, datastore.NewKey(req.GetKey()))
 	if err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
@@ -83,7 +83,7 @@ func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStorag
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
 	}
 
-	err := storage.Put(datastore.NewKey(req.GetKey()), req.GetValue())
+	err := storage.Put(ctx, datastore.NewKey(req.GetKey()), req.GetValue())
 	if err != nil {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
@@ -123,7 +123,7 @@ func (s *service) AppStorageRemove(ctx context.Context, req *accounttypes.AppSto
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
 	}
 
-	err := storage.Delete(datastore.NewKey(req.GetKey()))
+	err := storage.Delete(ctx, datastore.NewKey(req.GetKey()))
 	if err != nil {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}

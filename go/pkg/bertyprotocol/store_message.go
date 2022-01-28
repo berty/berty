@@ -210,7 +210,7 @@ func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *cry
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := m.mks.SealEnvelope(g, md.PrivateDevice(), msg, attachmentsCIDs)
+	env, err := m.mks.SealEnvelope(ctx, g, md.PrivateDevice(), msg, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
@@ -314,7 +314,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 					continue
 				}
 
-				if err := s.messageKeystore.UpdatePushGroupReferences(messageEvent.Headers.DevicePK, messageEvent.Headers.Counter, g); err != nil {
+				if err := s.messageKeystore.UpdatePushGroupReferences(ctx, messageEvent.Headers.DevicePK, messageEvent.Headers.Counter, g); err != nil {
 					store.logger.Error("unable to update push group references", zap.Error(err))
 				}
 

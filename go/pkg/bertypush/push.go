@@ -37,7 +37,7 @@ func NewPushReceiver(pushHandler PushHandler, evtHandler EventHandler, logger *z
 }
 
 func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (*messengertypes.PushReceive_Reply, error) {
-	clear, err := m.pushHandler.PushReceive(input)
+	clear, err := m.pushHandler.PushReceive(ctx, input)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}

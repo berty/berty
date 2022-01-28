@@ -8,6 +8,7 @@ import (
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 )
@@ -42,7 +43,9 @@ func GetInMemoryTestDB(t testing.TB, opts ...GetInMemoryTestDBOpts) (*DBWrapper,
 		}
 	}
 
+	zapLogger := zapgorm2.New(log)
 	db, err := gorm.Open(sqlite.Open(fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
+		Logger:                                   zapLogger,
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {

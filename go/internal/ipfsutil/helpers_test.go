@@ -17,6 +17,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/pnet"
+	tcp "github.com/libp2p/go-tcp-transport"
 	"moul.io/srand"
 )
 
@@ -55,8 +56,8 @@ func TestFullClose(t *testing.T) {
 			t.Fatalf("failed to generate A's private key: %s", err)
 		}
 
-		a, err = p2p.New(ctx,
-			p2p.DisableRelay(),
+		a, err = p2p.New(p2p.DisableRelay(),
+			p2p.Transport(tcp.NewTCPTransport),
 			p2p.Identity(priv),
 			p2p.PrivateNetwork(psk),
 			p2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
@@ -69,8 +70,8 @@ func TestFullClose(t *testing.T) {
 			t.Fatalf("failed to generate B's private key: %s", err)
 		}
 
-		b, err = p2p.New(ctx,
-			p2p.DisableRelay(),
+		b, err = p2p.New(p2p.DisableRelay(),
+			p2p.Transport(tcp.NewTCPTransport),
 			p2p.Identity(priv),
 			p2p.PrivateNetwork(psk),
 			p2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),

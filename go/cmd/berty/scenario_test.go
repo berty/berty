@@ -9,13 +9,19 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 	"moul.io/u"
+
+	"berty.tech/berty/v2/go/internal/initutil"
 )
 
 func TestPersistentIdentity(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("disabled on windows")
 	}
+
+	// @FIXME(gfanton): avoid write error caused by grpc logger
+	initutil.ReplaceGRPCLogger(zap.NewNop())
 
 	// create tempdir for the test
 	var tempdir string

@@ -1,6 +1,7 @@
 package bertyprotocol
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -26,19 +27,19 @@ func (s *service) getContactGroup(key crypto.PubKey) (*protocoltypes.Group, erro
 	return g, nil
 }
 
-func (s *service) getGroupForPK(pk crypto.PubKey) (*protocoltypes.Group, error) {
-	g, err := s.groupDatastore.Get(pk)
+func (s *service) getGroupForPK(ctx context.Context, pk crypto.PubKey) (*protocoltypes.Group, error) {
+	g, err := s.groupDatastore.Get(ctx, pk)
 	if err == nil {
 		return g, nil
 	} else if !errcode.Is(err, errcode.ErrMissingMapKey) {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if err = reindexGroupDatastore(s.groupDatastore, s.accountGroup.metadataStore, s.deviceKeystore); err != nil {
+	if err = reindexGroupDatastore(ctx, s.groupDatastore, s.accountGroup.metadataStore, s.deviceKeystore); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	g, err = s.groupDatastore.Get(pk)
+	g, err = s.groupDatastore.Get(ctx, pk)
 	if err == nil {
 		return g, nil
 	} else if errcode.Is(err, errcode.ErrMissingMapKey) {
@@ -76,7 +77,7 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 	return nil
 }
 
-func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
+func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly bool) error {
 	id, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
@@ -87,7 +88,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 		return nil
 	}
 
-	g, err := s.getGroupForPK(pk)
+	g, err := s.getGroupForPK(ctx, pk)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -148,13 +149,13 @@ func (s *service) GetContextGroupForID(id []byte) (*GroupContext, error) {
 	return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unknown group or not activated yet"))
 }
 
-func reindexGroupDatastore(gd *cryptoutil.GroupDatastore, m *MetadataStore, deviceKeystore cryptoutil.DeviceKeystore) error {
+func reindexGroupDatastore(ctx context.Context, gd *cryptoutil.GroupDatastore, m *MetadataStore, deviceKeystore cryptoutil.DeviceKeystore) error {
 	if deviceKeystore == nil {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing device keystore"))
 	}
 
 	for _, g := range m.ListMultiMemberGroups() {
-		if err := gd.Put(g); err != nil {
+		if err := gd.Put(ctx, g); err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}
 	}
@@ -172,7 +173,7 @@ func reindexGroupDatastore(gd *cryptoutil.GroupDatastore, m *MetadataStore, devi
 			return errcode.TODO.Wrap(err)
 		}
 
-		if err := gd.PutForContactPK(cPK, deviceKeystore); err != nil {
+		if err := gd.PutForContactPK(ctx, cPK, deviceKeystore); err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}
 	}

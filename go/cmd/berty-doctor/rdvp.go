@@ -18,7 +18,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
-	quic "github.com/libp2p/go-libp2p-quic-transport"
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
@@ -119,12 +118,11 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 						}
 
 						// Setup host
-						host, err := p2p.New(ctx,
+						host, err := p2p.New(
 							p2p.DisableRelay(),
 							p2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
 							p2p.UserAgent("Berty Doctor"),
 							p2p.DefaultTransports,
-							p2p.Transport(quic.NewTransport),
 						)
 						if err != nil {
 							rtr.message = fmt.Sprintf("Error creating host: %s", err)

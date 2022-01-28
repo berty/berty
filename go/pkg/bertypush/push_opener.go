@@ -189,7 +189,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 		return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("device has no known push key"))
 	}
 
-	accounts, err := accountutils.ListAccounts(rootDir, opts.Keystore, opts.Logger)
+	accounts, err := accountutils.ListAccounts(ctx, rootDir, opts.Keystore, opts.Logger)
 	if err != nil {
 		return nil, nil, err
 	}
