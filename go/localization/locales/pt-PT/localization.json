@@ -3,7 +3,7 @@
     "services": {
       "rpl": {
         "name": "",
-        "description": "",
+        "description": "Este serviço replicará automaticamente as suas conversas para fornecer melhor performance de rede ao seu dispositivo.",
         "benefitBadge": "Desempenho"
       },
       "psh": {
@@ -12,7 +12,7 @@
         "benefitBadge": "Desempenho"
       }
     },
-    "pageTitle": "",
+    "pageTitle": "Serviços Berty",
     "connectButton_one": "",
     "connectButton_other": "",
     "privacyPolicyLabel": ""
@@ -23,7 +23,7 @@
       "title": ""
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "Mensagem de voz enviada",
       "bodyWithNumberOfMedia_other": ""
     },
     "gif": {
