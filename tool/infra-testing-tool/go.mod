@@ -10,7 +10,7 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/gruntwork-io/terratest v0.35.4
 	github.com/libp2p/go-libp2p-core v0.8.5
-	github.com/libp2p/go-libp2p-crypto v0.1.0
+	github.com/mathisve/ec2ifupifdown v0.0.0-20220129230945-d304390301de
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/sirupsen/logrus v1.6.0

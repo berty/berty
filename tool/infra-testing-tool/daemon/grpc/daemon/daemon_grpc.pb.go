@@ -31,6 +31,7 @@ type ProxyClient interface {
 	NewTest(ctx context.Context, in *NewTest_Request, opts ...grpc.CallOption) (*NewTest_Response, error)
 	StartTest(ctx context.Context, in *StartTest_Request, opts ...grpc.CallOption) (*StartTest_Response, error)
 	IsTestRunning(ctx context.Context, in *IsTestRunning_Request, opts ...grpc.CallOption) (*IsTestRunning_Response, error)
+	AddReliability(ctx context.Context, in *AddReliability_Request, opts ...grpc.CallOption) (*AddReliability_Response, error)
 }
 
 type proxyClient struct {
@@ -158,6 +159,15 @@ func (c *proxyClient) IsTestRunning(ctx context.Context, in *IsTestRunning_Reque
 	return out, nil
 }
 
+func (c *proxyClient) AddReliability(ctx context.Context, in *AddReliability_Request, opts ...grpc.CallOption) (*AddReliability_Response, error) {
+	out := new(AddReliability_Response)
+	err := c.cc.Invoke(ctx, "/daemon.Proxy/AddReliability", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProxyServer is the server API for Proxy service.
 // All implementations must embed UnimplementedProxyServer
 // for forward compatibility
@@ -175,6 +185,7 @@ type ProxyServer interface {
 	NewTest(context.Context, *NewTest_Request) (*NewTest_Response, error)
 	StartTest(context.Context, *StartTest_Request) (*StartTest_Response, error)
 	IsTestRunning(context.Context, *IsTestRunning_Request) (*IsTestRunning_Response, error)
+	AddReliability(context.Context, *AddReliability_Request) (*AddReliability_Response, error)
 	mustEmbedUnimplementedProxyServer()
 }
 
@@ -220,6 +231,9 @@ func (UnimplementedProxyServer) StartTest(context.Context, *StartTest_Request) (
 }
 func (UnimplementedProxyServer) IsTestRunning(context.Context, *IsTestRunning_Request) (*IsTestRunning_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsTestRunning not implemented")
+}
+func (UnimplementedProxyServer) AddReliability(context.Context, *AddReliability_Request) (*AddReliability_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddReliability not implemented")
 }
 func (UnimplementedProxyServer) mustEmbedUnimplementedProxyServer() {}
 
@@ -468,6 +482,24 @@ func _Proxy_IsTestRunning_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Proxy_AddReliability_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddReliability_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProxyServer).AddReliability(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/daemon.Proxy/AddReliability",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProxyServer).AddReliability(ctx, req.(*AddReliability_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Proxy_ServiceDesc is the grpc.ServiceDesc for Proxy service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -526,6 +558,10 @@ var Proxy_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsTestRunning",
 			Handler:    _Proxy_IsTestRunning_Handler,
+		},
+		{
+			MethodName: "AddReliability",
+			Handler:    _Proxy_AddReliability_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

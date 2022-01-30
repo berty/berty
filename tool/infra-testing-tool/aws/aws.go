@@ -5,16 +5,17 @@ package aws
 import (
 	"errors"
 	"fmt"
+	"infratesting/logging"
+	"os"
+	"strings"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/sts"
 	"github.com/google/uuid"
-	"infratesting/logging"
-	"os"
-	"strings"
-	"time"
 )
 
 var (

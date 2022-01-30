@@ -2,8 +2,9 @@ package config
 
 import (
 	"encoding/json"
-	"gopkg.in/yaml.v3"
 	"infratesting/logging"
+
+	"gopkg.in/yaml.v3"
 )
 
 func OutputYaml(b []byte) (s string, err error) {
@@ -12,7 +13,7 @@ func OutputYaml(b []byte) (s string, err error) {
 		return s, err
 	}
 
-	comp, _ = ToHCL(comp)
+	ToHCL(comp)
 
 	c := GetConfig()
 
@@ -31,7 +32,7 @@ func OutputJson(b []byte) (s string, err error) {
 		return s, err
 	}
 
-	comp, _ = ToHCL(comp)
+	ToHCL(comp)
 
 	c := GetConfig()
 
@@ -50,7 +51,7 @@ func OutputHcl(b []byte) (s string, err error) {
 		return s, err
 	}
 
-	comp, s = ToHCL(comp)
+	_, s = ToHCL(comp)
 	return s, err
 }
 
@@ -60,7 +61,7 @@ func OutputNormal(b []byte) (hcl, y string, err error) {
 		return hcl, y, err
 	}
 
-	comp, hcl = ToHCL(comp)
+	_, hcl = ToHCL(comp)
 
 	c := GetConfig()
 

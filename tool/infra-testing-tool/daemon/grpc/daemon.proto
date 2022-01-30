@@ -146,6 +146,18 @@ message IsProcessRunning{
   }
 }
 
+// AddReliability
+message AddReliability{
+  message Request {
+    int64 timeout = 1;
+    int64 odds = 2;
+  }
+
+  message Response {}
+}
+
+
+
 service Proxy {
   rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
   rpc TestConnectionToPeer(TestConnectionToPeer.Request) returns (TestConnectionToPeer.Response) {}
@@ -163,4 +175,6 @@ service Proxy {
   rpc NewTest(NewTest.Request) returns (NewTest.Response) {}
   rpc StartTest(StartTest.Request) returns (StartTest.Response) {}
   rpc IsTestRunning(IsTestRunning.Request) returns (IsTestRunning.Response) {}
+  
+  rpc AddReliability(AddReliability.Request) returns (AddReliability.Response) {}
 }

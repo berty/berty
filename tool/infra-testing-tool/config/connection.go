@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"fmt"
 	"infratesting/iac"
 	"infratesting/iac/components/networking"
@@ -13,9 +12,8 @@ type Connection struct {
 	To       string `yaml:"to"`
 	Protocol string `yaml:"protocol"`
 
-	connType       string
-	infraToolOnly  bool
-	createdSGRules bool
+	connType      string
+	infraToolOnly bool
 }
 
 const (
@@ -54,13 +52,14 @@ func (c *NodeGroup) parseConnections() error {
 		case udp:
 			// ok
 		default:
-			return errors.New(fmt.Sprintf("invalid protocol: %v", c.Connections[i].Protocol))
+			return fmt.Errorf("invalid protocol: %v", c.Connections[i].Protocol)
 		}
 
 		config.Attributes.Connections[c.Connections[i].To] = &c.Connections[i]
 	}
 
 	if !hasInternet {
+		// supplementary connection for gRPC to talk to daemon
 		var con = Connection{
 			To:            ConnTypeInternet,
 			Protocol:      tcp,
@@ -68,7 +67,8 @@ func (c *NodeGroup) parseConnections() error {
 			infraToolOnly: true,
 		}
 
-		c.Connections = append(c.Connections, con)
+		// prepend
+		c.Connections = append([]Connection{con}, c.Connections...)
 		config.Attributes.Connections[ConnTypeInternet] = &con
 	}
 
@@ -142,10 +142,10 @@ func (c Connection) composeComponents() {
 		components = append(components, makeInternetSGRules(443, tcp, false, sg)...)
 
 	} else if c.connType == ConnTypeInternet {
-		components = append(components, makeInternetSGRules(0, "-1",false,  sg)...)
+		components = append(components, makeInternetSGRules(0, "-1", false, sg)...)
 	} else {
 		// all ports, any protocol, from anywhere
-		components = append(components, makeInternetSGRules(0, "-1",true,  sg)...)
+		components = append(components, makeInternetSGRules(0, "-1", true, sg)...)
 	}
 
 	for i, comp := range components {

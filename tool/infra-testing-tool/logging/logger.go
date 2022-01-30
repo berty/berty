@@ -2,12 +2,13 @@ package logging
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"math"
 	"os"
 	"runtime"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (

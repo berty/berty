@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"bytes"
 	"context"
 	"encoding/gob"
@@ -13,11 +12,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spf13/cobra"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+
 	"infratesting/config"
 	"infratesting/daemon/grpc/daemon"
 	"infratesting/testing"
 	"math/rand"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -55,6 +57,11 @@ var (
 				return logging.LogErr(err)
 			}
 
+			allPeers, err := testing.GetAllPeers()
+			if err != nil {
+				return logging.LogErr(err)
+			}
+
 			// temporary group object
 			type group struct {
 				Name  string
@@ -63,8 +70,7 @@ var (
 				Tests []config.Test
 			}
 
-			var groups map[string]group
-			groups = make(map[string]group, c.GetAmountOfGroups())
+			var groups = make(map[string]group, c.GetAmountOfGroups())
 
 			// assign peers and tests to group
 			for i := range availablePeers {
@@ -157,6 +163,14 @@ var (
 				}
 			}
 
+			for p := range allPeers {
+				allPeers[p].MatchNodeToPeer(c)
+				allPeers[p].P.AddReliability(ctx, &daemon.AddReliability_Request{
+					Timeout: allPeers[p].Reliability.Timeout,
+					Odds:    allPeers[p].Reliability.Odds,
+				})
+			}
+
 			// convert map to slice for ease of use
 			var groupArray []group
 			for key := range groups {
@@ -234,7 +248,7 @@ var (
 								if err != nil {
 									logging.Log(err)
 								} else {
-									if isRunning.TestIsRunning == false {
+									if !isRunning.TestIsRunning {
 										logging.Log(fmt.Sprintf("test finished - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[g].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 										break
 									}
@@ -266,7 +280,6 @@ var (
 				tempN := n
 				uploadWg.Add(1)
 				go func() {
-					logging.Log(allNodes[tempN].Name)
 					resp, err := allNodes[tempN].P.UploadLogs(ctx, &daemon.UploadLogs_Request{
 						Folder: strconv.FormatInt(t, 10),
 						Name:   strings.ReplaceAll(allNodes[tempN].Tags[aws.Ec2TagName], ".", "-"),

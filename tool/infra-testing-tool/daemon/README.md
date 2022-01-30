@@ -50,6 +50,8 @@ service Proxy {
     rpc NewTest(NewTest.Request) returns (NewTest.Response) {}
     rpc StartTest(StartTest.Request) returns (StartTest.Response) {}
     rpc IsTestRunning(IsTestRunning.Request) returns (IsTestRunning.Response) {}
+
+    rpc AddReliability(AddReliability.Request) returns (AddReliability.Response) {}
 }
 ```
 

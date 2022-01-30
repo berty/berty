@@ -1,14 +1,11 @@
 package daemon
 
 import (
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"github.com/golang/protobuf/proto"
-	"github.com/google/uuid"
 	"image"
 	"image/color"
 	"image/png"
@@ -16,6 +13,11 @@ import (
 	"math"
 	"math/rand"
 	"time"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+
+	"github.com/golang/protobuf/proto"
+	"github.com/google/uuid"
 )
 
 const (
@@ -164,6 +166,10 @@ func (s *Server) SendImageMessage(groupName string, content []byte) error {
 	}
 
 	logging.Log(fmt.Sprintf("media message: %+v", interact))
+
+	if err != nil {
+		return err
+	}
 
 	_, err = s.Messenger.Interact(ctx, interact)
 	if err != nil {

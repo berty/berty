@@ -9,9 +9,16 @@ In order to use the infra-testing-tool you need a handful of other tools install
 - [Terraform](https://www.terraform.io/downloads.html) (to provision infrastructure)
 - [Packer](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli) (to create the berty AMI)
 
-### Install
+### Install (Linux)
 ```bash
 make build && sudo mv infra /usr/local/bin
+```
+
+### Install (MacOS)
+```bash
+go mod tidy
+go build -o infra .
+sudo mv infra /usr/local/bin
 ```
 
 ### AMI (Amazon Machine Image)
@@ -19,10 +26,20 @@ To speed up the tool considerably we build an AMI beforehand, so our cloud insta
 This also allows us to use instances with much less memory.
 
 If this is your first time using the tool, or you want to rebuild the AMI you need to follow the next steps.
+
+Because this branch isn't merged into `berty/berty:master` yet, we need to upload the grpc control daemon manually to S3 so the AMI can download it manually (this process will not be needed once it is merged).
+
+Create an S3 bucket in the desired region.
+Change the name of the *bucket* in `packer/upload-daemon.sh` on line 3. Afterwards run the bash script. It will archive and upload to s3 so packer can download and install it.
+- `./upload-daemon.sh`
+
+Go to the S3 console and find the zip file the script uploaded, and copy the link into line 26 of `packer/install-berty.sh`.
+
 Replace `eu-central-1` with your region of choice (eu-west-1, eu-west-3, etc), but make sure it is the same region as the region specified in your config file later on.
 ```bash
 cd packer
-packer build --force -var "region=eu-central-1" . # this will delete any AMIs with the name "berty-ami" in that region!
+packer init .
+packer build --force -var "region=eu-central-1" . # this will delete any AMIs with the name "berty-ami" you own in that region!
 ```
 **(eu-west-3 is Paris)**, [See more](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html#Concepts.RegionsAndAvailabilityZones.Regions).
 
@@ -137,6 +154,15 @@ For this reason it's best to comment out unused infrastructure opposed to settin
 Each node inside the same nodegroup will have identical behaviour/config. The only difference is the name (different suffix), IP, tags, etc.
 For example if you add a group to a nodeGroup, all nodes inside the nodeGroup will be part of this group.
 Same with a router, if you add a RDVP to a nodeGroup, all nodes inside the nodeGroup will be connected to the same RDVP.
+
+## Reliability
+Defines their uptime. Some examples:
+```
+120,10 -> has 1/10 odds the node disconnects for 120 seconds
+60,2 -> has 1/2 odds the node disconnects for 60 seconds
+0,0 -> the node never disconnects
+```
+
 
 ## Groups
 This can only be used on **peer**s and **replication server**s.

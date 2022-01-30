@@ -1,25 +1,25 @@
 package config
 
 import (
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"crypto/ed25519"
 	crand "crypto/rand"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	core "github.com/libp2p/go-libp2p-core/crypto"
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
-	pb "github.com/libp2p/go-libp2p-core/crypto/pb"
-	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
-	crypto "github.com/libp2p/go-libp2p-crypto"
-	ma "github.com/multiformats/go-multiaddr"
 	"infratesting/iac"
 	"infratesting/iac/components/ec2"
 	"infratesting/iac/components/networking"
 	"infratesting/logging"
 	mrand "math/rand"
+	"strconv"
 	"strings"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
+	"github.com/google/uuid"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
+	pb "github.com/libp2p/go-libp2p-core/crypto/pb"
+	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
+	ma "github.com/multiformats/go-multiaddr"
 )
 
 const (
@@ -53,6 +53,8 @@ type NodeGroup struct {
 	// name given to individual nodes
 
 	Nodes []Node `yaml:"nodes"`
+
+	Reliability string `yaml:"reliability"`
 
 	// Amount is the amount of nodes with this config you want to generate
 	Amount      int          `yaml:"amount"`
@@ -96,6 +98,13 @@ type NodeAttributes struct {
 	// token server specific things
 	TokenSecret []byte
 	TokenSk     []byte
+
+	Reliability Reliability
+}
+
+type Reliability struct {
+	Timeout int64
+	Odds    int64
 }
 
 type Router struct {
@@ -115,11 +124,44 @@ func (c *NodeGroup) validate() bool {
 func (c *NodeGroup) composeComponents() {
 	var comps []iac.Component
 
+	var r Reliability
+	var err error
+
+	if c.Reliability == "" || c.Reliability == "0,0" {
+		r.Timeout = 0
+		r.Odds = 0
+	} else {
+		s := strings.Split(c.Reliability, ",")
+		if len(s) != 2 {
+			panic(fmt.Sprintf("reliability setting %s is not valid. Please us the format: timeout,int ie: 120,5 for a 1 in 5 chance the peer is unreachable 120 seconds", c.Reliability))
+		}
+
+		r.Timeout, err = strconv.ParseInt(s[0], 10, 64)
+		if err != nil {
+			panic(fmt.Sprintf("reliability timeout %s is not valid", s[0]))
+		}
+
+		if r.Timeout < 0 {
+			panic(fmt.Sprintf("reliability timeout %d is too small", r.Timeout))
+		}
+
+		r.Odds, err = strconv.ParseInt(s[1], 10, 64)
+		if err != nil {
+			panic(fmt.Sprintf("reliability odds %s is not valid", s[1]))
+		}
+
+		if r.Odds < 0 {
+			panic(fmt.Sprintf("reliability odds %d is too small", r.Odds))
+		}
+	}
+
 	// loop over nodes in NodeGroup
 	for i := range c.Nodes {
 		if len(c.Connections) == 0 {
 			panic(fmt.Sprintf("nodegroup %s has no connections", c.Name))
 		}
+
+		c.Nodes[i].NodeAttributes.Reliability = r
 
 		// placeholder for network interfaces
 		var networkInterfaces []*networking.NetworkInterface
@@ -300,7 +342,6 @@ func (c *NodeGroup) parseRouters() (RDVP, Relay, Bootstrap string) {
 			maddr, err := ma.NewMultiaddr(router.Address)
 			if err == nil {
 				RDVPMaddrs = append(RDVPMaddrs, maddr.String())
-				continue
 			}
 
 			for _, configrdvp := range config.RDVP {
@@ -337,7 +378,6 @@ func (c *NodeGroup) parseRouters() (RDVP, Relay, Bootstrap string) {
 			maddr, err := ma.NewMultiaddr(router.Address)
 			if err == nil {
 				RelayMaddrs = append(RelayMaddrs, maddr.String())
-				continue
 			}
 
 			for _, configrelay := range config.Relay {
@@ -374,7 +414,6 @@ func (c *NodeGroup) parseRouters() (RDVP, Relay, Bootstrap string) {
 			maddr, err := ma.NewMultiaddr(router.Address)
 			if err == nil {
 				BootstrapMaddrs = append(BootstrapMaddrs, maddr.String())
-				continue
 			}
 
 			for _, configBs := range config.Bootstrap {
@@ -557,13 +596,13 @@ func (c *NodeGroup) generateName() string {
 // genKey generates a peerid and pk
 func genKey() (peerid string, privatekey string, err error) {
 	// generate private key
-	priv, _, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.Ed25519, -1, crand.Reader)
+	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, -1, crand.Reader)
 	if err != nil {
 		return "", "", err
 	}
 
 	// convert to bytes
-	kBytes, err := libp2p_ci.MarshalPrivateKey(priv)
+	kBytes, err := crypto.MarshalPrivateKey(priv)
 	if err != nil {
 		return "", "", err
 	}
@@ -600,7 +639,7 @@ func seedFromEd25519PrivateKey(key crypto.PrivKey) ([]byte, error) {
 
 // genServiceKey generates a service key
 func genServiceKey() ([]byte, error) {
-	priv, _, err := core.GenerateEd25519Key(crand.Reader)
+	priv, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, err
 	}
@@ -616,7 +655,7 @@ func genServiceKey() ([]byte, error) {
 // genSecretKey generates a secret key
 func genSecretKey(servicekey []byte) ([]byte, error) {
 	stdPrivKey := ed25519.NewKeyFromSeed(servicekey)
-	_, pubKey, err := libp2p_ci.KeyPairFromStdKey(&stdPrivKey)
+	_, pubKey, err := crypto.KeyPairFromStdKey(&stdPrivKey)
 	if err != nil {
 		return nil, err
 	}

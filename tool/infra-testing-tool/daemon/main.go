@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"google.golang.org/grpc"
 	"infratesting/daemon/grpc/daemon"
 	"infratesting/iac/components/networking"
 	"infratesting/logging"
 	"net"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -20,6 +21,8 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	s := daemon.NewServer()
+	s.ReliabilityProcess()
+
 	daemon.RegisterProxyServer(grpcServer, &s)
 
 	if err := grpcServer.Serve(lis); err != nil {

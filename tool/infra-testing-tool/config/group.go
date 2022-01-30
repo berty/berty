@@ -82,7 +82,7 @@ func (c *NodeGroup) parseGroups() error {
 			case strings.Contains(t, TestTypeMedia):
 				c.Groups[i].Tests[j].TypeInternal = TestTypeMedia
 			default:
-				return errors.New(fmt.Sprintf("invalid test type in test in group: %s test: %v", group.Name, i))
+				return fmt.Errorf("invalid test type in test in group: %s test: %v", group.Name, i)
 			}
 
 			// parse message size
@@ -101,31 +101,31 @@ func (c *NodeGroup) parseGroups() error {
 				// this one has to go last because of the single "b"
 				unit = 1
 			default:
-				return errors.New(fmt.Sprintf("invalid test size in test in group: %s test: %d", group.Name, i))
+				return fmt.Errorf("invalid test size in test in group: %s test: %d", group.Name, i)
 			}
 
 			size, err := strconv.Atoi(s[:len(s)-2])
 			if err != nil {
-				return errors.New(fmt.Sprintf("invalid test size in test in group: %s test: %d", group.Name, i+1))
+				return fmt.Errorf("invalid test size in test in group: %s test: %d", group.Name, i+1)
 			}
 
 			c.Groups[i].Tests[j].SizeInternal = size * unit
 
 			if unit >= 3800000 && c.Groups[i].Tests[j].TypeInternal == TestTypeText {
-				return errors.New(fmt.Sprintf("exceeded 4MB grpc limit for text messages group: %s test: %d", group.Name, i))
+				return fmt.Errorf("exceeded 4MB grpc limit for text messages group: %s test: %d", group.Name, i)
 			}
 
 			// parse interval
 			if test.IntervalInput > 0 {
 				c.Groups[i].Tests[j].IntervalInternal = test.IntervalInput
 			} else {
-				return errors.New(fmt.Sprintf("invterval needs to be bigger than 0 in group: %s test: %d", group.Name, i))
+				return fmt.Errorf("invterval needs to be bigger than 0 in group: %s test: %d", group.Name, i)
 			}
 
 			if test.AmountInput > 0 {
 				c.Groups[i].Tests[j].AmountInternal = test.AmountInput
 			} else {
-				return errors.New(fmt.Sprintf("amount needs to be bigger than 0 in group: %s test %d", group.Name, i))
+				return fmt.Errorf("amount needs to be bigger than 0 in group: %s test %d", group.Name, i)
 			}
 
 		}

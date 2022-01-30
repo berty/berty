@@ -3,11 +3,14 @@ package daemon
 import (
 	"context"
 	"fmt"
-	ps "github.com/mitchellh/go-ps"
 	"infratesting/logging"
+	"math/rand"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/mathisve/ec2ifupifdown"
+	ps "github.com/mitchellh/go-ps"
 )
 
 var (
@@ -33,8 +36,7 @@ func StartProcessCheck() {
 			processLock.Lock()
 			isProcessRunning = false
 			for x := range processList {
-				var process ps.Process
-				process = processList[x]
+				var process = processList[x]
 
 				for p := range processNames {
 					if strings.Contains(process.Executable(), processNames[p]) {
@@ -61,4 +63,49 @@ func (s *Server) IsProcessRunning(ctx context.Context, request *IsProcessRunning
 	logging.Log(fmt.Sprintf("IsProcessRunning - incoming request: %+v", request))
 
 	return &IsProcessRunning_Response{Running: ProcessRunning()}, nil
+}
+
+func (s *Server) ReliabilityProcess() {
+	go func() {
+		for {
+			// no reliability configured, sleep for 1 second
+			if s.Reliability.Timeout == 0 && s.Reliability.Odds == 0 {
+				time.Sleep(1 * time.Second)
+			} else if !s.ReliabilityRunning {
+				time.Sleep(1 * time.Second)
+			} else {
+				if rand.Intn(int(s.Reliability.Odds)) == 0 {
+					interfaces, err := ec2ifupifdown.GetInterfaces()
+					if err != nil {
+						logging.LogErr(err)
+					}
+
+					logging.Log(fmt.Sprintf("disabling networking for %d seconds", s.Reliability.Timeout))
+
+					for _, interf := range interfaces {
+						if interf.DeviceNumber != 0 {
+							err = interf.Ifdown()
+							if err != nil {
+								logging.LogErr(err)
+							}
+						}
+					}
+
+					time.Sleep(time.Duration(s.Reliability.Timeout) * time.Second)
+
+					for _, interf := range interfaces {
+						if interf.DeviceNumber != 0 {
+							err = interf.Ifup()
+							if err != nil {
+								logging.LogErr(err)
+							}
+						}
+					}
+
+				} else {
+					time.Sleep(time.Duration(s.Reliability.Timeout) * time.Second)
+				}
+			}
+		}
+	}()
 }

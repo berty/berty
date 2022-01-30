@@ -1,11 +1,8 @@
 package testing
 
 import (
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"context"
 	"fmt"
-	"github.com/aws/aws-sdk-go/service/ec2"
-	"google.golang.org/grpc"
 	"infratesting/aws"
 	"infratesting/config"
 	"infratesting/daemon/grpc/daemon"
@@ -14,6 +11,10 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"google.golang.org/grpc"
 )
 
 type Peer struct {
@@ -29,6 +30,7 @@ type Peer struct {
 	Ip           string
 	Groups       map[string]*protocoltypes.Group
 	ConfigGroups []config.Group
+	Reliability  config.Reliability
 }
 
 var deploy bool
@@ -67,12 +69,12 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 				var cc *grpc.ClientConn
 				var err error
 				ctx := context.Background()
-				cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+				cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 
 				temp := daemon.NewProxyClient(cc)
 
 				resp, err := temp.IsProcessRunning(ctx, &daemon.IsProcessRunning_Request{})
-				if err != nil || resp.Running == false {
+				if err != nil || !resp.Running {
 					count += 1
 					time.Sleep(time.Second * 5)
 				}
@@ -110,7 +112,7 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 				var cc *grpc.ClientConn
 				ctx := context.Background()
 
-				cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+				cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 				p.P = daemon.NewProxyClient(cc)
 
 				_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
@@ -134,7 +136,7 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 			var cc *grpc.ClientConn
 			ctx := context.Background()
 
-			cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+			cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 			p.P = daemon.NewProxyClient(cc)
 
 			_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
@@ -156,7 +158,7 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 			var cc *grpc.ClientConn
 			ctx := context.Background()
 
-			cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+			cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 			p.P = daemon.NewProxyClient(cc)
 
 			_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
@@ -184,6 +186,7 @@ func (p *Peer) MatchNodeToPeer(c config.Config) {
 		for _, cIndividualPeer := range cPeerNg.Nodes {
 			if p.Tags[aws.Ec2TagName] == cIndividualPeer.Name {
 				p.ConfigGroups = cPeerNg.Groups
+				p.Reliability = cIndividualPeer.NodeAttributes.Reliability
 			}
 		}
 	}
@@ -239,4 +242,42 @@ func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 	}
 
 	return peers, nil
+}
+
+func GetAllPeers() (peers []Peer, err error) {
+	instances, err := aws.DescribeInstances()
+	if err != nil {
+		return peers, logging.LogErr(err)
+	}
+
+	for _, instance := range instances {
+		if *instance.State.Name != "running" {
+			continue
+		}
+
+		var ip string
+		for _, ni := range instance.NetworkInterfaces {
+			if ni.Association != nil {
+				if *ni.Association.PublicIp != "" {
+					ip = *ni.Association.PublicIp
+					break
+				}
+			}
+		}
+
+		if ip == "" {
+			panic("peer not publicly accessible")
+		}
+
+		p, err := NewPeer(ip, instance.Tags)
+		if err != nil {
+			return nil, logging.LogErr(err)
+		}
+		p.Name = *instance.InstanceId
+
+		peers = append(peers, p)
+
+	}
+
+	return peers, err
 }

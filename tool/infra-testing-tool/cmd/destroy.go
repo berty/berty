@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/spf13/cobra"
 	"os"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/spf13/cobra"
 )
 
 var (

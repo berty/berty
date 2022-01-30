@@ -1,15 +1,11 @@
 package daemon
 
 import (
-	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"bytes"
 	"context"
 	"encoding/gob"
 	"errors"
 	"fmt"
-	"github.com/anaskhan96/soup"
-	"google.golang.org/grpc"
 	"infratesting/aws"
 	"infratesting/config"
 	"infratesting/iac/components/networking"
@@ -19,6 +15,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"github.com/anaskhan96/soup"
+	"google.golang.org/grpc"
 )
 
 type Server struct {
@@ -39,6 +40,9 @@ type Server struct {
 	DevicePK      []byte
 	Messages      map[string][]Message
 	LastMessageId map[string][]byte
+
+	Reliability        config.Reliability
+	ReliabilityRunning bool
 }
 
 // NewServer returns server with initialised internal maps
@@ -119,7 +123,7 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 	}
 
 	// checks if test isn't already running
-	if s.RunningTests[request.GroupName][request.TestN] == true {
+	if s.RunningTests[request.GroupName][request.TestN] {
 		return response, logging.LogErr(errors.New(ErrTestInProgress))
 	}
 
@@ -248,8 +252,12 @@ func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request
 		GroupName: request.GroupName,
 	})
 
+	if err != nil {
+		return response, err
+	}
+
 	if invite == nil {
-		return response, logging.LogErr(errors.New("created invite was of type nil, something went wrong"))
+		return response, logging.LogErr(errors.New("created invite was of type nil, something else went wrong"))
 	}
 
 	s.Lock.Lock()
@@ -323,7 +331,7 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 		return response, logging.LogErr(errors.New(ErrNotInGroup))
 	}
 
-	if s.ReceivingMessages[request.GroupName] == true {
+	if s.ReceivingMessages[request.GroupName] {
 		logging.Log(ErrAlreadyReceiving)
 		return response, nil
 	}
@@ -357,7 +365,7 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 				}
 
 				// this doesn't work  ??
-				if s.ReceivingMessages[request.GroupName] == false {
+				if !s.ReceivingMessages[request.GroupName] {
 					logging.Log(fmt.Sprintf("done receiving messages in group %s", request.GroupName))
 					break
 				}
@@ -389,7 +397,7 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 							wg.Done()
 						}(&wg)
 
-						if isDupe == true {
+						if isDupe {
 							break
 						}
 					}
@@ -463,7 +471,7 @@ func (s *Server) AddReplication(ctx context.Context, request *AddReplication_Req
 // TestConnection always returns true
 func (s *Server) TestConnection(ctx context.Context, request *TestConnection_Request) (response *TestConnection_Response, err error) {
 	logging.Log(fmt.Sprintf("TestConnection - incoming request: %+v", request))
-	response = new(TestConnection_Response)
+	// response = new(TestConnection_Response)
 
 	return &TestConnection_Response{Success: true}, err
 }
@@ -498,4 +506,16 @@ func (s *Server) TestConnectionToPeer(ctx context.Context, request *TestConnecti
 	}
 
 	return &TestConnectionToPeer_Response{Success: true}, err
+}
+
+func (s *Server) AddReliability(ctx context.Context, request *AddReliability_Request) (response *AddReliability_Response, err error) {
+	logging.Log(fmt.Sprintf("AddReliability - incoming request: %+v", request))
+	response = new(AddReliability_Response)
+
+	s.Reliability.Odds = request.Odds
+	s.Reliability.Timeout = request.Timeout
+
+	s.ReliabilityRunning = true
+
+	return response, err
 }
