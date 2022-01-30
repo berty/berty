@@ -85,13 +85,18 @@ This is an example of a working config files
 peer:
     - name: test peers 1
       amount: 2
+      reliability: 10,5
       groups:
           - name: message group
             tests:
                 - type: text
-                  size: 40KB
+                  size: 4KB
                   interval: 10
                   amount: 15
+                - type: media
+                  size: 40KB
+                  interval: 50
+                  amount: 3
       connections:
           - to: internet
             protocol: tcp
@@ -112,7 +117,8 @@ rdvp:
 
 relay:
     - name: test relay
-      amount: 1
+      amount: 3
+      reliability: 20,15
       connections:
           - to: internet
             protocol: tcp
@@ -133,6 +139,7 @@ bootstrap:
 
 settings:
     region: eu-west-3
+    keyPairName: key_name
 ```
 There are 5 categories of instances:
 - peer
