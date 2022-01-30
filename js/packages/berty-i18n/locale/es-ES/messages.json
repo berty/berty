@@ -583,6 +583,9 @@
 		"user-message": {
 			"read-more": "Aprender más",
 			"show-less": "Mostrar menos"
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
