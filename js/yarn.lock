@@ -8607,7 +8607,6 @@ react-native-image-zoom-viewer@^3.0.1:
 
 "react-native-in-app-notification@git+https://github.com/robcalcroft/react-native-in-app-notification.git":
   version "3.2.0"
-  uid e6ce98e46ea82757fc74d32f1bef1f8e8a081058
   resolved "git+https://github.com/robcalcroft/react-native-in-app-notification.git#e6ce98e46ea82757fc74d32f1bef1f8e8a081058"
   dependencies:
     hoist-non-react-statics "^3.0.1"

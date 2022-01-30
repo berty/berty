@@ -5,6 +5,7 @@ import 'string.fromcodepoint'
 
 import { WelshProtocolServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useEffect, useRef } from 'react'
+import { Emoji } from '@berty-tech/styles/types'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
 
@@ -69,14 +70,17 @@ export const getMediaTypeFromMedias = (
 	return type
 }
 
+export const emojis: Emoji[] = emojiSource
+
 export const toEmoji = (code: any) => {
 	return String.fromCodePoint(...code.split('-').map((u: string) => '0x' + u))
 }
 
 export const getEmojiByName = (name: string) => {
-	const requiredSource = emojiSource.find(
-		(item: any) => item.short_name === name.replaceAll(':', ''),
-	)
+	const requiredSource = emojis.find((item: Emoji) => item.short_name === name.replaceAll(':', ''))
+	if (!requiredSource) {
+		return
+	}
 	return toEmoji(requiredSource?.unified)
 }
 

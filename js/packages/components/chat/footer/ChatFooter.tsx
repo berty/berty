@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
@@ -14,10 +14,6 @@ import {
 	selectChatInputText,
 	setChatInputText,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
-import {
-	selectChatInputSending,
-	setChatInputSending,
-} from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
@@ -29,6 +25,14 @@ import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooter
 import { ChatTextInput } from './ChatTextInput'
 import { RecordComponent } from './record/RecordComponent'
 import { AddFileMenu } from './file-uploads/AddFileMenu'
+import { EmojiBanner } from './emojis/EmojiBanner'
+import {
+	selectChatInputIsFocused,
+	selectChatInputIsSending,
+	setChatInputIsFocused,
+	setChatInputIsSending,
+	setChatInputSelection,
+} from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 
 export type ChatFooterProps = {
 	convPK: string
@@ -44,9 +48,9 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		// external
 		const { t } = useTranslation()
 		const dispatch = useAppDispatch()
-		const sending = useAppSelector(state => selectChatInputSending(state, convPK))
+		const sending = useAppSelector(state => selectChatInputIsSending(state, convPK))
 		const setSending = React.useCallback(
-			(value: boolean) => dispatch(setChatInputSending({ convPK, value })),
+			(isSending: boolean) => dispatch(setChatInputIsSending({ convPK, isSending })),
 			[dispatch, convPK],
 		)
 		const message = useAppSelector(state => selectChatInputText(state, convPK))
@@ -62,7 +66,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const addedMedias = useMedias(mediaCids)
 
 		// local
-		const [isFocused, setIsFocused] = React.useState<boolean>(false)
+		const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))
 		const [showAddFileMenu, setShowAddFileMenu] = React.useState(false)
 
 		// computed
@@ -73,6 +77,10 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			!disabled && !sending && !message && !isFocused && mediaCids.length <= 0
 
 		// callbacks
+
+		const setIsFocused = (isFocused: boolean) => {
+			dispatch(setChatInputIsFocused({ convPK, isFocused }))
+		}
 		const sendMessageBouncy = React.useCallback(
 			async (additionalMedia: beapi.messenger.IMedia[] = []) => {
 				try {
@@ -228,20 +236,31 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			[dispatch, sending, convPK],
 		)
 
+		const handleSelectionChange = React.useCallback(
+			(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+				if (isFocused) {
+					dispatch(setChatInputSelection({ convPK, selection: e.nativeEvent.selection }))
+				}
+			},
+			[convPK, dispatch, isFocused],
+		)
+
 		// elements
 		const recordIcon = React.useMemo(() => showQuickButtons && <RecordButton />, [showQuickButtons])
 
 		// render
 		return (
 			<View style={{ backgroundColor: colors['main-background'] }}>
+				<EmojiBanner convPk={convPK} />
 				<View
 					style={{
 						paddingLeft: 10 * scaleSize,
 						paddingTop: 10 * scaleSize,
-						marginBottom: (isFocused ? 0 : insets.bottom) || 18 * scaleSize,
+						paddingBottom: (isFocused ? 0 : insets.bottom) || 18 * scaleSize,
 						justifyContent: 'flex-end',
 						alignItems: 'center',
 						minHeight: 65 * scaleSize,
+						backgroundColor: colors['main-background'],
 					}}
 				>
 					{showAddFileMenu && (
@@ -268,7 +287,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 							style={{
 								flexDirection: 'row',
 								justifyContent: 'center',
-								alignItems: 'flex-end',
+								alignItems: 'center',
 							}}
 						>
 							<View style={{ marginRight: horizontalGutter }}>
@@ -284,6 +303,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								placeholder={sending ? t('chat.sending') : placeholder}
 								onFocusChange={setIsFocused}
 								onChangeText={handleTextChange}
+								onSelectionChange={handleSelectionChange}
 								value={message}
 							/>
 							<View style={{ marginLeft: horizontalGutter }}>

@@ -34,7 +34,6 @@ export const HomeHeader: React.FC<
 > = ({
 	hasRequests,
 	scrollRef,
-	onLayout,
 	isOnTop,
 	value,
 	onChange,
@@ -59,7 +58,7 @@ export const HomeHeader: React.FC<
 	}, [refresh, setRefresh, animate])
 
 	return (
-		<View onLayout={onLayout}>
+		<View>
 			<View>
 				<View
 					style={[
