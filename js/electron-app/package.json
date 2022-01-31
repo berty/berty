@@ -30,7 +30,7 @@
     "start:renderer": "cross-env BROWSER=none craco start",
     "build:main": "npx tsc --project tsconfig.main.json --watch",
     "dist:win": "craco build && npx tsc --project tsconfig.main.json && electron-builder -w -c.extraMetadata.main=build/main.js",
-    "dist:mac": "craco build && npx tsc --project tsconfig.main.json && electron-builder -m -c.extraMetadata.main=build/main.js -c.mac.identity=null",
+    "dist:mac": "craco build && npx tsc --project tsconfig.main.json && electron-builder -m -c.extraMetadata.main=build/main.js  -c.artifactName=Berty.dmg",
     "dist:linux": "craco build && npx tsc --project tsconfig.main.json && electron-builder -l -c.extraMetadata.main=build/main.js",
     "fix:electron": "npx electron-fix start"
   },
@@ -55,7 +55,7 @@
     "node": ">=14"
   },
   "build": {
-    "appId": "tech.berty.electron",
+    "appId": "tech.berty.mac",
     "productName": "Berty",
     "files": [
       "build/**/*",

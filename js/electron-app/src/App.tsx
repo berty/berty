@@ -36,7 +36,9 @@ const convertMAddr = (urls: String[]): (string | null) => urls.map((maddr: Strin
 function App() {
 	const [accountServerAddress, setAccountServerAddress] = useState('')
 	const [accountClient, setAccountClient] = useState<WelshAccountServiceClient | null>(null)
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [messengerClient, setMessengerClient] = useState<WelshMessengerServiceClient | null>(null)
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [protocolClient, setProtocolClient] = useState<WelshProtocolServiceClient | null>(null)
 	const [sysInfo, setSysInfo] = useState<beapi.protocol.SystemInfo | null>(null)
 

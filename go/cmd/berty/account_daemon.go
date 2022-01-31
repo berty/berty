@@ -7,7 +7,7 @@ import (
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/grpcserver"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 )
@@ -52,7 +52,7 @@ func accountDaemonCommand() *ffcli.Command {
 				cancel()
 			})
 
-			server, serverMux, _, err := grpcutil.InitGRPCServer(&workers, &grpcutil.GRPCOpts{
+			server, serverMux, _, err := grpcserver.InitGRPCServer(&workers, &grpcserver.GRPCOpts{
 				Logger:    logger,
 				Listeners: manager.Node.GRPC.AccountListeners,
 			})

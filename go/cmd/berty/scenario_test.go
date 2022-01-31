@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 	"moul.io/u"
 
-	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 func TestPersistentIdentity(t *testing.T) {
@@ -21,7 +21,7 @@ func TestPersistentIdentity(t *testing.T) {
 	}
 
 	// @FIXME(gfanton): avoid write error caused by grpc logger
-	initutil.ReplaceGRPCLogger(zap.NewNop())
+	logutil.ReplaceGRPCLogger(zap.NewNop())
 
 	// create tempdir for the test
 	var tempdir string
