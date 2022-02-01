@@ -166,18 +166,18 @@ func (c *NodeGroup) composeComponents() {
 		// placeholder for network interfaces
 		var networkInterfaces []*networking.NetworkInterface
 
-		// check for double internet connection
-		// which isn't allowed
-		var hasInternet bool
-		for _, con := range c.Connections {
-			if con.connType == ConnTypeInternet {
-				if hasInternet {
-					panic(fmt.Sprintf("nodegroup %s, cannot have more than one connection to the internet", c.Name))
-				}
+		// // check for double internet connection
+		// // which isn't allowed
+		// var hasInternet bool
+		// for _, con := range c.Connections {
+		// 	if con.connType == ConnTypeInternet {
+		// 		if hasInternet {
+		// 			panic(fmt.Sprintf("nodegroup %s, cannot have more than one connection to the internet", c.Name))
+		// 		}
 
-				hasInternet = true
-			}
-		}
+		// 		hasInternet = true
+		// 	}
+		// }
 
 		// generate a port for multiaddr
 		for _, connection := range c.Connections {

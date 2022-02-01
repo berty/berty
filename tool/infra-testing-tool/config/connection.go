@@ -23,19 +23,19 @@ const (
 
 // parseConnections takes the connection, adds it to the global connections
 func (c *NodeGroup) parseConnections() error {
-	//if len(c.Connections) == 0 {
-	//	return errors.New(fmt.Sprintf("%s needs at least 1 connection", c.NodeType))
-	//}
+	if len(c.Connections) == 0 {
+		return fmt.Errorf("%s needs at least 1 connection", c.NodeType)
+	}
 
 	// replace spaces in name
 	// would cause error in terraform otherwise
 	c.Name = strings.ReplaceAll(c.Name, " ", "_")
 
-	var hasInternet bool
+	// var hasInternet bool
 	for i := range c.Connections {
 		if strings.Contains(c.Connections[i].To, ConnTypeInternet) {
 			c.Connections[i].connType = ConnTypeInternet
-			hasInternet = true
+			// hasInternet = true
 		} else {
 			c.Connections[i].connType = ConnTypeLan
 		}
@@ -58,19 +58,19 @@ func (c *NodeGroup) parseConnections() error {
 		config.Attributes.Connections[c.Connections[i].To] = &c.Connections[i]
 	}
 
-	if !hasInternet {
-		// supplementary connection for gRPC to talk to daemon
-		var con = Connection{
-			To:            ConnTypeInternet,
-			Protocol:      tcp,
-			connType:      ConnTypeInternet,
-			infraToolOnly: true,
-		}
-
-		// prepend
-		c.Connections = append([]Connection{con}, c.Connections...)
-		config.Attributes.Connections[ConnTypeInternet] = &con
+	// if !hasInternet {
+	// supplementary connection for gRPC to talk to daemon
+	var con = Connection{
+		To:            ConnTypeInternet,
+		Protocol:      tcp,
+		connType:      ConnTypeInternet,
+		infraToolOnly: true,
 	}
+
+	// prepend
+	c.Connections = append([]Connection{con}, c.Connections...)
+	config.Attributes.Connections[ConnTypeInternet] = &con
+	// }
 
 	return nil
 }
