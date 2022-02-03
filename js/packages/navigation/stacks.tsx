@@ -187,6 +187,7 @@ export const Navigation: React.FC = React.memo(() => {
 			initialRouteName={
 				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Main.Home'
 			}
+			screenOptions={{ animation: 'slide_from_right' }}
 		>
 			{/* OnBoarding */}
 			<NavigationStack.Screen

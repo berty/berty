@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import RNBootSplash from 'react-native-bootsplash'
 import { Provider as ReduxProvider } from 'react-redux'
 import { View } from 'react-native'
+import 'react-native-console-time-polyfill'
 
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
