@@ -325,7 +325,7 @@ export const fetchMore = async ({
 	return client
 		?.conversationLoad({
 			options: {
-				amount: 30,
+				amount: 50,
 				conversationPk: convPk,
 				refCid: refCid,
 			},

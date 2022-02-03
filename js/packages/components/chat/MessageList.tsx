@@ -9,7 +9,13 @@ import {
 import moment from 'moment'
 
 import { useStyles } from '@berty-tech/styles'
-import { fetchMore, pbDateToNum, ParsedInteraction, useMessengerClient } from '@berty-tech/store'
+import {
+	fetchMore,
+	pbDateToNum,
+	ParsedInteraction,
+	useMessengerClient,
+	useThemeColor,
+} from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import {
 	useConversationInteractions,
@@ -66,6 +72,7 @@ export const MessageList: React.FC<{
 	setShowStickyDate: any
 }> = React.memo(({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
 	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
+	const colors = useThemeColor()
 	const conversation = useConversation(id)
 	const messengerClient = useMessengerClient()
 	const members = useConversationMembersDict(id)
@@ -162,12 +169,12 @@ export const MessageList: React.FC<{
 	)
 
 	const style = React.useMemo(
-		() => [overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }],
-		[overflow, row.item.fill, flex.tiny, scaleHeight],
+		() => [overflow, row.item.fill, flex.tiny],
+		[flex.tiny, overflow, row.item.fill],
 	)
 	const contentContainerStyle = React.useMemo(
-		() => ({ paddingBottom: 35 * scaleHeight }),
-		[scaleHeight],
+		() => ({ paddingBottom: 35 * scaleHeight, backgroundColor: colors['main-background'] }),
+		[scaleHeight, colors],
 	)
 
 	useEffect(() => {
@@ -179,26 +186,39 @@ export const MessageList: React.FC<{
 	}, [fetchingFrom, oldestMessage?.cid])
 
 	return (
-		<FlatList
-			overScrollMode='never'
-			initialScrollIndex={initialScrollIndex}
-			onScrollToIndexFailed={handleScrollToIndexFailed}
-			style={style}
-			contentContainerStyle={contentContainerStyle}
-			ref={flatListRef}
-			keyboardDismissMode='on-drag'
-			data={messages}
-			inverted
-			onEndReached={!isLoadingMore ? fetchMoreCB : null}
-			onEndReachedThreshold={1.5}
-			keyExtractor={keyExtractor}
-			refreshing={fetchingFrom !== null}
-			ListFooterComponent={listFooterComponent}
-			renderItem={renderItem}
-			onViewableItemsChanged={__DEV__ ? undefined : updateStickyDateCB}
-			initialNumToRender={20}
-			onScrollBeginDrag={handleScrollBeginDrag}
-			onScrollEndDrag={handleScrollEndDrag}
-		/>
+		<View style={{ flex: 1 }}>
+			{!fetchedFirst && (
+				<View
+					style={{
+						justifyContent: 'center',
+						alignItems: 'center',
+						flexDirection: 'row',
+					}}
+				>
+					<ActivityIndicator color={colors['background-header']} />
+				</View>
+			)}
+			<FlatList
+				overScrollMode='never'
+				initialScrollIndex={initialScrollIndex}
+				onScrollToIndexFailed={handleScrollToIndexFailed}
+				style={style}
+				contentContainerStyle={contentContainerStyle}
+				ref={flatListRef}
+				keyboardDismissMode='on-drag'
+				data={messages}
+				inverted
+				onEndReached={!isLoadingMore ? fetchMoreCB : null}
+				onEndReachedThreshold={3}
+				keyExtractor={keyExtractor}
+				refreshing={fetchingFrom !== null}
+				ListFooterComponent={listFooterComponent}
+				renderItem={renderItem}
+				onViewableItemsChanged={__DEV__ ? undefined : updateStickyDateCB}
+				initialNumToRender={20}
+				onScrollBeginDrag={handleScrollBeginDrag}
+				onScrollEndDrag={handleScrollEndDrag}
+			/>
+		</View>
 	)
 })
