@@ -523,9 +523,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "DEMANDE DE CONTACT",
+				"group-invitation": "INVITATION DE GROUPE",
 				"refuse-button": "REFUSER",
 				"accept-button": "ACCEPTER",
-				"accepted-button": "ACCEPTÉ"
+				"accepted-button": "ACCEPTÉ",
+				"error": "Impossible de vous ajouter au groupe ☹️ Désolé!",
+				"you-invited": "Vous avez invité",
+				"this-contact": "ce contact",
+				"to-a-group": "dans un groupe! 💌"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Connexion Berty confirmée ! 🎉",
