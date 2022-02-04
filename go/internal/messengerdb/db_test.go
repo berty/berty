@@ -1984,3 +1984,61 @@ func Test_dbWrapper_GetPushTokenSharedForConversation(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, tokens, 2)
 }
+
+func Test_dbWrapper_GetInteractionReactionsForEmoji(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	targetCID := "test_cid"
+	mpks := []string{"test_mpk_1", "test_mpk_2", "test_mpk_3", "test_mpk_4"}
+	date := int64(42)
+	emoji := "😼"
+
+	created, err := db.CreateOrUpdateReaction(&messengertypes.Reaction{
+		TargetCID:       targetCID,
+		MemberPublicKey: mpks[0],
+		Emoji:           emoji,
+		StateDate:       date,
+		State:           true,
+		IsMine:          true,
+	})
+	require.NoError(t, err)
+	require.True(t, created)
+
+	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
+		TargetCID:       targetCID,
+		MemberPublicKey: mpks[1],
+		Emoji:           emoji,
+		StateDate:       date,
+		State:           true,
+	})
+	require.NoError(t, err)
+	require.NoError(t, err)
+	require.True(t, created)
+
+	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
+		TargetCID:       targetCID,
+		MemberPublicKey: mpks[2],
+		Emoji:           emoji,
+		StateDate:       date,
+		State:           false,
+	})
+	require.NoError(t, err)
+	require.NoError(t, err)
+	require.True(t, created)
+
+	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
+		TargetCID:       targetCID,
+		MemberPublicKey: mpks[3],
+		Emoji:           "😿",
+		StateDate:       date,
+		State:           true,
+	})
+	require.NoError(t, err)
+	require.NoError(t, err)
+	require.True(t, created)
+
+	infos, err := db.GetInteractionReactionsForEmoji(targetCID, emoji)
+	require.NoError(t, err)
+	require.Len(t, infos, 2)
+}

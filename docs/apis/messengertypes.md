@@ -84,6 +84,9 @@
     - [Interact.Request](#berty.messenger.v1.Interact.Request)
     - [Interaction](#berty.messenger.v1.Interaction)
     - [Interaction.ReactionView](#berty.messenger.v1.Interaction.ReactionView)
+    - [InteractionReactionsForEmoji](#berty.messenger.v1.InteractionReactionsForEmoji)
+    - [InteractionReactionsForEmoji.Reply](#berty.messenger.v1.InteractionReactionsForEmoji.Reply)
+    - [InteractionReactionsForEmoji.Request](#berty.messenger.v1.InteractionReactionsForEmoji.Request)
     - [ListMemberDevices](#berty.messenger.v1.ListMemberDevices)
     - [ListMemberDevices.Reply](#berty.messenger.v1.ListMemberDevices.Reply)
     - [ListMemberDevices.Request](#berty.messenger.v1.ListMemberDevices.Request)
@@ -820,6 +823,27 @@ to test more false-positive guesses.
 | emoji | [string](#string) |  |  |
 | own_state | [bool](#bool) |  |  |
 | count | [uint64](#uint64) |  |  |
+
+<a name="berty.messenger.v1.InteractionReactionsForEmoji"></a>
+
+### InteractionReactionsForEmoji
+
+<a name="berty.messenger.v1.InteractionReactionsForEmoji.Reply"></a>
+
+### InteractionReactionsForEmoji.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| reactions | [Reaction](#berty.messenger.v1.Reaction) | repeated |  |
+
+<a name="berty.messenger.v1.InteractionReactionsForEmoji.Request"></a>
+
+### InteractionReactionsForEmoji.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| interaction_cid | [string](#string) |  |  |
+| emoji | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ListMemberDevices"></a>
 
@@ -1670,6 +1694,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | PushShareTokenForConversation | [PushShareTokenForConversation.Request](#berty.messenger.v1.PushShareTokenForConversation.Request) | [PushShareTokenForConversation.Reply](#berty.messenger.v1.PushShareTokenForConversation.Reply) | PushShareTokenForConversation Share a push token for a conversation |
 | PushTokenSharedForConversation | [PushTokenSharedForConversation.Request](#berty.messenger.v1.PushTokenSharedForConversation.Request) | [PushTokenSharedForConversation.Reply](#berty.messenger.v1.PushTokenSharedForConversation.Reply) stream | PushTokenSharedForConversation |
 | PushReceive | [PushReceive.Request](#berty.messenger.v1.PushReceive.Request) | [PushReceive.Reply](#berty.messenger.v1.PushReceive.Reply) | PushReceive handles a push payload, decrypts it if possible, adds it to the local store |
+| InteractionReactionsForEmoji | [InteractionReactionsForEmoji.Request](#berty.messenger.v1.InteractionReactionsForEmoji.Request) | [InteractionReactionsForEmoji.Reply](#berty.messenger.v1.InteractionReactionsForEmoji.Reply) | InteractionReactionsForEmoji returns a list of reactions on an interaction for a specific emoji |
 
  
 

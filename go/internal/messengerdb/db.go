@@ -1827,3 +1827,14 @@ func (d *DBWrapper) GetPushTokenSharedForConversation(pk string) ([]*messengerty
 
 	return tokens, nil
 }
+
+func (d *DBWrapper) GetInteractionReactionsForEmoji(cid string, emoji string) ([]*messengertypes.Reaction, error) {
+	var reactions []*messengertypes.Reaction
+	if err := d.db.
+		Where("target_cid = ? AND state = ? AND emoji = ?", cid, true, emoji).
+		Find(&reactions).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	return reactions, nil
+}
