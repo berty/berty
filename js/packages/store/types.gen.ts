@@ -306,6 +306,13 @@ export type MessengerMethodsHooks = {
 		done: boolean
 		called: boolean
 	}
+	useInteractionReactionsForEmoji: () => {
+		error: any
+		call: (req?: beapi.messenger.InteractionReactionsForEmoji.IRequest) => void
+		reply: beapi.messenger.InteractionReactionsForEmoji.IReply | null
+		done: boolean
+		called: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {

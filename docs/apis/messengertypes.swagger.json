@@ -681,6 +681,39 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/InteractionReactionsForEmoji": {
+      "post": {
+        "summary": "InteractionReactionsForEmoji returns a list of reactions on an interaction for a specific emoji",
+        "operationId": "MessengerService_InteractionReactionsForEmoji",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1InteractionReactionsForEmojiReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1InteractionReactionsForEmojiRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ListMemberDevices": {
       "post": {
         "summary": "ListMemberDevices Lists devices for a member",
@@ -2550,6 +2583,28 @@
         }
       }
     },
+    "v1InteractionReactionsForEmojiReply": {
+      "type": "object",
+      "properties": {
+        "reactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Reaction"
+          }
+        }
+      }
+    },
+    "v1InteractionReactionsForEmojiRequest": {
+      "type": "object",
+      "properties": {
+        "interaction_cid": {
+          "type": "string"
+        },
+        "emoji": {
+          "type": "string"
+        }
+      }
+    },
     "v1ListMemberDevicesReply": {
       "type": "object",
       "properties": {
@@ -2893,6 +2948,30 @@
       "properties": {
         "conversation_pk": {
           "type": "string"
+        }
+      }
+    },
+    "v1Reaction": {
+      "type": "object",
+      "properties": {
+        "target_cid": {
+          "type": "string"
+        },
+        "member_public_key": {
+          "type": "string"
+        },
+        "emoji": {
+          "type": "string"
+        },
+        "is_mine": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "boolean"
+        },
+        "state_date": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

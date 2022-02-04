@@ -105,6 +105,9 @@ service MessengerService {
 
   // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
+
+  // InteractionReactionsForEmoji returns a list of reactions on an interaction for a specific emoji
+  rpc InteractionReactionsForEmoji(InteractionReactionsForEmoji.Request) returns (InteractionReactionsForEmoji.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -951,5 +954,15 @@ message PushTokenSharedForConversation {
   }
   message Reply {
     SharedPushToken push_token = 1;
+  }
+}
+
+message InteractionReactionsForEmoji {
+  message Request {
+    string interaction_cid = 1 [(gogoproto.customname) = "InteractionCID"];
+    string emoji = 2;
+  }
+  message Reply {
+    repeated Reaction reactions = 1;
   }
 }
