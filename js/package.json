@@ -103,6 +103,7 @@
     "babel-jest": "^27.3.1",
     "babel-plugin-inline-react-svg": "^2.0.1",
     "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^7.14.0",
     "jest": "^27.4.5",
     "metro-config": "^0.66.2",
