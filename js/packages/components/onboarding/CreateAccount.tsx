@@ -130,7 +130,6 @@ const CreateAccountBody = () => {
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
 	const [isFinished, setIsFinished] = useState(false)
-	const { navigate } = useNavigation()
 	const { t } = useTranslation()
 	const headerHeight = useHeaderHeight()
 	const insets = useSafeAreaInsets()
@@ -164,9 +163,7 @@ const CreateAccountBody = () => {
 					loop={false}
 					onAnimationFinish={async () => {
 						Vibration.vibrate(500)
-						await rnutil.checkPermissions('p2p', navigate, {
-							navigateToPermScreenOnProblem: false,
-						})
+						await rnutil.checkPermissions('p2p')
 					}}
 					style={{ position: 'absolute', width: '100%' }}
 				/>

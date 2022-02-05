@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import { View, Modal, Platform, TouchableOpacity } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
-import { request, check, RESULTS, PERMISSIONS } from 'react-native-permissions'
+import { RESULTS } from 'react-native-permissions'
 import ImagePicker from 'react-native-image-crop-picker'
 import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
-import rnutil from '@berty-tech/rnutil'
 import { useNavigation } from '@berty-tech/navigation'
+import { checkPermissions } from '@berty-tech/rnutil/checkPermissions'
 
 import { MenuListItem } from './MenuListItem'
 import { GallerySection } from './GallerySection'
@@ -21,17 +21,18 @@ const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C)
 	Promise.all(arr.map(cb))
 
 export const AddFileMenu: React.FC<{
+	visible: boolean
 	onClose: (medias?: beapi.messenger.IMedia[]) => void
 	sending?: boolean
 	setSending: (val: boolean) => void
-}> = ({ onClose, sending, setSending }) => {
+}> = ({ visible, onClose, sending, setSending }) => {
 	const [{ border, padding }] = useStyles()
 	const { t }: { t: any } = useTranslation()
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
 	const client = useMessengerClient()
 	const colors = useThemeColor()
-	const navigate = useNavigation()
+	const { navigate } = useNavigation()
 
 	const LIST_CONFIG = [
 		{
@@ -45,24 +46,17 @@ export const AddFileMenu: React.FC<{
 			},
 			title: t('chat.files.gallery'),
 			onPress: async () => {
-				setActiveTab(TabItems.Gallery)
-				if (Platform.OS === 'ios') {
-					try {
-						const status = await check(PERMISSIONS.IOS.PHOTO_LIBRARY)
-						if (status !== RESULTS.GRANTED) {
-							try {
-								const status = await request(PERMISSIONS.IOS.PHOTO_LIBRARY)
-								if (status !== RESULTS.GRANTED) {
-									setSecurityAccessVisibility(true)
-									return
-								}
-							} catch (err) {
-								console.log(err)
-							}
-						}
-					} catch (err) {
-						console.log(err)
-					}
+				const status = await checkPermissions('gallery', {
+					navigate,
+					navigateToPermScreenOnProblem: true,
+					onComplete: () => {
+						setActiveTab(TabItems.Gallery)
+					},
+				})
+				if (status === RESULTS.GRANTED) {
+					setActiveTab(TabItems.Gallery)
+				} else {
+					onClose()
 				}
 			},
 		},
@@ -77,10 +71,18 @@ export const AddFileMenu: React.FC<{
 			},
 			title: t('chat.files.camera'),
 			onPress: async () => {
-				setActiveTab(TabItems.Camera)
-				const permissionStatus = await rnutil.checkPermissions('camera', navigate)
-				if (permissionStatus !== RESULTS.GRANTED) {
-					console.warn('camera permission:', permissionStatus)
+				const status = await checkPermissions('camera', {
+					navigate,
+					navigateToPermScreenOnProblem: true,
+					onComplete: () => {
+						setActiveTab(TabItems.Camera)
+					},
+				})
+				if (status === RESULTS.GRANTED) {
+					setActiveTab(TabItems.Camera)
+				} else {
+					console.warn('camera permission:', status)
+					onClose()
 					return
 				}
 				try {
@@ -183,7 +185,7 @@ export const AddFileMenu: React.FC<{
 	return (
 		<Modal
 			transparent
-			visible
+			visible={visible}
 			animationType='slide'
 			style={{
 				position: 'relative',

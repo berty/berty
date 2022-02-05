@@ -1,15 +1,8 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { Text, TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
-import LottieView from 'lottie-react-native'
+import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
-import {
-	requestNotifications,
-	request,
-	PERMISSIONS,
-	RESULTS,
-	openSettings,
-	PermissionStatus,
-} from 'react-native-permissions'
+import { RESULTS, openSettings, PermissionStatus } from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -27,12 +20,14 @@ import { ScreenFC } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
 import { useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { PermissionType, requestPermission } from '@berty-tech/rnutil/checkPermissions'
 
-const animations = {
+const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
 	camera: cameraLottie,
 	notification: notificationLottie,
 	p2p: p2pLottie,
+	gallery: cameraLottie, // get a lottie file for gallery
 }
 
 export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, navigation }) => {
@@ -66,7 +61,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 	const handleAppStateChange = useCallback(
 		async (nextAppState: string) => {
 			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-				const status = await rnutil.checkPermissions(permissionType, navigation.navigate, {
+				const status = await rnutil.checkPermissions(permissionType, {
+					navigate: navigation.navigate,
 					navigateToPermScreenOnProblem: false,
 				})
 
@@ -78,16 +74,14 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		[handleOnComplete, navigation.navigate, permissionType],
 	)
 
-	const requestPermission = useCallback(async () => {
-		let retStatus
+	const handleRequestPermission = useCallback(async () => {
+		const status = await requestPermission(permissionType)
 		try {
 			if (permissionStatus === RESULTS.BLOCKED) {
 				return openSettings()
 			}
 			if (permissionType === 'notification') {
 				try {
-					const { status } = await requestNotifications(['alert', 'sound'])
-					retStatus = status
 					await setPersistentOption({
 						type: PersistentOptionsKeys.Configurations,
 						payload: {
@@ -102,13 +96,6 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					console.warn('request notification permisison err:', err)
 				}
 			} else if (permissionType === 'p2p') {
-				const status = await request(
-					Platform.OS === 'ios'
-						? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-						: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-				)
-				retStatus = status
-
 				if (selectedAccount) {
 					const currentConfig = await accountService.networkConfigGet({
 						accountId: selectedAccount,
@@ -135,19 +122,11 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						config: newConfig,
 					})
 				}
-			} else if (permissionType === 'camera') {
-				retStatus = await request(
-					Platform.OS === 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA,
-				)
-			} else if (permissionType === 'audio') {
-				retStatus = await request(
-					Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
-				)
 			}
 		} catch (err) {
 			console.warn('request permission err:', err)
 		}
-		await handleOnComplete(retStatus)
+		await handleOnComplete(status)
 	}, [
 		handleOnComplete,
 		permissionStatus,
@@ -236,7 +215,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					}}
 				>
 					<TouchableOpacity
-						onPress={() => requestPermission()}
+						onPress={() => handleRequestPermission()}
 						style={{
 							backgroundColor: colors['background-header'],
 							paddingVertical: 16,

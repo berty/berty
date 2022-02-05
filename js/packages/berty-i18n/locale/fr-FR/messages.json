@@ -616,6 +616,10 @@
 			"title": "Messages audio",
 			"desc": "Pour envoyer des messages audio à vos contacts, vous devez autoriser l'application Berty à accéder au microphone."
 		},
+		"gallery": {
+			"title": "Galerie d'images",
+			"desc": "Pour envoyer des messages images à vos contacts, vous devez autoriser l'application Berty à accéder à la galerie d'images."
+		},
 		"button-labels": {
 			"allow": "Autoriser",
 			"settings": "Accéder aux paramètres"

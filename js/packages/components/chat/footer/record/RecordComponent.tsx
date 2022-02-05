@@ -44,7 +44,8 @@ const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
 const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await rnutil.checkPermissions('audio', navigate, {
+	const permissionStatus = await rnutil.checkPermissions('audio', {
+		navigate,
 		navigateToPermScreenOnProblem: true,
 	})
 	if (permissionStatus === RESULTS.GRANTED) {
