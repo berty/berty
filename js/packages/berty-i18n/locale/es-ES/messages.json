@@ -416,12 +416,12 @@
 			"export": "Exportar el tema seleccionado como un archivo",
 			"share": "Compartir el tema seleccionado como archivo",
 			"import": "Importar un archivo de tema",
-			"delete": "",
+			"delete": "Eliminar todos los temas no predeterminados",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "Formato incorrecto para el archivo del tema"
 		},
 		"my-berty-ID": {
-			"title": "",
+			"title": "Mi ID de Berty",
 			"qr": "QR",
 			"fingerprint": "Huella digital",
 			"devices": "Dispositivos"
@@ -475,17 +475,17 @@
 			"input-placeholder": "Escribe aquí..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"enable": "Habilitar notificaciones push",
+			"enabled": "Las notificaciones push están habilitadas",
 			"unsupported": "",
 			"check-device-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"accept": "Activar",
+				"refuse": "Omitir"
 			},
-			"why-cant-disable": "",
+			"why-cant-disable": "No puedes desactivar las notificaciones push para una conversación específica.",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
@@ -494,8 +494,8 @@
 		"devices": {
 			"title": "Dispositivos",
 			"push": {
-				"enabled": "",
-				"not-enabled": ""
+				"enabled": "Notificaciones push habilitadas",
+				"not-enabled": "Notificaciones push no habilitadas"
 			}
 		},
 		"multi-member-settings": {
