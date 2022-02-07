@@ -476,4 +476,4 @@ electron.mac: electron-app/package.json
 	mkdir -p ./electron-app/resources/mac/
 	ln `$(GO) env GOPATH`/bin/berty ./electron-app/resources/mac/berty
 	cd ./electron-app && yarn install
-	cd ./electron-app && yarn run dist:mac
+	cd ./electron-app && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)
