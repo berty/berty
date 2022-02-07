@@ -1,31 +1,84 @@
 import { berty } from '@berty-tech/api/root.pb'
 import { getEmojiByName } from '@berty-tech/components/utils'
-import { useThemeColor } from '@berty-tech/store'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import React, { createRef, FC, useEffect, useState } from 'react'
+import React, { createRef, FC, useCallback, useEffect, useState } from 'react'
 import { Modal, Text, View } from 'react-native'
 import AddEmojiIcon from '@berty-tech/assets/add_emoji.svg'
 import AnimatedNumber from '@berty-tech/components/shared-components/AnimatedNumber'
 import {
+	FlatList,
 	ScrollView,
 	TouchableOpacity,
 	TouchableWithoutFeedback,
 } from 'react-native-gesture-handler'
+import { useConversationMembersDict } from '@berty-tech/react-redux'
+import { ContactAvatar } from '@berty-tech/components/avatars'
+
+const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divider = true }) => {
+	const [{ row, margin, padding, border }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+
+	return (
+		<View>
+			<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
+				<ContactAvatar size={50 * scaleSize} publicKey={member?.publicKey} />
+				<Text
+					numberOfLines={1}
+					style={[
+						margin.left.small,
+						row.item.justify,
+						{ flexShrink: 1, color: colors['main-text'] },
+					]}
+				>
+					{member?.displayName!}
+				</Text>
+			</View>
+			{divider && (
+				<View style={[border.scale(0.6), { borderColor: `${colors['secondary-text']}90` }]} />
+			)}
+		</View>
+	)
+}
 
 const ReactionList: FC<{
 	closeModal: () => void
 	reactions: berty.messenger.v1.Interaction.IReactionView[]
 	emoji: string | null | undefined
-}> = ({ reactions, closeModal, emoji }) => {
+	cid: string
+	convPk: string
+}> = ({ reactions, closeModal, emoji, cid, convPk }) => {
 	const colors = useThemeColor()
 	const [{ padding, border, margin }] = useStyles()
 	const [currentEmoji, setCurrentEmoji] = useState<string | null | undefined>(emoji)
 	const [dataSourceCords, setDataSourceCords] = useState<number[] | undefined>()
+	const [userList, setUserList] = useState<(berty.messenger.v1.IMember | undefined)[]>([])
 	const scrollViewRef = createRef<ScrollView>()
+	const client = useMessengerClient()
+	const members = useConversationMembersDict(convPk)
+
+	console.log({ members })
+
+	const getReactionList = useCallback(async () => {
+		const r = (await client?.interactionReactionsForEmoji({
+			emoji: currentEmoji,
+			interactionCid: cid,
+		})) as berty.messenger.v1.InteractionReactionsForEmoji.Reply
+
+		setUserList(
+			Object.values(members).filter(member =>
+				r?.reactions.find(reaction => reaction.memberPublicKey === member?.publicKey),
+			) || [],
+		)
+	}, [cid, client, currentEmoji, members])
 
 	useEffect(() => {
 		setCurrentEmoji(emoji)
 	}, [emoji])
+
+	useEffect(() => {
+		getReactionList()
+	}, [getReactionList, currentEmoji])
 
 	useEffect(() => {
 		const index = reactions.findIndex(({ emoji }) => emoji === currentEmoji)
@@ -153,6 +206,21 @@ const ReactionList: FC<{
 										{currentEmoji}
 									</Text>
 								</View>
+								<FlatList
+									data={userList}
+									keyExtractor={member => member.publicKey}
+									renderItem={() => (
+										<View style={[padding.left.medium, { alignItems: 'flex-start' }]}>
+											{userList.map((member, index) => (
+												<MemberItem
+													key={`member-${index}`}
+													member={member}
+													divider={index < userList.length - 1}
+												/>
+											))}
+										</View>
+									)}
+								/>
 							</View>
 						</View>
 					</View>
@@ -166,7 +234,9 @@ export const Reactions: FC<{
 	reactions: berty.messenger.v1.Interaction.IReactionView[]
 	onEmojiKeyboard: () => void
 	onRemoveEmoji: (emoji: string, remove: boolean) => void
-}> = ({ reactions, onEmojiKeyboard, onRemoveEmoji }) => {
+	cid: string
+	convPk: string
+}> = ({ reactions, onEmojiKeyboard, onRemoveEmoji, cid, convPk }) => {
 	const [{ margin, padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const [emoji, setEmoji] = useState<string | null | undefined>()
@@ -177,7 +247,13 @@ export const Reactions: FC<{
 
 	return (
 		<View style={{ flexDirection: 'row', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-			<ReactionList closeModal={() => setEmoji(undefined)} reactions={reactions} emoji={emoji} />
+			<ReactionList
+				closeModal={() => setEmoji(undefined)}
+				reactions={reactions}
+				emoji={emoji}
+				cid={cid}
+				convPk={convPk}
+			/>
 			{reactions
 				.filter(({ emoji }) => typeof emoji === 'string')
 				.map(({ emoji, ownState, count }) => (

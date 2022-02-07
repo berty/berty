@@ -546,7 +546,9 @@ export const UserMessage: React.FC<{
 						{activePopoverCid === inte.cid && <Popover />}
 						{!!inte?.reactions?.length && !!messageLayoutWidth && (
 							<Reactions
+								convPk={convPK}
 								reactions={inte.reactions}
+								cid={inte.cid!}
 								onEmojiKeyboard={() => {
 									setActivePopoverCid(null)
 									setActiveEmojiKeyboardCid(inte.cid)
