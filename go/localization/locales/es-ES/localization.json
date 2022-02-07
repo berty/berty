@@ -45,7 +45,7 @@
       "bodyWithGroupName": "Invitado al grupo '%[1]v'"
     },
     "unknown": {
-      "body": ""
+      "body": "Se ha recibido algo nuevo"
     },
     "conversationNameChanged": {
       "body": ""
@@ -54,7 +54,7 @@
       "body": ""
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Foto de perfil actualizada"
     },
     "memberDetailsChanged": {
       "body": ""
