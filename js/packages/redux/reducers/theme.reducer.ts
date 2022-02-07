@@ -73,13 +73,15 @@ type LocalRootState = typeof rootInitialState
 
 const selectSlice = (state: LocalRootState) => state[sliceName]
 
-export const selectThemeSelected = (state: LocalRootState) => selectSlice(state).selected as string
+export const selectThemeSelected = (state: LocalRootState): string =>
+	selectSlice(state).selected as string
 
-export const selectThemeCollection = (state: LocalRootState) => selectSlice(state).collection
+export const selectThemeCollection = (state: LocalRootState): ThemeCollectionType =>
+	selectSlice(state).collection
 
-export const selectThemeIsDark = (state: LocalRootState) => selectSlice(state).isDark
+export const selectThemeIsDark = (state: LocalRootState): boolean => selectSlice(state).isDark
 
-export const selectCurrentTheme = (state: LocalRootState) =>
+export const selectCurrentTheme = (state: LocalRootState): keyof AVAILABLE_THEMES | string =>
 	selectSlice(state).isDark
 		? AVAILABLE_THEMES.DEFAULT_DARK_THEME
 		: (selectSlice(state).selected as string)

@@ -352,6 +352,7 @@ export const UserMessage: React.FC<{
 					<View style={{ position: 'relative' }}>
 						<PanGestureHandler
 							enabled={!inte.isMine}
+							activeOffsetX={20}
 							onGestureEvent={({ nativeEvent }) => {
 								if (nativeEvent.translationX > 0 && nativeEvent.translationX < 120) {
 									Animated.timing(animatedValue, {

@@ -90,8 +90,6 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	const conversations = useAllConversations()
 	const hasConversations = conversations.length > 0
 	const [layoutRequests, onLayoutRequests] = useLayout()
-	const [layoutHeader, onLayoutHeader] = useLayout()
-	const [layoutConvs, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [searchText, setSearchText] = useState<string>('')
 	const [refresh, setRefresh] = useState<boolean>(false)
@@ -106,7 +104,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 
 	const client = useSelector(selectClient)
 
-	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight, windowHeight }] = useStyles()
+	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 
@@ -216,13 +214,15 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 	)
 
 	return (
-		<SafeAreaView style={[styleBackground, { flex: 1 }]}>
-			<StatusBar
-				backgroundColor={
-					requests.length && !isOnTop ? colors['background-header'] : colors['main-background']
-				}
-				barStyle={requests.length && !isOnTop ? 'light-content' : 'dark-content'}
-			/>
+		<View style={[styleBackground, { flex: 1 }]}>
+			<SafeAreaView>
+				<StatusBar
+					backgroundColor={
+						requests.length && !isOnTop ? colors['background-header'] : colors['main-background']
+					}
+					barStyle={requests.length && !isOnTop ? 'light-content' : 'dark-content'}
+				/>
+			</SafeAreaView>
 			<ScrollView
 				ref={scrollRef}
 				stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
@@ -257,7 +257,6 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 					setRefresh={setRefresh}
 					onLongPress={setIsLongPress}
 					isMultiAccount={isLongPress}
-					onLayout={onLayoutHeader}
 				/>
 				{searchText?.length ? (
 					<SearchComponent
@@ -270,25 +269,13 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 						earliestInteractionCID={earliestResult}
 					/>
 				) : (
-					<>
+					<View style={{ height: '100%' }}>
 						<Conversations
 							items={conversations}
 							suggestions={suggestions}
 							configurations={configurations}
 							addBot={setIsAddBot}
-							onLayout={onLayoutConvs}
 						/>
-						{layoutRequests.height + layoutHeader.height + layoutConvs.height < windowHeight &&
-						requests.length ? (
-							<View
-								style={{
-									height:
-										windowHeight -
-										(layoutRequests.height + layoutHeader.height + layoutConvs.height),
-									backgroundColor: colors['main-background'],
-								}}
-							/>
-						) : null}
 						{!hasConversations && !hasSuggestion && !hasConfigurations ? (
 							<View style={{ backgroundColor: colors['main-background'] }}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
@@ -309,7 +296,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 								</View>
 							</View>
 						) : null}
-					</>
+					</View>
 				)}
 			</ScrollView>
 			<View
@@ -357,7 +344,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 					closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
 				/>
 			) : null}
-		</SafeAreaView>
+		</View>
 	)
 }
 

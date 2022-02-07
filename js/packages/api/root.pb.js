@@ -4550,6 +4550,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushReceive: {
                     requestType: "PushReceive.Request",
                     responseType: "PushReceive.Reply"
+                  },
+                  InteractionReactionsForEmoji: {
+                    requestType: "InteractionReactionsForEmoji.Request",
+                    responseType: "InteractionReactionsForEmoji.Reply"
                   }
                 }
               },
@@ -6854,6 +6858,35 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       pushToken: {
                         type: "SharedPushToken",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              InteractionReactionsForEmoji: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      interactionCid: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "InteractionCID"
+                        }
+                      },
+                      emoji: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      reactions: {
+                        rule: "repeated",
+                        type: "Reaction",
                         id: 1
                       }
                     }

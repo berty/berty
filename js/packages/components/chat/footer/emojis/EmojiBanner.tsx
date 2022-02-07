@@ -7,14 +7,16 @@ import { Divider, Icon } from '@ui-kitten/components'
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
-	selectChatInputIsFocused,
-	selectChatInputSelection,
 	selectChatInputText,
 	setChatInputText,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
 import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 import { emojis, getEmojiByName } from '@berty-tech/components/utils'
 import { Emoji } from '@berty-tech/styles/types'
+import {
+	selectChatInputIsFocused,
+	selectChatInputSelection,
+} from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 
 type Word = {
 	word: string
@@ -74,7 +76,7 @@ export const EmojiBanner: FC<{
 	const setOpen = useCallback(
 		(open: boolean) => {
 			Animated.spring(slideAnim, {
-				toValue: open ? 0 : modalHeight + emojisToDisplay * 50 * scaleSize + 10 * scaleSize, // + 10 for hiding modal shadows
+				toValue: open ? 0 : modalHeight + emojisToDisplay * 50 * scaleSize + 50 * scaleSize, // + 50 for hiding modal shadows
 				velocity: 3,
 				tension: 2,
 				friction: 8,
@@ -127,7 +129,6 @@ export const EmojiBanner: FC<{
 			if (!emoji) {
 				return
 			}
-			console.log({ tmpCurrentWord, emoji: getEmojiByName(tmpCurrentWord.word) })
 			dispatch(
 				setChatInputText({
 					convPK: convPk,
@@ -169,16 +170,6 @@ export const EmojiBanner: FC<{
 
 	return (
 		<Animated.View style={{ position: 'relative', transform: [{ translateY: slideAnim }] }}>
-			<View
-				style={{
-					position: 'absolute',
-					top: 0,
-					bottom: 0,
-					right: 0,
-					left: 0,
-					backgroundColor: 'red',
-				}}
-			/>
 			<View
 				style={[
 					border.radius.top.large,

@@ -469,35 +469,35 @@
 			"fingerprint": "Fingerprint",
 			"info": "Infos",
 			"devices": "Devices",
-      "my-devices": "My devices"
+			"my-devices": "My devices"
 		},
 		"multi-member": {
 			"input-placeholder": "Type here..."
 		},
-    "push-notifications": {
-      "enable": "Enable push notifications",
-      "enabled": "Push notifications are enabled",
-      "unsupported": "Notifications unsupported",
-      "check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
-      "warning-disable": {
-        "title": "Do you want to activate this feature?",
-        "subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
-        "accept": "Activate",
-        "refuse": "Skip"
-      },
-      "why-cant-disable": "You can't disable push notifications for a specific conversation.",
-      "errors": {
-        "no-token": "Your device is not compatible with push notifications",
-        "no-server": "Your must register a push relay first"
-      }
-    },
-    "devices": {
-      "title": "Devices",
-      "push": {
-        "enabled": "Push notifications enabled",
-        "not-enabled": "Push notifications not enabled"
-      }
-    },
+		"push-notifications": {
+			"enable": "Enable push notifications",
+			"enabled": "Push notifications are enabled",
+			"unsupported": "Notifications unsupported",
+			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
+			"warning-disable": {
+				"title": "Do you want to activate this feature?",
+				"subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
+				"accept": "Activate",
+				"refuse": "Skip"
+			},
+			"why-cant-disable": "You can't disable push notifications for a specific conversation.",
+			"errors": {
+				"no-token": "Your device is not compatible with push notifications",
+				"no-server": "Your must register a push relay first"
+			}
+		},
+		"devices": {
+			"title": "Devices",
+			"push": {
+				"enabled": "Push notifications enabled",
+				"not-enabled": "Push notifications not enabled"
+			}
+		},
 		"multi-member-settings": {
 			"header-left-button": "Search",
 			"header-middle-button": "Call",
@@ -583,6 +583,9 @@
 		"user-message": {
 			"read-more": "Read more",
 			"show-less": "Show less"
+		},
+		"emojis": {
+			"matching": "Emojis matching"
 		}
 	},
 	"audio": {

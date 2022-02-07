@@ -550,7 +550,7 @@ export const RecordComponent: React.FC<{
 					<View
 						style={[
 							{
-								justifyContent: 'flex-end',
+								justifyContent: 'center',
 								alignItems: 'flex-end',
 								paddingRight: 15 * scaleSize,
 							},
