@@ -50,6 +50,8 @@ export namespace berty {
                 public appStorageGet(request: berty.account.v1.AppStorageGet.IRequest): Promise<berty.account.v1.AppStorageGet.Reply>;
                 public appStorageRemove(request: berty.account.v1.AppStorageRemove.IRequest, callback: berty.account.v1.AccountService.AppStorageRemoveCallback): void;
                 public appStorageRemove(request: berty.account.v1.AppStorageRemove.IRequest): Promise<berty.account.v1.AppStorageRemove.Reply>;
+                public getOpenedAccount(request: berty.account.v1.GetOpenedAccount.IRequest, callback: berty.account.v1.AccountService.GetOpenedAccountCallback): void;
+                public getOpenedAccount(request: berty.account.v1.GetOpenedAccount.IRequest): Promise<berty.account.v1.GetOpenedAccount.Reply>;
             }
 
             namespace AccountService {
@@ -95,6 +97,8 @@ export namespace berty {
                 type AppStorageGetCallback = (error: (Error|null), response?: berty.account.v1.AppStorageGet.Reply) => void;
 
                 type AppStorageRemoveCallback = (error: (Error|null), response?: berty.account.v1.AppStorageRemove.Reply) => void;
+
+                type GetOpenedAccountCallback = (error: (Error|null), response?: berty.account.v1.GetOpenedAccount.Reply) => void;
             }
 
             interface IAppStoragePut {
@@ -266,6 +270,61 @@ export namespace berty {
                 }
             }
 
+            interface IGetOpenedAccount {
+            }
+
+            class GetOpenedAccount implements IGetOpenedAccount {
+
+                public static create(properties?: berty.account.v1.IGetOpenedAccount): berty.account.v1.GetOpenedAccount;
+                public static encode(message: berty.account.v1.IGetOpenedAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IGetOpenedAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.GetOpenedAccount;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.GetOpenedAccount;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.GetOpenedAccount;
+                public static toObject(message: berty.account.v1.GetOpenedAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace GetOpenedAccount {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.account.v1.GetOpenedAccount.IRequest): berty.account.v1.GetOpenedAccount.Request;
+                    public static encode(message: berty.account.v1.GetOpenedAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.GetOpenedAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.GetOpenedAccount.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.GetOpenedAccount.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.GetOpenedAccount.Request;
+                    public static toObject(message: berty.account.v1.GetOpenedAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    accountId?: (string|null);
+                    listeners?: (string[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public accountId: string;
+                    public listeners: string[];
+                    public static create(properties?: berty.account.v1.GetOpenedAccount.IReply): berty.account.v1.GetOpenedAccount.Reply;
+                    public static encode(message: berty.account.v1.GetOpenedAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.GetOpenedAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.GetOpenedAccount.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.GetOpenedAccount.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.GetOpenedAccount.Reply;
+                    public static toObject(message: berty.account.v1.GetOpenedAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
             interface IOpenAccount {
             }
 
@@ -289,6 +348,7 @@ export namespace berty {
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    sessionKind?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -297,6 +357,7 @@ export namespace berty {
                     public accountId: string;
                     public loggerFilters: string;
                     public networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    public sessionKind: string;
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -347,6 +408,7 @@ export namespace berty {
                     args?: (string[]|null);
                     accountId?: (string|null);
                     loggerFilters?: (string|null);
+                    sessionKind?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -354,6 +416,7 @@ export namespace berty {
                     public args: string[];
                     public accountId: string;
                     public loggerFilters: string;
+                    public sessionKind: string;
                     public static create(properties?: berty.account.v1.OpenAccountWithProgress.IRequest): berty.account.v1.OpenAccountWithProgress.Request;
                     public static encode(message: berty.account.v1.OpenAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -649,6 +712,7 @@ export namespace berty {
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    sessionKind?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -659,6 +723,7 @@ export namespace berty {
                     public args: string[];
                     public loggerFilters: string;
                     public networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    public sessionKind: string;
                     public static create(properties?: berty.account.v1.ImportAccount.IRequest): berty.account.v1.ImportAccount.Request;
                     public static encode(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -714,6 +779,7 @@ export namespace berty {
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    sessionKind?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -724,6 +790,7 @@ export namespace berty {
                     public args: string[];
                     public loggerFilters: string;
                     public networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    public sessionKind: string;
                     public static create(properties?: berty.account.v1.ImportAccountWithProgress.IRequest): berty.account.v1.ImportAccountWithProgress.Request;
                     public static encode(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.ImportAccountWithProgress.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -780,6 +847,7 @@ export namespace berty {
                     args?: (string[]|null);
                     loggerFilters?: (string|null);
                     networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    sessionKind?: (string|null);
                 }
 
                 class Request implements IRequest {
@@ -789,6 +857,7 @@ export namespace berty {
                     public args: string[];
                     public loggerFilters: string;
                     public networkConfig?: (berty.account.v1.INetworkConfig|null);
+                    public sessionKind: string;
                     public static create(properties?: berty.account.v1.CreateAccount.IRequest): berty.account.v1.CreateAccount.Request;
                     public static encode(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

@@ -60,6 +60,8 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		return nil, errcode.ErrBertyAccountInvalidIDFormat
 	}
 
+	s.openedAccountID = filepath.Clean(req.AccountID)
+
 	accountStorePath := accountutils.GetAccountDir(s.rootdir, req.GetAccountID())
 
 	if _, err := os.Stat(accountStorePath); err != nil {
@@ -118,6 +120,11 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		nativeLoggerStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
 		streams = append(streams, nativeLoggerStream)
 	}
+
+	if s.serviceListeners != "" {
+		args = addListValueArgs(args, initutil.FlagNameNodeListeners, []string{initutil.FlagValueNodeListeners}, []string{s.serviceListeners})
+	}
+
 	s.logger.Info("opening account", logutil.PrivateStrings("args", args), logutil.PrivateString("account-id", req.AccountID))
 
 	// setup manager
@@ -125,7 +132,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	var initManager *initutil.Manager
 	{
 		var err error
-		if initManager, err = s.openManager(streams, args...); err != nil {
+		if initManager, err = s.openManager(req.SessionKind, streams, args...); err != nil {
 			errCleanup()
 			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
@@ -200,6 +207,14 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		}
 	}
 
+	if initManager.Session.Kind != "mobile" {
+		go func() {
+			if err := initManager.RunWorkers(); err != nil {
+				s.logger.Error("error in workers", zap.Error(err))
+			}
+		}()
+	}
+
 	s.initManager = initManager
 	prog.Get("finishing").SetAsCurrent().Done()
 
@@ -265,6 +280,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
+		SessionKind:   req.SessionKind,
 	}
 	if _, err := s.openAccount(server.Context(), &typed, prog); err != nil {
 		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
@@ -297,6 +313,7 @@ func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccou
 	}
 	s.initManager = nil
 	s.accountData = nil
+	s.openedAccountID = ""
 
 	return &accounttypes.CloseAccount_Reply{}, nil
 }
@@ -356,7 +373,11 @@ func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithPro
 	return nil
 }
 
-func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...string) (*initutil.Manager, error) {
+func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream, args ...string) (*initutil.Manager, error) {
+	if kind == "" {
+		kind = "mobile"
+	}
+
 	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
@@ -370,7 +391,7 @@ func (s *service) openManager(defaultLoggerStreams []logutil.Stream, args ...str
 
 	// configure flagset options
 	fs := flag.NewFlagSet("account", flag.ContinueOnError)
-	manager.Session.Kind = "mobile" // FIXME: allow setting the session kind from the initialization of this package
+	manager.Session.Kind = kind
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalMessengerServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)
@@ -587,6 +608,7 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 		AccountID:     req.GetAccountID(),
 		LoggerFilters: req.GetLoggerFilters(),
 		NetworkConfig: req.GetNetworkConfig(),
+		SessionKind:   req.GetSessionKind(),
 	}
 	ret, err := s.importAccount(server.Context(), &typed, prog)
 	if err != nil {
@@ -655,6 +677,7 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
 		LoggerFilters: req.LoggerFilters,
 		NetworkConfig: req.NetworkConfig,
+		SessionKind:   req.SessionKind,
 	}, prog)
 	if err != nil {
 		return nil, err
@@ -723,6 +746,7 @@ func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAcc
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
 		NetworkConfig: req.NetworkConfig,
+		SessionKind:   req.SessionKind,
 	}, prog)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -1219,4 +1243,11 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accoun
 	}
 
 	return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
+}
+
+func (s *service) GetOpenedAccount(ctx context.Context, request *accounttypes.GetOpenedAccount_Request) (*accounttypes.GetOpenedAccount_Reply, error) {
+	return &accounttypes.GetOpenedAccount_Reply{
+		AccountID: s.openedAccountID,
+		Listeners: strings.Split(s.serviceListeners, ","),
+	}, nil
 }

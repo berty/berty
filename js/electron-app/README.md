@@ -1,0 +1,1 @@
+# Electron Client for Berty

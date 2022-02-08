@@ -103,6 +103,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   AppStorageRemove: {
                     requestType: "AppStorageRemove.Request",
                     responseType: "AppStorageRemove.Reply"
+                  },
+                  GetOpenedAccount: {
+                    requestType: "GetOpenedAccount.Request",
+                    responseType: "GetOpenedAccount.Reply"
                   }
                 }
               },
@@ -175,6 +179,30 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              GetOpenedAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      },
+                      listeners: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
               OpenAccount: {
                 fields: {},
                 nested: {
@@ -199,6 +227,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "NetworkConfig",
                         id: 4
+                      },
+                      sessionKind: {
+                        type: "string",
+                        id: 5
                       }
                     }
                   },
@@ -227,6 +259,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       loggerFilters: {
                         type: "string",
                         id: 3
+                      },
+                      sessionKind: {
+                        type: "string",
+                        id: 4
                       }
                     }
                   },
@@ -373,6 +409,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "NetworkConfig",
                         id: 6
+                      },
+                      sessionKind: {
+                        type: "string",
+                        id: 7
                       }
                     }
                   },
@@ -418,6 +458,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "NetworkConfig",
                         id: 6
+                      },
+                      sessionKind: {
+                        type: "string",
+                        id: 7
                       }
                     }
                   },
@@ -463,6 +507,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       networkConfig: {
                         type: "NetworkConfig",
                         id: 5
+                      },
+                      sessionKind: {
+                        type: "string",
+                        id: 6
                       }
                     }
                   },

@@ -1,0 +1,98 @@
+name: macOS Release
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/go.yml"
+      - "js/**"
+      - "config/**"
+      - "tool/generate-i18n-testlang"
+      - ".github/workflows/js.yml"
+  pull_request:
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/go.yml"
+      - "js/**"
+      - "config/**"
+      - "tool/generate-i18n-testlang"
+      - ".github/workflows/js.yml"
+
+jobs:
+  build-macos-app:
+    name: "Build electron app (macos)"
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        golang: ['1.17.x']
+    env:
+      OS: macos-latest
+      GOLANG: ${{ matrix.golang }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: js/node_modules
+          key:          ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}-${{ hashFiles('js/electron-app/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.golang }}
+      - name: Cache Go modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
+      - name: Compile the project on Unix-like operating systems
+        working-directory: go
+        run: |
+          touch gen.sum # avoid triggering make generate
+          make go.install
+      - name: Check go.mod and go.sum
+        run: |
+          go mod tidy -v
+          git --no-pager diff go.mod go.sum
+          git --no-pager diff --quiet go.mod go.sum
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install electron app deps (node_modules)
+        working-directory: js
+        run: make node_modules && make electron-app/node_modules
+      - name: Build the app (PR)
+        if: github.event_name == 'pull_request'
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        working-directory: js
+        run: make electron.mac
+      - name: Build the app (Merge)
+        if: github.event_name != 'pull_request'
+        env:
+          CSC_LINK: ${{ secrets.MAC_APP_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_APP_CSC_KEY_PASSWORD }}
+        working-directory: js
+        run: make electron.mac
+      - name: Upload the Archive
+        uses: actions/upload-artifact@v2
+        with:
+          path: js/electron-app/dist/Berty.dmg
+          name: berty-yolo-${{github.sha}}.unsigned-dmg
+          if-no-files-found: error
