@@ -13,8 +13,8 @@
       }
     },
     "pageTitle": "Services Berty",
-    "connectButton_one": "",
-    "connectButton_other": "",
+    "connectButton_one": "Utiliser le service",
+    "connectButton_other": "Utiliser les services sélectionnés",
     "privacyPolicyLabel": "Politique de confidentialité"
   },
   "push": {
@@ -45,22 +45,22 @@
       "bodyWithGroupName": "Invitation au groupe '%[1]v'"
     },
     "unknown": {
-      "body": ""
+      "body": "Quelque chose de nouveau vient d'être reçu"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "Le nom de la conversation a été mis à jour"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "Nom d'affichage mis à jour"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Photo de profil mise à jour"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "Détails du membre mis à jour"
     },
     "replyOptionsOffered": {
-      "body": ""
+      "body": "Options de réponse proposées"
     }
   }
 }
