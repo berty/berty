@@ -421,7 +421,7 @@
 			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
-			"title": "",
+			"title": "Mon identifiant Berty",
 			"qr": "QR",
 			"fingerprint": "Empreinte numérique",
 			"devices": "Appareils"
@@ -469,21 +469,21 @@
 			"fingerprint": "Empreinte digitale",
 			"info": "Infos",
 			"devices": "Appareils",
-			"my-devices": ""
+			"my-devices": "Mes appareils"
 		},
 		"multi-member": {
 			"input-placeholder": "Écrivez ici..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
-			"unsupported": "",
+			"enable": "Activer les notifications flottantes",
+			"enabled": "Les notifications flottantes sont activées",
+			"unsupported": "Notifications non prises en charge",
 			"check-device-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"accept": "Activer",
+				"refuse": "Ignorer"
 			},
 			"why-cant-disable": "",
 			"errors": {
