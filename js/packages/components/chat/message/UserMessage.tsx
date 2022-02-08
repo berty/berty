@@ -230,6 +230,7 @@ export const UserMessage: React.FC<{
 				ctx.playSound('messageSent')
 				setActivePopoverCid(null)
 				setActiveEmojiKeyboardCid(null)
+				console.log('succeeded to remove emoji', emoji)
 			})
 			.catch((e: unknown) => {
 				console.warn('e sending message:', e)
