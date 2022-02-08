@@ -47,10 +47,7 @@ export const ConversationModalProvider: FC = ({ children }) => {
 						top: 0,
 					}}
 				>
-					<TouchableWithoutFeedback
-						onPress={() => console.log('on close')}
-						style={{ height: '100%' }}
-					/>
+					<TouchableWithoutFeedback onPress={hide} style={{ height: '100%' }} />
 				</View>
 				<View
 					style={{

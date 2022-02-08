@@ -3,17 +3,13 @@ import { getEmojiByName } from '@berty-tech/components/utils'
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import React, { createRef, FC, useCallback, useEffect, useState } from 'react'
-import { Modal, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import AddEmojiIcon from '@berty-tech/assets/add_emoji.svg'
 import AnimatedNumber from '@berty-tech/components/shared-components/AnimatedNumber'
-import {
-	FlatList,
-	ScrollView,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
-} from 'react-native-gesture-handler'
+import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { useConversationMembersDict } from '@berty-tech/react-redux'
 import { ContactAvatar } from '@berty-tech/components/avatars'
+import { useConversationModal } from '../ConversationModalContext'
 
 const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divider = true }) => {
 	const [{ row, margin, padding, border }, { scaleSize }] = useStyles()
@@ -42,12 +38,11 @@ const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divid
 }
 
 const ReactionList: FC<{
-	closeModal: () => void
 	reactions: berty.messenger.v1.Interaction.IReactionView[]
 	emoji: string | null | undefined
 	cid: string
 	convPk: string
-}> = ({ reactions, closeModal, emoji, cid, convPk }) => {
+}> = ({ reactions, emoji, cid, convPk }) => {
 	const colors = useThemeColor()
 	const [{ padding, border, margin }] = useStyles()
 	const [currentEmoji, setCurrentEmoji] = useState<string | null | undefined>(emoji)
@@ -100,133 +95,80 @@ const ReactionList: FC<{
 	}, [currentEmoji, dataSourceCords, reactions, scrollViewRef])
 
 	return (
-		<Modal
-			transparent
-			visible={!!currentEmoji}
-			animationType='slide'
-			style={{
-				position: 'relative',
-				flex: 1,
-				height: '100%',
-			}}
-		>
-			<View
-				style={{
-					zIndex: 999,
-					position: 'absolute',
-					bottom: 0,
-					left: 0,
-					right: 0,
-					top: 0,
-				}}
-			>
-				<TouchableWithoutFeedback onPress={closeModal} style={{ height: '100%' }} />
-			</View>
-			<View
-				style={{
-					zIndex: 999,
-					position: 'absolute',
-					bottom: 0,
-					left: 0,
-					right: 0,
-				}}
-			>
-				<View style={{ width: '100%' }}>
-					<View
+		<View>
+			<ScrollView horizontal ref={scrollViewRef} style={[padding.vertical.small]}>
+				{reactions.map(({ emoji, count }) => (
+					<TouchableOpacity
 						style={[
-							border.radius.top.large,
-							border.shadow.big,
-							padding.bottom.large,
+							margin.small,
+							margin.horizontal.small,
+							padding.small,
+							border.radius.small,
+
 							{
-								backgroundColor: colors['main-background'],
-								shadowColor: colors.shadow,
+								flexDirection: 'row',
+								alignItems: 'center',
+								backgroundColor:
+									currentEmoji === emoji ? colors['background-header'] : colors['input-background'],
+							},
+						]}
+						key={`reaction-list${emoji}`}
+						onPress={() => setCurrentEmoji(emoji)}
+						onLayout={e => {
+							if (!dataSourceCords) {
+								setDataSourceCords(
+									reactions.reduce(p => {
+										return [...p, p[p.length - 1] + e.nativeEvent.layout.width + 25]
+									}, Array(1).fill(0)),
+								)
+							}
+						}}
+					>
+						<Text style={[padding.right.small]}>{`${getEmojiByName(emoji as string)}`}</Text>
+						<AnimatedNumber
+							number={count as unknown as number}
+							fontStyle={{
+								fontSize: 12,
+								fontWeight: 'bold',
+								color:
+									currentEmoji === emoji ? colors['main-background'] : colors['background-header'],
+							}}
+						/>
+					</TouchableOpacity>
+				))}
+			</ScrollView>
+			<View style={{ height: 300 }}>
+				<View>
+					<Text
+						style={[
+							padding.medium,
+							{
+								fontSize: 12,
+								fontWeight: 'bold',
+								color: colors['background-header'],
 							},
 						]}
 					>
-						<View>
-							<ScrollView horizontal ref={scrollViewRef} style={[padding.vertical.small]}>
-								{reactions.map(({ emoji, count }) => (
-									<TouchableOpacity
-										style={[
-											margin.small,
-											margin.horizontal.small,
-											padding.small,
-											border.radius.small,
-
-											{
-												flexDirection: 'row',
-												alignItems: 'center',
-												backgroundColor:
-													currentEmoji === emoji
-														? colors['background-header']
-														: colors['input-background'],
-											},
-										]}
-										key={`reaction-list${emoji}`}
-										onPress={() => setCurrentEmoji(emoji)}
-										onLayout={e => {
-											if (!dataSourceCords) {
-												setDataSourceCords(
-													reactions.reduce(p => {
-														return [...p, p[p.length - 1] + e.nativeEvent.layout.width + 25]
-													}, Array(1).fill(0)),
-												)
-											}
-										}}
-									>
-										<Text style={[padding.right.small]}>{`${getEmojiByName(
-											emoji as string,
-										)}`}</Text>
-										<AnimatedNumber
-											number={count as unknown as number}
-											fontStyle={{
-												fontSize: 12,
-												fontWeight: 'bold',
-												color:
-													currentEmoji === emoji
-														? colors['main-background']
-														: colors['background-header'],
-											}}
-										/>
-									</TouchableOpacity>
-								))}
-							</ScrollView>
-							<View style={{ height: 300 }}>
-								<View>
-									<Text
-										style={[
-											padding.medium,
-											{
-												fontSize: 12,
-												fontWeight: 'bold',
-												color: colors['background-header'],
-											},
-										]}
-									>
-										{currentEmoji}
-									</Text>
-								</View>
-								<FlatList
-									data={userList}
-									keyExtractor={member => member.publicKey}
-									renderItem={() => (
-										<View style={[padding.left.medium, { alignItems: 'flex-start' }]}>
-											{userList.map((member, index) => (
-												<MemberItem
-													key={`member-${index}`}
-													member={member}
-													divider={index < userList.length - 1}
-												/>
-											))}
-										</View>
-									)}
-								/>
-							</View>
-						</View>
-					</View>
+						{currentEmoji}
+					</Text>
 				</View>
+				<FlatList
+					data={userList}
+					keyExtractor={member => member.publicKey}
+					renderItem={() => (
+						<View style={[padding.left.medium, { alignItems: 'flex-start' }]}>
+							{userList.map((member, index) => (
+								<MemberItem
+									key={`member-${index}`}
+									member={member}
+									divider={index < userList.length - 1}
+								/>
+							))}
+						</View>
+					)}
+				/>
 			</View>
-		</Modal>
+		</View>
 	)
 }
 
@@ -239,7 +181,7 @@ export const Reactions: FC<{
 }> = ({ reactions, onEmojiKeyboard, onRemoveEmoji, cid, convPk }) => {
 	const [{ margin, padding, border }] = useStyles()
 	const colors = useThemeColor()
-	const [emoji, setEmoji] = useState<string | null | undefined>()
+	const { show } = useConversationModal()
 
 	if (!reactions.length) {
 		return null
@@ -247,13 +189,6 @@ export const Reactions: FC<{
 
 	return (
 		<View style={{ flexDirection: 'row', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-			<ReactionList
-				closeModal={() => setEmoji(undefined)}
-				reactions={reactions}
-				emoji={emoji}
-				cid={cid}
-				convPk={convPk}
-			/>
 			{reactions
 				.filter(({ emoji }) => typeof emoji === 'string')
 				.map(({ emoji, ownState, count }) => (
@@ -264,7 +199,7 @@ export const Reactions: FC<{
 							}
 						}}
 						onLongPress={() => {
-							setEmoji(emoji)
+							show(<ReactionList reactions={reactions} emoji={emoji} cid={cid} convPk={convPk} />)
 						}}
 						key={`reaction-list${emoji}`}
 					>
