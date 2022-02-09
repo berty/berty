@@ -48,10 +48,10 @@
       "body": ""
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "会话名称已更新"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "昵称已更新"
     },
     "memberPictureChanged": {
       "body": ""
