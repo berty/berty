@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
+			"title": "PROTEGGI LA TUA PRIVACY",
 			"desc": "",
-			"button": ""
+			"button": "SCOPRI"
 		},
 		"select-mode": {
 			"title": "Scegli un preset",
@@ -30,31 +30,31 @@
 			"title": "Crea il tuo account",
 			"desc": "Un nome è l'unica informazione richiesta",
 			"required": "Necessario",
-			"placeholder": "",
+			"placeholder": "Scegli il tuo nome utente",
 			"button": "CREA IL MIO ACCOUNT",
 			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
+			"import-account": "IMPORTA UN ACCOUNT",
+			"link-device": "COLLEGA UN DISPOSITIVO",
+			"more": "ALTRE INFORMAZIONI",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Buono a sapersi:",
+				"first-point": "Il tuo account viene creato localmente",
+				"second-point": "Il nome utente è facoltativo e può essere modificato"
 			}
 		},
 		"advanced-settings": {
-			"title": "",
+			"title": "Impostazioni avanzate",
 			"desc": "",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
+				"title": "Benvenuto nelle impostazioni avanzate",
+				"first-paragraph": "Qui sarai in grado di creare la tua configurazione personalizzata per adattarsi alle tue esigenze.",
+				"second-paragraph": "Ti presenteremo tutte le opzioni per aiutarti a capire cosa succede dietro le quinte.",
 				"third-paragraph": ""
 			},
-			"read-more": "",
-			"config-title": "",
+			"read-more": "Per saperne di più sulle impostazioni avanzate",
+			"config-title": "Configurazioni personalizzate",
 			"config-desc": "",
-			"learn-more": "",
+			"learn-more": "Per saperne di più",
 			"first-part": {
 				"title": "",
 				"first-button": "",
@@ -71,7 +71,7 @@
 				"first-button": "Notifiche gruppi",
 				"second-button": {
 					"title": "",
-					"placeholder": ""
+					"placeholder": "Inserisci l'indirizzo del server"
 				},
 				"third-button": ""
 			},
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Richiesta inviata. In attesa...",
 				"draft": "Bozza: {{message}}"
 			}
 		},
@@ -176,7 +176,7 @@
 				"title": "",
 				"avatar": {
 					"title": "",
-					"desc": ""
+					"desc": "Imposta un'immagine del profilo per questo account!"
 				},
 				"berty-services": {
 					"title": "",
@@ -191,7 +191,7 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
+					"title": "Invia messaggio",
 					"desc": ""
 				},
 				"ble-message": {
