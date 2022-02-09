@@ -63,7 +63,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 			Cache:                cache,
 			Directory:            &orbitDirectory,
 			Logger:               logger,
-			DirectChannelFactory: directchannel.InitDirectChannelFactory(logger.Named("odb-dc"), node.PeerHost),
+			DirectChannelFactory: directchannel.InitDirectChannelFactory(m.getContext(), logger.Named("odb-dc"), node.PeerHost),
 		},
 		Datastore:              rootDS,
 		DeviceKeystore:         deviceKS,
