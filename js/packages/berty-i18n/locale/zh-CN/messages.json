@@ -179,8 +179,8 @@
 					"desc": "让我们为此帐户设置个人资料图片！"
 				},
 				"berty-services": {
-					"title": "",
-					"desc": ""
+					"title": "激活 Berty 服务",
+					"desc": "通过使用由 Berty Tech 非营利机构提供的服务，提高您的网络性能。"
 				},
 				"contact": {
 					"title": "同步联系人",
@@ -281,11 +281,11 @@
 			"activate-button": "激活附近的 Android 设备"
 		},
 		"berty-services": {
-			"header": "",
-			"title": "",
+			"header": "活跃的 Berty 服务",
+			"title": "Berty 服务",
 			"recommended": "推荐的",
 			"desc": "",
-			"button": "",
+			"button": "使用 Berty 服务",
 			"skip": "跳过并稍后再做"
 		},
 		"delete-account": {
@@ -416,12 +416,12 @@
 			"export": "将选定主题导出为文件",
 			"share": "将选定主题作为文件分享",
 			"import": "导入主题文件",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": ""
+			"delete": "删除所有非默认主题",
+			"bad-format-title": "主题格式错误",
+			"bad-format-desc": "主题文件格式错误"
 		},
 		"my-berty-ID": {
-			"title": "",
+			"title": "我的 Berty ID",
 			"qr": "二维码",
 			"fingerprint": "指纹",
 			"devices": "设备"
@@ -469,7 +469,7 @@
 			"fingerprint": "指纹",
 			"info": "信息",
 			"devices": "设备",
-			"my-devices": ""
+			"my-devices": "我的设备"
 		},
 		"multi-member": {
 			"input-placeholder": "在此输入..."
@@ -480,10 +480,10 @@
 			"unsupported": "",
 			"check-device-settings": "",
 			"warning-disable": {
-				"title": "",
+				"title": "您想要激活此功能吗？",
 				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"accept": "启用",
+				"refuse": "跳过"
 			},
 			"why-cant-disable": "",
 			"errors": {
