@@ -37,15 +37,19 @@
 
 - (void)incrementCount {
     dispatch_async(self.dispatch_queue, ^{
-        self.count++;
+        @synchronized (self.semaphore) {
+            self.count++;
+        }
     });
 }
 
 - (void)countDown {
     dispatch_async(self.dispatch_queue, ^{
-        self.count--;
-        if (self.count == 0) {
-            dispatch_semaphore_signal(self.semaphore);
+        @synchronized (self.semaphore) {
+            self.count--;
+            if (self.count == 0) {
+                dispatch_semaphore_signal(self.semaphore);
+            }
         }
     });
 }

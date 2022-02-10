@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nonnull) CBCentralManager* cManager;
 @property (nonatomic, strong, nonnull) CBPeripheralManager* pManager;
 @property (nonatomic, strong, nonnull) CountDownLatch *bleOn;
-@property (nonatomic, strong, nonnull) CountDownLatch *serviceAdded;
+@property (nonatomic, strong, nonnull) CountDownLatch *serviceLatch;
 @property (nonatomic, strong, nullable) NSTimer *scannerTimer;
 @property (nonatomic, readwrite, getter=isScanning) BOOL scanning;
 @property (nonatomic, strong, nullable) WriteDataCache *writeCache;

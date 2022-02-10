@@ -14,8 +14,8 @@
 @interface CountDownLatch : NSObject
 
 @property (nonatomic, assign, readwrite) NSInteger count;
-@property (atomic, strong, readwrite) dispatch_semaphore_t semaphore;
-@property (nonatomic, strong) dispatch_queue_t dispatch_queue;
+@property (atomic, assign, readwrite) dispatch_semaphore_t semaphore;
+@property (nonatomic, assign) dispatch_queue_t dispatch_queue;
 @property (readwrite) BOOL timeout;
 
 - (instancetype)initCount:(NSInteger)count;

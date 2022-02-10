@@ -83,17 +83,17 @@ static inline char itoh(int i) {
         _pmEnable = FALSE;
         _scannerTimer = nil;
         _bleOn = [[CountDownLatch alloc] initCount:2];
-        _serviceAdded = [[CountDownLatch alloc] initCount:1];
+        _serviceLatch = [[CountDownLatch alloc] initCount:1];
         _bDevices = [[NSMutableArray alloc] init];
         
         _cManager = [[CBCentralManager alloc]
                      initWithDelegate:self
-                     queue:dispatch_queue_create("CentralManager", DISPATCH_QUEUE_SERIAL)
+                     queue:nil
                      options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:NO]}];
         
         _pManager = [[CBPeripheralManager alloc]
                      initWithDelegate:self
-                     queue:dispatch_queue_create("PeripheralManager", DISPATCH_QUEUE_SERIAL)
+					 queue:nil
                      options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:NO]}];
         
         [self initService];
@@ -134,7 +134,7 @@ static inline char itoh(int i) {
     [_logger release];
     [_peerManager release];
     [_bleOn release];
-    [_serviceAdded release];
+    [_serviceLatch release];
     [_bDevices release];
     [_cManager release];
     [_pManager release];
@@ -157,7 +157,7 @@ static inline char itoh(int i) {
     }];
     if (self.cmEnable && self.pmEnable) {
         [self.pManager addService:self.bertyService];
-        [self.serviceAdded await];
+        [self.serviceLatch await];
     }
 }
 
@@ -166,31 +166,35 @@ static inline char itoh(int i) {
         [self.logger e:@"didAddService() error=%@", [error localizedFailureReason]];
     }
     [self.logger d:@"didAddService: service=%@", [service.UUID UUIDString]];
-    [self.serviceAdded countDown];
+    [self.serviceLatch countDown];
 }
 
 #pragma mark - go called functions
 
 - (void)startScanning {
     @synchronized (self.cManager) {
-        if (self.cmEnable && !self.scanning) {
-            if (self.localPID != nil) {
-                [self.logger d:@"startScanning called"];
-                
-                NSDictionary *options = [NSDictionary
-                                         dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
-                                         CBCentralManagerScanOptionAllowDuplicatesKey, nil];
-                [self.cManager scanForPeripheralsWithServices:@[self.serviceUUID] options:options];
-                self.scanning = TRUE;
-                
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    self.scannerTimer = [NSTimer scheduledTimerWithTimeInterval:12.0 target:self selector:@selector(toggleScanner:) userInfo:nil repeats:YES];
-                });
-            }  else {
-                [self.logger e:@"startScanning error: localPID is null"];
+        if (self.cmEnable) {
+            if (!self.scanning) {
+                if (self.localPID != nil) {
+                    [self.logger d:@"startScanning called"];
+
+                    NSDictionary *options = [NSDictionary
+                                             dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
+                                             CBCentralManagerScanOptionAllowDuplicatesKey, nil];
+                    [self.cManager scanForPeripheralsWithServices:@[self.serviceUUID] options:options];
+                    self.scanning = TRUE;
+
+                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                        self.scannerTimer = [NSTimer scheduledTimerWithTimeInterval:12.0 target:self selector:@selector(toggleScanner:) userInfo:nil repeats:YES];
+                    });
+                }  else {
+                    [self.logger e:@"startScanning error: localPID is null"];
+                }
+            } else {
+                [self.logger i:@"startScanning: scanner is already enabled"];
             }
         } else {
-            [self.logger i:@"startScanning: scanner is already enabled"];
+            [self.logger i:@"startScanning: driver is not init"];
         }
     }
 }
@@ -234,20 +238,26 @@ static inline char itoh(int i) {
 
 - (void)startAdvertising {
     @synchronized (self.pManager) {
-        if (self.pmEnable && ![self.pManager isAdvertising]) {
-            if (self.ID != nil) {
-                [self.logger d:@"startAdvertising called: ID=%@", [self.logger SensitiveNSObject:self.ID]];
-                
-                // publish l2cap channel
-                self.psm = 0;
-                if (@available(iOS 11.0, *)) {
-                    [self.pManager publishL2CAPChannelWithEncryption:false];
+        if (self.pmEnable) {
+            if (![self.pManager isAdvertising]) {
+                if (self.ID != nil) {
+                    [self.logger d:@"startAdvertising called: ID=%@", [self.logger SensitiveNSObject:self.ID]];
+
+                    // publish l2cap channel
+                    self.psm = 0;
+                    if (@available(iOS 11.0, *)) {
+                        [self.pManager publishL2CAPChannelWithEncryption:false];
+                    }
+
+                    [self.pManager startAdvertising:@{ CBAdvertisementDataLocalNameKey:self.ID, CBAdvertisementDataServiceUUIDsKey:@[self.serviceUUID]}];
+                } else {
+                    [self.logger e:@"startAdvertising error: local ID is null"];
                 }
-                
-                [self.pManager startAdvertising:@{ CBAdvertisementDataLocalNameKey:self.ID, CBAdvertisementDataServiceUUIDsKey:@[self.serviceUUID]}];
             } else {
-                [self.logger e:@"startAdvertising error: local ID is null"];
+                [self.logger i:@"startAdvertising: already advertising"];
             }
+        } else {
+            [self.logger i:@"startAdvertising: driver is not init"];
         }
     }
 }

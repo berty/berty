@@ -16,7 +16,7 @@
     
     if (self) {
         _tasks = [[NSMutableArray alloc] init];
-        _queue = [queue retain];
+        _queue = queue;
         _logger = [logger retain];
     }
     
@@ -26,7 +26,6 @@
 - (void)dealloc {
     [_tasks removeAllObjects];
     [_tasks release];
-    [_queue release];
     [_logger release];
 
     [super dealloc];

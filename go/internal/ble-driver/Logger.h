@@ -22,7 +22,7 @@ typedef NS_ENUM(uint8_t, level) {
 
 @interface BLE_Logger : NSObject
 
-@property (nonatomic, strong, nonnull) os_log_t logger;
+@property (nonatomic, assign, nonnull) os_log_t logger;
 @property (readwrite) BOOL showSensitiveData;
 @property (readwrite) BOOL useExternalLogger;
 

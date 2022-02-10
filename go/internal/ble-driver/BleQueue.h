@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BleQueue : NSObject
 
-@property (nonatomic, strong, nonnull) dispatch_queue_t queue;
+@property (nonatomic, assign, nonnull) dispatch_queue_t queue;
 @property (nonatomic, strong, nonnull) Logger *logger;
 @property (nonatomic, strong, nonnull) NSMutableArray *tasks;
 @property (readwrite) BOOL taskQueueBusy;
