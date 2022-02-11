@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next'
 import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
+	removeActiveReplyInteraction,
 	resetChatInput,
+	selectActiveReplyInteraction,
 	selectChatInputMediaList,
 	selectChatInputText,
 	setChatInputText,
@@ -19,13 +21,6 @@ import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
 import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty-tech/react-redux'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-
-import { useReplyReaction } from '../ReplyReactionContext'
-import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
-import { ChatTextInput } from './ChatTextInput'
-import { RecordComponent } from './record/RecordComponent'
-import { AddFileMenu } from './file-uploads/AddFileMenu'
-import { EmojiBanner } from './emojis/EmojiBanner'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,
@@ -33,6 +28,12 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+
+import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
+import { ChatTextInput } from './ChatTextInput'
+import { RecordComponent } from './record/RecordComponent'
+import { AddFileMenu } from './file-uploads/AddFileMenu'
+import { EmojiBanner } from './emojis/EmojiBanner'
 
 export type ChatFooterProps = {
 	convPK: string
@@ -57,7 +58,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const mediaCids = useAppSelector(state => selectChatInputMediaList(state, convPK))
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
-		const { activeReplyInte, setActiveReplyInte } = useReplyReaction() // FIXME: move to redux
+		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
 		const [, { scaleSize }] = useStyles()
 		const messengerClient = useMessengerClient()
 		const ctx = useMessengerContext()
@@ -113,7 +114,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						type: 'messenger/InteractionUpdated',
 						payload: { interaction: optimisticInteraction },
 					})
-					setActiveReplyInte()
+					dispatch(removeActiveReplyInteraction({ convPK }))
 					dispatch(setChecklistItemDone({ key: 'message' }))
 					dispatch(resetChatInput(convPK))
 					ctx.playSound('messageSent')
@@ -123,14 +124,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				}
 			},
 			[
-				message,
+				activeReplyInte?.cid,
+				addedMedias,
 				convPK,
 				ctx,
-				activeReplyInte?.cid,
-				setActiveReplyInte,
 				dispatch,
+				message,
 				messengerClient,
-				addedMedias,
 				setSending,
 			],
 		)
@@ -305,6 +305,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								onChangeText={handleTextChange}
 								onSelectionChange={handleSelectionChange}
 								value={message}
+								convPK={convPK}
 							/>
 							<View style={{ marginLeft: horizontalGutter }}>
 								{showQuickButtons ? (

@@ -1,32 +1,54 @@
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import React, { createContext, FC, ReactNode, useContext, useState } from 'react'
+import React, { createContext, FC, ReactNode, useContext, useEffect, useState } from 'react'
 import { Modal, View } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
-const ModalContext = createContext<{ hide: () => void; show: (component: ReactNode) => void }>({
+const ModalContext = createContext<{
+	hide: (resetStack?: boolean) => void
+	show: (component: ReactNode) => void
+	modalVisible: boolean
+}>({
 	hide: () => {},
 	show: () => {},
+	modalVisible: false,
 })
 
 export const ConversationModalProvider: FC = ({ children }) => {
 	const colors = useThemeColor()
 	const [{ padding, border }] = useStyles()
 	const [visible, setVisible] = useState<boolean>(false)
-	const [content, setContent] = useState<ReactNode>(null)
+	const [stack, setStack] = useState<ReactNode[]>([])
 
 	const show = (component: ReactNode) => {
-		setContent(component)
+		setStack([...stack, component])
 		setVisible(true)
 	}
 
-	const hide = () => {
-		setContent(null)
-		setVisible(false)
+	const hide = (resetStack: boolean = false) => {
+		let newStack = [...stack]
+
+		if (!resetStack) {
+			newStack.pop()
+		} else {
+			newStack = []
+		}
+		setStack(newStack)
+		setVisible(newStack.length !== 0)
 	}
 
+	useEffect(() => {
+		if (!stack.length) {
+			return
+		}
+		setVisible(false)
+		setTimeout(() => {
+			setVisible(true)
+		}, 50)
+	}, [stack.length])
+
 	return (
-		<ModalContext.Provider value={{ hide, show }}>
+		<ModalContext.Provider value={{ hide, show, modalVisible: visible }}>
 			<Modal
 				transparent
 				visible={visible}
@@ -47,7 +69,7 @@ export const ConversationModalProvider: FC = ({ children }) => {
 						top: 0,
 					}}
 				>
-					<TouchableWithoutFeedback onPress={hide} style={{ height: '100%' }} />
+					<TouchableWithoutFeedback onPress={() => hide()} style={{ height: '100%' }} />
 				</View>
 				<View
 					style={{
@@ -70,7 +92,7 @@ export const ConversationModalProvider: FC = ({ children }) => {
 								},
 							]}
 						>
-							{content}
+							{stack.length ? stack[stack.length - 1] : null}
 						</View>
 					</View>
 				</View>
