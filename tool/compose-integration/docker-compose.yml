@@ -13,10 +13,10 @@ services:
       while [ ! -f /shared/testbot_daemon1.txt ]; do
         sleep 1;
       done;
-      sleep 60;
-      echo this sleep could be replace by something that auto-retry sending contact requests again and again;
+
       berty-integration
         -integration.testbot `cat /shared/testbot_daemon1.txt`
+        -p2p.disc-disable-filter=true
         -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
       ;"
     links:
