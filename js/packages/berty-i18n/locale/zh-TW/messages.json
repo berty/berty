@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "聯繫人請求",
+				"group-invitation": "",
 				"refuse-button": "拒絕",
 				"accept-button": "接受",
-				"accepted-button": "已接受"
+				"accepted-button": "已接受",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty 連接已確認! 🎉",
