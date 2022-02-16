@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "KONTAKTFORESPØRSEL",
+				"group-invitation": "",
 				"refuse-button": "NEKT",
 				"accept-button": "GODTA",
-				"accepted-button": "GODTATT"
+				"accepted-button": "GODTATT",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty-tilkobling bekreftet! 🎉",
