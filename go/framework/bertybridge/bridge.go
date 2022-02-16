@@ -16,9 +16,9 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -84,7 +84,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 		}
 
 		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
-		initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
+		logutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
 	}
 
 	// setup netdriver

@@ -77,6 +77,9 @@ service AccountService {
 
   // AppStorageRemove removes a value by key in a storage secured by the device enclave if possible
   rpc AppStorageRemove(AppStorageRemove.Request) returns (AppStorageRemove.Reply);
+
+  // GetOpenedAccount returns details of the opened account
+  rpc GetOpenedAccount(GetOpenedAccount.Request) returns (GetOpenedAccount.Reply);
 }
 
 message AppStoragePut {
@@ -106,12 +109,21 @@ message AppStorageRemove {
   message Reply {}
 }
 
+message GetOpenedAccount {
+  message Request {}
+  message Reply {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    repeated string listeners = 2;
+  }
+}
+
 message OpenAccount {
   message Request {
     repeated string args = 1;
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
     NetworkConfig network_config = 4;
+    string session_kind = 5;
   }
   message Reply {
   }
@@ -122,6 +134,7 @@ message OpenAccountWithProgress {
     repeated string args = 1;
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
+    string session_kind = 4;
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -174,6 +187,7 @@ message ImportAccount {
     repeated string args = 4;
     string logger_filters = 5;
     NetworkConfig network_config = 6;
+    string session_kind = 7;
   }
   message Reply {
     AccountMetadata account_metadata = 1;
@@ -188,6 +202,7 @@ message ImportAccountWithProgress {
     repeated string args = 4;
     string logger_filters = 5;
     NetworkConfig network_config = 6;
+    string session_kind = 7;
   }
   message Reply {
     berty.protocol.v1.Progress progress = 1;
@@ -202,6 +217,7 @@ message CreateAccount {
     repeated string args = 3;
     string logger_filters = 4;
     NetworkConfig network_config = 5;
+    string session_kind = 6;
   }
   message Reply {
     AccountMetadata account_metadata = 1;

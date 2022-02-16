@@ -65,6 +65,7 @@ func runMain(args []string) error {
 			UsageFunc: usageFunc,
 			Subcommands: []*ffcli.Command{
 				daemonCommand(),
+				accountDaemonCommand(),
 				miniCommand(),
 				bannerCommand(),
 				versionCommand(),

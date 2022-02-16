@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { ActivityIndicator, Text as TextNative, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
+import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@berty-tech/navigation'
+import { CommonActions } from '@react-navigation/native'
 
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
@@ -76,10 +79,14 @@ export const MessageInvitationButton: React.FC<{
 
 const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {
 	const [{ text }] = useStyles()
+	const { t }: any = useTranslation()
+
 	const conversationContact = useOneToOneContact(message.conversationPublicKey || '')
 	return (
 		<Text style={[text.size.scale(14), text.align.center]}>
-			You invited {conversationContact?.displayName || 'this contact'} to a group! 💌
+			{`${t('chat.one-to-one.contact-request-box.you-invited')} ${
+				conversationContact?.displayName || t('chat.one-to-one.contact-request-box.this-contact')
+			} ${t('chat.one-to-one.contact-request-box.to-a-group')}`}
 		</Text>
 	)
 }
@@ -90,6 +97,8 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 	const [{ row, flex, text, margin }] = useStyles()
 	const colors = useThemeColor()
 	const client = useMessengerClient()
+	const { t }: any = useTranslation()
+	const { dispatch } = useNavigation()
 	const [error, setError] = useState(false)
 	const [{ convPk, displayName }, setPdlInfo] = useState({ convPk: '', displayName: '' })
 	const [accepting, setAccepting] = useState(false)
@@ -125,6 +134,21 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 			setAccepting(true)
 			client
 				.conversationJoin({ link })
+				.then(() => {
+					dispatch(
+						CommonActions.reset({
+							routes: [
+								{ name: 'Main.Home' },
+								{
+									name: 'Chat.Group',
+									params: {
+										convId: convPk,
+									},
+								},
+							],
+						}),
+					)
+				})
 				.catch(err => {
 					console.warn(err)
 					setError(true)
@@ -133,7 +157,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 					setAccepting(false)
 				})
 		}
-	}, [client, link, conv, convPk, accepting, error])
+	}, [client, convPk, conv, accepting, error, link, dispatch])
 
 	return (
 		<>
@@ -145,7 +169,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
-					GROUP INVITATION
+					{t('chat.one-to-one.contact-request-box.group-invitation')}
 				</TextNative>
 			</View>
 			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
@@ -169,7 +193,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 					activeOpacity={!conv ? 0.2 : 1}
 					icon='close-outline'
 					color={colors['secondary-text']}
-					title='REFUSE'
+					title={t('chat.one-to-one.contact-request-box.refuse-button')}
 					backgroundColor={colors['main-background']}
 					styleOpacity={0.6}
 					disabled
@@ -185,7 +209,11 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 							? colors['background-header']
 							: colors['secondary-text']
 					}
-					title={!conv ? 'ACCEPT' : 'ACCEPTED'}
+					title={
+						!conv
+							? t('chat.one-to-one.contact-request-box.accept-button')
+							: t('chat.one-to-one.contact-request-box.accepted-button')
+					}
 					backgroundColor={
 						error
 							? colors['main-background']
@@ -208,7 +236,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 						{ color: colors['warning-asset'] },
 					]}
 				>
-					Error adding you to the group ☹️ Our bad!
+					{t('chat.one-to-one.contact-request-box.error')}
 				</Text>
 			)}
 		</>

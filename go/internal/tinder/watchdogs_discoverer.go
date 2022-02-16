@@ -213,6 +213,8 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 			continue
 		}
 
+		topic := in[sel].topic
+
 		// @gfanton(TODO): filter addrs by drivers should be made
 		// directly on the advertiser side, but since most drivers take
 		// addrs directly from host, it's easier (for now) to filter it
@@ -222,8 +224,6 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 				ID:    peer.ID,
 				Addrs: addrs,
 			}
-
-			topic := in[sel].topic
 
 			// protect this peer to avoid to be pruned
 			s.ProtectPeer(peer.ID)
@@ -236,6 +236,13 @@ func (s *multiDriverDiscoverer) selectFindPeers(ctx context.Context, out chan<- 
 
 			// forward the peer
 			out <- filterpeer
+		} else {
+			s.logger.Debug("found a peer but unable to add it, no valid addrs",
+				zap.String("driver", driver.Name),
+				logutil.PrivateString("peer", peer.ID.String()),
+				logutil.PrivateString("ns", topic),
+				zap.Any("addrs", peer.Addrs),
+				zap.Any("filter addrs", addrs))
 		}
 	}
 

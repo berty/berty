@@ -230,3 +230,21 @@ func (r *AuthTokenVerifier) GRPCAuthInterceptor(serviceID string) func(ctx conte
 		return ctx, nil
 	}
 }
+
+func GetAuthTokenVerifier(secret, pk string) (*AuthTokenVerifier, error) {
+	rawSecret, err := base64.RawStdEncoding.DecodeString(secret)
+	if err != nil {
+		return nil, err
+	}
+
+	rawPK, err := base64.RawStdEncoding.DecodeString(pk)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(rawPK) != ed25519.PublicKeySize {
+		return nil, fmt.Errorf("empty or invalid pk size")
+	}
+
+	return NewAuthTokenVerifier(rawSecret, rawPK)
+}

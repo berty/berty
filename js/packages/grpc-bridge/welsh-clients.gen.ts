@@ -98,6 +98,7 @@ export interface WelshAccountServiceClient {
 	appStoragePut: UnaryType<beapi.account.AccountService['appStoragePut']>
 	appStorageGet: UnaryType<beapi.account.AccountService['appStorageGet']>
 	appStorageRemove: UnaryType<beapi.account.AccountService['appStorageRemove']>
+	getOpenedAccount: UnaryType<beapi.account.AccountService['getOpenedAccount']>
 }
 
 export interface WelshMessengerServiceClient {

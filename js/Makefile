@@ -460,3 +460,20 @@ node_modules: package.json
 	$(call check-program, yarn)
 	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
+
+### Electron
+
+electron-app/node_modules: electron-app/package.json
+	$(call check-program, yarn)
+	cd ./electron-app && yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
+	echo 'SKIP_PREFLIGHT_CHECK=true' >> ./electron-app/.env
+	touch $@
+
+.PHONY: electron.mac
+electron.mac: electron-app/package.json
+	cd ../go && $(MAKE) install
+	rm -rf ./electron-app/resources/mac/berty
+	mkdir -p ./electron-app/resources/mac/
+	ln `$(GO) env GOPATH`/bin/berty ./electron-app/resources/mac/berty
+	cd ./electron-app && yarn install
+	cd ./electron-app && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)

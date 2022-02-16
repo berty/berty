@@ -1,0 +1,71 @@
+type: google.api.Service
+config_version: 3
+
+http:
+ rules:
+ - selector: berty.account.v1.AccountService.OpenAccount
+   post: /berty.account.v1/AccountService/OpenAccount
+   body: "*"
+ - selector: berty.account.v1.AccountService.OpenAccountWithProgress
+   post: /berty.account.v1/AccountService/OpenAccountWithProgress
+   body: "*"
+ - selector: berty.account.v1.AccountService.CloseAccount
+   post: /berty.account.v1/AccountService/CloseAccount
+   body: "*"
+ - selector: berty.account.v1.AccountService.CloseAccountWithProgress
+   post: /berty.account.v1/AccountService/CloseAccountWithProgress
+   body: "*"
+ - selector: berty.account.v1.AccountService.ListAccounts
+   post: /berty.account.v1/AccountService/ListAccounts
+   body: "*"
+ - selector: berty.account.v1.AccountService.DeleteAccount
+   post: /berty.account.v1/AccountService/DeleteAccount
+   body: "*"
+ - selector: berty.account.v1.AccountService.ImportAccount
+   post: /berty.account.v1/AccountService/ImportAccount
+   body: "*"
+ - selector: berty.account.v1.AccountService.ImportAccountWithProgress
+   post: /berty.account.v1/AccountService/ImportAccountWithProgress
+   body: "*"
+ - selector: berty.account.v1.AccountService.CreateAccount
+   post: /berty.account.v1/AccountService/CreateAccount
+   body: "*"
+ - selector: berty.account.v1.AccountService.UpdateAccount
+   post: /berty.account.v1/AccountService/UpdateAccount
+   body: "*"
+ - selector: berty.account.v1.AccountService.GetGRPCListenerAddrs
+   post: /berty.account.v1/AccountService/GetGRPCListenerAddrs
+   body: "*"
+ - selector: berty.account.v1.AccountService.LogfileList
+   post: /berty.account.v1/AccountService/LogfileList
+   body: "*"
+ - selector: berty.account.v1.AccountService.GetUsername
+   post: /berty.account.v1/AccountService/GetUsername
+   body: "*"
+ - selector: berty.account.v1.AccountService.NetworkConfigSet
+   post: /berty.account.v1/AccountService/NetworkConfigSet
+   body: "*"
+ - selector: berty.account.v1.AccountService.NetworkConfigGet
+   post: /berty.account.v1/AccountService/NetworkConfigGet
+   body: "*"
+ - selector: berty.account.v1.AccountService.NetworkConfigGetPreset
+   post: /berty.account.v1/AccountService/NetworkConfigGetPreset
+   body: "*"
+ - selector: berty.account.v1.AccountService.PushReceive
+   post: /berty.account.v1/AccountService/PushReceive
+   body: "*"
+ - selector: berty.account.v1.AccountService.PushPlatformTokenRegister
+   post: /berty.account.v1/AccountService/PushPlatformTokenRegister
+   body: "*"
+ - selector: berty.account.v1.AccountService.AppStoragePut
+   post: /berty.account.v1/AccountService/AppStoragePut
+   body: "*"
+ - selector: berty.account.v1.AccountService.AppStorageGet
+   post: /berty.account.v1/AccountService/AppStorageGet
+   body: "*"
+ - selector: berty.account.v1.AccountService.AppStorageRemove
+   post: /berty.account.v1/AccountService/AppStorageRemove
+   body: "*"
+ - selector: berty.account.v1.AccountService.GetOpenedAccount
+   post: /berty.account.v1/AccountService/GetOpenedAccount
+   body: "*"

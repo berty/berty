@@ -17,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/internal/androidnearby"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
@@ -64,6 +65,7 @@ type Options struct {
 	Keystore              accountutils.NativeKeystore
 	Logger                *zap.Logger
 	DisableLogging        bool
+	ServiceListeners      string
 }
 
 type service struct {
@@ -88,6 +90,8 @@ type service struct {
 	accountData       *accounttypes.AccountMetadata
 	nativeKeystore    accountutils.NativeKeystore
 	appStorage        datastore.Datastore
+	serviceListeners  string
+	openedAccountID   string
 }
 
 func (o *Options) applyDefault() {
@@ -135,12 +139,13 @@ func NewService(opts *Options) (_ Service, err error) {
 		nbDriver:          opts.NBDriver,
 		nativeKeystore:    opts.Keystore,
 		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
+		serviceListeners:  opts.ServiceListeners,
 	}
 
 	go s.handleLifecycle(rootCtx)
 
 	// override grpc logger before manager start to avoid race condition
-	initutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
+	logutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
 
 	// init app storage
 	dbPath := filepath.Join(s.rootdir, "app.sqlite")
