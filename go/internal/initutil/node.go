@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"strings"
 
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 
@@ -19,6 +21,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -551,6 +554,15 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init logger: %w", err))
 	}
 
+	// log file path
+	currentLogfilePath := ""
+	if m.Logging.FilePath != "" {
+		currentLogfilePath, err = logutil.CurrentLogfilePath(m.Logging.FilePath)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(fmt.Errorf("failed to get the current log file from path=%s", m.Logging.FilePath))
+		}
+	}
+
 	// messenger db
 	db, err := m.getMessengerDB()
 	if err != nil {
@@ -608,6 +620,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		StateBackup:         m.Node.Messenger.localDBState,
 		Ring:                m.Logging.ring,
 		PlatformPushToken:   pushPlatformToken,
+		LogFilePath:         currentLogfilePath,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {
@@ -618,6 +631,15 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 	messengertypes.RegisterMessengerServiceServer(grpcServer, messengerServer)
 	if err := messengertypes.RegisterMessengerServiceHandlerServer(m.getContext(), gatewayMux, messengerServer); err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to register messenger service handler: %w", err))
+	}
+
+	// Auto attach to Tyber hosts
+	if m.Logging.TyberAutoAttach != "" {
+		if _, err := messengerServer.TyberHostAttach(m.ctx, &messengertypes.TyberHostAttach_Request{
+			Addresses: strings.Split(m.Logging.TyberAutoAttach, ","),
+		}); err != nil {
+			m.initLogger.Error("messenger server cannot attach to tyber host", zap.Error(err))
+		}
 	}
 
 	m.Node.Messenger.lcmanager = lcmanager

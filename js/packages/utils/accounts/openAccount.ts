@@ -67,12 +67,12 @@ export const openAccount = async (selectedAccount: string | null, dispatch: AppD
 	const cliArgs = defaultCLIArgs
 
 	try {
-		const tyberHost = (await storageGet(GlobalPersistentOptionsKeys.TyberHost)) || ''
+		const tyberHost =
+			(await storageGet(GlobalPersistentOptionsKeys.TyberHost)) ||
+			defaultGlobalPersistentOptions().tyberHost.address
 		if (tyberHost !== '') {
-			// TODO: need to add this Tyber flag before enable this
-			// PR: https://github.com/berty/berty/pull/3877
-			// console.info(`connecting to ${tyberHost}`)
-			// cliArgs.push('--log.tyber-auto-attach=' + tyberHost)
+			console.info(`connecting to ${tyberHost}`)
+			cliArgs.push('--log.tyber-auto-attach=' + tyberHost)
 		}
 	} catch (e) {
 		console.warn(e)

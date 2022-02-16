@@ -24,6 +24,7 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Logging.FileFilters, "log.file-filters", m.Logging.FileFilters, "file zapfilter configuration")
 	fs.UintVar(&m.Logging.RingSize, "log.ring-size", m.Logging.RingSize, `ring buffer size in MB`)
 	fs.StringVar(&m.Logging.RingFilters, "log.ring-filters", m.Logging.RingFilters, "ring zapfilter configuration")
+	fs.StringVar(&m.Logging.TyberAutoAttach, "log.tyber-auto-attach", m.Logging.TyberAutoAttach, "tyber host addresses to be automatically attached to")
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-log.filters=':default: CUSTOM'",
