@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "KAPCSOLAT KÉRÉS",
+				"group-invitation": "",
 				"refuse-button": "ELUTASÍTÁS",
 				"accept-button": "ELFOGADÁS",
-				"accepted-button": "ELFOGADVA"
+				"accepted-button": "ELFOGADVA",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty kapcsolat megerősítve! 🎉",
