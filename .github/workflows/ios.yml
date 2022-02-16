@@ -112,13 +112,25 @@ jobs:
           key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-
 
-      - name: Cache Gomobile framework
-        uses: n0izn0iz/mkache@v3.0.20
+      - name: Cache Bertybridge framework
+        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
           rule: ios/Frameworks/Bertybridge.xcframework
           makefile: js/Makefile
-          key: ios-gomobile-${{ matrix.golang }}
+          key: ios-gomobile-bridge-${{ matrix.golang }}
+
+      - name: Cache Bertypush framework
+        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
+        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
+        with:
+          rule: ios/Frameworks/Bertypush.xcframework
+          makefile: js/Makefile
+          key: ios-gomobile-push-${{ matrix.golang }}
+
+      - name: Build Gomobile frameworks
+        working-directory: js
+        run: make ios.gomobile
 
       - name: Cache XCodeGen
         uses: actions/cache@v2.1.6

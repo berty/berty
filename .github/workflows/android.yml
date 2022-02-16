@@ -6,21 +6,21 @@ on:
     branches:
       - master
     paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '.github/workflows/android.yml'
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - ".github/workflows/android.yml"
   pull_request:
     paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '!js/packages/berty-i18n/locale/*/*.json'
-      - '.github/workflows/android.yml'
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - "!js/packages/berty-i18n/locale/*/*.json"
+      - ".github/workflows/android.yml"
 
 jobs:
   build:
@@ -28,16 +28,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golang: ['1.16.x']
-        node: ['14.x']
-        java: ['1.8']
+        golang: ["1.16.x"]
+        node: ["14.x"]
+        java: ["1.8"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
+          ref: ${{ github.event.pull_request.head.sha }} # see https://github.com/actions/checkout/issues/299
 
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -53,28 +53,32 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
 
       - name: Cache Node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-
-
-      - name: Cache Gomobile .aar
-        uses: n0izn0iz/mkache@v3.0.20
-        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
-        with:
-          rule: android/libs/gobridge.aar
-          makefile: js/Makefile
-          key: android-gomobile-${{ matrix.golang }}
 
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+
+      - name: Cache Gomobile .aar
+        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
+        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
+        with:
+          rule: android/libs/gobridge.aar
+          makefile: js/Makefile
+          key: android-gomobile-bridge-${{ matrix.golang }}
+
+      - name: Build Gomobile .aar
+        working-directory: js
+        run: make android.gomobile
 
       - name: Build the APK
         working-directory: js
