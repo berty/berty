@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "SOLICITUD DE CONTACTO",
+				"group-invitation": "",
 				"refuse-button": "RECHAZAR",
 				"accept-button": "ACEPTAR",
-				"accepted-button": "ACEPTADO"
+				"accepted-button": "ACEPTADO",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 ¡Conexión Berty confirmada! 🎉",
