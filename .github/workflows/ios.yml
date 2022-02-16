@@ -6,21 +6,21 @@ on:
     branches:
       - master
     paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '.github/workflows/ios.yml'
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - ".github/workflows/ios.yml"
   pull_request:
     paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '!js/packages/berty-i18n/locale/*/*.json'
-      - '.github/workflows/ios.yml'
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - "!js/packages/berty-i18n/locale/*/*.json"
+      - ".github/workflows/ios.yml"
 
 jobs:
   mac_runner_matrix_builder:
@@ -66,7 +66,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
+          ref: ${{ github.event.pull_request.head.sha }} # see https://github.com/actions/checkout/issues/299
 
       - name: Post-checkout cleanup
         if: ${{ matrix.selfhosted }}
@@ -82,15 +82,11 @@ jobs:
         with:
           xcode-version: ${{ matrix.xcode }}
 
-      #- name: Setup Ruby
-      #  uses: ruby/setup-ruby@v1
-      #  env:
-      #    # Needs to be set up for self-hosted runners, see:
-      #    # https://github.com/ruby/setup-ruby#using-self-hosted-runners
-      #    # Image used in runners: summerwind/actions-runner
-      #    ImageOS: macos11
-      #  with:
-      #    ruby-version: 3.0
+      # pinned by js/ios/.ruby-version
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: js/ios
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -102,35 +98,19 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Setup Bundler
-        if: ${{ matrix.selfhosted }}
-        working-directory: ./js/ios
-        run: |
-          gem --version
-          gem install bundler --user-install
-          bundler -v
-          bundle update --bundler
-
       - name: Cache Go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('go/**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
 
       - name: Cache Node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-
-
-      - name: Cache Ruby modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/vendor/bundle
-          key:          ${{ runner.OS }}-bundle-v1-${{ hashFiles('js/Gemfile.lock') }}
-          restore-keys: ${{ runner.OS }}-bundle-v1-
 
       - name: Cache Gomobile framework
         uses: n0izn0iz/mkache@v3.0.20
@@ -144,14 +124,14 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/vendor/xcodegen
-          key:          ios-xcodegen-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/XcodeGen.version') }}
+          key: ios-xcodegen-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/XcodeGen.version') }}
           restore-keys: ios-xcodegen-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-
 
       - name: Cache XCode project
         uses: actions/cache@v2.1.6
         with:
           path: js/ios/Berty.xcodeproj
-          key:          ios-xcodeproj-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/ios/*.yaml') }}
+          key: ios-xcodeproj-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproj-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-
 
       - name: Cache Pods and XCode workspace
@@ -160,7 +140,7 @@ jobs:
           path: |
             js/ios/Berty.xcworkspace
             js/ios/Pods
-          key:          ios-xcodeworkspace-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
+          key: ios-xcodeworkspace-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
           restore-keys: ios-xcodeworkspace-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-
 
       - name: Setup macOS keychain
