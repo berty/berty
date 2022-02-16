@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "",
+				"group-invitation": "",
 				"refuse-button": "",
 				"accept-button": "",
-				"accepted-button": ""
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "",
