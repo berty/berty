@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "KİŞİ İSTEĞİ",
+				"group-invitation": "",
 				"refuse-button": "REDDET",
 				"accept-button": "KABUL ET",
-				"accepted-button": "KABUL EDİLDİ"
+				"accepted-button": "KABUL EDİLDİ",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty bağlantısı onaylandı! 🎉",
