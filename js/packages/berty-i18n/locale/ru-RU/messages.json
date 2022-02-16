@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "ЗАПРОС В КОНТАКТЫ",
+				"group-invitation": "",
 				"refuse-button": "ОТКЛОНИТЬ",
 				"accept-button": "ПРИНЯТЬ",
-				"accepted-button": "ПРИНЯТЫЙ"
+				"accepted-button": "ПРИНЯТЫЙ",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty соединение подтверждено! 🎉",
