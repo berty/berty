@@ -525,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "",
+				"group-invitation": "",
 				"refuse-button": "거절",
 				"accept-button": "수락",
-				"accepted-button": "수락함"
+				"accepted-button": "수락함",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty 연결을 확인했어요! 🎉",
