@@ -2,13 +2,13 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "Réplication",
-        "description": "Ce service répliquera automatiquement vos conversations pour fournir une meilleure disponibilité.",
+        "name": "",
+        "description": "",
         "benefitBadge": "Performance"
       },
       "psh": {
         "name": "Notifications push",
-        "description": "Ce service permet à votre appareil de recevoir des notifications push pour les messages qui vous sont destinés.",
+        "description": "",
         "benefitBadge": "Performance"
       }
     },
@@ -20,7 +20,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": "Échec du déchiffrement push"
+      "title": ""
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Envoyé un message vocal",
@@ -32,35 +32,35 @@
     },
     "photo": {
       "bodyWithNumberOfMedia_one": "A envoyé une photo",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' photos"
     },
     "media": {
       "bodyWithNumberOfMedia_one": "A envoyé un média",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' médias"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v a réagi avec %[2]v à votre message"
     },
     "groupInvitation": {
       "bodyWithGroupName": "Invitation au groupe '%[1]v'"
     },
     "unknown": {
-      "body": "Quelque chose de nouveau a été reçu"
+      "body": "Quelque chose de nouveau vient d'être reçu"
     },
     "conversationNameChanged": {
       "body": "Le nom de la conversation a été mis à jour"
     },
     "memberNameChanged": {
-      "body": "Le surnom a été modifié"
+      "body": "Nom d'affichage mis à jour"
     },
     "memberPictureChanged": {
-      "body": "La photo de profil a été modifiée"
+      "body": "Photo de profil mise à jour"
     },
     "memberDetailsChanged": {
-      "body": "Les informations du membre ont été modifiées"
+      "body": "Détails du membre mis à jour"
     },
     "replyOptionsOffered": {
-      "body": "Des options de réponse sont disponibles"
+      "body": "Options de réponse proposées"
     }
   }
 }
