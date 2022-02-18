@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "서비스",
+				"network-button": "",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "",
-			"title": "서비스",
-			"recommended": "권장",
-			"desc": "이 기능은 자동으로 서버에 대화를 복제합니다.",
-			"button": "",
-			"skip": "넘기고 다음에 하기"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "설정이 끝났어요!",
 			"desc": "",
 			"button": "Berty 사용해보기"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "취소",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "지원",
-			"header-center-button": "",
-			"header-right-button": "설정",
-			"network-button": "",
 			"edit-profile": "프로필 수정",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "알림",
-				"tag-enabled": "켜짐",
-				"tag-disabled": "꺼짐"
-			},
-			"dark-mode-button": "다크모드",
-			"bluetooth-button": {
-				"title": "블루투스"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "새 계정 만들기"
 		},
 		"network-map": {
 			"title": "",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "설정",
 			"desc": "",
+			"in-app-notifications": "",
+			"dark-mode-button": "다크모드",
+			"devtools": "",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "외부 서비스",
-			"operated-services-button": "",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "",
-				"action": "추가하기"
-			},
-			"registered-services-button": {
-				"title": "",
-				"sample-no-services": "등록된 서비스 없음",
-				"sample-unknown-service": "알 수 없는 서비스"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "권장",
+			"desc": "",
+			"button": "",
+			"skip": "넘기고 다음에 하기"
 		},
 		"delete-account": {
 			"title": "계정 삭제!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "지문",
 			"devices": "장치"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "",
 			"block-button": "",
 			"delete-button": "",
 			"fingerprint": "지문",
 			"info": "정보",
-			"devices": "장치"
+			"devices": "장치",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "여기에 입력..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "장치",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "검색",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "",
+				"group-invitation": "",
 				"refuse-button": "거절",
 				"accept-button": "수락",
-				"accepted-button": "수락함"
+				"accepted-button": "수락함",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty 연결을 확인했어요! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "",
 			"files": "",
 			"microphone": "",
@@ -571,6 +584,13 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -607,6 +627,7 @@
 			"settings": ""
 		},
 		"skip": "넘기기",
+		"cancel": "취소하기",
 		"settings-text": ""
 	},
 	"notification": {
