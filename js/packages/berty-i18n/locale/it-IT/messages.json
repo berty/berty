@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
+			"title": "PROTEGGI LA TUA PRIVACY",
 			"desc": "",
-			"button": ""
+			"button": "SCOPRI"
 		},
 		"select-mode": {
 			"title": "Scegli un preset",
@@ -30,31 +30,31 @@
 			"title": "Crea il tuo account",
 			"desc": "Un nome è l'unica informazione richiesta",
 			"required": "Necessario",
-			"placeholder": "",
+			"placeholder": "Scegli il tuo nome utente",
 			"button": "CREA IL MIO ACCOUNT",
 			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"import-account": "IMPORTA UN ACCOUNT",
+			"link-device": "COLLEGA UN DISPOSITIVO",
+			"more": "ALTRE INFORMAZIONI",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Buono a sapersi:",
+				"first-point": "Il tuo account viene creato localmente",
+				"second-point": "Il nome utente è facoltativo e può essere modificato"
 			}
 		},
-		"expert-setup": {
-			"title": "",
+		"advanced-settings": {
+			"title": "Impostazioni avanzate",
 			"desc": "",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
+				"title": "Benvenuto nelle impostazioni avanzate",
+				"first-paragraph": "Qui sarai in grado di creare la tua configurazione personalizzata per adattarsi alle tue esigenze.",
+				"second-paragraph": "Ti presenteremo tutte le opzioni per aiutarti a capire cosa succede dietro le quinte.",
 				"third-paragraph": ""
 			},
-			"config-title": "",
+			"read-more": "Per saperne di più sulle impostazioni avanzate",
+			"config-title": "Configurazioni personalizzate",
 			"config-desc": "",
-			"learn-more": "",
+			"learn-more": "Per saperne di più",
 			"first-part": {
 				"title": "",
 				"first-button": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Servizi",
+				"network-button": "Lista Network",
 				"first-button": "Notifiche gruppi",
 				"second-button": {
 					"title": "",
-					"placeholder": ""
+					"placeholder": "Inserisci l'indirizzo del server"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Autenticazione ai servizi",
-			"title": "Servizi",
-			"recommended": "Consigliato",
-			"desc": "Questo replicherà automaticamente le tue conversazioni su un server",
-			"button": "Usa servizi gestiti da Berty",
-			"skip": "SALTA E FALLO DOPO"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Installazione terminata!",
 			"desc": "Ora è possibile utilizzare l'app, iniziare ad aggiungere contatti e parlare liberamente e privatamente con essi",
 			"button": "INIZIA A USARE BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Annulla",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -131,7 +128,7 @@
 				"fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Richiesta inviata. In attesa...",
 				"draft": "Bozza: {{message}}"
 			}
 		},
@@ -179,9 +176,9 @@
 				"title": "",
 				"avatar": {
 					"title": "",
-					"desc": ""
+					"desc": "Imposta un'immagine del profilo per questo account!"
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -194,15 +191,7 @@
 					"desc": ""
 				},
 				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
+					"title": "Invia messaggio",
 					"desc": ""
 				},
 				"ble-message": {
@@ -210,21 +199,10 @@
 					"desc": ""
 				}
 			},
-			"header-left-button": "Aiuto",
-			"header-center-button": "Devtools",
-			"header-right-button": "Impostazioni",
-			"network-button": "Lista Network",
 			"edit-profile": "Modifica il profilo",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Notifiche",
-				"tag-enabled": "Abilitato",
-				"tag-disabled": "Disabilitato"
-			},
-			"dark-mode-button": "Modalità anonima",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Crea un nuovo account"
 		},
 		"network-map": {
 			"title": "Lista Network",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Impostazioni",
 			"desc": "Personalizza tutto per ottenere l'app che si adatta alle tue esigenze",
+			"in-app-notifications": "",
+			"dark-mode-button": "Modalità anonima",
+			"devtools": "Devtools",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "Dati salvati!",
 				"desc": "Disponibile nella directory dei download"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Attiva Android Nelle Vicinanze"
 		},
-		"services-auth": {
-			"title": "Servizi esterni",
-			"operated-services-button": "Usa servizi gestiti da Berty",
-			"register-service-button": {
-				"title": "Registra un provider di servizi personalizzato",
-				"input-placeholder": "Url Servizio",
-				"action": "Aggiungi"
-			},
-			"registered-services-button": {
-				"title": "Servizi attualmente registrati",
-				"sample-no-services": "Nessun servizio registrato",
-				"sample-unknown-service": "Servizio sconosciuto"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Consigliato",
+			"desc": "",
+			"button": "",
+			"skip": "SALTA E FALLO DOPO"
 		},
 		"delete-account": {
 			"title": "Elimina account!",
@@ -439,9 +415,13 @@
 			"save": "Salva questo tema",
 			"export": "Esporta il tema selezionato come file",
 			"share": "Condividi il tema selezionato come file",
-			"import": "Importa un file tema"
+			"import": "Importa un file tema",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Impronta",
 			"devices": "Dispositivi"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Contrassegna come verificato",
 			"block-button": "Blocca contatto",
 			"delete-button": "Elimina contatto",
 			"fingerprint": "Impronta",
 			"info": "Informazioni",
-			"devices": "Dispositivi"
+			"devices": "Dispositivi",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "Scrivi qui..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Dispositivi",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Cerca",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "RICHIESTA DI CONTATTO",
+				"group-invitation": "",
 				"refuse-button": "RIFIUTA",
 				"accept-button": "ACCETTA",
-				"accepted-button": "ACCETTATO"
+				"accepted-button": "ACCETTATO",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Connessione Berty confermata! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "Galleria",
+			"no-images": "",
 			"camera": "Fotocamera",
 			"files": "File",
 			"microphone": "Microfono",
@@ -571,6 +584,13 @@
 			"response-to": "Risposta a",
 			"replying-to": "Stai rispondendo a",
 			"replied-to": "Risposto a"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -596,7 +616,7 @@
 		},
 		"camera": {
 			"title": "Fotocamera",
-			"desc": "Per scansionare il codice QR e aggiungere contatti con la tua fotocamera, l'app Berty ha bisogno del tuo permesso. La fotocamera non può essere utilizzata per nient'altro."
+			"desc": ""
 		},
 		"audio": {
 			"title": "Messaggi audio",
@@ -607,6 +627,7 @@
 			"settings": "Vai alle impostazioni"
 		},
 		"skip": "SALTA",
+		"cancel": "ANNULLA",
 		"settings-text": "Puoi abilitare il permesso {{title}} dalle Impostazioni."
 	},
 	"notification": {
@@ -624,13 +645,13 @@
 		"wtf-screen": {
 			"title": "Cosa è fallito?",
 			"desc": "L'applicazione è appena crashata.",
-			"desc-report": "Scuoti il telefono per segnalare il bug e fai clic sul pulsante per uscire e riavviare l'app."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Ci dispiace per questo bug!",
 			"desc": "È colpa di Francis, sviluppatore stagista a Berty, che deve aver commesso un errore. Che idiota questo Francis!",
 			"desc-em": "*Beh, ok, non c'è alcun Francis nel team di Berty.",
-			"desc-report": "Scuoti il tuo telefono e via di nuovo!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
