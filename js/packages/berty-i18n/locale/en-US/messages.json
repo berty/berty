@@ -483,19 +483,19 @@
 				"title": "Do you want to activate this feature?",
 				"subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
 				"accept": "Activate",
-				"refuse": ""
+				"refuse": "Skip"
 			},
-			"why-cant-disable": "",
+			"why-cant-disable": "You can't disable push notifications for a specific conversation.",
 			"errors": {
-				"no-token": "",
-				"no-server": ""
+				"no-token": "Your device is not compatible with push notifications",
+				"no-server": "Your must register a push relay first"
 			}
 		},
 		"devices": {
-			"title": "",
+			"title": "Devices",
 			"push": {
-				"enabled": "",
-				"not-enabled": ""
+				"enabled": "Push notifications enabled",
+				"not-enabled": "Push notifications not enabled"
 			}
 		},
 		"multi-member-settings": {
@@ -525,14 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "CONTACT REQUEST",
-				"group-invitation": "",
+				"group-invitation": "GROUP INVITATION",
 				"refuse-button": "REFUSE",
 				"accept-button": "ACCEPT",
 				"accepted-button": "ACCEPTED",
-				"error": "",
-				"you-invited": "",
-				"this-contact": "",
-				"to-a-group": ""
+				"error": "Error adding you to the group ☹️ Our bad!",
+				"you-invited": "You invited",
+				"this-contact": "this contact",
+				"to-a-group": "to a group! 💌"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty connection confirmed! 🎉",
@@ -590,7 +590,7 @@
 			"show-less": "Show less"
 		},
 		"emojis": {
-			"matching": ""
+			"matching": "Emojis matching"
 		}
 	},
 	"audio": {
