@@ -84,9 +84,27 @@ jobs:
 
       # pinned by js/ios/.ruby-version
       - uses: ruby/setup-ruby@v1
+        if: ${{ !matrix.selfhosted }}
         with:
           working-directory: js/ios
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      # ruby/setup-ruby doesn't work on self-hosted runners due to missing ImageOS env and bad paths
+      - name: Setup Bundler
+        if: ${{ matrix.selfhosted }}
+        working-directory: js/ios
+        run: |
+          gem --version
+          gem install bundler --user-install
+          bundler -v
+          bundle update --bundler
+      - name: Cache Ruby modules
+        if: ${{ matrix.selfhosted }}
+        uses: actions/cache@v2.1.6
+        with:
+          path: js/vendor/bundle
+          key: ${{ runner.OS }}-bundle-v1-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-v1-
 
       - name: Setup Go
         uses: actions/setup-go@v2
