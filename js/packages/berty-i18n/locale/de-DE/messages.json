@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "SCHÜTZE DEINE PRIVATSPHÄRE",
+			"desc": "kostenloses und sicheres Peer-to-Peer-Messaging",
+			"button": "ENTDECKEN"
 		},
 		"select-mode": {
 			"title": "Wähle eine Voreinstellung",
@@ -30,61 +30,52 @@
 			"title": "Konto erstellen",
 			"desc": "Ein Spitzname ist die einzige erforderliche Information",
 			"required": "Erforderlich",
-			"placeholder": "",
+			"placeholder": "Wähle deinen Spitznamen",
 			"button": "Account erstellen",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "ERWEITERT",
+			"import-account": "KONTO IMPORTIEREN",
+			"link-device": "GERÄT VERBINDEN",
+			"more": "Mehr Informationen",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Wissenswert:",
+				"first-point": "Ihr Konto wurde lokal erstellt",
+				"second-point": "Der Spitzname ist optional und kann bearbeitet werden"
 			}
 		},
-		"expert-setup": {
-			"title": "",
-			"desc": "",
+		"advanced-settings": {
+			"title": "Erweiterte Einstellungen",
+			"desc": "Finden Sie die Dokumentation und erstellen Sie Ihre eigene Konfiguration.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Willkommen in den erweiterten Einstellungen",
+				"first-paragraph": "Hier können Sie Ihre eigene benutzerdefinierte Konfiguration erstellen, die Ihren Bedürfnissen entspricht.",
+				"second-paragraph": "Wir stellen Ihnen alle Optionen vor, damit Sie verstehen können, was hinter dem Vorhang geschieht.",
+				"third-paragraph": "Sie finden auch die Resourcen, die Sie zum Hacken brauchen. Dieser Bereich ist nur etwas für Experten!"
 			},
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"read-more": "Lesen Sie mehr über die erweiterten Einstellungen",
+			"config-title": "Benutzerdefinierte Einstellungen",
+			"config-desc": "3 Schritte der App-Konfiguration. Passen Sie jetzt alles an!",
+			"learn-more": "Mehr lesen",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Nähe",
+				"first-button": "Bluetooth Low Energy",
 				"second-button": "Lokales Netz"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Peer-to-Peer",
+				"first-button": "Verteilte Hashtabelle",
+				"second-button": "TOR-Aktivierung"
 			},
 			"third-part": {
 				"title": "Dienste",
+				"network-button": "Netzwerke",
 				"first-button": "Push-Benachrichtigungen",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "Richten Sie Ihren eigenen Knoten ein",
+					"placeholder": "Serveradresse eingeben"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": "Wählen Sie einen zertifizierten Knoten aus"
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Authentifizieren bei Diensten",
-			"title": "Dienste",
-			"recommended": "Empfohlen",
-			"desc": "Dadurch werden deine Unterhaltungen automatisch auf einen Server kopiert",
-			"button": "Von Berty betriebene Dienste nutzen",
-			"skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
+			"apply-changes": "ÄNDERUNGEN ANWENDEN"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Einrichtung abgeschlossen!",
 			"desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
 			"button": "Fertig - Berty benutzen"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "Wir sind bereit, webviews im Netzwerk zu laden. Möchten Sie es trotzdem öffnen?",
+			"first-button": "Abbrechen",
+			"second-button": "Ja"
 		}
 	},
 	"main": {
@@ -176,13 +173,13 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Checkliste {{tasksDone}}/{{totalTasks}}",
+				"title": "Willkommens-Checkliste {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Ändere dein Avatar",
-					"desc": ""
+					"desc": "Lass uns ein Profilbild für dieses Konto erstellen!"
 				},
-				"relay": {
-					"title": "Relay konfigurieren",
+				"berty-services": {
+					"title": "Aktive Berty-Services",
 					"desc": "Verbessern Sie Ihre Netzwerkleistung durch die Nutzung eines von Berty Tech zur Verfügung gestellten Relais."
 				},
 				"contact": {
@@ -197,34 +194,15 @@
 					"title": "Nachricht senden",
 					"desc": "Sag \"Hallo Welt\" zu einem Kontakt!"
 				},
-				"theme": {
-					"title": "Thema anpassen",
-					"desc": "Lass und deine eigene Version der App erstellen und es mit der Community teilen!"
-				},
-				"hidden-account": {
-					"title": "Erstelle ein versteckten Account",
-					"desc": "Erstelle ein unsichtabren Account mit einem bestimmten Passwort zum einloggen und bleib sicher am Flughafen!"
-				},
 				"ble-message": {
 					"title": "Nachricht ohne Internet senden",
 					"desc": "Nutze das Proximity Feature und sende eine Nachricht ohne mobile Daten oder eine Internetverbindung!"
 				}
 			},
-			"header-left-button": "Hilfe",
-			"header-center-button": "Für Entwickler",
-			"header-right-button": "Einstellungen",
-			"network-button": "Netzwerke",
 			"edit-profile": "Profil bearbeiten",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Benachrichtigungen",
-				"tag-enabled": "Aktiviert",
-				"tag-disabled": "Deaktiviert"
-			},
-			"dark-mode-button": "Dunkler Modus",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "Link teilen",
+			"create-group": "Neue Gruppe erstellen",
+			"create-new-account": "Konto erstellen"
 		},
 		"network-map": {
 			"title": "Netzwerke",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Einstellungen",
 			"desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
+			"in-app-notifications": "In-App-Benachrichtigungen",
+			"dark-mode-button": "Dunkler Modus",
+			"devtools": "Für Entwickler",
+			"network-config": "Netzwerkeinstellungen",
 			"notification-file-saved": {
 				"title": "Daten gespeichert!",
 				"desc": "Im Download-Verzeichnis verfügbar"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "\"Android in der Nähe\" aktivieren"
 		},
-		"services-auth": {
-			"title": "Externe Dienste",
-			"operated-services-button": "Von Berty betriebene Dienste verwenden",
-			"register-service-button": {
-				"title": "Einen externen Dienst registrieren",
-				"input-placeholder": "Dienst-URL",
-				"action": "Hinzufügen"
-			},
-			"registered-services-button": {
-				"title": "Momentan registrierte Dienste",
-				"sample-no-services": "Keine Dienste registriert",
-				"sample-unknown-service": "Unbekannter Dienst"
-			}
+		"berty-services": {
+			"header": "Aktive Berty-Services",
+			"title": "Berty-Services",
+			"recommended": "Empfohlen",
+			"desc": " Mit der Aktivierung von Berty-Services erhalten Sie Push-Mitteilungen über Berty-Technologies Server und gewähren Ihnen Zugriff auf die Knoten für die Konversations-Replikation.",
+			"button": "Berty-Services nutzen",
+			"skip": "ÜBERSPRINGEN UND DIES SPÄTER ERLEDIGEN"
 		},
 		"delete-account": {
 			"title": "Mein Konto löschen!",
@@ -352,10 +328,10 @@
 			"current-tag": "Aktuell"
 		},
 		"faq": {
-			"title": ""
+			"title": "FAQ"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Roadmap"
 		},
 		"devtools": {
 			"title": "Entwicklerwerkzeuge",
@@ -439,9 +415,13 @@
 			"save": "Dieses Thema speichern",
 			"export": "Ausgewähltes Theme als Datei exportieren",
 			"share": "Ausgewähltes Theme als Datei teilen",
-			"import": "Importiere eine Thema-Datei"
+			"import": "Importiere eine Thema-Datei",
+			"delete": "Alle nicht Standard-Themes löschen",
+			"bad-format-title": "Ungültiges Themen-Format",
+			"bad-format-desc": "Ungültiges Format für die Themen-Datei"
 		},
 		"my-berty-ID": {
+			"title": "Meine Berty ID",
 			"qr": "QR",
 			"fingerprint": "Fingerabdruck",
 			"devices": "Geräte"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "Wird gesendet..",
+		"sent": "Gesendet",
 		"contact-settings": {
 			"mark-button": "Als bestätigt markieren",
 			"block-button": "Kontakt blockieren",
 			"delete-button": "Kontakt löschen",
 			"fingerprint": "Fingerabdruck",
 			"info": "Infos",
-			"devices": "Geräte"
+			"devices": "Geräte",
+			"my-devices": "Meine Geräte"
 		},
 		"multi-member": {
 			"input-placeholder": "Hier eingeben..."
+		},
+		"push-notifications": {
+			"enable": "Push-Benachrichtigungen aktivieren",
+			"enabled": "Push-Benachrichtigungen sind aktiviert",
+			"unsupported": "Benachrichtigungen werden nicht unterstützt",
+			"check-device-settings": "Diese Unterhaltung ist so eingestellt, dass Push-Benachrichtigungen empfangen werden, aber Benachrichtigungen wurden in den Systemeinstellungen Ihres Geräts deaktiviert",
+			"warning-disable": {
+				"title": "Möchten Sie diese Funktion aktivieren?",
+				"subtitle": "Einmal aktiviert, können Push-Benachrichtigungen für eine bestimmte Unterhaltung nicht deaktiviert werden.",
+				"accept": "Aktivieren",
+				"refuse": "Überspringen"
+			},
+			"why-cant-disable": "Sie können Push-Benachrichtigungen nicht für eine bestimmte Unterhaltung deaktivieren.",
+			"errors": {
+				"no-token": "Ihr Gerät ist nicht mit Push-Benachrichtigungen kompatibel",
+				"no-server": "Sie müssen zuerst ein Push-Relais registrieren"
+			}
+		},
+		"devices": {
+			"title": "Geräte",
+			"push": {
+				"enabled": "Push-Benachrichtigungen aktiviert",
+				"not-enabled": "Push-Benachrichtigungen deaktiviert"
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Suchen",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "KONTAKT-ANFRAGE",
+				"group-invitation": "",
 				"refuse-button": "Ablehnen",
 				"accept-button": "Annehmen",
-				"accepted-button": "Angenommen"
+				"accepted-button": "Angenommen",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty Verbindung bestätigt! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "Galerie",
+			"no-images": "Keine Bilder",
 			"camera": "Kamera",
 			"files": "Dateien",
 			"microphone": "Mikrofon",
@@ -571,6 +584,13 @@
 			"response-to": "Antwort an",
 			"replying-to": "Du antwortest an",
 			"replied-to": "Antwort auf"
+		},
+		"user-message": {
+			"read-more": "Mehr lesen",
+			"show-less": "Weniger anzeigen"
+		},
+		"emojis": {
+			"matching": "Emojis matching"
 		}
 	},
 	"audio": {
@@ -596,7 +616,7 @@
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": "Um QR-Codes zu scannen und Kontakte mit deiner hinzuzufügen braucht die Berty deine Berechtigung. Die Kamera wird für nichts anderes genutzt."
+			"desc": "Möchten Sie der Kamera erlauben zu fotografieren oder QR-Codes zu scannen?"
 		},
 		"audio": {
 			"title": "Audio-Nachrichten",
@@ -607,6 +627,7 @@
 			"settings": "Gehe zu den Einstellungen"
 		},
 		"skip": "Überspringen",
+		"cancel": "Abbrechen",
 		"settings-text": "Sie können {{title}} Berechtigungen in den Einstellungen aktivieren."
 	},
 	"notification": {
@@ -624,13 +645,13 @@
 		"wtf-screen": {
 			"title": "Was ist das Problem?",
 			"desc": "Die Anwendung ist soeben abgestürzt.",
-			"desc-report": "Schütteln Sie Ihr Telefon um den Fehler zu melden und klicken Sie auf den Button, um die App zu beenden und neu zu starten."
+			"desc-report": "Klicken Sie auf den Button, um die App zu beenden und sie neu zu starten."
 		},
 		"sorry-screen": {
 			"title": "Entschuldigen Sie diesen Fehler!",
 			"desc": "Francis ist schuld, unser Praktikant. Er hat wohl einen Fehler gemacht. Ach dieser Francis!",
 			"desc-em": "*Okay, es gibt keinen Francis im Team Berty.",
-			"desc-report": "Schütteln Sie Ihr Telefon und es geht weiter!"
+			"desc-report": "Klicken Sie auf den Button, um die App zu beenden und sie neu zu starten."
 		}
 	},
 	"debug": {
@@ -658,10 +679,10 @@
 					"action-cancel": "Abbrechen"
 				},
 				"status": {
-					"datastore-found": "",
-					"datastore-not-found": "",
-					"ipfs-repo-found": "",
-					"ipfs-repo-not-found": "",
+					"datastore-found": "Datenspeicher gefunden",
+					"datastore-not-found": "Datenspeicher nicht gefunden",
+					"ipfs-repo-found": "IPFS-Repository gefunden",
+					"ipfs-repo-not-found": "IPFS-Repository nicht gefunden",
 					"messenger-db-found": "Messenger-DB gefunden",
 					"messenger-db-not-found": "Messenger-DB nicht gefunden"
 				},
