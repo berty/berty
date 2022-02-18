@@ -1,33 +1,66 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Rendimiento"
+      },
+      "psh": {
+        "name": "Notificaciones Push",
+        "description": "",
+        "benefitBadge": "Rendimiento"
+      }
+    },
+    "pageTitle": "Servicios de Berty",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Política de privacidad"
+  },
   "push": {
     "message": {},
     "error": {
       "title": ""
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Un mensaje de voz enviado",
+      "bodyWithNumberOfMedia_other": "%[1]v mensajes de voz enviados"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Un imágen de gif enviado",
+      "bodyWithNumberOfMedia_other": "%[1]v imágenes de gif enviados"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Enviada una foto",
+      "bodyWithNumberOfMedia_other": "%[1]v fotos enviadas"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Un medio enviado",
+      "bodyWithNumberOfMedia_other": "%[1]v medios enviados"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v reaccionó con %[2]v a su mensaje"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Invitado al grupo '%[1]v'"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": "Se ha recibido algo nuevo"
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": "Foto de perfil actualizada"
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
