@@ -1,33 +1,66 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "性能"
+      },
+      "psh": {
+        "name": "推送通知",
+        "description": "",
+        "benefitBadge": "性能"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "隐私策略"
+  },
   "push": {
     "message": {},
     "error": {
       "title": ""
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了语音消息",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v 语音消息"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了 gif",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v gif"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了照片",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v 照片"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "发送了媒体",
+      "bodyWithNumberOfMedia_other": "已发送 %[1]v 媒体"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v 与 %[2]v 回应您的消息"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "邀请您加入 '%[1]v' 群组"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": "会话名称已更新"
+    },
+    "memberNameChanged": {
+      "body": "昵称已更新"
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
