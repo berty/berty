@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Tjenester",
+				"network-button": "Liste over nettverk",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Verifiser til tjenester",
-			"title": "Tjenester",
-			"recommended": "Anbefalt",
-			"desc": "Dette vil automatisk gjenskape dine samtaler på en server",
-			"button": "Bruk Berty-opererte tjenester",
-			"skip": "HOPP OVER OG GJØR DETTE SENERE"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Oppsett fullført!",
 			"desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
 			"button": "BEGYNN Å BRUKE BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "Hjelp",
-			"header-center-button": "Verktøy for utviklere",
-			"header-right-button": "Innstillinger",
-			"network-button": "Liste over nettverk",
 			"edit-profile": "Rediger profil",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Varsler",
-				"tag-enabled": "Aktivert",
-				"tag-disabled": "Deaktivert"
-			},
-			"dark-mode-button": "Mørk-modus",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": ""
 		},
 		"network-map": {
 			"title": "Liste over nettverk",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Innstillinger",
 			"desc": "Tilpass alt for å få appen som passer dine behov",
+			"in-app-notifications": "",
+			"dark-mode-button": "Mørk-modus",
+			"devtools": "Verktøy for utviklere",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Eksterne tjenester",
-			"operated-services-button": "Bruk Berty-opererte tjenester",
-			"register-service-button": {
-				"title": "Registrer en egendefinert tjenesteleverandør",
-				"input-placeholder": "Tjeneste URL",
-				"action": "Legg til"
-			},
-			"registered-services-button": {
-				"title": "Gjeldende registrerte tjenester",
-				"sample-no-services": "Ingen tjenester registrert",
-				"sample-unknown-service": "Ukjent tjeneste"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Anbefalt",
+			"desc": "",
+			"button": "",
+			"skip": "HOPP OVER OG GJØR DETTE SENERE"
 		},
 		"delete-account": {
 			"title": "Slett konto!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Fingeravtrykk",
 			"devices": "Enheter"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Marker som verifisert",
 			"block-button": "Blokker kontakt",
 			"delete-button": "Slett kontakt",
 			"fingerprint": "Fingeravtrykk",
 			"info": "Infoer",
-			"devices": "Enheter"
+			"devices": "Enheter",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Enheter",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Søk",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "KONTAKTFORESPØRSEL",
+				"group-invitation": "",
 				"refuse-button": "NEKT",
 				"accept-button": "GODTA",
-				"accepted-button": "GODTATT"
+				"accepted-button": "GODTATT",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty-tilkobling bekreftet! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "Galleri",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
@@ -571,6 +584,13 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -607,6 +627,7 @@
 			"settings": ""
 		},
 		"skip": "HOPP OVER",
+		"cancel": "AVBRYT",
 		"settings-text": ""
 	},
 	"notification": {
