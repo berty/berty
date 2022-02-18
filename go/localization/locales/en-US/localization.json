@@ -8,19 +8,19 @@
       },
       "psh": {
         "name": "Push notifications",
-        "description": "",
-        "benefitBadge": ""
+        "description": "This service allows your device to receive push notifications for incoming messages.",
+        "benefitBadge": "Performance"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
-    "privacyPolicyLabel": ""
+    "pageTitle": "Berty services",
+    "connectButton_one": "Use service",
+    "connectButton_other": "Use selected services",
+    "privacyPolicyLabel": "Privacy policy"
   },
   "push": {
     "message": {},
     "error": {
-      "title": ""
+      "title": "Push decryption failed"
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Sent a voice message",
@@ -45,22 +45,22 @@
       "bodyWithGroupName": "Invited you to '%[1]v' group"
     },
     "unknown": {
-      "body": ""
+      "body": "Something new has been received"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "Conversation name has been updated"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "Display name updated"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Profile picture updated"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "Member detail updated"
     },
     "replyOptionsOffered": {
-      "body": ""
+      "body": "Reply options offered"
     }
   }
 }
