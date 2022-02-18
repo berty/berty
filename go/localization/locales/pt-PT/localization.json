@@ -1,11 +1,29 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "Este serviço replicará automaticamente as suas conversas para fornecer melhor performance de rede ao seu dispositivo.",
+        "benefitBadge": "Desempenho"
+      },
+      "psh": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Desempenho"
+      }
+    },
+    "pageTitle": "Serviços Berty",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": ""
+  },
   "push": {
     "message": {},
     "error": {
       "title": ""
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "Mensagem de voz enviada",
       "bodyWithNumberOfMedia_other": ""
     },
     "gif": {
@@ -26,8 +44,23 @@
     "groupInvitation": {
       "bodyWithGroupName": ""
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
