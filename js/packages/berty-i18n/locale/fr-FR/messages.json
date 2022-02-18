@@ -35,7 +35,6 @@
 			"advanced": "AVANCÉ",
 			"import-account": "IMPORTER UN COMPTE",
 			"link-device": "LIER UN APPAREIL",
-			"expert-setup": "INSTALLATION EXPERT",
 			"more": "PLUS D'INFOS",
 			"good-to-know": {
 				"title": "Bon à savoir :",
@@ -43,17 +42,18 @@
 				"second-point": "Le pseudo est facultatif et peut être modifié"
 			}
 		},
-		"expert-setup": {
-			"title": "Mode expert",
+		"advanced-settings": {
+			"title": "Paramètres avancés",
 			"desc": "Trouvez de la documentation et créez votre propre configuration.",
 			"more-about": {
-				"title": "Bienvenue dans le mode Expert",
-				"first-paragraph": "",
+				"title": "Bienvenue dans les paramètres avancés",
+				"first-paragraph": "Ici vous pourrez créer votre propre configuration personnalisée correspondant à vos besoins.",
 				"second-paragraph": "Nous vous présenterons toutes les options pour vous permettre de comprendre ce qui se passe sous le capot.",
-				"third-paragraph": ""
+				"third-paragraph": "Vous trouverez aussi un lien vers les ressources pour le bidouiller. Cette section est réservée aux experts !"
 			},
+			"read-more": "En savoir plus sur les paramètres avancés",
 			"config-title": "Configurations personnalisées",
-			"config-desc": "",
+			"config-desc": "3 étapes de configuration de l'application. Personnalisez tout maintenant !",
 			"learn-more": "En savoir plus",
 			"first-part": {
 				"title": "Proximité",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Services",
+				"network-button": "Réseaux",
 				"first-button": "Notifications push",
 				"second-button": {
 					"title": "Configurez votre propre nœud",
 					"placeholder": "Entrez l'adresse du serveur"
 				},
-				"third-button": "Sélectionner un nœud certifié",
-				"connect": ""
+				"third-button": "Sélectionner un nœud certifié"
 			},
-			"apply-changes": "APPLIQUER LES CHANGEMENTS",
-			"skip": "Ignorer pour le moment"
-		},
-		"services-auth": {
-			"header": "S'authentifier aux services",
-			"title": "Services",
-			"recommended": "Recommandé",
-			"desc": "Cela répliquera automatiquement vos conversations sur un serveur",
-			"button": "Utiliser les services opérés par Berty",
-			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
+			"apply-changes": "APPLIQUER LES CHANGEMENTS"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Configuration terminée !",
 			"desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
 			"button": "LANCER BERTY"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "Nous nous préparons à charger les webviews sur le réseau. Voulez vous toujours l'ouvrir ?",
+			"first-button": "Annuler",
+			"second-button": "Oui"
 		}
 	},
 	"main": {
@@ -176,14 +173,14 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "Liste des tâches {{tasksDone}} sur {{totalTasks}}",
+				"title": "Liste des tâches de bienvenue {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Changer votre avatar",
 					"desc": "Configurer une image de profil !"
 				},
-				"relay": {
-					"title": "Configurer le relais",
-					"desc": "Améliorez les performances de votre réseau en utilisant un relais propulsé par Berty Tech organisation à but non lucrative."
+				"berty-services": {
+					"title": "Activer les services Berty",
+					"desc": "Améliorez vos performances réseau en utilisant les services de Berty Tech organisation à but non lucrative."
 				},
 				"contact": {
 					"title": "Synchroniser avec un contact",
@@ -197,34 +194,15 @@
 					"title": "Envoyer le message",
 					"desc": "Dites « Bonjour » à un contact !"
 				},
-				"theme": {
-					"title": "Personnaliser le thème",
-					"desc": "Créé et partage ta version de l’application avec la communauté !"
-				},
-				"hidden-account": {
-					"title": "Créer un compte masqué",
-					"desc": "Créer un compte fantôme avec un mot de passe dédié pour être en sécurité sur un réseau public."
-				},
 				"ble-message": {
 					"title": "Envoyer un message sans internet",
 					"desc": "Utilisez la fonction Proximité et envoyez un message sans réseau cellulaire, ni connexion internet !"
 				}
 			},
-			"header-left-button": "Aide",
-			"header-center-button": "Devtools",
-			"header-right-button": "Paramètres",
-			"network-button": "Liste de réseaux",
 			"edit-profile": "Modifier mon profil",
-			"expert-setup": "Configuration expert",
-			"notifications-button": {
-				"title": "Notifications",
-				"tag-enabled": "Activé",
-				"tag-disabled": "Désactivé"
-			},
-			"dark-mode-button": "Mode foncé",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "Partager le lien",
+			"create-group": "Créer un groupe",
+			"create-new-account": "Créer un nouveau compte"
 		},
 		"network-map": {
 			"title": "Réseaux",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Paramètres",
 			"desc": "Personnalisez l'app pour qu'elle corresponde à vos besoins",
+			"in-app-notifications": "Notifications dans l'application",
+			"dark-mode-button": "Mode foncé",
+			"devtools": "Devtools",
+			"network-config": "Configuration du réseau",
 			"notification-file-saved": {
 				"title": "Données sauvegardées !",
 				"desc": "Disponible dans le répertoire des téléchargements"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Activer Android Nearby"
 		},
-		"services-auth": {
-			"title": "Services externes",
-			"operated-services-button": "Utiliser les services opérés par Berty",
-			"register-service-button": {
-				"title": "Enregistrer un fournisseur de service personnalisé",
-				"input-placeholder": "URL du service",
-				"action": "Ajouter"
-			},
-			"registered-services-button": {
-				"title": "Services actuellement enregistrés",
-				"sample-no-services": "Aucun service enregistré",
-				"sample-unknown-service": "Service inconnu"
-			}
+		"berty-services": {
+			"header": "Activer les services Berty",
+			"title": "Services Berty",
+			"recommended": "Recommandé",
+			"desc": " L'activation des services Berty vous permettra de recevoir des notifications push via les serveurs Berty Technologies et vous donnera accès à ses nœuds pour la réplication des conversations.",
+			"button": "Utiliser les services de Berty",
+			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
 		},
 		"delete-account": {
 			"title": "Supprimer le compte !",
@@ -440,11 +416,12 @@
 			"export": "Exporter le thème sélectionné sous forme de fichier",
 			"share": "Partager le thème sélectionné sous forme de fichier",
 			"import": "Importer un fichier de thème",
-			"delete": "Réinitialiser les thèmes",
-			"bad-format-title": "Thème au mauvais format",
-			"bad-format-desc": "Ficher de thème au mauvais format"
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "Mon identifiant Berty",
 			"qr": "QR",
 			"fingerprint": "Empreinte numérique",
 			"devices": "Appareils"
@@ -491,10 +468,35 @@
 			"delete-button": "Supprimer le contact",
 			"fingerprint": "Empreinte digitale",
 			"info": "Infos",
-			"devices": "Appareils"
+			"devices": "Appareils",
+			"my-devices": "Mes appareils"
 		},
 		"multi-member": {
 			"input-placeholder": "Écrivez ici..."
+		},
+		"push-notifications": {
+			"enable": "Activer les notifications flottantes",
+			"enabled": "Les notifications flottantes sont activées",
+			"unsupported": "Notifications non prises en charge",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "Activer",
+				"refuse": "Ignorer"
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Appareils",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Rechercher",
@@ -523,14 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "DEMANDE DE CONTACT",
-				"group-invitation": "INVITATION DE GROUPE",
+				"group-invitation": "",
 				"refuse-button": "REFUSER",
 				"accept-button": "ACCEPTER",
 				"accepted-button": "ACCEPTÉ",
-				"error": "Impossible de vous ajouter au groupe ☹️ Désolé!",
-				"you-invited": "Vous avez invité",
-				"this-contact": "ce contact",
-				"to-a-group": "dans un groupe! 💌"
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Connexion Berty confirmée ! 🎉",
@@ -583,8 +585,12 @@
 			"replying-to": "Vous répondez à",
 			"replied-to": "Répondu à"
 		},
+		"user-message": {
+			"read-more": "En savoir plus",
+			"show-less": "Afficher moins"
+		},
 		"emojis": {
-			"matching": "Emojis correspondants"
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -610,7 +616,7 @@
 		},
 		"camera": {
 			"title": "Caméra",
-			"desc": "Voulez-vous autoriser la caméra à prendre des photos ou scanner des QR codes?"
+			"desc": ""
 		},
 		"audio": {
 			"title": "Messages audio",
@@ -621,6 +627,7 @@
 			"settings": "Accéder aux paramètres"
 		},
 		"skip": "PASSER",
+		"cancel": "ANNULER",
 		"settings-text": "Vous pouvez activer la permission {{title}} à partir des paramètres."
 	},
 	"notification": {
