@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Služby",
+				"network-button": "Seznam sítí",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Přihlášení ke službám",
-			"title": "Služby",
-			"recommended": "Doporučené",
-			"desc": "Tímto se vaše konverzace automaticky zkopírují na server",
-			"button": "Použít služby provozované Berty",
-			"skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Nastavení dokončeno!",
 			"desc": "Teď už můžete aplikaci používat. Můžete začít přidávat kontakty a svobodně a soukromě s nimi komunikovat",
 			"button": "ZAČÍT POUŽÍVAT BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Zrušit",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "Nápověda",
-			"header-center-button": "Nástroje pro vývojáře",
-			"header-right-button": "Nastavení",
-			"network-button": "Seznam sítí",
 			"edit-profile": "Upravit profil",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Oznámení",
-				"tag-enabled": "Povolit",
-				"tag-disabled": "Zakázat"
-			},
-			"dark-mode-button": "Tmavý režim",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": ""
 		},
 		"network-map": {
 			"title": "Seznam sítí",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Nastavení",
 			"desc": "Zde si můžete všechno přizpůsobit, aby aplikace lépe vyhovovala vašim potřebám",
+			"in-app-notifications": "",
+			"dark-mode-button": "Tmavý režim",
+			"devtools": "Nástroje pro vývojáře",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Externí služby",
-			"operated-services-button": "Použít služby provozované Berty",
-			"register-service-button": {
-				"title": "Registrovat vlastní poskytovatele služeb",
-				"input-placeholder": "URL služby",
-				"action": "Přidat"
-			},
-			"registered-services-button": {
-				"title": "Aktuálně registrované služby",
-				"sample-no-services": "Žádné registrované služby",
-				"sample-unknown-service": "Neznámá služba"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Doporučené",
+			"desc": "",
+			"button": "",
+			"skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
 		},
 		"delete-account": {
 			"title": "Smazat účet!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Otisk",
 			"devices": "Zařízení"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Označit jako ověřené",
 			"block-button": "Zablokovat kontakt",
 			"delete-button": "Odstranit kontakt",
 			"fingerprint": "Otisk",
 			"info": "Informace",
-			"devices": "Zařízení"
+			"devices": "Zařízení",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Zařízení",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Vyhledat",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "ŽÁDOST O KONTAKT",
+				"group-invitation": "",
 				"refuse-button": "ODMÍTNOUT",
 				"accept-button": "PŘIJMOUT",
-				"accepted-button": "PŘIJATO"
+				"accepted-button": "PŘIJATO",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty spojení potvrzeno! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "Galerie",
+			"no-images": "",
 			"camera": "Kamera",
 			"files": "Soubory",
 			"microphone": "Mikrofon",
@@ -571,6 +584,13 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -607,6 +627,7 @@
 			"settings": ""
 		},
 		"skip": "PŘESKOČIT",
+		"cancel": "ZRUŠIT",
 		"settings-text": ""
 	},
 	"notification": {
