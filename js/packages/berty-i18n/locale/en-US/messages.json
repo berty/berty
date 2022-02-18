@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "Sending..",
+		"sending": "Sending...",
 		"sent": "Sent",
 		"contact-settings": {
 			"mark-button": "Mark as verified",
@@ -483,19 +483,19 @@
 				"title": "Do you want to activate this feature?",
 				"subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
 				"accept": "Activate",
-				"refuse": "Skip"
+				"refuse": ""
 			},
-			"why-cant-disable": "You can't disable push notifications for a specific conversation.",
+			"why-cant-disable": "",
 			"errors": {
-				"no-token": "Your device is not compatible with push notifications",
-				"no-server": "Your must register a push relay first"
+				"no-token": "",
+				"no-server": ""
 			}
 		},
 		"devices": {
-			"title": "Devices",
+			"title": "",
 			"push": {
-				"enabled": "Push notifications enabled",
-				"not-enabled": "Push notifications not enabled"
+				"enabled": "",
+				"not-enabled": ""
 			}
 		},
 		"multi-member-settings": {
@@ -525,14 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "CONTACT REQUEST",
-				"group-invitation": "GROUP INVITATION",
+				"group-invitation": "",
 				"refuse-button": "REFUSE",
 				"accept-button": "ACCEPT",
 				"accepted-button": "ACCEPTED",
-				"error": "Error adding you to the group ☹️ Our bad!",
-				"you-invited": "You invited",
-				"this-contact": "this contact",
-				"to-a-group": "to a group! 💌"
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty connection confirmed! 🎉",
@@ -590,7 +590,7 @@
 			"show-less": "Show less"
 		},
 		"emojis": {
-			"matching": "Emojis matching"
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -616,7 +616,7 @@
 		},
 		"camera": {
 			"title": "Camera",
-			"desc": "Do you want to authorize camera to take picture or scan QR code?"
+			"desc": "Do you want to authorize the camera to take pictures or scan QR codes?"
 		},
 		"audio": {
 			"title": "Audio messages",
