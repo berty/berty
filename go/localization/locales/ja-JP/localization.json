@@ -1,33 +1,66 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "パフォーマンス"
+      },
+      "psh": {
+        "name": "プッシュ通知",
+        "description": "",
+        "benefitBadge": "パフォーマンス"
+      }
+    },
+    "pageTitle": "Berty サービス一覧",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "プライバシーポリシー"
+  },
   "push": {
     "message": {},
     "error": {
       "title": ""
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "音声メッセージを送信しました",
+      "bodyWithNumberOfMedia_other": "%[1] 件の音声メッセージを送信しました"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Gif 画像を送信しました",
+      "bodyWithNumberOfMedia_other": "%[1] 件の gif 画像を送信しました"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "写真を送信しました",
+      "bodyWithNumberOfMedia_other": "%[1] 件の写真を送信しました"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "メディアを送信しました",
+      "bodyWithNumberOfMedia_other": "%[1] 件のメディアを送信しました"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v が %[2]v でメッセージに反応しました"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "「%[1]v」グループに招待されています"
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
