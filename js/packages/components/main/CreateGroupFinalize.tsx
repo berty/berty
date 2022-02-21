@@ -181,7 +181,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 export const CreateGroupFinalize: React.FC = () => {
 	const { goBack, reset } = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	const { call, error, done, reply } = messengerMethodsHooks.useConversationCreate()
+	const { call, error, done, reply, loading } = messengerMethodsHooks.useConversationCreate()
 	const members = useAppSelector(selectInvitationListMembers)
 	const dispatch = useAppDispatch()
 
@@ -239,6 +239,7 @@ export const CreateGroupFinalize: React.FC = () => {
 									createGroup()
 									ctx.playSound('groupCreated')
 								}}
+								loading={loading}
 							/>
 						</Header>
 					</View>

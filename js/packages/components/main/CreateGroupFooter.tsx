@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
@@ -9,6 +9,7 @@ type FooterCreateGroupProps = {
 	title: string
 	icon?: string
 	action?: any
+	loading?: boolean
 }
 
 const useStylesCreateGroup = () => {
@@ -19,7 +20,12 @@ const useStylesCreateGroup = () => {
 	}
 }
 
-export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, action }) => {
+export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
+	title,
+	icon,
+	action,
+	loading,
+}) => {
 	const [{ row, padding, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesCreateGroup()
@@ -46,18 +52,22 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 				]}
 			>
 				<View style={[row.item.justify, { flex: 1 }]}>
-					<Text
-						style={[
-							text.bold.medium,
-							text.align.center,
-							_styles.footerCreateGroupText,
-							{ color: colors['background-header'] },
-						]}
-					>
-						{title}
-					</Text>
+					{loading ? (
+						<ActivityIndicator color={colors['background-header']} />
+					) : (
+						<Text
+							style={[
+								text.bold.medium,
+								text.align.center,
+								_styles.footerCreateGroupText,
+								{ color: colors['background-header'] },
+							]}
+						>
+							{title}
+						</Text>
+					)}
 				</View>
-				{icon && (
+				{icon && !loading && (
 					<View style={[row.item.justify, { position: 'absolute', right: 70 * scaleSize }]}>
 						<Icon
 							name='arrow-forward-outline'

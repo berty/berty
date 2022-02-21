@@ -7,16 +7,22 @@ import { useSelector } from 'react-redux'
 import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
 import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-const initialState: MethodState<any> = { error: null, reply: null, done: false, called: false }
+const initialState: MethodState<any> = {
+	error: null,
+	reply: null,
+	done: false,
+	called: false,
+	loading: false,
+}
 
 const methodReducer = (state: MethodState<any>, action: any) => {
 	switch (action.type) {
 		case 'ERROR':
-			return { ...state, error: action.payload.error, done: true }
+			return { ...state, error: action.payload.error, done: true, loading: false }
 		case 'DONE':
-			return { ...state, reply: action.payload.reply, done: true }
+			return { ...state, reply: action.payload.reply, done: true, loading: false }
 		case 'CALL':
-			return { ...initialState, called: true }
+			return { ...initialState, called: true, loading: true }
 		default:
 			console.warn(`Unknown methodReducer action ${action.type}`)
 			return state
@@ -112,4 +118,5 @@ type MethodState<R> = {
 	reply: R
 	done: boolean
 	called: boolean
+	loading: boolean
 }
