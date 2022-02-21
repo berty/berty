@@ -228,6 +228,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 				stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
 				showsVerticalScrollIndicator={false}
 				scrollEventThrottle={16}
+				contentContainerStyle={{ flexGrow: 1 }}
 				keyboardShouldPersistTaps={'handled'}
 				onScrollEndDrag={e => {
 					if (e.nativeEvent.contentOffset.y < 0) {
