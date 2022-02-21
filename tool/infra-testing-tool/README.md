@@ -9,16 +9,9 @@ In order to use the infra-testing-tool you need a handful of other tools install
 - [Terraform](https://www.terraform.io/downloads.html) (to provision infrastructure)
 - [Packer](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli) (to create the berty AMI)
 
-### Install (Linux)
+### Install
 ```bash
-make build && sudo mv infra /usr/local/bin
-```
-
-### Install (MacOS)
-```bash
-go mod tidy
-go build -o infra .
-sudo mv infra /usr/local/bin
+make install
 ```
 
 ### AMI (Amazon Machine Image)

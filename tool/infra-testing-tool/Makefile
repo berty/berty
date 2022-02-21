@@ -1,14 +1,19 @@
-BINARY_NAME=infra
+BINARY_NAME=berty_infra_testing
 
-build:
-	go build -o ${BINARY_NAME} .
+MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+build: deps
+	cd $(MAKEFILE_DIR) && go build -o ${BINARY_NAME} .
 
 deps:
-	go mod tidy
+	cd $(MAKEFILE_DIR) && go mod tidy
+
+install: build
+	mv $(MAKEFILE_DIR)/${BINARY_NAME} /usr/local/bin
 
 fmt:
-	gofmt -s -w -l .
+	cd $(MAKEFILE_DIR) && gofmt -s -w -l .
 
 clean:
 	go clean
-	rm ${BINARY_NAME}
+	rm $(MAKEFILE_DIR)/${BINARY_NAME}
