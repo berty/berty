@@ -13,6 +13,7 @@
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
     "@flyerhq/react-native-android-uri-path": "^2.1.0",
+    "@gorhom/bottom-sheet": "^4.1.5",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@react-native-community/audio-toolkit": "git+https://github.com/sakul-budhathoki/react-native-audio-toolkit.git#3e81181e97154ce84b6927fd5e5a484782d36d70",
     "@react-native-community/blur": "^3.6.0",
@@ -68,7 +69,7 @@
     "react-native-progress": "^5.0.0",
     "react-native-qrcode-scanner": "^1.6.0",
     "react-native-qrcode-svg": "git+https://github.com/sakul-budhathoki/react-native-qrcode-svg.git#feat/circles",
-    "react-native-reanimated": "^2.2.4",
+    "react-native-reanimated": "^2.3.0",
     "react-native-restart": "^0.0.22",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.9.0",

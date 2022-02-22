@@ -26,6 +26,10 @@ import tech.berty.rootdir.RootDirPackage;
 
 import com.wix.interactable.Interactable; // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
 
+// Needed by Reanimated 2
+import com.facebook.react.bridge.JSIModulePackage;
+import com.swmansion.reanimated.ReanimatedJSIModulePackage;
+
 public class MainApplication extends Application implements ReactApplication, LifecycleObserver {
     private static final String TAG = "MainApplication";
 
@@ -36,44 +40,50 @@ public class MainApplication extends Application implements ReactApplication, Li
 
     private static AppState appState = AppState.Foreground;
 
-    private final ReactNativeHost mReactNativeHost =
-        new ReactNativeHost(this) {
-            @Override
-            public boolean getUseDeveloperSupport() {
-                return BuildConfig.DEBUG;
-            }
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+        }
 
-            @Override
-            protected List<ReactPackage> getPackages() {
-                @SuppressWarnings("UnnecessaryLocalVariable")
-                List<ReactPackage> packages = new PackageList(this).getPackages();
-                // Packages that cannot be autolinked yet can be added manually here, for example:
-                // packages.add(new MyReactNativePackage());
-                packages.add(new NotificationPackage());
-                packages.add(new RootDirPackage());
-                packages.add(new GoBridgePackage());
-                packages.add(new Interactable()); // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
-                return packages;
-            }
+        @Override
+        protected List<ReactPackage> getPackages() {
+            @SuppressWarnings("UnnecessaryLocalVariable")
+            List<ReactPackage> packages = new PackageList(this).getPackages();
+            // Packages that cannot be autolinked yet can be added manually here, for
+            // example:
+            // packages.add(new MyReactNativePackage());
+            packages.add(new NotificationPackage());
+            packages.add(new RootDirPackage());
+            packages.add(new GoBridgePackage());
+            packages.add(new Interactable()); // remove when https://github.com/wix/react-native-interactable/pull/288
+                                              // is merged
+            return packages;
+        }
 
-            @Override
-            protected String getJSMainModuleName() {
-                return "index";
-            }
-        };
+        @Override
+        protected String getJSMainModuleName() {
+            return "index";
+        }
 
+        // Needed by Reanimated 2
+        @Override
+        protected JSIModulePackage getJSIModulePackage() {
+            return new ReanimatedJSIModulePackage(); // <- add
+        }
 
+    };
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onAppBackgrounded() {
-        //App in background
+        // App in background
         MainApplication.appState = AppState.Background;
         Log.d(TAG, "AppState" + MainApplication.appState);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onAppForegrounded() {
-        //App in foreground
+        // App in foreground
         MainApplication.appState = AppState.Foreground;
         Log.d(TAG, "AppState" + MainApplication.appState);
     }
@@ -98,24 +108,25 @@ public class MainApplication extends Application implements ReactApplication, Li
     }
 
     /**
-     * Loads Flipper in React Native templates. Call this in the onCreate method with something like
+     * Loads Flipper in React Native templates. Call this in the onCreate method
+     * with something like
      * initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
      *
      * @param context
      * @param reactInstanceManager
      */
     private static void initializeFlipper(
-        Context context, ReactInstanceManager reactInstanceManager) {
+            Context context, ReactInstanceManager reactInstanceManager) {
         if (BuildConfig.DEBUG) {
             try {
-        /*
-         We use reflection here to pick up the class that initializes Flipper,
-        since Flipper library is not available in release mode
-        */
+                /*
+                 * We use reflection here to pick up the class that initializes Flipper,
+                 * since Flipper library is not available in release mode
+                 */
                 Class<?> aClass = Class.forName("tech.berty.android.ReactNativeFlipper");
                 aClass
-                    .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
-                    .invoke(null, context, reactInstanceManager);
+                        .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
+                        .invoke(null, context, reactInstanceManager);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (NoSuchMethodException e) {

@@ -1,4 +1,4 @@
-apply plugin: "com.android.application"
+apply plugin: 'com.android.application'
 
 // TODO: remove this after closed beta
 apply plugin: 'com.google.gms.google-services'
@@ -81,11 +81,11 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    enableHermes: false,  // clean and rebuild if changing
-    entryFile: "index.ts",
+    enableHermes: true,  // clean and rebuild if changing
+    entryFile: 'index.ts',
 ]
 
-apply from: "../../node_modules/react-native/react.gradle"
+apply from: '../../node_modules/react-native/react.gradle'
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -122,7 +122,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
-def enableHermes = project.ext.react.get("enableHermes", false);
+def enableHermes = project.ext.react.get('enableHermes', false)
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -134,7 +134,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "tech.berty.android"
+        applicationId 'tech.berty.android'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
@@ -142,27 +142,27 @@ android {
         multiDexEnabled true // fix for "The number of method references in a .dex file cannot exceed 64K"
         vectorDrawables.useSupportLibrary = true // needed for image picker
 
-        def addEnvVar = {key ->
+        def addEnvVar = { key ->
             def value = getEnvValue(key)
             manifestPlaceholders += [(key):value]
-            buildConfigField "String", "${key}", "\"${value}\""
+            buildConfigField 'String', "${key}", "\"${value}\""
         }
 
-        addEnvVar("SHAKE_API_ID")
-        addEnvVar("SHAKE_API_SECRET")
+        addEnvVar('SHAKE_API_ID')
+        addEnvVar('SHAKE_API_SECRET')
 
         def generateVersionCode = {
-            def result = "git rev-list HEAD --count".execute().text.trim() //unix
-            if(result.empty) result = "PowerShell -Command git rev-list HEAD --count".execute().text.trim() //windows
-            if(result.empty) throw new RuntimeException("Could not generate versionCode on this platform? Cmd output: ${result.text}")
+            def result = 'git rev-list HEAD --count'.execute().text.trim() //unix
+            if (result.empty) result = 'PowerShell -Command git rev-list HEAD --count'.execute().text.trim() //windows
+            if (result.empty) throw new RuntimeException("Could not generate versionCode on this platform? Cmd output: ${result.text}")
             logger.info("Generated versionCode: ${result}")
             return result.toInteger()
         }
 
         def generateVersionName = {
             def result = "go run -mod=readonly -modfile=${rootDir.getPath()}/../../go.mod github.com/mdomke/git-semver/v5".execute().text.trim() // unix
-            if(result.empty) result = "PowerShell -Command go run -mod=readonly -modfile=${rootDir.getPath()}/../../go.mod github.com/mdomke/git-semver/v5".execute().text.trim() //windows
-            if(result.empty) throw new RuntimeException("Could not generate versionName on this platform? Cmd output: ${result.text}")
+            if (result.empty) result = "PowerShell -Command go run -mod=readonly -modfile=${rootDir.getPath()}/../../go.mod github.com/mdomke/git-semver/v5".execute().text.trim() //windows
+            if (result.empty) throw new RuntimeException("Could not generate versionName on this platform? Cmd output: ${result.text}")
             result = result.substring(1)
             result = result.split('-')[0]
             logger.info("Generated versionName: ${result}")
@@ -177,7 +177,7 @@ android {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+            include 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
         }
     }
     signingConfigs {
@@ -190,7 +190,7 @@ android {
     }
     buildTypes {
         debug {
-            applicationIdSuffix ".debug"
+            applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug
         }
         release {
@@ -199,16 +199,16 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         releaseStaff {
             initWith release
-            applicationIdSuffix ".staff"
+            applicationIdSuffix '.staff'
             matchingFallbacks = ['release']
         }
         releaseYolo {
             initWith release
-            applicationIdSuffix ".yolo"
+            applicationIdSuffix '.yolo'
             matchingFallbacks = ['release']
         }
     }
@@ -219,25 +219,24 @@ android {
             // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
             // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            def versionCodes = ['armeabi-v7a': 1, 'x86': 2, 'arm64-v8a': 3, 'x86_64': 4]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                     defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
-
         }
     }
 
     packagingOptions {
         // Make sure libjsc.so does not packed in APK
-        exclude "**/libjsc.so"
+        exclude '**/libjsc.so'
     }
 }
 
 // Auto-build gomobile.aar by running Makefile rule
 task makeDeps(description: 'Build gomobile.arr (Berty go core)') {
-    outputs.files fileTree(dir: "${rootDir.getPath()}/libs", include: ["*.jar", "*.aar"])
+    outputs.files fileTree(dir: "${rootDir.getPath()}/libs", include: ['*.jar', '*.aar'])
 
     doLast {
         if (System.properties['os.name'].toLowerCase().contains('windows')) {
@@ -265,9 +264,9 @@ task makeDeps(description: 'Build gomobile.arr (Berty go core)') {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.facebook.react:react-native:+'  // From node_modules
 
     // firebase fcm
     implementation platform('com.google.firebase:firebase-bom:28.1.0')
@@ -278,24 +277,24 @@ dependencies {
 
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
-    implementation project(path: ":react-native-interactable") // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
+    implementation project(path: ':react-native-interactable') // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
 
     implementation 'com.facebook.fresco:animated-gif:2.0.0' // For animated GIF support
 
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     implementation project(':react-native-share')
 
     // Add Android Nearby
-    implementation "com.google.android.gms:play-services-nearby:16.0.0"
+    implementation 'com.google.android.gms:play-services-nearby:16.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'androidx.lifecycle:lifecycle-process:2.3.1'
 
     // Add keystore, 1.1 is required to use the MasterKey class
-    implementation "androidx.security:security-crypto:1.1.0-alpha03"
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
-      exclude group:'com.facebook.fbjni'
+        exclude group:'com.facebook.fbjni'
     }
 
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
@@ -308,9 +307,9 @@ dependencies {
     }
 
     if (enableHermes) {
-        def hermesPath = "../../node_modules/hermes-engine/android/";
-        debugImplementation files(hermesPath + "hermes-debug.aar")
-        releaseImplementation files(hermesPath + "hermes-release.aar")
+        def hermesPath = '../../node_modules/hermes-engine/android/'
+        debugImplementation files(hermesPath + 'hermes-debug.aar')
+        releaseImplementation files(hermesPath + 'hermes-release.aar')
     } else {
         implementation jscFlavor
     }
@@ -325,11 +324,10 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-
+apply from: file('../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle'); applyNativeModulesAppBuildGradle(project)
 
 project.ext.vectoricons = [
     iconFontNames: [ 'Feather.ttf' ] // Name of the font files you want to copy
 ]
 
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply from: '../../node_modules/react-native-vector-icons/fonts.gradle'
