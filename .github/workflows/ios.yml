@@ -84,6 +84,11 @@ jobs:
 
       # pinned by js/ios/.ruby-version
       - uses: ruby/setup-ruby@v1
+        env:
+         # Needs to be set up for self-hosted runners, see:
+         # https://github.com/ruby/setup-ruby#using-self-hosted-runners
+         # Image used in runners: summerwind/actions-runner
+         ImageOS: macos11
         with:
           working-directory: js/ios
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
