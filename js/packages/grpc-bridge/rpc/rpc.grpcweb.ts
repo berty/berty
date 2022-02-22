@@ -89,8 +89,12 @@ const stream =
 					client.onEnd((code: grpc.Code, message: string, metadata: grpc.Metadata) => {
 						// TODO: dig why Internal Error is throw on grpcWeb
 						console.log('client.onEnd', code, message, JSON.stringify(metadata))
-						const messageToCheck = 'Response closed without grpc-status (Trailers provided)'
-						if (code === grpc.Code.Internal && message === messageToCheck) {
+						const messagesToCheck = [
+							'Response closed without grpc-status (Trailers provided)',
+							'Response closed without grpc-status (Headers only)',
+						]
+						const codesToCheck = [grpc.Code.Unknown, grpc.Code.Internal]
+						if (codesToCheck.indexOf(code) !== -1 && messagesToCheck.indexOf(message) !== -1) {
 							callback(null, EOF)
 							if (stream.resolve) {
 								stream.resolve(null)
