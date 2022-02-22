@@ -46,10 +46,10 @@
 			"title": "Advanced settings",
 			"desc": "Find documentation and create your own config.",
 			"more-about": {
-				"title": "Welcome in the advanced settings",
-				"first-paragraph": "Here you’ll be able to create your own custom configuration to fit with your needs.",
-				"second-paragraph": "We’ll present you every options to allow you to understand what’s happening behind the hood.",
-				"third-paragraph": "You’ll also find ressources link to hack it. This section is for experts only!"
+				"title": "Welcome to Advanced Settings",
+				"first-paragraph": "Create the custom configuration that best suits your needs.",
+				"second-paragraph": "You'll be presented with every available option to control what happens under the hood.",
+				"third-paragraph": "You’ll also find a link to resources to hack it. This section is for experts only!"
 			},
 			"read-more": "Read more about advanced settings",
 			"config-title": "Custom configs",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "We are getting ready to load webviews on the network. Do you still want to open it ?",
+			"desc": "We are getting ready to load webviews on the network. Do you still want to open it?",
 			"first-button": "Cancel",
 			"second-button": "Yes"
 		}
@@ -176,7 +176,7 @@
 				"title": "Welcome Checklist {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Change your avatar",
-					"desc": "Let's setup a profile picture for this account!"
+					"desc": "Let's set up a profile picture for this account!"
 				},
 				"berty-services": {
 					"title": "Activate Berty services",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "Sync with a contact",
-					"desc": "Scan a QR code to add a first contact in your contact list!"
+					"desc": "Scan a QR code to add your first contact to your contact list!"
 				},
 				"group": {
 					"title": "Join or create a group",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Send message without internet",
-					"desc": "Use the Proximity feature and send a message without any cellular network, or internet connection!"
+					"desc": "Use the Proximity feature to send a message without any cellular network or internet connection!"
 				}
 			},
 			"edit-profile": "Edit profile",
@@ -416,9 +416,9 @@
 			"export": "Export selected theme as file",
 			"share": "Share selected theme as file",
 			"import": "Import a file theme",
-			"delete": "Delete all not default themes",
-			"bad-format-title": "Theme bad format",
-			"bad-format-desc": "Bad format for the theme file"
+			"delete": "Delete all non-default themes",
+			"bad-format-title": "Bad theme format",
+			"bad-format-desc": "Incorrect format for theme file"
 		},
 		"my-berty-ID": {
 			"title": "My Berty ID",
@@ -448,7 +448,7 @@
 			"info": "Infos",
 			"devices": "Devices",
 			"join": "JOIN THIS GROUP",
-			"password-label": "Enter the group password",
+			"password-label": "Enter group password",
 			"password-placeholder": "Password..."
 		},
 		"save-theme": {
@@ -632,7 +632,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Need restart app",
+			"title": "Restart required",
 			"desc": "For this kind of notification, you have to restart your app to save these fields!"
 		}
 	},
