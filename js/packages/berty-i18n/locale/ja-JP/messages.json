@@ -622,6 +622,10 @@
 			"title": "音声メッセージ",
 			"desc": "連絡先に音声メッセージを送信するには、Berty アプリに「マイクの権限」を許可する必要があります。"
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "許可する",
 			"settings": "設定に移動"
