@@ -622,6 +622,10 @@
 			"title": "Messages audio",
 			"desc": "Pour envoyer des messages audio à vos contacts, vous devez autoriser l'application Berty à accéder au microphone."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Autoriser",
 			"settings": "Accéder aux paramètres"
