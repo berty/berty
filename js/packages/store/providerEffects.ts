@@ -58,64 +58,51 @@ export const openAccountWithProgress = async (
 	selectedAccount: string | null,
 ) => {
 	console.log('Opening account', selectedAccount)
-	let done = false
-
-	await accountService
-		.openAccountWithProgress({
-			args: bridgeOpts.cliArgs,
-			accountId: selectedAccount?.toString(),
-			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
-		})
-		.then(async stream => {
-			stream.onMessage((msg, err) => {
-				if (err?.EOF) {
-					console.log('activating persist with account:', selectedAccount?.toString())
-					persistor.persist()
-					console.log('opening account: stream closed')
-					if (!done) {
-						done = true
-						store.dispatch(setStateOpeningClients())
-					}
-					return
-				}
-				if (err && !err.OK) {
-					console.warn('open account error:', err)
-					if (!done) {
-						done = true
-						dispatch({
-							type: MessengerActions.SetStreamError,
-							payload: { error: new Error(`Failed to start node: ${err}`) },
-						})
-					}
-					return
-				}
-				if (msg?.progress?.state !== 'done') {
-					const progress = msg?.progress
-					if (progress) {
-						const payload: StreamInProgress = {
-							msg: progress,
-							stream: 'Open account',
-						}
-						store.dispatch(setStateStreamInProgress(payload))
-					}
-				} else if (msg?.progress?.state === 'done') {
-					if (!done) {
-						done = true
-						store.dispatch(setStateStreamDone())
-						store.dispatch(setStateOpeningClients())
-					}
-				}
+	try {
+		const stream = await accountService
+			.openAccountWithProgress({
+				args: bridgeOpts.cliArgs,
+				accountId: selectedAccount?.toString(),
+				sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 			})
-			await stream.start()
-			console.log('node is opened')
+		stream.onMessage((msg, err) => {
+			if (err?.EOF) {
+				console.log('activating persist with account:', selectedAccount?.toString())
+				persistor.persist()
+				console.log('opening account: stream closed')
+				store.dispatch(setStateStreamDone())
+				store.dispatch(setStateOpeningClients())
+				return
+			}
+			if (err && !err.OK) {
+				console.warn('open account error:', err.error.errorCode)
+				dispatch({
+					type: MessengerActions.SetStreamError,
+					payload: { error: new Error(`Failed to start node: ${err}`) },
+				})
+				return
+			}
+			if (msg?.progress?.state !== 'done') {
+				const progress = msg?.progress
+				if (progress) {
+					const payload: StreamInProgress = {
+						msg: progress,
+						stream: 'Open account',
+					}
+					store.dispatch(setStateStreamInProgress(payload))
+				}
+			}
 		})
-		.catch(err => {
-			dispatch({
-				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to start node: ${err}`) },
-			})
+		await stream.start()
+		console.log('node is opened')
+	} catch (err) {
+		dispatch({
+			type: MessengerActions.SetStreamError,
+			payload: { error: new Error(`Failed to start node: ${err}`) },
 		})
+	}
 }
+
 
 const getPersistentOptions = async (
 	dispatch: (arg0: reducerAction) => void,

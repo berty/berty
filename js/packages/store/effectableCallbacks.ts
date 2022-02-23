@@ -14,51 +14,41 @@ export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
-	let done = false
-
-	await accountService
-		.closeAccountWithProgress({})
-		.then(async stream => {
-			stream.onMessage((msg, err) => {
-				if (err) {
-					if (err?.EOF) {
-						if (!done) {
-							done = true
-							reduxDispatch(setStateStreamDone())
-						}
-						return
-					}
+	try {
+		const stream = await accountService.closeAccountWithProgress({})
+		stream.onMessage((msg, err) => {
+			if (err) {
+				if (err.EOF) {
+					console.log('Node is closed')
+				} else {
 					console.warn('Error while closing node:', err)
-					if (!done) {
-						done = true
-						reduxDispatch(resetAccountStore())
-					}
-					return
 				}
-				if (msg?.progress?.state !== 'done' && !done) {
-					const progress = msg?.progress
-					if (progress) {
-						const payload: StreamInProgress = {
-							msg: progress,
-							stream: 'Close account',
-						}
-						reduxDispatch(setStateStreamInProgress(payload))
+				reduxDispatch(resetAccountStore())
+				reduxDispatch(setStateStreamDone())
+				return
+			}
+			if (msg?.progress?.state !== 'done') {
+				const progress = msg?.progress
+				if (progress) {
+					const payload: StreamInProgress = {
+						msg: progress,
+						stream: 'Close account',
 					}
+					reduxDispatch(setStateStreamInProgress(payload))
 				}
-			})
-			await persistor.flush()
-			persistor.pause()
-			await stream.start()
-			console.log('SUCCESS TO CLOSE ACCOUNT')
+			}
 		})
-		.catch(err => {
-			console.warn('Failed to close node:', err)
-			reduxDispatch(resetAccountStore())
-			dispatch({
-				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to close node: ${err}`) },
-			})
+		await persistor.flush()
+		persistor.pause()
+		await stream.start()
+	} catch (err) {
+		console.warn('Failed to close node:', err)
+		reduxDispatch(resetAccountStore())
+		dispatch({
+			type: MessengerActions.SetStreamError,
+			payload: { error: new Error(`Failed to close node: ${err}`) },
 		})
+	}
 }
 
 export const importAccountWithProgress = async (

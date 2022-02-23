@@ -183,11 +183,13 @@ export const Navigation: React.FC = React.memo(() => {
 				)
 				return
 			case MESSENGER_APP_STATE.GET_STARTED:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Onboarding.GetStarted' }],
-					}),
-				)
+				if (Platform.OS === 'web') {
+					dispatch(
+						CommonActions.reset({
+							routes: [{ name: 'Onboarding.GetStarted' }],
+						}),
+					)
+				}
 				return
 		}
 	}, [appState])
