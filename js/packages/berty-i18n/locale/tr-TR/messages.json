@@ -622,6 +622,10 @@
 			"title": "Sesli mesajlar",
 			"desc": "Kişilerinize sesli mesaj göndermek için Berty uygulamasına mikrofona erişimi izni tanımalısınız."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "İzin ver",
 			"settings": "Ayarlara Git"
