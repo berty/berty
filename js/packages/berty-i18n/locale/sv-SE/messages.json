@@ -622,6 +622,10 @@
 			"title": "Ljudmeddelanden",
 			"desc": "För att skicka ljudmeddelande till dina kontakter måste du tillåta mikrofonbehörighet till Berty appen."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Tillåt",
 			"settings": "Gå till inställningar"
