@@ -1,4 +1,6 @@
 import { Linking, Platform } from 'react-native'
+
+import beapi from '@berty-tech/api'
 import {
 	check,
 	checkNotifications,
@@ -8,8 +10,7 @@ import {
 	request,
 	requestNotifications,
 	RESULTS,
-} from 'react-native-permissions'
-import beapi from '@berty-tech/api'
+} from '@berty-tech/polyfill/react-native-permissions'
 
 export type PermissionType = 'proximity' | 'audio' | 'notification' | 'camera' | 'gallery'
 
@@ -32,7 +33,13 @@ export const getPermissionStatus = async (
 	if (permissionType === 'notification') {
 		return (await checkNotifications()).status
 	}
-	return await check(permissionsByDevice[permissionType])
+
+	const permName = permissionsByDevice[permissionType]
+	if (permName === undefined) {
+		return RESULTS.BLOCKED
+	}
+
+	return await check(permissionsByDevice[permissionType]!)
 }
 
 export const requestPermission = async (
@@ -41,7 +48,13 @@ export const requestPermission = async (
 	if (permissionType === 'notification') {
 		return (await requestNotifications(['alert', 'sound'])).status
 	}
-	return await request(permissionsByDevice[permissionType])
+
+	const permName = permissionsByDevice[permissionType]
+	if (permName === undefined) {
+		return RESULTS.BLOCKED
+	}
+
+	return await request(permissionsByDevice[permissionType]!)
 }
 
 export const checkPermissions = async (

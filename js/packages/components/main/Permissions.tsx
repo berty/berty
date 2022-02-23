@@ -8,7 +8,7 @@ import {
 	PermissionStatus,
 	request,
 	PERMISSIONS,
-} from 'react-native-permissions'
+} from '@berty-tech/polyfill/react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
 import {

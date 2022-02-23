@@ -12,6 +12,19 @@ module.exports = {
 				p => p.constructor.name !== "ModuleScopePlugin"
 			)
 
+			webpackConfig.module.rules.push({
+				test: /node_modules\/react-native-reanimated.*\.(js|jsx)$/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: [
+							'@babel/preset-react',
+							{ plugins: ['@babel/plugin-proposal-class-properties'] }
+						],
+					},
+				},
+			})
+
 			// ts-loader is required to reference external typescript projects/files (non-transpiled)
 			webpackConfig.module.rules.push({
 				test: /\.tsx?$/,
