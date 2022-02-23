@@ -46,8 +46,9 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	logging.Log("generating components")
 
 	// iterate over connections and compose appropriate HCL components
-	for _, connection := range config.Attributes.Connections {
-		err = connection.validate()
+	for i := range config.Attributes.Connections {
+		err = config.Attributes.Connections[i].validate()
+
 		if err != nil {
 			panic(err)
 		}

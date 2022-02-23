@@ -193,7 +193,7 @@ func (p *Peer) MatchNodeToPeer(c config.Config) {
 }
 
 // GetAllEligiblePeers returns all peers who are potentially eligible to connect to via gRPC
-func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
+func GetAllEligiblePeers(tagKey string, tagValues []string) (peers []Peer, err error) {
 	instances, err := aws.DescribeInstances()
 	if err != nil {
 		return peers, logging.LogErr(err)
@@ -233,13 +233,9 @@ func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 						peers = append(peers, p)
 					}
 				}
-				p.Name = *instance.InstanceId
-
-				peers = append(peers, p)
 			}
 		}
 	}
-
 	return peers, nil
 }
 
