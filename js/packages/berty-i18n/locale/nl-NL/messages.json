@@ -622,6 +622,10 @@
 			"title": "Audioberichten",
 			"desc": "Om audioberichten naar je contactpersonen te versturen, moet de Berty app toegang tot je microfoon krijgen."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Toestaan",
 			"settings": "Ga naar Instellingen"
