@@ -1,4 +1,4 @@
-package daemon
+package server
 
 import (
 	"bytes"
@@ -32,9 +32,7 @@ const (
 	ImageSplitSize = 3000
 )
 
-var (
-	letterRunes = []rune(RandomChars)
-)
+var letterRunes = []rune(RandomChars)
 
 type Message struct {
 	MessageType messengertypes.AppMessage_Type

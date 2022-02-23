@@ -43,7 +43,7 @@ func (c *NodeGroup) parseConnections() error {
 		// check protocol
 		switch c.Connections[i].Protocol {
 		case quic:
-			//fmt.Println("quic")
+			// fmt.Println("quic")
 			// ok
 		case websocket:
 			// ok
@@ -59,8 +59,8 @@ func (c *NodeGroup) parseConnections() error {
 	}
 
 	// if !hasInternet {
-	// supplementary connection for gRPC to talk to daemon
-	var con = Connection{
+	// supplementary connection for gRPC to talk to server
+	con := Connection{
 		To:            ConnTypeInternet,
 		Protocol:      tcp,
 		connType:      ConnTypeInternet,
@@ -76,21 +76,7 @@ func (c *NodeGroup) parseConnections() error {
 }
 
 // Validate validates the connections
-func (c *Connection) validate() error {
-
-	// replace spaces in name
-	// would cause error in terraform otherwise
-	c.Name = strings.ReplaceAll(c.Name, " ", "_")
-
-	switch strings.Split(c.To, "_")[0] {
-	case ConnTypeInternet:
-		c.connType = ConnTypeInternet
-	case ConnTypeLan:
-		c.connType = ConnTypeLan
-	default:
-		return errors.New("no valid connection type")
-	}
-
+func (c Connection) validate() error {
 	return nil
 }
 
@@ -135,7 +121,7 @@ func (c Connection) composeComponents() {
 		// port 22, tcp, from anywhere for ssh
 		components = append(components, makeInternetSGRules(22, tcp, false, sg)...)
 
-		// port 9090, tcp, from anywhere for infra daemon
+		// port 9090, tcp, from anywhere for infra server
 		components = append(components, makeInternetSGRules(9090, tcp, false, sg)...)
 
 		// port 443, tcp, from anywhere for s3 upload
@@ -176,7 +162,7 @@ func generateNewSubnetCIDR() string {
 
 	vpcCidrBlock := config.Attributes.vpc.CidrBlock
 
-	//TODO:
+	// TODO:
 	// replace this with the `net` package, use IP and net.IPMask, etc
 	// because this is really sketchy
 
@@ -196,7 +182,7 @@ func generateNewSubnetCIDR() string {
 }
 
 func generateSubnetAZ() string {
-	//TODO
+	// TODO
 	// add support for more AZ's here
 	return fmt.Sprintf("%sa", GetRegion())
 }

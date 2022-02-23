@@ -1,5 +1,5 @@
 [Unit]
-Description=infra-daemon
+Description=berty-infra-server
 After=network.target
 StartLimitIntervalSec=0
 
@@ -8,6 +8,6 @@ Type=simple
 Restart=always
 RestartSec=1
 User=ec2-user
-ExecStart=/usr/local/bin/infra-daemon
+ExecStart=/usr/local/bin/berty-infra-server
 [Install]
 WantedBy=multi-user.target

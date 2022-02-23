@@ -1,28 +1,29 @@
 package main
 
 import (
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"bytes"
 	"context"
 	"encoding/gob"
 	"fmt"
-	"google.golang.org/grpc"
-	"infratesting/daemon/grpc/daemon"
 	"infratesting/logging"
+	"infratesting/server/grpc/server"
 	"time"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"google.golang.org/grpc"
 )
 
 func main() {
 	ctx := context.Background()
 
-	//conn, err := grpc.Dial("15.236.100.80:9090", grpc.WithInsecure())
+	// conn, err := grpc.Dial("15.236.100.80:9090", grpc.WithInsecure())
 	conn, err := grpc.Dial("192.168.1.177:9090", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
 	defer conn.Close()
 
-	p := daemon.NewProxyClient(conn)
+	p := server.NewProxyClient(conn)
 	////conn, err := grpc.Dial("15.236.100.80:9090", grpc.WithInsecure())
 	//conn, err = grpc.Dial("192.168.1.177:9090", grpc.WithInsecure())
 	//if err != nil {
@@ -31,7 +32,7 @@ func main() {
 	//defer conn.Close()
 	//
 
-	_, err = p.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+	_, err = p.ConnectToPeer(ctx, &server.ConnectToPeer_Request{
 		Host: "127.0.0.1",
 		Port: "9091",
 	})
@@ -40,7 +41,7 @@ func main() {
 	}
 
 	//
-	//resp, err := p.UploadLogs(ctx, &daemon.UploadLogs_Request{
+	//resp, err := p.UploadLogs(ctx, &server.UploadLogs_Request{
 	//	Folder: "thing",
 	//	Name:   "brah",
 	//})
@@ -48,11 +49,11 @@ func main() {
 	//	log.Println(err)
 	//}
 
-	//log.Println(resp.UploadCount)
+	// log.Println(resp.UploadCount)
 
 	groupName := "peepoo"
 
-	request, err := p.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
+	request, err := p.CreateInvite(ctx, &server.CreateInvite_Request{GroupName: groupName})
 	if err != nil {
 		panic(err)
 	}
@@ -68,7 +69,7 @@ func main() {
 	logging.Log(invite.Link)
 	logging.Log(invite.WebURL)
 
-	_, err = p.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{GroupName: groupName})
+	_, err = p.StartReceiveMessage(ctx, &server.StartReceiveMessage_Request{GroupName: groupName})
 	if err != nil {
 		_ = logging.LogErr(err)
 	}
@@ -81,13 +82,13 @@ func main() {
 	//}
 	//defer conn2.Close()
 	//
-	//g2 := daemon.NewGroupClient(conn2)
-	////p := daemon.NewPeerClient(conn)
-	////t := daemon.NewTestClient(conn)
+	//g2 := server.NewGroupClient(conn2)
+	////p := server.NewPeerClient(conn)
+	////t := server.NewTestClient(conn)
 	//
 	//
 	//
-	//_, err = g2.ReplicationJoinGroup(ctx, &daemon.ReplicationJoinGroup_Request{
+	//_, err = g2.ReplicationJoinGroup(ctx, &server.ReplicationJoinGroup_Request{
 	//	GroupName: groupName,
 	//	Invite: invite.Invite,
 	//})
@@ -96,7 +97,7 @@ func main() {
 	//}
 	//
 	//for {
-	////	resp, err := client.TestConnection(ctx, &daemon.TestConnection_Request{Message: uuid.NewString()})
+	////	resp, err := client.TestConnection(ctx, &server.TestConnection_Request{Message: uuid.NewString()})
 	////	if err != nil {
 	////		panic(err)
 	////	}
@@ -104,7 +105,7 @@ func main() {
 	////	log.Printf("successfull: %v", resp.Success)
 	////}
 	//
-	//_, err = p.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+	//_, err = p.ConnectToPeer(ctx, &server.ConnectToPeer_Request{
 	//	Host: "127.0.0.1",
 	//	Port: "9091",
 	//})
@@ -114,12 +115,12 @@ func main() {
 	//
 	//groupName := uuid.NewString()
 	//
-	//_, err = g.CreateInvite(ctx, &daemon.CreateInvite_Request{GroupName: groupName})
+	//_, err = g.CreateInvite(ctx, &server.CreateInvite_Request{GroupName: groupName})
 	//if err != nil {
 	//	panic(err)
 	//}
 
-	////r2, err := g.JoinGroup(ctx, &daemon.JoinGroup_Request{
+	////r2, err := g.JoinGroup(ctx, &server.JoinGroup_Request{
 	////	GroupName: groupName,
 	////	Invite:    resp.Invite,
 	////})
@@ -129,7 +130,7 @@ func main() {
 	////
 	////fmt.Printf(r2.String())
 	//
-	////_, err = t.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
+	////_, err = t.IsTestRunning(ctx, &server.IsTestRunning_Request{
 	////	GroupName: groupName,
 	////	TestName:  "beebop",
 	////})
@@ -140,7 +141,7 @@ func main() {
 	//tests := []string{"a", "b", "c"}
 	//
 
-	_, err = p.NewTest(ctx, &daemon.NewTest_Request{
+	_, err = p.NewTest(ctx, &server.NewTest_Request{
 		GroupName: groupName,
 		TestN:     0,
 		Type:      "text",
@@ -152,7 +153,7 @@ func main() {
 		logging.LogErr(err)
 	}
 
-	//_, err = p.NewTest(ctx, &daemon.NewTest_Request{
+	//_, err = p.NewTest(ctx, &server.NewTest_Request{
 	//	GroupName: groupName,
 	//	TestN:  1,
 	//	Type:      "media",
@@ -165,7 +166,7 @@ func main() {
 	//}
 
 	fmt.Println("starting")
-	_, err = p.StartTest(ctx, &daemon.StartTest_Request{
+	_, err = p.StartTest(ctx, &server.StartTest_Request{
 		GroupName: groupName,
 		TestN:     0,
 	})
@@ -173,7 +174,7 @@ func main() {
 		logging.LogErr(err)
 	}
 	//
-	//_, err = p.StartTest(ctx, &daemon.StartTest_Request{
+	//_, err = p.StartTest(ctx, &server.StartTest_Request{
 	//	GroupName: groupName,
 	//	TestN:  1,
 	//})
@@ -183,7 +184,7 @@ func main() {
 
 	time.Sleep(time.Second * 3)
 
-	r, err := p.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
+	r, err := p.IsTestRunning(ctx, &server.IsTestRunning_Request{
 		GroupName: groupName,
 		TestN:     0,
 	})
@@ -195,7 +196,7 @@ func main() {
 
 	time.Sleep(time.Second * 10)
 
-	_, err = p.UploadLogs(ctx, &daemon.UploadLogs_Request{
+	_, err = p.UploadLogs(ctx, &server.UploadLogs_Request{
 		Folder: "test",
 		Name:   "test-node-1",
 	})
@@ -204,7 +205,7 @@ func main() {
 	}
 
 	//
-	//_, err = g.StartReceiveMessage(ctx, &daemon.StartReceiveMessage_Request{GroupName: groupName})
+	//_, err = g.StartReceiveMessage(ctx, &server.StartReceiveMessage_Request{GroupName: groupName})
 	//if err != nil {
 	//	log.Println(err)
 	//}
@@ -219,7 +220,7 @@ func main() {
 	//		te := test
 	//		defer wg.Done()
 	//		for {
-	//			r, err := t.IsTestRunning(ctx, &daemon.IsTestRunning_Request{
+	//			r, err := t.IsTestRunning(ctx, &server.IsTestRunning_Request{
 	//				GroupName: groupName,
 	//				TestName:  te,
 	//			})
@@ -239,7 +240,7 @@ func main() {
 	//
 	//wg.Wait()
 	//
-	//_, err = g.StopReceiveMessage(ctx, &daemon.StopReceiveMessage_Request{GroupName: groupName})
+	//_, err = g.StopReceiveMessage(ctx, &server.StopReceiveMessage_Request{GroupName: groupName})
 	//if err != nil {
 	//	log.Println(err)
 	//}

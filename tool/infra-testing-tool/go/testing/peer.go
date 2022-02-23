@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"infratesting/aws"
 	"infratesting/config"
-	"infratesting/daemon/grpc/daemon"
 	"infratesting/iac/components/networking"
 	"infratesting/logging"
+	"infratesting/server/grpc/server"
 	"strconv"
 	"sync"
 	"time"
@@ -25,7 +25,7 @@ type Peer struct {
 	Lock sync.Mutex
 
 	Cc *grpc.ClientConn
-	P  daemon.ProxyClient
+	P  server.ProxyClient
 
 	Ip           string
 	Groups       map[string]*protocoltypes.Group
@@ -71,20 +71,20 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 				ctx := context.Background()
 				cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 
-				temp := daemon.NewProxyClient(cc)
+				temp := server.NewProxyClient(cc)
 
-				resp, err := temp.IsProcessRunning(ctx, &daemon.IsProcessRunning_Request{})
+				resp, err := temp.IsProcessRunning(ctx, &server.IsProcessRunning_Request{})
 				if err != nil || !resp.Running {
 					count += 1
 					time.Sleep(time.Second * 5)
 				}
 
-				_, err = temp.TestConnection(ctx, &daemon.TestConnection_Request{})
+				_, err = temp.TestConnection(ctx, &server.TestConnection_Request{})
 				if err != nil {
 					count += 1
 					time.Sleep(time.Second * 5)
 				} else {
-					_, err = temp.TestConnectionToPeer(ctx, &daemon.TestConnectionToPeer_Request{
+					_, err = temp.TestConnectionToPeer(ctx, &server.TestConnectionToPeer_Request{
 						Tries: 1,
 						Host:  "localhost",
 						Port:  strconv.Itoa(networking.BertyGRPCPort),
@@ -113,9 +113,9 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 				ctx := context.Background()
 
 				cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-				p.P = daemon.NewProxyClient(cc)
+				p.P = server.NewProxyClient(cc)
 
-				_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
+				_, err = p.P.TestConnection(ctx, &server.TestConnection_Request{})
 
 				if err != nil {
 					if count > 60 {
@@ -137,14 +137,14 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 			ctx := context.Background()
 
 			cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-			p.P = daemon.NewProxyClient(cc)
+			p.P = server.NewProxyClient(cc)
 
-			_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
+			_, err = p.P.TestConnection(ctx, &server.TestConnection_Request{})
 			if err != nil {
 				return p, logging.LogErr(err)
 			}
 
-			_, err = p.P.ConnectToPeer(ctx, &daemon.ConnectToPeer_Request{
+			_, err = p.P.ConnectToPeer(ctx, &server.ConnectToPeer_Request{
 				Host: "localhost",
 				Port: "9091",
 			})
@@ -159,9 +159,9 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 			ctx := context.Background()
 
 			cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
-			p.P = daemon.NewProxyClient(cc)
+			p.P = server.NewProxyClient(cc)
 
-			_, err = p.P.TestConnection(ctx, &daemon.TestConnection_Request{})
+			_, err = p.P.TestConnection(ctx, &server.TestConnection_Request{})
 			if err != nil {
 				return p, logging.LogErr(err)
 			}
@@ -173,13 +173,13 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 }
 
 func (p *Peer) GetHost() string {
-	return fmt.Sprintf("%s:%d", p.Ip, networking.DaemonGRPCPort)
+	return fmt.Sprintf("%s:%d", p.Ip, networking.ServerGRPCPort)
 }
 
 // MatchNodeToPeer matches nodes to peers (to get the group info)
 // loop over peers
 // loop over individual peers in config.Peer
-// if tags are identical, consider match the daemon
+// if tags are identical, consider match the server
 func (p *Peer) MatchNodeToPeer(c config.Config) {
 	for _, cPeerNg := range c.Peer {
 		// config.NodeGroup.Nodes
@@ -205,7 +205,6 @@ func GetAllEligiblePeers(tagKey, tagValue string) (peers []Peer, err error) {
 		}
 
 		for _, tag := range instance.Tags {
-
 			// if instance is peer
 			if *tag.Key == tagKey {
 				for _, value := range tagValues {

@@ -1,4 +1,4 @@
-package daemon
+package server
 
 import (
 	"context"
@@ -36,7 +36,7 @@ func StartProcessCheck() {
 			processLock.Lock()
 			isProcessRunning = false
 			for x := range processList {
-				var process = processList[x]
+				process := processList[x]
 
 				for p := range processNames {
 					if strings.Contains(process.Executable(), processNames[p]) {

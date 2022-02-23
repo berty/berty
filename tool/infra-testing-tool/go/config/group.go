@@ -42,7 +42,6 @@ type Test struct {
 }
 
 func (c *NodeGroup) parseGroups() error {
-
 	// we check if the user doesn't try to add types that are not supposed to have groups
 	// only types that support groups are:
 	// Peer & Replication
@@ -50,20 +49,20 @@ func (c *NodeGroup) parseGroups() error {
 	switch c.NodeType {
 	case NodeTypeRDVP:
 		if len(c.Groups) > 0 {
-			return errors.New("can't have daemon in type RDVP")
+			return errors.New("can't have type RDVP in group")
 		}
 	case NodeTypeBootstrap:
 		if len(c.Groups) > 0 {
-			return errors.New("can't have daemon in type Bootstrap")
+			return errors.New("can't have type Bootstrap in group")
 		}
 	case NodeTypeRelay:
 		if len(c.Groups) > 0 {
-			return errors.New("can't have daemon in type Relay")
+			return errors.New("can't have type Relay in group")
 		}
 	case NodeTypeReplication:
 		// allowed
 	case NodeTypePeer:
-		// daemon a re allowed here
+		// group are re allowed here
 		// do nothing
 	}
 

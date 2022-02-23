@@ -1,6 +1,6 @@
 syntax = "proto3";
-package daemon;
-option go_package = "./daemon";
+package server;
+option go_package = "./server";
 
 // ConnectToPeer
 message ConnectToPeer {

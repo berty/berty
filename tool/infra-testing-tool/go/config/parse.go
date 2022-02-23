@@ -1,18 +1,19 @@
 package config
 
 import (
-	"gopkg.in/yaml.v3"
 	"infratesting/aws"
 	"infratesting/iac"
 	"infratesting/iac/components/ec2"
 	"infratesting/iac/components/various"
 	"infratesting/logging"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Parse parses the config bytes.
 // it does this in multiple steps.
 // first it converts it to a map containing nodes
-// then it figures out the different daemon and networks
+// then it figures out the different servers and networks
 // then it creates the network stacks (internet, lan_1, lan_2, etc)
 // then it ranges over the nodes and composes a config for them
 // then it iterates over every component in Components and generates HCL
@@ -34,7 +35,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 
 	logging.Log("parsing config")
 
-	// gathering information about networking and daemon
+	// gathering information about networking and servers
 	// this needs to be done in a separate pass
 	// to make sure we don't create multiple networking stacks for the same connection type
 	err = config.parseGroupsAndConnections()

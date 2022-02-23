@@ -29,7 +29,7 @@ func init() {
 		}
 	}
 
-	logFile, err := os.OpenFile(fmt.Sprintf("%s/logs/infra-daemon.log", dirname), os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
+	logFile, err := os.OpenFile(fmt.Sprintf("%s/logs/berty-infra-server.log", dirname), os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
 	if err != nil {
 		panic(err)
 	}

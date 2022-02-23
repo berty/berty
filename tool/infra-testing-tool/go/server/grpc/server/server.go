@@ -1,4 +1,4 @@
-package daemon
+package server
 
 import (
 	"bytes"
@@ -178,7 +178,6 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 		}
 
 		logging.Log(fmt.Sprintf("sent %d messages to %s\n", x, request.GroupName))
-
 	}()
 
 	return response, logging.LogErr(err)
@@ -251,7 +250,6 @@ func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request
 		GroupPK:   resCreate.GroupPK,
 		GroupName: request.GroupName,
 	})
-
 	if err != nil {
 		return response, err
 	}
@@ -343,7 +341,6 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 	pk := s.Groups[request.GroupName]
 
 	go func() {
-
 		newContext := context.Background()
 
 		for {
