@@ -31,27 +31,12 @@ import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
 import { useReplyReaction } from '../ReplyReactionContext'
 import PopoverView from './Popover'
-import { getEmojiByName, getMediaTypeFromMedias } from '../../utils'
+import { getMediaTypeFromMedias } from '../../utils'
+import { Reactions } from './Reactions'
 
 const pal = palette('tol-rainbow', 256)
 const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
-
-const getPositionStyleForReactionView = (
-	messageWidth: number,
-	reactionWidth: number,
-	isMine: boolean,
-) => {
-	if (messageWidth - reactionWidth > 15 || isMine) {
-		return {
-			right: 15,
-		}
-	} else {
-		return {
-			left: messageWidth - 15,
-		}
-	}
-}
 
 const useStylesMessage = () => {
 	const [{ row, text, width }] = useStyles()
@@ -186,7 +171,6 @@ export const UserMessage: React.FC<{
 	const { t } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
 	const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
-	const [reactionLayoutWidth, setReactionLayoutWidth] = useState(0)
 
 	const {
 		activePopoverCid,
@@ -195,6 +179,7 @@ export const UserMessage: React.FC<{
 		setActiveEmojiKeyboardCid,
 		highlightCid,
 		setHighlightCid,
+		setIsActivePopoverOnKeyboardClose,
 	} = useReplyReaction()
 
 	const {
@@ -228,6 +213,28 @@ export const UserMessage: React.FC<{
 			duration: 50,
 			useNativeDriver: false,
 		}).start(() => {})
+	}
+
+	const handleSelectEmoji = (emoji: string, remove: boolean = false) => {
+		client
+			?.interact({
+				conversationPublicKey: convPK,
+				type: beapi.messenger.AppMessage.Type.TypeUserReaction,
+				payload: beapi.messenger.AppMessage.UserReaction.encode({
+					emoji,
+					state: !remove,
+				}).finish(),
+				targetCid: inte?.cid,
+			})
+			.then(() => {
+				ctx.playSound('messageSent')
+				setActivePopoverCid(null)
+				setActiveEmojiKeyboardCid(null)
+				console.log('succeeded to remove emoji', emoji)
+			})
+			.catch((e: unknown) => {
+				console.warn('e sending message:', e)
+			})
 	}
 
 	const isHighlight = highlightCid === inte.cid
@@ -529,27 +536,9 @@ export const UserMessage: React.FC<{
 										onEmojiKeyboard={() => {
 											setActivePopoverCid(null)
 											setActiveEmojiKeyboardCid(inte.cid)
+											setIsActivePopoverOnKeyboardClose(true)
 										}}
-										onSelectEmoji={emoji => {
-											client
-												?.interact({
-													conversationPublicKey: convPK,
-													type: beapi.messenger.AppMessage.Type.TypeUserReaction,
-													payload: beapi.messenger.AppMessage.UserReaction.encode({
-														emoji: emoji,
-														state: true,
-													}).finish(),
-													targetCid: inte?.cid,
-												})
-												.then(() => {
-													ctx.playSound('messageSent')
-													setActivePopoverCid(null)
-													setActiveEmojiKeyboardCid(null)
-												})
-												.catch((e: unknown) => {
-													console.warn('e sending message:', e)
-												})
-										}}
+										onSelectEmoji={handleSelectEmoji}
 									/>
 								</Popover>
 							</Animated.View>
@@ -557,38 +546,17 @@ export const UserMessage: React.FC<{
 
 						{activePopoverCid === inte.cid && <Popover />}
 						{!!inte?.reactions?.length && !!messageLayoutWidth && (
-							<View
-								onLayout={event => {
-									setReactionLayoutWidth(event.nativeEvent.layout.width)
+							<Reactions
+								convPk={convPK}
+								reactions={inte.reactions}
+								cid={inte.cid!}
+								onEmojiKeyboard={() => {
+									setActivePopoverCid(null)
+									setActiveEmojiKeyboardCid(inte.cid)
+									setIsActivePopoverOnKeyboardClose(false)
 								}}
-								style={[
-									border.radius.large,
-									{
-										flexDirection: 'row',
-										backgroundColor: colors['input-background'],
-										borderRadius: 20,
-										borderWidth: 1,
-										borderColor: colors['negative-asset'],
-										paddingVertical: 2,
-										paddingHorizontal: 4,
-										position: 'absolute',
-										bottom: inte?.payload?.body ? 0 : 9,
-									},
-									getPositionStyleForReactionView(
-										messageLayoutWidth,
-										reactionLayoutWidth,
-										!!inte.isMine,
-									),
-								]}
-							>
-								{inte.reactions
-									.filter(({ emoji }) => typeof emoji === 'string')
-									.map(({ emoji }) => (
-										<Text key={emoji} style={{ marginHorizontal: 2, fontSize: 10 }}>
-											{getEmojiByName(emoji as string)}
-										</Text>
-									))}
-							</View>
+								onRemoveEmoji={handleSelectEmoji}
+							/>
 						)}
 					</View>
 					{!isWithinCollapseDuration && (
@@ -599,7 +567,6 @@ export const UserMessage: React.FC<{
 							cmd={cmd}
 						/>
 					)}
-					{/*<Text>wtf</Text>*/}
 				</View>
 			</View>
 		</View>

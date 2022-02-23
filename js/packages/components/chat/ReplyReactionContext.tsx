@@ -17,6 +17,8 @@ export const ReplyReactionContext = createContext<{
 	setActiveReplyInte: (inte?: ReplyTargetInteraction) => void
 	highlightCid: CID
 	setHighlightCid: (cid: CID) => void
+	isActivePopoverOnKeyboardClose: boolean
+	setIsActivePopoverOnKeyboardClose: (activePopover: boolean) => void
 }>({
 	activePopoverCid: null,
 	setActivePopoverCid: () => {},
@@ -26,6 +28,8 @@ export const ReplyReactionContext = createContext<{
 	setActiveReplyInte: () => {},
 	highlightCid: null,
 	setHighlightCid: () => {},
+	isActivePopoverOnKeyboardClose: false,
+	setIsActivePopoverOnKeyboardClose: () => {},
 })
 
 export const ReplyReactionProvider: React.FC = React.memo(({ children }) => {
@@ -33,6 +37,8 @@ export const ReplyReactionProvider: React.FC = React.memo(({ children }) => {
 	const [highlightCid, setHighlight] = useState<CID>()
 	const [activeEmojiKeyboardCid, setActiveEmojiKeyboardCid] = useState<CID>()
 	const [activeReplyInte, setActiveReplyInte] = useState<ReplyTargetInteraction | undefined>()
+	const [isActivePopoverOnKeyboardClose, setIsActivePopoverOnKeyboardClose] =
+		useState<boolean>(false)
 
 	const value = {
 		activePopoverCid,
@@ -46,6 +52,8 @@ export const ReplyReactionProvider: React.FC = React.memo(({ children }) => {
 			setTimeout(() => setHighlight(cid), 400)
 			setTimeout(() => setHighlight(null), 2000)
 		},
+		isActivePopoverOnKeyboardClose,
+		setIsActivePopoverOnKeyboardClose,
 	}
 
 	return (
