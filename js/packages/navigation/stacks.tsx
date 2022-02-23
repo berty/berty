@@ -168,7 +168,6 @@ export const Navigation: React.FC = React.memo(() => {
 		console.log('context app State', appState)
 		switch (appState) {
 			case MESSENGER_APP_STATE.READY:
-				console.log('APP STATE READY BEFORE DISPATCH')
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: 'Main.Home' }],

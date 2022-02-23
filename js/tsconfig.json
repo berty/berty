@@ -2,7 +2,7 @@
 	"include": [
 		"global.d.ts",
 		"index.ts",
-		"packages",
+		"packages"
 	],
 	"exclude": [
 		"packages/web-dev-app",

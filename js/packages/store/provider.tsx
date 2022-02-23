@@ -199,7 +199,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		}
 
 		const f = async () => {
-			console.log('networkConfigSet')
 			const netConf = await accountService.networkConfigGet({
 				accountId: selectedAccount,
 			})
@@ -208,7 +207,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 			}
 
 			setNetworkConfig(netConf.currentConfig)
-			console.log('networkConfigSetted')
 		}
 
 		f().catch(e => console.warn(e))

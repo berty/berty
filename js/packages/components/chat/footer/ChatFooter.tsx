@@ -26,6 +26,7 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+import ImagePicker from '@berty-tech/polyfill/react-native-image-crop-picker'
 
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'

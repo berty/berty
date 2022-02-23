@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.12",
-    "@babel/plugin-transform-modules-commonjs": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-flow": "^7.16.7",
     "@babel/preset-react": "^7.16.7",
@@ -16,7 +15,6 @@
     "@types/node": "^12.20.42",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
-    "babel-loader": "^8.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-native": "^0.67.1",
@@ -29,7 +27,7 @@
     "url-loader": "^4.1.1"
   },
   "scripts": {
-    "start": "PORT=3001 craco start",
+    "start": "PORT=3002 craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"

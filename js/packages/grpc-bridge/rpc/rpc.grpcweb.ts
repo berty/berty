@@ -86,9 +86,8 @@ const stream =
 					client.onMessage((message: grpc.ProtobufMessage): void => {
 						callback(message.serializeBinary(), null)
 					})
-					client.onEnd((code: grpc.Code, message: string, metadata: grpc.Metadata) => {
+					client.onEnd((code: grpc.Code, message: string /*, metadata: grpc.Metadata */) => {
 						// TODO: dig why Internal Error is throw on grpcWeb
-						console.log('client.onEnd', code, message, JSON.stringify(metadata))
 						const messagesToCheck = [
 							'Response closed without grpc-status (Trailers provided)',
 							'Response closed without grpc-status (Headers only)',

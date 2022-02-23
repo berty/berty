@@ -9,13 +9,13 @@ import {
 	ActivityIndicator,
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import { WebView } from '@berty-tech/polyfill/react-native-webview'
 import { useTranslation } from 'react-i18next'
 
 import { useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@berty-tech/polyfill/react-native-community-blur'
+import { WebView } from '@berty-tech/polyfill/react-native-webview'
 
 export const useStylesModalWebView = () => {
 	const [{ width, border, padding, margin }] = useStyles()

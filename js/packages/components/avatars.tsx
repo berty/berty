@@ -2,7 +2,6 @@ import React from 'react'
 import { Image, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
 import palette from 'google-palette'
 import { SHA3 } from 'sha3'
-// import { withBadge } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
 import { Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
@@ -312,17 +311,9 @@ export const MultiMemberAvatar: React.FC<{
 			)
 		}
 
-		// if (Platform.OS === 'web') {
-		const WrappedAvatar = () => content
-		return <WrappedAvatar />
-		// }
-		// const badgeSize = size / 3
-		// class GroupBadge extends React.Component {
-		// 	render = () => <HardcodedAvatar size={badgeSize} name={'group'} />
-		// }
-		// const Avatar = () => content
-		// const WrappedAvatar = withBadge('', { Component: GroupBadge })(Avatar)
-		// return <WrappedAvatar />
+		// TODO: diff a OneToOne conversation icon and a MultiMember conversation icon
+		const Avatar = () => content
+		return <Avatar />
 	}, [
 		conv?.avatarCid,
 		conv?.displayName,

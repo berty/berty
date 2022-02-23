@@ -1,5 +1,5 @@
-const path = require("path")
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
 	babel: {
@@ -23,24 +23,23 @@ module.exports = {
 				},
 			})
 
-			webpackConfig.module.rules =  webpackConfig.module.rules.map(rule => {
+			webpackConfig.module.rules = webpackConfig.module.rules.map(rule => {
 				if (rule.oneOf) {
-						rule.oneOf.unshift({
-								test: /.svg$/,
-								exclude: /node_modules/,
-								use: [
-										{
-												loader: require.resolve('@svgr/webpack'),
-												options: {
-														expandProps: 'end',
-														native: true,
-												},
-										},
-								],
-						});
+					rule.oneOf.unshift({
+						test: /.svg$/,
+						exclude: /node_modules/,
+						use: [
+							{
+								loader: require.resolve('@svgr/webpack'),
+								options: {
+									expandProps: 'end',
+									native: true,
+								},
+							},
+						],
+					})
 				}
-
-				return rule;
+				return rule
 		})
 
 			webpackConfig.plugins.push(new webpack.DefinePlugin({
@@ -55,7 +54,7 @@ module.exports = {
 			'react': path.resolve(path.resolve(__dirname, './node_modules/react')),
 			'^react-native$': path.resolve(path.resolve(__dirname, './node_modules/react-native')),
 			'react-native-svg': path.resolve(path.resolve(__dirname, './node_modules/react-native-svg-web')),
-			'lottie-react-native': path.resolve(path.resolve(__dirname, './node_modules/react-native-web-lottie'))
+			'lottie-react-native': path.resolve(path.resolve(__dirname, './node_modules/react-native-web-lottie')),
 		},
 	}
 }

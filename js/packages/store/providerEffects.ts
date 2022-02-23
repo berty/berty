@@ -59,12 +59,11 @@ export const openAccountWithProgress = async (
 ) => {
 	console.log('Opening account', selectedAccount)
 	try {
-		const stream = await accountService
-			.openAccountWithProgress({
-				args: bridgeOpts.cliArgs,
-				accountId: selectedAccount?.toString(),
-				sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
-			})
+		const stream = await accountService.openAccountWithProgress({
+			args: bridgeOpts.cliArgs,
+			accountId: selectedAccount?.toString(),
+			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
+		})
 		stream.onMessage((msg, err) => {
 			if (err?.EOF) {
 				console.log('activating persist with account:', selectedAccount?.toString())
@@ -102,7 +101,6 @@ export const openAccountWithProgress = async (
 		})
 	}
 }
-
 
 const getPersistentOptions = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -359,14 +357,13 @@ export const openingClients = async (
 					if (err) {
 						if (
 							err?.EOF ||
-							err instanceof GRPCError &&
-							(
-								err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
-								err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE)
+							(err instanceof GRPCError &&
+								(err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
+									err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE))
 						) {
 							return
 						}
-						console.warn('events stream onMessage error:', JSON.stringify(err))
+						console.warn('events stream onMessage error:', err)
 						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 					}
 
