@@ -3,43 +3,44 @@
 ## Prerequisites
 
 ### Dependencies
-In order to use the infra-testing-tool you need a handful of other tools installed.
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) (to the tool supply tool with credentials) If already installed,
-  Depending on how much infrastructure you want to generate and launch on AWS, you might need to increase your ElasticIP service quota. The default is 5 (meaning you could only have 5 nodes). If you want more, visit [this link](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html#using-instance-addressing-limit).
-- [Terraform](https://www.terraform.io/downloads.html) (to provision infrastructure)
-- [Packer](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli) (to create the berty AMI)
+In order to use the infra testing tool you need a handful of other tools installed.
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) to manage AWS ressources, e.g. : run / stop servers
+- [Packer](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli) to create the Berty AMI (OS image for AWS servers)
+- [Terraform](https://www.terraform.io/downloads.html) to provision infrastructure
 
-### Install
+**Note** : depending on how much infrastructure you want to generate and launch on AWS, you might need to increase your ElasticIP service quota. The default is 5 (meaning you could only have 5 nodes). If you want more, visit [this link](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html#using-instance-addressing-limit).
+
+#### Example with `brew` on macOS
 ```bash
-make install
+brew install awscli packer terraform
+aws configure #Then enter ID, token, region, etc.
 ```
 
-### AMI (Amazon Machine Image)
+### Install client
+```bash
+make install.client
+```
+
+### Build AMI (Amazon Machine Image)
 To speed up the tool considerably we build an AMI beforehand, so our cloud instances don't have to build the Berty CLI from source every time they get launched.
 This also allows us to use instances with much less memory.
 
-If this is your first time using the tool, or you want to rebuild the AMI you need to follow the next steps.
-
-Because this branch isn't merged into `berty/berty:master` yet, we need to upload the grpc control daemon manually to S3 so the AMI can download it manually (this process will not be needed once it is merged).
-
-Create an S3 bucket in the desired region.
-Change the name of the *bucket* in `packer/upload-daemon.sh` on line 3. Afterwards run the bash script. It will archive and upload to s3 so packer can download and install it.
-- `./upload-daemon.sh`
-
-Go to the S3 console and find the zip file the script uploaded, and copy the link into line 26 of `packer/install-berty.sh`.
-
-Replace `eu-central-1` with your region of choice (eu-west-1, eu-west-3, etc), but make sure it is the same region as the region specified in your config file later on.
+If this is your first time using the tool, or you want to rebuild the AMI you need to run the following command:
 ```bash
-cd packer
-packer init .
-packer build --force -var "region=eu-central-1" . # this will delete any AMIs with the name "berty-ami" you own in that region!
+make update_ami
 ```
-**(eu-west-3 is Paris)**, [See more](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html#Concepts.RegionsAndAvailabilityZones.Regions).
 
-After you've executed these commands, it will start building the machine images. This could take roughly 15 minutes.
+Knowing that you can override the following variables:
+- `AWS_REGION` is the [AWS region](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html#Concepts.RegionsAndAvailabilityZones.Regions) where the AMI will be built
+- `GITHUB_REMOTE` is Github remote from which the code will be used to build the AMI
+- `GITHUB_BRANCH` is Github branch from which the code will be used to build the AMI
+- `SERVER_GO_VERSION` is the Golang version used to build the `berty` and `berty-infra-server` binaries within the AMI
+
+This command will start building the machine images. This could take roughly 15 minutes.
 When Packer has completed you can continue to the next step.
 
 ## Usage
+
 ### Generate config
 This command generates the underlying *infrastructure as code* as well as a state file.
 You can find these in the folder `infraState`, but they shouldn't be manually changed.
