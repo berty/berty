@@ -622,6 +622,10 @@
 			"title": "Audio-Nachrichten",
 			"desc": "Um Audionachrichten an Ihre Kontakte zu senden, müssen Sie der Berty App Zugriff auf das Mikrofon gewähren."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Zulassen",
 			"settings": "Gehe zu den Einstellungen"
