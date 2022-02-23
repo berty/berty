@@ -622,6 +622,10 @@
 			"title": "Audio messages",
 			"desc": "To send audio message to your contacts, you need to allow microphone permission to Berty app."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Allow",
 			"settings": "Go to Settings"
