@@ -622,6 +622,10 @@
 			"title": "Hangüzenetek",
 			"desc": "A hangüzenetek küldéséhez engedélyeznie kell a mikrofon használatát."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Engedélyezni",
 			"settings": "Ugorj a beállításokhoz"
