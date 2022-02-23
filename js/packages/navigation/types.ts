@@ -3,6 +3,7 @@ import { PermissionStatus } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import { StackScreenProps } from '@react-navigation/stack'
+import { PermissionType } from '@berty-tech/rnutil/checkPermissions'
 
 export type ScreensParams = {
 	// Onboarding
@@ -19,10 +20,10 @@ export type ScreensParams = {
 	'Main.ContactRequest': { contactId: string }
 	'Main.Scan': undefined
 	'Main.Permissions': {
-		permissionType: 'p2p' | 'audio' | 'notification' | 'camera'
+		permissionType: PermissionType
 		permissionStatus: PermissionStatus
 		navigateNext: keyof ScreensParams
-		onComplete?: () => Promise<void>
+		onComplete?: (() => Promise<void>) | (() => void)
 	}
 
 	// Create group

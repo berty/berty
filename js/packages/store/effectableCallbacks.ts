@@ -10,6 +10,7 @@ import {
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import { RESULTS } from 'react-native-permissions'
 
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -124,9 +125,7 @@ export const refreshAccountList = async (
 export const getNetworkConfigurationFromPreset = async (
 	preset: beapi.account.NetworkConfigPreset | null | undefined,
 ): Promise<beapi.account.INetworkConfig> => {
-	const hasBluetoothPermission =
-		(await rnutil.checkPermissions('p2p', null, { navigateToPermScreenOnProblem: false })) ===
-		'granted'
+	const hasBluetoothPermission = (await rnutil.checkPermissions('p2p')) === RESULTS.GRANTED
 
 	const configForPreset = await accountService.networkConfigGetPreset({
 		preset: preset || beapi.account.NetworkConfigPreset.Undefined,

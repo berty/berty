@@ -99,10 +99,11 @@ const EnableNotificationsButton: React.FC<{
 			onPress={async () => {
 				try {
 					// Get or ask for permission
-					const status = await rnutil.checkPermissions('notification', navigate)
+					const status = await rnutil.checkPermissions('notification')
 					if (status !== RESULTS.GRANTED && status !== RESULTS.LIMITED) {
 						await new Promise(resolve =>
-							rnutil.checkPermissions('notification', navigate, {
+							rnutil.checkPermissions('notification', {
+								navigate,
 								navigateToPermScreenOnProblem: true,
 								onComplete: () =>
 									new Promise(subResolve => {

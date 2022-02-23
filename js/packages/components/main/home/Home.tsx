@@ -312,7 +312,8 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 					fill={colors['secondary-text']}
 					backgroundColor={colors['main-background']}
 					onPress={async () => {
-						await rnutil.checkPermissions('camera', navigate, {
+						await rnutil.checkPermissions('camera', {
+							navigate,
 							navigateNext: 'Main.Scan',
 							navigateToPermScreenOnProblem: true,
 							onComplete: async () =>

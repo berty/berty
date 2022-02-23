@@ -19,13 +19,6 @@ import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
 import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty-tech/react-redux'
 import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-
-import { useReplyReaction } from '../ReplyReactionContext'
-import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
-import { ChatTextInput } from './ChatTextInput'
-import { RecordComponent } from './record/RecordComponent'
-import { AddFileMenu } from './file-uploads/AddFileMenu'
-import { EmojiBanner } from './emojis/EmojiBanner'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,
@@ -33,6 +26,13 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+
+import { useReplyReaction } from '../ReplyReactionContext'
+import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
+import { ChatTextInput } from './ChatTextInput'
+import { RecordComponent } from './record/RecordComponent'
+import { AddFileMenu } from './file-uploads/AddFileMenu'
+import { EmojiBanner } from './emojis/EmojiBanner'
 
 export type ChatFooterProps = {
 	convPK: string
@@ -67,7 +67,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 
 		// local
 		const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))
-		const [showAddFileMenu, setShowAddFileMenu] = React.useState(false)
+		const [addFileMenuVisible, setAddFileMenuVisible] = React.useState(false)
 
 		// computed
 		const isFake = !!(conversation as any)?.fake
@@ -148,7 +148,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				if (newMedias) {
 					await sendMessageBouncy(newMedias)
 				}
-				setShowAddFileMenu(false)
+				setAddFileMenuVisible(false)
 			},
 			[sendMessageBouncy],
 		)
@@ -193,7 +193,8 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		)
 
 		const handlePressCamera = React.useCallback(async () => {
-			const permissionStatus = await rnutil.checkPermissions('camera', navigate, {
+			const permissionStatus = await rnutil.checkPermissions('camera', {
+				navigate,
 				navigateToPermScreenOnProblem: true,
 			})
 			if (permissionStatus !== RESULTS.GRANTED) {
@@ -223,8 +224,8 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		}, [navigate, prepareMediaAndSend])
 
 		const handlePressMore = React.useCallback(() => {
-			setShowAddFileMenu(true)
-		}, [setShowAddFileMenu])
+			setAddFileMenuVisible(true)
+		}, [setAddFileMenuVisible])
 
 		const handleTextChange = React.useCallback(
 			(text: string) => {
@@ -263,18 +264,17 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						backgroundColor: colors['main-background'],
 					}}
 				>
-					{showAddFileMenu && (
-						<AddFileMenu
-							onClose={handleCloseFileMenu}
-							setSending={val => {
-								setSending(val)
-								if (val) {
-									setShowAddFileMenu(false)
-								}
-							}}
-							sending={sending}
-						/>
-					)}
+					<AddFileMenu
+						visible={addFileMenuVisible}
+						onClose={handleCloseFileMenu}
+						setSending={val => {
+							setSending(val)
+							if (val) {
+								setAddFileMenuVisible(false)
+							}
+						}}
+						sending={sending}
+					/>
 					<RecordComponent
 						component={recordIcon}
 						convPk={convPK}
