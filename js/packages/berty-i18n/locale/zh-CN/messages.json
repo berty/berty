@@ -622,6 +622,10 @@
 			"title": "音频消息",
 			"desc": "若要向您的联系人发送音频信息，您需要允许Berty 应用程序获得麦克风权限。"
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "允许",
 			"settings": "转到设置"
