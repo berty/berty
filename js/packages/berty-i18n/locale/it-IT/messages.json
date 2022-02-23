@@ -622,6 +622,10 @@
 			"title": "Messaggi audio",
 			"desc": "Per inviare un messaggio audio ai tuoi contatti, devi consentire l'autorizzazione del microfono all'app Berty."
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Consenti",
 			"settings": "Vai alle impostazioni"
