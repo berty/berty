@@ -2,7 +2,7 @@ import React, { ComponentProps, useState } from 'react'
 import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import Clipboard from '@react-native-community/clipboard'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 import beapi from '@berty-tech/api'
 import QRCode from '@berty-tech/polyfill/react-native-qrcode-svg'

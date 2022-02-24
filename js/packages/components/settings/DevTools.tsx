@@ -35,7 +35,7 @@ import {
 	useConversationsDict,
 	useAccount,
 } from '@berty-tech/react-redux'
-import { Player } from '@berty-tech/polyfill/player'
+import { Player } from '@berty-tech/polyfill/react-native-community-audio-toolkit-player'
 
 import {
 	ButtonSetting,

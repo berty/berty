@@ -68,10 +68,6 @@ export const AddBotBody: React.FC<{
 		}
 	}, [done, error, closeModal])
 
-	useEffect(() => {
-		console.log('AddBot', pdlReply)
-	})
-
 	return pdlReply?.link?.bertyId?.accountPk ? (
 		<View
 			style={[

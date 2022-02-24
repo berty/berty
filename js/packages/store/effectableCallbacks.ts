@@ -51,42 +51,40 @@ export const closeAccountWithProgress = async (
 	}
 }
 
-export const importAccountWithProgress = async (
+export const importAccountWithProgress = (
 	path: string,
 	dispatch: ReturnType<typeof useAppDispatch>,
 ) =>
-	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(resolve => {
+	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(async resolve => {
 		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
-		accountService
-			.importAccountWithProgress({ backupPath: path })
-			.then(async stream => {
-				stream.onMessage(async (msg, _) => {
-					if (msg?.progress?.state !== 'done') {
-						const progress = msg?.progress
-						if (progress) {
-							const payload: StreamInProgress = {
-								msg: progress,
-								stream: 'Import account',
-							}
-							dispatch(setStateStreamInProgress(payload))
+		try {
+			const stream = await accountService.importAccountWithProgress({ backupPath: path })
+			stream.onMessage(async (msg, _) => {
+				if (msg?.progress?.state !== 'done') {
+					const progress = msg?.progress
+					if (progress) {
+						const payload: StreamInProgress = {
+							msg: progress,
+							stream: 'Import account',
 						}
-					} else {
-						dispatch(setStateStreamDone())
-						resolve(metaMsg)
+						dispatch(setStateStreamInProgress(payload))
 					}
-					if (msg?.accountMetadata) {
-						metaMsg = msg
-					}
-				})
-				await stream.start()
+				} else {
+					dispatch(setStateStreamDone())
+					resolve(metaMsg)
+				}
+				if (msg?.accountMetadata) {
+					metaMsg = msg
+				}
 			})
-			.catch(err => {
-				dispatch({
-					type: MessengerActions.SetStreamError,
-					payload: { error: new Error(`Failed to import account: ${err}`) },
-				})
-				resolve(null)
+			await stream.start()
+		} catch (err) {
+			dispatch({
+				type: MessengerActions.SetStreamError,
+				payload: { error: new Error(`Failed to import account: ${err}`) },
 			})
+			resolve(null)
+		}
 	})
 
 export const refreshAccountList = async (

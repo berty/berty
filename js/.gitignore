@@ -123,3 +123,6 @@ __generated__/
 # osx
 dist/
 osx/Berty.app
+
+# watchman
+.watchman-cookie*

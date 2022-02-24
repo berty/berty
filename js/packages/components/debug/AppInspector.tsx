@@ -238,17 +238,17 @@ const accountAction = async (
 	])
 }
 
-const ExportAllAppData = () => {
-	const { t }: { t: any } = useTranslation()
+// const ExportAllAppData = () => {
+// 	const { t }: { t: any } = useTranslation()
 
-	return (
-		<TouchableOpacity style={{ flex: 1 }}>
-			<View style={[styles.button]}>
-				<Text style={[styles.text, styles.bold]}>{t('debug.inspector.dump.button')}</Text>
-			</View>
-		</TouchableOpacity>
-	)
-}
+// 	return (
+// 		<TouchableOpacity style={{ flex: 1 }}>
+// 			<View style={[styles.button]}>
+// 				<Text style={[styles.text, styles.bold]}>{t('debug.inspector.dump.button')}</Text>
+// 			</View>
+// 		</TouchableOpacity>
+// 	)
+// }
 
 const AccountsInspector: React.FC<{
 	lastRefresh: Number
@@ -427,7 +427,7 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 							</Text>
 						</View>
 					</TouchableOpacity>
-					<ExportAllAppData />
+					{/*<ExportAllAppData />*/}
 					<TouchableOpacity onPress={() => setDebugMode(false)} style={{ flex: 1 }}>
 						<View style={[styles.footerButton]}>
 							<Text style={[styles.text, styles.bold, { textAlign: 'center' }]}>

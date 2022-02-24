@@ -1,5 +1,5 @@
 import mapValues from 'lodash/mapValues'
-import { Player } from '@berty-tech/polyfill/player'
+import { Player } from '@berty-tech/polyfill/react-native-community-audio-toolkit-player'
 
 import { SoundKey, soundsMap } from './types'
 

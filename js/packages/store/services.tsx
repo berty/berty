@@ -96,9 +96,6 @@ export const servicesAuthViaURL = async (
 	}
 
 	if (!(await InAppBrowser.isAvailable())) {
-		if (Platform.OS === 'web') {
-			return
-		}
 		throw new Error('no browser available')
 	}
 

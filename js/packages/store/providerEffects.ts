@@ -252,32 +252,29 @@ export const openingDaemon = async (
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
-	accountService
-		.getGRPCListenerAddrs({})
-		.then(async rep => {
-			// account already open
-			if (Platform.OS === 'web') {
-				const openedAccount = await accountService.getOpenedAccount({})
-				if (openedAccount.accountId === '' || (openedAccount.listeners || []).length === 0) {
-					throw new Error('account not opened (web)')
-				}
-
-				console.log('service has grpc listeners for messenger/protocol services')
+	try {
+		const rep = await accountService.getGRPCListenerAddrs({})
+		// account already open
+		if (Platform.OS === 'web') {
+			const openedAccount = await accountService.getOpenedAccount({})
+			if (openedAccount.accountId === '' || (openedAccount.listeners || []).length === 0) {
+				throw new Error('account not opened (web)')
+			}
+			console.log('service has grpc listeners for messenger/protocol services')
+			store.dispatch(setStateOpeningClients())
+		} else {
+			if (rep.entries?.length > 0) {
+				console.log('service has grpc listeners')
 				store.dispatch(setStateOpeningClients())
 			} else {
-				if (rep.entries?.length > 0) {
-					console.log('service has grpc listeners')
-					store.dispatch(setStateOpeningClients())
-				} else {
-					throw Error('account not opened')
-				}
+				throw Error('account not opened')
 			}
-		})
-		.catch(async e => {
-			console.log(`account seems to be unopened yet ${e}`)
-			// account not open
-			await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
-		})
+		}
+	} catch (e) {
+		console.log(`account seems to be unopened yet ${e}`)
+		// account not open
+		await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
+	}
 }
 
 // handle state OpeningWaitingForClients
@@ -344,6 +341,7 @@ export const openingClients = async (
 	let cancel = () => {
 		precancel = true
 	}
+
 	messengerClient
 		.eventStream({ shallowAmount: 20 })
 		.then(async stream => {
@@ -411,7 +409,7 @@ export const openingClients = async (
 			await stream.start()
 		})
 		.catch(err => {
-			if (err?.EOF) {
+			if (err instanceof GRPCError && err?.EOF) {
 				console.info('end of the events stream')
 				store.dispatch(setStateClosed())
 			} else {
@@ -419,7 +417,6 @@ export const openingClients = async (
 				dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 			}
 		})
-
 	reduxDispatch(
 		setStateOpeningListingEvents({ messengerClient, protocolClient, clearClients: () => cancel() }),
 	)
@@ -472,10 +469,7 @@ export const updateAccountsPreReady = async (
 	await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
 	await storageRemove(GlobalPersistentOptionsKeys.IsNewAccount)
 	if (displayName) {
-		await client
-			?.accountUpdate({ displayName })
-			.then(async () => {})
-			.catch(err => console.error(err))
+		await client?.accountUpdate({ displayName }).catch(err => console.error(err))
 		// update account in bertyaccount
 		await updateAccount(embedded, dispatch, {
 			accountName: displayName,

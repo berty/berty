@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
-import { Player } from '@berty-tech/polyfill/player'
+import { Player } from '@berty-tech/polyfill/react-native-community-audio-toolkit-player'
 
 import { getSource } from '../utils'
 import { useSelector } from 'react-redux'
