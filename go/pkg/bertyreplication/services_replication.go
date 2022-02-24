@@ -136,7 +136,6 @@ func (s *replicationService) GroupSubscribe(group *protocoltypes.Group, pkStr st
 	}()
 
 	go func() {
-		messageStore.Subscribe(s.ctx)
 		ch := messageStore.Subscribe(s.ctx)
 		for evt := range ch {
 			s.updateGroupDB(evt, messageStore, pkStr, updatedMessageStore)
