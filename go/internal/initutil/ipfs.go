@@ -219,11 +219,25 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	// setup mdns
 	if m.Node.Protocol.MDNS.Enable && !m.Node.Protocol.DisableIPFSNetwork {
 		h := mnode.PeerHost()
-		dh := ipfsutil.DiscoveryHandler(ctx, logger, h)
-		mdnsService := ipfsutil.NewMdnsService(logger, h, ipfsutil.MDNSServiceName, dh)
-		logger.Named("mdns").Info("starting mdns")
-		if err := mdnsService.Start(); err != nil {
+		mdnslogger := logger.Named("mdns")
+
+		dh := ipfsutil.DiscoveryHandler(ctx, mdnslogger, h)
+		mdnsService := ipfsutil.NewMdnsService(mdnslogger, h, ipfsutil.MDNSServiceName, dh)
+
+		// get multicast interfaces
+		ifaces, err := ipfsutil.GetMulticastInterfaces()
+		if err != nil {
 			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		}
+
+		// if multicast interfaces is found, start mdns service
+		if len(ifaces) > 0 {
+			mdnslogger.Info("starting mdns")
+			if err := mdnsService.Start(); err != nil {
+				return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+			}
+		} else {
+			mdnslogger.Error("unable to start mdns service, no multicast interfaces found")
 		}
 
 		m.Node.Protocol.mdnsService = mdnsService
