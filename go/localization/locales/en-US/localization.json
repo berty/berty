@@ -3,7 +3,7 @@
     "services": {
       "rpl": {
         "name": "Replication",
-        "description": "This service will automatically replicate your conversations, to provide your device with the most efficient network performance.",
+        "description": "This service will automatically replicate your conversations to provide your device with the most efficient network performance.",
         "benefitBadge": "Performance"
       },
       "psh": {
@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "Sent %[1]v photos"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "Sent a media",
-      "bodyWithNumberOfMedia_other": "Sent %[1]v medias"
+      "bodyWithNumberOfMedia_one": "Sent media",
+      "bodyWithNumberOfMedia_other": "Sent %[1]v media items"
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v reacted with %[2]v to your message"
