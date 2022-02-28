@@ -58,7 +58,7 @@ type discoveryHandler struct {
 func DiscoveryHandler(ctx context.Context, l *zap.Logger, h host.Host) p2p_mdns.Notifee {
 	return &discoveryHandler{
 		ctx:    ctx,
-		logger: l.Named("mdns"),
+		logger: l,
 		host:   h,
 	}
 }
@@ -84,7 +84,7 @@ func NewMdnsService(logger *zap.Logger, host host.Host, serviceName string, noti
 	}
 
 	s := &mdnsService{
-		logger:      logger.Named("mdns"),
+		logger:      logger,
 		host:        host,
 		serviceName: serviceName,
 		// generate a random string between 32 and 63 characters long
@@ -169,13 +169,10 @@ func (s *mdnsService) startServer() error {
 	}
 
 	// manually get interfaces list
-	ifaces, err := getNetDriver().Interfaces()
+	ifaces, err := GetMulticastInterfaces()
 	if err != nil {
 		return err
 	}
-
-	// filter Multicast interfaces
-	ifaces = filterMulticastInterfaces(ifaces)
 	s.logger.Debug("multicast interfaces found", zap.Int("ifaces", len(ifaces)))
 
 	server, err := zeroconf.RegisterProxy(
@@ -241,6 +238,17 @@ func (s *mdnsService) startResolver(ctx context.Context) {
 			s.logger.Error("zeroconf browsing failed", zap.Error(err))
 		}
 	}()
+}
+
+func GetMulticastInterfaces() ([]net.Interface, error) {
+	// manually get interfaces list
+	ifaces, err := getNetDriver().Interfaces()
+	if err != nil {
+		return nil, err
+	}
+
+	// filter Multicast interfaces
+	return filterMulticastInterfaces(ifaces), nil
 }
 
 func randomString(l int) string {
