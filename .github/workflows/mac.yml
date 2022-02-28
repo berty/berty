@@ -43,7 +43,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
       - name: Cache Node.js modules
