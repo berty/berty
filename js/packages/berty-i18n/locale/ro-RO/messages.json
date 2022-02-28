@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Servicii",
+				"network-button": "",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Autentificare la servicii",
-			"title": "Servicii",
-			"recommended": "Recomandate",
-			"desc": "Acest lucru va reproduce automat conversațiile tale pe un server",
-			"button": "Utilizează servicii gestionate de Berty",
-			"skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Configurare finalizată!",
 			"desc": "",
 			"button": "ÎNCEPE SĂ UTILIZEZI BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Anulează",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "Ajutor",
-			"header-center-button": "",
-			"header-right-button": "Setări",
-			"network-button": "",
 			"edit-profile": "",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Notificări",
-				"tag-enabled": "Activate",
-				"tag-disabled": "Dezactivate"
-			},
-			"dark-mode-button": "Mod întunecat",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Creează un cont nou"
 		},
 		"network-map": {
 			"title": "",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Setări",
 			"desc": "",
+			"in-app-notifications": "",
+			"dark-mode-button": "Mod întunecat",
+			"devtools": "",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Servicii externe",
-			"operated-services-button": "Utilizează servicii gestionate de Berty",
-			"register-service-button": {
-				"title": "",
-				"input-placeholder": "URL-ul serviciului",
-				"action": "Adaugă"
-			},
-			"registered-services-button": {
-				"title": "Servicii înregistrate în prezent",
-				"sample-no-services": "Niciun serviciu înregistrat",
-				"sample-unknown-service": "Serviciu necunoscut"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Recomandate",
+			"desc": "",
+			"button": "",
+			"skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
 		},
 		"delete-account": {
 			"title": "Șterge contul meu!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Amprentă",
 			"devices": "Dispozitive"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Marchează ca verificat",
 			"block-button": "Blochează contact",
 			"delete-button": "Şterge contact",
 			"fingerprint": "Amprentă",
 			"info": "Informaţii",
-			"devices": "Dispozitive"
+			"devices": "Dispozitive",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Dispozitive",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Caută",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "",
+				"group-invitation": "",
 				"refuse-button": "",
 				"accept-button": "",
-				"accepted-button": ""
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "",
 			"files": "",
 			"microphone": "",
@@ -571,6 +584,13 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -602,11 +622,16 @@
 			"title": "",
 			"desc": ""
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "",
 			"settings": ""
 		},
 		"skip": "Omite",
+		"cancel": "Anulează",
 		"settings-text": ""
 	},
 	"notification": {
