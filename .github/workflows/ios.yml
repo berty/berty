@@ -44,7 +44,7 @@ jobs:
           #    optimized      WIP
           #
           # TODO: use a github action secret to pass the builder strategy dynamically
-          node .github/workflows/mac-runner-matrix-builder.js random
+          node .github/workflows/mac-runner-matrix-builder.js github
 
   build:
     needs: mac_runner_matrix_builder
