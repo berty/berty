@@ -179,7 +179,6 @@ export const ChatTextInput: React.FC<{
 							fontFamily: 'Open Sans',
 						},
 					]}
-					autoCorrect={false}
 					placeholder={placeholder || undefined}
 					placeholderTextColor={isFocused ? colors['main-text'] : colors['secondary-text']}
 					returnKeyType={isTablet ? 'send' : 'default'}
