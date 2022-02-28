@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "Usługi",
+				"network-button": "Lista sieci",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Uwierzytelnianie do usług",
-			"title": "Usługi",
-			"recommended": "Zalecane",
-			"desc": "To spowoduje automatyczne tworzenie kopii twoich rozmów na serwerze",
-			"button": "Używanie usług świadczonych przez Berty",
-			"skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Konfiguracja zakończona!",
 			"desc": "Teraz możesz korzystać z aplikacji, dodawać kontakty i rozmawiać z nimi swobodnie i prywatnie",
 			"button": "ROZPOCZNIJ UŻYWANIE BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Anuluj",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "Pomoc",
-			"header-center-button": "Narzędzia Deweloperskie",
-			"header-right-button": "Ustawienia",
-			"network-button": "Lista sieci",
 			"edit-profile": "Edytuj profil",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Powiadomienia",
-				"tag-enabled": "Włączone",
-				"tag-disabled": "Wyłączone"
-			},
-			"dark-mode-button": "Tryb ciemny",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Utwórz nowe konto"
 		},
 		"network-map": {
 			"title": "Lista sieci",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Ustawienia",
 			"desc": "Dostosuj wszystko, aby uzyskać aplikację, która pasuje do Twoich potrzeb",
+			"in-app-notifications": "",
+			"dark-mode-button": "Tryb ciemny",
+			"devtools": "Narzędzia Deweloperskie",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "Aktywuj Android Nearby"
 		},
-		"services-auth": {
-			"title": "Zewnętrzne usługi",
-			"operated-services-button": "Używanie usług świadczonych przez Berty",
-			"register-service-button": {
-				"title": "Zarejestruj niestandardowego dostawce usług",
-				"input-placeholder": "URL usługi",
-				"action": "Dodaj"
-			},
-			"registered-services-button": {
-				"title": "Aktualnie zarejestrowane usługi",
-				"sample-no-services": "Brak zarejestrowanych usług",
-				"sample-unknown-service": "Nieznana usługa"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Zalecane",
+			"desc": "",
+			"button": "",
+			"skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
 		},
 		"delete-account": {
 			"title": "Usuń konto!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Odcisk palca",
 			"devices": "Urządzenia"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Zaznacz jako zweryfikowane",
 			"block-button": "Zablokuj kontakt",
 			"delete-button": "Usuń kontakt",
 			"fingerprint": "Odcisk palca",
 			"info": "Informacje",
-			"devices": "Urządzenia"
+			"devices": "Urządzenia",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "Wpisz tutaj..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Urządzenia",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Szukaj",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "PROŚBA O KONTAKT",
+				"group-invitation": "",
 				"refuse-button": "ODRZUĆ",
 				"accept-button": "AKCEPTUJ",
-				"accepted-button": "ZAAKCEPOWANE"
+				"accepted-button": "ZAAKCEPOWANE",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Połączenie Berty potwierdzone! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "Galeria",
+			"no-images": "",
 			"camera": "Aparat",
 			"files": "Pliki",
 			"microphone": "Mikrofon",
@@ -571,6 +584,13 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -602,11 +622,16 @@
 			"title": "",
 			"desc": ""
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "",
 			"settings": ""
 		},
 		"skip": "POMIŃ",
+		"cancel": "ANULUJ",
 		"settings-text": ""
 	},
 	"notification": {
@@ -624,13 +649,13 @@
 		"wtf-screen": {
 			"title": "Jaki jest błąd?",
 			"desc": "Aplikacja właśnie uległa awarii.",
-			"desc-report": "Potrząśnij telefonem, aby zgłosić błąd i kliknij przycisk, aby wyjść i uruchomić ponownie aplikację."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Przepraszamy za ten błąd!",
 			"desc": "Jest to wina Francisa, twórcy wewnętrznego Berty, który musiał popełnić błąd. Co za szaleństwo tego Francisa!",
 			"desc-em": "*No dobra, w zespole Berty nie ma Francisa.",
-			"desc-report": "Potrząśnij swoim telefonem i wracamy tu znowu!"
+			"desc-report": ""
 		}
 	},
 	"debug": {
