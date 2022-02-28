@@ -175,8 +175,8 @@ export const ManageGroupInvitation: React.FC<{
 										fontFamily: 'Open Sans',
 										color: colors['background-header'],
 										paddingLeft: 5,
-										fontSize: 13,
 									},
+									text.size.small,
 									text.align.center,
 									text.bold.small,
 								]}

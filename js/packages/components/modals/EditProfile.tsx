@@ -327,7 +327,7 @@ const EditMyProfile: React.FC = () => {
 							style={[
 								text.align.center,
 								text.bold.medium,
-								text.size.scale(16),
+								text.size.medium,
 								{
 									textTransform: 'uppercase',
 									color: colors['background-header'],
@@ -348,6 +348,7 @@ const EditMyProfile: React.FC = () => {
 const Header: React.FC = () => {
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+	const [{ text }] = useStyles()
 
 	return (
 		<>
@@ -363,12 +364,14 @@ const Header: React.FC = () => {
 			</View>
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 				<Text
-					style={{
-						fontWeight: '700',
-						fontSize: 22,
-						lineHeight: 40,
-						color: colors['main-text'],
-					}}
+					style={[
+						text.size.big,
+						{
+							fontWeight: '700',
+							lineHeight: 40,
+							color: colors['main-text'],
+						},
+					]}
 				>
 					{t('settings.edit-profile.title') as any}
 				</Text>

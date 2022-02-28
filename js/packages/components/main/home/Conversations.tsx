@@ -3,7 +3,7 @@ import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } fro
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
+import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import {
 	pbDateToNum,
@@ -194,7 +194,7 @@ const ConversationsItem: React.FC<
 					]}
 				>
 					{/* Conversation title, unread count, and time */}
-					<View style={[flex.direction.row, flex.justify.flexStart]}>
+					<View style={[flex.direction.row, flex.justify.start]}>
 						{/* Title */}
 						<View
 							style={{
@@ -210,7 +210,7 @@ const ConversationsItem: React.FC<
 							style={[
 								flex.direction.row,
 								flex.align.center,
-								flex.justify.flexEnd,
+								flex.justify.end,
 								{ marginLeft: 'auto' },
 							]}
 						>
@@ -237,7 +237,7 @@ const ConversationsItem: React.FC<
 							flex.direction.row,
 							flex.align.center,
 							{
-								height: text.size.small.fontSize * 1.8, // Keep row height even if no description/message
+								height: defaultStylesDeclaration.text.sizes.small * 1.8, // Keep row height even if no description/message
 							},
 						]}
 					>
@@ -353,7 +353,7 @@ const SuggestionsItem: React.FC<{
 						]}
 					>
 						{/* Conversation title, unread count, and time */}
-						<View style={[flex.direction.row, flex.justify.flexStart]}>
+						<View style={[flex.direction.row, flex.justify.start]}>
 							{/* Title */}
 							<View
 								style={{
@@ -370,7 +370,7 @@ const SuggestionsItem: React.FC<{
 								flex.direction.row,
 								flex.align.center,
 								{
-									height: text.size.small.fontSize * 1.8, // Keep row height even if no description/message
+									height: defaultStylesDeclaration.text.sizes.small * 1.8, // Keep row height even if no description/message
 								},
 							]}
 						>

@@ -100,7 +100,7 @@ const BodyMode: React.FC = withInAppNotification(({ showNotification }: any) => 
 export const Mode: ScreenFC<'Settings.Mode'> = () => {
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-	const [{ padding, text }, { scaleSize }] = useStyles()
+	const [{ padding, text }] = useStyles()
 
 	return (
 		<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
@@ -110,7 +110,8 @@ export const Mode: ScreenFC<'Settings.Mode'> = () => {
 						style={[
 							text.align.center,
 							padding.horizontal.big,
-							{ fontSize: 10 * scaleSize, color: colors['reverted-main-text'] },
+							text.size.tiny,
+							{ color: colors['reverted-main-text'] },
 						]}
 					>
 						{t('settings.mode.desc')}

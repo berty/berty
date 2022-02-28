@@ -31,10 +31,10 @@ const useStylesMessage = () => {
 	const [{ text, padding }] = useStyles()
 	const colors = useThemeColor()
 	return {
-		dateMessage: [text.size.scale(11), text.bold.small, { color: colors['secondary-text'] }],
+		dateMessage: [text.size.tiny, text.bold.small, { color: colors['secondary-text'] }],
 		stateMessageValueMe: [
 			padding.left.scale(1.5),
-			text.size.scale(11),
+			text.size.tiny,
 			{ color: colors['background-header'] },
 		],
 	}
@@ -78,7 +78,7 @@ export const HyperlinkUserMessage: React.FC<{
 	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
-	const [{ margin, padding, column, border }, { scaleSize }] = useStyles()
+	const [{ margin, padding, column, border, text }, { scaleSize }] = useStyles()
 	const [isReadMore, setReadMore] = useState<boolean>(true)
 	const { t } = useTranslation()
 
@@ -125,9 +125,10 @@ export const HyperlinkUserMessage: React.FC<{
 					<Text
 						style={[
 							{
+								fontSize: 17,
 								color: msgTextColor,
-								fontSize: 12,
 								lineHeight: 17,
+								fontWeight: '400',
 							},
 						]}
 					>
@@ -142,8 +143,9 @@ export const HyperlinkUserMessage: React.FC<{
 						<TouchableOpacity onPress={() => setReadMore(!isReadMore)}>
 							<Text
 								style={[
-									{ color: colors['secondary-text'], fontSize: 12, alignSelf: 'center' },
 									margin.top.tiny,
+									text.size.small,
+									{ color: colors['secondary-text'], alignSelf: 'center' },
 								]}
 							>
 								<>

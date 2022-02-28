@@ -64,7 +64,7 @@ export const MessageInvitationButton: React.FC<{
 				<TextNative
 					style={[
 						text.align.center,
-						text.size.scale(14),
+						text.size.medium,
 						text.bold.medium,
 						opacity(styleOpacity),
 						{ fontFamily: 'Open Sans', color },
@@ -164,7 +164,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
 				<TextNative
 					style={[
-						text.size.scale(15),
+						text.size.medium,
 						text.bold.medium,
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
@@ -178,7 +178,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 				</View>
 				<TextNative
 					style={[
-						text.size.scale(13),
+						text.size.small,
 						text.bold.small,
 						margin.bottom.small,
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
