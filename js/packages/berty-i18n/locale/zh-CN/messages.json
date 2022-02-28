@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "保护您的隐私！",
+			"desc": "免费和安全的点对点消息传递",
+			"button": "发现"
 		},
 		"select-mode": {
 			"title": "选择预设",
@@ -30,61 +30,52 @@
 			"title": "创建您的帐号",
 			"desc": "名称是唯一需要的信息",
 			"required": "必需的",
-			"placeholder": "",
+			"placeholder": "选择您的昵称",
 			"button": "创建我的帐户",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "高级选项",
+			"import-account": "导入账户",
+			"link-device": "连接设备",
+			"more": "更多信息",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "知道：",
+				"first-point": "您的帐户已在本地创建",
+				"second-point": "昵称是可选的，可以编辑"
 			}
 		},
-		"expert-setup": {
-			"title": "",
-			"desc": "",
+		"advanced-settings": {
+			"title": "高级设置",
+			"desc": "查找文档并创建您自己的配置。",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "欢迎使用高级设置",
+				"first-paragraph": "在这里，您将能够创建自己的自定义配置以满足您的需求。",
+				"second-paragraph": "我们会给您提供每个选项以允许您了解场地后面发生的事情。",
+				"third-paragraph": "您还可以找到资源链接来破解它。 此部分仅供专业使用！"
 			},
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"read-more": "阅读更多关于高级设置的信息",
+			"config-title": "自定义配置",
+			"config-desc": "应用程序配置的 3 个步骤。 现在自定义一切！",
+			"learn-more": "了解更多",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "邻近",
+				"first-button": "低功耗蓝牙",
 				"second-button": "多播DNS"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "点对点",
+				"first-button": "分布式哈希表",
+				"second-button": "TOR 激活"
 			},
 			"third-part": {
 				"title": "服务",
+				"network-button": "网络列表",
 				"first-button": "推送通知",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "设置您自己的节点",
+					"placeholder": "输入服务器地址"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": "选择认证节点"
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "认证服务",
-			"title": "服务",
-			"recommended": "推荐",
-			"desc": "这将自动复制您的会话到服务器",
-			"button": "使用 Berty 运营的服务",
-			"skip": "跳过并稍后再做"
+			"apply-changes": "应用更改"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "设置完成！",
 			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
 			"button": "开始使用 Berty"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "我们准备好加载WebView。你还想打开它吗？",
+			"first-button": "取消",
+			"second-button": "是"
 		}
 	},
 	"main": {
@@ -176,14 +173,14 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "检查列表 {{tasksDone}}/{{totalTasks}}",
+				"title": "欢迎检查清单 {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "更改您的头像",
 					"desc": "让我们为此帐户设置个人资料图片！"
 				},
-				"relay": {
-					"title": "配置中继",
-					"desc": "通过使用由 Berty Tech 非营利机构提供的中继，提高您的网络性能。"
+				"berty-services": {
+					"title": "激活 Berty 服务",
+					"desc": "通过使用由 Berty Tech 非营利机构提供的服务，提高您的网络性能。"
 				},
 				"contact": {
 					"title": "同步联系人",
@@ -197,34 +194,15 @@
 					"title": "发送信息",
 					"desc": "对联系人说“你好，世界”！"
 				},
-				"theme": {
-					"title": "自定义主题",
-					"desc": "让我们创建您自己的应用程序版本，然后与社区分享！"
-				},
-				"hidden-account": {
-					"title": "创建隐藏账户",
-					"desc": "创建一个隐形的帐户，并使用特定密码登录，在机场更安全！"
-				},
 				"ble-message": {
 					"title": "在没有互联网的情况下发送消息",
 					"desc": "使用附近功能，在没有任何蜂窝网络或互联网连接的情况下发送消息！"
 				}
 			},
-			"header-left-button": "帮助",
-			"header-center-button": "开发工具",
-			"header-right-button": "设置",
-			"network-button": "网络列表",
 			"edit-profile": "编辑个人信息",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "消息通知",
-				"tag-enabled": "已启用",
-				"tag-disabled": "已禁用"
-			},
-			"dark-mode-button": "暗色模式",
-			"bluetooth-button": {
-				"title": "蓝牙"
-			}
+			"share-link": "分享链接",
+			"create-group": "创建群組",
+			"create-new-account": "创建新账号"
 		},
 		"network-map": {
 			"title": "网络列表",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "设置",
 			"desc": "所有功能皆可自定义",
+			"in-app-notifications": "应用内部通知",
+			"dark-mode-button": "暗色模式",
+			"devtools": "开发工具",
+			"network-config": "网络配置",
 			"notification-file-saved": {
 				"title": "数据已保存！",
 				"desc": "在下载目录中可用"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "激活附近的 Android 设备"
 		},
-		"services-auth": {
-			"title": "外部服务",
-			"operated-services-button": "使用 Berty 运营的服务",
-			"register-service-button": {
-				"title": "注册自定义的服务提供商",
-				"input-placeholder": "服务 URL",
-				"action": "添加"
-			},
-			"registered-services-button": {
-				"title": "当前注册的服务",
-				"sample-no-services": "未注册服务",
-				"sample-unknown-service": "未知服务"
-			}
+		"berty-services": {
+			"header": "活跃的 Berty 服务",
+			"title": "Berty 服务",
+			"recommended": "推荐的",
+			"desc": "",
+			"button": "使用 Berty 服务",
+			"skip": "跳过并稍后再做"
 		},
 		"delete-account": {
 			"title": "删除帐户！",
@@ -439,9 +415,13 @@
 			"save": "保存主题",
 			"export": "将选定主题导出为文件",
 			"share": "将选定主题作为文件分享",
-			"import": "导入主题文件"
+			"import": "导入主题文件",
+			"delete": "删除所有非默认主题",
+			"bad-format-title": "主题格式错误",
+			"bad-format-desc": "主题文件格式错误"
 		},
 		"my-berty-ID": {
+			"title": "我的 Berty ID",
 			"qr": "二维码",
 			"fingerprint": "指纹",
 			"devices": "设备"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "发送中...",
+		"sent": "已发送",
 		"contact-settings": {
 			"mark-button": "标记为已验证",
 			"block-button": "屏蔽联系人",
 			"delete-button": "删除联系人",
 			"fingerprint": "指纹",
 			"info": "信息",
-			"devices": "设备"
+			"devices": "设备",
+			"my-devices": "我的设备"
 		},
 		"multi-member": {
 			"input-placeholder": "在此输入..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "您想要激活此功能吗？",
+				"subtitle": "",
+				"accept": "启用",
+				"refuse": "跳过"
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "设备",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "搜索",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "联系人请求",
+				"group-invitation": "",
 				"refuse-button": "拒绝",
 				"accept-button": "接受",
-				"accepted-button": "已接受"
+				"accepted-button": "已接受",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty 连接已确认! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "相册",
+			"no-images": "无图像",
 			"camera": "摄像头",
 			"files": "文件",
 			"microphone": "麦克风",
@@ -571,6 +584,13 @@
 			"response-to": "答复：",
 			"replying-to": "你正在回复",
 			"replied-to": "回复至"
+		},
+		"user-message": {
+			"read-more": "查看更多",
+			"show-less": "显示剩余"
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -596,17 +616,22 @@
 		},
 		"camera": {
 			"title": "摄像头",
-			"desc": "Berty 应用程序需要您的许可以使用摄像头扫描二维码添加联系人。摄像头不用于其他任何目的。"
+			"desc": ""
 		},
 		"audio": {
 			"title": "音频消息",
 			"desc": "若要向您的联系人发送音频信息，您需要允许Berty 应用程序获得麦克风权限。"
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
 		},
 		"button-labels": {
 			"allow": "允许",
 			"settings": "转到设置"
 		},
 		"skip": "跳过",
+		"cancel": "取消",
 		"settings-text": "您可以在设置中启用 {{title}} 权限。"
 	},
 	"notification": {
@@ -624,13 +649,13 @@
 		"wtf-screen": {
 			"title": "失败的原因是什么？",
 			"desc": "应用程序崩溃。",
-			"desc-report": "摇动手机报告错误，然后单击按钮退出并重新启动应用程序。"
+			"desc-report": "单击按钮退出并重新启动应用程序。"
 		},
 		"sorry-screen": {
 			"title": "对不起，这是个BUG",
 			"desc": "这是Berty的实习生Francis的错，他一定犯了个错误。Francis真是个混蛋！",
 			"desc-em": "*好吧，伯蒂的团队里没有 Francis",
-			"desc-report": "摇一摇你的手机，我们又来了！"
+			"desc-report": "单击按钮退出并重新启动应用程序。"
 		}
 	},
 	"debug": {
