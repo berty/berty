@@ -309,7 +309,7 @@ export const UserMessage: React.FC<{
 							>
 								<Text
 									numberOfLines={1}
-									style={{ color: colors['background-header'], fontSize: 10 }}
+									style={[text.size.tiny, { color: colors['background-header'] }]}
 								>
 									<>
 										{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
@@ -338,7 +338,7 @@ export const UserMessage: React.FC<{
 							>
 								<Text
 									numberOfLines={1}
-									style={{ color: repliedToColors?.msgTextColor, fontSize: 10, lineHeight: 17 }}
+									style={[text.size.tiny, { color: repliedToColors?.msgTextColor, lineHeight: 17 }]}
 								>
 									{(replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
 										replyOf?.payload?.body) ||

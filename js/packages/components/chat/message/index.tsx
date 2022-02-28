@@ -43,7 +43,7 @@ export const Message: React.FC<{
 		const textStyle = React.useMemo(
 			() => [
 				inte?.isMine ? text.align.right : text.align.left,
-				text.size.scale(11),
+				text.size.tiny,
 				text.bold.small,
 				{ color: textColor },
 			],

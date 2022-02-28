@@ -39,7 +39,21 @@ export const setStylesDeclaration: SetStylesDeclaration = (
 	},
 ) => setStyles(mapScaledDeclarationWithDims(decl, { fontScale, scaleSize, scaleHeight }))
 
-export const ctx: React.Context<any> = createContext<any>([
+export const ctx = createContext<
+	[
+		Styles,
+		{
+			scaleSize: number
+			scaleHeight: number
+			fontScale: number
+			windowHeight: number
+			windowWidth: number
+			isGteIpadSize: boolean
+			isLandscape: boolean
+		},
+		(decl: Declaration) => void,
+	]
+>([
 	defaultStyles,
 	{
 		scaleSize: initialScaleSize,

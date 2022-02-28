@@ -180,7 +180,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				</Text>
 				<Text
 					style={[
-						text.size.scale(16),
+						text.size.medium,
 						{
 							lineHeight: 25,
 							marginTop: 20,

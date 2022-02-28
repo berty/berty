@@ -27,6 +27,7 @@ import {
 	selectThemeCollection,
 	selectThemeIsDark,
 	selectThemeSelected,
+	ThemeType,
 } from '@berty-tech/redux/reducers/theme.reducer'
 import {
 	MESSENGER_APP_STATE,
@@ -92,7 +93,7 @@ export const usePersistentOptions = () => {
 	return ctx.persistentOptions || {}
 }
 
-export const useThemeColor = () => {
+export const useThemeColor = (): ThemeType => {
 	const appState = useSelector(selectAppState)
 	const themeIsDark = useSelector(selectThemeIsDark)
 	const themeSelected = useSelector(selectThemeSelected)

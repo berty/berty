@@ -26,7 +26,7 @@ const useStylesContactRequest: any = () => {
 			border.radius.medium,
 			border.shadow.medium,
 			flex.align.center,
-			flex.justify.flexEnd,
+			flex.justify.end,
 			height(180),
 			margin.medium,
 			margin.top.huge,
@@ -149,10 +149,10 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 			>
 				<Text
 					style={[
-						text.size.scale(11),
+						text.size.tiny,
 						text.align.center,
 						{
-							lineHeight: (text.size.scale(11) as any).fontSize * 1.6,
+							lineHeight: (text.size.tiny as any).fontSize * 1.6,
 							color: colors['secondary-text'],
 						},
 					]}
@@ -161,10 +161,10 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 				</Text>
 				<Text
 					style={[
-						text.size.scale(10),
+						text.size.tiny,
 						text.align.center,
 						{
-							lineHeight: (text.size.scale(11) as any).fontSize * 2,
+							lineHeight: (text.size.tiny as any).fontSize * 2,
 							color: colors['secondary-text'],
 						},
 					]}
@@ -206,7 +206,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					/>
 					<Text
 						style={[
-							text.size.scale(10),
+							text.size.tiny,
 							padding.horizontal.tiny,
 							{ color: colors['background-header'] },
 						]}

@@ -118,7 +118,7 @@ export const WaveForm: React.FC<{
 					)
 				})}
 			</View>
-			<Text style={[{ color }, margin.small, text.size.scale(9)]}>
+			<Text style={[{ color }, margin.small, text.size.tiny]}>
 				{moment.utc(duration).format('mm:ss')}
 			</Text>
 		</View>

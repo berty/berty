@@ -108,7 +108,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 					>
 						<MultiMemberAvatar publicKey={publicKey} size={80} />
 					</TouchableOpacity>
-					<Text style={[text.size.scale(13), { color: colors['main-text'] }]}>
+					<Text style={[text.size.small, { color: colors['main-text'] }]}>
 						{conv?.displayName || ''}
 					</Text>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>

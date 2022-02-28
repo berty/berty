@@ -112,11 +112,13 @@ export const HomeHeader: React.FC<
 									]}
 								>
 									<Text
-										style={{
-											color: defaultStylesDeclaration.colors.default.white,
-											justifyContent: 'center',
-											fontSize: 8,
-										}}
+										style={[
+											text.size.tiny,
+											{
+												color: defaultStylesDeclaration.colors.default.white,
+												justifyContent: 'center',
+											},
+										]}
 									>
 										v1
 									</Text>

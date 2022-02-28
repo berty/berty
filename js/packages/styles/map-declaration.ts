@@ -48,10 +48,10 @@ export const defaultStylesDeclaration: Declaration = {
 	},
 	text: {
 		sizes: {
-			tiny: 10,
-			small: 12,
+			tiny: 11,
+			small: 13,
 			medium: 15,
-			large: 19,
+			large: 20,
 			big: 22,
 			huge: 26,
 		},

@@ -147,11 +147,11 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 							numberOfLines={1}
 							style={[
 								text.align.center,
+								text.size.large,
 								{
 									color: colors['main-text'],
 									fontFamily: 'Open Sans',
 									fontWeight: '700',
-									fontSize: 20,
 								},
 							]}
 						>

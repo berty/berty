@@ -138,7 +138,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.size.scale(16),
+								text.size.medium,
 								text.bold.medium,
 								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
 							]}
@@ -173,7 +173,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.size.scale(16),
+								text.size.medium,
 								text.bold.medium,
 								{ color: colors['background-header'] },
 							]}

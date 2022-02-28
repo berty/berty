@@ -36,7 +36,7 @@ const useStylesHome = () => {
 		firstHeaderButton: [margin.right.scale(20), height(90)],
 		secondHeaderButton: [margin.right.scale(20), height(90)],
 		thirdHeaderButton: height(90),
-		headerNameText: text.size.scale(13),
+		headerNameText: text.size.small,
 		scrollViewPadding: padding.bottom.scale(50),
 	}
 }

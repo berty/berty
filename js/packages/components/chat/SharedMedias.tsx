@@ -264,7 +264,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 							</Text>
 						</TouchableOpacity>
 
-						<Text style={{ fontSize: 12 }}>{timeFormat.fmtTimestamp3(doc.sentDate)}</Text>
+						<Text style={[text.size.small]}>{timeFormat.fmtTimestamp3(doc.sentDate)}</Text>
 					</View>
 				))}
 			</View>
@@ -308,7 +308,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 							</Text>
 						</Hyperlink>
 
-						<Text style={{ fontSize: 12, marginTop: 8 }}>{timeFormat.fmtTimestamp3(sentDate)}</Text>
+						<Text style={[text.size.small, { marginTop: 8 }]}>
+							{timeFormat.fmtTimestamp3(sentDate)}
+						</Text>
 					</View>
 				))}
 			</View>
