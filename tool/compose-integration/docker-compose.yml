@@ -14,6 +14,8 @@ services:
         sleep 1;
       done;
 
+      sleep 10
+
       berty-integration
         -integration.testbot `cat /shared/testbot_daemon1.txt`
         -p2p.disc-disable-filter=true
@@ -55,7 +57,7 @@ services:
     command: -xec "
       berty share-invite > /shared/testbot_daemon1.txt.tmp;
       mv /shared/testbot_daemon1.txt.tmp /shared/testbot_daemon1.txt;
-      berty daemon
+      berty -log.filters=debug:bty.tinder daemon
         -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
         -p2p.mdns=false
         -p2p.disc-disable-filter=true
@@ -77,7 +79,7 @@ services:
     command: -xec "
       berty share-invite > /shared/testbot_daemon2.txt.tmp;
       mv /shared/testbot_daemon2.txt.tmp /shared/testbot_daemon2.txt;
-      berty daemon
+      berty -log.filters=debug:bty.tinder daemon
         -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
         -p2p.mdns=false
         -p2p.disc-disable-filter=true
