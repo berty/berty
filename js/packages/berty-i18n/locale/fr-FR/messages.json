@@ -46,10 +46,10 @@
 			"title": "Paramètres avancés",
 			"desc": "Trouvez de la documentation et créez votre propre configuration.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Bienvenue dans les paramètres avancés",
+				"first-paragraph": "Créez la configuration parfaitement adaptée à vos besoins.",
+				"second-paragraph": "Vous verrez l'ensemble des options disponibles contrôlant ce qu'il se passe sous le capot.",
+				"third-paragraph": "Vous trouverez aussi un lien vers des ressources pour le bidouiller. Réservé aux experts !"
 			},
 			"read-more": "En savoir plus sur les paramètres avancés",
 			"config-title": "Configurations personnalisées",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "",
+			"desc": "Des données seront chargées depuis internet, voulez vous toujours ouvrir le contenu ?",
 			"first-button": "Annuler",
 			"second-button": "Oui"
 		}
@@ -475,8 +475,8 @@
 			"input-placeholder": "Écrivez ici..."
 		},
 		"push-notifications": {
-			"enable": "Activer les notifications flottantes",
-			"enabled": "Les notifications flottantes sont activées",
+			"enable": "Activer les notifications push",
+			"enabled": "Les notifications push sont activées",
 			"unsupported": "Notifications non prises en charge",
 			"check-device-settings": "",
 			"warning-disable": {
