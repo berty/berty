@@ -184,11 +184,11 @@
 				},
 				"contact": {
 					"title": "Synchroniser avec un contact",
-					"desc": ""
+					"desc": "Scannez un QR code pour ajouter votre premier contact !"
 				},
 				"group": {
 					"title": "Rejoindre ou créer un groupe",
-					"desc": "Créé ou rejoins ton premier groupe Berty !"
+					"desc": "Crée ou rejoins ton premier groupe Berty !"
 				},
 				"message": {
 					"title": "Envoyer le message",
