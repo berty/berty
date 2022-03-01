@@ -47,9 +47,9 @@
 			"desc": "Trouvez de la documentation et créez votre propre configuration.",
 			"more-about": {
 				"title": "Bienvenue dans les paramètres avancés",
-				"first-paragraph": "Ici vous pourrez créer votre propre configuration personnalisée correspondant à vos besoins.",
-				"second-paragraph": "Nous vous présenterons toutes les options pour vous permettre de comprendre ce qui se passe sous le capot.",
-				"third-paragraph": "Vous trouverez aussi un lien vers les ressources pour le bidouiller. Cette section est réservée aux experts !"
+				"first-paragraph": "Créez la configuration parfaitement adaptée à vos besoins.",
+				"second-paragraph": "Vous verrez l'ensemble des options disponibles contrôlant ce qu'il se passe sous le capot.",
+				"third-paragraph": "Vous trouverez aussi un lien vers des ressources pour le bidouiller. Réservé aux experts !"
 			},
 			"read-more": "En savoir plus sur les paramètres avancés",
 			"config-title": "Configurations personnalisées",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "Nous nous préparons à charger les webviews sur le réseau. Voulez vous toujours l'ouvrir ?",
+			"desc": "Des données seront chargées depuis internet, voulez vous toujours ouvrir le contenu ?",
 			"first-button": "Annuler",
 			"second-button": "Oui"
 		}
@@ -176,7 +176,7 @@
 				"title": "Liste des tâches de bienvenue {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Changer votre avatar",
-					"desc": "Configurer une image de profil !"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "Activer les services Berty",
@@ -184,11 +184,11 @@
 				},
 				"contact": {
 					"title": "Synchroniser avec un contact",
-					"desc": "Scannez un code QR pour ajouter un premier contact à votre liste de contacts !"
+					"desc": "Scannez un QR code pour ajouter votre premier contact !"
 				},
 				"group": {
 					"title": "Rejoindre ou créer un groupe",
-					"desc": "Créé ou rejoins ton premier groupe Berty !"
+					"desc": "Crée ou rejoins ton premier groupe Berty !"
 				},
 				"message": {
 					"title": "Envoyer le message",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Envoyer un message sans internet",
-					"desc": "Utilisez la fonction Proximité et envoyez un message sans réseau cellulaire, ni connexion internet !"
+					"desc": ""
 				}
 			},
 			"edit-profile": "Modifier mon profil",
@@ -416,9 +416,9 @@
 			"export": "Exporter le thème sélectionné sous forme de fichier",
 			"share": "Partager le thème sélectionné sous forme de fichier",
 			"import": "Importer un fichier de thème",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": ""
+			"delete": "Supprimer tous les thèmes non par défaut",
+			"bad-format-title": "Format de thème incorrect",
+			"bad-format-desc": "Format incorrect pour le fichier du thème"
 		},
 		"my-berty-ID": {
 			"title": "Mon identifiant Berty",
@@ -475,8 +475,8 @@
 			"input-placeholder": "Écrivez ici..."
 		},
 		"push-notifications": {
-			"enable": "Activer les notifications flottantes",
-			"enabled": "Les notifications flottantes sont activées",
+			"enable": "Activer les notifications push",
+			"enabled": "Les notifications push sont activées",
 			"unsupported": "Notifications non prises en charge",
 			"check-device-settings": "",
 			"warning-disable": {
@@ -494,8 +494,8 @@
 		"devices": {
 			"title": "Appareils",
 			"push": {
-				"enabled": "",
-				"not-enabled": ""
+				"enabled": "Les notifications push sont activées",
+				"not-enabled": "Notifications push désactivées"
 			}
 		},
 		"multi-member-settings": {
@@ -531,8 +531,8 @@
 				"accepted-button": "ACCEPTÉ",
 				"error": "",
 				"you-invited": "",
-				"this-contact": "",
-				"to-a-group": ""
+				"this-contact": "ce contact",
+				"to-a-group": "à un groupe ! 💌"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Connexion Berty confirmée ! 🎉",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Nécessite le redémarrage de l'application",
+			"title": "",
 			"desc": "Pour ce type de notification, vous devez redémarrer votre application !"
 		}
 	},
