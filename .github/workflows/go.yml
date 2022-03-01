@@ -48,7 +48,7 @@ jobs:
           key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
       - name: Run GoReleaser (Dry Run)
-        uses: goreleaser/goreleaser-action@v2.9.0
+        uses: goreleaser/goreleaser-action@v2.9.1
         with:
           version: latest
           args: release --rm-dist --snapshot --skip-publish
