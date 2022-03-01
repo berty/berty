@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Wysyłanie...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Zaznacz jako zweryfikowane",
