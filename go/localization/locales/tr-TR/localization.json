@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "%[1]v tane fotoğraf gönderildi"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "Bir medya gönderildi",
-      "bodyWithNumberOfMedia_other": "%[1]v adet medya gönderildi"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": ""
