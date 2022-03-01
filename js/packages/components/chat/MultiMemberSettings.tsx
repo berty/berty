@@ -230,7 +230,7 @@ const MultiMemberSettingsBody: React.FC<{
 					link
 						? async () => {
 								try {
-									await Share.share({ url: link })
+									await Share.share({ url: link, message: link })
 								} catch (e) {
 									console.error(e)
 								}
