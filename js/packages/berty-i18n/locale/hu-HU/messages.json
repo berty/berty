@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Küldés...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Ellenőrizve",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Szükséges az applikáció újraindítása",
+			"title": "",
 			"desc": "A beállítások mentéséhez szükségeltetik az applikáció újraindítása!"
 		}
 	},

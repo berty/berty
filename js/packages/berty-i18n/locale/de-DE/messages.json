@@ -46,10 +46,10 @@
 			"title": "Erweiterte Einstellungen",
 			"desc": "Finden Sie die Dokumentation und erstellen Sie Ihre eigene Konfiguration.",
 			"more-about": {
-				"title": "Willkommen in den erweiterten Einstellungen",
-				"first-paragraph": "Hier können Sie Ihre eigene benutzerdefinierte Konfiguration erstellen, die Ihren Bedürfnissen entspricht.",
-				"second-paragraph": "Wir stellen Ihnen alle Optionen vor, damit Sie verstehen können, was hinter dem Vorhang geschieht.",
-				"third-paragraph": "Sie finden auch die Resourcen, die Sie zum Hacken brauchen. Dieser Bereich ist nur etwas für Experten!"
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "Lesen Sie mehr über die erweiterten Einstellungen",
 			"config-title": "Benutzerdefinierte Einstellungen",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "Wir sind bereit, webviews im Netzwerk zu laden. Möchten Sie es trotzdem öffnen?",
+			"desc": "",
 			"first-button": "Abbrechen",
 			"second-button": "Ja"
 		}
@@ -176,7 +176,7 @@
 				"title": "Willkommens-Checkliste {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Ändere dein Avatar",
-					"desc": "Lass uns ein Profilbild für dieses Konto erstellen!"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "Aktive Berty-Services",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "Mit einem Kontakt synchronisieren",
-					"desc": "Scanne den QR code um deinen ersten Kontakt hinzuzufügen!"
+					"desc": ""
 				},
 				"group": {
 					"title": "Einer Gruppe beitreten oder Eine erstellen",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Nachricht ohne Internet senden",
-					"desc": "Nutze das Proximity Feature und sende eine Nachricht ohne mobile Daten oder eine Internetverbindung!"
+					"desc": ""
 				}
 			},
 			"edit-profile": "Profil bearbeiten",
@@ -416,9 +416,9 @@
 			"export": "Ausgewähltes Theme als Datei exportieren",
 			"share": "Ausgewähltes Theme als Datei teilen",
 			"import": "Importiere eine Thema-Datei",
-			"delete": "Alle nicht Standard-Themes löschen",
-			"bad-format-title": "Ungültiges Themen-Format",
-			"bad-format-desc": "Ungültiges Format für die Themen-Datei"
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
 			"title": "Meine Berty ID",
@@ -448,7 +448,7 @@
 			"info": "Infos",
 			"devices": "Geräte",
 			"join": "TRITT DER GRUPPE BEI",
-			"password-label": "Gruppenpasswort eingeben",
+			"password-label": "",
 			"password-placeholder": "Passwort..."
 		},
 		"save-theme": {
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "Wird gesendet..",
+		"sending": "Wird gesendet...",
 		"sent": "Gesendet",
 		"contact-settings": {
 			"mark-button": "Als bestätigt markieren",
@@ -616,7 +616,7 @@
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": "Möchten Sie der Kamera erlauben zu fotografieren oder QR-Codes zu scannen?"
+			"desc": ""
 		},
 		"audio": {
 			"title": "Audio-Nachrichten",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Neustart der App erforderlich",
+			"title": "",
 			"desc": "Für diese Art von Benachrichtigung musst du deine App neu starten, um diese Felder zu speichern!"
 		}
 	},

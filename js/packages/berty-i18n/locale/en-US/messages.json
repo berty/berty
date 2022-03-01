@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "Good to know:",
 				"first-point": "Your account is created locally",
-				"second-point": "Nickname is optional and can be edited"
+				"second-point": "Nickname is optional and can be changed later"
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "Read more about advanced settings",
 			"config-title": "Custom configs",
-			"config-desc": "3 steps of app configuration. Customize everything now!",
+			"config-desc": "3-step app configuration. Customize everything now!",
 			"learn-more": "Learn more",
 			"first-part": {
 				"title": "Proximity",
@@ -70,7 +70,7 @@
 				"network-button": "Network List",
 				"first-button": "Push notifications",
 				"second-button": {
-					"title": "Setup your own node",
+					"title": "Set up your own node",
 					"placeholder": "Enter server address"
 				},
 				"third-button": "Select a certified node"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "You cannot remove a member from this group"
 			},
 			"conversations": {
-				"request-sent": "The request is sent. Pending...",
+				"request-sent": "Request sent. Pending...",
 				"draft": "Draft: {{message}}"
 			}
 		},
@@ -179,8 +179,8 @@
 					"desc": "Let's set up a profile picture for this account!"
 				},
 				"berty-services": {
-					"title": "Activate Berty services",
-					"desc": "Improve your network performance by using services powered by Berty Tech non-profit."
+					"title": "Activate Berty Services",
+					"desc": "Improve your network performance by using services powered by Berty Tech."
 				},
 				"contact": {
 					"title": "Sync with a contact",
@@ -195,7 +195,7 @@
 					"desc": "Say 'Hello world' to a contact!"
 				},
 				"ble-message": {
-					"title": "Send message without internet",
+					"title": "Send a message without internet",
 					"desc": "Use the Proximity feature to send a message without any cellular network or internet connection!"
 				}
 			},
@@ -282,10 +282,10 @@
 		},
 		"berty-services": {
 			"header": "Active Berty services",
-			"title": "Berty services",
+			"title": "Berty Services",
 			"recommended": "Recommended",
-			"desc": " Activating Berty services will allow you to receive push notifications via Berty Technologies servers and grant you access to its nodes for conversation replication.",
-			"button": "Use Berty services",
+			"desc": " Activating Berty Services will allow you to receive push notifications via Berty Technologies' servers and grant you access to its nodes for conversation replication.",
+			"button": "Use Berty Services",
 			"skip": "SKIP AND DO THIS LATER"
 		},
 		"delete-account": {
@@ -476,7 +476,7 @@
 		},
 		"push-notifications": {
 			"enable": "Enable push notifications",
-			"enabled": "Push notifications are enabled",
+			"enabled": "Push notifications enabled",
 			"unsupported": "Notifications unsupported",
 			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
 			"warning-disable": {
@@ -485,17 +485,17 @@
 				"accept": "Activate",
 				"refuse": "Skip"
 			},
-			"why-cant-disable": "You can't disable push notifications for a specific conversation.",
+			"why-cant-disable": "Can't disable push notifications per conversation.",
 			"errors": {
 				"no-token": "Your device is not compatible with push notifications",
-				"no-server": "Your must register a push relay first"
+				"no-server": "You must register a push relay first"
 			}
 		},
 		"devices": {
 			"title": "Devices",
 			"push": {
 				"enabled": "Push notifications enabled",
-				"not-enabled": "Push notifications not enabled"
+				"not-enabled": "Push notifications disabled"
 			}
 		},
 		"multi-member-settings": {
@@ -624,7 +624,7 @@
 		},
 		"gallery": {
 			"title": "Image messaging",
-			"desc": "To send image message to your contacts, you need to allow gallery permission to Berty app."
+			"desc": "To send images to your contacts, you must authorize Berty to access photos and other media stored on your device."
 		},
 		"button-labels": {
 			"allow": "Allow",
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "Restart required",
-			"desc": "For this kind of notification, you have to restart your app to save these fields!"
+			"desc": "Restart Berty to save your data and enable notifications!"
 		}
 	},
 	"error": {
@@ -649,7 +649,7 @@
 		"wtf-screen": {
 			"title": "What's the Fail?",
 			"desc": "Application just crashed.",
-			"desc-report": "Click on the button to quit and restart the app."
+			"desc-report": "Click the button to quit and restart the app."
 		},
 		"sorry-screen": {
 			"title": "Sorry for this bug!",

@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "正在發送...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "標記為已驗證",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "需要重新啟動應用程序",
+			"title": "",
 			"desc": ""
 		}
 	},

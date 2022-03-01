@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "%[1]v Fotos gesendet"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "Medien gesendet",
-      "bodyWithNumberOfMedia_other": "%[1]v Medien gesendet"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v reagierte mit %[2]v auf deine Nachricht"

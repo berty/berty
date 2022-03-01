@@ -7,4 +7,4 @@
 */
 
 "BertyPushMessage" = "Nouveau message";
-"BertyPushMessageError" = "Un nouveau message a été reçu mais une erreur est survenue lors de son déchiffrement";
+"BertyPushMessageError" = "Un nouveau message a été reçu, mais une erreur s'est produite lors du déchiffrement";
