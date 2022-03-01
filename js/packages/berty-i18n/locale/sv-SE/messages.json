@@ -46,10 +46,10 @@
 			"title": "Avancerade inställningar",
 			"desc": "Hitta dokumentation och skapa din egen konfiguration.",
 			"more-about": {
-				"title": "Välkommen i de avancerade inställningarna",
-				"first-paragraph": "Här kommer du att kunna skapa din egen anpassade konfiguration för att passa dina behov.",
-				"second-paragraph": "Vi kommer att presentera alla alternativ för att låta dig förstå vad som händer bakom huven.",
-				"third-paragraph": "Du hittar också resurslänkar för att hacka den. Detta avsnitt är endast för experter!"
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "Läs mer om avancerade inställningar",
 			"config-title": "Anpassade konfigurationer",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "Vi förbereder fortfarande för att ladda webviews på nätverket. Vill du fortfarande öppna det?",
+			"desc": "",
 			"first-button": "Avbryt",
 			"second-button": "Ja"
 		}
@@ -176,7 +176,7 @@
 				"title": "Välkomstchecklista {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Ändra din profilbild",
-					"desc": "Låt oss ställa in en profilbild för detta konto!"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "Synkronisera med en kontakt",
-					"desc": "Skanna en QR-kod för att lägga till en första kontakt i din kontaktlista!"
+					"desc": ""
 				},
 				"group": {
 					"title": "Gå med i eller skapa en grupp",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Skicka meddelande utan internet",
-					"desc": "Använd närhetsfunktionen och skicka ett meddelande utan mobilnätverk eller internetanslutning!"
+					"desc": ""
 				}
 			},
 			"edit-profile": "Redigera profil",
@@ -448,7 +448,7 @@
 			"info": "Detaljer",
 			"devices": "Enheter",
 			"join": "GÅ MED I GRUPPEN",
-			"password-label": "Ange gruppens lösenord",
+			"password-label": "",
 			"password-placeholder": "Lösenord..."
 		},
 		"save-theme": {
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "Skickar..",
+		"sending": "Skickar...",
 		"sent": "Skickat",
 		"contact-settings": {
 			"mark-button": "Markera som verifierad",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Kräver omstart av appen",
+			"title": "",
 			"desc": "För denna typ av avisering måste du starta om appen för att spara dessa fält!"
 		}
 	},
