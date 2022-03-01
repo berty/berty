@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "الخدمات",
+				"network-button": "قائمة الشبكات",
 				"first-button": "",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "المصادقة على الخدمات",
-			"title": "الخدمات",
-			"recommended": "موصى",
-			"desc": "سيؤدي هذا تلقائياً إلى تكرار محادثاتك على خادم",
-			"button": "استخدام الخدمات التي تشغلها برتي",
-			"skip": "اختراع و هذه الأشرطة"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "تم الإعداد!",
 			"desc": "يمكنك الآن استخدام التطبيق، بدء إضافة جهات الاتصال والتحدث معهم بحرية وبشكل خاص",
 			"button": "ابدأ استخدام البيرتي"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -176,12 +173,12 @@
 	"settings": {
 		"home": {
 			"check-list": {
-				"title": "قائمة التحقق {{tasksDone}}\\{{totalTasks}}",
+				"title": "",
 				"avatar": {
 					"title": "غيّر الصورة الشخصية",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "مساعدة",
-			"header-center-button": "أدوات التطوير",
-			"header-right-button": "الإعدادات",
-			"network-button": "قائمة الشبكات",
 			"edit-profile": "تعديل الملف الشخصي",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "الإشعارات",
-				"tag-enabled": "مفعّل",
-				"tag-disabled": "معطّل"
-			},
-			"dark-mode-button": "",
-			"bluetooth-button": {
-				"title": "البلوتوث"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "إنشاء حساب جديد"
 		},
 		"network-map": {
 			"title": "قائمة الشبكات",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "الإعدادات",
 			"desc": "تخصيص كل شيء للحصول على التطبيق الذي يلائم احتياجاتك",
+			"in-app-notifications": "",
+			"dark-mode-button": "",
+			"devtools": "أدوات التطوير",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "الخدمات الخارجية",
-			"operated-services-button": "استخدام الخدمات التي تشغلها برتي",
-			"register-service-button": {
-				"title": "تسجيل موفر خدمة مخصص",
-				"input-placeholder": "رابط الخدمة",
-				"action": "إضافة"
-			},
-			"registered-services-button": {
-				"title": "الخدمات المسجلة حاليا",
-				"sample-no-services": "لا توجد خدمات مسجلة",
-				"sample-unknown-service": "خدمة غير معروفة"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "موصى",
+			"desc": "",
+			"button": "",
+			"skip": "اختراع و هذه الأشرطة"
 		},
 		"delete-account": {
 			"title": "حذف الحساب!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "بصمة",
 			"devices": "الأجهزة"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "",
 			"block-button": "",
 			"delete-button": "",
 			"fingerprint": "بصمة",
 			"info": "",
-			"devices": "الأجهزة"
+			"devices": "الأجهزة",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "الأجهزة",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "البحث",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "",
+				"group-invitation": "",
 				"refuse-button": "",
 				"accept-button": "الموافقة",
-				"accepted-button": ""
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "",
+			"no-images": "",
 			"camera": "الكاميرا",
 			"files": "الملفات",
 			"microphone": "الميكروفون",
@@ -571,6 +584,13 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -602,11 +622,16 @@
 			"title": "",
 			"desc": ""
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "",
 			"settings": ""
 		},
 		"skip": "تخطي",
+		"cancel": "لالغاء",
 		"settings-text": ""
 	},
 	"notification": {

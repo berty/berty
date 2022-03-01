@@ -35,7 +35,6 @@
 			"advanced": "",
 			"import-account": "",
 			"link-device": "",
-			"expert-setup": "",
 			"more": "",
 			"good-to-know": {
 				"title": "",
@@ -43,7 +42,7 @@
 				"second-point": ""
 			}
 		},
-		"expert-setup": {
+		"advanced-settings": {
 			"title": "",
 			"desc": "",
 			"more-about": {
@@ -52,6 +51,7 @@
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
+			"read-more": "",
 			"config-title": "",
 			"config-desc": "",
 			"learn-more": "",
@@ -67,24 +67,15 @@
 			},
 			"third-part": {
 				"title": "服務",
+				"network-button": "網絡列表",
 				"first-button": "推送通知",
 				"second-button": {
 					"title": "",
 					"placeholder": ""
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": ""
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "認證服務",
-			"title": "服務",
-			"recommended": "推薦",
-			"desc": "這將自動複製您的會話到服務器",
-			"button": "使用 Berty 運營的服務",
-			"skip": "跳過並稍後再做"
+			"apply-changes": ""
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "設置完成！",
 			"desc": "您現在可以使用該應用，開始添加聯繫人以及與他們自由私下聊天",
 			"button": "開始使用 Berty"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "取消",
+			"second-button": ""
 		}
 	},
 	"main": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "幫助",
-			"header-center-button": "開發工具",
-			"header-right-button": "設置",
-			"network-button": "網絡列表",
 			"edit-profile": "編輯個人信息",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "消息通知",
-				"tag-enabled": "已啟用",
-				"tag-disabled": "已禁用"
-			},
-			"dark-mode-button": "暗色模式",
-			"bluetooth-button": {
-				"title": "藍牙"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "創建新賬戶"
 		},
 		"network-map": {
 			"title": "網絡列表",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "設置",
 			"desc": "所有功能皆可自定義使其符合您的需求",
+			"in-app-notifications": "",
+			"dark-mode-button": "暗色模式",
+			"devtools": "開發工具",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "數據已保存！",
 				"desc": "在下載目錄中可用"
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": "激活 Android Nearby"
 		},
-		"services-auth": {
-			"title": "外部服務",
-			"operated-services-button": "使用 Berty 運營的服務",
-			"register-service-button": {
-				"title": "註冊自定義的服務提供商",
-				"input-placeholder": "服務 URL",
-				"action": "添加"
-			},
-			"registered-services-button": {
-				"title": "當前註冊的服務",
-				"sample-no-services": "未註冊服務",
-				"sample-unknown-service": "未知服務"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "推薦",
+			"desc": "",
+			"button": "",
+			"skip": "跳過並稍後再做"
 		},
 		"delete-account": {
 			"title": "刪除帳戶！",
@@ -439,9 +415,13 @@
 			"save": "保存主題",
 			"export": "將選定主題導出為文件",
 			"share": "將選定主題作為文件分享",
-			"import": "導入主題文件"
+			"import": "導入主題文件",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "二維碼",
 			"fingerprint": "指紋",
 			"devices": "設備"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "標記為已驗證",
 			"block-button": "屏蔽聯繫人",
 			"delete-button": "刪除聯繫人",
 			"fingerprint": "指紋",
 			"info": "信息",
-			"devices": "設備"
+			"devices": "設備",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "在此輸入..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "設備",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "搜索",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "聯繫人請求",
+				"group-invitation": "",
 				"refuse-button": "拒絕",
 				"accept-button": "接受",
-				"accepted-button": "已接受"
+				"accepted-button": "已接受",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty 連接已確認! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "相冊",
+			"no-images": "",
 			"camera": "攝像頭",
 			"files": "文件",
 			"microphone": "麥克風",
@@ -571,6 +584,13 @@
 			"response-to": "答覆：",
 			"replying-to": "你正在回復",
 			"replied-to": "回復至"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -596,17 +616,22 @@
 		},
 		"camera": {
 			"title": "攝像頭",
-			"desc": "Berty 應用程序需要您的許可以使用攝像頭掃描二維碼添加聯繫人。攝像頭不用於其他任何目的。"
+			"desc": ""
 		},
 		"audio": {
 			"title": "音頻消息",
 			"desc": "若要向您的聯繫人發送音頻信息，您需要允許Berty 應用程序獲得麥克風權限。"
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
 		},
 		"button-labels": {
 			"allow": "允許",
 			"settings": "轉到設置"
 		},
 		"skip": "跳過",
+		"cancel": "取消",
 		"settings-text": "您可以在設置中啟用 {{title}} 權限。"
 	},
 	"notification": {
@@ -624,13 +649,13 @@
 		"wtf-screen": {
 			"title": "失敗的原因是什麼？What's the Fail?",
 			"desc": "應用程序剛剛崩潰了。",
-			"desc-report": "搖動你的手機以報告錯誤，然後單擊按鈕退出並重新啟動應用程序。"
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "很抱歉發生了這個錯誤！",
 			"desc": "這是Berty的實習生Francis的錯，他一定犯了個錯誤。Francis真是個急躁的人！",
 			"desc-em": "*好吧，Berty的團隊裡沒有 Francis這個人。",
-			"desc-report": "搖一搖你的手機，然後我們繼續！"
+			"desc-report": ""
 		}
 	},
 	"debug": {

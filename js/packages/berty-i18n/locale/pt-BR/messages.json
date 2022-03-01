@@ -1,9 +1,9 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "PROTEJA SUA PRIVACIDADE",
+			"desc": "mensagem peer-to-peer gratuita e segura",
+			"button": "DESCUBRA"
 		},
 		"select-mode": {
 			"title": "Escolha uma predefinição",
@@ -30,61 +30,52 @@
 			"title": "Criar sua conta",
 			"desc": "O nome é a única informação obrigatória",
 			"required": "Obrigatório",
-			"placeholder": "",
+			"placeholder": "Escolha seu apelido",
 			"button": "CRIAR UMA CONTA",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"expert-setup": "",
-			"more": "",
+			"advanced": "AVANÇADO",
+			"import-account": "IMPORTAR CONTA",
+			"link-device": "VINCULAR DISPOSITIVO",
+			"more": "MAIS INFORMAÇÕES",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "É bom saber:",
+				"first-point": "Sua conta é criada localmente",
+				"second-point": "O apelido é opcional e pode ser editado"
 			}
 		},
-		"expert-setup": {
-			"title": "",
-			"desc": "",
+		"advanced-settings": {
+			"title": "Configurações avançadas",
+			"desc": "Encontre a documentação e crie sua própria configuração.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Boas vindas às configurações avançadas",
+				"first-paragraph": "Aqui você poderá criar sua própria configuração personalizada para atender às suas necessidades.",
+				"second-paragraph": "Apresentaremos todas as opções para permitir que você entenda o que está acontecendo por trás dos panos.",
+				"third-paragraph": "Você também encontrará o link para os recursos para ajustá-los às suas necessidades. Esta seção é apenas para especialistas!"
 			},
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
+			"read-more": "Leia mais sobre configurações avançadas",
+			"config-title": "Configurações personalizadas",
+			"config-desc": "3 passos da configuração do app. Personalize tudo agora!",
+			"learn-more": "Saiba mais",
 			"first-part": {
-				"title": "",
-				"first-button": "",
+				"title": "Proximidade",
+				"first-button": "Bluetooth de Baixa Energia",
 				"second-button": "DNS Multicast"
 			},
 			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
+				"title": "Ponto-a-Ponto",
+				"first-button": "Tabela Hash Distribuída",
+				"second-button": "Habilitar TOR"
 			},
 			"third-part": {
 				"title": "Serviços",
-				"first-button": "",
+				"network-button": "Lista de Redes",
+				"first-button": "Notificações Push",
 				"second-button": {
-					"title": "",
-					"placeholder": ""
+					"title": "Configure o seu próprio nó",
+					"placeholder": "Insira o endereço do servidor"
 				},
-				"third-button": "",
-				"connect": ""
+				"third-button": "Selecionar um nó certificado"
 			},
-			"apply-changes": "",
-			"skip": ""
-		},
-		"services-auth": {
-			"header": "Autenticar-se em serviços",
-			"title": "Serviços",
-			"recommended": "Recomendado",
-			"desc": "Isto irá replicar automaticamente as suas conversas em um servidor",
-			"button": "Usar serviços operados pelo Berty",
-			"skip": "PULAR E FAZER MAIS TARDE"
+			"apply-changes": "APLICAR MUDANÇAS"
 		},
 		"exper-setup": {},
 		"generate-key": {
@@ -95,6 +86,12 @@
 			"title": "Configuração finalizada!",
 			"desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
 			"button": "COMECE A USAR O BERTY"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "",
+			"first-button": "Cancelar",
+			"second-button": "Sim"
 		}
 	},
 	"main": {
@@ -131,7 +128,7 @@
 				"fifth-bullet-point": ""
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "A solicitação foi enviada. Pendente...",
 				"draft": ""
 			}
 		},
@@ -146,7 +143,7 @@
 				"desc": ""
 			},
 			"replicate": {
-				"display-name": "",
+				"display-name": "Replicação P2P",
 				"desc": ""
 			}
 		},
@@ -154,9 +151,9 @@
 			"welcome-title": "",
 			"full-anon-mode": "Modo de Anonimato Completo",
 			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
+			"allow-expert-mode": "Permitir Modo Expert",
 			"tor-compatible": {
-				"title": "",
+				"title": "Compatível com TOR",
 				"desc": ""
 			},
 			"full-anon": {
@@ -170,7 +167,7 @@
 			"skip": "PULAR E FAZER MAIS TARDE"
 		},
 		"scan": {
-			"title": ""
+			"title": "Escanear código QR"
 		}
 	},
 	"settings": {
@@ -181,7 +178,7 @@
 					"title": "",
 					"desc": ""
 				},
-				"relay": {
+				"berty-services": {
 					"title": "",
 					"desc": ""
 				},
@@ -197,34 +194,15 @@
 					"title": "",
 					"desc": ""
 				},
-				"theme": {
-					"title": "",
-					"desc": ""
-				},
-				"hidden-account": {
-					"title": "",
-					"desc": ""
-				},
 				"ble-message": {
 					"title": "",
 					"desc": ""
 				}
 			},
-			"header-left-button": "Ajuda",
-			"header-center-button": "Ferramentas do desenvolvedor",
-			"header-right-button": "Configurações",
-			"network-button": "Lista de Redes",
 			"edit-profile": "Editar perfil",
-			"expert-setup": "",
-			"notifications-button": {
-				"title": "Notificações",
-				"tag-enabled": "Ativado",
-				"tag-disabled": "Desativado"
-			},
-			"dark-mode-button": "Modo escuro",
-			"bluetooth-button": {
-				"title": "Bluetooth"
-			}
+			"share-link": "",
+			"create-group": "",
+			"create-new-account": "Criar nova conta"
 		},
 		"network-map": {
 			"title": "Lista de Redes",
@@ -233,6 +211,10 @@
 		"mode": {
 			"title": "Configurações",
 			"desc": "Personalize tudo para ter o aplicativo que se adapte às suas necessidades",
+			"in-app-notifications": "",
+			"dark-mode-button": "Modo escuro",
+			"devtools": "Ferramentas do desenvolvedor",
+			"network-config": "",
 			"notification-file-saved": {
 				"title": "",
 				"desc": ""
@@ -298,19 +280,13 @@
 		"nearby": {
 			"activate-button": ""
 		},
-		"services-auth": {
-			"title": "Serviços externos",
-			"operated-services-button": "Usar serviços operados pelo Berty",
-			"register-service-button": {
-				"title": "Registrar um provedor de serviço personalizado",
-				"input-placeholder": "URL do Serviço",
-				"action": "Adicionar"
-			},
-			"registered-services-button": {
-				"title": "Serviços atualmente registrados",
-				"sample-no-services": "Nenhum serviço registrado",
-				"sample-unknown-service": "Serviço desconhecido"
-			}
+		"berty-services": {
+			"header": "",
+			"title": "",
+			"recommended": "Recomendado",
+			"desc": "",
+			"button": "",
+			"skip": "PULAR E FAZER MAIS TARDE"
 		},
 		"delete-account": {
 			"title": "Apagar conta!",
@@ -439,9 +415,13 @@
 			"save": "",
 			"export": "",
 			"share": "",
-			"import": ""
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
+			"title": "",
 			"qr": "QR",
 			"fingerprint": "Impressão digital",
 			"devices": "Dispositivos"
@@ -480,16 +460,43 @@
 		}
 	},
 	"chat": {
+		"sending": "",
+		"sent": "",
 		"contact-settings": {
 			"mark-button": "Marcar como verificado",
 			"block-button": "Bloquear contato",
 			"delete-button": "Apagar contato",
 			"fingerprint": "Impressão digital",
 			"info": "Informações",
-			"devices": "Dispositivos"
+			"devices": "Dispositivos",
+			"my-devices": ""
 		},
 		"multi-member": {
 			"input-placeholder": "Digite aqui..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Dispositivos",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
 		},
 		"multi-member-settings": {
 			"header-left-button": "Pesquisar",
@@ -518,9 +525,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "SOLICITAÇÃO DE CONTATO",
+				"group-invitation": "",
 				"refuse-button": "RECUSAR",
 				"accept-button": "ACEITAR",
-				"accepted-button": "ACEITO"
+				"accepted-button": "ACEITO",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Conexão Berty confirmada! 🎉",
@@ -549,6 +561,7 @@
 		},
 		"files": {
 			"gallery": "Galeria",
+			"no-images": "",
 			"camera": "Câmera",
 			"files": "Ficheiros",
 			"microphone": "Microfone",
@@ -571,6 +584,13 @@
 			"response-to": "",
 			"replying-to": "",
 			"replied-to": "Respondeu para"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
 		}
 	},
 	"audio": {
@@ -602,11 +622,16 @@
 			"title": "",
 			"desc": ""
 		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "",
 			"settings": ""
 		},
 		"skip": "PULAR",
+		"cancel": "CANCELAR",
 		"settings-text": ""
 	},
 	"notification": {
@@ -624,7 +649,7 @@
 		"wtf-screen": {
 			"title": "",
 			"desc": "O aplicativo simplesmente travou.",
-			"desc-report": "Agite o seu telefone para relatar o erro e clique no botão para sair e reiniciar o aplicativo."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "",

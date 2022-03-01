@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  Berty
+
+  Created by Guilhem Fanton on 10/11/2021.
+
+*/
+
+"BertyPushMessage" = "New message";
+"BertyPushMessageError" = "A new message has been received but an error occurred while decrypting it";

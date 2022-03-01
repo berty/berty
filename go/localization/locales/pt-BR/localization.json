@@ -1,4 +1,22 @@
 {
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "Este serviço replicará suas mensagens automaticamente para fornecer melhor desempenho de rede ao seu dispositivo.",
+        "benefitBadge": "Desempenho"
+      },
+      "psh": {
+        "name": "Notificações Push",
+        "description": "",
+        "benefitBadge": "Desempenho"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Política de privacidade"
+  },
   "push": {
     "message": {},
     "error": {
@@ -26,8 +44,23 @@
     "groupInvitation": {
       "bodyWithGroupName": ""
     },
-    "memberNameChanged": {},
-    "memberDetailsChanged": {},
-    "MemberPictureChanged": {}
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
   }
 }
