@@ -47,9 +47,9 @@
 			"desc": "Vind documentatie en creëer uw eigen configuratie.",
 			"more-about": {
 				"title": "",
-				"first-paragraph": "Hier kunt u uw eigen aangepaste configuratie maken om aan uw behoeften te voldoen.",
-				"second-paragraph": "We zullen je alle opties presenteren om je te laten begrijpen wat er achter de schermen gebeurt.",
-				"third-paragraph": "Je vindt ook een ressources link om deze te hacken. Deze sectie is alleen voor experten!"
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "",
 			"config-title": "Aangepaste configuraties",
@@ -176,7 +176,7 @@
 				"title": "",
 				"avatar": {
 					"title": "Wijzig je avatar",
-					"desc": "Stel een profielfoto in voor dit account!"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "Synchroniseer met een contact",
-					"desc": "Scan een QR-code om een eerste contact toe te voegen aan je contactlijst!"
+					"desc": ""
 				},
 				"group": {
 					"title": "Word lid of maak zelf een groep aan",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Stuur bericht zonder internet",
-					"desc": "Gebruik de nabijheidsfunctie en stuur een bericht zonder mobiel netwerk of internetverbinding!"
+					"desc": ""
 				}
 			},
 			"edit-profile": "Mijn profiel bewerken",
@@ -448,7 +448,7 @@
 			"info": "Informatie",
 			"devices": "Apparaten",
 			"join": "WORD LID VAN DEZE GROEP",
-			"password-label": "Voer het groepswachtwoord in",
+			"password-label": "",
 			"password-placeholder": "Wachtwoord..."
 		},
 		"save-theme": {
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Verzenden...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Markeren als geverifieerd",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Herstart app vereist",
+			"title": "",
 			"desc": "Voor dit soort meldingen moet je de app opnieuw opstarten om deze velden op te slaan!"
 		}
 	},
