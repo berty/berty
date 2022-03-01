@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "보내는 중...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "",
