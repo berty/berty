@@ -157,7 +157,6 @@ targets:
     sources:
     - Berty
     - NotificationService/Common.swift
-    - Localization
     - path: ./Configs/GoogleService
       group: Configs
       buildPhase: none # will be added by a script
