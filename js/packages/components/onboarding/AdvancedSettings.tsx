@@ -30,7 +30,7 @@ import {
 	useAccountServices,
 	useMessengerClient,
 } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import { useAccount } from '@berty-tech/react-redux'
 
 import { showNeedRestartNotification } from '../helpers'
@@ -465,7 +465,7 @@ const Services: React.FC<{
 		const navigation = useNavigation()
 		const account = useAccount()
 		const services = useAccountServices()
-		const [{ margin, text }, { scaleSize }] = useStyles()
+		const [{ text }, { scaleSize }] = useStyles()
 		const ctx = useMessengerContext()
 		const client = useMessengerClient()
 
@@ -526,7 +526,7 @@ const Services: React.FC<{
 								text.bold.small,
 								text.size.small,
 								{
-									marginLeft: margin.left.big.marginLeft + 3 * scaleSize,
+									marginLeft: defaultStylesDeclaration.sides.big + 3 * scaleSize,
 									color: colors['secondary-text'],
 								},
 							]}

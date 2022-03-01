@@ -44,7 +44,7 @@ const ReactionList: FC<{
 	convPk: string
 }> = ({ reactions, emoji, cid, convPk }) => {
 	const colors = useThemeColor()
-	const [{ padding, border, margin }] = useStyles()
+	const [{ padding, border, margin, text }] = useStyles()
 	const [currentEmoji, setCurrentEmoji] = useState<string | null | undefined>(emoji)
 	const [dataSourceCords, setDataSourceCords] = useState<number[] | undefined>()
 	const [userList, setUserList] = useState<(berty.messenger.v1.IMember | undefined)[]>([])
@@ -125,12 +125,16 @@ const ReactionList: FC<{
 						<Text style={[padding.right.small]}>{`${getEmojiByName(emoji as string)}`}</Text>
 						<AnimatedNumber
 							number={count as unknown as number}
-							fontStyle={{
-								fontSize: 12,
-								fontWeight: 'bold',
-								color:
-									currentEmoji === emoji ? colors['main-background'] : colors['background-header'],
-							}}
+							fontStyle={[
+								text.size.small,
+								{
+									fontWeight: 'bold',
+									color:
+										currentEmoji === emoji
+											? colors['main-background']
+											: colors['background-header'],
+								},
+							]}
 						/>
 					</TouchableOpacity>
 				))}
@@ -140,8 +144,8 @@ const ReactionList: FC<{
 					<Text
 						style={[
 							padding.medium,
+							text.size.small,
 							{
-								fontSize: 12,
 								fontWeight: 'bold',
 								color: colors['background-header'],
 							},
@@ -177,7 +181,7 @@ export const Reactions: FC<{
 	cid: string
 	convPk: string
 }> = ({ reactions, onEmojiKeyboard, onRemoveEmoji, cid, convPk }) => {
-	const [{ margin, padding, border }] = useStyles()
+	const [{ margin, padding, border, text }] = useStyles()
 	const colors = useThemeColor()
 	const { show } = useConversationModal()
 
@@ -218,19 +222,23 @@ export const Reactions: FC<{
 							]}
 						>
 							<Text
-								style={{
-									marginHorizontal: 2,
-									fontSize: 10,
-								}}
+								style={[
+									text.size.tiny,
+									{
+										marginHorizontal: 2,
+									},
+								]}
 							>
 								{`${getEmojiByName(emoji as string)}`}
 							</Text>
 							<AnimatedNumber
 								number={count as unknown as number}
-								fontStyle={{
-									fontSize: 10,
-									color: ownState ? colors['main-background'] : colors['background-header'],
-								}}
+								fontStyle={[
+									text.size.tiny,
+									{
+										color: ownState ? colors['main-background'] : colors['background-header'],
+									},
+								]}
 							/>
 						</View>
 					</TouchableOpacity>

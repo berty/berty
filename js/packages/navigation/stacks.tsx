@@ -19,15 +19,17 @@ import { useSelector } from 'react-redux'
 import { MESSENGER_APP_STATE, selectAppState } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const CustomTitleStyle: () => any = () => {
-	const [{}, { scaleSize }] = useStyles()
+	const [{ text }] = useStyles()
 
-	return {
-		headerTitleStyle: {
-			fontFamily: 'Open Sans',
-			fontWeight: '700',
-			fontSize: 20 * scaleSize,
+	return [
+		text.size.large,
+		{
+			headerTitleStyle: {
+				fontFamily: 'Open Sans',
+				fontWeight: '700',
+			},
 		},
-	}
+	]
 }
 
 const ChatScreenOptions: (

@@ -83,7 +83,7 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 						{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
 						text.bold.small,
 						text.italic,
-						text.size.scale(14),
+						text.size.medium,
 					]}
 				>
 					{monitorPayloadTitle}
@@ -97,7 +97,7 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 								{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
 								text.bold.small,
 								text.italic,
-								text.size.scale(14),
+								text.size.medium,
 								margin.top.tiny,
 							]}
 						>

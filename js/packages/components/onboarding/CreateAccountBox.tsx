@@ -62,11 +62,8 @@ export const CreateAccountBox: React.FC<{
 							margin.top.medium,
 							padding.medium,
 							border.radius.small,
-							text.bold.small,
 							{
 								backgroundColor: colors['input-background'],
-								fontFamily: 'Open Sans',
-								color: colors['main-text'],
 								flexDirection: 'row',
 								alignItems: 'center',
 							},

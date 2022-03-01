@@ -18,7 +18,7 @@ const {
 const isTablet = deviceType === 'pad'
 
 export const ReplyMessageBar: React.FC = () => {
-	const [{ border }] = useStyles()
+	const [{ border, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
@@ -61,7 +61,7 @@ export const ReplyMessageBar: React.FC = () => {
 					borderRadius: 20,
 				}}
 			>
-				<Text numberOfLines={1} style={{ color: colors['background-header'], fontSize: 10 }}>
+				<Text numberOfLines={1} style={[text.size.tiny, { color: colors['background-header'] }]}>
 					{t('chat.reply.replying-to')} {replyTargetAuthor?.displayName || ''}
 				</Text>
 			</View>
@@ -69,11 +69,13 @@ export const ReplyMessageBar: React.FC = () => {
 			{activeReplyInte?.payload?.body ? (
 				<Text
 					numberOfLines={1}
-					style={{
-						color: activeReplyInte?.textColor,
-						fontSize: 12,
-						lineHeight: 17,
-					}}
+					style={[
+						text.size.small,
+						{
+							color: activeReplyInte?.textColor,
+							lineHeight: 17,
+						},
+					]}
 				>
 					{activeReplyInte?.payload?.body}
 				</Text>
@@ -94,12 +96,14 @@ export const ReplyMessageBar: React.FC = () => {
 					/>
 					<Text
 						numberOfLines={1}
-						style={{
-							color: activeReplyInte?.textColor,
-							fontSize: 12,
-							lineHeight: 17,
-							marginLeft: 10,
-						}}
+						style={[
+							text.size.small,
+							{
+								color: activeReplyInte?.textColor,
+								lineHeight: 17,
+								marginLeft: 10,
+							},
+						]}
 					>
 						{t(`medias.${getMediaTypeFromMedias(activeReplyInte?.medias)}`)}
 					</Text>

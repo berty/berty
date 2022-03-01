@@ -75,7 +75,7 @@ const TaskItem: React.FC<{ itemKey: ChecklistItemKey; value?: ChecklistItem }> =
 					{!itemCollapsed ? (
 						<TextNative
 							style={[
-								text.size.scale(13),
+								text.size.small,
 								margin.left.big,
 								margin.vertical.small,
 								{ fontFamily: 'Open Sans', color: colors['main-text'] },
@@ -190,7 +190,7 @@ export const WelcomeChecklist: React.FC = () => {
 					<View style={{ flexDirection: 'row', flex: 10 }}>
 						<TextNative
 							style={[
-								text.size.scale(16),
+								text.size.medium,
 								text.bold.medium,
 								margin.right.scale(5),
 								{ fontFamily: 'Open Sans', color: colors['main-text'] },

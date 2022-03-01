@@ -581,7 +581,7 @@ type ButtonSettingItem = {
 const useStylesButtonSettingItem = () => {
 	const [{ text, padding }] = useStyles()
 	return {
-		updateFeatureText: [text.size.scale(11), padding.left.scale(8)],
+		updateFeatureText: [text.size.tiny, padding.left.scale(8)],
 	}
 }
 

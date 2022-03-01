@@ -39,7 +39,7 @@ type ContactItemProps = {
 }
 
 const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar = true }) => {
-	const [{ row, margin, padding }, { scaleSize }] = useStyles()
+	const [{ row, margin, padding, text }, { scaleSize }] = useStyles()
 	const _styles = useStylesCreateGroup()
 	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
@@ -61,7 +61,8 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 					<Text
 						numberOfLines={1}
 						style={[
-							margin.left.small,
+							text.size.medium,
+							margin.left.medium,
 							row.item.justify,
 							{ flexShrink: 1, color: colors['main-text'] },
 						]}

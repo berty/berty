@@ -24,7 +24,7 @@ const useStylesOneToOne = () => {
 	const colors = useThemeColor()
 
 	return {
-		dateMessage: [text.size.scale(11), text.bold.small, { color: colors['secondary-text'] }],
+		dateMessage: [text.size.tiny, text.bold.small, { color: colors['secondary-text'] }],
 	}
 }
 
@@ -77,7 +77,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
 				<TextNative
 					style={[
-						text.size.scale(15),
+						text.size.medium,
 						text.bold.medium,
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
@@ -91,7 +91,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 				</View>
 				<TextNative
 					style={[
-						text.size.scale(13),
+						text.size.small,
 						text.bold.small,
 						margin.bottom.small,
 						{ fontFamily: 'Open Sans', color: colors['main-text'] },
