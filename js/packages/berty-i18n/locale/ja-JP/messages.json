@@ -46,10 +46,10 @@
 			"title": "詳細設定",
 			"desc": "ドキュメントを検索し、独自の設定を作成します。",
 			"more-about": {
-				"title": "詳細設定へようこそ",
-				"first-paragraph": "ここでは必要に応じた、より高度な設定が行えます。",
-				"second-paragraph": "裏で何が起きているかを理解するために必要な、あらゆるオプションを紹介します。",
-				"third-paragraph": "このセクションは専門知識を持つユーザーのみが対象です！機能追加や改造に必要な、情報リンクなども見つけることができます。"
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "詳細設定について、さらに詳しい情報を読む",
 			"config-title": "カスタム設定",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "ネットワークにある WebView をロード中です。準備中ですが強制的に開きますか？",
+			"desc": "",
 			"first-button": "キャンセル",
 			"second-button": "はい"
 		}
@@ -176,7 +176,7 @@
 				"title": "Welcome チェックリスト {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "アバターを変更する",
-					"desc": "このアカウントのプロフィール画像を設定しよう！"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "Berty サービスを有効にする",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "連絡先と同期",
-					"desc": "QR コードをスキャンして最初の連絡先を連絡先リストに追加しよう！"
+					"desc": ""
 				},
 				"group": {
 					"title": "グループに参加または作成",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "インターネットなしでメッセージを送信しよう！",
-					"desc": "Bluetooth 近接機能を使用して、携帯電話またはインターネットの接続なしでメッセージを送信しよう！"
+					"desc": ""
 				}
 			},
 			"edit-profile": "プロフィールを編集",
@@ -448,7 +448,7 @@
 			"info": "各種情報",
 			"devices": "デバイス",
 			"join": "このグループに参加する",
-			"password-label": "グループのパスワードを入力してください",
+			"password-label": "",
 			"password-placeholder": "パスワード..."
 		},
 		"save-theme": {
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "アプリの再起動が必要です",
+			"title": "",
 			"desc": "この種の通知は、アプリを再起動してからでないとフィールドを保存できません！"
 		}
 	},
