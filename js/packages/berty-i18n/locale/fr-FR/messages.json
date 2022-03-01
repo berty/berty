@@ -46,10 +46,10 @@
 			"title": "Paramètres avancés",
 			"desc": "Trouvez de la documentation et créez votre propre configuration.",
 			"more-about": {
-				"title": "Bienvenue dans les paramètres avancés",
-				"first-paragraph": "Ici vous pourrez créer votre propre configuration personnalisée correspondant à vos besoins.",
-				"second-paragraph": "Nous vous présenterons toutes les options pour vous permettre de comprendre ce qui se passe sous le capot.",
-				"third-paragraph": "Vous trouverez aussi un lien vers les ressources pour le bidouiller. Cette section est réservée aux experts !"
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "En savoir plus sur les paramètres avancés",
 			"config-title": "Configurations personnalisées",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "Nous nous préparons à charger les webviews sur le réseau. Voulez vous toujours l'ouvrir ?",
+			"desc": "",
 			"first-button": "Annuler",
 			"second-button": "Oui"
 		}
@@ -176,7 +176,7 @@
 				"title": "Liste des tâches de bienvenue {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Changer votre avatar",
-					"desc": "Configurer une image de profil !"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "Activer les services Berty",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "Synchroniser avec un contact",
-					"desc": "Scannez un code QR pour ajouter un premier contact à votre liste de contacts !"
+					"desc": ""
 				},
 				"group": {
 					"title": "Rejoindre ou créer un groupe",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Envoyer un message sans internet",
-					"desc": "Utilisez la fonction Proximité et envoyez un message sans réseau cellulaire, ni connexion internet !"
+					"desc": ""
 				}
 			},
 			"edit-profile": "Modifier mon profil",
@@ -448,7 +448,7 @@
 			"info": "Infos",
 			"devices": "Appareils",
 			"join": "REJOINDRE CE GROUPE",
-			"password-label": "Saisir le mot de passe du groupe",
+			"password-label": "",
 			"password-placeholder": "Mot de passe..."
 		},
 		"save-theme": {
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Nécessite le redémarrage de l'application",
+			"title": "",
 			"desc": "Pour ce type de notification, vous devez redémarrer votre application !"
 		}
 	},
