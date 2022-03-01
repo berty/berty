@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Odesílání...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Označit jako ověřené",
