@@ -46,9 +46,9 @@
 			"title": "Impostazioni avanzate",
 			"desc": "",
 			"more-about": {
-				"title": "Benvenuto nelle impostazioni avanzate",
-				"first-paragraph": "Qui sarai in grado di creare la tua configurazione personalizzata per adattarsi alle tue esigenze.",
-				"second-paragraph": "Ti presenteremo tutte le opzioni per aiutarti a capire cosa succede dietro le quinte.",
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
 				"third-paragraph": ""
 			},
 			"read-more": "Per saperne di più sulle impostazioni avanzate",
@@ -176,7 +176,7 @@
 				"title": "",
 				"avatar": {
 					"title": "",
-					"desc": "Imposta un'immagine del profilo per questo account!"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "",
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Invio...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Contrassegna come verificato",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Necessario riavvio app",
+			"title": "",
 			"desc": ""
 		}
 	},
