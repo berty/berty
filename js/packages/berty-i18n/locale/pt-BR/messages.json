@@ -46,10 +46,10 @@
 			"title": "Configurações avançadas",
 			"desc": "Encontre a documentação e crie sua própria configuração.",
 			"more-about": {
-				"title": "Boas vindas às configurações avançadas",
-				"first-paragraph": "Aqui você poderá criar sua própria configuração personalizada para atender às suas necessidades.",
-				"second-paragraph": "Apresentaremos todas as opções para permitir que você entenda o que está acontecendo por trás dos panos.",
-				"third-paragraph": "Você também encontrará o link para os recursos para ajustá-los às suas necessidades. Esta seção é apenas para especialistas!"
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "Leia mais sobre configurações avançadas",
 			"config-title": "Configurações personalizadas",
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Enviando...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Marcar como verificado",
