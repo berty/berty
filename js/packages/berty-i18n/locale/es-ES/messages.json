@@ -46,10 +46,10 @@
 			"title": "Configuración avanzada",
 			"desc": "Busque la documentación y cree su propia configuración.",
 			"more-about": {
-				"title": "Bienvenido a la configuración avanzada",
-				"first-paragraph": "Aquí podrá crear su propia configuración para adaptar a sus necesidades.",
-				"second-paragraph": "Le presentaremos todas las opciones para que pueda entender lo que ocurre bajo la capucha.",
-				"third-paragraph": "También puede encontrar el enlace de recursos para hackearlo. ¡Esta sección es sólo para expertos!"
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "Más información sobre la configuración avanzada",
 			"config-title": "Configuraciones personalizadas",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "Estamos preparando para subir las WebViews en la red. ¿Aún desea abrirlo?",
+			"desc": "",
 			"first-button": "Cancelar",
 			"second-button": "Sí"
 		}
@@ -176,7 +176,7 @@
 				"title": "Lista de verificación de bienvenida {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Cambiar tu avatar",
-					"desc": "¡Configuremos la foto de perfil de esta cuenta!"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "Activar servicios de Berty",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "Sincronizar con un contacto",
-					"desc": "¡Escanea un código QR para agregar un primer contacto a tu lista de contactos!"
+					"desc": ""
 				},
 				"group": {
 					"title": "Unirse o crear grupo",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Enviar mensaje sin conexión de internet",
-					"desc": "¡Utilice la función de Proximidad y envíe un mensaje sin necesidad de una red celular o de una conexión a Internet!"
+					"desc": ""
 				}
 			},
 			"edit-profile": "Editar perfil",
@@ -416,9 +416,9 @@
 			"export": "Exportar el tema seleccionado como un archivo",
 			"share": "Compartir el tema seleccionado como archivo",
 			"import": "Importar un archivo de tema",
-			"delete": "Eliminar todos los temas no predeterminados",
+			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": "Formato incorrecto para el archivo del tema"
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
 			"title": "Mi ID de Berty",
@@ -448,7 +448,7 @@
 			"info": "Información",
 			"devices": "Dispositivos",
 			"join": "UNIR A ESTE GRUPO",
-			"password-label": "Introduzca la contraseña del grupo",
+			"password-label": "",
 			"password-placeholder": "Contraseña..."
 		},
 		"save-theme": {
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "Enviando..",
+		"sending": "Enviando...",
 		"sent": "Enviado",
 		"contact-settings": {
 			"mark-button": "Marcar como verificado",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "Es necesario reiniciar la aplicación",
+			"title": "",
 			"desc": "¡Para este tipo de notificación, tienes que reiniciar la aplicación para guardar estos cambios!"
 		}
 	},
