@@ -126,8 +126,10 @@ export const HyperlinkUserMessage: React.FC<{
 						style={[
 							text.size.small,
 							{
+								fontSize: 17,
 								color: msgTextColor,
 								lineHeight: 17,
+								fontWeight: '400',
 							},
 						]}
 					>
