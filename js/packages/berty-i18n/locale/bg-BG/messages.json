@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Изпращане...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Маркирай като верифициран",
