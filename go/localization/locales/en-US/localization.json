@@ -3,7 +3,7 @@
     "services": {
       "rpl": {
         "name": "Replication",
-        "description": "This service will automatically replicate your conversations to provide your device with the most efficient network performance.",
+        "description": "",
         "benefitBadge": "Performance"
       },
       "psh": {
@@ -12,7 +12,7 @@
         "benefitBadge": "Performance"
       }
     },
-    "pageTitle": "Berty services",
+    "pageTitle": "Berty Services",
     "connectButton_one": "Use service",
     "connectButton_other": "Use selected services",
     "privacyPolicyLabel": "Privacy policy"
@@ -35,14 +35,14 @@
       "bodyWithNumberOfMedia_other": "Sent %[1]v photos"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "Sent media",
-      "bodyWithNumberOfMedia_other": "Sent %[1]v media items"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v reacted with %[2]v to your message"
     },
     "groupInvitation": {
-      "bodyWithGroupName": "Invited you to '%[1]v' group"
+      "bodyWithGroupName": "Invited you to %[1]v"
     },
     "unknown": {
       "body": "Something new has been received"
