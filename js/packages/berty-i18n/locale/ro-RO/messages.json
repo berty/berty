@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Se trimite...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Marchează ca verificat",
