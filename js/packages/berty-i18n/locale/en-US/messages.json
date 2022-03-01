@@ -38,7 +38,7 @@
 			"more": "MORE INFO",
 			"good-to-know": {
 				"title": "Good to know:",
-				"first-point": "Your account has been created locally",
+				"first-point": "Your account is created locally",
 				"second-point": "Nickname is optional and can be changed later"
 			}
 		},
@@ -46,10 +46,10 @@
 			"title": "Advanced settings",
 			"desc": "Find documentation and create your own config.",
 			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
+				"title": "Welcome to Advanced Settings",
+				"first-paragraph": "Create the custom configuration that best suits your needs.",
+				"second-paragraph": "You'll be presented with every available option to control what happens under the hood.",
+				"third-paragraph": "You’ll also find a link to resources to hack it. This section is for experts only!"
 			},
 			"read-more": "Read more about advanced settings",
 			"config-title": "Custom configs",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "",
+			"desc": "We are getting ready to load webviews on the network. Do you still want to open it?",
 			"first-button": "Cancel",
 			"second-button": "Yes"
 		}
@@ -176,7 +176,7 @@
 				"title": "Welcome Checklist {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "Change your avatar",
-					"desc": ""
+					"desc": "Let's set up a profile picture for this account!"
 				},
 				"berty-services": {
 					"title": "Activate Berty Services",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "Sync with a contact",
-					"desc": ""
+					"desc": "Scan a QR code to add your first contact to your contact list!"
 				},
 				"group": {
 					"title": "Join or create a group",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "Send a message without internet",
-					"desc": ""
+					"desc": "Use the Proximity feature to send a message without any cellular network or internet connection!"
 				}
 			},
 			"edit-profile": "Edit profile",
@@ -416,9 +416,9 @@
 			"export": "Export selected theme as file",
 			"share": "Share selected theme as file",
 			"import": "Import a file theme",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": ""
+			"delete": "Delete all non-default themes",
+			"bad-format-title": "Bad theme format",
+			"bad-format-desc": "Incorrect format for theme file"
 		},
 		"my-berty-ID": {
 			"title": "My Berty ID",
@@ -448,7 +448,7 @@
 			"info": "Infos",
 			"devices": "Devices",
 			"join": "JOIN THIS GROUP",
-			"password-label": "",
+			"password-label": "Enter group password",
 			"password-placeholder": "Password..."
 		},
 		"save-theme": {
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Sending...",
 		"sent": "Sent",
 		"contact-settings": {
 			"mark-button": "Mark as verified",
@@ -616,7 +616,7 @@
 		},
 		"camera": {
 			"title": "Camera",
-			"desc": ""
+			"desc": "Do you want to authorize the camera to take pictures or scan QR codes?"
 		},
 		"audio": {
 			"title": "Audio messages",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
+			"title": "Restart required",
 			"desc": "Restart Berty to save your data and enable notifications!"
 		}
 	},
