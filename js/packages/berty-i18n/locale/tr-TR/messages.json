@@ -46,8 +46,8 @@
 			"title": "Gelişmiş ayarlar",
 			"desc": "Dokümantasyonu bulun ve kendi yapılandırmanızı oluşturun.",
 			"more-about": {
-				"title": "Gelişmiş ayarlara hoşgeldiniz",
-				"first-paragraph": "Burada ihtiyacınıza göre kendinize özel yapılandırmanızı yaratabilirsiniz.",
+				"title": "",
+				"first-paragraph": "",
 				"second-paragraph": "",
 				"third-paragraph": ""
 			},
@@ -176,7 +176,7 @@
 				"title": "",
 				"avatar": {
 					"title": "Avatar'ını değiştir",
-					"desc": "Bu hesap için bir profil resmi belirle!"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "Berty Servislerini Aktif Et",
@@ -448,7 +448,7 @@
 			"info": "Bilgiler",
 			"devices": "Aygıtlar",
 			"join": "BU GRUBA KATIL",
-			"password-label": "Grup parolasını girin",
+			"password-label": "",
 			"password-placeholder": "Parola..."
 		},
 		"save-theme": {
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "Gönderiliyor..",
+		"sending": "Gönderiliyor...",
 		"sent": "Gönderildi",
 		"contact-settings": {
 			"mark-button": "Doğrulanmış olarak işaretle",
