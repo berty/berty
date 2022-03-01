@@ -46,10 +46,10 @@
 			"title": "高级设置",
 			"desc": "查找文档并创建您自己的配置。",
 			"more-about": {
-				"title": "欢迎使用高级设置",
-				"first-paragraph": "在这里，您将能够创建自己的自定义配置以满足您的需求。",
-				"second-paragraph": "我们会给您提供每个选项以允许您了解场地后面发生的事情。",
-				"third-paragraph": "您还可以找到资源链接来破解它。 此部分仅供专业使用！"
+				"title": "",
+				"first-paragraph": "",
+				"second-paragraph": "",
+				"third-paragraph": ""
 			},
 			"read-more": "阅读更多关于高级设置的信息",
 			"config-title": "自定义配置",
@@ -89,7 +89,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "我们准备好加载WebView。你还想打开它吗？",
+			"desc": "",
 			"first-button": "取消",
 			"second-button": "是"
 		}
@@ -176,7 +176,7 @@
 				"title": "欢迎检查清单 {{tasksDone}}/{{totalTasks}}",
 				"avatar": {
 					"title": "更改您的头像",
-					"desc": "让我们为此帐户设置个人资料图片！"
+					"desc": ""
 				},
 				"berty-services": {
 					"title": "激活 Berty 服务",
@@ -184,7 +184,7 @@
 				},
 				"contact": {
 					"title": "同步联系人",
-					"desc": "扫描二维码以在您的联系人列表中添加第一个联系人！"
+					"desc": ""
 				},
 				"group": {
 					"title": "加入或创建一个组",
@@ -196,7 +196,7 @@
 				},
 				"ble-message": {
 					"title": "在没有互联网的情况下发送消息",
-					"desc": "使用附近功能，在没有任何蜂窝网络或互联网连接的情况下发送消息！"
+					"desc": ""
 				}
 			},
 			"edit-profile": "编辑个人信息",
@@ -416,9 +416,9 @@
 			"export": "将选定主题导出为文件",
 			"share": "将选定主题作为文件分享",
 			"import": "导入主题文件",
-			"delete": "删除所有非默认主题",
-			"bad-format-title": "主题格式错误",
-			"bad-format-desc": "主题文件格式错误"
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": ""
 		},
 		"my-berty-ID": {
 			"title": "我的 Berty ID",
@@ -448,7 +448,7 @@
 			"info": "信息",
 			"devices": "设备",
 			"join": "加入此群组",
-			"password-label": "输入群组密码",
+			"password-label": "",
 			"password-placeholder": "密码..."
 		},
 		"save-theme": {
@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "发送中...",
+		"sending": "正在发送...",
 		"sent": "已发送",
 		"contact-settings": {
 			"mark-button": "标记为已验证",
@@ -636,7 +636,7 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "需要重新启动应用程序",
+			"title": "",
 			"desc": "对于此类通知，您必须重新启动应用程序以保存这些内容！"
 		}
 	},
