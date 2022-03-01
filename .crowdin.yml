@@ -22,6 +22,6 @@ files: [
   },
   {
    "source" : "/js/ios/Localization/Base.lproj/Localizable.strings",
-   "translation" : "/js/ios/Localization/%osx_code%.lproj/%original_file_name%",
+   "translation" : "/js/ios/Localization/%osx_code%/%original_file_name%",
   },
 ]
