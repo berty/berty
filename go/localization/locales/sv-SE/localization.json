@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "Skickade %[1]v st foton"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "Skickade media",
-      "bodyWithNumberOfMedia_other": "Skickade %[1]v st media"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v reagerade med %[2]v till ditt meddelande"
