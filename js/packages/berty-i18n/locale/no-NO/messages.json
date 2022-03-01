@@ -460,7 +460,7 @@
 		}
 	},
 	"chat": {
-		"sending": "",
+		"sending": "Sender...",
 		"sent": "",
 		"contact-settings": {
 			"mark-button": "Marker som verifisert",
