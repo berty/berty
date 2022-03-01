@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "Verstuur %[1]v foto's"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "Stuur een media",
-      "bodyWithNumberOfMedia_other": "Versturr %[1]v medias"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v reageerde met %[2]v op uw bericht"
