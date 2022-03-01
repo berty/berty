@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "%[1] 件の写真を送信しました"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "メディアを送信しました",
-      "bodyWithNumberOfMedia_other": "%[1] 件のメディアを送信しました"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v が %[2]v でメッセージに反応しました"
