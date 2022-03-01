@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "已发送 %[1]v 照片"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "发送了媒体",
-      "bodyWithNumberOfMedia_other": "已发送 %[1]v 媒体"
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v 与 %[2]v 回应您的消息"
