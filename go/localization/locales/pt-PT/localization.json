@@ -3,7 +3,7 @@
     "services": {
       "rpl": {
         "name": "",
-        "description": "Este serviço replicará automaticamente as suas conversas para fornecer melhor performance de rede ao seu dispositivo.",
+        "description": "",
         "benefitBadge": "Desempenho"
       },
       "psh": {
