@@ -495,7 +495,7 @@
 			"title": "",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Tõukemärguanded välja lülitatud"
 			}
 		},
 		"multi-member-settings": {
