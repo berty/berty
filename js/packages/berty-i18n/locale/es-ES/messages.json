@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "Buen saber:",
 				"first-point": "Su cuenta fue creada localmente",
-				"second-point": "El apodo es opcional y editable"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "Más información sobre la configuración avanzada",
 			"config-title": "Configuraciones personalizadas",
-			"config-desc": "3 pasos de configuración de la app. ¡Personaliza todo ahora!",
+			"config-desc": "",
 			"learn-more": "Aprender más",
 			"first-part": {
 				"title": "Proximidad",
@@ -70,7 +70,7 @@
 				"network-button": "Lista de redes",
 				"first-button": "Notificaciones Push",
 				"second-button": {
-					"title": "Configure su propio nodo",
+					"title": "",
 					"placeholder": "Introducir dirección del servidor"
 				},
 				"third-button": "Seleccione un nodo certificado"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "No se puede eliminar un miembro de este grupo"
 			},
 			"conversations": {
-				"request-sent": "La solicitud ha sido enviada. Pendiendo...",
+				"request-sent": "",
 				"draft": "Borrador: {{message}}"
 			}
 		},
@@ -179,8 +179,8 @@
 					"desc": ""
 				},
 				"berty-services": {
-					"title": "Activar servicios de Berty",
-					"desc": "Mejore el rendimiento de la red con los servicios de Berty Technologies, sin ánimo de lucro."
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Sincronizar con un contacto",
@@ -195,7 +195,7 @@
 					"desc": "¡Vamos a decir \"Hola mundo\" a un contacto!"
 				},
 				"ble-message": {
-					"title": "Enviar mensaje sin conexión de internet",
+					"title": "",
 					"desc": ""
 				}
 			},
@@ -282,10 +282,10 @@
 		},
 		"berty-services": {
 			"header": "Servicios activos de Berty",
-			"title": "Servicios de Berty",
+			"title": "",
 			"recommended": "Recomendado",
-			"desc": " La activación de los servicios de Berty le permitirá recibir notificaciones \"push\" a través de los servidores de Berty Technologies y le dará acceso a sus nodos para la replicación de conversaciones.",
-			"button": "Usar servicios de Berty",
+			"desc": "",
+			"button": "",
 			"skip": "SALTAR Y HACER MÁS TARDE"
 		},
 		"delete-account": {
@@ -476,7 +476,7 @@
 		},
 		"push-notifications": {
 			"enable": "Habilitar notificaciones push",
-			"enabled": "Las notificaciones push están habilitadas",
+			"enabled": "Notificaciones push habilitadas",
 			"unsupported": "",
 			"check-device-settings": "",
 			"warning-disable": {
@@ -485,7 +485,7 @@
 				"accept": "Activar",
 				"refuse": "Omitir"
 			},
-			"why-cant-disable": "No puedes desactivar las notificaciones push para una conversación específica.",
+			"why-cant-disable": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
@@ -495,7 +495,7 @@
 			"title": "Dispositivos",
 			"push": {
 				"enabled": "Notificaciones push habilitadas",
-				"not-enabled": "Notificaciones push no habilitadas"
+				"not-enabled": "Notificaciones push desactivadas"
 			}
 		},
 		"multi-member-settings": {
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "¡Para este tipo de notificación, tienes que reiniciar la aplicación para guardar estos cambios!"
+			"desc": ""
 		}
 	},
 	"error": {
@@ -649,7 +649,7 @@
 		"wtf-screen": {
 			"title": "¿Cuál es el fallo?",
 			"desc": "La aplicación ha fallado.",
-			"desc-report": "Pulse el botón para salir y reiniciar la aplicación."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "¡Perdón por este error!",
