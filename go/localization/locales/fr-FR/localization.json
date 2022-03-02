@@ -12,7 +12,7 @@
         "benefitBadge": "Performance"
       }
     },
-    "pageTitle": "Services Berty",
+    "pageTitle": "",
     "connectButton_one": "Utiliser le service",
     "connectButton_other": "Utiliser les services sélectionnés",
     "privacyPolicyLabel": "Politique de confidentialité"
@@ -42,7 +42,7 @@
       "bodyWithDisplayNameAndEmoji": "%[1]v a réagi avec %[2]v à votre message"
     },
     "groupInvitation": {
-      "bodyWithGroupName": "Invitation au groupe '%[1]v'"
+      "bodyWithGroupName": ""
     },
     "unknown": {
       "body": "Quelque chose de nouveau vient d'être reçu"
