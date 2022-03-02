@@ -495,7 +495,7 @@
 			"title": "장치",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "알림 수신 해제됨"
 			}
 		},
 		"multi-member-settings": {
