@@ -495,7 +495,7 @@
 			"title": "Dispozitive",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Notificări push dezactivate"
 			}
 		},
 		"multi-member-settings": {
