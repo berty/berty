@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "伝えておきたいこと:",
 				"first-point": "ローカルにアカウントが作成されました。",
-				"second-point": "ニックネームはオプションで、後から編集も可能です。"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "詳細設定について、さらに詳しい情報を読む",
 			"config-title": "カスタム設定",
-			"config-desc": "アプリ設定の基本 3 ステップです。今すぐ自分好みにカスタマイズしましょう！",
+			"config-desc": "",
 			"learn-more": "さらに詳しく学ぶ",
 			"first-part": {
 				"title": "近接性（接近度）",
@@ -70,7 +70,7 @@
 				"network-button": "ネットワーク一覧",
 				"first-button": "プッシュ通知の表示",
 				"second-button": {
-					"title": "独自ノードのセットアップ",
+					"title": "",
 					"placeholder": "サーバーのアドレスを入力"
 				},
 				"third-button": "認証済みノードを選択"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "このグループからメンバーを削除する権限がありません"
 			},
 			"conversations": {
-				"request-sent": "リクエストが送信されました。承認待ちです...",
+				"request-sent": "",
 				"draft": "下書き: {{message}}"
 			}
 		},
@@ -179,8 +179,8 @@
 					"desc": ""
 				},
 				"berty-services": {
-					"title": "Berty サービスを有効にする",
-					"desc": "非営利団体 Berty Technologies のサービスを使用して、ネットワークパフォーマンスを向上させる。"
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "連絡先と同期",
@@ -195,7 +195,7 @@
 					"desc": "連絡先に「Hello world」を言おう！"
 				},
 				"ble-message": {
-					"title": "インターネットなしでメッセージを送信しよう！",
+					"title": "",
 					"desc": ""
 				}
 			},
@@ -282,10 +282,10 @@
 		},
 		"berty-services": {
 			"header": "Berty サービスを有効にする",
-			"title": "Berty サービス一覧",
+			"title": "",
 			"recommended": "推奨",
-			"desc": " Berty サービスを有効にすると、プッシュ通知を Berty Technologies のサーバー経由で受信し、複製された通知にアクセスすることができます。",
-			"button": "Berty サービスを有効にする",
+			"desc": "",
+			"button": "",
 			"skip": "スキップして後で実行する"
 		},
 		"delete-account": {
@@ -495,7 +495,7 @@
 			"title": "デバイス",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "プッシュ通知は無効になっています"
 			}
 		},
 		"multi-member-settings": {
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "この種の通知は、アプリを再起動してからでないとフィールドを保存できません！"
+			"desc": ""
 		}
 	},
 	"error": {
@@ -649,7 +649,7 @@
 		"wtf-screen": {
 			"title": "失敗の原因は?",
 			"desc": "アプリケーションがクラッシュしました。",
-			"desc-report": "アプリを終了して再起動するにはボタンをクリックします。"
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "バグを謝罪します!",
