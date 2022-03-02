@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "لا يمكنك إزالة عضو من هذه المجموعة"
 			},
 			"conversations": {
-				"request-sent": "أُرسل الطلب. يعلق...",
+				"request-sent": "",
 				"draft": "مسودة: {{message}}"
 			}
 		},
@@ -495,7 +495,7 @@
 			"title": "الأجهزة",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "تم تعطيل الإشعارات"
 			}
 		},
 		"multi-member-settings": {
