@@ -42,7 +42,7 @@
       "bodyWithDisplayNameAndEmoji": "%[1]v 与 %[2]v 回应您的消息"
     },
     "groupInvitation": {
-      "bodyWithGroupName": "邀请您加入 '%[1]v' 群组"
+      "bodyWithGroupName": ""
     },
     "unknown": {
       "body": ""
