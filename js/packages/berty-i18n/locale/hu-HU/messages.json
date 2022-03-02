@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Nem dobhat ki egy csoporttagot ebből a csoportból"
 			},
 			"conversations": {
-				"request-sent": "Kérelem továbbítva. Várakozás...",
+				"request-sent": "",
 				"draft": "Vázlat: {{message}}"
 			}
 		},
@@ -495,7 +495,7 @@
 			"title": "Eszközök",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Értesítések letiltva"
 			}
 		},
 		"multi-member-settings": {
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "A beállítások mentéséhez szükségeltetik az applikáció újraindítása!"
+			"desc": ""
 		}
 	},
 	"error": {
