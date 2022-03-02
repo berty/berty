@@ -12,7 +12,7 @@
         "benefitBadge": "パフォーマンス"
       }
     },
-    "pageTitle": "Berty サービス一覧",
+    "pageTitle": "",
     "connectButton_one": "",
     "connectButton_other": "",
     "privacyPolicyLabel": "プライバシーポリシー"
@@ -42,7 +42,7 @@
       "bodyWithDisplayNameAndEmoji": "%[1]v が %[2]v でメッセージに反応しました"
     },
     "groupInvitation": {
-      "bodyWithGroupName": "「%[1]v」グループに招待されています"
+      "bodyWithGroupName": ""
     },
     "unknown": {
       "body": ""
