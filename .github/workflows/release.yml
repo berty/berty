@@ -13,7 +13,7 @@ jobs:
         golang: [1.16.x]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Unshallow
         run: git fetch --prune --unshallow
       - name: Run Semantic Release
