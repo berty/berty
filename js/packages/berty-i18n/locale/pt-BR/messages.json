@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "É bom saber:",
 				"first-point": "Sua conta é criada localmente",
-				"second-point": "O apelido é opcional e pode ser editado"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "Leia mais sobre configurações avançadas",
 			"config-title": "Configurações personalizadas",
-			"config-desc": "3 passos da configuração do app. Personalize tudo agora!",
+			"config-desc": "",
 			"learn-more": "Saiba mais",
 			"first-part": {
 				"title": "Proximidade",
@@ -70,7 +70,7 @@
 				"network-button": "Lista de Redes",
 				"first-button": "Notificações Push",
 				"second-button": {
-					"title": "Configure o seu próprio nó",
+					"title": "",
 					"placeholder": "Insira o endereço do servidor"
 				},
 				"third-button": "Selecionar um nó certificado"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": ""
 			},
 			"conversations": {
-				"request-sent": "A solicitação foi enviada. Pendente...",
+				"request-sent": "",
 				"draft": ""
 			}
 		},
@@ -495,7 +495,7 @@
 			"title": "Dispositivos",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Notificação de push desativada"
 			}
 		},
 		"multi-member-settings": {
