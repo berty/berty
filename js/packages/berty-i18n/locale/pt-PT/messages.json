@@ -495,7 +495,7 @@
 			"title": "",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Notificações push desativadas"
 			}
 		},
 		"multi-member-settings": {
