@@ -495,7 +495,7 @@
 			"title": "",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Push нотификације онемогућене"
 			}
 		},
 		"multi-member-settings": {
