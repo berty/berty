@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "Goed om te weten:",
 				"first-point": "Uw account is lokaal aangemaakt",
-				"second-point": "Bijnaam is optioneel en kan worden bewerkt"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "",
 			"config-title": "Aangepaste configuraties",
-			"config-desc": "3 stappen van app configuratie. Pas nu alles aan!",
+			"config-desc": "",
 			"learn-more": "Meer informatie",
 			"first-part": {
 				"title": "Nabijheid",
@@ -70,7 +70,7 @@
 				"network-button": "Netwerk Lijst",
 				"first-button": "Pushmeldingen",
 				"second-button": {
-					"title": "Uw eigen node instellen",
+					"title": "",
 					"placeholder": "Voer serveradres in"
 				},
 				"third-button": "Selecteer een gecertificeerd knooppunt"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Je kunt een lid van deze groep niet verwijderen"
 			},
 			"conversations": {
-				"request-sent": "Het verzoek is verzonden. In behandeling...",
+				"request-sent": "",
 				"draft": "Concept: {{message}}"
 			}
 		},
@@ -195,7 +195,7 @@
 					"desc": "Zeg 'Hallo wereld' tegen een contact!"
 				},
 				"ble-message": {
-					"title": "Stuur bericht zonder internet",
+					"title": "",
 					"desc": ""
 				}
 			},
@@ -495,7 +495,7 @@
 			"title": "Apparaten",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Push notificaties uitgeschakeld"
 			}
 		},
 		"multi-member-settings": {
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "Voor dit soort meldingen moet je de app opnieuw opstarten om deze velden op te slaan!"
+			"desc": ""
 		}
 	},
 	"error": {
