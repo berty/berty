@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "Bra att veta:",
 				"first-point": "Ditt konto är skapat lokalt",
-				"second-point": "Smeknamn är valfritt och kan ändras"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "Läs mer om avancerade inställningar",
 			"config-title": "Anpassade konfigurationer",
-			"config-desc": "3 steg i appkonfigurationen. Anpassa allt nu!",
+			"config-desc": "",
 			"learn-more": "Läs mer",
 			"first-part": {
 				"title": "Närhet",
@@ -70,7 +70,7 @@
 				"network-button": "Lista över nätverk",
 				"first-button": "Push-aviseringar",
 				"second-button": {
-					"title": "Konfigurera din egen nod",
+					"title": "",
 					"placeholder": "Ange serveradress"
 				},
 				"third-button": "Välj en certifierad nod"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Du kan inte ta bort medlemmar från denna grupp"
 			},
 			"conversations": {
-				"request-sent": "Begäran har skickats. Inväntar svar...",
+				"request-sent": "",
 				"draft": "Utkast: {{message}}"
 			}
 		},
@@ -195,7 +195,7 @@
 					"desc": "Säg 'Hej världen' till en kontakt!"
 				},
 				"ble-message": {
-					"title": "Skicka meddelande utan internet",
+					"title": "",
 					"desc": ""
 				}
 			},
@@ -495,7 +495,7 @@
 			"title": "Enheter",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Push-aviseringar avstängda"
 			}
 		},
 		"multi-member-settings": {
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "För denna typ av avisering måste du starta om appen för att spara dessa fält!"
+			"desc": ""
 		}
 	},
 	"error": {
@@ -649,7 +649,7 @@
 		"wtf-screen": {
 			"title": "Vad är felet?",
 			"desc": "Applikationen kraschade.",
-			"desc-report": "Klicka på knappen för att avsluta och starta om appen."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Ledsen för detta fel!",
