@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "Bilmeniz gerekenler:",
 				"first-point": "Hesabınız yerel olarak oluşturuldu",
-				"second-point": "Takma adlar isteğe bağlı ve düzenlenebilirdir"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Bu gruptan bir üye silemezsiniz"
 			},
 			"conversations": {
-				"request-sent": "İstek gonderildi. Bekliyor...",
+				"request-sent": "",
 				"draft": ""
 			}
 		},
@@ -179,7 +179,7 @@
 					"desc": ""
 				},
 				"berty-services": {
-					"title": "Berty Servislerini Aktif Et",
+					"title": "",
 					"desc": ""
 				},
 				"contact": {
@@ -282,7 +282,7 @@
 		},
 		"berty-services": {
 			"header": "Aktif Berty servisleri",
-			"title": "Berty servisleri",
+			"title": "",
 			"recommended": "Önerilen",
 			"desc": "",
 			"button": "",
@@ -495,7 +495,7 @@
 			"title": "Aygıtlar",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Anlık bildirimler devre dışı"
 			}
 		},
 		"multi-member-settings": {
@@ -649,7 +649,7 @@
 		"wtf-screen": {
 			"title": "Hata nedir?",
 			"desc": "Uygulama az önce çöktü.",
-			"desc-report": "Uygulamadan çıkıp yeniden başlatmak için düğmeye basın."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Bu hata için üzgünüm!",
