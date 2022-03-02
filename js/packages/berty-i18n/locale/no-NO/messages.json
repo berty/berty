@@ -495,7 +495,7 @@
 			"title": "Enheter",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Push-varsler deaktivert"
 			}
 		},
 		"multi-member-settings": {
