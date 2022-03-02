@@ -495,7 +495,7 @@
 			"title": "設備",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "已禁用新消息通知"
 			}
 		},
 		"multi-member-settings": {
