@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "Buono a sapersi:",
 				"first-point": "Il tuo account viene creato localmente",
-				"second-point": "Il nome utente è facoltativo e può essere modificato"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
 			},
 			"conversations": {
-				"request-sent": "Richiesta inviata. In attesa...",
+				"request-sent": "",
 				"draft": "Bozza: {{message}}"
 			}
 		},
@@ -495,7 +495,7 @@
 			"title": "Dispositivi",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Notifiche push disabilitate"
 			}
 		},
 		"multi-member-settings": {
