@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Δεν μπορείτε να αφαιρέσετε ένα μέλος από αυτήν την ομάδα"
 			},
 			"conversations": {
-				"request-sent": "Το αίτημα έχει αποσταλεί. Σε εκκρεμότητα...",
+				"request-sent": "",
 				"draft": "Πρόχειρο: {{message}}"
 			}
 		},
@@ -495,7 +495,7 @@
 			"title": "",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Προώθηση ειδοποιήσεων ανενεργές"
 			}
 		},
 		"multi-member-settings": {
