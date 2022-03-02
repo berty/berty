@@ -495,7 +495,7 @@
 			"title": "Устройства",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Известията са забранени"
 			}
 		},
 		"multi-member-settings": {
