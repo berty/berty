@@ -495,7 +495,7 @@
 			"title": "Urządzenia",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Powiadomienia push wyłączone"
 			}
 		},
 		"multi-member-settings": {
