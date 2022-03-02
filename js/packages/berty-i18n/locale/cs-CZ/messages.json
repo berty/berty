@@ -495,7 +495,7 @@
 			"title": "Zařízení",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Push oznámení zakázána"
 			}
 		},
 		"multi-member-settings": {
