@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "知道：",
 				"first-point": "您的帐户已在本地创建",
-				"second-point": "昵称是可选的，可以编辑"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "阅读更多关于高级设置的信息",
 			"config-title": "自定义配置",
-			"config-desc": "应用程序配置的 3 个步骤。 现在自定义一切！",
+			"config-desc": "",
 			"learn-more": "了解更多",
 			"first-part": {
 				"title": "邻近",
@@ -70,7 +70,7 @@
 				"network-button": "网络列表",
 				"first-button": "推送通知",
 				"second-button": {
-					"title": "设置您自己的节点",
+					"title": "",
 					"placeholder": "输入服务器地址"
 				},
 				"third-button": "选择认证节点"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "您不能从此群组中删除成员"
 			},
 			"conversations": {
-				"request-sent": "请求已发送，等待中...",
+				"request-sent": "",
 				"draft": "草稿: {{message}}"
 			}
 		},
@@ -179,8 +179,8 @@
 					"desc": ""
 				},
 				"berty-services": {
-					"title": "激活 Berty 服务",
-					"desc": "通过使用由 Berty Tech 非营利机构提供的服务，提高您的网络性能。"
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "同步联系人",
@@ -195,7 +195,7 @@
 					"desc": "对联系人说“你好，世界”！"
 				},
 				"ble-message": {
-					"title": "在没有互联网的情况下发送消息",
+					"title": "",
 					"desc": ""
 				}
 			},
@@ -282,10 +282,10 @@
 		},
 		"berty-services": {
 			"header": "活跃的 Berty 服务",
-			"title": "Berty 服务",
+			"title": "",
 			"recommended": "推荐的",
 			"desc": "",
-			"button": "使用 Berty 服务",
+			"button": "",
 			"skip": "跳过并稍后再做"
 		},
 		"delete-account": {
@@ -495,7 +495,7 @@
 			"title": "设备",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "已禁用新消息通知"
 			}
 		},
 		"multi-member-settings": {
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "对于此类通知，您必须重新启动应用程序以保存这些内容！"
+			"desc": ""
 		}
 	},
 	"error": {
@@ -649,7 +649,7 @@
 		"wtf-screen": {
 			"title": "失败的原因是什么？",
 			"desc": "应用程序崩溃。",
-			"desc-report": "单击按钮退出并重新启动应用程序。"
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "对不起，这是个BUG",
