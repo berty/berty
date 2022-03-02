@@ -39,7 +39,7 @@
 			"good-to-know": {
 				"title": "Bon à savoir :",
 				"first-point": "Votre compte est créé localement",
-				"second-point": "Le pseudo est facultatif et peut être modifié"
+				"second-point": ""
 			}
 		},
 		"advanced-settings": {
@@ -53,7 +53,7 @@
 			},
 			"read-more": "En savoir plus sur les paramètres avancés",
 			"config-title": "Configurations personnalisées",
-			"config-desc": "3 étapes de configuration de l'application. Personnalisez tout maintenant !",
+			"config-desc": "",
 			"learn-more": "En savoir plus",
 			"first-part": {
 				"title": "Proximité",
@@ -70,7 +70,7 @@
 				"network-button": "Réseaux",
 				"first-button": "Notifications push",
 				"second-button": {
-					"title": "Configurez votre propre nœud",
+					"title": "",
 					"placeholder": "Entrez l'adresse du serveur"
 				},
 				"third-button": "Sélectionner un nœud certifié"
@@ -128,7 +128,7 @@
 				"fifth-bullet-point": "Vous ne pouvez pas retirer un membre de ce groupe"
 			},
 			"conversations": {
-				"request-sent": "La demande a été envoyée. En attente...",
+				"request-sent": "",
 				"draft": "Brouillon : {{message}}"
 			}
 		},
@@ -179,8 +179,8 @@
 					"desc": ""
 				},
 				"berty-services": {
-					"title": "Activer les services Berty",
-					"desc": "Améliorez vos performances réseau en utilisant les services de Berty Tech organisation à but non lucrative."
+					"title": "",
+					"desc": ""
 				},
 				"contact": {
 					"title": "Synchroniser avec un contact",
@@ -195,7 +195,7 @@
 					"desc": "Dites « Bonjour » à un contact !"
 				},
 				"ble-message": {
-					"title": "Envoyer un message sans internet",
+					"title": "",
 					"desc": ""
 				}
 			},
@@ -282,10 +282,10 @@
 		},
 		"berty-services": {
 			"header": "Activer les services Berty",
-			"title": "Services Berty",
+			"title": "",
 			"recommended": "Recommandé",
-			"desc": " L'activation des services Berty vous permettra de recevoir des notifications push via les serveurs Berty Technologies et vous donnera accès à ses nœuds pour la réplication des conversations.",
-			"button": "Utiliser les services de Berty",
+			"desc": "",
+			"button": "",
 			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
 		},
 		"delete-account": {
@@ -637,7 +637,7 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "Pour ce type de notification, vous devez redémarrer votre application !"
+			"desc": ""
 		}
 	},
 	"error": {
@@ -649,7 +649,7 @@
 		"wtf-screen": {
 			"title": "Quelle est l'erreur ?",
 			"desc": "L'application vient de planter.",
-			"desc-report": "Cliquez sur le bouton pour quitter et redémarrer l'application."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Désolé pour ce bug !",
