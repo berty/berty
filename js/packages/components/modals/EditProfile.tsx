@@ -14,8 +14,7 @@ import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { useAppDispatch, useAccount } from '@berty-tech/react-redux'
+import { useAccount } from '@berty-tech/react-redux'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { StackActions } from '@react-navigation/native'
 
@@ -87,7 +86,6 @@ const EditMyProfile: React.FC = () => {
 	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-	const dispatch = useAppDispatch()
 	const navigation = useNavigation()
 	const client = useMessengerClient()
 	const selectedAccount = useSelector(selectSelectedAccount)
@@ -170,10 +168,6 @@ const EditMyProfile: React.FC = () => {
 					accountId: selectedAccount,
 					avatarCid: update.avatarCid,
 				})
-
-				if (update.avatarCid) {
-					dispatch(setChecklistItemDone({ key: 'avatar' }))
-				}
 			}
 
 			navigation.dispatch(StackActions.pop(1))

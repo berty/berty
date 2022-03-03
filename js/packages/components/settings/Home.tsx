@@ -24,7 +24,6 @@ import { useAppDispatch, useAccount } from '@berty-tech/react-redux'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { AccountAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
-import { WelcomeChecklist } from './WelcomeChecklist'
 import { LoaderDots } from '../gates'
 import { setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
 
@@ -251,7 +250,6 @@ export const Home: ScreenFC<'Settings.Home'> = () => {
 						>
 							<View style={{ bottom: -_verticalOffset }}>
 								<HomeHeaderAvatar />
-								<WelcomeChecklist />
 								<HomeHeaderGroupButton />
 							</View>
 						</View>

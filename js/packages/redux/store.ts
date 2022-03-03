@@ -9,7 +9,6 @@ import chatInputsRootReducer, {
 	sliceName as chatInputsSliceName,
 } from './reducers/chatInputs.reducer'
 import chatInputsVolatileRootReducer from './reducers/chatInputsVolatile.reducer'
-import checklistRootReducer, { sliceName as checklistSliceName } from './reducers/checklist.reducer'
 import accountSettingsRootReducer, {
 	sliceName as accountSettingsSliceName,
 } from './reducers/accountSettings.reducer'
@@ -20,20 +19,13 @@ import messengerRootReducer from './reducers/messenger.reducer'
 const persistConfig = {
 	key: 'persistStore',
 	storage: persistStorage,
-	whitelist: [
-		newGroupSliceName,
-		chatInputsSliceName,
-		checklistSliceName,
-		accountSettingsSliceName,
-		themeSliceName,
-	],
+	whitelist: [newGroupSliceName, chatInputsSliceName, accountSettingsSliceName, themeSliceName],
 }
 
 const rootReducer = combineReducers({
 	...newGroupRootReducer,
 	...chatInputsRootReducer,
 	...chatInputsVolatileRootReducer,
-	...checklistRootReducer,
 	...accountSettingsRootReducer,
 	...messengerRootReducer,
 	...themeReducer,

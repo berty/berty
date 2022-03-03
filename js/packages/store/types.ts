@@ -134,12 +134,6 @@ export type PersistentOptionsOnBoardingFinished = {
 	isFinished: boolean
 }
 
-export type CheckListItem = {
-	title: string
-	done?: boolean
-	desc?: string
-}
-
 export const UpdatesProfileNotification = 'updates'
 export type PersistentOptionsProfileNotification = {
 	[UpdatesProfileNotification]: number
