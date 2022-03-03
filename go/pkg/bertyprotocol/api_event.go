@@ -1,13 +1,16 @@
 package bertyprotocol
 
 import (
+	"context"
 	"errors"
+	"fmt"
 
+	"github.com/libp2p/go-eventbus"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/go-orbit-db/events"
+
 	"berty.tech/go-orbit-db/stores"
 )
 
@@ -34,11 +37,8 @@ func checkParametersConsistency(sinceID, untilID []byte, sinceNow, untilNow, rev
 
 // GroupMetadataList replays previous and subscribes to new metadata events from the group
 func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request, sub protocoltypes.ProtocolService_GroupMetadataListServer) error {
-	var (
-		newEvents            <-chan events.Event
-		sentEvents           = map[string]bool{}
-		firstReplicatedFound = true
-	)
+	ctx, cancel := context.WithCancel(sub.Context())
+	defer cancel()
 
 	// Get group context / check if the group is opened
 	cg, err := s.GetContextGroupForID(req.GroupPK)
@@ -52,88 +52,112 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 	}
 
 	// Subscribe to new metadata events if requested
+	var newEvents <-chan interface{}
 	if req.UntilID == nil && !req.UntilNow {
-		newEvents = cg.MetadataStore().Subscribe(sub.Context()) // nolint:staticcheck
+		sub, err := cg.MetadataStore().EventBus().Subscribe([]interface{}{
+			// new(stores.EventReplicated),
+			new(protocoltypes.GroupMetadataEvent),
+		}, eventbus.BufSize(32))
+		if err != nil {
+			return fmt.Errorf("unable to subscribe to new events")
+		}
+		defer sub.Close()
+		newEvents = sub.Out()
+	} else {
+		noop := make(chan interface{})
+		newEvents = noop
+		defer close(noop)
 	}
 
-	listPreviousMessages := func() error {
-		var previousEvents <-chan *protocoltypes.GroupMetadataEvent
-		previousEvents, err = cg.MetadataStore().ListEvents(sub.Context(), req.SinceID, req.UntilID, req.ReverseOrder)
+	// Subscribe to previous metadata events and stream them if requested
+	previousEvents := make(chan protocoltypes.GroupMetadataEvent)
+	if !req.SinceNow {
+		pevt, err := cg.MetadataStore().ListEvents(ctx, req.SinceID, req.UntilID, req.ReverseOrder)
 		if err != nil {
 			return err
 		}
 
-		for event := range previousEvents {
-			if event == nil || sentEvents[string(event.EventContext.ID)] {
-				continue
-			}
-
-			if err = sub.Send(event); err != nil {
-				if sub.Context().Err() == nil {
-					cg.logger.Error("error while sending metadata", zap.Error(err))
+		go func() {
+			for {
+				var evt *protocoltypes.GroupMetadataEvent
+				select {
+				case <-ctx.Done():
+					return
+				case evt = <-pevt:
 				}
-				return err
+
+				if evt == nil {
+					// if we don't want to stream new event, cancel the process
+					if req.UntilNow {
+						cancel()
+					} else {
+						previousEvents <- protocoltypes.GroupMetadataEvent{EventContext: nil}
+					}
+
+					return
+				}
+
+				previousEvents <- *evt
 			}
-
-			cg.logger.Info("service - metadata store - sent 1 event from log history")
-			sentEvents[string(event.EventContext.ID)] = true
-		}
-
-		return nil
-	}
-
-	// Subscribe to previous metadata events and stream them if requested
-	if !req.SinceNow {
-		if err := listPreviousMessages(); err != nil {
-			return err
-		}
-		firstReplicatedFound = false
+		}()
 	}
 
 	// Subscribe to new metadata events and stream them if requested
-	if req.UntilID == nil && !req.UntilNow {
-		for event := range newEvents {
-			if !firstReplicatedFound {
-				if _, ok := event.(stores.EventReplicated); ok {
-					if err := listPreviousMessages(); err != nil {
-						return err
-					}
-					firstReplicatedFound = true
+	listPreviouseMetadataDone := false
+	bufferMetadata := []*protocoltypes.GroupMetadataEvent{}
+	for {
+		var event interface{}
+		select {
+		case <-ctx.Done():
+			return nil
+		case event = <-previousEvents:
+		case event = <-newEvents:
+		}
+
+		var metadatas []*protocoltypes.GroupMetadataEvent
+		switch evt := event.(type) {
+		case stores.EventReplicated:
+			entries := evt.Entries
+			metadatas = []*protocoltypes.GroupMetadataEvent{}
+			cg.logger.Info("receving replicated metadata events", zap.Int("metadatas", len(entries)))
+			for _, entry := range entries {
+				msg, _, err := cg.MetadataStore().openMetadataEntry(entry)
+				if err != nil {
+					s.logger.Error("unable to open metadata", zap.Error(err))
 					continue
 				}
+
+				metadatas = append(metadatas, msg)
 			}
 
-			e, ok := event.(*protocoltypes.GroupMetadataEvent)
-			if !ok || sentEvents[string(e.EventContext.ID)] { // Avoid sending two times the same event
+			if !listPreviouseMetadataDone {
+				bufferMetadata = append(bufferMetadata, metadatas...)
 				continue
 			}
 
-			if err := sub.Send(e); err != nil {
-				if sub.Context().Err() != nil {
-					return nil
-				}
-				cg.logger.Error("error while sending metadata", zap.Error(err))
+		case protocoltypes.GroupMetadataEvent:
+			if evt.EventContext == nil {
+				listPreviouseMetadataDone = true
+				metadatas = bufferMetadata
+			} else {
+				metadatas = []*protocoltypes.GroupMetadataEvent{&evt}
+			}
+		}
+
+		for _, msg := range metadatas {
+			if err := sub.Send(msg); err != nil {
 				return err
 			}
-
-			if !firstReplicatedFound {
-				sentEvents[string(e.EventContext.ID)] = true
-			}
-
-			cg.logger.Info("service - metadata store - sent 1 event from log subscription")
 		}
-	}
 
-	return nil
+		cg.logger.Info("service - metadata store - sent event from log subscription", zap.Int("metadatas", len(metadatas)))
+	}
 }
 
 // GroupMessageList replays previous and subscribes to new message events from the group
 func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, sub protocoltypes.ProtocolService_GroupMessageListServer) error {
-	var (
-		newEvents            <-chan events.Event
-		sentEvents           = map[string]bool{}
-		firstReplicatedFound = true
-	)
+	ctx, cancel := context.WithCancel(sub.Context())
+	defer cancel()
 
 	// Get group context / check if the group is opened
 	cg, err := s.GetContextGroupForID(req.GroupPK)
@@ -147,78 +171,108 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 	}
 
 	// Subscribe to new message events if requested
+	var newEvents <-chan interface{}
 	if req.UntilID == nil && !req.UntilNow {
-		newEvents = cg.MessageStore().Subscribe(sub.Context()) // nolint:staticcheck
+		sub, err := cg.MessageStore().EventBus().Subscribe([]interface{}{
+			new(stores.EventReplicated),
+			new(protocoltypes.GroupMessageEvent),
+		}, eventbus.BufSize(32))
+		if err != nil {
+			return fmt.Errorf("unable to subscribe to new events")
+		}
+		defer sub.Close()
+		newEvents = sub.Out()
+	} else {
+		noop := make(chan interface{})
+		newEvents = noop
+		defer close(noop)
 	}
 
-	listPreviousMessages := func() error {
-		var previousEvents <-chan *protocoltypes.GroupMessageEvent
-		previousEvents, err = cg.MessageStore().ListEvents(sub.Context(), req.SinceID, req.UntilID, req.ReverseOrder)
+	// Subscribe to previous message events and stream them if requested
+	previousEvents := make(chan protocoltypes.GroupMessageEvent)
+	if !req.SinceNow {
+		pevt, err := cg.MessageStore().ListEvents(ctx, req.SinceID, req.UntilID, req.ReverseOrder)
 		if err != nil {
 			return err
 		}
 
-		for event := range previousEvents {
-			if event == nil || sentEvents[string(event.EventContext.ID)] {
-				continue
-			}
-
-			if err = sub.Send(event); err != nil {
-				if sub.Context().Err() == nil {
-					cg.logger.Error("error while sending message", zap.Error(err))
+		go func() {
+			for {
+				var evt *protocoltypes.GroupMessageEvent
+				select {
+				case <-ctx.Done():
+					return
+				case evt = <-pevt:
 				}
-				return err
+
+				if evt == nil {
+					// if we don't want to stream new event, cancel the process
+					if req.UntilNow {
+						cancel()
+					} else {
+						previousEvents <- protocoltypes.GroupMessageEvent{EventContext: nil}
+					}
+
+					return
+				}
+
+				previousEvents <- *evt
 			}
-
-			cg.logger.Info("service - message store - sent 1 event from log history")
-			sentEvents[string(event.EventContext.ID)] = true
-		}
-
-		return nil
-	}
-
-	// Subscribe to previous message events and stream them if requested
-	if !req.SinceNow {
-		if err := listPreviousMessages(); err != nil {
-			return err
-		}
-		firstReplicatedFound = false
+		}()
 	}
 
 	// Subscribe to new message events and stream them if requested
-	if req.UntilID == nil && !req.UntilNow {
-		for event := range newEvents {
-			if !firstReplicatedFound {
-				if _, ok := event.(stores.EventReplicated); ok {
-					if err := listPreviousMessages(); err != nil {
-						return err
-					}
-					firstReplicatedFound = true
-					continue
+	// listPreviouseMessageDone := false
+	bufferMessage := []*protocoltypes.GroupMessageEvent{}
+	for {
+		var event interface{}
+		select {
+		case <-ctx.Done():
+			return nil
+		case event = <-previousEvents:
+		case event = <-newEvents:
+		}
+
+		var messages []*protocoltypes.GroupMessageEvent
+		switch evt := event.(type) {
+		case stores.EventReplicated:
+			entries := evt.Entries
+			messages = []*protocoltypes.GroupMessageEvent{}
+			for _, entry := range entries {
+				if err := cg.MessageStore().addToMessageQueue(ctx, entry); err != nil {
+					s.logger.Error("unable to add message to queue", zap.Error(err))
 				}
+				// msg, err := cg.MessageStore().openMessage(ctx, entry, false)
+				// if err != nil {
+				// 	s.logger.Error("unable to open message", zap.Error(err))
+				// 	continue
+				// } else {
+				// 	messages = append(messages, msg)
+				// }
 			}
 
-			e, ok := event.(*protocoltypes.GroupMessageEvent)
-			if !ok || sentEvents[string(e.EventContext.ID)] { // Avoid sending two times the same event
-				continue
-			}
+			continue
 
-			err := sub.Send(e)
-			if err != nil {
-				if sub.Context().Err() != nil {
-					return nil
-				}
-				cg.logger.Error("error while sending message", zap.Error(err))
+			// if !listPreviouseMessageDone {
+			// 	bufferMessage = append(bufferMessage, messages...)
+			// 	continue
+			// }
+
+		case protocoltypes.GroupMessageEvent:
+			if evt.EventContext == nil {
+				// listPreviouseMessageDone = true
+				messages = bufferMessage
+			} else {
+				messages = []*protocoltypes.GroupMessageEvent{&evt}
+			}
+		}
+
+		for _, msg := range messages {
+			if err := sub.Send(msg); err != nil {
 				return err
 			}
-
-			if !firstReplicatedFound {
-				sentEvents[string(e.EventContext.ID)] = true
-			}
-
-			cg.logger.Info("service - message store - sent 1 event from log subscription")
 		}
-	}
 
-	return nil
+		cg.logger.Info("service - message store - sent event from log subscription", zap.Int("messages", len(messages)))
+	}
 }

@@ -11,7 +11,9 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-eventbus"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/event"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 
@@ -34,6 +36,12 @@ const groupMetadataStoreType = "berty_group_metadata"
 
 type MetadataStore struct {
 	basestore.BaseStore
+	eventBus event.Bus
+	emitters struct {
+		groupMetadata    event.Emitter
+		metadataReceived event.Emitter
+	}
+
 	g      *protocoltypes.Group
 	devKS  cryptoutil.DeviceKeystore
 	mks    *cryptoutil.MessageKeystore
@@ -94,6 +102,10 @@ func openMetadataEntry(log ipfslog.Log, e ipfslog.Entry, g *protocoltypes.Group,
 	return metaEvent, event, err
 }
 
+func (m *MetadataStore) openMetadataEntry(e ipfslog.Entry) (*protocoltypes.GroupMetadataEvent, proto.Message, error) {
+	return openMetadataEntry(m.OpLog(), e, m.g, m.devKS)
+}
+
 // FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
 func (m *MetadataStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *protocoltypes.GroupMetadataEvent, error) {
 	entries, err := getEntriesInRange(m.OpLog().GetEntries().Reverse().Slice(), since, until)
@@ -118,7 +130,6 @@ func (m *MetadataStore) ListEvents(ctx context.Context, since, until []byte, rev
 			},
 		)
 
-		out <- nil
 		close(out)
 	}()
 
@@ -979,6 +990,10 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			replication = false
 		)
 
+		if options.EventBus == nil {
+			options.EventBus = eventbus.NewBus()
+		}
+
 		if s.deviceKeystore == nil {
 			replication = true
 		} else {
@@ -991,10 +1006,15 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 		}
 
 		store := &MetadataStore{
-			g:      g,
-			mks:    s.messageKeystore,
-			devKS:  s.deviceKeystore,
-			logger: logger,
+			eventBus: options.EventBus,
+			g:        g,
+			mks:      s.messageKeystore,
+			devKS:    s.deviceKeystore,
+			logger:   logger,
+		}
+
+		if err := store.initEmitter(); err != nil {
+			return nil, fmt.Errorf("unable to init emitters: %w", err)
 		}
 
 		if replication {
@@ -1006,9 +1026,28 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			return store, nil
 		}
 
-		chSub := store.Subscribe(ctx) // nolint:staticcheck
+		chSub, err := store.eventBus.Subscribe([]interface{}{
+			new(stores.EventWrite),
+			new(stores.EventReplicateProgress),
+		})
+		if err != nil {
+			return nil, fmt.Errorf("unable to subscribe to store events")
+		}
+
+		// Enable logs in the metadata index
+		store.setLogger(logger)
+
 		go func() {
-			for e := range chSub {
+			defer chSub.Close()
+
+			for {
+				var e interface{}
+				select {
+				case e = <-chSub.Out():
+				case <-ctx.Done():
+					return
+				}
+
 				var entry ipfslog.Entry
 
 				switch evt := e.(type) {
@@ -1017,9 +1056,6 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 
 				case stores.EventReplicateProgress:
 					entry = evt.Entry
-
-				default:
-					continue
 				}
 
 				if entry == nil {
@@ -1043,7 +1079,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 					tyber.UpdateTraceName(fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(metaEvent.GetMetadata().GetEventType().String(), "EventType"), shortGroupType, b64GroupPK)),
 				)
 
-				store.Emit(ctx, &EventMetadataReceived{ // nolint:staticcheck
+				recvEvent := EventMetadataReceived{
 					MetaEvent: metaEvent,
 					Event:     event,
 				})
@@ -1051,11 +1087,17 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			}
 		}()
 
-		// Enable logs in the metadata index
-		store.setLogger(logger)
+				if err := store.emitters.metadataReceived.Emit(recvEvent); err != nil {
+					store.logger.Warn("unable to emit recv event", zap.Error(err))
+				}
 
-		options.Index = newMetadataIndex(ctx, store, g, md.Public(), s.deviceKeystore)
+				if err := store.emitters.groupMetadata.Emit(*metaEvent); err != nil {
+					store.logger.Warn("unable to emit group metadata event", zap.Error(err))
+				}
+			}
+		}()
 
+		options.Index = newMetadataIndex(ctx, g, md.Public(), s.deviceKeystore)
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
@@ -1157,4 +1199,16 @@ func (m *MetadataStore) DevicePK() (crypto.PubKey, error) {
 
 func (m *MetadataStore) Group() *protocoltypes.Group {
 	return m.g.Copy()
+}
+
+func (m *MetadataStore) initEmitter() (err error) {
+	if m.emitters.metadataReceived, err = m.eventBus.Emitter(new(EventMetadataReceived)); err != nil {
+		return
+	}
+
+	if m.emitters.groupMetadata, err = m.eventBus.Emitter(new(protocoltypes.GroupMetadataEvent)); err != nil {
+		return
+	}
+
+	return
 }

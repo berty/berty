@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/libp2p/go-eventbus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -59,9 +60,17 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	require.Equal(t, 1, countEntries(out))
 
 	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*2)
-	chSub := peers[1].GC.MessageStore().Subscribe(watcherCtx)
+	chSub, err := peers[1].GC.MessageStore().EventBus().Subscribe(new(protocoltypes.GroupMessageEvent))
+	require.NoError(t, err)
+	defer chSub.Close()
+
 	go func() {
-		for range chSub {
+		for {
+			select {
+			case <-chSub.Out():
+			case <-watcherCtx.Done():
+				return
+			}
 			c, err := peers[1].GC.MessageStore().ListEvents(watcherCtx, nil, nil, false)
 			if !assert.NoError(t, err) {
 				watcherCancel()
@@ -111,14 +120,14 @@ func bufferCount(buffer *ring.Ring) int {
 }
 
 func Test_Add_Messages_To_Cache(t *testing.T) {
-	testutil.FilterSpeed(t, testutil.Slow)
+	testutil.FilterSpeed(t, testutil.Fast)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	memberCount := 2
 	deviceCount := 1
-	entriesCount := 25
+	entriesCount := 50
 
 	testMsg1 := []byte("last message")
 
@@ -132,19 +141,13 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, ds0)
 
-	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*2)
-	chSub := peers[1].GC.MessageStore().Subscribe(watcherCtx)
-	go func() {
-		for range chSub {
-			c, err := peers[1].GC.MessageStore().ListEvents(watcherCtx, nil, nil, false)
-			require.NoError(t, err)
+	cevent, err := peers[0].GC.MessageStore().EventBus().Subscribe(
+		new(protocoltypes.GroupMessageEvent), eventbus.BufSize(entriesCount))
+	require.NoError(t, err)
 
-			if countEntries(c) == entriesCount {
-				watcherCancel()
-				break
-			}
-		}
-	}()
+	cadded, err := peers[1].GC.MessageStore().EventBus().Subscribe(
+		new(messageCacheItem), eventbus.BufSize(entriesCount))
+	require.NoError(t, err)
 
 	for i := 0; i < entriesCount; i++ {
 		payload := []byte(fmt.Sprintf("test message %d", i))
@@ -152,21 +155,63 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	<-watcherCtx.Done()
+	// check that all events has been received on peer 1
+	for i := 0; i < entriesCount; i++ {
+		select {
+		case <-cevent.Out():
+		case <-time.After(time.Second):
+			require.FailNow(t, "timeout while waiting for group message event")
+			return
+		}
+	}
+	cevent.Close()
 
-	require.Equal(t, entriesCount, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
+	clist, err := peers[0].GC.MessageStore().ListEvents(ctx, nil, nil, false)
+	require.NoError(t, err)
+	count := countEntries(clist)
+	require.Equal(t, entriesCount, count)
+
+	// check that messages has been replicated on peer 2
+	for i := 0; i < entriesCount; i++ {
+		select {
+		case <-cadded.Out():
+		case <-time.After(time.Second):
+			require.FailNow(t, "timeout while waiting for replicated event")
+			return
+		}
+	}
+	cadded.Close()
+
+	// time.Sleep(time.Millisecond * 500)
+
+	device, ok := peers[1].GC.MessageStore().GetCacheForDevicePK(dPK0Raw)
+	require.True(t, ok)
+	require.Equal(t, entriesCount, device.queue.Len())
 
 	err = peers[1].MKS.RegisterChainKey(ctx, peers[0].GC.Group(), dPK0, ds0, false)
 	require.NoError(t, err)
 
-	peers[1].GC.MessageStore().openMessageCacheForPK(ctx, dPK0Raw)
+	cevent, err = peers[1].GC.MessageStore().EventBus().Subscribe(
+		new(protocoltypes.GroupMessageEvent), eventbus.BufSize(entriesCount))
+	require.NoError(t, err)
 
+	peers[1].GC.MessageStore().ProcessMessageQueueForDevicePK(ctx, dPK0Raw)
+
+	// check that all events has been received on peer 2
+	for i := 0; i < entriesCount; i++ {
+		select {
+		case <-cevent.Out():
+		case <-time.After(time.Second):
+			require.FailNow(t, "timeout while waiting for group message event")
+			return
+		}
+	}
+	cevent.Close()
+
+	require.Equal(t, 0, device.queue.Len())
 	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
 	require.NoError(t, err)
-
-	<-time.After(time.Millisecond * 500)
-
-	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
+	// 	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
 }

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -19,46 +20,41 @@ func inviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*mockedPee
 	errChan := make(chan error, len(peers))
 
 	for i, p := range peers {
+		sub, err := p.GC.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		require.NoError(t, err)
 		go func(p *mockedPeer, peerIndex int) {
-			ctx, cancel := context.WithCancel(ctx)
-			defer cancel()
+			defer sub.Close()
+			defer wg.Done()
+
 			eventReceived := 0
 
-			for e := range p.GC.MetadataStore().Subscribe(ctx) { // nolint:staticcheck
-				switch e.(type) {
-				case *protocoltypes.GroupMetadataEvent:
-					casted, _ := e.(*protocoltypes.GroupMetadataEvent)
-					if casted.Metadata.EventType != protocoltypes.EventTypeGroupMemberDeviceAdded {
-						continue
-					}
+			for e := range sub.Out() {
+				evt := e.(protocoltypes.GroupMetadataEvent)
+				if evt.Metadata.EventType != protocoltypes.EventTypeGroupMemberDeviceAdded {
+					continue
+				}
 
-					memdev := &protocoltypes.GroupAddMemberDevice{}
-					if err := memdev.Unmarshal(casted.Event); err != nil {
-						errChan <- err
-						wg.Done()
-						return
-					}
+				memdev := &protocoltypes.GroupAddMemberDevice{}
+				if err := memdev.Unmarshal(evt.Event); err != nil {
+					errChan <- err
+					return
+				}
 
-					eventReceived++
-					if eventReceived == len(peers) {
-						cancel()
-					}
+				eventReceived++
+				if eventReceived == len(peers) {
+					return
 				}
 			}
-
-			wg.Done()
 		}(p, i)
 	}
 
 	for i, p := range peers {
-		if _, err := p.GC.MetadataStore().AddDeviceToGroup(ctx); err != nil {
-			t.Fatal(err)
-		}
+		_, err := p.GC.MetadataStore().AddDeviceToGroup(ctx)
+		require.NoError(t, err)
 
 		if i == 0 {
-			if _, err := p.GC.MetadataStore().ClaimGroupOwnership(ctx, groupSK); err != nil {
-				t.Fatal(err)
-			}
+			_, err := p.GC.MetadataStore().ClaimGroupOwnership(ctx, groupSK)
+			require.NoError(t, err)
 		}
 	}
 
@@ -79,14 +75,26 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *MetadataStore,
 
 	handledEvents := map[string]struct{}{}
 
-	for evt := range ms.Subscribe(ctx) { // nolint:staticcheck
-		switch evt.(type) {
-		case *protocoltypes.GroupMetadataEvent:
-			if evt.(*protocoltypes.GroupMetadataEvent).Metadata.EventType != eventType {
+	sub, err := ms.EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+	require.NoError(t, err)
+	defer sub.Close()
+
+	for {
+		var e interface{}
+
+		select {
+		case e = <-sub.Out():
+		case <-ctx.Done():
+			return
+		}
+
+		switch evt := e.(type) {
+		case protocoltypes.GroupMetadataEvent:
+			if evt.Metadata.EventType != eventType {
 				continue
 			}
 
-			eID := string(evt.(*protocoltypes.GroupMetadataEvent).EventContext.ID)
+			eID := string(evt.EventContext.ID)
 
 			if _, ok := handledEvents[eID]; ok {
 				continue
@@ -95,7 +103,7 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *MetadataStore,
 			handledEvents[eID] = struct{}{}
 
 			e := &protocoltypes.GroupAddDeviceSecret{}
-			if err := e.Unmarshal(evt.(*protocoltypes.GroupMetadataEvent).Event); err != nil {
+			if err := e.Unmarshal(evt.Event); err != nil {
 				t.Fatalf(" err: %+v\n", err.Error())
 			}
 

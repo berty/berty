@@ -15,7 +15,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
 )
@@ -128,17 +127,30 @@ func (s *replicationService) GroupSubscribe(group *protocoltypes.Group, pkStr st
 		return err
 	}
 
-	go func() {
-		ch := metadataStore.Subscribe(s.ctx) // nolint:staticcheck
-		for evt := range ch {
-			s.updateGroupDB(evt, metadataStore, pkStr, updatedMetaStore)
-		}
-	}()
+	subMetadata, err := metadataStore.EventBus().Subscribe(new(stores.EventReplicated))
+	if err != nil {
+		return fmt.Errorf("unable to subscribe to metadata store events")
+	}
+
+	subMessage, err := messageStore.EventBus().Subscribe(new(stores.EventReplicated))
+	if err != nil {
+		return fmt.Errorf("unable to subscribe to message store events")
+	}
 
 	go func() {
-		ch := messageStore.Subscribe(s.ctx) // nolint:staticcheck
-		for evt := range ch {
-			s.updateGroupDB(evt, messageStore, pkStr, updatedMessageStore)
+		defer subMetadata.Close()
+		defer subMessage.Close()
+
+		// @FIXME(gfanton): update group db should be run inside a goroutine to avoid channel to be stuck
+		for {
+			select {
+			case <-subMetadata.Out():
+				s.updateGroupDB(metadataStore, pkStr, updatedMetaStore)
+			case <-subMessage.Out():
+				s.updateGroupDB(messageStore, pkStr, updatedMessageStore)
+			case <-s.ctx.Done():
+				return
+			}
 		}
 	}()
 
@@ -152,12 +164,7 @@ const (
 	updatedMessageStore
 )
 
-func (s *replicationService) updateGroupDB(evt events.Event, store iface.Store, groupPK string, field groupInfoUpdatedStore) {
-	_, ok := evt.(stores.EventReplicated)
-	if !ok {
-		return
-	}
-
+func (s *replicationService) updateGroupDB(store iface.Store, groupPK string, field groupInfoUpdatedStore) {
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
 		qb := tx.Model(&replicationtypes.ReplicatedGroup{}).Where("public_key = ?", groupPK)
 

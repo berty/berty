@@ -59,7 +59,8 @@ func TestAdd(t *testing.T) {
 	}
 
 	g := &protocoltypes.Group{PublicKey: pubkB, Secret: sigkB}
-	opts, err := DefaultOrbitDBOptions(g, &orbitdb.CreateDBOptions{}, ks, "log", GroupOpenModeWrite)
+	replicate := false
+	opts, err := DefaultOrbitDBOptions(g, &orbitdb.CreateDBOptions{Replicate: &replicate}, ks, "log", GroupOpenModeWrite)
 	if err != nil {
 		t.Fatal(err)
 	}

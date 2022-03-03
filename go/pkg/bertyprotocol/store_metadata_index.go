@@ -8,13 +8,13 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/event"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	ipfslog "berty.tech/go-ipfs-log"
-	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 )
 
@@ -44,7 +44,7 @@ type metadataStoreIndex struct {
 	ownMemberDevice          *cryptoutil.MemberDevice
 	deviceKeystore           cryptoutil.DeviceKeystore
 	ctx                      context.Context
-	eventEmitter             events.EmitterInterface // nolint:staticcheck
+	eventEmitter             event.Emitter
 	lock                     sync.RWMutex
 	logger                   *zap.Logger
 }
@@ -883,7 +883,7 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 
 // nolint:staticcheck
 // newMetadataIndex returns a new index to manage the list of the group members
-func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *protocoltypes.Group, md *cryptoutil.MemberDevice, devKS cryptoutil.DeviceKeystore) iface.IndexConstructor {
+func newMetadataIndex(ctx context.Context, g *protocoltypes.Group, md *cryptoutil.MemberDevice, devKS cryptoutil.DeviceKeystore) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
 			members:                map[string][]*cryptoutil.MemberDevice{},
@@ -898,7 +898,6 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			contactRequestMetadata: map[string][]byte{},
 			membersPushTokens:      map[string]*protocoltypes.PushMemberTokenUpdate{},
 			g:                      g,
-			eventEmitter:           eventEmitter,
 			ownMemberDevice:        md,
 			deviceKeystore:         devKS,
 			ctx:                    ctx,

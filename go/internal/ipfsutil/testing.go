@@ -176,10 +176,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 		}
 
 		ps, err = pubsub.NewGossipSub(ctx, h,
-			pubsub.WithMessageSigning(true),
-			pubsub.WithFloodPublish(true),
 			pubsub.WithDiscovery(disc),
-			pubsub.WithPeerExchange(true),
 			pubsubtracker.EventTracerOption(),
 		)
 

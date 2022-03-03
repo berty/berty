@@ -358,6 +358,7 @@ func (v *groupView) loop(ctx context.Context) {
 					}
 
 					// @TODO: Log this
+
 					v.syncMessages <- &historyMessage{
 						messageType: messageTypeError,
 						payload:     []byte(err.Error()),

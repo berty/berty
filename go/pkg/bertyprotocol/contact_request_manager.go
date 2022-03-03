@@ -268,26 +268,32 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	}
 	c.lock.Unlock()
 
-	chSub := c.metadataStore.Subscribe(ctx) // nolint:staticcheck
+	chSub, err := c.metadataStore.EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+	if err != nil {
+		c.logger.Warn("unable to subscribe to group metadata event", zap.Error(err))
+		return
+	}
+
 	go func() {
-		for evt := range chSub {
-			e, ok := evt.(*protocoltypes.GroupMetadataEvent)
-			if !ok {
-				continue
+		defer chSub.Close()
+		for {
+			var evt interface{}
+			select {
+			case evt = <-chSub.Out():
+			case <-ctx.Done():
+				return
 			}
 
-			if _, ok := handlers[e.Metadata.EventType]; !ok {
-				continue
-			}
-
-			c.logger.Debug("METADATA WATCHER", zap.String("event", e.Metadata.EventType.String()))
+			// @FIXME(gfanton): we should run this in a gorouting to potentially
+			// avoid to stuck the channel
+			e := evt.(protocoltypes.GroupMetadataEvent)
 			c.lock.Lock()
-			if err := handlers[e.Metadata.EventType](e); err != nil {
-				c.lock.Unlock()
-				c.logger.Error("error while handling metadata store event", zap.Error(err))
-				continue
+			if handler, ok := handlers[e.Metadata.EventType]; ok {
+				c.logger.Debug("METADATA WATCHER", zap.String("event", e.Metadata.EventType.String()))
+				if err := handler(&e); err != nil {
+					c.logger.Error("error while handling metadata store event", zap.Error(err))
+				}
 			}
-
 			c.lock.Unlock()
 		}
 	}()
