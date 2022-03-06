@@ -886,6 +886,9 @@ func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 }
 
 func (s *service) NetworkConfigForAccount(ctx context.Context, accountID string) (*accounttypes.NetworkConfig, bool) {
+	if accountID == "" {
+		return NetworkConfigGetDefault(), false
+	}
 	var storageKey []byte
 	if s.nativeKeystore != nil {
 		var err error

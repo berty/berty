@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, TextInput, View } from 'react-native'
 
-import beapi from '@berty-tech/api'
 import {
 	GlobalPersistentOptionsKeys,
 	storageSet,
@@ -14,10 +13,11 @@ import { useStyles } from '@berty-tech/styles'
 import { useAccount } from '@berty-tech/react-redux'
 
 import SwiperCard from './SwiperCard'
+import { NetworkConfigFront } from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string
-	newConfig?: beapi.account.INetworkConfig | null
+	newConfig?: NetworkConfigFront | null
 	setIsFinished?: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ defaultName, newConfig, setIsFinished }) => {
 	const ctx = useMessengerContext()

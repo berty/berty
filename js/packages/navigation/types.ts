@@ -46,24 +46,33 @@ export type ScreensParams = {
 
 	// Settings
 
-	'Settings.Home': undefined
-	'Settings.MyBertyId': undefined
 	'Settings.Mode': undefined
 	'Settings.ServicesAuth': undefined
 	'Settings.AboutBerty': undefined
 	'Settings.TermsOfUse': undefined
+	'Settings.NetworkMap': undefined
+	'Settings.Roadmap': undefined
+	'Settings.Faq': undefined
+	'Settings.BertyServices': undefined
+
+	'Settings.Home': undefined
+	'Settings.MyBertyId': undefined
+	'Settings.Network': undefined
+	'Settings.Notifications': undefined
+	'Settings.ContactAndConversations': undefined
+	'Settings.Appearence': undefined
+	'Settings.DevicesAndBackup': undefined
+	'Settings.Security': undefined
+	'Settings.Accounts': undefined
+
 	'Settings.DevTools': undefined
 	'Settings.IpfsWebUI': undefined
+	'Settings.ThemeEditor': undefined
+	'Settings.DeleteAccount': undefined
 	'Settings.SystemInfo': undefined
 	'Settings.FakeData': undefined
 	'Settings.AddDevConversations': undefined
 	'Settings.DevText': { text: string }
-	'Settings.NetworkMap': undefined
-	'Settings.ThemeEditor': undefined
-	'Settings.DeleteAccount': undefined
-	'Settings.Roadmap': undefined
-	'Settings.Faq': undefined
-	'Settings.BertyServices': undefined
 
 	// Modals
 

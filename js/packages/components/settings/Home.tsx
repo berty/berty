@@ -1,262 +1,130 @@
 import React from 'react'
-import {
-	ActivityIndicator,
-	ScrollView,
-	Share,
-	StatusBar,
-	TouchableOpacity,
-	View,
-} from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
-import QRCode from 'react-native-qrcode-svg'
-import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View, Text } from 'react-native'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import {
-	useMessengerContext,
-	closeAccountWithProgress,
-	useThemeColor,
-	useMessengerClient,
-} from '@berty-tech/store'
-import { useAppDispatch, useAccount } from '@berty-tech/react-redux'
+import { useThemeColor } from '@berty-tech/store'
+import { useAccount } from '@berty-tech/react-redux'
 
-import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { AccountAvatar } from '../avatars'
-import logo from '../main/1_berty_picto.png'
-import { LoaderDots } from '../gates'
-import { setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
+import { ButtonSettingV2, Section } from '../shared-components'
 
-const _verticalOffset = 30
-
-const useStylesHome = () => {
-	const [{ height, margin, padding, text }] = useStyles()
-	return {
-		firstHeaderButton: [margin.right.scale(20), height(90)],
-		secondHeaderButton: [margin.right.scale(20), height(90)],
-		thirdHeaderButton: height(90),
-		headerNameText: text.size.small,
-		scrollViewPadding: padding.bottom.scale(50),
-	}
-}
-
-const HomeHeaderGroupButton: React.FC = () => {
-	const _styles = useStylesHome()
-	const [{ padding }] = useStyles()
-	const colors = useThemeColor()
-	const { t }: any = useTranslation()
-	const { navigate } = useNavigation()
-
-	return (
-		<View style={[padding.horizontal.medium]}>
-			<ButtonSettingRow
-				state={[
-					{
-						name: t('settings.faq.title'),
-						icon: 'question-mark-circle-outline',
-						color: colors['secondary-background-header'],
-						style: _styles.firstHeaderButton,
-						onPress: () => navigate('Settings.Faq'),
-					},
-					{
-						name: t('settings.roadmap.title'),
-						icon: 'calendar-outline',
-						color: colors['background-header'],
-						style: _styles.secondHeaderButton,
-						onPress: () => navigate('Settings.Roadmap'),
-					},
-					{
-						name: t('settings.mode.title'),
-						icon: 'settings-2-outline',
-						color: colors['background-header'],
-						style: _styles.thirdHeaderButton,
-						onPress: () => navigate('Settings.Mode'),
-					},
-				]}
-			/>
-		</View>
-	)
-}
-
-const HomeHeaderAvatar: React.FC = () => {
-	const _styles = useStylesHome()
-	const { navigate } = useNavigation()
-	const [{ row, border, padding }, { windowWidth, windowHeight, scaleHeight, scaleSize }] =
-		useStyles()
-	const client = useMessengerClient()
+const ProfileButton: React.FC<{}> = () => {
+	const [{ padding, margin, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const account = useAccount()
-	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
-	const [link, setLink] = React.useState<string>('')
-
-	React.useEffect(() => {
-		const getAccountLink = async () => {
-			if (account.displayName) {
-				const ret = await client?.instanceShareableBertyID({
-					reset: false,
-					displayName: account.displayName,
-				})
-				if (ret?.internalUrl) {
-					setLink(ret?.internalUrl)
-				}
-			}
-		}
-		getAccountLink().then()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	const { navigate } = useNavigation()
 
 	return (
-		<View style={[row.center, padding.top.small]}>
-			<TouchableOpacity
-				style={[
-					border.radius.medium,
-					padding.scale(20),
-					padding.top.scale(55),
-					{ backgroundColor: colors['main-background'] },
-				]}
-				onPress={() => navigate('Settings.MyBertyId')}
-			>
-				<View style={[{ alignItems: 'center' }]}>
-					<View style={{ position: 'absolute', top: -(90 * scaleSize) }}>
-						<AccountAvatar size={80 * scaleSize} />
-					</View>
-					<Text style={[_styles.headerNameText, { color: colors['main-text'] }]}>
+		<View
+			style={[
+				margin.horizontal.medium,
+				padding.medium,
+				border.radius.medium,
+				{
+					flex: 1,
+					backgroundColor: colors['main-background'],
+				},
+			]}
+		>
+			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<AccountAvatar size={50 * scaleSize} />
+					<Text style={[padding.left.medium, { fontFamily: 'Open Sans', fontWeight: '600' }]}>
 						{account.displayName || ''}
 					</Text>
-					<View style={[padding.top.scale(18 * scaleHeight)]}>
-						{link ? (
-							<QRCode
-								size={qrCodeSize}
-								value={link}
-								logo={logo}
-								color={colors['background-header']}
-								mode='circle'
-								backgroundColor={colors['main-background']}
-							/>
-						) : (
-							<View style={{ width: qrCodeSize, height: qrCodeSize, justifyContent: 'center' }}>
-								<LoaderDots />
-							</View>
-						)}
-					</View>
 				</View>
-			</TouchableOpacity>
-		</View>
-	)
-}
-
-const HomeBodySettings: React.FC = () => {
-	const [{ flex, padding }] = useStyles()
-	const colors = useThemeColor()
-	const { t }: any = useTranslation()
-	const reduxDispatch = useAppDispatch()
-	const { dispatch } = useMessengerContext()
-	const account = useAccount()
-	const url = account.link
-	const { navigate } = useNavigation()
-
-	return (
-		<View style={[flex.tiny, padding.horizontal.medium, padding.bottom.small]}>
-			<ButtonSetting
-				name={t('settings.home.share-link')}
-				icon='attach-outline'
-				iconSize={30}
-				iconColor={colors['background-header']}
-				onPress={async () => {
-					if (url) {
-						try {
-							await Share.share({ url, message: url })
-						} catch (e) {
-							console.error(e)
-						}
-					}
-				}}
-			/>
-			<ButtonSetting
-				name={t('settings.home.create-group')}
-				icon='add-new-group'
-				iconPack='custom'
-				iconSize={30}
-				iconColor={colors['background-header']}
-				onPress={() => navigate('Main.CreateGroupAddMembers')}
-			/>
-			<ButtonSetting
-				name={t('settings.home.create-new-account')}
-				icon='plus-circle'
-				iconSize={30}
-				iconColor={colors['background-header']}
-				onPress={async () => {
-					await closeAccountWithProgress(dispatch, reduxDispatch)
-					await reduxDispatch(setStateOnBoardingReady())
-				}}
-			/>
+				<TouchableOpacity
+					style={[
+						padding.scale(8),
+						border.radius.scale(100),
+						{
+							backgroundColor: '#EDEDED',
+							alignItems: 'center',
+							justifyContent: 'center',
+							flexDirection: 'row',
+						},
+					]}
+					onPress={() => navigate('Settings.MyBertyId')}
+				>
+					<Icon
+						name='qr'
+						pack='custom'
+						fill={colors['background-header']}
+						width={20 * scaleSize}
+						height={20 * scaleSize}
+					/>
+				</TouchableOpacity>
+			</View>
 		</View>
 	)
 }
 
 export const Home: ScreenFC<'Settings.Home'> = () => {
-	const account = useAccount()
-	const [{ row, margin, text, border }, { scaleSize }] = useStyles()
+	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { t }: any = useTranslation()
-	const { navigate, setOptions } = useNavigation()
-
-	React.useLayoutEffect(() => {
-		setOptions({
-			headerRight: ({ tintColor }: any) => (
-				<TouchableOpacity
-					onPress={() => navigate('Modals.EditProfile')}
-					style={{
-						flexDirection: 'row',
-						alignContent: 'center',
-						alignItems: 'center',
-						justifyContent: 'flex-end',
-						paddingVertical: 5 * scaleSize,
-					}}
-				>
-					<Text style={[{ color: tintColor }, margin.right.small, text.size.medium]}>
-						{t('settings.home.edit-profile')}
-					</Text>
-					<Icon
-						name='edit-outline'
-						width={25 * scaleSize}
-						height={25 * scaleSize}
-						fill={tintColor}
-					/>
-				</TouchableOpacity>
-			),
-		})
-	}, [margin.right.small, navigate, setOptions, scaleSize, t, text.size.medium])
+	const { navigate } = useNavigation()
 
 	return (
-		<>
-			<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
-				<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-				{account == null ? (
-					<ActivityIndicator size='large' style={[row.center]} />
-				) : (
-					<ScrollView
-						bounces={false}
-						nestedScrollEnabled
-						contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
-						showsVerticalScrollIndicator={false}
-					>
-						<View
-							style={[
-								{ backgroundColor: colors['background-header'] },
-								border.radius.bottom.medium,
-								margin.bottom.scale(_verticalOffset),
-							]}
-						>
-							<View style={{ bottom: -_verticalOffset }}>
-								<HomeHeaderAvatar />
-								<HomeHeaderGroupButton />
-							</View>
-						</View>
-						<HomeBodySettings />
-					</ScrollView>
-				)}
-			</View>
-		</>
+		<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: 20 }}>
+			<ScrollView
+				bounces={false}
+				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+				showsVerticalScrollIndicator={false}
+			>
+				<ProfileButton />
+				<Section>
+					<ButtonSettingV2 text='Connect around me' icon='bluetooth' toggle={{ enable: true }} />
+					<ButtonSettingV2
+						text='Notifications'
+						icon='bell'
+						onPress={() => navigate('Settings.Notifications')}
+					/>
+					<ButtonSettingV2
+						text='Contact and conversations'
+						icon='message-circle'
+						onPress={() => navigate('Settings.ContactAndConversations')}
+					/>
+					<ButtonSettingV2
+						text='Appearence'
+						icon='smile'
+						onPress={() => navigate('Settings.Appearence')}
+					/>
+					<ButtonSettingV2
+						text='Devices and backup'
+						icon='smartphone'
+						onPress={() => navigate('Settings.DevicesAndBackup')}
+						last
+					/>
+				</Section>
+				<Section>
+					<ButtonSettingV2
+						text='Security'
+						icon='lock'
+						onPress={() => navigate('Settings.Security')}
+					/>
+					<ButtonSettingV2
+						text='Accounts'
+						icon='user'
+						onPress={() => navigate('Settings.Accounts')}
+					/>
+					<ButtonSettingV2
+						text='Network'
+						icon='wifi'
+						last
+						onPress={() => navigate('Settings.Network')}
+					/>
+				</Section>
+				<Section>
+					<ButtonSettingV2
+						text='About Berty'
+						icon='info'
+						last
+						onPress={() => navigate('Settings.AboutBerty')}
+					/>
+				</Section>
+			</ScrollView>
+		</View>
 	)
 }

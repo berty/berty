@@ -22,6 +22,7 @@ import reduxStore from '@berty-tech/redux/store'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
+import { LucideIconsPack } from './lucide-icons'
 
 const BootSplashInhibitor: React.FC = React.memo(() => {
 	useMountEffect(() => {
@@ -47,7 +48,9 @@ export const App: React.FC = () => {
 			<StyleProvider>
 				<ReduxProvider store={reduxStore}>
 					<MessengerProvider daemonAddress='http://localhost:1337'>
-						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+						<IconRegistry
+							icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack, LucideIconsPack]}
+						/>
 						<ThemeProvider>
 							<Background>
 								<ErrorScreen>

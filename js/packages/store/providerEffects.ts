@@ -116,7 +116,7 @@ const getPersistentOptions = async (
 			}
 		}
 
-		await dispatch({
+		dispatch({
 			type: MessengerActions.SetPersistentOption,
 			payload: opts,
 		})

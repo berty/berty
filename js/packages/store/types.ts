@@ -1,6 +1,7 @@
 import { Dispatch } from 'react'
 
 import beapi from '@berty-tech/api'
+import { NetworkConfigFront } from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 // returns true if the notification should be inhibited
 export type NotificationsInhibitor = (
@@ -26,7 +27,7 @@ export type MessengerState = {
 		payload?: any
 	}>
 	setPersistentOption: (arg0: PersistentOptionsUpdate) => Promise<void>
-	createNewAccount: (arg0?: beapi.account.INetworkConfig) => Promise<void>
+	createNewAccount: (arg0?: NetworkConfigFront) => Promise<void>
 	importAccount: (arg0: string) => Promise<void>
 	switchAccount: (arg0: string) => Promise<void>
 	updateAccount: (arg0: any) => Promise<void>
@@ -46,8 +47,6 @@ export type MessengerState = {
 	) => Promise<beapi.messenger.Interact.Reply> | undefined
 	debugMode: boolean
 	setDebugMode: (value: boolean) => void
-	networkConfig: beapi.account.INetworkConfig
-	setNetworkConfig: (value: beapi.account.INetworkConfig) => void
 	handledLink: boolean
 	setHandledLink: (value: boolean) => void
 }

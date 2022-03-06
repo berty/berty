@@ -14,6 +14,125 @@ import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
 
+export const Section: React.FC<{}> = ({ children }) => {
+	const [{ margin, border, padding }] = useStyles()
+	const colors = useThemeColor()
+	return (
+		<View style={[margin.top.large, padding.horizontal.medium]}>
+			<View
+				style={[
+					border.radius.medium,
+					{
+						flex: 1,
+						backgroundColor: colors['main-background'],
+					},
+				]}
+			>
+				{children}
+			</View>
+		</View>
+	)
+}
+
+export const ButtonSettingV2: React.FC<{
+	text: string
+	icon?: string
+	arrowIcon?: string
+	onPress?: (...args: any) => void
+	toggle?: {
+		enable: boolean
+		value?: boolean
+		action?: (bool: boolean) => void
+	}
+	color?: string
+	pack?: string
+	disabled?: boolean
+	last?: boolean
+}> = ({
+	text,
+	icon,
+	arrowIcon = 'arrow-ios-forward',
+	onPress,
+	color,
+	toggle = {},
+	pack = 'feather',
+	disabled = false,
+	last = false,
+}) => {
+	const [{ padding, margin, opacity }, { scaleSize }] = useStyles()
+	const colors = useThemeColor()
+	const [isToggle, setIsToggle] = useState<boolean>(false)
+
+	if (!color) {
+		color = colors['background-header']
+	}
+	const heightButton = 55
+	const disabledOpacity = 0.3
+
+	return (
+		<>
+			<TouchableOpacity
+				onPress={!disabled ? onPress : () => {}}
+				activeOpacity={disabled ? disabledOpacity : 0.2}
+				style={[
+					padding.vertical.medium,
+					padding.horizontal.medium,
+					disabled && opacity(disabledOpacity),
+					{
+						height: heightButton * scaleSize,
+						flexDirection: 'row',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+					},
+				]}
+			>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					{icon && (
+						<View style={[{ height: heightButton, flexDirection: 'row', alignItems: 'center' }]}>
+							<Icon
+								name={icon}
+								width={20 * scaleSize}
+								height={20 * scaleSize}
+								pack={pack}
+								fill={color}
+							/>
+						</View>
+					)}
+					<View
+						style={[
+							margin.left.small,
+							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
+						]}
+					>
+						<Text>{text}</Text>
+					</View>
+				</View>
+
+				{toggle?.enable && !disabled ? (
+					<Toggle
+						style={padding.right.scale(5)}
+						status='primary'
+						checked={toggle?.value || isToggle}
+						onChange={
+							toggle.action ? () => toggle.action(!toggle.value) : () => setIsToggle(!isToggle)
+						}
+					/>
+				) : (
+					<Icon
+						name={arrowIcon}
+						width={20 * scaleSize}
+						height={20 * scaleSize}
+						fill={`${colors['secondary-background']}`}
+					/>
+				)}
+			</TouchableOpacity>
+			{!last && (
+				<View style={{ flex: 1, height: 1, backgroundColor: colors['secondary-background'] }} />
+			)}
+		</>
+	)
+}
+
 //
 // Button Setting
 //

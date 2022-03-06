@@ -4,8 +4,8 @@ import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-const TOGGLE_WIDTH = 55
-const CIRCLE_WIDTH = 30
+const TOGGLE_WIDTH = 50
+const CIRCLE_WIDTH = 25
 const BORDER_RADIUS_WIDTH = 1
 const CIRCLE_RIGHT_POSITION = TOGGLE_WIDTH - CIRCLE_WIDTH - BORDER_RADIUS_WIDTH * 2
 

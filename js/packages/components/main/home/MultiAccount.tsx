@@ -143,7 +143,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
 						await closeAccountWithProgress(dispatch, reduxDispatch)
-						await reduxDispatch(setStateOnBoardingReady())
+						reduxDispatch(setStateOnBoardingReady())
 					}}
 					avatar={
 						<View

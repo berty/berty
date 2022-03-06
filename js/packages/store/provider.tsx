@@ -31,7 +31,7 @@ import {
 	deleteAccount,
 	restart,
 } from './providerCallbacks'
-import { createNewAccount, getUsername } from './effectableCallbacks'
+import { createNewAccount, getUsername, handleNetworkConfigBack } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
 import { PersistentOptionsKeys, SoundKey } from './types'
@@ -45,6 +45,10 @@ import {
 	selectProtocolClient,
 	selectSelectedAccount,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import {
+	selectNetworkConfig,
+	setNetworkConfig,
+} from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	children,
@@ -57,7 +61,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	})
 	const [eventEmitter] = React.useState(new EventEmitter())
 	const [debugMode, setDebugMode] = React.useState(false)
-	const [networkConfig, setNetworkConfig] = useState<beapi.account.INetworkConfig>({})
 	const [handledLink, setHandledLink] = useState<boolean>(false)
 	const appState = useSelector(selectAppState)
 	const clearClients = useSelector(selectClearClients)
@@ -65,10 +68,14 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	const client = useSelector(selectClient)
 	const embedded = useSelector(selectEmbedded)
 	const selectedAccount = useSelector(selectSelectedAccount)
+	const networkConfig = useSelector(selectNetworkConfig)
 
 	useEffect(() => {
 		console.log(`State change: ${appState}\n`)
 	}, [appState])
+	// useEffect(() => {
+	// 	console.log(`networkConfig: ${networkConfig}\n`)
+	// }, [networkConfig])
 
 	useEffect(() => {
 		initialLaunch(dispatch, embedded)
@@ -149,7 +156,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	)
 
 	const callbackCreateNewAccount = useCallback(
-		(newConfig?: beapi.account.INetworkConfig) =>
+		(newConfig?: NetworkConfigFront) =>
 			createNewAccount(embedded, dispatch, reduxDispatch, newConfig),
 		[embedded, reduxDispatch],
 	)
@@ -195,25 +202,21 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	)
 
 	useEffect(() => {
-		if (selectedAccount === null) {
-			console.log('no account id supplied')
-			setNetworkConfig({})
-			return
-		}
-
 		const f = async () => {
-			const netConf = await accountService.networkConfigGet({
-				accountId: selectedAccount,
-			})
-			if (!netConf.currentConfig) {
-				return
+			if (!networkConfig) {
+				const netConf = await accountService.networkConfigGet({
+					accountId: selectedAccount,
+				})
+				if (!netConf.currentConfig) {
+					return
+				}
+				const test = handleNetworkConfigBack(netConf.currentConfig)
+				reduxDispatch(setNetworkConfig({ ...test }))
 			}
-
-			setNetworkConfig(netConf.currentConfig)
 		}
 
 		f().catch(e => console.warn(e))
-	}, [selectedAccount])
+	}, [networkConfig, reduxDispatch, selectedAccount])
 
 	return (
 		<MessengerContext.Provider
@@ -233,8 +236,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 				debugMode: debugMode,
 				playSound: callbackPlaySound,
 				setDebugMode: callbackSetDebugMode,
-				networkConfig: networkConfig,
-				setNetworkConfig: setNetworkConfig,
 				handledLink,
 				setHandledLink,
 			}}
