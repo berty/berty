@@ -9,8 +9,12 @@ const SwiperCard: React.FC<{
 	title: string
 	desc?: string
 	header?: string
-	button?: { text: string; onPress: () => Promise<void> | void }
-	secondButton?: { text: string; onPress: () => Promise<void> | void }
+	button?: { text: string; onPress: () => Promise<void> | void; status?: 'primary' | 'secondary' }
+	secondButton?: {
+		text: string
+		onPress: () => Promise<void> | void
+		status?: 'primary' | 'secondary'
+	}
 	skip?: { text: string; onPress: () => void }
 }> = ({ children, desc, header, title, button, skip, secondButton }) => {
 	const [{ text, padding, margin, border }] = useStyles()
@@ -52,14 +56,13 @@ const SwiperCard: React.FC<{
 						</Text>
 					) : null}
 					{children}
-					{button ? <Button onPress={button.onPress}>{button.text}</Button> : null}
+					{button ? (
+						<Button status={button.status} onPress={button.onPress}>
+							{button.text}
+						</Button>
+					) : null}
 					{secondButton ? (
-						<Button
-							onPress={secondButton.onPress}
-							style={{
-								marginTop: 5,
-							}}
-						>
+						<Button status={secondButton.status} onPress={secondButton.onPress}>
 							{secondButton.text}
 						</Button>
 					) : null}

@@ -67,7 +67,7 @@ export const DropDownPicker: React.FC<{
 					flex: 1,
 					marginTop: 22 * scaleSize,
 					minHeight: 55 * scaleSize,
-					backgroundColor: colors['main-background'],
+					backgroundColor: colors['input-background'],
 					// shadowColor: colors.shadow,
 				},
 			]}

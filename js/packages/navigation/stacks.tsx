@@ -182,7 +182,6 @@ export const Navigation: React.FC = React.memo(() => {
 				)
 				return
 			case MESSENGER_APP_STATE.GET_STARTED:
-				console.log('heererererererres')
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: 'Onboarding.GetStarted' }],
@@ -193,7 +192,11 @@ export const Navigation: React.FC = React.memo(() => {
 	}, [appState])
 
 	return (
-		<NavigationStack.Navigator initialRouteName={'Main.Home'}>
+		<NavigationStack.Navigator
+			initialRouteName={
+				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Main.Home'
+			}
+		>
 			{/* OnBoarding */}
 			<NavigationStack.Screen
 				name={'Onboarding.GetStarted'}
@@ -203,7 +206,14 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Onboarding.CreateAccount'}
 				component={Components.Onboarding.CreateAccount}
-				options={{ headerShown: false }}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.SetupFinished'}
@@ -211,14 +221,45 @@ export const Navigation: React.FC = React.memo(() => {
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.AdvancedSettings'}
-				component={Components.Onboarding.AdvancedSettings}
-				options={{ headerShown: false }}
+				name={'Onboarding.CustomModeSettings'}
+				component={Components.Onboarding.CustomModeSettings}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.WebViews'}
 				component={Components.Onboarding.WebViews}
 				options={{ title: '', headerBackTitle: '', headerTintColor: colors['main-text'] }}
+			/>
+			<NavigationStack.Screen
+				name={'Onboarding.DefaultMode'}
+				component={Components.Onboarding.DefaultMode}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Onboarding.CustomMode'}
+				component={Components.Onboarding.CustomMode}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
 			/>
 			{/* Main */}
 			<NavigationStack.Screen
@@ -502,14 +543,6 @@ export const Navigation: React.FC = React.memo(() => {
 					title: 'Terms of use',
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Mode'}
-				component={Components.Settings.Mode}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.mode.title'),
-					...CustomTitleStyle(),
 				})}
 			/>
 			<NavigationStack.Screen

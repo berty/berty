@@ -1,13 +1,11 @@
-import { Icon } from '@ui-kitten/components'
 import LottieView from 'lottie-react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, StatusBar, Text, TouchableOpacity, Vibration, View } from 'react-native'
+import { StatusBar, Text, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import rnutil from '@berty-tech/rnutil'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useMessengerContext,
 	useMountEffect,
@@ -17,119 +15,14 @@ import {
 import { useStyles } from '@berty-tech/styles'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 
-import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'
 
-const AdvancedButton: React.FC<{
-	icon: string
-	title: string
-	pack?: string
-	onPress?: () => void
-}> = ({ icon, title, pack, onPress }) => {
-	const colors = useThemeColor()
-	const [{ text, padding, margin, border }, { scaleSize }] = useStyles()
-	return (
-		<TouchableOpacity
-			onPress={onPress ? () => onPress() : () => {}}
-			style={[
-				padding.scale(14),
-				border.radius.small,
-				margin.vertical.scale(1),
-				{
-					width: 250 * scaleSize,
-					backgroundColor: colors['main-background'],
-					flexDirection: 'row',
-					alignItems: 'center',
-					flex: 1,
-				},
-			]}
-		>
-			<View style={{ justifyContent: 'flex-start', flex: 1 }}>
-				<Icon
-					pack={pack}
-					name={icon}
-					fill={colors['main-text']}
-					width={25 * scaleSize}
-					height={25 * scaleSize}
-				/>
-			</View>
-			<View style={{ justifyContent: 'center', flex: 10 }}>
-				<Text
-					style={[
-						text.size.medium,
-						{ fontWeight: '600', fontFamily: 'Open Sans', textAlign: 'center' },
-					]}
-				>
-					{title}
-				</Text>
-			</View>
-		</TouchableOpacity>
-	)
-}
-
-const Advanced = () => {
-	const colors = useThemeColor()
-	const [{ text, margin }, { scaleSize }] = useStyles()
-	const [isCollapsed, setCollapsed] = useState(true)
-	const { navigate } = useNavigation()
-	const ctx = useMessengerContext()
-	const { t } = useTranslation()
-
-	return (
-		<SafeAreaView style={{ position: 'absolute', right: 15 * scaleSize }}>
-			<View>
-				<TouchableOpacity
-					onPress={() => setCollapsed(!isCollapsed)}
-					style={[
-						margin.bottom.small,
-						{ flexDirection: 'row', alignItems: 'center', flex: 1, alignSelf: 'flex-end' },
-					]}
-				>
-					<Text
-						style={[
-							text.size.medium,
-							{ fontFamily: 'Open Sans', color: colors['reverted-main-text'], fontWeight: '700' },
-						]}
-					>
-						{t('onboarding.create-account.advanced')}
-					</Text>
-					<Icon
-						style={[margin.left.small]}
-						name={isCollapsed ? 'arrow-ios-downward' : 'arrow-ios-upward'}
-						fill={colors['reverted-main-text']}
-						width={25 * scaleSize}
-						height={25 * scaleSize}
-					/>
-				</TouchableOpacity>
-				{!isCollapsed ? (
-					<View style={{ flexDirection: 'column', flex: 1 }}>
-						<AdvancedButton
-							icon='settings'
-							pack='custom'
-							title={t('onboarding.advanced-settings.title').toUpperCase()}
-							onPress={() => navigate('Onboarding.AdvancedSettings')}
-						/>
-						{/*<AdvancedButton icon='smartphone-outline' title='LINK DEVICE' />*/}
-						<AdvancedButton
-							icon='folder-outline'
-							title={t('onboarding.create-account.import-account')}
-							onPress={() => importAccountFromDocumentPicker(ctx)}
-						/>
-						{/*<AdvancedButton icon='info-outline' title={t('onboarding.create-account.more')} />*/}
-					</View>
-				) : null}
-			</View>
-		</SafeAreaView>
-	)
-}
-
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
-	const [{ padding, margin, border }] = useStyles()
+	const [{ padding, margin, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
-	const [isFinished, setIsFinished] = useState(false)
 	const { t } = useTranslation()
 	const headerHeight = useHeaderHeight()
 	const insets = useSafeAreaInsets()
@@ -143,39 +36,27 @@ const CreateAccountBody = () => {
 
 	return (
 		<View style={[{ flex: 1 }]}>
-			<LottieView
-				source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
-				autoPlay
-				loop
-				style={{ width: '100%', position: 'absolute' }}
-			/>
-			{!isFinished ? (
+			<View>
+				<LottieView
+					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+					autoPlay
+					loop
+					style={{ width: '100%', position: 'absolute' }}
+				/>
 				<LottieView
 					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
 					autoPlay
 					loop={false}
-					style={{ position: 'absolute', width: '100%' }}
+					style={{ position: 'absolute', top: -(25 * scaleSize), width: '100%' }}
 				/>
-			) : (
-				<LottieView
-					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield dissapear.json')}
-					autoPlay
-					loop={false}
-					onAnimationFinish={async () => {
-						Vibration.vibrate(500)
-						await rnutil.checkPermissions('p2p')
-					}}
-					style={{ position: 'absolute', width: '100%' }}
-				/>
-			)}
+			</View>
+
 			<IOSOnlyKeyboardAvoidingView
 				style={{ flex: 1, justifyContent: 'flex-end' }}
 				behavior='padding'
 				keyboardVerticalOffset={headerHeight + insets.top}
 			>
-				{!!defaultName && (
-					<CreateAccountBox defaultName={defaultName} setIsFinished={setIsFinished} />
-				)}
+				{!!defaultName && <CreateAccountBox defaultName={defaultName} />}
 			</IOSOnlyKeyboardAvoidingView>
 			<View
 				style={[
@@ -200,7 +81,6 @@ const CreateAccountBody = () => {
 					</View>
 				</View>
 			</View>
-			<Advanced />
 		</View>
 	)
 }

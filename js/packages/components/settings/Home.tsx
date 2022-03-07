@@ -17,7 +17,8 @@ const ProfileButton: React.FC<{}> = () => {
 	const { navigate } = useNavigation()
 
 	return (
-		<View
+		<TouchableOpacity
+			onPress={() => navigate('Modals.EditProfile')}
 			style={[
 				margin.horizontal.medium,
 				padding.medium,
@@ -57,7 +58,7 @@ const ProfileButton: React.FC<{}> = () => {
 					/>
 				</TouchableOpacity>
 			</View>
-		</View>
+		</TouchableOpacity>
 	)
 }
 

@@ -114,7 +114,11 @@ export const ButtonSettingV2: React.FC<{
 						status='primary'
 						checked={toggle?.value || isToggle}
 						onChange={
-							toggle.action ? () => toggle.action(!toggle.value) : () => setIsToggle(!isToggle)
+							toggle.action
+								? () => {
+										// TODO toggle action
+								  }
+								: () => setIsToggle(!isToggle)
 						}
 					/>
 				) : (

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
-import beapi from '@berty-tech/api'
 import {
 	useAppDispatch,
 	useAppSelector,
@@ -10,6 +9,7 @@ import {
 } from '@berty-tech/react-redux'
 import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
 
+import beapi from '@berty-tech/api'
 import { MessengerContext, initialState } from './context'
 import {
 	initialLaunch,
@@ -31,11 +31,10 @@ import {
 	deleteAccount,
 	restart,
 } from './providerCallbacks'
-import { createNewAccount, getUsername, handleNetworkConfigBack } from './effectableCallbacks'
+import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
 import { PersistentOptionsKeys, SoundKey } from './types'
-import { accountService } from './accountService'
 import { useSelector } from 'react-redux'
 import {
 	selectAppState,
@@ -45,10 +44,6 @@ import {
 	selectProtocolClient,
 	selectSelectedAccount,
 } from '@berty-tech/redux/reducers/ui.reducer'
-import {
-	selectNetworkConfig,
-	setNetworkConfig,
-} from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	children,
@@ -68,14 +63,10 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	const client = useSelector(selectClient)
 	const embedded = useSelector(selectEmbedded)
 	const selectedAccount = useSelector(selectSelectedAccount)
-	const networkConfig = useSelector(selectNetworkConfig)
 
 	useEffect(() => {
 		console.log(`State change: ${appState}\n`)
 	}, [appState])
-	// useEffect(() => {
-	// 	console.log(`networkConfig: ${networkConfig}\n`)
-	// }, [networkConfig])
 
 	useEffect(() => {
 		initialLaunch(dispatch, embedded)
@@ -156,7 +147,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	)
 
 	const callbackCreateNewAccount = useCallback(
-		(newConfig?: NetworkConfigFront) =>
+		(newConfig?: beapi.account.INetworkConfig) =>
 			createNewAccount(embedded, dispatch, reduxDispatch, newConfig),
 		[embedded, reduxDispatch],
 	)
@@ -200,23 +191,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		},
 		[state.persistentOptions],
 	)
-
-	useEffect(() => {
-		const f = async () => {
-			if (!networkConfig) {
-				const netConf = await accountService.networkConfigGet({
-					accountId: selectedAccount,
-				})
-				if (!netConf.currentConfig) {
-					return
-				}
-				const test = handleNetworkConfigBack(netConf.currentConfig)
-				reduxDispatch(setNetworkConfig({ ...test }))
-			}
-		}
-
-		f().catch(e => console.warn(e))
-	}, [networkConfig, reduxDispatch, selectedAccount])
 
 	return (
 		<MessengerContext.Provider

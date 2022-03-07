@@ -2,16 +2,32 @@ import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 
+import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor, useMessengerContext } from '@berty-tech/store'
+import { useMountEffect, useThemeColor, accountService } from '@berty-tech/store'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
-	const { networkConfig } = useMessengerContext()
+	const [networkConfig, setNetworkConfig] = React.useState<beapi.account.INetworkConfig | null>(
+		null,
+	)
+
+	useMountEffect(() => {
+		const getNetworkConfig = async () => {
+			// with an empty accountId the function returns default config
+			const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
+			console.log('defaultConfig', defaultConfig.currentConfig)
+			if (defaultConfig.currentConfig) {
+				setNetworkConfig(defaultConfig?.currentConfig)
+			}
+		}
+
+		getNetworkConfig()
+	})
 
 	React.useEffect(() => {
 		call()

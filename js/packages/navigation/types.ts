@@ -11,8 +11,11 @@ export type ScreensParams = {
 	'Onboarding.GetStarted': undefined
 	'Onboarding.CreateAccount': undefined
 	'Onboarding.SetupFinished': undefined
-	'Onboarding.AdvancedSettings': undefined
+	'Onboarding.CustomModeSettings': undefined
 	'Onboarding.WebViews': { url: string }
+
+	'Onboarding.DefaultMode': undefined
+	'Onboarding.CustomMode': undefined
 
 	// Main
 
@@ -46,7 +49,6 @@ export type ScreensParams = {
 
 	// Settings
 
-	'Settings.Mode': undefined
 	'Settings.ServicesAuth': undefined
 	'Settings.AboutBerty': undefined
 	'Settings.TermsOfUse': undefined

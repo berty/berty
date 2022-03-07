@@ -1,4 +1,3 @@
-export { Mode } from './Mode'
 export { ServicesAuth } from './ServicesAuth'
 export { AboutBerty } from './AboutBerty'
 export { TermsOfUse } from './TermsOfUse'

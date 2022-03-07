@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
+import { Text, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
@@ -7,19 +7,25 @@ import { useThemeColor } from '@berty-tech/store/hooks'
 const Button: React.FC<{
 	children: string
 	onPress: () => void
+	width?: number
+	status?: 'primary' | 'secondary'
 	style?: ViewStyle
-	textStyle?: TextStyle
-}> = ({ children, onPress, style = null, textStyle = null }) => {
-	const [{ margin, padding, text, border }] = useStyles()
+}> = ({ children, onPress, width = 250, status = 'primary', style = null }) => {
+	const [{ margin, padding, text, border, column }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	return (
 		<TouchableOpacity
 			style={[
-				margin.top.medium,
+				margin.top.small,
 				padding.medium,
 				border.radius.small,
-				{ backgroundColor: colors['background-header'] },
+				column.item.center,
+				{
+					width: width * scaleSize,
+					backgroundColor:
+						status === 'primary' ? colors['background-header'] : `${colors['background-header']}20`,
+				},
 				style,
 			]}
 			onPress={onPress}
@@ -29,8 +35,11 @@ const Button: React.FC<{
 					text.size.medium,
 					text.align.center,
 					text.bold.medium,
-					{ color: colors['reverted-main-text'] },
-					textStyle,
+					{
+						color:
+							status === 'primary' ? colors['reverted-main-text'] : colors['background-header'],
+						textTransform: 'uppercase',
+					},
 				]}
 			>
 				{children}

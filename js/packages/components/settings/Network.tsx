@@ -5,19 +5,12 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { useHeaderHeight } from '@react-navigation/elements'
-import { useDispatch } from 'react-redux'
 
 import beapi from '@berty-tech/api'
 import rnutil from '@berty-tech/rnutil'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import {
-	accountService,
-	handleNetworkConfigFront,
-	NetworkConfigFront,
-	useMessengerContext,
-	useThemeColor,
-} from '@berty-tech/store'
+import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
 import { selectNetworkConfig, selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
@@ -25,13 +18,12 @@ import { useSelector } from 'react-redux'
 import { showNeedRestartNotification } from '../helpers'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
-import { setNetworkConfig } from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 const Proximity: React.FC<{
-	setNewConfig: (newConfig: NetworkConfigFront) => Promise<void>
-}> = ({ setNewConfig }) => {
+	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
+	networkConfig: beapi.account.INetworkConfig | null
+}> = ({ networkConfig, setNewConfig }) => {
 	const { navigate } = useNavigation()
-	const networkConfig = useSelector(selectNetworkConfig)
 
 	return (
 		<Section>
@@ -50,8 +42,8 @@ const Proximity: React.FC<{
 							...networkConfig,
 							bluetoothLe,
 							appleMultipeerConnectivity:
-								Platform.OS === 'ios' ? bluetoothLe : networkConfig.appleMultipeerConnectivity,
-							androidNearby: Platform.OS === 'android' ? bluetoothLe : networkConfig.androidNearby,
+								Platform.OS === 'ios' ? bluetoothLe : networkConfig?.appleMultipeerConnectivity,
+							androidNearby: Platform.OS === 'android' ? bluetoothLe : networkConfig?.androidNearby,
 						}
 						const status = await check(
 							Platform.OS === 'ios'
@@ -162,7 +154,7 @@ const Proximity: React.FC<{
 }
 
 const InputSetting: React.FC<{
-	setNewConfig: (newConfig: NetworkConfigFront) => Promise<void>
+	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
 	obj: string
 }> = ({ setNewConfig, obj }) => {
 	const [{ border, padding, margin }, { scaleSize }] = useStyles()
@@ -204,7 +196,6 @@ const InputSetting: React.FC<{
 					pack='feather'
 				/>
 
-				{/* <View style={{ flex: 1 }}> */}
 				<TextInput
 					value={input}
 					placeholderTextColor={`${colors['main-text']}50`}
@@ -214,11 +205,10 @@ const InputSetting: React.FC<{
 						setInput(text)
 					}}
 				/>
-				{/* </View> */}
 			</View>
 			<TouchableOpacity
 				onPress={() => {
-					const item = { value: input, enable: true }
+					const item = input
 					const newArray = networkConfig?.rendezvous
 					if (!newArray) {
 						return
@@ -281,27 +271,42 @@ const CustomItem: React.FC<{
 	)
 }
 
-export const Network2: React.FC = withInAppNotification(({ showNotification }: any) => {
+export const NetworkBody: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const { t } = useTranslation()
-	const networkConfig = useSelector(selectNetworkConfig)
-	const dispatch = useDispatch()
+	const [networkConfig, setNetworkConfig] = React.useState<beapi.account.INetworkConfig | null>(
+		null,
+	)
 
-	console.log('Network::', networkConfig)
+	React.useEffect(() => {
+		const f = async () => {
+			const netConf = await accountService.networkConfigGet({
+				accountId: selectedAccount,
+			})
+			if (netConf.currentConfig) {
+				console.log('CurrentConfig', netConf.currentConfig)
+				setNetworkConfig(netConf.currentConfig)
+				return
+			}
+		}
+
+		f().catch(e => console.warn(e))
+	}, [selectedAccount])
+
 	const setNewConfig = React.useCallback(
-		async (newConfig: NetworkConfigFront) => {
-			dispatch(setNetworkConfig(newConfig))
+		async (newConfig: beapi.account.INetworkConfig) => {
+			setNetworkConfig(newConfig)
 
 			await accountService.networkConfigSet({
 				accountId: selectedAccount,
-				config: handleNetworkConfigFront(newConfig),
+				config: newConfig,
 			})
 			showNeedRestartNotification(showNotification, ctx, t)
 		},
-		[ctx, dispatch, selectedAccount, showNotification, t],
+		[ctx, selectedAccount, showNotification, t],
 	)
 
 	return (
@@ -325,7 +330,7 @@ export const Network2: React.FC = withInAppNotification(({ showNotification }: a
 						disabled
 					/>
 				</Section>
-				<Proximity setNewConfig={setNewConfig} />
+				<Proximity setNewConfig={setNewConfig} networkConfig={networkConfig} />
 				<Section>
 					<ButtonSettingV2
 						text='DHT'
@@ -345,29 +350,13 @@ export const Network2: React.FC = withInAppNotification(({ showNotification }: a
 						}}
 					/>
 					<ButtonSettingV2 text='RDVP' icon='info' />
-					{networkConfig.rendezvous?.map(item => {
-						console.log('item', item)
+					{networkConfig?.rendezvous?.map(item => {
 						return (
 							<CustomItem
-								value={item.value === ':default:' ? 'Berty RDVP' : item.value}
-								toggle={item.enable}
-								onToggleChange={() => {
-									const index = networkConfig.rendezvous?.findIndex(
-										object => object.value === item.value,
-									)
-									if (!index) {
-										return
-									}
-									let newRendezvous = networkConfig?.rendezvous
-									if (!newRendezvous) {
-										return
-									}
-									newRendezvous[index].enable = !newRendezvous[index].enable
-									setNewConfig({
-										...networkConfig,
-										rendezvous: newRendezvous,
-									})
-								}}
+								key={item}
+								value={item === ':default:' ? 'Berty RDVP' : item}
+								toggle={true}
+								onToggleChange={() => {}}
 							/>
 						)
 					})}
@@ -391,7 +380,7 @@ export const Network: ScreenFC<'Settings.Network'> = () => {
 			keyboardVerticalOffset={headerHeight}
 			style={[{ flex: 1 }]}
 		>
-			<Network2 />
+			<NetworkBody />
 		</IOSOnlyKeyboardAvoidingView>
 	)
 }

@@ -2,14 +2,13 @@ import beapi from '@berty-tech/api'
 import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 
-import { reducerAction, MessengerActions, StreamInProgress, NetworkConfigFront } from './types'
+import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'
 import {
 	setCreatedAccount,
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
-import { setNetworkConfig } from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -121,54 +120,11 @@ export const refreshAccountList = async (
 	}
 }
 
-export const handleNetworkConfigFront = (config?: NetworkConfigFront) => {
-	if (!config) {
-		return
-	}
-	const handledConfig: beapi.account.INetworkConfig = {
-		...config,
-		rendezvous: config.rendezvous?.map(item => item.enable && item.value),
-		staticRelay: config.staticRelay?.map(item => item.enable && item.value),
-		bootstrap: config.bootstrap?.map(item => item.enable && item.value),
-	}
-
-	return handledConfig
-}
-
-export const handleNetworkConfigBack = (config?: beapi.account.INetworkConfig | null) => {
-	if (!config) {
-		return
-	}
-	const handledConfig: NetworkConfigFront = {
-		...config,
-		rendezvous: config.rendezvous?.map(item => {
-			return {
-				value: item,
-				enable: true,
-			}
-		}),
-		staticRelay: config.staticRelay?.map(item => {
-			return {
-				value: item,
-				enable: true,
-			}
-		}),
-		bootstrap: config.bootstrap?.map(item => {
-			return {
-				value: item,
-				enable: true,
-			}
-		}),
-	}
-
-	return handledConfig
-}
-
 export const createAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
-	config?: NetworkConfigFront,
+	config?: beapi.account.INetworkConfig,
 ) => {
 	let resp: beapi.account.CreateAccount.Reply
 	try {
@@ -177,9 +133,8 @@ export const createAccount = async (
 			const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
 			networkConfig = defaultConfig.currentConfig
 		} else {
-			networkConfig = handleNetworkConfigFront(config)
+			networkConfig = config
 		}
-
 		resp = await accountService.createAccount({
 			networkConfig,
 		})
@@ -204,7 +159,7 @@ export const createNewAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
-	config?: NetworkConfigFront,
+	config?: beapi.account.INetworkConfig,
 ) => {
 	if (!embedded) {
 		return
