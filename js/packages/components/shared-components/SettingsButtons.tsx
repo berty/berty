@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import {
 	View,
 	TouchableOpacity,
@@ -481,6 +481,7 @@ type ButtonSettingRowProps = {
 		style: StyleProp<any>
 		onPress?: () => void
 		disabled?: boolean
+		displayComponent?: ReactNode
 	}[]
 	numberOfLines?: number
 	style?: StyleProp<any>
@@ -504,7 +505,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	isScroll = false,
 }) => {
 	const _styles = useStylesButtonSettingRow()
-	const [{ flex, row, margin, padding, border, text, opacity }] = useStyles()
+	const [{ flex, row, margin, padding, border, text, opacity, width }] = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -526,10 +527,10 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 					key={key}
 					activeOpacity={obj.disabled ? 0.5 : undefined}
 					style={[
-						flex.tiny,
 						padding.medium,
 						border.radius.medium,
 						border.shadow.medium,
+						width(100),
 						obj.style,
 						obj.disabled ? opacity(0.5) : null,
 						{
@@ -537,24 +538,29 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 							justifyContent: 'center',
 							backgroundColor: colors['main-background'],
 							shadowColor: colors.shadow,
-							width: 100,
 						},
 					]}
 					onPress={obj.onPress}
 				>
-					<Icon name={obj.icon} width={30} height={30} fill={obj.color} />
-					<Text
-						style={[
-							text.align.center,
-							text.size.medium,
-							styleText,
-							_styles.textPadding,
-							{ color: colors['main-text'] },
-						]}
-						numberOfLines={numberOfLines}
-					>
-						{obj.name}
-					</Text>
+					{obj.displayComponent ? (
+						obj.displayComponent
+					) : (
+						<>
+							<Icon name={obj.icon} width={30} height={30} fill={obj.color} />
+							<Text
+								style={[
+									text.align.center,
+									text.size.medium,
+									styleText,
+									_styles.textPadding,
+									{ color: colors['main-text'] },
+								]}
+								numberOfLines={numberOfLines}
+							>
+								{obj.name}
+							</Text>
+						</>
+					)}
 				</TouchableOpacity>
 			))}
 		</ScrollView>

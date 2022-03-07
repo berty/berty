@@ -19,6 +19,7 @@ export type ScreensParams = {
 	'Main.Home': undefined
 	'Main.ContactRequest': { contactId: string }
 	'Main.Scan': undefined
+	'Main.Share': undefined
 	'Main.Permissions': {
 		permissionType: PermissionType
 		permissionStatus: PermissionStatus

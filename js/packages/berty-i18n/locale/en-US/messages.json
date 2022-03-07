@@ -425,6 +425,12 @@
 			"qr": "QR",
 			"fingerprint": "Fingerprint",
 			"devices": "Devices"
+		},
+		"share": {
+			"invite": "Invite",
+			"tap-to-scan": "Tap to scan",
+			"create-group": "Create group",
+			"create-feed-channel": "Create feed channel"
 		}
 	},
 	"modals": {

@@ -248,6 +248,13 @@ export const Navigation: React.FC = React.memo(() => {
 				component={Components.Main.Permissions}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
+			<NavigationStack.Screen
+				name={'Main.Share'}
+				component={Components.Main.ShareModal}
+				options={BackgroundHeaderScreenOptions({
+					title: '',
+				})}
+			/>
 			{/* CreateGroup */}
 			<NavigationStack.Screen
 				name={'Main.CreateGroupAddMembers'}

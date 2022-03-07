@@ -79,7 +79,7 @@ const HomeHeaderGroupButton: React.FC = () => {
 	)
 }
 
-const HomeHeaderAvatar: React.FC = () => {
+export const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
 	const { navigate } = useNavigation()
 	const [{ row, border, padding }, { windowWidth, windowHeight, scaleHeight, scaleSize }] =
