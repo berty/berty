@@ -30,7 +30,10 @@ export const LoaderDots: React.FC = () => {
 			}}
 		>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-			<Image source={source} style={{ width: 170, height: 80 }} />
+			<Image
+				source={source}
+				style={{ width: '80%', height: '40%', maxWidth: 170, maxHeight: 80 }}
+			/>
 		</View>
 	)
 }

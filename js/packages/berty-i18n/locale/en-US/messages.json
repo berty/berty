@@ -278,6 +278,11 @@
 			"title": "My Berty ID",
 			"qr": "QR",
 			"fingerprint": "Fingerprint"
+		},
+		"share": {
+			"invite": "Invite",
+			"tap-to-scan": "Tap to scan",
+			"create-group": "Create group"
 		}
 	},
 	"modals": {
