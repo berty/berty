@@ -1,9 +1,3 @@
-export enum RecorderState {
-	Default,
-	Recording,
-	Recorded,
-}
-
 export enum TabItems {
 	Default,
 	Gallery,

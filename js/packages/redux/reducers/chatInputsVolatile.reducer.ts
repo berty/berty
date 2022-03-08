@@ -1,4 +1,5 @@
 import { createEntityAdapter, createSlice, EntityId, PayloadAction } from '@reduxjs/toolkit'
+
 import { resetChatInput } from './chatInputs.reducer'
 
 /**
@@ -38,6 +39,7 @@ const initialState = adapter.getInitialState()
 const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
 })
+
 type LocalState = typeof initialState
 const rootInitialState = makeRoot(initialState)
 type LocalRootState = typeof rootInitialState
