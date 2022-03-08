@@ -56,6 +56,8 @@ jobs:
           make lint
         env:
           CI: true
+      - name: Look for i18n dead keys
+        run: bash tool/check-dead-i18n/check.sh
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:
