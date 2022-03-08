@@ -4,7 +4,7 @@ import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 
-export const MenuListItem: React.FC<{
+export const ListItemMenu: React.FC<{
 	title: string
 	onPress: () => void
 	iconProps: {

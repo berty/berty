@@ -11,8 +11,10 @@
     "postinstall": "patch-package && node ./fix-types.js && npx jetify"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.16.7",
     "@eva-design/eva": "^2.1.0",
     "@flyerhq/react-native-android-uri-path": "^2.1.0",
+    "@gorhom/bottom-sheet": "^4",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@react-native-community/audio-toolkit": "git+https://github.com/sakul-budhathoki/react-native-audio-toolkit.git#3e81181e97154ce84b6927fd5e5a484782d36d70",
     "@react-native-community/blur": "^3.6.0",
@@ -143,6 +145,9 @@
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/assetsTransformer.js",
       "\\.(css|less)$": "<rootDir>/assetsTransformer.js",
       "@berty-tech/(.*)": "<rootDir>/packages/$1"
-    }
+    },
+    "setupFiles": [
+      "./jest-setup.js"
+    ]
   }
 }

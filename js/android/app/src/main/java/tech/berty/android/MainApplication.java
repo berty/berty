@@ -23,6 +23,10 @@ import expo.modules.ReactNativeHostWrapper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+// react-native-reanimated
+import com.facebook.react.bridge.JSIModulePackage;
+import com.swmansion.reanimated.ReanimatedJSIModulePackage;
+
 import tech.berty.gobridge.GoBridgePackage;
 import tech.berty.notification.NotificationPackage;
 import tech.berty.notification.NotificationService;
@@ -66,18 +70,28 @@ public class MainApplication extends Application implements ReactApplication, Li
             }
         });
 
+        @Override
+        protected String getJSMainModuleName() {
+            return "index";
+        }
 
+        // react-native-reanimated
+        @Override
+        protected JSIModulePackage getJSIModulePackage() {
+            return new ReanimatedJSIModulePackage();
+        }
+    ;
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onAppBackgrounded() {
-        //App in background
+        // App in background
         MainApplication.appState = AppState.Background;
         Log.d(TAG, "AppState" + MainApplication.appState);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onAppForegrounded() {
-        //App in foreground
+        // App in foreground
         MainApplication.appState = AppState.Foreground;
         Log.d(TAG, "AppState" + MainApplication.appState);
     }
@@ -105,24 +119,25 @@ public class MainApplication extends Application implements ReactApplication, Li
     }
 
     /**
-     * Loads Flipper in React Native templates. Call this in the onCreate method with something like
+     * Loads Flipper in React Native templates. Call this in the onCreate method
+     * with something like
      * initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
      *
      * @param context
      * @param reactInstanceManager
      */
     private static void initializeFlipper(
-        Context context, ReactInstanceManager reactInstanceManager) {
+            Context context, ReactInstanceManager reactInstanceManager) {
         if (BuildConfig.DEBUG) {
             try {
-        /*
-         We use reflection here to pick up the class that initializes Flipper,
-        since Flipper library is not available in release mode
-        */
+                /*
+                 * We use reflection here to pick up the class that initializes Flipper,
+                 * since Flipper library is not available in release mode
+                 */
                 Class<?> aClass = Class.forName("tech.berty.android.ReactNativeFlipper");
                 aClass
-                    .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
-                    .invoke(null, context, reactInstanceManager);
+                        .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
+                        .invoke(null, context, reactInstanceManager);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (NoSuchMethodException e) {

@@ -6,9 +6,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { Maybe, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useInteractionAuthor } from '@berty-tech/react-redux'
+import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty-tech/react-redux'
+import {
+	removeActiveReplyInteraction,
+	selectActiveReplyInteraction,
+} from '@berty-tech/redux/reducers/chatInputs.reducer'
 
-import { useReplyReaction } from '../ReplyReactionContext'
 import { getMediaTypeFromMedias } from '../../utils'
 
 const {
@@ -17,18 +20,20 @@ const {
 
 const isTablet = deviceType === 'pad'
 
-export const ReplyMessageBar: React.FC = () => {
+export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const [{ border, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
-
-	const { activeReplyInte, setActiveReplyInte } = useReplyReaction()
+	const dispatch = useAppDispatch()
+	const activeReplyInteraction = useAppSelector(state =>
+		selectActiveReplyInteraction(state, convPK),
+	)
 	const replyTargetAuthor = useInteractionAuthor(
-		activeReplyInte?.conversationPublicKey || '',
-		activeReplyInte?.cid || '',
+		activeReplyInteraction?.conversationPublicKey || '',
+		activeReplyInteraction?.cid || '',
 	)
 
-	if (!activeReplyInte) {
+	if (!activeReplyInteraction) {
 		return null
 	}
 
@@ -37,7 +42,7 @@ export const ReplyMessageBar: React.FC = () => {
 			style={[
 				border.radius.top.medium,
 				{
-					backgroundColor: activeReplyInte?.backgroundColor,
+					backgroundColor: activeReplyInteraction?.backgroundColor,
 					paddingVertical: 4,
 					paddingLeft: 10,
 					paddingRight: 18,
@@ -66,18 +71,18 @@ export const ReplyMessageBar: React.FC = () => {
 				</Text>
 			</View>
 
-			{activeReplyInte?.payload?.body ? (
+			{activeReplyInteraction?.payload?.body ? (
 				<Text
 					numberOfLines={1}
 					style={[
 						text.size.small,
 						{
-							color: activeReplyInte?.textColor,
+							color: activeReplyInteraction?.textColor,
 							lineHeight: 17,
 						},
 					]}
 				>
-					{activeReplyInte?.payload?.body}
+					{activeReplyInteraction?.payload?.body}
 				</Text>
 			) : (
 				<View
@@ -91,7 +96,7 @@ export const ReplyMessageBar: React.FC = () => {
 						name='attach-outline'
 						height={15}
 						width={15}
-						fill={activeReplyInte?.textColor}
+						fill={activeReplyInteraction?.textColor}
 						style={{ marginTop: 4 }}
 					/>
 					<Text
@@ -99,22 +104,26 @@ export const ReplyMessageBar: React.FC = () => {
 						style={[
 							text.size.small,
 							{
-								color: activeReplyInte?.textColor,
+								color: activeReplyInteraction?.textColor,
 								lineHeight: 17,
 								marginLeft: 10,
 							},
 						]}
 					>
-						{t(`medias.${getMediaTypeFromMedias(activeReplyInte?.medias)}`)}
+						{t(`medias.${getMediaTypeFromMedias(activeReplyInteraction?.medias)}`)}
 					</Text>
 				</View>
 			)}
-			<TouchableOpacity onPress={() => setActiveReplyInte()}>
+			<TouchableOpacity
+				onPress={() => {
+					dispatch(removeActiveReplyInteraction({ convPK }))
+				}}
+			>
 				<Icon
 					name='plus'
 					height={18}
 					width={18}
-					fill={activeReplyInte?.textColor}
+					fill={activeReplyInteraction?.textColor}
 					style={{ marginTop: 2, transform: [{ rotate: '45deg' }] }}
 				/>
 			</TouchableOpacity>
@@ -130,6 +139,7 @@ export const ChatTextInput: React.FC<{
 	handleTabletSubmit?: Maybe<() => void>
 	placeholder?: Maybe<string>
 	onFocusChange?: Maybe<(val: boolean) => void>
+	convPK: string
 }> = React.memo(
 	({
 		disabled,
@@ -139,6 +149,7 @@ export const ChatTextInput: React.FC<{
 		value,
 		onChangeText,
 		onSelectionChange,
+		convPK,
 	}) => {
 		const [{ text }, { scaleSize }] = useStyles()
 		const colors = useThemeColor()
@@ -156,7 +167,7 @@ export const ChatTextInput: React.FC<{
 					flex: 1,
 				}}
 			>
-				<ReplyMessageBar />
+				<ReplyMessageBar convPK={convPK} />
 				<TextInput
 					value={value}
 					multiline
