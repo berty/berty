@@ -38,6 +38,8 @@ const (
 	ReplicationDatabaseFilename = "replication.sqlite"
 	StorageKeyName              = "storage"
 	StorageKeySize              = 32
+	StorageSaltName             = "storage_salt"
+	StorageSaltSize             = 16
 )
 
 func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[cryptoutil.KeySize]byte, sk *[cryptoutil.KeySize]byte, err error) {
@@ -116,7 +118,16 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 			}
 		}
 
-		account, err := GetAccountMetaForName(ctx, rootDir, subitem.Name(), storageKey, logger)
+		var storageSalt []byte
+		if ks != nil {
+			var err error
+			if storageSalt, err = GetOrCreateStorageSaltForAccount(ks, subitem.Name()); err != nil {
+				accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
+				continue
+			}
+		}
+
+		account, err := GetAccountMetaForName(ctx, rootDir, subitem.Name(), storageKey, storageSalt, logger)
 		if err != nil {
 			accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
 		} else {
@@ -129,13 +140,13 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 
 var storageKeyMutex = sync.Mutex{}
 
-func getOrCreateStorageKey(ks NativeKeystore, keyName string) ([]byte, error) {
+func getOrCreateKeystoreKey(ks NativeKeystore, keyName string, keySize int) ([]byte, error) {
 	storageKeyMutex.Lock()
 	defer storageKeyMutex.Unlock()
 
 	key, getErr := ks.Get(keyName)
 	if getErr != nil {
-		keyData := make([]byte, StorageKeySize)
+		keyData := make([]byte, keySize)
 		if _, err := crand.Read(keyData); err != nil {
 			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
@@ -153,19 +164,27 @@ func getOrCreateStorageKey(ks NativeKeystore, keyName string) ([]byte, error) {
 }
 
 func GetOrCreateMasterStorageKey(ks NativeKeystore) ([]byte, error) {
-	return getOrCreateStorageKey(ks, StorageKeyName)
+	return getOrCreateKeystoreKey(ks, StorageKeyName, StorageKeySize)
 }
 
 func GetOrCreateStorageKeyForAccount(ks NativeKeystore, accountID string) ([]byte, error) {
-	return getOrCreateStorageKey(ks, fmt.Sprintf("%s/%s", StorageKeyName, accountID))
+	return getOrCreateKeystoreKey(ks, fmt.Sprintf("%s/%s", StorageKeyName, accountID), StorageKeySize)
 }
 
-func GetAccountMetaForName(ctx context.Context, rootDir string, accountID string, storageKey []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
+func GetOrCreateMasterStorageSalt(ks NativeKeystore) ([]byte, error) {
+	return getOrCreateKeystoreKey(ks, StorageSaltName, StorageSaltSize)
+}
+
+func GetOrCreateStorageSaltForAccount(ks NativeKeystore, accountID string) ([]byte, error) {
+	return getOrCreateKeystoreKey(ks, fmt.Sprintf("%s/%s/salt", StorageKeyName, accountID), StorageSaltSize)
+}
+
+func GetAccountMetaForName(ctx context.Context, rootDir string, accountID string, storageKey []byte, storageSalt []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
 
-	ds, err := GetRootDatastoreForPath(GetAccountDir(rootDir, accountID), storageKey, logger)
+	ds, err := GetRootDatastoreForPath(GetAccountDir(rootDir, accountID), storageKey, storageSalt, logger)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
@@ -227,12 +246,12 @@ func GetDatastoreDir(dir string) (string, error) {
 	return dir, nil
 }
 
-func GetAccountAppStorage(rootDir string, accountID string, key []byte) (datastore.Datastore, error) {
+func GetAccountAppStorage(rootDir string, accountID string, key []byte, salt []byte) (datastore.Datastore, error) {
 	dbPath := filepath.Join(GetAccountDir(rootDir, accountID), "app-account.sqlite")
-	return encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", key)
+	return encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", key, salt)
 }
 
-func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datastore.Batching, error) {
+func GetRootDatastoreForPath(dir string, key []byte, salt []byte, logger *zap.Logger) (datastore.Batching, error) {
 	inMemory := dir == InMemoryDir
 
 	var ds datastore.Batching
@@ -245,7 +264,7 @@ func GetRootDatastoreForPath(dir string, key []byte, logger *zap.Logger) (datast
 		}
 
 		dbPath := filepath.Join(dir, "datastore.sqlite")
-		ds, err = encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "blocks", key)
+		ds, err = encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "blocks", key, salt)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}

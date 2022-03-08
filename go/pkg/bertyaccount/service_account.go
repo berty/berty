@@ -442,7 +442,16 @@ func (s *service) getAccountMetaForName(ctx context.Context, accountID string) (
 			return nil, err
 		}
 	}
-	return accountutils.GetAccountMetaForName(ctx, s.rootdir, accountID, storageKey, s.logger)
+
+	var storageSalt []byte
+	if s.nativeKeystore != nil {
+		var err error
+		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+			return nil, err
+		}
+	}
+
+	return accountutils.GetAccountMetaForName(ctx, s.rootdir, accountID, storageKey, storageSalt, s.logger)
 }
 
 func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.DeleteAccount_Request) (_ *accounttypes.DeleteAccount_Reply, err error) {
@@ -484,7 +493,15 @@ func (s *service) putInAccountDatastore(ctx context.Context, accountID string, k
 		}
 	}
 
-	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, s.logger)
+	var storageSalt []byte
+	if s.nativeKeystore != nil {
+		var err error
+		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+			return err
+		}
+	}
+
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, storageSalt, s.logger)
 	if err != nil {
 		return err
 	}
@@ -895,7 +912,16 @@ func (s *service) NetworkConfigForAccount(ctx context.Context, accountID string)
 		}
 	}
 
-	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, s.logger)
+	var storageSalt []byte
+	if s.nativeKeystore != nil {
+		var err error
+		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+			s.logger.Warn("unable to read network configuration for account: failed to get account storage salt", zap.Error(err), logutil.PrivateString("account-id", accountID))
+			return NetworkConfigGetDefault(), false
+		}
+	}
+
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, storageSalt, s.logger)
 	if err != nil {
 		s.logger.Warn("unable to read network configuration for account: failed to get root datastore", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false

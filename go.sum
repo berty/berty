@@ -2,8 +2,8 @@ bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnD
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 berty.tech/go-ipfs-log v1.6.0 h1:z7v597EgOl851hE1P7k+J/us6w3sO3f0DLsVJlc9KAQ=
 berty.tech/go-ipfs-log v1.6.0/go.mod h1:iUEkY66ZdeK01L/MQFUsHz49wYR1HdROuQ64EVGSBDE=
-berty.tech/go-ipfs-repo-encrypted v1.1.2 h1:6LYXrUsKUsNzCZolkIHXDsyJN0gZfz+zO6C65d4KD28=
-berty.tech/go-ipfs-repo-encrypted v1.1.2/go.mod h1:kzmfcfUvtQWxBFbmjvmkkoOquwJfnFsEkG0xZy2G1YU=
+berty.tech/go-ipfs-repo-encrypted v1.1.3 h1:/ZP4DFHk/4v5cI1/54QAQAagHNUguVyU4wQxt70Y0c4=
+berty.tech/go-ipfs-repo-encrypted v1.1.3/go.mod h1:kzmfcfUvtQWxBFbmjvmkkoOquwJfnFsEkG0xZy2G1YU=
 berty.tech/go-orbit-db v1.14.2 h1:1pcU/kpD+jD3P91GMfSw2PghDRTkXhmVwaNCwH5vnrs=
 berty.tech/go-orbit-db v1.14.2/go.mod h1:dqfRSCVO1xSFv9Bq2c8JrDT5C43nRYd3NFMh93yPriM=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=

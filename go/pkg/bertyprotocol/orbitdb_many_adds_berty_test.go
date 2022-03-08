@@ -21,7 +21,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *protocoltypes.Group, pathBase string, storageKey []byte, amountToAdd, amountCurrentlyPresent int) {
+func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *protocoltypes.Group, pathBase string, storageKey []byte, storageSalt []byte, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
 	testutil.FilterSpeed(t, testutil.Slow)
 	t.Logf("TestAddBerty: amountToAdd: %d, amountCurrentlyPresent: %d\n", amountToAdd, amountCurrentlyPresent)
@@ -36,7 +36,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	defer lock.Unlock()
 
-	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, storageKey, zap.NewNop())
+	baseDS, err := accountutils.GetRootDatastoreForPath(pathBase, storageKey, storageSalt, zap.NewNop())
 	require.NoError(t, err)
 
 	baseDS = sync_ds.MutexWrap(baseDS)
@@ -136,11 +136,12 @@ func TestAddBerty(t *testing.T) {
 	require.NoError(t, err)
 
 	storageKey := []byte("42424242424242424242424242424242")
+	storageSalt := []byte("2121212121212121")
 
-	testAddBerty(ctx, t, api, g, pathBase, storageKey, 20, 0)
-	testAddBerty(ctx, t, api, g, pathBase, storageKey, 0, 20)
-	testAddBerty(ctx, t, api, g, pathBase, storageKey, 20, 20)
-	testAddBerty(ctx, t, api, g, pathBase, storageKey, 0, 40)
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, storageSalt, 20, 0)
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, storageSalt, 0, 20)
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, storageSalt, 20, 20)
+	testAddBerty(ctx, t, api, g, pathBase, storageKey, storageSalt, 0, 40)
 
 	// FIXME: use github.com/stretchr/testify/suite
 }
