@@ -1,5 +1,6 @@
 import React from 'react'
-import { ScrollView, View, Text } from 'react-native'
+import { ScrollView, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
@@ -10,6 +11,7 @@ import { ButtonSettingV2, Section } from '../shared-components'
 export const ContactAndConversations: ScreenFC<'Settings.ContactAndConversations'> = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
+	const { t }: { t: any } = useTranslation()
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -18,16 +20,21 @@ export const ContactAndConversations: ScreenFC<'Settings.ContactAndConversations
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<Text style={{ textAlign: 'center' }}>Blah sur reset du QRCode</Text>
 				<Section>
 					<ButtonSettingV2
-						text='Reset my contact link/QR Code'
+						text={t('settings.contact-convs.reset-button')}
 						icon='bluetooth'
 						toggle={{ enable: true }}
 						disabled
 					/>
-					<ButtonSettingV2 text='Enabled incoming contact requests' icon='info' last disabled />
+					<ButtonSettingV2
+						text={t('settings.contact-convs.request-button')}
+						icon='info'
+						last
+						disabled
+					/>
 				</Section>
+				{/* TODO i18n */}
 				<Section>
 					<ButtonSettingV2 text='Find contacts' icon='bluetooth' last />
 				</Section>

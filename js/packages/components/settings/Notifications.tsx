@@ -18,6 +18,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
+				{/* TODO i18n */}
 				<Section>
 					<ButtonSettingV2
 						text='Enable globally for account'

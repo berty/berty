@@ -1,6 +1,7 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
@@ -15,6 +16,7 @@ export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
 	const isDark = useSelector(selectThemeIsDark)
 	const dispatch = useDispatch()
 	const { navigate } = useNavigation()
+	const { t }: { t: any } = useTranslation()
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -25,7 +27,7 @@ export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
 			>
 				<Section>
 					<ButtonSettingV2
-						text='Dark mode'
+						text={t('settings.appearance.dark-button')}
 						icon='bluetooth'
 						toggle={{
 							enable: true,
@@ -35,9 +37,9 @@ export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
 							},
 						}}
 					/>
-					<ButtonSettingV2 text='Auto dark mode' icon='info' toggle={{ enable: true }} disabled />
+					{/* TODO: replace dark toggle by a menu or a radio button:  Light, Dark, System based*/}
 					<ButtonSettingV2
-						text='Theme editor'
+						text={t('settings.appearance.editor-button')}
 						icon='info'
 						onPress={() => navigate('Settings.ThemeEditor')}
 						last

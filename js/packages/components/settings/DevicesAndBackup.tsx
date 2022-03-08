@@ -18,6 +18,7 @@ export const DevicesAndBackup: ScreenFC<'Settings.DevicesAndBackup'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
+				{/* TODO i18n */}
 				<Section>
 					<ButtonSettingV2 text='Link device' icon='bluetooth' disabled />
 					<ButtonSettingV2 text='Configure your node' icon='info' disabled />

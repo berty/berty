@@ -76,7 +76,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 							navigate('Onboarding.CreateAccount')
 						}}
 					>
-						create account
+						{t('onboarding.getstarted.create-button') as any}
 					</Button>
 					<Button
 						status='secondary'
@@ -84,10 +84,10 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 							importAccountFromDocumentPicker(ctx)
 						}}
 					>
-						import account
+						{t('onboarding.getstarted.import-button') as any}
 					</Button>
 					<Button status='secondary' onPress={() => {}}>
-						link device
+						{t('onboarding.getstarted.link-button') as any}
 					</Button>
 				</View>
 			</View>

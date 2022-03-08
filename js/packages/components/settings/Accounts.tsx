@@ -1,5 +1,6 @@
 import React from 'react'
 import { ScrollView, View, TouchableOpacity, Text } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -98,6 +99,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 	const ctx = useMessengerContext()
 	const reduxDispatch = useDispatch()
 	const { navigate } = useNavigation()
+	const { t }: { t: any } = useTranslation()
 
 	const [accountsCollapse, setAccountsCollapse] = React.useState<boolean>(true)
 
@@ -113,7 +115,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 				</Section>
 				<Section>
 					<ButtonSettingV2
-						text='Accounts'
+						text={t('settings.accounts.accounts-button')}
 						icon='bluetooth'
 						arrowIcon='arrow-ios-downward'
 						onPress={() => setAccountsCollapse(!accountsCollapse)}
@@ -128,7 +130,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 				</Section>
 				<Section>
 					<ButtonSettingV2
-						text='Create an account'
+						text={t('settings.accounts.create-button')}
 						icon='bluetooth'
 						onPress={async () => {
 							await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
@@ -136,15 +138,20 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 						}}
 					/>
 					<ButtonSettingV2
-						text='Import an account'
+						text={t('settings.accounts.import-button')}
 						icon='bluetooth'
 						onPress={async () => await importAccountFromDocumentPicker(ctx)}
 					/>
-					<ButtonSettingV2 text='Link another account' icon='bluetooth' disabled last />
+					<ButtonSettingV2
+						text={t('settings.accounts.link-button')}
+						icon='bluetooth'
+						disabled
+						last
+					/>
 				</Section>
 				<Section>
 					<ButtonSettingV2
-						text='Delete your account'
+						text={t('settings.accounts.delete-button')}
 						icon='bluetooth'
 						onPress={() => navigate('Settings.DeleteAccount')}
 						last

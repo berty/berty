@@ -1,4 +1,5 @@
 import LottieView from 'lottie-react-native'
+import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { StatusBar, Text, View } from 'react-native'
 
@@ -15,6 +16,7 @@ const CustomModeBody: React.FC = () => {
 	const colors = useThemeColor()
 	const [{ padding, border, margin, text }, { scaleSize }] = useStyles()
 	const { navigate } = useNavigation()
+	const { t }: { t: any } = useTranslation()
 
 	return (
 		<View style={[{ flex: 1 }]}>
@@ -62,7 +64,7 @@ const CustomModeBody: React.FC = () => {
 								},
 							]}
 						>
-							Custom Mode
+							{t('onboarding.custom-mode.summary.title')}
 						</Text>
 					</View>
 					<View style={[margin.top.medium]}>
@@ -77,7 +79,7 @@ const CustomModeBody: React.FC = () => {
 								},
 							]}
 						>
-							Custom Privacy Experience
+							{t('onboarding.custom-mode.summary.subtitle')}
 						</Text>
 					</View>
 					<View style={[margin.top.medium]}>
@@ -87,8 +89,7 @@ const CustomModeBody: React.FC = () => {
 								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
 							]}
 						>
-							By using Custom Configuration, you'll be able to manage your own settings and setup a
-							custom privacy experience.
+							{t('onboarding.custom-mode.summary.first-point')}
 						</Text>
 					</View>
 					<View style={[margin.top.medium]}>
@@ -98,7 +99,7 @@ const CustomModeBody: React.FC = () => {
 								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
 							]}
 						>
-							For a more easy ride, use Default Mode.
+							{t('onboarding.custom-mode.summary.second-point')}
 						</Text>
 					</View>
 				</View>
@@ -133,7 +134,7 @@ const CustomModeBody: React.FC = () => {
 								},
 							]}
 						>
-							back
+							{t('onboarding.custom-mode.summary.back-button')}
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -158,7 +159,7 @@ const CustomModeBody: React.FC = () => {
 								},
 							]}
 						>
-							accept
+							{t('onboarding.custom-mode.summary.accept-button')}
 						</Text>
 					</TouchableOpacity>
 				</View>

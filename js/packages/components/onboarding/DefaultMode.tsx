@@ -1,4 +1,5 @@
 import LottieView from 'lottie-react-native'
+import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { ActivityIndicator, StatusBar, Text, View } from 'react-native'
 
@@ -22,9 +23,10 @@ const DefaultModeBody: React.FC = () => {
 	const colors = useThemeColor()
 	const [{ padding, border, margin, text }, { scaleSize }] = useStyles()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
+	const { t }: { t: any } = useTranslation()
 
 	const onPress = React.useCallback(async () => {
-		const status = await rnutil.checkPermissions('p2p', {
+		const status = await rnutil.checkPermissions('proximity', {
 			navigate,
 			navigateToPermScreenOnProblem: true,
 		})
@@ -93,7 +95,7 @@ const DefaultModeBody: React.FC = () => {
 								},
 							]}
 						>
-							Default Mode
+							{t('onboarding.default-mode.summary.title')}
 						</Text>
 					</View>
 					<View style={[margin.top.medium]}>
@@ -108,7 +110,7 @@ const DefaultModeBody: React.FC = () => {
 								},
 							]}
 						>
-							{'Easy & Ready for all'}
+							{t('onboarding.default-mode.summary.subtitle')}
 						</Text>
 					</View>
 					<View style={[margin.top.medium]}>
@@ -118,8 +120,7 @@ const DefaultModeBody: React.FC = () => {
 								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
 							]}
 						>
-							This mode will facilitate your experience activating push-notifications by default,
-							replications services and proximity drivers.
+							{t('onboarding.default-mode.summary.first-point')}
 						</Text>
 					</View>
 					<View style={[margin.top.medium]}>
@@ -129,7 +130,7 @@ const DefaultModeBody: React.FC = () => {
 								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
 							]}
 						>
-							For custom privacy settings, use Custom Mode.
+							{t('onboarding.default-mode.summary.second-point')}
 						</Text>
 					</View>
 				</View>
@@ -164,7 +165,7 @@ const DefaultModeBody: React.FC = () => {
 								},
 							]}
 						>
-							back
+							{t('onboarding.default-mode.summary.back-button')}
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -190,7 +191,7 @@ const DefaultModeBody: React.FC = () => {
 									},
 								]}
 							>
-								accept
+								{t('onboarding.default-mode.summary.accept-button')}
 							</Text>
 						)}
 					</TouchableOpacity>

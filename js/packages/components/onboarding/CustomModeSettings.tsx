@@ -105,7 +105,7 @@ const Proximity: React.FC<{
 	return (
 		<View>
 			<ButtonSetting
-				name={t('onboarding.advanced-settings.first-part.first-button')}
+				name={t('onboarding.custom-mode.settings.off-grid.ble-button')}
 				color={colors['main-text']}
 				icon='expert-ble'
 				iconPack='custom'
@@ -131,7 +131,7 @@ const Proximity: React.FC<{
 					if (status === RESULTS.GRANTED) {
 						setNewConfig(retConfig)
 					} else {
-						await rnutil.checkPermissions('p2p', {
+						await rnutil.checkPermissions('proximity', {
 							navigate,
 							navigateToPermScreenOnProblem: true,
 							onComplete: async () => () => setNewConfig(retConfig),
@@ -141,7 +141,7 @@ const Proximity: React.FC<{
 			/>
 			{Platform.OS === 'ios' && (
 				<ButtonSetting
-					name='Multipeer connectivity'
+					name={t('onboarding.custom-mode.settings.off-grid.mc-button')}
 					color={colors['main-text']}
 					icon='expert-ble'
 					iconPack='custom'
@@ -169,7 +169,7 @@ const Proximity: React.FC<{
 						if (status === RESULTS.GRANTED) {
 							setNewConfig(retConfig)
 						} else {
-							await rnutil.checkPermissions('p2p', {
+							await rnutil.checkPermissions('proximity', {
 								navigate,
 								navigateToPermScreenOnProblem: true,
 								onComplete: () => setNewConfig(retConfig),
@@ -180,7 +180,7 @@ const Proximity: React.FC<{
 			)}
 			{Platform.OS === 'android' && (
 				<ButtonSetting
-					name='Android nearby'
+					name={t('onboarding.custom-mode.settings.off-grid.nearby-button')}
 					color={colors['main-text']}
 					icon='expert-ble'
 					iconPack='custom'
@@ -206,7 +206,7 @@ const Proximity: React.FC<{
 						if (status === RESULTS.GRANTED) {
 							setNewConfig(retConfig)
 						} else {
-							await rnutil.checkPermissions('p2p', {
+							await rnutil.checkPermissions('proximity', {
 								navigate,
 								navigateToPermScreenOnProblem: true,
 								onComplete: () => setNewConfig(retConfig),
@@ -216,7 +216,7 @@ const Proximity: React.FC<{
 				/>
 			)}
 			<ButtonSetting
-				name={t('onboarding.advanced-settings.first-part.second-button')}
+				name={t('onboarding.custom-mode.settings.off-grid.mdns-button')}
 				color={colors['main-text']}
 				icon='expert-setting'
 				iconPack='custom'
@@ -240,7 +240,7 @@ const Proximity: React.FC<{
 	)
 }
 
-const PeerToPeer: React.FC<{
+const Routing: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
 	newConfig: beapi.account.INetworkConfig | null
 }> = ({ setNewConfig, newConfig }) => {
@@ -249,7 +249,7 @@ const PeerToPeer: React.FC<{
 	return (
 		<View>
 			<ButtonSetting
-				name={t('onboarding.advanced-settings.second-part.first-button')}
+				name={t('onboarding.custom-mode.settings.routing.dht-button')}
 				color={colors['main-text']}
 				icon='expert-setting'
 				iconPack='custom'
@@ -271,7 +271,7 @@ const PeerToPeer: React.FC<{
 			/>
 			{/* TODO: node list */}
 			<ButtonSetting
-				name={`rendezvous: ${JSON.stringify(newConfig?.rendezvous)}`}
+				name={t('onboarding.custom-mode.settings.routing.rdvp-button')}
 				color={colors['main-text']}
 				icon='privacy'
 				iconPack='custom'
@@ -283,17 +283,18 @@ const PeerToPeer: React.FC<{
 	)
 }
 
-const Services: React.FC<{
+const Access: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
 	newConfig: beapi.account.INetworkConfig | null
-}> = ({ newConfig }) => {
+}> = (/*{ newConfig }*/) => {
 	const colors = useThemeColor()
 	const navigation = useNavigation()
+	const { t } = useTranslation()
 
 	return (
 		<View>
 			<ButtonSetting
-				name={`relay: ${JSON.stringify(newConfig?.staticRelay)}`}
+				name={t('onboarding.custom-mode.settings.access.relay-button')}
 				icon='earth'
 				iconPack='custom'
 				color={colors['main-text']}
@@ -303,7 +304,7 @@ const Services: React.FC<{
 				onPress={() => navigation.navigate('Settings.NetworkMap')}
 			/>
 			<ButtonSetting
-				name={`bootstrap: ${JSON.stringify(newConfig?.bootstrap)}`}
+				name={t('onboarding.custom-mode.settings.access.bootstrap-button')}
 				icon='earth'
 				iconPack='custom'
 				color={colors['main-text']}
@@ -313,7 +314,7 @@ const Services: React.FC<{
 				onPress={() => navigation.navigate('Settings.NetworkMap')}
 			/>
 			<ButtonSetting
-				name='replication'
+				name={t('onboarding.custom-mode.settings.access.replication-button')}
 				icon='earth'
 				iconPack='custom'
 				color={colors['main-text']}
@@ -342,7 +343,7 @@ const CustomConfig: React.FC<{
 					{ backgroundColor: colors['main-background'] },
 				]}
 			>
-				<ConfigPart title={t('onboarding.advanced-settings.first-part.title')} icon='proximity' />
+				<ConfigPart title={t('onboarding.custom-mode.settings.off-grid.title')} icon='proximity' />
 				<Proximity setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
 			<View
@@ -353,8 +354,8 @@ const CustomConfig: React.FC<{
 					{ backgroundColor: colors['main-background'] },
 				]}
 			>
-				<ConfigPart title={t('onboarding.advanced-settings.second-part.title')} icon='peer' />
-				<PeerToPeer setNewConfig={setNewConfig} newConfig={newConfig} />
+				<ConfigPart title={t('onboarding.custom-mode.settings.routing.title')} icon='proximity' />
+				<Routing setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
 			<View
 				style={[
@@ -365,11 +366,11 @@ const CustomConfig: React.FC<{
 				]}
 			>
 				<ConfigPart
-					title={t('onboarding.advanced-settings.third-part.title')}
+					title={t('onboarding.custom-mode.settings.access.title')}
 					icon='services'
 					iconSize={50}
 				/>
-				<Services setNewConfig={setNewConfig} newConfig={newConfig} />
+				<Access setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
 		</View>
 	)
@@ -382,6 +383,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
+	const { t } = useTranslation()
 
 	return (
 		<View style={{ alignSelf: 'center', flex: 1 }}>
@@ -408,7 +410,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 								{ fontFamily: 'Open Sans', fontWeight: '700', color: colors['reverted-main-text'] },
 							]}
 						>
-							ACCEPT
+							{t('onboarding.custom-mode.settings.accept-button')}
 						</Text>
 					)}
 				</TouchableOpacity>
@@ -424,6 +426,7 @@ const EnableDisableAll: React.FC<{
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
 	const { navigate } = useNavigation()
+	const { t } = useTranslation()
 
 	const enable: beapi.account.INetworkConfig = {
 		bootstrap: [':default:'],
@@ -458,7 +461,9 @@ const EnableDisableAll: React.FC<{
 				},
 			]}
 		>
-			<Text style={{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] }}>all</Text>
+			<Text style={{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] }}>
+				{t('onboarding.custom-mode.settings.all-button')}
+			</Text>
 			<View style={[padding.small]}>
 				<Toggle
 					checked={isToggled}
@@ -476,7 +481,7 @@ const EnableDisableAll: React.FC<{
 							if (status === RESULTS.GRANTED) {
 								setNewConfig(enable)
 							} else {
-								await rnutil.checkPermissions('p2p', {
+								await rnutil.checkPermissions('proximity', {
 									navigate,
 									navigateToPermScreenOnProblem: true,
 									onComplete: async () => () => setNewConfig(enable),

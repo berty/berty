@@ -10,10 +10,10 @@ import {
 	RESULTS,
 } from 'react-native-permissions'
 
-export type PermissionType = 'p2p' | 'audio' | 'notification' | 'camera' | 'gallery'
+export type PermissionType = 'proximity' | 'audio' | 'notification' | 'camera' | 'gallery'
 
 export const permissionsByDevice: Record<string, Permission> = {
-	p2p:
+	proximity:
 		Platform.OS === 'ios'
 			? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
 			: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,

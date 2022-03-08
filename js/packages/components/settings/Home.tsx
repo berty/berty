@@ -1,6 +1,7 @@
 import React from 'react'
 import { ScrollView, TouchableOpacity, View, Text } from 'react-native'
 import { Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
@@ -66,6 +67,7 @@ export const Home: ScreenFC<'Settings.Home'> = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
+	const { t }: { t: any } = useTranslation()
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: 20 }}>
@@ -76,50 +78,68 @@ export const Home: ScreenFC<'Settings.Home'> = () => {
 			>
 				<ProfileButton />
 				<Section>
-					<ButtonSettingV2 text='Connect around me' icon='bluetooth' toggle={{ enable: true }} />
 					<ButtonSettingV2
-						text='Notifications'
+						text={t('settings.home.proximity-button')}
+						icon='bluetooth'
+						toggle={{ enable: true }}
+					/>
+					{/*
+					<ButtonSettingV2
+						text={t('settings.home.notifications-button')}
 						icon='bell'
 						onPress={() => navigate('Settings.Notifications')}
 					/>
 					<ButtonSettingV2
-						text='Contact and conversations'
+						text={t('settings.home.contact-convs-button')}
 						icon='message-circle'
 						onPress={() => navigate('Settings.ContactAndConversations')}
 					/>
+					*/}
 					<ButtonSettingV2
-						text='Appearence'
+						text={t('settings.home.appearance-button')}
 						icon='smile'
 						onPress={() => navigate('Settings.Appearence')}
 					/>
+					{/*
 					<ButtonSettingV2
-						text='Devices and backup'
+						text={t('settings.home.devices-button')}
 						icon='smartphone'
 						onPress={() => navigate('Settings.DevicesAndBackup')}
 						last
 					/>
+					*/}
 				</Section>
 				<Section>
+					{/*
 					<ButtonSettingV2
-						text='Security'
+						text={t('settings.home.security-button')}
 						icon='lock'
 						onPress={() => navigate('Settings.Security')}
 					/>
+					*/}
 					<ButtonSettingV2
-						text='Accounts'
+						text={t('settings.home.accounts-button')}
 						icon='user'
 						onPress={() => navigate('Settings.Accounts')}
 					/>
 					<ButtonSettingV2
-						text='Network'
+						text={t('settings.home.network-button')}
 						icon='wifi'
 						last
 						onPress={() => navigate('Settings.Network')}
 					/>
 				</Section>
 				<Section>
+					{/*
 					<ButtonSettingV2
-						text='About Berty'
+						text={t('settings.home.bug-button')}
+						icon='info'
+						last
+						onPress={() => console.log('TODO')}
+					/>
+					*/}
+					<ButtonSettingV2
+						text={t('settings.home.about-button')}
 						icon='info'
 						last
 						onPress={() => navigate('Settings.AboutBerty')}

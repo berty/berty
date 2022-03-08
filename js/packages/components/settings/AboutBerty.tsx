@@ -1,5 +1,6 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
@@ -11,6 +12,7 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
+	const { t }: { t: any } = useTranslation()
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -20,10 +22,14 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Section>
-					<ButtonSettingV2 text='FAQ' icon='bluetooth' onPress={() => navigate('Settings.Faq')} />
-					<ButtonSettingV2 text='Roadmap' icon='info' />
-					<ButtonSettingV2 text='Privacy Policy' icon='info' />
-					<ButtonSettingV2 text='Open source licenses' icon='info' last />
+					<ButtonSettingV2
+						text={t('settings.about.faq-button')}
+						icon='bluetooth'
+						onPress={() => navigate('Settings.Faq')}
+					/>
+					<ButtonSettingV2 text={t('settings.about.roadmap-button')} icon='info' />
+					<ButtonSettingV2 text={t('settings.about.policy-button')} icon='info' />
+					<ButtonSettingV2 text={t('settings.about.license-button')} icon='info' last />
 				</Section>
 			</ScrollView>
 		</View>

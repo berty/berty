@@ -14,7 +14,7 @@ import {
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
 import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
-import p2pLottie from '@berty-tech/assets/p2p-lottie.json'
+import proximityLottie from '@berty-tech/assets/proximity-lottie.json'
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
@@ -26,7 +26,7 @@ const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
 	camera: cameraLottie,
 	notification: notificationLottie,
-	p2p: p2pLottie,
+	proximity: proximityLottie,
 	gallery: cameraLottie, // get a lottie file for gallery
 }
 
@@ -95,7 +95,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				} catch (err) {
 					console.warn('request notification permisison err:', err)
 				}
-			} else if (permissionType === 'p2p') {
+			} else if (permissionType === 'proximity') {
 				if (selectedAccount) {
 					const currentConfig = await accountService.networkConfigGet({
 						accountId: selectedAccount,
@@ -176,6 +176,13 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						},
 					]}
 				>
+					{/* Ignore check for i18n missing keys
+						permission.notification.title
+						permission.proximity.title
+						permission.camera.title
+						permission.audio.title
+						permission.gallery.title
+					*/}
 					{t(`permission.${permissionType}.title`)}
 				</Text>
 				<Text
@@ -188,10 +195,16 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						},
 					]}
 				>
-					{permissionType === 'p2p'
+					{/* Ignore check for i18n missing keys
+						permission.notification.desc
+						permission.camera.desc
+						permission.audio.desc
+						permission.gallery.desc
+					*/}
+					{permissionType === 'proximity'
 						? Platform.OS === 'ios'
-							? t(`permission.${permissionType}.ios-desc`)
-							: t(`permission.${permissionType}.android-desc`)
+							? t(`permission.proximity.ios-desc`)
+							: t(`permission.proximity.android-desc`)
 						: t(`permission.${permissionType}.desc`)}
 				</Text>
 				{permissionStatus === RESULTS.BLOCKED && (
@@ -235,6 +248,10 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 								},
 							]}
 						>
+							{/* Ignore check for i18n missing keys
+								permission.button-labels.settings
+								permission.button-labels.allow
+							*/}
 							{t(
 								`permission.button-labels.${
 									permissionStatus === RESULTS.BLOCKED ? 'settings' : 'allow'

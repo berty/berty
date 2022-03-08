@@ -19,6 +19,7 @@ export const Security: ScreenFC<'Settings.Security'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Section>
+					{/* TODO i18n */}
 					<ButtonSettingV2 text='TouchID/FaceID before open account' icon='bluetooth' disabled />
 					<ButtonSettingV2 text='Password' icon='info' disabled last />
 				</Section>

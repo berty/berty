@@ -109,8 +109,8 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 					await exportColorThemeToFile(JSON.stringify(colors), selectedTheme)
 					if (Platform.OS === 'android') {
 						showNotification({
-							title: t('settings.mode.notification-file-saved.title'),
-							message: t('settings.mode.notification-file-saved.desc'),
+							title: t('settings.theme-editor.notification-file-saved.title'),
+							message: t('settings.theme-editor.notification-file-saved.desc'),
 							additionalProps: { type: 'message' },
 						})
 					}

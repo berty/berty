@@ -24,11 +24,12 @@ const Proximity: React.FC<{
 	networkConfig: beapi.account.INetworkConfig | null
 }> = ({ networkConfig, setNewConfig }) => {
 	const { navigate } = useNavigation()
+	const { t }: { t: any } = useTranslation()
 
 	return (
 		<Section>
 			<ButtonSettingV2
-				text='BLE'
+				text={t('settings.network.ble-button')}
 				icon='bluetooth'
 				toggle={{
 					enable: true,
@@ -53,7 +54,7 @@ const Proximity: React.FC<{
 						if (status === RESULTS.GRANTED) {
 							setNewConfig(newConfig)
 						} else {
-							await rnutil.checkPermissions('p2p', {
+							await rnutil.checkPermissions('proximity', {
 								navigate,
 								navigateToPermScreenOnProblem: true,
 								onComplete: async () => setNewConfig(newConfig),
@@ -64,7 +65,7 @@ const Proximity: React.FC<{
 			/>
 			{Platform.OS === 'ios' && (
 				<ButtonSettingV2
-					text='MC'
+					text={t('settings.network.mc-button')}
 					icon='wifi'
 					toggle={{
 						enable: true,
@@ -88,7 +89,7 @@ const Proximity: React.FC<{
 							if (status === RESULTS.GRANTED) {
 								setNewConfig(newConfig)
 							} else {
-								await rnutil.checkPermissions('p2p', {
+								await rnutil.checkPermissions('proximity', {
 									navigate,
 									navigateToPermScreenOnProblem: true,
 									onComplete: async () => setNewConfig(newConfig),
@@ -100,7 +101,7 @@ const Proximity: React.FC<{
 			)}
 			{Platform.OS === 'android' && (
 				<ButtonSettingV2
-					text='Nearby'
+					text={t('settings.network.nearby-button')}
 					icon='wifi'
 					toggle={{
 						enable: true,
@@ -121,7 +122,7 @@ const Proximity: React.FC<{
 							if (status === RESULTS.GRANTED) {
 								setNewConfig(newConfig)
 							} else {
-								await rnutil.checkPermissions('p2p', {
+								await rnutil.checkPermissions('proximity', {
 									navigate,
 									navigateToPermScreenOnProblem: true,
 									onComplete: async () => setNewConfig(newConfig),
@@ -132,7 +133,7 @@ const Proximity: React.FC<{
 				/>
 			)}
 			<ButtonSettingV2
-				text='MDNS'
+				text={t('settings.network.mdns-button')}
 				icon='wifi'
 				toggle={{
 					enable: true,
@@ -159,7 +160,6 @@ const InputSetting: React.FC<{
 }> = ({ setNewConfig, obj }) => {
 	const [{ border, padding, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { t } = useTranslation()
 	const [input, setInput] = React.useState<string>('')
 	const networkConfig = useSelector(selectNetworkConfig)
 
@@ -199,7 +199,6 @@ const InputSetting: React.FC<{
 				<TextInput
 					value={input}
 					placeholderTextColor={`${colors['main-text']}50`}
-					placeholder={t('onboarding.advanced-settings.third-part.second-button.placeholder')}
 					style={[margin.left.small, { fontFamily: 'Open Sans', fontWeight: '600', padding: 0 }]}
 					onChangeText={(text: string) => {
 						setInput(text)
@@ -318,13 +317,13 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 			>
 				<Section>
 					<ButtonSettingV2
-						text='Load voice memeo on cellular'
+						text={t('settings.network.memo-cell-button')}
 						icon='bluetooth'
 						toggle={{ enable: true }}
 						disabled
 					/>
 					<ButtonSettingV2
-						text='Load medias on cellular'
+						text={t('settings.network.medias-cell-button')}
 						icon='bell'
 						toggle={{ enable: true }}
 						disabled
@@ -333,7 +332,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 				<Proximity setNewConfig={setNewConfig} networkConfig={networkConfig} />
 				<Section>
 					<ButtonSettingV2
-						text='DHT'
+						text={t('settings.network.dht-button')}
 						icon='info'
 						toggle={{
 							enable: true,
@@ -349,7 +348,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 							},
 						}}
 					/>
-					<ButtonSettingV2 text='RDVP' icon='info' />
+					<ButtonSettingV2 text={t('settings.network.rdvp-button')} icon='info' />
 					{networkConfig?.rendezvous?.map(item => {
 						return (
 							<CustomItem
@@ -363,9 +362,9 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 					<InputSetting setNewConfig={setNewConfig} obj='rendezvous' />
 				</Section>
 				<Section>
-					<ButtonSettingV2 text='Bootstrap Node' icon='info' />
-					<ButtonSettingV2 text='Relay' icon='info' />
-					<ButtonSettingV2 text='Tor' icon='info' last disabled />
+					<ButtonSettingV2 text={t('settings.network.relay-button')} icon='info' />
+					<ButtonSettingV2 text={t('settings.network.bootstrap-button')} icon='info' />
+					{/* <ButtonSettingV2 text='Tor' icon='info' last disabled /> */}
 				</Section>
 			</ScrollView>
 		</View>
