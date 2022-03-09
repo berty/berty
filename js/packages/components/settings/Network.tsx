@@ -1,27 +1,30 @@
 import React from 'react'
 import { ScrollView, View, Platform, TextInput, TouchableOpacity, Text } from 'react-native'
-import { PERMISSIONS, RESULTS, check } from 'react-native-permissions'
-import { withInAppNotification } from 'react-native-in-app-notification'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { useHeaderHeight } from '@react-navigation/elements'
+import { withInAppNotification } from 'react-native-in-app-notification'
 
 import beapi from '@berty-tech/api'
-import rnutil from '@berty-tech/rnutil'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import {
+	accountService,
+	useMessengerContext,
+	useMountEffect,
+	useThemeColor,
+} from '@berty-tech/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
 import { selectNetworkConfig, selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 import { useSelector } from 'react-redux'
-import { showNeedRestartNotification } from '../helpers'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
+import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
 
 const Proximity: React.FC<{
 	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
-	networkConfig: beapi.account.INetworkConfig | null
+	networkConfig: beapi.account.INetworkConfig
 }> = ({ networkConfig, setNewConfig }) => {
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
@@ -35,31 +38,12 @@ const Proximity: React.FC<{
 					enable: true,
 					value: networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
 					action: async () => {
-						const bluetoothLe =
-							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
-								? beapi.account.NetworkConfig.Flag.Disabled
-								: beapi.account.NetworkConfig.Flag.Enabled
-						const newConfig = {
-							...networkConfig,
-							bluetoothLe,
-							appleMultipeerConnectivity:
-								Platform.OS === 'ios' ? bluetoothLe : networkConfig?.appleMultipeerConnectivity,
-							androidNearby: Platform.OS === 'android' ? bluetoothLe : networkConfig?.androidNearby,
-						}
-						const status = await check(
-							Platform.OS === 'ios'
-								? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-								: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-						)
-						if (status === RESULTS.GRANTED) {
-							setNewConfig(newConfig)
-						} else {
-							await rnutil.checkPermissions('proximity', {
-								navigate,
-								navigateToPermScreenOnProblem: true,
-								onComplete: async () => setNewConfig(newConfig),
-							})
-						}
+						await checkBlePermission({
+							setNetworkConfig: setNewConfig,
+							networkConfig,
+							changedKey: ['bluetoothLe'],
+							navigate,
+						})
 					},
 				}}
 			/>
@@ -73,28 +57,12 @@ const Proximity: React.FC<{
 							networkConfig?.appleMultipeerConnectivity ===
 							beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
-							const newConfig = {
-								...networkConfig,
-								appleMultipeerConnectivity:
-									networkConfig?.appleMultipeerConnectivity ===
-									beapi.account.NetworkConfig.Flag.Enabled
-										? beapi.account.NetworkConfig.Flag.Disabled
-										: beapi.account.NetworkConfig.Flag.Enabled,
-							}
-							const status = await check(
-								Platform.OS === 'ios'
-									? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-									: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-							)
-							if (status === RESULTS.GRANTED) {
-								setNewConfig(newConfig)
-							} else {
-								await rnutil.checkPermissions('proximity', {
-									navigate,
-									navigateToPermScreenOnProblem: true,
-									onComplete: async () => setNewConfig(newConfig),
-								})
-							}
+							await checkBlePermission({
+								setNetworkConfig: setNewConfig,
+								networkConfig,
+								changedKey: ['appleMultipeerConnectivity'],
+								navigate,
+							})
 						},
 					}}
 				/>
@@ -107,27 +75,12 @@ const Proximity: React.FC<{
 						enable: true,
 						value: networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
-							const newConfig = {
-								...networkConfig,
-								androidNearby:
-									networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
-										? beapi.account.NetworkConfig.Flag.Disabled
-										: beapi.account.NetworkConfig.Flag.Enabled,
-							}
-							const status = await check(
-								Platform.OS === 'ios'
-									? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-									: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-							)
-							if (status === RESULTS.GRANTED) {
-								setNewConfig(newConfig)
-							} else {
-								await rnutil.checkPermissions('proximity', {
-									navigate,
-									navigateToPermScreenOnProblem: true,
-									onComplete: async () => setNewConfig(newConfig),
-								})
-							}
+							await checkBlePermission({
+								setNetworkConfig: setNewConfig,
+								networkConfig,
+								changedKey: ['androidNearby'],
+								navigate,
+							})
 						},
 					}}
 				/>
@@ -273,14 +226,15 @@ const CustomItem: React.FC<{
 export const NetworkBody: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMessengerContext()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const { t } = useTranslation()
 	const [networkConfig, setNetworkConfig] = React.useState<beapi.account.INetworkConfig | null>(
 		null,
 	)
+	const ctx = useMessengerContext()
 
-	React.useEffect(() => {
+	// get network config of the account at the mount of the component
+	useMountEffect(() => {
 		const f = async () => {
 			const netConf = await accountService.networkConfigGet({
 				accountId: selectedAccount,
@@ -293,8 +247,9 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 		}
 
 		f().catch(e => console.warn(e))
-	}, [selectedAccount])
+	})
 
+	// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
 	const setNewConfig = React.useCallback(
 		async (newConfig: beapi.account.INetworkConfig) => {
 			setNetworkConfig(newConfig)
@@ -303,9 +258,16 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 				accountId: selectedAccount,
 				config: newConfig,
 			})
-			showNeedRestartNotification(showNotification, ctx, t)
+			showNotification({
+				title: 'README',
+				message: 'Change manually bluetooth and restart app',
+				onPress: async () => {
+					await ctx.restart()
+				},
+				additionalProps: { type: 'message' },
+			})
 		},
-		[ctx, selectedAccount, showNotification, t],
+		[selectedAccount, showNotification, ctx],
 	)
 
 	return (
@@ -329,7 +291,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 						disabled
 					/>
 				</Section>
-				<Proximity setNewConfig={setNewConfig} networkConfig={networkConfig} />
+				{networkConfig && <Proximity setNewConfig={setNewConfig} networkConfig={networkConfig} />}
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.network.dht-button')}

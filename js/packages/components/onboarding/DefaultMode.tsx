@@ -15,22 +15,16 @@ import { useStyles } from '@berty-tech/styles'
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import rnutil from '@berty-tech/rnutil'
 
 const DefaultModeBody: React.FC = () => {
 	const ctx = useMessengerContext()
-	const { goBack, navigate } = useNavigation()
+	const { goBack } = useNavigation()
 	const colors = useThemeColor()
 	const [{ padding, border, margin, text }, { scaleSize }] = useStyles()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
 	const { t }: { t: any } = useTranslation()
 
 	const onPress = React.useCallback(async () => {
-		const status = await rnutil.checkPermissions('proximity', {
-			navigate,
-			navigateToPermScreenOnProblem: true,
-		})
-		console.log('status', status)
 		// with an empty accountId the function returns default config
 		const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
 		if (defaultConfig.currentConfig) {
@@ -38,7 +32,7 @@ const DefaultModeBody: React.FC = () => {
 			setIsPressed(true)
 			await ctx.createNewAccount(defaultConfig.currentConfig)
 		}
-	}, [ctx, navigate])
+	}, [ctx])
 
 	return (
 		<View style={[{ flex: 1 }]}>

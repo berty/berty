@@ -22,6 +22,7 @@ export type ScreensParams = {
 	'Main.Home': undefined
 	'Main.ContactRequest': { contactId: string }
 	'Main.Scan': undefined
+	'Main.BlePermission': { accept: () => Promise<void>; deny: () => Promise<void> }
 	'Main.Permissions': {
 		permissionType: PermissionType
 		permissionStatus: PermissionStatus

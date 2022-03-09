@@ -32,7 +32,7 @@ export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
 						toggle={{
 							enable: true,
 							value: isDark,
-							action: () => {
+							action: async () => {
 								dispatch(toggleDarkTheme())
 							},
 						}}

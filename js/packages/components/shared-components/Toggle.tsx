@@ -100,7 +100,7 @@ export const Toggle: React.FC<ToggleProps> = ({
 			activeOpacity={0.7}
 			onPress={() => {
 				onChange?.(!checked)
-				setChecked(!checked)
+				// setChecked(!checked)
 			}}
 			style={[
 				{

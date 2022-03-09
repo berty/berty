@@ -11,11 +11,9 @@ import {
 	ActivityIndicator,
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
-import { RESULTS, PERMISSIONS, check } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import rnutil from '@berty-tech/rnutil'
 import {
 	accountService,
 	useMessengerContext,
@@ -26,6 +24,7 @@ import { useStyles } from '@berty-tech/styles'
 
 import { ButtonSetting } from '../shared-components'
 import { Toggle } from '../shared-components/Toggle'
+import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
 
 const ConfigPart: React.FC<{
 	title: string
@@ -95,12 +94,12 @@ const ConfigPart: React.FC<{
 }
 
 const Proximity: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
-	newConfig: beapi.account.INetworkConfig | null
+	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
+	newConfig: beapi.account.INetworkConfig
 }> = ({ setNewConfig, newConfig }) => {
-	const { navigate } = useNavigation()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
+	const { navigate } = useNavigation()
 
 	return (
 		<View>
@@ -116,27 +115,14 @@ const Proximity: React.FC<{
 				toggleStatus='secondary'
 				varToggle={newConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
 				actionToggle={async () => {
-					const retConfig = {
-						...newConfig,
-						bluetoothLe:
-							newConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
-								? beapi.account.NetworkConfig.Flag.Disabled
-								: beapi.account.NetworkConfig.Flag.Enabled,
-					}
-					const status = await check(
-						Platform.OS === 'ios'
-							? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-							: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-					)
-					if (status === RESULTS.GRANTED) {
-						setNewConfig(retConfig)
-					} else {
-						await rnutil.checkPermissions('proximity', {
-							navigate,
-							navigateToPermScreenOnProblem: true,
-							onComplete: async () => () => setNewConfig(retConfig),
-						})
-					}
+					await checkBlePermission({
+						setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+							setNewConfig(newConfig)
+						},
+						networkConfig: newConfig,
+						changedKey: ['bluetoothLe'],
+						navigate,
+					})
 				}}
 			/>
 			{Platform.OS === 'ios' && (
@@ -154,27 +140,14 @@ const Proximity: React.FC<{
 						newConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
 					}
 					actionToggle={async () => {
-						const retConfig = {
-							...newConfig,
-							appleMultipeerConnectivity:
-								newConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
-									? beapi.account.NetworkConfig.Flag.Disabled
-									: beapi.account.NetworkConfig.Flag.Enabled,
-						}
-						const status = await check(
-							Platform.OS === 'ios'
-								? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-								: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-						)
-						if (status === RESULTS.GRANTED) {
-							setNewConfig(retConfig)
-						} else {
-							await rnutil.checkPermissions('proximity', {
-								navigate,
-								navigateToPermScreenOnProblem: true,
-								onComplete: () => setNewConfig(retConfig),
-							})
-						}
+						await checkBlePermission({
+							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+								setNewConfig(newConfig)
+							},
+							networkConfig: newConfig,
+							changedKey: ['appleMultipeerConnectivity'],
+							navigate,
+						})
 					}}
 				/>
 			)}
@@ -191,27 +164,14 @@ const Proximity: React.FC<{
 					toggleStatus='secondary'
 					varToggle={newConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled}
 					actionToggle={async () => {
-						const retConfig = {
-							...newConfig,
-							androidNearby:
-								newConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
-									? beapi.account.NetworkConfig.Flag.Disabled
-									: beapi.account.NetworkConfig.Flag.Enabled,
-						}
-						const status = await check(
-							Platform.OS === 'ios'
-								? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-								: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-						)
-						if (status === RESULTS.GRANTED) {
-							setNewConfig(retConfig)
-						} else {
-							await rnutil.checkPermissions('proximity', {
-								navigate,
-								navigateToPermScreenOnProblem: true,
-								onComplete: () => setNewConfig(retConfig),
-							})
-						}
+						await checkBlePermission({
+							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+								setNewConfig(newConfig)
+							},
+							networkConfig: newConfig,
+							changedKey: ['androidNearby'],
+							navigate,
+						})
 					}}
 				/>
 			)}
@@ -241,8 +201,8 @@ const Proximity: React.FC<{
 }
 
 const Routing: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
-	newConfig: beapi.account.INetworkConfig | null
+	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
+	newConfig: beapi.account.INetworkConfig
 }> = ({ setNewConfig, newConfig }) => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
@@ -284,8 +244,8 @@ const Routing: React.FC<{
 }
 
 const Access: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
-	newConfig: beapi.account.INetworkConfig | null
+	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
+	newConfig: beapi.account.INetworkConfig
 }> = (/*{ newConfig }*/) => {
 	const colors = useThemeColor()
 	const navigation = useNavigation()
@@ -328,8 +288,8 @@ const Access: React.FC<{
 }
 
 const CustomConfig: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
-	newConfig: beapi.account.INetworkConfig | null
+	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
+	newConfig: beapi.account.INetworkConfig
 }> = ({ setNewConfig, newConfig }) => {
 	const [{ margin, padding, border }] = useStyles()
 	const { t } = useTranslation()
@@ -402,7 +362,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 					]}
 				>
 					{isPressed ? (
-						<ActivityIndicator />
+						<ActivityIndicator color={colors['reverted-main-text']} />
 					) : (
 						<Text
 							style={[
@@ -425,8 +385,8 @@ const EnableDisableAll: React.FC<{
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
-	const { navigate } = useNavigation()
 	const { t } = useTranslation()
+	const { navigate } = useNavigation()
 
 	const enable: beapi.account.INetworkConfig = {
 		bootstrap: [':default:'],
@@ -470,21 +430,26 @@ const EnableDisableAll: React.FC<{
 					status='third'
 					onChange={async () => {
 						const toToggled = !isToggled
-
 						setIsToggled(toToggled)
 						if (toToggled) {
-							const status = await check(
-								Platform.OS === 'ios'
-									? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-									: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-							)
-							if (status === RESULTS.GRANTED) {
-								setNewConfig(enable)
-							} else {
-								await rnutil.checkPermissions('proximity', {
+							if (Platform.OS === 'ios') {
+								await checkBlePermission({
+									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+										setNewConfig(newConfig)
+									},
+									networkConfig: enable,
+									changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
 									navigate,
-									navigateToPermScreenOnProblem: true,
-									onComplete: async () => () => setNewConfig(enable),
+								})
+							}
+							if (Platform.OS === 'android') {
+								await checkBlePermission({
+									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+										setNewConfig(newConfig)
+									},
+									networkConfig: enable,
+									changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
+									navigate,
 								})
 							}
 						} else {
@@ -526,7 +491,7 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 				contentContainerStyle={[padding.medium]}
 				showsVerticalScrollIndicator={false}
 			>
-				<CustomConfig setNewConfig={setNewConfig} newConfig={newConfig} />
+				{newConfig && <CustomConfig setNewConfig={setNewConfig} newConfig={newConfig} />}
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<EnableDisableAll setNewConfig={setNewConfig} />
 					<ApplyChanges newConfig={newConfig} />

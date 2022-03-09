@@ -42,7 +42,7 @@ export const ButtonSettingV2: React.FC<{
 	toggle?: {
 		enable: boolean
 		value?: boolean
-		action?: (bool: boolean) => void
+		action?: () => Promise<void>
 	}
 	color?: string
 	pack?: string
@@ -54,14 +54,13 @@ export const ButtonSettingV2: React.FC<{
 	arrowIcon = 'arrow-ios-forward',
 	onPress,
 	color,
-	toggle = {},
+	toggle,
 	pack = 'feather',
 	disabled = false,
 	last = false,
 }) => {
 	const [{ padding, margin, opacity }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const [isToggle, setIsToggle] = useState<boolean>(false)
 
 	if (!color) {
 		color = colors['background-header']
@@ -112,14 +111,12 @@ export const ButtonSettingV2: React.FC<{
 					<Toggle
 						style={padding.right.scale(5)}
 						status='primary'
-						checked={toggle?.value || isToggle}
-						onChange={
-							toggle.action
-								? () => {
-										// TODO toggle action
-								  }
-								: () => setIsToggle(!isToggle)
-						}
+						checked={toggle?.value}
+						onChange={async () => {
+							if (toggle && toggle?.action) {
+								await toggle?.action()
+							}
+						}}
 					/>
 				) : (
 					<Icon

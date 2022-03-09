@@ -293,6 +293,11 @@ export const Navigation: React.FC = React.memo(() => {
 				component={Components.Main.Permissions}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
+			<NavigationStack.Screen
+				name={'Main.BlePermission'}
+				component={Components.Main.BlePermission}
+				options={{ headerShown: false, presentation: 'formSheet' }}
+			/>
 			{/* CreateGroup */}
 			<NavigationStack.Screen
 				name={'Main.CreateGroupAddMembers'}
