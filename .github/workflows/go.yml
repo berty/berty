@@ -31,7 +31,7 @@ jobs:
         golang: ['1.17.x']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Install libgl
         run: |
           sudo apt update
@@ -59,7 +59,7 @@ jobs:
     name: "GolangCI-lint"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2.5.2
         with:
@@ -88,7 +88,7 @@ jobs:
       GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -134,7 +134,7 @@ jobs:
       GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -190,7 +190,7 @@ jobs:
         golang: ['1.17.x']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -244,7 +244,7 @@ jobs:
       GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Set up Go
         uses: actions/setup-go@v2
         with:

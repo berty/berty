@@ -41,7 +41,7 @@ jobs:
       GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
