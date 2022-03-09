@@ -3,7 +3,8 @@ import { ScrollView, TouchableOpacity, View, Text, Platform } from 'react-native
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { withInAppNotification } from 'react-native-in-app-notification'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { check, PERMISSIONS } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -20,6 +21,12 @@ import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
 
 import { AccountAvatar } from '../avatars'
 import { ButtonSettingV2, Section } from '../shared-components'
+import {
+	selectBlePerm,
+	selectCurrentNetworkConfig,
+	setBlePerm,
+	setCurrentNetworkConfig,
+} from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 const ProfileButton: React.FC<{}> = () => {
 	const [{ padding, margin, border }, { scaleSize }] = useStyles()
@@ -80,11 +87,12 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const { navigate } = useNavigation()
 		const { t }: { t: any } = useTranslation()
 
-		const [networkConfig, setNetworkConfig] = React.useState<beapi.account.INetworkConfig | null>(
-			null,
-		)
 		const selectedAccount = useSelector(selectSelectedAccount)
 		const ctx = useMessengerContext()
+
+		const blePerm = useSelector(selectBlePerm)
+		const networkConfig = useSelector(selectCurrentNetworkConfig)
+		const dispatch = useDispatch()
 
 		// get network config of the account at the mount of the component
 		useMountEffect(() => {
@@ -93,12 +101,25 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					accountId: selectedAccount,
 				})
 				if (netConf.currentConfig) {
-					setNetworkConfig(netConf.currentConfig)
+					dispatch(setCurrentNetworkConfig(netConf.currentConfig))
 					return
 				}
 			}
 
 			f().catch(e => console.warn(e))
+		})
+
+		// get OS status permission
+		useMountEffect(() => {
+			const f = async () => {
+				const status = await check(
+					Platform.OS === 'ios'
+						? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
+						: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+				)
+				dispatch(setBlePerm(status))
+			}
+			f()
 		})
 
 		useEffect(() => {
@@ -108,7 +129,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
 		const setNewConfig = React.useCallback(
 			async (newConfig: beapi.account.INetworkConfig) => {
-				setNetworkConfig(newConfig)
+				dispatch(setCurrentNetworkConfig(newConfig))
 
 				await accountService.networkConfigSet({
 					accountId: selectedAccount,
@@ -123,7 +144,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					additionalProps: { type: 'message' },
 				})
 			},
-			[ctx, selectedAccount, showNotification],
+			[ctx, dispatch, selectedAccount, showNotification],
 		)
 
 		return (
@@ -141,12 +162,14 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 								icon='bluetooth'
 								toggle={{
 									enable: true,
-									value: networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
+									value:
+										blePerm === 'granted' &&
+										networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
 									action: async () => {
 										if (Platform.OS === 'ios') {
 											await checkBlePermission({
 												setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-													setNetworkConfig(newConfig)
+													dispatch(setCurrentNetworkConfig(newConfig))
 												},
 												networkConfig,
 												changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
@@ -206,18 +229,21 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 							icon='user'
 							onPress={() => navigate('Settings.Accounts')}
 						/>
-						<ButtonSettingV2
-							text={t('settings.home.network-button')}
-							icon='wifi'
-							last
-							onPress={() => navigate('Settings.Network')}
-						/>
+						{networkConfig && (
+							<ButtonSettingV2
+								text={t('settings.home.network-button')}
+								icon='wifi'
+								last
+								onPress={() => {
+									navigate('Settings.Network')
+								}}
+							/>
+						)}
 					</Section>
 					<Section>
 						<ButtonSettingV2
 							text={t('settings.home.bug-button')}
 							icon='mail'
-							last
 							onPress={() => console.log('TODO')}
 						/>
 						<ButtonSettingV2

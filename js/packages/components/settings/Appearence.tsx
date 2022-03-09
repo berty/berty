@@ -1,20 +1,20 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
+// import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store'
-import { selectThemeIsDark, toggleDarkTheme } from '@berty-tech/redux/reducers/theme.reducer'
+// import { selectThemeIsDark, toggleDarkTheme } from '@berty-tech/redux/reducers/theme.reducer'
 
 import { ButtonSettingV2, Section } from '../shared-components'
 
 export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const isDark = useSelector(selectThemeIsDark)
-	const dispatch = useDispatch()
+	// const isDark = useSelector(selectThemeIsDark)
+	// const dispatch = useDispatch()
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 

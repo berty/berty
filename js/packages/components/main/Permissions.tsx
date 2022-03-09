@@ -24,9 +24,10 @@ import proximityLottie from '@berty-tech/assets/proximity-lottie.json'
 import beapi from '@berty-tech/api'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 import { PermissionType, requestPermission } from '@berty-tech/rnutil/checkPermissions'
+import { setBlePerm } from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
@@ -300,6 +301,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const { goBack } = useNavigation()
+	const dispatch = useDispatch()
 
 	const handleRequestPermission = React.useCallback(async () => {
 		try {
@@ -309,7 +311,8 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 					? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
 					: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
 			)
-			console.log('Status post request:', status)
+			// set new Ble status for toggle's condition in settings
+			dispatch(setBlePerm(status))
 			// check status
 			switch (status) {
 				case 'granted':
@@ -327,7 +330,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 		} catch (err) {
 			console.warn('handleRequestPermission error:', err)
 		}
-	}, [accept, deny, goBack])
+	}, [accept, deny, dispatch, goBack])
 
 	return (
 		<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>

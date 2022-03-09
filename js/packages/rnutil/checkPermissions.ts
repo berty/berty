@@ -1,6 +1,4 @@
-// import React from 'react'
 import { Linking, Platform } from 'react-native'
-// import { navigate } from '@berty-tech/navigation'
 import {
 	check,
 	checkNotifications,
@@ -94,7 +92,7 @@ export const checkBlePermission = async (options: {
 	const handleAccept = async () => {
 		changedKey.forEach((key: 'bluetoothLe' | 'androidNearby' | 'appleMultipeerConnectivity') => {
 			let newValue = beapi.account.NetworkConfig.Flag.Disabled
-			if (networkConfig?.[key] === beapi.account.NetworkConfig.Flag.Disabled) {
+			if (networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Disabled) {
 				newValue = beapi.account.NetworkConfig.Flag.Enabled
 			}
 			newConfig = { ...newConfig, [key]: newValue }
@@ -120,15 +118,16 @@ export const checkBlePermission = async (options: {
 				? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
 				: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
 		)
-		console.log('Status post check:', status)
 		switch (status) {
 			case 'granted':
-				console.log('GRANTED')
 				await handleAccept()
 				break
 			case 'denied':
 				// status is denied at the first launch of the app (https://github.com/zoontek/react-native-permissions#understanding-permission-flow)
-				navigate('Main.BlePermission', { accept: handleAccept, deny: handleDeny })
+				navigate('Main.BlePermission', {
+					accept: handleAccept,
+					deny: handleDeny,
+				})
 				break
 			case 'limited':
 			case 'unavailable':
