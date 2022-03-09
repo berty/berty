@@ -653,6 +653,15 @@ export const Navigation: React.FC = React.memo(() => {
 					presentation: 'formSheet',
 				})}
 			/>
+			<NavigationStack.Screen
+				name={'Settings.PrivacyPolicy'}
+				component={Components.Settings.PrivacyPolicy}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.privacy-policy.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
 			{/* Modals */}
 			<NavigationStack.Screen
 				name={'Modals.ManageDeepLink'}

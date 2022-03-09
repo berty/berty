@@ -31,7 +31,11 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 						icon='map'
 						onPress={() => navigate('Settings.Roadmap')}
 					/>
-					<ButtonSettingV2 text={t('settings.about.policy-button')} icon='lock' />
+					<ButtonSettingV2
+						text={t('settings.about.policy-button')}
+						icon='lock'
+						onPress={() => navigate('Settings.PrivacyPolicy')}
+					/>
 					<ButtonSettingV2 text={t('settings.about.license-button')} icon='info' last />
 				</Section>
 			</ScrollView>

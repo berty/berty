@@ -4,6 +4,7 @@ export { TermsOfUse } from './TermsOfUse'
 export { BertyServices } from './BertyServices'
 export { Roadmap } from './Roadmap'
 export { Faq } from './Faq'
+export { PrivacyPolicy } from './PrivacyPolicy'
 
 export { Home } from './Home'
 export { MyBertyId } from './MyBertyId'

@@ -190,6 +190,9 @@
 		"roadmap": {
 			"title": "Roadmap"
 		},
+		"privacy-policy": {
+			"title": "Privacy Policy"
+		},
 		"devtools": {
 			"title": "Dev tools",
 			"header-left-button": "Device infos",
