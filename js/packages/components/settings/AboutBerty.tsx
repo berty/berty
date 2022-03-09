@@ -25,6 +25,7 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 					<ButtonSettingV2
 						text={t('settings.about.faq-button')}
 						onPress={() => navigate('Settings.Faq')}
+						icon='help-circle'
 					/>
 					<ButtonSettingV2
 						text={t('settings.about.roadmap-button')}

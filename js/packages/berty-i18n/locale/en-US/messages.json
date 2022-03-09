@@ -29,9 +29,9 @@
 			"settings": {
 				"off-grid": {
 					"title": "Off-Grid Communication",
-					"ble-button": "Bluetooth Low Energy (Prox)",
-					"nearby-button": "Android Nearby (Prox)",
-					"mc-button": "Apple Multipeer Connectivity (Prox)",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android Nearby",
+					"mc-button": "Apple Multipeer Connectivity",
 					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
@@ -473,6 +473,10 @@
 		"need-restart": {
 			"title": "Restart required",
 			"desc": "Restart Berty to save your data and enable notifications!"
+		},
+		"need-restart-ble": {
+			"title": "Restart required",
+			"desc": "Restart Berty and enable Bluetooth in system settings!"
 		}
 	},
 	"error": {

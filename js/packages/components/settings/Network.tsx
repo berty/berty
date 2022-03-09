@@ -242,8 +242,8 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 				config: newConfig,
 			})
 			showNotification({
-				title: 'README',
-				message: 'Change manually bluetooth and restart app',
+				title: t('notification.need-restart-ble.title'),
+				message: t('notification.need-restart-ble.desc'),
 				onPress: async () => {
 					await ctx.restart()
 				},
