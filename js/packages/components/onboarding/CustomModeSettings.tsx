@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	SafeAreaView,
@@ -392,15 +392,15 @@ const EnableDisableAll: React.FC<{
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 
-	const enable: beapi.account.INetworkConfig = {
+	const enableWithoutBle: beapi.account.INetworkConfig = {
 		bootstrap: [':default:'],
 		rendezvous: [':default:'],
 		staticRelay: [':default:'],
 		dht: beapi.account.NetworkConfig.DHTFlag.DHTClient,
-		bluetoothLe: beapi.account.NetworkConfig.Flag.Enabled,
-		appleMultipeerConnectivity: beapi.account.NetworkConfig.Flag.Enabled,
-		androidNearby: beapi.account.NetworkConfig.Flag.Enabled,
 		mdns: beapi.account.NetworkConfig.Flag.Enabled,
+		bluetoothLe: beapi.account.NetworkConfig.Flag.Disabled,
+		appleMultipeerConnectivity: beapi.account.NetworkConfig.Flag.Disabled,
+		androidNearby: beapi.account.NetworkConfig.Flag.Disabled,
 	}
 
 	const disable: beapi.account.INetworkConfig = {
@@ -413,6 +413,10 @@ const EnableDisableAll: React.FC<{
 		androidNearby: beapi.account.NetworkConfig.Flag.Disabled,
 		mdns: beapi.account.NetworkConfig.Flag.Disabled,
 	}
+
+	useEffect(() => {
+		console.log('networkConfig change:', newConfig)
+	}, [newConfig])
 
 	return (
 		<View
@@ -441,12 +445,10 @@ const EnableDisableAll: React.FC<{
 									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 										setNewConfig(newConfig)
 									},
-									networkConfig: newConfig,
+									networkConfig: enableWithoutBle,
 									changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
 									navigate,
-									accept: async () => {
-										setNewConfig(enable)
-									},
+									deny: async () => setNewConfig(enableWithoutBle),
 								})
 							}
 							if (Platform.OS === 'android') {
@@ -454,12 +456,10 @@ const EnableDisableAll: React.FC<{
 									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 										setNewConfig(newConfig)
 									},
-									networkConfig: newConfig,
+									networkConfig: enableWithoutBle,
 									changedKey: ['bluetoothLe', 'androidNearby'],
 									navigate,
-									accept: async () => {
-										setNewConfig(enable)
-									},
+									deny: async () => setNewConfig(enableWithoutBle),
 								})
 							}
 						} else {
