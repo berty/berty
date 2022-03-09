@@ -26,6 +26,7 @@ export type ScreensParams = {
 		accept: () => Promise<void>
 		deny: () => Promise<void>
 	}
+	'Main.Share': undefined
 	'Main.Permissions': {
 		permissionType: PermissionType
 		permissionStatus: PermissionStatus

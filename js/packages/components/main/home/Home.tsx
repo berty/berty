@@ -10,14 +10,12 @@ import {
 } from 'react-native'
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
-import { CommonActions, useNavigation } from '@react-navigation/native'
 
 import { ScreenFC } from '@berty-tech/navigation'
 import { useMessengerContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
-import rnutil from '@berty-tech/rnutil'
 import {
 	useContactsDict,
 	useConversationsDict,
@@ -69,7 +67,7 @@ const FooterButton: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			<Icon name={name} pack='custom' fill={fill} width={30 * scaleSize} height={30 * scaleSize} />
+			<Icon name={name} fill={fill} width={30 * scaleSize} height={30 * scaleSize} />
 		</TouchableOpacity>
 	)
 }
@@ -98,7 +96,6 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 		displayName: '',
 		isVisible: false,
 	})
-	const { dispatch } = useNavigation()
 
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
@@ -308,28 +305,10 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 				}}
 			>
 				<FooterButton
-					name='qr'
-					fill={colors['secondary-text']}
-					backgroundColor={colors['main-background']}
-					onPress={async () => {
-						await rnutil.checkPermissions('camera', {
-							navigate,
-							navigateNext: 'Main.Scan',
-							navigateToPermScreenOnProblem: true,
-							onComplete: async () =>
-								dispatch(
-									CommonActions.reset({
-										routes: [{ name: 'Main.Home' }, { name: 'Main.Scan' }],
-									}),
-								),
-						})
-					}}
-				/>
-				<FooterButton
-					name='add-new-group'
+					name='plus'
 					fill={colors['reverted-main-text']}
 					backgroundColor={colors['background-header']}
-					onPress={() => navigate('Main.CreateGroupAddMembers')}
+					onPress={() => navigate('Main.Share')}
 				/>
 			</View>
 			{isLongPress ? (

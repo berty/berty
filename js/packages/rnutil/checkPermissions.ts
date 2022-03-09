@@ -51,6 +51,7 @@ export const checkPermissions = async (
 		navigateToPermScreenOnProblem?: boolean
 		navigateNext?: string
 		onComplete?: (() => Promise<void>) | (() => void)
+		onSuccess?: (() => Promise<void>) | (() => void)
 	},
 ): Promise<PermissionStatus | undefined> => {
 	let status
@@ -70,10 +71,14 @@ export const checkPermissions = async (
 			navigateNext: options?.navigateNext,
 			onComplete: options?.onComplete,
 		})
-	} else if (options?.navigateNext) {
+		return status
+	}
+	if (options?.navigateNext) {
 		options.navigate(options?.navigateNext, {})
+		return status
 	}
 
+	options?.onSuccess && options.onSuccess()
 	return status
 }
 
