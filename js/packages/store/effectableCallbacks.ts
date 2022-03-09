@@ -1,5 +1,4 @@
 import beapi from '@berty-tech/api'
-import rnutil from '@berty-tech/rnutil'
 import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 
@@ -10,7 +9,6 @@ import {
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
-import { RESULTS } from 'react-native-permissions'
 
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -122,37 +120,23 @@ export const refreshAccountList = async (
 	}
 }
 
-export const getNetworkConfigurationFromPreset = async (
-	preset: beapi.account.NetworkConfigPreset | null | undefined,
-): Promise<beapi.account.INetworkConfig> => {
-	const hasBluetoothPermission = (await rnutil.checkPermissions('p2p')) === RESULTS.GRANTED
-
-	const configForPreset = await accountService.networkConfigGetPreset({
-		preset: preset || beapi.account.NetworkConfigPreset.Undefined,
-		hasBluetoothPermission: hasBluetoothPermission,
-	})
-
-	if (configForPreset.config) {
-		return configForPreset.config
-	}
-
-	return {}
-}
-
 export const createAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
-	newConfig?: beapi.account.INetworkConfig,
+	config?: beapi.account.INetworkConfig,
 ) => {
 	let resp: beapi.account.CreateAccount.Reply
 	try {
-		const netConf: beapi.account.INetworkConfig = await getNetworkConfigurationFromPreset(
-			beapi.account.NetworkConfigPreset.Performance,
-		)
-
+		let networkConfig
+		if (!config) {
+			const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
+			networkConfig = defaultConfig.currentConfig
+		} else {
+			networkConfig = config
+		}
 		resp = await accountService.createAccount({
-			networkConfig: newConfig || { ...netConf, staticRelay: [] },
+			networkConfig,
 		})
 		persistor.persist()
 	} catch (e) {
@@ -175,14 +159,14 @@ export const createNewAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
-	newConfig?: beapi.account.INetworkConfig,
+	config?: beapi.account.INetworkConfig,
 ) => {
 	if (!embedded) {
 		return
 	}
 
 	try {
-		await createAccount(embedded, dispatch, reduxDispatch, newConfig)
+		await createAccount(embedded, dispatch, reduxDispatch, config)
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

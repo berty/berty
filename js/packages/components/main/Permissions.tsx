@@ -2,7 +2,13 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { Text, TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
-import { RESULTS, openSettings, PermissionStatus } from 'react-native-permissions'
+import {
+	RESULTS,
+	openSettings,
+	PermissionStatus,
+	request,
+	PERMISSIONS,
+} from 'react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -14,19 +20,20 @@ import {
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
 import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
-import p2pLottie from '@berty-tech/assets/p2p-lottie.json'
+import proximityLottie from '@berty-tech/assets/proximity-lottie.json'
 import beapi from '@berty-tech/api'
-import { ScreenFC } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 import { PermissionType, requestPermission } from '@berty-tech/rnutil/checkPermissions'
+import { setBlePerm } from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
 	camera: cameraLottie,
 	notification: notificationLottie,
-	p2p: p2pLottie,
+	proximity: proximityLottie,
 	gallery: cameraLottie, // get a lottie file for gallery
 }
 
@@ -58,22 +65,6 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		[navigateNext, navigation, onComplete],
 	)
 
-	const handleAppStateChange = useCallback(
-		async (nextAppState: string) => {
-			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-				const status = await rnutil.checkPermissions(permissionType, {
-					navigate: navigation.navigate,
-					navigateToPermScreenOnProblem: false,
-				})
-
-				if (status === RESULTS.GRANTED) {
-					await handleOnComplete(status)
-				}
-			}
-		},
-		[handleOnComplete, navigation.navigate, permissionType],
-	)
-
 	const handleRequestPermission = useCallback(async () => {
 		const status = await requestPermission(permissionType)
 		try {
@@ -95,7 +86,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				} catch (err) {
 					console.warn('request notification permisison err:', err)
 				}
-			} else if (permissionType === 'p2p') {
+			} else if (permissionType === 'proximity') {
 				if (selectedAccount) {
 					const currentConfig = await accountService.networkConfigGet({
 						accountId: selectedAccount,
@@ -135,6 +126,22 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		selectedAccount,
 		setPersistentOption,
 	])
+
+	const handleAppStateChange = useCallback(
+		async (nextAppState: string) => {
+			if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+				const status = await rnutil.checkPermissions(permissionType, {
+					navigate: navigation.navigate,
+					navigateToPermScreenOnProblem: false,
+				})
+
+				if (status === RESULTS.GRANTED) {
+					await handleOnComplete(status)
+				}
+			}
+		},
+		[handleOnComplete, navigation.navigate, permissionType],
+	)
 
 	useEffect(() => {
 		AppState.addEventListener('change', handleAppStateChange)
@@ -176,6 +183,13 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						},
 					]}
 				>
+					{/* Ignore check for i18n missing keys
+						permission.notification.title
+						permission.proximity.title
+						permission.camera.title
+						permission.audio.title
+						permission.gallery.title
+					*/}
 					{t(`permission.${permissionType}.title`)}
 				</Text>
 				<Text
@@ -188,10 +202,16 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						},
 					]}
 				>
-					{permissionType === 'p2p'
+					{/* Ignore check for i18n missing keys
+						permission.notification.desc
+						permission.camera.desc
+						permission.audio.desc
+						permission.gallery.desc
+					*/}
+					{permissionType === 'proximity'
 						? Platform.OS === 'ios'
-							? t(`permission.${permissionType}.ios-desc`)
-							: t(`permission.${permissionType}.android-desc`)
+							? t('permission.proximity.ios-desc')
+							: t('permission.proximity.android-desc')
 						: t(`permission.${permissionType}.desc`)}
 				</Text>
 				{permissionStatus === RESULTS.BLOCKED && (
@@ -235,6 +255,10 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 								},
 							]}
 						>
+							{/* Ignore check for i18n missing keys
+								permission.button-labels.settings
+								permission.button-labels.allow
+							*/}
 							{t(
 								`permission.button-labels.${
 									permissionStatus === RESULTS.BLOCKED ? 'settings' : 'allow'
@@ -247,11 +271,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					onPress={async () => {
 						navigation.goBack()
 
-						if (
-							permissionType === 'notification' &&
-							!selectedAccount &&
-							typeof onComplete === 'function'
-						) {
+						// TODO: ??
+						if (typeof onComplete === 'function') {
 							await onComplete()
 						}
 					}}
@@ -267,6 +288,147 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						{permissionType === 'notification' && !selectedAccount
 							? t('permission.skip')
 							: t('permission.cancel')}
+					</Text>
+				</TouchableOpacity>
+			</View>
+		</View>
+	)
+}
+
+export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params } }) => {
+	const { accept, deny } = params
+	const [{ text, border }] = useStyles()
+	const colors = useThemeColor()
+	const { t }: { t: any } = useTranslation()
+	const { goBack } = useNavigation()
+	const dispatch = useDispatch()
+
+	const handleRequestPermission = React.useCallback(async () => {
+		try {
+			// request the permission
+			const status = await request(
+				Platform.OS === 'ios'
+					? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
+					: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+			)
+			// set new Ble status for toggle's condition in settings
+			dispatch(setBlePerm(status))
+			// check status
+			switch (status) {
+				case 'granted':
+					await accept()
+					break
+				case 'unavailable':
+					// TODO: dig why (on iOS) when i accept the request the status is unavailable
+					await accept()
+					break
+				case 'blocked':
+					await deny()
+					break
+			}
+			goBack()
+		} catch (err) {
+			console.warn('handleRequestPermission error:', err)
+		}
+	}, [accept, deny, dispatch, goBack])
+
+	return (
+		<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>
+			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+				<LottieView
+					source={animations.proximity}
+					autoPlay
+					style={{
+						marginVertical: 10,
+					}}
+				/>
+			</View>
+			<View
+				style={[
+					border.radius.top.large,
+					{
+						paddingVertical: 24,
+						paddingHorizontal: 32,
+						backgroundColor: colors['main-background'],
+					},
+				]}
+			>
+				<Text
+					style={[
+						text.size.huge,
+						text.bold.medium,
+						{
+							color: colors['background-header'],
+							textAlign: 'center',
+						},
+					]}
+				>
+					{t('permission.proximity.title')}
+				</Text>
+				<Text
+					style={[
+						text.size.medium,
+						{
+							lineHeight: 25,
+							marginTop: 20,
+							color: colors['main-text'],
+							textAlign: 'center',
+						},
+					]}
+				>
+					{Platform.OS === 'ios'
+						? t('permission.proximity.ios-desc')
+						: t('permission.proximity.android-desc')}
+				</Text>
+				<View
+					style={{
+						width: '100%',
+						paddingHorizontal: 20,
+					}}
+				>
+					<TouchableOpacity
+						onPress={async () => {
+							await handleRequestPermission()
+						}}
+						style={{
+							backgroundColor: colors['background-header'],
+							paddingVertical: 16,
+							alignItems: 'center',
+							borderRadius: 12,
+							marginTop: 20,
+							width: '100%',
+						}}
+						activeOpacity={0.9}
+					>
+						<Text
+							style={[
+								text.size.scale(18),
+								{
+									fontWeight: '700',
+									color: colors['reverted-main-text'],
+								},
+							]}
+						>
+							{t('permission.button-labels.allow')}
+						</Text>
+					</TouchableOpacity>
+				</View>
+				<TouchableOpacity
+					onPress={async () => {
+						await deny()
+						goBack()
+					}}
+				>
+					<Text
+						style={{
+							marginTop: 16,
+							color: colors['secondary-text'],
+							textTransform: 'uppercase',
+							textAlign: 'center',
+						}}
+					>
+						{t('permission.skip')}
 					</Text>
 				</TouchableOpacity>
 			</View>

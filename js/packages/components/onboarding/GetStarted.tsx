@@ -8,18 +8,21 @@ import {
 	GlobalPersistentOptionsKeys,
 	useNotificationsInhibitor,
 	useThemeColor,
+	useMessengerContext,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
+import { importAccountFromDocumentPicker } from '../pickerUtils'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
-	const [{ column, margin, padding, text }, { scaleSize }] = useStyles()
+	const [{ margin, padding, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+	const ctx = useMessengerContext()
 
 	return (
 		<View
@@ -68,19 +71,26 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 				</View>
 				<View style={[margin.top.big]}>
 					<Button
-						style={{
-							...column.item.center,
-							backgroundColor: colors['background-header'],
-							paddingHorizontal: 70 * scaleSize,
-						}}
-						textStyle={{ textTransform: 'uppercase', color: colors['reverted-main-text'] }}
 						onPress={async () => {
 							await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
 							navigate('Onboarding.CreateAccount')
 						}}
 					>
-						{t('onboarding.getstarted.button')}
+						{t('onboarding.getstarted.create-button') as any}
 					</Button>
+					<Button
+						status='secondary'
+						onPress={async () => {
+							importAccountFromDocumentPicker(ctx)
+						}}
+					>
+						{t('onboarding.getstarted.import-button') as any}
+					</Button>
+					{/*
+					<Button status='secondary' onPress={() => {}}>
+						{t('onboarding.getstarted.link-button') as any}
+					</Button>
+					*/}
 				</View>
 			</View>
 		</View>

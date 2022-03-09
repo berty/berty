@@ -4,12 +4,12 @@ import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty-tech/store/hooks'
 
-const TOGGLE_WIDTH = 55
-const CIRCLE_WIDTH = 30
+const TOGGLE_WIDTH = 50
+const CIRCLE_WIDTH = 25
 const BORDER_RADIUS_WIDTH = 1
 const CIRCLE_RIGHT_POSITION = TOGGLE_WIDTH - CIRCLE_WIDTH - BORDER_RADIUS_WIDTH * 2
 
-type Status = 'primary' | 'secondary'
+type Status = 'primary' | 'secondary' | 'third'
 type ToggleProps = {
 	status: Status
 	checked?: boolean
@@ -49,8 +49,13 @@ const generateStyleColors = (
 				toggleBackgroundActive: colors['background-header'],
 				checkColor: colors['background-header'],
 			},
+			third: {
+				circleBackground: colors['background-header'],
+				toggleBackgroundInactive: '#DEE2E8',
+				toggleBackgroundActive: colors['input-background'],
+				checkColor: colors['background-header'],
+			},
 		}
-
 		return statusColors[status]
 	}
 }
@@ -95,7 +100,7 @@ export const Toggle: React.FC<ToggleProps> = ({
 			activeOpacity={0.7}
 			onPress={() => {
 				onChange?.(!checked)
-				setChecked(!checked)
+				// setChecked(!checked)
 			}}
 			style={[
 				{

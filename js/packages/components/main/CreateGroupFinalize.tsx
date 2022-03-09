@@ -7,7 +7,6 @@ import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
-import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
 import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 
@@ -199,7 +198,6 @@ export const CreateGroupFinalize: React.FC = () => {
 			if (error) {
 				console.warn('Failed to create group:', error)
 			} else if (reply?.publicKey) {
-				dispatch(setChecklistItemDone({ key: 'group' }))
 				reset({
 					index: 0,
 					routes: [

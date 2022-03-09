@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
-import beapi from '@berty-tech/api'
 import {
 	useAppDispatch,
 	useAppSelector,
@@ -10,6 +9,7 @@ import {
 } from '@berty-tech/react-redux'
 import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
 
+import beapi from '@berty-tech/api'
 import { MessengerContext, initialState } from './context'
 import {
 	initialLaunch,
@@ -35,7 +35,6 @@ import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
 import { PersistentOptionsKeys, SoundKey } from './types'
-import { accountService } from './accountService'
 import { useSelector } from 'react-redux'
 import {
 	selectAppState,
@@ -57,7 +56,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	})
 	const [eventEmitter] = React.useState(new EventEmitter())
 	const [debugMode, setDebugMode] = React.useState(false)
-	const [networkConfig, setNetworkConfig] = useState<beapi.account.INetworkConfig>({})
 	const [handledLink, setHandledLink] = useState<boolean>(false)
 	const appState = useSelector(selectAppState)
 	const clearClients = useSelector(selectClearClients)
@@ -194,27 +192,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		[state.persistentOptions],
 	)
 
-	useEffect(() => {
-		if (selectedAccount === null) {
-			console.log('no account id supplied')
-			setNetworkConfig({})
-			return
-		}
-
-		const f = async () => {
-			const netConf = await accountService.networkConfigGet({
-				accountId: selectedAccount,
-			})
-			if (!netConf.currentConfig) {
-				return
-			}
-
-			setNetworkConfig(netConf.currentConfig)
-		}
-
-		f().catch(e => console.warn(e))
-	}, [selectedAccount])
-
 	return (
 		<MessengerContext.Provider
 			value={{
@@ -233,8 +210,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 				debugMode: debugMode,
 				playSound: callbackPlaySound,
 				setDebugMode: callbackSetDebugMode,
-				networkConfig: networkConfig,
-				setNetworkConfig: setNetworkConfig,
 				handledLink,
 				setHandledLink,
 			}}

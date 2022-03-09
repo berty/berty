@@ -11,7 +11,6 @@ import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useNavigation } from '@berty-tech/navigation'
 import { useAppDispatch, useContactConversation } from '@berty-tech/react-redux'
-import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 
 import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
@@ -80,7 +79,6 @@ const AddThisContact: React.FC<{
 
 	React.useEffect(() => {
 		if (done && !error) {
-			dispatch(setChecklistItemDone({ key: 'contact' }))
 			navDispatch(
 				CommonActions.reset({
 					routes: [{ name: 'Main.Home' }],

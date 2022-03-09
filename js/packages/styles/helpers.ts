@@ -11,6 +11,7 @@ export const randomizeThemeColor = () => {
 	return {
 		'main-text': getRandomColor(),
 		'main-background': getRandomColor(),
+		'secondary-background': getRandomColor(),
 		'secondary-text': getRandomColor(),
 		'background-header': getRandomColor(),
 		'secondary-background-header': getRandomColor(),

@@ -61,14 +61,14 @@ export const DropDownPicker: React.FC<{
 	return (
 		<View
 			style={[
-				border.shadow.medium,
+				// border.shadow.medium,
 				border.radius.medium,
 				{
 					flex: 1,
 					marginTop: 22 * scaleSize,
-					minHeight: 60 * scaleSize,
-					backgroundColor: colors['main-background'],
-					shadowColor: colors.shadow,
+					minHeight: 55 * scaleSize,
+					backgroundColor: colors['input-background'],
+					// shadowColor: colors.shadow,
 				},
 			]}
 		>

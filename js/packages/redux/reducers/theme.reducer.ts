@@ -35,6 +35,7 @@ export type ThemeType = {
 	'warning-asset': string
 	'input-background': string
 	shadow: string
+	'secondary-background'?: string
 }
 export type ThemeDefinition = { colors: ThemeType }
 

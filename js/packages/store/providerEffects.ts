@@ -19,7 +19,7 @@ import { defaultPersistentOptions } from './context'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
 import { updateAccount } from './providerCallbacks'
-import { bertyOperatedServer, requestAndPersistPushToken, servicesAuthViaURL } from './services'
+import { requestAndPersistPushToken } from './services'
 import {
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
@@ -116,7 +116,7 @@ const getPersistentOptions = async (
 			}
 		}
 
-		await dispatch({
+		dispatch({
 			type: MessengerActions.SetPersistentOption,
 			payload: opts,
 		})
@@ -429,10 +429,11 @@ export const updateAccountsPreReady = async (
 		})
 	}
 	store.dispatch(resetTheme())
-	const config = await accountService.networkConfigGet({ accountId: selectedAccount })
-	if (config.currentConfig?.staticRelay && config.currentConfig?.staticRelay[0] === ':default:') {
-		await servicesAuthViaURL(protocolClient, bertyOperatedServer)
-	}
+	// TODO: fix flow of asking permissions
+	// const config = await accountService.networkConfigGet({ accountId: selectedAccount })
+	// if (config.currentConfig?.staticRelay && config.currentConfig?.staticRelay[0] === ':default:') {
+	// 	await servicesAuthViaURL(protocolClient, bertyOperatedServer)
+	// }
 }
 
 // handle states DeletingClosingDaemon, ClosingDaemon

@@ -96,7 +96,6 @@ export const GenericAvatar: React.FC<{
 		<View style={{ zIndex: -1 }}>
 			<View
 				style={[
-					border.shadow.medium,
 					style,
 					{
 						borderRadius: size / 2,
@@ -105,7 +104,6 @@ export const GenericAvatar: React.FC<{
 						alignItems: 'center',
 						justifyContent: 'center',
 						backgroundColor: colors['main-background'],
-						shadowColor: colors.shadow,
 					},
 				]}
 			>
@@ -132,7 +130,6 @@ export const HardcodedAvatar: React.FC<{
 	name: HardcodedAvatarKey
 	pressable?: boolean
 }> = React.memo(({ size, style, name, pressable }) => {
-	const [{ border }] = useStyles()
 	const colors = useThemeColor()
 
 	let avatar = hardcodedAvatars[name]
@@ -148,12 +145,10 @@ export const HardcodedAvatar: React.FC<{
 				navigate('Modals.ImageView', { images: [avatar], previewOnly: true })
 			}}
 			style={[
-				border.shadow.medium,
 				style,
 				{
 					borderRadius: size / 2,
 					backgroundColor: colors['main-background'],
-					shadowColor: colors.shadow,
 				},
 			]}
 		>

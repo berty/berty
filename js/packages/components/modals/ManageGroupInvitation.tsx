@@ -9,7 +9,6 @@ import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useThemeColor } from '@berty-tech/store'
-import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 import { useAppDispatch, useConversation } from '@berty-tech/react-redux'
 
 import { TabBar } from '../shared-components/TabBar'
@@ -78,7 +77,6 @@ export const ManageGroupInvitation: React.FC<{
 
 	React.useEffect(() => {
 		if (done && !error) {
-			dispatch(setChecklistItemDone({ key: 'group' }))
 			navDispatch(
 				CommonActions.reset({
 					routes: [{ name: 'Main.Home' }],

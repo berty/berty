@@ -11,8 +11,6 @@ import {
 	useNotificationsInhibitor,
 	useThemeColor,
 } from '@berty-tech/store'
-import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
-import { useAppDispatch } from '@berty-tech/react-redux'
 
 import SwiperCard from '../onboarding/SwiperCard'
 import OnboardingWrapper from '../onboarding/OnboardingWrapper'
@@ -24,7 +22,6 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const accountServices = useAccountServices() || []
 	const { t }: any = useTranslation()
 	const { goBack } = useNavigation()
-	const dispatch = useAppDispatch()
 	const protocolClient = useSelector(selectProtocolClient)
 
 	return (
@@ -50,7 +47,6 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 												},
 											},
 										})
-										dispatch(setChecklistItemDone({ key: 'berty-services' }))
 										goBack()
 									} catch (e) {
 										console.log(e)

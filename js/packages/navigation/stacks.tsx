@@ -181,6 +181,13 @@ export const Navigation: React.FC = React.memo(() => {
 					}),
 				)
 				return
+			case MESSENGER_APP_STATE.GET_STARTED:
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: 'Onboarding.GetStarted' }],
+					}),
+				)
+				return
 		}
 	}, [appState])
 
@@ -199,7 +206,14 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Onboarding.CreateAccount'}
 				component={Components.Onboarding.CreateAccount}
-				options={{ headerShown: false }}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.SetupFinished'}
@@ -207,14 +221,45 @@ export const Navigation: React.FC = React.memo(() => {
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.AdvancedSettings'}
-				component={Components.Onboarding.AdvancedSettings}
-				options={{ headerShown: false }}
+				name={'Onboarding.CustomModeSettings'}
+				component={Components.Onboarding.CustomModeSettings}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.WebViews'}
 				component={Components.Onboarding.WebViews}
 				options={{ title: '', headerBackTitle: '', headerTintColor: colors['main-text'] }}
+			/>
+			<NavigationStack.Screen
+				name={'Onboarding.DefaultMode'}
+				component={Components.Onboarding.DefaultMode}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Onboarding.CustomMode'}
+				component={Components.Onboarding.CustomMode}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					headerBackTitleVisible: false,
+					title: '',
+				}}
 			/>
 			{/* Main */}
 			<NavigationStack.Screen
@@ -246,6 +291,11 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Main.Permissions'}
 				component={Components.Main.Permissions}
+				options={{ headerShown: false, presentation: 'formSheet' }}
+			/>
+			<NavigationStack.Screen
+				name={'Main.BlePermission'}
+				component={Components.Main.BlePermission}
 				options={{ headerShown: false, presentation: 'formSheet' }}
 			/>
 			{/* CreateGroup */}
@@ -372,9 +422,115 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Settings.Home'}
 				component={Components.Settings.Home}
-				options={BackgroundHeaderScreenOptions({
-					title: '',
-				})}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					headerTintColor: colors['main-text'],
+					headerBackTitleVisible: false,
+					title: 'Settings',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.Network'}
+				component={Components.Settings.Network}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					headerTintColor: colors['main-text'],
+					headerBackTitleVisible: false,
+					title: 'Network',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.Notifications'}
+				component={Components.Settings.Notifications}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: 'Notifications',
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.ContactAndConversations'}
+				component={Components.Settings.ContactAndConversations}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: 'Contact and Conversations',
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.Appearence'}
+				component={Components.Settings.Appearence}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: 'Appearence',
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.ThemeEditor'}
+				component={Components.Settings.ThemeEditor}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['alt-secondary-background-header'],
+					},
+					headerTintColor: colors['reverted-main-text'],
+					title: 'ThemeEditor',
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.DevicesAndBackup'}
+				component={Components.Settings.DevicesAndBackup}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: 'Devices and Backup',
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.Security'}
+				component={Components.Settings.Security}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: 'Security',
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.Accounts'}
+				component={Components.Settings.Accounts}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: 'Accounts',
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.AboutBerty'}
+				component={Components.Settings.AboutBerty}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: 'About Berty',
+					presentation: 'formSheet',
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Settings.MyBertyId'}
@@ -386,29 +542,12 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.AboutBerty'}
-				component={Components.Settings.AboutBerty}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.about.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
 				name={'Settings.TermsOfUse'}
 				component={Components.Settings.TermsOfUse}
 				options={BackgroundHeaderScreenOptions({
 					title: 'Terms of use',
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Mode'}
-				component={Components.Settings.Mode}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.mode.title'),
-					...CustomTitleStyle(),
 				})}
 			/>
 			<NavigationStack.Screen
@@ -455,14 +594,7 @@ export const Navigation: React.FC = React.memo(() => {
 					presentation: 'formSheet',
 				})}
 			/>
-			<NavigationStack.Screen
-				name={'Settings.ThemeEditor'}
-				component={Components.Settings.ThemeEditor}
-				options={AltBackgroundHeaderScreenOptions({
-					title: t('settings.theme-editor.title'),
-					...CustomTitleStyle(),
-				})}
-			/>
+
 			<NavigationStack.Screen
 				name={'Settings.SystemInfo'}
 				component={Components.Settings.SystemInfo}
@@ -517,6 +649,15 @@ export const Navigation: React.FC = React.memo(() => {
 				component={Components.Settings.Faq}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.faq.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
+				name={'Settings.PrivacyPolicy'}
+				component={Components.Settings.PrivacyPolicy}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.privacy-policy.title'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}

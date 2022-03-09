@@ -7,7 +7,6 @@ import Long from 'long'
 import { withInAppNotification } from 'react-native-in-app-notification'
 
 import {
-	accountService,
 	defaultPersistentOptions,
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
@@ -48,7 +47,7 @@ import {
 import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
-import { selectEmbedded, selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
 
 //
 // DevTools
@@ -343,7 +342,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
 	const embedded = useSelector(selectEmbedded)
-	const selectedAccount = useSelector(selectSelectedAccount)
 	const client = useMessengerClient()
 
 	const addTyberHost = useCallback(
@@ -395,35 +393,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 		}
 	}, [addTyberHost, client])
 
-	const torOptions =
-		t('settings.devtools.tor-button', {
-			option: '',
-		})?.length &&
-		t('settings.devtools.tor-disabled-option')?.length &&
-		t('settings.devtools.tor-optional-option')?.length &&
-		t('settings.devtools.tor-required-option')?.length
-			? [
-					{
-						label: t('settings.devtools.tor-button', {
-							option: t('settings.devtools.tor-disabled-option'),
-						}),
-						value: String(beapi.account.NetworkConfig.TorFlag.TorDisabled),
-					},
-					{
-						label: t('settings.devtools.tor-button', {
-							option: t('settings.devtools.tor-optional-option'),
-						}),
-						value: String(beapi.account.NetworkConfig.TorFlag.TorOptional),
-					},
-					{
-						label: t('settings.devtools.tor-button', {
-							option: t('settings.devtools.tor-required-option'),
-						}),
-						value: String(beapi.account.NetworkConfig.TorFlag.TorRequired),
-					},
-			  ]
-			: []
-
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -469,37 +438,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 							enable: !ctx.persistentOptions?.debug.enable,
 						},
 					})
-				}}
-			/>
-			<DropDownPicker
-				items={torOptions}
-				defaultValue={
-					torOptions?.length && ctx.networkConfig.tor
-						? String(ctx.networkConfig.tor)
-						: String(beapi.account.NetworkConfig.TorFlag.TorDisabled)
-				}
-				onChangeItem={async (item: any) => {
-					let newValue = beapi.account.NetworkConfig.TorFlag.TorDisabled
-
-					try {
-						newValue = parseInt(item.value, 10)
-					} catch (e) {
-						console.warn('unable to cast new value')
-						return
-					}
-
-					const newConfig = {
-						...ctx.networkConfig,
-						tor: newValue,
-					}
-
-					await accountService.networkConfigSet({
-						accountId: selectedAccount,
-						config: newConfig,
-					})
-
-					ctx.setNetworkConfig(newConfig)
-					showNeedRestartNotification(showNotification, ctx, t)
 				}}
 			/>
 			<StringOptionInput

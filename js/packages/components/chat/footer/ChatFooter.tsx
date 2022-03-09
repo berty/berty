@@ -18,7 +18,6 @@ import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import rnutil from '@berty-tech/rnutil'
 import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty-tech/react-redux'
-import { setChecklistItemDone } from '@berty-tech/redux/reducers/checklist.reducer'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,
@@ -114,7 +113,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						payload: { interaction: optimisticInteraction },
 					})
 					setActiveReplyInte()
-					dispatch(setChecklistItemDone({ key: 'message' }))
 					dispatch(resetChatInput(convPK))
 					ctx.playSound('messageSent')
 				} catch (e) {

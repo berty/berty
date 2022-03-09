@@ -46,8 +46,6 @@ export type MessengerState = {
 	) => Promise<beapi.messenger.Interact.Reply> | undefined
 	debugMode: boolean
 	setDebugMode: (value: boolean) => void
-	networkConfig: beapi.account.INetworkConfig
-	setNetworkConfig: (value: beapi.account.INetworkConfig) => void
 	handledLink: boolean
 	setHandledLink: (value: boolean) => void
 }
@@ -132,12 +130,6 @@ export type PersistentOptionsTyberHost = {
 
 export type PersistentOptionsOnBoardingFinished = {
 	isFinished: boolean
-}
-
-export type CheckListItem = {
-	title: string
-	done?: boolean
-	desc?: string
 }
 
 export const UpdatesProfileNotification = 'updates'
