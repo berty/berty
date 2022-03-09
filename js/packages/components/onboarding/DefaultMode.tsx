@@ -171,7 +171,7 @@ const DefaultModeBody: React.FC = () => {
 						onPress={onPress}
 					>
 						{isPressed ? (
-							<ActivityIndicator />
+							<ActivityIndicator color={colors['reverted-main-text']} />
 						) : (
 							<Text
 								style={[

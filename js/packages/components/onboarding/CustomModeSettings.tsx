@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	SafeAreaView,
@@ -244,49 +244,49 @@ const Routing: React.FC<{
 	)
 }
 
-const Access: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
-	newConfig: beapi.account.INetworkConfig
-}> = (/*{ newConfig }*/) => {
-	const colors = useThemeColor()
-	const navigation = useNavigation()
-	const { t } = useTranslation()
+// const Access: React.FC<{
+// 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
+// 	newConfig: beapi.account.INetworkConfig
+// }> = (/*{ newConfig }*/) => {
+// 	const colors = useThemeColor()
+// 	const navigation = useNavigation()
+// 	const { t } = useTranslation()
 
-	return (
-		<View>
-			<ButtonSetting
-				name={t('onboarding.custom-mode.settings.access.relay-button')}
-				icon='earth'
-				iconPack='custom'
-				color={colors['main-text']}
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-				onPress={() => navigation.navigate('Settings.NetworkMap')}
-			/>
-			<ButtonSetting
-				name={t('onboarding.custom-mode.settings.access.bootstrap-button')}
-				icon='earth'
-				iconPack='custom'
-				color={colors['main-text']}
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-				onPress={() => navigation.navigate('Settings.NetworkMap')}
-			/>
-			<ButtonSetting
-				name={t('onboarding.custom-mode.settings.access.replication-button')}
-				icon='earth'
-				iconPack='custom'
-				color={colors['main-text']}
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-				onPress={() => navigation.navigate('Settings.NetworkMap')}
-			/>
-		</View>
-	)
-}
+// 	return (
+// 		<View>
+// 			<ButtonSetting
+// 				name={t('onboarding.custom-mode.settings.access.relay-button')}
+// 				icon='earth'
+// 				iconPack='custom'
+// 				color={colors['main-text']}
+// 				iconColor='#6E6DFF'
+// 				actionIconColor={colors['main-text']}
+// 				backgroundColor={colors['input-background']}
+// 				onPress={() => navigation.navigate('Settings.NetworkMap')}
+// 			/>
+// 			<ButtonSetting
+// 				name={t('onboarding.custom-mode.settings.access.bootstrap-button')}
+// 				icon='earth'
+// 				iconPack='custom'
+// 				color={colors['main-text']}
+// 				iconColor='#6E6DFF'
+// 				actionIconColor={colors['main-text']}
+// 				backgroundColor={colors['input-background']}
+// 				onPress={() => navigation.navigate('Settings.NetworkMap')}
+// 			/>
+// 			<ButtonSetting
+// 				name={t('onboarding.custom-mode.settings.access.replication-button')}
+// 				icon='earth'
+// 				iconPack='custom'
+// 				color={colors['main-text']}
+// 				iconColor='#6E6DFF'
+// 				actionIconColor={colors['main-text']}
+// 				backgroundColor={colors['input-background']}
+// 				onPress={() => navigation.navigate('Settings.NetworkMap')}
+// 			/>
+// 		</View>
+// 	)
+// }
 
 const CustomConfig: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
@@ -384,7 +384,8 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 
 const EnableDisableAll: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
-}> = ({ setNewConfig }) => {
+	newConfig: beapi.account.INetworkConfig
+}> = ({ setNewConfig, newConfig }) => {
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
@@ -440,9 +441,12 @@ const EnableDisableAll: React.FC<{
 									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 										setNewConfig(newConfig)
 									},
-									networkConfig: enable,
+									networkConfig: newConfig,
 									changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
 									navigate,
+									accept: async () => {
+										setNewConfig(enable)
+									},
 								})
 							}
 							if (Platform.OS === 'android') {
@@ -450,9 +454,12 @@ const EnableDisableAll: React.FC<{
 									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 										setNewConfig(newConfig)
 									},
-									networkConfig: enable,
-									changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
+									networkConfig: newConfig,
+									changedKey: ['bluetoothLe', 'androidNearby'],
 									navigate,
+									accept: async () => {
+										setNewConfig(enable)
+									},
 								})
 							}
 						} else {
@@ -482,10 +489,6 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 		getNetworkConfig()
 	})
 
-	useEffect(() => {
-		console.log('newConfig change', newConfig)
-	}, [newConfig])
-
 	return (
 		<SafeAreaView style={{ backgroundColor: colors['background-header'], flex: 1 }}>
 			<StatusBar barStyle='light-content' />
@@ -496,7 +499,7 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 			>
 				{newConfig && <CustomConfig setNewConfig={setNewConfig} newConfig={newConfig} />}
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<EnableDisableAll setNewConfig={setNewConfig} />
+					{newConfig && <EnableDisableAll setNewConfig={setNewConfig} newConfig={newConfig} />}
 					<ApplyChanges newConfig={newConfig} />
 				</View>
 			</ScrollView>
