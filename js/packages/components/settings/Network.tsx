@@ -250,7 +250,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 				additionalProps: { type: 'message' },
 			})
 		},
-		[dispatch, selectedAccount, showNotification, ctx],
+		[dispatch, selectedAccount, showNotification, t, ctx],
 	)
 
 	return (

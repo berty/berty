@@ -92,7 +92,7 @@ export const checkBlePermission = async (options: {
 	const handleAccept = async () => {
 		changedKey.forEach((key: 'bluetoothLe' | 'androidNearby' | 'appleMultipeerConnectivity') => {
 			let newValue = beapi.account.NetworkConfig.Flag.Disabled
-			if (networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Disabled) {
+			if (networkConfig?.[key] === beapi.account.NetworkConfig.Flag.Disabled) {
 				newValue = beapi.account.NetworkConfig.Flag.Enabled
 			}
 			newConfig = { ...newConfig, [key]: newValue }

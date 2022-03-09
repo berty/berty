@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { ScrollView, TouchableOpacity, View, Text, Platform } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
@@ -122,10 +122,6 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 			f()
 		})
 
-		useEffect(() => {
-			console.log('networkConfig change', networkConfig)
-		}, [networkConfig])
-
 		// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
 		const setNewConfig = React.useCallback(
 			async (newConfig: beapi.account.INetworkConfig) => {
@@ -144,7 +140,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					additionalProps: { type: 'message' },
 				})
 			},
-			[ctx, dispatch, selectedAccount, showNotification],
+			[ctx, dispatch, selectedAccount, showNotification, t],
 		)
 
 		return (
@@ -174,6 +170,19 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 												networkConfig,
 												changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
 												navigate,
+												accept: async () => {
+													const newValue =
+														networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
+															? beapi.account.NetworkConfig.Flag.Disabled
+															: beapi.account.NetworkConfig.Flag.Enabled
+													dispatch(
+														setCurrentNetworkConfig({
+															...networkConfig,
+															bluetoothLe: newValue,
+															appleMultipeerConnectivity: newValue,
+														}),
+													)
+												},
 											})
 										}
 										if (Platform.OS === 'android') {
@@ -184,6 +193,19 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 												networkConfig,
 												changedKey: ['bluetoothLe', 'androidNearby'],
 												navigate,
+												accept: async () => {
+													const newValue =
+														networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
+															? beapi.account.NetworkConfig.Flag.Disabled
+															: beapi.account.NetworkConfig.Flag.Enabled
+													dispatch(
+														setCurrentNetworkConfig({
+															...networkConfig,
+															bluetoothLe: newValue,
+															androidNearby: newValue,
+														}),
+													)
+												},
 											})
 										}
 									},

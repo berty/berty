@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	SafeAreaView,
@@ -384,8 +384,7 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 
 const EnableDisableAll: React.FC<{
 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
-	newConfig: beapi.account.INetworkConfig
-}> = ({ setNewConfig, newConfig }) => {
+}> = ({ setNewConfig }) => {
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
@@ -413,10 +412,6 @@ const EnableDisableAll: React.FC<{
 		androidNearby: beapi.account.NetworkConfig.Flag.Disabled,
 		mdns: beapi.account.NetworkConfig.Flag.Disabled,
 	}
-
-	useEffect(() => {
-		console.log('networkConfig change:', newConfig)
-	}, [newConfig])
 
 	return (
 		<View
@@ -499,7 +494,7 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 			>
 				{newConfig && <CustomConfig setNewConfig={setNewConfig} newConfig={newConfig} />}
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					{newConfig && <EnableDisableAll setNewConfig={setNewConfig} newConfig={newConfig} />}
+					{newConfig && <EnableDisableAll setNewConfig={setNewConfig} />}
 					<ApplyChanges newConfig={newConfig} />
 				</View>
 			</ScrollView>
