@@ -93,36 +93,13 @@ export const HomeHeader: React.FC<
 									animate.current.play()
 									scrollRef.current?.scrollTo({ y: 0, animated: true })
 								}}
-								style={{ flexDirection: 'row' }}
 							>
 								<LottieView
 									ref={animate}
-									style={{ width: 40, marginRight: -10 }}
+									style={{ width: 40 }}
 									source={require('../berty_logo_animated.json')}
 									loop={false}
 								/>
-								<View
-									style={[
-										border.radius.medium,
-										padding.horizontal.tiny,
-										{
-											backgroundColor: defaultStylesDeclaration.colors.default.blue,
-											alignSelf: 'flex-start',
-										},
-									]}
-								>
-									<Text
-										style={[
-											text.size.tiny,
-											{
-												color: defaultStylesDeclaration.colors.default.white,
-												justifyContent: 'center',
-											},
-										]}
-									>
-										v1
-									</Text>
-								</View>
 							</TouchableOpacity>
 						</View>
 						<TouchableOpacity
