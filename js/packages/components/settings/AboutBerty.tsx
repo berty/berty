@@ -26,9 +26,13 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 						text={t('settings.about.faq-button')}
 						onPress={() => navigate('Settings.Faq')}
 					/>
-					<ButtonSettingV2 text={t('settings.about.roadmap-button')} />
-					<ButtonSettingV2 text={t('settings.about.policy-button')} />
-					<ButtonSettingV2 text={t('settings.about.license-button')} last />
+					<ButtonSettingV2
+						text={t('settings.about.roadmap-button')}
+						icon='map'
+						onPress={() => navigate('Settings.Roadmap')}
+					/>
+					<ButtonSettingV2 text={t('settings.about.policy-button')} icon='lock' />
+					<ButtonSettingV2 text={t('settings.about.license-button')} icon='info' last />
 				</Section>
 			</ScrollView>
 		</View>

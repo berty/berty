@@ -123,7 +123,7 @@ export const ButtonSettingV2: React.FC<{
 						name={arrowIcon}
 						width={20 * scaleSize}
 						height={20 * scaleSize}
-						fill={`${colors['secondary-background']}`}
+						fill={colors['main-text']}
 					/>
 				)}
 			</TouchableOpacity>
