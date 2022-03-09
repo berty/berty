@@ -13,7 +13,7 @@ import {
 	setActiveReplyInteraction,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
 
-import { useConversationModal } from '../ConversationModalContext'
+import { useModal } from '../../providers/modal.provider'
 import { EmojiKeyboard } from './EmojiKeyboard.modal'
 
 const emojis = [
@@ -41,7 +41,7 @@ export const MessageMenu: FC<{
 	const colors = useThemeColor()
 	const [{ padding, border, margin }, { windowWidth }] = useStyles()
 	const [layout, onLayout] = useLayout()
-	const { show, hide } = useConversationModal()
+	const { show, hide } = useModal()
 	const emojisToDisplay: number = (Math.floor(windowWidth / layout.width) - 1) * 0.6
 	const dispatch = useAppDispatch()
 	const menuItems = [

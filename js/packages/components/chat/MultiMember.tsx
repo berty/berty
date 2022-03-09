@@ -23,7 +23,6 @@ import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
 import { MessageList } from './MessageList'
 import { ChatFooter } from './footer/ChatFooter'
-import { ConversationModalProvider } from './ConversationModalContext'
 
 //
 // MultiMember
@@ -174,52 +173,50 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 			keyboardVerticalOffset={headerHeight}
 			style={[{ flex: 1, backgroundColor: colors['main-background'] }]}
 		>
-			<ConversationModalProvider>
-				<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
-					{Platform.OS === 'ios' ? (
-						<View style={[flex.tiny]}>
-							<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
-							<ChatFooter
-								convPK={params?.convId}
-								placeholder={t('chat.multi-member.input-placeholder')}
-							/>
-							{!!stickyDate && !!showStickyDate && (
-								<View
-									style={{
-										position: 'absolute',
-										top: 110,
-										left: 0,
-										right: 0,
-									}}
-								>
-									<ChatDate date={pbDateToNum(stickyDate)} />
-								</View>
-							)}
-						</View>
-					) : (
-						<>
-							<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
-							<ChatFooter
-								convPK={params?.convId}
-								placeholder={t('chat.multi-member.input-placeholder')}
-							/>
-							{!!stickyDate && !!showStickyDate && (
-								<View
-									style={{
-										position: 'absolute',
-										top: 110,
-										left: 0,
-										right: 0,
-									}}
-								>
-									<ChatDate date={pbDateToNum(stickyDate)} />
-								</View>
-							)}
-						</>
-					)}
-				</View>
-				)
-			</ConversationModalProvider>
+			<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
+				{Platform.OS === 'ios' ? (
+					<View style={[flex.tiny]}>
+						<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+						<ChatFooter
+							convPK={params?.convId}
+							placeholder={t('chat.multi-member.input-placeholder')}
+						/>
+						{!!stickyDate && !!showStickyDate && (
+							<View
+								style={{
+									position: 'absolute',
+									top: 110,
+									left: 0,
+									right: 0,
+								}}
+							>
+								<ChatDate date={pbDateToNum(stickyDate)} />
+							</View>
+						)}
+					</View>
+				) : (
+					<>
+						<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+						<ChatFooter
+							convPK={params?.convId}
+							placeholder={t('chat.multi-member.input-placeholder')}
+						/>
+						{!!stickyDate && !!showStickyDate && (
+							<View
+								style={{
+									position: 'absolute',
+									top: 110,
+									left: 0,
+									right: 0,
+								}}
+							>
+								<ChatDate date={pbDateToNum(stickyDate)} />
+							</View>
+						)}
+					</>
+				)}
+			</View>
+			)
 		</IOSOnlyKeyboardAvoidingView>
 	)
 }

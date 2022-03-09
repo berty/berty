@@ -4,7 +4,7 @@ import { Icon, Text } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { useMusicPlayer } from '@berty-tech/components/music-player'
+import { useMusicPlayer } from '@berty-tech/components/providers/musicPlayer.provider'
 import beapi from '@berty-tech/api'
 
 import { normalizeVolumeIntensities, WaveForm } from '../audioMessageCommon'

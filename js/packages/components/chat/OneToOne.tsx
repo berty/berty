@@ -22,7 +22,6 @@ import { ContactAvatar } from '../avatars'
 import { ChatDate } from './common'
 import { MessageList } from '../chat/MessageList'
 import { ChatFooter } from './footer/ChatFooter'
-import { ConversationModalProvider } from './ConversationModalContext'
 
 //
 // Chat
@@ -105,34 +104,32 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 				keyboardVerticalOffset={headerHeight}
 				style={[{ flex: 1, backgroundColor: colors['main-background'] }]}
 			>
-				<ConversationModalProvider>
-					<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
-						<View style={[flex.tiny]}>
-							<MessageList
-								id={params.convId}
-								scrollToMessage={params.scrollToMessage || '0'}
-								{...{ setStickyDate, setShowStickyDate }}
-							/>
-							<ChatFooter
-								convPK={params.convId}
-								disabled={isFooterDisable}
-								placeholder={placeholder}
-							/>
-							{stickyDate && showStickyDate && (
-								<View
-									style={{
-										position: 'absolute',
-										top: 110 * scaleSize, // TODO Redefine
-										left: 0,
-										right: 0,
-									}}
-								>
-									<ChatDate date={pbDateToNum(stickyDate)} />
-								</View>
-							)}
-						</View>
+				<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
+					<View style={[flex.tiny]}>
+						<MessageList
+							id={params.convId}
+							scrollToMessage={params.scrollToMessage || '0'}
+							{...{ setStickyDate, setShowStickyDate }}
+						/>
+						<ChatFooter
+							convPK={params.convId}
+							disabled={isFooterDisable}
+							placeholder={placeholder}
+						/>
+						{stickyDate && showStickyDate && (
+							<View
+								style={{
+									position: 'absolute',
+									top: 110 * scaleSize, // TODO Redefine
+									left: 0,
+									right: 0,
+								}}
+							>
+								<ChatDate date={pbDateToNum(stickyDate)} />
+							</View>
+						)}
 					</View>
-				</ConversationModalProvider>
+				</View>
 			</IOSOnlyKeyboardAvoidingView>
 		)
 	},

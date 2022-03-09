@@ -45,6 +45,35 @@
 					"bootstrap-button": "",
 					"replication-button": "Nœuds de réplication"
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "Ajouter un noeud relay (TURN)",
+							"bootstrap": "Ajouter un noeud bootstrap",
+							"rdvp": "Ajouter un noeud RDVP"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "Modifier un noeud relay (TURN)",
+							"bootstrap": "Modifier un noeud bootstrap",
+							"rdvp": "Modifier un noeud RDVP"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "L'alias existe déjà",
+						"multiaddr-alread-exists": "La multiadress existe déjà",
+						"multiaddr-bad-format": "Mauvais format de la multiadress",
+						"multiaddr-p2p": "La multiadress doit contenir un p2p"
+					},
+					"buttons": {
+						"add": "Ajouter",
+						"edit": "Modifier",
+						"delete": "Supprimer"
+					},
+					"multiaddress": "Multiaddress",
+					"alias": "Alias"
+				},
 				"all-button": "Tout",
 				"accept-button": "C'est parti"
 			}

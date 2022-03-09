@@ -10,10 +10,51 @@ import React, {
 	createRef,
 	forwardRef,
 	ForwardedRef,
+	useEffect,
 } from 'react'
-import { Platform, TouchableWithoutFeedback, View } from 'react-native'
+import { Keyboard, Platform, TouchableWithoutFeedback, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import BottomSheet, { BottomSheetView, useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet'
+
+const useKeyboardHeight = (platforms: string[] = ['ios', 'android']) => {
+	const [keyboardHeight, setKeyboardHeight] = useState<number>(0)
+	useEffect(() => {
+		if (isEventRequired(platforms)) {
+			Keyboard.addListener('keyboardDidShow', keyboardDidShow)
+			Keyboard.addListener('keyboardDidHide', keyboardDidHide)
+
+			// cleanup function
+			return () => {
+				Keyboard.removeListener('keyboardDidShow', keyboardDidShow)
+				Keyboard.removeListener('keyboardDidHide', keyboardDidHide)
+			}
+		} else {
+			return () => {}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	const isEventRequired = (platforms: any) => {
+		try {
+			return (
+				platforms?.map((p: string) => p?.toLowerCase()).indexOf(Platform.OS) !== -1 || !platforms
+			)
+		} catch (ex: any) {}
+
+		return false
+	}
+
+	const keyboardDidShow = (frames: any) => {
+		setKeyboardHeight(frames.endCoordinates.height)
+	}
+
+	const keyboardDidHide = () => {
+		setKeyboardHeight(0)
+	}
+
+	return keyboardHeight
+}
+
 declare module 'react' {
 	function forwardRef<T, P = {}>(
 		render: (props: P, ref: React.Ref<T>) => React.ReactElement | null,
@@ -44,7 +85,7 @@ const BottomSheetModal = forwardRef(
 		const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
 			useBottomSheetDynamicSnapPoints(snapPoints)
 		const insets = useSafeAreaInsets()
-
+		const keyboardHeight = useKeyboardHeight()
 		const handleSheetChanges = useCallback(
 			(index: number) => {
 				if (index === -1) {
@@ -57,6 +98,7 @@ const BottomSheetModal = forwardRef(
 		return (
 			<View
 				style={{
+					flex: 1,
 					position: 'absolute',
 					top: 0,
 					bottom: 0,
@@ -95,8 +137,12 @@ const BottomSheetModal = forwardRef(
 						zIndex: 100,
 					}}
 				>
-					<BottomSheetView style={{ paddingBottom: insets?.bottom }} onLayout={handleContentLayout}>
+					<BottomSheetView
+						style={{ paddingBottom: insets?.bottom, flex: 1 }}
+						onLayout={handleContentLayout}
+					>
 						{children}
+						<View style={{ height: keyboardHeight }} />
 					</BottomSheetView>
 				</BottomSheet>
 			</View>
@@ -114,7 +160,7 @@ const ModalContext = createContext<{
 	show: () => {},
 })
 
-export const ConversationModalProvider: FC = ({ children }) => {
+export const ModalProvider: FC = ({ children }) => {
 	const [stack, setStack] = useState<stackType[]>([])
 
 	const handleDeleteModal = useCallback((idToRemove: string) => {
@@ -128,18 +174,20 @@ export const ConversationModalProvider: FC = ({ children }) => {
 		])
 	}, [])
 
-	const hide = useCallback(
-		(closeAll: boolean = false) => {
+	const hide = useCallback((closeAll: boolean = false) => {
+		// stack is an empty array in this function, idk why
+		// stack is available in setState callback
+		// temporary fix
+		setStack(previous => {
 			if (closeAll) {
-				stack.forEach(({ ref }) => {
+				previous.forEach(({ ref }) => {
 					ref.current?.close()
 				})
-				return
 			}
-			stack.length && stack[stack.length - 1].ref.current?.close()
-		},
-		[stack],
-	)
+			previous.length && previous[previous.length - 1].ref.current?.close()
+			return previous
+		})
+	}, [])
 
 	return (
 		<ModalContext.Provider
@@ -165,7 +213,7 @@ export const ConversationModalProvider: FC = ({ children }) => {
 	)
 }
 
-export const useConversationModal = () => {
+export const useModal = () => {
 	const context = useContext(ModalContext)
 	if (!context) {
 		throw new Error('useConversationModal must be used within a ModalProvider')

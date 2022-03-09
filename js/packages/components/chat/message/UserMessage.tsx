@@ -32,7 +32,7 @@ import { FileMessage } from './FileMessage'
 import { getMediaTypeFromMedias } from '../../utils'
 // import { Reactions } from './Reactions'
 import { MessageMenu } from '../modals/MessageMenu.modal'
-import { useConversationModal } from '../ConversationModalContext'
+import { useModal } from '../../providers/modal.provider'
 import { setActiveReplyInteraction } from '@berty-tech/redux/reducers/chatInputs.reducer'
 // import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
@@ -173,7 +173,7 @@ export const UserMessage: React.FC<{
 	const { t } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
 	// const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
-	const { show } = useConversationModal()
+	const { show } = useModal()
 	const dispatch = useAppDispatch()
 	const [highlightCid, setHighlightCid] = useState<string | undefined | null>()
 

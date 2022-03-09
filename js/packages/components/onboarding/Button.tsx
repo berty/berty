@@ -9,24 +9,31 @@ const Button: React.FC<{
 	onPress: () => void
 	width?: number
 	status?: 'primary' | 'secondary'
-	style?: ViewStyle
-}> = ({ children, onPress, width = 250, status = 'primary', style = null }) => {
+	disabled?: boolean
+	style?: ViewStyle | ViewStyle[]
+}> = ({ children, onPress, width = 250, status = 'primary', style = null, disabled }) => {
 	const [{ margin, padding, text, border, column }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
+	const getBackgroundColor = () => {
+		if (disabled) {
+			return colors['secondary-text']
+		}
+		return status === 'primary' ? colors['background-header'] : `${colors['background-header']}20`
+	}
 	return (
 		<TouchableOpacity
+			disabled={disabled}
 			style={[
 				margin.top.small,
 				padding.medium,
 				border.radius.small,
 				column.item.center,
+				style,
 				{
 					width: width * scaleSize,
-					backgroundColor:
-						status === 'primary' ? colors['background-header'] : `${colors['background-header']}20`,
+					backgroundColor: getBackgroundColor(),
 				},
-				style,
 			]}
 			onPress={onPress}
 		>

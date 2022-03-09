@@ -33,7 +33,7 @@ import { ChatTextInput } from './ChatTextInput'
 import { RecordComponent } from './record/RecordComponent'
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { EmojiBanner } from './emojis/EmojiBanner'
-import { useConversationModal } from '../ConversationModalContext'
+import { useModal } from '../../providers/modal.provider'
 
 export type ChatFooterProps = {
 	convPK: string
@@ -65,7 +65,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
 		const addedMedias = useMedias(mediaCids)
-		const { hide, show } = useConversationModal()
+		const { hide, show } = useModal()
 
 		// local
 		const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))

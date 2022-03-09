@@ -6,7 +6,7 @@ import beapi from '@berty-tech/api'
 import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
-import { useConversationModal } from '../ConversationModalContext'
+import { useModal } from '../../providers/modal.provider'
 
 export const EmojiKeyboard: FC<{ conversationPublicKey: string; targetCid: string }> = ({
 	conversationPublicKey,
@@ -14,7 +14,7 @@ export const EmojiKeyboard: FC<{ conversationPublicKey: string; targetCid: strin
 }) => {
 	const client = useMessengerClient()
 	const ctx = useMessengerContext()
-	const { hideAll } = useConversationModal()
+	const { hideAll } = useModal()
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 

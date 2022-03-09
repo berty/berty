@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ScrollView, View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
@@ -8,17 +8,38 @@ import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
-
-import { ButtonSettingV2, Section } from '../shared-components'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
 import {
+	addToBootstrap,
+	addToRendezvous,
+	addToStaticRelay,
+	modifyFromBootstrap,
+	modifyFromRendezvous,
+	modifyFromStaticRelay,
+	removeFromBootstrap,
+	removeFromRendezvous,
+	removeFromStaticRelay,
 	selectBlePerm,
+	selectBootstrap,
 	selectCurrentNetworkConfig,
+	selectParsedLocalNetworkConfig,
+	selectRendezvous,
+	selectStaticRelay,
 	setCurrentNetworkConfig,
+	toggleFromBootstrap,
+	toggleFromRendezvous,
+	toggleFromStaticRelay,
 } from '@berty-tech/redux/reducers/networkConfig.reducer'
+import { useAppSelector } from '@berty-tech/react-redux'
+
+import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
+import { useModal } from '../providers/modal.provider'
+import { AccordionAdd } from '../modals/AccordionAdd.modal'
+import { AccordionEdit } from '../modals/AccordionEdit.modal'
+import { ButtonSettingV2, Section } from '../shared-components'
 
 const Proximity: React.FC<{
 	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
@@ -231,16 +252,23 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 	const ctx = useMessengerContext()
 	const dispatch = useDispatch()
 	const networkConfig = useSelector(selectCurrentNetworkConfig)
+	const { show, hide } = useModal()
+	const rendezvous = useAppSelector(selectRendezvous)
+	const bootstrap = useAppSelector(selectBootstrap)
+	const staticRelay = useAppSelector(selectStaticRelay)
+
+	const parsedLocalNetworkConfig = useAppSelector(selectParsedLocalNetworkConfig)
+	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
 
 	// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
 	const setNewConfig = React.useCallback(
 		async (newConfig: beapi.account.INetworkConfig) => {
-			dispatch(setCurrentNetworkConfig({ ...newConfig }))
-
-			await accountService.networkConfigSet({
-				accountId: selectedAccount,
-				config: newConfig,
-			})
+			await accountService
+				.networkConfigSet({
+					accountId: selectedAccount,
+					config: newConfig,
+				})
+				.then(() => dispatch(setCurrentNetworkConfig(newConfig)))
 			showNotification({
 				title: t('notification.need-restart-ble.title'),
 				message: t('notification.need-restart-ble.desc'),
@@ -252,6 +280,17 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 		},
 		[dispatch, selectedAccount, showNotification, t, ctx],
 	)
+
+	useEffect(() => {
+		return () => {
+			console.log('trying to save')
+			if (JSON.stringify(parsedLocalNetworkConfig) !== JSON.stringify(currentNetworkConfig)) {
+				setNewConfig(parsedLocalNetworkConfig)
+				console.log('saving')
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -292,28 +331,174 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 							},
 						}}
 					/>
-					{/*
-					<ButtonSettingV2 text={t('settings.network.rdvp-button')} />
-					{networkConfig?.rendezvous?.map(item => {
-						return (
-							<CustomItem
-								key={item}
-								value={item === ':default:' ? 'Berty RDVP' : item}
-								toggle={true}
-								onToggleChange={() => {}}
+					<AccordionV2 title={t('settings.network.rdvp-button')}>
+						{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+							<AccordionItemV2
+								key={`rendezvous-item-${index}`}
+								toggle={isEnabled}
+								value={alias}
+								onToggleChange={isEditable ? () => dispatch(toggleFromRendezvous(url)) : undefined}
+								onPressModify={
+									isEditable
+										? () =>
+												show(
+													<AccordionEdit
+														title={t('onboarding.custom-mode.settings.modals.edit.title.rdvp')}
+														onEdit={data => {
+															dispatch(modifyFromRendezvous({ url, changes: data }))
+															hide()
+														}}
+														onDelete={() => {
+															dispatch(removeFromRendezvous(url))
+															hide()
+														}}
+														defaultAlias={alias}
+														defaultUrl={url}
+														alreadyExistingUrls={rendezvous
+															.map(({ url }) => url)
+															.filter((url): url is string => url !== undefined)}
+														alreadyExistingAliases={rendezvous
+															.map(({ alias }) => alias)
+															.filter((alias): alias is string => alias !== undefined)}
+													/>,
+												)
+										: undefined
+								}
 							/>
-						)
-					})}
-					<InputSetting setNewConfig={setNewConfig} obj='rendezvous' />
-				*/}
+						))}
+						<AccordionAddItemV2
+							onPress={() =>
+								show(
+									<AccordionAdd
+										title={t('onboarding.custom-mode.settings.modals.add.title.rdvp')}
+										onSubmit={data => {
+											dispatch(addToRendezvous(data))
+											hide()
+										}}
+										alreadyExistingAliases={rendezvous
+											.map(({ alias }) => alias)
+											.filter((alias): alias is string => alias !== undefined)}
+										alreadyExistingUrls={rendezvous
+											.map(({ url }) => url)
+											.filter((url): url is string => url !== undefined)}
+									/>,
+								)
+							}
+						/>
+					</AccordionV2>
 				</Section>
-				{/*
 				<Section>
-					<ButtonSettingV2 text={t('settings.network.relay-button')} />
-					<ButtonSettingV2 text={t('settings.network.bootstrap-button')} />
-					<ButtonSettingV2 text='Tor' last disabled />
+					<AccordionV2 title={t('settings.network.relay-button')}>
+						{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+							<AccordionItemV2
+								key={`rendezvous-item-${index}`}
+								toggle={isEnabled}
+								value={alias}
+								onToggleChange={isEditable ? () => dispatch(toggleFromStaticRelay(url)) : undefined}
+								onPressModify={
+									isEditable
+										? () =>
+												show(
+													<AccordionEdit
+														title={t('onboarding.custom-mode.settings.modals.edit.title.relay')}
+														onEdit={data => {
+															dispatch(modifyFromStaticRelay({ url, changes: data }))
+															hide()
+														}}
+														onDelete={() => {
+															dispatch(removeFromStaticRelay(url))
+															hide()
+														}}
+														defaultUrl={url}
+														alreadyExistingUrls={staticRelay
+															.map(({ url }) => url)
+															.filter((url): url is string => url !== undefined)}
+														defaultAlias={alias}
+														alreadyExistingAliases={staticRelay
+															.map(({ alias }) => alias)
+															.filter((alias): alias is string => alias !== undefined)}
+													/>,
+												)
+										: undefined
+								}
+							/>
+						))}
+						<AccordionAddItemV2
+							onPress={() =>
+								show(
+									<AccordionAdd
+										title={t('onboarding.custom-mode.settings.modals.add.title.relay')}
+										onSubmit={data => {
+											dispatch(addToStaticRelay(data))
+											hide()
+										}}
+										alreadyExistingAliases={staticRelay
+											.map(({ alias }) => alias)
+											.filter((alias): alias is string => alias !== undefined)}
+										alreadyExistingUrls={staticRelay
+											.map(({ url }) => url)
+											.filter((url): url is string => url !== undefined)}
+									/>,
+								)
+							}
+						/>
+					</AccordionV2>
+					<AccordionV2 title={t('settings.network.bootstrap-button')}>
+						{(bootstrap || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+							<AccordionItemV2
+								key={`rendezvous-item-${index}`}
+								toggle={isEnabled}
+								value={alias}
+								onToggleChange={isEditable ? () => dispatch(toggleFromBootstrap(url)) : undefined}
+								onPressModify={
+									isEditable
+										? () =>
+												show(
+													<AccordionEdit
+														title={t('onboarding.custom-mode.settings.modals.edit.title.bootstrap')}
+														onEdit={data => {
+															dispatch(modifyFromBootstrap({ url, changes: data }))
+															hide()
+														}}
+														onDelete={() => {
+															dispatch(removeFromBootstrap(url))
+															hide()
+														}}
+														defaultAlias={alias}
+														defaultUrl={url}
+														alreadyExistingUrls={bootstrap
+															.map(({ url }) => url)
+															.filter((url): url is string => url !== undefined)}
+														alreadyExistingAliases={bootstrap
+															.map(({ alias }) => alias)
+															.filter((alias): alias is string => alias !== undefined)}
+													/>,
+												)
+										: undefined
+								}
+							/>
+						))}
+						<AccordionAddItemV2
+							onPress={() =>
+								show(
+									<AccordionAdd
+										title={t('onboarding.custom-mode.settings.modals.add.title.bootstrap')}
+										onSubmit={data => {
+											dispatch(addToBootstrap(data))
+											hide()
+										}}
+										alreadyExistingAliases={bootstrap
+											.map(({ alias }) => alias)
+											.filter((alias): alias is string => alias !== undefined)}
+										alreadyExistingUrls={bootstrap
+											.map(({ url }) => url)
+											.filter((url): url is string => url !== undefined)}
+									/>,
+								)
+							}
+						/>
+					</AccordionV2>
 				</Section>
-				*/}
 			</ScrollView>
 		</View>
 	)
@@ -321,6 +506,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 
 export const Network: ScreenFC<'Settings.Network'> = () => {
 	const headerHeight = useHeaderHeight()
+
 	return (
 		<IOSOnlyKeyboardAvoidingView
 			behavior='padding'

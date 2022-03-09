@@ -163,6 +163,7 @@ type SettingButtonProps = {
 	alone?: boolean
 	toggled?: boolean
 	actionIcon?: string | null
+	actionIconAngle?: Animated.AnimatedInterpolation | null
 	actionIconSize?: number
 	actionIconColor?: string
 	actionToggle?: any
@@ -175,8 +176,8 @@ type SettingButtonProps = {
 	previewValue?: string
 	previewValueColor?: string
 	onPress?: (...args: any) => void
-	//
 	disabled?: boolean
+	rightComponent?: ReactNode
 }
 
 // Style
@@ -202,6 +203,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	state = {},
 	actionIconColor,
 	actionIconSize = 25,
+	actionIconAngle = null,
 	actionToggle = null,
 	varToggle = null,
 	toggleStatus = 'primary',
@@ -215,6 +217,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	actionIcon = !toggled && 'arrow-ios-forward',
 	onPress,
 	disabled = false,
+	rightComponent,
 }) => {
 	const [isToggle, setIsToggle] = useState<boolean>()
 	const _styles = useStylesSettingButton()
@@ -250,13 +253,13 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					: 0.2
 			}
 			style={[
-				style,
 				{ minHeight: 60 * scaleSize, backgroundColor, flex: 1 },
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
 				alone ? { shadowColor: colors.shadow } : null,
 				alone ? margin.top.scale(20) : null,
 				disabled ? opacity(0.5) : opacity(1),
+				style,
 			]}
 			onPress={onPress}
 		>
@@ -352,13 +355,16 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							</Text>
 						</View>
 					)}
+					{rightComponent}
 					{actionIcon && (
-						<Icon
-							name={actionIcon}
-							width={actionIconSize}
-							height={actionIconSize}
-							fill={actionIconColor}
-						/>
+						<Animated.View style={actionIconAngle && { transform: [{ rotateZ: actionIconAngle }] }}>
+							<Icon
+								name={actionIcon}
+								width={actionIconSize}
+								height={actionIconSize}
+								fill={actionIconColor}
+							/>
+						</Animated.View>
 					)}
 					{toggled && (
 						<Toggle
@@ -375,7 +381,6 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 				</View>
 			</View>
-			{children && <View style={[_styles.descBox]}>{children}</View>}
 		</TouchableOpacity>
 	)
 }
