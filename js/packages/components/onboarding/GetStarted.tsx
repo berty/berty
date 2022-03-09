@@ -86,9 +86,11 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 					>
 						{t('onboarding.getstarted.import-button') as any}
 					</Button>
+					{/*
 					<Button status='secondary' onPress={() => {}}>
 						{t('onboarding.getstarted.link-button') as any}
 					</Button>
+					*/}
 				</View>
 			</View>
 		</View>

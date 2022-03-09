@@ -20,8 +20,8 @@ export const Security: ScreenFC<'Settings.Security'> = () => {
 			>
 				<Section>
 					{/* TODO i18n */}
-					<ButtonSettingV2 text='TouchID/FaceID before open account' icon='bluetooth' disabled />
-					<ButtonSettingV2 text='Password' icon='info' disabled last />
+					<ButtonSettingV2 text='TouchID/FaceID before open account' disabled />
+					<ButtonSettingV2 text='Password' disabled last />
 				</Section>
 			</ScrollView>
 		</View>

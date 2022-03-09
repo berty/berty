@@ -111,12 +111,11 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Section>
-					<ButtonSettingV2 text='Backup' icon='bluetooth' last />
+					<ButtonSettingV2 text='Backup' last />
 				</Section>
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.accounts.accounts-button')}
-						icon='bluetooth'
 						arrowIcon='arrow-ios-downward'
 						onPress={() => setAccountsCollapse(!accountsCollapse)}
 						last
@@ -131,7 +130,6 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.accounts.create-button')}
-						icon='bluetooth'
 						onPress={async () => {
 							await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
 							reduxDispatch(setStateOnBoardingReady())
@@ -139,20 +137,13 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 					/>
 					<ButtonSettingV2
 						text={t('settings.accounts.import-button')}
-						icon='bluetooth'
 						onPress={async () => await importAccountFromDocumentPicker(ctx)}
 					/>
-					<ButtonSettingV2
-						text={t('settings.accounts.link-button')}
-						icon='bluetooth'
-						disabled
-						last
-					/>
+					<ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last />
 				</Section>
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.accounts.delete-button')}
-						icon='bluetooth'
 						onPress={() => navigate('Settings.DeleteAccount')}
 						last
 					/>

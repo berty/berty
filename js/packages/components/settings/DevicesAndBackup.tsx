@@ -20,8 +20,8 @@ export const DevicesAndBackup: ScreenFC<'Settings.DevicesAndBackup'> = () => {
 			>
 				{/* TODO i18n */}
 				<Section>
-					<ButtonSettingV2 text='Link device' icon='bluetooth' disabled />
-					<ButtonSettingV2 text='Configure your node' icon='info' disabled />
+					<ButtonSettingV2 text='Link device' disabled />
+					<ButtonSettingV2 text='Configure your node' disabled />
 				</Section>
 			</ScrollView>
 		</View>

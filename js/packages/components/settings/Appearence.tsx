@@ -26,9 +26,9 @@ export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Section>
+					{/*
 					<ButtonSettingV2
 						text={t('settings.appearance.dark-button')}
-						icon='bluetooth'
 						toggle={{
 							enable: true,
 							value: isDark,
@@ -37,10 +37,10 @@ export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
 							},
 						}}
 					/>
+					*/}
 					{/* TODO: replace dark toggle by a menu or a radio button:  Light, Dark, System based*/}
 					<ButtonSettingV2
 						text={t('settings.appearance.editor-button')}
-						icon='info'
 						onPress={() => navigate('Settings.ThemeEditor')}
 						last
 					/>

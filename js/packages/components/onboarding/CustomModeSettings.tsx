@@ -229,7 +229,7 @@ const Routing: React.FC<{
 					})
 				}}
 			/>
-			{/* TODO: node list */}
+			{/*
 			<ButtonSetting
 				name={t('onboarding.custom-mode.settings.routing.rdvp-button')}
 				color={colors['main-text']}
@@ -239,6 +239,7 @@ const Routing: React.FC<{
 				actionIconColor={colors['main-text']}
 				backgroundColor={colors['input-background']}
 			/>
+			*/}
 		</View>
 	)
 }
@@ -314,9 +315,10 @@ const CustomConfig: React.FC<{
 					{ backgroundColor: colors['main-background'] },
 				]}
 			>
-				<ConfigPart title={t('onboarding.custom-mode.settings.routing.title')} icon='proximity' />
+				<ConfigPart title={t('onboarding.custom-mode.settings.routing.title')} icon='peer' />
 				<Routing setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
+			{/*
 			<View
 				style={[
 					margin.top.medium,
@@ -332,6 +334,7 @@ const CustomConfig: React.FC<{
 				/>
 				<Access setNewConfig={setNewConfig} newConfig={newConfig} />
 			</View>
+				*/}
 		</View>
 	)
 }

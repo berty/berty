@@ -214,14 +214,12 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 						/>
 					</Section>
 					<Section>
-						{/*
-					<ButtonSettingV2
-						text={t('settings.home.bug-button')}
-						icon='info'
-						last
-						onPress={() => console.log('TODO')}
-					/>
-					*/}
+						<ButtonSettingV2
+							text={t('settings.home.bug-button')}
+							icon='mail'
+							last
+							onPress={() => console.log('TODO')}
+						/>
 						<ButtonSettingV2
 							text={t('settings.home.about-button')}
 							icon='info'

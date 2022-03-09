@@ -33,7 +33,6 @@ const Proximity: React.FC<{
 		<Section>
 			<ButtonSettingV2
 				text={t('settings.network.ble-button')}
-				icon='bluetooth'
 				toggle={{
 					enable: true,
 					value: networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
@@ -50,7 +49,6 @@ const Proximity: React.FC<{
 			{Platform.OS === 'ios' && (
 				<ButtonSettingV2
 					text={t('settings.network.mc-button')}
-					icon='wifi'
 					toggle={{
 						enable: true,
 						value:
@@ -70,7 +68,6 @@ const Proximity: React.FC<{
 			{Platform.OS === 'android' && (
 				<ButtonSettingV2
 					text={t('settings.network.nearby-button')}
-					icon='wifi'
 					toggle={{
 						enable: true,
 						value: networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled,
@@ -87,7 +84,6 @@ const Proximity: React.FC<{
 			)}
 			<ButtonSettingV2
 				text={t('settings.network.mdns-button')}
-				icon='wifi'
 				toggle={{
 					enable: true,
 					value: networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled,
@@ -277,25 +273,24 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
+				{/*
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.network.memo-cell-button')}
-						icon='bluetooth'
 						toggle={{ enable: true }}
 						disabled
 					/>
 					<ButtonSettingV2
 						text={t('settings.network.medias-cell-button')}
-						icon='bell'
 						toggle={{ enable: true }}
 						disabled
 					/>
 				</Section>
+				*/}
 				{networkConfig && <Proximity setNewConfig={setNewConfig} networkConfig={networkConfig} />}
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.network.dht-button')}
-						icon='info'
 						toggle={{
 							enable: true,
 							value: networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient,
@@ -310,7 +305,8 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 							},
 						}}
 					/>
-					<ButtonSettingV2 text={t('settings.network.rdvp-button')} icon='info' />
+					{/*
+					<ButtonSettingV2 text={t('settings.network.rdvp-button')} />
 					{networkConfig?.rendezvous?.map(item => {
 						return (
 							<CustomItem
@@ -322,12 +318,15 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 						)
 					})}
 					<InputSetting setNewConfig={setNewConfig} obj='rendezvous' />
+				*/}
 				</Section>
+				{/*
 				<Section>
-					<ButtonSettingV2 text={t('settings.network.relay-button')} icon='info' />
-					<ButtonSettingV2 text={t('settings.network.bootstrap-button')} icon='info' />
-					{/* <ButtonSettingV2 text='Tor' icon='info' last disabled /> */}
+					<ButtonSettingV2 text={t('settings.network.relay-button')} />
+					<ButtonSettingV2 text={t('settings.network.bootstrap-button')} />
+					<ButtonSettingV2 text='Tor' last disabled />
 				</Section>
+				*/}
 			</ScrollView>
 		</View>
 	)

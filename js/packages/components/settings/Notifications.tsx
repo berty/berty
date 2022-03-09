@@ -20,25 +20,15 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 			>
 				{/* TODO i18n */}
 				<Section>
-					<ButtonSettingV2
-						text='Enable globally for account'
-						icon='bluetooth'
-						toggle={{ enable: true }}
-						disabled
-					/>
-					<ButtonSettingV2 text='Mute globally' icon='info' last disabled />
+					<ButtonSettingV2 text='Enable globally for account' toggle={{ enable: true }} disabled />
+					<ButtonSettingV2 text='Mute globally' last disabled />
 				</Section>
 				<Section>
-					<ButtonSettingV2 text='Display while using app' icon='bluetooth' last />
+					<ButtonSettingV2 text='Display while using app' last />
 				</Section>
 				<Section>
-					<ButtonSettingV2 text='Hide notifications previews' icon='info' disabled />
-					<ButtonSettingV2
-						text='Hide names/conersation titles in notifications'
-						icon='info'
-						last
-						disabled
-					/>
+					<ButtonSettingV2 text='Hide notifications previews' disabled />
+					<ButtonSettingV2 text='Hide names/conersation titles in notifications' last disabled />
 				</Section>
 			</ScrollView>
 		</View>
