@@ -72,7 +72,12 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
 
-	if m.Datastore.rootDS, err = accountutils.GetRootDatastoreForPath(dir, storageKey, m.initLogger); err != nil {
+	storageSalt, err := m.GetAccountStorageSalt()
+	if err != nil {
+		return nil, errcode.ErrKeystoreGet.Wrap(err)
+	}
+
+	if m.Datastore.rootDS, err = accountutils.GetRootDatastoreForPath(dir, storageKey, storageSalt, m.initLogger); err != nil {
 		return nil, err
 	}
 

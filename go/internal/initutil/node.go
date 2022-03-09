@@ -318,6 +318,13 @@ func (m *Manager) GetAccountStorageKey() ([]byte, error) {
 	return accountutils.GetOrCreateStorageKeyForAccount(m.nativeKeystore, m.accountID)
 }
 
+func (m *Manager) GetAccountStorageSalt() ([]byte, error) {
+	if m.nativeKeystore == nil {
+		return nil, nil
+	}
+	return accountutils.GetOrCreateStorageSaltForAccount(m.nativeKeystore, m.accountID)
+}
+
 func (m *Manager) SetLifecycleManager(manager *lifecycle.Manager) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()

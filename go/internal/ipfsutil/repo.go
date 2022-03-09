@@ -47,14 +47,14 @@ func CreateMockedRepo(dstore ipfs_ds.Batching) (ipfs_repo.Repo, error) {
 	}, nil
 }
 
-func LoadRepoFromPath(path string, key []byte) (ipfs_repo.Repo, error) {
+func LoadRepoFromPath(path string, key []byte, salt []byte) (ipfs_repo.Repo, error) {
 	dir, _ := filepath.Split(path)
 	if _, err := loadPlugins(dir); err != nil {
 		return nil, errors.Wrap(err, "failed to load plugins")
 	}
 
 	// init repo if needed
-	isInit, err := encrepo.IsInitialized(path, key)
+	isInit, err := encrepo.IsInitialized(path, key, salt)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to check if repo is initialized")
 	}
@@ -71,12 +71,12 @@ func LoadRepoFromPath(path string, key []byte) (ipfs_repo.Repo, error) {
 
 		ucfg.Datastore.Spec = nil
 
-		if err := encrepo.Init(path, key, ucfg); err != nil {
+		if err := encrepo.Init(path, key, salt, ucfg); err != nil {
 			return nil, errors.Wrap(err, "failed to init repo")
 		}
 	}
 
-	return encrepo.Open(path, key)
+	return encrepo.Open(path, key, salt)
 }
 
 var DefaultSwarmListeners = []string{
@@ -119,7 +119,7 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 	return &c, nil
 }
 
-func ResetExistingRepoIdentity(repo ipfs_repo.Repo, path string, key []byte) (ipfs_repo.Repo, error) {
+func ResetExistingRepoIdentity(repo ipfs_repo.Repo, path string, key []byte, salt []byte) (ipfs_repo.Repo, error) {
 	cfg, err := repo.Config()
 	if err != nil {
 		_ = repo.Close()
@@ -141,7 +141,7 @@ func ResetExistingRepoIdentity(repo ipfs_repo.Repo, path string, key []byte) (ip
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	repo, err = encrepo.Open(path, key)
+	repo, err = encrepo.Open(path, key, salt)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}

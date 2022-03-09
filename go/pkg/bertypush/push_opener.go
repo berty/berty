@@ -228,7 +228,14 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				}
 			}
 
-			rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, storageKey, opts.Logger)
+			var storageSalt []byte
+			if opts.Keystore != nil {
+				if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(opts.Keystore, account.AccountID); err != nil {
+					return nil, err
+				}
+			}
+
+			rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, storageKey, storageSalt, opts.Logger)
 			if err != nil {
 				return nil, err
 			}
